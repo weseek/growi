@@ -12,16 +12,16 @@ import { useTranslation } from 'next-i18next';
 import { DropdownToggle } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
-import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { ValidationTarget, useInputValidator, type InputValidationResult } from '~/client/util/use-input-validator';
+import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
+import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 
-import { MenuItemType, PageItemControl } from '../../Common/Dropdown/PageItemControl';
+import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import type { TreeItemToolProps } from '../../TreeItem';
 
 
@@ -111,7 +111,6 @@ export const usePageItemControl = (): UsePageItemControl => {
       <NotAvailableForGuest>
         <div className="grw-pagetree-control d-flex">
           <PageItemControl
-            forceHideMenuItems={[MenuItemType.SYNC_LATEST_REVISION_BODY]}
             pageId={page._id}
             isEnableActions={isEnableActions}
             isReadOnlyUser={isReadOnlyUser}

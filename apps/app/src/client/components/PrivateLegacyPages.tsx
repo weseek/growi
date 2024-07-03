@@ -443,7 +443,6 @@ const PrivateLegacyPages = (): JSX.Element => {
           MenuItemType.DUPLICATE,
           MenuItemType.REVERT,
           MenuItemType.PATH_RECOVERY,
-          MenuItemType.SYNC_LATEST_REVISION_BODY,
         ]}
         // Components
         searchControl={searchControl}

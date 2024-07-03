@@ -10,7 +10,6 @@ import type { IFormattedSearchResult } from '~/interfaces/search';
 import { useShowPageLimitationL } from '~/stores-universal/context';
 import { type ISearchConditions, type ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
-import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import { NotAvailableForGuest } from './NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from './NotAvailableForReadOnlyUser';
 import PaginationWrapper from './PaginationWrapper';
@@ -288,7 +287,6 @@ export const SearchPage = (): JSX.Element => {
       searchControl={searchControl}
       searchResultListHead={searchResultListHead}
       searchPager={searchPager}
-      forceHideMenuItems={[MenuItemType.SYNC_LATEST_REVISION_BODY]}
     />
   );
 };

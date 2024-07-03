@@ -193,7 +193,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
             isReadOnlyUser={isReadOnlyUser}
             pageInfo={pageInfo}
             isInstantRename
-            forceHideMenuItems={[MenuItemType.DUPLICATE, MenuItemType.SYNC_LATEST_REVISION_BODY]}
+            forceHideMenuItems={[MenuItemType.DUPLICATE]}
             onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
             onClickRenameMenuItem={renameMenuItemClickHandler}
             onClickDeleteMenuItem={deleteMenuItemClickHandler}
