@@ -1,6 +1,7 @@
 import assert from 'assert';
 
 import { isClient } from '@growi/core/dist/utils/browser-utils';
+import * as presentation from '@growi/presentation/dist/client/sanitize-option';
 import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client';
 import * as drawio from '@growi/remark-drawio';
 import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client';
@@ -78,6 +79,7 @@ export const generateViewOptions = (
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       commonSanitizeOption,
+      presentation.sanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
       attachment.sanitizeOption,
@@ -192,6 +194,7 @@ export const generateSimpleViewOptions = (
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       commonSanitizeOption,
+      presentation.sanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
       attachment.sanitizeOption,
