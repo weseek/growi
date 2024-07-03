@@ -42,6 +42,7 @@ import {
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
+  useElasticsearchMaxBodyLengthToIndex,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -157,6 +158,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  elasticsearchMaxBodyLengthToIndex: number,
   isEnabledMarp: boolean,
 
   sidebarConfig: ISidebarConfig,
@@ -215,6 +217,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
+  useElasticsearchMaxBodyLengthToIndex(props.elasticsearchMaxBodyLengthToIndex);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useIsSlackConfigured(props.isSlackConfigured);
@@ -537,6 +540,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.elasticsearchMaxBodyLengthToIndex = configManager.getConfig('crowi', 'app:elasticsearchMaxBodyLengthToIndex');
 
   props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;

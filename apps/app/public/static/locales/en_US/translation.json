@@ -321,7 +321,9 @@
       "stale": "More than {{count}} year has passed since last update.",
       "stale_plural": "More than {{count}} years has passed since last update.",
       "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
-      "no_deadline": "This page has no expiration date"
+      "no_deadline": "This page has no expiration date",
+      "not_indexed1": "This page may not be indexed by Full-Text search engines.",
+      "not_indexed2": "Page body exceeds the limit of {{limit}}."
     }
   },
   "page_edit": {
