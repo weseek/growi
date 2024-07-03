@@ -354,7 +354,9 @@
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
       "expiration": "この共有パーマリンクの有効期限は <strong>{{expiredAt}}</strong> です。",
-      "no_deadline": "このページに有効期限は設定されていません。"
+      "no_deadline": "このページに有効期限は設定されていません。",
+      "not_indexed1": "このページは全文検索エンジンにインデックスされない可能性があります.",
+      "not_indexed2": "ページ本文が閾値を超えています: {{threshold}}."
     }
   },
   "page_edit": {

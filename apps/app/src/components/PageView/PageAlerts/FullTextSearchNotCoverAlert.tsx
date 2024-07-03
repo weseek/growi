@@ -22,7 +22,7 @@ export const FullTextSearchNotCoverAlert = (): JSX.Element => {
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{
           __html: t('page_page.notice.not_indexed2', {
-            limit: `<code>ELASTICSEARCH_MAX_BODY_LENGTH_TO_INDEX=${elasticsearchMaxBodyLengthToIndex}</code>`,
+            threshold: `<code>ELASTICSEARCH_MAX_BODY_LENGTH_TO_INDEX=${elasticsearchMaxBodyLengthToIndex}</code>`,
           }),
         }}
       />

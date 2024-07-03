@@ -323,7 +323,7 @@
       "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
       "no_deadline": "This page has no expiration date",
       "not_indexed1": "This page may not be indexed by Full-Text search engines.",
-      "not_indexed2": "Page body exceeds the limit of {{limit}}."
+      "not_indexed2": "Page body exceeds the threshold specified by {{threshold}}."
     }
   },
   "page_edit": {
