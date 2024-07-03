@@ -740,36 +740,6 @@
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません",
     "please_enable_mailer_alert": "メール設定が完了していないため、パスワード再設定機能が無効になっています。メール設定を完了させるよう管理者に依頼してください。"
   },
-  "emoji": {
-    "title": "絵文字を選択",
-    "search": "探す",
-    "clear": "リセット",
-    "notfound": "絵文字が見つかりません",
-    "skintext": "デフォルトの肌の色を選択",
-    "categories": {
-      "search": "検索結果",
-      "recent": "最新履歴",
-      "smileys": "スマイリーと感情",
-      "people": "人と体",
-      "nature": "動物と自然",
-      "foods": "食べ物や飲み物",
-      "activity": "アクティビティ",
-      "places": "旅行と場所",
-      "objects": "オブジェクト",
-      "symbols": "シンボル",
-      "flags": "国旗",
-      "custom": "カスタマイズ"
-    },
-    "categorieslabel": "絵文字カテゴリ",
-    "skintones": {
-      "1": "デフォルトの肌の色",
-      "2": "明るい肌のトーン",
-      "3": "ミディアム-明るい肌のトーン",
-      "4": "ミディアムスキントーン",
-      "5": "ミディアムダークスキントーン",
-      "6": "肌の色が濃い"
-    }
-  },
   "maintenance_mode": {
     "maintenance_mode": "メンテナンスモード",
     "growi_is_under_maintenance": "GROWI はメンテナンス中です。終了するまでお待ちください",
