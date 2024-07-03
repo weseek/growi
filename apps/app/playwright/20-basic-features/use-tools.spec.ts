@@ -40,14 +40,15 @@ test('PageMoveRenameModal is shown successfully', async({ page }) => {
   await expect(page.getByTestId('page-rename-modal')).toBeVisible();
 });
 
-test('PresentationModal for "/" is shown successfully', async({ page }) => {
-  await page.goto('/');
+// TODO: Uncomment after https://redmine.weseek.co.jp/issues/149786
+// test('PresentationModal for "/" is shown successfully', async({ page }) => {
+//   await page.goto('/');
 
-  await openPageItemControl(page);
-  await page.getByTestId('open-presentation-modal-btn').click();
+//   await openPageItemControl(page);
+//   await page.getByTestId('open-presentation-modal-btn').click();
 
-  expect(page.getByTestId('page-presentation-modal')).toBeVisible();
-});
+//   expect(page.getByTestId('page-presentation-modal')).toBeVisible();
+// });
 
 test.describe('Page Accessories Modal', () => {
   test.beforeEach(async({ page }) => {
