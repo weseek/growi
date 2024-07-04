@@ -40,7 +40,11 @@ module.exports = (crowi: Crowi): Router => {
     };
 
     try {
+<<<<<<< HEAD
       await pageBulkExportService?.createAndStartPageBulkExportJob(path, format, req.user, activityParameters);
+=======
+      await pageBulkExportService?.createAndStartPageBulkExportJob(path, req.user, activityParameters);
+>>>>>>> feat/page-bulk-export
       return res.apiv3({}, 204);
     }
     catch (err) {
