@@ -2,8 +2,12 @@ import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
 
+import path from 'path';
+
+
 import { Origin } from '@growi/core';
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import {
@@ -33,14 +37,13 @@ const PageCreateModal: React.FC = () => {
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
 
-  const path = pageCreateModalData?.path;
   const isOpened = pageCreateModalData?.isOpened ?? false;
 
   const { create } = useCreatePage();
   const { createTemplate } = useCreateTemplatePage();
 
   const { data: isReachable } = useIsSearchServiceReachable();
-  const pathname = path || '';
+  const pathname = pageCreateModalData?.path ?? '';
   const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
   const isCreatable = isCreatablePage(pathname) || isUsersHomepage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
@@ -106,16 +109,19 @@ const PageCreateModal: React.FC = () => {
    * access input page
    */
   const createInputPage = useCallback(async() => {
+    const targetPath = normalizePath(pageNameInput);
+    const parentPath = path.dirname(targetPath);
+
     return create(
       {
-        path: pageNameInput,
-        parentPath: pathname,
+        path: targetPath,
+        parentPath,
         wip: true,
         origin: Origin.View,
       },
       { onTerminated: closeCreateModal },
     );
-  }, [closeCreateModal, create, pageNameInput, pathname]);
+  }, [closeCreateModal, create, pageNameInput]);
 
   /**
    * access template page
