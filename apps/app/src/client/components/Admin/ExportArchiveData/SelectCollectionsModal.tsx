@@ -14,11 +14,13 @@ const GROUPS_PAGE = [
 ];
 const GROUPS_USER = [
   'users', 'externalaccounts', 'usergroups', 'usergrouprelations',
-  'useruisettings', 'editorsettings', 'bookmarks', 'subscriptions',
+  'externalusergroups', 'externalusergrouprelations',
+  'useruisettings', 'editorsettings', 'bookmarks', 'bookmarkfolders', 'subscriptions',
   'inappnotificationsettings',
 ];
 const GROUPS_CONFIG = [
-  'configs', 'updateposts', 'globalnotificationsettings', 'slackappintegrations',
+  'configs', 'migrations', 'updateposts', 'globalnotificationsettings', 'slackappintegrations',
+  'growiplugins',
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
 
