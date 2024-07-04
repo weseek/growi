@@ -311,7 +311,9 @@
       "restricted": "访问此页受到限制",
       "stale": "自上次更新以来，已超过{{count}年。",
       "stale_plural": "自上次更新以来已过去{{count}年以上。",
-      "no_deadline": "This page has no expiration date"
+      "no_deadline": "此页面没有到期日期",
+      "not_indexed1": "此页面可能不会被全文搜索引擎索引。",
+      "not_indexed2": "页面正文超过了{{threshold}}指定的阈值。"
 		}
 	},
 	"page_edit": {
@@ -715,36 +717,6 @@
     "incorrect_token_or_expired_url": "令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配",
     "please_enable_mailer_alert": "密码重置功能被禁用，因为电子邮件设置尚未完成。请要求管理员完成电子邮件的设置。"
-  },
-  "emoji": {
-    "title": "选择一个表情符号",
-    "search": "搜索",
-    "clear": "重置",
-    "notfound": "找不到表情符号",
-    "skintext": "选择您的默认肤色",
-    "categories": {
-      "search": "搜索结果",
-      "recent": "经常使用",
-      "smileys": "笑脸和情感",
-      "people": "人和身体",
-      "nature": "动物与自然",
-      "foods": "食物和饮料",
-      "activity": "活动",
-      "places": "旅行和地方",
-      "objects": "对象",
-      "symbols": "符号",
-      "flags": "旗帜",
-      "custom": "定制"
-    },
-    "categorieslabel": "表情符号类别",
-    "skintones": {
-      "1": "默认肤色",
-      "2": "浅肤色",
-      "3": "中浅肤色",
-      "4": "中等肤色",
-      "5": "中深肤色",
-      "6": "深色肤色"
-    }
   },
   "maintenance_mode": {
     "maintenance_mode": "维护模式",

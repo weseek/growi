@@ -1,4 +1,5 @@
-import { Marp, MarpOptions } from '@marp-team/marp-core';
+import type { MarpOptions } from '@marp-team/marp-core';
+import { Marp } from '@marp-team/marp-core';
 import { Element } from '@marp-team/marpit';
 
 export const MARP_CONTAINER_CLASS_NAME = 'marpit';
