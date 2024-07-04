@@ -13,11 +13,11 @@ const ArchiveFilesTableMenu = (props: ArchiveFilesTableMenuProps):JSX.Element =>
   const { t } = useTranslation();
 
   return (
-    <div className="btn-group admin-user-menu dropdown">
-      <button type="button" className="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown">
+    <div className="dropdown">
+      <button type="button" className="btn btn-sm btn-outline-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
         <span className="material-symbols-outlined">settings</span> <span className="caret"></span>
       </button>
-      <ul className="dropdown-menu" role="menu">
+      <ul className="dropdown-menu dropdown-menu-end">
         <li className="dropdown-header">{t('admin:export_management.export_menu')}</li>
         <button type="button" className="dropdown-item" onClick={() => { window.location.href = `/admin/export/${props.fileName}` }}>
           <span className="material-symbols-outlined">cloud_download</span> {t('admin:export_management.download')}
