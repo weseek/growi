@@ -322,7 +322,9 @@
       "stale": "More than {{count}} year has passed since last update.",
       "stale_plural": "More than {{count}} years has passed since last update.",
       "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
-      "no_deadline": "This page has no expiration date"
+      "no_deadline": "This page has no expiration date",
+      "not_indexed1": "This page may not be indexed by Full-Text search engines.",
+      "not_indexed2": "Page body exceeds the threshold specified by {{threshold}}."
     }
   },
   "page_edit": {
@@ -707,36 +709,6 @@
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match",
     "please_enable_mailer_alert": "The password reset feature is disabled because email setup has not been completed. Please ask administrator to complete the email setup."
-  },
-  "emoji": {
-    "title": "Pick an Emoji",
-    "search": "Search",
-    "clear": "Clear",
-    "notfound": "No Emoji Found",
-    "skintext": "Choose your default skin tone",
-    "categories": {
-      "search": "Search Results",
-      "recent": "Frequently Used",
-      "smileys": "Smileys & Emotion",
-      "people": "People & Body",
-      "nature": "Animals & Nature",
-      "foods": "Food & Drink",
-      "activity": "Activity",
-      "places": "Travel & Places",
-      "objects": "Objects",
-      "symbols": "Symbols",
-      "flags": "Flags",
-      "custom": "Custom"
-    },
-    "categorieslabel": "Emoji categories",
-    "skintones": {
-      "1": "Default Skin Tone",
-      "2": "Light Skin Tone",
-      "3": "Medium-Light Skin Tone",
-      "4": "Medium Skin Tone",
-      "5": "Medium-Dark Skin Tone",
-      "6": "Dark Skin Tone"
-    }
   },
   "maintenance_mode": {
     "maintenance_mode": "Maintenance Mode",

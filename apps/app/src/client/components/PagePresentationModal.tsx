@@ -19,6 +19,8 @@ import { usePresentationViewOptions } from '~/stores/renderer';
 
 import styles from './PagePresentationModal.module.scss';
 
+const moduleClass = styles['grw-presentation-modal'] ?? '';
+
 
 const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
   ssr: false,
@@ -71,7 +73,7 @@ const PagePresentationModal = (): JSX.Element => {
       isOpen={isOpen}
       toggle={closeHandler}
       data-testid="page-presentation-modal"
-      className={`grw-presentation-modal ${styles['grw-presentation-modal']}`}
+      className={moduleClass}
     >
       <div className="grw-presentation-controls d-flex">
         <button
