@@ -4,6 +4,9 @@
     ".next",
     "public/static",
     "package.json",
-    "playwright"
+    "playwright",
+    "test",
+    "test-with-vite",
+    "tmp"
   ]
 }
