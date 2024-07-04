@@ -1,6 +1,8 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 
+import Image from 'next/image';
+
 import { useAppTitle } from '~/stores-universal/context';
 
 import GrowiLogo from '../Common/GrowiLogo';
@@ -37,7 +39,7 @@ export const NoLoginLayout = ({
               <div className="nologin-header mx-auto rounded-4 rounded-bottom-0">
                 <div className="d-flex justify-content-center align-items-center">
                   <GrowiLogo />
-                  <h1 className="growi-logo-type text-white fs-3 my-3 ms-3">GROWI</h1>
+                  <Image width={128.48} height={28} src="/images/growi-brand-logo-login.svg" alt="GROWI" className="growi-logo-type my-3" />
                 </div>
                 {appTitle !== 'GROWI' ? (
                   <h2 className="fs-4 text-center text-white">{ appTitle }</h2>
