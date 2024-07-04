@@ -59,7 +59,7 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
         <TagsInput tags={initTags} onTagsUpdated={tags => setTags(tags)} autoFocus />
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+        <button type="button" data-testid="tag-edit-done-btn" className="btn btn-primary" onClick={handleSubmit}>
           {t('tag_edit_modal.done')}
         </button>
       </ModalFooter>
