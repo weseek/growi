@@ -89,7 +89,7 @@ class PageBulkExportService {
     // export pages to fs temporarily
     const tmpOutputDir = `${this.tmpOutputRootDir}/${exportName}`;
     try {
-      await this.exportPagesToFS(basePagePath, tmpOutputDir);
+      await this.exportPagesToFS(basePagePath, tmpOutputDir, currentUser);
     }
     catch (err) {
       await this.handleExportError(err, activityParameters, pageBulkExportJob, tmpOutputDir);
@@ -152,8 +152,8 @@ class PageBulkExportService {
     }
   }
 
-  private async exportPagesToFS(basePagePath: string, outputDir: string): Promise<void> {
-    const pagesReadable = this.getPageReadable(basePagePath);
+  private async exportPagesToFS(basePagePath: string, outputDir: string, currentUser): Promise<void> {
+    const pagesReadable = await this.getPageReadable(basePagePath, currentUser);
     const pagesWritable = this.getPageWritable(outputDir);
 
     return pipelinePromise(pagesReadable, pagesWritable);
@@ -162,12 +162,13 @@ class PageBulkExportService {
   /**
    * Get a Readable of all the pages under the specified path, including the root page.
    */
-  private getPageReadable(basePagePath: string): Readable {
+  private async getPageReadable(basePagePath: string, currentUser): Promise<Readable> {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
-    const builder = new PageQueryBuilder(Page.find())
-      .addConditionToListWithDescendants(basePagePath);
+    const builder = await new PageQueryBuilder(Page.find())
+      .addConditionToListWithDescendants(basePagePath)
+      .addViewerCondition(currentUser);
 
     return builder
       .query
