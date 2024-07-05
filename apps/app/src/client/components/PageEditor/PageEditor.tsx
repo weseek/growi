@@ -24,7 +24,7 @@ import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
-  useSaveNextCaretLine,
+  useReservedNextCaretLine,
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
@@ -110,7 +110,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
-  const { data: nextCaretLine, mutate: mutateNextCaretLine } = useSaveNextCaretLine();
+  const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -300,20 +300,25 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
-  // set handler to set caret line
+
+  // set caret line if the edit button next to Header is clicked.
   useEffect(() => {
     if (codeMirrorEditor?.setCaretLine == null) {
       return;
     }
     if (editorMode === EditorMode.Editor) {
-      codeMirrorEditor.setCaretLine(nextCaretLine ?? 0, true);
+      codeMirrorEditor.setCaretLine(reservedNextCaretLine ?? 0, true);
     }
 
-    return () => {
-      mutateNextCaretLine(0);
-    };
+  }, [codeMirrorEditor, editorMode, reservedNextCaretLine]);
 
-  }, [codeMirrorEditor, editorMode, nextCaretLine, mutateNextCaretLine]);
+  // reset caret line if returning to the View.
+  useEffect(() => {
+    if (editorMode === EditorMode.View) {
+      mutateReservedNextCaretLine(0);
+    }
+  }, [editorMode, mutateReservedNextCaretLine]);
+
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,

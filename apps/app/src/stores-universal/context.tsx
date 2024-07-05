@@ -261,7 +261,7 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
 };
 
 
-export const useSaveNextCaretLine = (initialData?: number): SWRResponse<number> => {
+export const useReservedNextCaretLine = (initialData?: number): SWRResponse<number> => {
 
   const swrResponse = useSWRStatic('saveNextCaretLine', initialData, { fallbackData: 0 });
   const { mutate } = swrResponse;
@@ -271,10 +271,10 @@ export const useSaveNextCaretLine = (initialData?: number): SWRResponse<number> 
       mutate(lineNumber);
     };
 
-    globalEmitter.on('saveNextCaretLine', handler);
+    globalEmitter.on('reservedNextCaretLine', handler);
 
     return function cleanup() {
-      globalEmitter.removeListener('saveNextCaretLine', handler);
+      globalEmitter.removeListener('reservedNextCaretLine', handler);
     };
   }, [mutate]);
 

@@ -27,7 +27,7 @@ declare global {
 
 function setCaretLine(line?: number): void {
   if (line != null) {
-    globalEmitter.emit('saveNextCaretLine', line);
+    globalEmitter.emit('reservedNextCaretLine', line);
   }
 }
 
