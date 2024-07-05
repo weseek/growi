@@ -9,7 +9,6 @@
  * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
  * @typedef {import('mdast-util-to-markdown').Context} Context
  * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
- * @typedef {import()}
  *
  * @typedef {import('./complex-types').LeafDirective} LeafDirective
  * @typedef {import('./complex-types').TextDirective} TextDirective
@@ -163,7 +162,7 @@ function exit(token) {
  * @param {Directive} node
  */
 function handleDirective(node, _, context, safeOptions) {
-  const tracker = context.createtracker(safeOptions);
+  const tracker = context.createTracker(safeOptions);
   const sequence = fence(node);
   const exit = context.enter(node.type);
   let value = tracker.move(sequence + (node.name || ''));
