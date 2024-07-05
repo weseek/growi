@@ -260,7 +260,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateCurrentPageYjsData } = useCurrentPageYjsData();
 
-
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
