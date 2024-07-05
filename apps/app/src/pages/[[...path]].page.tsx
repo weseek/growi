@@ -41,7 +41,7 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
-  useIsUploadAllFileAllowed, useIsUploadEnabled, useSaveNextCaretLine,
+  useIsUploadAllFileAllowed, useIsUploadEnabled, useReservedNextCaretLine,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -263,7 +263,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
-  useSaveNextCaretLine();
+  useReservedNextCaretLine();
 
   // Store initial data (When revisionBody is not SSR)
   useEffect(() => {
