@@ -1,3 +1,7 @@
+import { useCallback, useEffect } from 'react';
+
+import type EventEmitter from 'events';
+
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
@@ -12,6 +16,10 @@ import type { TargetAndAncestors } from '../interfaces/page-listing-results';
 
 import { useContextSWR } from './use-context-swr';
 
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
 
 type Nullable<T> = T | null;
 
@@ -250,6 +258,29 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
       return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser);
     },
   );
+};
+
+
+export const useSaveNextCaretLine = (initialData?: number): SWRResponse<number> => {
+
+  const swrResponse = useSWRStatic('saveNextCaretLine', initialData, { fallbackData: 0 });
+  const { mutate } = swrResponse;
+
+  useEffect(() => {
+    const handler = (lineNumber: number) => {
+      mutate(lineNumber);
+    };
+
+    globalEmitter.on('saveNextCaretLine', handler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('saveNextCaretLine', handler);
+    };
+  }, [mutate]);
+
+  return {
+    ...swrResponse,
+  };
 };
 
 export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType, Error> => {
