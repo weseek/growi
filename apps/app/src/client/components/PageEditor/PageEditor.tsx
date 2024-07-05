@@ -19,12 +19,12 @@ import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { useSaveNextCaretLine } from '~/client/services/side-effects/save-next-caret-line';
 import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
+  useSaveNextCaretLine,
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
@@ -110,7 +110,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
-  const { pick: pickNextCaretLine } = useSaveNextCaretLine();
+  const { data: nextCaretLine, mutate: mutateNextCaretLine } = useSaveNextCaretLine();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -302,10 +302,18 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // set handler to set caret line
   useEffect(() => {
-    if (editorMode === EditorMode.Editor) {
-      codeMirrorEditor?.setCaretLine(pickNextCaretLine() ?? 0, true);
+    if (codeMirrorEditor?.setCaretLine == null) {
+      return;
     }
-  }, [codeMirrorEditor, editorMode, pickNextCaretLine]);
+    if (editorMode === EditorMode.Editor) {
+      codeMirrorEditor.setCaretLine(nextCaretLine ?? 0, true);
+    }
+
+    return () => {
+      mutateNextCaretLine(0);
+    };
+
+  }, [codeMirrorEditor, editorMode, nextCaretLine, mutateNextCaretLine]);
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
