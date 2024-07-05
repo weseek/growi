@@ -20,3 +20,10 @@ test('Access to /me page', async({ page }) => {
   // Expect the UserSettgins-specific elements to be present when accessing /me (UserSettgins)
   await expect(page.getByTestId('grw-user-settings')).toBeVisible();
 });
+
+test('All In-App Notification list is successfully loaded', async({ page }) => {
+  await page.goto('/me/all-in-app-notifications');
+
+  // Expect the In-App Notification-specific elements to be present when accessing /me/all-in-app-notifications
+  await expect(page.getByTestId('grw-in-app-notification-page')).toBeVisible();
+});

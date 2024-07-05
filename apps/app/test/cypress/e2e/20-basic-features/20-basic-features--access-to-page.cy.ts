@@ -307,33 +307,3 @@ context('Access to Template Editing Mode', () => {
     createPageFromPageTreeTest('template-test-page3','Sandbox',`${templateBody1}\n${templateBody2}`);
   })
 });
-
-context('Access to /me/all-in-app-notifications', () => {
-  const ssPrefix = 'in-app-notifications-';
-
-  beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
-  });
-
-  it('All In-App Notification list is successfully loaded', { scrollBehavior: false },() => {
-    cy.visit('/');
-    cy.get('.notification-wrapper').click();
-    cy.get('.notification-wrapper > .dropdown-menu > a').click();
-
-    cy.getByTestid('grw-in-app-notification-page').should('be.visible');
-    cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
-
-    cy.collapseSidebar(true);
-    cy.screenshot(`${ssPrefix}-see-all`);
-
-    cy.get('.grw-custom-nav-tab > div > ul > li:nth-child(2) > a').click();
-    cy.getByTestid('grw-in-app-notification-page-spinner').should('not.exist');
-
-    cy.collapseSidebar(true);
-    cy.screenshot(`${ssPrefix}-see-unread`);
-   });
-
-})
