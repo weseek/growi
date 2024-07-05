@@ -1,7 +1,7 @@
 import dynamic from 'next/dynamic';
 
 import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
-import { useIsEditable } from '~/stores-universal/context';
+import { useIsEditable, useReservedNextCaretLine } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useIsLatestRevision } from '~/stores/page';
 
@@ -18,6 +18,7 @@ export const DisplaySwitcher = (): JSX.Element => {
   const { data: isLatestRevision } = useIsLatestRevision();
 
   useHashChangedEffect();
+  useReservedNextCaretLine();
 
   return (
     <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
