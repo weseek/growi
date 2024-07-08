@@ -5,6 +5,7 @@ import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/cor
 import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
+import { Item } from 'yjs';
 
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 
@@ -137,7 +138,7 @@ export const UserGroupTable: FC<Props> = ({
     setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(childUserGroups));
   }, [userGroupRelations, childUserGroups]);
   const [hoveredindex, setHoveredIdex] = useState<undefined | number>(undefined);
-  const ButtonForUserGroupedit = async(index) => {
+  const ButtonForUserGroupedit = (index) => {
     return (
       <span className={`material-symbols-outlined px-2 py-0 ${hoveredindex === index ? '' : 'opacity-0'}`}>edit</span>
     );
@@ -180,7 +181,7 @@ export const UserGroupTable: FC<Props> = ({
                       >
                         <span className="material-symbols-outlined pe-2 pt-2">group</span>
                         <span className="text-decoration-underline">{group.name}</span>
-                        <span className={`material-symbols-outlined px-2 py-0 ${hoveredindex === index ? '' : 'opacity-0'}`}>edit</span>
+                        <ButtonForUserGroupedit />
                       </Link>
                     </td>
                   )
