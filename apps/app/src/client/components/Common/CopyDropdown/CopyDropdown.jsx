@@ -21,7 +21,7 @@ const DropdownItemContents = ({
 }) => (
   <>
     <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
-    <div className={`card custom-card mb-1 p-2 ${className}`} style={style}>{contents}</div>
+    <div className={`card mb-1 p-2 ${className}`} style={style}>{contents}</div>
   </>
 );
 /* eslint-enable react/prop-types */
