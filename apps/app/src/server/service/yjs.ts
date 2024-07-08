@@ -13,9 +13,9 @@ export const extractPageIdFromYdocId = (ydocId: string): string | undefined => {
   return result?.[1];
 };
 
-class YjsConnectionManager {
+class YjsService {
 
-  private static instance: YjsConnectionManager;
+  private static instance: YjsService;
 
   private ysocketio: YSocketIO;
 
@@ -41,10 +41,10 @@ class YjsConnectionManager {
     }
 
     if (io == null) {
-      throw new Error("'io' is required if initialize YjsConnectionManager");
+      throw new Error("'io' is required if initialize YjsService");
     }
 
-    this.instance = new YjsConnectionManager(io);
+    this.instance = new YjsService(io);
     return this.instance;
   }
 
@@ -110,11 +110,11 @@ class YjsConnectionManager {
 
 }
 
-export const instantiateYjsConnectionManager = (io: Server): YjsConnectionManager => {
-  return YjsConnectionManager.getInstance(io);
+export const instantiateYjsService = (io: Server): YjsService => {
+  return YjsService.getInstance(io);
 };
 
 // export the singleton instance
-export const getYjsConnectionManager = (): YjsConnectionManager => {
-  return YjsConnectionManager.getInstance();
+export const getYjsService = (): YjsService => {
+  return YjsService.getInstance();
 };

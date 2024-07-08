@@ -15,7 +15,7 @@ import type Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 import { configManager } from './config-manager';
-import { getYjsConnectionManager, extractPageIdFromYdocId } from './yjs-connection-manager';
+import { getYjsService, extractPageIdFromYdocId } from './yjs';
 
 
 const logger = loggerFactory('growi:service:socket-io');
@@ -180,11 +180,11 @@ class SocketIoService {
   }
 
   setupYjsConnection() {
-    const yjsConnectionManager = getYjsConnectionManager();
+    const yjsService = getYjsService();
 
     this.io.on('connection', (socket) => {
 
-      yjsConnectionManager.ysocketioInstance.on('awareness-update', async(doc: Document) => {
+      yjsService.ysocketioInstance.on('awareness-update', async(doc: Document) => {
         const pageId = extractPageIdFromYdocId(doc.name);
 
         if (pageId == null) return;
@@ -198,7 +198,7 @@ class SocketIoService {
 
         // Triggered when the last user leaves the editor
         if (awarenessStateSize === 0) {
-          const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+          const currentYdoc = yjsService.getCurrentYdoc(pageId);
           const yjsDraft = currentYdoc?.getText('codemirror').toString();
           const hasRevisionBodyDiff = await this.crowi.pageService.hasRevisionBodyDiff(pageId, yjsDraft);
           this.io
@@ -209,7 +209,7 @@ class SocketIoService {
 
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
         try {
-          await yjsConnectionManager.handleYDocSync(pageId, initialValue);
+          await yjsService.handleYDocSync(pageId, initialValue);
         }
         catch (error) {
           logger.warn(error.message);

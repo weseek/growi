@@ -36,7 +36,7 @@ import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
-import { instantiateYjsConnectionManager } from '../service/yjs-connection-manager';
+import { instantiateYjsService } from '../service/yjs';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
 
@@ -475,8 +475,8 @@ Crowi.prototype.start = async function() {
   // attach to socket.io
   this.socketIoService.attachServer(httpServer);
 
-  // Initialization YjsConnectionManager
-  instantiateYjsConnectionManager(this.socketIoService.io);
+  // Initialization YjsService
+  instantiateYjsService(this.socketIoService.io);
   this.socketIoService.setupYjsConnection();
 
   await this.autoInstall();

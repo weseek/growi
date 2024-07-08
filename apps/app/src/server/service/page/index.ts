@@ -41,7 +41,6 @@ import {
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import type { UserGroupDocument } from '~/server/models/user-group';
-import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
 import { generalXssFilter } from '~/services/general-xss-filter';
@@ -63,6 +62,7 @@ import { divideByType } from '../../util/granted-group';
 import { configManager } from '../config-manager';
 import type { IPageGrantService } from '../page-grant';
 import { preNotifyService } from '../pre-notify';
+import { getYjsService } from '../yjs';
 
 import { BULK_REINDEX_SIZE, LIMIT_FOR_MULTIPLE_PAGE_OP } from './consts';
 import type { IPageService } from './page-service';
@@ -4444,10 +4444,10 @@ class PageService implements IPageService {
   }
 
   async getYjsData(pageId: string): Promise<CurrentPageYjsData> {
-    const yjsConnectionManager = getYjsConnectionManager();
+    const yjsService = getYjsService();
 
-    const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
-    const persistedYdoc = await yjsConnectionManager.getPersistedYdoc(pageId);
+    const currentYdoc = yjsService.getCurrentYdoc(pageId);
+    const persistedYdoc = await yjsService.getPersistedYdoc(pageId);
 
     const yjsDraft = (currentYdoc ?? persistedYdoc)?.getText('codemirror').toString();
     const hasRevisionBodyDiff = await this.hasRevisionBodyDiff(pageId, yjsDraft);
