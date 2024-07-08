@@ -60,7 +60,7 @@ test.describe.serial('PageEditor', () => {
     await expect(page.locator('.cm-content')).toContainText(body1);
     await expect(page.getByTestId('page-editor-preview-body')).toContainText(body1);
 
-    await appendTextToEditorUntilContains(page, body2);
+    await appendTextToEditorUntilContains(page, body1 + body2);
     await page.keyboard.press(savePageShortcutKey);
     await page.getByTestId('view-button').click();
 
