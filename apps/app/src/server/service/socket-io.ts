@@ -1,4 +1,6 @@
 import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
+import expressSession from 'express-session';
+import passport from 'passport';
 import { Server } from 'socket.io';
 
 import { SocketEventName } from '~/interfaces/websocket';
@@ -8,9 +10,6 @@ import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 import { getYjsConnectionManager, extractPageIdFromYdocId } from './yjs-connection-manager';
 
-
-const expressSession = require('express-session');
-const passport = require('passport');
 
 const logger = loggerFactory('growi:service:socket-io');
 
