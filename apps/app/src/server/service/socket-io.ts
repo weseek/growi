@@ -1,28 +1,44 @@
+import type { IncomingMessage } from 'http';
+
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import expressSession from 'express-session';
 import passport from 'passport';
+import type { Namespace } from 'socket.io';
 import { Server } from 'socket.io';
+import type { Document } from 'y-socket.io/dist/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
+import type Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
+import { configManager } from './config-manager';
 import { getYjsConnectionManager, extractPageIdFromYdocId } from './yjs-connection-manager';
 
 
 const logger = loggerFactory('growi:service:socket-io');
 
 
+type RequestWithUser = IncomingMessage & { user: IUserHasId };
+
 /**
  * Serve socket.io for server-to-client messaging
  */
 class SocketIoService {
 
+  crowi: Crowi;
+
+  guestClients: Set<string>;
+
+  io: Server;
+
+  adminNamespace: Namespace;
+
+
   constructor(crowi) {
     this.crowi = crowi;
-    this.configManager = crowi.configManager;
-
     this.guestClients = new Set();
   }
 
@@ -32,11 +48,9 @@ class SocketIoService {
 
   // Since the Order is important, attachServer() should be async
   async attachServer(server) {
-    this.io = new Server({
-      transports: ['websocket'],
+    this.io = new Server(server, {
       serveClient: false,
     });
-    this.io.attach(server);
 
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');
@@ -127,7 +141,7 @@ class SocketIoService {
 
   setupStoreGuestIdEventHandler() {
     this.io.on('connection', (socket) => {
-      if (socket.request.user == null) {
+      if ((socket.request as RequestWithUser).user == null) {
         this.guestClients.add(socket.id);
 
         socket.on('disconnect', () => {
@@ -139,7 +153,7 @@ class SocketIoService {
 
   setupLoginedUserRoomsJoinOnConnection() {
     this.io.on('connection', (socket) => {
-      const user = socket.request.user;
+      const user = (socket.request as RequestWithUser).user;
       if (user == null) {
         logger.debug('Socket io: An anonymous user has connected');
         return;
@@ -170,9 +184,12 @@ class SocketIoService {
 
     this.io.on('connection', (socket) => {
 
-      yjsConnectionManager.ysocketioInstance.on('awareness-update', async(update) => {
-        const pageId = extractPageIdFromYdocId(update.name);
-        const awarenessStateSize = update.awareness.states.size;
+      yjsConnectionManager.ysocketioInstance.on('awareness-update', async(doc: Document) => {
+        const pageId = extractPageIdFromYdocId(doc.name);
+
+        if (pageId == null) return;
+
+        const awarenessStateSize = doc.awareness.states.size;
 
         // Triggered when awareness changes
         this.io
@@ -206,12 +223,12 @@ class SocketIoService {
     const namespaceName = socket.nsp.name;
 
     if (namespaceName === '/admin') {
-      const clients = await this.getAdminSocket().allSockets();
+      const clients = await this.getAdminSocket().fetchSockets();
       const clientsCount = clients.length;
 
       logger.debug('Current count of clients for \'/admin\':', clientsCount);
 
-      const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForAdmin');
+      const limit = configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForAdmin');
       if (limit <= clientsCount) {
         const msg = `The connection was refused because the current count of clients for '/admin' is ${clientsCount} and exceeds the limit`;
         logger.warn(msg);
@@ -230,7 +247,7 @@ class SocketIoService {
 
       logger.debug('Current count of clients for guests:', clientsCount);
 
-      const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForGuest');
+      const limit = configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForGuest');
       if (limit <= clientsCount) {
         const msg = `The connection was refused because the current count of clients for guests is ${clientsCount} and exceeds the limit`;
         logger.warn(msg);
@@ -252,12 +269,12 @@ class SocketIoService {
       next();
     }
 
-    const clients = await this.getDefaultSocket().allSockets();
+    const clients = await this.getDefaultSocket().fetchSockets();
     const clientsCount = clients.length;
 
     logger.debug('Current count of clients for \'/\':', clientsCount);
 
-    const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimit');
+    const limit = configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimit');
     if (limit <= clientsCount) {
       const msg = `The connection was refused because the current count of clients for '/' is ${clientsCount} and exceeds the limit`;
       logger.warn(msg);
