@@ -321,7 +321,9 @@
       "stale": "Plus de {{count}} an est passé depuis la dernière mise à jour.",
       "stale_plural": "Plus de {{count}} années sont passées depuis la dernière mise à jour.",
       "expiration": "Ce lien expirera <strong>{{expiredAt}}</strong>.",
-      "no_deadline": "Cette page n'a pas de date d'expiration"
+      "no_deadline": "Cette page n'a pas de date d'expiration",
+      "not_indexed1": "Cette page n'est peut-être pas indexée par les moteurs de recherche Full-Text.",
+      "not_indexed2": "Le corps de la page dépasse le seuil spécifié par {{threshold}}."
     }
   },
   "page_edit": {
@@ -700,36 +702,6 @@
     "incorrect_token_or_expired_url": "Le jeton est invalide ou l'URL est expirée. Effectuer une nouvelle réinitialisation via le lien ci-dessous.",
     "password_and_confirm_password_does_not_match": "Le mot de passe ne correspond pas",
     "please_enable_mailer_alert": "La réinitialisation de mot de passe est désactivée, car la configuration d'envois de courriels est incomplète."
-  },
-  "emoji": {
-    "title": "Choisir un émoji",
-    "search": "Rechercher",
-    "clear": "Vider",
-    "notfound": "Aucun émoji trouvé",
-    "skintext": "Choisir le teint par défaut",
-    "categories": {
-      "search": "Résultats de recherche",
-      "recent": "Récents",
-      "smileys": "Émotions",
-      "people": "Individus & corps",
-      "nature": "Animaux & nature",
-      "foods": "Nourriture & boisson",
-      "activity": "Activités",
-      "places": "Voyage",
-      "objects": "Objets",
-      "symbols": "Symboles",
-      "flags": "Drapeaux",
-      "custom": "Personnalisé"
-    },
-    "categorieslabel": "Catégories d'émojis",
-    "skintones": {
-      "1": "Teint par défaut",
-      "2": "Teint clair",
-      "3": "Teint moyen-clair",
-      "4": "Teint moyen",
-      "5": "Teint moyen-foncé",
-      "6": "Teint foncé"
-    }
   },
   "maintenance_mode": {
     "maintenance_mode": "Mode maintenance",
