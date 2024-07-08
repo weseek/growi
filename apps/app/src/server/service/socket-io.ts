@@ -1,12 +1,10 @@
 import type { IncomingMessage } from 'http';
 
 import type { IUserHasId } from '@growi/core/dist/interfaces';
-import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import expressSession from 'express-session';
 import passport from 'passport';
 import type { Namespace } from 'socket.io';
 import { Server } from 'socket.io';
-import type { Document } from 'y-socket.io/dist/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
@@ -15,7 +13,6 @@ import type Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 import { configManager } from './config-manager';
-import { getYjsService, extractPageIdFromYdocId } from './yjs';
 
 
 const logger = loggerFactory('growi:service:socket-io');
@@ -175,46 +172,6 @@ class SocketIoService {
     this.io.on('connection', (socket) => {
       socket.on(SocketEventName.LeavePage, ({ pageId }) => {
         socket.leave(getRoomNameWithId(RoomPrefix.PAGE, pageId));
-      });
-    });
-  }
-
-  setupYjsConnection() {
-    const yjsService = getYjsService();
-
-    this.io.on('connection', (socket) => {
-
-      yjsService.ysocketioInstance.on('awareness-update', async(doc: Document) => {
-        const pageId = extractPageIdFromYdocId(doc.name);
-
-        if (pageId == null) return;
-
-        const awarenessStateSize = doc.awareness.states.size;
-
-        // Triggered when awareness changes
-        this.io
-          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
-
-        // Triggered when the last user leaves the editor
-        if (awarenessStateSize === 0) {
-          const currentYdoc = yjsService.getCurrentYdoc(pageId);
-          const yjsDraft = currentYdoc?.getText('codemirror').toString();
-          const hasRevisionBodyDiff = await this.crowi.pageService.hasRevisionBodyDiff(pageId, yjsDraft);
-          this.io
-            .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-            .emit(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiff);
-        }
-      });
-
-      socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
-        try {
-          await yjsService.handleYDocSync(pageId, initialValue);
-        }
-        catch (error) {
-          logger.warn(error.message);
-          socket.emit(GlobalSocketEventName.YDocSyncError, 'An error occurred during YDoc synchronization.');
-        }
       });
     });
   }
