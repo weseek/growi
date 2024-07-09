@@ -34,7 +34,9 @@ export interface IRevisionModel extends Model<IRevisionDocument> {
 Schema.Types.String.checkRequired(v => typeof v === 'string');
 
 const revisionSchema = new Schema<IRevisionDocument, IRevisionModel>({
-  pageId: { type: String, required: true, index: true },
+  pageId: {
+    type: Types.ObjectId, ref: 'Page', required: true, index: true,
+  },
   body: {
     type: String,
     required: true,

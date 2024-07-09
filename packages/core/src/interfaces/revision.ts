@@ -1,5 +1,6 @@
 import type { Ref } from './common';
 import type { HasObjectId } from './has-object-id';
+import type { IPage } from './page';
 import type { IUser } from './user';
 
 export const Origin = {
@@ -12,7 +13,7 @@ export type Origin = typeof Origin[keyof typeof Origin];
 export const allOrigin = Object.values(Origin);
 
 export type IRevision = {
-  pageId: string,
+  pageId: Ref<IPage>,
   body: string,
   author: Ref<IUser>,
   format: string,

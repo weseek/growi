@@ -1355,7 +1355,7 @@ class PageService implements IPageService {
     // Mapping to set to the body of the new revision
     const pageIdRevisionMapping = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[revision.pageId] = revision;
+      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -1410,7 +1410,7 @@ class PageService implements IPageService {
     // Mapping to set to the body of the new revision
     const pageIdRevisionMapping = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[revision.pageId] = revision;
+      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
