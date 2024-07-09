@@ -1,9 +1,8 @@
+import mongoose from 'mongoose';
 import type { Server } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
 import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
-
-import { getMongoUri } from '../util/mongoose-utils';
 
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
@@ -29,10 +28,19 @@ class YjsConnectionManager {
     this.ysocketio = new YSocketIO(io);
     this.ysocketio.initialize();
 
-    this.mdb = new MongodbPersistence(getMongoUri(), {
-      collectionName: MONGODB_PERSISTENCE_COLLECTION_NAME,
-      flushSize: MONGODB_PERSISTENCE_FLUSH_SIZE,
-    });
+    this.mdb = new MongodbPersistence(
+      {
+        // TODO: Required upgrading mongoose and unifying the versions of mongodb to omit 'as any'
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        client: mongoose.connection.getClient() as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        db: mongoose.connection.db as any,
+      },
+      {
+        collectionName: MONGODB_PERSISTENCE_COLLECTION_NAME,
+        flushSize: MONGODB_PERSISTENCE_FLUSH_SIZE,
+      },
+    );
   }
 
   public static getInstance(io?: Server) {
