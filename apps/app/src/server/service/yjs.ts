@@ -141,16 +141,18 @@ class YjsService {
 
     if (diff.reduce((prev, curr) => prev + curr, 0) > 0) {
       this.mdb.storeUpdate(pageId, diff);
+      this.mdb.setMeta(pageId, 'updatedAt', Date.now());
     }
 
     Y.applyUpdate(currentYdoc, Y.encodeStateAsUpdate(persistedYdoc));
 
     currentYdoc.on('update', async(update) => {
-      await this.mdb.storeUpdate(pageId, update);
+      this.mdb.storeUpdate(pageId, update);
+      this.mdb.setMeta(pageId, 'updatedAt', Date.now());
     });
 
     currentYdoc.on('destroy', async() => {
-      await this.mdb.flushDocument(pageId);
+      this.mdb.flushDocument(pageId);
     });
 
     persistedYdoc.destroy();
