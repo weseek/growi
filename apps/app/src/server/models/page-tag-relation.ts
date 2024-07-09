@@ -1,6 +1,6 @@
 import type { ITag } from '@growi/core';
-import type { Document, Model } from 'mongoose';
-import mongoose, { ObjectId } from 'mongoose';
+import type { Document, Model, ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
@@ -9,11 +9,8 @@ import type { IPageTagRelation } from '~/interfaces/page-tag-relation';
 import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-import type { IdToNameMap } from './tag';
+import type { IdToNameMap, IdToNamesMap } from './tag';
 import Tag from './tag';
-
-
-const ObjectId = mongoose.Schema.Types.ObjectId;
 
 
 // disable no-return-await for model functions
@@ -36,7 +33,7 @@ type CreateTagListWithCountResult = {
 }
 type CreateTagListWithCount = (this: PageTagRelationModel, opts?: CreateTagListWithCountOpts) => Promise<CreateTagListWithCountResult>;
 
-type GetIdToTagNamesMap = (this: PageTagRelationModel, pageIds: string[]) => Promise<IdToNameMap>;
+type GetIdToTagNamesMap = (this: PageTagRelationModel, pageIds: string[]) => Promise<IdToNamesMap>;
 
 type UpdatePageTags = (this: PageTagRelationModel, pageId: string, tags: string[]) => Promise<void>
 
@@ -54,13 +51,13 @@ export interface PageTagRelationModel extends Model<PageTagRelationDocument> {
  */
 const schema = new mongoose.Schema<PageTagRelationDocument, PageTagRelationModel>({
   relatedPage: {
-    type: ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Page',
     required: true,
     index: true,
   },
   relatedTag: {
-    type: ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'Tag',
     required: true,
     index: true,

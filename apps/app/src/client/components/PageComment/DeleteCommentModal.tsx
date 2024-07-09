@@ -62,7 +62,9 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     return (
       <>
         <UserPicture user={creator} size="xs" /> <strong className="me-2"><Username user={creator}></Username></strong>{commentDate}:
-        <p className="card custom-card comment-body mt-2 p-2">{commentBodyElement}</p>
+        <div className="card mt-2">
+          <div className="card-body comment-body px-3 py-2">{commentBodyElement}</div>
+        </div>
       </>
     );
   };
