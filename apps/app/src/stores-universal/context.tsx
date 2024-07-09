@@ -260,29 +260,6 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
   );
 };
 
-
-export const useReservedNextCaretLine = (initialData?: number): SWRResponse<number> => {
-
-  const swrResponse = useSWRStatic('saveNextCaretLine', initialData, { fallbackData: 0 });
-  const { mutate } = swrResponse;
-
-  useEffect(() => {
-    const handler = (lineNumber: number) => {
-      mutate(lineNumber);
-    };
-
-    globalEmitter.on('reservedNextCaretLine', handler);
-
-    return function cleanup() {
-      globalEmitter.removeListener('reservedNextCaretLine', handler);
-    };
-  }, [mutate]);
-
-  return {
-    ...swrResponse,
-  };
-};
-
 export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType, Error> => {
   const { data: isUploadEnabled } = useIsUploadEnabled();
   const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
