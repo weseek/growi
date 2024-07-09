@@ -33,4 +33,5 @@ export interface IPageService {
   ): boolean,
   getYjsData(pageId: string, revisionBody?: string): Promise<CurrentPageYjsData>,
   syncLatestRevisionBodyToYjsDraft(pageId: string): Promise<void>,
+  hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean>,
 }
