@@ -1,4 +1,5 @@
 import { GlobalSocketEventName } from '@growi/core';
+import mongoose from 'mongoose';
 import type { Server } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
 import type { Document } from 'y-socket.io/dist/server';
@@ -42,6 +43,8 @@ class YjsService {
       flushSize: MONGODB_PERSISTENCE_FLUSH_SIZE,
     });
 
+    this.createIndexes();
+
     io.on('connection', (socket) => {
 
       ysocketio.on('awareness-update', async(doc: Document) => {
@@ -77,6 +80,44 @@ class YjsService {
         }
       });
     });
+  }
+
+  private async createIndexes(): Promise<void> {
+
+    const collection = mongoose.connection.collection(MONGODB_PERSISTENCE_COLLECTION_NAME);
+
+    try {
+      await collection.createIndexes([
+        {
+          key: {
+            version: 1,
+            docName: 1,
+            action: 1,
+            clock: 1,
+            part: 1,
+          },
+        },
+        // for metaKey
+        {
+          key: {
+            version: 1,
+            docName: 1,
+            metaKey: 1,
+          },
+        },
+        // for flushDocument / clearDocument
+        {
+          key: {
+            docName: 1,
+            clock: 1,
+          },
+        },
+      ]);
+    }
+    catch (err) {
+      logger.error('Failed to create Index', err);
+      throw err;
+    }
   }
 
   public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
