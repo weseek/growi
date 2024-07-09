@@ -122,7 +122,9 @@ class YjsService {
     const Revision = mongoose.model<IRevisionHasId>('Revision');
     const result = await Revision
       .findOne(
+        // filter
         { pageId },
+        // projection
         { createdAt: 1 },
         { sort: { createdAt: -1 } },
       );
