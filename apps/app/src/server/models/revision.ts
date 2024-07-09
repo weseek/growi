@@ -1,71 +1,80 @@
+import type {
+  HasObjectId,
+  IRevision,
+  Origin,
+} from '@growi/core';
 import { allOrigin } from '@growi/core';
+import {
+  Schema, Types, type Document, type Model,
+} from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 import loggerFactory from '~/utils/logger';
 
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
+import { getOrCreateModel } from '../util/mongoose-utils';
 
-module.exports = function(crowi) {
-  // eslint-disable-next-line no-unused-vars
-  const logger = loggerFactory('growi:models:revision');
+import type { PageDocument } from './page';
 
-  const mongoose = require('mongoose');
-  const mongoosePaginate = require('mongoose-paginate-v2');
+const logger = loggerFactory('growi:models:revision');
 
-  // allow empty strings
-  mongoose.Schema.Types.String.checkRequired(v => v != null);
+export interface IRevisionDocument extends IRevision, Document {
+}
 
-  const ObjectId = mongoose.Schema.Types.ObjectId;
-  const revisionSchema = new mongoose.Schema({
-    // OBSOLETE path: { type: String, required: true, index: true }
-    pageId: { type: ObjectId, required: true, index: true },
-    body: {
-      type: String,
-      required: true,
-      get: (data) => {
-      // replace CR/CRLF to LF above v3.1.5
-      // see https://github.com/weseek/growi/issues/463
-        return data ? data.replace(/\r\n?/g, '\n') : '';
-      },
+type UpdateRevisionListByPageId = (pageId: string, updateData: Partial<IRevision>) => Promise<void>;
+type PrepareRevision = (
+  pageData: PageDocument, body: string, previousBody: string | null, user: HasObjectId, origin?: Origin, options?: { format: string }
+) => IRevisionDocument;
+
+export interface IRevisionModel extends Model<IRevisionDocument> {
+  updateRevisionListByPageId: UpdateRevisionListByPageId,
+  prepareRevision: PrepareRevision,
+}
+
+// Use this to allow empty strings to pass the `required` validator
+Schema.Types.String.checkRequired(v => typeof v === 'string');
+
+const revisionSchema = new Schema<IRevisionDocument, IRevisionModel>({
+  pageId: { type: String, required: true, index: true },
+  body: {
+    type: String,
+    required: true,
+    get: (data) => {
+    // replace CR/CRLF to LF above v3.1.5
+    // see https://github.com/weseek/growi/issues/463
+      return data ? data.replace(/\r\n?/g, '\n') : '';
     },
-    format: { type: String, default: 'markdown' },
-    author: { type: ObjectId, ref: 'User' },
-    hasDiffToPrev: { type: Boolean },
-    origin: { type: String, enum: allOrigin },
-  }, {
-    timestamps: { createdAt: true, updatedAt: false },
-  });
-  revisionSchema.plugin(mongoosePaginate);
+  },
+  format: { type: String, default: 'markdown' },
+  author: { type: Types.ObjectId, ref: 'User' },
+  hasDiffToPrev: { type: Boolean },
+  origin: { type: String, enum: allOrigin },
+}, {
+  timestamps: { createdAt: true, updatedAt: false },
+});
+revisionSchema.plugin(mongoosePaginate);
 
-  revisionSchema.statics.updateRevisionListByPageId = async function(pageId, updateData) {
-    return this.updateMany({ pageId }, { $set: updateData });
-  };
-
-  revisionSchema.statics.prepareRevision = function(pageData, body, previousBody, user, origin, options) {
-    const Revision = this;
-
-    if (!options) {
-      // eslint-disable-next-line no-param-reassign
-      options = {};
-    }
-    const format = options.format || 'markdown';
-
-    if (!user._id) {
-      throw new Error('Error: user should have _id');
-    }
-
-    const newRevision = new Revision();
-    newRevision.pageId = pageData._id;
-    newRevision.body = body;
-    newRevision.format = format;
-    newRevision.author = user._id;
-    newRevision.origin = origin;
-    if (pageData.revision != null) {
-      newRevision.hasDiffToPrev = body !== previousBody;
-    }
-
-    return newRevision;
-  };
-
-  return mongoose.model('Revision', revisionSchema);
+const updateRevisionListByPageId: UpdateRevisionListByPageId = async function(this: IRevisionModel, pageId, updateData) {
+  await this.updateMany({ pageId }, { $set: updateData });
 };
+revisionSchema.statics.updateRevisionListByPageId = updateRevisionListByPageId;
+
+const prepareRevision: PrepareRevision = function(this: IRevisionModel, pageData, body, previousBody, user, origin, options = { format: 'markdown' }) {
+  if (!user._id) {
+    throw new Error('Error: user should have _id');
+  }
+
+  const newRevision = new this();
+  newRevision.pageId = pageData._id;
+  newRevision.body = body;
+  newRevision.format = options.format;
+  newRevision.author = user._id;
+  newRevision.origin = origin;
+  if (pageData.revision != null) {
+    newRevision.hasDiffToPrev = body !== previousBody;
+  }
+
+  return newRevision;
+};
+revisionSchema.statics.prepareRevision = prepareRevision;
+
+export const Revision = getOrCreateModel<IRevisionDocument, IRevisionModel>('Revision', revisionSchema);

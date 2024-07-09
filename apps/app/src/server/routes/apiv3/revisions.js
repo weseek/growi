@@ -1,5 +1,6 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
+import { Revision } from '~/server/models/revision';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -64,7 +65,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const {
-    Revision,
     Page,
     User,
   } = crowi.models;
