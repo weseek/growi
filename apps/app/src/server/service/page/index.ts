@@ -4447,30 +4447,12 @@ class PageService implements IPageService {
     const yjsService = getYjsService();
 
     const currentYdoc = yjsService.getCurrentYdoc(pageId);
-    const persistedYdoc = await yjsService.getPersistedYdoc(pageId);
-
-    const yjsDraft = (currentYdoc ?? persistedYdoc)?.getText('codemirror').toString();
-    const hasRevisionBodyDiff = await this.hasRevisionBodyDiff(pageId, yjsDraft);
+    const hasRevisionBodyDiff = await yjsService.hasYdocsNewerThanLatestRevision(pageId);
 
     return {
       hasRevisionBodyDiff,
       awarenessStateSize: currentYdoc?.awareness.states.size,
     };
-  }
-
-  async hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean> {
-    if (comparisonTarget == null) {
-      return false;
-    }
-
-    const Revision = mongoose.model<IRevisionHasId>('Revision');
-    const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
-
-    if (revision == null) {
-      return false;
-    }
-
-    return revision.body !== comparisonTarget;
   }
 
   async createTtlIndex(): Promise<void> {

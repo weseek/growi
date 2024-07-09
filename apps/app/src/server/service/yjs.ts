@@ -1,3 +1,4 @@
+import type { IRevisionHasId } from '@growi/core';
 import { GlobalSocketEventName } from '@growi/core';
 import mongoose from 'mongoose';
 import type { Server } from 'socket.io';
@@ -11,8 +12,6 @@ import loggerFactory from '~/utils/logger';
 
 import { getMongoUri } from '../util/mongoose-utils';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
-
-import type { IPageService } from './page';
 
 
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
@@ -33,7 +32,7 @@ class YjsService {
 
   private mdb: MongodbPersistence;
 
-  constructor(io: Server, pageService: IPageService) {
+  constructor(io: Server) {
     const ysocketio = new YSocketIO(io);
     ysocketio.initialize();
     this.ysocketio = ysocketio;
@@ -61,9 +60,7 @@ class YjsService {
 
         // Triggered when the last user leaves the editor
         if (awarenessStateSize === 0) {
-          const currentYdoc = this.getCurrentYdoc(pageId);
-          const yjsDraft = currentYdoc?.getText('codemirror').toString();
-          const hasRevisionBodyDiff = await pageService.hasRevisionBodyDiff(pageId, yjsDraft);
+          const hasRevisionBodyDiff = await this.hasYdocsNewerThanLatestRevision(pageId);
           io
             .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
             .emit(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiff);
@@ -118,6 +115,28 @@ class YjsService {
       logger.error('Failed to create Index', err);
       throw err;
     }
+  }
+
+  public async hasYdocsNewerThanLatestRevision(pageId: string): Promise<boolean> {
+    // get the latest revision createdAt
+    const Revision = mongoose.model<IRevisionHasId>('Revision');
+    const result = await Revision
+      .findOne(
+        { pageId },
+        { createdAt: 1 },
+        { sort: { createdAt: -1 } },
+      );
+
+    const lastRevisionCreatedAt = (result == null)
+      ? 0
+      : result.createdAt.getTime();
+
+    // count yjs-writings documents with updatedAt > latestRevision.updatedAt
+    const ydocUpdatedAt: number | undefined = await this.mdb.getMeta(pageId, 'updatedAt');
+
+    return ydocUpdatedAt == null
+      ? false
+      : ydocUpdatedAt > lastRevisionCreatedAt;
   }
 
   public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
@@ -186,7 +205,7 @@ class YjsService {
 
 let _instance: YjsService;
 
-export const initializeYjsService = (io: Server, pageService: IPageService): void => {
+export const initializeYjsService = (io: Server): void => {
   if (_instance != null) {
     throw new Error('YjsService is already initialized');
   }
@@ -195,7 +214,7 @@ export const initializeYjsService = (io: Server, pageService: IPageService): voi
     throw new Error("'io' is required if initialize YjsService");
   }
 
-  _instance = new YjsService(io, pageService);
+  _instance = new YjsService(io);
 };
 
 export const getYjsService = (): YjsService => {

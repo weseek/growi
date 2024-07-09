@@ -476,7 +476,7 @@ Crowi.prototype.start = async function() {
   this.socketIoService.attachServer(httpServer);
 
   // Initialization YjsService
-  initializeYjsService(this.socketIoService.io, this.pageService);
+  initializeYjsService(this.socketIoService.io);
 
   await this.autoInstall();
 
