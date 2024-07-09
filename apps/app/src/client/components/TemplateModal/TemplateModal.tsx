@@ -247,13 +247,21 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
               </div>
               <div className="col-6 d-flex justify-content-end">
                 <UncontrolledDropdown>
-                  <DropdownToggle caret type="button" outline className="float-end" disabled={selectedTemplateSummary == null}>
+                  <DropdownToggle
+                    caret
+                    type="button"
+                    outline
+                    className="float-end"
+                    disabled={selectedTemplateSummary == null}
+                    data-testid="select-locale-dropdown-toggle"
+                  >
                     <span className="float-start">{selectedTemplateLocale != null ? selectedTemplateLocale : t('Language')}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
                     { selectedTemplateLocales != null && Array.from(selectedTemplateLocales).map((locale) => {
                       return (
                         <DropdownItem
+                          data-testid="select-locale-dropdown-item"
                           key={locale}
                           onClick={() => setSelectedTemplateLocale(locale)}
                         >
