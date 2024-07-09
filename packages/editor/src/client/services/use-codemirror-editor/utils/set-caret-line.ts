@@ -60,7 +60,7 @@ const setCaretLineScheduleForYjs = (view?: EditorView, lineNumber?: number): voi
 
 export const useSetCaretLine = (view?: EditorView): SetCaretLine => {
 
-  return useCallback((lineNumber?: number, schedule = false) => {
+  return useCallback((lineNumber?: number, schedule?: boolean) => {
 
     if (schedule) {
       setCaretLineScheduleForYjs(view, lineNumber);
