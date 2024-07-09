@@ -4447,10 +4447,10 @@ class PageService implements IPageService {
     const yjsService = getYjsService();
 
     const currentYdoc = yjsService.getCurrentYdoc(pageId);
-    const hasRevisionBodyDiff = await yjsService.hasYdocsNewerThanLatestRevision(pageId);
+    const hasYdocsNewerThanLatestRevision = await yjsService.hasYdocsNewerThanLatestRevision(pageId);
 
     return {
-      hasRevisionBodyDiff,
+      hasYdocsNewerThanLatestRevision,
       awarenessStateSize: currentYdoc?.awareness.states.size,
     };
   }

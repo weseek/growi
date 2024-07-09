@@ -60,10 +60,10 @@ class YjsService {
 
         // Triggered when the last user leaves the editor
         if (awarenessStateSize === 0) {
-          const hasRevisionBodyDiff = await this.hasYdocsNewerThanLatestRevision(pageId);
+          const hasYdocsNewerThanLatestRevision = await this.hasYdocsNewerThanLatestRevision(pageId);
           io
             .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-            .emit(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiff);
+            .emit(SocketEventName.YjsHasYdocsNewerThanLatestRevisionUpdated, hasYdocsNewerThanLatestRevision);
         }
       });
 
