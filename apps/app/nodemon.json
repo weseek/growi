@@ -7,6 +7,7 @@
     "playwright",
     "test",
     "test-with-vite",
-    "tmp"
+    "tmp",
+    "*.mongodb.js"
   ]
 }
