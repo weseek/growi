@@ -1,8 +1,40 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.11...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.12...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.12](https://github.com/weseek/growi/compare/v7.0.11...v7.0.12) - 2024-07-10
+
+### 🚀 Improvement
+
+* imprv: lang attribute in Html element to correctly reflect locale (#8940) @maeshinshin
+* imprv: Archive importing and exporting (#8943) @yuki-takei
+* imprv: Restrict indexing for full text search when the body length exceeds the threshold (#8937) @yuki-takei
+* imprv: Dark theme support for emoji mart (#8936) @reiji-h
+* imprv: Add env var for set Elasticsearch reindex bulk size (#8933) @yuki-takei
+* imprv: Size for skeleton for tags (#8923) @yuki-takei
+* imprv: Button opacity of TableWithEditButton and DrawioViewerWithEditButton (#8924) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Initialize sanitize option (#8946) @yuki-takei
+* fix: PageTitleHeader rename input status (#8944) @yuki-takei
+* fix: Presentation section tag (#8941) @yuki-takei
+* fix: Page history colorscheme is broken (#8938) @reiji-h
+* imprv: Rename label for bookmark item (#8925) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Refactor Yjs service (#8949) @yuki-takei
+* support: Upgrade y-mongodb-provider (#8953) @yuki-takei
+* support: Typescriptize Revision model (#8954) @yuki-takei
+* support: Typescriptize SocketIoService (#8948) @yuki-takei
+* support: Update GROWI logo type in NoLogin (#8942) @satof3
+* support: Update logo design (#8934) @satof3
+* ci(deps): bump @azure/identity from 4.0.1 to 4.3.0 (#8927) @dependabot
+* support: Upgrade vitest (#8920) @yuki-takei
+* support: Upgrade playwright (#8921) @yuki-takei
 
 ## [v7.0.11](https://github.com/weseek/growi/compare/v7.0.10...v7.0.11) - 2024-06-25
 
