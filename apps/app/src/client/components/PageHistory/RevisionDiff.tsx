@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import type { IRevisionHasPageId } from '@growi/core';
+import type { IRevisionHasId } from '@growi/core';
 import { GrowiThemeSchemeType } from '@growi/core';
 import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
 import { PresetThemesMetadatas } from '@growi/preset-themes';
@@ -26,8 +26,8 @@ import 'diff2html/bundles/css/diff2html.min.css';
 const moduleClass = styles['revision-diff-container'];
 
 type RevisioinDiffProps = {
-  currentRevision: IRevisionHasPageId,
-  previousRevision: IRevisionHasPageId,
+  currentRevision: IRevisionHasId,
+  previousRevision: IRevisionHasId,
   revisionDiffOpened: boolean,
   currentPageId: string,
   currentPagePath: string,
