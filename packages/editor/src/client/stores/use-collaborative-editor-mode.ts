@@ -70,13 +70,13 @@ export const useCollaborativeEditorMode = (
 
   // Setup provider
   useEffect(() => {
-    if (provider != null || ydoc == null || socket == null || onEditorsUpdated == null) {
+    if (provider != null || pageId == null || ydoc == null || socket == null || onEditorsUpdated == null) {
       return;
     }
 
     const socketIOProvider = new SocketIOProvider(
-      GLOBAL_SOCKET_NS,
-      `yjs/${pageId}`,
+      '/',
+      pageId,
       ydoc,
       { autoConnect: true },
     );
