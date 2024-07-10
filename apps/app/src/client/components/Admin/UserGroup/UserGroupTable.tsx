@@ -5,7 +5,6 @@ import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/cor
 import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
-import { Item } from 'yjs';
 
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 
@@ -140,7 +139,15 @@ export const UserGroupTable: FC<Props> = ({
   const [hoveredindex, setHoveredIdex] = useState<undefined | number>(undefined);
   const ButtonForUserGroupedit = (index) => {
     return (
-      <span className={`material-symbols-outlined px-2 py-0 ${hoveredindex === index ? '' : 'opacity-0'}`}>edit</span>
+      <button
+        type="button"
+        className="btn btn-link btn-edit-groups text-secondary py-0"
+        key={index}
+        onMouseEnter={() => setHoveredIdex(index)}
+        onMouseLeave={() => setHoveredIdex(undefined)}
+      >
+        <span className="material-symbols-outlined px-2 py-0">edit</span>
+      </button>
     );
   };
 
@@ -161,7 +168,7 @@ export const UserGroupTable: FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {userGroups.map((group, index) => {
+          {userGroups.map((group) => {
             const users = groupIdToUsersMap[group._id];
 
             return (
@@ -169,11 +176,7 @@ export const UserGroupTable: FC<Props> = ({
                 {isExternalGroup && <td>{(group as IExternalUserGroupHasId).provider}</td>}
                 {isAclEnabled
                   ? (
-                    <td
-                      onMouseEnter={() => setHoveredIdex(index)}
-                      onMouseLeave={() => setHoveredIdex(undefined)}
-                    >
-
+                    <td>
 
                       <Link
                         className="link-opacity-75-hover"
@@ -181,7 +184,7 @@ export const UserGroupTable: FC<Props> = ({
                       >
                         <span className="material-symbols-outlined pe-2 pt-2">group</span>
                         <span className="text-decoration-underline">{group.name}</span>
-                        <ButtonForUserGroupedit />
+                        {hoveredindex ? '' : 'opacity-0'}<ButtonForUserGroupedit />
                       </Link>
                     </td>
                   )
