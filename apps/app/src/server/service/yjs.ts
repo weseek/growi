@@ -45,6 +45,9 @@ class YjsService implements IYjsService {
     this.ysocketio = ysocketio;
 
     this.mdb = new MongodbPersistence(
+      // ignore TS2345: Argument of type '{ client: any; db: any; }' is not assignable to parameter of type 'string'.
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       {
         // TODO: Required upgrading mongoose and unifying the versions of mongodb to omit 'as any'
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
