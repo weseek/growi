@@ -735,6 +735,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  PUPPETEER_CLUSTER_MAX_CONCURRENCY: {
+    ns: 'crowi',
+    key: 'app:puppeteerClusterMaxConcurrency',
+    type: ValueType.NUMBER,
+    default: 10,
+  },
 };
 
 

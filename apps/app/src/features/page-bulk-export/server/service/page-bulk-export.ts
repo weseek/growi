@@ -4,7 +4,6 @@ import type { Readable } from 'stream';
 import { Writable, pipeline } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
-
 import type { HasObjectId } from '@growi/core';
 import { type IPage, isPopulated, SubscriptionStatusType } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -12,8 +11,7 @@ import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
-import type { Browser } from 'puppeteer';
-import puppeteer from 'puppeteer';
+import { Cluster } from 'puppeteer-cluster';
 import remark from 'remark';
 import html from 'remark-html';
 
@@ -25,6 +23,7 @@ import { Attachment } from '~/server/models';
 import type { ActivityDocument } from '~/server/models/activity';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
+import { configManager } from '~/server/service/config-manager';
 import type { FileUploader } from '~/server/service/file-uploader';
 import type { IMultipartUploader } from '~/server/service/file-uploader/multipart-uploader';
 import { preNotifyService } from '~/server/service/pre-notify';
@@ -59,6 +58,8 @@ class PageBulkExportService {
   // temporal path of local fs to output page files before upload
   // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
   tmpOutputRootDir = '/tmp';
+
+  puppeteerCluster: Cluster | undefined;
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -191,9 +192,6 @@ class PageBulkExportService {
    * Get a Writable that writes the page body temporarily to fs
    */
   private async getPageWritable(outputDir: string, format: PageBulkExportFormat): Promise<Writable> {
-    // Create a browser instance
-    const browser = await puppeteer.launch();
-
     return new Writable({
       objectMode: true,
       write: async(page: PageDocument, encoding, callback) => {
@@ -201,7 +199,8 @@ class PageBulkExportService {
           const revision = page.revision;
 
           if (revision != null && isPopulated(revision)) {
-            const pageBody = format === PageBulkExportFormat.pdf ? (await this.convertMdToPdf(revision.body, browser)) : revision.body;
+            const pageBody = format === PageBulkExportFormat.pdf ? (await this.convertMdToPdf(revision.body)) : revision.body;
+            gc();
             const pathNormalized = `${normalizePath(page.path)}.${format}`;
             const fileOutputPath = path.join(outputDir, pathNormalized);
             const fileOutputParentPath = getParentPath(fileOutputPath);
@@ -217,7 +216,6 @@ class PageBulkExportService {
         callback();
       },
       final: async(callback) => {
-        await browser.close();
         callback();
       },
     });
@@ -284,25 +282,51 @@ class PageBulkExportService {
     });
   }
 
-  private async convertMdToPdf(md: string, browser: Browser): Promise<Buffer> {
+  async initPuppeteerCluster(): Promise<void> {
+    this.puppeteerCluster = await Cluster.launch({
+      concurrency: Cluster.CONCURRENCY_PAGE,
+      maxConcurrency: configManager.getConfig('crowi', 'app:puppeteerClusterMaxConcurrency'),
+      workerCreationDelay: 10000,
+      monitor: true,
+    });
+
+    await this.puppeteerCluster.task(async({ page, data: htmlString }) => {
+      await page.setContent(htmlString, { waitUntil: 'domcontentloaded' });
+      await page.emulateMediaType('screen');
+      const pdfResult = await page.pdf({
+        margin: {
+          top: '100px', right: '50px', bottom: '100px', left: '50px',
+        },
+        printBackground: true,
+        format: 'A4',
+      });
+      return pdfResult;
+    });
+
+    process.on('SIGINT', async() => {
+      logger.info('Closing puppeteer cluster...');
+      await this.puppeteerCluster?.close();
+      process.exit(0);
+    });
+
+    process.on('SIGTERM', async() => {
+      logger.info('Closing puppeteer cluster...');
+      await this.puppeteerCluster?.close();
+      process.exit(0);
+    });
+  }
+
+  private async convertMdToPdf(md: string): Promise<Buffer> {
+    if (this.puppeteerCluster == null) {
+      throw new Error('Puppeteer cluster is not initialized');
+    }
+
     const htmlString = (await remark()
       .use(html)
       .process(md))
       .toString();
-    // Create a new page
-    const page = await browser.newPage();
 
-    await page.setContent(htmlString, { waitUntil: 'domcontentloaded' });
-    await page.emulateMediaType('screen');
-    const result = await page.pdf({
-      margin: {
-        top: '100px', right: '50px', bottom: '100px', left: '50px',
-      },
-      printBackground: true,
-      format: 'A4',
-    });
-
-    await page.close();
+    const result = await this.puppeteerCluster.execute(htmlString);
 
     return result;
   }
@@ -329,6 +353,7 @@ class PageBulkExportService {
 
 // eslint-disable-next-line import/no-mutable-exports
 export let pageBulkExportService: PageBulkExportService | undefined; // singleton instance
-export default function instanciate(crowi): void {
+export default async function instanciate(crowi): Promise<void> {
   pageBulkExportService = new PageBulkExportService(crowi);
+  await pageBulkExportService.initPuppeteerCluster();
 }

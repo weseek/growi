@@ -694,7 +694,7 @@ Crowi.prototype.setupExport = async function() {
 };
 
 Crowi.prototype.setupPageBulkExportService = async function() {
-  instanciatePageBulkExportService(this);
+  await instanciatePageBulkExportService(this);
 };
 
 Crowi.prototype.setupImport = async function() {
