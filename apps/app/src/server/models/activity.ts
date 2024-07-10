@@ -1,4 +1,4 @@
-import type { Ref, IPage, IUser } from '@growi/core';
+import type { Ref, IUser } from '@growi/core';
 import type {
   Types, Document, Model, SortOrder,
 } from 'mongoose';
@@ -15,10 +15,7 @@ import {
 } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
-import { getOrCreateModel, getModelSafely } from '../util/mongoose-utils';
-
-
-import Subscription from './subscription';
+import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 const logger = loggerFactory('growi:models:activity');
@@ -34,8 +31,6 @@ export interface ActivityDocument extends Document {
   event: Types.ObjectId
   action: SupportedActionType
   snapshot: ISnapshot
-
-  getNotificationTargetUsers(): Promise<any[]>
 }
 
 export interface ActivityModel extends Model<ActivityDocument> {
@@ -97,18 +92,6 @@ activitySchema.plugin(mongoosePaginate);
 activitySchema.post('save', function() {
   logger.debug('activity has been created', this);
 });
-
-activitySchema.methods.getNotificationTargetUsers = async function() {
-  const User = getModelSafely('User') || require('~/server/models/user')();
-  const { user: actionUser, target } = this;
-  const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
-  const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
-  const activeNotificationUsers = await User.find({
-    _id: { $in: notificationUsers },
-    status: User.STATUS_ACTIVE,
-  }).distinct('_id');
-  return activeNotificationUsers;
-};
 
 activitySchema.statics.createByParameters = async function(parameters): Promise<IActivity> {
   const activity = await this.create(parameters) as unknown as IActivity;
