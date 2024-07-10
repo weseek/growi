@@ -10,7 +10,6 @@ import * as Y from 'yjs';
 import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
-import { getMongoUri } from '../util/mongoose-utils';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 
