@@ -14,11 +14,13 @@ const GROUPS_PAGE = [
 ];
 const GROUPS_USER = [
   'users', 'externalaccounts', 'usergroups', 'usergrouprelations',
-  'useruisettings', 'editorsettings', 'bookmarks', 'subscriptions',
+  'externalusergroups', 'externalusergrouprelations',
+  'useruisettings', 'editorsettings', 'bookmarks', 'bookmarkfolders', 'subscriptions',
   'inappnotificationsettings',
 ];
 const GROUPS_CONFIG = [
-  'configs', 'updateposts', 'globalnotificationsettings', 'slackappintegrations',
+  'configs', 'migrations', 'updateposts', 'globalnotificationsettings', 'slackappintegrations',
+  'growiplugins',
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
 
@@ -102,8 +104,14 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
 
     const html = t('admin:export_management.desc_password_seed');
 
-    // eslint-disable-next-line react/no-danger
-    return <div className="card custom-card bg-body-tertiary" dangerouslySetInnerHTML={{ __html: html }}></div>;
+    return (
+      <div className="card">
+        <div className="card-body">
+          {/* eslint-disable-next-line react/no-danger */}
+          <p className="card-text" dangerouslySetInnerHTML={{ __html: html }} />
+        </div>
+      </div>
+    );
   }, [selectedCollections, t]);
 
   const renderCheckboxes = useCallback((collectionNames, color?) => {
