@@ -1,11 +1,11 @@
-import mongoose, { Types } from 'mongoose';
+import { Types } from 'mongoose';
 import type { Server } from 'socket.io';
 import { mock } from 'vitest-mock-extended';
-import { MongodbPersistence } from 'y-mongodb-provider';
+import type { MongodbPersistence } from 'y-mongodb-provider';
 
 import { Revision } from '../models/revision';
-import { getMongoUri } from '../util/mongoose-utils';
 
+import type { IYjsService } from './yjs';
 import { getYjsService, initializeYjsService } from './yjs';
 
 
@@ -18,30 +18,40 @@ vi.mock('y-socket.io/dist/server', () => {
 
 const ObjectId = Types.ObjectId;
 
+
+const getPrivateMdbInstance = (yjsService: IYjsService): MongodbPersistence => {
+  // eslint-disable-next-line dot-notation
+  return yjsService['mdb'];
+};
+
 describe('YjsService', () => {
 
   describe('hasYdocsNewerThanLatestRevision()', () => {
 
-    const mdb: MongodbPersistence = new MongodbPersistence(getMongoUri(), {
-      collectionName: 'yjs-writings',
-    });
-
     beforeAll(async() => {
       const ioMock = mock<Server>();
+
+      // initialize
       initializeYjsService(ioMock);
     });
 
-    afterAll(() => {
-      Revision.deleteMany({});
-      mongoose.connection.collection('yjs-writings').deleteMany({});
+    afterAll(async() => {
+      // flush revisions
+      await Revision.deleteMany({});
+
+      // flush yjs-writings
+      const yjsService = getYjsService();
+      const privateMdb = getPrivateMdbInstance(yjsService);
+      await privateMdb.flushDB();
     });
 
     it('returns false when neither revisions nor YDocs exists', async() => {
       // arrange
+      const yjsService = getYjsService();
+
       const pageId = new ObjectId();
 
       // act
-      const yjsService = getYjsService();
       const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
 
       // assert
@@ -50,12 +60,14 @@ describe('YjsService', () => {
 
     it('returns true when no revisions exist', async() => {
       // arrange
+      const yjsService = getYjsService();
+
       const pageId = new ObjectId();
 
-      await mdb.setMeta(pageId.toString(), 'updatedAt', 1000);
+      const privateMdb = getPrivateMdbInstance(yjsService);
+      await privateMdb.setMeta(pageId.toString(), 'updatedAt', 1000);
 
       // act
-      const yjsService = getYjsService();
       const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
 
       // assert
@@ -64,16 +76,18 @@ describe('YjsService', () => {
 
     it('returns false when the latest revision is newer than meta data', async() => {
       // arrange
+      const yjsService = getYjsService();
+
       const pageId = new ObjectId();
 
       await Revision.insertMany([
         { pageId, body: '' },
       ]);
 
-      await mdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2024, 1, 1)).getTime());
+      const privateMdb = getPrivateMdbInstance(yjsService);
+      await privateMdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2024, 1, 1)).getTime());
 
       // act
-      const yjsService = getYjsService();
       const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
 
       // assert
@@ -82,6 +96,8 @@ describe('YjsService', () => {
 
     it('returns false when no YDocs exist', async() => {
       // arrange
+      const yjsService = getYjsService();
+
       const pageId = new ObjectId();
 
       await Revision.insertMany([
@@ -89,7 +105,6 @@ describe('YjsService', () => {
       ]);
 
       // act
-      const yjsService = getYjsService();
       const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
 
       // assert
@@ -98,16 +113,18 @@ describe('YjsService', () => {
 
     it('returns true when the newer YDocs exist', async() => {
       // arrange
+      const yjsService = getYjsService();
+
       const pageId = new ObjectId();
 
       await Revision.insertMany([
         { pageId, body: '' },
       ]);
 
-      await mdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2034, 1, 1)).getTime());
+      const privateMdb = getPrivateMdbInstance(yjsService);
+      await privateMdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2034, 1, 1)).getTime());
 
       // act
-      const yjsService = getYjsService();
       const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
 
       // assert
