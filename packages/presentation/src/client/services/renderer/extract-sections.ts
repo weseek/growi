@@ -83,5 +83,5 @@ export const remarkPlugin: Plugin<[ExtractSectionsPluginParams]> = (options) => 
 
 
 export const sanitizeOption: SanitizeOption = {
-  // tagNames: ['slides', 'slide'],
+  tagNames: ['section'],
 };

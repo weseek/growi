@@ -668,15 +668,6 @@ export const getPageSchema = (crowi) => {
     await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroups: [transferToUserGroup] });
   };
 
-  pageSchema.methods.getNotificationTargetUsers = async function() {
-    const Revision = mongoose.model('Revision');
-
-    const [commentCreators, revisionAuthors] = await Promise.all([Comment.findCreatorsByPage(this), Revision.findAuthorsByPage(this)]);
-
-    const targetUsers = new Set([this.creator].concat(commentCreators, revisionAuthors));
-    return Array.from(targetUsers);
-  };
-
   pageSchema.statics.getHistories = function() {
     // TODO
 

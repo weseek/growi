@@ -1,4 +1,4 @@
 export type CurrentPageYjsData = {
-  hasRevisionBodyDiff?: boolean,
+  hasYdocsNewerThanLatestRevision?: boolean,
   awarenessStateSize?: number,
 }

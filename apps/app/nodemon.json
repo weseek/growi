@@ -4,6 +4,12 @@
     ".next",
     "public/static",
     "package.json",
-    "playwright"
+    "playwright",
+    "src/client",
+    "src/**/client",
+    "test",
+    "test-with-vite",
+    "tmp",
+    "*.mongodb.js"
   ]
 }
