@@ -49,11 +49,12 @@ import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import type { ObjectIdLike } from '../../interfaces/mongoose-utils';
-import { Attachment } from '../../models';
+import { Attachment } from '../../models/attachment';
 import { PathAlreadyExistsError } from '../../models/errors';
 import type { PageOperationDocument } from '../../models/page-operation';
 import PageOperation from '../../models/page-operation';
 import PageRedirect from '../../models/page-redirect';
+import { Revision } from '../../models/revision';
 import { serializePageSecurely } from '../../models/serializers/page-serializer';
 import ShareLink from '../../models/share-link';
 import Subscription from '../../models/subscription';
@@ -832,7 +833,6 @@ class PageService implements IPageService {
 
   private async renamePageV4(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
     const {
       isRecursively = false,
       createRedirectPage = false,
@@ -1348,7 +1348,6 @@ class PageService implements IPageService {
     }
 
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const pageIds = pages.map(page => page._id);
     const revisions = await Revision.find({ pageId: { $in: pageIds } });
@@ -1356,7 +1355,7 @@ class PageService implements IPageService {
     // Mapping to set to the body of the new revision
     const pageIdRevisionMapping = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[revision.pageId] = revision;
+      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -1404,7 +1403,6 @@ class PageService implements IPageService {
 
   private async duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const pageIds = pages.map(page => page._id);
     const revisions = await Revision.find({ pageId: { $in: pageIds } });
@@ -1412,7 +1410,7 @@ class PageService implements IPageService {
     // Mapping to set to the body of the new revision
     const pageIdRevisionMapping = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[revision.pageId] = revision;
+      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -1709,7 +1707,6 @@ class PageService implements IPageService {
 
   private async deletePageV4(page, user, options = {}, isRecursively = false) {
     const Page = mongoose.model('Page') as PageModel;
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
 
     const newPath = Page.getDeletedPageName(page.path);
     const isTrashed = isTrashPage(page.path);
@@ -1872,7 +1869,6 @@ class PageService implements IPageService {
   async deleteCompletelyOperation(pageIds, pagePaths): Promise<void> {
     // Delete Attachments, Revisions, Pages and emit delete
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
@@ -3839,7 +3835,6 @@ class PageService implements IPageService {
     let savedPage = await page.save();
 
     // Create revision
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, options.origin);
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
@@ -3901,7 +3896,6 @@ class PageService implements IPageService {
    */
   private async createV4(path, body, user, options: any = {}) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
     const format = options.format || 'markdown';
     const grantUserGroupIds = options.grantUserGroupIds || null;
@@ -4037,8 +4031,7 @@ class PageService implements IPageService {
     let savedPage = await page.save();
 
     // Create revision
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
-    const dummyUser = { _id: new mongoose.Types.ObjectId() };
+    const dummyUser: HasObjectId = { _id: new mongoose.Types.ObjectId().toString() };
     const newRevision = Revision.prepareRevision(savedPage, body, null, dummyUser);
     savedPage = await pushRevision(savedPage, newRevision, dummyUser);
 
@@ -4146,7 +4139,6 @@ class PageService implements IPageService {
       options: IOptionsForUpdate = {},
   ): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
 
     const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
@@ -4290,7 +4282,6 @@ class PageService implements IPageService {
 
   async updatePageV4(pageData: PageDocument, body, previousBody, user, options: IOptionsForUpdate = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
     // use the previous data if absent
     const grant = options.grant || pageData.grant;
@@ -4463,7 +4454,6 @@ class PageService implements IPageService {
       return false;
     }
 
-    const Revision = mongoose.model<IRevisionHasId>('Revision');
     const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
 
     if (revision == null) {
