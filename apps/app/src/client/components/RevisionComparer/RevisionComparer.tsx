@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import type { IRevisionHasPageId } from '@growi/core';
+import type { IRevisionHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -22,8 +22,8 @@ const DropdownItemContents = ({ title, contents }) => (
 );
 
 type RevisionComparerProps = {
-  sourceRevision: IRevisionHasPageId
-  targetRevision: IRevisionHasPageId
+  sourceRevision: IRevisionHasId
+  targetRevision: IRevisionHasId
   currentPageId?: string
   currentPagePath: string
   onClose: () => void
