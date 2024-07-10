@@ -37,10 +37,19 @@ class YjsService {
     ysocketio.initialize();
     this.ysocketio = ysocketio;
 
-    this.mdb = new MongodbPersistence(getMongoUri(), {
-      collectionName: MONGODB_PERSISTENCE_COLLECTION_NAME,
-      flushSize: MONGODB_PERSISTENCE_FLUSH_SIZE,
-    });
+    this.mdb = new MongodbPersistence(
+      {
+        // TODO: Required upgrading mongoose and unifying the versions of mongodb to omit 'as any'
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        client: mongoose.connection.getClient() as any,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        db: mongoose.connection.db as any,
+      },
+      {
+        collectionName: MONGODB_PERSISTENCE_COLLECTION_NAME,
+        flushSize: MONGODB_PERSISTENCE_FLUSH_SIZE,
+      },
+    );
 
     this.createIndexes();
 
