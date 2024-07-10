@@ -9,6 +9,7 @@
     "src/**/client",
     "test",
     "test-with-vite",
-    "tmp"
+    "tmp",
+    "*.mongodb.js"
   ]
 }

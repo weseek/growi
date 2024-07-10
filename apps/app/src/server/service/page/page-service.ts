@@ -32,5 +32,4 @@ export interface IPageService {
     page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[]
   ): boolean,
   getYjsData(pageId: string, revisionBody?: string): Promise<CurrentPageYjsData>,
-  hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean>,
 }
