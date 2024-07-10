@@ -25,7 +25,15 @@ export const extractPageIdFromYdocId = (ydocId: string): string | undefined => {
   return result?.[1];
 };
 
-class YjsService {
+export interface IYjsService {
+  hasYdocsNewerThanLatestRevision(pageId: string): Promise<boolean>;
+  handleYDocSync(pageId: string, initialValue: string): Promise<void>;
+  handleYDocUpdate(pageId: string, newValue: string): Promise<void>;
+  getCurrentYdoc(pageId: string): Ydoc | undefined;
+  getPersistedYdoc(pageId: string): Promise<Y.Doc>;
+}
+
+class YjsService implements IYjsService {
 
   private ysocketio: YSocketIO;
 
