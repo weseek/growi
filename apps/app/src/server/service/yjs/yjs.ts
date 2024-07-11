@@ -13,6 +13,7 @@ import loggerFactory from '~/utils/logger';
 import type { PageModel } from '../../models/page';
 import { Revision } from '../../models/revision';
 
+import { createIndexes } from './create-indexes';
 import { createMongoDBPersistence } from './create-mongodb-persistence';
 import { MongodbPersistence } from './extended/mongodb-persistence';
 
@@ -68,7 +69,7 @@ class YjsService implements IYjsService {
     ysocketio.initialize();
     this.ysocketio = ysocketio;
 
-    this.createIndexes();
+    createIndexes(MONGODB_PERSISTENCE_COLLECTION_NAME);
 
     // check accessible page
     ysocketio.nsp?.use(async(socket, next) => {
@@ -163,44 +164,6 @@ class YjsService implements IYjsService {
     // foce set to private property
     // eslint-disable-next-line dot-notation
     ysocketio['persistence'] = persistece;
-  }
-
-  private async createIndexes(): Promise<void> {
-
-    const collection = mongoose.connection.collection(MONGODB_PERSISTENCE_COLLECTION_NAME);
-
-    try {
-      await collection.createIndexes([
-        {
-          key: {
-            version: 1,
-            docName: 1,
-            action: 1,
-            clock: 1,
-            part: 1,
-          },
-        },
-        // for metaKey
-        {
-          key: {
-            version: 1,
-            docName: 1,
-            metaKey: 1,
-          },
-        },
-        // for flushDocument / clearDocument
-        {
-          key: {
-            docName: 1,
-            clock: 1,
-          },
-        },
-      ]);
-    }
-    catch (err) {
-      logger.error('Failed to create Index', err);
-      throw err;
-    }
   }
 
   public async getYDocStatus(pageId: string): Promise<YDocStatus> {
