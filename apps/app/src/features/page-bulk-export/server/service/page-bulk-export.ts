@@ -317,7 +317,7 @@ class PageBulkExportService {
 
   /**
    * Convert markdown string to html, then to PDF
-   * PDF conversion can be unstable, so retry up to the specified limit
+   * When PDF conversion is unstable and error occurs, it will retry up to the specified limit
    */
   private async convertMdToPdf(md: string): Promise<Buffer> {
     const executeConvert = async(htmlString: string, retries: number) => {
