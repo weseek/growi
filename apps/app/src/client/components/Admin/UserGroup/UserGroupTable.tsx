@@ -182,7 +182,7 @@ export const UserGroupTable: FC<Props> = ({
                       >
                         <span className="material-symbols-outlined pe-2 pt-2">group</span>
                         <span className="text-decoration-underline">{group.name}</span>
-                        <ButtonForUserGroupedit className={hoveredindex ?? ''} />
+                        <ButtonForUserGroupedit />
                       </Link>
                     </td>
                   )
