@@ -1,11 +1,11 @@
-import { YDocStatus } from '@growi/editor/dist/consts';
+import { YDocStatus } from '@growi/core/dist/consts';
 import { Types } from 'mongoose';
 import type { Server } from 'socket.io';
 import { mock } from 'vitest-mock-extended';
-import type { MongodbPersistence } from 'y-mongodb-provider';
 
-import { Revision } from '../models/revision';
+import { Revision } from '../../models/revision';
 
+import type { MongodbPersistence } from './extended/mongodb-persistence';
 import type { IYjsService } from './yjs';
 import { getYjsService, initializeYjsService } from './yjs';
 
@@ -67,7 +67,7 @@ describe('YjsService', () => {
       const pageId = new ObjectId();
 
       const privateMdb = getPrivateMdbInstance(yjsService);
-      await privateMdb.setMeta(pageId.toString(), 'updatedAt', 1000);
+      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', 1000);
 
       // act
       const result = await yjsService.getYDocStatus(pageId.toString());
@@ -104,7 +104,7 @@ describe('YjsService', () => {
       ]);
 
       const privateMdb = getPrivateMdbInstance(yjsService);
-      await privateMdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2034, 1, 1)).getTime());
+      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', (new Date(2034, 1, 1)).getTime());
 
       // act
       const result = await yjsService.getYDocStatus(pageId.toString());
@@ -124,7 +124,7 @@ describe('YjsService', () => {
       ]);
 
       const privateMdb = getPrivateMdbInstance(yjsService);
-      await privateMdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2025, 1, 1)).getTime());
+      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', (new Date(2025, 1, 1)).getTime());
 
       // act
       const result = await yjsService.getYDocStatus(pageId.toString());
@@ -144,7 +144,7 @@ describe('YjsService', () => {
       ]);
 
       const privateMdb = getPrivateMdbInstance(yjsService);
-      await privateMdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2024, 1, 1)).getTime());
+      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', (new Date(2024, 1, 1)).getTime());
 
       // act
       const result = await yjsService.getYDocStatus(pageId.toString());

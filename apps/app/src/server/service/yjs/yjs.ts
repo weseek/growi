@@ -4,15 +4,17 @@ import type { IPage, IUserHasId } from '@growi/core';
 import { YDocStatus } from '@growi/core/dist/consts';
 import mongoose from 'mongoose';
 import type { Server } from 'socket.io';
-import { MongodbPersistence } from 'y-mongodb-provider';
-import type { Document, Persistence } from 'y-socket.io/dist/server';
+import type { Document } from 'y-socket.io/dist/server';
 import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
 import loggerFactory from '~/utils/logger';
 
-import type { PageModel } from '../models/page';
-import { Revision } from '../models/revision';
+import type { PageModel } from '../../models/page';
+import { Revision } from '../../models/revision';
+
+import { createMongoDBPersistence } from './create-mongodb-persistence';
+import { MongodbPersistence } from './extended/mongodb-persistence';
 
 
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
@@ -156,43 +158,7 @@ class YjsService implements IYjsService {
   }
 
   private injectPersistence(ysocketio: YSocketIO, mdb: MongodbPersistence): void {
-    const persistece: Persistence = {
-      provider: mdb,
-      bindState: async(docName, ydoc) => {
-        logger.debug('bindState', { docName });
-
-        const persistedYdoc = await mdb.getYDoc(docName);
-
-        // get the state vector so we can just store the diffs between client and server
-        const persistedStateVector = Y.encodeStateVector(persistedYdoc);
-        const diff = Y.encodeStateAsUpdate(ydoc, persistedStateVector);
-
-        // store the new data in db (if there is any: empty update is an array of 0s)
-        if (diff.reduce((previousValue, currentValue) => previousValue + currentValue, 0) > 0) {
-          mdb.storeUpdate(docName, diff);
-          mdb.setMeta(docName, 'updatedAt', Date.now());
-        }
-
-        // send the persisted data to clients
-        Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
-
-        // store updates of the document in db
-        ydoc.on('update', async(update) => {
-          mdb.storeUpdate(docName, update);
-          mdb.setMeta(docName, 'updatedAt', Date.now());
-        });
-
-        // cleanup some memory
-        persistedYdoc.destroy();
-      },
-      writeState: async(docName) => {
-        logger.debug('writeState', { docName });
-        // This is called when all connections to the document are closed.
-
-        // flush document on close to have the smallest possible database
-        await mdb.flushDocument(docName);
-      },
-    };
+    const persistece = createMongoDBPersistence(mdb);
 
     // foce set to private property
     // eslint-disable-next-line dot-notation
@@ -258,7 +224,7 @@ class YjsService implements IYjsService {
     }
 
     // count yjs-writings documents with updatedAt > latestRevision.updatedAt
-    const ydocUpdatedAt: number | undefined = await this.mdb.getMeta(pageId, 'updatedAt');
+    const ydocUpdatedAt = await this.mdb.getTypedMeta(pageId, 'updatedAt');
 
     if (ydocUpdatedAt == null) {
       dumpLog(YDocStatus.NEW);
