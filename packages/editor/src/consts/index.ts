@@ -1,5 +1,6 @@
 export * from './global-code-mirror-editor-key';
 export * from './ydoc-awareness-user-color';
+export * from './ydoc-status';
 export * from './editor-settings';
 export * from './editor-themes';
 export * from './keymaps';
