@@ -1,5 +1,7 @@
-import type { IRevisionHasId } from '@growi/core';
-import { GlobalSocketEventName } from '@growi/core';
+import type { IncomingMessage } from 'http';
+
+import type { IPage, IUserHasId } from '@growi/core';
+import { YDocStatus } from '@growi/core/dist/consts';
 import mongoose from 'mongoose';
 import type { Server } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
@@ -7,11 +9,10 @@ import type { Document, Persistence } from 'y-socket.io/dist/server';
 import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
-import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
+import type { PageModel } from '../models/page';
 import { Revision } from '../models/revision';
-import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
@@ -21,13 +22,13 @@ const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 const logger = loggerFactory('growi:service:yjs');
 
 
-// export const extractPageIdFromYdocId = (ydocId: string): string | undefined => {
-//   const result = ydocId.match(/yjs\/(.*)/);
-//   return result?.[1];
-// };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Delta = Array<{insert?:Array<any>|string, delete?:number, retain?:number}>;
+type RequestWithUser = IncomingMessage & { user: IUserHasId };
+
 
 export interface IYjsService {
-  hasYdocsNewerThanLatestRevision(pageId: string): Promise<boolean>;
+  getYDocStatus(pageId: string): Promise<YDocStatus>;
   // handleYDocSync(pageId: string, initialValue: string): Promise<void>;
   handleYDocUpdate(pageId: string, newValue: string): Promise<void>;
   getCurrentYdoc(pageId: string): Ydoc | undefined;
@@ -68,16 +69,38 @@ class YjsService implements IYjsService {
     this.createIndexes();
 
     ysocketio.on('document-loaded', async(doc: Document) => {
-      // const pageId = extractPageIdFromYdocId(doc.name);
       const pageId = doc.name;
 
-      if (pageId != null && !await this.hasYdocsNewerThanLatestRevision(pageId)) {
-        logger.debug(`YDoc for the page ('${pageId}') is initialized by the latest revision body`);
+      if (pageId == null) {
+        return;
+      }
 
-        const revision = await Revision.findOne({ pageId });
+      const ydocStatus = await this.getYDocStatus(pageId);
+      const shouldSync = ydocStatus === YDocStatus.NEW || ydocStatus === YDocStatus.OUTDATED;
+
+      if (shouldSync) {
+        logger.debug(`Initialize the page ('${pageId}') with the latest revision body`);
+
+        const revision = await Revision
+          .findOne({ pageId })
+          .sort({ createdAt: -1 })
+          .lean();
+
         if (revision?.body != null) {
-          doc.getText('codemirror').insert(0, revision.body);
+          const ytext = doc.getText('codemirror');
+          const delta: Delta = (ydocStatus === YDocStatus.OUTDATED && ytext.length > 0)
+            ? [
+              { delete: ytext.length },
+              { insert: revision.body },
+            ]
+            : [
+              { insert: revision.body },
+            ];
+
+          ytext.applyDelta(delta, { sanitize: false });
         }
+
+        mdb.setMeta(doc.name, 'updatedAt', revision?.createdAt.getTime() ?? Date.now());
       }
     });
 
@@ -123,21 +146,9 @@ class YjsService implements IYjsService {
         logger.debug('bindState', { docName });
 
         const persistedYdoc = await mdb.getYDoc(docName);
+
         // get the state vector so we can just store the diffs between client and server
         const persistedStateVector = Y.encodeStateVector(persistedYdoc);
-
-        /* we could also retrieve that sv with a mdb function
-         *  however this takes longer;
-         *  it would also flush the document (which merges all updates into one)
-         *   thats prob a good thing, which is why we always do this on document close (see writeState)
-         */
-        // const persistedStateVector = await mdb.getStateVector(docName);
-
-        // in the default code the following value gets saved in the db
-        //  this however leads to the case that multiple complete Y.Docs are saved in the db (https://github.com/fadiquader/y-mongodb/issues/7)
-        // const newUpdates = Y.encodeStateAsUpdate(ydoc);
-
-        // better just get the differences and save those:
         const diff = Y.encodeStateAsUpdate(ydoc, persistedStateVector);
 
         // store the new data in db (if there is any: empty update is an array of 0s)
