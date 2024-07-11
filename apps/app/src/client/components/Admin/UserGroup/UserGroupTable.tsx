@@ -136,15 +136,13 @@ export const UserGroupTable: FC<Props> = ({
     setGroupIdToUsersMap(generateGroupIdToUsersMap(userGroupRelations));
     setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(childUserGroups));
   }, [userGroupRelations, childUserGroups]);
-  const [hoveredindex, setHoveredIdex] = useState<undefined | number>(undefined);
+  const [hoveredindex, setHoveredIndex] = useState<undefined | number>(undefined);
   const ButtonForUserGroupedit = (index) => {
     return (
       <button
         type="button"
         className="btn btn-link btn-edit-groups text-secondary py-0"
         key={index}
-        onMouseEnter={() => setHoveredIdex(index)}
-        onMouseLeave={() => setHoveredIdex(undefined)}
       >
         <span className="material-symbols-outlined px-2 py-0">edit</span>
       </button>
@@ -184,7 +182,7 @@ export const UserGroupTable: FC<Props> = ({
                       >
                         <span className="material-symbols-outlined pe-2 pt-2">group</span>
                         <span className="text-decoration-underline">{group.name}</span>
-                        {hoveredindex ? '' : 'opacity-0'}<ButtonForUserGroupedit />
+                        <ButtonForUserGroupedit className={hoveredindex ?? ''} />
                       </Link>
                     </td>
                   )
