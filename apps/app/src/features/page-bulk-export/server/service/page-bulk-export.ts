@@ -285,7 +285,7 @@ class PageBulkExportService {
   async initPuppeteerCluster(): Promise<void> {
     this.puppeteerCluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_PAGE,
-      maxConcurrency: configManager.getConfig('crowi', 'app:puppeteerClusterMaxConcurrency'),
+      maxConcurrency: configManager.getConfig('crowi', 'app:bulkExportPuppeteerClusterMaxConcurrency'),
       workerCreationDelay: 10000,
       monitor: true,
     });
@@ -317,16 +317,29 @@ class PageBulkExportService {
   }
 
   private async convertMdToPdf(md: string): Promise<Buffer> {
-    if (this.puppeteerCluster == null) {
-      throw new Error('Puppeteer cluster is not initialized');
-    }
+    const executeConvert = async(htmlString: string, retries: number) => {
+      if (this.puppeteerCluster == null) {
+        throw new Error('Puppeteer cluster is not initialized');
+      }
+
+      try {
+        return await this.puppeteerCluster.execute(htmlString);
+      }
+      catch (err) {
+        if (retries > 0) {
+          logger.error('Failed to convert markdown to pdf. Retrying...', err);
+          return executeConvert(htmlString, retries - 1);
+        }
+        throw err;
+      }
+    };
 
     const htmlString = (await remark()
       .use(html)
       .process(md))
       .toString();
 
-    const result = await this.puppeteerCluster.execute(htmlString);
+    const result = await executeConvert(htmlString, configManager.getConfig('crowi', 'app:bulkExportPuppeteerRetryLimit'));
 
     return result;
   }
