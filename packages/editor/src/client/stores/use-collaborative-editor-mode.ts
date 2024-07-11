@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { keymap } from '@codemirror/view';
-import { GlobalSocketEventName, type IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next';
 import { SocketIOProvider } from 'y-socket.io';
@@ -43,9 +43,6 @@ export const useCollaborativeEditorMode = (
     // NOTICE: Destroying the provider leaves awareness in the other user's connection,
     // so only awareness is destroyed here
     provider?.awareness.destroy();
-
-    // TODO: catch ydoc:sync:error GlobalSocketEventName.YDocSyncError
-    socket?.off(GlobalSocketEventName.YDocSync);
 
     setCPageId(pageId);
 
@@ -95,14 +92,13 @@ export const useCollaborativeEditorMode = (
 
     socketIOProvider.on('sync', (isSync: boolean) => {
       if (isSync) {
-        socket.emit(GlobalSocketEventName.YDocSync, { pageId, initialValue });
         const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
         onEditorsUpdated(userList);
       }
     });
 
     // update args type see: SocketIOProvider.Awareness.awarenessUpdate
-    socketIOProvider.awareness.on('update', (update: any) => {
+    socketIOProvider.awareness.on('update', (update: { added: unknown[]; removed: unknown[]; }) => {
       const { added, removed } = update;
       if (added.length > 0 || removed.length > 0) {
         const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);

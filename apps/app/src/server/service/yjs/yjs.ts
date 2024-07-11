@@ -32,7 +32,6 @@ type RequestWithUser = IncomingMessage & { user: IUserHasId };
 
 export interface IYjsService {
   getYDocStatus(pageId: string): Promise<YDocStatus>;
-  // handleYDocSync(pageId: string, initialValue: string): Promise<void>;
   handleYDocUpdate(pageId: string, newValue: string): Promise<void>;
   getCurrentYdoc(pageId: string): Ydoc | undefined;
 }
@@ -135,16 +134,6 @@ class YjsService implements IYjsService {
     //     }
     //   });
 
-    //   socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
-    //     try {
-    //       await this.handleYDocSync(pageId, initialValue);
-    //     }
-    //     catch (error) {
-    //       logger.warn(error.message);
-    //       socket.emit(GlobalSocketEventName.YDocSyncError, 'An error occurred during YDoc synchronization.');
-    //     }
-    //   });
-    // });
   }
 
   private injectPersistence(ysocketio: YSocketIO, mdb: MongodbPersistence): void {
@@ -217,44 +206,6 @@ class YjsService implements IYjsService {
     dumpLog(YDocStatus.OUTDATED, { lastRevisionCreatedAt, ydocUpdatedAt });
     return YDocStatus.OUTDATED;
   }
-
-  // public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
-  //   const currentYdoc = this.getCurrentYdoc(pageId);
-  //   if (currentYdoc == null) {
-  //     return;
-  //   }
-
-  //   const persistedYdoc = await this.getPersistedYdoc(pageId);
-  //   const persistedStateVector = Y.encodeStateVector(persistedYdoc);
-
-  //   await this.mdb.flushDocument(pageId);
-
-  //   // If no write operation has been performed, insert initial value
-  //   const clientsSize = persistedYdoc.store.clients.size;
-  //   if (clientsSize === 0) {
-  //     currentYdoc.getText('codemirror').insert(0, initialValue);
-  //   }
-
-  //   const diff = Y.encodeStateAsUpdate(currentYdoc, persistedStateVector);
-
-  //   if (diff.reduce((prev, curr) => prev + curr, 0) > 0) {
-  //     this.mdb.storeUpdate(pageId, diff);
-  //     this.mdb.setMeta(pageId, 'updatedAt', Date.now());
-  //   }
-
-  //   Y.applyUpdate(currentYdoc, Y.encodeStateAsUpdate(persistedYdoc));
-
-  //   currentYdoc.on('update', async(update) => {
-  //     this.mdb.storeUpdate(pageId, update);
-  //     this.mdb.setMeta(pageId, 'updatedAt', Date.now());
-  //   });
-
-  //   currentYdoc.on('destroy', async() => {
-  //     this.mdb.flushDocument(pageId);
-  //   });
-
-  //   persistedYdoc.destroy();
-  // }
 
   public async handleYDocUpdate(pageId: string, newValue: string): Promise<void> {
     // TODO: https://redmine.weseek.co.jp/issues/132775
