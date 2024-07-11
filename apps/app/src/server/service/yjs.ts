@@ -68,6 +68,22 @@ class YjsService implements IYjsService {
 
     this.createIndexes();
 
+    // check accessible page
+    ysocketio.nsp?.use(async(socket, next) => {
+      // extract page id from namespace
+      const pageId = socket.nsp.name.replace(/\/yjs\|/, '');
+      const user = (socket.request as RequestWithUser).user; // should be injected by SocketIOService
+
+      const Page = mongoose.model<IPage, PageModel>('Page');
+      const isAccessible = await Page.isAccessiblePageByViewer(pageId, user);
+
+      if (!isAccessible) {
+        return next(new Error('Forbidden'));
+      }
+
+      return next();
+    });
+
     ysocketio.on('document-loaded', async(doc: Document) => {
       const pageId = doc.name;
 
