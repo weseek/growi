@@ -87,7 +87,7 @@ class PageBulkExportService {
     this.bulkExportWithBasePagePath(basePagePath, format, currentUser, activityParameters, pageBulkExportJob);
   }
 
-  async bulkExportWithBasePagePath(
+  private async bulkExportWithBasePagePath(
       basePagePath: string,
       format: PageBulkExportFormat,
       currentUser,
@@ -303,17 +303,14 @@ class PageBulkExportService {
       return pdfResult;
     });
 
-    process.on('SIGINT', async() => {
+    const handleClose = async() => {
       logger.info('Closing puppeteer cluster...');
+      await this.puppeteerCluster?.idle();
       await this.puppeteerCluster?.close();
-      process.exit(0);
-    });
-
-    process.on('SIGTERM', async() => {
-      logger.info('Closing puppeteer cluster...');
-      await this.puppeteerCluster?.close();
-      process.exit(0);
-    });
+      process.exit();
+    };
+    process.on('SIGINT', handleClose);
+    process.on('SIGTERM', handleClose);
   }
 
   private async convertMdToPdf(md: string): Promise<Buffer> {
