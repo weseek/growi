@@ -177,7 +177,8 @@ class YjsService implements IYjsService {
         // projection
         { createdAt: 1 },
         { sort: { createdAt: -1 } },
-      );
+      )
+      .lean();
 
     if (result == null) {
       dumpLog(YDocStatus.ISOLATED);
