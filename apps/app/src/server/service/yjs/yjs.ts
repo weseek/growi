@@ -6,7 +6,6 @@ import mongoose from 'mongoose';
 import type { Server } from 'socket.io';
 import type { Document } from 'y-socket.io/dist/server';
 import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
-import * as Y from 'yjs';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import { RoomPrefix, getRoomNameWithId } from '~/server/util/socket-io-helpers';
@@ -18,6 +17,7 @@ import { Revision } from '../../models/revision';
 import { createIndexes } from './create-indexes';
 import { createMongoDBPersistence } from './create-mongodb-persistence';
 import { MongodbPersistence } from './extended/mongodb-persistence';
+import { syncYDoc } from './sync-ydoc';
 
 
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
@@ -27,14 +27,12 @@ const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 const logger = loggerFactory('growi:service:yjs');
 
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Delta = Array<{insert?:Array<any>|string, delete?:number, retain?:number}>;
 type RequestWithUser = IncomingMessage & { user: IUserHasId };
 
 
 export interface IYjsService {
   getYDocStatus(pageId: string): Promise<YDocStatus>;
-  handleYDocUpdate(pageId: string, newValue: string): Promise<void>;
+  syncWithTheLatestRevisionForce(pageId: string): Promise<void>;
   getCurrentYdoc(pageId: string): Ydoc | undefined;
 }
 
@@ -80,37 +78,9 @@ class YjsService implements IYjsService {
     ysocketio.on('document-loaded', async(doc: Document) => {
       const pageId = doc.name;
 
-      if (pageId == null) {
-        return;
-      }
-
       const ydocStatus = await this.getYDocStatus(pageId);
-      const shouldSync = ydocStatus === YDocStatus.NEW || ydocStatus === YDocStatus.OUTDATED;
 
-      if (shouldSync) {
-        logger.debug(`Initialize the page ('${pageId}') with the latest revision body`);
-
-        const revision = await Revision
-          .findOne({ pageId })
-          .sort({ createdAt: -1 })
-          .lean();
-
-        if (revision?.body != null) {
-          const ytext = doc.getText('codemirror');
-          const delta: Delta = (ydocStatus === YDocStatus.OUTDATED && ytext.length > 0)
-            ? [
-              { delete: ytext.length },
-              { insert: revision.body },
-            ]
-            : [
-              { insert: revision.body },
-            ];
-
-          ytext.applyDelta(delta, { sanitize: false });
-        }
-
-        mdb.setMeta(doc.name, 'updatedAt', revision?.createdAt.getTime() ?? Date.now());
-      }
+      syncYDoc(mdb, doc, { ydocStatus });
     });
 
     ysocketio.on('awareness-update', async(doc: Document) => {
@@ -210,18 +180,14 @@ class YjsService implements IYjsService {
     return YDocStatus.OUTDATED;
   }
 
-  public async handleYDocUpdate(pageId: string, newValue: string): Promise<void> {
-    // TODO: https://redmine.weseek.co.jp/issues/132775
-    // It's necessary to confirm that the user is not editing the target page in the Editor
-    const currentYdoc = this.getCurrentYdoc(pageId);
-    if (currentYdoc == null) {
+  public async syncWithTheLatestRevisionForce(pageId: string): Promise<void> {
+    const doc = this.ysocketio.documents.get(pageId);
+
+    if (doc == null) {
       return;
     }
 
-    const currentMarkdownLength = currentYdoc.getText('codemirror').length;
-    currentYdoc.getText('codemirror').delete(0, currentMarkdownLength);
-    currentYdoc.getText('codemirror').insert(0, newValue);
-    Y.encodeStateAsUpdate(currentYdoc);
+    syncYDoc(this.mdb, doc, true);
   }
 
   public getCurrentYdoc(pageId: string): Ydoc | undefined {
