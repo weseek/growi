@@ -215,9 +215,6 @@ class PageBulkExportService {
         }
         callback();
       },
-      final: async(callback) => {
-        callback();
-      },
     });
   }
 
@@ -225,6 +222,7 @@ class PageBulkExportService {
     const pageArchiver = archiver('tar', {
       gzip: true,
     });
+
     // good practice to catch warnings (ie stat failures and other non-blocking errors)
     pageArchiver.on('warning', (err) => {
       if (err.code === 'ENOENT') logger.error(err);
@@ -282,6 +280,9 @@ class PageBulkExportService {
     });
   }
 
+  /**
+   * Initialize puppeteer cluster for converting markdown to pdf
+   */
   async initPuppeteerCluster(): Promise<void> {
     this.puppeteerCluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_PAGE,
@@ -303,6 +304,7 @@ class PageBulkExportService {
       return pdfResult;
     });
 
+    // close cluster on app termination
     const handleClose = async() => {
       logger.info('Closing puppeteer cluster...');
       await this.puppeteerCluster?.idle();
@@ -313,6 +315,10 @@ class PageBulkExportService {
     process.on('SIGTERM', handleClose);
   }
 
+  /**
+   * Convert markdown string to html, then to PDF
+   * PDF conversion can be unstable, so retry up to the specified limit
+   */
   private async convertMdToPdf(md: string): Promise<Buffer> {
     const executeConvert = async(htmlString: string, retries: number) => {
       if (this.puppeteerCluster == null) {
