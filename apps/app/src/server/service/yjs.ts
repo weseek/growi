@@ -31,6 +31,7 @@ export interface IYjsService {
   handleYDocUpdate(pageId: string, newValue: string): Promise<void>;
   getCurrentYdoc(pageId: string): Ydoc | undefined;
   getPersistedYdoc(pageId: string): Promise<Y.Doc>;
+  deleteYjsData(pageId: string): Promise<void>;
 }
 
 class YjsService implements IYjsService {
@@ -221,6 +222,11 @@ class YjsService implements IYjsService {
     const persistedYdoc = await this.mdb.getYDoc(pageId);
     return persistedYdoc;
   }
+
+  public deleteYjsData = async(pageId: string): Promise<void> => {
+    await this.mdb.clearDocument(pageId);
+    this.ysocketio.documents.delete(`yjs/${pageId}`);
+  };
 
 }
 
