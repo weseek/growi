@@ -130,6 +130,8 @@ export const useCollaborativeEditorMode = (
     return () => {
       cleanupYUndoManagerKeymap?.();
       cleanupYCollab?.();
+      // clean up editor
+      codeMirrorEditor.initDoc('');
     };
   }, [codeMirrorEditor, provider, ydoc]);
 };
