@@ -288,7 +288,6 @@ class PageBulkExportService {
       concurrency: Cluster.CONCURRENCY_PAGE,
       maxConcurrency: configManager.getConfig('crowi', 'app:bulkExportPuppeteerClusterMaxConcurrency'),
       workerCreationDelay: 10000,
-      monitor: true,
     });
 
     await this.puppeteerCluster.task(async({ page, data: htmlString }) => {
