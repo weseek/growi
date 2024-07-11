@@ -210,7 +210,11 @@ class YjsService implements IYjsService {
     }
   }
 
-  public async hasYdocsNewerThanLatestRevision(pageId: string): Promise<boolean> {
+  public async getYDocStatus(pageId: string): Promise<YDocStatus> {
+    const dumpLog = (status: YDocStatus, args?: { [key: string]: number }) => {
+      logger.debug(`getYDocStatus('${pageId}') detected '${status}'`, args ?? {});
+    };
+
     // get the latest revision createdAt
     const result = await Revision
       .findOne(
@@ -221,18 +225,34 @@ class YjsService implements IYjsService {
         { sort: { createdAt: -1 } },
       );
 
-    const lastRevisionCreatedAt = (result == null)
-      ? 0
-      : result.createdAt.getTime();
+    if (result == null) {
+      dumpLog(YDocStatus.ISOLATED);
+      return YDocStatus.ISOLATED;
+    }
 
     // count yjs-writings documents with updatedAt > latestRevision.updatedAt
     const ydocUpdatedAt: number | undefined = await this.mdb.getMeta(pageId, 'updatedAt');
 
-    logger.debug('hasYdocsNewerThanLatestRevision', { pageId, lastRevisionCreatedAt, ydocUpdatedAt });
+    if (ydocUpdatedAt == null) {
+      dumpLog(YDocStatus.NEW);
+      return YDocStatus.NEW;
+    }
 
-    return ydocUpdatedAt == null
-      ? false
-      : ydocUpdatedAt > lastRevisionCreatedAt;
+    const { createdAt } = result;
+    const lastRevisionCreatedAt = createdAt.getTime();
+
+    if (lastRevisionCreatedAt < ydocUpdatedAt) {
+      dumpLog(YDocStatus.DRAFT, { lastRevisionCreatedAt, ydocUpdatedAt });
+      return YDocStatus.DRAFT;
+    }
+
+    if (lastRevisionCreatedAt === ydocUpdatedAt) {
+      dumpLog(YDocStatus.SYNCED, { lastRevisionCreatedAt, ydocUpdatedAt });
+      return YDocStatus.SYNCED;
+    }
+
+    dumpLog(YDocStatus.OUTDATED, { lastRevisionCreatedAt, ydocUpdatedAt });
+    return YDocStatus.OUTDATED;
   }
 
   // public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {

@@ -1,3 +1,4 @@
+import { YDocStatus } from '@growi/editor/dist/consts';
 import { Types } from 'mongoose';
 import type { Server } from 'socket.io';
 import { mock } from 'vitest-mock-extended';
@@ -11,6 +12,7 @@ import { getYjsService, initializeYjsService } from './yjs';
 
 vi.mock('y-socket.io/dist/server', () => {
   const YSocketIO = vi.fn();
+  YSocketIO.prototype.on = vi.fn();
   YSocketIO.prototype.initialize = vi.fn();
   return { YSocketIO };
 });
@@ -26,7 +28,7 @@ const getPrivateMdbInstance = (yjsService: IYjsService): MongodbPersistence => {
 
 describe('YjsService', () => {
 
-  describe('hasYdocsNewerThanLatestRevision()', () => {
+  describe('getYDocStatus()', () => {
 
     beforeAll(async() => {
       const ioMock = mock<Server>();
@@ -45,20 +47,20 @@ describe('YjsService', () => {
       await privateMdb.flushDB();
     });
 
-    it('returns false when neither revisions nor YDocs exists', async() => {
+    it('returns ISOLATED when neither revisions nor YDocs exists', async() => {
       // arrange
       const yjsService = getYjsService();
 
       const pageId = new ObjectId();
 
       // act
-      const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
+      const result = await yjsService.getYDocStatus(pageId.toString());
 
       // assert
-      expect(result).toBe(false);
+      expect(result).toBe(YDocStatus.ISOLATED);
     });
 
-    it('returns true when no revisions exist', async() => {
+    it('returns ISOLATED when no revisions exist', async() => {
       // arrange
       const yjsService = getYjsService();
 
@@ -68,33 +70,13 @@ describe('YjsService', () => {
       await privateMdb.setMeta(pageId.toString(), 'updatedAt', 1000);
 
       // act
-      const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
+      const result = await yjsService.getYDocStatus(pageId.toString());
 
       // assert
-      expect(result).toBe(true);
+      expect(result).toBe(YDocStatus.ISOLATED);
     });
 
-    it('returns false when the latest revision is newer than meta data', async() => {
-      // arrange
-      const yjsService = getYjsService();
-
-      const pageId = new ObjectId();
-
-      await Revision.insertMany([
-        { pageId, body: '' },
-      ]);
-
-      const privateMdb = getPrivateMdbInstance(yjsService);
-      await privateMdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2024, 1, 1)).getTime());
-
-      // act
-      const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
-
-      // assert
-      expect(result).toBe(false);
-    });
-
-    it('returns false when no YDocs exist', async() => {
+    it('returns NEW when no YDocs exist', async() => {
       // arrange
       const yjsService = getYjsService();
 
@@ -105,13 +87,13 @@ describe('YjsService', () => {
       ]);
 
       // act
-      const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
+      const result = await yjsService.getYDocStatus(pageId.toString());
 
       // assert
-      expect(result).toBe(false);
+      expect(result).toBe(YDocStatus.NEW);
     });
 
-    it('returns true when the newer YDocs exist', async() => {
+    it('returns DRAFT when the newer YDocs exist', async() => {
       // arrange
       const yjsService = getYjsService();
 
@@ -125,10 +107,50 @@ describe('YjsService', () => {
       await privateMdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2034, 1, 1)).getTime());
 
       // act
-      const result = await yjsService.hasYdocsNewerThanLatestRevision(pageId.toString());
+      const result = await yjsService.getYDocStatus(pageId.toString());
 
       // assert
-      expect(result).toBe(true);
+      expect(result).toBe(YDocStatus.DRAFT);
+    });
+
+    it('returns SYNCED', async() => {
+      // arrange
+      const yjsService = getYjsService();
+
+      const pageId = new ObjectId();
+
+      await Revision.insertMany([
+        { pageId, body: '', createdAt: new Date(2025, 1, 1) },
+      ]);
+
+      const privateMdb = getPrivateMdbInstance(yjsService);
+      await privateMdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2025, 1, 1)).getTime());
+
+      // act
+      const result = await yjsService.getYDocStatus(pageId.toString());
+
+      // assert
+      expect(result).toBe(YDocStatus.SYNCED);
+    });
+
+    it('returns OUTDATED when the latest revision is newer than meta data', async() => {
+      // arrange
+      const yjsService = getYjsService();
+
+      const pageId = new ObjectId();
+
+      await Revision.insertMany([
+        { pageId, body: '' },
+      ]);
+
+      const privateMdb = getPrivateMdbInstance(yjsService);
+      await privateMdb.setMeta(pageId.toString(), 'updatedAt', (new Date(2024, 1, 1)).getTime());
+
+      // act
+      const result = await yjsService.getYDocStatus(pageId.toString());
+
+      // assert
+      expect(result).toBe(YDocStatus.OUTDATED);
     });
 
   });
