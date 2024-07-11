@@ -98,7 +98,7 @@ class YjsService implements IYjsService {
       // Triggered when the last user leaves the editor
       if (awarenessStateSize === 0) {
         const ydocStatus = await this.getYDocStatus(pageId);
-        const hasYdocsNewerThanLatestRevision = ydocStatus === YDocStatus.DRAFT || YDocStatus.ISOLATED;
+        const hasYdocsNewerThanLatestRevision = ydocStatus === YDocStatus.DRAFT || ydocStatus === YDocStatus.ISOLATED;
 
         io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
