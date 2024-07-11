@@ -8,6 +8,8 @@ import type { Document } from 'y-socket.io/dist/server';
 import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
+import { SocketEventName } from '~/interfaces/websocket';
+import { RoomPrefix, getRoomNameWithId } from '~/server/util/socket-io-helpers';
 import loggerFactory from '~/utils/logger';
 
 import type { PageModel } from '../../models/page';
@@ -111,28 +113,28 @@ class YjsService implements IYjsService {
       }
     });
 
-    // io.on('connection', (socket) => {
+    ysocketio.on('awareness-update', async(doc: Document) => {
+      const pageId = doc.name;
 
-    //   ysocketio.on('awareness-update', async(doc: Document) => {
-    //     const pageId = extractPageIdFromYdocId(doc.name);
+      if (pageId == null) return;
 
-    //     if (pageId == null) return;
+      const awarenessStateSize = doc.awareness.states.size;
 
-    //     const awarenessStateSize = doc.awareness.states.size;
+      // Triggered when awareness changes
+      io
+        .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+        .emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
 
-    //     // Triggered when awareness changes
-    //     io
-    //       .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-    //       .emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
+      // Triggered when the last user leaves the editor
+      if (awarenessStateSize === 0) {
+        const ydocStatus = await this.getYDocStatus(pageId);
+        const hasYdocsNewerThanLatestRevision = ydocStatus === YDocStatus.DRAFT || YDocStatus.ISOLATED;
 
-    //     // Triggered when the last user leaves the editor
-    //     if (awarenessStateSize === 0) {
-    //       const hasYdocsNewerThanLatestRevision = await this.hasYdocsNewerThanLatestRevision(pageId);
-    //       io
-    //         .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-    //         .emit(SocketEventName.YjsHasYdocsNewerThanLatestRevisionUpdated, hasYdocsNewerThanLatestRevision);
-    //     }
-    //   });
+        io
+          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+          .emit(SocketEventName.YjsHasYdocsNewerThanLatestRevisionUpdated, hasYdocsNewerThanLatestRevision);
+      }
+    });
 
   }
 
