@@ -200,7 +200,6 @@ class PageBulkExportService {
 
           if (revision != null && isPopulated(revision)) {
             const pageBody = format === PageBulkExportFormat.pdf ? (await this.convertMdToPdf(revision.body)) : revision.body;
-            gc();
             const pathNormalized = `${normalizePath(page.path)}.${format}`;
             const fileOutputPath = path.join(outputDir, pathNormalized);
             const fileOutputParentPath = getParentPath(fileOutputPath);
