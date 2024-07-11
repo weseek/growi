@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { keymap } from '@codemirror/view';
 import { GlobalSocketEventName, type IUserHasId } from '@growi/core/dist/interfaces';
-import { useGlobalSocket, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
+import { useGlobalSocket } from '@growi/core/dist/swr';
 import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next';
 import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
