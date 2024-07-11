@@ -78,7 +78,10 @@ export const useCollaborativeEditorMode = (
       '/',
       pageId,
       ydoc,
-      { autoConnect: true },
+      {
+        autoConnect: true,
+        resyncInterval: 3000,
+      },
     );
 
     const userLocalState: UserLocalState = {
