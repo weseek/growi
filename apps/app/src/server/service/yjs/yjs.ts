@@ -64,28 +64,17 @@ class YjsService implements IYjsService {
     );
     this.mdb = mdb;
 
+    // initialize YSocketIO
     const ysocketio = new YSocketIO(io);
     this.injectPersistence(ysocketio, mdb);
     ysocketio.initialize();
     this.ysocketio = ysocketio;
 
+    // create indexes
     createIndexes(MONGODB_PERSISTENCE_COLLECTION_NAME);
 
-    // check accessible page
-    ysocketio.nsp?.use(async(socket, next) => {
-      // extract page id from namespace
-      const pageId = socket.nsp.name.replace(/\/yjs\|/, '');
-      const user = (socket.request as RequestWithUser).user; // should be injected by SocketIOService
-
-      const Page = mongoose.model<IPage, PageModel>('Page');
-      const isAccessible = await Page.isAccessiblePageByViewer(pageId, user);
-
-      if (!isAccessible) {
-        return next(new Error('Forbidden'));
-      }
-
-      return next();
-    });
+    // register middlewares
+    this.registerAccessiblePageChecker(ysocketio);
 
     ysocketio.on('document-loaded', async(doc: Document) => {
       const pageId = doc.name;
@@ -164,6 +153,24 @@ class YjsService implements IYjsService {
     // foce set to private property
     // eslint-disable-next-line dot-notation
     ysocketio['persistence'] = persistece;
+  }
+
+  private registerAccessiblePageChecker(ysocketio: YSocketIO): void {
+    // check accessible page
+    ysocketio.nsp?.use(async(socket, next) => {
+      // extract page id from namespace
+      const pageId = socket.nsp.name.replace(/\/yjs\|/, '');
+      const user = (socket.request as RequestWithUser).user; // should be injected by SocketIOService
+
+      const Page = mongoose.model<IPage, PageModel>('Page');
+      const isAccessible = await Page.isAccessiblePageByViewer(pageId, user);
+
+      if (!isAccessible) {
+        return next(new Error('Forbidden'));
+      }
+
+      return next();
+    });
   }
 
   public async getYDocStatus(pageId: string): Promise<YDocStatus> {
