@@ -7,8 +7,6 @@ import type {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
-import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -25,7 +23,7 @@ import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
-import { useEditorMode } from '~/stores-universal/ui';
+import { useEditorMode, EditorMode } from '~/stores-universal/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -39,6 +37,7 @@ import {
   useIsAbleToChangeEditorMode,
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
+import { useCurrentPageYjsData } from '~/stores/yjs';
 
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
@@ -78,6 +77,8 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
+  const { data: editorMode } = useEditorMode();
+  const { data: currentYjsData } = useCurrentPageYjsData();
 
   const syncLatestRevisionBodyHandler = useCallback(async() => {
     // eslint-disable-next-line no-alert
@@ -93,15 +94,20 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     }
   }, [pageId, t]);
 
+  const isYjsDataDeletable = currentYjsData?.awarenessStateSize == null || currentYjsData.awarenessStateSize === 0;
+
   return (
     <>
-      <DropdownItem
-        onClick={() => syncLatestRevisionBodyHandler()}
-        className="grw-page-control-dropdown-item"
-      >
-        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
-        {t('SyncLatestRevisionBody')}
-      </DropdownItem>
+      { editorMode === EditorMode.View && (
+        <DropdownItem
+          onClick={() => syncLatestRevisionBodyHandler()}
+          className="grw-page-control-dropdown-item"
+          disabled={!isYjsDataDeletable}
+        >
+          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
+          {t('SyncLatestRevisionBody')}
+        </DropdownItem>
+      )}
 
       {/* Presentation */}
       <DropdownItem
