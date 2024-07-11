@@ -15,8 +15,9 @@ import type { IPageGrantData } from '~/interfaces/page';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
-import { GlobalNotificationSettingEvent } from '~/server/models';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageModel } from '~/server/models/page';
+import { Revision } from '~/server/models/revision';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
@@ -758,7 +759,6 @@ module.exports = (crowi) => {
 
       const revisionIdForFind = revisionId || page.revision;
 
-      const Revision = crowi.model('Revision');
       revision = await Revision.findById(revisionIdForFind);
       pagePath = page.path;
 
