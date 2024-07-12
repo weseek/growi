@@ -37,7 +37,6 @@ import {
   useIsAbleToChangeEditorMode,
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
-import { useCurrentPageYjsData } from '~/stores/yjs';
 
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
@@ -78,7 +77,6 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
   const { data: editorMode } = useEditorMode();
-  const { data: currentYjsData } = useCurrentPageYjsData();
 
   const syncLatestRevisionBodyHandler = useCallback(async() => {
     // eslint-disable-next-line no-alert
@@ -94,15 +92,12 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     }
   }, [pageId, t]);
 
-  const isYjsDataDeletable = currentYjsData?.awarenessStateSize == null || currentYjsData.awarenessStateSize === 0;
-
   return (
     <>
       { editorMode === EditorMode.View && (
         <DropdownItem
           onClick={() => syncLatestRevisionBodyHandler()}
           className="grw-page-control-dropdown-item"
-          disabled={!isYjsDataDeletable}
         >
           <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
           {t('SyncLatestRevisionBody')}
