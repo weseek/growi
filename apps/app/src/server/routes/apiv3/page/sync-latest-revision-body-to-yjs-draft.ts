@@ -47,7 +47,7 @@ export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionB
 
       try {
         const yjsService = getYjsService();
-        await yjsService.deleteYjsData(pageId);
+        await yjsService.syncWithTheLatestRevisionForce(pageId);
         return res.apiv3({ });
       }
       catch (err) {
