@@ -23,7 +23,7 @@ import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
-import { useEditorMode, EditorMode } from '~/stores-universal/ui';
+import { useEditorMode } from '~/stores-universal/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -76,7 +76,6 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
-  const { data: editorMode } = useEditorMode();
 
   const syncLatestRevisionBodyHandler = useCallback(async() => {
     // eslint-disable-next-line no-alert
@@ -94,15 +93,13 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   return (
     <>
-      { editorMode === EditorMode.View && (
-        <DropdownItem
-          onClick={() => syncLatestRevisionBodyHandler()}
-          className="grw-page-control-dropdown-item"
-        >
-          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
-          {t('SyncLatestRevisionBody')}
-        </DropdownItem>
-      )}
+      <DropdownItem
+        onClick={() => syncLatestRevisionBodyHandler()}
+        className="grw-page-control-dropdown-item"
+      >
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
+        {t('SyncLatestRevisionBody')}
+      </DropdownItem>
 
       {/* Presentation */}
       <DropdownItem
