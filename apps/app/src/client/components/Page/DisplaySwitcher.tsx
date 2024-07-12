@@ -1,8 +1,9 @@
 import dynamic from 'next/dynamic';
 
 import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
-import { useIsEditable, useReservedNextCaretLine } from '~/stores-universal/context';
+import { useIsEditable } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { useReservedNextCaretLine } from '~/stores/editor';
 import { useIsLatestRevision } from '~/stores/page';
 
 import { LazyRenderer } from '../Common/LazyRenderer';

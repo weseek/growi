@@ -24,7 +24,6 @@ import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
-  useReservedNextCaretLine,
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
@@ -33,6 +32,7 @@ import {
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import {
+  useReservedNextCaretLine,
   useEditorSettings,
   useCurrentIndentSize,
   useEditingMarkdown,
