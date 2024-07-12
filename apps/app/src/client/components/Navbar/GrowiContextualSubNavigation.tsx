@@ -7,8 +7,6 @@ import type {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
-import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
