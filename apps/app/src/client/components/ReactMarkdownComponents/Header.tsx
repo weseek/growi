@@ -113,11 +113,12 @@ export const Header = (props: HeaderProps): JSX.Element => {
     };
   }, [activateByHash, router.events]);
 
-  // TODO: currentPageYjsData?.hasRevisionBodyDiff === false make to hide the edit button when a Yjs draft exists
+  // TODO: currentPageYjsData?.hasYdocsNewerThanLatestRevision === false make to hide the edit button when a Yjs draft exists
   // This is because the current conditional logic cannot handle cases where the draft is an empty string.
   // It will be possible to address this TODO ySyncAnnotation become available for import.
   // Ref: https://github.com/yjs/y-codemirror.next/pull/30
-  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null && currentPageYjsData?.hasRevisionBodyDiff === false;
+  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null
+                            && currentPageYjsData?.hasYdocsNewerThanLatestRevision === false;
 
   return (
     <>
