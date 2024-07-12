@@ -16,7 +16,7 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:page:sync-latest-revision-body-to-yjs-draft');
 
-type DeleteYjsDataHandlerFactory = (crowi: Crowi) => RequestHandler[];
+type SyncLatestRevisionBodyToYjsDraftHandlerFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqParams = {
   pageId: string,
@@ -24,7 +24,7 @@ type ReqParams = {
 interface Req extends Request<ReqParams, ApiV3Response> {
   user: IUserHasId,
 }
-export const deleteYjsDataHandlerFactory: DeleteYjsDataHandlerFactory = (crowi) => {
+export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionBodyToYjsDraftHandlerFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
   const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);

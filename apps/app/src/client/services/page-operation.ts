@@ -13,9 +13,7 @@ import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
 import { apiPost } from '../util/apiv1-client';
-import {
-  apiv3Get, apiv3Post, apiv3Put, apiv3Delete,
-} from '../util/apiv3-client';
+import { apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
 import { toastError } from '../util/toastr';
 
 const logger = loggerFactory('growi:services:page-operation');
@@ -177,7 +175,7 @@ export const unpublish = async(pageId: string): Promise<IPageHasId> => {
   return res.data;
 };
 
-export const deleteYjsData = async(pageId: string): Promise<void> => {
-  await apiv3Delete(`/page/${pageId}/yjs-data`);
+export const syncLatestRevisionBody = async(pageId: string): Promise<void> => {
+  await apiv3Put(`/page/${pageId}/sync-latest-revision-body-to-yjs-draft`);
   return;
 };
