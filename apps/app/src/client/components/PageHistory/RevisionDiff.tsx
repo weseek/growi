@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
-import type { IRevisionHasPageId } from '@growi/core';
+import type { IRevisionHasId } from '@growi/core';
+import { GrowiThemeSchemeType } from '@growi/core';
 import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
+import { PresetThemesMetadatas } from '@growi/preset-themes';
 import { createPatch } from 'diff';
 import type { Diff2HtmlConfig } from 'diff2html';
 import { html } from 'diff2html';
@@ -10,17 +12,22 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
+
 import { Themes, useNextThemes } from '~/stores-universal/use-next-themes';
 
 import UserDate from '../../../components/User/UserDate';
+import { useSWRxGrowiThemeSetting } from '../../../stores/admin/customize';
+
 
 import styles from './RevisionDiff.module.scss';
 
 import 'diff2html/bundles/css/diff2html.min.css';
 
+const moduleClass = styles['revision-diff-container'];
+
 type RevisioinDiffProps = {
-  currentRevision: IRevisionHasPageId,
-  previousRevision: IRevisionHasPageId,
+  currentRevision: IRevisionHasId,
+  previousRevision: IRevisionHasId,
   revisionDiffOpened: boolean,
   currentPageId: string,
   currentPagePath: string,
@@ -34,10 +41,26 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
     currentRevision, previousRevision, revisionDiffOpened, currentPageId, currentPagePath, onClose,
   } = props;
 
-  const { theme } = useNextThemes();
+  const { theme: userTheme } = useNextThemes();
+  const { data: growiTheme } = useSWRxGrowiThemeSetting();
 
   const colorScheme: ColorSchemeType = useMemo(() => {
-    switch (theme) {
+    if (growiTheme == null) {
+      return ColorSchemeType.AUTO;
+    }
+
+    const growiThemeSchemeType = growiTheme.pluginThemesMetadatas[0]?.schemeType
+        ?? PresetThemesMetadatas.find(theme => theme.name === growiTheme.currentTheme)?.schemeType;
+
+    switch (growiThemeSchemeType) {
+      case GrowiThemeSchemeType.DARK:
+        return ColorSchemeType.DARK;
+      case GrowiThemeSchemeType.LIGHT:
+        return ColorSchemeType.LIGHT;
+      default:
+        // growiThemeSchemeType === GrowiThemeSchemeType.BOTH
+    }
+    switch (userTheme) {
       case Themes.DARK:
         return ColorSchemeType.DARK;
       case Themes.LIGHT:
@@ -45,7 +68,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
       default:
         return ColorSchemeType.AUTO;
     }
-  }, [theme]);
+  }, [growiTheme, userTheme]);
 
   const previousText = (currentRevision._id === previousRevision._id) ? '' : previousRevision.body;
 
@@ -66,7 +89,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
   const diffView = { __html: diffViewHTML };
 
   return (
-    <div className={`${styles['revision-diff-container']}`}>
+    <div className={moduleClass}>
       <div className="container">
         <div className="row mt-2">
           <div className="col px-0 py-2">

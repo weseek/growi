@@ -2,7 +2,7 @@ import React, {
   useEffect, useRef, useState,
 } from 'react';
 
-import type { IRevisionHasPageId } from '@growi/core';
+import type { IRevisionHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { useSWRxInfinitePageRevisions } from '~/stores/page';
@@ -48,8 +48,8 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
     || (isValidating && data != null && typeof data[size - 1] === 'undefined');
   const isReachingEnd = (revisionPerPage === 0) || !!(data != null && data[data.length - 1]?.revisions.length < REVISIONS_PER_PAGE);
 
-  const [sourceRevision, setSourceRevision] = useState<IRevisionHasPageId>();
-  const [targetRevision, setTargetRevision] = useState<IRevisionHasPageId>();
+  const [sourceRevision, setSourceRevision] = useState<IRevisionHasId>();
+  const [targetRevision, setTargetRevision] = useState<IRevisionHasId>();
 
   const tbodyRef = useRef<HTMLTableSectionElement>(null);
 
@@ -96,7 +96,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
   }, [isLoadingMore, isReachingEnd, setSize, size]);
 
 
-  const renderRow = (revision: IRevisionHasPageId, previousRevision: IRevisionHasPageId, latestRevision: IRevisionHasPageId,
+  const renderRow = (revision: IRevisionHasId, previousRevision: IRevisionHasId, latestRevision: IRevisionHasId,
       isOldestRevision: boolean, hasDiff: boolean) => {
 
     const revisionId = revision._id;

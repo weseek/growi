@@ -96,6 +96,10 @@ export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse
   return useContextSWR<boolean, Error>('isSearchServiceReachable', initialData);
 };
 
+export const useElasticsearchMaxBodyLengthToIndex = (initialData?: number) : SWRResponse<number, Error> => {
+  return useContextSWR('elasticsearchMaxBodyLengthToIndex', initialData);
+};
+
 export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, any> => {
   return useContextSWR('isMailerSetup', initialData);
 };

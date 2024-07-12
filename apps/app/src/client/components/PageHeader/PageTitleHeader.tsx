@@ -94,8 +94,8 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   useEffect(() => {
     setEditedPagePath(currentPagePath);
-    if (isUntitledPage && editorMode === EditorMode.Editor) {
-      setRenameInputShown(true);
+    if (isUntitledPage != null) {
+      setRenameInputShown(isUntitledPage && editorMode === EditorMode.Editor);
     }
   }, [currentPage._id, currentPagePath, editorMode, isUntitledPage]);
 
