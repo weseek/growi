@@ -7,7 +7,6 @@ import mongoose from 'mongoose';
 
 import type Crowi from '~/server/crowi';
 import type { PageModel } from '~/server/models/page';
-import { getYjsService } from '~/server/service/yjs/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -46,8 +45,7 @@ export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionB
       }
 
       try {
-        const yjsService = getYjsService();
-        await yjsService.syncWithTheLatestRevisionForce(pageId);
+        await crowi.pageService.syncLatestRevisionBodyToYjsDraft(pageId);
         return res.apiv3({ });
       }
       catch (err) {
