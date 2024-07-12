@@ -7,34 +7,32 @@ import path from 'node:path';
 
 import { isHidden } from 'is-hidden';
 import { remark } from 'remark';
-import test from 'tape';
 import { readSync } from 'to-vfile';
 import { unified } from 'unified';
+import { describe, it, expect } from 'vitest';
 
 import { remarkGrowiDirectivePlugin } from '../src/remark-growi-directive.js';
 
-test('directive()', (t) => {
-  t.doesNotThrow(() => {
-    remark().use(remarkGrowiDirectivePlugin).freeze();
-  }, 'should not throw if not passed options');
+describe('directive()', () => {
+  it('should not throw if not passed options', () => {
+    expect(() => {
+      remark().use(remarkGrowiDirectivePlugin).freeze();
+    }).not.toThrow();
+  });
 
-  t.doesNotThrow(() => {
-    unified().use(remarkGrowiDirectivePlugin).freeze();
-  }, 'should not throw if without parser or compiler');
-
-  t.end();
+  it('should not throw if without parser or compiler', () => {
+    expect(() => {
+      unified().use(remarkGrowiDirectivePlugin).freeze();
+    }).not.toThrow();
+  });
 });
 
-test('fixtures', (t) => {
+describe('fixtures', () => {
   const base = path.join('test', 'fixtures');
   const entries = fs.readdirSync(base).filter(d => !isHidden(d));
 
-  t.plan(entries.length);
-
-  let index = -1;
-  while (++index < entries.length) {
-    const fixture = entries[index];
-    t.test(fixture, (st) => {
+  entries.forEach((fixture) => {
+    it(`should handle ${fixture}`, () => {
       const file = readSync(path.join(base, fixture, 'input.md'));
       const input = String(file);
       const outputPath = path.join(base, fixture, 'output.md');
@@ -62,10 +60,8 @@ test('fixtures', (t) => {
         output = input;
       }
 
-      st.deepEqual(actual, expected, 'tree');
-      st.equal(String(proc.processSync(file)), output, 'process');
-
-      st.end();
+      expect(actual).toEqual(expected);
+      expect(String(proc.processSync(file))).toBe(output);
     });
-  }
+  });
 });
