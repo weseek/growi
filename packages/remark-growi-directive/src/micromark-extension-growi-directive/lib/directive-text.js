@@ -5,8 +5,7 @@
  * @typedef {import('micromark-util-types').State} State
  */
 
-import { codes } from 'micromark-util-symbol/codes.js';
-import { types } from 'micromark-util-symbol/types.js';
+import { codes, types } from 'micromark-util-symbol';
 import { ok as assert } from 'uvu/assert';
 
 import { factoryAttributes } from './factory-attributes.js';

@@ -6,17 +6,15 @@
  * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
  * @typedef {import('mdast-util-from-markdown').CompileContext} CompileContext
  * @typedef {import('mdast-util-from-markdown').Token} Token
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Handle} ToMarkdownHandle
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Context} Context
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Options} ToMarkdownExtension
+ * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
+ * @typedef {import('mdast-util-to-markdown').Context} Context
+ * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
+ *
  * @typedef {import('./complex-types').LeafDirective} LeafDirective
  * @typedef {import('./complex-types').TextDirective} TextDirective
  * @typedef {LeafDirective|TextDirective} Directive
  */
 
-import { checkQuote } from 'mdast-util-to-markdown/lib/util/check-quote.js';
-import { containerPhrasing } from 'mdast-util-to-markdown/lib/util/container-phrasing.js';
-import { track } from 'mdast-util-to-markdown/lib/util/track.js';
 import { parseEntities } from 'parse-entities';
 import { stringifyEntitiesLight } from 'stringify-entities';
 
@@ -110,14 +108,14 @@ function exitName(token) {
 
 /** @type {FromMarkdownHandle} */
 function enterAttributes() {
-  this.setData('directiveAttributes', []);
+  this.data.directiveAttributes = [];
   this.buffer(); // Capture EOLs
 }
 
 /** @type {FromMarkdownHandle} */
 function exitAttributeValue(token) {
   const list = /** @type {Array.<[string, string]>} */ (
-    this.getData('directiveAttributes')
+    this.data.directiveAttributes
   );
   list[list.length - 1][1] = parseEntities(this.sliceSerialize(token));
 }
@@ -125,7 +123,7 @@ function exitAttributeValue(token) {
 /** @type {FromMarkdownHandle} */
 function exitAttributeName(token) {
   const list = /** @type {Array.<[string, string]>} */ (
-    this.getData('directiveAttributes')
+    this.data.directiveAttributes
   );
 
   // Attribute names in CommonMark are significantly limited, so character
@@ -136,7 +134,7 @@ function exitAttributeName(token) {
 /** @type {FromMarkdownHandle} */
 function exitAttributes() {
   const list = /** @type {Array.<[string, string]>} */ (
-    this.getData('directiveAttributes')
+    this.data.directiveAttributes
   );
   /** @type {Record.<string, string>} */
   const cleaned = {};
@@ -148,7 +146,7 @@ function exitAttributes() {
     cleaned[attribute[0]] = attribute[1];
   }
 
-  this.setData('directiveAttributes');
+  this.data.directiveAttributes = [];
   this.resume(); // Drop EOLs
   const node = /** @type {Directive} */ (this.stack[this.stack.length - 1]);
   node.attributes = cleaned;
@@ -164,7 +162,7 @@ function exit(token) {
  * @param {Directive} node
  */
 function handleDirective(node, _, context, safeOptions) {
-  const tracker = track(safeOptions);
+  const tracker = context.createTracker(safeOptions);
   const sequence = fence(node);
   const exit = context.enter(node.type);
   let value = tracker.move(sequence + (node.name || ''));
@@ -176,7 +174,7 @@ function handleDirective(node, _, context, safeOptions) {
     const subexit = context.enter(`${node.type}Label`);
     value += tracker.move('[');
     value += tracker.move(
-      containerPhrasing(label, context, {
+      context.containerPhrasing(label, {
         ...tracker.current(),
         before: value,
         after: ']',
@@ -204,7 +202,7 @@ function peekDirective() {
  * @returns {string}
  */
 function attributes(node, context) {
-  const quote = checkQuote(context);
+  const quote = context.options.quote || '"';
   const subset = node.type === DirectiveType.Text ? [quote] : [quote, '\n', '\r'];
   const attrs = node.attributes || {};
   /** @type {Array.<string>} */

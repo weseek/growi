@@ -87,14 +87,15 @@ test('markdown -> mdast', (t) => {
     'should support directives (leaf)',
   );
 
+  let tree = fromMarkdown('x $a[b *c*\nd]', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown],
+  });
+
+  removePosition(tree, { force: true });
+
   t.deepEqual(
-    removePosition(
-      fromMarkdown('x $a[b *c*\nd]', {
-        extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown],
-      }),
-      true,
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -119,22 +120,15 @@ test('markdown -> mdast', (t) => {
     'should support content in a label',
   );
 
-  const hoge = removePosition(
-    fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
-      extensions: [directive()],
-      mdastExtensions: [directiveFromMarkdown],
-    }),
-    true,
-  );
+  tree = fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown],
+  });
+
+  removePosition(tree, { force: true });
 
   t.deepEqual(
-    removePosition(
-      fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
-        extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown],
-      }),
-      true,
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -157,14 +151,15 @@ test('markdown -> mdast', (t) => {
     'should support attributes',
   );
 
+  tree = fromMarkdown('$a(b\nc="d\ne")', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown],
+  });
+
+  removePosition(tree, { force: true });
+
   t.deepEqual(
-    removePosition(
-      fromMarkdown('$a(b\nc="d\ne")', {
-        extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown],
-      }),
-      true,
-    ),
+    tree,
     {
       type: 'root',
       children: [
