@@ -68,7 +68,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     const origin = req.body.origin;
     if (origin === Origin.View || origin === undefined) {
       const yjsService = getYjsService();
-      await yjsService.handleYDocUpdate(req.body.pageId, req.body.body);
+      await yjsService.syncWithTheLatestRevisionForce(req.body.pageId);
     }
 
     // persist activity
