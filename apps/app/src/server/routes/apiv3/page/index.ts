@@ -3,6 +3,7 @@ import path from 'path';
 import type { IPage } from '@growi/core';
 import {
   AllSubscriptionStatusType, PageGrant, SubscriptionStatusType,
+  getIdForRef,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
@@ -593,7 +594,8 @@ module.exports = (crowi) => {
     } = page;
     let isGrantNormalized = false;
     try {
-      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroups, false, false);
+      const grantedUsersId = grantedUsers.map(ref => getIdForRef(ref));
+      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsersId, grantedGroups, false, false);
     }
     catch (err) {
       logger.error('Error occurred while processing isGrantNormalized.', err);
@@ -616,7 +618,7 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
-    const parentPage = await Page.findByIdAndViewer(page.parent, req.user, null, false);
+    const parentPage = await Page.findByIdAndViewer(getIdForRef(page.parent), req.user, null, false);
 
     // user isn't allowed to see parent's grant
     if (parentPage == null) {
