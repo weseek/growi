@@ -32,7 +32,6 @@ export const constructConvertMap = (): ConvertMap => {
     for (const key of Object.keys(model.schema.paths)) {
       convertMap[collectionName][key] = keepOriginal;
     }
-
   });
 
   return convertMap;
