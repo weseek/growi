@@ -1,8 +1,6 @@
-import type { Document, Schema } from 'mongoose';
-
 import type { ImportMode } from './import-mode';
+import type { OverwriteFunction } from './overwrite-function';
 
-export type OverwriteFunction = (value: unknown, ctx: { document: Document, propertyName: string, schema: Schema }) => unknown;
 export type OverwriteParams = { [propertyName: string]: OverwriteFunction | unknown }
 
 export type ImportSettings = {

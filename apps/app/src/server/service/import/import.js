@@ -8,9 +8,7 @@ import path from 'path';
 import { Writable, Transform } from 'stream';
 
 import JSONStream from 'JSONStream';
-import { parseISO } from 'date-fns/parseISO';
 import gc from 'expose-gc/function';
-import isIsoDate from 'is-iso-date';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
@@ -20,7 +18,7 @@ import loggerFactory from '~/utils/logger';
 import CollectionProgressingStatus from '../../models/vo/collection-progressing-status';
 import { createBatchStream } from '../../util/batch-stream';
 
-const { ObjectId } = mongoose.Types;
+import { keepOriginal } from './overwrite-function';
 
 const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 
@@ -45,7 +43,6 @@ export class ImportService {
     this.growiBridgeService = crowi.growiBridgeService;
     this.getFile = this.growiBridgeService.getFile.bind(this);
     this.baseDir = path.join(crowi.tmpDir, 'imports');
-    this.keepOriginal = this.keepOriginal.bind(this);
 
     this.adminEvent = crowi.event('admin');
 
@@ -75,40 +72,9 @@ export class ImportService {
       this.convertMap[collectionName] = {};
 
       for (const key of Object.keys(model.schema.paths)) {
-        this.convertMap[collectionName][key] = this.keepOriginal;
+        this.convertMap[collectionName][key] = keepOriginal;
       }
     }
-  }
-
-  /**
-   * keep original value
-   * automatically convert ObjectId
-   *
-   * @memberOf ImportService
-   * @param {any} value value from imported document
-   * @param {{ document: object, schema: object, propertyName: string }}
-   * @return {any} new value for the document
-   *
-   * @see https://mongoosejs.com/docs/api/schematype.html#schematype_SchemaType-cast
-   */
-  keepOriginal(value, { document, schema, propertyName }) {
-    // Model
-    if (schema != null && schema.path(propertyName) != null) {
-      const schemaType = schema.path(propertyName);
-      return schemaType.cast(value);
-    }
-
-    // _id
-    if (propertyName === '_id' && ObjectId.isValid(value)) {
-      return ObjectId(value);
-    }
-
-    // Date
-    if (isIsoDate(value)) {
-      return parseISO(value);
-    }
-
-    return value;
   }
 
   /**
@@ -460,7 +426,7 @@ export class ImportService {
     if (convertMap == null) {
       // apply keepOriginal to all of properties
       Object.entries(document).forEach(([propertyName, value]) => {
-        _document[propertyName] = this.keepOriginal(value, { document, propertyName });
+        _document[propertyName] = keepOriginal(value, { document, propertyName });
       });
     }
     // Mongoose Model
