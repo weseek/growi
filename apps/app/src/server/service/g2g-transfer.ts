@@ -1,6 +1,7 @@
-import { createReadStream, ReadStream } from 'fs';
+import type { ReadStream } from 'fs';
+import { createReadStream } from 'fs';
 import { basename } from 'path';
-import { Readable } from 'stream';
+import type { Readable } from 'stream';
 
 // eslint-disable-next-line no-restricted-imports
 import rawAxios, { type AxiosRequestConfig } from 'axios';
@@ -11,7 +12,7 @@ import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { generateOverwriteParams } from '~/server/routes/apiv3/import';
-import { type ImportSettings } from '~/server/service/import';
+import { getImportService, type ImportSettings } from '~/server/service/import';
 import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
@@ -603,8 +604,6 @@ export class G2GTransferReceiverService implements Receiver {
       optionsMap: { [key: string]: GrowiArchiveImportOption; },
       operatorUserId: string,
   ): { [key: string]: ImportSettings; } {
-    const { importService } = this.crowi;
-
     const importSettingsMap = {};
     innerFileStats.forEach(({ fileName, collectionName }) => {
       const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
@@ -638,7 +637,9 @@ export class G2GTransferReceiverService implements Receiver {
       importSettingsMap: { [key: string]: ImportSettings; },
       sourceGROWIUploadConfigs: FileUploadConfigs,
   ): Promise<void> {
-    const { configManager, importService, appService } = this.crowi;
+    const { configManager, appService } = this.crowi;
+    const importService = getImportService();
+
     /** whether to keep current file upload configs */
     const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
 

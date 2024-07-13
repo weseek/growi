@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { getImportService } from '~/server/service/import';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -72,7 +73,9 @@ export const generateOverwriteParams = (collectionName, operatorUserId, options)
 };
 
 export default function route(crowi) {
-  const { growiBridgeService, importService, socketIoService } = crowi;
+  const { growiBridgeService, socketIoService } = crowi;
+  const importService = getImportService(crowi);
+
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
