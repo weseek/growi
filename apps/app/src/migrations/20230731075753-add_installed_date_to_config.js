@@ -1,5 +1,5 @@
 // eslint-disable-next-line import/no-named-as-default
-import ConfigModel from '~/server/models/config';
+import { Config } from '~/server/models/config';
 import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -12,7 +12,6 @@ module.exports = {
   async up() {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
-    const Config = getModelSafely('Config') || ConfigModel;
     const User = getModelSafely('User') || require('~/server/models/user')();
 
     const appInstalled = await Config.findOne({ key: 'app:installed' });
