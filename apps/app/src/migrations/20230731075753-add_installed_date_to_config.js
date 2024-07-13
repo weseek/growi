@@ -38,7 +38,6 @@ module.exports = {
   async down() {
     logger.info('Rollback migration');
     mongoose.connect(getMongoUri(), mongoOptions);
-    const Config = getModelSafely('Config') || ConfigModel;
 
     const appInstalled = await Config.findOne({ key: 'app:installed' });
     if (appInstalled != null) {
