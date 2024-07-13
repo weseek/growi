@@ -26,6 +26,7 @@ import { configManager as configManagerSingletonInstance } from '../service/conf
 import { instanciate as instanciateExternalAccountService } from '../service/external-account';
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
+import { initializeImportService } from '../service/import';
 import { InstallerService } from '../service/installer';
 import { normalizeData } from '../service/normalize-data';
 import PageService from '../service/page';
@@ -86,7 +87,6 @@ class Crowi {
     this.restQiitaAPIService = null;
     this.growiBridgeService = null;
     this.exportService = null;
-    this.importService = null;
     this.pluginService = null;
     this.searchService = null;
     this.socketIoService = null;
@@ -694,10 +694,7 @@ Crowi.prototype.setupExport = async function() {
 };
 
 Crowi.prototype.setupImport = async function() {
-  const ImportService = require('../service/import');
-  if (this.importService == null) {
-    this.importService = new ImportService(this);
-  }
+  initializeImportService(this);
 };
 
 Crowi.prototype.setupGrowiPluginService = async function() {
