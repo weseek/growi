@@ -1,4 +1,4 @@
-const { serializeUserSecurely } = require('./user-serializer');
+import { serializeUserSecurely } from './user-serializer';
 
 function serializeInsecureUserAttributes(userGroupRelation) {
   if (userGroupRelation.relatedUser != null && userGroupRelation.relatedUser._id != null) {

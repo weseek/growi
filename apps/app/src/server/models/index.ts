@@ -1,15 +1,20 @@
-import GlobalNotificationSettingFactory from './GlobalNotificationSetting';
+import GlobalNotificationSetting from './GlobalNotificationSetting';
+import GlobalNotificationMailSetting from './GlobalNotificationSetting/GlobalNotificationMailSetting';
+import GlobalNotificationSlackSetting from './GlobalNotificationSetting/GlobalNotificationSlackSetting';
 import Page from './page';
+import PageTagRelation from './page-tag-relation';
+import SlackAppIntegration from './slack-app-integration';
+import User from './user';
 
 export const modelsDependsOnCrowi = {
   Page,
-  PageTagRelation: require('./page-tag-relation'),
-  User: require('./user'),
+  PageTagRelation,
+  User,
   Bookmark: require('./bookmark'),
-  GlobalNotificationSetting: GlobalNotificationSettingFactory,
-  GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),
-  GlobalNotificationSlackSetting: require('./GlobalNotificationSetting/GlobalNotificationSlackSetting'),
-  SlackAppIntegration: require('./slack-app-integration'),
+  GlobalNotificationSetting,
+  GlobalNotificationMailSetting,
+  GlobalNotificationSlackSetting,
+  SlackAppIntegration,
 };
 
 // setup models that independent from crowi

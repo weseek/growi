@@ -1,4 +1,4 @@
-const { serializeUserSecurely } = require('./user-serializer');
+import { serializeUserSecurely } from './user-serializer';
 
 function serializeInsecureUserAttributes(revision) {
   if (revision.author != null && revision.author._id != null) {

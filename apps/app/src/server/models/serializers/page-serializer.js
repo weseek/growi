@@ -1,4 +1,4 @@
-const { serializeUserSecurely } = require('./user-serializer');
+import { serializeUserSecurely } from './user-serializer';
 
 function depopulate(page, attributeName) {
   // revert the ObjectID

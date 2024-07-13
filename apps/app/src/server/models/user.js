@@ -7,6 +7,7 @@ import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
 
 import { Attachment } from './attachment';
+import { omitInsecureAttributes } from './serializers/user-serializer';
 
 
 const crypto = require('crypto');
@@ -16,8 +17,6 @@ const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
-
-const { omitInsecureAttributes } = require('./serializers/user-serializer');
 
 const logger = loggerFactory('growi:models:user');
 
