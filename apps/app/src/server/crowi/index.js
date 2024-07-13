@@ -100,6 +100,7 @@ class Crowi {
 
     this.tokens = null;
 
+    /** @type {{ [modelName: string]: mongoose.Model }} */
     this.models = {};
 
     this.env = process.env;

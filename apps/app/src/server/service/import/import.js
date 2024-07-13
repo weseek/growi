@@ -18,6 +18,7 @@ import loggerFactory from '~/utils/logger';
 import CollectionProgressingStatus from '../../models/vo/collection-progressing-status';
 import { createBatchStream } from '../../util/batch-stream';
 
+import { constructConvertMap } from './construct-convert-map';
 import { keepOriginal } from './overwrite-function';
 
 const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
@@ -46,35 +47,10 @@ export class ImportService {
 
     this.adminEvent = crowi.event('admin');
 
-    // { pages: { _id: ..., path: ..., ...}, users: { _id: ..., username: ..., }, ... }
-    this.convertMap = {};
-    this.initConvertMap(crowi.models);
+    /** @type {import('./construct-convert-map').ConvertMap} */
+    this.convertMap = constructConvertMap(crowi);
 
     this.currentProgressingStatus = null;
-  }
-
-  /**
-   * initialize convert map. set keepOriginal as default
-   *
-   * @memberOf ImportService
-   * @param {object} models from models/index.js
-   */
-  initConvertMap(models) {
-    // by default, original value is used for imported documents
-    for (const model of Object.values(models)) {
-      if (model.collection == null) {
-        continue;
-      }
-
-      const collectionName = model.collection.name;
-
-      console.log({ collectionName });
-      this.convertMap[collectionName] = {};
-
-      for (const key of Object.keys(model.schema.paths)) {
-        this.convertMap[collectionName][key] = keepOriginal;
-      }
-    }
   }
 
   /**
