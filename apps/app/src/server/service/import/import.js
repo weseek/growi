@@ -3,23 +3,22 @@
  * @typedef {import("@types/unzip-stream").Entry} Entry
  */
 
+import fs from 'fs';
+import path from 'path';
+import { Writable, Transform } from 'stream';
+
+import JSONStream from 'JSONStream';
 import { parseISO } from 'date-fns/parseISO';
 import gc from 'expose-gc/function';
+import isIsoDate from 'is-iso-date';
+import mongoose from 'mongoose';
+import streamToPromise from 'stream-to-promise';
+import unzipStream from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
 
-const fs = require('fs');
-const path = require('path');
-const { Writable, Transform } = require('stream');
-
-const JSONStream = require('JSONStream');
-const isIsoDate = require('is-iso-date');
-const mongoose = require('mongoose');
-const streamToPromise = require('stream-to-promise');
-const unzipStream = require('unzip-stream');
-
-const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
-const { createBatchStream } = require('../util/batch-stream');
+import CollectionProgressingStatus from '../../models/vo/collection-progressing-status';
+import { createBatchStream } from '../../util/batch-stream';
 
 const { ObjectId } = mongoose.Types;
 
@@ -28,16 +27,6 @@ const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-
 
 const BULK_IMPORT_SIZE = 100;
 
-
-export class ImportSettings {
-
-  constructor(mode) {
-    this.mode = mode || 'insert';
-    this.jsonFileName = null;
-    this.overwriteParams = null;
-  }
-
-}
 
 class ImportingCollectionError extends Error {
 
@@ -49,7 +38,7 @@ class ImportingCollectionError extends Error {
 }
 
 
-class ImportService {
+export class ImportService {
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -68,14 +57,6 @@ class ImportService {
   }
 
   /**
-   * generate ImportSettings instance
-   * @param {string} mode bulk operation mode (insert | upsert | flushAndInsert)
-   */
-  generateImportSettings(mode) {
-    return new ImportSettings(mode);
-  }
-
-  /**
    * initialize convert map. set keepOriginal as default
    *
    * @memberOf ImportService
@@ -89,6 +70,8 @@ class ImportService {
       }
 
       const collectionName = model.collection.name;
+
+      console.log({ collectionName });
       this.convertMap[collectionName] = {};
 
       for (const key of Object.keys(model.schema.paths)) {
@@ -181,8 +164,9 @@ class ImportService {
   /**
    * import collections from json
    *
-   * @param {string} collections MongoDB collection name
-   * @param {array} importSettingsMap key: collection name, value: ImportSettings instance
+   * @param {string[]} collections MongoDB collection name
+   * @param {{ [collectionName: string]: ImportSettings }} importSettingsMap key: collection name, value: ImportSettings instance
+   * @return {Promise<void>}
    */
   async import(collections, importSettingsMap) {
     // init status object
@@ -537,5 +521,3 @@ class ImportService {
   }
 
 }
-
-module.exports = ImportService;
