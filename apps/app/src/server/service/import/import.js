@@ -19,6 +19,7 @@ import CollectionProgressingStatus from '../../models/vo/collection-progressing-
 import { createBatchStream } from '../../util/batch-stream';
 
 import { constructConvertMap } from './construct-convert-map';
+import { getModelFromCollectionName } from './get-model-from-collection-name';
 import { keepOriginal } from './overwrite-function';
 
 const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
@@ -392,7 +393,7 @@ export class ImportService {
    * @return {object} document to be persisted
    */
   convertDocuments(collectionName, document, overwriteParams) {
-    const Model = this.growiBridgeService.getModelFromCollectionName(collectionName);
+    const Model = getModelFromCollectionName(collectionName);
     const schema = (Model != null) ? Model.schema : null;
     const convertMap = this.convertMap[collectionName];
 

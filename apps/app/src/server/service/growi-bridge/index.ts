@@ -1,4 +1,3 @@
-import { Model } from 'mongoose';
 import unzipStream, { type Entry } from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
@@ -50,21 +49,6 @@ class GrowiBridgeService {
    */
   getMetaFileName() {
     return this.metaFileName;
-  }
-
-  /**
-   * get a model from collection name
-   *
-   * @memberOf GrowiBridgeService
-   * @param {string} collectionName collection name
-   * @return {object} instance of mongoose model
-   */
-  getModelFromCollectionName(collectionName) {
-    const Model = Object.values(this.crowi.models).find((m: Model<unknown>) => {
-      return m.collection != null && m.collection.name === collectionName;
-    });
-
-    return Model;
   }
 
   /**
