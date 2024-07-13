@@ -18,7 +18,6 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import UserEvent from '../events/user';
-import { modelsDependsOnCrowi } from '../models';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
@@ -38,7 +37,9 @@ import { SlackIntegrationService } from '../service/slack-integration';
 import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
 import { initializeYjsService } from '../service/yjs';
-import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
+import { getModelSafely, getMongoUri, mongoOptions } from '../util/mongoose-utils';
+
+import { setupModels } from './setup-models';
 
 
 const logger = loggerFactory('growi:crowi');
@@ -122,7 +123,7 @@ class Crowi {
 
 Crowi.prototype.init = async function() {
   await this.setupDatabase();
-  await this.setupModels();
+  this.models = setupModels(this);
   await this.setupConfigManager();
   await this.setupSessionConfig();
   this.setupCron();
@@ -210,14 +211,13 @@ Crowi.prototype.getEnv = function() {
   return this.env;
 };
 
-// getter/setter of model instance
-//
-Crowi.prototype.model = function(name, model) {
-  if (model != null) {
-    this.models[name] = model;
-  }
-
-  return this.models[name];
+/**
+ * Wrapper function of mongoose.model()
+ * @param {string} modelName
+ * @returns {mongoose.Model}
+ */
+Crowi.prototype.model = function(modelName) {
+  return getModelSafely(modelName);
 };
 
 // getter/setter of event instance
@@ -306,20 +306,6 @@ Crowi.prototype.setupSocketIoService = async function() {
   if (this.socketIoService == null) {
     this.socketIoService = new SocketIoService(this);
   }
-};
-
-Crowi.prototype.setupModels = async function() {
-  Object.keys(modelsDependsOnCrowi).forEach((key) => {
-    const factory = modelsDependsOnCrowi[key];
-
-    if (!(factory instanceof Function)) {
-      logger.warn(`modelsDependsOnCrowi['${key}'] is not a function. skipped.`);
-      return;
-    }
-
-    return this.model(key, modelsDependsOnCrowi[key](this));
-  });
-
 };
 
 Crowi.prototype.setupCron = function() {
