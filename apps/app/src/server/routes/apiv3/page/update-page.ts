@@ -13,10 +13,9 @@ import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/a
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
-import {
-  GlobalNotificationSettingEvent, serializePageSecurely, serializeRevisionSecurely, serializeUserSecurely,
-} from '~/server/models';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
+import { serializePageSecurely, serializeRevisionSecurely, serializeUserSecurely } from '~/server/models/serializers';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { getYjsService } from '~/server/service/yjs';
 import { generalXssFilter } from '~/services/general-xss-filter';

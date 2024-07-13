@@ -3,7 +3,7 @@ import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
 import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
-import { GlobalNotificationSettingEvent } from '../models';
+import { GlobalNotificationSettingEvent } from '../models/GlobalNotificationSetting';
 import { preNotifyService } from '../service/pre-notify';
 
 /**

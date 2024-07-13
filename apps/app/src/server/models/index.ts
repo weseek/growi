@@ -1,16 +1,15 @@
 import GlobalNotificationSetting from './GlobalNotificationSetting';
 import GlobalNotificationMailSetting from './GlobalNotificationSetting/GlobalNotificationMailSetting';
 import GlobalNotificationSlackSetting from './GlobalNotificationSetting/GlobalNotificationSlackSetting';
+import Bookmark from './bookmark';
 import Page from './page';
-import PageTagRelation from './page-tag-relation';
 import SlackAppIntegration from './slack-app-integration';
 import User from './user';
 
 export const modelsDependsOnCrowi = {
   Page,
-  PageTagRelation,
   User,
-  Bookmark: require('./bookmark'),
+  Bookmark,
   GlobalNotificationSetting,
   GlobalNotificationMailSetting,
   GlobalNotificationSlackSetting,
@@ -26,7 +25,3 @@ export * as ShareLink from './share-link';
 export * as Tag from './tag';
 export * as UserGroup from './user-group';
 export * as PageTagRelation from './page-tag-relation';
-
-export * from './serializers';
-
-export * from './GlobalNotificationSetting';

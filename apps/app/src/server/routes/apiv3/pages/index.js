@@ -8,7 +8,7 @@ import { body, query } from 'express-validator';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import { GlobalNotificationSettingEvent } from '~/server/models';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';

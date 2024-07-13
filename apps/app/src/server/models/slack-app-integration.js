@@ -53,8 +53,10 @@ class SlackAppIntegration {
 
 }
 
-module.exports = function(crowi) {
+const factory = (crowi) => {
   SlackAppIntegration.crowi = crowi;
   schema.loadClass(SlackAppIntegration);
   return mongoose.model('SlackAppIntegration', schema);
 };
+
+export default factory;

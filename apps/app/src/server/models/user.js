@@ -20,7 +20,7 @@ const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const logger = loggerFactory('growi:models:user');
 
-module.exports = function(crowi) {
+const factory = (crowi) => {
   const STATUS_REGISTERED = 1;
   const STATUS_ACTIVE = 2;
   const STATUS_SUSPENDED = 3;
@@ -785,3 +785,5 @@ module.exports = function(crowi) {
 
   return mongoose.model('User', userSchema);
 };
+
+export default factory;

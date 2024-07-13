@@ -4,7 +4,7 @@ import type { Response } from 'express';
 
 import type { ICheckLimitResult } from '~/interfaces/attachment';
 import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachment';
-import { Attachment, type IAttachmentDocument } from '~/server/models';
+import { Attachment, type IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';

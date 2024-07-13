@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 import { createModel } from 'mongoose-gridfs';
 
 import type { RespondOptions } from '~/server/interfaces/attachment';
-import type { IAttachmentDocument } from '~/server/models';
+import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';

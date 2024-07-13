@@ -1,11 +1,14 @@
-import { ClientSecretCredential, TokenCredential } from '@azure/identity';
-import {
-  generateBlobSASQueryParameters,
-  BlobServiceClient,
+import type { TokenCredential } from '@azure/identity';
+import { ClientSecretCredential } from '@azure/identity';
+import type {
   BlobClient,
   BlockBlobClient,
   BlobDeleteOptions,
   ContainerClient,
+} from '@azure/storage-blob';
+import {
+  generateBlobSASQueryParameters,
+  BlobServiceClient,
   ContainerSASPermissions,
   SASProtocol,
   type BlobDeleteIfExistsResponse,
@@ -14,7 +17,7 @@ import {
 } from '@azure/storage-blob';
 
 import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
-import type { IAttachmentDocument } from '~/server/models';
+import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
