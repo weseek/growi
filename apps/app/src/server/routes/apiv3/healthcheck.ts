@@ -1,14 +1,17 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import express from 'express';
+import nocache from 'nocache';
 
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:routes:apiv3:healthcheck'); // eslint-disable-line no-unused-vars
+import { Config } from '../../models/config';
 
-const express = require('express');
+import type { ApiV3Response } from './interfaces/apiv3-response';
+
+
+const logger = loggerFactory('growi:routes:apiv3:healthcheck');
 
 const router = express.Router();
-
-const noCache = require('nocache');
 
 /**
  * @swagger
@@ -52,7 +55,6 @@ module.exports = (crowi) => {
 
   async function checkMongo(errors, info) {
     try {
-      const Config = crowi.models.Config;
       await Config.findOne({});
 
       info.mongo = 'OK';
@@ -123,8 +125,11 @@ module.exports = (crowi) => {
    *                  info:
    *                    $ref: '#/components/schemas/HealthcheckInfo'
    */
-  router.get('/', noCache(), async(req, res) => {
-    let checkServices = req.query.checkServices || [];
+  router.get('/', nocache(), async(req, res: ApiV3Response) => {
+    let checkServices = (() => {
+      if (req.query.checkServices == null) return [];
+      return Array.isArray(req.query.checkServices) ? req.query.checkServices : [req.query.checkServices];
+    })();
     let isStrictly = req.query.strictly != null;
 
     // for backward compatibility
