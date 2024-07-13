@@ -39,7 +39,7 @@ import { UserNotificationService } from '../service/user-notification';
 import { initializeYjsService } from '../service/yjs';
 import { getModelSafely, getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
-import { setupModels } from './setup-models';
+import { setupModelsDependentOnCrowi } from './setup-models';
 
 
 const logger = loggerFactory('growi:crowi');
@@ -101,7 +101,7 @@ class Crowi {
 
     this.tokens = null;
 
-    /** @type {{ [modelName: string]: mongoose.Model }} */
+    /** @type {import('./setup-models').ModelsMapDependentOnCrowi} */
     this.models = {};
 
     this.env = process.env;
@@ -123,7 +123,7 @@ class Crowi {
 
 Crowi.prototype.init = async function() {
   await this.setupDatabase();
-  this.models = setupModels(this);
+  this.models = await setupModelsDependentOnCrowi(this);
   await this.setupConfigManager();
   await this.setupSessionConfig();
   this.setupCron();

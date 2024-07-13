@@ -3,7 +3,7 @@ import type { EventEmitter } from 'events';
 import { mock } from 'vitest-mock-extended';
 
 import type Crowi from '~/server/crowi';
-import { setupModels } from '~/server/crowi/setup-models';
+import { setupIndependentModels, setupModelsDependentOnCrowi } from '~/server/crowi/setup-models';
 
 import { constructConvertMap } from './construct-convert-map';
 
@@ -18,7 +18,8 @@ describe('constructConvertMap', () => {
       event: (name: string) => events[name],
     });
 
-    setupModels(crowiMock);
+    await setupModelsDependentOnCrowi(crowiMock);
+    await setupIndependentModels();
   });
 
   test('should return convert map', () => {
@@ -29,6 +30,6 @@ describe('constructConvertMap', () => {
 
     // assert
     expect(result).not.toBeNull();
-    expect(Object.keys(result).length).toEqual(17);
+    expect(Object.keys(result).length).toEqual(36);
   });
 });
