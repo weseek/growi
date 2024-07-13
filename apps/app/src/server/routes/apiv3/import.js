@@ -56,6 +56,7 @@ const router = express.Router();
  * @param {string} collectionName
  * @param {string} operatorUserId Operator user id
  * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
+ * @return {import('~/server/service/import').OverwriteParams}
  */
 export const generateOverwriteParams = (collectionName, operatorUserId, options) => {
   switch (collectionName) {
@@ -281,11 +282,12 @@ export default function route(crowi) {
       const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
 
       // generate options
-      const importSettings = importService.generateImportSettings(options.mode);
-      importSettings.jsonFileName = fileName;
-
-      // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user._id, options);
+      /** @type {import('~/server/service/import').ImportSettings} */
+      const importSettings = {
+        mode: options.mode,
+        jsonFileName: fileName,
+        overwriteParams: generateOverwriteParams(collectionName, req.user._id, options),
+      };
 
       importSettingsMap[collectionName] = importSettings;
     });

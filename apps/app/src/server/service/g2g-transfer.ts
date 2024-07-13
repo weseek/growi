@@ -622,9 +622,11 @@ export class G2GTransferReceiverService implements Receiver {
         throw new Error('`attachmentFiles.files` must not be transferred. Please omit it from request body `collections`.');
       }
 
-      const importSettings = importService.generateImportSettings(options.mode);
-      importSettings.jsonFileName = fileName;
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
+      const importSettings: ImportSettings = {
+        mode: options.mode,
+        jsonFileName: fileName,
+        overwriteParams: generateOverwriteParams(collectionName, operatorUserId, options),
+      };
       importSettingsMap[collectionName] = importSettings;
     });
 
