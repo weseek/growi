@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import getPageModel from '~/server/models/page';
+import { Revision } from '~/server/models/revision';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
@@ -18,7 +19,6 @@ module.exports = {
   async up(db, client) {
     mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
-    const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
     const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, path: 1 }).cursor({ batch_size: LIMIT });
     const batchStrem = createBatchStream(LIMIT);
@@ -69,7 +69,6 @@ module.exports = {
   async down(db, client) {
     mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
-    const Revision = getModelSafely('Revision') || require('~/server/models/revision')();
 
     const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, path: 1 }).cursor({ batch_size: LIMIT });
     const batchStrem = createBatchStream(LIMIT);

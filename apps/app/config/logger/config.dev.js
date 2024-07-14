@@ -17,6 +17,8 @@ module.exports = {
   'growi:middleware:safe-redirect': 'debug',
   'growi:service:PassportService': 'debug',
   'growi:service:s2s-messaging:*': 'debug',
+  'growi:service:yjs': 'debug',
+  'growi:service:yjs:*': 'debug',
   // 'growi:service:socket-io': 'debug',
   // 'growi:service:ConfigManager': 'debug',
   // 'growi:service:mail': 'debug',

@@ -93,11 +93,11 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const _isBtnDisabled = isCreating || isBtnDisabled;
 
   const circleColor = useMemo(() => {
-    if (currentPageYjsData?.awarenessStateSize != null && currentPageYjsData.awarenessStateSize > 0) {
+    if ((currentPageYjsData?.awarenessStateSize ?? 0) > 0) {
       return 'bg-primary';
     }
 
-    if (currentPageYjsData?.hasRevisionBodyDiff != null && currentPageYjsData.hasRevisionBodyDiff) {
+    if (currentPageYjsData?.hasYdocsNewerThanLatestRevision ?? false) {
       return 'bg-secondary';
     }
   }, [currentPageYjsData]);

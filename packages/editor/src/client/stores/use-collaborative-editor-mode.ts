@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 
 import { keymap } from '@codemirror/view';
-import { GlobalSocketEventName, type IUserHasId } from '@growi/core/dist/interfaces';
-import { useGlobalSocket, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
+import type { IUserHasId } from '@growi/core/dist/interfaces';
+import { useGlobalSocket } from '@growi/core/dist/swr';
 import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next';
 import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
@@ -44,9 +44,6 @@ export const useCollaborativeEditorMode = (
     // so only awareness is destroyed here
     provider?.awareness.destroy();
 
-    // TODO: catch ydoc:sync:error GlobalSocketEventName.YDocSyncError
-    socket?.off(GlobalSocketEventName.YDocSync);
-
     setCPageId(pageId);
 
     // reset editors
@@ -70,15 +67,18 @@ export const useCollaborativeEditorMode = (
 
   // Setup provider
   useEffect(() => {
-    if (provider != null || ydoc == null || socket == null || onEditorsUpdated == null) {
+    if (provider != null || pageId == null || ydoc == null || socket == null || onEditorsUpdated == null) {
       return;
     }
 
     const socketIOProvider = new SocketIOProvider(
-      GLOBAL_SOCKET_NS,
-      `yjs/${pageId}`,
+      '/',
+      pageId,
       ydoc,
-      { autoConnect: true },
+      {
+        autoConnect: true,
+        resyncInterval: 3000,
+      },
     );
 
     const userLocalState: UserLocalState = {
@@ -92,14 +92,13 @@ export const useCollaborativeEditorMode = (
 
     socketIOProvider.on('sync', (isSync: boolean) => {
       if (isSync) {
-        socket.emit(GlobalSocketEventName.YDocSync, { pageId, initialValue });
         const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
         onEditorsUpdated(userList);
       }
     });
 
     // update args type see: SocketIOProvider.Awareness.awarenessUpdate
-    socketIOProvider.awareness.on('update', (update: any) => {
+    socketIOProvider.awareness.on('update', (update: { added: unknown[]; removed: unknown[]; }) => {
       const { added, removed } = update;
       if (added.length > 0 || removed.length > 0) {
         const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
@@ -131,6 +130,8 @@ export const useCollaborativeEditorMode = (
     return () => {
       cleanupYUndoManagerKeymap?.();
       cleanupYCollab?.();
+      // clean up editor
+      codeMirrorEditor.initDoc('');
     };
   }, [codeMirrorEditor, provider, ydoc]);
 };
