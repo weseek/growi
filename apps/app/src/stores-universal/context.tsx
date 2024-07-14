@@ -1,3 +1,7 @@
+import { useCallback, useEffect } from 'react';
+
+import type EventEmitter from 'events';
+
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
@@ -12,6 +16,10 @@ import type { TargetAndAncestors } from '../interfaces/page-listing-results';
 
 import { useContextSWR } from './use-context-swr';
 
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
 
 type Nullable<T> = T | null;
 

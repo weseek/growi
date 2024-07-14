@@ -4,8 +4,9 @@ import { parseISO } from 'date-fns/parseISO';
 import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 import loggerFactory from '~/utils/logger';
 
-import type { Config } from '../models/config';
-import ConfigModel, { defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs } from '../models/config';
+import {
+  Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
+} from '../models/config';
 
 
 const logger = loggerFactory('growi:service:ConfigLoader');
@@ -802,7 +803,7 @@ export default class ConfigLoader {
 
   async loadFromDB(): Promise<any> {
     const config = {};
-    const docs: Config[] = await ConfigModel.find().exec();
+    const docs = await Config.find().exec();
 
     for (const doc of docs) {
       if (!config[doc.ns]) {

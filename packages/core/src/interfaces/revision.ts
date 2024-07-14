@@ -1,5 +1,6 @@
 import type { Ref } from './common';
 import type { HasObjectId } from './has-object-id';
+import type { IPage } from './page';
 import type { IUser } from './user';
 
 export const Origin = {
@@ -12,24 +13,20 @@ export type Origin = typeof Origin[keyof typeof Origin];
 export const allOrigin = Object.values(Origin);
 
 export type IRevision = {
+  pageId: Ref<IPage>,
   body: string,
   author: Ref<IUser>,
-  hasDiffToPrev: boolean;
+  format: string,
+  hasDiffToPrev?: boolean;
+  origin?: Origin,
   createdAt: Date,
   updatedAt: Date,
-  origin?: Origin,
 }
 
 export type IRevisionHasId = IRevision & HasObjectId;
 
-type HasPageId = {
-  pageId: string,
-};
-
-export type IRevisionHasPageId = IRevisionHasId & HasPageId;
-
 export type IRevisionsForPagination = {
-  revisions: IRevisionHasPageId[], // revisions in one pagination
+  revisions: IRevisionHasId[], // revisions in one pagination
   totalCounts: number // total counts
 }
 export type HasRevisionShortbody = {
@@ -37,7 +34,7 @@ export type HasRevisionShortbody = {
 }
 
 export type SWRInfinitePageRevisionsResponse = {
-  revisions: IRevisionHasPageId[],
+  revisions: IRevisionHasId[],
   totalCount: number,
   offset: number,
 }
