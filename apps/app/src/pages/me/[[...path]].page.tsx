@@ -19,7 +19,7 @@ import {
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp, useCurrentPathname,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
@@ -46,10 +46,10 @@ type Props = CommonProps & {
   sidebarConfig: ISidebarConfig,
 };
 
-const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
+const PersonalSettings = dynamic(() => import('~/client/components/Me/PersonalSettings'), { ssr: false });
 // const MyDraftList = dynamic(() => import('~/components/MyDraftList/MyDraftList'), { ssr: false });
 const InAppNotificationPage = dynamic(
-  () => import('~/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
+  () => import('~/client/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
 );
 
 const MePage: NextPageWithLayout<Props> = (props: Props) => {
@@ -196,9 +196,9 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    attrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    tagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    sanitizeType: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+    customAttrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    customTagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 }

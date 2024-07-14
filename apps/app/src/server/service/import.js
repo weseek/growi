@@ -3,6 +3,7 @@
  * @typedef {import("@types/unzip-stream").Entry} Entry
  */
 
+import { parseISO } from 'date-fns/parseISO';
 import gc from 'expose-gc/function';
 
 import loggerFactory from '~/utils/logger';
@@ -14,7 +15,6 @@ const path = require('path');
 const { Writable, Transform } = require('stream');
 
 const JSONStream = require('JSONStream');
-const parseISO = require('date-fns/parseISO');
 const isIsoDate = require('is-iso-date');
 const mongoose = require('mongoose');
 const streamToPromise = require('stream-to-promise');

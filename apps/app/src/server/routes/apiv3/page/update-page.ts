@@ -11,18 +11,15 @@ import mongoose from 'mongoose';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
-import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import {
   GlobalNotificationSettingEvent, serializePageSecurely, serializeRevisionSecurely, serializeUserSecurely,
 } from '~/server/models';
 import type { PageDocument, PageModel } from '~/server/models/page';
-import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
-import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
-import Xss from '~/services/xss';
-import XssOption from '~/services/xss/xssOption';
+import { getYjsService } from '~/server/service/yjs';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -47,20 +44,6 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
-
-  const xss = (() => {
-    const initializedConfig = {
-      isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-      tagWhitelist: crowi.xssService.getTagWhitelist(),
-      attrWhitelist: crowi.xssService.getAttrWhitelist(),
-      // TODO: Omit rehype related property from XssOptionConfig type
-      //  Server side xss implementation does not require it.
-      xssOption: RehypeSanitizeOption.CUSTOM,
-    };
-    const xssOption = new XssOption(initializedConfig);
-    return new Xss(xssOption);
-  })();
-
   // define validators for req.body
   const validator: ValidationChain[] = [
     body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
@@ -84,8 +67,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     // Reflect the updates in ydoc
     const origin = req.body.origin;
     if (origin === Origin.View || origin === undefined) {
-      const yjsConnectionManager = getYjsConnectionManager();
-      await yjsConnectionManager.handleYDocUpdate(req.body.pageId, req.body.body);
+      const yjsService = getYjsService();
+      await yjsService.syncWithTheLatestRevisionForce(req.body.pageId);
     }
 
     // persist activity
@@ -138,7 +121,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         pageId, revisionId, body, origin,
       } = req.body;
 
-      const sanitizeRevisionId = revisionId == null ? undefined : xss.process(revisionId);
+      const sanitizeRevisionId = revisionId == null ? undefined : generalXssFilter.process(revisionId);
 
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;
@@ -153,7 +136,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
-          revisionBody: xss.process(latestRevision?.body),
+          revisionBody: latestRevision?.body,
           createdAt: latestRevision?.createdAt,
           user: serializeUserSecurely(latestRevision?.author),
         };

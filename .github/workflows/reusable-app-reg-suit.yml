@@ -60,25 +60,15 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
-    - name: Install turbo
-      run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune --scope=@growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
+    - name: Restore node_modules
+      uses: actions/cache/restore@v4
       with:
         path: |
           **/node_modules
-        key: node_modules-7.x-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        # saved key by launch-prod
+        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-7.x-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |

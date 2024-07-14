@@ -1,7 +1,7 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 
 import { type Nullable } from '@growi/core';
-import { withUtils, type SWRResponseWithUtils } from '@growi/core/dist/swr';
+import { withUtils, type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
 import type { EditorSettings } from '@growi/editor';
 import useSWR, { type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -9,22 +9,21 @@ import useSWRImmutable from 'swr/immutable';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import type { SlackChannels } from '~/interfaces/user-trigger-notification';
-
 import {
   useCurrentUser, useDefaultIndentSize, useIsGuestUser, useIsReadOnlyUser,
-} from './context';
+} from '~/stores-universal/context';
+
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
-import { useStaticSWR } from './use-static-swr';
 
 
 export const useWaitingSaveProcessing = (): SWRResponse<boolean, Error> => {
-  return useStaticSWR('waitingSaveProcessing', undefined, { fallbackData: false });
+  return useSWRStatic('waitingSaveProcessing', undefined, { fallbackData: false });
 };
 
 
 export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('editingMarkdown', initialData);
+  return useSWRStatic('editingMarkdown', initialData);
 };
 
 
@@ -69,7 +68,7 @@ export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperatio
 
 export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
   const { data: defaultIndentSize } = useDefaultIndentSize();
-  return useStaticSWR<number, Error>(
+  return useSWRStatic<number, Error>(
     defaultIndentSize == null ? null : 'currentIndentSize',
     undefined,
     { fallbackData: defaultIndentSize },
@@ -92,7 +91,7 @@ export const useSWRxSlackChannels = (currentPagePath: Nullable<string>): SWRResp
 };
 
 export const useIsSlackEnabled = (): SWRResponse<boolean, Error> => {
-  return useStaticSWR(
+  return useSWRStatic(
     'isSlackEnabled',
     undefined,
     { fallbackData: false },
@@ -105,7 +104,7 @@ export type IPageTagsForEditorsOption = {
 
 export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<string[], Error> & IPageTagsForEditorsOption => {
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const swrResult = useStaticSWR<string[], Error>('pageTags', undefined);
+  const swrResult = useSWRStatic<string[], Error>('pageTags', undefined);
   const { mutate } = swrResult;
   const sync = useCallback((): void => {
     mutate(tagsInfoData?.tags || [], false);
@@ -118,5 +117,28 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
 };
 
 export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning');
+  return useSWRStatic<boolean, Error>('isEnabledUnsavedWarning');
+};
+
+
+export const useReservedNextCaretLine = (initialData?: number): SWRResponse<number> => {
+
+  const swrResponse = useSWRStatic('saveNextCaretLine', initialData, { fallbackData: 0 });
+  const { mutate } = swrResponse;
+
+  useEffect(() => {
+    const handler = (lineNumber: number) => {
+      mutate(lineNumber);
+    };
+
+    globalEmitter.on('reservedNextCaretLine', handler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('reservedNextCaretLine', handler);
+    };
+  }, [mutate]);
+
+  return {
+    ...swrResponse,
+  };
 };

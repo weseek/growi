@@ -321,7 +321,9 @@
       "stale": "More than {{count}} year has passed since last update.",
       "stale_plural": "More than {{count}} years has passed since last update.",
       "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
-      "no_deadline": "This page has no expiration date"
+      "no_deadline": "This page has no expiration date",
+      "not_indexed1": "This page may not be indexed by Full-Text search engines.",
+      "not_indexed2": "Page body exceeds the threshold specified by {{threshold}}."
     }
   },
   "page_edit": {
@@ -677,10 +679,9 @@
     "Email format is invalid": "Email format is invalid.",
     "Email field is required": "Email field is required.",
     "Password has invalid character": "Password has invalid character.",
-    "Password minimum character should be more than 8 characters": "Password minimum character should be more than 8 characters.",
+    "Password minimum character should be more than n characters": "Password minimum character should be more than {{number}} characters.",
     "Password field is required": "Password field is required.",
     "Username or E-mail has invalid characters": "Username or E-mail has invalid characters.",
-    "Password minimum character should be more than 6 characters": "Password minimum character should be more than 6 characters.",
     "user_not_found": "User not found.",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>DuplicatedUsernameException occured</strong></p><p class='mb-0'> Your {{ failedProviderForDuplicatedUsernameException }} authentication was succeeded, but a new user could not be created. See the issue <a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },
@@ -713,36 +714,6 @@
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired. Please resend a password reset request via the link below.",
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match",
     "please_enable_mailer_alert": "The password reset feature is disabled because email setup has not been completed. Please ask administrator to complete the email setup."
-  },
-  "emoji": {
-    "title": "Pick an Emoji",
-    "search": "Search",
-    "clear": "Clear",
-    "notfound": "No Emoji Found",
-    "skintext": "Choose your default skin tone",
-    "categories": {
-      "search": "Search Results",
-      "recent": "Frequently Used",
-      "smileys": "Smileys & Emotion",
-      "people": "People & Body",
-      "nature": "Animals & Nature",
-      "foods": "Food & Drink",
-      "activity": "Activity",
-      "places": "Travel & Places",
-      "objects": "Objects",
-      "symbols": "Symbols",
-      "flags": "Flags",
-      "custom": "Custom"
-    },
-    "categorieslabel": "Emoji categories",
-    "skintones": {
-      "1": "Default Skin Tone",
-      "2": "Light Skin Tone",
-      "3": "Medium-Light Skin Tone",
-      "4": "Medium Skin Tone",
-      "5": "Medium-Dark Skin Tone",
-      "6": "Dark Skin Tone"
-    }
   },
   "maintenance_mode": {
     "maintenance_mode": "Maintenance Mode",

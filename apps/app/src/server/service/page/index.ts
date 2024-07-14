@@ -7,7 +7,7 @@ import type {
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup, IRevisionHasId,
 } from '@growi/core';
 import {
-  PageGrant, PageStatus, getIdForRef,
+  PageGrant, PageStatus, YDocStatus, getIdForRef,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
@@ -41,18 +41,19 @@ import {
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import type { UserGroupDocument } from '~/server/models/user-group';
-import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import type { ObjectIdLike } from '../../interfaces/mongoose-utils';
-import { Attachment } from '../../models';
+import { Attachment } from '../../models/attachment';
 import { PathAlreadyExistsError } from '../../models/errors';
 import type { PageOperationDocument } from '../../models/page-operation';
 import PageOperation from '../../models/page-operation';
 import PageRedirect from '../../models/page-redirect';
+import { Revision } from '../../models/revision';
 import { serializePageSecurely } from '../../models/serializers/page-serializer';
 import ShareLink from '../../models/share-link';
 import Subscription from '../../models/subscription';
@@ -62,6 +63,7 @@ import { divideByType } from '../../util/granted-group';
 import { configManager } from '../config-manager';
 import type { IPageGrantService } from '../page-grant';
 import { preNotifyService } from '../pre-notify';
+import { getYjsService } from '../yjs';
 
 import { BULK_REINDEX_SIZE, LIMIT_FOR_MULTIPLE_PAGE_OP } from './consts';
 import type { IPageService } from './page-service';
@@ -610,7 +612,7 @@ class PageService implements IPageService {
 
     const updateMetadata = options.updateMetadata || false;
     // sanitize path
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // UserGroup & Owner validation
     // use the parent's grant when target page is an empty page
@@ -831,7 +833,6 @@ class PageService implements IPageService {
 
   private async renamePageV4(page, newPagePath, user, options) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
     const {
       isRecursively = false,
       createRedirectPage = false,
@@ -839,7 +840,7 @@ class PageService implements IPageService {
     } = options;
 
     // sanitize path
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // create descendants first
     if (isRecursively) {
@@ -1104,7 +1105,7 @@ class PageService implements IPageService {
       throw Error('Page not found.');
     }
 
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // 1. Separate v4 & v5 process
     const isShouldUseV4Process = shouldUseV4Process(page);
@@ -1278,7 +1279,7 @@ class PageService implements IPageService {
     options.grantUserGroupIds = page.grantedGroups;
     options.grantedUserIds = page.grantedUsers;
 
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     const createdPage = await this.create(
       newPagePath, page.revision.body, user, options,
@@ -1347,7 +1348,6 @@ class PageService implements IPageService {
     }
 
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const pageIds = pages.map(page => page._id);
     const revisions = await Revision.find({ pageId: { $in: pageIds } });
@@ -1355,7 +1355,7 @@ class PageService implements IPageService {
     // Mapping to set to the body of the new revision
     const pageIdRevisionMapping = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[revision.pageId] = revision;
+      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -1403,7 +1403,6 @@ class PageService implements IPageService {
 
   private async duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix) {
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const pageIds = pages.map(page => page._id);
     const revisions = await Revision.find({ pageId: { $in: pageIds } });
@@ -1411,7 +1410,7 @@ class PageService implements IPageService {
     // Mapping to set to the body of the new revision
     const pageIdRevisionMapping = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[revision.pageId] = revision;
+      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -1708,7 +1707,6 @@ class PageService implements IPageService {
 
   private async deletePageV4(page, user, options = {}, isRecursively = false) {
     const Page = mongoose.model('Page') as PageModel;
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
 
     const newPath = Page.getDeletedPageName(page.path);
     const isTrashed = isTrashPage(page.path);
@@ -1871,7 +1869,6 @@ class PageService implements IPageService {
   async deleteCompletelyOperation(pageIds, pagePaths): Promise<void> {
     // Delete Attachments, Revisions, Pages and emit delete
     const Page = this.crowi.model('Page');
-    const Revision = this.crowi.model('Revision');
 
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
@@ -3777,7 +3774,7 @@ class PageService implements IPageService {
     }
 
     // Values
-    const path: string = this.crowi.xss.process(_path); // sanitize path
+    const path: string = generalXssFilter.process(_path); // sanitize path
 
     // Retrieve closest ancestor document
     const Page = mongoose.model<PageDocument, PageModel>('Page');
@@ -3838,7 +3835,6 @@ class PageService implements IPageService {
     let savedPage = await page.save();
 
     // Create revision
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, options.origin);
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
@@ -3900,14 +3896,13 @@ class PageService implements IPageService {
    */
   private async createV4(path, body, user, options: any = {}) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
     const format = options.format || 'markdown';
     const grantUserGroupIds = options.grantUserGroupIds || null;
     const expandContentWidth = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     // sanitize path
-    path = this.crowi.xss.process(path); // eslint-disable-line no-param-reassign
+    path = generalXssFilter.process(path); // eslint-disable-line no-param-reassign
 
     let grant = options.grant;
     // force public
@@ -3988,7 +3983,7 @@ class PageService implements IPageService {
 
     // Values
     // eslint-disable-next-line no-param-reassign
-    path = this.crowi.xss.process(path); // sanitize path
+    path = generalXssFilter.process(path); // sanitize path
 
     const {
       grantUserGroupIds, grantUserIds,
@@ -4036,8 +4031,7 @@ class PageService implements IPageService {
     let savedPage = await page.save();
 
     // Create revision
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
-    const dummyUser = { _id: new mongoose.Types.ObjectId() };
+    const dummyUser: HasObjectId = { _id: new mongoose.Types.ObjectId().toString() };
     const newRevision = Revision.prepareRevision(savedPage, body, null, dummyUser);
     savedPage = await pushRevision(savedPage, newRevision, dummyUser);
 
@@ -4145,7 +4139,6 @@ class PageService implements IPageService {
       options: IOptionsForUpdate = {},
   ): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
 
     const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
@@ -4289,7 +4282,6 @@ class PageService implements IPageService {
 
   async updatePageV4(pageData: PageDocument, body, previousBody, user, options: IOptionsForUpdate = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
     // use the previous data if absent
     const grant = options.grant || pageData.grant;
@@ -4443,33 +4435,16 @@ class PageService implements IPageService {
   }
 
   async getYjsData(pageId: string): Promise<CurrentPageYjsData> {
-    const yjsConnectionManager = getYjsConnectionManager();
+    const yjsService = getYjsService();
 
-    const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
-    const persistedYdoc = await yjsConnectionManager.getPersistedYdoc(pageId);
-
-    const yjsDraft = (currentYdoc ?? persistedYdoc)?.getText('codemirror').toString();
-    const hasRevisionBodyDiff = await this.hasRevisionBodyDiff(pageId, yjsDraft);
+    const currentYdoc = yjsService.getCurrentYdoc(pageId);
+    const ydocStatus = await yjsService.getYDocStatus(pageId);
+    const hasYdocsNewerThanLatestRevision = ydocStatus === YDocStatus.DRAFT;
 
     return {
-      hasRevisionBodyDiff,
+      hasYdocsNewerThanLatestRevision,
       awarenessStateSize: currentYdoc?.awareness.states.size,
     };
-  }
-
-  async hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean> {
-    if (comparisonTarget == null) {
-      return false;
-    }
-
-    const Revision = mongoose.model<IRevisionHasId>('Revision');
-    const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
-
-    if (revision == null) {
-      return false;
-    }
-
-    return revision.body !== comparisonTarget;
   }
 
   async createTtlIndex(): Promise<void> {

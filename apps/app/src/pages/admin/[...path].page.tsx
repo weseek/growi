@@ -1,17 +1,17 @@
-import {
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import dynamic from 'next/dynamic';
 
-import { CommonProps } from '~/pages/utils/commons';
-import { useCurrentUser } from '~/stores/context';
+import AdminLayout from '~/components/Layout/AdminLayout';
+import type { CommonProps } from '~/pages/utils/commons';
+import { useCurrentUser } from '~/stores-universal/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
-const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-const AdminNotFoundPage = dynamic(() => import('~/components/Admin/NotFoundPage').then(mod => mod.AdminNotFoundPage), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const AdminNotFoundPage = dynamic(() => import('~/client/components/Admin/NotFoundPage').then(mod => mod.AdminNotFoundPage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 const AdminAppPage: NextPage<CommonProps> = (props) => {

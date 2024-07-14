@@ -1,9 +1,9 @@
 import assert from 'assert';
 
 import { isClient } from '@growi/core/dist/utils/browser-utils';
+import * as presentation from '@growi/presentation/dist/client/services/sanitize-option';
 import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client';
 import * as drawio from '@growi/remark-drawio';
-// eslint-disable-next-line import/extensions
 import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client';
 import katex from 'rehype-katex';
 import sanitize from 'rehype-sanitize';
@@ -14,13 +14,12 @@ import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
 
-import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
-import { Header } from '~/components/ReactMarkdownComponents/Header';
-import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
-import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
-import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
+import { DrawioViewerWithEditButton } from '~/client/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
+import { Header } from '~/client/components/ReactMarkdownComponents/Header';
+import { LightBox } from '~/client/components/ReactMarkdownComponents/LightBox';
+import { RichAttachment } from '~/client/components/ReactMarkdownComponents/RichAttachment';
+import { TableWithEditButton } from '~/client/components/ReactMarkdownComponents/TableWithEditButton';
 import * as mermaid from '~/features/mermaid';
-import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-line-number-attribute';
@@ -30,11 +29,12 @@ import * as attachment from '~/services/renderer/remark-plugins/attachment';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
-  commonSanitizeOption, generateCommonOptions, injectCustomSanitizeOption, verifySanitizePlugin,
+  getCommonSanitizeOption, generateCommonOptions, verifySanitizePlugin,
 } from '~/services/renderer/renderer';
 import loggerFactory from '~/utils/logger';
 
 // import EasyGrid from './PreProcessor/EasyGrid';
+
 
 import '@growi/remark-lsx/dist/client/style.css';
 import '@growi/remark-attachment-refs/dist/client/style.css';
@@ -71,13 +71,10 @@ export const generateViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
-      commonSanitizeOption,
+      getCommonSanitizeOption(config),
+      presentation.sanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
       attachment.sanitizeOption,
@@ -132,14 +129,9 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
-
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
-      commonSanitizeOption,
+      getCommonSanitizeOption(config),
     )]
     : () => {};
 
@@ -184,14 +176,10 @@ export const generateSimpleViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
-
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
-      commonSanitizeOption,
+      getCommonSanitizeOption(config),
+      presentation.sanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
       attachment.sanitizeOption,
@@ -277,13 +265,9 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
-      commonSanitizeOption,
+      getCommonSanitizeOption(config),
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
       attachment.sanitizeOption,

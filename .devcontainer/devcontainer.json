@@ -23,10 +23,10 @@
     "msjsdiag.debugger-for-chrome",
     "firefox-devtools.vscode-firefox-debug",
     "editorconfig.editorconfig",
-    "esbenp.prettier-vscode",
     "shinnn.stylelint",
     "stylelint.vscode-stylelint",
-    "vitest.explorer"
+    "vitest.explorer",
+    "ms-playwright.playwright"
   ],
 
   // Uncomment the next line if you want start specific services in your Docker Compose config.

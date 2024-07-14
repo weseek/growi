@@ -1,13 +1,14 @@
+import axios from 'axios';
+import { addHours } from 'date-fns/addHours';
+import { isAfter } from 'date-fns/isAfter';
+import { Router } from 'express';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:staffs'); // eslint-disable-line no-unused-vars
 
-const express = require('express');
 
-const axios = require('axios');
-
-const router = express.Router();
-const { isAfter, addHours } = require('date-fns');
+const router = Router();
 
 const contributors = require('^/resource/Contributor');
 

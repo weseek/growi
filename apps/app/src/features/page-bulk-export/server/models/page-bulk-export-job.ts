@@ -13,7 +13,7 @@ const pageBulkExportJobSchema = new Schema<PageBulkExportJobDocument>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   page: { type: Schema.Types.ObjectId, ref: 'Page', required: true },
   lastUploadedPagePath: { type: String },
-  uploadId: { type: String, required: true, unique: true },
+  uploadId: { type: String, unique: true, sparse: true },
   format: { type: String, enum: Object.values(PageBulkExportFormat), required: true },
   completedAt: { type: Date },
   attachment: { type: Schema.Types.ObjectId, ref: 'Attachment' },

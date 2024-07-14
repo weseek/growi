@@ -15,7 +15,6 @@ import { LdapUserGroupSyncService } from '~/features/external-user-group/server/
 import instanciatePageBulkExportService from '~/features/page-bulk-export/server/service/page-bulk-export';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
-import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
@@ -40,7 +39,7 @@ import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
-import { instantiateYjsConnectionManager } from '../service/yjs-connection-manager';
+import { initializeYjsService } from '../service/yjs';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
 
@@ -84,7 +83,6 @@ class Crowi {
     this.mailService = null;
     this.passportService = null;
     this.globalNotificationService = null;
-    this.xssService = null;
     this.aclService = null;
     this.appService = null;
     this.fileUploadService = null;
@@ -99,7 +97,6 @@ class Crowi {
     this.inAppNotificationService = null;
     this.activityService = null;
     this.commentService = null;
-    this.xss = new Xss();
     this.questionnaireService = null;
     this.questionnaireCronService = null;
 
@@ -135,12 +132,11 @@ Crowi.prototype.init = async function() {
   await this.setupS2sMessagingService();
   await this.setupSocketIoService();
 
-  // customizeService depends on AppService and XssService
+  // customizeService depends on AppService
   // passportService depends on appService
   // export and import depends on setUpGrowiBridge
   await Promise.all([
     this.setUpApp(),
-    this.setUpXss(),
     this.setUpGrowiBridge(),
   ]);
 
@@ -482,9 +478,8 @@ Crowi.prototype.start = async function() {
   // attach to socket.io
   this.socketIoService.attachServer(httpServer);
 
-  // Initialization YjsConnectionManager
-  instantiateYjsConnectionManager(this.socketIoService.io);
-  this.socketIoService.setupYjsConnection();
+  // Initialization YjsService
+  initializeYjsService(this.socketIoService.io);
 
   await this.autoInstall();
 
@@ -597,16 +592,6 @@ Crowi.prototype.setUpGlobalNotification = async function() {
 Crowi.prototype.setUpUserNotification = async function() {
   if (this.userNotificationService == null) {
     this.userNotificationService = new UserNotificationService(this);
-  }
-};
-
-/**
- * setup XssService
- */
-Crowi.prototype.setUpXss = async function() {
-  const XssService = require('../service/xss');
-  if (this.xssService == null) {
-    this.xssService = new XssService(this.configManager);
   }
 };
 
