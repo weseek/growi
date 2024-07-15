@@ -1,4 +1,5 @@
 import { Storage } from '@google-cloud/storage';
+import axios from 'axios';
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
@@ -14,7 +15,6 @@ import {
 } from '../file-uploader';
 import { ContentHeaders } from '../utils';
 
-import type { IGcsMultipartUploader } from './multipart-uploader';
 import { GcsMultipartUploader } from './multipart-uploader';
 
 const logger = loggerFactory('growi:service:fileUploaderGcs');
@@ -175,6 +175,17 @@ class GcsFileUploader extends AbstractFileUploader {
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
     return new GcsMultipartUploader(myBucket, uploadKey, maxPartSize);
+  }
+
+  override async abortExistingMultipartUpload(uploadKey: string, uploadId: string) {
+    try {
+      await axios.delete(uploadId);
+    }
+    catch (e) {
+      if (e.response?.status !== 499) {
+        throw e;
+      }
+    }
   }
 
 }

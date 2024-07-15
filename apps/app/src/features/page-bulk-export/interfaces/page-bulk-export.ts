@@ -11,7 +11,9 @@ export const PageBulkExportFormat = {
 export type PageBulkExportFormat = typeof PageBulkExportFormat[keyof typeof PageBulkExportFormat]
 
 export const PageBulkExportJobStatus = {
-  inProgress: 'inProgress',
+  initializing: 'initializing', // preparing for export
+  exporting: 'exporting', // exporting to fs
+  uploading: 'uploading', // uploading to cloud storage
   completed: 'completed',
   failed: 'failed',
 } as const;
@@ -21,10 +23,10 @@ export type PageBulkExportJobStatus = typeof PageBulkExportJobStatus[keyof typeo
 export interface IPageBulkExportJob {
   user: Ref<IUser>, // user that started export job
   page: Ref<IPage>, // the root page of page tree to export
-  lastUploadedPagePath: string, // the path of page that was uploaded last
-  uploadId: string | null, // upload ID of multipart upload of S3/GCS
+  lastExportedPagePath?: string, // the path of page that was uploaded last
+  uploadId?: string, // upload ID of multipart upload of S3/GCS
   format: PageBulkExportFormat,
-  completedAt: Date | null, // the date at which job was completed
+  completedAt?: Date, // the date at which job was completed
   attachment?: Ref<IAttachment>,
   status: PageBulkExportJobStatus,
 }

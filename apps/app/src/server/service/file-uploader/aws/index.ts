@@ -8,6 +8,7 @@ import {
   DeleteObjectCommand,
   ListObjectsCommand,
   ObjectCannedACL,
+  AbortMultipartUploadCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -234,6 +235,14 @@ class AwsFileUploader extends AbstractFileUploader {
   override createMultipartUploader(uploadKey: string, maxPartSize: number) {
     const s3 = S3Factory();
     return new AwsMultipartUploader(s3, getS3Bucket(), uploadKey, maxPartSize);
+  }
+
+  override async abortExistingMultipartUpload(uploadKey: string, uploadId: string) {
+    await S3Factory().send(new AbortMultipartUploadCommand({
+      Bucket: getS3Bucket(),
+      Key: uploadKey,
+      UploadId: uploadId,
+    }));
   }
 
 }

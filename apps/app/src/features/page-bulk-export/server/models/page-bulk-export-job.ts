@@ -12,13 +12,13 @@ export type PageBulkExportJobModel = Model<PageBulkExportJobDocument>
 const pageBulkExportJobSchema = new Schema<PageBulkExportJobDocument>({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   page: { type: Schema.Types.ObjectId, ref: 'Page', required: true },
-  lastUploadedPagePath: { type: String },
+  lastExportedPagePath: { type: String },
   uploadId: { type: String, unique: true, sparse: true },
   format: { type: String, enum: Object.values(PageBulkExportFormat), required: true },
   completedAt: { type: Date },
   attachment: { type: Schema.Types.ObjectId, ref: 'Attachment' },
   status: {
-    type: String, enum: Object.values(PageBulkExportJobStatus), required: true, default: PageBulkExportJobStatus.inProgress,
+    type: String, enum: Object.values(PageBulkExportJobStatus), required: true, default: PageBulkExportJobStatus.initializing,
   },
 }, { timestamps: true });
 
