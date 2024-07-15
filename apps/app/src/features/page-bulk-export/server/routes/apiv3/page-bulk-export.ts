@@ -7,7 +7,7 @@ import type Crowi from '~/server/crowi';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { pageBulkExportService } from '../../service/page-bulk-export';
+import { DuplicateBulkExportJobError, pageBulkExportService } from '../../service/page-bulk-export';
 
 const logger = loggerFactory('growi:routes:apiv3:page-bulk-export');
 
@@ -45,7 +45,10 @@ module.exports = (crowi: Crowi): Router => {
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err(new ErrorV3('Failed to start bulk export'));
+      if (err instanceof DuplicateBulkExportJobError) {
+        return res.apiv3Err(new ErrorV3('Duplicate bulk export job is in progress', 'page_export.duplicate_bulk_export_job_error'), 409);
+      }
+      return res.apiv3Err(new ErrorV3('Failed to start bulk export', 'page_export.failed_to_export'));
     }
   });
 

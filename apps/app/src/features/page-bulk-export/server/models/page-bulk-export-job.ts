@@ -3,7 +3,7 @@ import { type Document, type Model, Schema } from 'mongoose';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 import type { IPageBulkExportJob } from '../../interfaces/page-bulk-export';
-import { PageBulkExportFormat } from '../../interfaces/page-bulk-export';
+import { PageBulkExportFormat, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 
 export interface PageBulkExportJobDocument extends IPageBulkExportJob, Document {}
 
@@ -17,6 +17,9 @@ const pageBulkExportJobSchema = new Schema<PageBulkExportJobDocument>({
   format: { type: String, enum: Object.values(PageBulkExportFormat), required: true },
   completedAt: { type: Date },
   attachment: { type: Schema.Types.ObjectId, ref: 'Attachment' },
+  status: {
+    type: String, enum: Object.values(PageBulkExportJobStatus), required: true, default: PageBulkExportJobStatus.inProgress,
+  },
 }, { timestamps: true });
 
 export default getOrCreateModel<PageBulkExportJobDocument, PageBulkExportJobModel>('PageBulkExportJob', pageBulkExportJobSchema);

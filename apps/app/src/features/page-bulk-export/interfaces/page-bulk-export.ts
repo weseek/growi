@@ -4,11 +4,19 @@ import type {
 } from '@growi/core';
 
 export const PageBulkExportFormat = {
-  markdown: 'markdown',
+  md: 'md',
   pdf: 'pdf',
 } as const;
 
 export type PageBulkExportFormat = typeof PageBulkExportFormat[keyof typeof PageBulkExportFormat]
+
+export const PageBulkExportJobStatus = {
+  inProgress: 'inProgress',
+  completed: 'completed',
+  failed: 'failed',
+} as const;
+
+export type PageBulkExportJobStatus = typeof PageBulkExportJobStatus[keyof typeof PageBulkExportJobStatus]
 
 export interface IPageBulkExportJob {
   user: Ref<IUser>, // user that started export job
@@ -18,12 +26,13 @@ export interface IPageBulkExportJob {
   format: PageBulkExportFormat,
   completedAt: Date | null, // the date at which job was completed
   attachment?: Ref<IAttachment>,
+  status: PageBulkExportJobStatus,
 }
 
 export interface IPageBulkExportJobHasId extends IPageBulkExportJob, HasObjectId {}
 
 // snapshot of page info to upload
-export interface IPageBulkExportPageInfo {
+export interface IPageBulkExportPageSnapshot {
   pageBulkExportJob: Ref<IPageBulkExportJob>,
   path: string, // page path when export was stared
   revision: Ref<IRevision>, // page revision when export was stared

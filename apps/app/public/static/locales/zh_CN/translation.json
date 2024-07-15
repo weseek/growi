@@ -643,7 +643,8 @@
     "markdown": "Markdown",
     "choose_export_format": "选择导出格式",
     "bulk_export_started": "目前我们正在准备...",
-    "bulk_export_download_expired": "下载期限已过"
+    "bulk_export_download_expired": "下载期限已过",
+    "duplicate_bulk_export_job_error": "正在导出同一页面及其子页面"
   },
   "message": {
     "successfully_connected": "连接成功！",

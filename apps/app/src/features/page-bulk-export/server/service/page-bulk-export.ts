@@ -27,16 +27,25 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportFormat } from '../../interfaces/page-bulk-export';
+import { PageBulkExportFormat, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
+import PageBulkExportPageSnapshot from '../models/page-bulk-export-page-snapshot';
 
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
 type ActivityParameters ={
-  ip: string;
+  ip: string | undefined;
   endpoint: string;
+}
+
+export class DuplicateBulkExportJobError extends Error {
+
+  constructor() {
+    super('Duplicate bulk export job is in progress');
+  }
+
 }
 
 class PageBulkExportService {
@@ -69,18 +78,22 @@ class PageBulkExportService {
       throw new Error('Base page not found or not accessible');
     }
 
-    const pageBulkExportJob: PageBulkExportJobDocument & HasObjectId = await PageBulkExportJob.create({
-      user: currentUser,
-      page: basePage,
-      format: PageBulkExportFormat.markdown,
-    });
+    const format = PageBulkExportFormat.md;
+    const pageBulkExportJobProperties = {
+      user: currentUser, page: basePage, format, status: PageBulkExportJobStatus.inProgress,
+    };
+    const duplicatePageBulkExportJobInProgress: PageBulkExportJobDocument & HasObjectId | null = await PageBulkExportJob.findOne(pageBulkExportJobProperties);
+    if (duplicatePageBulkExportJobInProgress != null) {
+      throw new DuplicateBulkExportJobError();
+    }
+    const pageBulkExportJob: PageBulkExportJobDocument & HasObjectId = await PageBulkExportJob.create(pageBulkExportJobProperties);
 
     await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
 
     this.bulkExportWithBasePagePath(basePagePath, currentUser, activityParameters, pageBulkExportJob);
   }
 
-  async bulkExportWithBasePagePath(
+  private async bulkExportWithBasePagePath(
       basePagePath: string, currentUser, activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument & HasObjectId,
   ): Promise<void> {
     const timeStamp = (new Date()).getTime();
@@ -153,7 +166,7 @@ class PageBulkExportService {
   }
 
   private async exportPagesToFS(basePagePath: string, outputDir: string, currentUser): Promise<void> {
-    const pagesReadable = await this.getPageReadable(basePagePath, currentUser);
+    const pagesReadable = await this.getPageReadable(basePagePath, currentUser, true);
     const pagesWritable = this.getPageWritable(outputDir);
 
     return pipelinePromise(pagesReadable, pagesWritable);
@@ -162,7 +175,7 @@ class PageBulkExportService {
   /**
    * Get a Readable of all the pages under the specified path, including the root page.
    */
-  private async getPageReadable(basePagePath: string, currentUser): Promise<Readable> {
+  private async getPageReadable(basePagePath: string, currentUser, populateRevision = false): Promise<Readable> {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
@@ -170,11 +183,36 @@ class PageBulkExportService {
       .addConditionToListWithDescendants(basePagePath)
       .addViewerCondition(currentUser);
 
+    if (populateRevision) {
+      builder.query = builder.query.populate('revision');
+    }
+
     return builder
       .query
-      .populate('revision')
       .lean()
       .cursor({ batchSize: this.pageBatchSize });
+  }
+
+  private async createPageSnapshots(basePagePath: string, currentUser, pageBulkExportJob: PageBulkExportJobDocument) {
+    const pagesReadable = await this.getPageReadable(basePagePath, currentUser);
+    const pageSnapshotwritable = new Writable({
+      objectMode: true,
+      write: async(page: PageDocument, encoding, callback) => {
+        try {
+          await PageBulkExportPageSnapshot.create({
+            pageBulkExportJob: pageBulkExportJob._id,
+            path: page.path,
+            revision: page.revision,
+          });
+        }
+        catch (err) {
+          callback(err);
+          return;
+        }
+        callback();
+      },
+    });
+    await pipelinePromise(pagesReadable, pageSnapshotwritable);
   }
 
   /**
