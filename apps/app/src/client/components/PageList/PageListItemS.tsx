@@ -35,7 +35,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
       {isNarrowView ? (
         <Clamp lines={2}>
-          <div className={`mx-1 ${styles['page-title']} ${noLink ? 'text-break' : ''}`}>
+          <div className={`mx-1 grw-sidebar-text ${styles['page-title']} ${noLink ? 'text-break' : ''}`}>
             {pagePathElement}
           </div>
         </Clamp>

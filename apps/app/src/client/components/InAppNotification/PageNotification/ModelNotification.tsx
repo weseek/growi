@@ -21,7 +21,7 @@ export const ModelNotification: FC<Props> = (props) => {
   } = props;
 
   return (
-    <div className="p-2 overflow-hidden">
+    <div className="p-2 overflow-hidden grw-sidebar-text">
       <div className="text-truncate">
         <b>{actionUsers}</b>
         {actionMsg}

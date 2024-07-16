@@ -9,10 +9,10 @@ import { DevidedPagePath } from '@growi/core/dist/models';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
-import { useKeywordManager } from '~/client/services/search-operation';
-import { PagePathHierarchicalLink } from '~/components/Common/PagePathHierarchicalLink';
 import FormattedDistanceDate from '~/client/components/FormattedDistanceDate';
 import InfiniteScroll from '~/client/components/InfiniteScroll';
+import { useKeywordManager } from '~/client/services/search-operation';
+import { PagePathHierarchicalLink } from '~/components/Common/PagePathHierarchicalLink';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
@@ -117,7 +117,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
               { !dPagePath.isRoot && <FormerLink /> }
             </div>
 
-            <h6 className={`col-12 d-flex align-items-center ${isSmall ? 'mb-0 text-truncate' : 'mb-0'}`}>
+            <h6 className={`col-12 d-flex align-items-center grw-sidebar-text ${isSmall ? 'mb-0 text-truncate' : 'mb-0'}`}>
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
               { page.wip && (
                 <span className="wip-page-badge badge rounded-pill text-bg-secondary ms-2">WIP</span>
