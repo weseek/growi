@@ -1417,11 +1417,11 @@ describe('PageService page operations with non-public pages', () => {
       ]);
       expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision2.body).toBe(_revision2.body);
-      expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id);
+      expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id.toString());
       expect(duplicatedPage3.grantedUsers).toStrictEqual([npDummyUser2._id]);
       expect(duplicatedPage3.parent).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision3.body).toBe(_revision3.body);
-      expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id);
+      expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id.toString());
     });
 
   });
