@@ -135,7 +135,7 @@ class YjsService implements IYjsService {
   }
 
   public async getYDocStatus(pageId: string): Promise<YDocStatus> {
-    const dumpLog = (status: YDocStatus, args?: { [key: string]: number }) => {
+    const dumpLog = (status: YDocStatus, args?: { [key: string]: unknown }) => {
       logger.debug(`getYDocStatus('${pageId}') detected '${status}'`, args ?? {});
     };
 
@@ -151,7 +151,7 @@ class YjsService implements IYjsService {
       .lean();
 
     if (result == null) {
-      dumpLog(YDocStatus.ISOLATED);
+      dumpLog(YDocStatus.ISOLATED, { result });
       return YDocStatus.ISOLATED;
     }
 
