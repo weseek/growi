@@ -1,7 +1,6 @@
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import { removePosition } from 'unist-util-remove-position';
-import { describe, it, expect } from 'vitest';
 
 import { DirectiveType } from '../src/mdast-util-growi-directive/consts.js';
 import { directiveFromMarkdown, directiveToMarkdown } from '../src/mdast-util-growi-directive/index.js';
@@ -463,7 +462,7 @@ describe('mdast -> markdown', () => {
         },
         { extensions: [directiveToMarkdown] },
       ),
-    ).toEqual('$a(#b .c.d key="e&#xA;f")\n');
+    ).toBe('$a(#b .c.d key="e&#xA;f")\n');
   });
 
   it('should escape a `:` in phrasing when followed by an alpha', () => {
@@ -475,7 +474,7 @@ describe('mdast -> markdown', () => {
         },
         { extensions: [directiveToMarkdown] },
       ),
-    ).toEqual('a\\$b\n');
+    ).toBe('a\\$b\n');
   });
 
   it('should not escape a `:` in phrasing when followed by a non-alpha', () => {

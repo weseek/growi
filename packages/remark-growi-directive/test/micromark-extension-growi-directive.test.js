@@ -5,7 +5,6 @@
 
 import { htmlVoidElements } from 'html-void-elements';
 import { micromark } from 'micromark';
-import { describe, it, expect } from 'vitest';
 
 import { DirectiveType } from '../src/mdast-util-growi-directive/consts.js';
 import { directive as syntax, directiveHtml as html } from '../src/micromark-extension-growi-directive/index.js';
