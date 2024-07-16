@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import type EventEmitter from 'events';
 
-import type { Element } from 'react-markdown/lib/rehype-filter';
+import type { Element } from 'hast';
 
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,

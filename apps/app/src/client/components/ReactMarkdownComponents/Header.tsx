@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type EventEmitter from 'events';
 
+import type { Element } from 'hast';
 import { useRouter } from 'next/router';
-import type { Element } from 'react-markdown/lib/rehype-filter';
 
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import {
