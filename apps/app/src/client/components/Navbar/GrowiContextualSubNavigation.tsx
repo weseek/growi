@@ -14,7 +14,8 @@ import { useRouter } from 'next/router';
 import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
-import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -76,8 +77,30 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
+  const syncLatestRevisionBodyHandler = useCallback(async() => {
+    // eslint-disable-next-line no-alert
+    const answer = window.confirm(t('sync-latest-reevision-body.confirm'));
+    if (answer) {
+      try {
+        await syncLatestRevisionBody(pageId);
+        toastSuccess(t('sync-latest-reevision-body.success-toaster'));
+      }
+      catch {
+        toastError(t('sync-latest-reevision-body.error-toaster'));
+      }
+    }
+  }, [pageId, t]);
+
   return (
     <>
+      <DropdownItem
+        onClick={() => syncLatestRevisionBodyHandler()}
+        className="grw-page-control-dropdown-item"
+      >
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
+        {t('SyncLatestRevisionBody')}
+      </DropdownItem>
+
       {/* Presentation */}
       <DropdownItem
         onClick={() => openPresentationModal()}
