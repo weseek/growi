@@ -97,27 +97,28 @@ describe('markdown -> mdast', () => {
 
   it('should support content in a label', () => {
     expect(tree).toEqual(
-    {
-      type: 'root',
-      children: [
-        {
-          type: 'paragraph',
-          children: [
-            { type: 'text', value: 'x ' },
-            {
-              type: DirectiveType.Text,
-              name: 'a',
-              attributes: {},
-              children: [
-                { type: 'text', value: 'b ' },
-                { type: 'emphasis', children: [{ type: 'text', value: 'c' }] },
-                { type: 'text', value: '\nd' },
-              ],
-            },
-          ],
-        },
-      ],
-    });
+      {
+        type: 'root',
+        children: [
+          {
+            type: 'paragraph',
+            children: [
+              { type: 'text', value: 'x ' },
+              {
+                type: DirectiveType.Text,
+                name: 'a',
+                attributes: {},
+                children: [
+                  { type: 'text', value: 'b ' },
+                  { type: 'emphasis', children: [{ type: 'text', value: 'c' }] },
+                  { type: 'text', value: '\nd' },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    );
   });
 
   tree = fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
