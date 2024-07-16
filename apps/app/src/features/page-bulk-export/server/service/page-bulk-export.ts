@@ -37,11 +37,6 @@ import PageBulkExportPageSnapshot from '../models/page-bulk-export-page-snapshot
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
-type ActivityParameters ={
-  ip: string | undefined;
-  endpoint: string;
-}
-
 export class DuplicateBulkExportJobError extends Error {
 
   constructor() {
@@ -78,7 +73,7 @@ class PageBulkExportService {
   /**
    * Create a new page bulk export job and execute it
    */
-  async createAndExecuteBulkExportJob(basePagePath: string, currentUser, activityParameters: ActivityParameters): Promise<void> {
+  async createAndExecuteBulkExportJob(basePagePath: string, currentUser): Promise<void> {
     const basePage = await this.pageModel.findByPathAndViewer(basePagePath, currentUser, null, true);
 
     if (basePage == null) {
@@ -103,15 +98,13 @@ class PageBulkExportService {
 
     await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
 
-    this.executePageBulkExportJob(activityParameters, pageBulkExportJob);
+    this.executePageBulkExportJob(pageBulkExportJob);
   }
 
   /**
    * Execute a page bulk export job. This method can also resume a previously inturrupted job.
    */
-  private async executePageBulkExportJob(
-      activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument & HasObjectId,
-  ): Promise<void> {
+  async executePageBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument & HasObjectId): Promise<void> {
     try {
       const User = this.crowi.model('User');
       const user = await User.findById(getIdForRef(pageBulkExportJob.user));
@@ -132,11 +125,11 @@ class PageBulkExportService {
     }
     catch (err) {
       logger.error(err);
-      await this.notifyExportResultAndCleanUp(false, activityParameters, pageBulkExportJob);
+      await this.notifyExportResultAndCleanUp(false, pageBulkExportJob);
       return;
     }
 
-    await this.notifyExportResultAndCleanUp(true, activityParameters, pageBulkExportJob);
+    await this.notifyExportResultAndCleanUp(true, pageBulkExportJob);
   }
 
   /**
@@ -148,13 +141,12 @@ class PageBulkExportService {
    */
   private async notifyExportResultAndCleanUp(
       succeeded: boolean,
-      activityParameters: ActivityParameters,
       pageBulkExportJob: PageBulkExportJobDocument,
   ): Promise<void> {
     const action = succeeded ? SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED : SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED;
     pageBulkExportJob.status = succeeded ? PageBulkExportJobStatus.completed : PageBulkExportJobStatus.failed;
     const results = await Promise.allSettled([
-      this.notifyExportResult(activityParameters, pageBulkExportJob, action),
+      this.notifyExportResult(pageBulkExportJob, action),
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
       pageBulkExportJob.save(),
@@ -213,10 +205,15 @@ class PageBulkExportService {
    * The export will resume from the last exported page if the process was interrupted.
    */
   private async exportPagesToFS(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+    const findQuery = pageBulkExportJob.lastExportedPagePath != null ? {
+      pageBulkExportJob,
+      path: { $gt: pageBulkExportJob.lastExportedPagePath },
+    } : { pageBulkExportJob };
     const pageSnapshotsReadable = PageBulkExportPageSnapshot
-      .find({ pageBulkExportJob, path: { $gt: pageBulkExportJob.lastExportedPagePath } })
+      .find(findQuery)
       .populate('revision').sort({ path: 1 }).lean()
       .cursor({ batchSize: this.pageBatchSize });
+
     const pagesWritable = this.getPageWritable(pageBulkExportJob);
 
     return pipelinePromise(pageSnapshotsReadable, pagesWritable);
@@ -352,10 +349,9 @@ class PageBulkExportService {
   }
 
   private async notifyExportResult(
-      activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType,
+      pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType,
   ) {
     const activity = await this.crowi.activityService.createActivity({
-      ...activityParameters,
       action,
       targetModel: SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB,
       target: pageBulkExportJob,

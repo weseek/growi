@@ -12,7 +12,9 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
-import instanciatePageBulkExportService from '~/features/page-bulk-export/server/service/page-bulk-export';
+import { PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
+import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
@@ -176,6 +178,8 @@ Crowi.prototype.init = async function() {
   ]);
 
   await normalizeData();
+
+  this.resumeIncompletePageBulkExportJobs();
 };
 
 /**
@@ -789,6 +793,15 @@ Crowi.prototype.setupExternalAccountService = function() {
 Crowi.prototype.setupExternalUserGroupSyncService = function() {
   this.ldapUserGroupSyncService = new LdapUserGroupSyncService(this.passportService, this.s2sMessagingService, this.socketIoService);
   this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
+};
+
+Crowi.prototype.resumeIncompletePageBulkExportJobs = async function() {
+  const jobs = await PageBulkExportJob.find({
+    $or: [
+      { status: PageBulkExportJobStatus.initializing }, { status: PageBulkExportJobStatus.exporting }, { status: PageBulkExportJobStatus.uploading },
+    ],
+  });
+  Promise.all(jobs.map(job => pageBulkExportService.executePageBulkExportJob(job)));
 };
 
 export default Crowi;
