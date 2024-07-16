@@ -9,6 +9,7 @@ import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
+import { useCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 
@@ -26,7 +27,7 @@ declare global {
 
 function setCaretLine(line?: number): void {
   if (line != null) {
-    globalEmitter.emit('setCaretLine', line);
+    globalEmitter.emit('reservedNextCaretLine', line);
   }
 }
 
@@ -66,6 +67,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
+  const { data: currentPageYjsData } = useCurrentPageYjsData();
 
   const router = useRouter();
 
@@ -111,7 +113,12 @@ export const Header = (props: HeaderProps): JSX.Element => {
     };
   }, [activateByHash, router.events]);
 
-  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
+  // TODO: currentPageYjsData?.hasYdocsNewerThanLatestRevision === false make to hide the edit button when a Yjs draft exists
+  // This is because the current conditional logic cannot handle cases where the draft is an empty string.
+  // It will be possible to address this TODO ySyncAnnotation become available for import.
+  // Ref: https://github.com/yjs/y-codemirror.next/pull/30
+  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null
+                            && currentPageYjsData?.hasYdocsNewerThanLatestRevision === false;
 
   return (
     <>

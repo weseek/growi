@@ -3,6 +3,7 @@ import path from 'path';
 import type { IPage } from '@growi/core';
 import {
   AllSubscriptionStatusType, PageGrant, SubscriptionStatusType,
+  getIdForRef,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
@@ -30,6 +31,7 @@ import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
 import { getYjsDataHandlerFactory } from './get-yjs-data';
 import { publishPageHandlersFactory } from './publish-page';
+import { syncLatestRevisionBodyToYjsDraftHandlerFactory } from './sync-latest-revision-body-to-yjs-draft';
 import { unpublishPageHandlersFactory } from './unpublish-page';
 import { updatePageHandlersFactory } from './update-page';
 
@@ -592,7 +594,8 @@ module.exports = (crowi) => {
     } = page;
     let isGrantNormalized = false;
     try {
-      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroups, false, false);
+      const grantedUsersId = grantedUsers.map(ref => getIdForRef(ref));
+      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsersId, grantedGroups, false, false);
     }
     catch (err) {
       logger.error('Error occurred while processing isGrantNormalized.', err);
@@ -615,7 +618,7 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
-    const parentPage = await Page.findByIdAndViewer(page.parent, req.user, null, false);
+    const parentPage = await Page.findByIdAndViewer(getIdForRef(page.parent), req.user, null, false);
 
     // user isn't allowed to see parent's grant
     if (parentPage == null) {
@@ -950,6 +953,8 @@ module.exports = (crowi) => {
   router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
 
   router.get('/:pageId/yjs-data', getYjsDataHandlerFactory(crowi));
+
+  router.put('/:pageId/sync-latest-revision-body-to-yjs-draft', syncLatestRevisionBodyToYjsDraftHandlerFactory(crowi));
 
   return router;
 };

@@ -15,7 +15,13 @@ type CurrentPageYjsDataUtils = {
 }
 
 export const useCurrentPageYjsData = (): SWRResponse<CurrentPageYjsData, Error> & CurrentPageYjsDataUtils => {
-  const swrResponse = useSWRStatic<CurrentPageYjsData, Error>('currentPageYjsData', undefined);
+  const { data: currentPageId } = useCurrentPageId();
+
+  const key = currentPageId != null
+    ? `/page/${currentPageId}/yjs-data`
+    : null;
+
+  const swrResponse = useSWRStatic<CurrentPageYjsData, Error>(key, undefined);
 
   const updateHasYdocsNewerThanLatestRevision = useCallback((hasYdocsNewerThanLatestRevision: boolean) => {
     swrResponse.mutate({ ...swrResponse.data, hasYdocsNewerThanLatestRevision });
@@ -29,12 +35,15 @@ export const useCurrentPageYjsData = (): SWRResponse<CurrentPageYjsData, Error> 
 };
 
 export const useSWRMUTxCurrentPageYjsData = (): SWRMutationResponse<CurrentPageYjsData, Error> => {
-  const key = 'currentPageYjsData';
   const { data: currentPageId } = useCurrentPageId();
+
+  const key = currentPageId != null
+    ? `/page/${currentPageId}/yjs-data`
+    : null;
 
   return useSWRMutation(
     key,
-    () => apiv3Get<{ yjsData: CurrentPageYjsData }>(`/page/${currentPageId}/yjs-data`).then(result => result.data.yjsData),
+    ([endpoint]) => apiv3Get<{ yjsData: CurrentPageYjsData }>(endpoint).then(result => result.data.yjsData),
     { populateCache: true, revalidate: false },
   );
 };

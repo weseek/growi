@@ -32,6 +32,7 @@ import {
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import {
+  useReservedNextCaretLine,
   useEditorSettings,
   useCurrentIndentSize,
   useEditingMarkdown,
@@ -109,6 +110,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
+  const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -298,19 +300,25 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
-  // set handler to set caret line
+
+  // set caret line if the edit button next to Header is clicked.
   useEffect(() => {
-    const handler = (lineNumber?: number) => {
-      codeMirrorEditor?.setCaretLine(lineNumber);
+    if (codeMirrorEditor?.setCaretLine == null) {
+      return;
+    }
+    if (editorMode === EditorMode.Editor) {
+      codeMirrorEditor.setCaretLine(reservedNextCaretLine ?? 0, true);
+    }
 
-      // TODO: scroll to the caret line
-    };
-    globalEmitter.on('setCaretLine', handler);
+  }, [codeMirrorEditor, editorMode, reservedNextCaretLine]);
 
-    return function cleanup() {
-      globalEmitter.removeListener('setCaretLine', handler);
-    };
-  }, [codeMirrorEditor]);
+  // reset caret line if returning to the View.
+  useEffect(() => {
+    if (editorMode === EditorMode.View) {
+      mutateReservedNextCaretLine(0);
+    }
+  }, [editorMode, mutateReservedNextCaretLine]);
+
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,

@@ -121,6 +121,8 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
         <Head>
           {this.renderCustomScript(customScript)}
           <link rel="stylesheet" key="link-theme" href={themeHref} />
+          <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+          <link rel="alternate icon" href="/favicon.ico" />
           <HeadersForGrowiPlugin pluginResourceEntries={pluginResourceEntries} />
           {this.renderCustomCss(customCss)}
         </Head>
