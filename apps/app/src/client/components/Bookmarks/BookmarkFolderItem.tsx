@@ -250,7 +250,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
               onClick={loadChildFolder}
             >
               <div className="d-flex justify-content-center">
-                <span className="material-symbols-outlined">arrow_right</span>
+                <span className="material-symbols-outlined fs-5">arrow_right</span>
               </div>
             </button>
           </div>
