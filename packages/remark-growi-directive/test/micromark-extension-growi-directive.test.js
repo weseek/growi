@@ -332,32 +332,24 @@ describe('micromark-extension-directive (syntax)', () => {
     });
 
     // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a[', options()),
-    //   '<p>$a[</p>',
-    //   'should not support a name followed by an unclosed `[`',
-    // );
+    // it('should not support a name followed by an unclosed `[`', () => {
+    //   expect(micromark('$a[', options())).toBe('<p>$a[</p>');
+    // });
 
     // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a{', options()),
-    //   '<p>$a{</p>',
-    //   'should not support a name followed by an unclosed `{`',
-    // );
+    // it('should not support a name followed by an unclosed `{`', () => {
+    //   expect(micromark('$a{', options())).toBe('<p>$a{</p>');
+    // });
 
     // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a[b', options()),
-    //   '<p>$a[b</p>',
-    //   'should not support a name followed by an unclosed `[` w/ content',
-    // );
+    // it('should not support a name followed by an unclosed `[` w/ content', () => {
+    //   expect(micromark('$a[b', options())).toBe('<p>$a[b</p>');
+    // });
 
     // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a{b', options()),
-    //   '<p>$a{b</p>',
-    //   'should not support a name followed by an unclosed `{` w/ content',
-    // );
+    // it('should not support a name followed by an unclosed `{` w/ content', () => {
+    //   expect(micromark('$a{b', options())).toBe('<p>$a{b</p>');
+    // });
 
     it('should support an empty label', () => {
       expect(micromark('$a[]', options())).toBe('');
@@ -368,11 +360,9 @@ describe('micromark-extension-directive (syntax)', () => {
     });
 
     // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a[\n]', options()),
-    //   '<p>$a[\n]</p>',
-    //   'should not support an eol in an label',
-    // );
+    // it('should not support an eol in an label', () => {
+    //   expect(micromark('$a[\n]', options())).toBe('<p>$a[\n]</p>');
+    // });
 
     it('should support content in an label', () => {
       expect(micromark('$a[a b c]', options())).toBe('');
@@ -383,11 +373,9 @@ describe('micromark-extension-directive (syntax)', () => {
     });
 
     // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a[]asd', options()),
-    //   '<p>$a[]asd</p>',
-    //   'should not support content after a label',
-    // );
+    // it('should not support content after a label', () => {
+    //   expect(micromark('$a[]asd', options())).toBe('<p>$a[]asd</p>');
+    // });
 
     it('should support empty attributes', () => {
       expect(micromark('$a()', options())).toBe('');
@@ -398,11 +386,9 @@ describe('micromark-extension-directive (syntax)', () => {
     });
 
     // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a(\n)', options()),
-    //   '<p>$a(\n)</p>',
-    //   'should not support an eol in attributes',
-    // );
+    // it('should not support an eol in attributes', () => {
+    //   expect(micromark('$a(\n)', options())).toBe('<p>$a(\n)</p>');
+    // });
 
     it('should support attributes w/o values', () => {
       expect(micromark('$a(a b c)', options())).toBe('');
@@ -437,18 +423,14 @@ describe('micromark-extension-directive (syntax)', () => {
     });
 
     // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a(f  =\rg)', options()),
-    //   '<p>$a(f  =\rg)</p>',
-    //   'should not support EOLs around initializers',
-    // );
+    // it('should not support EOLs around initializers', () => {
+    //   expect(micromark('$a(f  =\rg)', options())).toBe('<p>$a(f  =\rg)</p>');
+    // });
 
     // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a(b==)', options()),
-    //   '<p>$a(b==)</p>',
-    //   'should not support `=` to start an unquoted attribute value',
-    // );
+    // it('should not support `=` to start an unquoted attribute value', () => {
+    //   expect(micromark('$a(b==)', options())).toBe('<p>$a(b==)</p>');
+    // });
 
     it('should support most other characters in attribute keys', () => {
       expect(micromark('$a(b💚=a💚b)', options())).toBe('');
@@ -458,29 +440,21 @@ describe('micromark-extension-directive (syntax)', () => {
       expect(micromark('$a(b=a💚b)', options())).toBe('');
     });
 
-    // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a(b="c', options()),
-    //   '<p>$a(b=&quot;c</p>',
-    //   'should not support an EOF in a quoted attribute value',
-    // );
+    it('should not support an EOF in a quoted attribute value', () => {
+      expect(micromark('$a(b="c', options())).toBe('<p>(b=&quot;c</p>');
+    });
 
     it('should support most other characters in quoted attribute values', () => {
       expect(micromark('$a(b="a💚b")', options())).toBe('');
     });
 
-    // == Resolved as text directive
-    // t.equal(
-    //   micromark('$a(b="\nc\r  d")', options()),
-    //   '<p>$a(b=&quot;\nc\rd&quot;)</p>',
-    //   'should not support EOLs in quoted attribute values',
-    // );
+    it('should not support EOLs in quoted attribute values', () => {
+      expect(micromark('$a(b="\nc\r  d")', options())).toBe('<p></p>');
+    });
 
-    // t.equal(
-    //   micromark('$a(b="c"', options()),
-    //   '<p>$a(b=&quot;c&quot;</p>',
-    //   'should not support an EOF after a quoted attribute value',
-    // );
+    it('should not support an EOF after a quoted attribute value', () => {
+      expect(micromark('$a(b="c"', options())).toBe('<p>(b=&quot;c&quot;</p>');
+    });
 
     it('should support whitespace after directives', () => {
       expect(micromark('$a(b=c) \t ', options())).toBe('');
@@ -740,11 +714,10 @@ describe('content', () => {
   });
 
   // == does not work but I don't know why.. -- 2022.08.12 Yuki Takei
-  // t.equal(
-  //   micromark('$abbr[a\n$abbr[b]\nc]', options({ abbr })),
-  //   '<p>a <abbr>a\n<abbr>b</abbr>\nc</abbr> a</p>',
-  //   'should support EOLs around nested directives',
-  // );
+  // it('should support EOLs around nested directives', () => {
+  //   expect(micromark('$abbr[a\n$abbr[b]\nc]', options({ abbr })))
+  //     .toBe('<p><abbr>a\n<abbr>b</abbr>\nc</abbr></p>');
+  // });
 
   it('should support EOLs inside nested directives (1)', () => {
     expect(micromark('$abbr[$abbr[\n]]', options({ abbr })))
