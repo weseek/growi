@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 import {
   PageRecursiveDeleteConfigValue, PageRecursiveDeleteCompConfigValue,
 } from '~/interfaces/page-delete-config';
-import ConfigModel from '~/server/models/config';
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { Config } from '~/server/models/config';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:convert-page-delete-config');
@@ -13,7 +13,6 @@ const logger = loggerFactory('growi:migrate:convert-page-delete-config');
 module.exports = {
   async up(db, client) {
     mongoose.connect(getMongoUri(), mongoOptions);
-    const Config = getModelSafely('Config') || ConfigModel;
 
     const isNewConfigExists = await Config.count({
       ns: 'crowi',

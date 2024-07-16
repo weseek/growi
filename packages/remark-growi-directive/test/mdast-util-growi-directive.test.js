@@ -88,16 +88,16 @@ describe('markdown -> mdast', () => {
     });
   });
 
+  let tree = fromMarkdown('x $a[b *c*\nd]', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown],
+  });
+
+  removePosition(tree, { force: true });
+
   it('should support content in a label', () => {
-    expect(
-      removePosition(
-        fromMarkdown('x $a[b *c*\nd]', {
-          extensions: [directive()],
-          mdastExtensions: [directiveFromMarkdown],
-        }),
-        true,
-      ),
-    ).toEqual({
+    expect(tree).toEqual(
+    {
       type: 'root',
       children: [
         {
@@ -120,16 +120,15 @@ describe('markdown -> mdast', () => {
     });
   });
 
+  tree = fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown],
+  });
+
+  removePosition(tree, { force: true });
+
   it('should support attributes', () => {
-    expect(
-      removePosition(
-        fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
-          extensions: [directive()],
-          mdastExtensions: [directiveFromMarkdown],
-        }),
-        true,
-      ),
-    ).toEqual({
+    expect(tree).toEqual({
       type: 'root',
       children: [
         {
@@ -150,16 +149,15 @@ describe('markdown -> mdast', () => {
     });
   });
 
+  tree = fromMarkdown('$a(b\nc="d\ne")', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown],
+  });
+
+  removePosition(tree, { force: true });
+
   it('should support EOLs in attributes', () => {
-    expect(
-      removePosition(
-        fromMarkdown('$a(b\nc="d\ne")', {
-          extensions: [directive()],
-          mdastExtensions: [directiveFromMarkdown],
-        }),
-        true,
-      ),
-    ).toEqual({
+    expect(tree).toEqual({
       type: 'root',
       children: [
         {
