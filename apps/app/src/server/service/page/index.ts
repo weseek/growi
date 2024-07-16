@@ -7,7 +7,7 @@ import type {
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup, IRevisionHasId,
 } from '@growi/core';
 import {
-  PageGrant, PageStatus, getIdForRef,
+  PageGrant, PageStatus, YDocStatus, getIdForRef,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
@@ -4438,7 +4438,8 @@ class PageService implements IPageService {
     const yjsService = getYjsService();
 
     const currentYdoc = yjsService.getCurrentYdoc(pageId);
-    const hasYdocsNewerThanLatestRevision = await yjsService.hasYdocsNewerThanLatestRevision(pageId);
+    const ydocStatus = await yjsService.getYDocStatus(pageId);
+    const hasYdocsNewerThanLatestRevision = ydocStatus === YDocStatus.DRAFT;
 
     return {
       hasYdocsNewerThanLatestRevision,

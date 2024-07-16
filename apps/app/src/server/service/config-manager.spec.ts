@@ -1,6 +1,6 @@
 import { mock } from 'vitest-mock-extended';
 
-import ConfigModel from '../models/config';
+import { Config } from '../models/config';
 
 import { configManager } from './config-manager';
 import type { S2sMessagingService } from './s2s-messaging/base';
@@ -19,7 +19,7 @@ describe('ConfigManager test', () => {
 
     test('invoke publishUpdateMessage()', async() => {
       // setup
-      ConfigModel.bulkWrite = vi.fn();
+      Config.bulkWrite = vi.fn();
       configManager.loadConfigs = vi.fn();
       configManager.publishUpdateMessage = vi.fn();
 
@@ -28,14 +28,14 @@ describe('ConfigManager test', () => {
       await configManager.updateConfigsInTheSameNamespace('dummyNs', dummyConfig);
 
       // then
-      expect(ConfigModel.bulkWrite).toHaveBeenCalledTimes(1);
+      expect(Config.bulkWrite).toHaveBeenCalledTimes(1);
       expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
     });
 
     test('does not invoke publishUpdateMessage()', async() => {
       // setup
-      ConfigModel.bulkWrite = vi.fn();
+      Config.bulkWrite = vi.fn();
       configManager.loadConfigs = vi.fn();
       configManager.publishUpdateMessage = vi.fn();
 
@@ -44,7 +44,7 @@ describe('ConfigManager test', () => {
       await configManager.updateConfigsInTheSameNamespace('dummyNs', dummyConfig, true);
 
       // then
-      expect(ConfigModel.bulkWrite).toHaveBeenCalledTimes(1);
+      expect(Config.bulkWrite).toHaveBeenCalledTimes(1);
       expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).not.toHaveBeenCalled();
     });
