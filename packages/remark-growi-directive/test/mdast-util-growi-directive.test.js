@@ -1,6 +1,7 @@
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { toMarkdown } from 'mdast-util-to-markdown';
 import { removePosition } from 'unist-util-remove-position';
+import { describe, it, expect } from 'vitest';
 
 import { DirectiveType } from '../src/mdast-util-growi-directive/consts.js';
 import { directiveFromMarkdown, directiveToMarkdown } from '../src/mdast-util-growi-directive/index.js';
