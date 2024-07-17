@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 
 import { Collapse } from 'reactstrap';
+import type SimpleBar from 'simplebar-react';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../../consts';
 import { useCodeMirrorEditorIsolated } from '../../../stores/codemirror-editor';
@@ -8,7 +9,6 @@ import { useCodeMirrorEditorIsolated } from '../../../stores/codemirror-editor';
 import styles from './TextFormatTools.module.scss';
 
 const btnTextFormatToolsTogglerClass = styles['btn-text-format-tools-toggler'];
-
 
 type TogglarProps = {
   isOpen: boolean,
@@ -34,16 +34,23 @@ const TextFormatToolsToggler = (props: TogglarProps): JSX.Element => {
 
 type TextFormatToolsType = {
   editorKey: string | GlobalCodeMirrorEditorKey,
+  simpleBarRef: React.RefObject<SimpleBar>,
 }
 
 export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
-  const { editorKey } = props;
+  const { editorKey, simpleBarRef } = props;
   const [isOpen, setOpen] = useState(false);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
 
   const toggle = useCallback(() => {
     setOpen(bool => !bool);
   }, []);
+
+  const recalculateSimpleBar = useCallback(() => {
+    if (simpleBarRef.current) {
+      simpleBarRef.current.recalculate();
+    }
+  }, [simpleBarRef]);
 
   const onClickInsertMarkdownElements = (prefix: string, suffix: string) => {
     codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
@@ -57,7 +64,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
     <div className="d-flex">
       <TextFormatToolsToggler isOpen={isOpen} onClick={toggle} />
 
-      <Collapse isOpen={isOpen} horizontal>
+      <Collapse isOpen={isOpen} horizontal onEntered={recalculateSimpleBar} onExited={recalculateSimpleBar}>
         <div className="d-flex px-1 gap-1" style={{ width: '220px' }}>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('**', '**')}>
             <span className="material-symbols-outlined fs-5">format_bold</span>
