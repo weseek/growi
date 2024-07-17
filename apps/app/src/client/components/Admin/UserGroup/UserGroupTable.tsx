@@ -54,6 +54,29 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
   return map;
 };
 
+type UserGroupEditLinkProps = {
+  group:IUserGroupHasId,
+  isExternalGroup:boolean,
+}
+
+const UserGroupEditLink = (props: UserGroupEditLinkProps): JSX.Element => {
+  const [isHover, setHover] = useState(false);
+
+  return (
+    <div
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+    >
+      <Link
+        href={`/admin/user-group-detail/${props.group._id}?isExternalGroup=${props.isExternalGroup}`}
+      >
+        <span className="material-symbols-outlined pe-2 pt-2">group</span>
+        <span className="text-decoration-underline">{props.group.name}</span>
+        <span className={`material-symbols-outlined link-opacity-75-hover px-2 py-0 ${isHover ? '' : 'invisible'}`}>edit</span>
+      </Link>
+    </div>
+  );
+};
 
 export const UserGroupTable: FC<Props> = ({
   headerLabel,
@@ -136,18 +159,6 @@ export const UserGroupTable: FC<Props> = ({
     setGroupIdToUsersMap(generateGroupIdToUsersMap(userGroupRelations));
     setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(childUserGroups));
   }, [userGroupRelations, childUserGroups]);
-  const [hoveredindex, setHoveredIndex] = useState<undefined | number>(undefined);
-  const ButtonForUserGroupedit = (index) => {
-    return (
-      <button
-        type="button"
-        className="btn btn-link btn-edit-groups text-secondary py-0"
-        key={index}
-      >
-        <span className="material-symbols-outlined px-2 py-0">edit</span>
-      </button>
-    );
-  };
 
   return (
     <div data-testid="grw-user-group-table" className="mb-5">
@@ -175,15 +186,7 @@ export const UserGroupTable: FC<Props> = ({
                 {isAclEnabled
                   ? (
                     <td>
-
-                      <Link
-                        className="link-opacity-75-hover"
-                        href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
-                      >
-                        <span className="material-symbols-outlined pe-2 pt-2">group</span>
-                        <span className="text-decoration-underline">{group.name}</span>
-                        <ButtonForUserGroupedit />
-                      </Link>
+                      <UserGroupEditLink group={group} isExternalGroup={isExternalGroup} />
                     </td>
                   )
                   : (
