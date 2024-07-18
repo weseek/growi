@@ -6,7 +6,7 @@ import mongoose from 'mongoose';
 export const convertRevisionPageIdToString = async(): Promise<void> => {
   const Revision = mongoose.model<IRevisionHasId>('Revision');
 
-  // Extract documents with ObjectId value of revision.pageId value
+  // Find pageId fields that are not of type string
   const targetDocuments = await Revision.find({ $expr: { $not: { $eq: [{ $type: '$pageId' }, 'string'] } } });
 
   const requests = targetDocuments.map((revision) => {
