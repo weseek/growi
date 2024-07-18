@@ -1,5 +1,3 @@
-import { Console } from 'console';
-
 import type { IPage, IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
