@@ -87,7 +87,15 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     if (answer) {
       try {
         const editingMarkdownLength = codeMirrorEditor?.getDoc().length;
-        await syncLatestRevisionBody(pageId, editingMarkdownLength);
+        const res = await syncLatestRevisionBody(pageId, editingMarkdownLength);
+
+        if (res?.isYjsDataCorrupted) {
+          // TODO: i18n
+          // eslint-disable-next-line no-alert
+          window.alert('Please reload the page');
+          return;
+        }
+
         toastSuccess(t('sync-latest-reevision-body.success-toaster'));
       }
       catch {
