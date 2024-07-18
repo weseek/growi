@@ -3,8 +3,10 @@
 import { type IRevisionHasId } from '@growi/core';
 import mongoose from 'mongoose';
 
+import { type IRevisionModel } from '~/server/models/revision';
+
 export const convertRevisionPageIdToString = async(): Promise<void> => {
-  const Revision = mongoose.model<IRevisionHasId>('Revision');
+  const Revision = mongoose.model<IRevisionHasId, IRevisionModel>('Revision');
 
   // Find pageId fields that are not of type string
   const targetDocuments = await Revision.find({ $expr: { $not: { $eq: [{ $type: '$pageId' }, 'string'] } } });
