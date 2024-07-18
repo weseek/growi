@@ -368,11 +368,11 @@ class SecuritySetting extends React.Component {
             <tbody>
               <tr>
                 <th scope="row">{ t('public') }</th>
-                <td><span className="material-symbols-outlined text-success me-1">check_circle</span>{ t('security_settings.always_displayed') }</td>
+                <input type="checkbox" />
               </tr>
               <tr>
                 <th scope="row">{ t('anyone_with_the_link') }</th>
-                <td><span className="material-symbols-outlined text-danger me-1">cancel</span>{ t('security_settings.always_hidden') }</td>
+                <input type="checkbox" />
               </tr>
               <tr>
                 <th scope="row">{ t('only_me') }</th>
@@ -385,9 +385,6 @@ class SecuritySetting extends React.Component {
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                     />
-                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByOwner">
-                      {t('security_settings.displayed_or_hidden')}
-                    </label>
                   </div>
                 </td>
               </tr>
@@ -402,9 +399,6 @@ class SecuritySetting extends React.Component {
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                     />
-                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByGroup">
-                      {t('security_settings.displayed_or_hidden')}
-                    </label>
                   </div>
                 </td>
               </tr>
