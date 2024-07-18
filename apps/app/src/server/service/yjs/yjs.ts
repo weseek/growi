@@ -72,8 +72,9 @@ class YjsService implements IYjsService {
     // create indexes
     createIndexes(MONGODB_PERSISTENCE_COLLECTION_NAME);
 
+    // TODO: https://redmine.weseek.co.jp/issues/150529
     // register middlewares
-    this.registerAccessiblePageChecker(ysocketio);
+    // this.registerAccessiblePageChecker(ysocketio);
 
     ysocketio.on('document-loaded', async(doc: Document) => {
       const pageId = doc.name;
