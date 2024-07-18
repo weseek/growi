@@ -90,9 +90,8 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         const res = await syncLatestRevisionBody(pageId, editingMarkdownLength);
 
         if (res?.isYjsDataBroken) {
-          // TODO: i18n
           // eslint-disable-next-line no-alert
-          window.alert('Please reload the page');
+          window.alert(t('sync-latest-reevision-body.alert'));
           return;
         }
 

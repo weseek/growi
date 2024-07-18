@@ -856,6 +856,7 @@
   },
   "sync-latest-reevision-body": {
     "confirm": "删除输入编辑器的草稿数据，同步最新文本。 您真的想运行它吗？",
+    "alert": "最新文本可能尚未同步。 请重新加载并再次检查。",
     "success-toaster": "同步最新文本",
     "error-toaster": "同步最新文本失败"
   }
