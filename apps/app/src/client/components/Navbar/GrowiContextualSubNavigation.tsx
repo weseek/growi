@@ -7,6 +7,8 @@ import type {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
+import { GlobalCodeMirrorEditorKey } from '@growi/editor';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -77,19 +79,22 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+
   const syncLatestRevisionBodyHandler = useCallback(async() => {
     // eslint-disable-next-line no-alert
     const answer = window.confirm(t('sync-latest-reevision-body.confirm'));
     if (answer) {
       try {
-        await syncLatestRevisionBody(pageId);
+        const editingMarkdownLength = codeMirrorEditor?.getDoc().length;
+        await syncLatestRevisionBody(pageId, editingMarkdownLength);
         toastSuccess(t('sync-latest-reevision-body.success-toaster'));
       }
       catch {
         toastError(t('sync-latest-reevision-body.error-toaster'));
       }
     }
-  }, [pageId, t]);
+  }, [codeMirrorEditor, pageId, t]);
 
   return (
     <>
