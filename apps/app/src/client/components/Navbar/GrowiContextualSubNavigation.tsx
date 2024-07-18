@@ -89,7 +89,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         const editingMarkdownLength = codeMirrorEditor?.getDoc().length;
         const res = await syncLatestRevisionBody(pageId, editingMarkdownLength);
 
-        if (res?.isYjsDataCorrupted) {
+        if (res?.isYjsDataBroken) {
           // TODO: i18n
           // eslint-disable-next-line no-alert
           window.alert('Please reload the page');
