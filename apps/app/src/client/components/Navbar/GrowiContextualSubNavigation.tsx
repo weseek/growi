@@ -25,7 +25,7 @@ import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
-import { useEditorMode } from '~/stores-universal/ui';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -72,6 +72,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     pageId, revisionId, isLinkSharingDisabled,
   } = props;
 
+  const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -110,13 +111,15 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   return (
     <>
-      <DropdownItem
-        onClick={() => syncLatestRevisionBodyHandler()}
-        className="grw-page-control-dropdown-item"
-      >
-        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
-        {t('SyncLatestRevisionBody')}
-      </DropdownItem>
+      { editorMode === EditorMode.Editor && (
+        <DropdownItem
+          onClick={() => syncLatestRevisionBodyHandler()}
+          className="grw-page-control-dropdown-item"
+        >
+          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
+          {t('SyncLatestRevisionBody')}
+        </DropdownItem>
+      ) }
 
       {/* Presentation */}
       <DropdownItem
