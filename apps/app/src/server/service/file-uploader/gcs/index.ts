@@ -14,7 +14,6 @@ import {
 } from '../file-uploader';
 import { ContentHeaders } from '../utils';
 
-import type { IGcsMultipartUploader } from './multipart-uploader';
 import { GcsMultipartUploader } from './multipart-uploader';
 
 const logger = loggerFactory('growi:service:fileUploaderGcs');

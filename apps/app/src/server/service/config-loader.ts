@@ -736,6 +736,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  BULK_EXPORT_PUPPETEER_CLUSTER_MAX_CONCURRENCY: {
+    ns: 'crowi',
+    key: 'app:bulkExportPuppeteerClusterMaxConcurrency',
+    type: ValueType.NUMBER,
+    default: 10,
+  },
+  BULK_EXPORT_PUPPETEER_RETRY_LIMIT: {
+    ns: 'crowi',
+    key: 'app:bulkExportPuppeteerRetryLimit',
+    type: ValueType.NUMBER,
+    default: 5,
+  },
 };
 
 

@@ -119,7 +119,7 @@ ENV appDir ${optDir}/growi
 # see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
 RUN set -eux; \
 	apt-get update; \
-	apt-get install -y gosu; \
+	apt-get install -y gosu chromium; \
 	rm -rf /var/lib/apt/lists/*; \
 # verify that the binary works
 	gosu nobody true

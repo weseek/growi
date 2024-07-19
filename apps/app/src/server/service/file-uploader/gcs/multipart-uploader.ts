@@ -1,9 +1,11 @@
 import type { Bucket, File } from '@google-cloud/storage';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
+import urljoin from 'url-join';
 
 import loggerFactory from '~/utils/logger';
 
+import { configManager } from '../../config-manager';
 import { MultipartUploader, UploadStatus, type IMultipartUploader } from '../multipart-uploader';
 
 const logger = loggerFactory('growi:services:fileUploaderGcs:multipartUploader');
@@ -26,7 +28,8 @@ export class GcsMultipartUploader extends MultipartUploader implements IGcsMulti
   constructor(bucket: Bucket, uploadKey: string, maxPartSize: number) {
     super(uploadKey, maxPartSize);
 
-    this.file = bucket.file(this.uploadKey);
+    const namespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
+    this.file = bucket.file(urljoin(namespace || '', uploadKey));
   }
 
   async initUpload(): Promise<void> {

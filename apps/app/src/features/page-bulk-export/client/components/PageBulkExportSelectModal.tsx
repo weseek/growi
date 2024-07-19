@@ -38,7 +38,7 @@ const PageBulkExportSelectModal = (): JSX.Element => {
               </small>
             </div>
             <div className="d-flex justify-content-center mt-2">
-              <button className="btn btn-primary" type="button" onClick={() => startBulkExport(PageBulkExportFormat.markdown)}>
+              <button className="btn btn-primary" type="button" onClick={() => startBulkExport(PageBulkExportFormat.md)}>
                 {t('page_export.markdown')}
               </button>
               <button className="btn btn-primary ms-2" type="button" onClick={() => startBulkExport(PageBulkExportFormat.pdf)}>PDF</button>

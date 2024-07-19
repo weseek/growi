@@ -4,7 +4,6 @@ import type { Readable } from 'stream';
 import { Writable, pipeline } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
-
 import type { HasObjectId } from '@growi/core';
 import { type IPage, isPopulated, SubscriptionStatusType } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -12,6 +11,9 @@ import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
+import { Cluster } from 'puppeteer-cluster';
+import remark from 'remark';
+import html from 'remark-html';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -21,6 +23,7 @@ import { Attachment } from '~/server/models';
 import type { ActivityDocument } from '~/server/models/activity';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
+import { configManager } from '~/server/service/config-manager';
 import type { FileUploader } from '~/server/service/file-uploader';
 import type { IMultipartUploader } from '~/server/service/file-uploader/multipart-uploader';
 import { preNotifyService } from '~/server/service/pre-notify';
@@ -56,12 +59,16 @@ class PageBulkExportService {
   // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
   tmpOutputRootDir = '/tmp';
 
+  puppeteerCluster: Cluster | undefined;
+
   constructor(crowi) {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
   }
 
-  async createAndStartPageBulkExportJob(basePagePath: string, currentUser, activityParameters: ActivityParameters): Promise<void> {
+  async createAndStartPageBulkExportJob(
+      basePagePath: string, format: PageBulkExportFormat, currentUser, activityParameters: ActivityParameters,
+  ): Promise<void> {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const basePage = await Page.findByPathAndViewer(basePagePath, currentUser, null, true);
 
@@ -72,16 +79,20 @@ class PageBulkExportService {
     const pageBulkExportJob: PageBulkExportJobDocument & HasObjectId = await PageBulkExportJob.create({
       user: currentUser,
       page: basePage,
-      format: PageBulkExportFormat.markdown,
+      format,
     });
 
     await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
 
-    this.bulkExportWithBasePagePath(basePagePath, currentUser, activityParameters, pageBulkExportJob);
+    this.bulkExportWithBasePagePath(basePagePath, format, currentUser, activityParameters, pageBulkExportJob);
   }
 
-  async bulkExportWithBasePagePath(
-      basePagePath: string, currentUser, activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument & HasObjectId,
+  private async bulkExportWithBasePagePath(
+      basePagePath: string,
+      format: PageBulkExportFormat,
+      currentUser,
+      activityParameters: ActivityParameters,
+      pageBulkExportJob: PageBulkExportJobDocument & HasObjectId,
   ): Promise<void> {
     const timeStamp = (new Date()).getTime();
     const exportName = `page-bulk-export-${timeStamp}`;
@@ -89,7 +100,7 @@ class PageBulkExportService {
     // export pages to fs temporarily
     const tmpOutputDir = `${this.tmpOutputRootDir}/${exportName}`;
     try {
-      await this.exportPagesToFS(basePagePath, tmpOutputDir, currentUser);
+      await this.exportPagesToFS(basePagePath, tmpOutputDir, currentUser, format);
     }
     catch (err) {
       await this.handleExportError(err, activityParameters, pageBulkExportJob, tmpOutputDir);
@@ -152,9 +163,9 @@ class PageBulkExportService {
     }
   }
 
-  private async exportPagesToFS(basePagePath: string, outputDir: string, currentUser): Promise<void> {
+  private async exportPagesToFS(basePagePath: string, outputDir: string, currentUser, format: PageBulkExportFormat): Promise<void> {
     const pagesReadable = await this.getPageReadable(basePagePath, currentUser);
-    const pagesWritable = this.getPageWritable(outputDir);
+    const pagesWritable = await this.getPageWritable(outputDir, format);
 
     return pipelinePromise(pagesReadable, pagesWritable);
   }
@@ -180,7 +191,7 @@ class PageBulkExportService {
   /**
    * Get a Writable that writes the page body temporarily to fs
    */
-  private getPageWritable(outputDir: string): Writable {
+  private async getPageWritable(outputDir: string, format: PageBulkExportFormat): Promise<Writable> {
     return new Writable({
       objectMode: true,
       write: async(page: PageDocument, encoding, callback) => {
@@ -188,13 +199,13 @@ class PageBulkExportService {
           const revision = page.revision;
 
           if (revision != null && isPopulated(revision)) {
-            const markdownBody = revision.body;
-            const pathNormalized = `${normalizePath(page.path)}.md`;
+            const pageBody = format === PageBulkExportFormat.pdf ? (await this.convertMdToPdf(revision.body)) : revision.body;
+            const pathNormalized = `${normalizePath(page.path)}.${format}`;
             const fileOutputPath = path.join(outputDir, pathNormalized);
             const fileOutputParentPath = getParentPath(fileOutputPath);
 
             await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
-            await fs.promises.writeFile(fileOutputPath, markdownBody);
+            await fs.promises.writeFile(fileOutputPath, pageBody);
           }
         }
         catch (err) {
@@ -268,6 +279,72 @@ class PageBulkExportService {
     });
   }
 
+  /**
+   * Initialize puppeteer cluster for converting markdown to pdf
+   */
+  async initPuppeteerCluster(): Promise<void> {
+    this.puppeteerCluster = await Cluster.launch({
+      concurrency: Cluster.CONCURRENCY_PAGE,
+      maxConcurrency: configManager.getConfig('crowi', 'app:bulkExportPuppeteerClusterMaxConcurrency'),
+      workerCreationDelay: 10000,
+    });
+
+    await this.puppeteerCluster.task(async({ page, data: htmlString }) => {
+      await page.setContent(htmlString, { waitUntil: 'domcontentloaded' });
+      await page.emulateMediaType('screen');
+      const pdfResult = await page.pdf({
+        margin: {
+          top: '100px', right: '50px', bottom: '100px', left: '50px',
+        },
+        printBackground: true,
+        format: 'A4',
+      });
+      return pdfResult;
+    });
+
+    // close cluster on app termination
+    const handleClose = async() => {
+      logger.info('Closing puppeteer cluster...');
+      await this.puppeteerCluster?.idle();
+      await this.puppeteerCluster?.close();
+      process.exit();
+    };
+    process.on('SIGINT', handleClose);
+    process.on('SIGTERM', handleClose);
+  }
+
+  /**
+   * Convert markdown string to html, then to PDF
+   * When PDF conversion is unstable and error occurs, it will retry up to the specified limit
+   */
+  private async convertMdToPdf(md: string): Promise<Buffer> {
+    const executeConvert = async(htmlString: string, retries: number) => {
+      if (this.puppeteerCluster == null) {
+        throw new Error('Puppeteer cluster is not initialized');
+      }
+
+      try {
+        return await this.puppeteerCluster.execute(htmlString);
+      }
+      catch (err) {
+        if (retries > 0) {
+          logger.error('Failed to convert markdown to pdf. Retrying...', err);
+          return executeConvert(htmlString, retries - 1);
+        }
+        throw err;
+      }
+    };
+
+    const htmlString = (await remark()
+      .use(html)
+      .process(md))
+      .toString();
+
+    const result = await executeConvert(htmlString, configManager.getConfig('crowi', 'app:bulkExportPuppeteerRetryLimit'));
+
+    return result;
+  }
+
   private async notifyExportResult(
       activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType,
   ) {
@@ -290,6 +367,7 @@ class PageBulkExportService {
 
 // eslint-disable-next-line import/no-mutable-exports
 export let pageBulkExportService: PageBulkExportService | undefined; // singleton instance
-export default function instanciate(crowi): void {
+export default async function instanciate(crowi): Promise<void> {
   pageBulkExportService = new PageBulkExportService(crowi);
+  await pageBulkExportService.initPuppeteerCluster();
 }
