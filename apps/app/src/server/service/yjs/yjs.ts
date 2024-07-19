@@ -8,6 +8,7 @@ import type { Document } from 'y-socket.io/dist/server';
 import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
+import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
 import { RoomPrefix, getRoomNameWithId } from '~/server/util/socket-io-helpers';
 import loggerFactory from '~/utils/logger';
 
@@ -32,7 +33,7 @@ type RequestWithUser = IncomingMessage & { user: IUserHasId };
 
 export interface IYjsService {
   getYDocStatus(pageId: string): Promise<YDocStatus>;
-  syncWithTheLatestRevisionForce(pageId: string): Promise<void>;
+  syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody>
   getCurrentYdoc(pageId: string): Ydoc | undefined;
 }
 
@@ -72,8 +73,9 @@ class YjsService implements IYjsService {
     // create indexes
     createIndexes(MONGODB_PERSISTENCE_COLLECTION_NAME);
 
+    // TODO: https://redmine.weseek.co.jp/issues/150529
     // register middlewares
-    this.registerAccessiblePageChecker(ysocketio);
+    // this.registerAccessiblePageChecker(ysocketio);
 
     ysocketio.on('document-loaded', async(doc: Document) => {
       const pageId = doc.name;
@@ -180,14 +182,22 @@ class YjsService implements IYjsService {
     return YDocStatus.OUTDATED;
   }
 
-  public async syncWithTheLatestRevisionForce(pageId: string): Promise<void> {
+  public async syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody> {
     const doc = this.ysocketio.documents.get(pageId);
 
     if (doc == null) {
-      return;
+      return { synced: false };
     }
 
+    const ytextLength = doc?.getText('codemirror').length;
     syncYDoc(this.mdb, doc, true);
+
+    return {
+      synced: true,
+      isYjsDataBroken: editingMarkdownLength != null
+        ? editingMarkdownLength !== ytextLength
+        : undefined,
+    };
   }
 
   public getCurrentYdoc(pageId: string): Ydoc | undefined {
