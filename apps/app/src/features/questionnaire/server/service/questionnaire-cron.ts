@@ -1,19 +1,17 @@
 import axiosRetry from 'axios-retry';
 
-import loggerFactory from '~/utils/logger';
+import { configManager } from '~/server/service/config-manager';
+import CronService from '~/server/service/cron';
 import { getRandomIntInRange } from '~/utils/rand';
 
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
-import { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
+import type { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
 import ProactiveQuestionnaireAnswer from '../models/proactive-questionnaire-answer';
 import QuestionnaireAnswer from '../models/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
 import QuestionnaireOrder from '../models/questionnaire-order';
 
-const logger = loggerFactory('growi:service:questionnaire-cron');
-
 const axios = require('axios').default;
-const nodeCron = require('node-cron');
 
 axiosRetry(axios, { retries: 3 });
 
@@ -24,36 +22,19 @@ axiosRetry(axios, { retries: 3 });
  *  3. changes QuestionnaireAnswerStatuses which are 'skipped' to 'not_answered'
  *  4. resend QuestionnaireAnswers & ProactiveQuestionnaireAnswers which failed to reach questionnaire server
  */
-class QuestionnaireCronService {
-
-  crowi: any;
-
-  cronJob: any;
-
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(crowi) {
-    this.crowi = crowi;
-  }
+class QuestionnaireCronService extends CronService {
 
   sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
 
-  startCron(): void {
-    const cronSchedule = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
-    const maxHoursUntilRequest = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
-
+  override startCron(cronSchedule: string): void {
+    const maxHoursUntilRequest = configManager.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
     const maxSecondsUntilRequest = maxHoursUntilRequest * 60 * 60;
 
-    this.cronJob?.stop();
-    this.cronJob = this.generateCronJob(cronSchedule, maxSecondsUntilRequest);
-    this.cronJob.start();
+    super.startCron(cronSchedule, this.getPreExecute(maxSecondsUntilRequest));
   }
 
-  stopCron(): void {
-    this.cronJob.stop();
-  }
-
-  async executeJob(): Promise<void> {
-    const questionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
+  override async executeJob(): Promise<void> {
+    const questionnaireServerOrigin = configManager.getConfig('crowi', 'app:questionnaireServerOrigin');
 
     const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
       const response = await axios.get(`${questionnaireServerOrigin}/questionnaire-order/index`);
@@ -100,22 +81,16 @@ class QuestionnaireCronService {
     await changeSkippedAnswerStatusToNotAnswered();
   }
 
-  private generateCronJob(cronSchedule: string, maxSecondsUntilRequest: number) {
-    return nodeCron.schedule(cronSchedule, async() => {
+  private getPreExecute(maxSecondsUntilRequest: number): () => Promise<void> {
+    return async() => {
       // sleep for a random amount to scatter request time from GROWI apps to questionnaire server
       const secToSleep = getRandomIntInRange(0, maxSecondsUntilRequest);
       await this.sleep(secToSleep * 1000);
-
-      try {
-        this.executeJob();
-      }
-      catch (e) {
-        logger.error(e);
-      }
-
-    });
+    };
   }
 
 }
 
-export default QuestionnaireCronService;
+const questionnaireCronService = new QuestionnaireCronService();
+
+export default questionnaireCronService;

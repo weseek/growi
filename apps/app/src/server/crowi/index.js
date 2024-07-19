@@ -16,7 +16,7 @@ import { PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/
 import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
 import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
-import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
+import questionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
@@ -100,7 +100,6 @@ class Crowi {
     this.activityService = null;
     this.commentService = null;
     this.questionnaireService = null;
-    this.questionnaireCronService = null;
 
     this.tokens = null;
 
@@ -329,8 +328,8 @@ Crowi.prototype.setupModels = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
-  this.questionnaireCronService = new QuestionnaireCronService(this);
-  this.questionnaireCronService.startCron();
+  const questionnaireCronSchedule = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
+  questionnaireCronService.startCron(questionnaireCronSchedule);
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {

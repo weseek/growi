@@ -234,6 +234,7 @@
     "@types/archiver": "^6.0.2",
     "@types/express": "^4.17.21",
     "@types/jest": "^29.5.2",
+    "@types/node-cron": "^3.0.2",
     "@types/react-input-autosize": "^2.2.4",
     "@types/react-scroll": "^1.8.4",
     "@types/react-stickynode": "^4.0.3",
