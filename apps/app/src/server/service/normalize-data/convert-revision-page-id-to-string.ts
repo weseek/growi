@@ -11,8 +11,7 @@ const logger = loggerFactory('growi:service:NormalizeData:convert-revision-page-
 export const convertRevisionPageIdToString = async(): Promise<void> => {
   const Revision = mongoose.model<IRevisionHasId, IRevisionModel>('Revision');
 
-  // Find and update pageId fields that are not of type string
-  const filter = { $expr: { $not: { $eq: [{ $type: '$pageId' }, 'string'] } } };
+  const filter = { pageId: { $type: 'objectId' } };  
   const update = [
     {
       $set: {
@@ -25,6 +24,6 @@ export const convertRevisionPageIdToString = async(): Promise<void> => {
 
   await Revision.updateMany(filter, update);
 
-  const explain = await Revision.updateMany(filter, update).explain('executionStats');
-  logger.info(explain);
+  const explain = await Revision.updateMany(filter, update).explain('queryPlanner');
+  logger.debug(explain);
 };
