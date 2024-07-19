@@ -11,7 +11,7 @@ const logger = loggerFactory('growi:service:NormalizeData:convert-revision-page-
 export const convertRevisionPageIdToString = async(): Promise<void> => {
   const Revision = mongoose.model<IRevisionHasId, IRevisionModel>('Revision');
 
-  const filter = { pageId: { $type: 'objectId' } };  
+  const filter = { pageId: { $type: 'objectId' } };
   const update = [
     {
       $set: {
