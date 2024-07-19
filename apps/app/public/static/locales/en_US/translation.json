@@ -9,6 +9,7 @@
   "delete_all": "Delete all",
   "Duplicate": "Duplicate",
   "PathRecovery": "Path recovery",
+  "SyncLatestRevisionBody": "Sync editor with latest body",
   "Copy": "Copy",
   "preview": "Preview",
   "desktop": "Desktop",
@@ -849,5 +850,11 @@
   },
   "create_page": {
     "untitled": "Untitled"
+  },
+  "sync-latest-reevision-body": {
+    "confirm": "Delete the draft data being entered into the editor and synchronize the latest text. Are you sure you want to run it?",
+    "alert": "The latest text may not have been synchronized. Please reload and check again.",
+    "success-toaster": "Latest text synchronized",
+    "error-toaster": "Synchronization of the latest text failed"
   }
 }

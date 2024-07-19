@@ -32,7 +32,7 @@ type RequestWithUser = IncomingMessage & { user: IUserHasId };
 
 export interface IYjsService {
   getYDocStatus(pageId: string): Promise<YDocStatus>;
-  syncWithTheLatestRevisionForce(pageId: string): Promise<void>;
+  syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<{ isYjsDataBroken?: boolean } | void>
   getCurrentYdoc(pageId: string): Ydoc | undefined;
 }
 
@@ -72,8 +72,9 @@ class YjsService implements IYjsService {
     // create indexes
     createIndexes(MONGODB_PERSISTENCE_COLLECTION_NAME);
 
+    // TODO: https://redmine.weseek.co.jp/issues/150529
     // register middlewares
-    this.registerAccessiblePageChecker(ysocketio);
+    // this.registerAccessiblePageChecker(ysocketio);
 
     ysocketio.on('document-loaded', async(doc: Document) => {
       const pageId = doc.name;
@@ -135,7 +136,7 @@ class YjsService implements IYjsService {
   }
 
   public async getYDocStatus(pageId: string): Promise<YDocStatus> {
-    const dumpLog = (status: YDocStatus, args?: { [key: string]: number }) => {
+    const dumpLog = (status: YDocStatus, args?: { [key: string]: unknown }) => {
       logger.debug(`getYDocStatus('${pageId}') detected '${status}'`, args ?? {});
     };
 
@@ -151,7 +152,7 @@ class YjsService implements IYjsService {
       .lean();
 
     if (result == null) {
-      dumpLog(YDocStatus.ISOLATED);
+      dumpLog(YDocStatus.ISOLATED, { result });
       return YDocStatus.ISOLATED;
     }
 
@@ -180,14 +181,19 @@ class YjsService implements IYjsService {
     return YDocStatus.OUTDATED;
   }
 
-  public async syncWithTheLatestRevisionForce(pageId: string): Promise<void> {
+  public async syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<{ isYjsDataBroken?: boolean } | void> {
     const doc = this.ysocketio.documents.get(pageId);
 
     if (doc == null) {
       return;
     }
 
+    const ytextLength = doc?.getText('codemirror').length;
     syncYDoc(this.mdb, doc, true);
+
+    if (editingMarkdownLength != null) {
+      return { isYjsDataBroken: editingMarkdownLength !== ytextLength };
+    }
   }
 
   public getCurrentYdoc(pageId: string): Ydoc | undefined {

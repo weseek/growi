@@ -1289,8 +1289,8 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision1.body).toBe(_revision1.body);
       expect(duplicatedRevision2.body).toBe(_revision2.body);
-      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
-      expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id);
+      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id.toString());
+      expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id.toString());
     });
     test('Should duplicate multiple pages. Page with GRANT_RESTRICTED should NOT be duplicated', async() => {
       const _path1 = '/np_duplicate4';
@@ -1329,8 +1329,8 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedPage3.parent).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision1.body).toBe(baseRevision1.body);
       expect(duplicatedRevision3.body).toBe(baseRevision3.body);
-      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
-      expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id);
+      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id.toString());
+      expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id.toString());
     });
     test('Should duplicate only user related pages and granted groups when onlyDuplicateUserRelatedResources is true', async() => {
       const _path1 = '/np_duplicate7';
@@ -1364,7 +1364,7 @@ describe('PageService page operations with non-public pages', () => {
       ]);
       expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
       expect(duplicatedRevision1.body).toBe(_revision1.body);
-      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
+      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id.toString());
     });
     test('Should duplicate all pages and granted groups when onlyDuplicateUserRelatedResources is false', async() => {
       const _path1 = '/np_duplicate7';
@@ -1410,18 +1410,18 @@ describe('PageService page operations with non-public pages', () => {
       ]);
       expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
       expect(duplicatedRevision1.body).toBe(_revision1.body);
-      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
+      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id.toString());
       expect(normalizeGrantedGroups(duplicatedPage2.grantedGroups)).toStrictEqual([
         { item: groupIdC, type: GroupType.userGroup },
         { item: externalGroupIdC, type: GroupType.externalUserGroup },
       ]);
       expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision2.body).toBe(_revision2.body);
-      expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id);
+      expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id.toString());
       expect(duplicatedPage3.grantedUsers).toStrictEqual([npDummyUser2._id]);
       expect(duplicatedPage3.parent).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision3.body).toBe(_revision3.body);
-      expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id);
+      expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id.toString());
     });
 
   });
