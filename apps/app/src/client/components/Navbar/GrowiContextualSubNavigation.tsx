@@ -17,7 +17,7 @@ import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
-import { toastSuccess, toastError } from '~/client/util/toastr';
+import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -88,6 +88,11 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
       try {
         const editingMarkdownLength = codeMirrorEditor?.getDoc().length;
         const res = await syncLatestRevisionBody(pageId, editingMarkdownLength);
+
+        if (!res.synced) {
+          toastWarning('Skipped synchronizing since the page is not being edited.');
+          return;
+        }
 
         if (res?.isYjsDataBroken) {
           // eslint-disable-next-line no-alert
