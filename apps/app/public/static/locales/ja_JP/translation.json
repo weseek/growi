@@ -675,6 +675,7 @@
     "choose_export_format": "エクスポート形式を選択してください",
     "bulk_export_started": "ただいま準備中です...",
     "bulk_export_download_expired": "ダウンロード期限が切れました",
+    "bulk_export_job_expired": "エクスポート時間が長すぎるため、処理が中断されました",
     "duplicate_bulk_export_job_error": "既に同じページとその配下のエクスポートが進行中です"
   },
   "message": {

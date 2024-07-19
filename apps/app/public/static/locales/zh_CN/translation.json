@@ -645,6 +645,7 @@
     "choose_export_format": "选择导出格式",
     "bulk_export_started": "目前我们正在准备...",
     "bulk_export_download_expired": "下载期限已过",
+    "bulk_export_job_expired": "由于导出时间太长，处理被中断",
     "duplicate_bulk_export_job_error": "正在导出同一页面及其子页面"
   },
   "message": {
