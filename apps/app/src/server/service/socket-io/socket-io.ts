@@ -9,10 +9,10 @@ import { Server } from 'socket.io';
 import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
-import type Crowi from '../crowi';
-import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
+import type Crowi from '../../crowi';
+import { configManager } from '../config-manager';
 
-import { configManager } from './config-manager';
+import { RoomPrefix, getRoomNameWithId } from './helper';
 
 
 const logger = loggerFactory('growi:service:socket-io');
@@ -23,7 +23,7 @@ type RequestWithUser = IncomingMessage & { user: IUserHasId };
 /**
  * Serve socket.io for server-to-client messaging
  */
-class SocketIoService {
+export class SocketIoService {
 
   crowi: Crowi;
 
@@ -34,12 +34,12 @@ class SocketIoService {
   adminNamespace: Namespace;
 
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.guestClients = new Set();
   }
 
-  get isInitialized() {
+  get isInitialized(): boolean {
     return (this.io != null);
   }
 
@@ -103,7 +103,7 @@ class SocketIoService {
    * use loginRequired middleware
    */
   setupLoginRequiredMiddleware() {
-    const loginRequired = require('../middlewares/login-required')(this.crowi, true, (req, res, next) => {
+    const loginRequired = require('../../middlewares/login-required')(this.crowi, true, (req, res, next) => {
       next(new Error('Login is required to connect.'));
     });
 
@@ -117,7 +117,7 @@ class SocketIoService {
    * use adminRequired middleware
    */
   setupAdminRequiredMiddleware() {
-    const adminRequired = require('../middlewares/admin-required')(this.crowi, (req, res, next) => {
+    const adminRequired = require('../../middlewares/admin-required')(this.crowi, (req, res, next) => {
       next(new Error('Admin priviledge is required to connect.'));
     });
 
@@ -243,5 +243,3 @@ class SocketIoService {
   }
 
 }
-
-module.exports = SocketIoService;
