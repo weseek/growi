@@ -329,11 +329,11 @@ Crowi.prototype.setupModels = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
-  const questionnaireCronSchedule = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
+  const questionnaireCronSchedule = this.configManager.getConfig('crowi', 'app:questionnaireCronSchedule');
   questionnaireCronService.startCron(questionnaireCronSchedule);
 
   instanciatePageBulkExportJobCronService(this);
-  const pageBulkExportJobCronSchedule = this.crowi.configManager?.getConfig('crowi', 'app:pageBulkExportJobCronSchedule');
+  const pageBulkExportJobCronSchedule = this.configManager.getConfig('crowi', 'app:pageBulkExportJobCronSchedule');
   pageBulkExportJobCronService.startCron(pageBulkExportJobCronSchedule);
 };
 
