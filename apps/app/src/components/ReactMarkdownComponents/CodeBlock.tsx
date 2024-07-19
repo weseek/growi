@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-import type { CodeComponent, CodeProps } from 'react-markdown/lib/ast-to-react';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
@@ -67,11 +66,11 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   );
 }
 
-export const CodeBlock: CodeComponent = ({ inline, className, children }: CodeProps) => {
+export const InlineCodeBlock = ({ className, children }: { className: string, children: JSX.Element}): JSX.Element => {
+  return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
+};
 
-  if (inline) {
-    return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
-  }
+export const CodeBlock = ({ className, children }: {className: string, children: JSX.Element}): JSX.Element => {
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
 
