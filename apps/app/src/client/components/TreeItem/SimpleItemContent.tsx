@@ -34,7 +34,7 @@ export const SimpleItemContent = ({ page }: { page: IPageForItem }): JSX.Element
       {page != null && page.path != null && page._id != null && (
         <div className="grw-page-title-anchor flex-grow-1">
           <div className="d-flex align-items-center">
-            <span className={`text-truncate me-1 grw-sidebar-text ${page.isEmpty && 'opacity-75'}`}>{pageName}</span>
+            <span className={`text-truncate me-1 ${page.isEmpty && 'opacity-75'}`}>{pageName}</span>
             { page.wip && (
               <span className="wip-page-badge badge rounded-pill me-1 text-bg-secondary">WIP</span>
             )}

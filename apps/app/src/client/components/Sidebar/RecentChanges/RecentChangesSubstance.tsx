@@ -117,7 +117,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
               { !dPagePath.isRoot && <FormerLink /> }
             </div>
 
-            <h6 className={`col-12 d-flex align-items-center grw-sidebar-text ${isSmall ? 'mb-0 text-truncate' : 'mb-0'}`}>
+            <h6 className={`col-12 d-flex align-items-center ${isSmall ? 'mb-0 text-truncate' : 'mb-0'}`}>
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
               { page.wip && (
                 <span className="wip-page-badge badge rounded-pill text-bg-secondary ms-2">WIP</span>

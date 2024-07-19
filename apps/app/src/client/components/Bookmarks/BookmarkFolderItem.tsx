@@ -268,7 +268,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           ) : (
             <>
               <div className="grw-foldertree-title-anchor ps-1">
-                <p className="text-truncate m-auto grw-sidebar-text">{name}</p>
+                <p className="text-truncate m-auto">{name}</p>
               </div>
             </>
           )}
