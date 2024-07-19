@@ -264,13 +264,14 @@ class PageBulkExportService {
 
     const fileUploadService: FileUploader = this.crowi.fileUploadService;
     // if the process of uploading was interrupted, delete and start from the start
-    if (pageBulkExportJob.uploadId != null) {
-      await fileUploadService.abortExistingMultipartUpload(uploadKey, pageBulkExportJob.uploadId);
+    if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
+      await fileUploadService.abortExistingMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId);
     }
 
     // init multipart upload
     const multipartUploader: IMultipartUploader = fileUploadService.createMultipartUploader(uploadKey, this.maxPartSize);
     await multipartUploader.initUpload();
+    pageBulkExportJob.uploadKey = uploadKey;
     pageBulkExportJob.uploadId = multipartUploader.uploadId;
     await pageBulkExportJob.save();
 
