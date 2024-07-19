@@ -32,7 +32,7 @@ type RequestWithUser = IncomingMessage & { user: IUserHasId };
 
 export interface IYjsService {
   getYDocStatus(pageId: string): Promise<YDocStatus>;
-  syncWithTheLatestRevisionForce(pageId: string): Promise<void>;
+  syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<{ isYjsDataBroken?: boolean } | void>
   getCurrentYdoc(pageId: string): Ydoc | undefined;
 }
 
@@ -181,14 +181,19 @@ class YjsService implements IYjsService {
     return YDocStatus.OUTDATED;
   }
 
-  public async syncWithTheLatestRevisionForce(pageId: string): Promise<void> {
+  public async syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<{ isYjsDataBroken?: boolean } | void> {
     const doc = this.ysocketio.documents.get(pageId);
 
     if (doc == null) {
       return;
     }
 
+    const ytextLength = doc?.getText('codemirror').length;
     syncYDoc(this.mdb, doc, true);
+
+    if (editingMarkdownLength != null) {
+      return { isYjsDataBroken: editingMarkdownLength !== ytextLength };
+    }
   }
 
   public getCurrentYdoc(pageId: string): Ydoc | undefined {

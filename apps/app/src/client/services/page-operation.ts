@@ -175,7 +175,7 @@ export const unpublish = async(pageId: string): Promise<IPageHasId> => {
   return res.data;
 };
 
-export const syncLatestRevisionBody = async(pageId: string): Promise<void> => {
-  await apiv3Put(`/page/${pageId}/sync-latest-revision-body-to-yjs-draft`);
-  return;
+export const syncLatestRevisionBody = async(pageId: string, editingMarkdownLength?: number): Promise<{ isYjsDataBroken?: boolean } | void> => {
+  const res = await apiv3Put(`/page/${pageId}/sync-latest-revision-body-to-yjs-draft`, { editingMarkdownLength });
+  return res.data;
 };
