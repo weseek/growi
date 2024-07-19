@@ -188,10 +188,10 @@ class YjsService implements IYjsService {
       return;
     }
 
+    const ytextLength = doc?.getText('codemirror').length;
     syncYDoc(this.mdb, doc, true);
 
     if (editingMarkdownLength != null) {
-      const ytextLength = doc?.getText('codemirror').length;
       return { isYjsDataBroken: editingMarkdownLength !== ytextLength };
     }
   }
