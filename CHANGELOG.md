@@ -1,8 +1,30 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.13...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.14...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.14](https://github.com/weseek/growi/compare/v7.0.13...v7.0.14) - 2024-07-19
+
+### 🐛 Bug Fixes
+
+### 💎 Features
+
+* feat: Alerts when trying to sync with latest revision when yjs data is corrupt (#8971) @miya
+
+### 🚀 Improvement
+
+* imprv: Restrict use of the editing UI from View if there is at least one user currently editing (#8966) @miya
+
+### 🐛 Bug Fixes
+
+* fix: Handle error when folding drawio blocks (#8977) @yuki-takei
+* fix: Sync the editor text with the latest revision menu (1) (#8975) @yuki-takei
+* fix: Sync the editor text with the latest revision menu (2) (#8978) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Normalize Revision.pageId (for #8954) (#8973) @miya
 
 ## [v7.0.13](https://github.com/weseek/growi/compare/v7.0.12...v7.0.13) - 2024-07-16
 
