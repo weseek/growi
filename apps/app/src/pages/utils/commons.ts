@@ -1,5 +1,5 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import { Lang, AllLang } from '@growi/core';
+import { Lang, AllLang, Locale } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -105,16 +105,20 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   return { props };
 };
 
-export const getLocaleAtServerSide = (req: CrowiRequest): 'ja-jp' | 'en-us' | 'zh-cn' | 'fr-fr' => {
+export type LangMap = {
+  readonly [key in Lang]: Locale;
+};
+
+export const langMap: LangMap = {
+  [Lang.ja_JP]: Locale['ja-JP'],
+  [Lang.en_US]: Locale['en-US'],
+  [Lang.zh_CN]: Locale['zh-CN'],
+  [Lang.fr_FR]: Locale['fr-FR'],
+};
+
+export const getLocaleAtServerSide = (req: CrowiRequest): Locale => {
   const { user, headers } = req;
   const { configManager } = req.crowi;
-
-  const langMap = {
-    [Lang.ja_JP]: 'ja-jp',
-    [Lang.en_US]: 'en-us',
-    [Lang.zh_CN]: 'zh-cn',
-    [Lang.fr_FR]: 'fr-fr',
-  } as const;
 
   return langMap[user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
     : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US) ?? Lang.en_US];
