@@ -202,10 +202,10 @@ interface Receiver {
   updateFileUploadConfigs(fileUploadConfigs: FileUploadConfigs): Promise<void>
   /**
    * Upload attachment file
-   * @param {Readable} content Pushed attachment data from source GROWI
+   * @param {ReadStream} content Pushed attachment data from source GROWI
    * @param {any} attachmentMap Map-ped Attachment instance
    */
-  receiveAttachment(content: Readable, attachmentMap: any): Promise<void>
+  receiveAttachment(content: ReadStream, attachmentMap: any): Promise<void>
 }
 
 /**
@@ -681,7 +681,7 @@ export class G2GTransferReceiverService implements Receiver {
     await appService.setupAfterInstall();
   }
 
-  public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
+  public async receiveAttachment(content: ReadStream, attachmentMap): Promise<void> {
     const { fileUploadService } = this.crowi;
     return fileUploadService.uploadAttachment(content, attachmentMap);
   }

@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto';
-import type { Readable } from 'stream';
+import type { ReadStream } from 'fs';
 
 import type { Response } from 'express';
 
@@ -37,7 +37,7 @@ export interface FileUploader {
   getTotalFileSize(): Promise<number>,
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<ICheckLimitResult>,
   determineResponseMode(): ResponseMode,
-  uploadAttachment(readStream: Readable, attachment: IAttachmentDocument): Promise<void>,
+  uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>,
   respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
   generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
@@ -153,7 +153,7 @@ export abstract class AbstractFileUploader implements FileUploader {
     return ResponseMode.RELAY;
   }
 
- abstract uploadAttachment(readStream: Readable, attachment: IAttachmentDocument): Promise<void>;
+ abstract uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>;
 
   /**
    * Respond to the HTTP request.
