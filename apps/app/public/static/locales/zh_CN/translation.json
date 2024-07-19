@@ -9,6 +9,7 @@
   "delete_all": "删除所有",
   "Duplicate": "复制",
   "PathRecovery": "路径恢复",
+  "SyncLatestRevisionBody": "将编辑器与最新机身同步",
   "Copy": "复制",
   "preview": "预览",
   "desktop": "电脑",
@@ -859,5 +860,10 @@
   },
   "create_page": {
     "untitled": "Untitled"
+  },
+  "sync-latest-reevision-body": {
+    "confirm": "删除输入编辑器的草稿数据，同步最新文本。 您真的想运行它吗？",
+    "success-toaster": "同步最新文本",
+    "error-toaster": "同步最新文本失败"
   }
 }

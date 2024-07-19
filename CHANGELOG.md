@@ -1,8 +1,29 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.12...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.13...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.13](https://github.com/weseek/growi/compare/v7.0.12...v7.0.13) - 2024-07-16
+
+### 💎 Features
+
+* feat: Sync latest revision body to Yjs draft (#8939) @miya
+
+### 🚀 Improvement
+
+* imprv: Better synchronizing between YDoc and the latest revision (#8959) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Revision model (#8967) @yuki-takei
+* fix: Healthcheck with checkServices=mongo (#8961) @yuki-takei
+* fix: Enable  # next to headline in view (#8826) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump nodemailer from 6.6.2 to 6.9.14 (#8928) @dependabot
+* support: Update favicon (#8957) @satof3
 
 ## [v7.0.12](https://github.com/weseek/growi/compare/v7.0.11...v7.0.12) - 2024-07-10
 

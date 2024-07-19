@@ -9,6 +9,7 @@
   "delete_all": "Tout supprimer",
   "Duplicate": "Dupliquer",
   "PathRecovery": "Récupération de chemin",
+  "SyncLatestRevisionBody": "Synchroniser l'éditeur avec le dernier corps",
   "Copy": "Copier",
   "preview": "Prévisualiser",
   "desktop": "Ordinateur",
@@ -847,5 +848,10 @@
     "show_wip_page": "Voir brouillon",
     "size_s": "Taille: P",
     "size_l": "Taille: G"
+  },
+  "sync-latest-reevision-body": {
+    "confirm": "Delete the draft data being entered into the editor and synchronize the latest text. Are you sure you want to run it?",
+    "success-toaster": "Dernier texte synchronisé",
+    "error-toaster": "La synchronisation du dernier texte a échoué"
   }
 }

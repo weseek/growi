@@ -72,8 +72,9 @@ class YjsService implements IYjsService {
     // create indexes
     createIndexes(MONGODB_PERSISTENCE_COLLECTION_NAME);
 
+    // TODO: https://redmine.weseek.co.jp/issues/150529
     // register middlewares
-    this.registerAccessiblePageChecker(ysocketio);
+    // this.registerAccessiblePageChecker(ysocketio);
 
     ysocketio.on('document-loaded', async(doc: Document) => {
       const pageId = doc.name;
@@ -135,7 +136,7 @@ class YjsService implements IYjsService {
   }
 
   public async getYDocStatus(pageId: string): Promise<YDocStatus> {
-    const dumpLog = (status: YDocStatus, args?: { [key: string]: number }) => {
+    const dumpLog = (status: YDocStatus, args?: { [key: string]: unknown }) => {
       logger.debug(`getYDocStatus('${pageId}') detected '${status}'`, args ?? {});
     };
 
@@ -151,7 +152,7 @@ class YjsService implements IYjsService {
       .lean();
 
     if (result == null) {
-      dumpLog(YDocStatus.ISOLATED);
+      dumpLog(YDocStatus.ISOLATED, { result });
       return YDocStatus.ISOLATED;
     }
 
