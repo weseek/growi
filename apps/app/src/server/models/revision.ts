@@ -35,7 +35,7 @@ Schema.Types.String.checkRequired(v => typeof v === 'string');
 
 const revisionSchema = new Schema<IRevisionDocument, IRevisionModel>({
   pageId: {
-    type: Types.ObjectId, ref: 'Page', required: true, index: true,
+    type: String, required: true, index: true,
   },
   body: {
     type: String,

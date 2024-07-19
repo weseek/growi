@@ -9,6 +9,7 @@
   "delete_all": "全て削除",
   "Duplicate": "複製",
   "PathRecovery": "パスを修復",
+  "SyncLatestRevisionBody": "エディターを最新の本文に同期",
   "Copy": "コピー",
   "preview": "プレビュー",
   "desktop": "パソコン",
@@ -888,5 +889,10 @@
   },
   "create_page": {
     "untitled": "無題のページ"
+  },
+  "sync-latest-reevision-body": {
+    "confirm": "エディターに入力中のドラフトデータを削除して最新の本文を同期します。実行しますか？",
+    "success-toaster": "最新の本文を同期しました",
+    "error-toaster": "最新の本文の同期に失敗しました"
   }
 }
