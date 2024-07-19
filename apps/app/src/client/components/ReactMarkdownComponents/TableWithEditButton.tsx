@@ -22,7 +22,7 @@ type TableWithEditButtonProps = {
   className?: string
 }
 
-export const TableWithEditButton = React.memo((props: TableWithEditButtonProps): JSX.Element => {
+export const TableWithEditButton = (props: TableWithEditButtonProps): JSX.Element => {
 
   const { children, node, className } = props;
 
@@ -53,5 +53,5 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
       </table>
     </div>
   );
-});
+};
 TableWithEditButton.displayName = 'TableWithEditButton';
