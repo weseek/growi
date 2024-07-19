@@ -8,6 +8,7 @@ import type { Document } from 'y-socket.io/dist/server';
 import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
+import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
 import { RoomPrefix, getRoomNameWithId } from '~/server/util/socket-io-helpers';
 import loggerFactory from '~/utils/logger';
 
@@ -32,7 +33,7 @@ type RequestWithUser = IncomingMessage & { user: IUserHasId };
 
 export interface IYjsService {
   getYDocStatus(pageId: string): Promise<YDocStatus>;
-  syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<{ isYjsDataBroken?: boolean } | void>
+  syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody>
   getCurrentYdoc(pageId: string): Ydoc | undefined;
 }
 
@@ -181,19 +182,22 @@ class YjsService implements IYjsService {
     return YDocStatus.OUTDATED;
   }
 
-  public async syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<{ isYjsDataBroken?: boolean } | void> {
+  public async syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody> {
     const doc = this.ysocketio.documents.get(pageId);
 
     if (doc == null) {
-      return;
+      return { synced: false };
     }
 
     const ytextLength = doc?.getText('codemirror').length;
     syncYDoc(this.mdb, doc, true);
 
-    if (editingMarkdownLength != null) {
-      return { isYjsDataBroken: editingMarkdownLength !== ytextLength };
-    }
+    return {
+      synced: true,
+      isYjsDataBroken: editingMarkdownLength != null
+        ? editingMarkdownLength !== ytextLength
+        : undefined,
+    };
   }
 
   public getCurrentYdoc(pageId: string): Ydoc | undefined {

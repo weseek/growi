@@ -17,7 +17,7 @@ import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
-import { toastSuccess, toastError } from '~/client/util/toastr';
+import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -25,7 +25,7 @@ import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
-import { useEditorMode } from '~/stores-universal/ui';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -72,6 +72,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     pageId, revisionId, isLinkSharingDisabled,
   } = props;
 
+  const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -89,6 +90,11 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         const editingMarkdownLength = codeMirrorEditor?.getDoc().length;
         const res = await syncLatestRevisionBody(pageId, editingMarkdownLength);
 
+        if (!res.synced) {
+          toastWarning('Skipped synchronizing since the page is not being edited.');
+          return;
+        }
+
         if (res?.isYjsDataBroken) {
           // eslint-disable-next-line no-alert
           window.alert(t('sync-latest-reevision-body.alert'));
@@ -105,13 +111,15 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   return (
     <>
-      <DropdownItem
-        onClick={() => syncLatestRevisionBodyHandler()}
-        className="grw-page-control-dropdown-item"
-      >
-        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
-        {t('SyncLatestRevisionBody')}
-      </DropdownItem>
+      { editorMode === EditorMode.Editor && (
+        <DropdownItem
+          onClick={() => syncLatestRevisionBodyHandler()}
+          className="grw-page-control-dropdown-item"
+        >
+          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
+          {t('SyncLatestRevisionBody')}
+        </DropdownItem>
+      ) }
 
       {/* Presentation */}
       <DropdownItem
