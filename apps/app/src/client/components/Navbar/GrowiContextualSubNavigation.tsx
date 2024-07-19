@@ -25,7 +25,7 @@ import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { useEditorMode } from '~/stores-universal/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -72,7 +72,6 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     pageId, revisionId, isLinkSharingDisabled,
   } = props;
 
-  const { data: editorMode } = useEditorMode();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
@@ -84,42 +83,40 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const syncLatestRevisionBodyHandler = useCallback(async() => {
     // eslint-disable-next-line no-alert
-    const answer = window.confirm(t('sync-latest-reevision-body.confirm'));
+    const answer = window.confirm(t('sync-latest-revision-body.confirm'));
     if (answer) {
       try {
         const editingMarkdownLength = codeMirrorEditor?.getDoc().length;
         const res = await syncLatestRevisionBody(pageId, editingMarkdownLength);
 
         if (!res.synced) {
-          toastWarning('Skipped synchronizing since the page is not being edited.');
+          toastWarning(t('sync-latest-revision-body.skipped-toaster'));
           return;
         }
 
         if (res?.isYjsDataBroken) {
           // eslint-disable-next-line no-alert
-          window.alert(t('sync-latest-reevision-body.alert'));
+          window.alert(t('sync-latest-revision-body.alert'));
           return;
         }
 
-        toastSuccess(t('sync-latest-reevision-body.success-toaster'));
+        toastSuccess(t('sync-latest-revision-body.success-toaster'));
       }
       catch {
-        toastError(t('sync-latest-reevision-body.error-toaster'));
+        toastError(t('sync-latest-revision-body.error-toaster'));
       }
     }
   }, [codeMirrorEditor, pageId, t]);
 
   return (
     <>
-      { editorMode === EditorMode.Editor && (
-        <DropdownItem
-          onClick={() => syncLatestRevisionBodyHandler()}
-          className="grw-page-control-dropdown-item"
-        >
-          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
-          {t('SyncLatestRevisionBody')}
-        </DropdownItem>
-      ) }
+      <DropdownItem
+        onClick={() => syncLatestRevisionBodyHandler()}
+        className="grw-page-control-dropdown-item"
+      >
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
+        {t('sync-latest-revision-body.menuitem')}
+      </DropdownItem>
 
       {/* Presentation */}
       <DropdownItem
