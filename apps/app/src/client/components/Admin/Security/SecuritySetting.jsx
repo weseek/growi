@@ -373,9 +373,11 @@ class SecuritySetting extends React.Component {
                     <input
                       type="checkbox"
                       className="form-check-input"
-                      id="isShowAll"
+                      id="isShowPublic"
                       checked
                     />
+                    <label className="form-label form-check-label" htmlFor="isShowPublic">
+                    </label>
                   </div>
                 </td>
               </tr>
@@ -387,7 +389,10 @@ class SecuritySetting extends React.Component {
                       type="checkbox"
                       disabled
                       className="form-check-input"
+                      id="isShowRestrictedByAnyonewiththelink"
                     />
+                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByAnyonewiththelink">
+                    </label>
                   </div>
                 </td>
               </tr>
