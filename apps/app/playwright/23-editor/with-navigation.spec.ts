@@ -1,7 +1,7 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
 
 test('should not be cleared and should prevent GrantSelector from modified', async({ page }) => {
   await page.goto('/Sandbox/for-122040');
@@ -46,4 +46,60 @@ test('should not be cleared and should prevent GrantSelector from modified', asy
 
   // Expect grant not to be reset after uploading an attachment
   await expect(page.getByTestId('page-grant-alert')).toContainText('Browsing of this page is restricted');
+});
+
+const appendTextToEditorUntilContains = async(page: Page, text: string) => {
+  await page.locator('.cm-content').fill(text);
+  await expect(page.getByTestId('page-editor-preview-body')).toContainText(text);
+};
+
+
+test('Successfully updating the page body', async({ page }) => {
+  const page1Path = '/Sandbox/for-115285/page1';
+  const page2Path = '/Sandbox/for-115285/page2';
+
+  const page1Body = 'Hello';
+  const page2Body = 'World';
+
+
+  await page.goto(page1Path);
+
+  // Open Editor (page1)
+  await page.getByTestId('editor-button').click();
+  await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
+
+  // Append text
+  await appendTextToEditorUntilContains(page, page1Body);
+
+  // Save page
+  await page.getByTestId('save-page-btn').click();
+
+  await expect(page.locator('.main')).toContainText(page1Body);
+
+  // Duplicate page1
+  await page.getByTestId('grw-contextual-sub-nav').getByTestId('open-page-item-control-btn').click();
+  await page.getByTestId('open-page-duplicate-modal-btn').click();
+  await expect(page.getByTestId('page-duplicate-modal')).toBeVisible();
+  await page.locator('.form-control').fill(page2Path);
+  await page.getByTestId('btn-duplicate').click();
+
+  // Open Editor (page2)
+  await page.getByTestId('editor-button').click();
+  await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
+
+  // Expect to see the text from which you are duplicating
+  expect(page.getByTestId('page-editor-preview-body')).toContainText(page1Body);
+
+  // Append text
+  await appendTextToEditorUntilContains(page, page1Body + page2Body);
+
+
+  await page.goto(page1Path);
+
+  // Open Editor (page1)
+  await page.getByTestId('editor-button').click();
+  await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
+
+  expect(page.getByTestId('page-editor-preview-body')).toContainText(page1Body);
+
 });
