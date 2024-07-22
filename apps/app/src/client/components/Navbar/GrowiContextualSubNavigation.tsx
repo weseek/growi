@@ -17,7 +17,7 @@ import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
-import { toastSuccess, toastError } from '~/client/util/toastr';
+import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -83,22 +83,27 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const syncLatestRevisionBodyHandler = useCallback(async() => {
     // eslint-disable-next-line no-alert
-    const answer = window.confirm(t('sync-latest-reevision-body.confirm'));
+    const answer = window.confirm(t('sync-latest-revision-body.confirm'));
     if (answer) {
       try {
         const editingMarkdownLength = codeMirrorEditor?.getDoc().length;
         const res = await syncLatestRevisionBody(pageId, editingMarkdownLength);
 
-        if (res?.isYjsDataBroken) {
-          // eslint-disable-next-line no-alert
-          window.alert(t('sync-latest-reevision-body.alert'));
+        if (!res.synced) {
+          toastWarning(t('sync-latest-revision-body.skipped-toaster'));
           return;
         }
 
-        toastSuccess(t('sync-latest-reevision-body.success-toaster'));
+        if (res?.isYjsDataBroken) {
+          // eslint-disable-next-line no-alert
+          window.alert(t('sync-latest-revision-body.alert'));
+          return;
+        }
+
+        toastSuccess(t('sync-latest-revision-body.success-toaster'));
       }
       catch {
-        toastError(t('sync-latest-reevision-body.error-toaster'));
+        toastError(t('sync-latest-revision-body.error-toaster'));
       }
     }
   }, [codeMirrorEditor, pageId, t]);
@@ -110,7 +115,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         className="grw-page-control-dropdown-item"
       >
         <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
-        {t('SyncLatestRevisionBody')}
+        {t('sync-latest-revision-body.menuitem')}
       </DropdownItem>
 
       {/* Presentation */}
