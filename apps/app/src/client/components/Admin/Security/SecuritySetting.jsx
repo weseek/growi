@@ -373,8 +373,8 @@ class SecuritySetting extends React.Component {
                     <input
                       type="checkbox"
                       className="form-check-input"
-                      id="isShowRestrictedByGroup"
-                      checked={!adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
+                      id="isShowAll"
+                      checked
                     />
                   </div>
                 </td>
