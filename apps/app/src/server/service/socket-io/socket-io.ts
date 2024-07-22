@@ -83,20 +83,12 @@ export class SocketIoService {
 
   /**
    * use passport session
-   * @see https://socket.io/docs/v4/middlewares/#Compatibility-with-Express-middleware
+   * @see https://socket.io/docs/v4/middlewares/#compatibility-with-express-middleware
    */
-  setupSessionMiddleware() {
-    const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
-
-    this.io.use(wrap(expressSession(this.crowi.sessionConfig)));
-    this.io.use(wrap(passport.initialize()));
-    this.io.use(wrap(passport.session()));
-
-    // express and passport session on main socket doesn't shared to child namespace socket
-    // need to define the session for specific namespace
-    this.getAdminSocket().use(wrap(expressSession(this.crowi.sessionConfig)));
-    this.getAdminSocket().use(wrap(passport.initialize()));
-    this.getAdminSocket().use(wrap(passport.session()));
+  setupSessionMiddleware(): void {
+    this.io.engine.use(expressSession(this.crowi.sessionConfig));
+    this.io.engine.use(passport.initialize());
+    this.io.engine.use(passport.session());
   }
 
   /**
