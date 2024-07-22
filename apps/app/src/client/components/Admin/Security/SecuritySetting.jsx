@@ -377,6 +377,7 @@ class SecuritySetting extends React.Component {
                       checked
                     />
                     <label className="form-label form-check-label" htmlFor="isShowPublic">
+                      {t('security_settings.fixed')}
                     </label>
                   </div>
                 </td>
@@ -392,6 +393,7 @@ class SecuritySetting extends React.Component {
                       id="isShowRestrictedByAnyonewiththelink"
                     />
                     <label className="form-label form-check-label" htmlFor="isShowRestrictedByAnyonewiththelink">
+                      {t('security_settings.fixed')}
                     </label>
                   </div>
                 </td>
