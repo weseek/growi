@@ -368,11 +368,17 @@ class SecuritySetting extends React.Component {
             <tbody>
               <tr>
                 <th scope="row">{ t('public') }</th>
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                />
               </tr>
               <tr>
                 <th scope="row">{ t('anyone_with_the_link') }</th>
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                />
               </tr>
               <tr>
                 <th scope="row">{ t('only_me') }</th>
