@@ -368,17 +368,28 @@ class SecuritySetting extends React.Component {
             <tbody>
               <tr>
                 <th scope="row">{ t('public') }</th>
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                />
+                <td>
+                  <div className="form-check form-switch form-check-success">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="isShowRestrictedByGroup"
+                      checked={!adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
+                    />
+                  </div>
+                </td>
               </tr>
               <tr>
                 <th scope="row">{ t('anyone_with_the_link') }</th>
-                <input
-                  type="checkbox"
-                  className="form-check-input"
-                />
+                <td>
+                  <div className="form-check form-switch">
+                    <input
+                      type="checkbox"
+                      disabled
+                      className="form-check-input"
+                    />
+                  </div>
+                </td>
               </tr>
               <tr>
                 <th scope="row">{ t('only_me') }</th>
