@@ -67,7 +67,10 @@ export type CreateMethod = (path: string, body: string, user, options: IOptionsF
 
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
-  findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean): Promise<PageDocument[]>
+  findByIdAndViewer(pageId: ObjectIdLike, user, userGroups?, includeEmpty?: boolean): Promise<PageDocument & HasObjectId>
+  findByIdsAndViewer(
+    pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
+  ): Promise<(PageDocument & HasObjectId)[]>
   findByPath(path: string, includeEmpty?: boolean): Promise<PageDocument | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument & HasObjectId | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<(PageDocument & HasObjectId)[]>

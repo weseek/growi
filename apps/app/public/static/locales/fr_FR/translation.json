@@ -321,7 +321,9 @@
       "stale": "Plus de {{count}} an est passé depuis la dernière mise à jour.",
       "stale_plural": "Plus de {{count}} années sont passées depuis la dernière mise à jour.",
       "expiration": "Ce lien expirera <strong>{{expiredAt}}</strong>.",
-      "no_deadline": "Cette page n'a pas de date d'expiration"
+      "no_deadline": "Cette page n'a pas de date d'expiration",
+      "not_indexed1": "Cette page n'est peut-être pas indexée par les moteurs de recherche Full-Text.",
+      "not_indexed2": "Le corps de la page dépasse le seuil spécifié par {{threshold}}."
     }
   },
   "page_edit": {
@@ -701,36 +703,6 @@
     "password_and_confirm_password_does_not_match": "Le mot de passe ne correspond pas",
     "please_enable_mailer_alert": "La réinitialisation de mot de passe est désactivée, car la configuration d'envois de courriels est incomplète."
   },
-  "emoji": {
-    "title": "Choisir un émoji",
-    "search": "Rechercher",
-    "clear": "Vider",
-    "notfound": "Aucun émoji trouvé",
-    "skintext": "Choisir le teint par défaut",
-    "categories": {
-      "search": "Résultats de recherche",
-      "recent": "Récents",
-      "smileys": "Émotions",
-      "people": "Individus & corps",
-      "nature": "Animaux & nature",
-      "foods": "Nourriture & boisson",
-      "activity": "Activités",
-      "places": "Voyage",
-      "objects": "Objets",
-      "symbols": "Symboles",
-      "flags": "Drapeaux",
-      "custom": "Personnalisé"
-    },
-    "categorieslabel": "Catégories d'émojis",
-    "skintones": {
-      "1": "Teint par défaut",
-      "2": "Teint clair",
-      "3": "Teint moyen-clair",
-      "4": "Teint moyen",
-      "5": "Teint moyen-foncé",
-      "6": "Teint foncé"
-    }
-  },
   "maintenance_mode": {
     "maintenance_mode": "Mode maintenance",
     "growi_is_under_maintenance": "GROWI est actuellement en maintenance.",
@@ -868,5 +840,13 @@
     "show_wip_page": "Voir brouillon",
     "size_s": "Taille: P",
     "size_l": "Taille: G"
+  },
+  "sync-latest-revision-body": {
+    "menuitem": "Synchroniser le texte de l'éditeur avec le corps de la dernière révision",
+    "confirm": "Delete the draft data being entered into the editor and synchronize the latest text. Are you sure you want to run it?",
+    "alert": "Il se peut que le texte le plus récent n'ait pas été synchronisé. Veuillez recharger et vérifier à nouveau.",
+    "success-toaster": "Dernier texte synchronisé",
+    "skipped-toaster": "Synchronisation ignorée car l'éditeur n'est pas activé. Ouvrir l'éditeur et réessayer.",
+    "error-toaster": "La synchronisation du dernier texte a échoué"
   }
 }

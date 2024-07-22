@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 
-import { pagePathUtils } from '@growi/core/dist/utils';
 import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -11,20 +10,17 @@ import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-
-import InstallerForm from '../components/InstallerForm';
 import {
   useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
-} from '../stores/context';
+} from '~/stores-universal/context';
 
 import type { CommonProps } from './utils/commons';
 import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './utils/commons';
 
 
-const DataTransferForm = dynamic(() => import('../components/DataTransferForm'), { ssr: false });
-const CustomNavAndContents = dynamic(() => import('../components/CustomNavigation/CustomNavAndContents'), { ssr: false });
-
-const { isTrashPage: _isTrashPage } = pagePathUtils;
+const InstallerForm = dynamic(() => import('~/client/components/InstallerForm'), { ssr: false });
+const DataTransferForm = dynamic(() => import('~/client/components/DataTransferForm'), { ssr: false });
+const CustomNavAndContents = dynamic(() => import('~/client/components/CustomNavigation/CustomNavAndContents'), { ssr: false });
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired, true);
