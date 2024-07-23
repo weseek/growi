@@ -8,6 +8,10 @@
 .list-group-item :global {
   font-size: 12px;
 
+  h6 {
+    font-size: 14px;
+  }
+
   .grw-recent-changes-skeleton-small {
     @include grw-skeleton-text($font-size: 14px, $line-height: 16px);
 

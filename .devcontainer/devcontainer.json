@@ -19,6 +19,7 @@
     "eamodio.gitlens",
     "github.vscode-pull-request-github",
     "cschleiden.vscode-github-actions",
+    "cweijan.vscode-database-client2",
     "mongodb.mongodb-vscode",
     "msjsdiag.debugger-for-chrome",
     "firefox-devtools.vscode-firefox-debug",
