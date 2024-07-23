@@ -17,9 +17,9 @@ export const InAppNotification = (): JSX.Element => {
   return (
     <div className="px-3">
       <div className="grw-sidebar-content-header py-4 d-flex">
-        <h4 className="mb-0">
+        <h1 className="fs-6 fw-bold mb-0">
           {t('In-App Notification')}
-        </h4>
+        </h1>
       </div>
 
       <InAppNotificationForms
