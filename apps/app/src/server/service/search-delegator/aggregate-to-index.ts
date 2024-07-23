@@ -88,7 +88,7 @@ export const aggregatePipelineToIndex = (maxBodyLengthToIndex: number, query?: Q
     },
     {
       $addFields: {
-        commentsCount: { $size: '$comments' },
+        commentsCount: { $size: { $ifNull: ['$comments', []] } },
       },
     },
 
@@ -103,19 +103,19 @@ export const aggregatePipelineToIndex = (maxBodyLengthToIndex: number, query?: Q
     },
     {
       $addFields: {
-        bookmarksCount: { $size: '$bookmarks' },
+        bookmarksCount: { $size: { $ifNull: ['$bookmarks', []] } },
       },
     },
 
     // add counts for embedded arrays
     {
       $addFields: {
-        likeCount: { $size: '$liker' },
+        likeCount: { $size: { $ifNull: ['$liker', []] } },
       },
     },
     {
       $addFields: {
-        seenUsersCount: { $size: '$seenUsers' },
+        seenUsersCount: { $size: { $ifNull: ['$seenUsers', []] } },
       },
     },
 
