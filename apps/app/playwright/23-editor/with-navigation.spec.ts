@@ -88,7 +88,7 @@ test('Successfully updating the page body', async({ page }) => {
   await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
 
   // Expect to see the text from which you are duplicating
-  expect(page.getByTestId('page-editor-preview-body')).toContainText(page1Body);
+  await expect(page.getByTestId('page-editor-preview-body')).toContainText(page1Body);
 
   // Append text
   await appendTextToEditorUntilContains(page, page1Body + page2Body);
