@@ -51,11 +51,32 @@ export const aggregatePipelineToIndex = (maxBodyLengthToIndex: number, query?: Q
 
     // join Comment
     {
+      // MongoDB 5.0 or later can use concise syntax
+      // https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/lookup/#correlated-subqueries-using-concise-syntax
+      // $lookup: {
+      //   from: 'comments',
+      //   localField: '_id',
+      //   foreignField: 'page',
+      //   pipeline: [
+      //     {
+      //       $addFields: {
+      //         commentLength: { $strLenCP: '$comment' },
+      //       },
+      //     },
+      //   ],
+      //   as: 'comments',
+      // },
       $lookup: {
         from: 'comments',
-        localField: '_id',
-        foreignField: 'page',
+        let: { pageId: '$_id' },
         pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$page', '$$pageId'],
+              },
+            },
+          },
           {
             $addFields: {
               commentLength: { $strLenCP: '$comment' },

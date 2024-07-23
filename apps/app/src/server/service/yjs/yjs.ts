@@ -1,5 +1,6 @@
 import type { IncomingMessage } from 'http';
 
+
 import type { IPage, IUserHasId } from '@growi/core';
 import { YDocStatus } from '@growi/core/dist/consts';
 import mongoose from 'mongoose';
@@ -9,7 +10,7 @@ import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
-import { RoomPrefix, getRoomNameWithId } from '~/server/util/socket-io-helpers';
+import { RoomPrefix, getRoomNameWithId } from '~/server/service/socket-io/helper';
 import loggerFactory from '~/utils/logger';
 
 import type { PageModel } from '../../models/page';
@@ -73,9 +74,8 @@ class YjsService implements IYjsService {
     // create indexes
     createIndexes(MONGODB_PERSISTENCE_COLLECTION_NAME);
 
-    // TODO: https://redmine.weseek.co.jp/issues/150529
     // register middlewares
-    // this.registerAccessiblePageChecker(ysocketio);
+    this.registerAccessiblePageChecker(ysocketio);
 
     ysocketio.on('document-loaded', async(doc: Document) => {
       const pageId = doc.name;
