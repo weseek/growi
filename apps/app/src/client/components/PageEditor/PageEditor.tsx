@@ -172,7 +172,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const currentRevisionBody = currentPage?.revision?.body ?? '';
 
-  // Do not change value until Editor mode is switched
+  // Recalculated at the time the editor is switched
   const isYjsEnabled = useMemo(() => (
     editorMode === EditorMode.Editor && (currentRevisionBody?.length ?? 0) <= (yjsMaxBodyLength ?? 0)
   // eslint-disable-next-line react-hooks/exhaustive-deps
