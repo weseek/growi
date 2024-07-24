@@ -587,8 +587,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
-  console.log("configManager.getConfig('crowi', 'app:yjsMaxBodyLength')", configManager.getConfig('crowi', 'app:yjsMaxBodyLength'));
-
   props.yjsMaxBodyLength = configManager.getConfig('crowi', 'app:yjsMaxBodyLength');
   props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 }
