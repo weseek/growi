@@ -377,7 +377,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
-            isEditorMode={editorMode === EditorMode.Editor}
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
@@ -386,7 +385,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             indentSize={currentIndentSize ?? defaultIndentSize}
             user={user ?? undefined}
             pageId={pageId ?? undefined}
-            initialValue={initialValue}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
             isYjsEnabled={isYjsEnabled}
