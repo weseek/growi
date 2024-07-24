@@ -2542,7 +2542,7 @@ class PageService implements IPageService {
     });
   }
 
-  constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
+  constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | Omit<IPageInfoForEntity, 'bookmarkCount'> {
     const isMovable = isGuestUser ? false : isMovablePage(page.path);
     const isDeletable = !(isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path));
 
@@ -2560,7 +2560,7 @@ class PageService implements IPageService {
     const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
     const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
 
-    return {
+    const infoForEntity: Omit<IPageInfoForEntity, 'bookmarkCount'> = {
       isV5Compatible: isTopPage(page.path) || page.parent != null,
       isEmpty: false,
       sumOfLikers: page.liker.length,
@@ -2576,6 +2576,7 @@ class PageService implements IPageService {
       commentCount: page.commentCount,
     };
 
+    return infoForEntity;
   }
 
   async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user?): Promise<Record<string, string | null>> {
