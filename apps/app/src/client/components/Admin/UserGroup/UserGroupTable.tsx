@@ -9,6 +9,11 @@ import Link from 'next/link';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 
 
+import styles from './UserGroupTable.module.scss';
+
+const userGroupEditLinkStyle = styles['user-group-edit-link'] ?? '';
+
+
 type Props = {
   headerLabel?: string,
   userGroups: IUserGroupHasId[],
@@ -60,21 +65,15 @@ type UserGroupEditLinkProps = {
 }
 
 const UserGroupEditLink = (props: UserGroupEditLinkProps): JSX.Element => {
-  const [isHover, setHover] = useState(false);
-
   return (
-    <div
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+    <Link
+      href={`/admin/user-group-detail/${props.group._id}?isExternalGroup=${props.isExternalGroup}`}
+      className={`${userGroupEditLinkStyle} link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover`}
     >
-      <Link
-        href={`/admin/user-group-detail/${props.group._id}?isExternalGroup=${props.isExternalGroup}`}
-      >
-        <span className="material-symbols-outlined pe-2 pt-2">group</span>
-        <span className="text-decoration-underline">{props.group.name}</span>
-        <span className={`material-symbols-outlined link-opacity-75-hover px-2 py-0 ${isHover ? '' : 'invisible'}`}>edit</span>
-      </Link>
-    </div>
+      <span className="material-symbols-outlined pe-2 pt-2">group</span>
+      <span>{props.group.name}</span>
+      <span className="grw-edit-icon material-symbols-outlined px-2 py-0">edit</span>
+    </Link>
   );
 };
 
