@@ -27,7 +27,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType, useYjsMaxBodyLength,
+  useAcceptedUploadFileType,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
@@ -45,6 +45,7 @@ import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
+import { useIsYjsEnabled } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
@@ -106,11 +107,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: editorSettings } = useEditorSettings();
-  const { data: yjsMaxBodyLength } = useYjsMaxBodyLength();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
+  const { data: isYjsEnabled } = useIsYjsEnabled();
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
   const { data: rendererOptions } = usePreviewOptions();
@@ -170,19 +171,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
-  const currentRevisionBody = currentPage?.revision?.body ?? '';
-
-  // Recalculated at the time the editor is switched
-  const isYjsEnabled = useMemo(() => (
-    editorMode === EditorMode.Editor && (currentRevisionBody?.length ?? 0) <= (yjsMaxBodyLength ?? 0)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  ), [editorMode]);
-
   useEffect(() => {
     if (!isYjsEnabled && editorMode === EditorMode.Editor) {
-      codeMirrorEditor?.initDoc(currentRevisionBody);
+      codeMirrorEditor?.initDoc(currentPage?.revision?.body);
     }
-  }, [editorMode, codeMirrorEditor, isYjsEnabled, currentRevisionBody]);
+  }, [editorMode, codeMirrorEditor, isYjsEnabled, currentPage?.revision?.body]);
 
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || selectedGrant == null) {
@@ -387,7 +380,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             pageId={pageId ?? undefined}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
-            isYjsEnabled={isYjsEnabled}
+            isYjsEnabled={isYjsEnabled ?? false}
           />
         </div>
         <div

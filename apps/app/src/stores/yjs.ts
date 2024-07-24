@@ -1,13 +1,16 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
+import useSWRImmutable from 'swr/immutable';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
+import { useYjsMaxBodyLength } from '~/stores-universal/context';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
 
-import { useCurrentPageId } from './page';
 
 type CurrentPageYjsDataUtils = {
   updateHasYdocsNewerThanLatestRevision(hasYdocsNewerThanLatestRevision: boolean): void
@@ -46,4 +49,19 @@ export const useSWRMUTxCurrentPageYjsData = (): SWRMutationResponse<CurrentPageY
     ([endpoint]) => apiv3Get<{ yjsData: CurrentPageYjsData }>(endpoint).then(result => result.data.yjsData),
     { populateCache: true, revalidate: false },
   );
+};
+
+
+export const useIsYjsEnabled = (): SWRResponse<boolean, Error> => {
+  const { data: yjsMaxBodyLength } = useYjsMaxBodyLength();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: editorMode } = useEditorMode();
+
+  // Recalculated at the time the editor is switched
+  const isYjsEnabled = useMemo(() => (
+    editorMode === EditorMode.Editor && (currentPage?.revision?.body.length ?? 0) <= (yjsMaxBodyLength ?? 0)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ), [editorMode]);
+
+  return useSWRImmutable('isYjsEnabled', () => isYjsEnabled, { fallbackData: isYjsEnabled });
 };
