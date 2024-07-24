@@ -27,7 +27,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType,
+  useAcceptedUploadFileType, useYjsMaxBodyLength,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
@@ -106,6 +106,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: editorSettings } = useEditorSettings();
+  const { data: yjsMaxBodyLength } = useYjsMaxBodyLength();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
@@ -169,6 +170,18 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
+  // Do not change value until Editor mode is switched
+  const isYjsEnabled = useMemo(() => (
+    editorMode === EditorMode.Editor && (currentPage?.revision?.body?.length ?? 0) <= (yjsMaxBodyLength ?? 0)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ), [editorMode]);
+
+  useEffect(() => {
+    if (!isYjsEnabled && editorMode === EditorMode.Editor) {
+      codeMirrorEditor?.initDoc(currentPage?.revision?.body);
+    }
+  }, [editorMode, codeMirrorEditor, isYjsEnabled, currentPage?.revision?.body]);
+
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || selectedGrant == null) {
       logger.error('Some materials to save are invalid', {
@@ -186,7 +199,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         wip: opts?.wip,
         body: markdown ?? '',
         grant: selectedGrant?.grant,
-        origin: Origin.Editor,
+        origin: isYjsEnabled ? Origin.Editor : Origin.EditorOffline,
         userRelatedGrantUserGroupIds: selectedGrant?.userRelatedGrantedGroups,
         ...(opts ?? {}),
       });
@@ -214,7 +227,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       mutateWaitingSaveProcessing(false);
     }
-  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, t, mutateIsGrantNormalized]);
+  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, isYjsEnabled, mutateIsGrantNormalized, t]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
     const markdown = codeMirrorEditor?.getDoc();
@@ -374,6 +387,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             initialValue={initialValue}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
+            isYjsEnabled={isYjsEnabled}
           />
         </div>
         <div
