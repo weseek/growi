@@ -372,6 +372,7 @@ class SecuritySetting extends React.Component {
                   <div className="form-check form-switch form-check-success">
                     <input
                       type="checkbox"
+                      disabled
                       className="form-check-input"
                       id="isShowPublic"
                       checked
