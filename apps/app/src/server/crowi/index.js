@@ -34,6 +34,7 @@ import PageOperationService from '../service/page-operation';
 import PassportService from '../service/passport';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
+import { SocketIoService } from '../service/socket-io';
 import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
 import { initializeYjsService } from '../service/yjs';
@@ -301,10 +302,7 @@ Crowi.prototype.setupS2sMessagingService = async function() {
 };
 
 Crowi.prototype.setupSocketIoService = async function() {
-  const SocketIoService = require('../service/socket-io');
-  if (this.socketIoService == null) {
-    this.socketIoService = new SocketIoService(this);
-  }
+  this.socketIoService = new SocketIoService(this);
 };
 
 Crowi.prototype.setupModels = async function() {

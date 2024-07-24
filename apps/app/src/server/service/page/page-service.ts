@@ -23,7 +23,7 @@ export interface IPageService {
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>,
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>,
   shortBodiesMapByPageIds(pageIds?: ObjectId[], user?): Promise<Record<string, string | null>>,
-  constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity,
+  constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | Omit<IPageInfoForEntity, 'bookmarkCount'>,
   canDelete(page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, isRecursively: boolean): boolean,
   canDeleteCompletely(
     page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
