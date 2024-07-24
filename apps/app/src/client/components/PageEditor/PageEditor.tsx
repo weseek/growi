@@ -171,12 +171,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
-  useEffect(() => {
-    if (!isYjsEnabled && editorMode === EditorMode.Editor) {
-      codeMirrorEditor?.initDoc(currentPage?.revision?.body);
-    }
-  }, [editorMode, codeMirrorEditor, isYjsEnabled, currentPage?.revision?.body]);
-
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || selectedGrant == null) {
       logger.error('Some materials to save are invalid', {
@@ -370,6 +364,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
+            isEditorMode={editorMode === EditorMode.Editor}
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
@@ -378,6 +373,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             indentSize={currentIndentSize ?? defaultIndentSize}
             user={user ?? undefined}
             pageId={pageId ?? undefined}
+            revisionBody={currentPage?.revision?.body}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
             isYjsEnabled={isYjsEnabled ?? false}
