@@ -100,6 +100,6 @@ test('Successfully updating the page body', async({ page }) => {
   await page.getByTestId('editor-button').click();
   await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
 
-  expect(page.getByTestId('page-editor-preview-body')).toContainText(page1Body);
+  await expect(page.getByTestId('page-editor-preview-body')).toContainText(page1Body);
 
 });
