@@ -170,17 +170,19 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
+  const currentRevisionBody = currentPage?.revision?.body ?? '';
+
   // Do not change value until Editor mode is switched
   const isYjsEnabled = useMemo(() => (
-    editorMode === EditorMode.Editor && (currentPage?.revision?.body?.length ?? 0) <= (yjsMaxBodyLength ?? 0)
+    editorMode === EditorMode.Editor && (currentRevisionBody?.length ?? 0) <= (yjsMaxBodyLength ?? 0)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ), [editorMode]);
 
   useEffect(() => {
     if (!isYjsEnabled && editorMode === EditorMode.Editor) {
-      codeMirrorEditor?.initDoc(currentPage?.revision?.body);
+      codeMirrorEditor?.initDoc(currentRevisionBody);
     }
-  }, [editorMode, codeMirrorEditor, isYjsEnabled, currentPage?.revision?.body]);
+  }, [editorMode, codeMirrorEditor, isYjsEnabled, currentRevisionBody]);
 
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || selectedGrant == null) {
