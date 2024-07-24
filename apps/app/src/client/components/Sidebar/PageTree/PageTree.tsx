@@ -23,7 +23,7 @@ export const PageTree = (): JSX.Element => {
   return (
     <div className="pt-4 pb-3 px-3">
       <div className="grw-sidebar-content-header d-flex">
-        <h1 className="fs-6 fw-bold mb-0">{t('Page Tree')}</h1>
+        <h2 className="fs-6 fw-bold mb-0">{t('Page Tree')}</h2>
         <Suspense>
           <PageTreeHeader
             isWipPageShown={isWipPageShown}

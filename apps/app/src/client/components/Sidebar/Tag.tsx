@@ -45,7 +45,7 @@ const Tag: FC = () => {
   return (
     <div className="container-lg px-3 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
       <div className="grw-sidebar-content-header pt-4 pb-3 d-flex">
-        <h1 className="fs-6 fw-bold mb-0">{t('Tags')}</h1>
+        <h2 className="fs-6 fw-bold mb-0">{t('Tags')}</h2>
         <SidebarHeaderReloadButton onClick={() => onReload()} />
       </div>
 

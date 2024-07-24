@@ -14,7 +14,7 @@ export const Bookmarks = () : JSX.Element => {
   return (
     <div className="px-3">
       <div className="grw-sidebar-content-header">
-        <h1 className="fs-6 fw-bold mb-0 py-4">{t('Bookmarks')}</h1>
+        <h2 className="fs-6 fw-bold mb-0 py-4">{t('Bookmarks')}</h2>
       </div>
       {isGuestUser ? (
         <h4 className="fs-6">
