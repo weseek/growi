@@ -1,8 +1,20 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.14...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.15...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.15](https://github.com/weseek/growi/compare/v7.0.14...v7.0.15) - 2024-07-23
+
+### 🐛 Bug Fixes
+
+* fix: The $size query when aggregation to rebuild the index (#8987) @yuki-takei
+* fix: Regaining lost backward compatibility for MongoDB 4.4 (#8985) @yuki-takei
+* fix: Activate express-session middlewares for all sockets in SocketIoService (#8981) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Chage text size in sidebar (#8965) @satof3
 
 ## [v7.0.14](https://github.com/weseek/growi/compare/v7.0.13...v7.0.14) - 2024-07-19
 

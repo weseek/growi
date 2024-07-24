@@ -18,10 +18,11 @@ import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../crowi';
-import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
+
 
 import { generateSnapshot } from './in-app-notification/in-app-notification-utils';
 import { preNotifyService, type PreNotify } from './pre-notify';
+import { RoomPrefix, getRoomNameWithId } from './socket-io/helper';
 
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
