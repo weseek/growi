@@ -39,7 +39,6 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   // Insert latest revisionBody when yjs is disabled
   useEffect(() => {
     if (!isYjsEnabled && isEditorMode) {
-      console.log('発火');
       codeMirrorEditor?.initDoc(revisionBody);
     }
   }, [codeMirrorEditor, isEditorMode, isYjsEnabled, revisionBody]);
