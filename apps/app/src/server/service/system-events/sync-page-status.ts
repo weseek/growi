@@ -2,9 +2,9 @@ import loggerFactory from '~/utils/logger';
 
 import { S2cMessagePageUpdated } from '../../models/vo/s2c-message';
 import S2sMessage from '../../models/vo/s2s-message';
-import { RoomPrefix, getRoomNameWithId } from '../../util/socket-io-helpers';
-import { S2sMessagingService } from '../s2s-messaging/base';
-import { S2sMessageHandlable } from '../s2s-messaging/handlable';
+import type { S2sMessagingService } from '../s2s-messaging/base';
+import type { S2sMessageHandlable } from '../s2s-messaging/handlable';
+import { RoomPrefix, getRoomNameWithId } from '../socket-io/helper';
 
 const logger = loggerFactory('growi:service:system-events:SyncPageStatusService');
 

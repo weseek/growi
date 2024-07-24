@@ -1,43 +1,53 @@
-import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
+import type { IncomingMessage } from 'http';
+
+import type { IUserHasId } from '@growi/core/dist/interfaces';
+import expressSession from 'express-session';
+import passport from 'passport';
+import type { Namespace } from 'socket.io';
 import { Server } from 'socket.io';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
-import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
+import type Crowi from '../../crowi';
+import { configManager } from '../config-manager';
 
-import { getYjsConnectionManager, extractPageIdFromYdocId } from './yjs-connection-manager';
+import { RoomPrefix, getRoomNameWithId } from './helper';
 
-
-const expressSession = require('express-session');
-const passport = require('passport');
 
 const logger = loggerFactory('growi:service:socket-io');
 
 
+type RequestWithUser = IncomingMessage & { user: IUserHasId };
+
 /**
  * Serve socket.io for server-to-client messaging
  */
-class SocketIoService {
+export class SocketIoService {
 
-  constructor(crowi) {
+  crowi: Crowi;
+
+  guestClients: Set<string>;
+
+  io: Server;
+
+  adminNamespace: Namespace;
+
+
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
-    this.configManager = crowi.configManager;
-
     this.guestClients = new Set();
   }
 
-  get isInitialized() {
+  get isInitialized(): boolean {
     return (this.io != null);
   }
 
   // Since the Order is important, attachServer() should be async
   async attachServer(server) {
-    this.io = new Server({
-      transports: ['websocket'],
+    this.io = new Server(server, {
       serveClient: false,
     });
-    this.io.attach(server);
 
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');
@@ -73,27 +83,19 @@ class SocketIoService {
 
   /**
    * use passport session
-   * @see https://socket.io/docs/v4/middlewares/#Compatibility-with-Express-middleware
+   * @see https://socket.io/docs/v4/middlewares/#compatibility-with-express-middleware
    */
-  setupSessionMiddleware() {
-    const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
-
-    this.io.use(wrap(expressSession(this.crowi.sessionConfig)));
-    this.io.use(wrap(passport.initialize()));
-    this.io.use(wrap(passport.session()));
-
-    // express and passport session on main socket doesn't shared to child namespace socket
-    // need to define the session for specific namespace
-    this.getAdminSocket().use(wrap(expressSession(this.crowi.sessionConfig)));
-    this.getAdminSocket().use(wrap(passport.initialize()));
-    this.getAdminSocket().use(wrap(passport.session()));
+  setupSessionMiddleware(): void {
+    this.io.engine.use(expressSession(this.crowi.sessionConfig));
+    this.io.engine.use(passport.initialize());
+    this.io.engine.use(passport.session());
   }
 
   /**
    * use loginRequired middleware
    */
   setupLoginRequiredMiddleware() {
-    const loginRequired = require('../middlewares/login-required')(this.crowi, true, (req, res, next) => {
+    const loginRequired = require('../../middlewares/login-required')(this.crowi, true, (req, res, next) => {
       next(new Error('Login is required to connect.'));
     });
 
@@ -107,7 +109,7 @@ class SocketIoService {
    * use adminRequired middleware
    */
   setupAdminRequiredMiddleware() {
-    const adminRequired = require('../middlewares/admin-required')(this.crowi, (req, res, next) => {
+    const adminRequired = require('../../middlewares/admin-required')(this.crowi, (req, res, next) => {
       next(new Error('Admin priviledge is required to connect.'));
     });
 
@@ -128,7 +130,7 @@ class SocketIoService {
 
   setupStoreGuestIdEventHandler() {
     this.io.on('connection', (socket) => {
-      if (socket.request.user == null) {
+      if ((socket.request as RequestWithUser).user == null) {
         this.guestClients.add(socket.id);
 
         socket.on('disconnect', () => {
@@ -140,7 +142,7 @@ class SocketIoService {
 
   setupLoginedUserRoomsJoinOnConnection() {
     this.io.on('connection', (socket) => {
-      const user = socket.request.user;
+      const user = (socket.request as RequestWithUser).user;
       if (user == null) {
         logger.debug('Socket io: An anonymous user has connected');
         return;
@@ -166,53 +168,16 @@ class SocketIoService {
     });
   }
 
-  setupYjsConnection() {
-    const yjsConnectionManager = getYjsConnectionManager();
-
-    this.io.on('connection', (socket) => {
-
-      yjsConnectionManager.ysocketioInstance.on('awareness-update', async(update) => {
-        const pageId = extractPageIdFromYdocId(update.name);
-        const awarenessStateSize = update.awareness.states.size;
-
-        // Triggered when awareness changes
-        this.io
-          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
-
-        // Triggered when the last user leaves the editor
-        if (awarenessStateSize === 0) {
-          const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
-          const yjsDraft = currentYdoc?.getText('codemirror').toString();
-          const hasRevisionBodyDiff = await this.crowi.pageService.hasRevisionBodyDiff(pageId, yjsDraft);
-          this.io
-            .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-            .emit(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiff);
-        }
-      });
-
-      socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
-        try {
-          await yjsConnectionManager.handleYDocSync(pageId, initialValue);
-        }
-        catch (error) {
-          logger.warn(error.message);
-          socket.emit(GlobalSocketEventName.YDocSyncError, 'An error occurred during YDoc synchronization.');
-        }
-      });
-    });
-  }
-
   async checkConnectionLimitsForAdmin(socket, next) {
     const namespaceName = socket.nsp.name;
 
     if (namespaceName === '/admin') {
-      const clients = await this.getAdminSocket().allSockets();
+      const clients = await this.getAdminSocket().fetchSockets();
       const clientsCount = clients.length;
 
       logger.debug('Current count of clients for \'/admin\':', clientsCount);
 
-      const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForAdmin');
+      const limit = configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForAdmin');
       if (limit <= clientsCount) {
         const msg = `The connection was refused because the current count of clients for '/admin' is ${clientsCount} and exceeds the limit`;
         logger.warn(msg);
@@ -231,7 +196,7 @@ class SocketIoService {
 
       logger.debug('Current count of clients for guests:', clientsCount);
 
-      const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForGuest');
+      const limit = configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForGuest');
       if (limit <= clientsCount) {
         const msg = `The connection was refused because the current count of clients for guests is ${clientsCount} and exceeds the limit`;
         logger.warn(msg);
@@ -253,12 +218,12 @@ class SocketIoService {
       next();
     }
 
-    const clients = await this.getDefaultSocket().allSockets();
+    const clients = await this.getDefaultSocket().fetchSockets();
     const clientsCount = clients.length;
 
     logger.debug('Current count of clients for \'/\':', clientsCount);
 
-    const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimit');
+    const limit = configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimit');
     if (limit <= clientsCount) {
       const msg = `The connection was refused because the current count of clients for '/' is ${clientsCount} and exceeds the limit`;
       logger.warn(msg);
@@ -270,5 +235,3 @@ class SocketIoService {
   }
 
 }
-
-module.exports = SocketIoService;

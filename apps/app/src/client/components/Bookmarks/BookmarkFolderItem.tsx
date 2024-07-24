@@ -4,11 +4,11 @@ import { useCallback, useState } from 'react';
 import type { IPageToDeleteWithMeta } from '@growi/core';
 import { DropdownToggle } from 'reactstrap';
 
+import { FolderIcon } from '~/client/components/Icons/FolderIcon';
 import {
   addBookmarkToFolder, addNewFolder, hasChildren, updateBookmarkFolder,
 } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
-import { FolderIcon } from '~/client/components/Icons/FolderIcon';
 import type { BookmarkFolderItems, DragItemDataType, DragItemType } from '~/interfaces/bookmark-info';
 import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import type { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
@@ -250,7 +250,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
               onClick={loadChildFolder}
             >
               <div className="d-flex justify-content-center">
-                <span className="material-symbols-outlined">arrow_right</span>
+                <span className="material-symbols-outlined fs-5">arrow_right</span>
               </div>
             </button>
           </div>
@@ -268,7 +268,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           ) : (
             <>
               <div className="grw-foldertree-title-anchor ps-1">
-                <p className="text-truncate m-auto ">{name}</p>
+                <p className="text-truncate m-auto">{name}</p>
               </div>
             </>
           )}

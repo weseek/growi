@@ -671,7 +671,7 @@ describe('PageService', () => {
       expect(insertedPage.lastUpdateUser).toEqual(testUser2._id);
 
       expect([insertedRevision]).not.toBeNull();
-      expect(insertedRevision.pageId).toEqual(insertedPage._id);
+      expect(insertedRevision.pageId).toEqual(insertedPage._id.toString());
       expect(insertedRevision._id).not.toEqual(childForDuplicateRevision._id);
       expect(insertedRevision.body).toEqual(childForDuplicateRevision.body);
 

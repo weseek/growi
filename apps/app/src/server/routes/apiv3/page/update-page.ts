@@ -18,7 +18,7 @@ import {
 } from '~/server/models';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { preNotifyService } from '~/server/service/pre-notify';
-import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
+import { getYjsService } from '~/server/service/yjs';
 import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
@@ -67,8 +67,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     // Reflect the updates in ydoc
     const origin = req.body.origin;
     if (origin === Origin.View || origin === undefined) {
-      const yjsConnectionManager = getYjsConnectionManager();
-      await yjsConnectionManager.handleYDocUpdate(req.body.pageId, req.body.body);
+      const yjsService = getYjsService();
+      await yjsService.syncWithTheLatestRevisionForce(req.body.pageId);
     }
 
     // persist activity
