@@ -47,10 +47,10 @@ export const SecondaryItems: FC = memo(() => {
 
   return (
     <div className={styles['grw-secondary-items']}>
-      {!isGuestUser && <PersonalDropdown />}
       <SecondaryItem label="Help" iconName="help" href={growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org'} isBlank />
       {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
       <SecondaryItem label="Trash" href="/trash" iconName="delete" />
+      {!isGuestUser && <PersonalDropdown />}
     </div>
   );
 });
