@@ -3,6 +3,11 @@ import path from 'path';
 
 import { test, expect, type Page } from '@playwright/test';
 
+/**
+ * for the issues:
+ * @see https://redmine.weseek.co.jp/issues/122040
+ * @see https://redmine.weseek.co.jp/issues/124281
+ */
 test('should not be cleared and should prevent GrantSelector from modified', async({ page }) => {
   await page.goto('/Sandbox/for-122040');
 
@@ -53,7 +58,10 @@ const appendTextToEditorUntilContains = async(page: Page, text: string) => {
   await expect(page.getByTestId('page-editor-preview-body')).toContainText(text);
 };
 
-
+/**
+ * for the issue:
+ * @see https://redmine.weseek.co.jp/issues/115285
+ */
 test('Successfully updating the page body', async({ page }) => {
   const page1Path = '/Sandbox/for-115285/page1';
   const page2Path = '/Sandbox/for-115285/page2';
