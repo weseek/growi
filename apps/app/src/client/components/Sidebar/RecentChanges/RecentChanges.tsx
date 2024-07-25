@@ -21,7 +21,7 @@ export const RecentChanges = (): JSX.Element => {
   return (
     <div className="px-3" data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header py-4 d-flex">
-        <h2 className="fs-6 fw-bold mb-0 text-nowrap">{t('Recent Changes')}</h2>
+        <h3 className="fs-6 fw-bold mb-0 text-nowrap">{t('Recent Changes')}</h3>
         <Suspense>
           <RecentChangesHeader
             isSmall={isSmall}
