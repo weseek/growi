@@ -4,8 +4,9 @@ import type {
   Origin,
 } from '@growi/core';
 import { allOrigin } from '@growi/core';
+import type { Types } from 'mongoose';
 import {
-  Schema, Types, type Document, type Model,
+  Schema, type Document, type Model,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
@@ -17,10 +18,11 @@ import type { PageDocument } from './page';
 
 const logger = loggerFactory('growi:models:revision');
 
+
 export interface IRevisionDocument extends IRevision, Document {
 }
 
-type UpdateRevisionListByPageId = (pageId: string, updateData: Partial<IRevision>) => Promise<void>;
+type UpdateRevisionListByPageId = (pageId: Types.ObjectId, updateData: Partial<IRevision>) => Promise<void>;
 type PrepareRevision = (
   pageData: PageDocument, body: string, previousBody: string | null, user: HasObjectId, origin?: Origin, options?: { format: string }
 ) => IRevisionDocument;
@@ -58,17 +60,24 @@ const revisionSchema = new Schema<IRevisionDocument, IRevisionModel>({
 revisionSchema.plugin(mongoosePaginate);
 
 const updateRevisionListByPageId: UpdateRevisionListByPageId = async function(this: IRevisionModel, pageId, updateData) {
+  // Check pageId for safety
+  if (pageId == null) {
+    throw new Error('Error: pageId is required');
+  }
   await this.updateMany({ pageId }, { $set: updateData });
 };
 revisionSchema.statics.updateRevisionListByPageId = updateRevisionListByPageId;
 
 const prepareRevision: PrepareRevision = function(this: IRevisionModel, pageData, body, previousBody, user, origin, options = { format: 'markdown' }) {
-  if (!user._id) {
-    throw new Error('Error: user should have _id');
+  if (user._id == null) {
+    throw new Error('user should have _id');
+  }
+  if (pageData._id == null) {
+    throw new Error('pageData should have _id');
   }
 
   const newRevision = new this();
-  newRevision.pageId = pageData._id;
+  newRevision.pageId = pageData._id.toString();
   newRevision.body = body;
   newRevision.format = options.format;
   newRevision.author = user._id;

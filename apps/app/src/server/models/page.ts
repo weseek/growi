@@ -11,10 +11,11 @@ import { getIdForRef, isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
-import type { Model, Document, AnyObject } from 'mongoose';
-import mongoose, {
-  Schema,
+import type {
+  Model, Document, AnyObject,
+  Types,
 } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
@@ -44,7 +45,7 @@ const PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
 const STATUS_DELETED = 'deleted';
 
-export interface PageDocument extends IPage, Document {
+export interface PageDocument extends IPage, Document<Types.ObjectId> {
   [x:string]: any // for obsolete methods
   getLatestRevisionBodyLength(): Promise<number | null | undefined>
   calculateAndUpdateLatestRevisionBodyLength(this: PageDocument): Promise<void>
@@ -101,22 +102,21 @@ export interface PageModel extends Model<PageDocument> {
   STATUS_DELETED
 }
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const schema = new Schema<PageDocument, PageModel>({
   parent: {
-    type: ObjectId, ref: 'Page', index: true, default: null,
+    type: Schema.Types.ObjectId, ref: 'Page', index: true, default: null,
   },
   descendantCount: { type: Number, default: 0 },
   isEmpty: { type: Boolean, default: false },
   path: {
     type: String, required: true, index: true,
   },
-  revision: { type: ObjectId, ref: 'Revision' },
+  revision: { type: Schema.Types.ObjectId, ref: 'Revision' },
   latestRevisionBodyLength: { type: Number },
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
-  grantedUsers: [{ type: ObjectId, ref: 'User' }],
+  grantedUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   grantedGroups: {
     type: [{
       type: {
@@ -126,7 +126,7 @@ const schema = new Schema<PageDocument, PageModel>({
         default: 'UserGroup',
       },
       item: {
-        type: ObjectId,
+        type: Schema.Types.ObjectId,
         refPath: 'grantedGroups.type',
         required: true,
         index: true,
@@ -140,16 +140,16 @@ const schema = new Schema<PageDocument, PageModel>({
     default: [],
     required: true,
   },
-  creator: { type: ObjectId, ref: 'User', index: true },
-  lastUpdateUser: { type: ObjectId, ref: 'User' },
-  liker: [{ type: ObjectId, ref: 'User' }],
-  seenUsers: [{ type: ObjectId, ref: 'User' }],
+  creator: { type: Schema.Types.ObjectId, ref: 'User', index: true },
+  lastUpdateUser: { type: Schema.Types.ObjectId, ref: 'User' },
+  liker: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+  seenUsers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
   expandContentWidth: { type: Boolean },
   wip: { type: Boolean },
   ttlTimestamp: { type: Date },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
-  deleteUser: { type: ObjectId, ref: 'User' },
+  deleteUser: { type: Schema.Types.ObjectId, ref: 'User' },
   deletedAt: { type: Date },
 }, {
   timestamps: { createdAt: true, updatedAt: false },
