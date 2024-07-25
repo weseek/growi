@@ -147,7 +147,7 @@ schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<
     .select('relatedGroup')
     .exec();
 
-  return relations.map((relation) => { return getIdForRef(relation.relatedGroup) });
+  return relations.map((relation) => { return getIdForRef(relation.relatedGroup).toString() });
 };
 
 /**

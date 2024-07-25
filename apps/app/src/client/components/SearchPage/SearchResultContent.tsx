@@ -184,7 +184,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       return <></>;
     }
 
-    const revisionId = page.revision != null ? getIdForRef(page.revision) : null;
+    const revisionId = page.revision != null ? getIdForRef(page.revision).toString() : null;
     const additionalMenuItemRenderer = revisionId != null
       ? props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />
       : undefined;

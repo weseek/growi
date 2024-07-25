@@ -10,6 +10,7 @@ import { useTranslation } from 'next-i18next';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
@@ -30,7 +31,7 @@ type PageCommentProps = {
   rendererOptions?: RendererOptions,
   pageId: string,
   pagePath: string,
-  revision: string | IRevisionHasId,
+  revision: ObjectIdLike | IRevisionHasId,
   currentUser: any,
   isReadOnly: boolean,
 }
@@ -121,7 +122,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
     return <></>;
   }
 
-  const revisionId = getIdForRef(revision);
+  const revisionId = getIdForRef(revision).toString();
   const revisionCreatedAt = (isPopulated(revision)) ? revision.createdAt : undefined;
 
   const commentElement = (comment: ICommentHasId) => (

@@ -357,8 +357,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
    * generate object that is related to page.grant*
    */
   generateDocContentsRelatedToRestriction(page: AggregatedPage) {
-    const grantedUserIds = page.grantedUsers.map(user => getIdForRef(user));
-    const grantedGroupIds = page.grantedGroups.map(group => getIdForRef(group.item));
+    const grantedUserIds = page.grantedUsers.map(user => getIdForRef(user).toString());
+    const grantedGroupIds = page.grantedGroups.map(group => getIdForRef(group.item).toString());
 
     return {
       grant: page.grant,

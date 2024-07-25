@@ -59,7 +59,7 @@ export const retrieveAttachmentFromIdParam = async(
   // check viewer has permission
   if (user != null && attachment.page != null) {
     const Page = mongoose.model<IPage, PageModel>('Page');
-    const isAccessible = await Page.isAccessiblePageByViewer(getIdForRef(attachment.page), user);
+    const isAccessible = await Page.isAccessiblePageByViewer(getIdForRef(attachment.page).toString(), user);
     if (!isAccessible) {
       res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'. This attachment might belong to other pages.`));
       return;

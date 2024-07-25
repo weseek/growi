@@ -144,7 +144,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       const groupName = isPopulated(group.item) ? group.item.name : null;
       return { id: groupId, name: groupName };
     }).filter(obj => obj.name != null)
-      .map(obj => <option key={obj.id} value={obj.id}>{obj.name}</option>);
+      .map(obj => <option key={obj.id.toString()} value={obj.id.toString()}>{obj.name}</option>);
 
     const defaultOptionText = groups.length === 0 ? t('admin:user_group_management.delete_modal.no_groups')
       : t('admin:user_group_management.delete_modal.select_group');
@@ -153,7 +153,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       <select
         name="transferToUserGroup"
         className={`form-control ${actionName === PageActionOnGroupDelete.transfer ? '' : 'd-none'}`}
-        value={transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : ''}
+        value={transferToUserGroup != null ? getIdForRef(transferToUserGroup.item).toString() : ''}
         onChange={handleGroupChange}
       >
         <option value="" disabled>{defaultOptionText}</option>
