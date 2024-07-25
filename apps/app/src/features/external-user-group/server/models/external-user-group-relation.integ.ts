@@ -100,10 +100,10 @@ describe('ExternalUserGroupRelation model', () => {
 
     it('finds all group ids related to user', async() => {
       const groupIds = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
-      expect(groupIds).toStrictEqual([groupId1, groupId2]);
+      expect(groupIds).toStrictEqual([groupId1.toString(), groupId2.toString()]);
 
       const groupIds2 = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user2);
-      expect(groupIds2).toStrictEqual([groupId3]);
+      expect(groupIds2).toStrictEqual([groupId3.toString()]);
     });
   });
 
