@@ -37,7 +37,7 @@ const revisionSchema = new Schema<IRevisionDocument, IRevisionModel>({
   // The type of pageId is always converted to String at server startup
   // Refer to this method (/src/server/service/normalize-data/convert-revision-page-id-to-string.ts) to change the pageId type
   pageId: {
-    type: String, required: true, index: true,
+    type: Types.ObjectId, ref: 'Page', required: true, index: true,
   },
   body: {
     type: String,
