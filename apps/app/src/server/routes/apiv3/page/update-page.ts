@@ -132,6 +132,10 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
+      // check page existence (for type safety)
+      if (currentPage == null) {
+        return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
+      }
 
       if (currentPage != null) {
         // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
