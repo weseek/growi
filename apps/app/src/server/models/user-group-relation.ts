@@ -13,7 +13,6 @@ const debug = require('debug')('growi:models:userGroupRelation');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const ObjectId = Schema.Types.ObjectId;
 
 export interface UserGroupRelationDocument extends IUserGroupRelation, Document {}
 
@@ -39,8 +38,8 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
  * define schema
  */
 const schema = new Schema<UserGroupRelationDocument, UserGroupRelationModel>({
-  relatedGroup: { type: ObjectId, ref: 'UserGroup', required: true },
-  relatedUser: { type: ObjectId, ref: 'User', required: true },
+  relatedGroup: { type: Schema.Types.ObjectId, ref: 'UserGroup', required: true },
+  relatedUser: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 }, {
   timestamps: { createdAt: true, updatedAt: false },
 });
