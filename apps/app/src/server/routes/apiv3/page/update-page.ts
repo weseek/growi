@@ -131,6 +131,10 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
+      // check page existence (for type safety)
+      if (currentPage == null) {
+        return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
+      }
 
       if (currentPage != null && !await currentPage.isUpdatable(sanitizeRevisionId, origin)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');

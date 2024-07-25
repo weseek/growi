@@ -13,6 +13,7 @@ import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-uti
 import escapeStringRegexp from 'escape-string-regexp';
 import type {
   Model, Document, AnyObject,
+  HydratedDocument,
   Types,
 } from 'mongoose';
 import mongoose, { Schema } from 'mongoose';
@@ -64,25 +65,26 @@ type PaginatedPages = {
   offset: number
 }
 
-export type CreateMethod = (path: string, body: string, user, options: IOptionsForCreate) => Promise<PageDocument & { _id: any }>
+export type CreateMethod = (path: string, body: string, user, options: IOptionsForCreate) => Promise<HydratedDocument<PageDocument>>
 
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
-  findByIdAndViewer(pageId: ObjectIdLike, user, userGroups?, includeEmpty?: boolean): Promise<PageDocument & HasObjectId>
+  findByIdAndViewer(pageId: ObjectIdLike, user, userGroups?, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
   findByIdsAndViewer(
     pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
-  ): Promise<(PageDocument & HasObjectId)[]>
-  findByPath(path: string, includeEmpty?: boolean): Promise<PageDocument | null>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument & HasObjectId | null>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<(PageDocument & HasObjectId)[]>
+  ): Promise<HydratedDocument<PageDocument>[]>
+  findByPath(path: string, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
+  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument>[]>
   countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
+  findParentByPath(path: string | null): Promise<HydratedDocument<PageDocument> | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
     user, userGroups: string[] | null, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
-  findNonEmptyClosestAncestor(path: string): Promise<PageDocument | null>
-  findNotEmptyParentByPathRecursively(path: string): Promise<PageDocument | undefined>
+  findNonEmptyClosestAncestor(path: string): Promise<HydratedDocument<PageDocument> | null>
+  findNotEmptyParentByPathRecursively(path: string): Promise<HydratedDocument<PageDocument> | null>
   removeLeafEmptyPagesRecursively(pageId: ObjectIdLike): Promise<void>
   findTemplate(path: string): Promise<{
     templateBody?: string,
@@ -757,10 +759,8 @@ schema.statics.createEmptyPagesByPaths = async function(paths: string[], aggrPip
 
 /**
  * Find a parent page by path
- * @param {string} path
- * @returns {Promise<PageDocument | null>}
  */
-schema.statics.findParentByPath = async function(path: string): Promise<PageDocument | null> {
+schema.statics.findParentByPath = async function(path: string): Promise<HydratedDocument<PageDocument> | null> {
   const parentPath = nodePath.dirname(path);
 
   const builder = new PageQueryBuilder(this.find({ path: parentPath }), true);

@@ -4,7 +4,7 @@ import type {
   HasObjectId,
   IPageInfo, IPageInfoForEntity, IUser,
 } from '@growi/core';
-import type { ObjectId } from 'mongoose';
+import type { Types } from 'mongoose';
 
 import type { IOptionsForCreate, IOptionsForUpdate } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
@@ -17,12 +17,12 @@ export interface IPageService {
   forceCreateBySystem(path: string, body: string, options: IOptionsForCreate): Promise<PageDocument>,
   updatePage(pageData: PageDocument, body: string | null, previousBody: string | null, user: IUser, options: IOptionsForUpdate,): Promise<PageDocument>,
   updateDescendantCountOfAncestors: (pageId: ObjectIdLike, inc: number, shouldIncludeTarget: boolean) => Promise<void>,
-  deleteCompletelyOperation: (pageIds: string[], pagePaths: string[]) => Promise<void>,
+  deleteCompletelyOperation: (pageIds: ObjectIdLike[], pagePaths: string[]) => Promise<void>,
   getEventEmitter: () => EventEmitter,
   deleteMultipleCompletely: (pages: ObjectIdLike[], user: IUser | undefined) => Promise<void>,
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>,
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>,
-  shortBodiesMapByPageIds(pageIds?: ObjectId[], user?): Promise<Record<string, string | null>>,
+  shortBodiesMapByPageIds(pageIds?: Types.ObjectId[], user?): Promise<Record<string, string | null>>,
   constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | Omit<IPageInfoForEntity, 'bookmarkCount'>,
   canDelete(page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, isRecursively: boolean): boolean,
   canDeleteCompletely(

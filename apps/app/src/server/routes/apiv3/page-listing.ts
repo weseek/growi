@@ -6,6 +6,7 @@ import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, Router } from 'express';
 import express from 'express';
 import { query, oneOf } from 'express-validator';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
 
@@ -14,7 +15,7 @@ import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import type { PageModel } from '../../models/page';
+import type { PageDocument, PageModel } from '../../models/page';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
@@ -122,7 +123,7 @@ const routerFactory = (crowi: Crowi): Router => {
     const attachBookmarkCount: boolean = attachBookmarkCountParam === 'true';
     const attachShortBody: boolean = attachShortBodyParam === 'true';
 
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
     const Bookmark = crowi.model('Bookmark');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pageService = crowi.pageService;
