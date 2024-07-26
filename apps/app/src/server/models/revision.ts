@@ -77,7 +77,7 @@ const prepareRevision: PrepareRevision = function(this: IRevisionModel, pageData
   }
 
   const newRevision = new this();
-  newRevision.pageId = pageData._id.toString();
+  newRevision.pageId = pageData._id;
   newRevision.body = body;
   newRevision.format = options.format;
   newRevision.author = user._id;
