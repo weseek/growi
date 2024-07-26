@@ -36,6 +36,7 @@ export const useNonYjsModeEffect = (): void => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const isYjsEnabled = useIsYjsEnabled();
 
+  // initDoc() is not available unless codeMirrorEditor.view is true
   const shouldRecalculate = isYjsEnabled === false && codeMirrorEditor != null && codeMirrorEditor.view != null && t != null;
 
   useEffect(() => {
