@@ -21,14 +21,14 @@ import { throttle, debounce } from 'throttle-debounce';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
-import { useIsYjsEnabled } from '~/client/services/yjs';
+import { useIsYjsEnabled, useNonYjsModeEffect } from '~/client/services/yjs';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType, useYjsMaxBodyLength,
+  useAcceptedUploadFileType,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
@@ -109,7 +109,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
-  const { data: yjsMaxBodyLength } = useYjsMaxBodyLength();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
   const isYjsEnabled = useIsYjsEnabled();
@@ -123,6 +122,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
+
+  useNonYjsModeEffect();
 
   useConflictEffect();
 
@@ -322,16 +323,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       mutateReservedNextCaretLine(0);
     }
   }, [editorMode, mutateReservedNextCaretLine]);
-
-  // Insert latest revisionBody when yjs is disabled
-  useEffect(() => {
-    if (!isYjsEnabled && editorMode === EditorMode.Editor) {
-      codeMirrorEditor?.initDoc(currentPage?.revision?.body);
-
-      // eslint-disable-next-line no-alert
-      window.alert(t('non-yjs-alert', { yjsMaxBodyLength }));
-    }
-  }, [codeMirrorEditor, currentPage?.revision?.body, editorMode, isYjsEnabled, t, yjsMaxBodyLength]);
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
