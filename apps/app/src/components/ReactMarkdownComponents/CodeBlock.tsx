@@ -65,14 +65,12 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
     </PrismAsyncLight>
   );
 }
-
-export const InlineCodeBlock = ({ className, children }: { className: string, children: JSX.Element}): JSX.Element => {
-  return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
-};
-
 export const CodeBlock = ({ className, children }: {className: string, children: JSX.Element}): JSX.Element => {
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
+  if (className === 'inline') {
+    return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
+  }
 
   const match = /language-(\w+)(:?.+)?/.exec(className || '');
   const lang = match && match[1] ? match[1] : '';
