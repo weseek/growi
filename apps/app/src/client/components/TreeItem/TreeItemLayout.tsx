@@ -152,7 +152,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
-                <span className="material-symbols-outlined">arrow_right</span>
+                <span className="material-symbols-outlined fs-5">arrow_right</span>
               </div>
             </button>
           )}

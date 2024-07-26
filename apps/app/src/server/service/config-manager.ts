@@ -214,7 +214,7 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
     }
   }
 
-  async removeConfigsInTheSameNamespace(namespace, configKeys: string[], withoutPublishingS2sMessage?) {
+  async removeConfigsInTheSameNamespace(namespace, configKeys: readonly string[], withoutPublishingS2sMessage?) {
     const queries: any[] = [];
     for (const key of configKeys) {
       queries.push({
