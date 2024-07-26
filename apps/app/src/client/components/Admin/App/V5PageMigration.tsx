@@ -1,12 +1,14 @@
-import React, {
-  FC, useCallback, useEffect, useState,
-} from 'react';
+import type { FC } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import type {
+  PMStartedData, PMMigratingData, PMErrorCountData, PMEndedData,
+} from '~/interfaces/websocket';
 import {
-  SocketEventName, PMStartedData, PMMigratingData, PMErrorCountData, PMEndedData,
+  SocketEventName,
 } from '~/interfaces/websocket';
 import { useGlobalAdminSocket } from '~/stores/websocket';
 
@@ -64,7 +66,6 @@ const V5PageMigration: FC<Props> = (props: Props) => {
         <LabeledProgressBar
           header={t('admin:v5_page_migration.header_upgrading_progress')}
           currentCount={current}
-          errorsCount={skip}
           totalCount={total}
           isInProgress={isInProgress}
         />

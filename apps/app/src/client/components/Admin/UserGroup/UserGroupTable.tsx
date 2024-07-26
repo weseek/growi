@@ -9,6 +9,11 @@ import Link from 'next/link';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 
 
+import styles from './UserGroupTable.module.scss';
+
+const userGroupEditLinkStyle = styles['user-group-edit-link'] ?? '';
+
+
 type Props = {
   headerLabel?: string,
   userGroups: IUserGroupHasId[],
@@ -54,6 +59,23 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
   return map;
 };
 
+type UserGroupEditLinkProps = {
+  group:IUserGroupHasId,
+  isExternalGroup:boolean,
+}
+
+const UserGroupEditLink = (props: UserGroupEditLinkProps): JSX.Element => {
+  return (
+    <Link
+      href={`/admin/user-group-detail/${props.group._id}?isExternalGroup=${props.isExternalGroup}`}
+      className={`${userGroupEditLinkStyle} link-secondary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover`}
+    >
+      <span className="material-symbols-outlined pe-2 pt-2">group</span>
+      <span>{props.group.name}</span>
+      <span className="grw-edit-icon material-symbols-outlined px-2 py-0">edit</span>
+    </Link>
+  );
+};
 
 export const UserGroupTable: FC<Props> = ({
   headerLabel,
@@ -163,12 +185,7 @@ export const UserGroupTable: FC<Props> = ({
                 {isAclEnabled
                   ? (
                     <td>
-                      <Link
-                        className="link-opacity-75-hover"
-                        href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
-                      >
-                        {group.name}
-                      </Link>
+                      <UserGroupEditLink group={group} isExternalGroup={isExternalGroup} />
                     </td>
                   )
                   : (

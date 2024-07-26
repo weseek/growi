@@ -1,11 +1,16 @@
-import { ClientSecretCredential, TokenCredential } from '@azure/identity';
-import {
-  generateBlobSASQueryParameters,
-  BlobServiceClient,
+import type { ReadStream } from 'fs';
+
+import type { TokenCredential } from '@azure/identity';
+import { ClientSecretCredential } from '@azure/identity';
+import type {
   BlobClient,
   BlockBlobClient,
   BlobDeleteOptions,
   ContainerClient,
+} from '@azure/storage-blob';
+import {
+  generateBlobSASQueryParameters,
+  BlobServiceClient,
   ContainerSASPermissions,
   SASProtocol,
   type BlobDeleteIfExistsResponse,
@@ -92,6 +97,29 @@ class AzureFileUploader extends AbstractFileUploader {
    */
   override deleteFiles() {
     throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+    if (!this.getIsUploadable()) {
+      throw new Error('Azure is not configured.');
+    }
+
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
+    const filePath = getFilePathOnStorage(attachment);
+    const containerClient = await getContainerClient();
+    const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
+    const contentHeaders = new ContentHeaders(attachment);
+
+    await blockBlobClient.uploadStream(readStream, undefined, undefined, {
+      blobHTTPHeaders: {
+        // put type and the file name for reference information when uploading
+        blobContentType: contentHeaders.contentType?.value.toString(),
+        blobContentDisposition: contentHeaders.contentDisposition?.value.toString(),
+      },
+    });
   }
 
   /**
@@ -216,26 +244,6 @@ module.exports = (crowi) => {
     for await (const attachment of attachments) {
       (lib as any).deleteFile(attachment);
     }
-  };
-
-  (lib as any).uploadAttachment = async function(readStream, attachment) {
-    if (!lib.getIsUploadable()) {
-      throw new Error('Azure is not configured.');
-    }
-
-    logger.debug(`File uploading: fileName=${attachment.fileName}`);
-    const filePath = getFilePathOnStorage(attachment);
-    const containerClient = await getContainerClient();
-    const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
-    const contentHeaders = new ContentHeaders(attachment);
-
-    return blockBlobClient.uploadStream(readStream, undefined, undefined, {
-      blobHTTPHeaders: {
-        // put type and the file name for reference information when uploading
-        blobContentType: contentHeaders.contentType?.value.toString(),
-        blobContentDisposition: contentHeaders.contentDisposition?.value.toString(),
-      },
-    });
   };
 
   lib.saveFile = async function({ filePath, contentType, data }) {

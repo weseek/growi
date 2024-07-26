@@ -8,6 +8,7 @@ import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
 import { useIsRevisionOutdated } from '~/stores/page';
+import { useCurrentPageYjsData } from '~/stores/yjs';
 
 import styles from './TableWithEditButton.module.scss';
 
@@ -31,6 +32,7 @@ export const TableWithEditButton = (props: TableWithEditButtonProps): JSX.Elemen
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
   const { data: isRevisionOutdated } = useIsRevisionOutdated();
+  const { data: currentPageYjsData } = useCurrentPageYjsData();
 
   const bol = node.position?.start.line;
   const eol = node.position?.end.line;
@@ -39,7 +41,13 @@ export const TableWithEditButton = (props: TableWithEditButtonProps): JSX.Elemen
     globalEmitter.emit('launchHandsonTableModal', bol, eol);
   }, [bol, eol]);
 
-  const showEditButton = !isRevisionOutdated && !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
+  const isNoEditingUsers = currentPageYjsData?.awarenessStateSize == null || currentPageYjsData?.awarenessStateSize === 0;
+  const showEditButton = isNoEditingUsers
+    && !isRevisionOutdated
+    && !isGuestUser
+    && !isReadOnlyUser
+    && !isSharedUser
+    && shareLinkId == null;
 
   return (
     <div className={`editable-with-handsontable ${styles['editable-with-handsontable']}`}>
