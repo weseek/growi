@@ -21,27 +21,18 @@ const additionalExtensions: Extension[] = [
 type Props = CodeMirrorEditorProps & {
   user?: IUserHasId,
   pageId?: string,
-  isEditorMode: boolean,
-  revisionBody?: string,
   isYjsEnabled: boolean,
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    user, pageId, revisionBody, onSave, onEditorsUpdated, isEditorMode, isYjsEnabled, ...otherProps
+    user, pageId, onSave, onEditorsUpdated, isYjsEnabled, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   useCollaborativeEditorMode(isYjsEnabled, user, pageId, onEditorsUpdated, codeMirrorEditor);
-
-  // Insert latest revisionBody when yjs is disabled
-  useEffect(() => {
-    if (!isYjsEnabled && isEditorMode) {
-      codeMirrorEditor?.initDoc(revisionBody);
-    }
-  }, [codeMirrorEditor, isEditorMode, isYjsEnabled, revisionBody]);
 
   // setup additional extensions
   useEffect(() => {

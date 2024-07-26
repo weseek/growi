@@ -113,9 +113,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const onConflict = useConflictResolver();
   const isYjsEnabled = useIsYjsEnabled();
 
-  console.log('isYjsEnabled', isYjsEnabled);
-
-
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
   const { data: rendererOptions } = usePreviewOptions();
@@ -326,6 +323,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [editorMode, mutateReservedNextCaretLine]);
 
 
+  // Insert latest revisionBody when yjs is disabled
+  useEffect(() => {
+    if (!isYjsEnabled && editorMode === EditorMode.Editor) {
+      codeMirrorEditor?.initDoc(currentPage?.revision?.body);
+    }
+  }, [codeMirrorEditor, currentPage?.revision?.body, editorMode, isYjsEnabled]);
+
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
   // // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
@@ -368,7 +372,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
-            isEditorMode={editorMode === EditorMode.Editor}
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
@@ -377,7 +380,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             indentSize={currentIndentSize ?? defaultIndentSize}
             user={user ?? undefined}
             pageId={pageId ?? undefined}
-            revisionBody={currentPage?.revision?.body}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
             isYjsEnabled={isYjsEnabled ?? false}
