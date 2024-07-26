@@ -28,7 +28,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType,
+  useAcceptedUploadFileType, useYjsMaxBodyLength,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
@@ -109,6 +109,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
+  const { data: yjsMaxBodyLength } = useYjsMaxBodyLength();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
   const isYjsEnabled = useIsYjsEnabled();
@@ -328,9 +329,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       codeMirrorEditor?.initDoc(currentPage?.revision?.body);
 
       // eslint-disable-next-line no-alert
-      window.alert('現在、同時多人数編集は利用できません。同時多人数編集を利用するにはページ本文の文字数を 500000 文字以下で保存し再度エディターを開いてください。');
+      window.alert(t('non-yjs-alert', { yjsMaxBodyLength }));
     }
-  }, [codeMirrorEditor, currentPage?.revision?.body, editorMode, isYjsEnabled]);
+  }, [codeMirrorEditor, currentPage?.revision?.body, editorMode, isYjsEnabled, t, yjsMaxBodyLength]);
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,

@@ -160,6 +160,7 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
+  "non-yjs-alert": "Collaborative editor is currently unavailable. To use the collaborative editor, save the page content with less than {{yjsMaxBodyLength}} characters and reopen the editor.",
   "input_validation": {
     "target": {
       "page_name": "Page name",
