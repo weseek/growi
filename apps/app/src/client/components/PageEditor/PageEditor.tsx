@@ -21,6 +21,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
+import { useIsYjsEnabled } from '~/client/services/yjs';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
@@ -45,7 +46,6 @@ import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
-import { useIsYjsEnabled } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
@@ -111,7 +111,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
-  const { data: isYjsEnabled } = useIsYjsEnabled();
+  const isYjsEnabled = useIsYjsEnabled();
+
+  console.log('isYjsEnabled', isYjsEnabled);
+
+
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
   const { data: rendererOptions } = usePreviewOptions();
