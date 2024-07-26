@@ -322,11 +322,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [editorMode, mutateReservedNextCaretLine]);
 
-
   // Insert latest revisionBody when yjs is disabled
   useEffect(() => {
     if (!isYjsEnabled && editorMode === EditorMode.Editor) {
       codeMirrorEditor?.initDoc(currentPage?.revision?.body);
+
+      // eslint-disable-next-line no-alert
+      window.alert('現在、同時多人数編集は利用できません。同時多人数編集を利用するにはページ本文の文字数を 500000 文字以下で保存し再度エディターを開いてください。');
     }
   }, [codeMirrorEditor, currentPage?.revision?.body, editorMode, isYjsEnabled]);
 
