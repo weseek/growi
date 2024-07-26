@@ -1,9 +1,9 @@
 import { pathUtils } from '@growi/core/dist/utils';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
-import { Schema as SanitizeOption } from 'hast-util-sanitize';
+import type { Nodes as HastNode } from 'hast';
+import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { selectAll } from 'hast-util-select';
-import type { Node as HastNode } from 'hast-util-select/lib/types';
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 import loggerFactory from '../../../utils/logger';
