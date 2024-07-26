@@ -53,7 +53,7 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
   }
 
   return (
-    <div className={`${styles.attachment} d-inline-block`}>
+    <div data-testid="rich-attachment" className={`${styles.attachment} d-inline-block`}>
       <div className="my-2 p-2 card">
         <div className="p-1 card-body d-flex align-items-center">
           <div className="me-2 px-0 d-flex align-items-center justify-content-center">
