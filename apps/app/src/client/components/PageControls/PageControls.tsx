@@ -1,4 +1,3 @@
-import type { MouseEventHandler } from 'react';
 import React, {
   memo, useCallback, useEffect, useMemo, useRef,
 } from 'react';

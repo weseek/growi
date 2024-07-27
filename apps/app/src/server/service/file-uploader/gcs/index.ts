@@ -1,3 +1,5 @@
+import type { ReadStream } from 'fs';
+
 import { Storage } from '@google-cloud/storage';
 import axios from 'axios';
 import urljoin from 'url-join';
@@ -102,6 +104,28 @@ class GcsFileUploader extends AbstractFileUploader {
     return configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode')
       ? ResponseMode.RELAY
       : ResponseMode.REDIRECT;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+    if (!this.getIsUploadable()) {
+      throw new Error('GCS is not configured.');
+    }
+
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
+
+    const gcs = getGcsInstance();
+    const myBucket = gcs.bucket(getGcsBucket());
+    const filePath = getFilePathOnStorage(attachment);
+    const contentHeaders = new ContentHeaders(attachment);
+
+    await myBucket.upload(readStream.path.toString(), {
+      destination: filePath,
+      // put type and the file name for reference information when uploading
+      contentType: contentHeaders.contentType?.value.toString(),
+    });
   }
 
   /**
@@ -228,25 +252,6 @@ module.exports = function(crowi: Crowi) {
 
     files.forEach((file) => {
       file.delete({ ignoreNotFound: true });
-    });
-  };
-
-  (lib as any).uploadAttachment = function(fileStream, attachment) {
-    if (!lib.getIsUploadable()) {
-      throw new Error('GCS is not configured.');
-    }
-
-    logger.debug(`File uploading: fileName=${attachment.fileName}`);
-
-    const gcs = getGcsInstance();
-    const myBucket = gcs.bucket(getGcsBucket());
-    const filePath = getFilePathOnStorage(attachment);
-    const contentHeaders = new ContentHeaders(attachment);
-
-    return myBucket.upload(fileStream.path, {
-      destination: filePath,
-      // put type and the file name for reference information when uploading
-      contentType: contentHeaders.contentType?.value.toString(),
     });
   };
 

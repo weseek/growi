@@ -2,7 +2,7 @@ import type { IPage, IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
-import { param } from 'express-validator';
+import { param, body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import type Crowi from '~/server/crowi';
@@ -21,7 +21,10 @@ type SyncLatestRevisionBodyToYjsDraftHandlerFactory = (crowi: Crowi) => RequestH
 type ReqParams = {
   pageId: string,
 }
-interface Req extends Request<ReqParams, ApiV3Response> {
+type ReqBody = {
+  editingMarkdownLength?: number,
+}
+interface Req extends Request<ReqParams, ApiV3Response, ReqBody> {
   user: IUserHasId,
 }
 export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionBodyToYjsDraftHandlerFactory = (crowi) => {
@@ -32,6 +35,7 @@ export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionB
   // define validators for req.params
   const validator: ValidationChain[] = [
     param('pageId').isMongoId().withMessage('The param "pageId" must be specified'),
+    body('editingMarkdownLength').optional().isInt().withMessage('The body "editingMarkdownLength" must be integer'),
   ];
 
   return [
@@ -39,6 +43,7 @@ export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionB
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { pageId } = req.params;
+      const { editingMarkdownLength } = req.body;
 
       // check whether accessible
       if (!(await Page.isAccessiblePageByViewer(pageId, req.user))) {
@@ -47,8 +52,8 @@ export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionB
 
       try {
         const yjsService = getYjsService();
-        await yjsService.syncWithTheLatestRevisionForce(pageId);
-        return res.apiv3({ });
+        const result = await yjsService.syncWithTheLatestRevisionForce(pageId, editingMarkdownLength);
+        return res.apiv3(result);
       }
       catch (err) {
         logger.error(err);
