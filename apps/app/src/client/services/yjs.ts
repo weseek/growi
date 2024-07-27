@@ -14,17 +14,17 @@ export const useIsYjsEnabled = (): boolean | undefined => {
   const { data: editorMode } = useEditorMode();
 
   const revisionBody = currentPage?.revision?.body;
-  const shoulRecalculate = editorMode === EditorMode.Editor && revisionBody != null && yjsMaxBodyLength != null;
+  const shouldRecalculate = editorMode === EditorMode.Editor && revisionBody != null && yjsMaxBodyLength != null;
 
   const isYjsEnabled = useMemo(() => {
-    if (!shoulRecalculate) {
+    if (!shouldRecalculate) {
       return undefined;
     }
 
     return revisionBody.length <= yjsMaxBodyLength;
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [shoulRecalculate]);
+  }, [shouldRecalculate]);
 
   return isYjsEnabled;
 };
@@ -37,7 +37,7 @@ export const useNonYjsModeEffect = (): void => {
   const isYjsEnabled = useIsYjsEnabled();
 
   // initDoc() is not available unless codeMirrorEditor.view is true
-  const shouldRecalculate = isYjsEnabled === false && codeMirrorEditor != null && codeMirrorEditor.view != null && t != null;
+  const shouldRecalculate = isYjsEnabled === false && codeMirrorEditor != null && codeMirrorEditor.view != null;
 
   useEffect(() => {
     if (shouldRecalculate) {
@@ -46,6 +46,7 @@ export const useNonYjsModeEffect = (): void => {
       // eslint-disable-next-line no-alert
       window.alert(t('non-yjs-alert', { yjsMaxBodyLength }));
     }
+
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shouldRecalculate]);
 };
