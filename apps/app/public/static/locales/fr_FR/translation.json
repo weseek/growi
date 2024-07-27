@@ -9,7 +9,6 @@
   "delete_all": "Tout supprimer",
   "Duplicate": "Dupliquer",
   "PathRecovery": "Récupération de chemin",
-  "SyncLatestRevisionBody": "Synchroniser l'éditeur avec le dernier corps",
   "Copy": "Copier",
   "preview": "Prévisualiser",
   "desktop": "Ordinateur",
@@ -848,9 +847,12 @@
     "size_s": "Taille: P",
     "size_l": "Taille: G"
   },
-  "sync-latest-reevision-body": {
+  "sync-latest-revision-body": {
+    "menuitem": "Synchroniser le texte de l'éditeur avec le corps de la dernière révision",
     "confirm": "Delete the draft data being entered into the editor and synchronize the latest text. Are you sure you want to run it?",
+    "alert": "Il se peut que le texte le plus récent n'ait pas été synchronisé. Veuillez recharger et vérifier à nouveau.",
     "success-toaster": "Dernier texte synchronisé",
+    "skipped-toaster": "Synchronisation ignorée car l'éditeur n'est pas activé. Ouvrir l'éditeur et réessayer.",
     "error-toaster": "La synchronisation du dernier texte a échoué"
   }
 }

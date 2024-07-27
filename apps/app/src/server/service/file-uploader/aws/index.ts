@@ -1,3 +1,5 @@
+import type { ReadStream } from 'fs';
+
 import type { GetObjectCommandInput, HeadObjectCommandInput } from '@aws-sdk/client-s3';
 import {
   S3Client,
@@ -154,6 +156,32 @@ class AwsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
+  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+    if (!this.getIsUploadable()) {
+      throw new Error('AWS is not configured.');
+    }
+
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
+
+    const s3 = S3Factory();
+
+    const filePath = getFilePathOnStorage(attachment);
+    const contentHeaders = new ContentHeaders(attachment);
+
+    await s3.send(new PutObjectCommand({
+      Bucket: getS3Bucket(),
+      Key: filePath,
+      Body: readStream,
+      ACL: getS3PutObjectCannedAcl(),
+      // put type and the file name for reference information when uploading
+      ContentType: contentHeaders.contentType?.value.toString(),
+      ContentDisposition: contentHeaders.contentDisposition?.value.toString(),
+    }));
+  }
+
+  /**
+   * @inheritdoc
+   */
   override respond(): void {
     throw new Error('AwsFileUploader does not support ResponseMode.DELEGATE.');
   }
@@ -292,29 +320,6 @@ module.exports = (crowi) => {
     }
 
     return s3.send(new DeleteObjectCommand(params));
-  };
-
-  (lib as any).uploadAttachment = async function(fileStream, attachment) {
-    if (!lib.getIsUploadable()) {
-      throw new Error('AWS is not configured.');
-    }
-
-    logger.debug(`File uploading: fileName=${attachment.fileName}`);
-
-    const s3 = S3Factory();
-
-    const filePath = getFilePathOnStorage(attachment);
-    const contentHeaders = new ContentHeaders(attachment);
-
-    return s3.send(new PutObjectCommand({
-      Bucket: getS3Bucket(),
-      Key: filePath,
-      Body: fileStream,
-      ACL: getS3PutObjectCannedAcl(),
-      // put type and the file name for reference information when uploading
-      ContentType: contentHeaders.contentType?.value.toString(),
-      ContentDisposition: contentHeaders.contentDisposition?.value.toString(),
-    }));
   };
 
   lib.saveFile = async function({ filePath, contentType, data }) {
