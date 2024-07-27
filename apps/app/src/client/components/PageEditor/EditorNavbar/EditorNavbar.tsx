@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 
 import { PageHeader } from '~/client/components/PageHeader';
 import { useIsYjsEnabled } from '~/client/services/yjs';
@@ -9,10 +10,11 @@ import styles from './EditorNavbar.module.scss';
 
 const moduleClass = styles['editor-navbar'] ?? '';
 
-const EditorCondition = (): JSX.Element => {
+export const EditorNavbar = (): JSX.Element => {
   const { data: editingUsers } = useEditingUsers();
   const isYjsEnabled = useIsYjsEnabled();
-  const renderContent = () => {
+
+  const editorCondition = useMemo(() => {
     if (isYjsEnabled) {
       return <EditingUserList userList={editingUsers?.userList ?? []} />;
     }
@@ -28,22 +30,16 @@ const EditorCondition = (): JSX.Element => {
     }
 
     return <></>;
-  };
+  }, [editingUsers?.userList, isYjsEnabled]);
 
-  return (
-    <div className="order-1 order-sm-2">
-      {renderContent()}
-    </div>
-  );
-};
-
-export const EditorNavbar = (): JSX.Element => {
   return (
     <div className={`${moduleClass} d-flex flex-column flex-sm-row justify-content-between ps-3 ps-md-5 ps-xl-4 pe-4 py-1 align-items-sm-end`}>
       <div className="order-2 order-sm-1">
         <PageHeader />
       </div>
-      <EditorCondition />
+      <div className="order-1 order-sm-2">
+        {editorCondition}
+      </div>
     </div>
   );
 };
