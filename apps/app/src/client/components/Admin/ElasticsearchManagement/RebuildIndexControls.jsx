@@ -16,7 +16,6 @@ class RebuildIndexControls extends React.Component {
     this.state = {
       total: 0,
       current: 0,
-      skip: 0,
     };
   }
 
@@ -32,7 +31,6 @@ class RebuildIndexControls extends React.Component {
         this.setState({
           total: data.totalCount,
           current: data.count,
-          skip: data.skipped,
         });
       });
 
@@ -40,7 +38,6 @@ class RebuildIndexControls extends React.Component {
         this.setState({
           total: data.totalCount,
           current: data.count,
-          skip: data.skipped,
         });
       });
     }
@@ -51,7 +48,7 @@ class RebuildIndexControls extends React.Component {
       isRebuildingProcessing, isRebuildingCompleted,
     } = this.props;
     const {
-      total, current, skip,
+      total, current,
     } = this.state;
     const showProgressBar = isRebuildingProcessing || isRebuildingCompleted;
 
@@ -59,23 +56,13 @@ class RebuildIndexControls extends React.Component {
       return null;
     }
 
-    function getCompletedLabel() {
-      const completedLabel = skip === 0 ? 'Completed' : `Done (${skip} skips)`;
-      return completedLabel;
-    }
-
-    function getSkipLabel() {
-      return `Processing.. (${skip} skips)`;
-    }
-
-    const header = isRebuildingCompleted ? getCompletedLabel() : getSkipLabel();
+    const header = isRebuildingCompleted ? 'Completed' : 'Processing..';
 
     return (
       <div className="mb-3">
         <LabeledProgressBar
           header={header}
           currentCount={current}
-          errorsCount={skip}
           totalCount={total}
         />
       </div>

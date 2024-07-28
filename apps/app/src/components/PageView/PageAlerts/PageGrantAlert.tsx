@@ -55,7 +55,7 @@ export const PageGrantAlert = (): JSX.Element => {
 
 
   return (
-    <p className="alert alert-primary py-3 px-4">
+    <p data-testid="page-grant-alert" className="alert alert-primary py-3 px-4">
       {renderAlertContent()}
     </p>
   );

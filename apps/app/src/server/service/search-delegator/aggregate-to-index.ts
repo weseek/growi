@@ -51,11 +51,32 @@ export const aggregatePipelineToIndex = (maxBodyLengthToIndex: number, query?: Q
 
     // join Comment
     {
+      // MongoDB 5.0 or later can use concise syntax
+      // https://www.mongodb.com/docs/v6.0/reference/operator/aggregation/lookup/#correlated-subqueries-using-concise-syntax
+      // $lookup: {
+      //   from: 'comments',
+      //   localField: '_id',
+      //   foreignField: 'page',
+      //   pipeline: [
+      //     {
+      //       $addFields: {
+      //         commentLength: { $strLenCP: '$comment' },
+      //       },
+      //     },
+      //   ],
+      //   as: 'comments',
+      // },
       $lookup: {
         from: 'comments',
-        localField: '_id',
-        foreignField: 'page',
+        let: { pageId: '$_id' },
         pipeline: [
+          {
+            $match: {
+              $expr: {
+                $eq: ['$page', '$$pageId'],
+              },
+            },
+          },
           {
             $addFields: {
               commentLength: { $strLenCP: '$comment' },
@@ -67,7 +88,7 @@ export const aggregatePipelineToIndex = (maxBodyLengthToIndex: number, query?: Q
     },
     {
       $addFields: {
-        commentsCount: { $size: '$comments' },
+        commentsCount: { $size: { $ifNull: ['$comments', []] } },
       },
     },
 
@@ -82,19 +103,19 @@ export const aggregatePipelineToIndex = (maxBodyLengthToIndex: number, query?: Q
     },
     {
       $addFields: {
-        bookmarksCount: { $size: '$bookmarks' },
+        bookmarksCount: { $size: { $ifNull: ['$bookmarks', []] } },
       },
     },
 
     // add counts for embedded arrays
     {
       $addFields: {
-        likeCount: { $size: '$liker' },
+        likeCount: { $size: { $ifNull: ['$liker', []] } },
       },
     },
     {
       $addFields: {
-        seenUsersCount: { $size: '$seenUsers' },
+        seenUsersCount: { $size: { $ifNull: ['$seenUsers', []] } },
       },
     },
 
