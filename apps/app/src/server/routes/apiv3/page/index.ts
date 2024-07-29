@@ -661,7 +661,7 @@ module.exports = (crowi) => {
         }
 
         const userRelatedGroups = await pageGrantService.getUserRelatedGroups(user);
-        const isUserGrantedPageAccess = await pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups);
+        const isUserGrantedPageAccess = await pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups, true);
         if (!isUserGrantedPageAccess) {
           return res.apiv3Err(new ErrorV3('Cannot access page or ancestor.', 'cannot_access_page'), 403);
         }
