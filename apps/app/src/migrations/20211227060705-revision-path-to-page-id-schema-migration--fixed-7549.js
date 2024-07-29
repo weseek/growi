@@ -18,6 +18,8 @@ module.exports = {
   async up(db, client) {
     mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
+
+    // Do not use models in /server/models/revision because of schema changes
     const Revision = await db.collection('revisions');
 
     const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, path: 1 }).cursor({ batch_size: LIMIT });
@@ -69,6 +71,8 @@ module.exports = {
   async down(db, client) {
     mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
+
+    // Do not use models in /server/models/revision because of schema changes
     const Revision = await db.collection('revisions');
 
     const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, path: 1 }).cursor({ batch_size: LIMIT });
