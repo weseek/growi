@@ -34,6 +34,10 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement, DetailedHTMLProps<R
 );
 
 export type CodeMirrorEditorProps = {
+  /**
+   * Specity the props for the react-codemirror component. This must be memolized object.
+   */
+  cmProps?: ReactCodeMirrorProps,
   acceptedUploadFileType?: AcceptedUploadFileType,
   indentSize?: number,
   editorSettings?: EditorSettings,
@@ -53,6 +57,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     editorKey,
     hideToolbar,
 
+    cmProps,
     acceptedUploadFileType = AcceptedUploadFileType.NONE,
     indentSize,
     editorSettings,
@@ -64,12 +69,13 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   const containerRef = useRef(null);
 
-  const cmProps = useMemo<ReactCodeMirrorProps>(() => {
+  const _cmProps = useMemo<ReactCodeMirrorProps>(() => {
     return {
+      ...cmProps,
       onChange,
     };
-  }, [onChange]);
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
+  }, [cmProps, onChange]);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, _cmProps);
 
   useDefaultExtensions(codeMirrorEditor);
   useEditorSettings(codeMirrorEditor, editorSettings, onSave);

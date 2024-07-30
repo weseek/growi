@@ -55,8 +55,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
           dropCursor: false,
           highlightActiveLine: false,
           highlightActiveLineGutter: false,
-          // Disabled react-codemirror history for Y.UndoManager
-          history: false,
         },
         // ------- End -------
       },
