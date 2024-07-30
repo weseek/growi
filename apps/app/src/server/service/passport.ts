@@ -570,7 +570,6 @@ class PassportService implements S2sMessageHandlable {
 
     // Prevent request timeout error on app init
     const oidcIssuer = await this.getOIDCIssuerInstance(issuerHost);
-
     if (oidcIssuer != null) {
       const oidcIssuerMetadata = oidcIssuer.metadata;
 
