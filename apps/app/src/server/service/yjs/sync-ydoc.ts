@@ -28,7 +28,7 @@ export const syncYDoc = async(mdb: MongodbPersistence, doc: Document, context: t
   const pageId = doc.name;
 
   // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
-  normalizeLatestRevisionIfBroken(pageId);
+  await normalizeLatestRevisionIfBroken(pageId);
 
   const revision = await Revision
     .findOne(
