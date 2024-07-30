@@ -3,7 +3,6 @@ import React, {
   useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 
-
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
@@ -14,6 +13,7 @@ import { CodeMirrorEditorMain } from '@growi/editor/dist/client/components/CodeM
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { useRect } from '@growi/ui/dist/utils';
+import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
@@ -159,10 +159,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     setMarkdownToPreview(value);
   })), []);
 
-  const markdownChangedHandler = useCallback((value: string) => {
-    setMarkdownPreviewWithDebounce(value);
-  }, [setMarkdownPreviewWithDebounce]);
-
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 
@@ -267,6 +263,14 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     });
   }, [codeMirrorEditor, pageId]);
 
+
+  const cmProps = useMemo<ReactCodeMirrorProps>(() => ({
+    onChange: (value: string) => {
+      setMarkdownPreviewWithDebounce(value);
+    },
+  }), [setMarkdownPreviewWithDebounce]);
+
+
   // set handler to save and return to View
   useEffect(() => {
     globalEmitter.on('saveAndReturnToView', saveAndReturnToViewHandler);
@@ -363,7 +367,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
             isEditorMode={editorMode === EditorMode.Editor}
-            onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
             acceptedUploadFileType={acceptedUploadFileType}
@@ -374,6 +377,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             initialValue={initialValue}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
+            cmProps={cmProps}
           />
         </div>
         <div

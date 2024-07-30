@@ -35,13 +35,12 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement, DetailedHTMLProps<R
 
 export type CodeMirrorEditorProps = {
   /**
-   * Specity the props for the react-codemirror component. This must be memolized object.
+   * Specity the props for the react-codemirror component. **This must be a memolized object.**
    */
   cmProps?: ReactCodeMirrorProps,
   acceptedUploadFileType?: AcceptedUploadFileType,
   indentSize?: number,
   editorSettings?: EditorSettings,
-  onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
   onScroll?: () => void,
@@ -61,7 +60,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     acceptedUploadFileType = AcceptedUploadFileType.NONE,
     indentSize,
     editorSettings,
-    onChange,
     onSave,
     onUpload,
     onScroll,
@@ -69,13 +67,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   const containerRef = useRef(null);
 
-  const _cmProps = useMemo<ReactCodeMirrorProps>(() => {
-    return {
-      ...cmProps,
-      onChange,
-    };
-  }, [cmProps, onChange]);
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, _cmProps);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
   useDefaultExtensions(codeMirrorEditor);
   useEditorSettings(codeMirrorEditor, editorSettings, onSave);

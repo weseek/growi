@@ -1,8 +1,9 @@
 import {
-  useCallback, useEffect, useState,
+  useCallback, useEffect, useMemo, useState,
 } from 'react';
 
 import { AcceptedUploadFileType } from '@growi/core';
+import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { toast } from 'react-toastify';
 
 import { GlobalCodeMirrorEditorKey } from '../../../consts';
@@ -62,6 +63,10 @@ export const Playground = (): JSX.Element => {
 
   }, [codeMirrorEditor]);
 
+  const cmProps = useMemo<ReactCodeMirrorProps>(() => ({
+    onChange: setMarkdownToPreview,
+  }), []);
+
   return (
     <div className="d-flex flex-column vw-100 flex-expand-vh-100">
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
@@ -72,11 +77,11 @@ export const Playground = (): JSX.Element => {
           <CodeMirrorEditorMain
             isEditorMode
             onSave={saveHandler}
-            onChange={setMarkdownToPreview}
             onUpload={uploadHandler}
             indentSize={4}
             acceptedUploadFileType={AcceptedUploadFileType.ALL}
             editorSettings={editorSettings}
+            cmProps={cmProps}
           />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
