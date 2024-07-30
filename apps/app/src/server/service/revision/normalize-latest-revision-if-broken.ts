@@ -15,14 +15,14 @@ const logger = loggerFactory('growi:service:revision:normalize-latest-revision')
  */
 export const normalizeLatestRevisionIfBroken = async(pageId: string | Types.ObjectId): Promise<void> => {
 
-  if (await Revision.exists({ pageId })) {
+  if (await Revision.exists({ pageId: { $eq: pageId } })) {
     return;
   }
 
   logger.info(`The page ('${pageId}') does not have any revisions. Normalization of the latest revision will be started.`);
 
   const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
-  const page = await Page.findOne({ _id: pageId }, { revision: 1 }).exec();
+  const page = await Page.findOne({ _id: { $eq: pageId } }, { revision: 1 }).exec();
 
   if (page == null) {
     logger.warn(`Normalization has been canceled since the page ('${pageId}') could not be found.`);
