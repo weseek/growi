@@ -611,15 +611,14 @@ class PassportService implements S2sMessageHandlable {
 
       const newOidcIssuer = new OIDCIssuer(oidcIssuerMetadata);
 
+      logger.debug('Configured issuer %s %O', newOidcIssuer.issuer, newOidcIssuer.metadata);
+
       const client = new newOidcIssuer.Client({
         client_id: clientId,
         client_secret: clientSecret,
         redirect_uris: [redirectUri],
         response_types: ['code'],
       });
-
-      logger.debug('Configured issuer %s %O', newOidcIssuer.issuer, newOidcIssuer.metadata);
-
       // prevent error AssertionError [ERR_ASSERTION]: id_token issued in the future
       // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
       const OIDC_CLIENT_CLOCK_TOLERANCE = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcClientClockTolerance');
