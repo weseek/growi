@@ -251,7 +251,7 @@ const InstallerForm = memo((props: Props): JSX.Element => {
                   <span className="material-symbols-outlined">person_add</span>
                 )}
               </span>
-              <label className="flex-grow-1">{ t('Create') }</label>
+              <span className="flex-grow-1">{ t('Create') }</span>
             </button>
           </div>
 
