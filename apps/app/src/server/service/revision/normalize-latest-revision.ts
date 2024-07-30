@@ -15,7 +15,7 @@ const logger = loggerFactory('growi:service:revision:normalize-latest-revision')
  */
 export const normalizeLatestRevision = async(pageId: string | Types.ObjectId): Promise<void> => {
 
-  if (await Revision.countDocuments({ pageId }) > 0) {
+  if (await Revision.exists({ pageId })) {
     return;
   }
 
@@ -28,7 +28,7 @@ export const normalizeLatestRevision = async(pageId: string | Types.ObjectId): P
     logger.warn(`Normalization has been canceled since the page ('${pageId}') could not be found.`);
     return;
   }
-  if (page.revision == null || await Revision.countDocuments({ _id: page.revision }) === 0) {
+  if (page.revision == null || !(await Revision.exists({ _id: page.revision }))) {
     logger.warn(`Normalization has been canceled since the Page.revision of the page ('${pageId}') could not be found.`);
     return;
   }

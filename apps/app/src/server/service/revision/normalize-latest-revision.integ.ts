@@ -51,7 +51,7 @@ describe('normalizeLatestRevision', () => {
 
 
   describe('should returns without any operation', () => {
-    test('when the page has revisions', async() => {
+    test('when the page has revisions at least one', async() => {
       const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
       // Arrange
