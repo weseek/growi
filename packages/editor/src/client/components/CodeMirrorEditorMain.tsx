@@ -68,17 +68,15 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
-  const cmPropsOverride = useMemo<ReactCodeMirrorProps>(() => {
-    return deepmerge(
-      cmProps ?? {},
-      {
-        // Disabled basic history configuration since this component uses Y.UndoManager instead
-        basicSetup: {
-          history: false,
-        },
+  const cmPropsOverride = useMemo<ReactCodeMirrorProps>(() => deepmerge(
+    cmProps ?? {},
+    {
+      // Disable the basic history configuration since this component uses Y.UndoManager instead
+      basicSetup: {
+        history: false,
       },
-    );
-  }, [cmProps]);
+    },
+  ), [cmProps]);
 
   return (
     <CodeMirrorEditor

@@ -40,27 +40,25 @@ export type UseCodeMirrorEditor = {
 
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
 
-  const mergedProps = useMemo(() => {
-    return deepmerge(
-      {
-        // Reset settings of react-codemirror.
-        // Extensions are defined first will be used if they have the same priority.
-        // If extensions conflict, disable them here.
-        // And add them to defaultExtensions: Extension[] with a lower priority.
-        // ref: https://codemirror.net/examples/config/
-        // ------- Start -------
-        indentWithTab: false,
-        basicSetup: {
-          defaultKeymap: false,
-          dropCursor: false,
-          highlightActiveLine: false,
-          highlightActiveLineGutter: false,
-        },
-        // ------- End -------
+  const mergedProps = useMemo(() => deepmerge(
+    {
+      // Reset settings of react-codemirror.
+      // Extensions are defined first will be used if they have the same priority.
+      // If extensions conflict, disable them here.
+      // And add them to defaultExtensions: Extension[] with a lower priority.
+      // ref: https://codemirror.net/examples/config/
+      // ------- Start -------
+      indentWithTab: false,
+      basicSetup: {
+        defaultKeymap: false,
+        dropCursor: false,
+        highlightActiveLine: false,
+        highlightActiveLineGutter: false,
       },
-      props ?? {},
-    );
-  }, [props]);
+      // ------- End -------
+    },
+    props ?? {},
+  ), [props]);
 
   const { state, view } = useCodeMirror(mergedProps);
 

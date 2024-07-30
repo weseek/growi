@@ -209,14 +209,12 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     });
   }, [codeMirrorEditor, pageId]);
 
-  const cmProps = useMemo<ReactCodeMirrorProps>(() => {
-    return {
-      onChange: async(value: string) => {
-        const dirtyNum = await evaluateEditorDirtyMap(editorKey, value);
-        mutateIsEnabledUnsavedWarning(dirtyNum > 0);
-      },
-    };
-  }, [editorKey, evaluateEditorDirtyMap, mutateIsEnabledUnsavedWarning]);
+  const cmProps = useMemo<ReactCodeMirrorProps>(() => ({
+    onChange: async(value: string) => {
+      const dirtyNum = await evaluateEditorDirtyMap(editorKey, value);
+      mutateIsEnabledUnsavedWarning(dirtyNum > 0);
+    },
+  }), [editorKey, evaluateEditorDirtyMap, mutateIsEnabledUnsavedWarning]);
 
 
   // initialize CodeMirrorEditor
