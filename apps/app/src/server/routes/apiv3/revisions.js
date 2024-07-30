@@ -122,8 +122,8 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
     }
 
+    // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
     try {
-      // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
       await normalizeLatestRevisionIfBroken(pageId);
     }
     catch (err) {
