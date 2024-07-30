@@ -131,7 +131,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   mutateResolvedTheme({ themeData: resolvedTheme });
 
   const currentRevisionId = currentPage?.revision?._id;
-  const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
+  const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined || isYjsEnabled === false;
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
