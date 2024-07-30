@@ -167,7 +167,7 @@
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
   "copied_to_clipboard": "它已复制到剪贴板。",
-  "non-yjs-alert": "协作编辑器目前不可用。要使用协作编辑器，请保存少于 {{yjsMaxBodyLength}} 字符的页面内容，然后重新打开编辑器",
+  "non-yjs-alert": "协作编辑器目前处于禁用状态。要启用协作编辑器，请保存少于 {{yjsMaxBodyLength}} 字符的页面内容，然后重新打开编辑器。",
 
   "input_validation": {
     "target": {

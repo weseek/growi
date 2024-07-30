@@ -160,7 +160,7 @@
   "not_allowed_to_see_this_page": "Vous ne pouvez pas voir cette page",
   "Confirm": "Confirmer",
   "Successfully requested": "Demande envoyée.",
-  "non-yjs-alert": "L'éditeur collaboratif est actuellement indisponible. Pour utiliser l'éditeur collaboratif, enregistrez le contenu de la page avec moins de {{yjsMaxBodyLength}} caractères et rouvrez l'éditeur.",
+  "non-yjs-alert": "L'éditeur collaboratif est actuellement désactivé. Pour activer l'éditeur collaboratif, enregistrez le contenu de la page avec moins de {{yjsMaxBodyLength}} caractères et rouvrez l'éditeur.",
 
   "input_validation": {
     "target": {
