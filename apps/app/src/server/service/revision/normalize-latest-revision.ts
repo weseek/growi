@@ -1,4 +1,4 @@
-import type { HydratedDocument, ObjectId } from 'mongoose';
+import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
 
 import type { PageDocument, PageModel } from '~/server/models/page';
@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:service:revision:normalize-latest-revision')
  *
  * @ref https://github.com/weseek/growi/pull/8998
  */
-export const normalizeLatestRevision = async(pageId: string | ObjectId): Promise<void> => {
+export const normalizeLatestRevision = async(pageId: string | Types.ObjectId): Promise<void> => {
 
   if (await Revision.countDocuments({ pageId }) > 0) {
     return;
@@ -22,7 +22,7 @@ export const normalizeLatestRevision = async(pageId: string | ObjectId): Promise
   logger.info(`The page ('${pageId}') does not have any revisions. Normalization of the latest revision will be started.`);
 
   const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
-  const page = await Page.findOne({ _id: pageId });
+  const page = await Page.findOne({ _id: pageId }, { revision: 1 }).exec();
 
   if (page == null) {
     logger.warn(`Normalization has been canceled since the page ('${pageId}') could not be found.`);
