@@ -7,9 +7,9 @@ import type { PageDocument, PageModel } from '~/server/models/page';
 import PageModelFactory from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
 
-import { normalizeLatestRevision } from './normalize-latest-revision';
+import { normalizeLatestRevisionIfBroken } from './normalize-latest-revision-if-broken';
 
-describe('normalizeLatestRevision', () => {
+describe('normalizeLatestRevisionIfBroken', () => {
 
   beforeAll(async() => {
     await PageModelFactory(null);
@@ -32,7 +32,7 @@ describe('normalizeLatestRevision', () => {
     const updateOneSpy = vi.spyOn(Revision, 'updateOne');
 
     // == Act
-    await normalizeLatestRevision(page._id);
+    await normalizeLatestRevisionIfBroken(page._id);
 
     // == Assert
     // assert spy
@@ -61,7 +61,7 @@ describe('normalizeLatestRevision', () => {
       const updateOneSpy = vi.spyOn(Revision, 'updateOne');
 
       // Act
-      await normalizeLatestRevision(page._id);
+      await normalizeLatestRevisionIfBroken(page._id);
 
       // Assert
       expect(updateOneSpy).not.toHaveBeenCalled();
@@ -77,7 +77,7 @@ describe('normalizeLatestRevision', () => {
       const updateOneSpy = vi.spyOn(Revision, 'updateOne');
 
       // Act
-      await normalizeLatestRevision(pageIdOfRevision);
+      await normalizeLatestRevisionIfBroken(pageIdOfRevision);
 
       // Assert
       expect(updateOneSpy).not.toHaveBeenCalled();
@@ -95,7 +95,7 @@ describe('normalizeLatestRevision', () => {
       const updateOneSpy = vi.spyOn(Revision, 'updateOne');
 
       // Act
-      await normalizeLatestRevision(page._id);
+      await normalizeLatestRevisionIfBroken(page._id);
 
       // Assert
       expect(updateOneSpy).not.toHaveBeenCalled();
@@ -114,7 +114,7 @@ describe('normalizeLatestRevision', () => {
       const updateOneSpy = vi.spyOn(Revision, 'updateOne');
 
       // Act
-      await normalizeLatestRevision(page._id);
+      await normalizeLatestRevisionIfBroken(page._id);
 
       // Assert
       expect(updateOneSpy).not.toHaveBeenCalled();

@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:service:revision:normalize-latest-revision')
  *
  * @ref https://github.com/weseek/growi/pull/8998
  */
-export const normalizeLatestRevision = async(pageId: string | Types.ObjectId): Promise<void> => {
+export const normalizeLatestRevisionIfBroken = async(pageId: string | Types.ObjectId): Promise<void> => {
 
   if (await Revision.exists({ pageId })) {
     return;
