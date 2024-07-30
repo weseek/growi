@@ -28,10 +28,8 @@ export const useCodeMirrorEditorIsolated = (
   const swrKey = key != null ? `codeMirrorEditor_${key}` : null;
   const mergedProps = useMemo<UseCodeMirror>(() => {
     return deepmerge(
+      { container },
       props ?? {},
-      {
-        container,
-      },
     );
   }, [container, props]);
 

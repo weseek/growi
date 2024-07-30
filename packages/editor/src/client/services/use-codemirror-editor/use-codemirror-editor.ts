@@ -42,7 +42,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
 
   const mergedProps = useMemo(() => {
     return deepmerge(
-      props ?? {},
       {
         // Reset settings of react-codemirror.
         // Extensions are defined first will be used if they have the same priority.
@@ -61,6 +60,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
         },
         // ------- End -------
       },
+      props ?? {},
     );
   }, [props]);
 
