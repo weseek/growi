@@ -172,11 +172,11 @@ const routerFactory = (crowi: Crowi): Router => {
           : {
             ...basicPageInfo,
             isAbleToDeleteCompletely: canDeleteCompletely,
-            bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
-            revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
+            bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id.toString()] : undefined,
+            revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id.toString()] : undefined,
           } as IPageInfoForListing;
 
-        idToPageInfoMap[page._id] = pageInfo;
+        idToPageInfoMap[page._id.toString()] = pageInfo;
       }
 
       return res.apiv3(idToPageInfoMap);
