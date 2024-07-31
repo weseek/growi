@@ -3,13 +3,16 @@ import React, {
   useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { isPopulated, getIdForRef, type IRevisionHasId } from '@growi/core';
+import {
+  isPopulated, type IRevisionHasId, getIdStringForRef,
+} from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
@@ -30,7 +33,7 @@ type PageCommentProps = {
   rendererOptions?: RendererOptions,
   pageId: string,
   pagePath: string,
-  revision: string | IRevisionHasId,
+  revision: ObjectIdLike | IRevisionHasId,
   currentUser: any,
   isReadOnly: boolean,
 }
@@ -121,7 +124,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
     return <></>;
   }
 
-  const revisionId = getIdForRef(revision);
+  const revisionId = getIdStringForRef(revision);
   const revisionCreatedAt = (isPopulated(revision)) ? revision.createdAt : undefined;
 
   const commentElement = (comment: ICommentHasId) => (
