@@ -8,6 +8,7 @@ import {
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
 
@@ -747,9 +748,9 @@ module.exports = (crowi) => {
     let revision;
     let pagePath;
 
-    const Page = mongoose.model<PageDocument, PageModel>('Page');
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
-    let page: PageDocument;
+    let page: HydratedDocument<PageDocument> | null;
 
     try {
       page = await Page.findByIdAndViewer(pageId, req.user);
