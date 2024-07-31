@@ -3,7 +3,6 @@ import type { HydratedDocument } from 'mongoose';
 import mongoose, { Types } from 'mongoose';
 
 import type { PageDocument, PageModel } from '~/server/models/page';
-// eslint-disable-next-line import/no-named-as-default
 import PageModelFactory from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
 
