@@ -81,7 +81,7 @@ export interface PageModel extends Model<PageDocument> {
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
-    user, userGroups: string[] | null, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
+    user, userGroups: ObjectIdLike[] | null, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
   findNonEmptyClosestAncestor(path: string): Promise<HydratedDocument<PageDocument> | null>
   findNotEmptyParentByPathRecursively(path: string): Promise<HydratedDocument<PageDocument> | null>
@@ -425,7 +425,7 @@ export class PageQueryBuilder {
   }
 
   addConditionToFilteringByViewer(
-      user, userGroups: string[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+      user, userGroups: ObjectIdLike[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
   ): PageQueryBuilder {
     const condition = generateGrantCondition(user, userGroups, includeAnyoneWithTheLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
@@ -968,7 +968,7 @@ schema.statics.findParent = async function(pageId): Promise<PageDocument | null>
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
 
 export function generateGrantCondition(
-    user, userGroups: string[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+    user, userGroups: ObjectIdLike[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
 ): { $or: any[] } {
   const grantConditions: AnyObject[] = [
     { grant: null },
