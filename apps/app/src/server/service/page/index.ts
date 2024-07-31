@@ -9,6 +9,7 @@ import type {
 } from '@growi/core';
 import {
   PageGrant, PageStatus, YDocStatus, getIdForRef,
+  getIdStringForRef,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
@@ -54,6 +55,7 @@ import { PathAlreadyExistsError } from '../../models/errors';
 import type { PageOperationDocument } from '../../models/page-operation';
 import PageOperation from '../../models/page-operation';
 import PageRedirect from '../../models/page-redirect';
+import type { IRevisionDocument } from '../../models/revision';
 import { Revision } from '../../models/revision';
 import { serializePageSecurely } from '../../models/serializers/page-serializer';
 import ShareLink from '../../models/share-link';
@@ -1351,15 +1353,15 @@ class PageService implements IPageService {
       return this.duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix);
     }
 
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<PageDocument, PageModel>('Page');
 
     const pageIds = pages.map(page => page._id);
     const revisions = await Revision.find({ pageId: { $in: pageIds } });
 
     // Mapping to set to the body of the new revision
-    const pageIdRevisionMapping = {};
+    const pageIdRevisionMapping: Record<string, IRevisionDocument> = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
+      pageIdRevisionMapping[getIdStringForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -1394,7 +1396,7 @@ class PageService implements IPageService {
           revision: revisionId,
         };
         newRevisions.push({
-          _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+          _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id.toString()].body, author: user._id, format: 'markdown',
         });
         newPages.push(newPage);
       }
@@ -1412,9 +1414,9 @@ class PageService implements IPageService {
     const revisions = await Revision.find({ pageId: { $in: pageIds } });
 
     // Mapping to set to the body of the new revision
-    const pageIdRevisionMapping = {};
+    const pageIdRevisionMapping: Record<string, IRevisionDocument> = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
+      pageIdRevisionMapping[getIdStringForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -1440,7 +1442,7 @@ class PageService implements IPageService {
       });
 
       newRevisions.push({
-        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id.toString()].body, author: user._id, format: 'markdown',
       });
 
     });
