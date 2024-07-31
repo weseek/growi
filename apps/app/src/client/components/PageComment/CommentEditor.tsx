@@ -9,6 +9,7 @@ import { CodeMirrorEditorComment } from '@growi/editor/dist/client/components/Co
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { UserPicture } from '@growi/ui/dist/components';
+import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import {
@@ -208,10 +209,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     });
   }, [codeMirrorEditor, pageId]);
 
-  const onChangeHandler = useCallback(async(value: string) => {
-    const dirtyNum = await evaluateEditorDirtyMap(editorKey, value);
-    mutateIsEnabledUnsavedWarning(dirtyNum > 0);
-  }, [editorKey, evaluateEditorDirtyMap, mutateIsEnabledUnsavedWarning]);
+  const cmProps = useMemo<ReactCodeMirrorProps>(() => ({
+    onChange: async(value: string) => {
+      const dirtyNum = await evaluateEditorDirtyMap(editorKey, value);
+      mutateIsEnabledUnsavedWarning(dirtyNum > 0);
+    },
+  }), [editorKey, evaluateEditorDirtyMap, mutateIsEnabledUnsavedWarning]);
+
 
   // initialize CodeMirrorEditor
   useEffect(() => {
@@ -260,10 +264,10 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
             <CodeMirrorEditorComment
               editorKey={editorKey}
               acceptedUploadFileType={acceptedUploadFileType}
-              onChange={onChangeHandler}
               onSave={postCommentHandler}
               onUpload={uploadHandler}
               editorSettings={editorSettings}
+              cmProps={cmProps}
             />
           </TabPane>
           <TabPane tabId="comment_preview">
