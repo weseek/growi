@@ -3,7 +3,7 @@
  */
 
 
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 
 type ObjectId = Types.ObjectId;
 
@@ -13,7 +13,9 @@ export type Ref<T> = string | ObjectId | T & { _id: string | ObjectId };
 export type Nullable<T> = T | null | undefined;
 
 export const isPopulated = <T>(ref: Ref<T>): ref is T & { _id: string | ObjectId } => {
-  return ref != null && typeof ref !== 'string' && !(ref instanceof Types.ObjectId);
+  return ref != null
+    && typeof ref !== 'string'
+    && !('_bsontype' in ref && ref._bsontype === 'ObjectID');
 };
 
 export const getIdForRef = <T>(ref: Ref<T>): string | ObjectId => {
