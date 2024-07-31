@@ -70,7 +70,7 @@ export const Playground = (): JSX.Element => {
       <div className="flex-expand-horiz">
         <div className="flex-expand-vert">
           <CodeMirrorEditorMain
-            isEditorMode
+            isYjsEnabled={false}
             onSave={saveHandler}
             onChange={setMarkdownToPreview}
             onUpload={uploadHandler}
