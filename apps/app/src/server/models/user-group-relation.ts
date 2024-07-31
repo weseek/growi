@@ -31,7 +31,7 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
 
   findAllGroupsForUser: (user) => Promise<UserGroupDocument[]>
 
-  findAllUserGroupIdsRelatedToUser: (user) => Promise<string[]>
+  findAllUserGroupIdsRelatedToUser: (user) => Promise<ObjectIdLike[]>
 }
 
 /*
@@ -142,7 +142,7 @@ schema.statics.findAllGroupsForUser = async function(user): Promise<UserGroupDoc
  * @param {User} user
  * @returns {Promise<ObjectId[]>}
  */
-schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<string[]> {
+schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<ObjectIdLike[]> {
   const relations = await this.find({ relatedUser: user._id })
     .select('relatedGroup')
     .exec();
