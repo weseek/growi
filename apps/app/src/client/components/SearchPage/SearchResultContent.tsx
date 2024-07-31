@@ -3,7 +3,7 @@ import React, {
   useCallback, useEffect, useRef,
 } from 'react';
 
-import { getIdForRef } from '@growi/core';
+import { getIdStringForRef } from '@growi/core';
 import type { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -184,7 +184,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       return <></>;
     }
 
-    const revisionId = page.revision != null ? getIdForRef(page.revision) : null;
+    const revisionId = page.revision != null ? getIdStringForRef(page.revision) : null;
     const additionalMenuItemRenderer = revisionId != null
       ? props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />
       : undefined;

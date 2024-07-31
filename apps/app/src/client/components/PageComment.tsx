@@ -3,8 +3,9 @@ import React, {
   useState, useMemo, memo, useCallback,
 } from 'react';
 
+import type { IRevision, Ref } from '@growi/core';
 import {
-  isPopulated, type IRevisionHasId, getIdStringForRef,
+  isPopulated, getIdStringForRef,
 } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
@@ -12,7 +13,6 @@ import { useTranslation } from 'next-i18next';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
 import type { RendererOptions } from '~/interfaces/renderer-options';
-import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
@@ -33,7 +33,7 @@ type PageCommentProps = {
   rendererOptions?: RendererOptions,
   pageId: string,
   pagePath: string,
-  revision: ObjectIdLike | IRevisionHasId,
+  revision: Ref<IRevision>,
   currentUser: any,
   isReadOnly: boolean,
 }
