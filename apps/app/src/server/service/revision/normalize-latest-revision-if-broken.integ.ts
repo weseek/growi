@@ -1,4 +1,4 @@
-import { getIdForRef } from '@growi/core';
+import { getIdStringForRef } from '@growi/core';
 import type { HydratedDocument } from 'mongoose';
 import mongoose, { Types } from 'mongoose';
 
@@ -45,7 +45,7 @@ describe('normalizeLatestRevisionIfBroken', () => {
     assert(revisionById != null);
     assert(revisionByPageId != null);
     expect(revisionById._id).toEqual(revisionByPageId._id);
-    expect(getIdForRef(revisionById.pageId)).toEqual(page._id.toString());
+    expect(getIdStringForRef(revisionById.pageId)).toEqual(page._id.toString());
   });
 
 
