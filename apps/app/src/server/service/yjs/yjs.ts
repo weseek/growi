@@ -15,6 +15,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { PageModel } from '../../models/page';
 import { Revision } from '../../models/revision';
+import { normalizeLatestRevisionIfBroken } from '../revision/normalize-latest-revision-if-broken';
 
 import { createIndexes } from './create-indexes';
 import { createMongoDBPersistence } from './create-mongodb-persistence';
@@ -140,6 +141,9 @@ class YjsService implements IYjsService {
     const dumpLog = (status: YDocStatus, args?: { [key: string]: unknown }) => {
       logger.debug(`getYDocStatus('${pageId}') detected '${status}'`, args ?? {});
     };
+
+    // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+    await normalizeLatestRevisionIfBroken(pageId);
 
     // get the latest revision createdAt
     const result = await Revision
