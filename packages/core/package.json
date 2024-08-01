@@ -66,7 +66,8 @@
   },
   "dependencies": {
     "bson-objectid": "^2.0.4",
-    "escape-string-regexp": "^4.0.0"
+    "escape-string-regexp": "^4.0.0",
+    "mongoose": "^6.11.3"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
