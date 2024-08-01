@@ -6,11 +6,11 @@ const mongoose = require('mongoose');
 
 const { getMongoUri, mongoOptions } = require('~/server/util/mongoose-utils');
 
-const models = require('./models');
+// const models = require('./models');
 
-Object.keys(models).forEach((modelName) => {
-  global[modelName] = models[modelName];
-});
+// Object.keys(models).forEach((modelName) => {
+//   global[modelName] = models[modelName];
+// });
 
 mongoose.Promise = global.Promise;
 
@@ -32,7 +32,7 @@ fs.readFile(replHistoryPath, 'utf8', (err, data) => {
 });
 
 replServer.context.mongoose = mongoose;
-replServer.context.models = models;
+// replServer.context.models = models;
 
 mongoose.connect(getMongoUri(), mongoOptions)
   .then(() => {
