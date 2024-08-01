@@ -9,7 +9,6 @@ import nodePath from 'path';
 import { type IPageHasId, Origin } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { CodeMirrorEditorMain } from '@growi/editor/dist/client/components/CodeMirrorEditorMain';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { useRect } from '@growi/ui/dist/utils';
@@ -21,7 +20,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
-import { useIsYjsEnabled, useNonYjsModeEffect } from '~/client/services/yjs';
+import { useIsYjsEnabled } from '~/client/services/yjs';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
@@ -50,6 +49,7 @@ import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
+import { PageEditorSwitcher } from './PageEditorSwitcher';
 import Preview from './Preview';
 import { useScrollSync } from './ScrollSyncHelper';
 import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
@@ -122,8 +122,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
-
-  useNonYjsModeEffect();
 
   useConflictEffect();
 
@@ -369,8 +367,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
-          <CodeMirrorEditorMain
-            isEditorMode={editorMode === EditorMode.Editor}
+          <PageEditorSwitcher
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
             acceptedUploadFileType={acceptedUploadFileType}
