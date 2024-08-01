@@ -640,7 +640,8 @@ export class G2GTransferReceiverService implements Receiver {
       importSettingsMap: { [key: string]: ImportSettings; },
       sourceGROWIUploadConfigs: FileUploadConfigs,
   ): Promise<void> {
-    const { configManager, importService, appService } = this.crowi;
+    const { appService } = this.crowi;
+    const importService = getImportService();
     /** whether to keep current file upload configs */
     const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
 
