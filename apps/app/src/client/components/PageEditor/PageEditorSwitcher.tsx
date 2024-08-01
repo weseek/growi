@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 
 import { type IUserHasId } from '@growi/core';
@@ -12,12 +11,12 @@ import deepmerge from 'ts-deepmerge';
 
 import { useNonYjsModeEffect } from '~/client/services/yjs';
 
-type PageEditorSwitcherProps = {
+type PageEditorSwitcherProps = CodeMirrorEditorProps & {
   isYjsEnabled?: boolean
   user?: IUserHasId
   pageId?: string
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
-} & CodeMirrorEditorProps;
+};
 
 export const PageEditorSwitcher = React.memo((props: PageEditorSwitcherProps): JSX.Element => {
   const {

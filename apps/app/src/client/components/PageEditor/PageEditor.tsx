@@ -377,7 +377,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             pageId={pageId ?? undefined}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
-            isYjsEnabled={isYjsEnabled ?? false}
+            isYjsEnabled={isYjsEnabled}
             cmProps={cmProps}
           />
         </div>
