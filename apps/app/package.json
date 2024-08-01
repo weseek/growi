@@ -45,7 +45,7 @@
     "previtest:run:integ": "vitest run -c test-with-vite/download-mongo-binary/vitest.config.ts test-with-vite/download-mongo-binary",
     "//// misc": "",
     "console": "yarn repl",
-    "repl": "yarn cross-env NODE_ENV=development yarn ts-node --experimental-repl-await src/server/repl.ts",
+    "repl": "yarn cross-env NODE_ENV=development yarn ts-node src/server/repl.ts",
     "swagger-jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "openapi:v3": "yarn cross-env API_VERSION=3 yarn swagger-jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
