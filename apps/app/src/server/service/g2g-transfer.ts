@@ -203,10 +203,10 @@ interface Receiver {
   updateFileUploadConfigs(fileUploadConfigs: FileUploadConfigs): Promise<void>
   /**
    * Upload attachment file
-   * @param {Readable} content Pushed attachment data from source GROWI
+   * @param {ReadStream} content Pushed attachment data from source GROWI
    * @param {any} attachmentMap Map-ped Attachment instance
    */
-  receiveAttachment(content: Readable, attachmentMap: any): Promise<void>
+  receiveAttachment(content: ReadStream, attachmentMap: any): Promise<void>
 }
 
 /**
@@ -329,7 +329,7 @@ export class G2GTransferPusherService implements Pusher {
   public async transferAttachments(tk: TransferKey): Promise<void> {
     const BATCH_SIZE = 100;
     const { fileUploadService, socketIoService } = this.crowi;
-    const socket = socketIoService.getAdminSocket();
+    const socket = socketIoService?.getAdminSocket();
     const filesFromSrcGROWI = await this.listFilesInStorage(tk);
 
     /**
@@ -394,7 +394,7 @@ export class G2GTransferPusherService implements Pusher {
         }
         catch (err) {
           logger.warn(`Error occured when getting Attachment(ID=${attachment.id}), skipping: `, err);
-          socket.emit('admin:g2gError', {
+          socket?.emit('admin:g2gError', {
             message: `Error occured when uploading Attachment(ID=${attachment.id})`,
             key: `Error occured when uploading Attachment(ID=${attachment.id})`,
             // TODO: emit error with params
@@ -408,7 +408,7 @@ export class G2GTransferPusherService implements Pusher {
         }
         catch (err) {
           logger.error(`Error occured when uploading attachment(ID=${attachment.id})`, err);
-          socket.emit('admin:g2gError', {
+          socket?.emit('admin:g2gError', {
             message: `Error occured when uploading Attachment(ID=${attachment.id})`,
             key: `Error occured when uploading Attachment(ID=${attachment.id})`,
             // TODO: emit error with params
@@ -421,9 +421,9 @@ export class G2GTransferPusherService implements Pusher {
 
   // eslint-disable-next-line max-len
   public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any, destGROWIInfo: IDataGROWIInfo): Promise<void> {
-    const socket = this.crowi.socketIoService.getAdminSocket();
+    const socket = this.crowi.socketIoService?.getAdminSocket();
 
-    socket.emit('admin:g2gProgress', {
+    socket?.emit('admin:g2gProgress', {
       mongo: G2G_PROGRESS_STATUS.IN_PROGRESS,
       attachments: G2G_PROGRESS_STATUS.PENDING,
     });
@@ -443,11 +443,11 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      socket.emit('admin:g2gProgress', {
+      socket?.emit('admin:g2gProgress', {
         mongo: G2G_PROGRESS_STATUS.ERROR,
         attachments: G2G_PROGRESS_STATUS.PENDING,
       });
-      socket.emit('admin:g2gError', { message: 'Failed to generate GROWI archive file', key: 'admin:g2g:error_generate_growi_archive' });
+      socket?.emit('admin:g2gError', { message: 'Failed to generate GROWI archive file', key: 'admin:g2g:error_generate_growi_archive' });
       throw err;
     }
 
@@ -466,15 +466,15 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      socket.emit('admin:g2gProgress', {
+      socket?.emit('admin:g2gProgress', {
         mongo: G2G_PROGRESS_STATUS.ERROR,
         attachments: G2G_PROGRESS_STATUS.PENDING,
       });
-      socket.emit('admin:g2gError', { message: 'Failed to send GROWI archive file to the destination GROWI', key: 'admin:g2g:error_send_growi_archive' });
+      socket?.emit('admin:g2gError', { message: 'Failed to send GROWI archive file to the destination GROWI', key: 'admin:g2g:error_send_growi_archive' });
       throw err;
     }
 
-    socket.emit('admin:g2gProgress', {
+    socket?.emit('admin:g2gProgress', {
       mongo: G2G_PROGRESS_STATUS.COMPLETED,
       attachments: G2G_PROGRESS_STATUS.IN_PROGRESS,
     });
@@ -484,15 +484,15 @@ export class G2GTransferPusherService implements Pusher {
     }
     catch (err) {
       logger.error(err);
-      socket.emit('admin:g2gProgress', {
+      socket?.emit('admin:g2gProgress', {
         mongo: G2G_PROGRESS_STATUS.COMPLETED,
         attachments: G2G_PROGRESS_STATUS.ERROR,
       });
-      socket.emit('admin:g2gError', { message: 'Failed to transfer attachments', key: 'admin:g2g:error_upload_attachment' });
+      socket?.emit('admin:g2gError', { message: 'Failed to transfer attachments', key: 'admin:g2g:error_upload_attachment' });
       throw err;
     }
 
-    socket.emit('admin:g2gProgress', {
+    socket?.emit('admin:g2gProgress', {
       mongo: G2G_PROGRESS_STATUS.COMPLETED,
       attachments: G2G_PROGRESS_STATUS.COMPLETED,
     });
@@ -520,9 +520,9 @@ export class G2GTransferPusherService implements Pusher {
  */
 export class G2GTransferReceiverService implements Receiver {
 
-  crowi: any;
+  crowi: Crowi;
 
-  constructor(crowi: any) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
   }
 
@@ -543,7 +543,7 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
-    const { version, configManager, fileUploadService } = this.crowi;
+    const { version, fileUploadService } = this.crowi;
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
     const fileUploadTotalLimit = fileUploadService.getFileUploadTotalLimit();
@@ -640,9 +640,7 @@ export class G2GTransferReceiverService implements Receiver {
       importSettingsMap: { [key: string]: ImportSettings; },
       sourceGROWIUploadConfigs: FileUploadConfigs,
   ): Promise<void> {
-    const { configManager, appService } = this.crowi;
-    const importService = getImportService();
-
+    const { configManager, importService, appService } = this.crowi;
     /** whether to keep current file upload configs */
     const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
 
@@ -670,7 +668,6 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async getFileUploadConfigs(): Promise<FileUploadConfigs> {
-    const { configManager } = this.crowi;
     const fileUploadConfigs = Object.fromEntries(UPLOAD_CONFIG_KEYS.map((key) => {
       return [key, configManager.getConfigFromDB('crowi', key)];
     })) as FileUploadConfigs;
@@ -679,7 +676,7 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async updateFileUploadConfigs(fileUploadConfigs: FileUploadConfigs): Promise<void> {
-    const { appService, configManager } = this.crowi;
+    const { appService } = this.crowi;
 
     await configManager.removeConfigsInTheSameNamespace('crowi', Object.keys(fileUploadConfigs));
     await configManager.updateConfigsInTheSameNamespace('crowi', fileUploadConfigs);
@@ -687,7 +684,7 @@ export class G2GTransferReceiverService implements Receiver {
     await appService.setupAfterInstall();
   }
 
-  public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
+  public async receiveAttachment(content: ReadStream, attachmentMap): Promise<void> {
     const { fileUploadService } = this.crowi;
     return fileUploadService.uploadAttachment(content, attachmentMap);
   }

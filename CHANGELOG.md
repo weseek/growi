@@ -1,8 +1,85 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.12...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.16...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.16](https://github.com/weseek/growi/compare/v7.0.15...v7.0.16) - 2024-07-31
+
+### 💎 Features
+
+* feat: Automatically repair corrupted data, at least for the latest revision (#9002) @yuki-takei
+
+### 🚀 Improvement
+
+* imprv: User group link in admin page (#8855) @kazutoweseek
+* imprv: Sidebar header text size (#8986) @satof3
+* imprv: Replace possition usericon (#8991) @satof3
+
+### 🐛 Bug Fixes
+
+* fix: Undo in the comment editor (#9005) @yuki-takei
+* fix: Some OIDC authentication settings not being applied (#9000) @WNomunomu
+* fix: font-family for monospace (#9004) @yuki-takei
+* fix: Pointer cursor for the create button in the installer (#9003) @yuki-takei
+* fix: Migration script (20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js) (#8998) @miya
+* fix: Non-admin user gets 500 error when opening history modal (#9001) @miya
+* fix: Enable page creation under GRANT_RESTRICTED pages (#8996) @arafubeatbox
+
+## [v7.0.15](https://github.com/weseek/growi/compare/v7.0.14...v7.0.15) - 2024-07-23
+
+### 🐛 Bug Fixes
+
+* fix: The $size query when aggregation to rebuild the index (#8987) @yuki-takei
+* fix: Regaining lost backward compatibility for MongoDB 4.4 (#8985) @yuki-takei
+* fix: Activate express-session middlewares for all sockets in SocketIoService (#8981) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Chage text size in sidebar (#8965) @satof3
+
+## [v7.0.14](https://github.com/weseek/growi/compare/v7.0.13...v7.0.14) - 2024-07-19
+
+### 🐛 Bug Fixes
+
+### 💎 Features
+
+* feat: Alerts when trying to sync with latest revision when yjs data is corrupt (#8971) @miya
+
+### 🚀 Improvement
+
+* imprv: Restrict use of the editing UI from View if there is at least one user currently editing (#8966) @miya
+
+### 🐛 Bug Fixes
+
+* fix: Handle error when folding drawio blocks (#8977) @yuki-takei
+* fix: Sync the editor text with the latest revision menu (1) (#8975) @yuki-takei
+* fix: Sync the editor text with the latest revision menu (2) (#8978) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Normalize Revision.pageId (for #8954) (#8973) @miya
+
+## [v7.0.13](https://github.com/weseek/growi/compare/v7.0.12...v7.0.13) - 2024-07-16
+
+### 💎 Features
+
+* feat: Sync latest revision body to Yjs draft (#8939) @miya
+
+### 🚀 Improvement
+
+* imprv: Better synchronizing between YDoc and the latest revision (#8959) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Revision model (#8967) @yuki-takei
+* fix: Healthcheck with checkServices=mongo (#8961) @yuki-takei
+* fix: Enable  # next to headline in view (#8826) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump nodemailer from 6.6.2 to 6.9.14 (#8928) @dependabot
+* support: Update favicon (#8957) @satof3
 
 ## [v7.0.12](https://github.com/weseek/growi/compare/v7.0.11...v7.0.12) - 2024-07-10
 

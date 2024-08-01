@@ -16,8 +16,6 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
 const logger = loggerFactory('growi:models:user');
 
 const factory = (crowi) => {
@@ -43,7 +41,7 @@ const factory = (crowi) => {
   const userSchema = new mongoose.Schema({
     userId: String,
     image: String,
-    imageAttachment: { type: ObjectId, ref: 'Attachment' },
+    imageAttachment: { type: mongoose.Schema.Types.ObjectId, ref: 'Attachment' },
     imageUrlCached: String,
     isGravatarEnabled: { type: Boolean, default: false },
     isEmailPublished: { type: Boolean, default: true },

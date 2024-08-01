@@ -1,5 +1,6 @@
 import type { IncomingMessage } from 'http';
 
+
 import type { IPage, IUserHasId } from '@growi/core';
 import { YDocStatus } from '@growi/core/dist/consts';
 import mongoose from 'mongoose';
@@ -8,11 +9,13 @@ import type { Document } from 'y-socket.io/dist/server';
 import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { RoomPrefix, getRoomNameWithId } from '~/server/util/socket-io-helpers';
+import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
+import { RoomPrefix, getRoomNameWithId } from '~/server/service/socket-io/helper';
 import loggerFactory from '~/utils/logger';
 
 import type { PageModel } from '../../models/page';
 import { Revision } from '../../models/revision';
+import { normalizeLatestRevisionIfBroken } from '../revision/normalize-latest-revision-if-broken';
 
 import { createIndexes } from './create-indexes';
 import { createMongoDBPersistence } from './create-mongodb-persistence';
@@ -32,7 +35,7 @@ type RequestWithUser = IncomingMessage & { user: IUserHasId };
 
 export interface IYjsService {
   getYDocStatus(pageId: string): Promise<YDocStatus>;
-  syncWithTheLatestRevisionForce(pageId: string): Promise<void>;
+  syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody>
   getCurrentYdoc(pageId: string): Ydoc | undefined;
 }
 
@@ -135,9 +138,12 @@ class YjsService implements IYjsService {
   }
 
   public async getYDocStatus(pageId: string): Promise<YDocStatus> {
-    const dumpLog = (status: YDocStatus, args?: { [key: string]: number }) => {
+    const dumpLog = (status: YDocStatus, args?: { [key: string]: unknown }) => {
       logger.debug(`getYDocStatus('${pageId}') detected '${status}'`, args ?? {});
     };
+
+    // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+    await normalizeLatestRevisionIfBroken(pageId);
 
     // get the latest revision createdAt
     const result = await Revision
@@ -151,7 +157,7 @@ class YjsService implements IYjsService {
       .lean();
 
     if (result == null) {
-      dumpLog(YDocStatus.ISOLATED);
+      dumpLog(YDocStatus.ISOLATED, { result });
       return YDocStatus.ISOLATED;
     }
 
@@ -180,14 +186,22 @@ class YjsService implements IYjsService {
     return YDocStatus.OUTDATED;
   }
 
-  public async syncWithTheLatestRevisionForce(pageId: string): Promise<void> {
+  public async syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody> {
     const doc = this.ysocketio.documents.get(pageId);
 
     if (doc == null) {
-      return;
+      return { synced: false };
     }
 
+    const ytextLength = doc?.getText('codemirror').length;
     syncYDoc(this.mdb, doc, true);
+
+    return {
+      synced: true,
+      isYjsDataBroken: editingMarkdownLength != null
+        ? editingMarkdownLength !== ytextLength
+        : undefined,
+    };
   }
 
   public getCurrentYdoc(pageId: string): Ydoc | undefined {

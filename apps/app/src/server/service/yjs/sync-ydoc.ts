@@ -4,6 +4,7 @@ import type { Document } from 'y-socket.io/dist/server';
 import loggerFactory from '~/utils/logger';
 
 import { Revision } from '../../models/revision';
+import { normalizeLatestRevisionIfBroken } from '../revision/normalize-latest-revision-if-broken';
 
 import type { MongodbPersistence } from './extended/mongodb-persistence';
 
@@ -25,6 +26,9 @@ type Context = {
  */
 export const syncYDoc = async(mdb: MongodbPersistence, doc: Document, context: true | Context): Promise<void> => {
   const pageId = doc.name;
+
+  // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+  await normalizeLatestRevisionIfBroken(pageId);
 
   const revision = await Revision
     .findOne(

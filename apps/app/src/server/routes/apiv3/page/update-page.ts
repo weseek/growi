@@ -17,6 +17,7 @@ import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificati
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { serializePageSecurely, serializeRevisionSecurely, serializeUserSecurely } from '~/server/models/serializers';
 import { preNotifyService } from '~/server/service/pre-notify';
+import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import { getYjsService } from '~/server/service/yjs';
 import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
@@ -130,6 +131,20 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
+      // check page existence (for type safety)
+      if (currentPage == null) {
+        return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
+      }
+
+      if (currentPage != null) {
+        // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+        try {
+          await normalizeLatestRevisionIfBroken(pageId);
+        }
+        catch (err) {
+          logger.error('Error occurred in normalizing the latest revision');
+        }
+      }
 
       if (currentPage != null && !await currentPage.isUpdatable(sanitizeRevisionId, origin)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');

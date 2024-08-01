@@ -6,6 +6,7 @@ import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, Router } from 'express';
 import express from 'express';
 import { query, oneOf } from 'express-validator';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
 import type { IPageGrantService } from '~/server/service/page-grant';
@@ -13,7 +14,7 @@ import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import type { PageModel } from '../../models/page';
+import type { PageDocument, PageModel } from '../../models/page';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
@@ -121,9 +122,10 @@ const routerFactory = (crowi: Crowi): Router => {
     const attachBookmarkCount: boolean = attachBookmarkCountParam === 'true';
     const attachShortBody: boolean = attachShortBodyParam === 'true';
 
-    const Page = mongoose.model<IPage, PageModel>('Page');
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const Bookmark = mongoose.model<any, any>('Bookmark');
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pageService = crowi.pageService;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pageGrantService: IPageGrantService = crowi.pageGrantService!;
@@ -170,11 +172,11 @@ const routerFactory = (crowi: Crowi): Router => {
           : {
             ...basicPageInfo,
             isAbleToDeleteCompletely: canDeleteCompletely,
-            bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
-            revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
+            bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id.toString()] : undefined,
+            revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id.toString()] : undefined,
           } as IPageInfoForListing;
 
-        idToPageInfoMap[page._id] = pageInfo;
+        idToPageInfoMap[page._id.toString()] = pageInfo;
       }
 
       return res.apiv3(idToPageInfoMap);

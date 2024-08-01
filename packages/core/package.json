@@ -1,6 +1,6 @@
 {
   "name": "@growi/core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "GROWI Core Libraries",
   "license": "MIT",
   "keywords": [
@@ -70,6 +70,7 @@
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
+    "mongoose": "^6.11.3",
     "swr": "^2.2.2"
   }
 }
