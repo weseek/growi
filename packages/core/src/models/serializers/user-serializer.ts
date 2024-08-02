@@ -1,6 +1,7 @@
-import type { IUser } from '~/interfaces';
+import { isPopulated, type Ref } from '../../interfaces/common';
+import type { IUser } from '../../interfaces/user';
 
-type IUserSerializedSecurely = Omit<IUser, 'password' | 'apiToken' | 'email'> & { email?: string };
+export type IUserSerializedSecurely = Omit<IUser, 'password' | 'apiToken' | 'email'> & { email?: string };
 
 export const omitInsecureAttributes = (user: IUser): IUserSerializedSecurely => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,11 +17,14 @@ export const omitInsecureAttributes = (user: IUser): IUserSerializedSecurely => 
   return secureUser;
 };
 
-export const serializeUserSecurely = (user?: IUser | null): Partial<IUser> | null | undefined => {
+export const serializeUserSecurely = (user?: Ref<IUser>): Ref<IUserSerializedSecurely> | undefined => {
   // return when it is not a user object
-  if (user == null || !('username' in user)) {
+  if (user == null || !isPopulated(user)) {
     return user;
   }
 
-  return omitInsecureAttributes(user);
+  return {
+    _id: user._id,
+    ...omitInsecureAttributes(user),
+  };
 };
