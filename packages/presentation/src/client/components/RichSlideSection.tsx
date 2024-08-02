@@ -22,7 +22,7 @@ const OriginalRichSlideSection = React.memo((props: RichSlideSectionProps): JSX.
   );
 });
 
-export const RichSlideSection = (props: RichSlideSectionProps): JSX.Element => {
+export const RichSlideSection = React.memo((props: RichSlideSectionProps): JSX.Element => {
   const { children } = props;
 
   return (
@@ -30,10 +30,10 @@ export const RichSlideSection = (props: RichSlideSectionProps): JSX.Element => {
       {children}
     </OriginalRichSlideSection>
   );
-};
+}) as typeof RichSlideSection;
 
 
-export const PresentationRichSlideSection = (props: RichSlideSectionProps): JSX.Element => {
+export const PresentationRichSlideSection = React.memo((props: RichSlideSectionProps): JSX.Element => {
   const { children } = props;
 
   return (
@@ -41,4 +41,4 @@ export const PresentationRichSlideSection = (props: RichSlideSectionProps): JSX.
       {children}
     </OriginalRichSlideSection>
   );
-};
+}) as typeof PresentationRichSlideSection;
