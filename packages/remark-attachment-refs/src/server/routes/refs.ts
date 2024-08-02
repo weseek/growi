@@ -151,6 +151,12 @@ export const routesFactory = (crowi): any => {
     let regex;
     const regexOptionValue = options.regexp || options.regex;
     if (regexOptionValue != null) {
+      // check the length to avoid ReDoS
+      if (regexOptionValue.length > 400) {
+        res.status(400).send('the length of the \'regex\' option is too long.');
+        return;
+      }
+
       try {
         regex = generateRegexp(regexOptionValue);
       }
