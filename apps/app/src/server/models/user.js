@@ -1,4 +1,5 @@
 /* eslint-disable no-use-before-define */
+import { omitInsecureAttributes } from '@growi/core/dist/models/serializers';
 import { pagePathUtils } from '@growi/core/dist/utils';
 
 import { i18n } from '^/config/next-i18next.config';
@@ -9,7 +10,6 @@ import loggerFactory from '~/utils/logger';
 import { getModelSafely } from '../util/mongoose-utils';
 
 import { Attachment } from './attachment';
-import { omitInsecureAttributes } from './serializers/user-serializer';
 
 
 const crypto = require('crypto');
