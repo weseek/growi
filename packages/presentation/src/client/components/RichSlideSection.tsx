@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 type RichSlideSectionProps = {
   children: ReactNode,
@@ -29,7 +30,7 @@ export const RichSlideSection = React.memo((props: RichSlideSectionProps): JSX.E
       {children}
     </OriginalRichSlideSection>
   );
-});
+}) as typeof RichSlideSection;
 
 
 export const PresentationRichSlideSection = React.memo((props: RichSlideSectionProps): JSX.Element => {
@@ -40,4 +41,4 @@ export const PresentationRichSlideSection = React.memo((props: RichSlideSectionP
       {children}
     </OriginalRichSlideSection>
   );
-});
+}) as typeof PresentationRichSlideSection;
