@@ -5,7 +5,7 @@ import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { CodeMirrorEditorMain } from '@growi/editor/dist/client/components/CodeMirrorEditorMain';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { type CodeMirrorEditorProps } from '@growi/editor/src/client/components-internal/CodeMirrorEditor';
-// import { useCollaborativeEditorMode } from '@growi/editor/src/client/stores/use-collaborative-editor-mode';
+import { useCollaborativeEditorMode } from '@growi/editor/src/client/stores/use-collaborative-editor-mode';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
@@ -20,13 +20,13 @@ type PageEditorSwitcherProps = CodeMirrorEditorProps & {
 
 export const PageEditorSwitcher = React.memo((props: PageEditorSwitcherProps): JSX.Element => {
   const {
-    isYjsEnabled, cmProps, ...otherProps
+    isYjsEnabled, cmProps, user, pageId, onEditorsUpdated, ...otherProps
   } = props;
 
-  // const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   useSingleEditorMode();
-  // useCollaborativeEditorMode(isYjsEnabled ?? false, user, pageId, onEditorsUpdated, codeMirrorEditor);
+  useCollaborativeEditorMode(isYjsEnabled ?? false, user, pageId, onEditorsUpdated, codeMirrorEditor);
 
   const cmPropsOverride = useMemo<ReactCodeMirrorProps>(() => deepmerge(
     cmProps ?? {},
@@ -40,7 +40,6 @@ export const PageEditorSwitcher = React.memo((props: PageEditorSwitcherProps): J
 
   return (
     <CodeMirrorEditorMain
-      isYjsEnabled={isYjsEnabled}
       cmProps={cmPropsOverride}
       {...otherProps}
     />
