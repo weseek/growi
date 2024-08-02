@@ -1,10 +1,17 @@
-import type { IAttachment } from '@growi/core';
+import type { IPage, IUser } from '@growi/core';
+import { type IAttachment } from '@growi/core';
 import { OptionParser } from '@growi/core/dist/remark-plugins';
-import { model } from 'mongoose';
+import type { Request } from 'express';
+import { Router } from 'express';
+import type { Model, HydratedDocument } from 'mongoose';
+import mongoose, { model, Types } from 'mongoose';
 
 import loggerFactory from '../../utils/logger';
 
 const logger = loggerFactory('growi:remark-attachment-refs:routes:refs');
+
+
+type RequestWithUser = Request & { user: HydratedDocument<IUser> };
 
 
 const loginRequiredFallback = (req, res) => {
@@ -13,21 +20,21 @@ const loginRequiredFallback = (req, res) => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const routesFactory = (crowi): any => {
-  const express = crowi.require('express');
-  const mongoose = crowi.require('mongoose');
 
   const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
   const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
+
   const { serializeUserSecurely } = crowi.require('../models/serializers/user-serializer');
 
-  const router = express.Router();
+  const router = Router();
 
-  const ObjectId = mongoose.Types.ObjectId;
+  const ObjectId = Types.ObjectId;
 
-  const User = crowi.model('User');
-  const Page = crowi.model('Page');
+  const User = mongoose.model('User');
+  const Page = mongoose.model <HydratedDocument<IPage>, Model<any> & any>('Page');
 
-  const { PageQueryBuilder } = Page;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { PageQueryBuilder } = Page as any;
 
   function generateRegexp(expression: string): RegExp {
     // https://regex101.com/r/uOrwqt/2
@@ -78,7 +85,7 @@ export const routesFactory = (crowi): any => {
   /**
    * return an Attachment model
    */
-  router.get('/ref', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/ref', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
 
@@ -96,9 +103,10 @@ export const routesFactory = (crowi): any => {
     }
 
     // convert ObjectId
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const orConditions: any[] = [{ originalName: fileNameOrId }];
-    if (ObjectId.isValid(fileNameOrId)) {
-      orConditions.push({ _id: ObjectId(fileNameOrId) });
+    if (fileNameOrId != null && ObjectId.isValid(fileNameOrId.toString())) {
+      orConditions.push({ _id: new ObjectId(fileNameOrId.toString()) });
     }
 
     const Attachment = model<IAttachment>('Attachment');
@@ -134,10 +142,10 @@ export const routesFactory = (crowi): any => {
   /**
    * return a list of Attachment
    */
-  router.get('/refs', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/refs', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { prefix, pagePath } = req.query;
-    const options = JSON.parse(req.query.options);
+    const options = JSON.parse(req.query.options?.toString() ?? '');
 
     // check either 'prefix' or 'pagePath ' is specified
     if (prefix == null && pagePath == null) {
