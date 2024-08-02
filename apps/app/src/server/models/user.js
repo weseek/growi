@@ -6,6 +6,8 @@ import { i18n } from '^/config/next-i18next.config';
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
 
+import { getModelSafely } from '../util/mongoose-utils';
+
 import { Attachment } from './attachment';
 import { omitInsecureAttributes } from './serializers/user-serializer';
 
@@ -19,6 +21,12 @@ const uniqueValidator = require('mongoose-unique-validator');
 const logger = loggerFactory('growi:models:user');
 
 const factory = (crowi) => {
+
+  const userModelExists = getModelSafely('User');
+  if (userModelExists != null) {
+    return userModelExists;
+  }
+
   const STATUS_REGISTERED = 1;
   const STATUS_ACTIVE = 2;
   const STATUS_SUSPENDED = 3;
