@@ -1,4 +1,4 @@
-import { memo, useRef } from 'react';
+import { memo, useCallback, useRef } from 'react';
 
 import type { AcceptedUploadFileType } from '@growi/core';
 import SimpleBar from 'simplebar-react';
@@ -24,6 +24,12 @@ export const Toolbar = memo((props: Props): JSX.Element => {
   const { editorKey, acceptedUploadFileType, onUpload } = props;
   const simpleBarRef = useRef<SimpleBar>(null);
 
+  const onTextFormatToolsCollapseChange = useCallback(() => {
+    if (simpleBarRef.current) {
+      simpleBarRef.current.recalculate();
+    }
+  }, [simpleBarRef]);
+
   return (
     <>
       <div className={`d-flex gap-2 py-1 px-2 px-md-3 border-top ${styles['codemirror-editor-toolbar']}`}>
@@ -31,7 +37,7 @@ export const Toolbar = memo((props: Props): JSX.Element => {
         <div className="flex-grow-1">
           <SimpleBar ref={simpleBarRef} autoHide style={{ overflowY: 'hidden' }}>
             <div className="d-flex gap-2">
-              <TextFormatTools editorKey={editorKey} simpleBarRef={simpleBarRef} />
+              <TextFormatTools editorKey={editorKey} onTextFormatToolsCollapseChange={onTextFormatToolsCollapseChange} />
               <EmojiButton editorKey={editorKey} />
               <TableButton editorKey={editorKey} />
               <DiagramButton editorKey={editorKey} />
