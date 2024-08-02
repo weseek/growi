@@ -369,7 +369,7 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('public') }</th>
                 <td>
-                  <div className="form-check form-switch form-check-success">
+                  <div className="form-check form-switch">
                     <input
                       type="checkbox"
                       disabled
@@ -386,7 +386,7 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('anyone_with_the_link') }</th>
                 <td>
-                  <div className="form-check form-switch form-check-success">
+                  <div className="form-check form-switch">
                     <input
                       type="checkbox"
                       disabled
@@ -402,7 +402,7 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_me') }</th>
                 <td>
-                  <div className="form-check form-switch form-check-success">
+                  <div className="form-check form-switch">
                     <input
                       type="checkbox"
                       className="form-check-input"
@@ -416,7 +416,7 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
-                  <div className="form-check form-switch form-check-success">
+                  <div className="form-check form-switch">
                     <input
                       type="checkbox"
                       className="form-check-input"
