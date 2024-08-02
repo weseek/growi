@@ -1,4 +1,4 @@
-import type { Nodes as HastNode } from 'hast';
+import type { Nodes as HastNode, Text } from 'hast';
 import { select } from 'hast-util-select';
 import parse from 'remark-parse';
 import rehype from 'remark-rehype';
@@ -45,7 +45,7 @@ describe('relativeLinksByPukiwikiLikeLinker', () => {
 
       expect(anchorElement?.children[0]).not.toBeNull();
       expect(anchorElement?.children[0].type).toEqual('text');
-      expect(anchorElement?.children[0].value).toEqual(expectedValue);
+      expect((anchorElement?.children[0] as HastNode as Text).value).toEqual(expectedValue);
 
     });
   });
