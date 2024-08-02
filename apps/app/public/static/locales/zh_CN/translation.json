@@ -167,7 +167,7 @@
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
   "copied_to_clipboard": "它已复制到剪贴板。",
-  "non-yjs-alert": "由于此页面内容超过 {{yjsMaxBodyLength}} 字符数，协作编辑器已禁用。要启用协同编辑器，请将内容减少到阈值以内，保存页面并重新打开编辑器。",
+  "single-editor-mode-alert": "由于此页面内容超过 {{yjsMaxBodyLength}} 字符数，协作编辑器已禁用。要启用协同编辑器，请将内容减少到阈值以内，保存页面并重新打开编辑器。",
 
   "input_validation": {
     "target": {

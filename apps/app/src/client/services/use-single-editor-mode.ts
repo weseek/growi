@@ -24,7 +24,7 @@ export const useSingleEditorMode = (): void => {
       codeMirrorEditor.initDoc(currentPage?.revision?.body);
 
       // eslint-disable-next-line no-alert
-      window.alert(t('non-yjs-alert', { yjsMaxBodyLength }));
+      window.alert(t('single-editor-mode-alert', { yjsMaxBodyLength }));
     }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
