@@ -1,35 +1,26 @@
-const mongoose = require('mongoose');
+import type { IUser } from '~/interfaces';
 
+type IUserSerializedSecurely = Omit<IUser, 'password' | 'apiToken' | 'email'> & { email?: string };
 
-export function omitInsecureAttributes(user) {
-  // omit password
-  delete user.password;
-  // omit apiToken
-  delete user.apiToken;
+export const omitInsecureAttributes = (user: IUser): IUserSerializedSecurely => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password, apiToken, ...rest } = user;
+
+  const secureUser: IUserSerializedSecurely = rest;
 
   // omit email
-  if (!user.isEmailPublished) {
-    delete user.email;
+  if (!secureUser.isEmailPublished) {
+    delete secureUser.email;
   }
-  return user;
-}
 
-export function serializeUserSecurely(user) {
-  const User = mongoose.model('User');
+  return secureUser;
+};
 
+export const serializeUserSecurely = (user?: IUser | null): Partial<IUser> | null | undefined => {
   // return when it is not a user object
-  if (user == null || !(user instanceof User)) {
+  if (user == null || !('username' in user)) {
     return user;
   }
 
-  let serialized = user;
-
-  // invoke toObject if page is a model instance
-  if (user.toObject != null) {
-    serialized = user.toObject();
-  }
-
-  omitInsecureAttributes(serialized);
-
-  return serialized;
-}
+  return omitInsecureAttributes(user);
+};
