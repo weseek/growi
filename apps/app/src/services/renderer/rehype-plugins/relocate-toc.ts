@@ -1,6 +1,6 @@
-import rehypeToc, { type HtmlElementNode } from 'rehype-toc';
+import rehypeToc from 'rehype-toc';
+import type { HtmlElementNode } from 'rehype-toc';
 import type { Plugin } from 'unified';
-import type { Node } from 'unist';
 
 type StoreTocPluginParams = {
   storeTocNode: (toc: HtmlElementNode) => void,
@@ -22,13 +22,13 @@ export const rehypePluginStore: Plugin<[StoreTocPluginParams]> = (options) => {
 
 
 // method for replace <ol> to <ul>
-const replaceOlToUl = (children: Node[]) => {
+const replaceOlToUl = (children: HtmlElementNode[]) => {
   children.forEach((child) => {
     if (child.type === 'element' && child.tagName === 'ol') {
       child.tagName = 'ul';
     }
     if (child.children != null) {
-      replaceOlToUl(child.children as Node[]);
+      replaceOlToUl(child.children as HtmlElementNode[]);
     }
   });
 };
