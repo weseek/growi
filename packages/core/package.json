@@ -30,6 +30,10 @@
       "import": "./dist/models/index.js",
       "require": "./dist/models/index.cjs"
     },
+    "./dist/models/serializers": {
+      "import": "./dist/models/serializers/index.js",
+      "require": "./dist/models/serializers/index.cjs"
+    },
     "./dist/remark-plugins": {
       "import": "./dist/remark-plugins/index.js",
       "require": "./dist/remark-plugins/index.cjs"

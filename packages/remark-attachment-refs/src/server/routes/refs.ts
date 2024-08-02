@@ -1,5 +1,5 @@
-import type { IPage, IUser } from '@growi/core';
-import { type IAttachment } from '@growi/core';
+import type { IPage, IUser, IAttachment } from '@growi/core';
+import { serializeAttachmentSecurely } from '@growi/core/dist/models/serializers';
 import { OptionParser } from '@growi/core/dist/remark-plugins';
 import type { Request } from 'express';
 import { Router } from 'express';
@@ -24,13 +24,10 @@ export const routesFactory = (crowi): any => {
   const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
   const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
 
-  const { serializeUserSecurely } = crowi.require('../models/serializers/user-serializer');
-
   const router = Router();
 
   const ObjectId = Types.ObjectId;
 
-  const User = mongoose.model('User');
   const Page = mongoose.model <HydratedDocument<IPage>, Model<any> & any>('Page');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -133,10 +130,7 @@ export const routesFactory = (crowi): any => {
       return;
     }
 
-    // serialize User data
-    attachment.creator = serializeUserSecurely(attachment.creator);
-
-    res.status(200).send({ attachment });
+    res.status(200).send({ attachment: serializeAttachmentSecurely(attachment) });
   });
 
   /**
@@ -215,14 +209,7 @@ export const routesFactory = (crowi): any => {
       .populate('creator')
       .exec();
 
-    // serialize User data
-    attachments.forEach((doc) => {
-      if (doc.creator != null && doc.creator instanceof User) {
-        doc.creator = serializeUserSecurely(doc.creator);
-      }
-    });
-
-    res.status(200).send({ attachments });
+    res.status(200).send({ attachments: attachments.map(attachment => serializeAttachmentSecurely(attachment)) });
   });
 
   return router;
