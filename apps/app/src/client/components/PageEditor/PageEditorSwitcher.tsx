@@ -9,7 +9,7 @@ import { useCollaborativeEditorMode } from '@growi/editor/src/client/stores/use-
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
-import { useNonYjsModeEffect } from '~/client/services/yjs';
+import { useSingleEditorMode } from '~/client/services/use-single-editor-mode';
 
 type PageEditorSwitcherProps = CodeMirrorEditorProps & {
   isYjsEnabled?: boolean
@@ -25,7 +25,7 @@ export const PageEditorSwitcher = React.memo((props: PageEditorSwitcherProps): J
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useNonYjsModeEffect();
+  useSingleEditorMode();
   useCollaborativeEditorMode(isYjsEnabled ?? false, user, pageId, onEditorsUpdated, codeMirrorEditor);
 
   const cmPropsOverride = useMemo<ReactCodeMirrorProps>(() => deepmerge(
