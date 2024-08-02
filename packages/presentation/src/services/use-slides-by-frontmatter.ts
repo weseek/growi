@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import type { Parent } from 'mdast';
 import type { Processor } from 'unified';
 
 type ParseResult = {
@@ -43,7 +44,7 @@ const generateFrontmatterProcessor = async(opts?: ProcessorOpts) => {
     .use(remarkParse)
     .use(remarkStringify)
     .use(remarkFrontmatter, ['yaml'])
-    .use(() => ((obj) => {
+    .use(() => ((obj: Parent) => {
       if (obj.children[0]?.type === 'yaml') {
         const result = parseSlideFrontmatter(obj.children[0]?.value);
         opts?.onParsed?.(result);
