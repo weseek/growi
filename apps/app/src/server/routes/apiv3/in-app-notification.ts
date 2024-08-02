@@ -1,9 +1,9 @@
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
-import { serializeUserSecurely } from '~/server/models/serializers';
 
 import type { IInAppNotification } from '../../../interfaces/in-app-notification';
 

@@ -1,6 +1,6 @@
-import loggerFactory from '~/utils/logger';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 
-import { serializeUserSecurely } from '../models/serializers';
+import loggerFactory from '~/utils/logger';
 
 
 const logger = loggerFactory('growi:middleware:access-token-parser');

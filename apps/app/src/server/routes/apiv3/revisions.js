@@ -1,8 +1,8 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
 
 import { Revision } from '~/server/models/revision';
-import { serializeUserSecurely } from '~/server/models/serializers';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import loggerFactory from '~/utils/logger';
 

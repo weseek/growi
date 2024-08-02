@@ -13,7 +13,7 @@ import type {
 } from '../interfaces/search';
 import NamedQuery from '../models/named-query';
 import type { PageModel } from '../models/page';
-import { serializeUserSecurely } from '../models/serializers/user-serializer';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { SearchError } from '../models/vo/search-error';
 import { hasIntersection } from '../util/compare-objectId';
 

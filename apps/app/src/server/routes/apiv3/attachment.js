@@ -1,4 +1,5 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
 import multer from 'multer';
 import autoReap from 'multer-autoreap';
@@ -6,7 +7,7 @@ import autoReap from 'multer-autoreap';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { Attachment } from '~/server/models/attachment';
-import { serializePageSecurely, serializeRevisionSecurely, serializeUserSecurely } from '~/server/models/serializers';
+import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';

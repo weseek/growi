@@ -17,7 +17,7 @@ import { generateAddActivityMiddleware } from '../../../middlewares/add-activity
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import { serializePageSecurely } from '../../../models/serializers/page-serializer';
-import { serializeUserSecurely } from '../../../models/serializers/user-serializer';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { isV5ConversionError } from '../../../models/vo/v5-conversion-error';
 
 

@@ -4,7 +4,7 @@ import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/in
 import loggerFactory from '~/utils/logger';
 
 import { GlobalNotificationSettingEvent } from '../models/GlobalNotificationSetting';
-import { serializeUserSecurely } from '../models/serializers';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { preNotifyService } from '../service/pre-notify';
 
 /**

@@ -1,12 +1,12 @@
 import { GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
 import {
   body, param, query, sanitizeQuery,
 } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { serializeUserSecurely } from '~/server/models/serializers';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';

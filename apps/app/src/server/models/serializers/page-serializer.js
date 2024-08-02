@@ -1,4 +1,4 @@
-import { serializeUserSecurely } from './user-serializer';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 
 function depopulate(page, attributeName) {
   // revert the ObjectID

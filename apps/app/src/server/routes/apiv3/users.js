@@ -2,6 +2,7 @@
 import path from 'path';
 
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
 import express from 'express';
 import { body, query } from 'express-validator';
@@ -11,7 +12,7 @@ import ExternalUserGroupRelation from '~/features/external-user-group/server/mod
 import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import ExternalAccount from '~/server/models/external-account';
-import { serializePageSecurely, serializeUserSecurely } from '~/server/models/serializers';
+import { serializePageSecurely } from '~/server/models/serializers';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
 import { deleteCompletelyUserHomeBySystem } from '~/server/service/page/delete-completely-user-home-by-system';
