@@ -161,7 +161,7 @@ export const routesFactory = (crowi): any => {
         regex = generateRegexp(regexOptionValue);
       }
       catch (err) {
-        res.status(400).send(`the 'regex=${options.regex}' option is invalid as RegExp.`);
+        res.status(400).send('the \'regex\' option is invalid as RegExp.');
         return;
       }
     }
