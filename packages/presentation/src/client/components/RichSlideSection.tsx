@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import React from 'react';
 
 type RichSlideSectionProps = {
-  children: ReactNode,
+  children?: ReactNode,
   presentation?: boolean,
 }
 
@@ -14,7 +14,7 @@ const OriginalRichSlideSection = React.memo((props: RichSlideSectionProps): JSX.
       <svg data-marpit-svg="" viewBox="0 0 1280 720">
         <foreignObject width="1280" height="720">
           <section>
-            {children}
+            {children ?? <></>}
           </section>
         </foreignObject>
       </svg>
@@ -22,7 +22,7 @@ const OriginalRichSlideSection = React.memo((props: RichSlideSectionProps): JSX.
   );
 });
 
-export const RichSlideSection = React.memo((props: RichSlideSectionProps): JSX.Element => {
+export const RichSlideSection = (props: RichSlideSectionProps): JSX.Element => {
   const { children } = props;
 
   return (
@@ -30,10 +30,10 @@ export const RichSlideSection = React.memo((props: RichSlideSectionProps): JSX.E
       {children}
     </OriginalRichSlideSection>
   );
-}) as typeof RichSlideSection;
+};
 
 
-export const PresentationRichSlideSection = React.memo((props: RichSlideSectionProps): JSX.Element => {
+export const PresentationRichSlideSection = (props: RichSlideSectionProps): JSX.Element => {
   const { children } = props;
 
   return (
@@ -41,4 +41,4 @@ export const PresentationRichSlideSection = React.memo((props: RichSlideSectionP
       {children}
     </OriginalRichSlideSection>
   );
-}) as typeof PresentationRichSlideSection;
+};
