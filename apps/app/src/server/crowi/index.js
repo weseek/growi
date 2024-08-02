@@ -62,6 +62,9 @@ class Crowi {
   /** @type {FileUploader} */
   fileUploadService;
 
+  /** @type {SocketIoService} */
+  socketIoService;
+
   constructor() {
     this.version = pkg.version;
     this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
