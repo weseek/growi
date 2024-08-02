@@ -18,7 +18,7 @@ import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
+import { useUpdatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { useIsYjsEnabled } from '~/client/services/yjs';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
@@ -121,6 +121,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
+  const updatePage = useUpdatePage();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
   useConflictEffect();
