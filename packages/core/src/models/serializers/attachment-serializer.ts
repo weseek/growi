@@ -1,24 +1,33 @@
 import type { IAttachment } from '~/interfaces';
 
-import { isPopulated, type Ref } from '../../interfaces/common';
+import { isPopulated, isRef, type Ref } from '../../interfaces/common';
 
 import { serializeUserSecurely, type IUserSerializedSecurely } from './user-serializer';
 
-export type IAttachmentSerializedSecurely = Omit<IAttachment, 'creator'> & { creator?: Ref<IUserSerializedSecurely> };
+export type IAttachmentSerializedSecurely<A extends IAttachment = IAttachment> = Omit<A, 'creator'> & { creator?: Ref<IUserSerializedSecurely> };
 
-export const serializeAttachmentSecurely = (attachment?: Ref<IAttachment>): Ref<IAttachmentSerializedSecurely> | undefined => {
-  // return when it is not a user object
-  if (attachment == null || !isPopulated(attachment)) {
-    return attachment;
-  }
+const omitInsecureAttributes = <A extends IAttachment>(attachment: A): IAttachmentSerializedSecurely<A> => {
+  const { creator, ...rest } = attachment;
 
-  // serialize User data
-  const { _id, creator, ...restAttachmentProperties } = attachment;
+  const secureCreator = creator == null
+    ? undefined
+    : serializeUserSecurely(creator);
 
   return {
-    _id,
-    creator: serializeUserSecurely(creator),
-    ...restAttachmentProperties,
+    creator: secureCreator,
+    ...rest,
   };
-
 };
+
+
+export function serializeAttachmentSecurely<A extends IAttachment>(attachment?: A): IAttachmentSerializedSecurely<A>;
+export function serializeAttachmentSecurely<A extends IAttachment>(attachment?: Ref<A>): Ref<IAttachmentSerializedSecurely<A>>;
+export function serializeAttachmentSecurely<A extends IAttachment>(attachment?: A | Ref<A>)
+    : undefined | IAttachmentSerializedSecurely<A> | Ref<IAttachmentSerializedSecurely<A>> {
+
+  if (attachment == null) return attachment;
+
+  if (isRef(attachment) && !isPopulated(attachment)) return attachment;
+
+  return omitInsecureAttributes(attachment);
+}

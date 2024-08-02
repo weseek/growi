@@ -1,30 +1,30 @@
-import { isPopulated, type Ref } from '../../interfaces/common';
+import { isPopulated, isRef, type Ref } from '../../interfaces/common';
 import type { IUser } from '../../interfaces/user';
 
-export type IUserSerializedSecurely = Omit<IUser, 'password' | 'apiToken' | 'email'> & { email?: string };
+export type IUserSerializedSecurely<U extends IUser = IUser> = Omit<U, 'password' | 'apiToken' | 'email'> & { email?: string };
 
-export const omitInsecureAttributes = (user: IUser): IUserSerializedSecurely => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { password, apiToken, ...rest } = user;
+export const omitInsecureAttributes = <U extends IUser = IUser>(user: U): IUserSerializedSecurely<U> => {
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    password, apiToken, email, ...rest
+  } = user;
 
-  const secureUser: IUserSerializedSecurely = rest;
+  const secureUser: IUserSerializedSecurely<U> = rest;
 
   // omit email
-  if (!secureUser.isEmailPublished) {
-    delete secureUser.email;
+  if (secureUser.isEmailPublished) {
+    secureUser.email = email;
   }
 
   return secureUser;
 };
 
-export const serializeUserSecurely = (user?: Ref<IUser>): Ref<IUserSerializedSecurely> | undefined => {
-  // return when it is not a user object
-  if (user == null || !isPopulated(user)) {
-    return user;
-  }
+export function serializeUserSecurely<U extends IUser>(user?: U): IUserSerializedSecurely<U>;
+export function serializeUserSecurely<U extends IUser>(user?: Ref<U>): Ref<IUserSerializedSecurely<U>>;
+export function serializeUserSecurely<U extends IUser>(user?: U | Ref<U>): undefined | IUserSerializedSecurely<U> | Ref<IUserSerializedSecurely<U>> {
+  if (user == null) return user;
 
-  return {
-    _id: user._id,
-    ...omitInsecureAttributes(user),
-  };
-};
+  if (isRef(user) && !isPopulated(user)) return user;
+
+  return omitInsecureAttributes(user);
+}
