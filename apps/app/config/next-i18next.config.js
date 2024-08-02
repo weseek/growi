@@ -2,8 +2,10 @@ const isDev = process.env.NODE_ENV === 'development';
 
 const path = require('path');
 
-const { Locale, AllLocale } = require('@growi/core');
+const { AllLang } = require('@growi/core');
 const { isServer } = require('@growi/core/dist/utils');
+
+const { defaultLang } = require('./i18next.config');
 
 const HMRPlugin = isDev ? require('i18next-hmr/plugin').HMRPlugin : undefined;
 
@@ -12,8 +14,8 @@ module.exports = {
   ...require('./i18next.config').initOptions,
 
   i18n: {
-    defaultLocale: Locale['en-US'],
-    locales: AllLocale,
+    defaultLocale: defaultLang.toString(),
+    locales: AllLang,
   },
 
   localePath: path.resolve('./public/static/locales'),
