@@ -6,7 +6,7 @@ import type { IUser } from './user';
 export const Origin = {
   View: 'view',
   Editor: 'editor',
-  EditorOffline: 'editor-offline',
+  EditorSingle: 'editor-single',
 } as const;
 
 export type Origin = typeof Origin[keyof typeof Origin];

@@ -185,7 +185,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         wip: opts?.wip,
         body: markdown ?? '',
         grant: selectedGrant?.grant,
-        origin: isYjsEnabled ? Origin.Editor : Origin.EditorOffline,
+        origin: isYjsEnabled ? Origin.Editor : Origin.EditorSingle,
         userRelatedGrantUserGroupIds: selectedGrant?.userRelatedGrantedGroups,
         ...(opts ?? {}),
       });
