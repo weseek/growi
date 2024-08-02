@@ -391,7 +391,7 @@ class SecuritySetting extends React.Component {
                       type="checkbox"
                       disabled
                       className="form-check-input"
-                      id="isShowRestrictedByAnyonewiththelink"
+                      id="isShowRestrictedByAnyoneWithTheLink"
                     />
                     <label className="form-label form-check-label" htmlFor="isShowRestrictedByAnyonewiththelink">
                       {t('security_settings.fixed')}
