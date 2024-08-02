@@ -1,13 +1,20 @@
-import type { IAttachment } from '~/interfaces';
+import { Document } from 'mongoose';
+
+import type { IAttachment, IUser } from '~/interfaces';
 
 import { isPopulated, isRef, type Ref } from '../../interfaces/common';
 
 import { serializeUserSecurely, type IUserSerializedSecurely } from './user-serializer';
 
-export type IAttachmentSerializedSecurely<A extends IAttachment = IAttachment> = Omit<A, 'creator'> & { creator?: Ref<IUserSerializedSecurely> };
+export type IAttachmentSerializedSecurely<A extends IAttachment> = Omit<A, 'creator'> & { creator?: Ref<IUserSerializedSecurely<IUser>> };
 
 const omitInsecureAttributes = <A extends IAttachment>(attachment: A): IAttachmentSerializedSecurely<A> => {
-  const { creator, ...rest } = attachment;
+
+  const leanDoc = (attachment instanceof Document)
+    ? attachment.toObject<A>()
+    : attachment;
+
+  const { creator, ...rest } = leanDoc;
 
   const secureCreator = creator == null
     ? undefined
