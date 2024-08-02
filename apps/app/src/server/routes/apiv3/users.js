@@ -1,11 +1,17 @@
 
+import path from 'path';
+
 import { ErrorV3 } from '@growi/core/dist/models';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
+import express from 'express';
+import { body, query } from 'express-validator';
+import { isEmail } from 'validator';
 
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import ExternalAccount from '~/server/models/external-account';
+import { serializePageSecurely, serializeUserSecurely } from '~/server/models/serializers';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
 import { deleteCompletelyUserHomeBySystem } from '~/server/service/page/delete-completely-user-home-by-system';
@@ -16,17 +22,8 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:users');
 
-const path = require('path');
-
-const express = require('express');
-
 const router = express.Router();
 
-const { body, query } = require('express-validator');
-const { isEmail } = require('validator');
-
-const { serializePageSecurely } = require('../../models/serializers/page-serializer');
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const PAGE_ITEMS = 50;
 

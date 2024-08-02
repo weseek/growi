@@ -1,12 +1,14 @@
+import express from 'express';
+
 import { SupportedAction } from '~/interfaces/activity';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
+import { serializeUserSecurely } from '~/server/models/serializers';
 
+import type { IInAppNotification } from '../../../interfaces/in-app-notification';
 
-import { IInAppNotification } from '../../../interfaces/in-app-notification';
+import type { ApiV3Response } from './interfaces/apiv3-response';
 
-const express = require('express');
-
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 
@@ -22,14 +24,18 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const user = req.user;
+  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+    // user must be set by loginRequiredStrictly
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const user = req.user!;
 
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = req.query.limit != null
+      ? parseInt(req.query.limit.toString()) || 10
+      : 10;
 
     let offset = 0;
-    if (req.query.offset) {
-      offset = parseInt(req.query.offset, 10);
+    if (req.query.offset != null) {
+      offset = parseInt(req.query.offset.toString(), 10);
     }
 
     const queryOptions = {
@@ -73,10 +79,13 @@ module.exports = (crowi) => {
     return res.apiv3(serializedPaginationResult);
   });
 
-  router.get('/status', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const userId = req.user._id;
+  router.get('/status', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+    // user must be set by loginRequiredStrictly
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const user = req.user!;
+
     try {
-      const count = await inAppNotificationService.getUnreadCountByUser(userId);
+      const count = await inAppNotificationService.getUnreadCountByUser(user._id);
       return res.apiv3({ count });
     }
     catch (err) {
@@ -84,7 +93,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/read', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.post('/read', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     const user = req.user;
 
     try {
@@ -96,8 +105,11 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/open', accessTokenParser, loginRequiredStrictly, async(req, res) => {
-    const user = req.user;
+  router.post('/open', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+    // user must be set by loginRequiredStrictly
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const user = req.user!;
+
     const id = req.body.id;
 
     try {
@@ -110,8 +122,10 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
-    const user = req.user;
+  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, addActivity, async(req: CrowiRequest, res: ApiV3Response) => {
+    // user must be set by loginRequiredStrictly
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const user = req.user!;
 
     try {
       await inAppNotificationService.updateAllNotificationsAsOpened(user);

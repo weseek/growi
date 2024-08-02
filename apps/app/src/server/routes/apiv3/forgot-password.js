@@ -5,6 +5,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
+import { serializeUserSecurely } from '~/server/models/serializers';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -17,7 +18,6 @@ const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-dis
 const express = require('express');
 const { body } = require('express-validator');
 
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 

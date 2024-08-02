@@ -4,6 +4,7 @@ import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/in
 import loggerFactory from '~/utils/logger';
 
 import { GlobalNotificationSettingEvent } from '../models/GlobalNotificationSetting';
+import { serializeUserSecurely } from '../models/serializers';
 import { preNotifyService } from '../service/pre-notify';
 
 /**
@@ -12,7 +13,6 @@ import { preNotifyService } from '../service/pre-notify';
  *    name: Comments
  */
 
-const { serializeUserSecurely } = require('../models/serializers/user-serializer');
 
 /**
  * @swagger
