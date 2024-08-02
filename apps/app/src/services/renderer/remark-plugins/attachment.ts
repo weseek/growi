@@ -3,8 +3,18 @@ import path from 'path';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { Link } from 'mdast';
 import type { Plugin } from 'unified';
-import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
+
+declare module 'mdast' {
+  interface LinkData {
+    hName?: string,
+    hProperties?: {
+      attachmentId?: string,
+      url?: string,
+      attachmentName?: PhrasingContent,
+    }
+  }
+}
 
 const SUPPORTED_ATTRIBUTES = ['attachmentId', 'url', 'attachmentName'];
 
@@ -16,6 +26,7 @@ const isAttachmentLink = (url: string): boolean => {
 
 const rewriteNode = (node: Link) => {
   const attachmentId = path.basename(node.url as string);
+
   const data = node.data ?? (node.data = {});
   data.hName = 'attachment';
   data.hProperties = {
