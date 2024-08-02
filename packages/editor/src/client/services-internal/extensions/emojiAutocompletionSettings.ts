@@ -1,10 +1,10 @@
 import { type CompletionContext, type Completion, autocompletion } from '@codemirror/autocomplete';
 import { syntaxTree } from '@codemirror/language';
-import emojiData from '@emoji-mart/data';
+import emojiData, { type EmojiMartData } from '@emoji-mart/data';
 
 
 const getEmojiDataArray = (): string[] => {
-  const rawEmojiDataArray = emojiData.categories;
+  const rawEmojiDataArray = (emojiData as EmojiMartData).categories;
 
   const emojiCategoriesData = [
     'people',
@@ -60,7 +60,7 @@ export const emojiAutocompletionSettings = autocompletion({
   addToOptions: [{
     render: (completion: Completion) => {
       const emojiName = completion.type ?? '';
-      const emoji = emojiData.emojis[emojiName].skins[0].native;
+      const emoji = (emojiData as EmojiMartData).emojis[emojiName].skins[0].native;
 
       const element = document.createElement('span');
       element.innerHTML = emoji;
