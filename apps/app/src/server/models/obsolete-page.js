@@ -145,7 +145,7 @@ export const getPageSchema = (crowi) => {
     const populatedPageDataWithRevisionOrigin = await this.populate('revision', 'origin');
     const latestRevisionOrigin = populatedPageDataWithRevisionOrigin.revision.origin;
     // eslint-disable-next-line max-len
-    const ignoreLatestRevision = (origin === Origin.Editor) && (latestRevisionOrigin === Origin.Editor || latestRevisionOrigin === Origin.EditorOffline || latestRevisionOrigin === Origin.View);
+    const ignoreLatestRevision = (origin === Origin.Editor) && (latestRevisionOrigin === Origin.Editor || latestRevisionOrigin === Origin.View);
     if (ignoreLatestRevision) {
       return true;
     }
