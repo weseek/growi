@@ -22,6 +22,7 @@ import type { PageDocument, PageModel } from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
+import { exportService } from '~/server/service/export';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
@@ -806,7 +807,7 @@ module.exports = (crowi) => {
     let stream;
 
     try {
-      stream = exportService.getReadStreamFromRevision(revision, format);
+      stream = exportService?.getReadStreamFromRevision(revision, format);
     }
     catch (err) {
       logger.error('Failed to create readStream', err);

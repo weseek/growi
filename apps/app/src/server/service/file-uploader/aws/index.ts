@@ -14,16 +14,19 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
 
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import {
+  AttachmentType, FilePathOnStoragePrefix, ResponseMode, type RespondOptions,
+} from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
-import { configManager } from '../config-manager';
-
+import { configManager } from '../../config-manager';
 import {
   AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
-} from './file-uploader';
-import { ContentHeaders } from './utils';
+} from '../file-uploader';
+import { ContentHeaders } from '../utils';
+
+import { AwsMultipartUploader } from './multipart-uploader';
 
 
 const logger = loggerFactory('growi:service:fileUploaderAws');
@@ -90,19 +93,25 @@ const S3Factory = (): S3Client => {
   });
 };
 
-const getFilePathOnStorage = (attachment) => {
+const getFilePathOnStorage = (attachment: IAttachmentDocument) => {
   if (attachment.filePath != null) { // DEPRECATED: remains for backward compatibility for v3.3.x or below
     return attachment.filePath;
   }
 
-  const dirName = (attachment.page != null)
-    ? 'attachment'
-    : 'user';
+  let dirName: string;
+  if (attachment.attachmentType === AttachmentType.PAGE_BULK_EXPORT) {
+    dirName = FilePathOnStoragePrefix.pageBulkExport;
+  }
+  else if (attachment.page != null) {
+    dirName = FilePathOnStoragePrefix.attachment;
+  }
+  else {
+    dirName = FilePathOnStoragePrefix.user;
+  }
   const filePath = urljoin(dirName, attachment.fileName);
 
   return filePath;
 };
-
 
 // TODO: rewrite this module to be a type-safe implementation
 class AwsFileUploader extends AbstractFileUploader {
@@ -248,6 +257,11 @@ class AwsFileUploader extends AbstractFileUploader {
       lifetimeSec: lifetimeSecForTemporaryUrl,
     };
 
+  }
+
+  override createMultipartUploader(uploadKey: string, maxPartSize: number) {
+    const s3 = S3Factory();
+    return new AwsMultipartUploader(s3, getS3Bucket(), uploadKey, maxPartSize);
   }
 
 }

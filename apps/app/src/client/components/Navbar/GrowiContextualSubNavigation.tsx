@@ -19,6 +19,7 @@ import { DropdownItem } from 'reactstrap';
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
+import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
@@ -78,6 +79,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
+  const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModal();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
@@ -134,7 +136,16 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         className="grw-page-control-dropdown-item"
       >
         <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
-        {t('export_bulk.export_page_markdown')}
+        {t('page_export.export_page_markdown')}
+      </DropdownItem>
+
+      {/* Bulk export */}
+      <DropdownItem
+        onClick={openPageBulkExportSelectModal}
+        className="grw-page-control-dropdown-item"
+      >
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
+        {t('page_export.bulk_export')}
       </DropdownItem>
 
       <DropdownItem divider />
