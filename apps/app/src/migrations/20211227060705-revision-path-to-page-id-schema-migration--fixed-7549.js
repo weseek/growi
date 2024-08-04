@@ -47,7 +47,7 @@ module.exports = {
           };
         });
 
-        await Revision.bulkWrite(updateManyOperations);
+        await Revision.bulkWrite(updateManyOperations, { strict: false });
 
         callback();
       },
@@ -98,7 +98,7 @@ module.exports = {
           };
         });
 
-        await Revision.bulkWrite(updateManyOperations);
+        await Revision.bulkWrite(updateManyOperations, { strict: false });
 
         callback();
       },

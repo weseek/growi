@@ -1,10 +1,9 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import { Lang, AllLang } from '@growi/core';
+import { Lang, AllLang, Locale } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
-
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
@@ -106,13 +105,23 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   return { props };
 };
 
+export type LangMap = {
+  readonly [key in Lang]: Locale;
+};
 
-export const getLocateAtServerSide = (req: CrowiRequest): Lang => {
+export const langMap: LangMap = {
+  [Lang.ja_JP]: Locale['ja-JP'],
+  [Lang.en_US]: Locale['en-US'],
+  [Lang.zh_CN]: Locale['zh-CN'],
+  [Lang.fr_FR]: Locale['fr-FR'],
+};
+
+export const getLocaleAtServerSide = (req: CrowiRequest): Locale => {
   const { user, headers } = req;
   const { configManager } = req.crowi;
 
-  return user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
-    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
+  return langMap[user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
+    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US) ?? Lang.en_US];
 };
 
 export const getNextI18NextConfig = async(
@@ -126,7 +135,7 @@ export const getNextI18NextConfig = async(
 
   // determine language
   const req: CrowiRequest = context.req as CrowiRequest;
-  const locale = getLocateAtServerSide(req);
+  const locale = getLocaleAtServerSide(req);
 
   const namespaces = ['commons'];
   if (namespacesRequired != null) {
