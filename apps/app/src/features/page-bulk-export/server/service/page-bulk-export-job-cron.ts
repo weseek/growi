@@ -33,13 +33,7 @@ class PageBulkExportJobCronService extends CronService {
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
     });
     for (const expiredExportJob of expiredExportJobs) {
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        await pageBulkExportService?.notifyExportResult(expiredExportJob, SupportedAction.ACTION_PAGE_BULK_EXPORT_JOB_EXPIRED);
-      }
-      catch (err) {
-        logger.error(err);
-      }
+      pageBulkExportService?.pageBulkExportJobStreamManager?.destroyJobStream(expiredExportJob._id);
       // eslint-disable-next-line no-await-in-loop
       await this.cleanUpAndDeleteBulkExportJob(expiredExportJob);
     }
