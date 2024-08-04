@@ -47,7 +47,16 @@ class PageBulkExportJobCronService extends CronService {
     });
     for (const downloadExpiredExportJob of downloadExpiredExportJobs) {
       try {
-        this.crowi.attachmentService?.removeAttachment(downloadExpiredExportJob.attachment);
+        // eslint-disable-next-line no-await-in-loop
+        const hasSameAttachmentAndDownloadNotExpired = await PageBulkExportJob.findOne({
+          attachment: downloadExpiredExportJob.attachment,
+          _id: { $ne: downloadExpiredExportJob._id },
+          completedAt: { $gte: new Date(Date.now() - downloadExpirationSeconds * 1000) },
+        });
+        if (hasSameAttachmentAndDownloadNotExpired == null) {
+          // delete attachment if no other export job (which download has not expired) has re-used it
+          this.crowi.attachmentService?.removeAttachment(downloadExpiredExportJob.attachment);
+        }
       }
       catch (err) {
         logger.error(err);
