@@ -164,7 +164,7 @@ export abstract class AbstractFileUploader implements FileUploader {
     throw new Error('Multipart upload not available for file upload type');
   }
 
- abstract uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>;
+  abstract uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>;
 
   /**
    * Abort an existing multipart upload without creating a MultipartUploader instance

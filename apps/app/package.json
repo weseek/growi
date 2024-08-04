@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "7.0.16-RC.0",
+  "version": "7.0.17-RC.0",
   "license": "MIT",
   "private": "true",
   "scripts": {
@@ -44,7 +44,8 @@
     "vitest:run:components": "vitest run -c vitest.config.components.ts src --coverage",
     "previtest:run:integ": "vitest run -c test-with-vite/download-mongo-binary/vitest.config.ts test-with-vite/download-mongo-binary",
     "//// misc": "",
-    "console": "yarn cross-env NODE_ENV=development yarn ts-node --experimental-repl-await src/server/console.js",
+    "console": "yarn repl",
+    "repl": "yarn cross-env NODE_ENV=development yarn ts-node src/server/repl.ts",
     "swagger-jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "openapi:v3": "yarn cross-env API_VERSION=3 yarn swagger-jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
