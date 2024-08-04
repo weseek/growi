@@ -15,8 +15,9 @@ import { LdapUserGroupSyncService } from '~/features/external-user-group/server/
 import { PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
 import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
+import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
-import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
+import questionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
@@ -101,7 +102,6 @@ class Crowi {
     this.activityService = null;
     this.commentService = null;
     this.questionnaireService = null;
-    this.questionnaireCronService = null;
 
     this.tokens = null;
 
@@ -327,8 +327,12 @@ Crowi.prototype.setupModels = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
-  this.questionnaireCronService = new QuestionnaireCronService(this);
-  this.questionnaireCronService.startCron();
+  const questionnaireCronSchedule = this.configManager.getConfig('crowi', 'app:questionnaireCronSchedule');
+  questionnaireCronService.startCron(questionnaireCronSchedule);
+
+  instanciatePageBulkExportJobCronService(this);
+  const pageBulkExportJobCronSchedule = this.configManager.getConfig('crowi', 'app:pageBulkExportJobCronSchedule');
+  pageBulkExportJobCronService.startCron(pageBulkExportJobCronSchedule);
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {

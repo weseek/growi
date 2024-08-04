@@ -265,12 +265,20 @@ class AwsFileUploader extends AbstractFileUploader {
     return new AwsMultipartUploader(s3, getS3Bucket(), uploadKey, maxPartSize);
   }
 
-  override async abortExistingMultipartUpload(uploadKey: string, uploadId: string) {
-    await S3Factory().send(new AbortMultipartUploadCommand({
-      Bucket: getS3Bucket(),
-      Key: uploadKey,
-      UploadId: uploadId,
-    }));
+  override async abortPreviousMultipartUpload(uploadKey: string, uploadId: string) {
+    try {
+      await S3Factory().send(new AbortMultipartUploadCommand({
+        Bucket: getS3Bucket(),
+        Key: uploadKey,
+        UploadId: uploadId,
+      }));
+    }
+    catch (e) {
+      // allow duplicate abort requests to ensure abortion
+      if (e.response?.status !== 404) {
+        throw e;
+      }
+    }
   }
 
 }

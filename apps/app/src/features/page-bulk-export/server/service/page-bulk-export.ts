@@ -133,11 +133,9 @@ class PageBulkExportService {
   }
 
   /**
-   * Do the following in parallel:
-   * - notify user of the export result
-   * - update pageBulkExportJob status
-   * - delete page snapshots
-   * - remove the temporal output directory
+   * Notify the user of the export result, and cleanup the resources used in the export process
+   * @param succeeded whether the export was successful
+   * @param pageBulkExportJob the page bulk export job
    */
   private async notifyExportResultAndCleanUp(
       succeeded: boolean,
@@ -145,15 +143,16 @@ class PageBulkExportService {
   ): Promise<void> {
     const action = succeeded ? SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED : SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED;
     pageBulkExportJob.status = succeeded ? PageBulkExportJobStatus.completed : PageBulkExportJobStatus.failed;
-    const results = await Promise.allSettled([
-      this.notifyExportResult(pageBulkExportJob, action),
-      PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
-      fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
-      pageBulkExportJob.save(),
-    ]);
-    results.forEach((result) => {
-      if (result.status === 'rejected') logger.error(result.reason);
-    });
+
+    try {
+      await pageBulkExportJob.save();
+      await this.notifyExportResult(pageBulkExportJob, action);
+    }
+    catch (err) {
+      logger.error(err);
+    }
+    // execute independently of notif process resolve/reject
+    await this.cleanUpExportJobResources(pageBulkExportJob);
   }
 
   /**
@@ -265,7 +264,7 @@ class PageBulkExportService {
     const fileUploadService: FileUploader = this.crowi.fileUploadService;
     // if the process of uploading was interrupted, delete and start from the start
     if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
-      await fileUploadService.abortExistingMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId);
+      await fileUploadService.abortPreviousMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId);
     }
 
     // init multipart upload
@@ -349,7 +348,7 @@ class PageBulkExportService {
     return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
   }
 
-  private async notifyExportResult(
+  async notifyExportResult(
       pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType,
   ) {
     const activity = await this.crowi.activityService.createActivity({
@@ -364,6 +363,29 @@ class PageBulkExportService {
     const getAdditionalTargetUsers = (activity: ActivityDocument) => [activity.user];
     const preNotify = preNotifyService.generatePreNotify(activity, getAdditionalTargetUsers);
     this.activityEvent.emit('updated', activity, pageBulkExportJob, preNotify);
+  }
+
+  /**
+   * Do the following in parallel:
+   * - delete page snapshots
+   * - remove the temporal output directory
+   * - abort multipart upload
+   */
+  async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument) {
+    const promises = [
+      PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
+      fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
+    ];
+
+    const fileUploadService: FileUploader = this.crowi.fileUploadService;
+    if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
+      promises.push(fileUploadService.abortPreviousMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId));
+    }
+
+    const results = await Promise.allSettled(promises);
+    results.forEach((result) => {
+      if (result.status === 'rejected') logger.error(result.reason);
+    });
   }
 
 }

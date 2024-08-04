@@ -2,28 +2,30 @@
 import axios from 'axios';
 import mongoose from 'mongoose';
 
-import { IProactiveQuestionnaireAnswer } from '../../../src/features/questionnaire/interfaces/proactive-questionnaire-answer';
-import { IQuestionnaireAnswer } from '../../../src/features/questionnaire/interfaces/questionnaire-answer';
-import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
-import ProactiveQuestionnaireAnswer from '../../../src/features/questionnaire/server/models/proactive-questionnaire-answer';
-import QuestionnaireAnswer from '../../../src/features/questionnaire/server/models/questionnaire-answer';
-import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
-import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
-import { getInstance } from '../setup-crowi';
+import { configManager } from '~/server/service/config-manager';
 
-const spyAxiosGet = jest.spyOn<typeof axios, 'get'>(
-  axios,
-  'get',
-);
+import type { IProactiveQuestionnaireAnswer } from '../../interfaces/proactive-questionnaire-answer';
+import type { IQuestionnaireAnswer } from '../../interfaces/questionnaire-answer';
+import { StatusType } from '../../interfaces/questionnaire-answer-status';
+import ProactiveQuestionnaireAnswer from '../models/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '../models/questionnaire-answer';
+import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
+import QuestionnaireOrder from '../models/questionnaire-order';
 
-const spyAxiosPost = jest.spyOn<typeof axios, 'post'>(
-  axios,
-  'post',
-);
+import questionnaireCronService from './questionnaire-cron';
+
+// TODO: use actual user model after ~/server/models/user.js becomes importable in vitest
+// ref: https://github.com/vitest-dev/vitest/issues/846
+const userSchema = new mongoose.Schema({
+  name: { type: String },
+  username: { type: String, required: true, unique: true },
+  email: { type: String, unique: true, sparse: true },
+}, {
+  timestamps: true,
+});
+const User = mongoose.model('User', userSchema);
 
 describe('QuestionnaireCronService', () => {
-  let crowi;
-
   const mockResponse = {
     data: {
       questionnaireOrders: [
@@ -137,13 +139,11 @@ describe('QuestionnaireCronService', () => {
   };
 
   beforeAll(async() => {
-    crowi = await getInstance();
-    const User = crowi.model('User');
+    await configManager.loadConfigs();
     await User.create({
       name: 'Example for Questionnaire Service Test',
       username: 'questionnaire cron test user',
       email: 'questionnaireCronTestUser@example.com',
-      password: 'usertestpass',
       createdAt: '2020-01-01',
     });
   });
@@ -325,19 +325,19 @@ describe('QuestionnaireCronService', () => {
       validProactiveQuestionnaireAnswer,
     ]);
 
-    crowi.setupCron();
+    questionnaireCronService.startCron('0 22 * * *');
 
-    spyAxiosGet.mockResolvedValue(mockResponse);
-    spyAxiosPost.mockResolvedValue({ data: { result: 'success' } });
+    vi.spyOn(axios, 'get').mockResolvedValue(mockResponse);
+    vi.spyOn(axios, 'post').mockResolvedValue({ data: { result: 'success' } });
   });
 
   afterAll(() => {
-    crowi.questionnaireCronService.stopCron(); // jest will not finish until cronjob stops
+    questionnaireCronService.stopCron(); // vitest will not finish until cronjob stops
   });
 
   test('Job execution should save(update) quesionnaire orders, delete outdated ones, update skipped answer statuses, and delete resent answers', async() => {
     // testing the cronjob from schedule has untrivial overhead, so test job execution in place
-    await crowi.questionnaireCronService.executeJob();
+    await questionnaireCronService.executeJob();
 
     const savedOrders = await QuestionnaireOrder.find()
       .select('-condition._id -questions._id -questions.createdAt -questions.updatedAt')

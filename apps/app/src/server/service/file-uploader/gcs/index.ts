@@ -201,12 +201,15 @@ class GcsFileUploader extends AbstractFileUploader {
     return new GcsMultipartUploader(myBucket, uploadKey, maxPartSize);
   }
 
-  override async abortExistingMultipartUpload(uploadKey: string, uploadId: string) {
+  override async abortPreviousMultipartUpload(uploadKey: string, uploadId: string) {
     try {
       await axios.delete(uploadId);
     }
     catch (e) {
-      if (e.response?.status !== 499) {
+      // allow 404: allow duplicate abort requests to ensure abortion
+      // allow 499: it is the success response code for canceling upload
+      // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads#cancel-upload
+      if (e.response?.status !== 404 && e.response?.status !== 499) {
         throw e;
       }
     }
