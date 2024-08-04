@@ -8,6 +8,7 @@ import {
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
 
@@ -17,13 +18,14 @@ import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
-import type { PageModel } from '~/server/models/page';
+import type { PageDocument, PageModel } from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
 import { exportService } from '~/server/service/export';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
+import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import loggerFactory from '~/utils/logger';
 
 import type { ApiV3Response } from '../interfaces/apiv3-response';
@@ -662,7 +664,7 @@ module.exports = (crowi) => {
         }
 
         const userRelatedGroups = await pageGrantService.getUserRelatedGroups(user);
-        const isUserGrantedPageAccess = await pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups);
+        const isUserGrantedPageAccess = await pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups, true);
         if (!isUserGrantedPageAccess) {
           return res.apiv3Err(new ErrorV3('Cannot access page or ancestor.', 'cannot_access_page'), 403);
         }
@@ -742,14 +744,17 @@ module.exports = (crowi) => {
   *            description: Return page's markdown
   */
   router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
-    const { pageId } = req.params;
+    const pageId: string = req.params.pageId;
     const { format, revisionId = null } = req.query;
     let revision;
     let pagePath;
 
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+
+    let page: HydratedDocument<PageDocument> | null;
+
     try {
-      const Page = crowi.model('Page');
-      const page = await Page.findByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
         const isPageExist = await Page.count({ _id: pageId }) > 0;
@@ -759,8 +764,22 @@ module.exports = (crowi) => {
         }
         return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
       }
+    }
+    catch (err) {
+      logger.error('Failed to get page data', err);
+      return res.apiv3Err(err, 500);
+    }
 
-      const revisionIdForFind = revisionId || page.revision;
+    // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+    try {
+      await normalizeLatestRevisionIfBroken(pageId);
+    }
+    catch (err) {
+      logger.error('Error occurred in normalizing the latest revision');
+    }
+
+    try {
+      const revisionIdForFind = revisionId ?? page.revision;
 
       revision = await Revision.findById(revisionIdForFind);
       pagePath = page.path;
@@ -771,7 +790,7 @@ module.exports = (crowi) => {
       }
     }
     catch (err) {
-      logger.error('Failed to get page data', err);
+      logger.error('Failed to get revision data', err);
       return res.apiv3Err(err, 500);
     }
 

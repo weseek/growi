@@ -272,7 +272,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/theme', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/theme', loginRequiredStrictly, async(req, res) => {
 
     try {
       const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
