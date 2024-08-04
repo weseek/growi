@@ -1,8 +1,30 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.15...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.16...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.16](https://github.com/weseek/growi/compare/v7.0.15...v7.0.16) - 2024-07-31
+
+### 💎 Features
+
+* feat: Automatically repair corrupted data, at least for the latest revision (#9002) @yuki-takei
+
+### 🚀 Improvement
+
+* imprv: User group link in admin page (#8855) @kazutoweseek
+* imprv: Sidebar header text size (#8986) @satof3
+* imprv: Replace possition usericon (#8991) @satof3
+
+### 🐛 Bug Fixes
+
+* fix: Undo in the comment editor (#9005) @yuki-takei
+* fix: Some OIDC authentication settings not being applied (#9000) @WNomunomu
+* fix: font-family for monospace (#9004) @yuki-takei
+* fix: Pointer cursor for the create button in the installer (#9003) @yuki-takei
+* fix: Migration script (20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js) (#8998) @miya
+* fix: Non-admin user gets 500 error when opening history modal (#9001) @miya
+* fix: Enable page creation under GRANT_RESTRICTED pages (#8996) @arafubeatbox
 
 ## [v7.0.15](https://github.com/weseek/growi/compare/v7.0.14...v7.0.15) - 2024-07-23
 
