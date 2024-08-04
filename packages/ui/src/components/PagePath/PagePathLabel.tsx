@@ -1,6 +1,6 @@
 import type { FC, ReactNode } from 'react';
 
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 
 
 type TextElemProps = {
@@ -32,7 +32,7 @@ export const PagePathLabel: FC<Props> = (props:Props) => {
     isLatterOnly, isFormerOnly, isPathIncludedHtml, additionalClassNames, path,
   } = props;
 
-  const dPagePath = new DevidedPagePath(path, false, true);
+  const dPagePath = new DividedPagePath(path, false, true);
 
   const classNames = additionalClassNames || [];
 

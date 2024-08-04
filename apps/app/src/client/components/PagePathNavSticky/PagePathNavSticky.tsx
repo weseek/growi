@@ -5,7 +5,7 @@ import {
   useState,
 } from 'react';
 
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import Sticky from 'react-stickynode';
 
@@ -58,7 +58,7 @@ export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element =>
   }, [pageControlsX, pagePathNavRef, sidebarMode]);
 
   const latterLink = useMemo(() => {
-    const dPagePath = new DevidedPagePath(pagePath, false, true);
+    const dPagePath = new DividedPagePath(pagePath, false, true);
 
     const isInTrash = isTrashPage(pagePath);
 

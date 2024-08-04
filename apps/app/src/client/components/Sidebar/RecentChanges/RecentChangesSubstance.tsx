@@ -5,7 +5,7 @@ import React, {
 import {
   isPopulated, type IPageHasId,
 } from '@growi/core';
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
@@ -88,7 +88,7 @@ const PageTags = memo((props: PageTagsProps): JSX.Element => {
 PageTags.displayName = 'PageTags';
 
 const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Element => {
-  const dPagePath = new DevidedPagePath(page.path, false, true);
+  const dPagePath = new DividedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const FormerLink = () => (

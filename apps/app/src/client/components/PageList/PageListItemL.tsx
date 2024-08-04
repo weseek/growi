@@ -7,7 +7,7 @@ import type {
   IPageInfoAll, IPageWithMeta, IPageInfoForListing,
 } from '@growi/core';
 import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core';
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
 import { UserPicture, PageListMeta } from '@growi/ui/dist/components';
 import { format } from 'date-fns/format';
@@ -97,10 +97,10 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   const elasticSearchResult = isIPageSearchMeta(pageMeta) ? pageMeta.elasticSearchResult : null;
   const revisionShortBody = isIPageInfoForListing(pageMeta) ? pageMeta.revisionShortBody : null;
 
-  const dPagePath: DevidedPagePath = new DevidedPagePath(pageData.path, false);
+  const dPagePath: DividedPagePath = new DividedPagePath(pageData.path, false);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
 
-  const dPagePathHighlighted: DevidedPagePath = new DevidedPagePath(elasticSearchResult?.highlightedPath || pageData.path, true);
+  const dPagePathHighlighted: DividedPagePath = new DividedPagePath(elasticSearchResult?.highlightedPath || pageData.path, true);
   const linkedPagePathHighlightedFormer = new LinkedPagePath(dPagePathHighlighted.former);
   const linkedPagePathHighlightedLatter = new LinkedPagePath(dPagePathHighlighted.latter);
 

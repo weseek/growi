@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import nodePath from 'path';
 
 import type { IPageHasId, IPageInfoAll, IPageToDeleteWithMeta } from '@growi/core';
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
@@ -159,7 +159,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     return <></>;
   }
 
-  const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
+  const dPagePath = new DividedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
 
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;

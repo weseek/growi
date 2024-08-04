@@ -1,6 +1,6 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import { Lang, AllLang, Locale } from '@growi/core';
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
@@ -167,7 +167,7 @@ export const generateCustomTitle = (props: CommonProps, title: string): string =
  * @param pagePath
  */
 export const generateCustomTitleForPage = (props: CommonProps, pagePath: string): string => {
-  const dPagePath = new DevidedPagePath(pagePath, true, true);
+  const dPagePath = new DividedPagePath(pagePath, true, true);
 
   return props.customTitleTemplate
     .replace('{{sitename}}', props.appTitle)

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
 
 import LinkedPagePath from '~/models/linked-page-path';
@@ -26,7 +26,7 @@ export const PagePathNav = (props: PagePathNavLayoutProps): JSX.Element => {
   const isInTrash = isTrashPage(pagePath);
 
   const formerLink = useMemo(() => {
-    const dPagePath = new DevidedPagePath(pagePath, false, true);
+    const dPagePath = new DividedPagePath(pagePath, false, true);
 
     // one line
     if (dPagePath.isRoot || dPagePath.isFormerRoot) {
@@ -44,7 +44,7 @@ export const PagePathNav = (props: PagePathNavLayoutProps): JSX.Element => {
   }, [isInTrash, pagePath]);
 
   const latterLink = useMemo(() => {
-    const dPagePath = new DevidedPagePath(pagePath, false, true);
+    const dPagePath = new DividedPagePath(pagePath, false, true);
 
     // one line
     if (dPagePath.isRoot || dPagePath.isFormerRoot) {

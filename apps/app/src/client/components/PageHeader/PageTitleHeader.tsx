@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from 'react';
 import nodePath from 'path';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
 import { isMovablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
@@ -38,7 +38,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const isMovable = isMovablePage(currentPagePath);
 
-  const dPagePath = new DevidedPagePath(currentPage.path, true);
+  const dPagePath = new DividedPagePath(currentPage.path, true);
   const pageTitle = dPagePath.latter;
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);

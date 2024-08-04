@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { useTranslation } from 'next-i18next';
 
 import { useCurrentPagePath } from '~/stores/page';
@@ -24,7 +24,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
 
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const dPagePath = (new DevidedPagePath(currentPagePath ?? '', true, true));
+  const dPagePath = (new DividedPagePath(currentPagePath ?? '', true, true));
   const currentPageName = `
   ${(!(dPagePath.isRoot || dPagePath.isFormerRoot) ? '...' : '')}/${(dPagePath.isRoot ? '' : `${dPagePath.latter}/`)}
   `;

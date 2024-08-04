@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import path from 'path';
 
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import {
@@ -69,7 +69,7 @@ module.exports = function(crowi) {
 
       bufferedUserImage = user.imageUrlCached === DEFAULT_USER_IMAGE_URL ? bufferedDefaultUserImageCache : (await getBufferedUserImage(user.imageUrlCached));
       // todo: consider page title
-      pageTitle = (new DevidedPagePath(page.path)).latter;
+      pageTitle = (new DividedPagePath(page.path)).latter;
     }
     catch (err) {
       logger.error(err);

@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 import React from 'react';
 
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { useTranslation } from 'next-i18next';
 
 import { useCurrentPathname } from '~/stores-universal/context';
@@ -25,9 +25,9 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
   let _pageName = '――';
 
   if (path != null) {
-    const devidedPath = new DevidedPagePath(path);
-    _path = devidedPath.isFormerRoot ? '/' : devidedPath.former;
-    _pageName = devidedPath.latter;
+    const dividedPath = new DividedPagePath(path);
+    _path = dividedPath.isFormerRoot ? '/' : dividedPath.former;
+    _pageName = dividedPath.latter;
   }
 
 

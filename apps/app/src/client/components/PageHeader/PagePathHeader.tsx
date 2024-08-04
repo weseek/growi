@@ -4,7 +4,7 @@ import {
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
@@ -37,7 +37,7 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
     currentPage, className, maxWidth, onRenameTerminated,
   } = props;
 
-  const dPagePath = new DevidedPagePath(currentPage.path, true);
+  const dPagePath = new DividedPagePath(currentPage.path, true);
   const parentPagePath = dPagePath.former;
 
   const linkedPagePath = new LinkedPagePath(parentPagePath);

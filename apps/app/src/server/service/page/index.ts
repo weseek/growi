@@ -417,7 +417,16 @@ class PageService implements IPageService {
       page = await Page.findByIdAndViewer(pageId, user, null, includeEmpty);
     }
     else {
-      page = await Page.findByPathAndViewer(path, user, null, true, includeEmpty);
+      // includes both empty and non-empty pages with the same path
+      const pages = await Page.findByPathAndViewer(path, user, null, false, includeEmpty, true);
+      if (pages.find(p => p.grant === PageGrant.GRANT_RESTRICTED) != null) {
+        // if page is requested by path, and requested page is GRANT_RESTRICTED, only return empty page
+        page = pages.find(p => p.isEmpty === true) ?? null;
+      }
+      else {
+        // else prioritize non-empty page
+        page = pages.find(p => p.isEmpty === false) ?? pages.find(p => p.isEmpty === true) ?? null;
+      }
     }
 
     if (page == null) {
@@ -2129,7 +2138,7 @@ class PageService implements IPageService {
     return nDeletedNonEmptyPages;
   }
 
-  // no need to separate Main Sub since it is devided into single page operations
+  // no need to separate Main Sub since it is divided into single page operations
   async deleteMultiplePages(pagesToDelete, user, options, activityParameters): Promise<void> {
     const { isRecursively, isCompletely } = options;
 

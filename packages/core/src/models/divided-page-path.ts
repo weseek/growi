@@ -3,7 +3,7 @@ import * as pathUtils from '../utils/path-utils';
 // https://regex101.com/r/BahpKX/2
 const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d{2})$/;
 
-export class DevidedPagePath {
+export class DividedPagePath {
 
   isRoot: boolean;
 

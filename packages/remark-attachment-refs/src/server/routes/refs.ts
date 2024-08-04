@@ -87,7 +87,7 @@ export const routesFactory = (crowi): any => {
       return;
     }
 
-    const page = await Page.findByPathAndViewer(pagePath, user, undefined, true);
+    const page = await Page.findByPathAndViewer(pagePath, user, undefined, true, false, true);
 
     // not found
     if (page == null) {

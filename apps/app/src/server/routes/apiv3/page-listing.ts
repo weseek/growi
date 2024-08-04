@@ -70,7 +70,7 @@ const routerFactory = (crowi: Crowi): Router => {
 
     let rootPage;
     try {
-      rootPage = await Page.findByPathAndViewer('/', req.user, null, true);
+      rootPage = await Page.findByPathAndViewer('/', req.user, null, true, false, true);
     }
     catch (err) {
       return res.apiv3Err(new ErrorV3('rootPage not found'));

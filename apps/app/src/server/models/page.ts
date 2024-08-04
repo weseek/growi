@@ -635,14 +635,13 @@ schema.statics.findByIdsAndViewer = async function(
  * Find a page by path and viewer. Pass true to useFindOne to use findOne method.
  */
 schema.statics.findByPathAndViewer = async function(
-    path: string | null, user, userGroups = null, useFindOne = false, includeEmpty = false,
+    path: string | null, user, userGroups = null, useFindOne = false, includeEmpty = false, includeAnyoneWithTheLink = false,
 ): Promise<(PageDocument | PageDocument[]) & HasObjectId | null> {
   if (path == null) {
     throw new Error('path is required.');
   }
 
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
-  const includeAnyoneWithTheLink = useFindOne;
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
   await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);

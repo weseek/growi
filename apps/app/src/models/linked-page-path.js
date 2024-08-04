@@ -1,4 +1,4 @@
-import { DevidedPagePath } from '@growi/core/dist/models';
+import { DividedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 
 const { isTrashPage } = pagePathUtils;
@@ -10,7 +10,7 @@ export default class LinkedPagePath {
 
   constructor(path) {
 
-    const pagePath = new DevidedPagePath(path);
+    const pagePath = new DividedPagePath(path);
 
     this.path = path;
     this.pathName = pagePath.latter;

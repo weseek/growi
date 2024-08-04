@@ -300,7 +300,7 @@ module.exports = (crowi) => {
         page = await Page.findByIdAndViewer(pageId, user);
       }
       else if (!findAll) {
-        page = await Page.findByPathAndViewer(path, user, null, true);
+        page = await Page.findByPathAndViewer(path, user, null, true, false, true);
       }
       else {
         pages = await Page.findByPathAndViewer(path, user, null, false);
