@@ -74,8 +74,12 @@ export interface PageModel extends Model<PageDocument> {
     pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
   ): Promise<HydratedDocument<PageDocument>[]>
   findByPath(path: string, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
-  findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument>[]>
+  findByPathAndViewer(
+    path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean
+  ): Promise<HydratedDocument<PageDocument> | null>
+  findByPathAndViewer(
+    path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean
+  ): Promise<HydratedDocument<PageDocument>[]>
   countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
   findParentByPath(path: string | null): Promise<HydratedDocument<PageDocument> | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
