@@ -13,7 +13,6 @@ const debug = require('debug')('growi:models:userGroupRelation');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const ObjectId = Schema.Types.ObjectId;
 
 export interface UserGroupRelationDocument extends IUserGroupRelation, Document {}
 
@@ -32,15 +31,15 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
 
   findAllGroupsForUser: (user) => Promise<UserGroupDocument[]>
 
-  findAllUserGroupIdsRelatedToUser: (user) => Promise<string[]>
+  findAllUserGroupIdsRelatedToUser: (user) => Promise<ObjectIdLike[]>
 }
 
 /*
  * define schema
  */
 const schema = new Schema<UserGroupRelationDocument, UserGroupRelationModel>({
-  relatedGroup: { type: ObjectId, ref: 'UserGroup', required: true },
-  relatedUser: { type: ObjectId, ref: 'User', required: true },
+  relatedGroup: { type: Schema.Types.ObjectId, ref: 'UserGroup', required: true },
+  relatedUser: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 }, {
   timestamps: { createdAt: true, updatedAt: false },
 });
@@ -143,7 +142,7 @@ schema.statics.findAllGroupsForUser = async function(user): Promise<UserGroupDoc
  * @param {User} user
  * @returns {Promise<ObjectId[]>}
  */
-schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<string[]> {
+schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<ObjectIdLike[]> {
   const relations = await this.find({ relatedUser: user._id })
     .select('relatedGroup')
     .exec();
