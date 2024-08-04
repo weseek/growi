@@ -12,12 +12,6 @@ const logger = loggerFactory('growi:services:fileUploaderAws:multipartUploader')
 
 export type IAwsMultipartUploader = IMultipartUploader
 
-/**
- * Class for uploading files to S3 using multipart upload.
- * Create instance from AwsFileUploader class.
- * Each instance can only be used for one multipart upload, and cannot be reused once completed.
- * TODO: Enable creation of uploader of inturrupted uploads: https://redmine.weseek.co.jp/issues/78040
- */
 export class AwsMultipartUploader extends MultipartUploader implements IAwsMultipartUploader {
 
   private bucket: string | undefined;

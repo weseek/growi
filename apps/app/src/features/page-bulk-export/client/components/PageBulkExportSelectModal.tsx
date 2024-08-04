@@ -18,7 +18,9 @@ const PageBulkExportSelectModal = (): JSX.Element => {
       toastSuccess(t('page_export.bulk_export_started'));
     }
     catch (e) {
-      toastError(t('page_export.failed_to_export'));
+      // TODO: Enable cancel and restart of export if duplicate export exists (https://redmine.weseek.co.jp/issues/150418)
+      const errorCode = e?.[0].code ?? 'page_export.failed_to_export';
+      toastError(t(errorCode));
     }
     close();
   };
@@ -38,7 +40,7 @@ const PageBulkExportSelectModal = (): JSX.Element => {
               </small>
             </div>
             <div className="d-flex justify-content-center mt-2">
-              <button className="btn btn-primary" type="button" onClick={() => startBulkExport(PageBulkExportFormat.markdown)}>
+              <button className="btn btn-primary" type="button" onClick={() => startBulkExport(PageBulkExportFormat.md)}>
                 {t('page_export.markdown')}
               </button>
               <button className="btn btn-primary ms-2" type="button" onClick={() => startBulkExport(PageBulkExportFormat.pdf)}>PDF</button>

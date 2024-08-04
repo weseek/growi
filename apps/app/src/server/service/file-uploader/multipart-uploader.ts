@@ -18,6 +18,10 @@ export interface IMultipartUploader {
   getUploadedFileSize(): Promise<number>;
 }
 
+/**
+ * Abstract class for uploading files to cloud storage using multipart upload.
+ * Each instance is equivalent to a single multipart upload, and cannot be reused once completed.
+ */
 export abstract class MultipartUploader implements IMultipartUploader {
 
   protected uploadKey: string;
