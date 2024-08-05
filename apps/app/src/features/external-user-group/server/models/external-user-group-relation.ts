@@ -26,7 +26,7 @@ export interface ExternalUserGroupRelationModel extends Model<ExternalUserGroupR
 
   findAllGroupsForUser: (user) => Promise<ExternalUserGroupDocument[]>
 
-  findAllUserGroupIdsRelatedToUser: (user) => Promise<string[]>
+  findAllUserGroupIdsRelatedToUser: (user) => Promise<ObjectIdLike[]>
 }
 
 const schema = new Schema<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>({

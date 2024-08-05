@@ -102,7 +102,9 @@ export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperatio
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
-  return pageInfo != null;
+  return pageInfo != null && pageInfo instanceof Object
+    && ('isEmpty' in pageInfo)
+    && pageInfo.isEmpty === false;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

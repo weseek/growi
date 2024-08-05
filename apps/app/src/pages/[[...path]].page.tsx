@@ -20,8 +20,8 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useEditorModeClassName } from '~/client/services/layout';
-import { PageView } from '~/components/Page/PageView';
+import { BasicLayout } from '~/components/Layout/BasicLayout';
+import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -30,6 +30,7 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
+import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
 import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,
@@ -41,7 +42,8 @@ import {
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
-} from '~/stores/context';
+  useElasticsearchMaxBodyLengthToIndex,
+} from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
   useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId,
@@ -52,10 +54,6 @@ import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
-
-import { BasicLayout } from '../components/Layout/BasicLayout';
-import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
-import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
@@ -70,17 +68,28 @@ declare global {
 }
 
 
+const GrowiContextualSubNavigationSubstance = dynamic(() => import('~/client/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
+
 const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
-const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
-const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
-const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
-const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
-const TemplateModal = dynamic(() => import('../components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
-const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
-const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
+
+const DisplaySwitcher = dynamic(() => import('~/client/components/Page/DisplaySwitcher').then(mod => mod.DisplaySwitcher), { ssr: false });
+const PageStatusAlert = dynamic(() => import('~/client/components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
+
+const UnsavedAlertDialog = dynamic(() => import('~/client/components/UnsavedAlertDialog'), { ssr: false });
+const DescendantsPageListModal = dynamic(
+  () => import('~/client/components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal),
+  { ssr: false },
+);
+const DrawioModal = dynamic(() => import('~/client/components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
+const HandsontableModal = dynamic(() => import('~/client/components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
+const TemplateModal = dynamic(() => import('~/client/components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
+const LinkEditModal = dynamic(() => import('~/client/components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
+const TagEditModal = dynamic(() => import('~/client/components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
+const ConflictDiffModal = dynamic(() => import('~/client/components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
 const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
-const TagEditModal = dynamic(() => import('../components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
-const ConflictDiffModal = dynamic(() => import('../components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
+
+const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
+
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -149,6 +158,7 @@ type Props = CommonProps & {
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  elasticsearchMaxBodyLengthToIndex: number,
   isEnabledMarp: boolean,
 
   sidebarConfig: ISidebarConfig,
@@ -207,6 +217,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
+  useElasticsearchMaxBodyLengthToIndex(props.elasticsearchMaxBodyLengthToIndex);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useIsSlackConfigured(props.isSlackConfigured);
@@ -334,15 +345,15 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
         <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
 
-        <DisplaySwitcher
-          pageView={(
-            <PageView
-              pagePath={pagePath}
-              initialPage={pageWithMeta?.data}
-              rendererConfig={props.rendererConfig}
-            />
-          )}
+        <PageView
+          className="d-edit-none"
+          pagePath={pagePath}
+          initialPage={pageWithMeta?.data}
+          rendererConfig={props.rendererConfig}
         />
+
+        <EditablePageEffects />
+        <DisplaySwitcher />
 
         <PageStatusAlert />
       </div>
@@ -529,6 +540,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.elasticsearchMaxBodyLengthToIndex = configManager.getConfig('crowi', 'app:elasticsearchMaxBodyLengthToIndex');
 
   props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;

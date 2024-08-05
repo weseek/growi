@@ -5,7 +5,6 @@ export const modelsDependsOnCrowi = {
   Page,
   PageTagRelation: require('./page-tag-relation'),
   User: require('./user'),
-  Revision: require('./revision'),
   Bookmark: require('./bookmark'),
   GlobalNotificationSetting: GlobalNotificationSettingFactory,
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),
@@ -17,6 +16,7 @@ export const modelsDependsOnCrowi = {
 export * from './attachment';
 export * as Activity from './activity';
 export * as PageRedirect from './page-redirect';
+export * from './revision';
 export * as ShareLink from './share-link';
 export * as Tag from './tag';
 export * as UserGroup from './user-group';

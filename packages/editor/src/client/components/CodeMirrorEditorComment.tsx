@@ -3,11 +3,9 @@ import { memo, useEffect } from 'react';
 import type { Extension } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
 
-import { useCodeMirrorEditorIsolated } from '../stores';
-
-import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';
-
-import type { GlobalCodeMirrorEditorKey } from 'src/consts';
+import type { GlobalCodeMirrorEditorKey } from '../../consts';
+import { CodeMirrorEditor, type CodeMirrorEditorProps } from '../components-internal/CodeMirrorEditor';
+import { useCodeMirrorEditorIsolated } from '../stores/codemirror-editor';
 
 
 const additionalExtensions: Extension[] = [

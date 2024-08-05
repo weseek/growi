@@ -1,5 +1,6 @@
+import type { IApiRateLimitEndpointMap } from '../config';
 import {
-  defaultConfig, defaultConfigWithRegExp, IApiRateLimitEndpointMap,
+  defaultConfig, defaultConfigWithRegExp,
 } from '../config';
 
 const envVar = process.env;
