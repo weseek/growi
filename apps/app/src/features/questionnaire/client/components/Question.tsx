@@ -1,6 +1,6 @@
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
-import { IQuestionHasId } from '../../interfaces/question';
+import type { IQuestionHasId } from '../../interfaces/question';
 
 type QuestionProps = {
   question: IQuestionHasId,

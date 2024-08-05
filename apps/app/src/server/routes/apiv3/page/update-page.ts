@@ -18,7 +18,8 @@ import {
 } from '~/server/models';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { preNotifyService } from '~/server/service/pre-notify';
-import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
+import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
+import { getYjsService } from '~/server/service/yjs';
 import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
@@ -67,8 +68,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     // Reflect the updates in ydoc
     const origin = req.body.origin;
     if (origin === Origin.View || origin === undefined) {
-      const yjsConnectionManager = getYjsConnectionManager();
-      await yjsConnectionManager.handleYDocUpdate(req.body.pageId, req.body.body);
+      const yjsService = getYjsService();
+      await yjsService.syncWithTheLatestRevisionForce(req.body.pageId);
     }
 
     // persist activity
@@ -131,6 +132,20 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
+      // check page existence (for type safety)
+      if (currentPage == null) {
+        return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
+      }
+
+      if (currentPage != null) {
+        // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+        try {
+          await normalizeLatestRevisionIfBroken(pageId);
+        }
+        catch (err) {
+          logger.error('Error occurred in normalizing the latest revision');
+        }
+      }
 
       if (currentPage != null && !await currentPage.isUpdatable(sanitizeRevisionId, origin)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');

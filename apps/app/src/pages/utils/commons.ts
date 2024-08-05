@@ -1,20 +1,19 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import { Lang, AllLang } from '@growi/core';
+import { Lang, AllLang, Locale } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
 
-
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
-import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-utils';
 import { type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
+import { detectLocaleFromBrowserAcceptLanguage } from '~/server/util/locale-utils';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferCollapsedMode,
 } from '~/stores/ui';
@@ -106,6 +105,25 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   return { props };
 };
 
+export type LangMap = {
+  readonly [key in Lang]: Locale;
+};
+
+export const langMap: LangMap = {
+  [Lang.ja_JP]: Locale['ja-JP'],
+  [Lang.en_US]: Locale['en-US'],
+  [Lang.zh_CN]: Locale['zh-CN'],
+  [Lang.fr_FR]: Locale['fr-FR'],
+};
+
+export const getLocaleAtServerSide = (req: CrowiRequest): Locale => {
+  const { user, headers } = req;
+  const { configManager } = req.crowi;
+
+  return langMap[user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
+    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US) ?? Lang.en_US];
+};
+
 export const getNextI18NextConfig = async(
     // 'serverSideTranslations' method should be given from Next.js Page
     //  because importing it in this file causes https://github.com/isaachinman/next-i18next/issues/1545
@@ -115,13 +133,9 @@ export const getNextI18NextConfig = async(
     context: GetServerSidePropsContext, namespacesRequired?: string[] | undefined, preloadAllLang = false,
 ): Promise<SSRConfig> => {
 
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi, user, headers } = req;
-  const { configManager } = crowi;
-
   // determine language
-  const locale = user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
-    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const locale = getLocaleAtServerSide(req);
 
   const namespaces = ['commons'];
   if (namespacesRequired != null) {

@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
-import { useNextThemes, NextThemesProvider } from '~/stores/use-next-themes';
+import { useNextThemes, NextThemesProvider } from '~/stores-universal/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
 import styles from './RawLayout.module.scss';

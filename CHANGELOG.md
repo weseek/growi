@@ -1,8 +1,143 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.16...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.16](https://github.com/weseek/growi/compare/v7.0.15...v7.0.16) - 2024-07-31
+
+### 💎 Features
+
+* feat: Automatically repair corrupted data, at least for the latest revision (#9002) @yuki-takei
+
+### 🚀 Improvement
+
+* imprv: User group link in admin page (#8855) @kazutoweseek
+* imprv: Sidebar header text size (#8986) @satof3
+* imprv: Replace possition usericon (#8991) @satof3
+
+### 🐛 Bug Fixes
+
+* fix: Undo in the comment editor (#9005) @yuki-takei
+* fix: Some OIDC authentication settings not being applied (#9000) @WNomunomu
+* fix: font-family for monospace (#9004) @yuki-takei
+* fix: Pointer cursor for the create button in the installer (#9003) @yuki-takei
+* fix: Migration script (20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js) (#8998) @miya
+* fix: Non-admin user gets 500 error when opening history modal (#9001) @miya
+* fix: Enable page creation under GRANT_RESTRICTED pages (#8996) @arafubeatbox
+
+## [v7.0.15](https://github.com/weseek/growi/compare/v7.0.14...v7.0.15) - 2024-07-23
+
+### 🐛 Bug Fixes
+
+* fix: The $size query when aggregation to rebuild the index (#8987) @yuki-takei
+* fix: Regaining lost backward compatibility for MongoDB 4.4 (#8985) @yuki-takei
+* fix: Activate express-session middlewares for all sockets in SocketIoService (#8981) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Chage text size in sidebar (#8965) @satof3
+
+## [v7.0.14](https://github.com/weseek/growi/compare/v7.0.13...v7.0.14) - 2024-07-19
+
+### 🐛 Bug Fixes
+
+### 💎 Features
+
+* feat: Alerts when trying to sync with latest revision when yjs data is corrupt (#8971) @miya
+
+### 🚀 Improvement
+
+* imprv: Restrict use of the editing UI from View if there is at least one user currently editing (#8966) @miya
+
+### 🐛 Bug Fixes
+
+* fix: Handle error when folding drawio blocks (#8977) @yuki-takei
+* fix: Sync the editor text with the latest revision menu (1) (#8975) @yuki-takei
+* fix: Sync the editor text with the latest revision menu (2) (#8978) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Normalize Revision.pageId (for #8954) (#8973) @miya
+
+## [v7.0.13](https://github.com/weseek/growi/compare/v7.0.12...v7.0.13) - 2024-07-16
+
+### 💎 Features
+
+* feat: Sync latest revision body to Yjs draft (#8939) @miya
+
+### 🚀 Improvement
+
+* imprv: Better synchronizing between YDoc and the latest revision (#8959) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Revision model (#8967) @yuki-takei
+* fix: Healthcheck with checkServices=mongo (#8961) @yuki-takei
+* fix: Enable  # next to headline in view (#8826) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump nodemailer from 6.6.2 to 6.9.14 (#8928) @dependabot
+* support: Update favicon (#8957) @satof3
+
+## [v7.0.12](https://github.com/weseek/growi/compare/v7.0.11...v7.0.12) - 2024-07-10
+
+### 🚀 Improvement
+
+* imprv: lang attribute in Html element to correctly reflect locale (#8940) @maeshinshin
+* imprv: Archive importing and exporting (#8943) @yuki-takei
+* imprv: Restrict indexing for full text search when the body length exceeds the threshold (#8937) @yuki-takei
+* imprv: Dark theme support for emoji mart (#8936) @reiji-h
+* imprv: Add env var for set Elasticsearch reindex bulk size (#8933) @yuki-takei
+* imprv: Size for skeleton for tags (#8923) @yuki-takei
+* imprv: Button opacity of TableWithEditButton and DrawioViewerWithEditButton (#8924) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Initialize sanitize option (#8946) @yuki-takei
+* fix: PageTitleHeader rename input status (#8944) @yuki-takei
+* fix: Presentation section tag (#8941) @yuki-takei
+* fix: Page history colorscheme is broken (#8938) @reiji-h
+* imprv: Rename label for bookmark item (#8925) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Refactor Yjs service (#8949) @yuki-takei
+* support: Upgrade y-mongodb-provider (#8953) @yuki-takei
+* support: Typescriptize Revision model (#8954) @yuki-takei
+* support: Typescriptize SocketIoService (#8948) @yuki-takei
+* support: Update GROWI logo type in NoLogin (#8942) @satof3
+* support: Update logo design (#8934) @satof3
+* ci(deps): bump @azure/identity from 4.0.1 to 4.3.0 (#8927) @dependabot
+* support: Upgrade vitest (#8920) @yuki-takei
+* support: Upgrade playwright (#8921) @yuki-takei
+
+## [v7.0.11](https://github.com/weseek/growi/compare/v7.0.10...v7.0.11) - 2024-06-25
+
+### 💎 Features
+
+### 🚀 Improvement
+
+* imprv: New marker color (#8891) @satof3
+* imprv: SSR performance (#8916) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Vim keymap works correctly (#8901) @reiji-h
+* fix: Readonly editor prevents ctrl+v and paste. (#8902) @reiji-h
+* fix: Missing HTTP Response in SAML Login With ABLC Callback (#8879) @maeshinshin
+* fix: Set `z-0` to correct navbar and header overlap when the anchor is specified (#8905) @yuki-takei
+* fix: Minimum number of characters in password cannot be changed (#8896) @miya
+
+### 🧰 Maintenance
+
+* support: Replace tests with playwright (20-basic-features/20-basic-features--click-page-icons) (#8903) @miya
+* support: Relocate components dir (#8917) @yuki-takei
+* ci(deps): bump ws from 8.11.0 to 8.17.1 (#8906) @dependabot
+* support: Update module resolution settings (#8898) @yuki-takei
+* support: Decrease max SSR body length (#8895) @yuki-takei
+* support: Use typescript-transform-paths instead of tsconfig-paths (#8892) @yuki-takei
 
 ## [v7.0.10](https://github.com/weseek/growi/compare/v7.0.9...v7.0.10) - 2024-06-13
 
