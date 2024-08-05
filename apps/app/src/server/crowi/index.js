@@ -778,7 +778,7 @@ Crowi.prototype.setupG2GTransferService = async function() {
 };
 
 Crowi.prototype.setupAnnouncementService = async function() {
-  const AnnouncementService = require('../service/announcement');
+  const AnnouncementService = require('../../features/announcement/server/service/announcement');
   if (this.announcementService == null) {
     this.announcementService = new AnnouncementService(this);
   }

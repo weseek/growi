@@ -16,7 +16,11 @@ module.exports = (crowi: Crowi): Router => {
 
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
-  router.post('/', loginRequiredStrictly, async(req: CrowiRequest) => {
+  const validators = {
+
+  };
+
+  router.post('/doAnnouncement', loginRequiredStrictly, async(req: CrowiRequest) => {
 
     const params: ParamsForAnnouncement = req.body;
 

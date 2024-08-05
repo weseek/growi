@@ -3,11 +3,9 @@ import type { IPage } from '@growi/core';
 import { Announcement, AnnouncementStatuses } from '~/features/announcement';
 import type { IAnnouncement, ParamsForAnnouncement } from '~/interfaces/announcement';
 
-import type Crowi from '../crowi';
-import type { ActivityDocument } from '../models/activity';
-
-
-import type { PreNotifyProps } from './pre-notify';
+import type Crowi from '../../../../server/crowi';
+import type { ActivityDocument } from '../../../../server/models/activity';
+import type { PreNotifyProps } from '../../../../server/service/pre-notify';
 
 export default class AnnouncementService {
 
