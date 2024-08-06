@@ -25,6 +25,7 @@ import { tagNames as recommendedTagNames, attributes as recommendedAttributes } 
 import * as addClass from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
+import * as codeBlocks from './remark-plugins/codeblock';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
@@ -96,6 +97,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       pukiwikiLikeLinker,
       growiDirective,
       remarkFrontmatter,
+      codeBlocks.remarkPlugin,
     ],
     remarkRehypeOptions: {
       clobberPrefix: '', // remove clobber prefix
@@ -108,6 +110,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       [addClass.rehypePlugin, {
         table: 'table table-bordered',
       }],
+      codeBlocks.rehypePlugin,
     ],
     components: {
       a: NextLink,
@@ -137,7 +140,7 @@ export const generateSSRViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       getCommonSanitizeOption(config),
     )]

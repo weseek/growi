@@ -13,7 +13,7 @@ describe('markdown -> mdast', () => {
     expect(
       fromMarkdown('a $b[c](d) e.', {
         extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown],
+        mdastExtensions: [directiveFromMarkdown()],
       }).children[0],
     ).toEqual({
       type: 'paragraph',
@@ -65,7 +65,7 @@ describe('markdown -> mdast', () => {
     expect(
       fromMarkdown('$a[b](c)', {
         extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown],
+        mdastExtensions: [directiveFromMarkdown()],
       }).children[0],
     ).toEqual({
       type: DirectiveType.Leaf,
@@ -92,7 +92,7 @@ describe('markdown -> mdast', () => {
   it('should support content in a label', () => {
     const tree = fromMarkdown('x $a[b *c*\nd]', {
       extensions: [directive()],
-      mdastExtensions: [directiveFromMarkdown],
+      mdastExtensions: [directiveFromMarkdown()],
     });
 
     removePosition(tree, { force: true });
@@ -126,7 +126,7 @@ describe('markdown -> mdast', () => {
   it('should support attributes', () => {
     const tree = fromMarkdown('x $a(#b.c.d e=f g="h&amp;i&unknown;j")', {
       extensions: [directive()],
-      mdastExtensions: [directiveFromMarkdown],
+      mdastExtensions: [directiveFromMarkdown()],
     });
 
     removePosition(tree, { force: true });
@@ -156,7 +156,7 @@ describe('markdown -> mdast', () => {
   it('should support EOLs in attributes', () => {
     const tree = fromMarkdown('$a(b\nc="d\ne")', {
       extensions: [directive()],
-      mdastExtensions: [directiveFromMarkdown],
+      mdastExtensions: [directiveFromMarkdown()],
     });
 
     removePosition(tree, { force: true });
@@ -193,7 +193,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' b.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $ b.\n');
   });
@@ -210,7 +210,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' c.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b c.\n');
   });
@@ -230,7 +230,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' d.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b[c] d.\n');
   });
@@ -250,7 +250,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' f.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b[c\\[d\\]e] f.\n');
   });
@@ -270,7 +270,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' e.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b[c\nd] e.\n');
   });
@@ -294,7 +294,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' k.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b(c="d" e="f" g j="2") k.\n');
   });
@@ -315,7 +315,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' k.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b(#d .a.b.c key="value") k.\n');
   });
@@ -336,7 +336,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' k.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b(x="y&#x22;\'\r\nz") k.\n');
   });
@@ -357,7 +357,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' e.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b(id="c#d") e.\n');
   });
@@ -378,7 +378,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' g.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b(c.d e<f) g.\n');
   });
@@ -401,7 +401,7 @@ describe('mdast -> markdown', () => {
             { type: 'text', value: ' k.' },
           ],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a $b(c.d e f<g hij) k.\n');
   });
@@ -411,7 +411,7 @@ describe('mdast -> markdown', () => {
     expect(
       toMarkdown(
         { type: DirectiveType.Leaf },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('$\n');
   });
@@ -421,7 +421,7 @@ describe('mdast -> markdown', () => {
     expect(
       toMarkdown(
         { type: DirectiveType.Leaf, name: 'a' },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('$a\n');
   });
@@ -434,7 +434,7 @@ describe('mdast -> markdown', () => {
           name: 'a',
           children: [{ type: 'text', value: 'b' }],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('$a[b]\n');
   });
@@ -447,7 +447,7 @@ describe('mdast -> markdown', () => {
           name: 'a',
           children: [{ type: 'text', value: 'b\nc' }],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('$a[b&#xA;c]\n');
   });
@@ -461,7 +461,7 @@ describe('mdast -> markdown', () => {
           attributes: { '#b': '', '.c.d': '', key: 'e\nf' },
           children: [],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('$a(#b .c.d key="e&#xA;f")\n');
   });
@@ -473,7 +473,7 @@ describe('mdast -> markdown', () => {
           type: 'paragraph',
           children: [{ type: 'text', value: 'a$b' }],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('a\\$b\n');
   });
@@ -483,7 +483,7 @@ describe('mdast -> markdown', () => {
       toMarkdown({
         type: 'paragraph',
         children: [{ type: 'text', value: 'a$9' }],
-      }, { extensions: [directiveToMarkdown] }),
+      }, { extensions: [directiveToMarkdown()] }),
     ).toBe('a$9\n');
   });
 
@@ -492,7 +492,7 @@ describe('mdast -> markdown', () => {
       toMarkdown({
         type: 'paragraph',
         children: [{ type: 'text', value: 'a$c' }],
-      }, { extensions: [directiveToMarkdown] }),
+      }, { extensions: [directiveToMarkdown()] }),
     ).toBe('a\\$c\n');
   });
 
@@ -503,7 +503,7 @@ describe('mdast -> markdown', () => {
           type: 'paragraph',
           children: [{ type: 'text', value: '$\na' }],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('$\na\n');
   });
@@ -515,7 +515,7 @@ describe('mdast -> markdown', () => {
           type: 'paragraph',
           children: [{ type: 'text', value: '$a' }],
         },
-        { extensions: [directiveToMarkdown] },
+        { extensions: [directiveToMarkdown()] },
       ),
     ).toBe('\\$a\n');
   });
@@ -525,7 +525,7 @@ describe('mdast -> markdown', () => {
       toMarkdown({
         type: 'paragraph',
         children: [{ type: 'text', value: '$\na' }],
-      }, { extensions: [directiveToMarkdown] }),
+      }, { extensions: [directiveToMarkdown()] }),
     ).toBe('$\na\n');
   });
 
@@ -537,7 +537,7 @@ describe('mdast -> markdown', () => {
           { type: DirectiveType.Text, name: 'red', children: [] },
           { type: 'text', value: '$' },
         ],
-      }, { extensions: [directiveToMarkdown] }),
+      }, { extensions: [directiveToMarkdown()] }),
     ).toBe('$red$\n');
   });
 

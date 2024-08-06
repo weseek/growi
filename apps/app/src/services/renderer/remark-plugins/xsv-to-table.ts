@@ -1,4 +1,8 @@
 import csvToMarkdownTable from 'csv-to-markdown-table';
+import type {
+  Code, Parent,
+} from 'mdast';
+import type { Options } from 'mdast-util-from-markdown';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmTableFromMarkdown } from 'mdast-util-gfm-table';
 import { gfmTable } from 'micromark-extension-gfm-table';
@@ -8,12 +12,12 @@ import { visit } from 'unist-util-visit';
 
 type Lang = 'csv' | 'csv-h' | 'tsv' | 'tsv-h';
 
-function isXsv(lang: unknown): lang is Lang {
+function isXsv(lang?: string | null | undefined): lang is Lang {
   return /^(csv|csv-h|tsv|tsv-h)$/.test(lang as string);
 }
 
 function rewriteNode(node: Node, lang: Lang) {
-  const tableContents = node.value as string;
+  const tableContents = (node as Code).value as string;
 
   const tableDoc = csvToMarkdownTable(
     tableContents,
@@ -23,12 +27,12 @@ function rewriteNode(node: Node, lang: Lang) {
   const tableTree = fromMarkdown(tableDoc, {
     extensions: [gfmTable],
     mdastExtensions: [gfmTableFromMarkdown],
-  });
+  } as Options);
 
   // replace node
   if (tableTree.children[0] != null) {
     node.type = 'table';
-    node.children = tableTree.children[0].children;
+    (node as Parent).children = (tableTree.children[0] as Parent).children;
   }
 }
 
@@ -36,8 +40,8 @@ export const remarkPlugin: Plugin = function() {
   return (tree) => {
     visit(tree, (node) => {
       if (node.type === 'code') {
-        if (isXsv(node.lang)) {
-          rewriteNode(node, node.lang);
+        if (isXsv((node as Code).lang)) {
+          rewriteNode(node, (node as Code).lang as Lang);
         }
       }
     });
