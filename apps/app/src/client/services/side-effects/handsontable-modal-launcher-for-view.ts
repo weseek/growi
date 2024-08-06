@@ -6,7 +6,7 @@ import { Origin } from '@growi/core';
 import type { MarkdownTable } from '@growi/editor';
 
 import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/client/components/Page/markdown-table-util-for-view';
-import { extractRemoteRevisionDataFromErrorObj, updatePage as _updatePage } from '~/client/services/update-page';
+import { extractRemoteRevisionDataFromErrorObj, useUpdatePage } from '~/client/services/update-page';
 import { useShareLinkId } from '~/stores-universal/context';
 import { useHandsontableModal, useConflictDiffModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -35,6 +35,8 @@ export const useHandsontableModalLauncherForView = (opts?: {
   const { open: openHandsontableModal } = useHandsontableModal();
 
   const { open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
+
+  const _updatePage = useUpdatePage();
 
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 

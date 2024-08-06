@@ -17,6 +17,9 @@ vi.mock('y-socket.io/dist/server', () => {
   return { YSocketIO };
 });
 
+vi.mock('../revision/normalize-latest-revision-if-broken', () => ({
+  normalizeLatestRevisionIfBroken: vi.fn(),
+}));
 
 const ObjectId = Types.ObjectId;
 

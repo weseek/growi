@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - release/**
       - rc/**
+      - changeset-release/**
     paths:
       - .github/workflows/ci-app.yml
       - .eslint*
