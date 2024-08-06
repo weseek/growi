@@ -10,19 +10,23 @@
  * @typedef {import('mdast-util-to-markdown').Context} Context
  * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
  *
- * @typedef {import('./complex-types').LeafDirective} LeafDirective
- * @typedef {import('./complex-types').TextDirective} TextDirective
- * @typedef {LeafDirective|TextDirective} Directive
+ * @typedef {import('../types/index.js').LeafGrowiPluginDirective} LeafGrowiPluginDirective
+ * @typedef {import('../types/index.js').TextGrowiPluginDirective} TextGrowiPluginDirective
+ * @typedef {import('../types/index.js').Directives} Directives
  */
 
 import { parseEntities } from 'parse-entities';
 import { stringifyEntitiesLight } from 'stringify-entities';
 
-import { DirectiveType } from './consts.js';
-
 const own = {}.hasOwnProperty;
 
 const shortcut = /^[^\t\n\r "#'.<=>`}]+$/;
+
+
+export const DirectiveType = Object.freeze({
+  Text: 'textGrowiPluginDirective',
+  Leaf: 'leafGrowiPluginDirective',
+});
 
 handleDirective.peek = peekDirective;
 
