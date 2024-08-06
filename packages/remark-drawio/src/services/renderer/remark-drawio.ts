@@ -21,7 +21,7 @@ declare module 'mdast' {
 
 type Lang = 'drawio';
 
-function isDrawioBlock(lang: string | undefined | null): lang is Lang {
+function isDrawioBlock(lang?: string | null): lang is Lang {
   return /^drawio$/.test(lang ?? '');
 }
 
