@@ -180,6 +180,7 @@ export const SearchPage = (): JSX.Element => {
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
           <button
+            data-testid="delete-control-button"
             type="button"
             className={`${isCollapsed ? 'active' : ''} btn btn-muted-danger d-flex align-items-center ms-2`}
             aria-expanded="false"

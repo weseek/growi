@@ -157,7 +157,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
       </div>
 
       { collapseContents != null && (
-        <Collapse isOpen={isCollapsed}>
+        <Collapse data-testid="search-control-collapse" isOpen={isCollapsed}>
           {collapseContents}
         </Collapse>
       ) }
