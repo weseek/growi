@@ -348,7 +348,7 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:1.45.0
+      image: mcr.microsoft.com/playwright:latest
 
     strategy:
       fail-fast: false
