@@ -12,7 +12,7 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
-import { PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
 import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
 import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
@@ -799,9 +799,7 @@ Crowi.prototype.setupExternalUserGroupSyncService = function() {
 
 Crowi.prototype.resumeIncompletePageBulkExportJobs = async function() {
   const jobs = await PageBulkExportJob.find({
-    $or: [
-      { status: PageBulkExportJobStatus.initializing }, { status: PageBulkExportJobStatus.exporting }, { status: PageBulkExportJobStatus.uploading },
-    ],
+    $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
   });
   Promise.all(jobs.map(job => pageBulkExportService.executePageBulkExportJob(job)));
 };
