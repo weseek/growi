@@ -10,10 +10,14 @@ export const PageBulkExportFormat = {
 
 export type PageBulkExportFormat = typeof PageBulkExportFormat[keyof typeof PageBulkExportFormat]
 
-export const PageBulkExportJobStatus = {
+export const PageBulkExportJobInProgressStatus = {
   initializing: 'initializing', // preparing for export
   exporting: 'exporting', // exporting to fs
   uploading: 'uploading', // uploading to cloud storage
+} as const;
+
+export const PageBulkExportJobStatus = {
+  ...PageBulkExportJobInProgressStatus,
   completed: 'completed',
   failed: 'failed',
 } as const;
