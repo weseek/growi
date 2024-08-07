@@ -24,6 +24,7 @@ module.exports = (crowi: Crowi): Router => {
     pageBulkExport: [
       body('path').exists({ checkFalsy: true }).isString(),
       body('format').exists({ checkFalsy: true }).isString(),
+      body('restartJob').isBoolean().optional(),
     ],
   };
 
@@ -33,10 +34,10 @@ module.exports = (crowi: Crowi): Router => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { path, format } = req.body;
+    const { path, format, restartJob } = req.body;
 
     try {
-      await pageBulkExportService?.createAndExecuteBulkExportJob(path, req.user);
+      await pageBulkExportService?.createAndExecuteOrRestartBulkExportJob(path, req.user, restartJob);
       return res.apiv3({}, 204);
     }
     catch (err) {
