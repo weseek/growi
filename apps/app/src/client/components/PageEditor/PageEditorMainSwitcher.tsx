@@ -18,7 +18,7 @@ type PageEditorSwitcherProps = CodeMirrorEditorProps & {
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
 };
 
-export const PageEditorSwitcher = React.memo((props: PageEditorSwitcherProps): JSX.Element => {
+export const PageEditorMainSwitcher = React.memo((props: PageEditorSwitcherProps): JSX.Element => {
   const {
     isYjsEnabled, cmProps, user, pageId, onEditorsUpdated, ...otherProps
   } = props;

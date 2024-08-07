@@ -49,7 +49,7 @@ import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
-import { PageEditorSwitcher } from './PageEditorSwitcher';
+import { PageEditorMainSwitcher } from './PageEditorMainSwitcher';
 import Preview from './Preview';
 import { useScrollSync } from './ScrollSyncHelper';
 import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
@@ -368,7 +368,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
-          <PageEditorSwitcher
+          <PageEditorMainSwitcher
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
             acceptedUploadFileType={acceptedUploadFileType}
