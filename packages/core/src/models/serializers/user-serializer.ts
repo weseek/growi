@@ -1,35 +1,37 @@
-const mongoose = require('mongoose');
+import { Document } from 'mongoose';
 
+import { isPopulated, isRef, type Ref } from '../../interfaces/common';
+import type { IUser } from '../../interfaces/user';
 
-export function omitInsecureAttributes(user) {
-  // omit password
-  delete user.password;
-  // omit apiToken
-  delete user.apiToken;
+export type IUserSerializedSecurely<U extends IUser> = Omit<U, 'password' | 'apiToken' | 'email'> & { email?: string };
+
+export const omitInsecureAttributes = <U extends IUser>(user: U): IUserSerializedSecurely<U> => {
+
+  const leanDoc = (user instanceof Document)
+    ? user.toObject<U>()
+    : user;
+
+  const {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    password, apiToken, email, ...rest
+  } = leanDoc;
+
+  const secureUser: IUserSerializedSecurely<U> = rest;
 
   // omit email
-  if (!user.isEmailPublished) {
-    delete user.email;
-  }
-  return user;
-}
-
-export function serializeUserSecurely(user) {
-  const User = mongoose.model('User');
-
-  // return when it is not a user object
-  if (user == null || !(user instanceof User)) {
-    return user;
+  if (secureUser.isEmailPublished) {
+    secureUser.email = email;
   }
 
-  let serialized = user;
+  return secureUser;
+};
 
-  // invoke toObject if page is a model instance
-  if (user.toObject != null) {
-    serialized = user.toObject();
-  }
+export function serializeUserSecurely<U extends IUser>(user?: U): IUserSerializedSecurely<U>;
+export function serializeUserSecurely<U extends IUser>(user?: Ref<U>): Ref<IUserSerializedSecurely<U>>;
+export function serializeUserSecurely<U extends IUser>(user?: U | Ref<U>): undefined | IUserSerializedSecurely<U> | Ref<IUserSerializedSecurely<U>> {
+  if (user == null) return user;
 
-  omitInsecureAttributes(serialized);
+  if (isRef(user) && !isPopulated(user)) return user;
 
-  return serialized;
+  return omitInsecureAttributes(user);
 }
