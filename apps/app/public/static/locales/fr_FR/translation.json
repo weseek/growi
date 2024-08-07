@@ -636,7 +636,6 @@
     "bulk_export_started": "Patientez s'il-vous-plait...",
     "bulk_export_download_expired": "La période de téléchargement a expiré",
     "bulk_export_job_expired": "Le traitement a été interrompu car le temps d'exportation était trop long",
-    "duplicate_bulk_export_job_error": "L'export pour la même page et ses enfants est en cours",
     "export_in_progress": "Exportation en cours",
     "export_in_progress_explanation": "L'exportation avec le même format est déjà en cours. Souhaitez-vous redémarrer pour exporter le dernier contenu de la page ?",
     "export_cancel_warning": "L'export en cours sera annulé",
