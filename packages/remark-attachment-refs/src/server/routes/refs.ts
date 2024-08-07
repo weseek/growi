@@ -1,10 +1,17 @@
-import type { IAttachment } from '@growi/core';
+import type { IPage, IUser, IAttachment } from '@growi/core';
+import { serializeAttachmentSecurely } from '@growi/core/dist/models/serializers';
 import { OptionParser } from '@growi/core/dist/remark-plugins';
-import { model } from 'mongoose';
+import type { Request } from 'express';
+import { Router } from 'express';
+import type { Model, HydratedDocument } from 'mongoose';
+import mongoose, { model, Types } from 'mongoose';
 
 import loggerFactory from '../../utils/logger';
 
 const logger = loggerFactory('growi:remark-attachment-refs:routes:refs');
+
+
+type RequestWithUser = Request & { user: HydratedDocument<IUser> };
 
 
 const loginRequiredFallback = (req, res) => {
@@ -13,21 +20,18 @@ const loginRequiredFallback = (req, res) => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const routesFactory = (crowi): any => {
-  const express = crowi.require('express');
-  const mongoose = crowi.require('mongoose');
 
   const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
   const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
-  const { serializeUserSecurely } = crowi.require('../models/serializers/user-serializer');
 
-  const router = express.Router();
+  const router = Router();
 
-  const ObjectId = mongoose.Types.ObjectId;
+  const ObjectId = Types.ObjectId;
 
-  const User = crowi.model('User');
-  const Page = crowi.model('Page');
+  const Page = mongoose.model <HydratedDocument<IPage>, Model<any> & any>('Page');
 
-  const { PageQueryBuilder } = Page;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const { PageQueryBuilder } = Page as any;
 
   function generateRegexp(expression: string): RegExp {
     // https://regex101.com/r/uOrwqt/2
@@ -78,7 +82,7 @@ export const routesFactory = (crowi): any => {
   /**
    * return an Attachment model
    */
-  router.get('/ref', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/ref', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
 
@@ -96,9 +100,10 @@ export const routesFactory = (crowi): any => {
     }
 
     // convert ObjectId
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const orConditions: any[] = [{ originalName: fileNameOrId }];
-    if (ObjectId.isValid(fileNameOrId)) {
-      orConditions.push({ _id: ObjectId(fileNameOrId) });
+    if (fileNameOrId != null && ObjectId.isValid(fileNameOrId.toString())) {
+      orConditions.push({ _id: new ObjectId(fileNameOrId.toString()) });
     }
 
     const Attachment = model<IAttachment>('Attachment');
@@ -125,19 +130,16 @@ export const routesFactory = (crowi): any => {
       return;
     }
 
-    // serialize User data
-    attachment.creator = serializeUserSecurely(attachment.creator);
-
-    res.status(200).send({ attachment });
+    res.status(200).send({ attachment: serializeAttachmentSecurely(attachment) });
   });
 
   /**
    * return a list of Attachment
    */
-  router.get('/refs', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/refs', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { prefix, pagePath } = req.query;
-    const options = JSON.parse(req.query.options);
+    const options = JSON.parse(req.query.options?.toString() ?? '');
 
     // check either 'prefix' or 'pagePath ' is specified
     if (prefix == null && pagePath == null) {
@@ -149,11 +151,17 @@ export const routesFactory = (crowi): any => {
     let regex;
     const regexOptionValue = options.regexp || options.regex;
     if (regexOptionValue != null) {
+      // check the length to avoid ReDoS
+      if (regexOptionValue.length > 400) {
+        res.status(400).send('the length of the \'regex\' option is too long.');
+        return;
+      }
+
       try {
         regex = generateRegexp(regexOptionValue);
       }
       catch (err) {
-        res.status(400).send(`the 'regex=${options.regex}' option is invalid as RegExp.`);
+        res.status(400).send('the \'regex\' option is invalid as RegExp.');
         return;
       }
     }
@@ -207,14 +215,7 @@ export const routesFactory = (crowi): any => {
       .populate('creator')
       .exec();
 
-    // serialize User data
-    attachments.forEach((doc) => {
-      if (doc.creator != null && doc.creator instanceof User) {
-        doc.creator = serializeUserSecurely(doc.creator);
-      }
-    });
-
-    res.status(200).send({ attachments });
+    res.status(200).send({ attachments: attachments.map(attachment => serializeAttachmentSecurely(attachment)) });
   });
 
   return router;

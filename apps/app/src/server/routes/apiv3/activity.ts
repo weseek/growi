@@ -1,16 +1,17 @@
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { parseISO, addMinutes, isValid } from 'date-fns';
-import express, { Request, Router } from 'express';
+import type { Request, Router } from 'express';
+import express from 'express';
 import { query } from 'express-validator';
 
-import { IActivity, ISearchFilter } from '~/interfaces/activity';
+import type { IActivity, ISearchFilter } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
 import loggerFactory from '~/utils/logger';
 
-import Crowi from '../../crowi';
+import type Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 
-import { ApiV3Response } from './interfaces/apiv3-response';
+import type { ApiV3Response } from './interfaces/apiv3-response';
 
 
 const logger = loggerFactory('growi:routes:apiv3:activity');
@@ -103,12 +104,12 @@ module.exports = (crowi: Crowi): Router => {
         },
       );
 
-      const User = crowi.model('User');
       const serializedDocs = paginateResult.docs.map((doc: IActivity) => {
-        if (doc.user != null && doc.user instanceof User) {
-          doc.user = serializeUserSecurely(doc.user);
-        }
-        return doc;
+        const { user, ...rest } = doc;
+        return {
+          user: serializeUserSecurely(user),
+          ...rest,
+        };
       });
 
       const serializedPaginationResult = {
