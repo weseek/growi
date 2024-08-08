@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import {
   Suspense, useState, useCallback,
+  memo,
 } from 'react';
 
 import nodePath from 'path';
@@ -19,8 +20,29 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { ItemsTree } from '../ItemsTree';
 import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
+import { StickyStretchableScroller } from '../StickyStretchableScroller';
 
 import { TreeItemForModal } from './TreeItemForModal';
+
+import 'simplebar';
+import 'simplebar/dist/simplebar.css';
+
+const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
+
+  const { children } = props;
+
+  const calcViewHeight = useCallback(() => {
+    return window.innerHeight / 2;
+  }, []);
+
+  return (
+    <div className="grw-page-select-modal-wrapper">
+      <div data-simplebar>
+        { children }
+      </div>
+    </div>
+  );
+});
 
 export const PageSelectModal: FC = () => {
   const {
@@ -85,17 +107,21 @@ export const PageSelectModal: FC = () => {
       size="sm"
     >
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
-      <ModalBody>
+      <ModalBody className="p-0">
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
-          <ItemsTree
-            CustomTreeItem={TreeItemForModal}
-            isEnableActions={!isGuestUser}
-            isReadOnlyUser={!!isReadOnlyUser}
-            targetPath={targetPath}
-            targetPathOrId={targetPathOrId}
-            targetAndAncestorsData={targetAndAncestorsData}
-            onClickTreeItem={onClickTreeItem}
-          />
+          <TreeForModalWrapper>
+            <div className="p-3">
+              <ItemsTree
+                CustomTreeItem={TreeItemForModal}
+                isEnableActions={!isGuestUser}
+                isReadOnlyUser={!!isReadOnlyUser}
+                targetPath={targetPath}
+                targetPathOrId={targetPathOrId}
+                targetAndAncestorsData={targetAndAncestorsData}
+                onClickTreeItem={onClickTreeItem}
+              />
+            </div>
+          </TreeForModalWrapper>
         </Suspense>
       </ModalBody>
       <ModalFooter>
