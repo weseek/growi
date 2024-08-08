@@ -1,5 +1,11 @@
 # @growi/core
 
+## 1.2.0
+
+### Minor Changes
+
+- [#9019](https://github.com/weseek/growi/pull/9019) [`60097ac`](https://github.com/weseek/growi/commit/60097ac686928cca76715a83a10b506576889108) Thanks [@yuki-takei](https://github.com/yuki-takei)! - Transplant and re-implement serializers for User and Attachment
+
 ## 1.1.0
 
 ### Minor Changes
