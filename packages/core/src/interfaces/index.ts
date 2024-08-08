@@ -7,6 +7,7 @@ export * from './growi-facade';
 export * from './growi-theme-metadata';
 export * from './has-object-id';
 export * from './lang';
+export * from './locale';
 export * from './page';
 export * from './revision';
 export * from './subscription';

@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import {
-  GroupType, getIdForRef, type IGrantedGroup, type IUserGroup, type IUserGroupHasId,
+  GroupType, getIdStringForRef, type IGrantedGroup, type IUserGroup, type IUserGroupHasId,
 } from '@growi/core';
 import { objectIdUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
@@ -130,8 +130,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     setSearchType(searchType);
   }, []);
 
-  const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: Partial<IUserGroupHasId>, forceUpdateParents: boolean) => {
-    const parentId = typeof update.parent === 'string' ? update.parent : update.parent?._id;
+  const updateUserGroup = useCallback(async(userGroup: IUserGroupHasId, update: IUserGroupHasId, forceUpdateParents: boolean) => {
     if (isExternalGroup) {
       await apiv3Put<{ userGroup: IExternalUserGroupHasId }>(`/external-user-groups/${userGroup._id}`, {
         description: update.description,
@@ -141,7 +140,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       await apiv3Put<{ userGroup: IUserGroupHasId }>(`/user-groups/${userGroup._id}`, {
         name: update.name,
         description: update.description,
-        parentId: parentId ?? null,
+        parentId: update.parent != null ? getIdStringForRef(update.parent) : null,
         forceUpdateParents,
       });
     }
@@ -154,7 +153,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   }, [mutateAncestorUserGroups, mutateChildUserGroups, mutateSelectableChildUserGroups, mutateSelectableParentUserGroups, isExternalGroup]);
 
   const onSubmitUpdateGroup = useCallback(
-    async(targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>, forceUpdateParents: boolean): Promise<void> => {
+    async(targetGroup: IUserGroupHasId, userGroupData: IUserGroupHasId, forceUpdateParents: boolean): Promise<void> => {
       try {
         await updateUserGroup(targetGroup, userGroupData, forceUpdateParents);
         toastSuccess(t('toaster.update_successed', { target: t('UserGroup'), ns: 'commons' }));
@@ -303,7 +302,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup | null) => {
     const url = isExternalGroup ? `/external-user-groups/${deleteGroupId}` : `/user-groups/${deleteGroupId}`;
-    const transferToUserGroupId = transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : null;
+    const transferToUserGroupId = transferToUserGroup != null ? getIdStringForRef(transferToUserGroup.item) : null;
     const transferToUserGroupType = transferToUserGroup != null ? transferToUserGroup.type : null;
     try {
       const res = await apiv3Delete(url, {

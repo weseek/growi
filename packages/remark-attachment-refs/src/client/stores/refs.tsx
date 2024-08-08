@@ -1,6 +1,9 @@
-import { IAttachmentHasId } from '@growi/core';
+import type { IAttachmentHasId } from '@growi/core';
+import type { AxiosError } from 'axios';
 import axios from 'axios';
-import useSWR, { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+// eslint-disable-next-line camelcase
+import useSWR, { unstable_serialize } from 'swr';
 
 export const useSWRxRef = (
     pagePath: string, fileNameOrId: string, isImmutable?: boolean,
@@ -27,10 +30,12 @@ export const useSWRxRef = (
 
 export const useSWRxRefs = (
     pagePath: string, prefix?: string, options?: Record<string, string | undefined>, isImmutable?: boolean,
-): SWRResponse<IAttachmentHasId[], Error> => {
+): SWRResponse<IAttachmentHasId[], AxiosError<string>> => {
+  const serializedOptions = unstable_serialize(options);
+
   return useSWR(
-    ['/_api/attachment-refs/refs', pagePath, prefix, options, isImmutable],
-    ([endpoint, pagePath, prefix, options]) => {
+    ['/_api/attachment-refs/refs', pagePath, prefix, serializedOptions, isImmutable],
+    async([endpoint, pagePath, prefix]) => {
       return axios.get(endpoint, {
         params: {
           pagePath,

@@ -1,10 +1,13 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import express from 'express';
 import multer from 'multer';
 import autoReap from 'multer-autoreap';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
-import { Attachment } from '~/server/models';
+import { Attachment } from '~/server/models/attachment';
+import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -14,16 +17,12 @@ import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
 
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
-const express = require('express');
 
 const router = express.Router();
 const {
   query, param, body,
 } = require('express-validator');
 
-const { serializePageSecurely } = require('../../models/serializers/page-serializer');
-const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 /**
  * @swagger

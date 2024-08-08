@@ -1,7 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
 import { AttachmentType } from '../interfaces/attachment';
-import { Attachment } from '../models';
+import { Attachment } from '../models/attachment';
 
 const fs = require('fs');
 

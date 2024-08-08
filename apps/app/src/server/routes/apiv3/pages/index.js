@@ -1,6 +1,7 @@
 
 import { PageGrant } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath, addHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import express from 'express';
@@ -8,7 +9,7 @@ import { body, query } from 'express-validator';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import { GlobalNotificationSettingEvent } from '~/server/models';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
@@ -17,7 +18,6 @@ import { generateAddActivityMiddleware } from '../../../middlewares/add-activity
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import { serializePageSecurely } from '../../../models/serializers/page-serializer';
-import { serializeUserSecurely } from '../../../models/serializers/user-serializer';
 import { isV5ConversionError } from '../../../models/vo/v5-conversion-error';
 
 

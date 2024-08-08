@@ -9,7 +9,7 @@ import multer from 'multer';
 import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
-import { Attachment } from '~/server/models';
+import { Attachment } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';

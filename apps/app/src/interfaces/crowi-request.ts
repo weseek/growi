@@ -1,11 +1,11 @@
 import type { IUser } from '@growi/core';
 import type { Request } from 'express';
-import type { Document } from 'mongoose';
+import type { HydratedDocument } from 'mongoose';
 
 
 export interface CrowiProperties {
 
-  user?: IUser & Document,
+  user?: HydratedDocument<IUser>,
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   crowi: any,

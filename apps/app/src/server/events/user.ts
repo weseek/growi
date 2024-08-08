@@ -1,10 +1,11 @@
 import EventEmitter from 'events';
 
-import type { IPage, IUserHasId } from '@growi/core';
+import { getIdStringForRef, type IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
-import type { PageModel } from '~/server/models/page';
+import type { PageDocument, PageModel } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
 import { deleteCompletelyUserHomeBySystem } from '../service/page/delete-completely-user-home-by-system';
@@ -22,16 +23,13 @@ class UserEvent extends EventEmitter {
   }
 
   async onActivated(user: IUserHasId): Promise<void> {
-    const Page = mongoose.model<IPage, PageModel>('Page');
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
     const userHomepagePath = pagePathUtils.userHomepagePath(user);
 
     try {
-      let page = await Page.findByPath(userHomepagePath, true);
+      let page: HydratedDocument<PageDocument> | null = await Page.findByPath(userHomepagePath, true);
 
-      // TODO: Make it more type safe
-      // Since the type of page.creator is 'any', we resort to the following comparison,
-      // checking if page.creator.toString() is not equal to user._id.toString(). Our code covers null, string, or object types.
-      if (page != null && page.creator != null && page.creator.toString() !== user._id.toString()) {
+      if (page != null && page.creator != null && getIdStringForRef(page.creator) !== user._id.toString()) {
         await deleteCompletelyUserHomeBySystem(userHomepagePath, this.crowi.pageService);
         page = null;
       }

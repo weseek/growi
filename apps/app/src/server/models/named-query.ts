@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import mongoose, {
-  Schema, Model, Document,
+import type { Model, Document } from 'mongoose';
+import {
+  Schema,
 } from 'mongoose';
 
-import { INamedQuery, SearchDelegatorName } from '~/interfaces/named-query';
+import type { INamedQuery } from '~/interfaces/named-query';
+import { SearchDelegatorName } from '~/interfaces/named-query';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
@@ -17,14 +19,12 @@ export interface NamedQueryDocument extends INamedQuery, Document {}
 
 export type NamedQueryModel = Model<NamedQueryDocument>
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
 const schema = new Schema<NamedQueryDocument, NamedQueryModel>({
   name: { type: String, required: true, unique: true },
   aliasOf: { type: String },
   delegatorName: { type: String, enum: SearchDelegatorName },
   creator: {
-    type: ObjectId, ref: 'User', index: true, default: null,
+    type: Schema.Types.ObjectId, ref: 'User', index: true, default: null,
   },
 });
 

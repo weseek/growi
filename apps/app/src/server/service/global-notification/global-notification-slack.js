@@ -1,6 +1,6 @@
 import { pagePathUtils } from '@growi/core/dist/utils';
 
-import { GlobalNotificationSettingEvent, GlobalNotificationSettingType } from '~/server/models';
+import { GlobalNotificationSettingEvent, GlobalNotificationSettingType } from '~/server/models/GlobalNotificationSetting';
 import loggerFactory from '~/utils/logger';
 
 import {

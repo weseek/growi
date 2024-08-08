@@ -5,13 +5,12 @@ import { respond, deleteOriginal } from '@growi/slack/dist/utils/response-url';
 import { format, formatDate } from 'date-fns/format';
 import { parse } from 'date-fns/parse';
 
+import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:SlackBotService:togetter');
 
-
-const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');

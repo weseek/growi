@@ -1,22 +1,29 @@
 // see: https://redmine.weseek.co.jp/issues/150649
 
 import { type IRevisionHasId } from '@growi/core';
+import type { FilterQuery, UpdateQuery } from 'mongoose';
 import mongoose from 'mongoose';
 
+import type { IRevisionDocument } from '~/server/models/revision';
 import { type IRevisionModel } from '~/server/models/revision';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:NormalizeData:convert-revision-page-id-to-string');
 
-export const convertRevisionPageIdToString = async(): Promise<void> => {
+export const convertRevisionPageIdToObjectId = async(): Promise<void> => {
   const Revision = mongoose.model<IRevisionHasId, IRevisionModel>('Revision');
 
-  const filter = { pageId: { $type: 'objectId' } };
-  const update = [
+  const filter: FilterQuery<IRevisionDocument> = { pageId: { $type: 'string' } };
+
+  const update: UpdateQuery<IRevisionDocument> = [
     {
       $set: {
         pageId: {
-          $toString: '$pageId',
+          $convert: {
+            input: '$pageId',
+            to: 'objectId',
+            onError: '$pageId',
+          },
         },
       },
     },

@@ -1,7 +1,8 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
 import type { IExternalAccount, IExternalAccountHasId, IUserHasId } from '@growi/core';
-import { Schema, Model, Document } from 'mongoose';
+import type { Model, Document } from 'mongoose';
+import { Schema } from 'mongoose';
 
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
 
@@ -12,7 +13,6 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
 
 export interface ExternalAccountDocument extends IExternalAccount, Document {}
 
@@ -23,7 +23,7 @@ export interface ExternalAccountModel extends Model<ExternalAccountDocument> {
 const schema = new Schema<ExternalAccountDocument, ExternalAccountModel>({
   providerType: { type: String, required: true },
   accountId: { type: String, required: true },
-  user: { type: ObjectId, ref: 'User', required: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 }, {
   timestamps: { createdAt: true, updatedAt: false },
 });

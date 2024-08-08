@@ -3,7 +3,7 @@ import path from 'path';
 import type { IAttachment } from '@growi/core';
 import { addSeconds } from 'date-fns/addSeconds';
 import {
-  Schema, type Model, type Document, Types,
+  Schema, type Model, type Document,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -36,8 +36,8 @@ export interface IAttachmentModel extends Model<IAttachmentDocument> {
 }
 
 const attachmentSchema = new Schema({
-  page: { type: Types.ObjectId, ref: 'Page', index: true },
-  creator: { type: Types.ObjectId, ref: 'User', index: true },
+  page: { type: Schema.Types.ObjectId, ref: 'Page', index: true },
+  creator: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   filePath: { type: String }, // DEPRECATED: remains for backward compatibility for v3.3.x or below
   fileName: { type: String, required: true, unique: true },
   fileFormat: { type: String, required: true },

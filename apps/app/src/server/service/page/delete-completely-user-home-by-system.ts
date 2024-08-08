@@ -3,10 +3,11 @@ import { Writable } from 'stream';
 import { getIdForRef } from '@growi/core';
 import type { IPage, Ref } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
-import type { PageModel } from '~/server/models/page';
+import type { PageDocument, PageModel } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
@@ -38,7 +39,7 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
     throw new Error(msg);
   }
 
-  const Page = mongoose.model<IPage, PageModel>('Page');
+  const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
   const userHomepage = await Page.findByPath(userHomepagePath, true);
 
   if (userHomepage == null) {

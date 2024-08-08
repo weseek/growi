@@ -37,7 +37,7 @@ export type IUserGroup = {
   name: string;
   createdAt: Date;
   description: string;
-  parent: Ref<IUserGroupHasId> | null;
+  parent: Ref<IUserGroup> | null;
 }
 
 export const USER_STATUS = {

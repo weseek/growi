@@ -1,7 +1,7 @@
 import { Writable, Transform } from 'stream';
 import { URL } from 'url';
 
-import { getIdForRef, type IPage } from '@growi/core';
+import { getIdStringForRef, type IPage } from '@growi/core';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -357,8 +357,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
    * generate object that is related to page.grant*
    */
   generateDocContentsRelatedToRestriction(page: AggregatedPage) {
-    const grantedUserIds = page.grantedUsers.map(user => getIdForRef(user));
-    const grantedGroupIds = page.grantedGroups.map(group => getIdForRef(group.item));
+    const grantedUserIds = page.grantedUsers.map(user => getIdStringForRef(user));
+    const grantedGroupIds = page.grantedGroups.map(group => getIdStringForRef(group.item));
 
     return {
       grant: page.grant,

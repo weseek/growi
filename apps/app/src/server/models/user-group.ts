@@ -19,11 +19,9 @@ export interface UserGroupModel extends Model<UserGroupDocument> {
 /*
  * define schema
  */
-const ObjectId = Schema.Types.ObjectId;
-
 const schema = new Schema<UserGroupDocument, UserGroupModel>({
   name: { type: String, required: true, unique: true },
-  parent: { type: ObjectId, ref: 'UserGroup', index: true },
+  parent: { type: Schema.Types.ObjectId, ref: 'UserGroup', index: true },
   description: { type: String, default: '' },
 }, {
   timestamps: true,

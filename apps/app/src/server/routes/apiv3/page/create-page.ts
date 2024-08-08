@@ -16,11 +16,10 @@ import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import type { IOptionsForCreate } from '~/interfaces/page';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
-import {
-  GlobalNotificationSettingEvent, serializePageSecurely, serializeRevisionSecurely,
-} from '~/server/models';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import { configManager } from '~/server/service/config-manager';
 import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';

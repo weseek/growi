@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 
+import { isPopulated } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import ImageCropModal from '~/client/components/Common/ImageCropModal';
@@ -21,10 +22,10 @@ const ProfileImageSettings = (): JSX.Element => {
 
   const [isGravatarEnabled, setGravatarEnabled] = useState(currentUser?.isGravatarEnabled);
   const [uploadedPictureSrc, setUploadedPictureSrc] = useState(() => {
-    if (typeof currentUser?.imageAttachment === 'string') {
-      return currentUser?.image;
+    if (currentUser?.imageAttachment != null && isPopulated(currentUser.imageAttachment)) {
+      return currentUser.imageAttachment.filePathProxied ?? currentUser.image;
     }
-    return currentUser?.imageAttachment?.filePathProxied ?? currentUser?.image;
+    return currentUser?.image;
   });
 
   const [showImageCropModal, setShowImageCropModal] = useState(false);

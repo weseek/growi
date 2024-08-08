@@ -10,8 +10,6 @@ import uniqueValidator from 'mongoose-unique-validator';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
 export interface IPasswordResetOrder {
   token: string,
   email: string,
@@ -39,7 +37,7 @@ const expiredAt = (): Date => {
 const schema = new Schema<PasswordResetOrderDocument, PasswordResetOrderModel>({
   token: { type: String, required: true, unique: true },
   email: { type: String, required: true },
-  relatedUser: { type: ObjectId, ref: 'User' },
+  relatedUser: { type: Schema.Types.ObjectId, ref: 'User' },
   isRevoked: { type: Boolean, default: false, required: true },
   expiredAt: { type: Date, default: expiredAt, required: true },
 }, {

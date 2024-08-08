@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import {
-  Types, Schema, Model, Document,
-} from 'mongoose';
+import type { Types, Model, Document } from 'mongoose';
+import { Schema } from 'mongoose';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 
@@ -12,7 +11,7 @@ export interface IUpdatePost {
   patternPrefix2: string
   channel: string
   provider: string
-  creator: Schema.Types.ObjectId
+  creator: Types.ObjectId
   createdAt: Date
 }
 

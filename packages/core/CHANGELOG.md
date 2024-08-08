@@ -1,5 +1,14 @@
 # @growi/core
 
+## 1.1.0
+
+### Minor Changes
+
+- [#9010](https://github.com/weseek/growi/pull/9010) [`c2d4766`](https://github.com/weseek/growi/commit/c2d476677574dfb9cd3fb9e18cc8073b30dad842) Thanks [@yuki-takei](https://github.com/yuki-takei)! - - `Ref<T>` is modified - includes ObjectId
+  - `isPopulated()` is updated
+  - `getIdForRef()` is updated
+  - `getIdStringForRef()` is newly added
+
 ## 1.0.0
 
 ### Major Changes

@@ -9,7 +9,6 @@ import styles from './TextFormatTools.module.scss';
 
 const btnTextFormatToolsTogglerClass = styles['btn-text-format-tools-toggler'];
 
-
 type TogglarProps = {
   isOpen: boolean,
   onClick?: () => void,
@@ -34,10 +33,11 @@ const TextFormatToolsToggler = (props: TogglarProps): JSX.Element => {
 
 type TextFormatToolsType = {
   editorKey: string | GlobalCodeMirrorEditorKey,
+  onTextFormatToolsCollapseChange: () => void,
 }
 
 export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
-  const { editorKey } = props;
+  const { editorKey, onTextFormatToolsCollapseChange } = props;
   const [isOpen, setOpen] = useState(false);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
 
@@ -57,7 +57,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
     <div className="d-flex">
       <TextFormatToolsToggler isOpen={isOpen} onClick={toggle} />
 
-      <Collapse isOpen={isOpen} horizontal>
+      <Collapse isOpen={isOpen} horizontal onEntered={onTextFormatToolsCollapseChange} onExited={onTextFormatToolsCollapseChange}>
         <div className="d-flex px-1 gap-1" style={{ width: '220px' }}>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('**', '**')}>
             <span className="material-symbols-outlined fs-5">format_bold</span>

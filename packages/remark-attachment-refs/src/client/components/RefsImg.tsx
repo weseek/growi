@@ -50,7 +50,7 @@ export const RefsImgSubstance = React.memo(({
       width, height, maxWidth, maxHeight,
       display, grid, gridGap, noCarousel]);
 
-  const { data, error, isLoading } = useSWRxRefs(pagePath, prefix, {
+  const { data, error: axiosError, isLoading } = useSWRxRefs(pagePath, prefix, {
     depth,
     regexp,
     width,
@@ -63,6 +63,10 @@ export const RefsImgSubstance = React.memo(({
     noCarousel,
   }, isImmutable);
   const attachments = data != null ? data : [];
+
+  const error = axiosError != null
+    ? new Error(axiosError.response?.data ?? axiosError.message)
+    : undefined;
 
   return (
     <AttachmentList

@@ -20,10 +20,9 @@ export type ShareLinkModel = Model<ShareLinkDocument>;
 /*
  * define schema
  */
-const ObjectId = mongoose.Schema.Types.ObjectId;
 const schema = new Schema<ShareLinkDocument, ShareLinkModel>({
   relatedPage: {
-    type: ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Page',
     required: true,
     index: true,

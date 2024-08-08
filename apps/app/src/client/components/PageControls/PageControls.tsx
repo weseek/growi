@@ -225,11 +225,13 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
   const switchContentWidthClickHandler = useCallback(() => {
+    if (onClickSwitchContentWidth == null) {
+      return;
+    }
 
     const newValue = !expandContentWidth;
-    if (onClickSwitchContentWidth == null || (isGuestUser ?? true) || (isReadOnlyUser ?? true)) {
+    if ((isGuestUser ?? true) || (isReadOnlyUser ?? true)) {
       logger.warn('Could not switch content width', {
-        onClickSwitchContentWidth: onClickSwitchContentWidth == null ? 'null' : 'not null',
         isGuestUser,
         isReadOnlyUser,
       });
@@ -250,12 +252,15 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
     }
-    const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
+    if (onClickSwitchContentWidth == null) {
+      return undefined;
+    }
 
+    const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
       return <WideViewMenuItem {...props} onClick={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
     };
     return wideviewMenuItemRenderer;
-  }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);
+  }, [pageInfo, expandContentWidth, onClickSwitchContentWidth, switchContentWidthClickHandler]);
 
   if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;

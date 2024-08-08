@@ -1,4 +1,4 @@
-const { serializePageSecurely } = require('./page-serializer');
+import { serializePageSecurely } from './page-serializer';
 
 function serializeInsecurePageAttributes(bookmark) {
   if (bookmark.page != null && bookmark.page._id != null) {

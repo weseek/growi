@@ -1,3 +1,5 @@
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
@@ -12,7 +14,6 @@ const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-
 const express = require('express');
 const { body, query, param } = require('express-validator');
 
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 
