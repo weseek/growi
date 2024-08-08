@@ -9,7 +9,6 @@ import nodePath from 'path';
 import { type IPageHasId, Origin } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { CodeMirrorEditorMain } from '@growi/editor/dist/client/components/CodeMirrorEditorMain';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { useRect } from '@growi/ui/dist/utils';
@@ -21,6 +20,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { useUpdatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
+import { useIsYjsEnabled } from '~/client/services/yjs';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
@@ -49,6 +49,7 @@ import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
+import { PageEditorMainSwitcher } from './PageEditorMainSwitcher';
 import Preview from './Preview';
 import { useScrollSync } from './ScrollSyncHelper';
 import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
@@ -110,6 +111,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
+  const isYjsEnabled = useIsYjsEnabled();
+
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
   const { data: rendererOptions } = usePreviewOptions();
@@ -127,7 +130,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   mutateResolvedTheme({ themeData: resolvedTheme });
 
   const currentRevisionId = currentPage?.revision?._id;
-  const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
+  const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined || isYjsEnabled === false;
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -183,7 +186,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         wip: opts?.wip,
         body: markdown ?? '',
         grant: selectedGrant?.grant,
-        origin: Origin.Editor,
+        origin: isYjsEnabled ? Origin.Editor : Origin.EditorSingle,
         userRelatedGrantUserGroupIds: selectedGrant?.userRelatedGrantedGroups,
         ...(opts ?? {}),
       });
@@ -211,7 +214,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       mutateWaitingSaveProcessing(false);
     }
-  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, t, mutateIsGrantNormalized]);
+  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, isYjsEnabled, mutateIsGrantNormalized, t]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
     const markdown = codeMirrorEditor?.getDoc();
@@ -324,7 +327,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [editorMode, mutateReservedNextCaretLine]);
 
-
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
   // // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
@@ -366,8 +368,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
-          <CodeMirrorEditorMain
-            isEditorMode={editorMode === EditorMode.Editor}
+          <PageEditorMainSwitcher
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
             acceptedUploadFileType={acceptedUploadFileType}
@@ -375,9 +376,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             indentSize={currentIndentSize ?? defaultIndentSize}
             user={user ?? undefined}
             pageId={pageId ?? undefined}
-            initialValue={initialValue}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
+            isYjsEnabled={isYjsEnabled}
             cmProps={cmProps}
           />
         </div>

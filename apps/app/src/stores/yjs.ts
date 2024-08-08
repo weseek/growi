@@ -6,8 +6,8 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
+import { useCurrentPageId } from '~/stores/page';
 
-import { useCurrentPageId } from './page';
 
 type CurrentPageYjsDataUtils = {
   updateHasYdocsNewerThanLatestRevision(hasYdocsNewerThanLatestRevision: boolean): void
