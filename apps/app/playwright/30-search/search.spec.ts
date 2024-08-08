@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test('Search page with "q" param is successfully loaded', async({ page }) => {
   // Navigate to the search page with query parameters
-  await page.goto('/_search?q=labels alerts cards blocks');
+  await page.goto('/_search?q=alerts');
 
   // Confirm search result elements are visible
   await expect(page.getByTestId('search-result-base')).toBeVisible();
@@ -14,7 +14,7 @@ test('Search page with "q" param is successfully loaded', async({ page }) => {
 
 test('checkboxes behaviors', async({ page }) => {
   // Navigate to the search page with query parameters
-  await page.goto('/_search?q=labels alerts cards blocks');
+  await page.goto('/_search?q=alerts');
 
   // Confirm search result elements are visible
   await expect(page.getByTestId('search-result-base')).toBeVisible();
@@ -152,7 +152,7 @@ test.describe('Sort with dropdown', () => {
 
 test.describe('Search and use', () => {
   test.beforeEach(async({ page }) => {
-    await page.goto('/_search?q=labels alerts cards blocks');
+    await page.goto('/_search?q=alerts');
 
     await expect(page.getByTestId('search-result-base')).toBeVisible();
     await expect(page.getByTestId('search-result-list')).toBeVisible();
