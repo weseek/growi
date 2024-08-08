@@ -1,9 +1,11 @@
 
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+
 import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
 import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
-import { GlobalNotificationSettingEvent } from '../models';
+import { GlobalNotificationSettingEvent } from '../models/GlobalNotificationSetting';
 import { preNotifyService } from '../service/pre-notify';
 
 /**
@@ -12,7 +14,6 @@ import { preNotifyService } from '../service/pre-notify';
  *    name: Comments
  */
 
-const { serializeUserSecurely } = require('../models/serializers/user-serializer');
 
 /**
  * @swagger

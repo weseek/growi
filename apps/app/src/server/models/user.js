@@ -1,4 +1,5 @@
 /* eslint-disable no-use-before-define */
+import { omitInsecureAttributes } from '@growi/core/dist/models/serializers';
 import { pagePathUtils } from '@growi/core/dist/utils';
 
 import { i18n } from '^/config/next-i18next.config';
@@ -14,8 +15,6 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
-
-const { omitInsecureAttributes } = require('./serializers/user-serializer');
 
 const logger = loggerFactory('growi:models:user');
 
