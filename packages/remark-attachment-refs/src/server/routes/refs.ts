@@ -5,7 +5,7 @@ import type { Request } from 'express';
 import { Router } from 'express';
 import type { Model, HydratedDocument } from 'mongoose';
 import mongoose, { model, Types } from 'mongoose';
-
+import { FilterXSS } from 'xss';
 
 import loggerFactory from '../../utils/logger';
 
@@ -191,7 +191,8 @@ export const routesFactory = (crowi): any => {
       }
     }
     catch (err) {
-      return res.status(400).send(err.toString());
+      const filterXSS = new FilterXSS();
+      return res.status(400).send(filterXSS.process(err.toString()));
     }
 
     const results = await pageQuery.select('id').exec();
