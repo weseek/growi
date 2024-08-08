@@ -60,11 +60,11 @@ test('Search all pages by word', async({ page }) => {
 });
 
 test.describe.serial('Search all pages', () => {
-  test('Search all pages by tag is successfully loaded', async({ page }) => {
-    await page.goto('/');
+  const tag = 'help';
+  const searchText = `tag:${tag}`;
 
-    const tag = 'help';
-    const searchText = `tag:${tag}`;
+  test('Successfully created tags', async({ page }) => {
+    await page.goto('/');
 
     // open Edit Tags Modal to add tag
     await page.locator('.grw-side-contents-sticky-container').isVisible();
@@ -73,6 +73,11 @@ test.describe.serial('Search all pages', () => {
     await page.locator('.rbt-input-main').fill(tag);
     await page.locator('#tag-typeahead-asynctypeahead-item-0').click();
     await page.getByTestId('tag-edit-done-btn').click();
+
+  });
+
+  test('Search all pages by tag is successfully loaded', async({ page }) => {
+    await page.goto('/');
 
     // Search
     await page.getByTestId('open-search-modal-button').click();
