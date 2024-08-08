@@ -9,7 +9,7 @@ import loggerFactory from '~/utils/logger';
 import type Crowi from '../../crowi';
 import { AttachmentType } from '../../interfaces/attachment';
 import { generateCertifyBrandLogoMiddleware } from '../../middlewares/certify-brand-logo';
-import { Attachment } from '../../models';
+import { Attachment } from '../../models/attachment';
 import ApiResponse from '../../util/apiResponse';
 
 import { getActionFactory } from './get';

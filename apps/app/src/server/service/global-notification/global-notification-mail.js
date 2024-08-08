@@ -1,6 +1,6 @@
 import nodePath from 'path';
 
-import { GlobalNotificationSettingEvent, GlobalNotificationSettingType } from '~/server/models';
+import { GlobalNotificationSettingEvent, GlobalNotificationSettingType } from '~/server/models/GlobalNotificationSetting';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
