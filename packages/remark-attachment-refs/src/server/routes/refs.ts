@@ -148,7 +148,7 @@ export const routesFactory = (crowi): any => {
     }
 
     // check regex
-    let regex;
+    let regex: RegExp | null = null;
     const regexOptionValue = options.regexp || options.regex;
     if (regexOptionValue != null) {
       // check the length to avoid ReDoS
