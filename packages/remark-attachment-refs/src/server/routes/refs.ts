@@ -139,7 +139,7 @@ export const routesFactory = (crowi): any => {
   router.get('/refs', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { prefix, pagePath } = req.query;
-    const options = JSON.parse(req.query.options?.toString() ?? '');
+    const options: Record<string, string | undefined> = JSON.parse(req.query.options?.toString() ?? '');
 
     // check either 'prefix' or 'pagePath ' is specified
     if (prefix == null && pagePath == null) {
@@ -149,7 +149,7 @@ export const routesFactory = (crowi): any => {
 
     // check regex
     let regex: RegExp | null = null;
-    const regexOptionValue = options.regexp || options.regex;
+    const regexOptionValue = options.regexp ?? options.regex;
     if (regexOptionValue != null) {
       // check the length to avoid ReDoS
       if (regexOptionValue.length > 400) {
