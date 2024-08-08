@@ -1,5 +1,13 @@
 import { test, expect } from '@playwright/test';
 
+test('Successfully rebuild index', async({ page }) => {
+  await page.goto('/admin/search');
+
+  await page.getByTestId('rebuild-index-button').click();
+
+  await expect(page.getByTestId('rebuild-status')).toContainText('Completed');
+});
+
 test('Search page with "q" param is successfully loaded', async({ page }) => {
   // Navigate to the search page with query parameters
   await page.goto('/_search?q=alerts');
