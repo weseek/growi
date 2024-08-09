@@ -3,9 +3,9 @@ import React, { useMemo } from 'react';
 import { type IUserHasId } from '@growi/core';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { CodeMirrorEditorMain } from '@growi/editor/dist/client/components/CodeMirrorEditorMain';
+import { type CodeMirrorEditorProps } from '@growi/editor/dist/client/interfaces/CodeMirrorEditor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { type CodeMirrorEditorProps } from '@growi/editor/src/client/components-internal/CodeMirrorEditor';
-import { useCollaborativeEditorMode } from '@growi/editor/src/client/stores/use-collaborative-editor-mode';
+import { useCollaborativeEditorMode } from '@growi/editor/dist/client/stores/use-collaborative-editor-mode';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
