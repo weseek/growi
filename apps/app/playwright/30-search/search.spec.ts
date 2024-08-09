@@ -17,12 +17,9 @@ test('Search page with "q" param is successfully loaded', async({ page }) => {
   // Confirm search result elements are visible
   await expect(page.getByTestId('search-result-base')).toBeVisible();
 
-  await expect(page.getByTestId('search-result-base')).toContainText('0 pages');
-
-
-  // await expect(page.getByTestId('search-result-list')).toBeVisible();
-  // await expect(page.getByTestId('search-result-content')).toBeVisible();
-  // await expect(page.locator('.wiki')).toBeVisible();
+  await expect(page.getByTestId('search-result-list')).toBeVisible();
+  await expect(page.getByTestId('search-result-content')).toBeVisible();
+  await expect(page.locator('.wiki')).toBeVisible();
 });
 
 
