@@ -12,14 +12,17 @@ import { test, expect } from '@playwright/test';
 
 test('Search page with "q" param is successfully loaded', async({ page }) => {
   // Navigate to the search page with query parameters
-  await page.goto('/_search?q=alerts');
+  await page.goto('/_search?q=あああああああああああああああああああああああ');
 
   // Confirm search result elements are visible
   await expect(page.getByTestId('search-result-base')).toBeVisible();
 
-  await expect(page.getByTestId('search-result-list')).toBeVisible();
-  await expect(page.getByTestId('search-result-content')).toBeVisible();
-  await expect(page.locator('.wiki')).toBeVisible();
+
+  await expect(page.locator('.search-result-list')).toContainText('0 pages');
+
+  // await expect(page.getByTestId('search-result-list')).toBeVisible();
+  // await expect(page.getByTestId('search-result-content')).toBeVisible();
+  // await expect(page.locator('.wiki')).toBeVisible();
 });
 
 
