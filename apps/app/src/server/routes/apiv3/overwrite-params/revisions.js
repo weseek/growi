@@ -11,7 +11,7 @@ class RevisionOverwriteParamsFactory {
    * generate overwrite params object
    * @param {string} operatorUserId
    * @param {ImportOptionForPages} option
-   * @return object
+   * @return {import('~/server/service/import').OverwriteParams}
    *  key: property name
    *  value: any value or a function `(value, { document, schema, propertyName }) => { return newValue }`
    */

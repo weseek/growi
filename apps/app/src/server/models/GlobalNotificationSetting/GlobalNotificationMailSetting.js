@@ -7,7 +7,7 @@ const GlobalNotificationSetting = require('./index');
 const GlobalNotificationSettingClass = GlobalNotificationSetting.class;
 const GlobalNotificationSettingSchema = GlobalNotificationSetting.schema;
 
-module.exports = function(crowi) {
+const factory = (crowi) => {
   GlobalNotificationSettingClass.crowi = crowi;
   GlobalNotificationSettingSchema.loadClass(GlobalNotificationSettingClass);
 
@@ -23,3 +23,5 @@ module.exports = function(crowi) {
 
   return GlobalNotificationMailSettingModel;
 };
+
+export default factory;

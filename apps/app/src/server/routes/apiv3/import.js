@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { getImportService } from '~/server/service/import';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -56,6 +57,7 @@ const router = express.Router();
  * @param {string} collectionName
  * @param {string} operatorUserId Operator user id
  * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
+ * @return {import('~/server/service/import').OverwriteParams}
  */
 export const generateOverwriteParams = (collectionName, operatorUserId, options) => {
   switch (collectionName) {
@@ -71,7 +73,9 @@ export const generateOverwriteParams = (collectionName, operatorUserId, options)
 };
 
 export default function route(crowi) {
-  const { growiBridgeService, importService, socketIoService } = crowi;
+  const { growiBridgeService, socketIoService } = crowi;
+  const importService = getImportService(crowi);
+
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -281,11 +285,12 @@ export default function route(crowi) {
       const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
 
       // generate options
-      const importSettings = importService.generateImportSettings(options.mode);
-      importSettings.jsonFileName = fileName;
-
-      // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user._id, options);
+      /** @type {import('~/server/service/import').ImportSettings} */
+      const importSettings = {
+        mode: options.mode,
+        jsonFileName: fileName,
+        overwriteParams: generateOverwriteParams(collectionName, req.user._id, options),
+      };
 
       importSettingsMap[collectionName] = importSettings;
     });

@@ -1,10 +1,11 @@
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 
 import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
+import pageModelFactory from '~/server/models/page';
 
 import loggerFactory from '../../utils/logger';
-import Crowi from '../crowi';
-import { getModelSafely } from '../util/mongoose-utils';
+import type Crowi from '../crowi';
+import userModelFactory from '../models/user';
 
 // https://regex101.com/r/Ztxj2j/1
 const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
@@ -33,7 +34,7 @@ class CommentService {
     commentEvent.on(CommentEvent.CREATE, async(savedComment) => {
 
       try {
-        const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
+        const Page = pageModelFactory(this.crowi);
         await Page.updateCommentCount(savedComment.page);
       }
       catch (err) {
@@ -49,7 +50,7 @@ class CommentService {
     // remove
     commentEvent.on(CommentEvent.DELETE, async(removedComment) => {
       try {
-        const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
+        const Page = pageModelFactory(this.crowi);
         await Page.updateCommentCount(removedComment.page);
       }
       catch (err) {
@@ -59,7 +60,7 @@ class CommentService {
   }
 
   getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
-    const User = getModelSafely('User') || require('../models/user')(this.crowi);
+    const User = userModelFactory(this.crowi);
 
     // Get comment by comment ID
     const commentData = await Comment.findOne({ _id: commentId });

@@ -3,41 +3,30 @@
  * @typedef {import("@types/unzip-stream").Entry} Entry
  */
 
-import { parseISO } from 'date-fns/parseISO';
+import fs from 'fs';
+import path from 'path';
+import { Writable, Transform } from 'stream';
+
+import JSONStream from 'JSONStream';
 import gc from 'expose-gc/function';
+import mongoose from 'mongoose';
+import streamToPromise from 'stream-to-promise';
+import unzipStream from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
 
-const fs = require('fs');
-const path = require('path');
-const { Writable, Transform } = require('stream');
+import CollectionProgressingStatus from '../../models/vo/collection-progressing-status';
+import { createBatchStream } from '../../util/batch-stream';
 
-const JSONStream = require('JSONStream');
-const isIsoDate = require('is-iso-date');
-const mongoose = require('mongoose');
-const streamToPromise = require('stream-to-promise');
-const unzipStream = require('unzip-stream');
-
-const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
-const { createBatchStream } = require('../util/batch-stream');
-
-const { ObjectId } = mongoose.Types;
+import { constructConvertMap } from './construct-convert-map';
+import { getModelFromCollectionName } from './get-model-from-collection-name';
+import { keepOriginal } from './overwrite-function';
 
 const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 
 
 const BULK_IMPORT_SIZE = 100;
 
-
-export class ImportSettings {
-
-  constructor(mode) {
-    this.mode = mode || 'insert';
-    this.jsonFileName = null;
-    this.overwriteParams = null;
-  }
-
-}
 
 class ImportingCollectionError extends Error {
 
@@ -49,83 +38,20 @@ class ImportingCollectionError extends Error {
 }
 
 
-class ImportService {
+export class ImportService {
 
   constructor(crowi) {
     this.crowi = crowi;
     this.growiBridgeService = crowi.growiBridgeService;
     this.getFile = this.growiBridgeService.getFile.bind(this);
     this.baseDir = path.join(crowi.tmpDir, 'imports');
-    this.keepOriginal = this.keepOriginal.bind(this);
 
     this.adminEvent = crowi.event('admin');
 
-    // { pages: { _id: ..., path: ..., ...}, users: { _id: ..., username: ..., }, ... }
-    this.convertMap = {};
-    this.initConvertMap(crowi.models);
+    /** @type {import('./construct-convert-map').ConvertMap} */
+    this.convertMap = constructConvertMap(crowi);
 
     this.currentProgressingStatus = null;
-  }
-
-  /**
-   * generate ImportSettings instance
-   * @param {string} mode bulk operation mode (insert | upsert | flushAndInsert)
-   */
-  generateImportSettings(mode) {
-    return new ImportSettings(mode);
-  }
-
-  /**
-   * initialize convert map. set keepOriginal as default
-   *
-   * @memberOf ImportService
-   * @param {object} models from models/index.js
-   */
-  initConvertMap(models) {
-    // by default, original value is used for imported documents
-    for (const model of Object.values(models)) {
-      if (model.collection == null) {
-        continue;
-      }
-
-      const collectionName = model.collection.name;
-      this.convertMap[collectionName] = {};
-
-      for (const key of Object.keys(model.schema.paths)) {
-        this.convertMap[collectionName][key] = this.keepOriginal;
-      }
-    }
-  }
-
-  /**
-   * keep original value
-   * automatically convert ObjectId
-   *
-   * @memberOf ImportService
-   * @param {any} value value from imported document
-   * @param {{ document: object, schema: object, propertyName: string }}
-   * @return {any} new value for the document
-   *
-   * @see https://mongoosejs.com/docs/api/schematype.html#schematype_SchemaType-cast
-   */
-  keepOriginal(value, { document, schema, propertyName }) {
-    // Model
-    if (schema != null && schema.path(propertyName) != null) {
-      const schemaType = schema.path(propertyName);
-      return schemaType.cast(value);
-    }
-
-    // _id
-    if (propertyName === '_id' && ObjectId.isValid(value)) {
-      return ObjectId(value);
-    }
-
-    // Date
-    if (isIsoDate(value)) {
-      return parseISO(value);
-    }
-
-    return value;
   }
 
   /**
@@ -181,8 +107,9 @@ class ImportService {
   /**
    * import collections from json
    *
-   * @param {string} collections MongoDB collection name
-   * @param {array} importSettingsMap key: collection name, value: ImportSettings instance
+   * @param {string[]} collections MongoDB collection name
+   * @param {{ [collectionName: string]: ImportSettings }} importSettingsMap key: collection name, value: ImportSettings instance
+   * @return {Promise<void>}
    */
   async import(collections, importSettingsMap) {
     // init status object
@@ -466,7 +393,7 @@ class ImportService {
    * @return {object} document to be persisted
    */
   convertDocuments(collectionName, document, overwriteParams) {
-    const Model = this.growiBridgeService.getModelFromCollectionName(collectionName);
+    const Model = getModelFromCollectionName(collectionName);
     const schema = (Model != null) ? Model.schema : null;
     const convertMap = this.convertMap[collectionName];
 
@@ -476,7 +403,7 @@ class ImportService {
     if (convertMap == null) {
       // apply keepOriginal to all of properties
       Object.entries(document).forEach(([propertyName, value]) => {
-        _document[propertyName] = this.keepOriginal(value, { document, propertyName });
+        _document[propertyName] = keepOriginal(value, { document, propertyName });
       });
     }
     // Mongoose Model
@@ -537,5 +464,3 @@ class ImportService {
   }
 
 }
-
-module.exports = ImportService;

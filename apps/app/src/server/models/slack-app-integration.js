@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import { defaultSupportedSlackEventActions } from '@growi/slack';
 import mongoose from 'mongoose';
 
+import { getModelSafely } from '../util/mongoose-utils';
+
 
 const schema = new mongoose.Schema({
   tokenGtoP: { type: String, required: true, unique: true },
@@ -53,8 +55,15 @@ class SlackAppIntegration {
 
 }
 
-module.exports = function(crowi) {
+const factory = (crowi) => {
+  const modelExists = getModelSafely('SlackAppIntegration');
+  if (modelExists != null) {
+    return modelExists;
+  }
+
   SlackAppIntegration.crowi = crowi;
   schema.loadClass(SlackAppIntegration);
   return mongoose.model('SlackAppIntegration', schema);
 };
+
+export default factory;

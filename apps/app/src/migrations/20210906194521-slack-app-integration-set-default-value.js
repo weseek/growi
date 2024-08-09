@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import slackAppIntegrationFactory from '~/server/models/slack-app-integration';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:migrate:slack-app-integration-set-default-value');
 
@@ -10,8 +12,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
 
-    // Add columns + set all default commands if supportedCommandsForBroadcastUse column does not exist
-    const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
+    const SlackAppIntegration = slackAppIntegrationFactory();
 
     // Add togetter command if supportedCommandsForBroadcastUse already exists
     const slackAppIntegrations = await SlackAppIntegration.find();

@@ -18,12 +18,6 @@ describe('Test for Crowi application context', () => {
       expect(crowi.getConfig()).toEqual({ test: 1 });
     });
 
-    test('model getter, setter', async() => {
-      const crowi = await getInstance();
-      // set
-      crowi.model('hoge', { fuga: 1 });
-      expect(crowi.model('hoge')).toEqual({ fuga: 1 });
-    });
   });
 
 });

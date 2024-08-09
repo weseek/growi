@@ -1,7 +1,9 @@
 import mongoose from 'mongoose';
 
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import userModelFactory from '~/server/models/user';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:migrate:make-email-unique');
 
@@ -11,7 +13,7 @@ module.exports = {
     logger.info('Start migration');
     mongoose.connect(getMongoUri(), mongoOptions);
 
-    const User = getModelSafely('User') || require('~/server/models/user')();
+    const User = userModelFactory();
 
     // get all users who has 'deleted@deleted' email
     const users = await User.find({ email: 'deleted@deleted' });

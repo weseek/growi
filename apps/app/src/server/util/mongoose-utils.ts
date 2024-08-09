@@ -27,10 +27,7 @@ export const getModelSafely = <Interface, Method = Interface>(modelName: string)
 
 // TODO: Do not use any type
 export const getOrCreateModel = <Interface, Method>(modelName: string, schema: any): Method & Model<Interface & Document> => {
-  if (mongoose.modelNames().includes(modelName)) {
-    return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName);
-  }
-  return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName, schema);
+  return getModelSafely(modelName) ?? mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName, schema);
 };
 
 // supress deprecation warnings

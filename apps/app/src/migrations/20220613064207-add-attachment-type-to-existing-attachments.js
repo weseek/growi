@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 import { AttachmentType } from '~/server/interfaces/attachment';
-import { Attachment } from '~/server/models';
+import { Attachment } from '~/server/models/attachment';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 

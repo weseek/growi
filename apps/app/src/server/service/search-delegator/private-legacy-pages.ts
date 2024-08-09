@@ -1,4 +1,5 @@
 import type { IPage } from '@growi/core';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import mongoose from 'mongoose';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';

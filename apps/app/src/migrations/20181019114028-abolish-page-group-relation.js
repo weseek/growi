@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
 
-import getPageModel from '~/server/models/page';
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import pageModelFactory from '~/server/models/page';
+import userGroupModelFactory from '~/server/models/user-group';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:migrate:abolish-page-group-relation');
 
@@ -38,8 +40,8 @@ module.exports = {
       return;
     }
 
-    const Page = getModelSafely('Page') || getPageModel();
-    const UserGroup = getModelSafely('UserGroup') || require('~/server/models/user-group')();
+    const Page = pageModelFactory();
+    const UserGroup = userGroupModelFactory();
 
     // retrieve all documents from 'pagegrouprelations'
     const relations = await db.collection('pagegrouprelations').find().toArray();
@@ -75,8 +77,8 @@ module.exports = {
     logger.info('Rollback migration');
     mongoose.connect(getMongoUri(), mongoOptions);
 
-    const Page = getModelSafely('Page') || getPageModel();
-    const UserGroup = getModelSafely('UserGroup') || require('~/server/models/user-group')();
+    const Page = pageModelFactory();
+    const UserGroup = userGroupModelFactory();
 
     // retrieve all Page documents which granted by UserGroup
     const relatedPages = await Page.find({ grant: Page.GRANT_USER_GROUP });
