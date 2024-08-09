@@ -11,6 +11,7 @@ import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
 } from 'reactstrap';
+import SimpleBar from 'simplebar-react';
 
 import type { IPageForItem } from '~/interfaces/page';
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
@@ -23,19 +24,16 @@ import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
-import 'simplebar';
-import 'simplebar/dist/simplebar.css';
+import 'simplebar-react/dist/simplebar.min.css';
 
 const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
 
   const { children } = props;
-
-
   return (
     <div className="grw-page-select-modal-wrapper">
-      <div data-simplebar>
+      <SimpleBar style={{ maxHeight: 500 }}>
         { children }
-      </div>
+      </SimpleBar>
     </div>
   );
 });
