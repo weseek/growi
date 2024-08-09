@@ -83,6 +83,7 @@ class RebuildIndexControls extends React.Component {
           className="btn btn-primary"
           onClick={() => { this.props.onRebuildingRequested() }}
           disabled={!isEnabled}
+          data-testid="rebuild-index-button"
         >
           { t('full_text_search_management.rebuild_button') }
         </button>
