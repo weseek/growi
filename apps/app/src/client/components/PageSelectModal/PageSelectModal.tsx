@@ -20,7 +20,6 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { ItemsTree } from '../ItemsTree';
 import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
-import { StickyStretchableScroller } from '../StickyStretchableScroller';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
