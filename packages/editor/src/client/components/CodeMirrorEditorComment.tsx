@@ -4,7 +4,8 @@ import type { Extension } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
 
 import type { GlobalCodeMirrorEditorKey } from '../../consts';
-import { CodeMirrorEditor, type CodeMirrorEditorProps } from '../components-internal/CodeMirrorEditor';
+import { CodeMirrorEditor } from '../components-internal/CodeMirrorEditor';
+import type { CodeMirrorEditorProps } from '../interfaces/CodeMirrorEditor';
 import { useCodeMirrorEditorIsolated } from '../stores/codemirror-editor';
 
 
