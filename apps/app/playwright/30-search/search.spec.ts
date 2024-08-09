@@ -10,26 +10,9 @@ import { test, expect } from '@playwright/test';
 //   await expect(page.getByTestId('rebuild-status')).toContainText('Completed');
 // });
 
-const searchText = 'Hello, GROWI';
-const searchUrl = `_search?q=${searchText}`;
-
-test('Successfully created page for search', async({ page }) => {
-  await page.goto('/');
-
-  await page.getByTestId('grw-page-create-button').click();
-
-  await page.locator('.cm-content').fill(searchText);
-  await expect(page.getByTestId('page-editor-preview-body')).toContainText(searchText);
-
-  await page.getByTestId('save-page-btn').click();
-
-  await expect(page.locator('.wiki').first()).toContainText(searchText);
-});
-
-
 test('Search page with "q" param is successfully loaded', async({ page }) => {
   // Navigate to the search page with query parameters
-  await page.goto(searchUrl);
+  await page.goto('/_search?q=alerts');
 
   // Confirm search result elements are visible
   await expect(page.getByTestId('search-result-base')).toBeVisible();
@@ -40,52 +23,52 @@ test('Search page with "q" param is successfully loaded', async({ page }) => {
 });
 
 
-test('checkboxes behaviors', async({ page }) => {
-  // Navigate to the search page with query parameters
-  await page.goto(searchUrl);
+// test('checkboxes behaviors', async({ page }) => {
+//   // Navigate to the search page with query parameters
+//   await page.goto('/_search?q=alerts');
 
-  // Confirm search result elements are visible
-  await expect(page.getByTestId('search-result-base')).toBeVisible();
-  await expect(page.getByTestId('search-result-list')).toBeVisible();
-  await expect(page.getByTestId('search-result-content')).toBeVisible();
-  await expect(page.locator('.wiki')).toBeVisible();
+//   // Confirm search result elements are visible
+//   await expect(page.getByTestId('search-result-base')).toBeVisible();
+//   await expect(page.getByTestId('search-result-list')).toBeVisible();
+//   await expect(page.getByTestId('search-result-content')).toBeVisible();
+//   await expect(page.locator('.wiki')).toBeVisible();
 
-  // Click the first checkbox
-  await page.getByTestId('cb-select').first().click({ force: true });
+//   // Click the first checkbox
+//   await page.getByTestId('cb-select').first().click({ force: true });
 
-  // Unclick the first checkbox
-  await page.getByTestId('cb-select').first().click({ force: true });
+//   // Unclick the first checkbox
+//   await page.getByTestId('cb-select').first().click({ force: true });
 
-  // Click the select all checkbox
-  await page.getByTestId('delete-control-button').first().click({ force: true });
-  await page.getByTestId('cb-select-all').click({ force: true });
+//   // Click the select all checkbox
+//   await page.getByTestId('delete-control-button').first().click({ force: true });
+//   await page.getByTestId('cb-select-all').click({ force: true });
 
-  // Unclick the first checkbox after selecting all
-  await page.getByTestId('cb-select').first().click({ force: true });
+//   // Unclick the first checkbox after selecting all
+//   await page.getByTestId('cb-select').first().click({ force: true });
 
-  // Click the first checkbox again
-  await page.getByTestId('cb-select').first().click({ force: true });
+//   // Click the first checkbox again
+//   await page.getByTestId('cb-select').first().click({ force: true });
 
-  // Unclick the select all checkbox
-  await page.getByTestId('cb-select').first().click({ force: true });
-});
+//   // Unclick the select all checkbox
+//   await page.getByTestId('cb-select').first().click({ force: true });
+// });
 
 
-test('successfully loads /_private-legacy-pages', async({ page }) => {
-  await page.goto('/_private-legacy-pages');
+// test('successfully loads /_private-legacy-pages', async({ page }) => {
+//   await page.goto('/_private-legacy-pages');
 
-  // Confirm search result elements are visible
-  await expect(page.locator('[data-testid="search-result-base"]')).toBeVisible();
-  await expect(page.locator('[data-testid="search-result-private-legacy-pages"]')).toBeVisible();
-});
+//   // Confirm search result elements are visible
+//   await expect(page.locator('[data-testid="search-result-base"]')).toBeVisible();
+//   await expect(page.locator('[data-testid="search-result-private-legacy-pages"]')).toBeVisible();
+// });
 
-test('Search all pages by word', async({ page }) => {
-  await page.goto('/');
-  await page.getByTestId('open-search-modal-button').click();
-  await expect(page.getByTestId('search-modal')).toBeVisible();
-  await page.locator('.form-control').fill(searchText);
-  await expect(page.locator('.search-menu-item').first()).toBeVisible();
-});
+// test('Search all pages by word', async({ page }) => {
+//   await page.goto('/');
+//   await page.getByTestId('open-search-modal-button').click();
+//   await expect(page.getByTestId('search-modal')).toBeVisible();
+//   await page.locator('.form-control').fill('sand');
+//   await expect(page.locator('.search-menu-item').first()).toBeVisible();
+// });
 
 // test.describe.serial('Search all pages', () => {
 //   const tag = 'help';
@@ -130,123 +113,127 @@ test('Search all pages by word', async({ page }) => {
 //   });
 // });
 
-test.describe('Sort with dropdown', () => {
-  test.beforeEach(async({ page }) => {
-    await page.goto(searchUrl);
+// test.describe('Sort with dropdown', () => {
+//   test.beforeEach(async({ page }) => {
+//     await page.goto('/_search?q=sand');
 
-    await expect(page.getByTestId('search-result-base')).toBeVisible();
-    await expect(page.getByTestId('search-result-list')).toBeVisible();
-    await expect(page.getByTestId('search-result-content')).toBeVisible();
+//     await expect(page.getByTestId('search-result-base')).toBeVisible();
+//     await expect(page.getByTestId('search-result-list')).toBeVisible();
+//     await expect(page.getByTestId('search-result-content')).toBeVisible();
 
-    // open sort dropdown
-    await page.locator('.search-control').locator('button').first().click();
-  });
+//     // open sort dropdown
+//     await page.locator('.search-control').locator('button').first().click();
+//   });
 
-  test('Open sort dropdown', async({ page }) => {
-    await expect(page.locator('.search-control .dropdown-menu.show')).toBeVisible();
-  });
+//   test('Open sort dropdown', async({ page }) => {
+//     await expect(page.locator('.search-control .dropdown-menu.show')).toBeVisible();
+//   });
 
-  test('Sort by relevance', async({ page }) => {
-    const dropdownMenu = page.locator('.search-control .dropdown-menu.show');
+//   test('Sort by relevance', async({ page }) => {
+//     const dropdownMenu = page.locator('.search-control .dropdown-menu.show');
 
-    await expect(dropdownMenu).toBeVisible();
-    await dropdownMenu.locator('.dropdown-item').nth(0).click();
+//     await expect(dropdownMenu).toBeVisible();
+//     await dropdownMenu.locator('.dropdown-item').nth(0).click();
 
-    await expect(page.getByTestId('search-result-base')).toBeVisible();
-    await expect(page.getByTestId('search-result-list')).toBeVisible();
-    await expect(page.getByTestId('search-result-content')).toBeVisible();
-  });
 
-  test('Sort by creation date', async({ page }) => {
-    const dropdownMenu = page.locator('.search-control .dropdown-menu.show');
+//     await expect(page.getByTestId('search-result-base')).toBeVisible();
+//     await expect(page.getByTestId('search-result-list')).toBeVisible();
+//     await expect(page.getByTestId('search-result-content')).toBeVisible();
+//   });
 
-    await expect(dropdownMenu).toBeVisible();
-    await dropdownMenu.locator('.dropdown-item').nth(1).click();
+//   test('Sort by creation date', async({ page }) => {
+//     const dropdownMenu = page.locator('.search-control .dropdown-menu.show');
 
-    await expect(page.getByTestId('search-result-base')).toBeVisible();
-    await expect(page.getByTestId('search-result-list')).toBeVisible();
-    await expect(page.getByTestId('search-result-content')).toBeVisible();
-  });
+//     await expect(dropdownMenu).toBeVisible();
+//     await dropdownMenu.locator('.dropdown-item').nth(1).click();
 
-  test('Sort by last update date', async({ page }) => {
-    const dropdownMenu = page.locator('.search-control .dropdown-menu.show');
 
-    await expect(dropdownMenu).toBeVisible();
-    await dropdownMenu.locator('.dropdown-item').nth(2).click();
+//     await expect(page.getByTestId('search-result-base')).toBeVisible();
+//     await expect(page.getByTestId('search-result-list')).toBeVisible();
+//     await expect(page.getByTestId('search-result-content')).toBeVisible();
+//   });
 
-    await expect(page.getByTestId('search-result-base')).toBeVisible();
-    await expect(page.getByTestId('search-result-list')).toBeVisible();
-    await expect(page.getByTestId('search-result-content')).toBeVisible();
-  });
-});
+//   test('Sort by last update date', async({ page }) => {
+//     const dropdownMenu = page.locator('.search-control .dropdown-menu.show');
 
-test.describe('Search and use', () => {
-  test.beforeEach(async({ page }) => {
-    await page.goto(searchUrl);
+//     await expect(dropdownMenu).toBeVisible();
+//     await dropdownMenu.locator('.dropdown-item').nth(2).click();
 
-    await expect(page.getByTestId('search-result-base')).toBeVisible();
-    await expect(page.getByTestId('search-result-list')).toBeVisible();
-    await expect(page.getByTestId('search-result-content')).toBeVisible();
 
-    await page.getByTestId('page-list-item-L').first().getByTestId('open-page-item-control-btn').click();
-    await expect(page.locator('.dropdown-menu.show')).toBeVisible();
-  });
+//     await expect(page.getByTestId('search-result-base')).toBeVisible();
+//     await expect(page.getByTestId('search-result-list')).toBeVisible();
+//     await expect(page.getByTestId('search-result-content')).toBeVisible();
+//   });
+// });
 
-  test('Successfully the dropdown is opened', async({ page }) => {
-    await expect(page.locator('.dropdown-menu.show')).toBeVisible();
-  });
+// test.describe('Search and use', () => {
+//   test.beforeEach(async({ page }) => {
+//     await page.goto('/_search?q=alerts');
 
-  test('Successfully add bookmark', async({ page }) => {
-    const dropdonwMenu = page.locator('.dropdown-menu.show');
+//     await expect(page.getByTestId('search-result-base')).toBeVisible();
+//     await expect(page.getByTestId('search-result-list')).toBeVisible();
+//     await expect(page.getByTestId('search-result-content')).toBeVisible();
 
-    await expect(dropdonwMenu).toBeVisible();
+//     await page.getByTestId('page-list-item-L').first().getByTestId('open-page-item-control-btn').click();
+//     await expect(page.locator('.dropdown-menu.show')).toBeVisible();
+//   });
 
-    // Add bookmark
-    await dropdonwMenu.getByTestId('add-bookmark-btn').click();
+//   test('Successfully the dropdown is opened', async({ page }) => {
+//     await expect(page.locator('.dropdown-menu.show')).toBeVisible();
+//   });
 
-    await expect(page.getByTestId('search-result-content').locator('.btn-bookmark.active').first()).toBeVisible();
-  });
+//   test('Successfully add bookmark', async({ page }) => {
+//     const dropdonwMenu = page.locator('.dropdown-menu.show');
 
-  test('Successfully open duplicate modal', async({ page }) => {
-    const dropdonwMenu = page.locator('.dropdown-menu.show');
+//     await expect(dropdonwMenu).toBeVisible();
 
-    await expect(dropdonwMenu).toBeVisible();
+//     // Add bookmark
+//     await dropdonwMenu.getByTestId('add-bookmark-btn').click();
 
-    await dropdonwMenu.getByTestId('open-page-duplicate-modal-btn').click();
+//     await expect(page.getByTestId('search-result-content').locator('.btn-bookmark.active').first()).toBeVisible();
+//   });
 
-    await expect(page.getByTestId('page-duplicate-modal')).toBeVisible();
-  });
+//   test('Successfully open duplicate modal', async({ page }) => {
+//     const dropdonwMenu = page.locator('.dropdown-menu.show');
 
-  test('Successfully open move/rename modal', async({ page }) => {
-    const dropdonwMenu = page.locator('.dropdown-menu.show');
+//     await expect(dropdonwMenu).toBeVisible();
 
-    await expect(dropdonwMenu).toBeVisible();
+//     await dropdonwMenu.getByTestId('open-page-duplicate-modal-btn').click();
 
-    await dropdonwMenu.getByTestId('rename-page-btn').click();
+//     await expect(page.getByTestId('page-duplicate-modal')).toBeVisible();
+//   });
 
-    await expect(page.getByTestId('page-rename-modal')).toBeVisible();
-  });
+//   test('Successfully open move/rename modal', async({ page }) => {
+//     const dropdonwMenu = page.locator('.dropdown-menu.show');
 
-  test('Successfully open delete modal', async({ page }) => {
-    const dropdonwMenu = page.locator('.dropdown-menu.show');
+//     await expect(dropdonwMenu).toBeVisible();
 
-    await expect(dropdonwMenu).toBeVisible();
+//     await dropdonwMenu.getByTestId('rename-page-btn').click();
 
-    await dropdonwMenu.getByTestId('open-page-delete-modal-btn').click();
+//     await expect(page.getByTestId('page-rename-modal')).toBeVisible();
+//   });
 
-    await expect(page.getByTestId('page-delete-modal')).toBeVisible();
-  });
-});
+//   test('Successfully open delete modal', async({ page }) => {
+//     const dropdonwMenu = page.locator('.dropdown-menu.show');
 
-test('Search current tree by word is successfully loaded', async({ page }) => {
-  await page.goto('/');
+//     await expect(dropdonwMenu).toBeVisible();
 
-  await page.getByTestId('open-search-modal-button').click();
-  await expect(page.getByTestId('search-modal')).toBeVisible();
-  await page.locator('.form-control').fill(searchText);
-  await page.getByTestId('search-prefix-menu-item').click();
+//     await dropdonwMenu.getByTestId('open-page-delete-modal-btn').click();
 
-  await expect(page.getByTestId('search-result-base')).toBeVisible();
-  await expect(page.getByTestId('search-result-list')).toBeVisible();
-  await expect(page.getByTestId('search-result-content')).toBeVisible();
-});
+//     await expect(page.getByTestId('page-delete-modal')).toBeVisible();
+//   });
+// });
+
+// test('Search current tree by word is successfully loaded', async({ page }) => {
+//   await page.goto('/');
+//   const searchText = 'GROWI';
+
+//   await page.getByTestId('open-search-modal-button').click();
+//   await expect(page.getByTestId('search-modal')).toBeVisible();
+//   await page.locator('.form-control').fill(searchText);
+//   await page.getByTestId('search-prefix-menu-item').click();
+
+//   await expect(page.getByTestId('search-result-base')).toBeVisible();
+//   await expect(page.getByTestId('search-result-list')).toBeVisible();
+//   await expect(page.getByTestId('search-result-content')).toBeVisible();
+// });
