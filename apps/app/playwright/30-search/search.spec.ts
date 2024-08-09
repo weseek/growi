@@ -1,14 +1,15 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Logger } from '@playwright/test';
 
-// test('Successfully rebuild index', async({ page }) => {
-//   await page.goto('/admin/search');
+test('Successfully rebuild index', async({ page }) => {
+  await page.goto('/admin/search');
 
-//   await expect(page.getByTestId('admin-full-text-search')).toBeVisible();
+  await expect(page.getByTestId('admin-full-text-search')).toBeVisible();
 
-//   await page.getByTestId('rebuild-index-button').click();
 
-//   await expect(page.getByTestId('rebuild-status')).toContainText('Completed');
-// });
+  // await page.getByTestId('rebuild-index-button').click();
+
+  // await expect(page.getByTestId('rebuild-status')).toContainText('Completed');
+});
 
 test('Search page with "q" param is successfully loaded', async({ page }) => {
   // Navigate to the search page with query parameters
@@ -17,8 +18,8 @@ test('Search page with "q" param is successfully loaded', async({ page }) => {
   // Confirm search result elements are visible
   await expect(page.getByTestId('search-result-base')).toBeVisible();
 
+  await expect(page.getByTestId('connection-status-badge-connected')).toHaveText('CONNECTED');
 
-  await expect(page.locator('.search-result-list')).toContainText('0 pages');
 
   // await expect(page.getByTestId('search-result-list')).toBeVisible();
   // await expect(page.getByTestId('search-result-content')).toBeVisible();
