@@ -1,6 +1,7 @@
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
-import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';

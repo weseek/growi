@@ -1,6 +1,7 @@
 
 import { PageGrant } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath, addHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import express from 'express';
@@ -17,7 +18,6 @@ import { generateAddActivityMiddleware } from '../../../middlewares/add-activity
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import { serializePageSecurely } from '../../../models/serializers/page-serializer';
-import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { isV5ConversionError } from '../../../models/vo/v5-conversion-error';
 
 

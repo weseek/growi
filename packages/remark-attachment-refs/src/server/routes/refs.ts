@@ -5,6 +5,7 @@ import type { Request } from 'express';
 import { Router } from 'express';
 import type { Model, HydratedDocument } from 'mongoose';
 import mongoose, { model, Types } from 'mongoose';
+import { FilterXSS } from 'xss';
 
 import loggerFactory from '../../utils/logger';
 
@@ -13,6 +14,55 @@ const logger = loggerFactory('growi:remark-attachment-refs:routes:refs');
 
 type RequestWithUser = Request & { user: HydratedDocument<IUser> };
 
+
+function generateRegexp(expression: string): RegExp {
+  // https://regex101.com/r/uOrwqt/2
+  const matches = expression.match(/^\/(.+)\/(.*)?$/);
+
+  return (matches != null)
+    ? new RegExp(matches[1], matches[2])
+    : new RegExp(expression);
+}
+
+/**
+ * add depth condition that limit fetched pages
+ *
+ * @param {any} query
+ * @param {any} pagePath
+ * @param {any} optionsDepth
+ * @returns query
+ */
+function addDepthCondition(query, pagePath, optionsDepth) {
+  // when option strings is 'depth=', the option value is true
+  if (optionsDepth == null || optionsDepth === true) {
+    throw new Error('The value of depth option is invalid.');
+  }
+
+  const range = OptionParser.parseRange(optionsDepth);
+
+  if (range == null) {
+    return query;
+  }
+
+  const start = range.start;
+  const end = range.end;
+
+  if (start < 1 || end < 1) {
+    throw new Error(`specified depth is [${start}:${end}] : start and end are must be larger than 1`);
+  }
+
+  // count slash
+  const slashNum = pagePath.split('/').length - 1;
+  const depthStart = slashNum; // start is not affect to fetch page
+  const depthEnd = slashNum + end - 1;
+
+  return query.and({
+    path: new RegExp(`^(\\/[^\\/]*){${depthStart},${depthEnd}}$`),
+  });
+}
+
+
+type RequestWithUser = Request & { user: HydratedDocument<IUser> };
 
 const loginRequiredFallback = (req, res) => {
   return res.status(403).send('login required');
@@ -32,52 +82,6 @@ export const routesFactory = (crowi): any => {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const { PageQueryBuilder } = Page as any;
-
-  function generateRegexp(expression: string): RegExp {
-    // https://regex101.com/r/uOrwqt/2
-    const matches = expression.match(/^\/(.+)\/(.*)?$/);
-
-    return (matches != null)
-      ? new RegExp(matches[1], matches[2])
-      : new RegExp(expression);
-  }
-
-  /**
-   * add depth condition that limit fetched pages
-   *
-   * @param {any} query
-   * @param {any} pagePath
-   * @param {any} optionsDepth
-   * @returns query
-   */
-  function addDepthCondition(query, pagePath, optionsDepth) {
-    // when option strings is 'depth=', the option value is true
-    if (optionsDepth == null || optionsDepth === true) {
-      throw new Error('The value of depth option is invalid.');
-    }
-
-    const range = OptionParser.parseRange(optionsDepth);
-
-    if (range == null) {
-      return query;
-    }
-
-    const start = range.start;
-    const end = range.end;
-
-    if (start < 1 || end < 1) {
-      throw new Error(`specified depth is [${start}:${end}] : start and end are must be larger than 1`);
-    }
-
-    // count slash
-    const slashNum = pagePath.split('/').length - 1;
-    const depthStart = slashNum; // start is not affect to fetch page
-    const depthEnd = slashNum + end - 1;
-
-    return query.and({
-      path: new RegExp(`^(\\/[^\\/]*){${depthStart},${depthEnd}}$`),
-    });
-  }
 
   /**
    * return an Attachment model
@@ -139,7 +143,7 @@ export const routesFactory = (crowi): any => {
   router.get('/refs', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { prefix, pagePath } = req.query;
-    const options = JSON.parse(req.query.options?.toString() ?? '');
+    const options: Record<string, string | undefined> = JSON.parse(req.query.options?.toString() ?? '');
 
     // check either 'prefix' or 'pagePath ' is specified
     if (prefix == null && pagePath == null) {
@@ -148,8 +152,8 @@ export const routesFactory = (crowi): any => {
     }
 
     // check regex
-    let regex;
-    const regexOptionValue = options.regexp || options.regex;
+    let regex: RegExp | null = null;
+    const regexOptionValue = options.regexp ?? options.regex;
     if (regexOptionValue != null) {
       // check the length to avoid ReDoS
       if (regexOptionValue.length > 400) {
@@ -190,7 +194,8 @@ export const routesFactory = (crowi): any => {
       }
     }
     catch (err) {
-      return res.status(400).send(err);
+      const filterXSS = new FilterXSS();
+      return res.status(400).send(filterXSS.process(err.toString()));
     }
 
     const results = await pageQuery.select('id').exec();

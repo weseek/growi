@@ -4,7 +4,7 @@ import type { Router, Request } from 'express';
 import type { IExternalUserGroupRelationHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import type Crowi from '~/server/crowi';
-import { serializeUserGroupRelationSecurely } from '~/server/models/serializers';
+import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 

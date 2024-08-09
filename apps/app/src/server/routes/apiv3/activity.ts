@@ -97,6 +97,7 @@ module.exports = (crowi: Crowi): Router => {
       const paginateResult = await Activity.paginate(
         query,
         {
+          lean: true,
           limit,
           offset,
           sort: { createdAt: -1 },
