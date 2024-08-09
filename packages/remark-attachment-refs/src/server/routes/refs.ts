@@ -12,9 +12,6 @@ import loggerFactory from '../../utils/logger';
 const logger = loggerFactory('growi:remark-attachment-refs:routes:refs');
 
 
-type RequestWithUser = Request & { user: HydratedDocument<IUser> };
-
-
 function generateRegexp(expression: string): RegExp {
   // https://regex101.com/r/uOrwqt/2
   const matches = expression.match(/^\/(.+)\/(.*)?$/);
