@@ -30,9 +30,6 @@ const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
 
   const { children } = props;
 
-  const calcViewHeight = useCallback(() => {
-    return window.innerHeight / 2;
-  }, []);
 
   return (
     <div className="grw-page-select-modal-wrapper">
