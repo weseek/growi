@@ -5,7 +5,7 @@ test('Successfully rebuild index', async({ page }) => {
 
   await expect(page.getByTestId('admin-full-text-search')).toBeVisible();
 
-  await expect(page.getByTestId('connection-status-badge-connected')).toHaveText('CONNECTED');
+  await expect(page.getByTestId('connection-status-label')).toHaveText('CONNECTED');
 
 
   // await page.getByTestId('rebuild-index-button').click();

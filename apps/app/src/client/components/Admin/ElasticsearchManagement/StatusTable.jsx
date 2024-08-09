@@ -148,7 +148,11 @@ class StatusTable extends React.PureComponent {
         <tbody>
           <tr>
             <th className="w-25">{t('full_text_search_management.connection_status')}</th>
-            <td className="w-75">{ isInitialized ? this.renderConnectionStatusLabels() : this.renderPreInitializedLabel() }</td>
+            <td
+              data-testid="connection-status-label"
+              className="w-75"
+            >{ isInitialized ? this.renderConnectionStatusLabels() : this.renderPreInitializedLabel() }
+            </td>
           </tr>
           <tr>
             <th className="w-25">{t('full_text_search_management.indices_status')}</th>
