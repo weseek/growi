@@ -5,6 +5,8 @@ test('Successfully rebuild index', async({ page }) => {
 
   await expect(page.getByTestId('admin-full-text-search')).toBeVisible();
 
+  await expect(page.getByTestId('connection-status-badge-connected')).toHaveText('CONNECTED');
+
 
   // await page.getByTestId('rebuild-index-button').click();
 
@@ -17,8 +19,6 @@ test('Search page with "q" param is successfully loaded', async({ page }) => {
 
   // Confirm search result elements are visible
   await expect(page.getByTestId('search-result-base')).toBeVisible();
-
-  await expect(page.getByTestId('connection-status-badge-connected')).toHaveText('CONNECTED');
 
 
   // await expect(page.getByTestId('search-result-list')).toBeVisible();
