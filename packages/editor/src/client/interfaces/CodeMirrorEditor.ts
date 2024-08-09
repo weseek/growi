@@ -1,7 +1,7 @@
 import type { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import type { EditorSettings } from 'src/consts';
+import type { EditorSettings } from '../../consts';
 
 export type CodeMirrorEditorProps = {
   /**
