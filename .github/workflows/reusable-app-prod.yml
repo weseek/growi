@@ -433,7 +433,7 @@ jobs:
         yarn playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
       env:
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
-        MONGO_URI: mongodb://mongodb:27017/growi-playwright-${{ matrix.browser }}
+        MONGO_URI: mongodb://mongodb:27017/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
     - name: Copy dotenv file for automatic installation with allowing guest mode
