@@ -12,6 +12,7 @@ import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils'
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import gc from 'expose-gc/function';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
 import type { SupportedActionType } from '~/interfaces/activity';
@@ -81,7 +82,7 @@ class PageBulkExportService {
     }
 
     const format = PageBulkExportFormat.md;
-    const duplicatePageBulkExportJobInProgress: PageBulkExportJobDocument & HasObjectId | null = await PageBulkExportJob.findOne({
+    const duplicatePageBulkExportJobInProgress: HydratedDocument<PageBulkExportJobDocument> | null = await PageBulkExportJob.findOne({
       user: currentUser,
       page: basePage,
       format,
@@ -92,7 +93,7 @@ class PageBulkExportService {
     if (duplicatePageBulkExportJobInProgress != null) {
       throw new DuplicateBulkExportJobError();
     }
-    const pageBulkExportJob: PageBulkExportJobDocument & HasObjectId = await PageBulkExportJob.create({
+    const pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument> = await PageBulkExportJob.create({
       user: currentUser, page: basePage, format, status: PageBulkExportJobStatus.initializing,
     });
 
@@ -104,7 +105,7 @@ class PageBulkExportService {
   /**
    * Execute a page bulk export job. This method can also resume a previously inturrupted job.
    */
-  async executePageBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument & HasObjectId): Promise<void> {
+  async executePageBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>): Promise<void> {
     try {
       const User = this.crowi.model('User');
       const user = await User.findById(getIdForRef(pageBulkExportJob.user));
