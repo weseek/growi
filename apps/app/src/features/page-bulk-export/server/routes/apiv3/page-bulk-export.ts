@@ -35,9 +35,13 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     const { path, format, restartJob } = req.body;
+    const activityParameters = {
+      ip: req.ip,
+      endpoint: req.originalUrl,
+    };
 
     try {
-      await pageBulkExportService?.createAndExecuteOrRestartBulkExportJob(path, req.user, restartJob);
+      await pageBulkExportService?.createAndExecuteOrRestartBulkExportJob(path, req.user, restartJob, activityParameters);
       return res.apiv3({}, 204);
     }
     catch (err) {
