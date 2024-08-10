@@ -797,6 +797,7 @@ Crowi.prototype.setupExternalUserGroupSyncService = function() {
   this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
 };
 
+// TODO: Limit the number of jobs to execute in parallel (https://redmine.weseek.co.jp/issues/143599)
 Crowi.prototype.resumeIncompletePageBulkExportJobs = async function() {
   const jobs = await PageBulkExportJob.find({
     $or: [
