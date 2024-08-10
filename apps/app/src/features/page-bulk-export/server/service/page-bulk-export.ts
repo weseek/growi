@@ -3,8 +3,6 @@ import path from 'path';
 import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
-
-import type { HasObjectId } from '@growi/core';
 import {
   getIdForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
@@ -37,6 +35,11 @@ import PageBulkExportPageSnapshot from '../models/page-bulk-export-page-snapshot
 
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
+
+type ActivityParameters ={
+  ip?: string;
+  endpoint: string;
+}
 
 export class DuplicateBulkExportJobError extends Error {
 
@@ -74,7 +77,7 @@ class PageBulkExportService {
   /**
    * Create a new page bulk export job and execute it
    */
-  async createAndExecuteBulkExportJob(basePagePath: string, currentUser): Promise<void> {
+  async createAndExecuteBulkExportJob(basePagePath: string, currentUser, activityParameters: ActivityParameters): Promise<void> {
     const basePage = await this.pageModel.findByPathAndViewer(basePagePath, currentUser, null, true);
 
     if (basePage == null) {
@@ -99,13 +102,13 @@ class PageBulkExportService {
 
     await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
 
-    this.executePageBulkExportJob(pageBulkExportJob);
+    this.executePageBulkExportJob(pageBulkExportJob, activityParameters);
   }
 
   /**
    * Execute a page bulk export job. This method can also resume a previously inturrupted job.
    */
-  async executePageBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>): Promise<void> {
+  async executePageBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters): Promise<void> {
     try {
       const User = this.crowi.model('User');
       const user = await User.findById(getIdForRef(pageBulkExportJob.user));
@@ -126,11 +129,11 @@ class PageBulkExportService {
     }
     catch (err) {
       logger.error(err);
-      await this.notifyExportResultAndCleanUp(false, pageBulkExportJob);
+      await this.notifyExportResultAndCleanUp(false, pageBulkExportJob, activityParameters);
       return;
     }
 
-    await this.notifyExportResultAndCleanUp(true, pageBulkExportJob);
+    await this.notifyExportResultAndCleanUp(true, pageBulkExportJob, activityParameters);
   }
 
   /**
@@ -143,11 +146,12 @@ class PageBulkExportService {
   private async notifyExportResultAndCleanUp(
       succeeded: boolean,
       pageBulkExportJob: PageBulkExportJobDocument,
+      activityParameters?: ActivityParameters,
   ): Promise<void> {
     const action = succeeded ? SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED : SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED;
     pageBulkExportJob.status = succeeded ? PageBulkExportJobStatus.completed : PageBulkExportJobStatus.failed;
     const results = await Promise.allSettled([
-      this.notifyExportResult(pageBulkExportJob, action),
+      this.notifyExportResult(pageBulkExportJob, action, activityParameters),
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
       pageBulkExportJob.save(),
@@ -351,9 +355,10 @@ class PageBulkExportService {
   }
 
   private async notifyExportResult(
-      pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType,
+      pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType, activityParameters?: ActivityParameters,
   ) {
     const activity = await this.crowi.activityService.createActivity({
+      ...activityParameters,
       action,
       targetModel: SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB,
       target: pageBulkExportJob,
