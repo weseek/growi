@@ -450,6 +450,13 @@ jobs:
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
+    - uses: actions/upload-artifact@v2
+     if: always()
+     with:
+       name: playwright-report
+       path: playwright-report/
+       retention-days: 1
+
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
