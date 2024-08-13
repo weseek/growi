@@ -314,7 +314,7 @@ jobs:
       if: always()
       with:
         name: playwright-report
-        path: apps/app/playwright/screenshots/
+        path: apps/app/playwright/output
         retention-days: 1
 
     - name: Slack Notification
