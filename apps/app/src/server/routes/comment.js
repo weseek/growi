@@ -394,7 +394,7 @@ module.exports = function(crowi, app) {
       if (!isAccessible) {
         throw new Error('Current user is not accessible to this page.');
       }
-      if (req.user.id !== comment.creator.toString()) {
+      if (req.user._id.toString() !== comment.creator.toString()) {
         throw new Error('Current user is not operatable to this comment.');
       }
 
@@ -477,7 +477,7 @@ module.exports = function(crowi, app) {
       if (!isAccessible) {
         throw new Error('Current user is not accessible to this page.');
       }
-      if (req.user.id !== comment.creator.toString()) {
+      if (req.user._id !== comment.creator.toString()) {
         throw new Error('Current user is not operatable to this comment.');
       }
 
