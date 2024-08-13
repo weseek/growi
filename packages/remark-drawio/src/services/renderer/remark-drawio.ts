@@ -1,6 +1,6 @@
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type {
-  Code, Node, Parent,
+  Code, Node, Paragraph,
 } from 'mdast';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
@@ -28,7 +28,7 @@ function isDrawioBlock(lang?: string | null): lang is Lang {
 function rewriteNode(node: Node, index: number) {
 
   node.type = 'paragraph';
-  (node as Parent).children = [{ type: 'text', value: (node as Code).value }];
+  (node as Paragraph).children = [{ type: 'text', value: (node as Code).value }];
 
   const data = node.data ?? (node.data = {});
   data.hName = 'drawio';
