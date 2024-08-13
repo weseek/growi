@@ -8,7 +8,7 @@ import type Crowi from '~/server/crowi';
 import {
   AttachmentType, FilePathOnStoragePrefix, ResponseMode, type RespondOptions,
 } from '~/server/interfaces/attachment';
-import type { IAttachmentDocument } from '~/server/models';
+import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../../config-manager';
