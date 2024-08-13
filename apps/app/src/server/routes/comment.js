@@ -368,9 +368,9 @@ module.exports = function(crowi, app) {
   api.update = async function(req, res) {
     const { commentForm } = req.body;
 
-    const commentStr = commentForm.comment;
-    const commentId = commentForm.comment_id;
-    const revision = commentForm.revision_id;
+    const commentStr = commentForm?.comment;
+    const commentId = commentForm?.comment_id;
+    const revision = commentForm?.revision_id;
 
     if (commentStr === '') {
       return res.json(ApiResponse.error('Comment text is required'));
