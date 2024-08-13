@@ -2,21 +2,24 @@ import { createReadStream } from 'fs';
 import path from 'path';
 
 import { ErrorV3 } from '@growi/core/dist/models';
-import express, { NextFunction, Request, Router } from 'express';
+import type { NextFunction, Request, Router } from 'express';
+import express from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
+import { configManager } from '~/server/service/config-manager';
 import { exportService } from '~/server/service/export';
-import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
+import type { IDataGROWIInfo } from '~/server/service/g2g-transfer';
+import { X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
 
-import Crowi from '../../crowi';
+import type Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-import { ApiV3Response } from './interfaces/apiv3-response';
+import type { ApiV3Response } from './interfaces/apiv3-response';
 
 interface AuthorizedRequest extends Request {
   user?: any
@@ -38,7 +41,7 @@ const validator = {
 module.exports = (crowi: Crowi): Router => {
   const {
     g2gTransferPusherService, g2gTransferReceiverService, importService,
-    growiBridgeService, configManager,
+    growiBridgeService,
   } = crowi;
   if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
     || growiBridgeService == null || configManager == null) {
