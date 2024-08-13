@@ -22,7 +22,8 @@ const OriginalRichSlideSection = React.memo((props: RichSlideSectionProps): JSX.
   );
 });
 
-export const RichSlideSection = React.memo((props: RichSlideSectionProps): JSX.Element => {
+
+const RichSlideSectionNoMemorized = (props: RichSlideSectionProps): JSX.Element => {
   const { children } = props;
 
   return (
@@ -30,10 +31,11 @@ export const RichSlideSection = React.memo((props: RichSlideSectionProps): JSX.E
       {children}
     </OriginalRichSlideSection>
   );
-}) as typeof RichSlideSection;
+};
+export const RichSlideSection = React.memo(RichSlideSectionNoMemorized) as typeof RichSlideSectionNoMemorized;
 
 
-export const PresentationRichSlideSection = React.memo((props: RichSlideSectionProps): JSX.Element => {
+const PresentationRichSlideSectionNoMemorized = (props: RichSlideSectionProps): JSX.Element => {
   const { children } = props;
 
   return (
@@ -41,4 +43,5 @@ export const PresentationRichSlideSection = React.memo((props: RichSlideSectionP
       {children}
     </OriginalRichSlideSection>
   );
-}) as typeof PresentationRichSlideSection;
+};
+export const PresentationRichSlideSection = React.memo(PresentationRichSlideSectionNoMemorized) as typeof PresentationRichSlideSectionNoMemorized;
