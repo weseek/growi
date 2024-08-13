@@ -275,6 +275,7 @@ module.exports = function(crowi, app) {
       action: SupportedAction.ACTION_COMMENT_CREATE,
     };
 
+    /** @type {import('../service/pre-notify').GetAdditionalTargetUsers} */
     const getAdditionalTargetUsers = async(activity) => {
       const mentionedUsers = await crowi.commentService.getMentionedUsers(activity.event);
 
