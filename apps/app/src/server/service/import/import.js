@@ -49,9 +49,6 @@ export class ImportService {
 
     this.adminEvent = crowi.event('admin');
 
-    /** @type {import('./construct-convert-map').ConvertMap} */
-    this.convertMap = constructConvertMap(crowi);
-
     this.currentProgressingStatus = null;
   }
 
@@ -108,6 +105,10 @@ export class ImportService {
 
   async preImport() {
     await setupIndependentModels();
+
+    // initialize convertMap
+    /** @type {import('./construct-convert-map').ConvertMap} */
+    this.convertMap = constructConvertMap();
   }
 
   /**
