@@ -4,9 +4,10 @@ import type {
   PhrasingContent,
 } from 'mdast';
 
-import type { DirectiveType as DirectiveTypeObject } from './lib/index.js';
+import { DirectiveType as DirectiveTypeObject } from './lib/index.js';
 
-export type DirectiveType = typeof DirectiveTypeObject;
+export { DirectiveTypeObject };
+type DirectiveType = typeof DirectiveTypeObject;
 
 export { directiveToMarkdown, directiveFromMarkdown } from './lib/index.js';
 
@@ -48,7 +49,10 @@ export interface LeafGrowiPluginDirective extends Parent, DirectiveFields {
 /**
  * Info associated with mdast leaf directive nodes by the ecosystem.
  */
-export type LeafGrowiPluginDirectiveData = Data
+export interface LeafGrowiPluginDirectiveData extends Data {
+  hName?: string,
+  hProperties?: Record<string, string>
+}
 
 /**
  * Markdown directive (text form).
@@ -73,7 +77,11 @@ export interface TextGrowiPluginDirective extends Parent, DirectiveFields {
 /**
  * Info associated with mdast text directive nodes by the ecosystem.
  */
-export type TextGrowiPluginDirectiveData = Data
+export interface TextGrowiPluginDirectiveData extends Data {
+  hName?: string,
+  hProperties?: Record<string, string>
+}
+
 
 /**
  * Union of registered mdast directive nodes.
