@@ -5,6 +5,8 @@ test('Successfully rebuild index', async({ page }) => {
 
   await expect(page.getByTestId('admin-full-text-search')).toBeVisible();
 
+  await page.screenshot({ path: 'apps/app/playwright/screenshots/admin-search.png', fullPage: true });
+
   await expect(page.getByTestId('connection-status-label')).toHaveText('CONNECTED');
 
 
