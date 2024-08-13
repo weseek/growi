@@ -16,7 +16,7 @@ const axios = require('axios').default;
 axiosRetry(axios, { retries: 3 });
 
 /**
- * manage cronjob which
+ * Manages cronjob which
  *  1. fetches QuestionnaireOrders from questionnaire server
  *  2. updates QuestionnaireOrder collection to contain only the ones that exist in the fetched list and is not finished (doesn't have to be started)
  *  3. changes QuestionnaireAnswerStatuses which are 'skipped' to 'not_answered'
@@ -27,13 +27,13 @@ class QuestionnaireCronService extends CronService {
   sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
 
   override startCron(cronSchedule: string): void {
-    const maxHoursUntilRequest = configManager.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
-    const maxSecondsUntilRequest = maxHoursUntilRequest * 60 * 60;
-
-    super.startCron(cronSchedule, this.getPreExecute(maxSecondsUntilRequest));
+    super.startCron(cronSchedule);
   }
 
   override async executeJob(): Promise<void> {
+    // sleep for a random amount to scatter request time from GROWI apps to questionnaire server
+    await this.sleepBeforeJob();
+
     const questionnaireServerOrigin = configManager.getConfig('crowi', 'app:questionnaireServerOrigin');
 
     const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
@@ -81,12 +81,12 @@ class QuestionnaireCronService extends CronService {
     await changeSkippedAnswerStatusToNotAnswered();
   }
 
-  private getPreExecute(maxSecondsUntilRequest: number): () => Promise<void> {
-    return async() => {
-      // sleep for a random amount to scatter request time from GROWI apps to questionnaire server
-      const secToSleep = getRandomIntInRange(0, maxSecondsUntilRequest);
-      await this.sleep(secToSleep * 1000);
-    };
+  private async sleepBeforeJob() {
+    const maxHoursUntilRequest = configManager.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
+    const maxSecondsUntilRequest = maxHoursUntilRequest * 60 * 60;
+
+    const secToSleep = getRandomIntInRange(0, maxSecondsUntilRequest);
+    await this.sleep(secToSleep * 1000);
   }
 
 }

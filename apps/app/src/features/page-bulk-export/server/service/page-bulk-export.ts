@@ -140,6 +140,7 @@ class PageBulkExportService {
    * Notify the user of the export result, and cleanup the resources used in the export process
    * @param succeeded whether the export was successful
    * @param pageBulkExportJob the page bulk export job
+   * @param activityParameters parameters to record user activity
    */
   private async notifyExportResultAndCleanUp(
       succeeded: boolean,
@@ -353,7 +354,7 @@ class PageBulkExportService {
     return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
   }
 
-  private async notifyExportResult(
+  async notifyExportResult(
       pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType, activityParameters?: ActivityParameters,
   ) {
     const activity = await this.crowi.activityService.createActivity({
