@@ -44,6 +44,7 @@ export interface FileUploader {
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
   generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
   createMultipartUploader: (uploadKey: string, maxPartSize: number) => MultipartUploader,
+  abortExistingMultipartUpload: (uploadKey: string, uploadId: string) => Promise<void>
 }
 
 export abstract class AbstractFileUploader implements FileUploader {
@@ -156,11 +157,21 @@ export abstract class AbstractFileUploader implements FileUploader {
     return ResponseMode.RELAY;
   }
 
+  /**
+   * Create a multipart uploader for cloud storage
+   */
   createMultipartUploader(uploadKey: string, maxPartSize: number): MultipartUploader {
     throw new Error('Multipart upload not available for file upload type');
   }
 
- abstract uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>;
+  abstract uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>;
+
+  /**
+   * Abort an existing multipart upload without creating a MultipartUploader instance
+   */
+  abortExistingMultipartUpload(uploadKey: string, uploadId: string): Promise<void> {
+    throw new Error('Multipart upload not available for file upload type');
+  }
 
   /**
    * Respond to the HTTP request.

@@ -640,7 +640,8 @@
     "markdown": "Markdown",
     "choose_export_format": "Select export format",
     "bulk_export_started": "Please wait a moment...",
-    "bulk_export_download_expired": "Download period has expired"
+    "bulk_export_download_expired": "Download period has expired",
+    "duplicate_bulk_export_job_error": "Export for the same page and its children is in progress"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",

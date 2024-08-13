@@ -1,16 +1,16 @@
 import fs from 'fs';
 import path from 'path';
-import type { Readable } from 'stream';
-import { Writable, pipeline } from 'stream';
+import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
-
-import type { HasObjectId } from '@growi/core';
-import { type IPage, isPopulated, SubscriptionStatusType } from '@growi/core';
+import {
+  getIdForRef, type IPage, isPopulated, SubscriptionStatusType,
+} from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import gc from 'expose-gc/function';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
 import type { SupportedActionType } from '~/interfaces/activity';
@@ -27,16 +27,26 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportFormat } from '../../interfaces/page-bulk-export';
+import { PageBulkExportFormat, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
+import type { PageBulkExportPageSnapshotDocument } from '../models/page-bulk-export-page-snapshot';
+import PageBulkExportPageSnapshot from '../models/page-bulk-export-page-snapshot';
 
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
 type ActivityParameters ={
-  ip: string;
+  ip?: string;
   endpoint: string;
+}
+
+export class DuplicateBulkExportJobError extends Error {
+
+  constructor() {
+    super('Duplicate bulk export job is in progress');
+  }
+
 }
 
 class PageBulkExportService {
@@ -54,147 +64,187 @@ class PageBulkExportService {
 
   // temporal path of local fs to output page files before upload
   // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
-  tmpOutputRootDir = '/tmp';
+  tmpOutputRootDir = '/tmp/page-bulk-export';
+
+  pageModel: PageModel;
 
   constructor(crowi) {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
+    this.pageModel = mongoose.model<IPage, PageModel>('Page');
   }
 
-  async createAndStartPageBulkExportJob(basePagePath: string, currentUser, activityParameters: ActivityParameters): Promise<void> {
-    const Page = mongoose.model<IPage, PageModel>('Page');
-    const basePage = await Page.findByPathAndViewer(basePagePath, currentUser, null, true);
+  /**
+   * Create a new page bulk export job and execute it
+   */
+  async createAndExecuteBulkExportJob(basePagePath: string, currentUser, activityParameters: ActivityParameters): Promise<void> {
+    const basePage = await this.pageModel.findByPathAndViewer(basePagePath, currentUser, null, true);
 
     if (basePage == null) {
       throw new Error('Base page not found or not accessible');
     }
 
-    const pageBulkExportJob: PageBulkExportJobDocument & HasObjectId = await PageBulkExportJob.create({
+    const format = PageBulkExportFormat.md;
+    const duplicatePageBulkExportJobInProgress: HydratedDocument<PageBulkExportJobDocument> | null = await PageBulkExportJob.findOne({
       user: currentUser,
       page: basePage,
-      format: PageBulkExportFormat.markdown,
+      format,
+      $or: [
+        { status: PageBulkExportJobStatus.initializing }, { status: PageBulkExportJobStatus.exporting }, { status: PageBulkExportJobStatus.uploading },
+      ],
+    });
+    if (duplicatePageBulkExportJobInProgress != null) {
+      throw new DuplicateBulkExportJobError();
+    }
+    const pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument> = await PageBulkExportJob.create({
+      user: currentUser, page: basePage, format, status: PageBulkExportJobStatus.initializing,
     });
 
     await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
 
-    this.bulkExportWithBasePagePath(basePagePath, currentUser, activityParameters, pageBulkExportJob);
-  }
-
-  async bulkExportWithBasePagePath(
-      basePagePath: string, currentUser, activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument & HasObjectId,
-  ): Promise<void> {
-    const timeStamp = (new Date()).getTime();
-    const exportName = `page-bulk-export-${timeStamp}`;
-
-    // export pages to fs temporarily
-    const tmpOutputDir = `${this.tmpOutputRootDir}/${exportName}`;
-    try {
-      await this.exportPagesToFS(basePagePath, tmpOutputDir, currentUser);
-    }
-    catch (err) {
-      await this.handleExportError(err, activityParameters, pageBulkExportJob, tmpOutputDir);
-      return;
-    }
-
-    const pageArchiver = this.setUpPageArchiver();
-    const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.maxPartSize);
-
-    const originalName = `${exportName}.${this.compressExtension}`;
-    const attachment = Attachment.createWithoutSave(null, currentUser, originalName, this.compressExtension, 0, AttachmentType.PAGE_BULK_EXPORT);
-    const uploadKey = `${FilePathOnStoragePrefix.pageBulkExport}/${attachment.fileName}`;
-
-    // init multipart upload
-    const fileUploadService: FileUploader = this.crowi.fileUploadService;
-    const multipartUploader: IMultipartUploader = fileUploadService.createMultipartUploader(uploadKey, this.maxPartSize);
-    try {
-      await multipartUploader.initUpload();
-      pageBulkExportJob.uploadId = multipartUploader.uploadId;
-      await pageBulkExportJob.save;
-    }
-    catch (err) {
-      await this.handleExportError(err, activityParameters, pageBulkExportJob, tmpOutputDir, multipartUploader);
-      return;
-    }
-
-    const multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader, pageBulkExportJob, attachment, activityParameters, tmpOutputDir);
-
-    pipeline(pageArchiver, bufferToPartSizeTransform, multipartUploadWritable,
-      err => this.handleExportError(err, activityParameters, pageBulkExportJob, tmpOutputDir, multipartUploader));
-    pageArchiver.directory(tmpOutputDir, false);
-    pageArchiver.finalize();
+    this.executePageBulkExportJob(pageBulkExportJob, activityParameters);
   }
 
   /**
-   * Handles export failure with the following:
-   * - notify the user of the failure
-   * - remove the temporal output directory
-   * - abort multipart upload
+   * Execute a page bulk export job. This method can also resume a previously inturrupted job.
    */
-  // TODO: update completedAt of pageBulkExportJob, or add a failed status flag to it (https://redmine.weseek.co.jp/issues/78040)
-  private async handleExportError(
-      err: Error | null,
-      activityParameters: ActivityParameters,
-      pageBulkExportJob: PageBulkExportJobDocument,
-      tmpOutputDir: string,
-      multipartUploader?: IMultipartUploader,
-  ): Promise<void> {
-    if (err != null) {
+  async executePageBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters): Promise<void> {
+    try {
+      const User = this.crowi.model('User');
+      const user = await User.findById(getIdForRef(pageBulkExportJob.user));
+
+      if (pageBulkExportJob.status === PageBulkExportJobStatus.initializing) {
+        await this.createPageSnapshots(user, pageBulkExportJob);
+        pageBulkExportJob.status = PageBulkExportJobStatus.exporting;
+        await pageBulkExportJob.save();
+      }
+      if (pageBulkExportJob.status === PageBulkExportJobStatus.exporting) {
+        await this.exportPagesToFS(pageBulkExportJob);
+        pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
+        await pageBulkExportJob.save();
+      }
+      if (pageBulkExportJob.status === PageBulkExportJobStatus.uploading) {
+        await this.compressAndUpload(user, pageBulkExportJob);
+      }
+    }
+    catch (err) {
       logger.error(err);
-
-      const results = await Promise.allSettled([
-        this.notifyExportResult(activityParameters, pageBulkExportJob, SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED),
-        fs.promises.rm(tmpOutputDir, { recursive: true, force: true }),
-        multipartUploader?.abortUpload(),
-      ]);
-      results.forEach((result) => {
-        if (result.status === 'rejected') logger.error(result.reason);
-      });
+      await this.notifyExportResultAndCleanUp(false, pageBulkExportJob, activityParameters);
+      return;
     }
-  }
 
-  private async exportPagesToFS(basePagePath: string, outputDir: string, currentUser): Promise<void> {
-    const pagesReadable = await this.getPageReadable(basePagePath, currentUser);
-    const pagesWritable = this.getPageWritable(outputDir);
-
-    return pipelinePromise(pagesReadable, pagesWritable);
+    await this.notifyExportResultAndCleanUp(true, pageBulkExportJob, activityParameters);
   }
 
   /**
-   * Get a Readable of all the pages under the specified path, including the root page.
+   * Do the following in parallel:
+   * - notify user of the export result
+   * - update pageBulkExportJob status
+   * - delete page snapshots
+   * - remove the temporal output directory
    */
-  private async getPageReadable(basePagePath: string, currentUser): Promise<Readable> {
-    const Page = mongoose.model<IPage, PageModel>('Page');
-    const { PageQueryBuilder } = Page;
+  private async notifyExportResultAndCleanUp(
+      succeeded: boolean,
+      pageBulkExportJob: PageBulkExportJobDocument,
+      activityParameters?: ActivityParameters,
+  ): Promise<void> {
+    const action = succeeded ? SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED : SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED;
+    pageBulkExportJob.status = succeeded ? PageBulkExportJobStatus.completed : PageBulkExportJobStatus.failed;
+    const results = await Promise.allSettled([
+      this.notifyExportResult(pageBulkExportJob, action, activityParameters),
+      PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
+      fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
+      pageBulkExportJob.save(),
+    ]);
+    results.forEach((result) => {
+      if (result.status === 'rejected') logger.error(result.reason);
+    });
+  }
 
-    const builder = await new PageQueryBuilder(Page.find())
-      .addConditionToListWithDescendants(basePagePath)
-      .addViewerCondition(currentUser);
+  /**
+   * Create a snapshot for each page that is to be exported in the pageBulkExportJob
+   */
+  private async createPageSnapshots(user, pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+    // if the process of creating snapshots was interrupted, delete the snapshots and create from the start
+    await PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob });
 
-    return builder
+    const basePage = await this.pageModel.findById(getIdForRef(pageBulkExportJob.page));
+    if (basePage == null) {
+      throw new Error('Base page not found');
+    }
+
+    // create a Readable for pages to be exported
+    const { PageQueryBuilder } = this.pageModel;
+    const builder = await new PageQueryBuilder(this.pageModel.find())
+      .addConditionToListWithDescendants(basePage.path)
+      .addViewerCondition(user);
+    const pagesReadable = builder
       .query
-      .populate('revision')
       .lean()
       .cursor({ batchSize: this.pageBatchSize });
+
+    // create a Writable that creates a snapshot for each page
+    const pageSnapshotsWritable = new Writable({
+      objectMode: true,
+      write: async(page: PageDocument, encoding, callback) => {
+        try {
+          await PageBulkExportPageSnapshot.create({
+            pageBulkExportJob,
+            path: page.path,
+            revision: page.revision,
+          });
+        }
+        catch (err) {
+          callback(err);
+          return;
+        }
+        callback();
+      },
+    });
+
+    await pipelinePromise(pagesReadable, pageSnapshotsWritable);
+  }
+
+  /**
+   * Export pages to the file system before compressing and uploading to the cloud storage.
+   * The export will resume from the last exported page if the process was interrupted.
+   */
+  private async exportPagesToFS(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+    const findQuery = pageBulkExportJob.lastExportedPagePath != null ? {
+      pageBulkExportJob,
+      path: { $gt: pageBulkExportJob.lastExportedPagePath },
+    } : { pageBulkExportJob };
+    const pageSnapshotsReadable = PageBulkExportPageSnapshot
+      .find(findQuery)
+      .populate('revision').sort({ path: 1 }).lean()
+      .cursor({ batchSize: this.pageBatchSize });
+
+    const pagesWritable = this.getPageWritable(pageBulkExportJob);
+
+    return pipelinePromise(pageSnapshotsReadable, pagesWritable);
   }
 
   /**
    * Get a Writable that writes the page body temporarily to fs
    */
-  private getPageWritable(outputDir: string): Writable {
+  private getPageWritable(pageBulkExportJob: PageBulkExportJobDocument): Writable {
+    const outputDir = this.getTmpOutputDir(pageBulkExportJob);
     return new Writable({
       objectMode: true,
-      write: async(page: PageDocument, encoding, callback) => {
+      write: async(page: PageBulkExportPageSnapshotDocument, encoding, callback) => {
         try {
           const revision = page.revision;
 
           if (revision != null && isPopulated(revision)) {
             const markdownBody = revision.body;
-            const pathNormalized = `${normalizePath(page.path)}.md`;
+            const pathNormalized = `${normalizePath(page.path)}.${PageBulkExportFormat.md}`;
             const fileOutputPath = path.join(outputDir, pathNormalized);
             const fileOutputParentPath = getParentPath(fileOutputPath);
 
             await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
             await fs.promises.writeFile(fileOutputPath, markdownBody);
+            pageBulkExportJob.lastExportedPagePath = page.path;
+            await pageBulkExportJob.save();
           }
         }
         catch (err) {
@@ -204,6 +254,39 @@ class PageBulkExportService {
         callback();
       },
     });
+  }
+
+  /**
+   * Execute a pipeline that reads the page files from the temporal fs directory, compresses them, and uploads to the cloud storage
+   */
+  private async compressAndUpload(user, pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+    const pageArchiver = this.setUpPageArchiver();
+    const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.maxPartSize);
+
+    const originalName = `${pageBulkExportJob._id}.${this.compressExtension}`;
+    const attachment = Attachment.createWithoutSave(null, user, originalName, this.compressExtension, 0, AttachmentType.PAGE_BULK_EXPORT);
+    const uploadKey = `${FilePathOnStoragePrefix.pageBulkExport}/${attachment.fileName}`;
+
+    const fileUploadService: FileUploader = this.crowi.fileUploadService;
+    // if the process of uploading was interrupted, delete and start from the start
+    if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
+      await fileUploadService.abortExistingMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId);
+    }
+
+    // init multipart upload
+    const multipartUploader: IMultipartUploader = fileUploadService.createMultipartUploader(uploadKey, this.maxPartSize);
+    await multipartUploader.initUpload();
+    pageBulkExportJob.uploadKey = uploadKey;
+    pageBulkExportJob.uploadId = multipartUploader.uploadId;
+    await pageBulkExportJob.save();
+
+    const multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader, pageBulkExportJob, attachment);
+
+    const compressAndUploadPromise = pipelinePromise(pageArchiver, bufferToPartSizeTransform, multipartUploadWritable);
+    pageArchiver.directory(this.getTmpOutputDir(pageBulkExportJob), false);
+    pageArchiver.finalize();
+
+    await compressAndUploadPromise;
   }
 
   private setUpPageArchiver(): Archiver {
@@ -224,8 +307,6 @@ class PageBulkExportService {
       multipartUploader: IMultipartUploader,
       pageBulkExportJob: PageBulkExportJobDocument,
       attachment: IAttachmentDocument,
-      activityParameters: ActivityParameters,
-      tmpOutputDir: string,
   ): Writable {
     let partNumber = 1;
 
@@ -239,6 +320,7 @@ class PageBulkExportService {
           gc();
         }
         catch (err) {
+          await multipartUploader.abortUpload();
           callback(err);
           return;
         }
@@ -255,9 +337,6 @@ class PageBulkExportService {
           pageBulkExportJob.completedAt = new Date();
           pageBulkExportJob.attachment = attachment._id;
           await pageBulkExportJob.save();
-
-          await this.notifyExportResult(activityParameters, pageBulkExportJob, SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED);
-          await fs.promises.rm(tmpOutputDir, { recursive: true, force: true });
         }
         catch (err) {
           callback(err);
@@ -268,8 +347,15 @@ class PageBulkExportService {
     });
   }
 
+  /**
+   * Get the output directory on the fs to temporarily store page files before compressing and uploading
+   */
+  private getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string {
+    return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
+  }
+
   private async notifyExportResult(
-      activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType,
+      pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType, activityParameters?: ActivityParameters,
   ) {
     const activity = await this.crowi.activityService.createActivity({
       ...activityParameters,
