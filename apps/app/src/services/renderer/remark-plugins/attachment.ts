@@ -1,9 +1,20 @@
 import path from 'path';
 
-import { Schema as SanitizeOption } from 'hast-util-sanitize';
-import { Plugin } from 'unified';
-import { Node } from 'unist';
+import type { Schema as SanitizeOption } from 'hast-util-sanitize';
+import type { Link } from 'mdast';
+import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
+
+declare module 'mdast' {
+  interface LinkData {
+    hName?: string,
+    hProperties?: {
+      attachmentId?: string,
+      url?: string,
+      attachmentName?: PhrasingContent,
+    }
+  }
+}
 
 const SUPPORTED_ATTRIBUTES = ['attachmentId', 'url', 'attachmentName'];
 
@@ -13,25 +24,24 @@ const isAttachmentLink = (url: string): boolean => {
   return attachmentUrlFormat.test(url);
 };
 
-const rewriteNode = (node: Node) => {
-  const attachmentId = path.basename(node.url as string);
+const rewriteNode = (node: Link) => {
+  const attachmentId = path.basename(node.url);
+
   const data = node.data ?? (node.data = {});
   data.hName = 'attachment';
   data.hProperties = {
     attachmentId,
     url: node.url,
-    attachmentName: (node.children as any)[0]?.value,
+    attachmentName: node.children[0] ?? '',
   };
 };
 
 
 export const remarkPlugin: Plugin = () => {
   return (tree) => {
-    visit(tree, (node) => {
-      if (node.type === 'link') {
-        if (isAttachmentLink(node.url as string)) {
-          rewriteNode(node);
-        }
+    visit(tree, 'link', (node: Link) => {
+      if (isAttachmentLink(node.url)) {
+        rewriteNode(node);
       }
     });
   };

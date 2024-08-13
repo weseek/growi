@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-import type { CodeComponent, CodeProps } from 'react-markdown/lib/ast-to-react';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
@@ -66,14 +65,12 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
     </PrismAsyncLight>
   );
 }
-
-export const CodeBlock: CodeComponent = ({ inline, className, children }: CodeProps) => {
-
-  if (inline) {
-    return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
-  }
+export const CodeBlock = ({ className, children }: {className: string, children: JSX.Element}): JSX.Element => {
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
+  if (className === 'inline') {
+    return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
+  }
 
   const match = /language-(\w+)(:?.+)?/.exec(className || '');
   const lang = match && match[1] ? match[1] : '';
