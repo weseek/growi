@@ -367,7 +367,7 @@ class PageBulkExportService {
         username: isPopulated(pageBulkExportJob.user) ? pageBulkExportJob.user.username : '',
       },
     });
-    const getAdditionalTargetUsers = (activity: ActivityDocument) => [activity.user];
+    const getAdditionalTargetUsers = async(activity: ActivityDocument) => [activity.user];
     const preNotify = preNotifyService.generatePreNotify(activity, getAdditionalTargetUsers);
     this.activityEvent.emit('updated', activity, pageBulkExportJob, preNotify);
   }
