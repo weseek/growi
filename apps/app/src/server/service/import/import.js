@@ -13,6 +13,7 @@ import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
 
+import { setupIndependentModels } from '~/server/crowi/setup-models';
 import loggerFactory from '~/utils/logger';
 
 import CollectionProgressingStatus from '../../models/vo/collection-progressing-status';
@@ -104,6 +105,11 @@ export class ImportService {
     };
   }
 
+
+  async preImport() {
+    await setupIndependentModels();
+  }
+
   /**
    * import collections from json
    *
@@ -112,6 +118,8 @@ export class ImportService {
    * @return {Promise<void>}
    */
   async import(collections, importSettingsMap) {
+    await this.preImport();
+
     // init status object
     this.currentProgressingStatus = new CollectionProgressingStatus(collections);
 
