@@ -1,6 +1,5 @@
 import csvToMarkdownTable from 'csv-to-markdown-table';
-import type { Code, Parent } from 'mdast';
-import type { Options } from 'mdast-util-from-markdown';
+import type { Code, Table } from 'mdast';
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmTableFromMarkdown } from 'mdast-util-gfm-table';
 import { gfmTable } from 'micromark-extension-gfm-table';
@@ -23,14 +22,14 @@ function rewriteNode(node: Node, lang: Lang) {
     lang === 'csv-h' || lang === 'tsv-h',
   );
   const tableTree = fromMarkdown(tableDoc, {
-    extensions: [gfmTable],
-    mdastExtensions: [gfmTableFromMarkdown],
-  } as Options);
+    extensions: [gfmTable()],
+    mdastExtensions: [gfmTableFromMarkdown()],
+  });
 
   // replace node
   if (tableTree.children[0] != null) {
     node.type = 'table';
-    (node as Parent).children = (tableTree.children[0] as Parent).children;
+    (node as Table).children = (tableTree.children[0] as Table).children;
   }
 }
 
