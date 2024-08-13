@@ -12,9 +12,8 @@ export type PreNotifyProps = {
 }
 
 export type PreNotify = (props: PreNotifyProps) => Promise<void>;
-export type GeneratePreNotify = (activity: ActivityDocument, getAdditionalTargetUsers?: (activity?: ActivityDocument) => Ref<IUser>[]) => PreNotify;
-
-export type GetAdditionalTargetUsers = (activity: ActivityDocument) => Ref<IUser>[];
+export type GetAdditionalTargetUsers = (activity: ActivityDocument) => Promise<Ref<IUser>[]>;
+export type GeneratePreNotify = (activity: ActivityDocument, getAdditionalTargetUsers?: GetAdditionalTargetUsers) => PreNotify;
 
 interface IPreNotifyService {
   generateInitialPreNotifyProps: (PreNotifyProps) => { notificationTargetUsers?: Ref<IUser>[] },
@@ -49,7 +48,7 @@ class PreNotifyService implements IPreNotifyService {
         notificationTargetUsers?.push(...activeNotificationUsers);
       }
       else {
-        const AdditionalTargetUsers = getAdditionalTargetUsers(activity);
+        const AdditionalTargetUsers = await getAdditionalTargetUsers(activity);
 
         notificationTargetUsers?.push(
           ...activeNotificationUsers,

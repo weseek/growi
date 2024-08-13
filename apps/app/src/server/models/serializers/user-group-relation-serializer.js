@@ -1,4 +1,4 @@
-const { serializeUserSecurely } = require('./user-serializer');
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 
 function serializeInsecureUserAttributes(userGroupRelation) {
   if (userGroupRelation.relatedUser != null && userGroupRelation.relatedUser._id != null) {

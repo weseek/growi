@@ -182,6 +182,7 @@ class PageBulkExportService {
    * Notify the user of the export result, and cleanup the resources used in the export process
    * @param action whether the export was successful
    * @param pageBulkExportJob the page bulk export job
+   * @param activityParameters parameters to record user activity
    */
   private async notifyExportResultAndCleanUp(
       action: SupportedActionType,
@@ -399,7 +400,7 @@ class PageBulkExportService {
     return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
   }
 
-  private async notifyExportResult(
+  async notifyExportResult(
       pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType, activityParameters?: ActivityParameters,
   ) {
     const activity = await this.crowi.activityService.createActivity({
@@ -412,7 +413,7 @@ class PageBulkExportService {
         username: isPopulated(pageBulkExportJob.user) ? pageBulkExportJob.user.username : '',
       },
     });
-    const getAdditionalTargetUsers = (activity: ActivityDocument) => [activity.user];
+    const getAdditionalTargetUsers = async(activity: ActivityDocument) => [activity.user];
     const preNotify = preNotifyService.generatePreNotify(activity, getAdditionalTargetUsers);
     this.activityEvent.emit('updated', activity, pageBulkExportJob, preNotify);
   }
