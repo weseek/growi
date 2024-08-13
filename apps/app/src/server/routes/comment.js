@@ -275,6 +275,7 @@ module.exports = function(crowi, app) {
       action: SupportedAction.ACTION_COMMENT_CREATE,
     };
 
+    /** @type {import('../service/pre-notify').GetAdditionalTargetUsers} */
     const getAdditionalTargetUsers = async(activity) => {
       const mentionedUsers = await crowi.commentService.getMentionedUsers(activity.event);
 
@@ -367,9 +368,9 @@ module.exports = function(crowi, app) {
   api.update = async function(req, res) {
     const { commentForm } = req.body;
 
-    const commentStr = commentForm.comment;
-    const commentId = commentForm.comment_id;
-    const revision = commentForm.revision_id;
+    const commentStr = commentForm?.comment;
+    const commentId = commentForm?.comment_id;
+    const revision = commentForm?.revision_id;
 
     if (commentStr === '') {
       return res.json(ApiResponse.error('Comment text is required'));
@@ -393,7 +394,7 @@ module.exports = function(crowi, app) {
       if (!isAccessible) {
         throw new Error('Current user is not accessible to this page.');
       }
-      if (req.user.id !== comment.creator.toString()) {
+      if (req.user._id.toString() !== comment.creator.toString()) {
         throw new Error('Current user is not operatable to this comment.');
       }
 
@@ -476,7 +477,7 @@ module.exports = function(crowi, app) {
       if (!isAccessible) {
         throw new Error('Current user is not accessible to this page.');
       }
-      if (req.user.id !== comment.creator.toString()) {
+      if (req.user._id !== comment.creator.toString()) {
         throw new Error('Current user is not operatable to this comment.');
       }
 
