@@ -1,5 +1,5 @@
 import type {
-  IPageInfoForListing, IPageInfo,
+  IPageInfoForListing, IPageInfo, IPage,
 } from '@growi/core';
 import { getIdForRef, isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
@@ -8,7 +8,6 @@ import express from 'express';
 import { query, oneOf } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
-
 
 import type { IPageGrantService } from '~/server/service/page-grant';
 import loggerFactory from '~/utils/logger';
@@ -66,7 +65,7 @@ const routerFactory = (crowi: Crowi): Router => {
 
 
   router.get('/root', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const Page: PageModel = crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     let rootPage;
     try {
@@ -124,7 +123,8 @@ const routerFactory = (crowi: Crowi): Router => {
     const attachShortBody: boolean = attachShortBodyParam === 'true';
 
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
-    const Bookmark = crowi.model('Bookmark');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const Bookmark = mongoose.model<any, any>('Bookmark');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pageService = crowi.pageService;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
