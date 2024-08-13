@@ -1,8 +1,10 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 import type { IUserHasId } from '@growi/core/dist/interfaces';
+import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+import deepmerge from 'ts-deepmerge';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { CodeMirrorEditor, type CodeMirrorEditorProps } from '../components-internal/CodeMirrorEditor';
@@ -28,7 +30,7 @@ type Props = CodeMirrorEditorProps & {
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    user, pageId, initialValue, isEditorMode,
+    user, pageId, initialValue, isEditorMode, cmProps,
     onSave, onEditorsUpdated, ...otherProps
   } = props;
 
@@ -66,10 +68,21 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
+  const cmPropsOverride = useMemo<ReactCodeMirrorProps>(() => deepmerge(
+    cmProps ?? {},
+    {
+      // Disable the basic history configuration since this component uses Y.UndoManager instead
+      basicSetup: {
+        history: false,
+      },
+    },
+  ), [cmProps]);
+
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onSave={onSave}
+      cmProps={cmPropsOverride}
       {...otherProps}
     />
   );
