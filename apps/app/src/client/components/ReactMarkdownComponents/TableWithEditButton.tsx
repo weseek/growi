@@ -23,7 +23,7 @@ type TableWithEditButtonProps = {
   className?: string
 }
 
-export const TableWithEditButton = React.memo((props: TableWithEditButtonProps): JSX.Element => {
+const TableWithEditButtonNoMemorized = (props: TableWithEditButtonProps): JSX.Element => {
   const { children, node, className } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -60,5 +60,6 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
       </table>
     </div>
   );
-}) as typeof TableWithEditButton;
-TableWithEditButton.displayName = 'TableWithEditButton';
+};
+TableWithEditButtonNoMemorized.displayName = 'TableWithEditButton';
+export const TableWithEditButton = React.memo(TableWithEditButtonNoMemorized) as typeof TableWithEditButtonNoMemorized;
