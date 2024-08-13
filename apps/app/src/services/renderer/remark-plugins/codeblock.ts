@@ -9,12 +9,10 @@ import { addClassToProperties } from '../rehype-plugins/add-class';
 
 export const remarkPlugin: Plugin = () => {
   return (tree) => {
-    visit(tree, (node) => {
-      if (node.type === 'inlineCode') {
-        const data = (node as InlineCode).data || (node.data = {});
-        // setting inline for rehypePlugin
-        data.hProperties = { inline: true };
-      }
+    visit(tree, 'inlineCode', (node: InlineCode) => {
+      const data = node.data || (node.data = {});
+      // setting inline for rehypePlugin
+      data.hProperties = { inline: true };
     });
   };
 };

@@ -11,9 +11,9 @@ function rewriteNode(node: Code) {
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
-    visit(tree, (node) => {
-      if (node.type === 'code' && (node as Code).lang === 'mermaid') {
-        rewriteNode(node as Code);
+    visit(tree, 'code', (node: Code) => {
+      if (node.lang === 'mermaid') {
+        rewriteNode(node);
       }
     });
   };

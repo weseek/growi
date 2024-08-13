@@ -42,11 +42,9 @@ function rewriteNode(node: Node, index: number) {
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
-    visit(tree, (node, index) => {
-      if (node.type === 'code') {
-        if (isDrawioBlock((node as Code).lang)) {
-          rewriteNode(node, index ?? 0);
-        }
+    visit(tree, 'code', (node: Code, index) => {
+      if (isDrawioBlock(node.lang)) {
+        rewriteNode(node, index ?? 0);
       }
     });
   };

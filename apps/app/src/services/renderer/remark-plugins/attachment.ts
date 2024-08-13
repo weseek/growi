@@ -25,7 +25,7 @@ const isAttachmentLink = (url: string): boolean => {
 };
 
 const rewriteNode = (node: Link) => {
-  const attachmentId = path.basename(node.url as string);
+  const attachmentId = path.basename(node.url);
 
   const data = node.data ?? (node.data = {});
   data.hName = 'attachment';
@@ -39,11 +39,9 @@ const rewriteNode = (node: Link) => {
 
 export const remarkPlugin: Plugin = () => {
   return (tree) => {
-    visit(tree, (node) => {
-      if (node.type === 'link') {
-        if (isAttachmentLink((node as Link).url as string)) {
-          rewriteNode(node as Link);
-        }
+    visit(tree, 'link', (node: Link) => {
+      if (isAttachmentLink(node.url)) {
+        rewriteNode(node);
       }
     });
   };
