@@ -2,7 +2,7 @@ import type {
   IPage, IUser, Ref,
 } from '@growi/core';
 
-import { ActivityDocument } from '../models/activity';
+import type { ActivityDocument } from '../models/activity';
 import Subscription from '../models/subscription';
 import { getModelSafely } from '../util/mongoose-utils';
 
