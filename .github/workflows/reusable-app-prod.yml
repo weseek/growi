@@ -310,7 +310,7 @@ jobs:
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
-    - uses: Upload Screenshots
+    - uses: actions/upload-artifact@v3
       if: always()
       with:
         name: playwright-report
