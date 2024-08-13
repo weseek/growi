@@ -3,8 +3,8 @@ import { toMarkdown } from 'mdast-util-to-markdown';
 import { removePosition } from 'unist-util-remove-position';
 import { describe, it, expect } from 'vitest';
 
-import { DirectiveType } from '../src/mdast-util-growi-directive/consts.js';
-import { directiveFromMarkdown, directiveToMarkdown } from '../src/mdast-util-growi-directive/index.js';
+import { directiveFromMarkdown, directiveToMarkdown } from '../src/mdast-util-growi-directive/index';
+import { DirectiveType } from '../src/mdast-util-growi-directive/lib/index.js';
 import { directive } from '../src/micromark-extension-growi-directive/index.js';
 
 
