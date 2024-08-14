@@ -1,4 +1,3 @@
-import { SupportedAction } from '~/interfaces/activity';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import loggerFactory from '~/utils/logger';
@@ -56,7 +55,8 @@ class PageBulkExportJobCronService extends CronService {
     });
     for (const downloadExpiredExportJob of downloadExpiredExportJobs) {
       try {
-        this.crowi.attachmentService?.removeAttachment(downloadExpiredExportJob.attachment);
+        // eslint-disable-next-line no-await-in-loop
+        await this.crowi.attachmentService?.removeAttachment(downloadExpiredExportJob.attachment);
       }
       catch (err) {
         logger.error(err);
