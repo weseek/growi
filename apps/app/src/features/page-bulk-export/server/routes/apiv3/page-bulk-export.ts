@@ -7,7 +7,8 @@ import type Crowi from '~/server/crowi';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { DuplicateBulkExportJobError, pageBulkExportService } from '../../service/page-bulk-export';
+import { pageBulkExportService } from '../../service/page-bulk-export';
+import { DuplicateBulkExportJobError } from '../../service/page-bulk-export/errors';
 
 const logger = loggerFactory('growi:routes:apiv3:page-bulk-export');
 
