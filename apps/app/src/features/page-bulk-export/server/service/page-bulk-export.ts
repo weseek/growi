@@ -29,7 +29,7 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportFormat, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
+import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 import type { PageBulkExportPageSnapshotDocument } from '../models/page-bulk-export-page-snapshot';
@@ -126,9 +126,7 @@ class PageBulkExportService {
       user: currentUser,
       page: basePage,
       format,
-      $or: [
-        { status: PageBulkExportJobStatus.initializing }, { status: PageBulkExportJobStatus.exporting }, { status: PageBulkExportJobStatus.uploading },
-      ],
+      $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
     });
     if (duplicatePageBulkExportJobInProgress != null) {
       throw new DuplicateBulkExportJobError();
