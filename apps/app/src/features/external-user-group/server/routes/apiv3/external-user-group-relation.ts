@@ -1,19 +1,19 @@
 import { ErrorV3 } from '@growi/core/dist/models';
-import { Router, Request } from 'express';
+import type { Router, Request } from 'express';
 
-import { IExternalUserGroupRelationHasId } from '~/features/external-user-group/interfaces/external-user-group';
+import type { IExternalUserGroupRelationHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import Crowi from '~/server/crowi';
+import type Crowi from '~/server/crowi';
+import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { ApiV3Response } from '../../../../../server/routes/apiv3/interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { query } = require('express-validator');
 
-const { serializeUserGroupRelationSecurely } = require('~/server/models/serializers/user-group-relation-serializer');
 
 const router = express.Router();
 

@@ -3,7 +3,7 @@ import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
+import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
@@ -11,6 +11,9 @@ import { pageBulkExportService } from './page-bulk-export';
 
 const logger = loggerFactory('growi:service:cron');
 
+/**
+ * Manages cronjob which deletes unnecessary bulk export jobs
+ */
 class PageBulkExportJobCronService extends CronService {
 
   crowi: any;
@@ -22,14 +25,17 @@ class PageBulkExportJobCronService extends CronService {
 
   override async executeJob(): Promise<void> {
     await this.deleteExpiredExportJobs();
-    await this.deleteDownloadExpiredJobs();
+    await this.deleteDownloadExpiredExportJobs();
     await this.deleteFailedExportJobs();
   }
 
+  /**
+   * Delete bulk export jobs which are on-going and has passed the limit time for execution
+   */
   async deleteExpiredExportJobs() {
     const exportJobExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportJobExpirationSeconds');
     const expiredExportJobs = await PageBulkExportJob.find({
-      status: PageBulkExportJobStatus.initializing,
+      $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
     });
     for (const expiredExportJob of expiredExportJobs) {
@@ -39,7 +45,10 @@ class PageBulkExportJobCronService extends CronService {
     }
   }
 
-  async deleteDownloadExpiredJobs() {
+  /**
+   * Delete bulk export jobs which have completed but the due time for downloading has passed
+   */
+  async deleteDownloadExpiredExportJobs() {
     const downloadExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportDownloadExpirationSeconds');
     const downloadExpiredExportJobs = await PageBulkExportJob.find({
       status: PageBulkExportJobStatus.completed,
@@ -66,6 +75,9 @@ class PageBulkExportJobCronService extends CronService {
     }
   }
 
+  /**
+   * Delete bulk export jobs which have failed
+   */
   async deleteFailedExportJobs() {
     const failedExportJobs = await PageBulkExportJob.find({ status: PageBulkExportJobStatus.failed });
     for (const failedExportJob of failedExportJobs) {

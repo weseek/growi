@@ -17,7 +17,7 @@ import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
-import { Attachment, type IAttachmentDocument } from '../../models';
+import { Attachment, type IAttachmentDocument } from '../../models/attachment';
 import ApiResponse from '../../util/apiResponse';
 
 
