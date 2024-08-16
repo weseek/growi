@@ -1,6 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import type { Readable } from 'stream';
 import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
@@ -17,7 +16,6 @@ import mongoose from 'mongoose';
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { AttachmentType, FilePathOnStoragePrefix } from '~/server/interfaces/attachment';
-import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import type { ActivityDocument } from '~/server/models/activity';
 import { Attachment } from '~/server/models/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
@@ -29,11 +27,14 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
-import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
-import PageBulkExportJob from '../models/page-bulk-export-job';
-import type { PageBulkExportPageSnapshotDocument } from '../models/page-bulk-export-page-snapshot';
-import PageBulkExportPageSnapshot from '../models/page-bulk-export-page-snapshot';
+import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
+import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
+import PageBulkExportJob from '../../models/page-bulk-export-job';
+import type { PageBulkExportPageSnapshotDocument } from '../../models/page-bulk-export-page-snapshot';
+import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
+
+import { BulkExportJobExpiredError, DuplicateBulkExportJobError } from './errors';
+import { PageBulkExportJobStreamManager } from './page-bulk-export-job-stream-manager';
 
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
@@ -41,47 +42,6 @@ const logger = loggerFactory('growi:services:PageBulkExportService');
 type ActivityParameters ={
   ip?: string;
   endpoint: string;
-}
-
-export class DuplicateBulkExportJobError extends Error {
-
-  constructor() {
-    super('Duplicate bulk export job is in progress');
-  }
-
-}
-
-class BulkExportJobExpiredError extends Error {
-
-  constructor() {
-    super('Bulk export job has expired');
-  }
-
-}
-
-/**
- * Used to keep track of streams currently being executed, and enable destroying them
- */
-class PageBulkExportJobStreamManager {
-
-  private jobStreams: Record<string, Readable> = {};
-
-  addJobStream(jobId: ObjectIdLike, stream: Readable) {
-    this.jobStreams[jobId.toString()] = stream;
-  }
-
-  removeJobStream(jobId: ObjectIdLike) {
-    delete this.jobStreams[jobId.toString()];
-  }
-
-  destroyJobStream(jobId: ObjectIdLike) {
-    const stream = this.jobStreams[jobId.toString()];
-    if (stream != null) {
-      stream.destroy(new BulkExportJobExpiredError());
-    }
-    this.removeJobStream(jobId);
-  }
-
 }
 
 class PageBulkExportService {
