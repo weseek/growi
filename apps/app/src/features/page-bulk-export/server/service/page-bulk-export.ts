@@ -18,9 +18,9 @@ import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { AttachmentType, FilePathOnStoragePrefix } from '~/server/interfaces/attachment';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-import type { IAttachmentDocument } from '~/server/models';
-import { Attachment } from '~/server/models';
 import type { ActivityDocument } from '~/server/models/activity';
+import { Attachment } from '~/server/models/attachment';
+import type { IAttachmentDocument } from '~/server/models/attachment';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
 import type { FileUploader } from '~/server/service/file-uploader';
@@ -147,7 +147,7 @@ class PageBulkExportService {
    */
   async executePageBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters): Promise<void> {
     try {
-      const User = this.crowi.model('User');
+      const User = mongoose.model('User');
       const user = await User.findById(getIdForRef(pageBulkExportJob.user));
 
       if (pageBulkExportJob.status === PageBulkExportJobStatus.initializing) {

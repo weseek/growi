@@ -2,7 +2,7 @@ import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
+import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
@@ -34,7 +34,7 @@ class PageBulkExportJobCronService extends CronService {
   async deleteExpiredExportJobs() {
     const exportJobExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportJobExpirationSeconds');
     const expiredExportJobs = await PageBulkExportJob.find({
-      status: PageBulkExportJobStatus.initializing,
+      $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
     });
     for (const expiredExportJob of expiredExportJobs) {
