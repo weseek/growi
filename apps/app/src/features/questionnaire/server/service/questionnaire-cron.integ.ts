@@ -140,6 +140,8 @@ describe('QuestionnaireCronService', () => {
 
   beforeAll(async() => {
     await configManager.loadConfigs();
+    await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:questionnaireCronMaxHoursUntilRequest': 0 });
+
     await User.create({
       name: 'Example for Questionnaire Service Test',
       username: 'questionnaire cron test user',

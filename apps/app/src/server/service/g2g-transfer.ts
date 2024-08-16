@@ -4,9 +4,10 @@ import { basename } from 'path';
 import type { Readable } from 'stream';
 
 // eslint-disable-next-line no-restricted-imports
+import type { IUser } from '@growi/core';
 import rawAxios, { type AxiosRequestConfig } from 'axios';
 import FormData from 'form-data';
-import { Types as MongooseTypes } from 'mongoose';
+import mongoose, { Types as MongooseTypes } from 'mongoose';
 
 import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
@@ -19,7 +20,7 @@ import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
 import type Crowi from '../crowi';
-import { Attachment } from '../models';
+import { Attachment } from '../models/attachment';
 import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfer-error';
 
 import { configManager } from './config-manager';
@@ -258,7 +259,9 @@ export class G2GTransferPusherService implements Pusher {
       };
     }
 
-    const activeUserCount = await this.crowi.model('User').countActiveUsers();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const User = mongoose.model<IUser, any>('User');
+    const activeUserCount = await User.countActiveUsers();
     if ((destGROWIInfo.userUpperLimit ?? Infinity) < activeUserCount) {
       return {
         canTransfer: false,

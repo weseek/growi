@@ -1,7 +1,6 @@
 import { createHash } from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import type { Readable } from 'stream';
 import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
@@ -18,7 +17,6 @@ import mongoose from 'mongoose';
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { AttachmentType, FilePathOnStoragePrefix } from '~/server/interfaces/attachment';
-import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import type { IAttachmentDocument } from '~/server/models';
 import { Attachment } from '~/server/models';
 import type { ActivityDocument } from '~/server/models/activity';
@@ -30,11 +28,14 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
-import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
-import PageBulkExportJob from '../models/page-bulk-export-job';
-import type { PageBulkExportPageSnapshotDocument } from '../models/page-bulk-export-page-snapshot';
-import PageBulkExportPageSnapshot from '../models/page-bulk-export-page-snapshot';
+import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
+import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
+import PageBulkExportJob from '../../models/page-bulk-export-job';
+import type { PageBulkExportPageSnapshotDocument } from '../../models/page-bulk-export-page-snapshot';
+import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
+
+import { BulkExportJobExpiredError, BulkExportJobRestartedError, DuplicateBulkExportJobError } from './errors';
+import { PageBulkExportJobStreamManager } from './page-bulk-export-job-stream-manager';
 
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
@@ -42,60 +43,6 @@ const logger = loggerFactory('growi:services:PageBulkExportService');
 type ActivityParameters ={
   ip?: string;
   endpoint: string;
-}
-
-export class DuplicateBulkExportJobError extends Error {
-
-  constructor() {
-    super('Duplicate bulk export job is in progress');
-  }
-
-}
-
-class BulkExportJobExpiredError extends Error {
-
-  constructor() {
-    super('Bulk export job has expired');
-  }
-
-}
-
-class BulkExportJobRestartedError extends Error {
-
-  constructor() {
-    super('Bulk export job has restarted');
-  }
-
-}
-
-/**
- * Used to keep track of streams currently being executed, and enable destroying them
- */
-class PageBulkExportJobStreamManager {
-
-  private jobStreams: Record<string, Readable> = {};
-
-  addJobStream(jobId: ObjectIdLike, stream: Readable) {
-    this.jobStreams[jobId.toString()] = stream;
-  }
-
-  removeJobStream(jobId: ObjectIdLike) {
-    delete this.jobStreams[jobId.toString()];
-  }
-
-  destroyJobStream(jobId: ObjectIdLike, restarted = false) {
-    const stream = this.jobStreams[jobId.toString()];
-    if (stream != null) {
-      if (restarted) {
-        stream.destroy(new BulkExportJobRestartedError());
-      }
-      else {
-        stream.destroy(new BulkExportJobExpiredError());
-      }
-    }
-    this.removeJobStream(jobId);
-  }
-
 }
 
 class PageBulkExportService {
@@ -161,7 +108,7 @@ class PageBulkExportService {
   /**
    * Restart page bulk export job in progress from the beginning
    */
-  async restartBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument & HasObjectId): Promise<void> {
+  async restartBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>): Promise<void> {
     this.pageBulkExportJobStreamManager.destroyJobStream(pageBulkExportJob._id, true);
     await this.cleanUpExportJobResources(pageBulkExportJob);
 
@@ -230,6 +177,7 @@ class PageBulkExportService {
    * Notify the user of the export result, and cleanup the resources used in the export process
    * @param action whether the export was successful
    * @param pageBulkExportJob the page bulk export job
+   * @param activityParameters parameters to record user activity
    */
   private async notifyExportResultAndCleanUp(
       action: SupportedActionType,
@@ -457,7 +405,7 @@ class PageBulkExportService {
     return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
   }
 
-  private async notifyExportResult(
+  async notifyExportResult(
       pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType, activityParameters?: ActivityParameters,
   ) {
     const activity = await this.crowi.activityService.createActivity({
@@ -470,7 +418,7 @@ class PageBulkExportService {
         username: isPopulated(pageBulkExportJob.user) ? pageBulkExportJob.user.username : '',
       },
     });
-    const getAdditionalTargetUsers = (activity: ActivityDocument) => [activity.user];
+    const getAdditionalTargetUsers = async(activity: ActivityDocument) => [activity.user];
     const preNotify = preNotifyService.generatePreNotify(activity, getAdditionalTargetUsers);
     this.activityEvent.emit('updated', activity, pageBulkExportJob, preNotify);
   }
