@@ -62,7 +62,8 @@ class PageBulkExportJobCronService extends CronService {
     });
     for (const downloadExpiredExportJob of downloadExpiredExportJobs) {
       try {
-        this.crowi.attachmentService?.removeAttachment(downloadExpiredExportJob.attachment);
+        // eslint-disable-next-line no-await-in-loop
+        await this.crowi.attachmentService?.removeAttachment(downloadExpiredExportJob.attachment);
       }
       catch (err) {
         logger.error(err);
