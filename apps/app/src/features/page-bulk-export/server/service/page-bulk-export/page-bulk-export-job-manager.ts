@@ -73,11 +73,13 @@ export class PageBulkExportJobManager {
   removeJobInProgressAndQueueNextJob(jobId: ObjectIdLike, isJobRestarted = false): void {
     this.removeJobInProgress(jobId, isJobRestarted);
 
-    if (this.jobQueue.length > 0 && this.canExecuteNextJob()) {
-      const nextJob = this.jobQueue.shift();
-      if (nextJob != null) {
-        this.jobsInProgress[nextJob.id.toString()] = { stream: undefined };
-        this.pageBulkExportService.executePageBulkExportJob(nextJob);
+    if (this.jobQueue.length > 0) {
+      while (this.canExecuteNextJob()) {
+        const nextJob = this.jobQueue.shift();
+        if (nextJob != null) {
+          this.jobsInProgress[nextJob.id.toString()] = { stream: undefined };
+          this.pageBulkExportService.executePageBulkExportJob(nextJob);
+        }
       }
     }
   }

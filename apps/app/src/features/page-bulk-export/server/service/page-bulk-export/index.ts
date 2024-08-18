@@ -434,7 +434,7 @@ class PageBulkExportService implements IPageBulkExportService {
    * - abort multipart upload
    */
   async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument, restarted = false) {
-    this.pageBulkExportJobManager.removeJobInProgress(pageBulkExportJob._id, restarted);
+    this.pageBulkExportJobManager.removeJobInProgressAndQueueNextJob(pageBulkExportJob._id, restarted);
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
