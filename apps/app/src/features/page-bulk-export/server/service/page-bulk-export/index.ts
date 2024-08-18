@@ -35,17 +35,21 @@ import type { PageBulkExportPageSnapshotDocument } from '../../models/page-bulk-
 import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
 
 import { BulkExportJobExpiredError, BulkExportJobRestartedError, DuplicateBulkExportJobError } from './errors';
-import { PageBulkExportJobStreamManager } from './page-bulk-export-job-stream-manager';
+import { PageBulkExportJobManager } from './page-bulk-export-job-manager';
 
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
-type ActivityParameters ={
+export type ActivityParameters ={
   ip?: string;
   endpoint: string;
 }
 
-class PageBulkExportService {
+export interface IPageBulkExportService {
+  executePageBulkExportJob: (pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters) => Promise<void>
+}
+
+class PageBulkExportService implements IPageBulkExportService {
 
   crowi: any;
 
@@ -58,7 +62,7 @@ class PageBulkExportService {
 
   compressExtension = 'tar.gz';
 
-  pageBulkExportJobStreamManager: PageBulkExportJobStreamManager = new PageBulkExportJobStreamManager();
+  pageBulkExportJobManager: PageBulkExportJobManager;
 
   // temporal path of local fs to output page files before upload
   // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
@@ -70,6 +74,7 @@ class PageBulkExportService {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
     this.pageModel = mongoose.model<IPage, PageModel>('Page');
+    this.pageBulkExportJobManager = new PageBulkExportJobManager(this);
   }
 
   /**
@@ -91,7 +96,7 @@ class PageBulkExportService {
     });
     if (duplicatePageBulkExportJobInProgress != null) {
       if (restartJob) {
-        this.restartBulkExportJob(duplicatePageBulkExportJobInProgress);
+        this.restartBulkExportJob(duplicatePageBulkExportJobInProgress, activityParameters);
         return;
       }
       throw new DuplicateBulkExportJobError();
@@ -102,18 +107,18 @@ class PageBulkExportService {
 
     await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
 
-    this.executePageBulkExportJob(pageBulkExportJob, activityParameters);
+    this.pageBulkExportJobManager.addJob(pageBulkExportJob, activityParameters);
   }
 
   /**
    * Restart page bulk export job in progress from the beginning
    */
-  async restartBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>): Promise<void> {
+  async restartBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>, activityParameters: ActivityParameters): Promise<void> {
     await this.cleanUpExportJobResources(pageBulkExportJob, true);
 
     pageBulkExportJob.status = PageBulkExportJobStatus.initializing;
     await pageBulkExportJob.save();
-    this.executePageBulkExportJob(pageBulkExportJob);
+    this.pageBulkExportJobManager.addJob(pageBulkExportJob, activityParameters);
   }
 
   /**
@@ -244,7 +249,7 @@ class PageBulkExportService {
       },
     });
 
-    this.pageBulkExportJobStreamManager.addJobStream(pageBulkExportJob._id, pagesReadable);
+    this.pageBulkExportJobManager.updateJobStream(pageBulkExportJob._id, pagesReadable);
 
     await pipelinePromise(pagesReadable, pageSnapshotsWritable);
 
@@ -268,7 +273,7 @@ class PageBulkExportService {
 
     const pagesWritable = this.getPageWritable(pageBulkExportJob);
 
-    this.pageBulkExportJobStreamManager.addJobStream(pageBulkExportJob._id, pageSnapshotsReadable);
+    this.pageBulkExportJobManager.updateJobStream(pageBulkExportJob._id, pageSnapshotsReadable);
 
     return pipelinePromise(pageSnapshotsReadable, pagesWritable);
   }
@@ -429,7 +434,7 @@ class PageBulkExportService {
    * - abort multipart upload
    */
   async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument, restarted = false) {
-    this.pageBulkExportJobStreamManager?.destroyJobStream(pageBulkExportJob._id, restarted);
+    this.pageBulkExportJobManager.removeJobInProgress(pageBulkExportJob._id, restarted);
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
