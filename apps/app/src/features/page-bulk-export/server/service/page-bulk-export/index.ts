@@ -109,8 +109,7 @@ class PageBulkExportService {
    * Restart page bulk export job in progress from the beginning
    */
   async restartBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>): Promise<void> {
-    this.pageBulkExportJobStreamManager.destroyJobStream(pageBulkExportJob._id, true);
-    await this.cleanUpExportJobResources(pageBulkExportJob);
+    await this.cleanUpExportJobResources(pageBulkExportJob, true);
 
     pageBulkExportJob.status = PageBulkExportJobStatus.initializing;
     await pageBulkExportJob.save();
@@ -429,8 +428,8 @@ class PageBulkExportService {
    * - remove the temporal output directory
    * - abort multipart upload
    */
-  async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument) {
-    this.pageBulkExportJobStreamManager?.destroyJobStream(pageBulkExportJob._id);
+  async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument, restarted = false) {
+    this.pageBulkExportJobStreamManager?.destroyJobStream(pageBulkExportJob._id, restarted);
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
