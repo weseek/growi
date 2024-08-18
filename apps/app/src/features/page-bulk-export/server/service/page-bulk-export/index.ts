@@ -409,7 +409,7 @@ class PageBulkExportService {
    * - abort multipart upload
    */
   async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument) {
-    this.pageBulkExportJobStreamManager.removeJobStream(pageBulkExportJob._id);
+    this.pageBulkExportJobStreamManager?.destroyJobStream(pageBulkExportJob._id);
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
