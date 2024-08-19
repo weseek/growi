@@ -558,7 +558,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
-  props.isPageBulkExportEnabled = PageBulkExportEnabledFileUploadTypes.includes(crowi.configManager.getConfig('crowi', 'app:fileUploadType'));
+  props.isPageBulkExportEnabled = PageBulkExportEnabledFileUploadTypes.includes(configManager.getConfig('crowi', 'app:fileUploadType'));
 
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');

@@ -3,7 +3,7 @@ import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
+import { PageBulkExportEnabledFileUploadTypes, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
@@ -24,6 +24,9 @@ class PageBulkExportJobCronService extends CronService {
   }
 
   override async executeJob(): Promise<void> {
+    const isPageBulkExportEnabled = PageBulkExportEnabledFileUploadTypes.includes(configManager.getConfig('crowi', 'app:fileUploadType'));
+    if (!isPageBulkExportEnabled) return;
+
     await this.deleteExpiredExportJobs();
     await this.deleteDownloadExpiredExportJobs();
     await this.deleteFailedExportJobs();
