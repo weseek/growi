@@ -25,8 +25,8 @@ export const useCodeMirrorEditorIsolated = (
   const ref = useRef<UseCodeMirrorEditor>();
   const currentData = ref.current;
 
-  const propsRef = useRef<ReactCodeMirrorProps>();
-  const currentPropsData = propsRef.current;
+  const cmPropsRef = useRef<ReactCodeMirrorProps>();
+  const currentCmPropsData = cmPropsRef.current;
 
   const swrKey = key != null ? `codeMirrorEditor_${key}` : null;
   const mergedProps = useMemo<UseCodeMirror>(() => deepmerge(
@@ -37,11 +37,12 @@ export const useCodeMirrorEditorIsolated = (
   const newData = useCodeMirrorEditor(mergedProps);
 
   const shouldUpdate = swrKey != null && container != null && props != null
-  && (currentData == null || (isValid(newData) && !isDeepEquals(currentData, newData)) || currentPropsData == null || !isDeepEquals(currentPropsData, props));
+  && (currentData == null || (isValid(newData) && !isDeepEquals(currentData, newData))
+  || currentCmPropsData == null || !isDeepEquals(currentCmPropsData, props));
 
   if (shouldUpdate) {
     ref.current = newData;
-    propsRef.current = props;
+    cmPropsRef.current = props;
   }
 
   return useSWRStatic(swrKey, shouldUpdate ? newData : undefined);
