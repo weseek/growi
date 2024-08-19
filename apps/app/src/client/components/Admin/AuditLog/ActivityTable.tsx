@@ -15,7 +15,7 @@ type Props = {
   activityList: IActivityHasId[]
 }
 
-const formatDate = (date) => {
+const formatDate = (date: Date): string => {
   return format(new Date(date), 'yyyy/MM/dd HH:mm:ss');
 };
 
