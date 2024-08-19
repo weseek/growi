@@ -675,7 +675,8 @@
     "bulk_export_started": "ただいま準備中です...",
     "bulk_export_download_expired": "ダウンロード期限が切れました",
     "bulk_export_job_expired": "エクスポート時間が長すぎるため、処理が中断されました",
-    "duplicate_bulk_export_job_error": "既に同じページとその配下のエクスポートが進行中です"
+    "duplicate_bulk_export_job_error": "既に同じページとその配下のエクスポートが進行中です",
+    "bulk_export_only_available_for": "AWS と GCP のみ対応しています"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",
