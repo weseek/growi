@@ -116,12 +116,22 @@ export const langMap: LangMap = {
   [Lang.fr_FR]: Locale['fr-FR'],
 };
 
+// use this function to get locale for html lang attribute
 export const getLocaleAtServerSide = (req: CrowiRequest): Locale => {
   const { user, headers } = req;
   const { configManager } = req.crowi;
 
   return langMap[user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
     : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US) ?? Lang.en_US];
+};
+
+// use this function to translate content
+export const getLangAtServerSide = (req: CrowiRequest): Lang => {
+  const { user, headers } = req;
+  const { configManager } = req.crowi;
+
+  return user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
+    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US) ?? Lang.en_US;
 };
 
 export const getNextI18NextConfig = async(
@@ -135,7 +145,7 @@ export const getNextI18NextConfig = async(
 
   // determine language
   const req: CrowiRequest = context.req as CrowiRequest;
-  const locale = getLocaleAtServerSide(req);
+  const lang = getLangAtServerSide(req);
 
   const namespaces = ['commons'];
   if (namespacesRequired != null) {
@@ -146,7 +156,7 @@ export const getNextI18NextConfig = async(
     namespaces.push('translation');
   }
 
-  return serverSideTranslations(locale, namespaces, nextI18NextConfig, preloadAllLang ? AllLang : false);
+  return serverSideTranslations(lang, namespaces, nextI18NextConfig, preloadAllLang ? AllLang : false);
 };
 
 /**
