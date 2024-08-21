@@ -20,8 +20,8 @@ export class ImportOptionForPages extends GrowiArchiveImportOption {
 
   initPageMetadatas;
 
-  constructor(mode, initProps) {
-    super(mode, initProps || DEFAULT_PROPS);
+  constructor(collectionName: string, mode: string, initProps) {
+    super(collectionName, mode, initProps || DEFAULT_PROPS);
   }
 
 }

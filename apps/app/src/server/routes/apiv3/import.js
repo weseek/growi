@@ -179,29 +179,32 @@ export default function route(crowi) {
    *                  type: array
    *                  items:
    *                    type: string
-   *                optionsMap:
+   *                options:
    *                  description: |
-   *                    the map object of importing option that have collection name as the key
+   *                    the array of importing option that have collection name as the key
    *                  additionalProperties:
-   *                    type: object
-   *                    properties:
-   *                      mode:
-   *                        description: Import mode
-   *                        type: string
-   *                        enum: [insert, upsert, flushAndInsert]
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                        properties:
+   *                          mode:
+   *                            description: Import mode
+   *                            type: string
+   *                            enum: [insert, upsert, flushAndInsert]
    *      responses:
    *        200:
    *          description: Import process has requested
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
-    const { fileName, collections, optionsMap } = req.body;
+    const { fileName, collections, options } = req.body;
 
     // pages collection can only be imported by upsert if isV5Compatible is true
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isImportPagesCollection = collections.includes('pages');
     if (isV5Compatible && isImportPagesCollection) {
-      const option = new GrowiArchiveImportOption(null, optionsMap.pages);
+      /** @type {ImportOptionForPages} */
+      const option = options.find(opt => opt.collectionName === 'pages');
       if (option.mode !== 'upsert') {
         return res.apiv3Err(new ErrorV3('Upsert is only available for importing pages collection.', 'only_upsert_available'));
       }
@@ -258,14 +261,15 @@ export default function route(crowi) {
     const importSettingsMap = {};
     fileStatsToImport.forEach(({ fileName, collectionName }) => {
       // instanciate GrowiArchiveImportOption
-      const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
+      /** @type {GrowiArchiveImportOption} */
+      const option = options.find(opt => opt.collectionName === collectionName);
 
       // generate options
       /** @type {import('~/server/service/import').ImportSettings} */
       const importSettings = {
-        mode: options.mode,
+        mode: option.mode,
         jsonFileName: fileName,
-        overwriteParams: generateOverwriteParams(collectionName, req.user._id, options),
+        overwriteParams: generateOverwriteParams(collectionName, req.user._id, option),
       };
 
       importSettingsMap[collectionName] = importSettings;

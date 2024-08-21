@@ -11,20 +11,20 @@ import { generateOverwriteParams as generateForRevisions } from './revisions';
  * generate overwrite params with overwrite-params/* modules
  */
 export const generateOverwriteParams = <OPT extends GrowiArchiveImportOption>(
-  collectionName: string, operatorUserId: string, options: OPT,
+  collectionName: string, operatorUserId: string, option: OPT,
 ): OverwriteParams => {
 
   switch (collectionName) {
     case 'pages':
-      if (!isImportOptionForPages(options)) {
+      if (!isImportOptionForPages(option)) {
         throw new Error('Invalid option for pages');
       }
-      return generateForPages(operatorUserId, options);
+      return generateForPages(operatorUserId, option);
     case 'revisions':
-      if (!isImportOptionForPages(options)) {
+      if (!isImportOptionForPages(option)) {
         throw new Error('Invalid option for revisions');
       }
-      return generateForRevisions(operatorUserId, options);
+      return generateForRevisions(operatorUserId, option);
     case 'attachmentFiles.chunks':
       return overwriteParamsForAttachmentFilesChunks;
     default:

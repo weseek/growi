@@ -6,8 +6,8 @@ const DEFAULT_PROPS = {
 
 export class ImportOptionForRevisions extends GrowiArchiveImportOption {
 
-  constructor(mode, initProps) {
-    super(mode, initProps || DEFAULT_PROPS);
+  constructor(collectionName, mode, initProps) {
+    super(collectionName, mode, initProps || DEFAULT_PROPS);
   }
 
 }

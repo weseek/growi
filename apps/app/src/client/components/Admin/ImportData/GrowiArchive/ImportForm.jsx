@@ -73,7 +73,7 @@ class ImportForm extends React.Component {
         : DEFAULT_MODE;
       // create GrowiArchiveImportOption instance
       const ImportOption = IMPORT_OPTION_CLASS_MAPPING[collectionName] || GrowiArchiveImportOption;
-      this.initialState.optionsMap[collectionName] = new ImportOption(initialMode);
+      this.initialState.optionsMap[collectionName] = new ImportOption(collectionName, initialMode);
     });
 
     this.state = this.initialState;
@@ -303,7 +303,7 @@ class ImportForm extends React.Component {
       await apiv3Post('/import', {
         fileName,
         collections: Array.from(selectedCollections),
-        optionsMap,
+        options: Object.values(optionsMap),
       });
 
       if (onPostImport != null) {
