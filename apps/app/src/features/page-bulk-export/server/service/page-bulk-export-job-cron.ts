@@ -23,6 +23,10 @@ class PageBulkExportJobCronService extends CronService {
     this.crowi = crowi;
   }
 
+  override getCronSchedule(): string {
+    return configManager.getConfig('crowi', 'app:pageBulkExportJobCronSchedule');
+  }
+
   override async executeJob(): Promise<void> {
     await this.deleteExpiredExportJobs();
     await this.deleteDownloadExpiredExportJobs();
