@@ -41,7 +41,7 @@ class ImportForm extends React.Component {
       isImporting: false,
       isImported: false,
       progressMap: [],
-      errorsMap: [],
+      errorsMap: {},
 
       selectedCollections: new Set(),
 
@@ -109,8 +109,10 @@ class ImportForm extends React.Component {
       const { progressMap, errorsMap } = this.state;
       progressMap[collectionName] = collectionProgress;
 
-      const errors = errorsMap[collectionName] || [];
-      errorsMap[collectionName] = errors.concat(appendedErrors);
+      if (appendedErrors != null) {
+        const errors = errorsMap[collectionName] || [];
+        errorsMap[collectionName] = errors.concat(appendedErrors);
+      }
 
       this.setState({
         isImporting: true,
@@ -378,7 +380,7 @@ class ImportForm extends React.Component {
       <div className="row">
         {collectionNames.map((collectionName) => {
           const collectionProgress = progressMap[collectionName];
-          const errors = errorsMap[collectionName];
+          const errorsCount = errorsMap[collectionName]?.length ?? 0;
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           return (
@@ -388,7 +390,7 @@ class ImportForm extends React.Component {
                 isImported={collectionProgress ? isImported : false}
                 insertedCount={collectionProgress ? collectionProgress.insertedCount : 0}
                 modifiedCount={collectionProgress ? collectionProgress.modifiedCount : 0}
-                errorsCount={errors ? errors.length : 0}
+                errorsCount={errorsCount}
                 collectionName={collectionName}
                 isSelected={selectedCollections.has(collectionName)}
                 option={optionsMap[collectionName]}
