@@ -2,14 +2,10 @@ import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { getImportService } from '~/server/service/import';
+import { generateOverwriteParams } from '~/server/service/import/overwrite-params';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
-
-import overwriteParamsAttachmentFilesChunks from './overwrite-params/attachmentFiles.chunks';
-import overwriteParamsPages from './overwrite-params/pages';
-import overwriteParamsRevisions from './overwrite-params/revisions';
-
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
 
@@ -51,26 +47,6 @@ const router = express.Router();
  *            type: boolean
  *            description: whether the current importing job exists or not
  */
-
-/**
- * generate overwrite params with overwrite-params/* modules
- * @param {string} collectionName
- * @param {string} operatorUserId Operator user id
- * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
- * @return {import('~/server/service/import').OverwriteParams}
- */
-export const generateOverwriteParams = (collectionName, operatorUserId, options) => {
-  switch (collectionName) {
-    case 'pages':
-      return overwriteParamsPages(operatorUserId, options);
-    case 'revisions':
-      return overwriteParamsRevisions(operatorUserId, options);
-    case 'attachmentFiles.chunks':
-      return overwriteParamsAttachmentFilesChunks(operatorUserId, options);
-    default:
-      return {};
-  }
-};
 
 export default function route(crowi) {
   const { growiBridgeService, socketIoService } = crowi;

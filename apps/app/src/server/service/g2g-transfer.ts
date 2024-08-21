@@ -12,7 +12,6 @@ import mongoose, { Types as MongooseTypes } from 'mongoose';
 import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
-import { generateOverwriteParams } from '~/server/routes/apiv3/import';
 import { getImportService, type ImportSettings } from '~/server/service/import';
 import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
@@ -24,6 +23,7 @@ import { Attachment } from '../models/attachment';
 import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfer-error';
 
 import { configManager } from './config-manager';
+import { generateOverwriteParams } from './import/overwrite-params';
 
 const logger = loggerFactory('growi:service:g2g-transfer');
 
