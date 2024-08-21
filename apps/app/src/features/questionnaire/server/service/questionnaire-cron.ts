@@ -26,8 +26,8 @@ class QuestionnaireCronService extends CronService {
 
   sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
 
-  override startCron(cronSchedule: string): void {
-    super.startCron(cronSchedule);
+  override getCronSchedule(): string {
+    return configManager.getConfig('crowi', 'app:questionnaireCronSchedule');
   }
 
   override async executeJob(): Promise<void> {
