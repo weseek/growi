@@ -14,6 +14,6 @@ export const overwriteParams: OverwriteParams = {
 
   // Binary
   data: (value, { document, schema, propertyName }) => {
-    return new Binary(value);
+    return new Binary(Buffer.from(value, 'base64'));
   },
 };
