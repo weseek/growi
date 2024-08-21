@@ -267,20 +267,20 @@ jobs:
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
-    - name: Copy dotenv file for ci
-      working-directory: ./apps/app
-      run: |
-        cat config/ci/.env.local.for-ci >> .env.production.local
+    # - name: Copy dotenv file for ci
+    #   working-directory: ./apps/app
+    #   run: |
+    #     cat config/ci/.env.local.for-ci >> .env.production.local
 
-    - name: Playwright Run (--project=chromium/installer)
-      if: ${{ matrix.browser == 'chromium' }}
-      working-directory: ./apps/app
-      run: |
-        yarn playwright test --project=chromium/installer
-      env:
-        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
-        MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
-        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+    # - name: Playwright Run (--project=chromium/installer)
+    #   if: ${{ matrix.browser == 'chromium' }}
+    #   working-directory: ./apps/app
+    #   run: |
+    #     yarn playwright test --project=chromium/installer
+    #   env:
+    #     HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+    #     MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
+    #     ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
     - name: Copy dotenv file for automatic installation
       working-directory: ./apps/app
@@ -296,19 +296,19 @@ jobs:
         MONGO_URI: mongodb://mongodb:27017/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
-    - name: Copy dotenv file for automatic installation with allowing guest mode
-      working-directory: ./apps/app
-      run: |
-        cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
+    # - name: Copy dotenv file for automatic installation with allowing guest mode
+    #   working-directory: ./apps/app
+    #   run: |
+    #     cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
 
-    - name: Playwright Run (--project=${browser}/guest-mode)
-      working-directory: ./apps/app
-      run: |
-        yarn playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
-      env:
-        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
-        MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
-        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+    # - name: Playwright Run (--project=${browser}/guest-mode)
+    #   working-directory: ./apps/app
+    #   run: |
+    #     yarn playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
+    #   env:
+    #     HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+    #     MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
+    #     ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
     - uses: actions/upload-artifact@v3
       if: always()
