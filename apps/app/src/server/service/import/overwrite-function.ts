@@ -1,6 +1,10 @@
 import { parseISO } from 'date-fns/parseISO';
 import isIsoDate from 'is-iso-date';
-import { Types, type Document, type Schema } from 'mongoose';
+import type { Schema } from 'mongoose';
+import {
+  Types, type Document,
+} from 'mongoose';
+
 
 const { ObjectId } = Types;
 
