@@ -8,7 +8,17 @@ const DEFAULT_PROPS = {
   initPageMetadatas: false,
 };
 
-class ImportOptionForPages extends GrowiArchiveImportOption {
+export class ImportOptionForPages extends GrowiArchiveImportOption {
+
+  isOverwriteAuthorWithCurrentUser;
+
+  makePublicForGrant2;
+
+  makePublicForGrant4;
+
+  makePublicForGrant5;
+
+  initPageMetadatas;
 
   constructor(mode, initProps) {
     super(mode, initProps || DEFAULT_PROPS);
@@ -16,4 +26,6 @@ class ImportOptionForPages extends GrowiArchiveImportOption {
 
 }
 
-module.exports = ImportOptionForPages;
+export const isImportOptionForPages = (opt: GrowiArchiveImportOption): opt is ImportOptionForPages => {
+  return 'isOverwriteAuthorWithCurrentUser' in opt;
+};
