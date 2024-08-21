@@ -8,6 +8,7 @@ import gc from 'expose-gc/function';
 import type {
   BulkWriteResult, MongoBulkWriteError, UnorderedBulkOperation, WriteError,
 } from 'mongodb';
+import type { Document } from 'mongoose';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
@@ -24,7 +25,7 @@ import { configManager } from '../config-manager';
 import type { ConvertMap } from './construct-convert-map';
 import { constructConvertMap } from './construct-convert-map';
 import { getModelFromCollectionName } from './get-model-from-collection-name';
-import type { ImportSettings } from './import-settings';
+import type { ImportSettings, OverwriteParams } from './import-settings';
 import { keepOriginal } from './overwrite-function';
 
 
@@ -413,27 +414,24 @@ export class ImportService {
    * execute unorderedBulkOp and ignore errors
    *
    * @memberOf ImportService
-   * @param {string} collectionName
-   * @param {object} document document being imported
-   * @param {object} overwriteParams overwrite each document with unrelated value. e.g. { creator: req.user }
-   * @return {object} document to be persisted
+   * @param collectionName
+   * @param document document being imported
+   * @returns document to be persisted
    */
-  convertDocuments(collectionName, document, overwriteParams) {
+  convertDocuments<D extends Document>(collectionName: string, document: D, overwriteParams: OverwriteParams): D {
     const Model = getModelFromCollectionName(collectionName);
     const schema = (Model != null) ? Model.schema : undefined;
     const convertMap = this.convertMap[collectionName];
 
-    const _document = {};
+    const _document: D = structuredClone(document);
 
-    // not Mongoose Model
-    if (convertMap == null) {
-      // apply keepOriginal to all of properties
-      Object.entries(document).forEach(([propertyName, value]) => {
-        _document[propertyName] = keepOriginal(value, { document, propertyName });
-      });
-    }
+    // apply keepOriginal to all of properties
+    Object.entries(document).forEach(([propertyName, value]) => {
+      _document[propertyName] = keepOriginal(value, { document, propertyName });
+    });
+
     // Mongoose Model
-    else {
+    if (convertMap != null) {
       // assign value from documents being imported
       Object.entries(convertMap).forEach(([propertyName, convertedValue]) => {
         const value = document[propertyName];
