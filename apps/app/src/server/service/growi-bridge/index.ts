@@ -1,13 +1,13 @@
+import fs from 'fs';
+import path from 'path';
+
+import streamToPromise from 'stream-to-promise';
 import unzipStream, { type Entry } from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
 
 import { tapStreamDataByPromise } from './unzip-stream-utils';
 
-const fs = require('fs');
-const path = require('path');
-
-const streamToPromise = require('stream-to-promise');
 
 const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-disable-line no-unused-vars
 
@@ -53,18 +53,11 @@ class GrowiBridgeService {
 
   /**
    * get the absolute path to a file
-   * this method must must be bound to the caller (this.baseDir is undefined in this service)
    *
    * @memberOf GrowiBridgeService
-   * @param {string} fileName base name of file
-   * @return {string} absolute path to the file
    */
-  getFile(fileName) {
-    if (this.baseDir == null) {
-      throw new Error('baseDir is not defined');
-    }
-
-    const jsonFile = path.join(this.baseDir, fileName);
+  getFile(fileName: string, baseDir: string): string {
+    const jsonFile = path.join(baseDir, fileName);
 
     // throws err if the file does not exist
     fs.accessSync(jsonFile);
