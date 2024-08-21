@@ -1,5 +1,5 @@
-import type { ColorScheme, IUserHasId } from '@growi/core';
-import { Lang, AllLang, Locale } from '@growi/core';
+import type { ColorScheme, IUserHasId, Locale } from '@growi/core';
+import { Lang, AllLang } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -110,10 +110,10 @@ export type LangMap = {
 };
 
 export const langMap: LangMap = {
-  [Lang.ja_JP]: Locale['ja-JP'],
-  [Lang.en_US]: Locale['en-US'],
-  [Lang.zh_CN]: Locale['zh-CN'],
-  [Lang.fr_FR]: Locale['fr-FR'],
+  [Lang.ja_JP]: 'ja-JP' as Locale,
+  [Lang.en_US]: 'en-US' as Locale,
+  [Lang.zh_CN]: 'zh-CN' as Locale,
+  [Lang.fr_FR]: 'fr-FR' as Locale,
 };
 
 // use this function to translate content
@@ -152,6 +152,7 @@ export const getNextI18NextConfig = async(
     namespaces.push('translation');
   }
 
+  // The first argument must be a language code with an underscore, such as en_US
   return serverSideTranslations(lang, namespaces, nextI18NextConfig, preloadAllLang ? AllLang : false);
 };
 

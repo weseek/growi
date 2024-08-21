@@ -1,8 +1,2 @@
-export const Locale = {
-  'en-US': 'en-US',
-  'ja-JP': 'ja-JP',
-  'zh-CN': 'zh-CN',
-  'fr-FR': 'fr-FR',
-} as const;
-export const AllLocale = Object.values(Locale);
-export type Locale = typeof Locale[keyof typeof Locale];
+export const AllLocale = ['en-US', 'ja-JP', 'zh-CN', 'fr-FR'];
+export type Locale = 'ja-JP' | 'en-US' | 'zh-CN' | 'fr-FR';
