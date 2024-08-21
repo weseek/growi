@@ -6,8 +6,8 @@ import PropTypes from 'prop-types';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
-import ImportOptionForPages from '~/models/admin/import-option-for-pages';
-import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
+import { ImportOptionForPages } from '~/models/admin/import-option-for-pages';
+import { ImportOptionForRevisions } from '~/models/admin/import-option-for-revisions';
 import { useAdminSocket } from '~/stores/socket-io';
 
 

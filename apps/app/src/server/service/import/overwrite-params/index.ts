@@ -1,22 +1,32 @@
 import type GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
+import { isImportOptionForPages } from '~/models/admin/import-option-for-pages';
 
 import type { OverwriteParams } from '../import-settings';
 
-import overwriteParamsAttachmentFilesChunks from './attachmentFiles.chunks';
-import overwriteParamsPages from './pages';
-import overwriteParamsRevisions from './revisions';
+import { overwriteParams as overwriteParamsForAttachmentFilesChunks } from './attachmentFiles.chunks';
+import { generateOverwriteParams as generateForPages } from './pages';
+import { generateOverwriteParams as generateForRevisions } from './revisions';
 
 /**
  * generate overwrite params with overwrite-params/* modules
  */
-export const generateOverwriteParams = (collectionName: string, operatorUserId: string, options: GrowiArchiveImportOption): OverwriteParams => {
+export const generateOverwriteParams = <OPT extends GrowiArchiveImportOption>(
+  collectionName: string, operatorUserId: string, options: OPT,
+): OverwriteParams => {
+
   switch (collectionName) {
     case 'pages':
-      return overwriteParamsPages(operatorUserId, options);
+      if (!isImportOptionForPages(options)) {
+        throw new Error('Invalid option for pages');
+      }
+      return generateForPages(operatorUserId, options);
     case 'revisions':
-      return overwriteParamsRevisions(operatorUserId, options);
+      if (!isImportOptionForPages(options)) {
+        throw new Error('Invalid option for revisions');
+      }
+      return generateForRevisions(operatorUserId, options);
     case 'attachmentFiles.chunks':
-      return overwriteParamsAttachmentFilesChunks(operatorUserId, options);
+      return overwriteParamsForAttachmentFilesChunks;
     default:
       return {};
   }

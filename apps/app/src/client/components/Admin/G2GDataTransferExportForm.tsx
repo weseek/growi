@@ -5,8 +5,8 @@ import React, {
 import { useTranslation } from 'next-i18next';
 
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
-import ImportOptionForPages from '~/models/admin/import-option-for-pages';
-import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
+import { ImportOptionForPages } from '~/models/admin/import-option-for-pages';
+import { ImportOptionForRevisions } from '~/models/admin/import-option-for-revisions';
 
 import ImportCollectionConfigurationModal from './ImportData/GrowiArchive/ImportCollectionConfigurationModal';
 import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportData/GrowiArchive/ImportCollectionItem';

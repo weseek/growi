@@ -1,31 +1,18 @@
-const mongoose = require('mongoose');
+import { Types } from 'mongoose';
 
-// eslint-disable-next-line no-unused-vars
-const ImportOptionForPages = require('~/models/admin/import-option-for-pages');
+import type { ImportOptionForPages } from '~/models/admin/import-option-for-pages';
 
-const { ObjectId } = mongoose.Types;
+import type { OverwriteParams } from '../import-settings';
 
-class RevisionOverwriteParamsFactory {
+const { ObjectId } = Types;
 
-  /**
-   * generate overwrite params object
-   * @param {string} operatorUserId
-   * @param {ImportOptionForPages} option
-   * @return {import('~/server/service/import').OverwriteParams}
-   *  key: property name
-   *  value: any value or a function `(value, { document, schema, propertyName }) => { return newValue }`
-   */
-  static generate(operatorUserId, option) {
-    const params = {};
+export const generateOverwriteParams = (operatorUserId: string, option: ImportOptionForPages): OverwriteParams => {
+  const params: OverwriteParams = {};
 
-    if (option.isOverwriteAuthorWithCurrentUser) {
-      const userId = ObjectId(operatorUserId);
-      params.author = userId;
-    }
-
-    return params;
+  if (option.isOverwriteAuthorWithCurrentUser) {
+    const userId = new ObjectId(operatorUserId);
+    params.author = userId;
   }
 
-}
-
-module.exports = (operatorUserId, option) => RevisionOverwriteParamsFactory.generate(operatorUserId, option);
+  return params;
+};

@@ -1,32 +1,19 @@
-const { Binary } = require('mongodb');
-const { ObjectId } = require('mongoose').Types;
+import { Binary } from 'mongodb';
+import { Types } from 'mongoose';
 
-class AttachmentFilesChunksOverwriteParamsFactory {
+import type { OverwriteParams } from '../import-settings';
 
-  /**
-   * generate overwrite params object
-   * @param {string} operatorUserId
-   * @param {ImportOptionForPages} option
-   * @return {import('~/server/service/import').OverwriteParams}
-   *  key: property name
-   *  value: any value or a function `(value, { document, schema, propertyName }) => { return newValue }`
-   */
-  static generate(operatorUserId, option) {
-    const params = {};
 
-    // Date
-    params.files_id = (value, { document, schema, propertyName }) => {
-      return ObjectId(value);
-    };
+const { ObjectId } = Types;
 
-    // Binary
-    params.data = (value, { document, schema, propertyName }) => {
-      return Binary(value);
-    };
+export const overwriteParams: OverwriteParams = {
+  // Date
+  files_id: (value, { document, schema, propertyName }) => {
+    return new ObjectId(value);
+  },
 
-    return params;
-  }
-
-}
-
-module.exports = (operatorUserId, option) => AttachmentFilesChunksOverwriteParamsFactory.generate(operatorUserId, option);
+  // Binary
+  data: (value, { document, schema, propertyName }) => {
+    return new Binary(value);
+  },
+};

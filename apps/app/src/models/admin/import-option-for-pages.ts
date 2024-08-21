@@ -1,4 +1,4 @@
-const GrowiArchiveImportOption = require('./growi-archive-import-option');
+import GrowiArchiveImportOption from './growi-archive-import-option';
 
 const DEFAULT_PROPS = {
   isOverwriteAuthorWithCurrentUser: false,
