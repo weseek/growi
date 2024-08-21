@@ -110,11 +110,11 @@ export type LangMap = {
 };
 
 export const langMap: LangMap = {
-  [Lang.ja_JP]: 'ja-JP' as Locale,
-  [Lang.en_US]: 'en-US' as Locale,
-  [Lang.zh_CN]: 'zh-CN' as Locale,
-  [Lang.fr_FR]: 'fr-FR' as Locale,
-};
+  [Lang.ja_JP]: 'ja-JP',
+  [Lang.en_US]: 'en-US',
+  [Lang.zh_CN]: 'zh-CN',
+  [Lang.fr_FR]: 'fr-FR',
+} as const;
 
 // use this function to translate content
 export const getLangAtServerSide = (req: CrowiRequest): Lang => {
