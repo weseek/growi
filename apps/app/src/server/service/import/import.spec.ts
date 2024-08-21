@@ -19,6 +19,15 @@ vi.mock('./construct-convert-map', () => ({
   constructConvertMap: mocks.constructConvertMapMock,
 }));
 
+
+/**
+ * Get private property from ImportService
+ */
+const getPrivateProperty = <T>(importService: ImportService, propertyName: string): T => {
+  return importService[propertyName];
+};
+
+
 describe('ImportService', () => {
 
   let importService: ImportService;
@@ -46,7 +55,7 @@ describe('ImportService', () => {
       // assert
       expect(mocks.setupIndependentModelsMock).toHaveBeenCalledOnce();
       expect(mocks.constructConvertMapMock).toHaveBeenCalledOnce();
-      expect(importService.convertMap).toStrictEqual(convertMapMock);
+      expect(getPrivateProperty(importService, 'convertMap')).toStrictEqual(convertMapMock);
     });
   });
 });
