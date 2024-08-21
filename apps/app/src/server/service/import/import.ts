@@ -1,27 +1,31 @@
-/**
- * @typedef {import("@types/unzip-stream").Parse} Parse
- * @typedef {import("@types/unzip-stream").Entry} Entry
- */
-
 import fs from 'fs';
 import path from 'path';
+import type { EventEmitter } from 'stream';
 import { Writable, Transform } from 'stream';
 
 import JSONStream from 'JSONStream';
 import gc from 'expose-gc/function';
+import type {
+  BulkWriteOperationError, BulkWriteResult, ObjectId, UnorderedBulkOperation,
+} from 'mongodb';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
 
+import type Crowi from '~/server/crowi';
 import { setupIndependentModels } from '~/server/crowi/setup-models';
+import type CollectionProgress from '~/server/models/vo/collection-progress';
 import loggerFactory from '~/utils/logger';
 
 import CollectionProgressingStatus from '../../models/vo/collection-progressing-status';
 import { createBatchStream } from '../../util/batch-stream';
+import { configManager } from '../config-manager';
 
+import type { ConvertMap } from './construct-convert-map';
 import { constructConvertMap } from './construct-convert-map';
 import { getModelFromCollectionName } from './get-model-from-collection-name';
 import { keepOriginal } from './overwrite-function';
+
 
 const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
 
@@ -30,6 +34,8 @@ const BULK_IMPORT_SIZE = 100;
 
 
 class ImportingCollectionError extends Error {
+
+  collectionProgress: CollectionProgress;
 
   constructor(collectionProgress, error) {
     super(error);
@@ -41,15 +47,29 @@ class ImportingCollectionError extends Error {
 
 export class ImportService {
 
-  constructor(crowi) {
+  private crowi: Crowi;
+
+  private growiBridgeService: any;
+
+  private adminEvent: EventEmitter;
+
+  private currentProgressingStatus: CollectionProgressingStatus | null;
+
+  private convertMap: ConvertMap;
+
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.growiBridgeService = crowi.growiBridgeService;
-    this.getFile = this.growiBridgeService.getFile.bind(this);
-    this.baseDir = path.join(crowi.tmpDir, 'imports');
+    // this.getFile = this.growiBridgeService.getFile.bind(this);
+    // this.baseDir = path.join(crowi.tmpDir, 'imports');
 
     this.adminEvent = crowi.event('admin');
 
     this.currentProgressingStatus = null;
+  }
+
+  private get baseDir(): string {
+    return path.join(this.crowi.tmpDir, 'imports');
   }
 
   /**
@@ -62,9 +82,9 @@ export class ImportService {
     const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
 
     // process serially so as not to waste memory
-    const zipFileStats = [];
-    const parseZipFilePromises = zipFiles.map((file) => {
-      const zipFile = this.getFile(file);
+    const zipFileStats: any[] = [];
+    const parseZipFilePromises: Promise<any>[] = zipFiles.map((file) => {
+      const zipFile = this.growiBridgeService.getFile(file);
       return this.growiBridgeService.parseZipFile(zipFile);
     });
     for await (const stat of parseZipFilePromises) {
@@ -76,8 +96,6 @@ export class ImportService {
       .filter(zipFileStat => zipFileStat != null);
     // sort with ctime("Change Time" - Time when file status was last changed (inode data modification).)
     filtered.sort((a, b) => { return a.fileStat.ctime - b.fileStat.ctime });
-
-    const isImporting = this.currentProgressingStatus != null;
 
     const zipFileStat = filtered.pop();
     let isTheSameVersion = false;
@@ -97,8 +115,8 @@ export class ImportService {
     return {
       isTheSameVersion,
       zipFileStat,
-      isImporting,
-      progressList: isImporting ? this.currentProgressingStatus.progressList : null,
+      isImporting: this.currentProgressingStatus != null,
+      progressList: this.currentProgressingStatus?.progressList ?? null,
     };
   }
 
@@ -107,7 +125,6 @@ export class ImportService {
     await setupIndependentModels();
 
     // initialize convertMap
-    /** @type {import('./construct-convert-map').ConvertMap} */
     this.convertMap = constructConvertMap();
   }
 
@@ -144,9 +161,9 @@ export class ImportService {
     this.currentProgressingStatus = null;
     this.emitTerminateEvent();
 
-    await this.crowi.configManager.loadConfigs();
+    await configManager.loadConfigs();
 
-    const currentIsV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const currentIsV5Compatible = configManager.getConfig('crowi', 'app:isV5Compatible');
     const isImportPagesCollection = collections.includes('pages');
     const shouldNormalizePages = currentIsV5Compatible && isImportPagesCollection;
 
@@ -162,6 +179,10 @@ export class ImportService {
    * @return {insertedIds: Array.<string>, failedIds: Array.<string>}
    */
   async importCollection(collectionName, importSettings) {
+    if (this.currentProgressingStatus == null) {
+      throw new Error('Something went wrong: currentProgressingStatus is not initialized');
+    }
+
     // prepare functions invoked from custom streams
     const convertDocuments = this.convertDocuments.bind(this);
     const bulkOperate = this.bulkOperate.bind(this);
@@ -174,7 +195,7 @@ export class ImportService {
     const collectionProgress = this.currentProgressingStatus.progressMap[collectionName];
 
     try {
-      const jsonFile = this.getFile(jsonFileName);
+      const jsonFile = this.growiBridgeService.getFile(jsonFileName);
 
       // validate options
       this.validateImportSettings(collectionName, importSettings);
@@ -328,7 +349,7 @@ export class ImportService {
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
     const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
-    const files = [];
+    const files: string[] = [];
 
     unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
       const fileName = entry.path;
@@ -362,34 +383,47 @@ export class ImportService {
    * execute unorderedBulkOp and ignore errors
    *
    * @memberOf ImportService
-   * @param {object} unorderedBulkOp result of Model.collection.initializeUnorderedBulkOp()
-   * @return {object} e.g. { insertedCount: 10, errors: [...] }
    */
-  async execUnorderedBulkOpSafely(unorderedBulkOp) {
-    let errors = [];
-    let result = null;
+  async execUnorderedBulkOpSafely(unorderedBulkOp: UnorderedBulkOperation): Promise<{ insertedCount: number, modifiedCount: number, errors: unknown[] }> {
+    let errors: unknown[] = [];
+    let log: BulkWriteResult | null = null;
 
     try {
-      const log = await unorderedBulkOp.execute();
-      result = log.result;
+      log = await unorderedBulkOp.execute();
     }
     catch (err) {
-      result = err.result;
-      errors = err.writeErrors || [err];
-      errors.map((err) => {
-        const moreDetailErr = err.err;
-        return { _id: moreDetailErr.op._id, message: err.errmsg };
+
+      const _errs = Array.isArray(err.writeErrors) ? err : [err];
+
+      const errTypeGuard = (err: any): err is BulkWriteOperationError => {
+        return 'index' in err;
+      };
+      const docTypeGuard = (op: any): op is { _id: ObjectId } => {
+        return '_id' in op;
+      };
+
+      errors = _errs.map((e) => {
+        if (errTypeGuard(e)) {
+          const { op } = e;
+          return {
+            _id: docTypeGuard(op) ? op._id : undefined,
+            message: err.errmsg,
+          };
+        }
+        return err;
       });
     }
 
-    const insertedCount = result.nInserted + result.nUpserted;
-    const modifiedCount = result.nModified;
+    assert(log != null);
+    const insertedCount = log.nInserted + log.nUpserted;
+    const modifiedCount = log.nModified;
 
     return {
       insertedCount,
       modifiedCount,
       errors,
     };
+
   }
 
   /**
@@ -403,7 +437,7 @@ export class ImportService {
    */
   convertDocuments(collectionName, document, overwriteParams) {
     const Model = getModelFromCollectionName(collectionName);
-    const schema = (Model != null) ? Model.schema : null;
+    const schema = (Model != null) ? Model.schema : undefined;
     const convertMap = this.convertMap[collectionName];
 
     const _document = {};
