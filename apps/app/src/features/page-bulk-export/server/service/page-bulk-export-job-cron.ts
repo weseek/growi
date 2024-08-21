@@ -45,12 +45,9 @@ class PageBulkExportJobCronService extends CronService {
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
     });
 
-    const cleanup = async(job: PageBulkExportJobDocument) => {
-      await pageBulkExportService?.cleanUpExportJobResources(job);
-      await pageBulkExportService?.notifyExportResult(job, SupportedAction.ACTION_PAGE_BULK_EXPORT_JOB_EXPIRED);
-    };
-
-    await this.cleanUpAndDeleteBulkExportJobs(expiredExportJobs, cleanup);
+    if (pageBulkExportService != null) {
+      await this.cleanUpAndDeleteBulkExportJobs(expiredExportJobs, pageBulkExportService?.cleanUpExportJobResources);
+    }
   }
 
   /**
