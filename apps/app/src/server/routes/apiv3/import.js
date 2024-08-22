@@ -15,15 +15,27 @@ const express = require('express');
 const multer = require('multer');
 
 
-const GrowiArchiveImportOption = require('~/models/admin/growi-archive-import-option');
-
-
 const router = express.Router();
 
 /**
  * @swagger
  *  tags:
  *    name: Import
+ */
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      GrowiArchiveImportOption:
+ *        description: GrowiArchiveImportOption
+ *        type: object
+ *        properties:
+ *          mode:
+ *            description: Import mode
+ *            type: string
+ *            enum: [insert, upsert, flushAndInsert]
  */
 
 /**
@@ -185,12 +197,7 @@ export default function route(crowi) {
    *                  additionalProperties:
    *                    type: array
    *                    items:
-   *                      type: object
-   *                        properties:
-   *                          mode:
-   *                            description: Import mode
-   *                            type: string
-   *                            enum: [insert, upsert, flushAndInsert]
+   *                      $ref: '#/components/schemas/GrowiArchiveImportOption'
    *      responses:
    *        200:
    *          description: Import process has requested
