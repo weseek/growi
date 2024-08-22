@@ -7,7 +7,7 @@ import type { OverwriteParams } from '../import-settings';
 const { ObjectId } = Types;
 
 export const overwriteParams: OverwriteParams = {
-  // Date
+  // ObjectId
   files_id: (value, { document, schema, propertyName }) => {
     return new ObjectId(value);
   },
