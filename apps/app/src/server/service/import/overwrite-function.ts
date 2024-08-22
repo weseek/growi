@@ -24,6 +24,12 @@ export const keepOriginal: OverwriteFunction = (value, { document, schema, prope
   // Model
   if (schema != null && schema.path(propertyName) != null) {
     const schemaType = schema.path(propertyName);
+
+    // force to set schema to the document
+    //  cz: SchemaArray.cast requires the document to have 'schema' property
+    // ref: https://github.com/Automattic/mongoose/blob/6.11.4/lib/schema/array.js#L334
+    document.schema = schema;
+
     return schemaType.cast(value, document, true);
   }
 
