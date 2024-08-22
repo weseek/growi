@@ -7,7 +7,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-module.exports = function(crowi) {
+const factory = (crowi) => {
   const bookmarkEvent = crowi.event('bookmark');
 
   let bookmarkSchema = null;
@@ -114,3 +114,5 @@ module.exports = function(crowi) {
 
   return mongoose.model('Bookmark', bookmarkSchema);
 };
+
+export default factory;
