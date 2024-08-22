@@ -25,6 +25,7 @@ import { configManager } from '../config-manager';
 import type { ConvertMap } from './construct-convert-map';
 import { constructConvertMap } from './construct-convert-map';
 import { getModelFromCollectionName } from './get-model-from-collection-name';
+import { ImportMode } from './import-mode';
 import type { ImportSettings, OverwriteParams } from './import-settings';
 import { keepOriginal } from './overwrite-function';
 
@@ -200,7 +201,7 @@ export class ImportService {
       this.validateImportSettings(collectionName, importSettings);
 
       // flush
-      if (mode === 'flushAndInsert') {
+      if (mode === ImportMode.flushAndInsert) {
         await collection.deleteMany({});
       }
 
@@ -293,7 +294,7 @@ export class ImportService {
 
     switch (collectionName) {
       case 'configs':
-        if (mode !== 'flushAndInsert') {
+        if (mode !== ImportMode.flushAndInsert) {
           throw new Error(`The specified mode '${mode}' is not allowed when importing to 'configs' collection.`);
         }
         break;

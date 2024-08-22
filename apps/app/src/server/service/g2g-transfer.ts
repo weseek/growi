@@ -12,7 +12,7 @@ import mongoose, { Types as MongooseTypes } from 'mongoose';
 import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
-import { getImportService, type ImportSettings } from '~/server/service/import';
+import { getImportService, ImportMode, type ImportSettings } from '~/server/service/import';
 import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
@@ -611,7 +611,7 @@ export class G2GTransferReceiverService implements Receiver {
     innerFileStats.forEach(({ fileName, collectionName }) => {
       const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
 
-      if (collectionName === 'configs' && options.mode !== 'flushAndInsert') {
+      if (collectionName === 'configs' && options.mode !== ImportMode.flushAndInsert) {
         throw new Error('`flushAndInsert` is only available as an import setting for configs collection');
       }
       if (collectionName === 'pages' && options.mode === 'insert') {
