@@ -25,6 +25,7 @@ import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
@@ -43,6 +44,7 @@ import {
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled, useYjsMaxBodyLength,
   useElasticsearchMaxBodyLengthToIndex,
+  useIsLocalAccountRegistrationEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -155,6 +157,8 @@ type Props = CommonProps & {
   templateTagData?: string[],
   templateBodyData?: string,
 
+  isLocalAccountRegistrationEnabled: boolean,
+
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
@@ -239,6 +243,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadEnabled(props.isUploadEnabled);
 
   useYjsMaxBodyLength(props.yjsMaxBodyLength);
+  useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
 
   const { pageWithMeta } = props;
 
@@ -558,6 +563,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
+
+  props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
+  && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');

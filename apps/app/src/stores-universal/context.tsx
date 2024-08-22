@@ -209,6 +209,10 @@ export const useYjsMaxBodyLength = (initialData?: number): SWRResponse<number, E
 };
 
 
+export const useIsLocalAccountRegistrationEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isLocalAccountRegistrationEnabled', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
