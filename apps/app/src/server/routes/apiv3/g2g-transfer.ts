@@ -12,6 +12,7 @@ import { configManager } from '~/server/service/config-manager';
 import { exportService } from '~/server/service/export';
 import type { IDataGROWIInfo } from '~/server/service/g2g-transfer';
 import { X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
+import { getImportService } from '~/server/service/import';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
@@ -40,9 +41,12 @@ const validator = {
  */
 module.exports = (crowi: Crowi): Router => {
   const {
-    g2gTransferPusherService, g2gTransferReceiverService, importService,
+    g2gTransferPusherService, g2gTransferReceiverService,
     growiBridgeService,
   } = crowi;
+
+  const importService = getImportService();
+
   if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
     || growiBridgeService == null || configManager == null) {
     throw Error('GROWI is not ready for g2g transfer');

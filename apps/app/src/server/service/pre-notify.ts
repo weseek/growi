@@ -5,7 +5,7 @@ import {
 
 import type { ActivityDocument } from '../models/activity';
 import Subscription from '../models/subscription';
-import { getModelSafely } from '../util/mongoose-utils';
+import userModelFactory from '../models/user';
 
 export type PreNotifyProps = {
   notificationTargetUsers?: Ref<IUser>[],
@@ -34,7 +34,7 @@ class PreNotifyService implements IPreNotifyService {
     const preNotify = async(props: PreNotifyProps) => {
       const { notificationTargetUsers } = props;
 
-      const User = getModelSafely('User') || require('~/server/models/user')();
+      const User = userModelFactory();
       const actionUser = activity.user;
       const target = activity.target;
       const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
