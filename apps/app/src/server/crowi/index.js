@@ -21,7 +21,6 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import UserEvent from '../events/user';
-import { modelsDependsOnCrowi } from '../models';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
@@ -31,6 +30,7 @@ import instanciateExternalAccountService from '../service/external-account';
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import GrowiBridgeService from '../service/growi-bridge';
+import { initializeImportService } from '../service/import';
 import { InstallerService } from '../service/installer';
 import { normalizeData } from '../service/normalize-data';
 import PageService from '../service/page';
@@ -43,7 +43,9 @@ import { SocketIoService } from '../service/socket-io';
 import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
 import { initializeYjsService } from '../service/yjs';
-import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
+import { getModelSafely, getMongoUri, mongoOptions } from '../util/mongoose-utils';
+
+import { setupModelsDependentOnCrowi } from './setup-models';
 
 
 const logger = loggerFactory('growi:crowi');
@@ -64,6 +66,9 @@ class Crowi {
 
   /** @type {FileUploader} */
   fileUploadService;
+
+  /** @type {SocketIoService} */
+  socketIoService;
 
   constructor() {
     this.version = pkg.version;
@@ -91,7 +96,6 @@ class Crowi {
     this.fileUploadService = null;
     this.restQiitaAPIService = null;
     this.growiBridgeService = null;
-    this.importService = null;
     this.pluginService = null;
     this.searchService = null;
     this.socketIoService = null;
@@ -105,6 +109,7 @@ class Crowi {
 
     this.tokens = null;
 
+    /** @type {import('./setup-models').ModelsMapDependentOnCrowi} */
     this.models = {};
 
     this.env = process.env;
@@ -126,7 +131,7 @@ class Crowi {
 
 Crowi.prototype.init = async function() {
   await this.setupDatabase();
-  await this.setupModels();
+  this.models = await setupModelsDependentOnCrowi(this);
   await this.setupConfigManager();
   await this.setupSessionConfig();
   this.setupCron();
@@ -217,14 +222,13 @@ Crowi.prototype.getEnv = function() {
   return this.env;
 };
 
-// getter/setter of model instance
-//
-Crowi.prototype.model = function(name, model) {
-  if (model != null) {
-    this.models[name] = model;
-  }
-
-  return this.models[name];
+/**
+ * Wrapper function of mongoose.model()
+ * @param {string} modelName
+ * @returns {mongoose.Model}
+ */
+Crowi.prototype.model = function(modelName) {
+  return getModelSafely(modelName);
 };
 
 // getter/setter of event instance
@@ -310,20 +314,6 @@ Crowi.prototype.setupS2sMessagingService = async function() {
 
 Crowi.prototype.setupSocketIoService = async function() {
   this.socketIoService = new SocketIoService(this);
-};
-
-Crowi.prototype.setupModels = async function() {
-  Object.keys(modelsDependsOnCrowi).forEach((key) => {
-    const factory = modelsDependsOnCrowi[key];
-
-    if (!(factory instanceof Function)) {
-      logger.warn(`modelsDependsOnCrowi['${key}'] is not a function. skipped.`);
-      return;
-    }
-
-    return this.model(key, modelsDependsOnCrowi[key](this));
-  });
-
 };
 
 Crowi.prototype.setupCron = function() {
@@ -699,10 +689,7 @@ Crowi.prototype.setupPageBulkExportService = async function() {
 };
 
 Crowi.prototype.setupImport = async function() {
-  const ImportService = require('../service/import');
-  if (this.importService == null) {
-    this.importService = new ImportService(this);
-  }
+  initializeImportService(this);
 };
 
 Crowi.prototype.setupGrowiPluginService = async function() {

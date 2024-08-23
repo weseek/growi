@@ -12,8 +12,7 @@ import mongoose, { Types as MongooseTypes } from 'mongoose';
 import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
 import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
-import { generateOverwriteParams } from '~/server/routes/apiv3/import';
-import { type ImportSettings } from '~/server/service/import';
+import { getImportService, ImportMode, type ImportSettings } from '~/server/service/import';
 import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
@@ -25,6 +24,7 @@ import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfe
 
 import { configManager } from './config-manager';
 import { exportService } from './export';
+import { generateOverwriteParams } from './import/overwrite-params';
 
 const logger = loggerFactory('growi:service:g2g-transfer');
 
@@ -610,13 +610,11 @@ export class G2GTransferReceiverService implements Receiver {
       optionsMap: { [key: string]: GrowiArchiveImportOption; },
       operatorUserId: string,
   ): { [key: string]: ImportSettings; } {
-    const { importService } = this.crowi;
-
     const importSettingsMap = {};
     innerFileStats.forEach(({ fileName, collectionName }) => {
       const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
 
-      if (collectionName === 'configs' && options.mode !== 'flushAndInsert') {
+      if (collectionName === 'configs' && options.mode !== ImportMode.flushAndInsert) {
         throw new Error('`flushAndInsert` is only available as an import setting for configs collection');
       }
       if (collectionName === 'pages' && options.mode === 'insert') {
@@ -629,9 +627,11 @@ export class G2GTransferReceiverService implements Receiver {
         throw new Error('`attachmentFiles.files` must not be transferred. Please omit it from request body `collections`.');
       }
 
-      const importSettings = importService.generateImportSettings(options.mode);
-      importSettings.jsonFileName = fileName;
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, operatorUserId, options);
+      const importSettings: ImportSettings = {
+        mode: options.mode,
+        jsonFileName: fileName,
+        overwriteParams: generateOverwriteParams(collectionName, operatorUserId, options),
+      };
       importSettingsMap[collectionName] = importSettings;
     });
 
@@ -643,7 +643,8 @@ export class G2GTransferReceiverService implements Receiver {
       importSettingsMap: { [key: string]: ImportSettings; },
       sourceGROWIUploadConfigs: FileUploadConfigs,
   ): Promise<void> {
-    const { importService, appService } = this.crowi;
+    const { appService } = this.crowi;
+    const importService = getImportService();
     /** whether to keep current file upload configs */
     const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
 
