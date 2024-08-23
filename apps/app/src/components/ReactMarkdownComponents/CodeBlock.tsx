@@ -65,10 +65,18 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
     </PrismAsyncLight>
   );
 }
-export const CodeBlock = ({ className, children }: {className: string, children: JSX.Element}): JSX.Element => {
+
+type CodeBlockProps = {
+  children: JSX.Element,
+  className?: string,
+  inline?: string, // "" or undefined
+}
+
+export const CodeBlock = (props: CodeBlockProps): JSX.Element => {
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
-  if (className === 'inline') {
+  const { className, children, inline } = props;
+  if (inline != null) {
     return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
   }
 
