@@ -806,6 +806,7 @@
     "receive_notifications": "通知を受け取る",
     "stop_notification": "通知を止める",
     "footprints": "足跡",
+    "login_required": "ログインが必要です",
     "operation": {
       "attention": {
         "rename": "配下のページパスの更新が正常に行われませんでした。3点リーダーからメニューを開き、「パスを修復」を選択してしてください。"
