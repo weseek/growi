@@ -6,10 +6,10 @@ import type {
 
 import { DirectiveType as DirectiveTypeObject } from './lib/index.js';
 
+export { directiveFromMarkdown, directiveToMarkdown } from './lib/index.js';
 export { DirectiveTypeObject };
-type DirectiveType = typeof DirectiveTypeObject;
 
-export { directiveToMarkdown, directiveFromMarkdown } from './lib/index.js';
+type DirectiveType = typeof DirectiveTypeObject;
 
 /**
  * Fields shared by directives.

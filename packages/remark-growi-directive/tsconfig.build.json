@@ -8,7 +8,6 @@
     "noResolve": false,
     "preserveConstEnums": true,
     "sourceMap": false,
-    "noEmit": false,
-    "allowJs": true
+    "noEmit": false
   }
 }

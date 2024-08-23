@@ -1,8 +1,8 @@
 import assert from 'assert';
 
 import { hasHeadingSlash, removeTrailingSlash, addTrailingSlash } from '@growi/core/dist/utils/path-utils';
-import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import type { TextGrowiPluginDirective, LeafGrowiPluginDirective } from '@growi/remark-growi-directive';
+import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import type { Nodes as HastNode } from 'hast';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { selectAll } from 'hast-util-select';
