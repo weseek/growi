@@ -1,3 +1,4 @@
+import type { Properties } from 'hast';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type {
   Code, Node, Paragraph,
@@ -7,16 +8,9 @@ import { visit } from 'unist-util-visit';
 
 const SUPPORTED_ATTRIBUTES = ['diagramIndex', 'bol', 'eol'];
 
-declare module 'mdast' {
-  interface Data {
-    hName?: string,
-    hProperties?: {
-      diagramIndex?: number,
-      bol?: number,
-      eol?: number,
-      key?: string,
-    }
-  }
+interface Data {
+  hName?: string,
+  hProperties?: Properties,
 }
 
 type Lang = 'drawio';
@@ -30,7 +24,7 @@ function rewriteNode(node: Node, index: number) {
   node.type = 'paragraph';
   (node as Paragraph).children = [{ type: 'text', value: (node as Code).value }];
 
-  const data = node.data ?? (node.data = {});
+  const data: Data = node.data ?? (node.data = {});
   data.hName = 'drawio';
   data.hProperties = {
     diagramIndex: index,
