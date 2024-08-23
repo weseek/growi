@@ -5,17 +5,6 @@ import type { Link } from 'mdast';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-declare module 'mdast' {
-  interface LinkData {
-    hName?: string,
-    hProperties?: {
-      attachmentId?: string,
-      url?: string,
-      attachmentName?: PhrasingContent,
-    }
-  }
-}
-
 const SUPPORTED_ATTRIBUTES = ['attachmentId', 'url', 'attachmentName'];
 
 const isAttachmentLink = (url: string): boolean => {
@@ -32,7 +21,7 @@ const rewriteNode = (node: Link) => {
   data.hProperties = {
     attachmentId,
     url: node.url,
-    attachmentName: node.children[0] ?? '',
+    attachmentName: 'value' in node.children[0] ? node.children[0].value : '',
   };
 };
 
