@@ -1,7 +1,6 @@
 import { defaultSchema } from 'hast-util-sanitize';
+import type { Attributes } from 'hast-util-sanitize/lib';
 import deepmerge from 'ts-deepmerge';
-
-type Attributes = typeof defaultSchema.attributes;
 
 /**
  * reference: https://meta.stackexchange.com/questions/1777/what-html-tags-are-allowed-on-stack-exchange-sites,
