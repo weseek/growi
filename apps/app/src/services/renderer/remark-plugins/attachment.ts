@@ -15,14 +15,13 @@ const isAttachmentLink = (url: string): boolean => {
 
 const rewriteNode = (node: Link) => {
   const attachmentId = path.basename(node.url);
-  const attachmentName = node.children[0] != null && node.children[0].type === 'text' ? node.children[0].value : '';
 
   const data = node.data ?? (node.data = {});
   data.hName = 'attachment';
   data.hProperties = {
     attachmentId,
     url: node.url,
-    attachmentName,
+    attachmentName: 'value' in node.children[0] ? node.children[0].value : '',
   };
 };
 
