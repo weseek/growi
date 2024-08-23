@@ -44,8 +44,6 @@ class ExportService {
 
   growiBridgeService: GrowiBridgeService;
 
-  getFile: (filename: string) => string;
-
   per = 100;
 
   zlibLevel = 9; // 0(min) - 9(max)
