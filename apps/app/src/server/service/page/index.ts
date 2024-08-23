@@ -3057,7 +3057,7 @@ class PageService implements IPageService {
     return isUnique;
   }
 
-  async normalizeAllPublicPages() {
+  async normalizeAllPublicPages(): Promise<void> {
     let isUnique;
     try {
       isUnique = await this._isPagePathIndexUnique();

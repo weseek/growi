@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
+import type { Locale } from '@growi/core';
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import Document, {
   Html, Head, Main, NextScript,
@@ -43,7 +44,7 @@ interface GrowiDocumentProps {
   customCss: string | null,
   customNoscript: string | null,
   pluginResourceEntries: GrowiPluginResourceEntries;
-  locale: string;
+  locale: Locale;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
 

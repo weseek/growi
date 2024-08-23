@@ -1,6 +1,7 @@
 class GrowiArchiveImportOption {
 
-  constructor(mode, initProps = {}) {
+  constructor(collectionName, mode, initProps = {}) {
+    this.collectionName = collectionName;
     this.mode = mode;
 
     Object.entries(initProps).forEach(([key, value]) => {
