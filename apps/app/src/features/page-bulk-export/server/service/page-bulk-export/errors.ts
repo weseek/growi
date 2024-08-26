@@ -13,3 +13,11 @@ export class BulkExportJobExpiredError extends Error {
   }
 
 }
+
+export class BulkExportJobRestartedError extends Error {
+
+  constructor() {
+    super('Bulk export job has restarted');
+  }
+
+}

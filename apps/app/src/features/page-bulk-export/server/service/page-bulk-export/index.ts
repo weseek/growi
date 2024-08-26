@@ -34,7 +34,7 @@ import PageBulkExportJob from '../../models/page-bulk-export-job';
 import type { PageBulkExportPageSnapshotDocument } from '../../models/page-bulk-export-page-snapshot';
 import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
 
-import { BulkExportJobExpiredError, DuplicateBulkExportJobError } from './errors';
+import { BulkExportJobExpiredError, BulkExportJobRestartedError, DuplicateBulkExportJobError } from './errors';
 import { PageBulkExportJobStreamManager } from './page-bulk-export-job-stream-manager';
 
 
@@ -75,7 +75,7 @@ class PageBulkExportService {
   /**
    * Create a new page bulk export job and execute it
    */
-  async createAndExecuteBulkExportJob(basePagePath: string, currentUser, activityParameters: ActivityParameters): Promise<void> {
+  async createAndExecuteOrRestartBulkExportJob(basePagePath: string, currentUser, activityParameters: ActivityParameters, restartJob = false): Promise<void> {
     const basePage = await this.pageModel.findByPathAndViewer(basePagePath, currentUser, null, true);
 
     if (basePage == null) {
@@ -90,6 +90,10 @@ class PageBulkExportService {
       $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
     });
     if (duplicatePageBulkExportJobInProgress != null) {
+      if (restartJob) {
+        this.restartBulkExportJob(duplicatePageBulkExportJobInProgress);
+        return;
+      }
       throw new DuplicateBulkExportJobError();
     }
     const pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument> = await PageBulkExportJob.create({
@@ -99,6 +103,17 @@ class PageBulkExportService {
     await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
 
     this.executePageBulkExportJob(pageBulkExportJob, activityParameters);
+  }
+
+  /**
+   * Restart page bulk export job in progress from the beginning
+   */
+  async restartBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>): Promise<void> {
+    await this.cleanUpExportJobResources(pageBulkExportJob, true);
+
+    pageBulkExportJob.status = PageBulkExportJobStatus.initializing;
+    await pageBulkExportJob.save();
+    this.executePageBulkExportJob(pageBulkExportJob);
   }
 
   /**
@@ -139,11 +154,16 @@ class PageBulkExportService {
       }
     }
     catch (err) {
-      logger.error(err);
       if (err instanceof BulkExportJobExpiredError) {
+        logger.error(err);
         await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_JOB_EXPIRED, pageBulkExportJob, activityParameters);
       }
+      else if (err instanceof BulkExportJobRestartedError) {
+        logger.info(err.message);
+        await this.cleanUpExportJobResources(pageBulkExportJob);
+      }
       else {
+        logger.error(err);
         await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED, pageBulkExportJob, activityParameters);
       }
       return;
@@ -408,8 +428,8 @@ class PageBulkExportService {
    * - remove the temporal output directory
    * - abort multipart upload
    */
-  async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument) {
-    this.pageBulkExportJobStreamManager.destroyJobStream(pageBulkExportJob._id);
+  async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument, restarted = false) {
+    this.pageBulkExportJobStreamManager.destroyJobStream(pageBulkExportJob._id, restarted);
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
