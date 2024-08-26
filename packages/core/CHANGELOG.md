@@ -1,5 +1,11 @@
 # @growi/core
 
+## 1.3.0
+
+### Minor Changes
+
+- [#9042](https://github.com/weseek/growi/pull/9042) [`8f9189d`](https://github.com/weseek/growi/commit/8f9189d4fcf031c1344072f88b7d9febeb02ce1d) Thanks [@yuki-takei](https://github.com/yuki-takei)! - Add isIPageInfo type guard
+
 ## 1.2.0
 
 ### Minor Changes
