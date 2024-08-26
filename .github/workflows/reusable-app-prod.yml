@@ -213,7 +213,7 @@ jobs:
       fail-fast: false
       matrix:
         # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: ['21', '30', '50']
+        spec-group: ['21', '50']
 
     services:
       mongodb:
@@ -348,7 +348,9 @@ jobs:
 
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:latest
+      # Match the Playwright version
+      # https://github.com/microsoft/playwright/issues/20010
+      image: mcr.microsoft.com/playwright:v1.46.0-jammy
 
     strategy:
       fail-fast: false

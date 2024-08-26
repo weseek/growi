@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
-import { Lang } from '@growi/core';
+import type { Locale } from '@growi/core';
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import Document, {
   Html, Head, Main, NextScript,
@@ -9,11 +9,9 @@ import Document, {
 
 import type { GrowiPluginResourceEntries } from '~/features/growi-plugin/server/services';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { configManager } from '~/server/service/config-manager';
-import { detectLocaleFromBrowserAcceptLanguage } from '~/server/util/locale-utils';
 import loggerFactory from '~/utils/logger';
 
-import { getLocateAtServerSide } from './utils/commons';
+import { getLocaleAtServerSide } from './utils/commons';
 
 const logger = loggerFactory('growi:page:_document');
 
@@ -46,20 +44,13 @@ interface GrowiDocumentProps {
   customCss: string | null,
   customNoscript: string | null,
   pluginResourceEntries: GrowiPluginResourceEntries;
-  locale: string;
+  locale: Locale;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
 
 class GrowiDocument extends Document<GrowiDocumentInitialProps> {
 
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
-
-    const langMap = {
-      [Lang.ja_JP]: 'ja-jp',
-      [Lang.en_US]: 'en-us',
-      [Lang.zh_CN]: 'zh-cn',
-      [Lang.fr_FR]: 'fr-fr',
-    } as const;
 
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
     const req = ctx.req as CrowiRequest;
@@ -75,7 +66,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const growiPluginService = await import('~/features/growi-plugin/server/services').then(mod => mod.growiPluginService);
     const pluginResourceEntries = await growiPluginService.retrieveAllPluginResourceEntries();
 
-    const locale = langMap[getLocateAtServerSide(req)];
+    const locale = getLocaleAtServerSide(req);
 
     return {
       ...initialProps,

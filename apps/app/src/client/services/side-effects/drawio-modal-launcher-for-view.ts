@@ -6,7 +6,7 @@ import { Origin } from '@growi/core';
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
 import { replaceDrawioInMarkdown } from '~/client/components/Page/markdown-drawio-util-for-view';
-import { extractRemoteRevisionDataFromErrorObj, updatePage as _updatePage } from '~/client/services/update-page';
+import { extractRemoteRevisionDataFromErrorObj, useUpdatePage } from '~/client/services/update-page';
 import { useShareLinkId } from '~/stores-universal/context';
 import { useConflictDiffModal, useDrawioModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -35,6 +35,8 @@ export const useDrawioModalLauncherForView = (opts?: {
   const { open: openDrawioModal } = useDrawioModal();
 
   const { open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
+
+  const _updatePage = useUpdatePage();
 
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 

@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 
-import { GlobalNotificationSettingEvent } from '../models';
+import { GlobalNotificationSettingEvent } from '../models/GlobalNotificationSetting';
 import { PathAlreadyExistsError } from '../models/errors';
 import PageTagRelation from '../models/page-tag-relation';
 import UpdatePost from '../models/update-post';

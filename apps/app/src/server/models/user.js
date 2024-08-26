@@ -1,10 +1,13 @@
 /* eslint-disable no-use-before-define */
+import { omitInsecureAttributes } from '@growi/core/dist/models/serializers';
 import { pagePathUtils } from '@growi/core/dist/utils';
 
 import { i18n } from '^/config/next-i18next.config';
 
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
+
+import { getModelSafely } from '../util/mongoose-utils';
 
 import { Attachment } from './attachment';
 
@@ -15,13 +18,15 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
-const { omitInsecureAttributes } = require('./serializers/user-serializer');
-
 const logger = loggerFactory('growi:models:user');
 
-module.exports = function(crowi) {
+const factory = (crowi) => {
+
+  const userModelExists = getModelSafely('User');
+  if (userModelExists != null) {
+    return userModelExists;
+  }
+
   const STATUS_REGISTERED = 1;
   const STATUS_ACTIVE = 2;
   const STATUS_SUSPENDED = 3;
@@ -44,7 +49,7 @@ module.exports = function(crowi) {
   const userSchema = new mongoose.Schema({
     userId: String,
     image: String,
-    imageAttachment: { type: ObjectId, ref: 'Attachment' },
+    imageAttachment: { type: mongoose.Schema.Types.ObjectId, ref: 'Attachment' },
     imageUrlCached: String,
     isGravatarEnabled: { type: Boolean, default: false },
     isEmailPublished: { type: Boolean, default: true },
@@ -786,3 +791,5 @@ module.exports = function(crowi) {
 
   return mongoose.model('User', userSchema);
 };
+
+export default factory;

@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import React, { useCallback, useState, useMemo } from 'react';
 
 import {
-  getIdForRef, isPopulated, type IGrantedGroup, type IUserGroupHasId,
+  getIdStringForRef, isPopulated, type IGrantedGroup, type IUserGroupHasId,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
@@ -90,8 +90,8 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   }, [setActionName]);
 
   const handleGroupChange = useCallback((e) => {
-    const transferToUserGroupId = e.target.value;
-    const selectedGroup = userGroups.find(group => getIdForRef(group.item) === transferToUserGroupId) ?? null;
+    const transferToUserGroupId: string = e.target.value;
+    const selectedGroup = userGroups.find(group => getIdStringForRef(group.item) === transferToUserGroupId) ?? null;
     setTransferToUserGroup(selectedGroup);
   }, [userGroups]);
 
@@ -136,11 +136,11 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
     }
 
     const groups = userGroups.filter((group) => {
-      return getIdForRef(group.item) !== deleteUserGroup._id;
+      return getIdStringForRef(group.item) !== deleteUserGroup._id;
     });
 
     const options = groups.map((group) => {
-      const groupId = getIdForRef(group.item);
+      const groupId = getIdStringForRef(group.item);
       const groupName = isPopulated(group.item) ? group.item.name : null;
       return { id: groupId, name: groupName };
     }).filter(obj => obj.name != null)
@@ -153,7 +153,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       <select
         name="transferToUserGroup"
         className={`form-control ${actionName === PageActionOnGroupDelete.transfer ? '' : 'd-none'}`}
-        value={transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : ''}
+        value={transferToUserGroup != null ? getIdStringForRef(transferToUserGroup.item) : ''}
         onChange={handleGroupChange}
       >
         <option value="" disabled>{defaultOptionText}</option>

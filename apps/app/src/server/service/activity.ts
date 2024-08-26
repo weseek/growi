@@ -1,14 +1,16 @@
 import type { IPage } from '@growi/core';
 import mongoose from 'mongoose';
 
+import type { IActivity, SupportedActionType } from '~/interfaces/activity';
 import {
-  IActivity, SupportedActionType, AllSupportedActions, ActionGroupSize,
+  AllSupportedActions, ActionGroupSize,
   AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
-import Activity, { ActivityDocument } from '~/server/models/activity';
+import type { ActivityDocument } from '~/server/models/activity';
+import Activity from '~/server/models/activity';
 
 import loggerFactory from '../../utils/logger';
-import Crowi from '../crowi';
+import type Crowi from '../crowi';
 
 
 import type { GeneratePreNotify, GetAdditionalTargetUsers } from './pre-notify';
@@ -134,12 +136,15 @@ class ActivityService {
   createTtlIndex = async function() {
     const configManager = this.crowi.configManager;
     const activityExpirationSeconds = configManager != null ? configManager.getConfig('crowi', 'app:activityExpirationSeconds') : 2592000;
-    const collection = mongoose.connection.collection('activities');
 
     try {
-      const targetField = 'createdAt_1';
+      // create the collection with indexes at first
+      await Activity.createIndexes();
 
+      const collection = mongoose.connection.collection('activities');
       const indexes = await collection.indexes();
+
+      const targetField = 'createdAt_1';
       const foundCreatedAt = indexes.find(i => i.name === targetField);
 
       const isNotSpec = foundCreatedAt?.expireAfterSeconds == null || foundCreatedAt?.expireAfterSeconds !== activityExpirationSeconds;

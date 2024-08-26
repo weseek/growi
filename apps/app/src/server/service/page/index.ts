@@ -4,16 +4,18 @@ import { Readable, Writable } from 'stream';
 
 import type {
   Ref, HasObjectId, IUserHasId, IUser,
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup, IRevisionHasId,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IGrantedGroup, IRevisionHasId,
+  IDataWithMeta,
 } from '@growi/core';
 import {
   PageGrant, PageStatus, YDocStatus, getIdForRef,
+  getIdStringForRef,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
-import type { ObjectId, Cursor } from 'mongoose';
+import type { Cursor, HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
@@ -53,6 +55,7 @@ import { PathAlreadyExistsError } from '../../models/errors';
 import type { PageOperationDocument } from '../../models/page-operation';
 import PageOperation from '../../models/page-operation';
 import PageRedirect from '../../models/page-redirect';
+import type { IRevisionDocument } from '../../models/revision';
 import { Revision } from '../../models/revision';
 import { serializePageSecurely } from '../../models/serializers/page-serializer';
 import ShareLink from '../../models/share-link';
@@ -405,11 +408,11 @@ class PageService implements IPageService {
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async findPageAndMetaDataByViewer(
       pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
-  ): Promise<IPageWithMeta<IPageInfoAll>|null> {
+  ): Promise<IDataWithMeta<HydratedDocument<PageDocument>, IPageInfoAll>|null> {
 
-    const Page = this.crowi.model('Page') as PageModel;
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
-    let page: PageDocument & HasObjectId | null;
+    let page: HydratedDocument<PageDocument> | null;
     if (pageId != null) { // prioritized
       page = await Page.findByIdAndViewer(pageId, user, null, includeEmpty);
     }
@@ -708,7 +711,7 @@ class PageService implements IPageService {
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
       const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-      const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+      const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
@@ -832,7 +835,7 @@ class PageService implements IPageService {
   }
 
   private async renamePageV4(page, newPagePath, user, options) {
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
     const {
       isRecursively = false,
       createRedirectPage = false,
@@ -858,6 +861,9 @@ class PageService implements IPageService {
     const renamedPage = await Page.findByIdAndUpdate(page._id, { $set: update }, { new: true });
 
     // update Rivisions
+    if (renamedPage == null) {
+      throw new Error('Failed to rename page');
+    }
     await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });
 
     if (createRedirectPage) {
@@ -1347,15 +1353,15 @@ class PageService implements IPageService {
       return this.duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix);
     }
 
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<PageDocument, PageModel>('Page');
 
     const pageIds = pages.map(page => page._id);
     const revisions = await Revision.find({ pageId: { $in: pageIds } });
 
     // Mapping to set to the body of the new revision
-    const pageIdRevisionMapping = {};
+    const pageIdRevisionMapping: Record<string, IRevisionDocument> = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
+      pageIdRevisionMapping[getIdStringForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -1390,7 +1396,7 @@ class PageService implements IPageService {
           revision: revisionId,
         };
         newRevisions.push({
-          _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+          _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id.toString()].body, author: user._id, format: 'markdown',
         });
         newPages.push(newPage);
       }
@@ -1408,9 +1414,9 @@ class PageService implements IPageService {
     const revisions = await Revision.find({ pageId: { $in: pageIds } });
 
     // Mapping to set to the body of the new revision
-    const pageIdRevisionMapping = {};
+    const pageIdRevisionMapping: Record<string, IRevisionDocument> = {};
     revisions.forEach((revision) => {
-      pageIdRevisionMapping[getIdForRef(revision.pageId)] = revision;
+      pageIdRevisionMapping[getIdStringForRef(revision.pageId)] = revision;
     });
 
     // key: oldPageId, value: newPageId
@@ -1436,7 +1442,7 @@ class PageService implements IPageService {
       });
 
       newRevisions.push({
-        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
+        _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id.toString()].body, author: user._id, format: 'markdown',
       });
 
     });
@@ -1696,7 +1702,7 @@ class PageService implements IPageService {
 
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+    const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -1705,8 +1711,8 @@ class PageService implements IPageService {
     // no sub operation available
   }
 
-  private async deletePageV4(page, user, options = {}, isRecursively = false) {
-    const Page = mongoose.model('Page') as PageModel;
+  private async deletePageV4(page: HydratedDocument<PageDocument>, user, options = {}, isRecursively = false) {
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const newPath = Page.getDeletedPageName(page.path);
     const isTrashed = isTrashPage(page.path);
@@ -2015,7 +2021,7 @@ class PageService implements IPageService {
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+    const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -2062,7 +2068,7 @@ class PageService implements IPageService {
     const pages = await this.deleteCompletelyDescendantsWithStream(page, user, options, true, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+    const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -2298,7 +2304,7 @@ class PageService implements IPageService {
     await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+    const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -2579,7 +2585,7 @@ class PageService implements IPageService {
     return infoForEntity;
   }
 
-  async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user?): Promise<Record<string, string | null>> {
+  async shortBodiesMapByPageIds(pageIds: ObjectIdLike[] = [], user?): Promise<Record<string, string | null>> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const MAX_LENGTH = 350;
 
@@ -3051,7 +3057,7 @@ class PageService implements IPageService {
     return isUnique;
   }
 
-  async normalizeAllPublicPages() {
+  async normalizeAllPublicPages(): Promise<void> {
     let isUnique;
     try {
       isUnique = await this._isPagePathIndexUnique();
@@ -3591,8 +3597,8 @@ class PageService implements IPageService {
    * @param path string
    * @returns Promise<PageDocument>
    */
-  async getParentAndFillAncestorsByUser(user, path: string): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  async getParentAndFillAncestorsByUser(user, path: string): Promise<HydratedDocument<PageDocument>> {
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     // Find parent
     const parent = await Page.findParentByPath(path);
@@ -3618,8 +3624,8 @@ class PageService implements IPageService {
     return createdParent;
   }
 
-  async getParentAndFillAncestorsBySystem(path: string): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  async getParentAndFillAncestorsBySystem(path: string): Promise<HydratedDocument<PageDocument>> {
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     // Find parent
     const parent = await Page.findParentByPath(path);
@@ -4036,6 +4042,10 @@ class PageService implements IPageService {
     const newRevision = Revision.prepareRevision(savedPage, body, null, dummyUser);
     savedPage = await pushRevision(savedPage, newRevision, dummyUser);
 
+    if (savedPage._id == null) {
+      throw new Error('Something went wrong: _id is null');
+    }
+
     // Update descendantCount
     await this.updateDescendantCountOfAncestors(savedPage._id, 1, false);
 
@@ -4322,8 +4332,9 @@ class PageService implements IPageService {
   /*
    * Find all children by parent's path or id. Using id should be prioritized
    */
-  async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null): Promise<PageDocument[]> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null)
+      : Promise<(HydratedDocument<PageDocument> & { processData?: IPageOperationProcessData })[]> {
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
     let queryBuilder: PageQueryBuilder;
     if (hasSlash(parentPathOrId)) {
       const path = parentPathOrId;
@@ -4337,7 +4348,7 @@ class PageService implements IPageService {
     }
     await queryBuilder.addViewerCondition(user, userGroups);
 
-    const pages = await queryBuilder
+    const pages: HydratedDocument<PageDocument>[] = await queryBuilder
       .addConditionToSortPagesByAscPath()
       .query
       .lean()
@@ -4413,7 +4424,7 @@ class PageService implements IPageService {
    * The processData is a combination of actionType as a key and information on whether the action is processable as a value.
    */
   private async injectProcessDataIntoPagesByActionTypes(
-      pages: (PageDocument & { processData?: IPageOperationProcessData })[],
+      pages: (HydratedDocument<PageDocument> & { processData?: IPageOperationProcessData })[],
       actionTypes: PageActionType[],
   ): Promise<void> {
 
