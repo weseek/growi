@@ -1,10 +1,11 @@
+import { createHash } from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
 import {
-  getIdForRef, type IPage, isPopulated, SubscriptionStatusType,
+  getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Archiver } from 'archiver';
@@ -110,7 +111,22 @@ class PageBulkExportService {
 
       if (pageBulkExportJob.status === PageBulkExportJobStatus.initializing) {
         await this.createPageSnapshots(user, pageBulkExportJob);
-        pageBulkExportJob.status = PageBulkExportJobStatus.exporting;
+
+        const duplicateExportJob = await PageBulkExportJob.findOne({
+          user: pageBulkExportJob.user,
+          page: pageBulkExportJob.page,
+          format: pageBulkExportJob.format,
+          status: PageBulkExportJobStatus.completed,
+          revisionListHash: pageBulkExportJob.revisionListHash,
+        });
+        if (duplicateExportJob != null) {
+          // if an upload with the exact same contents exists, re-use the same attachment of that upload
+          pageBulkExportJob.attachment = duplicateExportJob.attachment;
+          pageBulkExportJob.status = PageBulkExportJobStatus.completed;
+        }
+        else {
+          pageBulkExportJob.status = PageBulkExportJobStatus.exporting;
+        }
         await pageBulkExportJob.save();
       }
       if (pageBulkExportJob.status === PageBulkExportJobStatus.exporting) {
@@ -162,7 +178,8 @@ class PageBulkExportService {
   }
 
   /**
-   * Create a snapshot for each page that is to be exported in the pageBulkExportJob
+   * Create a snapshot for each page that is to be exported in the pageBulkExportJob.
+   * Also calulate revisionListHash and save it to the pageBulkExportJob.
    */
   private async createPageSnapshots(user, pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
     // if the process of creating snapshots was interrupted, delete the snapshots and create from the start
@@ -172,6 +189,8 @@ class PageBulkExportService {
     if (basePage == null) {
       throw new Error('Base page not found');
     }
+
+    const revisionListHash = createHash('sha256');
 
     // create a Readable for pages to be exported
     const { PageQueryBuilder } = this.pageModel;
@@ -188,6 +207,9 @@ class PageBulkExportService {
       objectMode: true,
       write: async(page: PageDocument, encoding, callback) => {
         try {
+          if (page.revision != null) {
+            revisionListHash.update(getIdStringForRef(page.revision));
+          }
           await PageBulkExportPageSnapshot.create({
             pageBulkExportJob,
             path: page.path,
@@ -205,6 +227,9 @@ class PageBulkExportService {
     this.pageBulkExportJobStreamManager.addJobStream(pageBulkExportJob._id, pagesReadable);
 
     await pipelinePromise(pagesReadable, pageSnapshotsWritable);
+
+    pageBulkExportJob.revisionListHash = revisionListHash.digest('hex');
+    await pageBulkExportJob.save();
   }
 
   /**
@@ -267,7 +292,8 @@ class PageBulkExportService {
     const pageArchiver = this.setUpPageArchiver();
     const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.maxPartSize);
 
-    const originalName = `${pageBulkExportJob._id}.${this.compressExtension}`;
+    if (pageBulkExportJob.revisionListHash == null) throw new Error('revisionListHash is not set');
+    const originalName = `${pageBulkExportJob.revisionListHash}.${this.compressExtension}`;
     const attachment = Attachment.createWithoutSave(null, user, originalName, this.compressExtension, 0, AttachmentType.PAGE_BULK_EXPORT);
     const uploadKey = `${FilePathOnStoragePrefix.pageBulkExport}/${attachment.fileName}`;
 

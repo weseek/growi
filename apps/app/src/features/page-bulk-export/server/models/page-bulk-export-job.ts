@@ -21,6 +21,7 @@ const pageBulkExportJobSchema = new Schema<PageBulkExportJobDocument>({
   status: {
     type: String, enum: Object.values(PageBulkExportJobStatus), required: true, default: PageBulkExportJobStatus.initializing,
   },
+  revisionListHash: { type: String },
 }, { timestamps: true });
 
 export default getOrCreateModel<PageBulkExportJobDocument, PageBulkExportJobModel>('PageBulkExportJob', pageBulkExportJobSchema);
