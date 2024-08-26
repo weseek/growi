@@ -433,11 +433,6 @@ export class PageQueryBuilder {
   addConditionToFilteringByViewer(
       user, userGroups: ObjectIdLike[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
   ): PageQueryBuilder {
-
-    console.log('showPagesRestrictedByOwner:', showPagesRestrictedByOwner);
-    console.log('showPagesRestrictedByGroup:', showPagesRestrictedByGroup);
-
-
     const condition = generateGrantCondition(user, userGroups, includeAnyoneWithTheLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
     this.query = this.query
