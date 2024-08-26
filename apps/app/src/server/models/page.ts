@@ -414,19 +414,30 @@ export class PageQueryBuilder {
   }
 
   // add viewer condition to PageQueryBuilder instance
-  async addViewerCondition(user, userGroups = null, includeAnyoneWithTheLink = false): Promise<PageQueryBuilder> {
+  async addViewerCondition(
+      user,
+      userGroups = null,
+      includeAnyoneWithTheLink = false,
+      showPagesRestrictedByOwner = false,
+      showPagesRestrictedByGroup = false,
+  ): Promise<PageQueryBuilder> {
     const relatedUserGroups = (user != null && userGroups == null) ? [
       ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
       ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
     ] : userGroups;
 
-    this.addConditionToFilteringByViewer(user, relatedUserGroups, includeAnyoneWithTheLink);
+    this.addConditionToFilteringByViewer(user, relatedUserGroups, includeAnyoneWithTheLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
     return this;
   }
 
   addConditionToFilteringByViewer(
       user, userGroups: ObjectIdLike[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
   ): PageQueryBuilder {
+
+    console.log('showPagesRestrictedByOwner:', showPagesRestrictedByOwner);
+    console.log('showPagesRestrictedByGroup:', showPagesRestrictedByGroup);
+
+
     const condition = generateGrantCondition(user, userGroups, includeAnyoneWithTheLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
     this.query = this.query
@@ -690,7 +701,7 @@ schema.statics.findRecentUpdatedPages = async function(
 
   queryBuilder.addConditionToListWithDescendants(path, options);
   queryBuilder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
-  await queryBuilder.addViewerCondition(user);
+  await queryBuilder.addViewerCondition(user, undefined, undefined, !options.hideRestrictedByOwner, !options.hideRestrictedByGroup);
   const pages = await Page.paginate(queryBuilder.query.clone(), {
     lean: true, sort: sortOpt, offset: options.offset, limit: options.limit,
   });
