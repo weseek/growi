@@ -776,6 +776,7 @@
     "receive_notifications": "Receive Notifications",
     "stop_notification": "Stop Notification",
     "footprints": "Footprints",
+    "login_required": "Login required",
     "operation": {
       "attention": {
         "rename": "Renaming paths of descendant pages was not successful, please open the menu from the 3-point reader and select 'Path recovery'"
