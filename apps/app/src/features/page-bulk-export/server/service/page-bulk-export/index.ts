@@ -16,9 +16,9 @@ import mongoose from 'mongoose';
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { AttachmentType, FilePathOnStoragePrefix } from '~/server/interfaces/attachment';
-import type { IAttachmentDocument } from '~/server/models';
-import { Attachment } from '~/server/models';
 import type { ActivityDocument } from '~/server/models/activity';
+import type { IAttachmentDocument } from '~/server/models/attachment';
+import { Attachment } from '~/server/models/attachment';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
 import type { FileUploader } from '~/server/service/file-uploader';
@@ -27,11 +27,14 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
-import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
-import PageBulkExportJob from '../models/page-bulk-export-job';
-import type { PageBulkExportPageSnapshotDocument } from '../models/page-bulk-export-page-snapshot';
-import PageBulkExportPageSnapshot from '../models/page-bulk-export-page-snapshot';
+import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
+import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
+import PageBulkExportJob from '../../models/page-bulk-export-job';
+import type { PageBulkExportPageSnapshotDocument } from '../../models/page-bulk-export-page-snapshot';
+import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
+
+import { BulkExportJobExpiredError, DuplicateBulkExportJobError } from './errors';
+import { PageBulkExportJobStreamManager } from './page-bulk-export-job-stream-manager';
 
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
@@ -39,14 +42,6 @@ const logger = loggerFactory('growi:services:PageBulkExportService');
 type ActivityParameters ={
   ip?: string;
   endpoint: string;
-}
-
-export class DuplicateBulkExportJobError extends Error {
-
-  constructor() {
-    super('Duplicate bulk export job is in progress');
-  }
-
 }
 
 class PageBulkExportService {
@@ -61,6 +56,8 @@ class PageBulkExportService {
   pageBatchSize = 100;
 
   compressExtension = 'tar.gz';
+
+  pageBulkExportJobStreamManager: PageBulkExportJobStreamManager = new PageBulkExportJobStreamManager();
 
   // temporal path of local fs to output page files before upload
   // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
@@ -127,26 +124,31 @@ class PageBulkExportService {
     }
     catch (err) {
       logger.error(err);
-      await this.notifyExportResultAndCleanUp(false, pageBulkExportJob, activityParameters);
+      if (err instanceof BulkExportJobExpiredError) {
+        await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_JOB_EXPIRED, pageBulkExportJob, activityParameters);
+      }
+      else {
+        await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED, pageBulkExportJob, activityParameters);
+      }
       return;
     }
 
-    await this.notifyExportResultAndCleanUp(true, pageBulkExportJob, activityParameters);
+    await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED, pageBulkExportJob, activityParameters);
   }
 
   /**
    * Notify the user of the export result, and cleanup the resources used in the export process
-   * @param succeeded whether the export was successful
+   * @param action whether the export was successful
    * @param pageBulkExportJob the page bulk export job
    * @param activityParameters parameters to record user activity
    */
   private async notifyExportResultAndCleanUp(
-      succeeded: boolean,
+      action: SupportedActionType,
       pageBulkExportJob: PageBulkExportJobDocument,
       activityParameters?: ActivityParameters,
   ): Promise<void> {
-    const action = succeeded ? SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED : SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED;
-    pageBulkExportJob.status = succeeded ? PageBulkExportJobStatus.completed : PageBulkExportJobStatus.failed;
+    pageBulkExportJob.status = action === SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED
+      ? PageBulkExportJobStatus.completed : PageBulkExportJobStatus.failed;
 
     try {
       await pageBulkExportJob.save();
@@ -200,6 +202,8 @@ class PageBulkExportService {
       },
     });
 
+    this.pageBulkExportJobStreamManager.addJobStream(pageBulkExportJob._id, pagesReadable);
+
     await pipelinePromise(pagesReadable, pageSnapshotsWritable);
   }
 
@@ -218,6 +222,8 @@ class PageBulkExportService {
       .cursor({ batchSize: this.pageBatchSize });
 
     const pagesWritable = this.getPageWritable(pageBulkExportJob);
+
+    this.pageBulkExportJobStreamManager.addJobStream(pageBulkExportJob._id, pageSnapshotsReadable);
 
     return pipelinePromise(pageSnapshotsReadable, pagesWritable);
   }
@@ -377,6 +383,8 @@ class PageBulkExportService {
    * - abort multipart upload
    */
   async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument) {
+    this.pageBulkExportJobStreamManager.destroyJobStream(pageBulkExportJob._id);
+
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
