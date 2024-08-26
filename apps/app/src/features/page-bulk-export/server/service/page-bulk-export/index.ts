@@ -17,8 +17,8 @@ import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { AttachmentType, FilePathOnStoragePrefix } from '~/server/interfaces/attachment';
 import type { ActivityDocument } from '~/server/models/activity';
-import { Attachment } from '~/server/models/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
+import { Attachment } from '~/server/models/attachment';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
 import type { FileUploader } from '~/server/service/file-uploader';
@@ -383,7 +383,7 @@ class PageBulkExportService {
    * - abort multipart upload
    */
   async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument) {
-    this.pageBulkExportJobStreamManager?.destroyJobStream(pageBulkExportJob._id);
+    this.pageBulkExportJobStreamManager.destroyJobStream(pageBulkExportJob._id);
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
