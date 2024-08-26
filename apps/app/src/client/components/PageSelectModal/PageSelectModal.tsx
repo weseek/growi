@@ -31,7 +31,7 @@ const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
   const { children } = props;
   return (
     <div className="grw-page-select-modal-wrapper">
-      <SimpleBar style={{ maxHeight: 500 }}>
+      <SimpleBar style={{ maxHeight: 350 }}>
         { children }
       </SimpleBar>
     </div>
@@ -98,7 +98,7 @@ export const PageSelectModal: FC = () => {
       isOpen={isOpened}
       toggle={closeModal}
       centered
-      size="sm"
+      size="lg"
     >
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
       <ModalBody className="p-0">
