@@ -18704,10 +18704,10 @@ untildify@^4.0.0:
   resolved "https://registry.yarnpkg.com/untildify/-/untildify-4.0.0.tgz#2bc947b953652487e4600949fb091e3ae8cd919b"
   integrity sha512-KK8xQ1mkzZeg9inewmFVDNkg3l5LUhoq9kN6iWYB/CC9YMG8HA+c1Q8HwDe6dEX7kErrEVNVBO3fWsVq5iDgtw==
 
-unzip-stream@^0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/unzip-stream/-/unzip-stream-0.3.1.tgz#2333b5cd035d29db86fb701ca212cf8517400083"
-  integrity sha512-RzaGXLNt+CW+T41h1zl6pGz3EaeVhYlK+rdAap+7DxW5kqsqePO8kRtWPaCiVqdhZc86EctSPVYNix30YOMzmw==
+unzip-stream@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/unzip-stream/-/unzip-stream-0.3.2.tgz#e7bfd887f4c9a284b46978693ba54e0d4f5095df"
+  integrity sha512-oWhfqwjx36ULFG+krfkbtbrc/BeEzaYrlqdEWa5EPNd6x6RerzuNW8aSTM0TtNtrOfUKYdO0TwrlkzrXAE6Olg==
   dependencies:
     binary "^0.3.0"
     mkdirp "^0.5.1"
