@@ -5,7 +5,7 @@ import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
 import {
-  getIdForRef, type IPage, isPopulated, SubscriptionStatusType,
+  getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Archiver } from 'archiver';
@@ -208,7 +208,7 @@ class PageBulkExportService {
       write: async(page: PageDocument, encoding, callback) => {
         try {
           if (page.revision != null) {
-            revisionListHash.update(getIdForRef(page.revision).toString());
+            revisionListHash.update(getIdStringForRef(page.revision));
           }
           await PageBulkExportPageSnapshot.create({
             pageBulkExportJob,
