@@ -711,7 +711,7 @@ class PageService implements IPageService {
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
       const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-      const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+      const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
@@ -1702,7 +1702,7 @@ class PageService implements IPageService {
 
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+    const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -2021,7 +2021,7 @@ class PageService implements IPageService {
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+    const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -2068,7 +2068,7 @@ class PageService implements IPageService {
     const pages = await this.deleteCompletelyDescendantsWithStream(page, user, options, true, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+    const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -2304,7 +2304,7 @@ class PageService implements IPageService {
     await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+    const preNotify = preNotifyService.generatePreNotify(activity, async() => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -3057,7 +3057,7 @@ class PageService implements IPageService {
     return isUnique;
   }
 
-  async normalizeAllPublicPages() {
+  async normalizeAllPublicPages(): Promise<void> {
     let isUnique;
     try {
       isUnique = await this._isPagePathIndexUnique();

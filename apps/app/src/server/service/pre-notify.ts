@@ -4,16 +4,15 @@ import type {
 
 import type { ActivityDocument } from '../models/activity';
 import Subscription from '../models/subscription';
-import { getModelSafely } from '../util/mongoose-utils';
+import userModelFactory from '../models/user';
 
 export type PreNotifyProps = {
   notificationTargetUsers?: Ref<IUser>[],
 }
 
 export type PreNotify = (props: PreNotifyProps) => Promise<void>;
-export type GeneratePreNotify = (activity: ActivityDocument, getAdditionalTargetUsers?: (activity?: ActivityDocument) => Ref<IUser>[]) => PreNotify;
-
-export type GetAdditionalTargetUsers = (activity: ActivityDocument) => Ref<IUser>[];
+export type GetAdditionalTargetUsers = (activity: ActivityDocument) => Promise<Ref<IUser>[]>;
+export type GeneratePreNotify = (activity: ActivityDocument, getAdditionalTargetUsers?: GetAdditionalTargetUsers) => PreNotify;
 
 interface IPreNotifyService {
   generateInitialPreNotifyProps: (PreNotifyProps) => { notificationTargetUsers?: Ref<IUser>[] },
@@ -34,7 +33,7 @@ class PreNotifyService implements IPreNotifyService {
     const preNotify = async(props: PreNotifyProps) => {
       const { notificationTargetUsers } = props;
 
-      const User = getModelSafely('User') || require('~/server/models/user')();
+      const User = userModelFactory();
       const actionUser = activity.user;
       const target = activity.target;
       const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
@@ -48,7 +47,7 @@ class PreNotifyService implements IPreNotifyService {
         notificationTargetUsers?.push(...activeNotificationUsers);
       }
       else {
-        const AdditionalTargetUsers = getAdditionalTargetUsers(activity);
+        const AdditionalTargetUsers = await getAdditionalTargetUsers(activity);
 
         notificationTargetUsers?.push(
           ...activeNotificationUsers,
