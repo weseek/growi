@@ -194,7 +194,7 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const Page = mongoose.model<IPage, PageModel>('Page');
-  const { pageService, exportService } = crowi;
+  const { pageService } = crowi;
 
   const activityEvent = crowi.event('activity');
 

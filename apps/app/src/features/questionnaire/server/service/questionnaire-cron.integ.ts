@@ -327,7 +327,7 @@ describe('QuestionnaireCronService', () => {
       validProactiveQuestionnaireAnswer,
     ]);
 
-    questionnaireCronService.startCron('0 22 * * *');
+    questionnaireCronService.startCron();
 
     vi.spyOn(axios, 'get').mockResolvedValue(mockResponse);
     vi.spyOn(axios, 'post').mockResolvedValue({ data: { result: 'success' } });

@@ -9,12 +9,13 @@ import type {
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { auto } from '@popperjs/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Sticky from 'react-stickynode';
-import { DropdownItem } from 'reactstrap';
+import { DropdownItem, UncontrolledTooltip } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
@@ -24,7 +25,7 @@ import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from 
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import {
@@ -244,6 +245,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const { data: isLocalAccountRegistrationEnabled } = useIsLocalAccountRegistrationEnabled();
   const { data: isSharedUser } = useIsSharedUser();
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
@@ -398,9 +400,23 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
             { isGuestUser && (
               <div className="mt-2">
-                <Link href="/login#register" className="btn me-2" prefetch={false}>
-                  <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
-                </Link>
+                <span>
+                  <span className="d-inline-block" id="sign-up-link">
+                    <Link
+                      href={!isLocalAccountRegistrationEnabled ? '#' : '/login#register'}
+                      className={`btn me-2 ${!isLocalAccountRegistrationEnabled ? 'opacity-25' : ''}`}
+                      style={{ pointerEvents: !isLocalAccountRegistrationEnabled ? 'none' : undefined }}
+                      prefetch={false}
+                    >
+                      <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
+                    </Link>
+                  </span>
+                  {!isLocalAccountRegistrationEnabled && (
+                    <UncontrolledTooltip target="sign-up-link" fade={false}>
+                      {t('tooltip.login_required')}
+                    </UncontrolledTooltip>
+                  )}
+                </span>
                 <Link href="/login#login" className="btn btn-primary" prefetch={false}>
                   <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
                 </Link>

@@ -1,11 +1,12 @@
 import { Server } from 'http';
 
 import Crowi from '../../src/server/crowi';
+import { setupModelsDependentOnCrowi } from '../../src/server/crowi/setup-models';
 
 let _instance: Crowi;
 
-const initCrowi = async(crowi) => {
-  await crowi.setupModels();
+const initCrowi = async(crowi: Crowi) => {
+  crowi.models = await setupModelsDependentOnCrowi(crowi);
   await crowi.setupConfigManager();
 
   await crowi.setupSocketIoService();
