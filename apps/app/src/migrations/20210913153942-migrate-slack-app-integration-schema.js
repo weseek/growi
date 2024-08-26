@@ -1,7 +1,8 @@
 import { defaultSupportedCommandsNameForBroadcastUse, defaultSupportedCommandsNameForSingleUse } from '@growi/slack';
 import mongoose from 'mongoose';
 
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import slackAppIntegrationFactory from '~/server/models/slack-app-integration';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 
@@ -26,7 +27,7 @@ module.exports = {
       await mongoose.connect(getMongoUri(), mongoOptions);
     }
 
-    const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
+    const SlackAppIntegration = slackAppIntegrationFactory();
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 
@@ -95,7 +96,7 @@ module.exports = {
     logger.info('Rollback migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
-    const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
+    const SlackAppIntegration = slackAppIntegrationFactory();
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 
