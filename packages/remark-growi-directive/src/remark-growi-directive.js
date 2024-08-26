@@ -3,7 +3,7 @@
  * @typedef {import('unified').Processor<Root>} Processor
  */
 
-import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-directive/index';
+import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-directive/index.js';
 import { directive } from './micromark-extension-growi-directive/index.js';
 
 /**
