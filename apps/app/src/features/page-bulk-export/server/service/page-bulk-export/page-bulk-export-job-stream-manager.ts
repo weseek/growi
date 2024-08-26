@@ -12,6 +12,9 @@ export class PageBulkExportJobStreamManager {
   private jobStreams: Record<string, Readable> = {};
 
   addJobStream(jobId: ObjectIdLike, stream: Readable): void {
+    if (this.jobStreams[jobId.toString()] != null) {
+      this.destroyJobStream(jobId);
+    }
     this.jobStreams[jobId.toString()] = stream;
   }
 
