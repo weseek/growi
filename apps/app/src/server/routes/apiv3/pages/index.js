@@ -229,6 +229,9 @@ module.exports = (crowi) => {
     const hideRestrictedByOwner = await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
     const hideRestrictedByGroup = await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
 
+    /**
+    * @type {import('~/server/models/page').FindRecentUpdatedPagesOption}
+    */
     const queryOptions = {
       offset,
       limit,

@@ -65,6 +65,18 @@ type PaginatedPages = {
   offset: number
 }
 
+export type FindRecentUpdatedPagesOption = {
+  offset: number,
+  limit: number,
+  includeWipPage: boolean,
+  includeTrashed: boolean,
+  isRegExpEscapedFromPath: boolean,
+  sort: 'updatedAt'
+  desc: number
+  hideRestrictedByOwner: boolean,
+  hideRestrictedByGroup: boolean,
+}
+
 export type CreateMethod = (path: string, body: string, user, options: IOptionsForCreate) => Promise<HydratedDocument<PageDocument>>
 
 export interface PageModel extends Model<PageDocument> {
@@ -79,7 +91,7 @@ export interface PageModel extends Model<PageDocument> {
   countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
   findParentByPath(path: string | null): Promise<HydratedDocument<PageDocument> | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
-  findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
+  findRecentUpdatedPages(path: string, user, option: FindRecentUpdatedPagesOption, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
     user, userGroups: ObjectIdLike[] | null, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
@@ -670,7 +682,7 @@ schema.statics.countByPathAndViewer = async function(path: string | null, user, 
 };
 
 schema.statics.findRecentUpdatedPages = async function(
-    path: string, user, options, includeEmpty = false,
+    path: string, user, options: FindRecentUpdatedPagesOption, includeEmpty = false,
 ): Promise<PaginatedPages> {
 
   const sortOpt = {};
