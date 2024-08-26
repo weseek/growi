@@ -17,9 +17,8 @@
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "cp:declaration": "cp -RT ./src/mdast-util-growi-directive/index.d.ts ./dist/mdast-util-growi-directive/index.d.ts",
     "build": "yarn tsc -p tsconfig.build.json",
-    "postbuild": "yarn cp:declaration",
+    "postbuild": "shx cp ./src/mdast-util-growi-directive/index.d.ts ./dist/mdast-util-growi-directive/index.d.ts",
     "clean": "shx rm -rf dist",
     "dev": "yarn build",
     "watch": "yarn tsc -w",
