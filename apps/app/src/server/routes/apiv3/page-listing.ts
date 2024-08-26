@@ -9,6 +9,7 @@ import { query, oneOf } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import loggerFactory from '~/utils/logger';
 
@@ -17,6 +18,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import type { PageDocument, PageModel } from '../../models/page';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
@@ -103,8 +105,13 @@ const routerFactory = (crowi: Crowi): Router => {
 
     const pageService = crowi.pageService;
 
+    const hideRestrictedByOwner = await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
+    const hideRestrictedByGroup = await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
+
     try {
-      const pages = await pageService.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
+      const pages = await pageService.findChildrenByParentPathOrIdAndViewer(
+        (id || path)as string, req.user, undefined, !hideRestrictedByOwner, !hideRestrictedByGroup,
+      );
       return res.apiv3({ children: pages });
     }
     catch (err) {
