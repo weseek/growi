@@ -55,9 +55,10 @@ class PageBulkExportJobCronService extends CronService {
    */
   async deleteDownloadExpiredExportJobs() {
     const downloadExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportDownloadExpirationSeconds');
+    const thresholdDate = new Date(Date.now() - downloadExpirationSeconds * 1000);
     const downloadExpiredExportJobs = await PageBulkExportJob.find({
       status: PageBulkExportJobStatus.completed,
-      completedAt: { $lt: new Date(Date.now() - downloadExpirationSeconds * 1000) },
+      completedAt: { $lt: thresholdDate },
     });
 
     const cleanup = async(job: PageBulkExportJobDocument) => {
@@ -66,7 +67,7 @@ class PageBulkExportJobCronService extends CronService {
       const hasSameAttachmentAndDownloadNotExpired = await PageBulkExportJob.findOne({
         attachment: job.attachment,
         _id: { $ne: job._id },
-        completedAt: { $gte: new Date(Date.now() - downloadExpirationSeconds * 1000) },
+        completedAt: { $gte: thresholdDate },
       });
       if (hasSameAttachmentAndDownloadNotExpired == null) {
         // delete attachment if no other export job (which download has not expired) has re-used it
