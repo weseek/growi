@@ -39,6 +39,10 @@ export class PageBulkExportJobManager {
     return Object.keys(this.jobsInProgress).length < this.parallelExecLimit;
   }
 
+  /**
+   * Get the information of a job in progress.
+   * A getter method that includes "undefined" in the return type
+   */
   getJobInProgress(jobId: ObjectIdLike): { stream: Readable | undefined } | undefined {
     return this.jobsInProgress[jobId.toString()];
   }
