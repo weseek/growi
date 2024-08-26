@@ -6,14 +6,13 @@ import Link from 'next/link';
 
 import GrowiLogo from '~/components/Common/GrowiLogo';
 
-import { AdminNavigation } from '../Admin/Common/AdminNavigation';
-
 import { RawLayout } from './RawLayout';
 
 
 import styles from './Admin.module.scss';
 
 
+const AdminNavigation = dynamic(() => import('../Admin/Common/AdminNavigation').then(mod => mod.AdminNavigation), { ssr: false });
 const PageCreateModal = dynamic(() => import('~/client/components/PageCreateModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('~/client/components/SystemVersion'), { ssr: false });
 const HotkeysManager = dynamic(() => import('~/client/components/Hotkeys/HotkeysManager'), { ssr: false });

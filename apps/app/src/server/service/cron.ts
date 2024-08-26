@@ -15,11 +15,10 @@ abstract class CronService {
 
   /**
    * Create and start a new cronjob
-   * @param cronSchedule e.g. '0 1 * * *'
    */
-  startCron(cronSchedule: string): void {
+  startCron(): void {
     this.cronJob?.stop();
-    this.cronJob = this.generateCronJob(cronSchedule);
+    this.cronJob = this.generateCronJob(this.getCronSchedule());
     this.cronJob.start();
   }
 
@@ -29,6 +28,12 @@ abstract class CronService {
   stopCron(): void {
     this.cronJob.stop();
   }
+
+  /**
+   * Get the cron schedule
+   * e.g. '0 1 * * *'
+   */
+  abstract getCronSchedule(): string;
 
   /**
    * Execute the job. Define the job process in the subclass.

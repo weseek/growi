@@ -5,7 +5,7 @@ import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
 import {
-  getIdForRef, type IPage, isPopulated, SubscriptionStatusType,
+  getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Archiver } from 'archiver';
@@ -17,9 +17,9 @@ import mongoose from 'mongoose';
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { AttachmentType, FilePathOnStoragePrefix } from '~/server/interfaces/attachment';
-import type { IAttachmentDocument } from '~/server/models';
-import { Attachment } from '~/server/models';
 import type { ActivityDocument } from '~/server/models/activity';
+import type { IAttachmentDocument } from '~/server/models/attachment';
+import { Attachment } from '~/server/models/attachment';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
 import type { FileUploader } from '~/server/service/file-uploader';
@@ -228,7 +228,7 @@ class PageBulkExportService {
       write: async(page: PageDocument, encoding, callback) => {
         try {
           if (page.revision != null) {
-            revisionListHash.update(getIdForRef(page.revision).toString());
+            revisionListHash.update(getIdStringForRef(page.revision));
           }
           await PageBulkExportPageSnapshot.create({
             pageBulkExportJob,
@@ -429,7 +429,7 @@ class PageBulkExportService {
    * - abort multipart upload
    */
   async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument, restarted = false) {
-    this.pageBulkExportJobStreamManager?.destroyJobStream(pageBulkExportJob._id, restarted);
+    this.pageBulkExportJobStreamManager.destroyJobStream(pageBulkExportJob._id, restarted);
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),

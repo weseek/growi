@@ -1,3 +1,5 @@
+import type { HydratedDocument } from 'mongoose';
+
 import { SupportedAction } from '~/interfaces/activity';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
@@ -23,6 +25,10 @@ class PageBulkExportJobCronService extends CronService {
     this.crowi = crowi;
   }
 
+  override getCronSchedule(): string {
+    return configManager.getConfig('crowi', 'app:pageBulkExportJobCronSchedule');
+  }
+
   override async executeJob(): Promise<void> {
     await this.deleteExpiredExportJobs();
     await this.deleteDownloadExpiredExportJobs();
@@ -38,9 +44,9 @@ class PageBulkExportJobCronService extends CronService {
       $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
     });
-    for (const expiredExportJob of expiredExportJobs) {
-      // eslint-disable-next-line no-await-in-loop
-      await this.cleanUpAndDeleteBulkExportJob(expiredExportJob);
+
+    if (pageBulkExportService != null) {
+      await this.cleanUpAndDeleteBulkExportJobs(expiredExportJobs, pageBulkExportService?.cleanUpExportJobResources);
     }
   }
 
@@ -49,29 +55,27 @@ class PageBulkExportJobCronService extends CronService {
    */
   async deleteDownloadExpiredExportJobs() {
     const downloadExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportDownloadExpirationSeconds');
+    const thresholdDate = new Date(Date.now() - downloadExpirationSeconds * 1000);
     const downloadExpiredExportJobs = await PageBulkExportJob.find({
       status: PageBulkExportJobStatus.completed,
-      completedAt: { $lt: new Date(Date.now() - downloadExpirationSeconds * 1000) },
+      completedAt: { $lt: thresholdDate },
     });
-    for (const downloadExpiredExportJob of downloadExpiredExportJobs) {
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        const hasSameAttachmentAndDownloadNotExpired = await PageBulkExportJob.findOne({
-          attachment: downloadExpiredExportJob.attachment,
-          _id: { $ne: downloadExpiredExportJob._id },
-          completedAt: { $gte: new Date(Date.now() - downloadExpirationSeconds * 1000) },
-        });
-        if (hasSameAttachmentAndDownloadNotExpired == null) {
-          // delete attachment if no other export job (which download has not expired) has re-used it
-          this.crowi.attachmentService?.removeAttachment(downloadExpiredExportJob.attachment);
-        }
+
+    const cleanup = async(job: PageBulkExportJobDocument) => {
+      await pageBulkExportService?.cleanUpExportJobResources(job);
+
+      const hasSameAttachmentAndDownloadNotExpired = await PageBulkExportJob.findOne({
+        attachment: job.attachment,
+        _id: { $ne: job._id },
+        completedAt: { $gte: thresholdDate },
+      });
+      if (hasSameAttachmentAndDownloadNotExpired == null) {
+        // delete attachment if no other export job (which download has not expired) has re-used it
+        await this.crowi.attachmentService?.removeAttachment(job.attachment);
       }
-      catch (err) {
-        logger.error(err);
-      }
-      // eslint-disable-next-line no-await-in-loop
-      await this.cleanUpAndDeleteBulkExportJob(downloadExpiredExportJob);
-    }
+    };
+
+    await this.cleanUpAndDeleteBulkExportJobs(downloadExpiredExportJobs, cleanup);
   }
 
   /**
@@ -79,15 +83,28 @@ class PageBulkExportJobCronService extends CronService {
    */
   async deleteFailedExportJobs() {
     const failedExportJobs = await PageBulkExportJob.find({ status: PageBulkExportJobStatus.failed });
-    for (const failedExportJob of failedExportJobs) {
-      // eslint-disable-next-line no-await-in-loop
-      await this.cleanUpAndDeleteBulkExportJob(failedExportJob);
+
+    if (pageBulkExportService != null) {
+      await this.cleanUpAndDeleteBulkExportJobs(failedExportJobs, pageBulkExportService.cleanUpExportJobResources);
     }
   }
 
-  async cleanUpAndDeleteBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument) {
-    await pageBulkExportService?.cleanUpExportJobResources(pageBulkExportJob);
-    await pageBulkExportJob.delete();
+  async cleanUpAndDeleteBulkExportJobs(
+      pageBulkExportJobs: HydratedDocument<PageBulkExportJobDocument>[],
+      cleanup: (job: PageBulkExportJobDocument) => Promise<void>,
+  ): Promise<void> {
+    const results = await Promise.allSettled(pageBulkExportJobs.map(job => cleanup(job)));
+    results.forEach((result) => {
+      if (result.status === 'rejected') logger.error(result.reason);
+    });
+
+    // Only batch delete jobs which have been successfully cleaned up
+    // Cleanup failed jobs will be retried in the next cron execution
+    const cleanedUpJobs = pageBulkExportJobs.filter((_, index) => results[index].status === 'fulfilled');
+    if (cleanedUpJobs.length > 0) {
+      const cleanedUpJobIds = cleanedUpJobs.map(job => job._id);
+      await PageBulkExportJob.deleteMany({ _id: { $in: cleanedUpJobIds } });
+    }
   }
 
 }
