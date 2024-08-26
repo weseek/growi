@@ -10,6 +10,12 @@ import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors
 
 import type { ActivityParameters, IPageBulkExportService } from '.';
 
+/**
+ * Manage PageBulkExportJob execution.
+ * - Keep track of jobs being executed and enable destroying the stream if the job is terminated
+ * - Limit the number of jobs being executed in parallel
+ * - Queue jobs to be executed in order
+ */
 export class PageBulkExportJobManager {
 
   pageBulkExportService: IPageBulkExportService;
