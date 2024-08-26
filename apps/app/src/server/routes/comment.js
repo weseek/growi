@@ -494,6 +494,95 @@ module.exports = function(crowi, app) {
 
     return res.json(ApiResponse.success({}));
   };
+  /**
+   * @swagger
+   *
+   *    /comments.like:
+   *      post:
+   *        tags: [Comments]
+   *        operationId: likeComment
+   *        summary: /comments.like
+   *        description: Like/Unlike specified comment
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  comment_id:
+   *                    $ref: '#/components/schemas/Comment/properties/_id'
+   *                required:
+   *                  - comment_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to remove specified comment.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    ok:
+   *                      $ref: '#/components/schemas/V1Response/properties/ok'
+   *                    comment:
+   *                      $ref: '#/components/schemas/Comment'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
+   * @api {post} /comments.like Like/Unlike specified comment
+   * @apiName LikeComment
+   * @apiGroup Comment
+   *
+   * @apiParam {String} comment_id Comment Id.
+   */
+  api.like = async function(req, res) {
+    const commentId = req.body.comment_id;
+    if (!commentId) {
+      return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));
+    }
+
+    let updatedComment;
+    try {
+      const comment = await Comment.findById(commentId).exec();
+
+      if (comment == null) {
+        throw new Error('This comment does not exist.');
+      }
+
+      // check whether accessible
+      const pageId = comment.page;
+      const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+      if (!isAccessible) {
+        throw new Error('Current user is not accessible to this page.');
+      }
+
+      const likers = comment?.liker ?? [];
+      const isLiked = !!(likers.find(liker => liker._id.toString() == req.user._id.toString()));
+
+      if (!isLiked) {
+        updatedComment = await Comment.findOneAndUpdate(
+          { _id: commentId },
+          { $set: { liker: [...likers, req.user._id] } },
+          { timestamps: false },
+        );
+      }
+      else {
+        updatedComment = await Comment.findOneAndUpdate(
+          { _id: commentId },
+          { $set: { liker: likers.filter(liker => liker._id.toString() != req.user._id.toString()) } },
+          { timestamps: false },
+        );
+      }
+    }
+    catch (err) {
+      return res.json(ApiResponse.error(err));
+    }
+
+    // const parameters = { action: SupportedAction.ACTION_COMMENT_LIKE };
+    // activityEvent.emit('like', res.locals.activity._id, parameters);
+
+    res.json(ApiResponse.success({ comment: updatedComment }));
+  };
 
   return actions;
 };
