@@ -1,4 +1,5 @@
 import { pathUtils } from '@growi/core/dist/utils';
+import type { TextGrowiPluginDirective, LeafGrowiPluginDirective } from '@growi/remark-growi-directive';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
 import type { Nodes as HastNode } from 'hast';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
@@ -21,11 +22,11 @@ const REFS_IMG_SUPPORTED_ATTRIBUTES = [
 ];
 
 type DirectiveAttributes = Record<string, string>
+type GrowiPluginDirective = TextGrowiPluginDirective | LeafGrowiPluginDirective
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
-    visit(tree, (node: any) => {
-      // TODO: growi-directive types
+    visit(tree, (node: GrowiPluginDirective) => {
       if (node.type === remarkGrowiDirectivePluginType.Text || node.type === remarkGrowiDirectivePluginType.Leaf) {
         if (typeof node.name !== 'string') {
           return;
