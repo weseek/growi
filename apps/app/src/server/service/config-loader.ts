@@ -736,6 +736,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  BULK_EXPORT_JOB_EXPIRATION_SECONDS: {
+    ns: 'crowi',
+    key: 'app:bulkExportJobExpirationSeconds',
+    type: ValueType.NUMBER,
+    default: 86400, // 1 day
+  },
+  BULK_EXPORT_DOWNLOAD_EXPIRATION_SECONDS: {
+    ns: 'crowi',
+    key: 'app:bulkExportDownloadExpirationSeconds',
+    type: ValueType.NUMBER,
+    default: 86400, // 1 day
+  },
+  BULK_EXPORT_JOB_CRON_SCHEDULE: {
+    ns: 'crowi',
+    key: 'app:pageBulkExportJobCronSchedule',
+    type: ValueType.STRING,
+    default: '*/10 * * * *', // every 10 minutes
+  },
 };
 
 

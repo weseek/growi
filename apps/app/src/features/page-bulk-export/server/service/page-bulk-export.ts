@@ -27,7 +27,7 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportFormat, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
+import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 import type { PageBulkExportPageSnapshotDocument } from '../models/page-bulk-export-page-snapshot';
@@ -89,9 +89,7 @@ class PageBulkExportService {
       user: currentUser,
       page: basePage,
       format,
-      $or: [
-        { status: PageBulkExportJobStatus.initializing }, { status: PageBulkExportJobStatus.exporting }, { status: PageBulkExportJobStatus.uploading },
-      ],
+      $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
     });
     if (duplicatePageBulkExportJobInProgress != null) {
       throw new DuplicateBulkExportJobError();
@@ -137,11 +135,10 @@ class PageBulkExportService {
   }
 
   /**
-   * Do the following in parallel:
-   * - notify user of the export result
-   * - update pageBulkExportJob status
-   * - delete page snapshots
-   * - remove the temporal output directory
+   * Notify the user of the export result, and cleanup the resources used in the export process
+   * @param succeeded whether the export was successful
+   * @param pageBulkExportJob the page bulk export job
+   * @param activityParameters parameters to record user activity
    */
   private async notifyExportResultAndCleanUp(
       succeeded: boolean,
@@ -150,15 +147,16 @@ class PageBulkExportService {
   ): Promise<void> {
     const action = succeeded ? SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED : SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED;
     pageBulkExportJob.status = succeeded ? PageBulkExportJobStatus.completed : PageBulkExportJobStatus.failed;
-    const results = await Promise.allSettled([
-      this.notifyExportResult(pageBulkExportJob, action, activityParameters),
-      PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
-      fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
-      pageBulkExportJob.save(),
-    ]);
-    results.forEach((result) => {
-      if (result.status === 'rejected') logger.error(result.reason);
-    });
+
+    try {
+      await pageBulkExportJob.save();
+      await this.notifyExportResult(pageBulkExportJob, action, activityParameters);
+    }
+    catch (err) {
+      logger.error(err);
+    }
+    // execute independently of notif process resolve/reject
+    await this.cleanUpExportJobResources(pageBulkExportJob);
   }
 
   /**
@@ -270,7 +268,7 @@ class PageBulkExportService {
     const fileUploadService: FileUploader = this.crowi.fileUploadService;
     // if the process of uploading was interrupted, delete and start from the start
     if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
-      await fileUploadService.abortExistingMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId);
+      await fileUploadService.abortPreviousMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId);
     }
 
     // init multipart upload
@@ -354,7 +352,7 @@ class PageBulkExportService {
     return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
   }
 
-  private async notifyExportResult(
+  async notifyExportResult(
       pageBulkExportJob: PageBulkExportJobDocument, action: SupportedActionType, activityParameters?: ActivityParameters,
   ) {
     const activity = await this.crowi.activityService.createActivity({
@@ -367,9 +365,32 @@ class PageBulkExportService {
         username: isPopulated(pageBulkExportJob.user) ? pageBulkExportJob.user.username : '',
       },
     });
-    const getAdditionalTargetUsers = (activity: ActivityDocument) => [activity.user];
+    const getAdditionalTargetUsers = async(activity: ActivityDocument) => [activity.user];
     const preNotify = preNotifyService.generatePreNotify(activity, getAdditionalTargetUsers);
     this.activityEvent.emit('updated', activity, pageBulkExportJob, preNotify);
+  }
+
+  /**
+   * Do the following in parallel:
+   * - delete page snapshots
+   * - remove the temporal output directory
+   * - abort multipart upload
+   */
+  async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument) {
+    const promises = [
+      PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
+      fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
+    ];
+
+    const fileUploadService: FileUploader = this.crowi.fileUploadService;
+    if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
+      promises.push(fileUploadService.abortPreviousMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId));
+    }
+
+    const results = await Promise.allSettled(promises);
+    results.forEach((result) => {
+      if (result.status === 'rejected') logger.error(result.reason);
+    });
   }
 
 }

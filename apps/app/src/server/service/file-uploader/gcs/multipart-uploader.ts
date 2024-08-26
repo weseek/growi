@@ -77,6 +77,8 @@ export class GcsMultipartUploader extends MultipartUploader implements IGcsMulti
       await axios.delete(this.uploadId);
     }
     catch (e) {
+      // 499 is successful response code for canceling upload
+      // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads#cancel-upload
       if (e.response?.status !== 499) {
         throw e;
       }

@@ -75,6 +75,7 @@ export const useActionMsgAndIconForModelNotification = (notification: IInAppNoti
       actionIcon = 'download';
       break;
     case SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED:
+    case SupportedAction.ACTION_PAGE_BULK_EXPORT_JOB_EXPIRED:
       actionMsg = 'export failed for';
       actionIcon = 'error';
       break;

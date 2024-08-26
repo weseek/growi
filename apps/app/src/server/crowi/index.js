@@ -12,11 +12,12 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
-import { PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
 import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
+import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
-import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
+import questionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
@@ -105,7 +106,6 @@ class Crowi {
     this.activityService = null;
     this.commentService = null;
     this.questionnaireService = null;
-    this.questionnaireCronService = null;
 
     this.tokens = null;
 
@@ -317,8 +317,10 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
-  this.questionnaireCronService = new QuestionnaireCronService(this);
-  this.questionnaireCronService.startCron();
+  questionnaireCronService.startCron();
+
+  instanciatePageBulkExportJobCronService(this);
+  pageBulkExportJobCronService.startCron();
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {
@@ -783,9 +785,7 @@ Crowi.prototype.setupExternalUserGroupSyncService = function() {
 // TODO: Limit the number of jobs to execute in parallel (https://redmine.weseek.co.jp/issues/143599)
 Crowi.prototype.resumeIncompletePageBulkExportJobs = async function() {
   const jobs = await PageBulkExportJob.find({
-    $or: [
-      { status: PageBulkExportJobStatus.initializing }, { status: PageBulkExportJobStatus.exporting }, { status: PageBulkExportJobStatus.uploading },
-    ],
+    $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
   });
   Promise.all(jobs.map(job => pageBulkExportService.executePageBulkExportJob(job)));
 };
