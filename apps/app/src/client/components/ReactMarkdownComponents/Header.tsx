@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 
 import type EventEmitter from 'events';
 
+import type { Element } from 'hast';
 import { useRouter } from 'next/router';
-import type { Element } from 'react-markdown/lib/rehype-filter';
 
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import {
@@ -54,13 +54,12 @@ const EditLink = (props: EditLinkProps): JSX.Element => {
 type HeaderProps = {
   children: React.ReactNode,
   node: Element,
-  level: number,
   id?: string,
 }
 
 export const Header = (props: HeaderProps): JSX.Element => {
   const {
-    node, id, children, level,
+    node, id, children,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -73,7 +72,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   const [isActive, setActive] = useState(false);
 
-  const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
+  const CustomTag = node.tagName as keyof JSX.IntrinsicElements;
 
   const activateByHash = useCallback((url: string) => {
     try {

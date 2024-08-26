@@ -27,54 +27,59 @@ const shortcut = /^[^\t\n\r "#'.<=>`}]+$/;
 handleDirective.peek = peekDirective;
 
 /** @type {FromMarkdownExtension} */
-export const directiveFromMarkdown = {
-  canContainEols: [DirectiveType.Text],
-  enter: {
-    directiveLeaf: enterLeaf,
-    directiveLeafAttributes: enterAttributes,
+export function directiveFromMarkdown() {
+  return {
+    canContainEols: [DirectiveType.Text],
+    enter: {
+      directiveLeaf: enterLeaf,
+      directiveLeafAttributes: enterAttributes,
 
-    directiveText: enterText,
-    directiveTextAttributes: enterAttributes,
-  },
-  exit: {
-    directiveLeaf: exit,
-    directiveLeafAttributeName: exitAttributeName,
-    directiveLeafAttributeValue: exitAttributeValue,
-    directiveLeafAttributes: exitAttributes,
-    directiveLeafName: exitName,
+      directiveText: enterText,
+      directiveTextAttributes: enterAttributes,
+    },
+    exit: {
+      directiveLeaf: exit,
+      directiveLeafAttributeName: exitAttributeName,
+      directiveLeafAttributeValue: exitAttributeValue,
+      directiveLeafAttributes: exitAttributes,
+      directiveLeafName: exitName,
 
-    directiveText: exit,
-    directiveTextAttributeName: exitAttributeName,
-    directiveTextAttributeValue: exitAttributeValue,
-    directiveTextAttributes: exitAttributes,
-    directiveTextName: exitName,
-  },
-};
+      directiveText: exit,
+      directiveTextAttributeName: exitAttributeName,
+      directiveTextAttributeValue: exitAttributeValue,
+      directiveTextAttributes: exitAttributes,
+      directiveTextName: exitName,
+
+    },
+  };
+}
 
 /** @type {ToMarkdownExtension} */
-export const directiveToMarkdown = {
-  unsafe: [
-    {
-      character: '\r',
-      inConstruct: [DirectiveType.Leaf],
+export function directiveToMarkdown() {
+  return {
+    unsafe: [
+      {
+        character: '\r',
+        inConstruct: [DirectiveType.Leaf],
+      },
+      {
+        character: '\n',
+        inConstruct: [DirectiveType.Leaf],
+      },
+      {
+        before: '[^$]',
+        character: '$',
+        after: '[A-Za-z]',
+        inConstruct: ['phrasing'],
+      },
+      { atBreak: true, character: '$', after: '$' },
+    ],
+    handlers: {
+      [DirectiveType.Leaf]: handleDirective,
+      [DirectiveType.Text]: handleDirective,
     },
-    {
-      character: '\n',
-      inConstruct: [DirectiveType.Leaf],
-    },
-    {
-      before: '[^$]',
-      character: '$',
-      after: '[A-Za-z]',
-      inConstruct: ['phrasing'],
-    },
-    { atBreak: true, character: '$', after: '$' },
-  ],
-  handlers: {
-    [DirectiveType.Leaf]: handleDirective,
-    [DirectiveType.Text]: handleDirective,
-  },
-};
+  };
+}
 
 /** @type {FromMarkdownHandle} */
 function enterLeaf(token) {
