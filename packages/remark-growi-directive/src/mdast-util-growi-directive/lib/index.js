@@ -1,14 +1,16 @@
 /**
- * @typedef {import('mdast').BlockContent} BlockContent
- * @typedef {import('mdast').Root} Root
+ * @typedef {import('mdast').Node} Node
  * @typedef {import('mdast').Paragraph} Paragraph
- * @typedef {import('mdast-util-from-markdown').Handle} FromMarkdownHandle
- * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
+ *
  * @typedef {import('mdast-util-from-markdown').CompileContext} CompileContext
+ * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
+ * @typedef {import('mdast-util-from-markdown').Handle} FromMarkdownHandle
  * @typedef {import('mdast-util-from-markdown').Token} Token
+ *
+ * @typedef {import('mdast-util-to-markdown').ConstructName} ConstructName
  * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
- * @typedef {import('mdast-util-to-markdown').Context} Context
  * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
+ * @typedef {import('mdast-util-to-markdown').State} State
  *
  * @typedef {import('../types/index.js').LeafGrowiPluginDirective} LeafGrowiPluginDirective
  * @typedef {import('../types/index.js').TextGrowiPluginDirective} TextGrowiPluginDirective
@@ -207,11 +209,11 @@ function peekDirective() {
 
 /**
  * @param {Directive} node
- * @param {Context} context
+ * @param {State} state
  * @returns {string}
  */
-function attributes(node, context) {
-  const quote = context.options.quote || '"';
+function attributes(node, state) {
+  const quote = state.options.quote || '"';
   const subset = node.type === DirectiveType.Text ? [quote] : [quote, '\n', '\r'];
   const attrs = node.attributes || {};
   /** @type {Array.<string>} */
