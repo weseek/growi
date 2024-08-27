@@ -21,7 +21,7 @@ export type AggregatedPage = Pick<IPageHasId,
   },
 } & {
   tagNames: string[],
-  revisionBodyEmbedded: number[],
+  revisionBodyEmbedded?: number[],
 };
 
 export type BulkWriteCommand = {
