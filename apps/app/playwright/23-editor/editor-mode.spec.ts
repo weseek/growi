@@ -6,6 +6,8 @@ const longString = 'a'.repeat(10001);
 test('Expect Collaborative editor mode when opening pages with content length below YJS_MAX_BODY_LENGTH', async({ page }) => {
   await page.goto('/Sandbox/collaborative-editor-mode');
 
+  // Open editor
+  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
   await page.getByTestId('editor-button').click();
   await expect(page.locator('.cm-editor')).toBeVisible();
 
@@ -17,6 +19,7 @@ test('Expect Collaborative editor mode when opening pages with content length be
   await page.getByTestId('save-page-btn').click();
 
   // Back to editor
+  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
   await page.getByTestId('editor-button').click();
   await expect(page.locator('.cm-editor')).toBeVisible();
 
@@ -28,6 +31,8 @@ test('Expect Collaborative editor mode when opening pages with content length be
 test('Expect Single editor mode when opening pages with content length above YJS_MAX_BODY_LENGTH', async({ page }) => {
   await page.goto('Sandbox/single-editor-mode');
 
+  // Open editor
+  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
   await page.getByTestId('editor-button').click();
   await expect(page.locator('.cm-editor')).toBeVisible();
 
@@ -39,6 +44,7 @@ test('Expect Single editor mode when opening pages with content length above YJS
   await page.getByTestId('save-page-btn').click();
 
   // Back to editor
+  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
   await page.getByTestId('editor-button').click();
   await expect(page.locator('.cm-editor')).toBeVisible();
 
