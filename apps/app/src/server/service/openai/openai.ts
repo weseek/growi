@@ -1,7 +1,7 @@
 import { OpenAI } from 'openai';
 
 export interface IOpenaiService {
-  embed: (user: string, input: string) => Promise<OpenAI.Embedding[]>;
+  embed: (username: string, input: string) => Promise<OpenAI.Embedding[]>;
 }
 
 class OpenaiService implements IOpenaiService {
@@ -14,12 +14,12 @@ class OpenaiService implements IOpenaiService {
     });
   }
 
-  async embed(userId: string, input: string): Promise<OpenAI.Embedding[]> {
+  async embed(username: string, input: string): Promise<OpenAI.Embedding[]> {
     const result = await this.client.embeddings.create({
       input,
       model: 'text-embedding-3-large',
-      dimensions: process.env.OPENAI_DIMENSIONS as unknown as number,
-      user: userId,
+      dimensions: Number(process.env.OPENAI_DIMENSIONS),
+      user: username,
     });
 
     return result.data;
