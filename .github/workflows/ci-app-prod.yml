@@ -22,6 +22,7 @@ on:
       - master
       - dev/7.*.x
       - dev/6.*.x
+      - feat/non-yjs-mode
     types: [opened, reopened, synchronize]
     paths:
       - .github/workflows/ci-app-prod.yml
