@@ -1,12 +1,18 @@
 import { Readable } from 'stream';
 import { finished } from 'stream/promises';
 
+import { configManager } from '~/server/service/config-manager';
+
 import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors';
 import { PageBulkExportJobManager } from './page-bulk-export-job-manager';
 
 describe('PageBulkExportJobManager', () => {
   let pageBulkExportServiceMock;
   let jobManager: PageBulkExportJobManager;
+
+  beforeAll(() => {
+    vi.spyOn(configManager, 'getConfig').mockReturnValue(3);
+  });
 
   beforeEach(() => {
     pageBulkExportServiceMock = {
@@ -25,8 +31,6 @@ describe('PageBulkExportJobManager', () => {
         job1: { stream: undefined },
         job2: { stream: undefined },
         job3: { stream: undefined },
-        job4: { stream: undefined },
-        job5: { stream: undefined },
       };
       expect(jobManager.canExecuteNextJob()).toBe(false);
     });
@@ -58,8 +62,6 @@ describe('PageBulkExportJobManager', () => {
         job1: { stream: undefined },
         job2: { stream: undefined },
         job3: { stream: undefined },
-        job4: { stream: undefined },
-        job5: { stream: undefined },
       };
       const job = { _id: 'job2' } as any;
       jobManager.addJob(job);

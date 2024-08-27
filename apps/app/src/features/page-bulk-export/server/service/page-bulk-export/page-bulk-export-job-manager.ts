@@ -3,6 +3,7 @@ import type { Readable } from 'stream';
 import type { HydratedDocument } from 'mongoose';
 
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import { configManager } from '~/server/service/config-manager';
 
 import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
 
@@ -20,7 +21,7 @@ export class PageBulkExportJobManager {
 
   pageBulkExportService: IPageBulkExportService;
 
-  private parallelExecLimit = 5;
+  private parallelExecLimit: number;
 
   // contains jobs being executed and it's information
   // the key is the _id of PageBulkExportJob and the value contains the stream of the job
@@ -33,6 +34,7 @@ export class PageBulkExportJobManager {
 
   constructor(pageBulkExportService: IPageBulkExportService) {
     this.pageBulkExportService = pageBulkExportService;
+    this.parallelExecLimit = configManager.getConfig('crowi', 'app:pageBulkExportParallelExecLimit');
   }
 
   canExecuteNextJob(): boolean {

@@ -754,6 +754,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.STRING,
     default: '*/10 * * * *', // every 10 minutes
   },
+  BULK_EXPORT_PARALLEL_EXEC_LIMIT: {
+    ns: 'crowi',
+    key: 'app:pageBulkExportParallelExecLimit',
+    type: ValueType.NUMBER,
+    default: 5,
+  },
 };
 
 
