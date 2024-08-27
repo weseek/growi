@@ -128,7 +128,7 @@ schema.statics.findAllRelationForUserGroups = function(userGroups) {
  * @memberof UserGroupRelation
  */
 schema.statics.findAllGroupsForUser = async function(user): Promise<UserGroupDocument[]> {
-  const userGroupRelations = await this.find({ relatedUser: user.id }).populate('relatedGroup');
+  const userGroupRelations = await this.find({ relatedUser: user._id }).populate('relatedGroup');
   const userGroups = userGroupRelations.map((relation) => {
     return isPopulated(relation.relatedGroup) ? relation.relatedGroup as UserGroupDocument : null;
   });

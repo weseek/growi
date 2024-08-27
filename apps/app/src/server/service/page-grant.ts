@@ -276,7 +276,7 @@ class PageGrantService implements IPageGrantService {
     ).length === 0;
 
     if (!userBelongsToAllPreviousGrantedGroups) {
-      if (grant !== PageGrant.GRANT_USER_GROUP) {
+      if (Number(grant) !== PageGrant.GRANT_USER_GROUP) {
         return false;
       }
       const pageGrantIncludesUserRelatedGroup = hasIntersection(grantedGroups?.map(g => getIdForRef(g.item)) || [], userRelatedGroupIds);
