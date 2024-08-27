@@ -1,4 +1,4 @@
-import { FileUploadEnvVarType } from '~/interfaces/file-uploader';
+import { FileUploadTypeForEnvVar } from '~/interfaces/file-uploader';
 import type Crowi from '~/server/crowi';
 import loggerFactory from '~/utils/logger';
 
@@ -11,7 +11,7 @@ export type { FileUploader } from './file-uploader';
 const logger = loggerFactory('growi:service:FileUploaderServise');
 
 const envToModuleMappings = {
-  ...FileUploadEnvVarType,
+  ...FileUploadTypeForEnvVar,
   mongo:   'gridfs',
   mongodb: 'gridfs',
   gcp:     'gcs',

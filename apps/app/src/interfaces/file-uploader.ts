@@ -1,3 +1,4 @@
+// file upload types actually supported by the app
 export const FileUploadType = {
   aws: 'aws',
   gcs: 'gcs',
@@ -8,11 +9,12 @@ export const FileUploadType = {
 
 export type FileUploadType = typeof FileUploadType[keyof typeof FileUploadType]
 
-export const FileUploadEnvVarType = {
+// file upload type strings you can specify in the env var
+export const FileUploadTypeForEnvVar = {
   ...FileUploadType,
   mongo:   'mongo',
   mongodb: 'mongodb',
   gcp:     'gcp',
 } as const;
 
-export type FileUploadEnvVarType = typeof FileUploadEnvVarType[keyof typeof FileUploadEnvVarType]
+export type FileUploadTypeForEnvVar = typeof FileUploadTypeForEnvVar[keyof typeof FileUploadTypeForEnvVar]
