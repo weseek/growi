@@ -44,11 +44,11 @@ describe('PageBulkExportJobCronService', () => {
   });
 
   describe('deleteExpiredExportJobs', () => {
+    // arrange
     const jobId1 = new mongoose.Types.ObjectId();
     const jobId2 = new mongoose.Types.ObjectId();
     const jobId3 = new mongoose.Types.ObjectId();
     const jobId4 = new mongoose.Types.ObjectId();
-
     beforeEach(async() => {
       await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:bulkExportJobExpirationSeconds': 86400 }); // 1 day
 
@@ -84,21 +84,25 @@ describe('PageBulkExportJobCronService', () => {
     });
 
     test('should delete expired jobs', async() => {
+      // assert
       expect(await PageBulkExportJob.find()).toHaveLength(4);
-      await pageBulkExportJobCronService?.deleteExpiredExportJobs();
 
+      // act
+      await pageBulkExportJobCronService?.deleteExpiredExportJobs();
       const jobs = await PageBulkExportJob.find();
+
+      // assert
       expect(jobs).toHaveLength(2);
       expect(jobs.map(job => job._id).sort()).toStrictEqual([jobId1, jobId4].sort());
     });
   });
 
   describe('deleteDownloadExpiredExportJobs', () => {
+    // arrange
     const jobId1 = new mongoose.Types.ObjectId();
     const jobId2 = new mongoose.Types.ObjectId();
     const jobId3 = new mongoose.Types.ObjectId();
     const jobId4 = new mongoose.Types.ObjectId();
-
     beforeEach(async() => {
       await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:bulkExportDownloadExpirationSeconds': 86400 }); // 1 day
 
@@ -129,20 +133,24 @@ describe('PageBulkExportJobCronService', () => {
     });
 
     test('should delete download expired jobs', async() => {
+      // assert
       expect(await PageBulkExportJob.find()).toHaveLength(4);
-      await pageBulkExportJobCronService?.deleteDownloadExpiredExportJobs();
 
+      // act
+      await pageBulkExportJobCronService?.deleteDownloadExpiredExportJobs();
       const jobs = await PageBulkExportJob.find();
+
+      // assert
       expect(jobs).toHaveLength(3);
       expect(jobs.map(job => job._id).sort()).toStrictEqual([jobId1, jobId3, jobId4].sort());
     });
   });
 
   describe('deleteFailedExportJobs', () => {
+    // arrange
     const jobId1 = new mongoose.Types.ObjectId();
     const jobId2 = new mongoose.Types.ObjectId();
     const jobId3 = new mongoose.Types.ObjectId();
-
     beforeEach(async() => {
       await PageBulkExportJob.insertMany([
         {
@@ -158,10 +166,14 @@ describe('PageBulkExportJobCronService', () => {
     });
 
     test('should delete failed export jobs', async() => {
+      // assert
       expect(await PageBulkExportJob.find()).toHaveLength(3);
-      await pageBulkExportJobCronService?.deleteFailedExportJobs();
 
+      // act
+      await pageBulkExportJobCronService?.deleteFailedExportJobs();
       const jobs = await PageBulkExportJob.find();
+
+      // assert
       expect(jobs).toHaveLength(1);
       expect(jobs.map(job => job._id)).toStrictEqual([jobId2]);
     });
