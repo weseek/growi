@@ -21,6 +21,7 @@ export type AggregatedPage = Pick<IPageHasId,
   },
 } & {
   tagNames: string[],
+  revisionBodyEmbedded: number[],
 };
 
 export type BulkWriteCommand = {
@@ -42,6 +43,7 @@ export type BulkWriteBody = {
   created_at: Date;
   updated_at: Date;
   body: string;
+  body_embedded?: number[];
   username?: string;
   comments?: string[];
   comment_count: number;
