@@ -20,7 +20,7 @@ export class PageBulkExportJobManager {
 
   pageBulkExportService: IPageBulkExportService;
 
-  parallelExecLimit = 5;
+  private parallelExecLimit = 5;
 
   // contains jobs being executed and it's information
   // the key is the _id of PageBulkExportJob and the value contains the stream of the job
@@ -29,7 +29,7 @@ export class PageBulkExportJobManager {
   } = {};
 
   // jobs waiting to be executed in order
-  jobQueue: HydratedDocument<PageBulkExportJobDocument>[] = [];
+  jobQueue: { job: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters }[] = [];
 
   constructor(pageBulkExportService: IPageBulkExportService) {
     this.pageBulkExportService = pageBulkExportService;
@@ -54,11 +54,11 @@ export class PageBulkExportJobManager {
    */
   addJob(job: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters): void {
     if (this.canExecuteNextJob()) {
-      this.jobsInProgress[job.id.toString()] = { stream: undefined };
+      this.jobsInProgress[job._id.toString()] = { stream: undefined };
       this.pageBulkExportService.executePageBulkExportJob(job, activityParameters);
     }
     else {
-      this.jobQueue.push(job);
+      this.jobQueue.push({ job, activityParameters });
     }
   }
 
@@ -93,8 +93,8 @@ export class PageBulkExportJobManager {
       while (this.canExecuteNextJob()) {
         const nextJob = this.jobQueue.shift();
         if (nextJob != null) {
-          this.jobsInProgress[nextJob.id.toString()] = { stream: undefined };
-          this.pageBulkExportService.executePageBulkExportJob(nextJob);
+          this.jobsInProgress[nextJob.job._id.toString()] = { stream: undefined };
+          this.pageBulkExportService.executePageBulkExportJob(nextJob.job, nextJob.activityParameters);
         }
       }
     }
