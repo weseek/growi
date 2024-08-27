@@ -70,7 +70,6 @@ export class PageBulkExportJobManager {
   updateJobStream(jobId: ObjectIdLike, stream: Readable): void {
     const jobInProgress = this.getJobInProgress(jobId);
     if (jobInProgress != null) {
-      console.log(jobInProgress.stream?.readableEnded);
       if (jobInProgress.stream != null && !jobInProgress.stream.readableEnded) {
         jobInProgress.stream.destroy(new Error('Stream not finished before next stream started'));
       }
