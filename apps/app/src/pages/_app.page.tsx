@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import React, { useEffect } from 'react';
 
+import type { Locale } from '@growi/core';
 import type { NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
 import type { AppContext, AppProps } from 'next/app';
@@ -29,7 +30,7 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 
 type GrowiAppProps = AppProps & {
   Component: NextPageWithLayout,
-  userLocale: string,
+  userLocale: Locale,
 };
 
 // register custom serializer

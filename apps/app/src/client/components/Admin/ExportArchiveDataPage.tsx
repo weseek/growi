@@ -14,7 +14,7 @@ import SelectCollectionsModal from './ExportArchiveData/SelectCollectionsModal';
 
 
 const IGNORED_COLLECTION_NAMES = [
-  'sessions', 'rlflx', 'activities', 'yjs-writings', 'transferkeys',
+  'sessions', 'rlflx', 'yjs-writings', 'transferkeys',
 ];
 
 const ExportArchiveDataPage = (): JSX.Element => {

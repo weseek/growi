@@ -752,7 +752,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns: 'crowi',
     key: 'app:pageBulkExportJobCronSchedule',
     type: ValueType.STRING,
-    default: '0 * * * *',
+    default: '*/10 * * * *', // every 10 minutes
   },
 };
 

@@ -768,6 +768,7 @@
     "receive_notifications": "Recevoir les notifications",
     "stop_notification": "Stopper les notifications",
     "footprints": "Visiteurs",
+    "login_required": "Connexion requise",
     "operation": {
       "attention": {
         "rename": "Échec du renommage du chemin des pages descendantes, ouvrir le menu du lecteur 3-points et sélectionner 'Récupération du chemin'"
