@@ -12,7 +12,7 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 const logger = loggerFactory('growi:routes:apiv3:openai:chat');
 
 type ReqBody = {
-  prompt: string,
+  userMessage: string,
 }
 
 type Req = Request<undefined, ApiV3Response, ReqBody>
@@ -24,7 +24,7 @@ export const chatHandlersFactory: ChatHandlersFactory = (crowi) => {
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
-    body('prompt').isString().withMessage('prompt must be string'),
+    body('userMessage').isString().withMessage('userMessage must be string'),
   ];
 
   return [
@@ -32,7 +32,7 @@ export const chatHandlersFactory: ChatHandlersFactory = (crowi) => {
     async(req: Req, res: ApiV3Response) => {
       try {
         const chatCompletion = await openaiService.client.chat.completions.create({
-          messages: [{ role: 'assistant', content: req.body.prompt }],
+          messages: [{ role: 'assistant', content: req.body.userMessage }],
           model: 'gpt-3.5-turbo-0125',
         });
 
