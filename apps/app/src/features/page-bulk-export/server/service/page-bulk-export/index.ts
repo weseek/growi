@@ -3,6 +3,7 @@ import path from 'path';
 import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
+import type { IUser } from '@growi/core';
 import {
   getIdForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
@@ -105,7 +106,7 @@ class PageBulkExportService {
    */
   async executePageBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters): Promise<void> {
     try {
-      const User = mongoose.model('User');
+      const User = mongoose.model<IUser>('User');
       const user = await User.findById(getIdForRef(pageBulkExportJob.user));
 
       if (pageBulkExportJob.status === PageBulkExportJobStatus.initializing) {
