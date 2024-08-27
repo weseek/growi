@@ -1,6 +1,5 @@
 import type { HydratedDocument } from 'mongoose';
 
-import { SupportedAction } from '~/interfaces/activity';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import loggerFactory from '~/utils/logger';
