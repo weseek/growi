@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
+vi.mock('./page-bulk-export', () => {
+  return {
+    pageBulkExportService: {
+      cleanUpExportJobResources: vi.fn(() => Promise.resolve()),
+    },
+  };
+});
+
 describe('PageBulkExportJobCronService', () => {
   const crowi = { event: () => {} };
   let user;
