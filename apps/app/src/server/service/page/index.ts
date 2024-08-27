@@ -4332,8 +4332,13 @@ class PageService implements IPageService {
   /*
    * Find all children by parent's path or id. Using id should be prioritized
    */
-  async findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups = null)
-      : Promise<(HydratedDocument<PageDocument> & { processData?: IPageOperationProcessData })[]> {
+  async findChildrenByParentPathOrIdAndViewer(
+      parentPathOrId: string,
+      user,
+      userGroups = null,
+      showPagesRestrictedByOwner = false,
+      showPagesRestrictedByGroup = false,
+  ): Promise<(HydratedDocument<PageDocument> & { processData?: IPageOperationProcessData })[]> {
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
     let queryBuilder: PageQueryBuilder;
     if (hasSlash(parentPathOrId)) {
@@ -4346,7 +4351,7 @@ class PageService implements IPageService {
       // Use $eq for user-controlled sources. see: https://codeql.github.com/codeql-query-help/javascript/js-sql-injection/#recommendation
       queryBuilder = new PageQueryBuilder(Page.find({ parent: { $eq: parentId } } as any), true); // TODO: improve type
     }
-    await queryBuilder.addViewerCondition(user, userGroups);
+    await queryBuilder.addViewerCondition(user, userGroups, undefined, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
     const pages: HydratedDocument<PageDocument>[] = await queryBuilder
       .addConditionToSortPagesByAscPath()

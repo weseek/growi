@@ -646,7 +646,11 @@
     "bulk_export_download_expired": "下载期限已过",
     "bulk_export_job_expired": "由于导出时间太长，处理被中断",
     "duplicate_bulk_export_job_error": "正在导出同一页面及其子页面",
-    "bulk_export_only_available_for": "仅适用于 AWS 或 GCP"
+    "bulk_export_only_available_for": "仅适用于 AWS 或 GCP",
+    "export_in_progress": "导出正在进行中",
+    "export_in_progress_explanation": "已在进行相同格式的导出。您要重新启动以导出最新的页面内容吗？",
+    "export_cancel_warning": "正在进行的导出将被取消",
+    "restart": "重新开始"
   },
   "message": {
     "successfully_connected": "连接成功！",

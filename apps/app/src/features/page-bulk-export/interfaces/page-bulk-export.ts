@@ -36,6 +36,7 @@ export interface IPageBulkExportJob {
   completedAt?: Date, // the date at which job was completed
   attachment?: Ref<IAttachment>,
   status: PageBulkExportJobStatus,
+  revisionListHash?: string, // Hash created from the list of revision IDs. Used to detect existing duplicate uploads.
 }
 
 export interface IPageBulkExportJobHasId extends IPageBulkExportJob, HasObjectId {}

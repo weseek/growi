@@ -2,7 +2,7 @@ import type { Readable } from 'stream';
 
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
-import { BulkExportJobExpiredError } from './errors';
+import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors';
 
 /**
  * Used to keep track of streams currently being executed, and enable destroying them
@@ -22,10 +22,15 @@ export class PageBulkExportJobStreamManager {
     delete this.jobStreams[jobId.toString()];
   }
 
-  destroyJobStream(jobId: ObjectIdLike): void {
+  destroyJobStream(jobId: ObjectIdLike, restarted = false): void {
     const stream = this.jobStreams[jobId.toString()];
     if (stream != null) {
-      stream.destroy(new BulkExportJobExpiredError());
+      if (restarted) {
+        stream.destroy(new BulkExportJobRestartedError());
+      }
+      else {
+        stream.destroy(new BulkExportJobExpiredError());
+      }
     }
     this.removeJobStream(jobId);
   }
