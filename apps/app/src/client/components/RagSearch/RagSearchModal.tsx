@@ -34,7 +34,8 @@ const RagSearchModal = (): JSX.Element => {
     <Modal size="lg" isOpen={ragSearchModalData?.isOpened ?? false} toggle={closeRagSearchModal} data-testid="search-modal">
       <ModalBody>
         <ModalHeader tag="h4" className="mb-3 p-0">
-          Chat
+          <span className="material-symbols-outlined me-2 text-primary">psychology</span>
+          GROWI Assistant
         </ModalHeader>
 
         <p>
@@ -45,7 +46,7 @@ const RagSearchModal = (): JSX.Element => {
           <input
             type="text"
             className="form-control"
-            placeholder="検索結果を生成するためのメッセージを入力してください"
+            placeholder="お手伝いできることはありますか？"
             aria-label="Recipient's username"
             aria-describedby="button-addon2"
             value={userMessage}
