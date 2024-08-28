@@ -5,12 +5,11 @@ import type { OpenAI } from 'openai';
 import { openaiClient } from './client';
 
 
-const hasher = crypto.createHash('sha256');
-
 export const embed = async(input: string, username?: string): Promise<OpenAI.Embedding[]> => {
   let user;
 
   if (username != null) {
+    const hasher = crypto.createHash('sha256');
     hasher.update(username);
     user = hasher.digest('hex');
   }
