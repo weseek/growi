@@ -4,6 +4,7 @@ import path from 'path';
 import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
+import type { IUser } from '@growi/core';
 import {
   getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
@@ -126,7 +127,7 @@ class PageBulkExportService implements IPageBulkExportService {
    */
   async executePageBulkExportJob(pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters): Promise<void> {
     try {
-      const User = this.crowi.model('User');
+      const User = mongoose.model<IUser>('User');
       const user = await User.findById(getIdForRef(pageBulkExportJob.user));
 
       if (pageBulkExportJob.status === PageBulkExportJobStatus.initializing) {
