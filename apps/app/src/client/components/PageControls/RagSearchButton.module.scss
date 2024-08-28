@@ -2,11 +2,11 @@
 @use '@growi/ui/scss/atoms/btn-muted';
 @use './button-styles';
 
-.btn-rag-prompt :global {
+.btn-rag-search :global {
   @extend %btn-basis;
 }
 
 // == Colors
-.btn-rag-prompt {
+.btn-rag-search {
   @include btn-muted.colorize(bs.$success);
 }

@@ -4,17 +4,17 @@ import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
 
-type RagPromptMoldalStatus = {
+type RagSearchMoldalStatus = {
   isOpened: boolean,
 }
 
-type RagPromptUtils = {
+type RagSearchUtils = {
   open(): void
   close(): void
 }
-export const useRagPromptModal = (status?: RagPromptMoldalStatus): SWRResponse<RagPromptMoldalStatus, Error> & RagPromptUtils => {
+export const useRagSearchModal = (status?: RagSearchMoldalStatus): SWRResponse<RagSearchMoldalStatus, Error> & RagSearchUtils => {
   const initialStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<RagPromptMoldalStatus, Error>('RagPromptModal', status, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<RagSearchMoldalStatus, Error>('RagSearchModal', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,

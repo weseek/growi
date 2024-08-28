@@ -4,13 +4,13 @@ import React, { useState } from 'react';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { useRagPromptModal } from '~/stores/rag-prompt';
+import { useRagSearchModal } from '~/stores/rag-search';
 
-const RagPromptModal = (): JSX.Element => {
+const RagSearchModal = (): JSX.Element => {
   const [userMessage, setUserMessage] = useState('');
   const [assistantMessage, setAssistantMessage] = useState('');
 
-  const { data: ragPromptModalData, close: closeRagPromptModal } = useRagPromptModal();
+  const { data: ragSearchModalData, close: closeRagSearchModal } = useRagSearchModal();
 
   const onClickSubmitUserMessageHandler = async() => {
     try {
@@ -23,7 +23,7 @@ const RagPromptModal = (): JSX.Element => {
   };
 
   return (
-    <Modal size="lg" isOpen={ragPromptModalData?.isOpened ?? false} toggle={closeRagPromptModal} data-testid="search-modal">
+    <Modal size="lg" isOpen={ragSearchModalData?.isOpened ?? false} toggle={closeRagSearchModal} data-testid="search-modal">
       <ModalBody>
         <ModalHeader tag="h4" className="mb-3 p-0">
           Chat
@@ -56,4 +56,4 @@ const RagPromptModal = (): JSX.Element => {
   );
 };
 
-export default RagPromptModal;
+export default RagSearchModal;
