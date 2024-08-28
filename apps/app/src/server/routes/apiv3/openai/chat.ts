@@ -4,7 +4,7 @@ import { body } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
 import { openaiClient } from '~/server/service/openai';
-import { getOrCreateSearchAssistant } from '~/server/service/openai/assistant';
+import { getOrCreateChatAssistant } from '~/server/service/openai/assistant';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -40,7 +40,7 @@ export const chatHandlersFactory: ChatHandlersFactory = (crowi) => {
       }
 
       try {
-        await getOrCreateSearchAssistant();
+        const assistant = await getOrCreateChatAssistant();
 
         const threadId = req.body.threadId;
         const thread = threadId == null
