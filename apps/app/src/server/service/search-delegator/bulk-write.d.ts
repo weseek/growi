@@ -15,7 +15,7 @@ export type AggregatedPage = Pick<IPageHasId,
   bookmarksCount: number,
   likeCount: number,
   seenUsersCount: number,
-  creator: {
+  creator?: {
     username: string,
     email: string,
   },

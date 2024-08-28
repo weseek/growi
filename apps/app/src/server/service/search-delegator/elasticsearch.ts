@@ -486,7 +486,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       async transform(chunk: AggregatedPage[], encoding, callback) {
         // append embedding
         for await (const doc of chunk) {
-          doc.revisionBodyEmbedded = (await embed(doc.creator.username, doc.revision.body))[0].embedding;
+          doc.revisionBodyEmbedded = (await embed(doc.revision.body, doc.creator?.username))[0].embedding;
         }
 
         this.push(chunk);
