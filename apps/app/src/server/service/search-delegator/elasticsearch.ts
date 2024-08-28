@@ -20,7 +20,7 @@ import type { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
 import { configManager } from '../config-manager';
 import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
-import { embed } from '../openai';
+import { embed, fileUpload } from '../openai';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
@@ -493,6 +493,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     });
 
+    const appendFileUploadedStream = new Transform({
+      objectMode: true,
+      async transform(chunk, encoding, callback) {
+        await fileUpload(chunk);
+        this.push(chunk);
+        callback();
+      },
+    });
+
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
@@ -547,6 +556,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       .pipe(batchStream)
       .pipe(appendTagNamesStream)
       .pipe(appendEmbeddingStream)
+      .pipe(appendFileUploadedStream)
       .pipe(writeStream);
 
     return streamToPromise(writeStream);
