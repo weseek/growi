@@ -53,10 +53,13 @@ export const chatHandlersFactory: ChatHandlersFactory = (crowi) => {
           })
           : await openaiClient.beta.threads.retrieve(threadId);
 
-        const run = await openaiClient.beta.threads.runs.createAndPoll(thread.id, { assistant_id: assistantId });
+        const run = await openaiClient.beta.threads.runs.createAndPoll(thread.id, { assistant_id: assistant.id });
 
         if (run.status === 'completed') {
-          const messages = await openaiClient.beta.threads.messages.list(run.thread_id);
+          const messages = await openaiClient.beta.threads.messages.list(run.thread_id, {
+            limit: 1,
+            order: 'desc',
+          });
           return res.apiv3({ messages });
         }
 
