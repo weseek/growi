@@ -84,7 +84,6 @@ describe('PageBulkExportJobCronService', () => {
     });
 
     test('should delete expired jobs', async() => {
-      // assert
       expect(await PageBulkExportJob.find()).toHaveLength(4);
 
       // act
@@ -133,7 +132,6 @@ describe('PageBulkExportJobCronService', () => {
     });
 
     test('should delete download expired jobs', async() => {
-      // assert
       expect(await PageBulkExportJob.find()).toHaveLength(4);
 
       // act
@@ -166,7 +164,6 @@ describe('PageBulkExportJobCronService', () => {
     });
 
     test('should delete failed export jobs', async() => {
-      // assert
       expect(await PageBulkExportJob.find()).toHaveLength(3);
 
       // act
