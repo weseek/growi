@@ -35,7 +35,7 @@ const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.As
 
 const getOrCreateAssistant = async(type: AssistantType): Promise<OpenAI.Beta.Assistant> => {
   const appSiteUrl = configManager.getConfig('crowi', 'app:siteUrl');
-  const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}`;
+  const assistantName = `GROWI ${type} Assistant for ${appSiteUrl} ${process.env.OPENAI_ASSISTANT_NAME_SUFFIX}`;
 
   const assistantOnRemote = await findAssistantByName(assistantName);
   if (assistantOnRemote != null) {
