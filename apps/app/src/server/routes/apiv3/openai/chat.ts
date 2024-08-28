@@ -33,10 +33,9 @@ export const chatHandlersFactory: ChatHandlersFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
-      const assistantId = process.env.OPENAI_ASSISTANT_ID;
       const vectorStoreId = process.env.OPENAI_VECTOR_STORE_ID;
-      if (assistantId == null || vectorStoreId == null) {
-        return res.apiv3Err('OPENAI_ASSISTANT_ID or OPENAI_VECTOR_STORE_ID is not setup', 503);
+      if (vectorStoreId == null) {
+        return res.apiv3Err('OPENAI_VECTOR_STORE_ID is not setup', 503);
       }
 
       try {
