@@ -854,7 +854,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       script_score: {
         query: { ...query.body.query },
         script: {
-          source: "cosineSimilarity(params.query_vector, doc['body_embedded']) + 1.0",
+          source: "cosineSimilarity(params.query_vector, 'body_embedded') + 1.0",
           params: { query_vector: queryVector },
         },
       },
@@ -893,20 +893,20 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const order = option?.order ?? null;
 
     const query = this.createSearchQuery();
-    this.appendCriteriaForQueryString(query, terms);
 
-    await this.filterPagesByViewer(query, user, userGroups);
+    if (option?.vector) {
+      await this.filterPagesByViewer(query, user, userGroups);
+      await this.appendVectorScore(query, queryString, user.username);
+    }
+    else {
+      this.appendCriteriaForQueryString(query, terms);
+      await this.filterPagesByViewer(query, user, userGroups);
+      await this.appendFunctionScore(query, queryString);
+    }
 
     this.appendResultSize(query, from, size);
 
     this.appendSortOrder(query, sort, order);
-
-    if (option?.vector) {
-      await this.appendVectorScore(query, queryString, user.username);
-    }
-    else {
-      await this.appendFunctionScore(query, queryString);
-    }
 
     this.appendHighlight(query);
 
