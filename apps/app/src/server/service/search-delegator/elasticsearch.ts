@@ -847,6 +847,20 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     };
   }
 
+  async appendVectorScore(query, queryString: string, username: string): Promise<void> {
+    const queryVector = (await openaiService.embed(username, queryString))[0].embedding;
+
+    query.body.query = {
+      script_score: {
+        query: { ...query.body.query },
+        script: {
+          source: "cosineSimilarity(params.query_vector, doc['body_embedded']) + 1.0",
+          params: { query_vector: queryVector },
+        },
+      },
+    };
+  }
+
   appendHighlight(query) {
     query.body.highlight = {
       fragmenter: 'simple',
@@ -877,6 +891,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const size = option?.limit ?? null;
     const sort = option?.sort ?? null;
     const order = option?.order ?? null;
+
     const query = this.createSearchQuery();
     this.appendCriteriaForQueryString(query, terms);
 
@@ -885,7 +900,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     this.appendResultSize(query, from, size);
 
     this.appendSortOrder(query, sort, order);
-    await this.appendFunctionScore(query, queryString);
+
+    if (option?.vector) {
+      await this.appendVectorScore(query, queryString, user.username);
+    }
+    else {
+      await this.appendFunctionScore(query, queryString);
+    }
 
     this.appendHighlight(query);
 
