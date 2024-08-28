@@ -20,7 +20,8 @@ import type { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
 import { configManager } from '../config-manager';
 import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
-import { embed, fileUpload } from '../openai';
+import { embed, openaiClient, fileUpload } from '../openai';
+import { getOrCreateSearchAssistant } from '../openai/assistant';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
@@ -858,6 +859,28 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async appendVectorScore(query, queryString: string, username: string): Promise<void> {
+
+    const searchAssistant = await getOrCreateSearchAssistant();
+
+    // generate keywords for vector
+    const run = await openaiClient.beta.threads.createAndRunPoll({
+      assistant_id: searchAssistant.id,
+      thread: {
+        messages: [
+          { role: 'user', content: 'globalLang: "en_US", userLang: "ja_JP", user_input: "武井さんがジョインしたのはいつですか？"' },
+          { role: 'assistant', content: '武井さん 武井 takei yuki ジョイン join 入社 加入 雇用開始 年月日 start date join employee' },
+          { role: 'user', content: `globalLang: "en_US", userLang: "ja_JP", user_input: "${queryString}"` },
+        ],
+      },
+    });
+    const messages = await openaiClient.beta.threads.messages.list(run.thread_id, {
+      limit: 1,
+    });
+    const content = messages.data[0].content[0];
+    const keywordsForVector = content.type === 'text' ? content.text.value : queryString;
+
+    logger.debug('keywordsFor: ', keywordsForVector);
+
     const queryVector = (await embed(username, queryString))[0].embedding;
 
     query.body.query = {
