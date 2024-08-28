@@ -39,7 +39,9 @@ const filterXss = new FilterXSS(filterXssOptions);
 
 const normalizeQueryString = (_queryString: string): string => {
   let queryString = _queryString.trim();
-  queryString = queryString.replace(/\s+/g, ' ');
+  queryString = queryString
+    .replace(/\s+@ai\s+/g, ' ') // omit '@ai' keyword
+    .replace(/\s+/g, ' ');
 
   return queryString;
 };
@@ -298,6 +300,10 @@ class SearchService implements SearchQueryParser, SearchResolver {
     catch (err) {
       logger.error('Error occurred while parseSearchQuery', err);
       throw err;
+    }
+
+    if (keyword.includes('@ai')) {
+      searchOpts.vector = true;
     }
 
     let delegator: SearchDelegator;
