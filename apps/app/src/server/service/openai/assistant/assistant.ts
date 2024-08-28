@@ -3,6 +3,15 @@ import type OpenAI from 'openai';
 import { configManager } from '../../config-manager';
 import { openaiClient } from '../client';
 
+
+const AssistantType = {
+  SEARCH: 'Search',
+  CHAT: 'Chat',
+} as const;
+
+type AssistantType = typeof AssistantType[keyof typeof AssistantType];
+
+
 const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.Assistant | undefined> => {
 
   // declare finder
@@ -24,14 +33,12 @@ const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.As
   return findAssistant(storedAssistants);
 };
 
-const getOrCreateAssistant = async(): Promise<OpenAI.Beta.Assistant> => {
-
+const getOrCreateAssistant = async(type: AssistantType): Promise<OpenAI.Beta.Assistant> => {
   const appSiteUrl = configManager.getConfig('crowi', 'app:siteUrl');
-  const assistantName = `GROWI OpenAI Assistant for ${appSiteUrl}`;
+  const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}`;
 
   const assistantOnRemote = await findAssistantByName(assistantName);
   if (assistantOnRemote != null) {
-    // store
     return assistantOnRemote;
   }
 
@@ -43,4 +50,31 @@ const getOrCreateAssistant = async(): Promise<OpenAI.Beta.Assistant> => {
   return newAssistant;
 };
 
-export const defaultAssistant = getOrCreateAssistant();
+let searchAssistant: OpenAI.Beta.Assistant | undefined;
+export const getOrCreateSearchAssistant = async(): Promise<OpenAI.Beta.Assistant> => {
+  if (searchAssistant != null) {
+    return searchAssistant;
+  }
+
+  searchAssistant = await getOrCreateAssistant(AssistantType.SEARCH);
+  openaiClient.beta.assistants.update(searchAssistant.id, {
+    instructions: process.env.OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS,
+  });
+
+  return searchAssistant;
+};
+
+
+let chatAssistant: OpenAI.Beta.Assistant | undefined;
+export const getOrCreateChatAssistant = async(): Promise<OpenAI.Beta.Assistant> => {
+  if (chatAssistant != null) {
+    return chatAssistant;
+  }
+
+  chatAssistant = await getOrCreateAssistant(AssistantType.SEARCH);
+  openaiClient.beta.assistants.update(chatAssistant.id, {
+    instructions: process.env.OPENAI_CHAT_ASSISTANT_INSTRUCTIONS,
+  });
+
+  return chatAssistant;
+};
