@@ -71,7 +71,7 @@ export const getOrCreateChatAssistant = async(): Promise<OpenAI.Beta.Assistant> 
     return chatAssistant;
   }
 
-  chatAssistant = await getOrCreateAssistant(AssistantType.SEARCH);
+  chatAssistant = await getOrCreateAssistant(AssistantType.CHAT);
   openaiClient.beta.assistants.update(chatAssistant.id, {
     instructions: process.env.OPENAI_CHAT_ASSISTANT_INSTRUCTIONS,
   });
