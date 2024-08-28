@@ -20,6 +20,10 @@ export const fileUpload = async(pages: PageToUpload[]): Promise<void> => {
       return file;
     });
 
+  if (filesPromise.length === 0) {
+    return;
+  }
+
   const files = await Promise.all(filesPromise);
 
   await openaiClient.beta.vectorStores.fileBatches.uploadAndPoll(vectorStoreId, { files });
