@@ -858,7 +858,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     };
   }
 
-  async appendVectorScore(query, queryString: string, username: string): Promise<void> {
+  async appendVectorScore(query, queryString: string, username?: string): Promise<void> {
 
     const searchAssistant = await getOrCreateSearchAssistant();
 
@@ -881,7 +881,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     logger.debug('keywordsFor: ', keywordsForVector);
 
-    const queryVector = (await embed(username, queryString))[0].embedding;
+    const queryVector = (await embed(queryString, username))[0].embedding;
 
     query.body.query = {
       script_score: {
@@ -929,7 +929,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     if (option?.vector) {
       await this.filterPagesByViewer(query, user, userGroups);
-      await this.appendVectorScore(query, queryString, user.username);
+      await this.appendVectorScore(query, queryString, user?.username);
     }
     else {
       this.appendCriteriaForQueryString(query, terms);
