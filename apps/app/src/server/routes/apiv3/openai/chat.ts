@@ -3,7 +3,7 @@ import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
-import { openaiService } from '~/server/service/openai';
+import { openaiClient } from '~/server/service/openai';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -31,9 +31,9 @@ export const chatHandlersFactory: ChatHandlersFactory = (crowi) => {
     accessTokenParser, loginRequiredStrictly, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       try {
-        const chatCompletion = await openaiService.client.chat.completions.create({
+        const chatCompletion = await openaiClient.chat.completions.create({
           messages: [{ role: 'assistant', content: req.body.userMessage }],
-          model: 'gpt-3.5-turbo-0125',
+          model: 'gpt-4o',
         });
 
         return res.apiv3({ assistantMessage: chatCompletion.choices[0].message.content });

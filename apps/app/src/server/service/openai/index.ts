@@ -1,1 +1,2 @@
-export * from './openai';
+export * from './embeddings';
+export * from './client';

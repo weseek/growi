@@ -20,7 +20,7 @@ import type { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
 import { configManager } from '../config-manager';
 import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
-import { openaiService } from '../openai';
+import { embed } from '../openai';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
@@ -485,7 +485,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       async transform(chunk: AggregatedPage[], encoding, callback) {
         // append embedding
         for await (const doc of chunk) {
-          doc.revisionBodyEmbedded = (await openaiService.embed(doc.creator.username, doc.revision.body))[0].embedding;
+          doc.revisionBodyEmbedded = (await embed(doc.creator.username, doc.revision.body))[0].embedding;
         }
 
         this.push(chunk);
@@ -848,7 +848,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async appendVectorScore(query, queryString: string, username: string): Promise<void> {
-    const queryVector = (await openaiService.embed(username, queryString))[0].embedding;
+    const queryVector = (await embed(username, queryString))[0].embedding;
 
     query.body.query = {
       script_score: {
