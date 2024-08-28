@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { FilterXSS } from 'xss';
 
 import { CommentEvent, commentEvent } from '~/features/comment/server';
+import { isIncludeAiMenthion, removeAiMenthion } from '~/features/search/utils/ai';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import type { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
@@ -39,8 +40,7 @@ const filterXss = new FilterXSS(filterXssOptions);
 
 const normalizeQueryString = (_queryString: string): string => {
   let queryString = _queryString.trim();
-  queryString = queryString
-    .replace(/\s+@ai\s+/g, ' ') // omit '@ai' keyword
+  queryString = removeAiMenthion(queryString)
     .replace(/\s+/g, ' ');
 
   return queryString;
@@ -302,7 +302,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
       throw err;
     }
 
-    if (keyword.includes('@ai')) {
+    if (isIncludeAiMenthion(keyword)) {
       searchOpts.vector = true;
     }
 

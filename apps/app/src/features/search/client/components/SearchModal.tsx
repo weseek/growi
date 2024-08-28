@@ -7,6 +7,7 @@ import Downshift, { type DownshiftState, type StateChangeOptions } from 'downshi
 import { useRouter } from 'next/router';
 import { Modal, ModalBody } from 'reactstrap';
 
+import { isIncludeAiMenthion, removeAiMenthion } from '../../utils/ai';
 import type { DownshiftItem } from '../interfaces/downshift';
 import { useSearchModal } from '../stores/search';
 
@@ -65,8 +66,10 @@ const SearchModal = (): JSX.Element => {
   }, [searchModalData?.isOpened, searchModalData?.searchKeyword]);
 
   useEffect(() => {
-    setMenthionedToAi(searchKeyword.includes('@ai'));
+    setMenthionedToAi(isIncludeAiMenthion(searchKeyword));
   }, [searchKeyword]);
+
+  const searchKeywordWithoutAi = removeAiMenthion(searchKeyword);
 
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal} data-testid="search-modal">
@@ -107,12 +110,12 @@ const SearchModal = (): JSX.Element => {
                 <div className="border-top mt-2 mb-2" />
                 <SearchMethodMenuItem
                   activeIndex={highlightedIndex}
-                  searchKeyword={searchKeyword}
+                  searchKeyword={searchKeywordWithoutAi}
                   getItemProps={getItemProps}
                 />
                 <SearchResultMenuItem
                   activeIndex={highlightedIndex}
-                  searchKeyword={searchKeyword}
+                  searchKeyword={searchKeywordWithoutAi}
                   getItemProps={getItemProps}
                 />
                 <div className="border-top mt-2 mb-2" />
