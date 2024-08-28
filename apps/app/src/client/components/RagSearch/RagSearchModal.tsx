@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
@@ -8,14 +7,23 @@ import { useRagSearchModal } from '~/stores/rag-search';
 
 const RagSearchModal = (): JSX.Element => {
   const [userMessage, setUserMessage] = useState('');
-  const [assistantMessage, setAssistantMessage] = useState('');
+  const [assistantMessage, setAssistantMessage] = useState<Array<string>>([]);
 
   const { data: ragSearchModalData, close: closeRagSearchModal } = useRagSearchModal();
 
   const onClickSubmitUserMessageHandler = async() => {
     try {
       const res = await apiv3Post('/openai/chat', { userMessage });
-      setAssistantMessage(res.data.assistantMessage);
+      const assistantMessageData = res.data.messages;
+
+      const messages: string[] = [];
+      for (const message of assistantMessageData.data.reverse()) {
+        messages.push(`${message.role} > ${message.content[0].text.value}`);
+      }
+
+      setAssistantMessage(messages);
+      setUserMessage('');
+
     }
     catch (err) {
       //
@@ -40,6 +48,7 @@ const RagSearchModal = (): JSX.Element => {
             placeholder="検索結果を生成するためのメッセージを入力してください"
             aria-label="Recipient's username"
             aria-describedby="button-addon2"
+            value={userMessage}
             onChange={e => setUserMessage(e.target.value)}
           />
           <button
