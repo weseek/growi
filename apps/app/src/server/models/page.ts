@@ -787,6 +787,14 @@ export async function pushRevision(pageData, newRevision, user) {
   pageData.lastUpdateUser = user?._id ?? user;
   pageData.updatedAt = Date.now();
 
+  // Set the _id of grantedGroups to revision._id
+  if (pageData.grantedGroups.length > 0) {
+    pageData.grantedGroups = pageData.grantedGroups.map(group => ({
+      ...group,
+      _id: newRevision._id,
+    }));
+  }
+
   return pageData.save();
 }
 

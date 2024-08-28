@@ -268,11 +268,11 @@ export const getPageSchema = (crowi) => {
 
     this.grant = grant || GRANT_PUBLIC;
 
-    if (grant === GRANT_OWNER) {
+    if (Number(grant) === GRANT_OWNER) {
       this.grantedUsers.push(user?._id ?? user);
     }
 
-    if (grant === GRANT_USER_GROUP) {
+    if (Number(grant) === GRANT_USER_GROUP) {
       this.grantedGroups = grantUserGroupIds;
     }
   };
