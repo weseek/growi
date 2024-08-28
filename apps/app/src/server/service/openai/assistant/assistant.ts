@@ -59,6 +59,7 @@ export const getOrCreateSearchAssistant = async(): Promise<OpenAI.Beta.Assistant
   searchAssistant = await getOrCreateAssistant(AssistantType.SEARCH);
   openaiClient.beta.assistants.update(searchAssistant.id, {
     instructions: process.env.OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS,
+    tools: [{ type: 'file_search' }],
   });
 
   return searchAssistant;
@@ -74,6 +75,7 @@ export const getOrCreateChatAssistant = async(): Promise<OpenAI.Beta.Assistant> 
   chatAssistant = await getOrCreateAssistant(AssistantType.CHAT);
   openaiClient.beta.assistants.update(chatAssistant.id, {
     instructions: process.env.OPENAI_CHAT_ASSISTANT_INSTRUCTIONS,
+    tools: [{ type: 'file_search' }],
   });
 
   return chatAssistant;
