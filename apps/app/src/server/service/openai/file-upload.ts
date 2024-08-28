@@ -13,10 +13,12 @@ export const fileUpload = async(pages: PageToUpload[]): Promise<void> => {
     return;
   }
 
-  const filesPromise = pages.map(async(page) => {
-    const file = await toFile(Readable.from(page.revision.body), `${page._id}.md`);
-    return file;
-  });
+  const filesPromise = pages
+    .filter(pages => pages.revision.body.length > 0)
+    .map(async(page) => {
+      const file = await toFile(Readable.from(page.revision.body), `${page._id}.md`);
+      return file;
+    });
 
   const files = await Promise.all(filesPromise);
 
