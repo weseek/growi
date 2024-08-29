@@ -1,3 +1,5 @@
+import assert from 'assert';
+
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
@@ -63,15 +65,15 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       res.setHeader('X-Accel-Buffering', 'no');
 
       try {
-        for await (const data of stream) {
-          res.write(data);
-        }
+        res.send(stream.toReadableStream());
       }
       catch (e) {
         return res.status(500).send({ message: 'Internal server error', error: e });
       }
+      finally {
+        res.end();
+      }
 
-      res.end();
     },
   ];
 };

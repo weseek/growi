@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 
@@ -27,29 +27,60 @@ const RagSearchModal = (): JSX.Element => {
 
   const { data: ragSearchModalData, close: closeRagSearchModal } = useRagSearchModal();
 
+  const isOpened = ragSearchModalData?.isOpened ?? false;
+
+  useEffect(() => {
+    // do nothing when modal is not opened
+    if (!isOpened) {
+      return;
+    }
+
+    // do nothing when threadId is already set
+    if (threadId != null) {
+      return;
+    }
+
+    const createThread = async() => {
+      // create thread
+      try {
+        const res = await apiv3Post('/openai/thread', { threadId });
+        const thread = res.data.thread;
+
+        setThreadId(thread.id);
+      }
+      catch (err) {
+        logger.error(err.toString());
+      }
+    };
+
+    createThread();
+  }, [isOpened, threadId]);
+
   const onClickSubmitUserMessageHandler = async() => {
     const newUserMessage = { id: messages.length.toString(), content: input, isUserMessage: true };
     setMessages(msgs => [...msgs, newUserMessage]);
 
     setInput('');
 
+    // post message
     try {
-      const res = await apiv3Post('/openai/chat', { userMessage: input, threadId });
-      const assistantMessageData = res.data.messages;
+      const res = await apiv3Post('/openai/message', { userMessage: input, threadId });
 
-      if (assistantMessageData.data.length > 0) {
-        const newMessages: Message[] = assistantMessageData.data.reverse()
-          .map((message: any) => {
-            return {
-              id: message.id,
-              content: message.content[0].text.value,
-            };
-          });
-
-        setMessages(msgs => [...msgs, ...newMessages]);
-        setThreadId(assistantMessageData.data[0].threadId);
+      if (res.data) {
+        console.log(res.data);
       }
+      // if (res.data) {
+      //   const newMessages: Message[] = assistantMessageData.data.reverse()
+      //     .map((message: any) => {
+      //       return {
+      //         id: message.id,
+      //         content: message.content[0].text.value,
+      //       };
+      //     });
 
+      //   setMessages(msgs => [...msgs, ...newMessages]);
+      //   setThreadId(assistantMessageData.data[0].threadId);
+      // }
     }
     catch (err) {
       logger.error(err.toString());
@@ -57,7 +88,7 @@ const RagSearchModal = (): JSX.Element => {
   };
 
   return (
-    <Modal size="lg" isOpen={ragSearchModalData?.isOpened ?? false} toggle={closeRagSearchModal} data-testid="search-modal">
+    <Modal size="lg" isOpen={isOpened} toggle={closeRagSearchModal} data-testid="search-modal">
       <ModalBody>
         <ModalHeader tag="h4" className="mb-3 p-0">
           <span className="material-symbols-outlined me-2 text-primary">psychology</span>
