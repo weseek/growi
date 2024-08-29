@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 type Props = {
-  children?: ReactNode,
+  children?: string,
   right?: boolean,
 }
 
@@ -11,7 +11,9 @@ export const MessageCard = (props: Props): JSX.Element => {
   return (
     <div className={`card d-inline-flex ${right ? 'align-self-end' : 'align-self-start'}`} style={{ maxWidth: '75%' }}>
       <div className="card-body">
-        {children}
+        { children != null && children.length > 0 && (
+          <ReactMarkdown>{children}</ReactMarkdown>
+        ) }
       </div>
     </div>
   );
