@@ -6,6 +6,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
+import type { IPageBulkExportJob } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { PageBulkExportFormat } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { useCurrentPagePath } from '~/stores/page';
 
@@ -15,7 +16,8 @@ const PageBulkExportSelectModal = (): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   const [isRestartModalOpened, setIsRestartModalOpened] = useState(false);
-  const [formatMemoForRestart, setFormatMemoForRestart] = useState<PageBulkExportFormat | null>(null);
+  const [formatMemoForRestart, setFormatMemoForRestart] = useState<PageBulkExportFormat | undefined>(undefined);
+  const [duplicateJob, setDuplicateJob] = useState<IPageBulkExportJob | undefined>(undefined);
 
   const startBulkExport = async(format: PageBulkExportFormat) => {
     try {
@@ -26,6 +28,7 @@ const PageBulkExportSelectModal = (): JSX.Element => {
     catch (e) {
       const errorCode = e?.[0].code ?? 'page_export.failed_to_export';
       if (errorCode === 'page_export.duplicate_bulk_export_job_error') {
+        setDuplicateJob(e[0].args.duplicateJob);
         setIsRestartModalOpened(true);
       }
       else {

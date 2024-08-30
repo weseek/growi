@@ -94,7 +94,7 @@ class PageBulkExportService {
         this.restartBulkExportJob(duplicatePageBulkExportJobInProgress);
         return;
       }
-      throw new DuplicateBulkExportJobError();
+      throw new DuplicateBulkExportJobError(duplicatePageBulkExportJobInProgress);
     }
     const pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument> = await PageBulkExportJob.create({
       user: currentUser, page: basePage, format, status: PageBulkExportJobStatus.initializing,
