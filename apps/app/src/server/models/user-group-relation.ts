@@ -161,7 +161,7 @@ schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<
 schema.statics.countByGroupIdsAndUser = async function(userGroupIds: ObjectIdLike[], userData): Promise<number> {
   const query = {
     relatedGroup: { $in: userGroupIds },
-    relatedUser: userData.id,
+    relatedUser: userData._id,
   };
 
   return this.count(query);
