@@ -49,7 +49,9 @@ module.exports = (crowi: Crowi): Router => {
       logger.error(err);
       if (err instanceof DuplicateBulkExportJobError) {
         return res.apiv3Err(new ErrorV3(
-          'Duplicate bulk export job is in progress', 'page_export.duplicate_bulk_export_job_error', undefined, { duplicateJob: err.duplicateJob },
+          'Duplicate bulk export job is in progress',
+          'page_export.duplicate_bulk_export_job_error', undefined,
+          { duplicateJob: { createdAt: err.duplicateJob.createdAt } },
         ), 409);
       }
       return res.apiv3Err(new ErrorV3('Failed to start bulk export', 'page_export.failed_to_export'));

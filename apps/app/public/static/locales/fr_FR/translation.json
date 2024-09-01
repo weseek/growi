@@ -638,8 +638,10 @@
     "bulk_export_job_expired": "Le traitement a été interrompu car le temps d'exportation était trop long",
     "export_in_progress": "Exportation en cours",
     "export_in_progress_explanation": "L'exportation avec le même format est déjà en cours. Souhaitez-vous redémarrer pour exporter le dernier contenu de la page ?",
-    "export_cancel_warning": "L'export en cours sera annulé",
-    "restart": "Redémarrage"
+    "export_cancel_warning": "Les exportations suivantes en cours seront annulées",
+    "restart": "Redémarrage",
+    "format": "Format",
+    "started_on": "Commencé le"
   },
   "message": {
     "successfully_connected": "Connecté!",
