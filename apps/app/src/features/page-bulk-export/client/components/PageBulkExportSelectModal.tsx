@@ -23,9 +23,6 @@ const PageBulkExportSelectModal = (): JSX.Element => {
       setFormatMemoForRestart(format);
       await apiv3Post('/page-bulk-export', { path: currentPagePath, format });
       toastSuccess(t('page_export.bulk_export_started'));
-
-      // setDuplicateJob({ createdAt: new Date(), format } as any);
-      // setIsRestartModalOpened(true);
     }
     catch (e) {
       const errorCode = e?.[0].code ?? 'page_export.failed_to_export';
