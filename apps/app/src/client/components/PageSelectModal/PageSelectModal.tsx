@@ -23,8 +23,6 @@ import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
-import 'simplebar-react/dist/simplebar.min.css';
-
 
 export const PageSelectModal: FC = () => {
   const {
