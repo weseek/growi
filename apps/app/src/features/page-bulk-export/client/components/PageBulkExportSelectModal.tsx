@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
@@ -15,7 +16,8 @@ const PageBulkExportSelectModal = (): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   const [isRestartModalOpened, setIsRestartModalOpened] = useState(false);
-  const [formatMemoForRestart, setFormatMemoForRestart] = useState<PageBulkExportFormat | null>(null);
+  const [formatMemoForRestart, setFormatMemoForRestart] = useState<PageBulkExportFormat | undefined>(undefined);
+  const [duplicateJobInfo, setDuplicateJobInfo] = useState<{createdAt: string} | undefined>(undefined);
 
   const startBulkExport = async(format: PageBulkExportFormat) => {
     try {
@@ -26,6 +28,7 @@ const PageBulkExportSelectModal = (): JSX.Element => {
     catch (e) {
       const errorCode = e?.[0].code ?? 'page_export.failed_to_export';
       if (errorCode === 'page_export.duplicate_bulk_export_job_error') {
+        setDuplicateJobInfo(e[0].args.duplicateJob);
         setIsRestartModalOpened(true);
       }
       else {
@@ -79,11 +82,21 @@ const PageBulkExportSelectModal = (): JSX.Element => {
         </ModalHeader>
         <ModalBody>
           {t('page_export.export_in_progress_explanation')}
-          <div className="my-1 text-danger">
-            <small className="text-danger">
-              {t('page_export.export_cancel_warning')}
-            </small>
+          <div className="text-danger">
+            {t('page_export.export_cancel_warning')}:
           </div>
+          { duplicateJobInfo && (
+            <div className="my-1">
+              <ul>
+                { formatMemoForRestart && (
+                  <li>
+                    {t('page_export.format')}: {formatMemoForRestart === PageBulkExportFormat.md ? t('page_export.markdown') : 'PDF'}
+                  </li>
+                )}
+                <li>{t('page_export.started_on')}: {format(new Date(duplicateJobInfo.createdAt), 'MM/dd HH:mm')}</li>
+              </ul>
+            </div>
+          )}
           <div className="d-flex justify-content-center mt-3">
             <button className="btn btn-primary" type="button" onClick={() => restartBulkExport()}>
               {t('page_export.restart')}

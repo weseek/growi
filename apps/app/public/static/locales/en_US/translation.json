@@ -645,8 +645,10 @@
     "bulk_export_only_available_for": "Only available for AWS or GCP",
     "export_in_progress": "Export in progress",
     "export_in_progress_explanation": "Export with the same format is already in progress. Would you like to restart to export the latest page contents?",
-    "export_cancel_warning": "The export in progress will be canceled",
-    "restart": "Restart"
+    "export_cancel_warning": "The following export in progress will be canceled",
+    "restart": "Restart",
+    "format": "Format",
+    "started_on": "Started on"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",

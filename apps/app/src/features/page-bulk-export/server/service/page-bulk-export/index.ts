@@ -100,7 +100,7 @@ class PageBulkExportService implements IPageBulkExportService {
         this.restartBulkExportJob(duplicatePageBulkExportJobInProgress, activityParameters);
         return;
       }
-      throw new DuplicateBulkExportJobError();
+      throw new DuplicateBulkExportJobError(duplicatePageBulkExportJobInProgress);
     }
     const pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument> = await PageBulkExportJob.create({
       user: currentUser, page: basePage, format, status: PageBulkExportJobStatus.initializing,

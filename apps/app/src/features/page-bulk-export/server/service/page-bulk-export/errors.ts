@@ -1,7 +1,14 @@
+import type { HydratedDocument } from 'mongoose';
+
+import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
+
 export class DuplicateBulkExportJobError extends Error {
 
-  constructor() {
+  duplicateJob: HydratedDocument<PageBulkExportJobDocument>;
+
+  constructor(duplicateJob: HydratedDocument<PageBulkExportJobDocument>) {
     super('Duplicate bulk export job is in progress');
+    this.duplicateJob = duplicateJob;
   }
 
 }
