@@ -21,7 +21,9 @@ export interface IPageService {
   getEventEmitter: () => EventEmitter,
   deleteMultipleCompletely: (pages: ObjectIdLike[], user: IUser | undefined) => Promise<void>,
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>,
-  findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>,
+  findChildrenByParentPathOrIdAndViewer(
+    parentPathOrId: string, user, userGroups?, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
+  ): Promise<PageDocument[]>,
   shortBodiesMapByPageIds(pageIds?: Types.ObjectId[], user?): Promise<Record<string, string | null>>,
   constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | Omit<IPageInfoForEntity, 'bookmarkCount'>,
   normalizeAllPublicPages(): Promise<void>,

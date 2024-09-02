@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity } from '@growi/core';
+import { isIPageInfo } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
+  IDataWithMeta, IPageInfo, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
   isClient, pagePathUtils, pathUtils,
@@ -100,7 +100,7 @@ const {
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
-type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
+type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfo>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
 
 superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
@@ -108,8 +108,7 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
     isApplicable: (v): v is IPageToShowRevisionWithMeta => {
       return v?.data != null
         && v?.data.toObject != null
-        && v?.meta != null
-        && isIPageInfoForEntity(v.meta);
+        && isIPageInfo(v.meta);
     },
     serialize: (v) => {
       return {
