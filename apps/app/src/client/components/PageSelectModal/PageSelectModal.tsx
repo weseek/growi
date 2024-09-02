@@ -26,17 +26,6 @@ import { TreeItemForModal } from './TreeItemForModal';
 
 import 'simplebar-react/dist/simplebar.min.css';
 
-const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
-
-  const { children } = props;
-  return (
-    <div className="grw-page-select-modal-wrapper">
-      <SimpleBar style={{ maxHeight: 350 }}>
-        { children }
-      </SimpleBar>
-    </div>
-  );
-});
 
 export const PageSelectModal: FC = () => {
   const {
@@ -103,7 +92,7 @@ export const PageSelectModal: FC = () => {
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
       <ModalBody className="p-0">
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
-          <TreeForModalWrapper>
+          <SimpleBar style={{ maxHeight: 350 }}>
             <div className="p-3">
               <ItemsTree
                 CustomTreeItem={TreeItemForModal}
@@ -115,7 +104,7 @@ export const PageSelectModal: FC = () => {
                 onClickTreeItem={onClickTreeItem}
               />
             </div>
-          </TreeForModalWrapper>
+          </SimpleBar>
         </Suspense>
       </ModalBody>
       <ModalFooter>
