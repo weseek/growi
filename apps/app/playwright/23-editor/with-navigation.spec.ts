@@ -3,6 +3,8 @@ import path from 'path';
 
 import { test, expect, type Page } from '@playwright/test';
 
+import { openEditor } from '../utils';
+
 /**
  * for the issues:
  * @see https://redmine.weseek.co.jp/issues/122040
@@ -12,8 +14,7 @@ test('should not be cleared and should prevent GrantSelector from modified', asy
   await page.goto('/Sandbox/for-122040');
 
   // Open Editor
-  await page.getByTestId('editor-button').click();
-  await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
+  await openEditor(page);
 
   // Open GrantSelector and select "only me"
   await page.getByTestId('grw-grant-selector').click();
@@ -73,8 +74,7 @@ test('Successfully updating the page body', async({ page }) => {
   await page.goto(page1Path);
 
   // Open Editor (page1)
-  await page.getByTestId('editor-button').click();
-  await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
+  await openEditor(page);
 
   // Append text
   await appendTextToEditorUntilContains(page, page1Body);
@@ -92,8 +92,7 @@ test('Successfully updating the page body', async({ page }) => {
   await page.getByTestId('btn-duplicate').click();
 
   // Open Editor (page2)
-  await page.getByTestId('editor-button').click();
-  await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
+  await openEditor(page);
 
   // Expect to see the text from which you are duplicating
   await expect(page.getByTestId('page-editor-preview-body')).toContainText(page1Body);
@@ -105,8 +104,7 @@ test('Successfully updating the page body', async({ page }) => {
   await page.goto(page1Path);
 
   // Open Editor (page1)
-  await page.getByTestId('editor-button').click();
-  await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
+  await openEditor(page);
 
   await expect(page.getByTestId('page-editor-preview-body')).toContainText(page1Body);
 

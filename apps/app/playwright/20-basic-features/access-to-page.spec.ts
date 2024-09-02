@@ -1,5 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
+import { openEditor } from '../utils';
+
 const appendTextToEditorUntilContains = async(page: Page, text: string) => {
   await page.locator('.cm-content').fill(text);
   await expect(page.getByTestId('page-editor-preview-body')).toContainText(text);
@@ -43,7 +45,7 @@ test.describe.serial('PageEditor', () => {
   test('Edit and save with save-page-btn', async({ page }) => {
     await page.goto(targetPath);
 
-    await page.getByTestId('editor-button').click();
+    await openEditor(page);
     await appendTextToEditorUntilContains(page, body1);
     await page.getByTestId('save-page-btn').click();
 
@@ -55,8 +57,7 @@ test.describe.serial('PageEditor', () => {
 
     await page.goto(targetPath);
 
-    await page.getByTestId('editor-button').click();
-
+    await openEditor(page);
     await expect(page.locator('.cm-content')).toContainText(body1);
     await expect(page.getByTestId('page-editor-preview-body')).toContainText(body1);
 

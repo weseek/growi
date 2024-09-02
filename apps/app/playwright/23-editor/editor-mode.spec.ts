@@ -1,15 +1,14 @@
 import { test, expect } from '@playwright/test';
 
+import { openEditor } from '../utils';
+
 const string = 'hoge';
 const longString = 'a'.repeat(10001);
 
 test('Expect Collaborative editor mode when opening pages with content length below YJS_MAX_BODY_LENGTH', async({ page }) => {
   await page.goto('/Sandbox/collaborative-editor-mode');
 
-  // Open editor
-  await expect(page.getByTestId('page-view-layout')).toBeVisible();
-  await page.getByTestId('editor-button').click();
-  await expect(page.locator('.cm-editor')).toBeVisible();
+  await openEditor(page);
 
   // Apend text
   await page.locator('.cm-content').fill(string);
@@ -19,9 +18,7 @@ test('Expect Collaborative editor mode when opening pages with content length be
   await page.getByTestId('save-page-btn').click();
 
   // Back to editor
-  await expect(page.getByTestId('page-view-layout')).toBeVisible();
-  await page.getByTestId('editor-button').click();
-  await expect(page.locator('.cm-editor')).toBeVisible();
+  await openEditor(page);
 
   // Expect to be in Collaborative Editor mode
   await expect(page.getByTestId('editing-user-list')).toBeVisible();
@@ -31,10 +28,7 @@ test('Expect Collaborative editor mode when opening pages with content length be
 test('Expect Single editor mode when opening pages with content length above YJS_MAX_BODY_LENGTH', async({ page }) => {
   await page.goto('Sandbox/single-editor-mode');
 
-  // Open editor
-  await expect(page.getByTestId('page-view-layout')).toBeVisible();
-  await page.getByTestId('editor-button').click();
-  await expect(page.locator('.cm-editor')).toBeVisible();
+  await openEditor(page);
 
   // Apend long string
   await page.locator('.cm-content').fill(longString);
@@ -44,9 +38,7 @@ test('Expect Single editor mode when opening pages with content length above YJS
   await page.getByTestId('save-page-btn').click();
 
   // Back to editor
-  await expect(page.getByTestId('page-view-layout')).toBeVisible();
-  await page.getByTestId('editor-button').click();
-  await expect(page.locator('.cm-editor')).toBeVisible();
+  await openEditor(page);
 
   // Expect to be in Single Editor mode
   await expect(page.getByTestId('editing-user-list')).not.toBeVisible();
