@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
@@ -50,16 +51,6 @@ const PageBulkExportSelectModal = (): JSX.Element => {
     }
   };
 
-  const formatStartDate = (createdAt: string) => {
-    const date = new Date(createdAt);
-    const mm = String(date.getMonth() + 1).padStart(2, '0');
-    const dd = String(date.getDate()).padStart(2, '0');
-    const hh = String(date.getHours()).padStart(2, '0');
-    const min = String(date.getMinutes()).padStart(2, '0');
-
-    return `${mm}/${dd} ${hh}:${min}`;
-  };
-
   return (
     <>
       {status != null && (
@@ -102,7 +93,7 @@ const PageBulkExportSelectModal = (): JSX.Element => {
                     {t('page_export.format')}: {formatMemoForRestart === PageBulkExportFormat.md ? t('page_export.markdown') : 'PDF'}
                   </li>
                 )}
-                <li>{t('page_export.started_on')}: {formatStartDate(duplicateJobInfo.createdAt)}</li>
+                <li>{t('page_export.started_on')}: {format(new Date(duplicateJobInfo.createdAt), 'MM/dd HH:mm')}</li>
               </ul>
             </div>
           )}
