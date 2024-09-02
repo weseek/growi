@@ -68,7 +68,7 @@ export const CodeMirrorEditorReadOnly = ({ markdown, onScroll }: Props): JSX.Ele
       hideToolbar
       editorKey={GlobalCodeMirrorEditorKey.READONLY}
       onScroll={onScroll}
-      cmProps={{}}
+      cmProps={{}} // Do not pass undefined when initializing useCodeMirrorEditorIsolated
     />
   );
 };
