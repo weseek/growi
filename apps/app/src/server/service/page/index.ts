@@ -4182,7 +4182,7 @@ class PageService implements IPageService {
       : clonedPageData.grantedGroups;
 
     const grantedUserIds = clonedPageData.grantedUserIds || [user._id];
-    const shouldBeOnTree = Number(grant) !== PageGrant.GRANT_RESTRICTED;
+    const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
     const isChildrenExist = await Page.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(clonedPageData.path))}`), parent: { $ne: null } });
 
     const isGrantChangeable = await this.pageGrantService.validateGrantChange(user, pageData.grantedGroups, grant, grantUserGroupIds);
