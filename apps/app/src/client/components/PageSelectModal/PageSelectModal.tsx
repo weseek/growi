@@ -90,7 +90,7 @@ export const PageSelectModal: FC = () => {
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
       <ModalBody className="p-0">
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
-          <SimpleBar style={{ maxHeight: 350 }}>
+          <SimpleBar style={{ maxHeight: 'calc(85vh - 133px)' }}> {/* 133px = 63px(ModalHeader) + 70px(ModalFooter) */}
             <div className="p-3">
               <ItemsTree
                 CustomTreeItem={TreeItemForModal}
