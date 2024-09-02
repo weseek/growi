@@ -13,6 +13,7 @@ const additionalExtensions: Extension[] = [
   [
     setDataLine,
     EditorState.readOnly.of(true),
+    EditorView.editable.of(false),
   ],
 ];
 
