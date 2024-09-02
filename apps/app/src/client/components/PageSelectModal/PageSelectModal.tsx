@@ -86,7 +86,6 @@ export const PageSelectModal: FC = () => {
       isOpen={isOpened}
       toggle={closeModal}
       centered
-      size="lg"
     >
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
       <ModalBody className="p-0">
