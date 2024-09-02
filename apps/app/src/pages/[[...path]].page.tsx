@@ -23,6 +23,7 @@ import superjson from 'superjson';
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import { PageBulkExportEnabledFileUploadTypes } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { RegistrationMode } from '~/interfaces/registration-mode';
@@ -42,7 +43,7 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
-  useIsUploadAllFileAllowed, useIsUploadEnabled,
+  useIsUploadAllFileAllowed, useIsUploadEnabled, useIsPageBulkExportEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
 } from '~/stores-universal/context';
@@ -177,6 +178,7 @@ type Props = CommonProps & {
   isContainerFluid: boolean,
   isUploadEnabled: boolean,
   isUploadAllFileAllowed: boolean,
+  isPageBulkExportEnabled: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
@@ -239,6 +241,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
+  useIsPageBulkExportEnabled(props.isPageBulkExportEnabled);
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
 
@@ -560,6 +563,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
+  props.isPageBulkExportEnabled = PageBulkExportEnabledFileUploadTypes.includes(configManager.getConfig('crowi', 'app:fileUploadType'));
 
   props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
   && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;

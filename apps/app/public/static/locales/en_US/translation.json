@@ -642,6 +642,7 @@
     "bulk_export_started": "Please wait a moment...",
     "bulk_export_download_expired": "Download period has expired",
     "bulk_export_job_expired": "Export process was canceled because it took too long",
+    "bulk_export_only_available_for": "Only available for AWS or GCP",
     "export_in_progress": "Export in progress",
     "export_in_progress_explanation": "Export with the same format is already in progress. Would you like to restart to export the latest page contents?",
     "export_cancel_warning": "The export in progress will be canceled",
