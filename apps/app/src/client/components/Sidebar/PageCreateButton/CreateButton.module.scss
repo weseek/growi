@@ -12,6 +12,10 @@
   }
 }
 
+.icon:hover {
+  transform: scale(1.1);
+}
+
 // pointer-events
 .btn-create :global {
   pointer-events: none;
