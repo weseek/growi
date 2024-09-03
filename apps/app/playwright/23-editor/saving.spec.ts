@@ -1,14 +1,8 @@
 import path from 'path';
 
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
-import { openEditor } from '../utils';
-
-
-const appendTextToEditorUntilContains = async(page: Page, text: string) => {
-  await page.locator('.cm-content').fill(text);
-  await expect(page.getByTestId('page-editor-preview-body')).toContainText(text);
-};
+import { openEditor, appendTextToEditor } from '../utils';
 
 
 test('Successfully create page under specific path', async({ page }) => {
@@ -37,14 +31,14 @@ test('Successfully updating a page using a shortcut on a previously created page
 
   // 1st
   await openEditor(page);
-  await appendTextToEditorUntilContains(page, body1);
+  await appendTextToEditor(page, body1);
   await page.keyboard.press(savePageShortcutKey);
   await page.getByTestId('view-button').click();
   await expect(page.locator('.main')).toContainText(body1);
 
   // 2nd
   await openEditor(page);
-  await appendTextToEditorUntilContains(page, body1 + body2);
+  await appendTextToEditor(page, body1 + body2);
   await page.keyboard.press(savePageShortcutKey);
   await page.getByTestId('view-button').click();
   await expect(page.locator('.main')).toContainText(body1 + body2);
