@@ -2,45 +2,73 @@ import { test, expect } from '@playwright/test';
 
 import { openEditor } from '../utils';
 
-const string = 'hoge';
-const longString = 'a'.repeat(10001);
+test.describe.serial('Collaborative editor mode', () => {
+  const inputText = 'hello';
+  const targetPath = '/Sandbox/collaborative-editor-mode';
 
-test('Expect Collaborative editor mode when opening pages with content length below YJS_MAX_BODY_LENGTH', async({ page }) => {
-  await page.goto('/Sandbox/collaborative-editor-mode');
+  test.beforeEach(async({ page }) => {
+    await page.goto(targetPath);
+  });
 
-  await openEditor(page);
+  test('Expect the previous input content to be reflected even after reloading', async({ page }) => {
+    await openEditor(page);
 
-  // Apend text
-  await page.locator('.cm-content').fill(string);
-  await expect(page.getByTestId('page-editor-preview-body')).toContainText(string);
+    // Apend text
+    await page.locator('.cm-content').fill(inputText);
+    await expect(page.getByTestId('page-editor-preview-body')).toHaveText(inputText);
 
-  // Update
-  await page.getByTestId('save-page-btn').click();
+    // Return to view
+    await page.getByTestId('view-button').click();
+    await expect(page.getByTestId('page-view-layout')).toBeVisible();
 
-  // Back to editor
-  await openEditor(page);
+    // Reload
+    await page.reload();
+    await openEditor(page);
+    await expect(page.getByTestId('page-editor-preview-body')).toHaveText(inputText);
+  });
 
-  // Expect to be in Collaborative Editor mode
-  await expect(page.getByTestId('editing-user-list')).toBeVisible();
-  await expect(page.getByTestId('single-editor-badge')).not.toBeVisible();
+  test('Expect Collaborative editor mode when opening pages with content length below YJS_MAX_BODY_LENGTH', async({ page }) => {
+    await openEditor(page);
+
+    // Update
+    await page.getByTestId('save-page-btn').click();
+
+    // Back to editor
+    await openEditor(page);
+
+    // Expect to be in Collaborative Editor mode
+    await expect(page.getByTestId('editing-user-list')).toBeVisible();
+    await expect(page.getByTestId('single-editor-badge')).not.toBeVisible();
+  });
 });
 
-test('Expect Single editor mode when opening pages with content length above YJS_MAX_BODY_LENGTH', async({ page }) => {
-  await page.goto('Sandbox/single-editor-mode');
+test.describe('Single editor mode', () => {
+  const inputText = 'a'.repeat(10001); // YJS_MAX_BODY_LENGTH + 1
+  const targetPath = '/Sandbox/single-editor-mode';
 
-  await openEditor(page);
+  test.beforeEach(async({ page }) => {
+    await page.goto(targetPath);
+  });
 
-  // Apend long string
-  await page.locator('.cm-content').fill(longString);
-  await expect(page.getByTestId('page-editor-preview-body')).toContainText(longString);
+  test('Expect Single editor mode when opening pages with content length above YJS_MAX_BODY_LENGTH', async({ page }) => {
+    await openEditor(page);
 
-  // Update
-  await page.getByTestId('save-page-btn').click();
+    // Apend long string
+    await page.locator('.cm-content').fill(inputText);
+    await expect(page.getByTestId('page-editor-preview-body')).toHaveText(inputText);
 
-  // Back to editor
-  await openEditor(page);
+    // Expect to be in Collaborative Editor mode
+    await expect(page.getByTestId('editing-user-list')).toBeVisible();
+    await expect(page.getByTestId('single-editor-badge')).not.toBeVisible();
 
-  // Expect to be in Single Editor mode
-  await expect(page.getByTestId('editing-user-list')).not.toBeVisible();
-  await expect(page.getByTestId('single-editor-badge')).toBeVisible();
+    // Update
+    await page.getByTestId('save-page-btn').click();
+
+    // Back to editor
+    await openEditor(page);
+
+    // Expect to be in Single Editor mode
+    await expect(page.getByTestId('editing-user-list')).not.toBeVisible();
+    await expect(page.getByTestId('single-editor-badge')).toBeVisible();
+  });
 });
