@@ -2860,6 +2860,16 @@
     markdown-it-front-matter "^0.2.3"
     postcss "^8.4.29"
 
+"@microflash/remark-callout-directives@^4.3.1":
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/@microflash/remark-callout-directives/-/remark-callout-directives-4.3.1.tgz#ba71c740f3478a28f133ddd6d571c507644a8bf9"
+  integrity sha512-ZCS8+6ykJ4AqKPi6w1q3oV8RnRkaU+jOyT8b8LcvF1sNe9aufqgkInXvE93lrYyD7+04cVtmdtiUa07dI7KTNA==
+  dependencies:
+    defu "^6.1.4"
+    hastscript "^9.0.0"
+    mdast-util-from-markdown "^2.0.1"
+    unist-util-visit "^5.0.0"
+
 "@microsoft/api-extractor-model@7.28.13":
   version "7.28.13"
   resolved "https://registry.yarnpkg.com/@microsoft/api-extractor-model/-/api-extractor-model-7.28.13.tgz#96fbc52155e0d07e0eabbd9699065b77702fe33a"
@@ -7857,6 +7867,11 @@ define-property@^2.0.2:
     is-descriptor "^1.0.2"
     isobject "^3.0.1"
 
+defu@^6.1.4:
+  version "6.1.4"
+  resolved "https://registry.yarnpkg.com/defu/-/defu-6.1.4.tgz#4e0c9cf9ff68fe5f3d7f2765cc1a012dfdcb0479"
+  integrity sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==
+
 del@6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/del/-/del-6.0.0.tgz#0b40d0332cea743f1614f818be4feb717714c952"
@@ -10302,6 +10317,17 @@ hastscript@^8.0.0:
     property-information "^6.0.0"
     space-separated-tokens "^2.0.0"
 
+hastscript@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/hastscript/-/hastscript-9.0.0.tgz#2b76b9aa3cba8bf6d5280869f6f6f7165c230763"
+  integrity sha512-jzaLBGavEDKHrc5EfFImKN7nZKKBdSLIdGvCwDZ9TfzbF2ffXiov8CKE445L2Z1Ek2t/m4SKQ2j6Ipv7NyUolw==
+  dependencies:
+    "@types/hast" "^3.0.0"
+    comma-separated-tokens "^2.0.0"
+    hast-util-parse-selector "^4.0.0"
+    property-information "^6.0.0"
+    space-separated-tokens "^2.0.0"
+
 he@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/he/-/he-1.2.0.tgz#84ae65fa7eafb165fddb61566ae14baf05664f0f"
@@ -12706,6 +12732,20 @@ md5@^2.2.1:
     crypt "~0.0.1"
     is-buffer "~1.1.1"
 
+mdast-util-directive@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/mdast-util-directive/-/mdast-util-directive-3.0.0.tgz#3fb1764e705bbdf0afb0d3f889e4404c3e82561f"
+  integrity sha512-JUpYOqKI4mM3sZcNxmF/ox04XYFFkNwr0CFlrQIkCwbvH0xzMCqkMqAde9wRd80VAhaUrwFwKm2nxretdT1h7Q==
+  dependencies:
+    "@types/mdast" "^4.0.0"
+    "@types/unist" "^3.0.0"
+    devlop "^1.0.0"
+    mdast-util-from-markdown "^2.0.0"
+    mdast-util-to-markdown "^2.0.0"
+    parse-entities "^4.0.0"
+    stringify-entities "^4.0.0"
+    unist-util-visit-parents "^6.0.0"
+
 mdast-util-find-and-replace@^3.0.0, mdast-util-find-and-replace@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/mdast-util-find-and-replace/-/mdast-util-find-and-replace-3.0.1.tgz#a6fc7b62f0994e973490e45262e4bc07607b04e0"
@@ -13103,6 +13143,19 @@ micromark-core-commonmark@^2.0.0:
     micromark-util-subtokenize "^2.0.0"
     micromark-util-symbol "^2.0.0"
     micromark-util-types "^2.0.0"
+
+micromark-extension-directive@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/micromark-extension-directive/-/micromark-extension-directive-3.0.1.tgz#67b3985bb991a69dbcae52664c57ee54b22f635a"
+  integrity sha512-VGV2uxUzhEZmaP7NSFo2vtq7M2nUD+WfmYQD+d8i/1nHbzE+rMy9uzTvUybBbNiVbrhOZibg3gbyoARGqgDWyg==
+  dependencies:
+    devlop "^1.0.0"
+    micromark-factory-space "^2.0.0"
+    micromark-factory-whitespace "^2.0.0"
+    micromark-util-character "^2.0.0"
+    micromark-util-symbol "^2.0.0"
+    micromark-util-types "^2.0.0"
+    parse-entities "^4.0.0"
 
 micromark-extension-frontmatter@^2.0.0:
   version "2.0.0"
@@ -16091,6 +16144,16 @@ remark-breaks@^4.0.0:
     mdast-util-newline-to-break "^2.0.0"
     unified "^11.0.0"
 
+remark-directive@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/remark-directive/-/remark-directive-3.0.0.tgz#34452d951b37e6207d2e2a4f830dc33442923268"
+  integrity sha512-l1UyWJ6Eg1VPU7Hm/9tt0zKtReJQNOA4+iDMAxTyZNWnJnFlbS/7zhiel/rogTLQ2vMYwDzSJa4BiVNqGlqIMA==
+  dependencies:
+    "@types/mdast" "^4.0.0"
+    mdast-util-directive "^3.0.0"
+    micromark-extension-directive "^3.0.0"
+    unified "^11.0.0"
+
 remark-emoji@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/remark-emoji/-/remark-emoji-5.0.0.tgz#14bd520b765cea3f00228258926ed59ad8125729"
@@ -16123,6 +16186,16 @@ remark-gfm@^4.0.0:
     remark-parse "^11.0.0"
     remark-stringify "^11.0.0"
     unified "^11.0.0"
+
+remark-github-admonitions-to-directives@^1.0.5:
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/remark-github-admonitions-to-directives/-/remark-github-admonitions-to-directives-1.0.5.tgz#60bf09a31ff309b6d9a16a36d4c6850012d28cfd"
+  integrity sha512-MSRzDs51HGbUrHJ0es8POuxwJiUycWw4aYCTN2RZhdOm5UvyqdB8ApWoGBj9QAiPSHKw2HWl1hd5rRzWxVfNew==
+  dependencies:
+    "@types/mdast" "^4.0.0"
+    mdast-util-directive "^3.0.0"
+    unified "^11.0.0"
+    unist-util-visit "^5.0.0"
 
 remark-math@^6.0.0:
   version "6.0.0"
@@ -17347,7 +17420,7 @@ string-template@>=1.0.0:
   resolved "https://registry.yarnpkg.com/string-template/-/string-template-1.0.0.tgz#9e9f2233dc00f218718ec379a28a5673ecca8b96"
   integrity sha1-np8iM9wA8hhxjsN5oopWc+zKi5Y=
 
-"string-width-cjs@npm:string-width@^4.2.0":
+"string-width-cjs@npm:string-width@^4.2.0", "string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -17364,15 +17437,6 @@ string-width@=4.2.2:
     emoji-regex "^8.0.0"
     is-fullwidth-code-point "^3.0.0"
     strip-ansi "^6.0.0"
-
-"string-width@^1.0.2 || 2 || 3 || 4", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
 
 string-width@^5.0.1, string-width@^5.1.2:
   version "5.1.2"
@@ -17457,7 +17521,7 @@ stringify-entities@^4.0.0:
     character-entities-html4 "^2.0.0"
     character-entities-legacy "^3.0.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -17470,13 +17534,6 @@ strip-ansi@^3.0.0:
   integrity sha1-ajhfuIU9lS1f8F0Oiq+UJ43GPc8=
   dependencies:
     ansi-regex "^2.0.0"
-
-strip-ansi@^6.0.0, strip-ansi@^6.0.1:
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
-  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
-  dependencies:
-    ansi-regex "^5.0.1"
 
 strip-ansi@^7.0.1, strip-ansi@^7.1.0:
   version "7.1.0"
@@ -19274,7 +19331,7 @@ word-wrap@^1.2.3:
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.3.tgz#610636f6b1f703891bd34771ccb17fb93b47079c"
   integrity sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
@@ -19287,15 +19344,6 @@ wrap-ansi@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-6.2.0.tgz#e9393ba07102e6c91a3b221478f0257cd2856e53"
   integrity sha512-r6lPcBGxZXlIcymEu7InxDMhdW0KDxpLgoFLcguasxCaJ/SOIZwINatK9KY/tf+ZrlywOKU0UDj3ATXUBfxJXA==
-  dependencies:
-    ansi-styles "^4.0.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-
-wrap-ansi@^7.0.0:
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
-  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
   dependencies:
     ansi-styles "^4.0.0"
     string-width "^4.1.0"

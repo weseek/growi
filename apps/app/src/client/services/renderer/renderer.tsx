@@ -10,6 +10,8 @@ import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import type { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
+import remarkDirective from 'remark-directive';
+import remarkGithubAdmonitionsToDirectives from 'remark-github-admonitions-to-directives';
 import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
@@ -65,6 +67,8 @@ export const generateViewOptions = (
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
+    remarkGithubAdmonitionsToDirectives,
+    remarkDirective,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -169,6 +173,8 @@ export const generateSimpleViewOptions = (
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
+    remarkGithubAdmonitionsToDirectives,
+    remarkDirective,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -262,6 +268,8 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
+    remarkGithubAdmonitionsToDirectives,
+    remarkDirective,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
