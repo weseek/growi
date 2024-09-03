@@ -36,9 +36,11 @@ export const useCodeMirrorEditorIsolated = (
 
   const newData = useCodeMirrorEditor(mergedProps);
 
-  const shouldUpdate = swrKey != null && container != null && props != null
-  && (currentData == null || (isValid(newData) && !isDeepEquals(currentData, newData))
-  || currentCmPropsData == null || !isDeepEquals(currentCmPropsData, props));
+  // eslint-disable-next-line max-len
+  const shouldUpdateProps = (props != null && currentCmPropsData == null) || (props != null && currentCmPropsData != null && !isDeepEquals(currentCmPropsData, props));
+
+  // eslint-disable-next-line max-len
+  const shouldUpdate = swrKey != null && container != null && (currentData == null || (isValid(newData) && !isDeepEquals(currentData, newData)) || shouldUpdateProps);
 
   if (shouldUpdate) {
     ref.current = newData;
