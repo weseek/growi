@@ -16,12 +16,16 @@ export const EditorNavbar = (): JSX.Element => {
 
   const editorCondition = useMemo(() => {
     if (isYjsEnabled) {
-      return <EditingUserList userList={editingUsers?.userList ?? []} />;
+      return (
+        <div data-testid="editing-user-list">
+          <EditingUserList userList={editingUsers?.userList ?? []} />
+        </div>
+      );
     }
 
     if (isYjsEnabled === false) {
       return (
-        <div className="text-warning bg-warning-subtle rounded-1 px-1">
+        <div data-testid="single-editor-badge" className="text-warning bg-warning-subtle rounded-1 px-1">
           <div className="d-flex align-items-center justify-content-center">
             <span className="material-symbols-outlined fs-6 me-1">error</span>SINGLE
           </div>
