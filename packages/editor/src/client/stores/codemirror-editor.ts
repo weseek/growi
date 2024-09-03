@@ -33,7 +33,7 @@ export const useCodeMirrorEditorIsolated = (
 
   const newData = useCodeMirrorEditor(mergedProps);
 
-  const shouldUpdate = swrKey != null && container != null && props != null && (
+  const shouldUpdate = swrKey != null && container != null && (
     currentData == null
     || (isValid(newData) && !isDeepEquals(currentData, newData))
   );
