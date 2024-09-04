@@ -15,7 +15,7 @@ test('/Sandbox/math is successfully loaded', async({ page }) => {
   await page.goto('/Sandbox/Math');
 
   // Check if the math elements are visible
-  await expect(page.locator('.katex').first()).toBeVisible();
+  await expect(page.locator('.math').first()).toBeVisible();
 });
 
 test('Access to /me page', async({ page }) => {

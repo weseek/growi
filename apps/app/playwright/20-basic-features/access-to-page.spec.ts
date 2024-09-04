@@ -23,7 +23,7 @@ test('/Sandbox/Math is successfully loaded', async({ page }) => {
   await page.goto('/Sandbox/Math');
 
   // Expect the Math-specific elements to be present
-  await expect(page.locator('.katex').first()).toBeVisible();
+  await expect(page.locator('.math').first()).toBeVisible();
 });
 
 test('Sandbox with edit is successfully loaded', async({ page }) => {
