@@ -54,7 +54,9 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       .withMessage("'revisionId' must be specified"),
     body('body').exists().isString()
       .withMessage("Empty value is not allowed for 'body'"),
-    body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
+    body('grant').optional().not().isString()
+      .isInt({ min: 0, max: 5 })
+      .withMessage('grant must be an integer from 1 to 5'),
     body('userRelatedGrantUserGroupIds').optional().isArray().withMessage('userRelatedGrantUserGroupIds must be an array of group id'),
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
