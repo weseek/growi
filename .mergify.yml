@@ -1,16 +1,27 @@
+queue_rules:
+  - name: default
+    allow_inplace_checks: false
+    queue_conditions:
+      - '#approved-reviews-by >= 1'
+      - check-success = "check-title"
+      - check-success = "Node CI for slackbot-proxy"
+      - check-success = "Node CI for app development"
+    merge_conditions:
+      - '#approved-reviews-by >= 1'
+      - check-success = "check-title"
+      - check-success = "Node CI for slackbot-proxy"
+      - check-success = "Node CI for app development"
+      - check-success = "Node CI for app production"
+
 pull_request_rules:
   - name: Automatic merge for Dependabot pull requests
     conditions:
       - author = dependabot[bot]
       - '#approved-reviews-by >= 1'
-      - check-success = "ci-slackbot-proxy-lint (20.x)"
-      - check-success = "ci-slackbot-proxy-launch-dev (20.x)"
-      - check-success = "ci-slackbot-proxy-launch-prod (20.x)"
-      - check-success = "ci-app-lint (20.x)"
-      - check-success = "ci-app-test (20.x)"
-      - check-success = "ci-app-launch-dev (20.x)"
-      - check-success = "test-prod-node18 / launch-prod"
-      - check-success = "test-prod-node20 / launch-prod"
+      - check-success = "check-title"
+      - check-success = "Node CI for slackbot-proxy"
+      - check-success = "Node CI for app development"
+      - check-success = "Node CI for app production"
     actions:
       merge:
         method: merge
