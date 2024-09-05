@@ -1,11 +1,9 @@
-import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
-import { Attachment, serializePageSecurely, serializeRevisionSecurely } from '../../models';
-
+import { Attachment } from '../../models/attachment';
 /* eslint-disable no-use-before-define */
 
 

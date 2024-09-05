@@ -10,7 +10,7 @@ import {
   ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip,
 } from 'reactstrap';
 
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 import { useCurrentPagePath } from '~/stores/page';
 
 import { type IWorkflowHasId, WorkflowStatus } from '../../../interfaces/workflow';

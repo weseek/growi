@@ -14,12 +14,10 @@ import { KeycloakUserGroupSyncService } from '~/features/external-user-group/ser
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
-import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import UserEvent from '../events/user';
-import { modelsDependsOnCrowi } from '../models';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
@@ -27,6 +25,7 @@ import { configManager as configManagerSingletonInstance } from '../service/conf
 import { instanciate as instanciateExternalAccountService } from '../service/external-account';
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
+import { initializeImportService } from '../service/import';
 import { InstallerService } from '../service/installer';
 import { normalizeData } from '../service/normalize-data';
 import PageService from '../service/page';
@@ -35,10 +34,13 @@ import PageOperationService from '../service/page-operation';
 import PassportService from '../service/passport';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
+import { SocketIoService } from '../service/socket-io';
 import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
-import { instantiateYjsConnectionManager } from '../service/yjs-connection-manager';
-import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
+import { initializeYjsService } from '../service/yjs';
+import { getModelSafely, getMongoUri, mongoOptions } from '../util/mongoose-utils';
+
+import { setupModelsDependentOnCrowi } from './setup-models';
 
 
 const logger = loggerFactory('growi:crowi');
@@ -59,6 +61,9 @@ class Crowi {
 
   /** @type {FileUploader} */
   fileUploadService;
+
+  /** @type {SocketIoService} */
+  socketIoService;
 
   constructor() {
     this.version = pkg.version;
@@ -81,14 +86,12 @@ class Crowi {
     this.mailService = null;
     this.passportService = null;
     this.globalNotificationService = null;
-    this.xssService = null;
     this.aclService = null;
     this.appService = null;
     this.fileUploadService = null;
     this.restQiitaAPIService = null;
     this.growiBridgeService = null;
     this.exportService = null;
-    this.importService = null;
     this.pluginService = null;
     this.searchService = null;
     this.socketIoService = null;
@@ -97,12 +100,12 @@ class Crowi {
     this.inAppNotificationService = null;
     this.activityService = null;
     this.commentService = null;
-    this.xss = new Xss();
     this.questionnaireService = null;
     this.questionnaireCronService = null;
 
     this.tokens = null;
 
+    /** @type {import('./setup-models').ModelsMapDependentOnCrowi} */
     this.models = {};
 
     this.env = process.env;
@@ -124,7 +127,7 @@ class Crowi {
 
 Crowi.prototype.init = async function() {
   await this.setupDatabase();
-  await this.setupModels();
+  this.models = await setupModelsDependentOnCrowi(this);
   await this.setupConfigManager();
   await this.setupSessionConfig();
   this.setupCron();
@@ -133,12 +136,11 @@ Crowi.prototype.init = async function() {
   await this.setupS2sMessagingService();
   await this.setupSocketIoService();
 
-  // customizeService depends on AppService and XssService
+  // customizeService depends on AppService
   // passportService depends on appService
   // export and import depends on setUpGrowiBridge
   await Promise.all([
     this.setUpApp(),
-    this.setUpXss(),
     this.setUpGrowiBridge(),
   ]);
 
@@ -213,14 +215,13 @@ Crowi.prototype.getEnv = function() {
   return this.env;
 };
 
-// getter/setter of model instance
-//
-Crowi.prototype.model = function(name, model) {
-  if (model != null) {
-    this.models[name] = model;
-  }
-
-  return this.models[name];
+/**
+ * Wrapper function of mongoose.model()
+ * @param {string} modelName
+ * @returns {mongoose.Model}
+ */
+Crowi.prototype.model = function(modelName) {
+  return getModelSafely(modelName);
 };
 
 // getter/setter of event instance
@@ -305,24 +306,7 @@ Crowi.prototype.setupS2sMessagingService = async function() {
 };
 
 Crowi.prototype.setupSocketIoService = async function() {
-  const SocketIoService = require('../service/socket-io');
-  if (this.socketIoService == null) {
-    this.socketIoService = new SocketIoService(this);
-  }
-};
-
-Crowi.prototype.setupModels = async function() {
-  Object.keys(modelsDependsOnCrowi).forEach((key) => {
-    const factory = modelsDependsOnCrowi[key];
-
-    if (!(factory instanceof Function)) {
-      logger.warn(`modelsDependsOnCrowi['${key}'] is not a function. skipped.`);
-      return;
-    }
-
-    return this.model(key, modelsDependsOnCrowi[key](this));
-  });
-
+  this.socketIoService = new SocketIoService(this);
 };
 
 Crowi.prototype.setupCron = function() {
@@ -479,9 +463,8 @@ Crowi.prototype.start = async function() {
   // attach to socket.io
   this.socketIoService.attachServer(httpServer);
 
-  // Initialization YjsConnectionManager
-  instantiateYjsConnectionManager(this.socketIoService.io);
-  this.socketIoService.setupYjsConnection();
+  // Initialization YjsService
+  initializeYjsService(this.socketIoService.io);
 
   await this.autoInstall();
 
@@ -598,16 +581,6 @@ Crowi.prototype.setUpUserNotification = async function() {
 };
 
 /**
- * setup XssService
- */
-Crowi.prototype.setUpXss = async function() {
-  const XssService = require('../service/xss');
-  if (this.xssService == null) {
-    this.xssService = new XssService(this.configManager);
-  }
-};
-
-/**
  * setup AclService
  */
 Crowi.prototype.setUpAcl = async function() {
@@ -709,10 +682,7 @@ Crowi.prototype.setupExport = async function() {
 };
 
 Crowi.prototype.setupImport = async function() {
-  const ImportService = require('../service/import');
-  if (this.importService == null) {
-    this.importService = new ImportService(this);
-  }
+  initializeImportService(this);
 };
 
 Crowi.prototype.setupGrowiPluginService = async function() {

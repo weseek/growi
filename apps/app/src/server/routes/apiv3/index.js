@@ -22,6 +22,7 @@ const routerForAuth = express.Router();
 
 module.exports = (crowi, app) => {
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
+  const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -62,9 +63,9 @@ module.exports = (crowi, app) => {
   routerForAuth.use('/logout', require('./logout')(crowi));
 
   routerForAuth.post('/register',
-    applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
+    applicationInstalled, registerFormValidator.registerRules(minPasswordLength), registerFormValidator.registerValidation, addActivity, login.register);
 
-  routerForAuth.post('/user-activation/register', applicationInstalled, userActivation.registerRules(),
+  routerForAuth.post('/user-activation/register', applicationInstalled, userActivation.registerRules(minPasswordLength),
     userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   // installer

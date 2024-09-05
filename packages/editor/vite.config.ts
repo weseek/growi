@@ -18,6 +18,7 @@ export default defineConfig({
   plugins: [
     react(),
     dts({
+      entryRoot: 'src',
       exclude: [
         ...excludeFiles,
       ],
@@ -49,9 +50,6 @@ export default defineConfig({
         preserveModules: true,
         preserveModulesRoot: 'src',
       },
-      external: [
-        'emoji-mart/css/emoji-mart.css',
-      ],
     },
   },
 });

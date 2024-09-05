@@ -2,7 +2,7 @@ import { pagePathUtils } from '@growi/core/dist/utils';
 import type { LinkProps } from 'next/link';
 import Link from 'next/link';
 
-import { useSiteUrl } from '~/stores/context';
+import { useSiteUrl } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 

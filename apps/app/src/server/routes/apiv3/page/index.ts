@@ -2,10 +2,13 @@ import path from 'path';
 
 import type { IPage } from '@growi/core';
 import {
-  AllSubscriptionStatusType, SubscriptionStatusType,
+  AllSubscriptionStatusType, PageGrant, SubscriptionStatusType,
+  getIdForRef,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
 
@@ -14,18 +17,23 @@ import type { IPageGrantData } from '~/interfaces/page';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
-import { GlobalNotificationSettingEvent } from '~/server/models';
-import type { PageModel } from '~/server/models/page';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
+import type { PageDocument, PageModel } from '~/server/models/page';
+import { Revision } from '~/server/models/revision';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
+import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import loggerFactory from '~/utils/logger';
+
+import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
 import { getYjsDataHandlerFactory } from './get-yjs-data';
 import { publishPageHandlersFactory } from './publish-page';
+import { syncLatestRevisionBodyToYjsDraftHandlerFactory } from './sync-latest-revision-body-to-yjs-draft';
 import { unpublishPageHandlersFactory } from './unpublish-page';
 import { updatePageHandlersFactory } from './update-page';
 
@@ -184,7 +192,7 @@ module.exports = (crowi) => {
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page } = crowi.models;
+  const Page = mongoose.model<IPage, PageModel>('Page');
   const { pageService, exportService } = crowi;
 
   const activityEvent = crowi.event('activity');
@@ -202,8 +210,11 @@ module.exports = (crowi) => {
     info: [
       query('pageId').isMongoId().withMessage('pageId is required'),
     ],
-    isGrantNormalized: [
+    getGrantData: [
       query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    nonUserRelatedGroupsGranted: [
+      query('path').isString(),
     ],
     applicableGrant: [
       query('pageId').isMongoId().withMessage('pageId is required'),
@@ -567,7 +578,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/grant-data', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
+  router.get('/grant-data', loginRequiredStrictly, validator.getGrantData, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
     const Page = mongoose.model<IPage, PageModel>('Page');
@@ -585,7 +596,8 @@ module.exports = (crowi) => {
     } = page;
     let isGrantNormalized = false;
     try {
-      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroups, false, false);
+      const grantedUsersId = grantedUsers.map(ref => getIdForRef(ref));
+      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsersId, grantedGroups, false, false);
     }
     catch (err) {
       logger.error('Error occurred while processing isGrantNormalized.', err);
@@ -608,7 +620,7 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
-    const parentPage = await Page.findByIdAndViewer(page.parent, req.user, null, false);
+    const parentPage = await Page.findByIdAndViewer(getIdForRef(page.parent), req.user, null, false);
 
     // user isn't allowed to see parent's grant
     if (parentPage == null) {
@@ -634,6 +646,40 @@ module.exports = (crowi) => {
 
     return res.apiv3({ isGrantNormalized, grantData });
   });
+
+  // Check if non user related groups are granted page access.
+  // If specified page does not exist, check the closest ancestor.
+  router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator,
+    async(req, res: ApiV3Response) => {
+      const { user } = req;
+      const path = normalizePath(req.query.path);
+      const pageGrantService = crowi.pageGrantService as IPageGrantService;
+      try {
+        const page = await Page.findByPath(path, true) ?? await Page.findNonEmptyClosestAncestor(path);
+        if (page == null) {
+          // 'page' should always be non empty, since every page stems back to root page.
+          // If it is empty, there is a problem with the server logic.
+          return res.apiv3Err(new ErrorV3('No page on the page tree could be retrived.', 'page_could_not_be_retrieved'), 500);
+        }
+
+        const userRelatedGroups = await pageGrantService.getUserRelatedGroups(user);
+        const isUserGrantedPageAccess = await pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups, true);
+        if (!isUserGrantedPageAccess) {
+          return res.apiv3Err(new ErrorV3('Cannot access page or ancestor.', 'cannot_access_page'), 403);
+        }
+
+        if (page.grant !== PageGrant.GRANT_USER_GROUP) {
+          return res.apiv3({ isNonUserRelatedGroupsGranted: false });
+        }
+
+        const nonUserRelatedGrantedGroups = await pageGrantService.getNonUserRelatedGrantedGroups(page, user);
+        return res.apiv3({ isNonUserRelatedGroupsGranted: nonUserRelatedGrantedGroups.length > 0 });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
@@ -697,14 +743,17 @@ module.exports = (crowi) => {
   *            description: Return page's markdown
   */
   router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
-    const { pageId } = req.params;
+    const pageId: string = req.params.pageId;
     const { format, revisionId = null } = req.query;
     let revision;
     let pagePath;
 
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+
+    let page: HydratedDocument<PageDocument> | null;
+
     try {
-      const Page = crowi.model('Page');
-      const page = await Page.findByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
         const isPageExist = await Page.count({ _id: pageId }) > 0;
@@ -714,10 +763,23 @@ module.exports = (crowi) => {
         }
         return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
       }
+    }
+    catch (err) {
+      logger.error('Failed to get page data', err);
+      return res.apiv3Err(err, 500);
+    }
 
-      const revisionIdForFind = revisionId || page.revision;
+    // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+    try {
+      await normalizeLatestRevisionIfBroken(pageId);
+    }
+    catch (err) {
+      logger.error('Error occurred in normalizing the latest revision');
+    }
 
-      const Revision = crowi.model('Revision');
+    try {
+      const revisionIdForFind = revisionId ?? page.revision;
+
       revision = await Revision.findById(revisionIdForFind);
       pagePath = page.path;
 
@@ -727,7 +789,7 @@ module.exports = (crowi) => {
       }
     }
     catch (err) {
-      logger.error('Failed to get page data', err);
+      logger.error('Failed to get revision data', err);
       return res.apiv3Err(err, 500);
     }
 
@@ -910,6 +972,8 @@ module.exports = (crowi) => {
   router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
 
   router.get('/:pageId/yjs-data', getYjsDataHandlerFactory(crowi));
+
+  router.put('/:pageId/sync-latest-revision-body-to-yjs-draft', syncLatestRevisionBodyToYjsDraftHandlerFactory(crowi));
 
   return router;
 };

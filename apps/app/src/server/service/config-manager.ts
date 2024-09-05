@@ -2,7 +2,7 @@ import { parseISO } from 'date-fns/parseISO';
 
 import loggerFactory from '~/utils/logger';
 
-import ConfigModel from '../models/config';
+import { Config } from '../models/config';
 import S2sMessage from '../models/vo/s2s-message';
 
 import type { ConfigObject } from './config-loader';
@@ -204,7 +204,7 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
         },
       });
     }
-    await ConfigModel.bulkWrite(queries);
+    await Config.bulkWrite(queries);
 
     await this.loadConfigs();
 
@@ -214,7 +214,7 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
     }
   }
 
-  async removeConfigsInTheSameNamespace(namespace, configKeys: string[], withoutPublishingS2sMessage?) {
+  async removeConfigsInTheSameNamespace(namespace, configKeys: readonly string[], withoutPublishingS2sMessage?) {
     const queries: any[] = [];
     for (const key of configKeys) {
       queries.push({
@@ -223,7 +223,7 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
         },
       });
     }
-    await ConfigModel.bulkWrite(queries);
+    await Config.bulkWrite(queries);
 
     await this.loadConfigs();
 

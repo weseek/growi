@@ -1,27 +1,27 @@
 {
   "name": "@growi/slackbot-proxy",
-  "version": "7.0.7-slackbot-proxy.0",
+  "version": "7.0.18-slackbot-proxy.0",
   "license": "MIT",
+  "private": "true",
   "scripts": {
-    "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
+    "build": "tspc -p tsconfig.build.json",
     "clean": "shx rm -rf dist",
     "cp:public": "cp -RT ./src/public ./dist/public",
     "cp:views": "cp -RT ./src/views ./dist/views",
     "cp:bootstrap": "cp -RT ../../node_modules/bootstrap/dist ./dist/public/bootstrap",
     "cp:bootstrap:dev": "cp -RT ../../node_modules/bootstrap/dist ./src/public/bootstrap",
-    "tsc": "tsc -p tsconfig.build.json",
-    "tsc:w": "yarn tsc -w",
-    "dev:ci": "yarn dev --ci",
-    "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config --transpile-only src/index.ts",
+    "dev:ci": "cross-env NODE_ENV=development yarn ts-node src/index.ts --ci",
+    "dev": "cross-env NODE_ENV=development nodemon --exec yarn ts-node --inspect src/index.ts",
     "start:prod:ci": "yarn start:prod --ci",
     "start:prod": "cross-env NODE_ENV=production node -r dotenv-flow/config dist/index.js",
     "postbuild": "yarn cp:public && yarn cp:views && yarn cp:bootstrap",
     "predev": "yarn cp:bootstrap:dev",
     "lint:js": "yarn eslint src/**/*.{js,ts}",
-    "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
-    "lint:typecheck": "tsc",
+    "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
+    "lint:typecheck": "tspc",
     "lint": "run-p lint:*",
-    "version": "yarn version --no-git-tag-version --preid=slackbot-proxy"
+    "version": "yarn version --no-git-tag-version --preid=slackbot-proxy",
+    "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config"
   },
   "// comments for dependencies": {
     "read-pkg-up": "v8 doesn't support CommonJS anymore. https://github.com/sindresorhus/read-pkg-up/issues/17",
@@ -53,16 +53,18 @@
     "typeorm": "=0.2.45",
     "universal-bunyan": "^0.9.2"
   },
+  "// comments for devDependencies": {
+    "bootstrap": "v5.3.3 has a bug. refs: https://github.com/twbs/bootstrap/issues/39798"
+  },
   "devDependencies": {
     "@popperjs/core": "^2.11.8",
     "@tsed/core": "^6.43.0",
     "@tsed/exceptions": "^6.43.0",
     "@tsed/json-mapper": "^6.43.0",
     "@tsed/schema": "^6.43.0",
-    "bootstrap": "^5.3.3",
+    "bootstrap": "=5.3.2",
     "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",
-    "morgan": "^1.10.0",
-    "tsc-alias": "^1.2.9"
+    "morgan": "^1.10.0"
   }
 }

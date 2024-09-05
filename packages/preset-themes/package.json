@@ -22,15 +22,16 @@
     "watch:libs": "yarn dev:libs -w --emptyOutDir=false",
     "watch:themes": "yarn dev:themes -w --emptyOutDir=false",
     "lint:eslint": "yarn eslint \"**/*.{js,jsx,ts,tsx}\"",
-    "lint:styles": "stylelint src/**/*.scss",
+    "lint:styles": "stylelint \"src/**/*.scss\"",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
     "preview": "vite preview"
   },
   "dependencies": {},
   "devDependencies": {
-    "@growi/core-styles": "link:../../packages/core-styles",
-    "bootstrap": "^5.3.3",
+    "@growi/core": "link:../core",
+    "@growi/core-styles": "link:../core-styles",
+    "bootstrap": "=5.3.2",
     "sass": "^1.55.0"
   },
   "peerDependencies": {

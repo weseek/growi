@@ -1,15 +1,16 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import express from 'express';
 
+import { Revision } from '~/server/models/revision';
+import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:pages');
 
-const express = require('express');
 const { query, param } = require('express-validator');
-
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 
@@ -64,7 +65,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const {
-    Revision,
     Page,
     User,
   } = crowi.models;
@@ -119,6 +119,14 @@ module.exports = (crowi) => {
     // check whether accessible
     if (!isSharedPage && !(await Page.isAccessiblePageByViewer(pageId, req.user))) {
       return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
+    }
+
+    // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+    try {
+      await normalizeLatestRevisionIfBroken(pageId);
+    }
+    catch (err) {
+      logger.error('Error occurred in normalizing the latest revision');
     }
 
     try {

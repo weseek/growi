@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
 import { isWorkflowNameSet } from '~/features/approval-workflow/utils/workflow';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 import { useCurrentPagePath } from '~/stores/page';
 
 import {

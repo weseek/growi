@@ -4,7 +4,7 @@ import React, { useCallback, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
 import { useEditingApproverGroups } from '../../services/workflow';
 import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';

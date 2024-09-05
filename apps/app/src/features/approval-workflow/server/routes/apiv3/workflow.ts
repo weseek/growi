@@ -1,12 +1,13 @@
 import type { IUserHasId } from '@growi/core';
-import express, { Request, Router } from 'express';
+import type { Request, Router } from 'express';
+import express from 'express';
 import { param, query, body } from 'express-validator';
 
-import Crowi from '~/server/crowi';
+import type Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
-import XssService from '~/services/xss';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
 import { WorkflowStatus, WorkflowApproverStatus } from '../../../interfaces/workflow';
@@ -79,8 +80,6 @@ module.exports = (crowi: Crowi): Router => {
       param('workflowId').isMongoId().withMessage('workflowId is required'),
     ],
   };
-
-  const xss = new XssService();
 
 
   /**
@@ -235,8 +234,8 @@ module.exports = (crowi: Crowi): Router => {
     } = req.body;
     const { user } = req;
 
-    const xssProcessedName = xss.process(name);
-    const xssProcessedComment = xss.process(comment);
+    const xssProcessedName = generalXssFilter.process(name);
+    const xssProcessedComment = generalXssFilter.process(comment);
 
     const workflow = {
       pageId,

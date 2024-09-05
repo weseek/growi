@@ -1,7 +1,7 @@
 import type { Response } from 'express';
 
 import type { ExpressHttpHeader, IContentHeaders } from '~/server/interfaces/attachment';
-import type { IAttachmentDocument } from '~/server/models';
+import type { IAttachmentDocument } from '~/server/models/attachment';
 
 
 export class ContentHeaders implements IContentHeaders {

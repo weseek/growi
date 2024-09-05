@@ -5,10 +5,11 @@ import useSWRImmutable from 'swr/immutable';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 
+import { useCurrentUser } from '~/stores-universal/context';
+
 import { apiv3Get } from '../client/util/apiv3-client';
 import type { IBookmarkInfo } from '../interfaces/bookmark-info';
 
-import { useCurrentUser } from './context';
 
 export const useSWRxBookmarkedUsers = (pageId: string | null): SWRResponse<IUser[], Error> => {
   return useSWR(

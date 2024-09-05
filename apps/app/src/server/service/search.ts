@@ -1,22 +1,23 @@
 import type { IPageHasId } from '@growi/core';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import mongoose from 'mongoose';
 import { FilterXSS } from 'xss';
 
 import { CommentEvent, commentEvent } from '~/features/comment/server';
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
+import type { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import {
+import type { ObjectIdLike } from '../interfaces/mongoose-utils';
+import type {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
 } from '../interfaces/search';
 import NamedQuery from '../models/named-query';
-import { PageModel } from '../models/page';
-import { serializeUserSecurely } from '../models/serializers/user-serializer';
+import type { PageModel } from '../models/page';
 import { SearchError } from '../models/vo/search-error';
 import { hasIntersection } from '../util/compare-objectId';
 
+import { configManager } from './config-manager';
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
 
@@ -76,8 +77,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   crowi!: any;
 
-  configManager!: any;
-
   isErrorOccuredOnHealthcheck: boolean | null;
 
   isErrorOccuredOnSearching: boolean | null;
@@ -88,7 +87,6 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.configManager = crowi.configManager;
 
     this.isErrorOccuredOnHealthcheck = null;
     this.isErrorOccuredOnSearching = null;
@@ -117,7 +115,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   get isElasticsearchEnabled() {
-    const uri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
+    const uri = configManager.getConfig('crowi', 'app:elasticsearchUri');
     return uri != null && uri.length > 0;
   }
 
@@ -126,7 +124,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     if (this.isElasticsearchEnabled) {
       logger.info('Elasticsearch is enabled');
-      return new ElasticsearchDelegator(this.configManager, this.crowi.socketIoService);
+      return new ElasticsearchDelegator(this.crowi.socketIoService);
     }
 
     logger.info('No elasticsearch URI is specified so that full text search is disabled.');

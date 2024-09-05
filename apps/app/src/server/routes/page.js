@@ -1,14 +1,12 @@
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
-import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
 
-import { GlobalNotificationSettingEvent } from '../models';
+import { GlobalNotificationSettingEvent } from '../models/GlobalNotificationSetting';
 import { PathAlreadyExistsError } from '../models/errors';
 import PageTagRelation from '../models/page-tag-relation';
 import UpdatePost from '../models/update-post';
-import { configManager } from '../service/config-manager';
 
 /**
  * @swagger
@@ -146,18 +144,7 @@ module.exports = function(crowi, app) {
 
   const ApiResponse = require('../util/apiResponse');
 
-  const { xssService } = crowi;
   const globalNotificationService = crowi.getGlobalNotificationService();
-
-  const Xss = require('~/services/xss/index');
-  const initializedConfig = {
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-    tagWhitelist: xssService.getTagWhitelist(),
-    attrWhitelist: xssService.getAttrWhitelist(),
-  };
-  const xssOption = new XssOption(initializedConfig);
-  const xss = new Xss(xssOption);
-
 
   const actions = {};
 

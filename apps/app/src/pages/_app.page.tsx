@@ -1,25 +1,27 @@
 import type { ReactElement, ReactNode } from 'react';
 import React, { useEffect } from 'react';
 
+import type { Locale } from '@growi/core';
 import type { NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
-import type { AppProps } from 'next/app';
+import type { AppContext, AppProps } from 'next/app';
+import App from 'next/app';
+import { useRouter } from 'next/router';
 import { SWRConfig } from 'swr';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
 
 import { GlobalFonts } from '~/components/FontFamily/GlobalFonts';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import {
   useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
-import type { CommonProps } from './utils/commons';
-import { registerTransformerForObjectId } from './utils/objectid-transformer';
-
+import { getLocaleAtServerSide, type CommonProps } from './utils/commons';
 import '~/styles/prebuilt/vendor.css';
 import '~/styles/style-app.scss';
-
+import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
@@ -28,16 +30,30 @@ export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
 
 type GrowiAppProps = AppProps & {
   Component: NextPageWithLayout,
+  userLocale: Locale,
 };
 
 // register custom serializer
 registerTransformerForObjectId();
 
-function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
+function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Element {
+  const router = useRouter();
+
+  useEffect(() => {
+    const updateLangAttribute = () => {
+      if (document.documentElement.getAttribute('lang') !== userLocale) {
+        document.documentElement.setAttribute('lang', userLocale);
+      }
+    };
+    router.events.on('routeChangeComplete', updateLangAttribute);
+    return () => {
+      router.events.off('routeChangeComplete', updateLangAttribute);
+    };
+  }, [router, userLocale]);
+
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap');
   }, []);
-
 
   const commonPageProps = pageProps as CommonProps;
   useAppTitle(commonPageProps.appTitle);
@@ -59,5 +75,12 @@ function GrowiApp({ Component, pageProps }: GrowiAppProps): JSX.Element {
     </>
   );
 }
+
+GrowiApp.getInitialProps = async(appContext: AppContext) => {
+  const appProps = App.getInitialProps(appContext);
+  const userLocale = getLocaleAtServerSide(appContext.ctx.req as unknown as CrowiRequest);
+
+  return { ...appProps, userLocale };
+};
 
 export default appWithTranslation(GrowiApp, nextI18nConfig);

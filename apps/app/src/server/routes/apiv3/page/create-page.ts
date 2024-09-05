@@ -16,11 +16,10 @@ import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import type { IOptionsForCreate } from '~/interfaces/page';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
-import {
-  GlobalNotificationSettingEvent, serializePageSecurely, serializeRevisionSecurely,
-} from '~/server/models';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import { configManager } from '~/server/service/config-manager';
 import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
@@ -107,14 +106,15 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
   // define validators for req.body
   const validator: ValidationChain[] = [
     body('path').optional().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("The empty value is not allowd for the 'path'"),
+      .withMessage("Empty value is not allowed for 'path'"),
     body('parentPath').optional().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("The empty value is not allowd for the 'parentPath'"),
+      .withMessage("Empty value is not allowed for 'parentPath'"),
     body('optionalParentPath').optional().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("The empty value is not allowd for the 'optionalParentPath'"),
+      .withMessage("Empty value is not allowed for 'optionalParentPath'"),
     body('body').optional().isString()
       .withMessage('body must be string or undefined'),
     body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
+    body('onlyInheritUserRelatedGrantedGroups').optional().isBoolean().withMessage('onlyInheritUserRelatedGrantedGroups must be boolean'),
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('pageTags').optional().isArray().withMessage('pageTags must be array'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
@@ -231,10 +231,12 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       let createdPage;
       try {
         const {
-          grant, grantUserGroupIds, overwriteScopesOfDescendants, wip, origin,
+          grant, grantUserGroupIds, onlyInheritUserRelatedGrantedGroups, overwriteScopesOfDescendants, wip, origin,
         } = req.body;
 
-        const options: IOptionsForCreate = { overwriteScopesOfDescendants, wip, origin };
+        const options: IOptionsForCreate = {
+          onlyInheritUserRelatedGrantedGroups, overwriteScopesOfDescendants, wip, origin,
+        };
         if (grant != null) {
           options.grant = grant;
           options.grantUserGroupIds = grantUserGroupIds;

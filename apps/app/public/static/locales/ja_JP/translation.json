@@ -354,7 +354,9 @@
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
       "expiration": "この共有パーマリンクの有効期限は <strong>{{expiredAt}}</strong> です。",
-      "no_deadline": "このページに有効期限は設定されていません。"
+      "no_deadline": "このページに有効期限は設定されていません。",
+      "not_indexed1": "このページは全文検索エンジンにインデックスされない可能性があります.",
+      "not_indexed2": "ページ本文が閾値を超えています: {{threshold}}."
     }
   },
   "page_edit": {
@@ -458,6 +460,12 @@
     }
   },
   "duplicated_pages": "{{fromPath}} を複製しました",
+  "modal_granted_groups_inheritance_select": {
+    "select_granted_groups": "閲覧権限のあるグループを選択",
+    "inherit_all_granted_groups_from_parent": "閲覧権限のあるグループを親ページから全て引き継ぐ",
+    "only_inherit_related_groups": "自分が所属するグループのみを親ページから引き継ぐ",
+    "create_page": "ページ作成"
+  },
   "modal_putback": {
     "label": {
       "Put Back Page": "ページを元に戻す",
@@ -594,6 +602,8 @@
     "delete_completely": "完全に削除する",
     "include_certain_path": "{{pathToInclude}}下を含む ",
     "delete_all_selected_page": "一括削除",
+    "select_all": "全件選択",
+    "delete_selected_pages": "選択したページを削除",
     "currently_not_implemented": "現在未実装の機能です",
     "search_again": "再検索",
     "number_of_list_to_display": "表示件数",
@@ -696,10 +706,9 @@
     "Email format is invalid": "メールアドレスのフォーマットが無効です",
     "Email field is required": "メールアドレスは必須項目です",
     "Password has invalid character": "パスワードに無効な文字があります",
-    "Password minimum character should be more than 8 characters": "パスワードの最小文字数は8文字以上です",
+    "Password minimum character should be more than n characters": "パスワードの最小文字数は{{number}}文字以上です",
     "Password field is required": "パスワードの欄は必ず入力してください",
     "Username or E-mail has invalid characters": "ユーザー名または、メールアドレスに無効な文字があります",
-    "Password minimum character should be more than 6 characters": "パスワードの最小文字数は6文字以上です",
     "user_not_found": "ユーザーが見つかりません",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>エラー: DuplicatedUsernameException</strong></p><p class='mb-0'> {{ failedProviderForDuplicatedUsernameException }} 認証は成功しましたが、新しいユーザーを作成できませんでした。詳しくは<a href='https://github.com/weseek/growi/issues/193'>こちら: #193</a>.</p>"
   },
@@ -732,36 +741,6 @@
     "incorrect_token_or_expired_url": "トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません",
     "please_enable_mailer_alert": "メール設定が完了していないため、パスワード再設定機能が無効になっています。メール設定を完了させるよう管理者に依頼してください。"
-  },
-  "emoji": {
-    "title": "絵文字を選択",
-    "search": "探す",
-    "clear": "リセット",
-    "notfound": "絵文字が見つかりません",
-    "skintext": "デフォルトの肌の色を選択",
-    "categories": {
-      "search": "検索結果",
-      "recent": "最新履歴",
-      "smileys": "スマイリーと感情",
-      "people": "人と体",
-      "nature": "動物と自然",
-      "foods": "食べ物や飲み物",
-      "activity": "アクティビティ",
-      "places": "旅行と場所",
-      "objects": "オブジェクト",
-      "symbols": "シンボル",
-      "flags": "国旗",
-      "custom": "カスタマイズ"
-    },
-    "categorieslabel": "絵文字カテゴリ",
-    "skintones": {
-      "1": "デフォルトの肌の色",
-      "2": "明るい肌のトーン",
-      "3": "ミディアム-明るい肌のトーン",
-      "4": "ミディアムスキントーン",
-      "5": "ミディアムダークスキントーン",
-      "6": "肌の色が濃い"
-    }
   },
   "maintenance_mode": {
     "maintenance_mode": "メンテナンスモード",
@@ -819,6 +798,7 @@
     "receive_notifications": "通知を受け取る",
     "stop_notification": "通知を止める",
     "footprints": "足跡",
+    "login_required": "ログインが必要です",
     "operation": {
       "attention": {
         "rename": "配下のページパスの更新が正常に行われませんでした。3点リーダーからメニューを開き、「パスを修復」を選択してしてください。"
@@ -947,5 +927,13 @@
   },
   "create_page": {
     "untitled": "無題のページ"
+  },
+  "sync-latest-revision-body": {
+    "menuitem": "最新のリビジョンの本文とエディタのテキストを同期",
+    "confirm": "エディターに入力中のドラフトデータを削除して最新の本文を同期します。実行しますか？",
+    "alert": "最新の本文が同期されていない可能性があります。リロードして再度ご確認ください。",
+    "success-toaster": "最新の本文を同期しました",
+    "skipped-toaster": "エディターがアクティブではないため、同期をスキップしました。エディターを開いて再度お試しください。",
+    "error-toaster": "最新の本文の同期に失敗しました"
   }
 }

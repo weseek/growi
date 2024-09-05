@@ -1,6 +1,7 @@
 import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
 import { reshapeContentsBody } from '@growi/slack/dist/utils/reshape-contents-body';
 
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
@@ -19,7 +20,7 @@ class CreatePageService {
     const reshapedContentsBody = reshapeContentsBody(contentsBody);
 
     // sanitize path
-    const sanitizedPath = this.crowi.xss.process(path);
+    const sanitizedPath = generalXssFilter.process(path);
     const normalizedPath = pathUtils.normalizePath(sanitizedPath);
 
     // Since an ObjectId is required for creating a page, if a user does not exist, a dummy user will be generated

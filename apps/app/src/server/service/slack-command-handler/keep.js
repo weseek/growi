@@ -1,13 +1,14 @@
 import {
   inputBlock, actionsBlock, buttonElement, markdownSectionBlock,
 } from '@growi/slack/dist/utils/block-kit-builder';
+import { format } from 'date-fns/format';
+import { parse } from 'date-fns/parse';
 
+import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:SlackBotService:keep');
-const { parse, format } = require('date-fns');
 
-const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');

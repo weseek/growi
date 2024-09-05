@@ -2,7 +2,7 @@ import growiDirective from '@growi/remark-growi-directive';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import katex from 'rehype-katex';
 import raw from 'rehype-raw';
-import sanitize, { defaultSchema as rehypeSanitizeDefaultSchema } from 'rehype-sanitize';
+import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import breaks from 'remark-breaks';
 import emoji from 'remark-emoji';
@@ -16,16 +16,18 @@ import type { Pluggable, PluginTuple } from 'unified';
 
 import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
-import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import loggerFactory from '~/utils/logger';
 
+import { tagNames as recommendedTagNames, attributes as recommendedAttributes } from './recommended-whitelist';
 import * as addClass from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
+
 
 // import EasyGrid from './PreProcessor/EasyGrid';
 
@@ -36,34 +38,27 @@ const logger = loggerFactory('growi:services:renderer');
 
 type SanitizePlugin = PluginTuple<[SanitizeOption]>;
 
-const baseSanitizeSchema = {
-  tagNames: ['iframe', 'section', 'video'],
-  attributes: {
-    iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
-    video: ['controls', 'src', 'muted', 'preload', 'width', 'height', 'autoplay'],
-    // The special value 'data*' as a property name can be used to allow all data properties.
-    // see: https://github.com/syntax-tree/hast-util-sanitize/
-    '*': ['key', 'class', 'className', 'style', 'data*'],
-  },
-};
+let currentInitializedSanitizeType: RehypeSanitizeType = RehypeSanitizeType.RECOMMENDED;
+let commonSanitizeOption: SanitizeOption;
+export const getCommonSanitizeOption = (config:RendererConfig): SanitizeOption => {
+  if (commonSanitizeOption == null || config.sanitizeType !== currentInitializedSanitizeType) {
+    // initialize
+    commonSanitizeOption = {
+      tagNames: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
+        ? recommendedTagNames
+        : config.customTagWhitelist ?? recommendedTagNames,
+      attributes: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
+        ? recommendedAttributes
+        : config.customAttrWhitelist ?? recommendedAttributes,
+      clobberPrefix: '', // remove clobber prefix
+    };
 
-export const commonSanitizeOption: SanitizeOption = deepmerge(
-  rehypeSanitizeDefaultSchema,
-  baseSanitizeSchema,
-  {
-    clobberPrefix: '', // remove clobber prefix
-  },
-);
-
-let isInjectedCustomSanitaizeOption = false;
-
-export const injectCustomSanitizeOption = (config: RendererConfig): void => {
-  if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    commonSanitizeOption.tagNames = baseSanitizeSchema.tagNames.concat(config.tagWhitelist ?? []);
-    commonSanitizeOption.attributes = deepmerge(baseSanitizeSchema.attributes, config.attrWhitelist ?? {});
-    isInjectedCustomSanitaizeOption = true;
+    currentInitializedSanitizeType = config.sanitizeType;
   }
+
+  return commonSanitizeOption;
 };
+
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
   if (!Array.isArray(pluggable) || pluggable.length < 2) {
@@ -142,13 +137,9 @@ export const generateSSRViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
   const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
-      commonSanitizeOption,
+      getCommonSanitizeOption(config),
     )]
     : () => {};
 

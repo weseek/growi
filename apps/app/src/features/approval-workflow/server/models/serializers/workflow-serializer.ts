@@ -1,18 +1,18 @@
-import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
+import { omitInsecureAttributes } from '@growi/core/dist/models/serializers';
 
 import type { IWorkflowDocument } from '../workflow';
 
 
 export const serializeWorkflowSecurely = (workflow: IWorkflowDocument, isOnlyCreator = false): IWorkflowDocument => {
 
-  workflow.creator = serializeUserSecurely(workflow.creator);
+  workflow.creator = omitInsecureAttributes(workflow.creator);
   if (isOnlyCreator) {
     return workflow;
   }
 
   workflow.approverGroups.forEach((approverGroup) => {
     approverGroup.approvers.forEach((approver) => {
-      approver.user = serializeUserSecurely(approver.user);
+      approver.user = omitInsecureAttributes(approver.user);
     });
   });
 

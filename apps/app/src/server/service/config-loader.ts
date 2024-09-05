@@ -4,8 +4,9 @@ import { parseISO } from 'date-fns/parseISO';
 import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 import loggerFactory from '~/utils/logger';
 
-import type { Config } from '../models/config';
-import ConfigModel, { defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs } from '../models/config';
+import {
+  Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
+} from '../models/config';
 
 
 const logger = loggerFactory('growi:service:ConfigLoader');
@@ -281,6 +282,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'app:elasticsearchRejectUnauthorized',
     type:    ValueType.BOOLEAN,
     default: false,
+  },
+  ELASTICSEARCH_MAX_BODY_LENGTH_TO_INDEX: {
+    ns:      'crowi',
+    key:     'app:elasticsearchMaxBodyLengthToIndex',
+    type:    ValueType.NUMBER,
+    default: 100000,
+  },
+  ELASTICSEARCH_REINDEX_BULK_SIZE: {
+    ns:      'crowi',
+    key:     'app:elasticsearchReindexBulkSize',
+    type:    ValueType.NUMBER,
+    default: 100,
   },
   ELASTICSEARCH_REINDEX_ON_BOOT: {
     ns:      'crowi',
@@ -715,7 +728,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns: 'crowi',
     key: 'app:ssrMaxRevisionBodyLength',
     type: ValueType.NUMBER,
-    default: 30000,
+    default: 3000,
   },
   WIP_PAGE_EXPIRATION_SECONDS: {
     ns: 'crowi',
@@ -778,7 +791,7 @@ export default class ConfigLoader {
 
   async loadFromDB(): Promise<any> {
     const config = {};
-    const docs: Config[] = await ConfigModel.find().exec();
+    const docs = await Config.find().exec();
 
     for (const doc of docs) {
       if (!config[doc.ns]) {
