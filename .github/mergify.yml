@@ -4,26 +4,52 @@ queue_rules:
     queue_conditions:
       - '#approved-reviews-by >= 2'
       - check-success = "check-title"
-      - check-success = "Node CI for slackbot-proxy"
-      - check-success = "Node CI for app development"
+      - check-success = "ci-slackbot-proxy-lint (20.x)"
+      - check-success = "ci-slackbot-proxy-launch-dev (20.x)"
+      - check-success = "ci-slackbot-proxy-launch-prod (20.x)"
+      - check-success = "ci-app-lint (20.x)"
+      - check-success = "ci-app-test (20.x)"
+      - check-success = "ci-app-launch-dev (20.x)"
     merge_conditions:
       - '#approved-reviews-by >= 2'
       - check-success = "check-title"
-      - check-success = "Node CI for slackbot-proxy"
-      - check-success = "Node CI for app development"
-      - check-success = "Node CI for app production"
+      - check-success = "ci-slackbot-proxy-lint (20.x)"
+      - check-success = "ci-slackbot-proxy-launch-dev (20.x)"
+      - check-success = "ci-slackbot-proxy-launch-prod (20.x)"
+      - check-success = "ci-app-lint (20.x)"
+      - check-success = "ci-app-test (20.x)"
+      - check-success = "ci-app-launch-dev (20.x)"
+      - check-success = "test-prod-node18 / launch-prod"
+      - check-success = "test-prod-node20 / launch-prod"
 
 pull_request_rules:
+  - name: Automatic queue to merge
+    conditions:
+      - '#approved-reviews-by >= 1'
+      - check-success = "check-title"
+      - check-success = "ci-slackbot-proxy-lint (20.x)"
+      - check-success = "ci-slackbot-proxy-launch-dev (20.x)"
+      - check-success = "ci-slackbot-proxy-launch-prod (20.x)"
+      - check-success = "ci-app-lint (20.x)"
+      - check-success = "ci-app-test (20.x)"
+      - check-success = "ci-app-launch-dev (20.x)"
+    actions:
+      queue:
+        method: merge
+
   - name: Automatic merge for Dependabot pull requests
     conditions:
       - author = dependabot[bot]
       - '#approved-reviews-by >= 1'
       - check-success = "check-title"
-      - check-success ~= Node CI for slackbot-proxy / .*
-      - check-success ~= Node CI for app development / .*
-      - check-success = test-prod-node20
-      - check-success ~= test-prod-node20
-      - check-success ~= test-prod-node20 / .*
+      - check-success = "ci-slackbot-proxy-lint (20.x)"
+      - check-success = "ci-slackbot-proxy-launch-dev (20.x)"
+      - check-success = "ci-slackbot-proxy-launch-prod (20.x)"
+      - check-success = "ci-app-lint (20.x)"
+      - check-success = "ci-app-test (20.x)"
+      - check-success = "ci-app-launch-dev (20.x)"
+      - check-success = "test-prod-node18 / launch-prod"
+      - check-success = "test-prod-node20 / launch-prod"
     actions:
       merge:
         method: merge
