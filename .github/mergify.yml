@@ -19,9 +19,9 @@ pull_request_rules:
       - author = dependabot[bot]
       - '#approved-reviews-by >= 1'
       - check-success = "check-title"
-      - check-success = "Node CI for slackbot-proxy"
-      - check-success = "Node CI for app development"
-      - check-success = "Node CI for app production"
+      - check-success ~= "Node CI for slackbot-proxy \/.*"
+      - check-success ~= "Node CI for app development \/.*"
+      - check-success ~= "Node CI for app production \/.*"
     actions:
       merge:
         method: merge
