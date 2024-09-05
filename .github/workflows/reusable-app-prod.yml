@@ -213,7 +213,7 @@ jobs:
       fail-fast: false
       matrix:
         # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: ['50']
+        spec-group: []
 
     services:
       mongodb:
