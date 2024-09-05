@@ -71,8 +71,6 @@
     "@vitejs/plugin-react": "^4.3.1",
     "@vitest/coverage-v8": "^1.6.0",
     "@vitest/ui": "^1.6.0",
-    "cypress": "^13.3.0",
-    "cypress-wait-until": "^2.0.1",
     "eslint": "^8.41.0",
     "eslint-config-next": "^12.1.6",
     "eslint-config-weseek": "^2.1.1",
