@@ -29,11 +29,8 @@ queue_rules:
 pull_request_rules:
   - name: Automatic queue to merge
     conditions:
-      - or:
-        - label = automerge
-        - and:
-          - '#approved-reviews-by >= 1'
-          - '#review-requested = 0'
+      - '#approved-reviews-by >= 1'
+      - '#review-requested = 0'
     actions:
       queue:
 
