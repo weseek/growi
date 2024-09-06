@@ -288,7 +288,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [currentPageId, mutateCurrentPage, mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
+
+  // Add pageWithMeta?.data.revision?._id to the dependency array as it should mutate when revisionId changes
+  }, [
+    currentPageId, mutateCurrentPage, mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown,
+    props.isNotFound, props.skipSSR, pageWithMeta?.data.revision?._id,
+  ]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
