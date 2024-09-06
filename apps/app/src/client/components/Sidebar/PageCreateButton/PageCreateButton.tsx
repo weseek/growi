@@ -12,8 +12,6 @@ import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 import { useCreateNewPage, useCreateTodaysMemo } from './hooks';
 
-import styles from './CreateButton.module.scss';
-
 
 export const PageCreateButton = React.memo((): JSX.Element => {
   const [isHovered, setIsHovered] = useState(false);
