@@ -343,16 +343,18 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
           </DropdownToggle>
         ) }
 
-        <PageItemControlDropdownMenu
-          {...props}
-          isLoading={isLoading}
-          pageInfo={fetchedPageInfo ?? presetPageInfo}
-          onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-          onClickRenameMenuItem={renameMenuItemClickHandler}
-          onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-          onClickDeleteMenuItem={deleteMenuItemClickHandler}
-          onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
-        />
+        { isOpen && (
+          <PageItemControlDropdownMenu
+            {...props}
+            isLoading={isLoading}
+            pageInfo={fetchedPageInfo ?? presetPageInfo}
+            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+            onClickRenameMenuItem={renameMenuItemClickHandler}
+            onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+            onClickDeleteMenuItem={deleteMenuItemClickHandler}
+            onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
+          />
+        ) }
       </Dropdown>
 
     </NotAvailableForGuest>
