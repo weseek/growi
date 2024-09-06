@@ -21,7 +21,8 @@ jobs:
 
     if: |
       (!contains( github.event.pull_request.labels.*.name, 'flag/exclude-from-changelog' )
-        && !startsWith( github.head_ref, 'changeset-release/' ))
+        && !startsWith( github.head_ref, 'changeset-release/' )
+        && !startsWith( github.head_ref, 'mergify/merge-queue/' ))
 
     steps:
       - uses: release-drafter/release-drafter@v5
