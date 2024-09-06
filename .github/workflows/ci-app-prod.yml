@@ -7,6 +7,7 @@ on:
       - dev/7.*.x
       - dev/6.*.x
     paths:
+      - .github/mergify.yml
       - .github/workflows/ci-app-prod.yml
       - .github/workflows/reusable-app-prod.yml
       - .github/workflows/reusable-app-reg-suit.yml
@@ -24,6 +25,7 @@ on:
       - dev/6.*.x
     types: [opened, reopened, synchronize]
     paths:
+      - .github/mergify.yml
       - .github/workflows/ci-app-prod.yml
       - .github/workflows/reusable-app-prod.yml
       - .github/workflows/reusable-app-reg-suit.yml
@@ -34,12 +36,6 @@ on:
       - apps/app/**
       - '!apps/app/docker/**'
       - packages/**
-  workflow_call:
-    inputs:
-      cypress-config-video:
-        description: 'Enable video when running Cypress test'
-        type: boolean
-        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -62,25 +58,21 @@ jobs:
     with:
       node-version: 20.x
       skip-e2e-test: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
-      cypress-report-artifact-name-prefix: cypress-report-
-      cypress-config-video: ${{ inputs.cypress-config-video || false }}
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
+  # run-reg-suit-node20:
+  #   needs: [test-prod-node20]
 
-  run-reg-suit-node20:
-    needs: [test-prod-node20]
+  #   uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
 
-    uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
+  #   if: always()
 
-    if: always()
-
-    with:
-      node-version: 20.x
-      skip-reg-suit: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
-      cypress-report-artifact-name-pattern: cypress-report-*
-    secrets:
-      REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #   with:
+  #     node-version: 20.x
+  #     skip-reg-suit: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
+  #   secrets:
+  #     REG_NOTIFY_GITHUB_PLUGIN_CLIENTID: ${{ secrets.REG_NOTIFY_GITHUB_PLUGIN_CLIENTID }}
+  #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

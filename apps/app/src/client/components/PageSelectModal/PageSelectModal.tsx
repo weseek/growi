@@ -10,6 +10,7 @@ import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
 } from 'reactstrap';
+import SimpleBar from 'simplebar-react';
 
 import type { IPageForItem } from '~/interfaces/page';
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
@@ -21,6 +22,7 @@ import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 import { TreeItemForModal } from './TreeItemForModal';
+
 
 export const PageSelectModal: FC = () => {
   const {
@@ -82,20 +84,23 @@ export const PageSelectModal: FC = () => {
       isOpen={isOpened}
       toggle={closeModal}
       centered
-      size="sm"
     >
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
-      <ModalBody>
+      <ModalBody className="p-0">
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
-          <ItemsTree
-            CustomTreeItem={TreeItemForModal}
-            isEnableActions={!isGuestUser}
-            isReadOnlyUser={!!isReadOnlyUser}
-            targetPath={targetPath}
-            targetPathOrId={targetPathOrId}
-            targetAndAncestorsData={targetAndAncestorsData}
-            onClickTreeItem={onClickTreeItem}
-          />
+          <SimpleBar style={{ maxHeight: 'calc(85vh - 133px)' }}> {/* 133px = 63px(ModalHeader) + 70px(ModalFooter) */}
+            <div className="p-3">
+              <ItemsTree
+                CustomTreeItem={TreeItemForModal}
+                isEnableActions={!isGuestUser}
+                isReadOnlyUser={!!isReadOnlyUser}
+                targetPath={targetPath}
+                targetPathOrId={targetPathOrId}
+                targetAndAncestorsData={targetAndAncestorsData}
+                onClickTreeItem={onClickTreeItem}
+              />
+            </div>
+          </SimpleBar>
         </Suspense>
       </ModalBody>
       <ModalFooter>

@@ -32,14 +32,15 @@ test('Access to /trash page', async({ page }) => {
   await expect(page.getByTestId('trash-page-list')).toBeVisible();
 });
 
-// TODO: Improve collapseSidebar (https://redmine.weseek.co.jp/issues/148538)
-// test('Access to /tags page', async({ page }) => {
-//   await page.goto('/tags');
+test('Access to /tags page', async({ page }) => {
+  await page.goto('/');
 
-//   await collapseSidebar(page, false);
-//   await page.getByTestId('grw-sidebar-nav-primary-tags').click();
-//   await expect(page.getByTestId('grw-sidebar-content-tags')).toBeVisible();
-//   await expect(page.getByTestId('grw-tags-list').first()).toBeVisible();
-//   await expect(page.getByTestId('grw-tags-list').first()).toContainText('You have no tag, You can set tags on pages');
-//   await expect(page.getByTestId('tags-page')).toBeVisible();
-// });
+  await collapseSidebar(page, false);
+  await page.getByTestId('grw-sidebar-nav-primary-tags').click();
+  await expect(page.getByTestId('grw-sidebar-content-tags')).toBeVisible();
+  await expect(page.getByTestId('grw-tags-list').first()).toBeVisible();
+  await expect(page.getByTestId('grw-tags-list').first()).toContainText('You have no tag, You can set tags on pages');
+
+  await page.getByTestId('check-all-tags-button').click();
+  await expect(page.getByTestId('tags-page')).toBeVisible();
+});

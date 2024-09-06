@@ -1,7 +1,7 @@
 {
   "core": {
     "workingDir": ".reg",
-    "actualDir": "test/cypress/screenshots",
+    "actualDir": "test/playwright/screenshots",
     "thresholdRate": 0.001,
     "addIgnore": true,
     "ximgdiff": {
