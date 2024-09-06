@@ -1,0 +1,56 @@
+queue_rules:
+  - name: default
+    allow_inplace_checks: false
+    queue_conditions:
+      - "#check-failure=0"
+      - check-success = "check-title"
+      - or:
+        - and:
+            - check-success = "ci-slackbot-proxy-lint (20.x)"
+            - check-success = "ci-slackbot-proxy-launch-dev (20.x)"
+        - and:
+            - check-success = "ci-app-lint (20.x)"
+            - check-success = "ci-app-test (20.x)"
+            - check-success = "ci-app-launch-dev (20.x)"
+    merge_conditions:
+      - "#check-failure=0"
+      - or:
+        - and:
+            - check-success = "ci-slackbot-proxy-lint (20.x)"
+            - check-success = "ci-slackbot-proxy-launch-dev (20.x)"
+            - check-success = "ci-slackbot-proxy-launch-prod (20.x)"
+        - and:
+            - check-success = "ci-app-lint (20.x)"
+            - check-success = "ci-app-test (20.x)"
+            - check-success = "ci-app-launch-dev (20.x)"
+            - check-success = "test-prod-node18 / launch-prod"
+            - check-success = "test-prod-node20 / launch-prod"
+
+pull_request_rules:
+  - name: Automatic queue to merge
+    conditions:
+      - or:
+        - label = automerge
+        - and:
+          - '#approved-reviews-by >= 1'
+          - '#review-requested = 0'
+    actions:
+      queue:
+
+  - name: Automatic merge for Dependabot pull requests
+    conditions:
+      - author = dependabot[bot]
+      - '#approved-reviews-by >= 1'
+      - "#check-failure=0"
+      - check-success = "check-title"
+    actions:
+      merge:
+        method: merge
+
+  - name: Automatic merge for Preparing next version
+    conditions:
+      - author = github-actions[bot]
+      - label = "type/prepare-next-version"
+    actions:
+      merge:
+        method: merge

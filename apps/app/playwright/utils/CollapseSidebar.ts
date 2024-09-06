@@ -1,4 +1,3 @@
-// TODO: https://redmine.weseek.co.jp/issues/148538
 import { expect, type Page } from '@playwright/test';
 
 export const collapseSidebar = async(page: Page, isCollapsed: boolean): Promise<void> => {
@@ -9,7 +8,6 @@ export const collapseSidebar = async(page: Page, isCollapsed: boolean): Promise<
 
   const collapseSidebarToggle = page.getByTestId('btn-toggle-collapse');
   await expect(collapseSidebarToggle).toBeVisible();
-
   await collapseSidebarToggle.click();
 
   if (isCollapsed) {
