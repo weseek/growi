@@ -43,7 +43,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     setDropdownOpen(false);
   };
 
-
   const toggle = () => setDropdownOpen(!dropdownOpen);
 
   return (
