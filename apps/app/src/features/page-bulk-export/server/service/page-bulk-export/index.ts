@@ -11,9 +11,13 @@ import {
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
+// eslint-disable-next-line no-restricted-imports
+import axios from 'axios';
 import gc from 'expose-gc/function';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
+import remark from 'remark';
+import html from 'remark-html';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -81,14 +85,15 @@ class PageBulkExportService implements IPageBulkExportService {
   /**
    * Create a new page bulk export job and execute it
    */
-  async createAndExecuteOrRestartBulkExportJob(basePagePath: string, currentUser, activityParameters: ActivityParameters, restartJob = false): Promise<void> {
+  async createAndExecuteOrRestartBulkExportJob(
+      basePagePath: string, format: PageBulkExportFormat, currentUser, activityParameters: ActivityParameters, restartJob = false,
+  ): Promise<void> {
     const basePage = await this.pageModel.findByPathAndViewer(basePagePath, currentUser, null, true);
 
     if (basePage == null) {
       throw new Error('Base page not found or not accessible');
     }
 
-    const format = PageBulkExportFormat.md;
     const duplicatePageBulkExportJobInProgress: HydratedDocument<PageBulkExportJobDocument> | null = await PageBulkExportJob.findOne({
       user: currentUser,
       page: basePage,
@@ -292,12 +297,22 @@ class PageBulkExportService implements IPageBulkExportService {
 
           if (revision != null && isPopulated(revision)) {
             const markdownBody = revision.body;
-            const pathNormalized = `${normalizePath(page.path)}.${PageBulkExportFormat.md}`;
-            const fileOutputPath = path.join(outputDir, pathNormalized);
-            const fileOutputParentPath = getParentPath(fileOutputPath);
 
-            await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
-            await fs.promises.writeFile(fileOutputPath, markdownBody);
+            if (pageBulkExportJob.format === PageBulkExportFormat.md) {
+              const pathNormalized = `${normalizePath(page.path)}.${PageBulkExportFormat.md}`;
+              const fileOutputPath = path.join(outputDir, pathNormalized);
+              const fileOutputParentPath = getParentPath(fileOutputPath);
+
+              await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
+              await fs.promises.writeFile(fileOutputPath, markdownBody);
+            }
+            else {
+              const htmlString = await this.convertMdToHtml(markdownBody);
+              const pathNormalized = `${normalizePath(page.path)}.${PageBulkExportFormat.pdf}`;
+
+              const url = 'http://growi-pdf-converter:3004/pdf/html-to-pdf';
+              await axios.post(url, { htmlString, fileName: pathNormalized, jobId: pageBulkExportJob._id.toString() });
+            }
             pageBulkExportJob.lastExportedPagePath = page.path;
             await pageBulkExportJob.save();
           }
@@ -309,6 +324,15 @@ class PageBulkExportService implements IPageBulkExportService {
         callback();
       },
     });
+  }
+
+  private async convertMdToHtml(md: string): Promise<string> {
+    const htmlString = (await remark()
+      .use(html)
+      .process(md))
+      .toString();
+
+    return htmlString;
   }
 
   /**
