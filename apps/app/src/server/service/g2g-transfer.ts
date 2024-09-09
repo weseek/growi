@@ -614,7 +614,7 @@ export class G2GTransferReceiverService implements Receiver {
       if (collectionName === 'configs' && options.mode !== ImportMode.flushAndInsert) {
         throw new Error('`flushAndInsert` is only available as an import setting for configs collection');
       }
-      if (collectionName === 'pages' && options.mode === 'insert') {
+      if (collectionName === 'pages' && options.mode === ImportMode.insert) {
         throw new Error('`insert` is not available as an import setting for pages collection');
       }
       if (collectionName === 'attachmentFiles.chunks') {
