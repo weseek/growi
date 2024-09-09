@@ -3,9 +3,13 @@ import type { IPage } from '@growi/core';
 import { Announcement, AnnouncementStatuses } from '~/features/announcement';
 import type { IAnnouncement, ParamsForAnnouncement } from '~/interfaces/announcement';
 
+import loggerFactory from '~/utils/logger';
+
 import type Crowi from '../../../../server/crowi';
 import type { ActivityDocument } from '../../../../server/models/activity';
 import type { PreNotifyProps } from '../../../../server/service/pre-notify';
+
+const logger = loggerFactory('growi:service:inAppNotification');
 
 export default class AnnouncementService {
 
@@ -23,10 +27,10 @@ export default class AnnouncementService {
 
   }
 
-  getReadRate = async() => {};
+  getReadRate = async () => { };
 
-  insertAnnouncement = async(
-      params: ParamsForAnnouncement,
+  insertAnnouncement = async (
+    params: ParamsForAnnouncement,
   ): Promise<void> => {
 
     const {
@@ -54,16 +58,17 @@ export default class AnnouncementService {
     }];
 
     await Announcement.bulkWrite(operation);
+    logger.info('Announcement bulkWrite has run');
 
     return;
 
   };
 
-  doAnnounce = async(activity: ActivityDocument, target: IPage, params: ParamsForAnnouncement): Promise<void> => {
+  doAnnounce = async (activity: ActivityDocument, target: IPage, params: ParamsForAnnouncement): Promise<void> => {
 
     this.insertAnnouncement(params);
 
-    const preNotify = async(props: PreNotifyProps) => {
+    const preNotify = async (props: PreNotifyProps) => {
 
       const { notificationTargetUsers } = props;
 

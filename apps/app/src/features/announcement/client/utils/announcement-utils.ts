@@ -7,10 +7,10 @@ import { type IAnnouncement, type ParamsForAnnouncement } from '~/interfaces/ann
 import { apiv3Post } from '../../../../client/util/apiv3-client';
 import { toastError } from '../../../../client/util/toastr';
 
-export const createAnnouncement = async(params: ParamsForAnnouncement): Promise<void> => {
+export const createAnnouncement = async (params: ParamsForAnnouncement, currentPageId): Promise<void> => {
 
   try {
-    await apiv3Post('/announcement/doAnnouncement', params);
+    await apiv3Post(`/announcement/${currentPageId}/doAnnouncement`, params);
   }
   catch (err) {
     toastError(err);

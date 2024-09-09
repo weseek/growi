@@ -30,11 +30,27 @@ module.exports = (crowi: Crowi): Router => {
     ],
   };
 
-  router.post('/doAnnouncement', loginRequiredStrictly, validators.doAnnouncement, async(req: CrowiRequest) => {
+  router.post('/', async (req: CrowiRequest) => {
+
+    console.log('test');
+
+  })
+
+  router.post('/:name', async (req: CrowiRequest) => {
+
+    const { name } = req.params;
+
+    console.log(name);
+
+  });
+
+  router.post('/:id/doAnnouncement', loginRequiredStrictly, validators.doAnnouncement, async (req: CrowiRequest) => {
 
     const params: ParamsForAnnouncement = req.body;
 
-    const page = await Page.findById(params.pageId);
+    const { id: pageId } = req.params;
+
+    const page = await Page.findById(pageId);
 
     const parametersForActivity = {
       ip: req.ip,
