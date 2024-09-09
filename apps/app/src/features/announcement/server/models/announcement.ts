@@ -1,7 +1,7 @@
 import type { Types, Document, Model } from 'mongoose';
 import { Schema } from 'mongoose';
 
-import type { IAnnouncement } from '../../../../interfaces/announcement';
+import type { IAnnouncement } from '../../interfaces/announcement';
 import { getOrCreateModel } from '../../../../server/util/mongoose-utils';
 import { AnnouncementStatuses } from '../events/announcement-utils';
 
@@ -55,7 +55,7 @@ const AnnouncementSchema = new Schema<AnnouncementDocument>({
   ],
 }, {});
 
-AnnouncementSchema.statics.createByParameters = async function(parameters): Promise<IAnnouncement> {
+AnnouncementSchema.statics.createByParameters = async function (parameters): Promise<IAnnouncement> {
   const announcement = await this.create(parameters) as IAnnouncement;
 
   return announcement;
