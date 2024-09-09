@@ -3,6 +3,7 @@ import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
@@ -13,10 +14,9 @@ import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/a
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
-import {
-  GlobalNotificationSettingEvent, serializePageSecurely, serializeRevisionSecurely, serializeUserSecurely,
-} from '~/server/models';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
+import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import { getYjsService } from '~/server/service/yjs';
@@ -54,7 +54,9 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       .withMessage("'revisionId' must be specified"),
     body('body').exists().isString()
       .withMessage("Empty value is not allowed for 'body'"),
-    body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
+    body('grant').optional().not().isString()
+      .isInt({ min: 0, max: 5 })
+      .withMessage('grant must be an integer from 1 to 5'),
     body('userRelatedGrantUserGroupIds').optional().isArray().withMessage('userRelatedGrantUserGroupIds must be an array of group id'),
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
