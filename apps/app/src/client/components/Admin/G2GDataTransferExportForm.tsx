@@ -92,9 +92,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
         {collectionNames.map((collectionName) => {
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
-          // console.log(optionsMap);
-
-          if (optionsMap[collectionName] == null || optionsMap[collectionName].mode === undefined) {
+          if (optionsMap[collectionName] == null) {
             return null;
           }
 
@@ -191,7 +189,6 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
         : DEFAULT_MODE;
       const ImportOption = IMPORT_OPTION_CLASS_MAPPING[collectionName] || GrowiArchiveImportOption;
       initialOptionsMap[collectionName] = new ImportOption(collectionName, initialMode);
-      console.log('initialOptionsMap[collectionName]', initialOptionsMap[collectionName]);
     });
     updateOptionsMap(initialOptionsMap);
   }, [allCollectionNames, updateOptionsMap]);
