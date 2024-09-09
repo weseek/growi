@@ -3,7 +3,7 @@ import type { WebClient } from '@slack/web-api';
 import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 
-import { RelationRepository } from '~/repositories/relation';
+import type { RelationRepository } from '~/repositories/relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:LinkSharedService');
@@ -42,7 +42,7 @@ type PublicData = {
 export type DataForLinkShared = PrivateData | PublicData;
 
 @Service()
-export class LinkSharedService implements GrowiEventProcessor {
+export class LinkSharedService implements GrowiEventProcessor<LinkSharedRequestEvent> {
 
   @Inject()
   relationRepository: RelationRepository;
