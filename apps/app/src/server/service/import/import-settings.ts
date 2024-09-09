@@ -1,4 +1,5 @@
-import type { ImportMode } from './import-mode';
+import type { ImportMode } from '~/models/admin/import-mode';
+
 import type { OverwriteFunction } from './overwrite-function';
 
 export type OverwriteParams = { [propertyName: string]: OverwriteFunction | unknown }
