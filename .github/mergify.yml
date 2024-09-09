@@ -3,7 +3,6 @@ queue_rules:
     allow_inplace_checks: false
     queue_conditions:
       - '#check-failure = 0'
-      - check-success = "check-title"
       - or:
         - and:
             - check-success ~= ci-slackbot-proxy-
@@ -23,6 +22,7 @@ pull_request_rules:
     conditions:
       - '#approved-reviews-by >= 1'
       - '#review-requested = 0'
+      - check-success = "check-title"
     actions:
       queue:
 
