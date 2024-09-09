@@ -4,12 +4,10 @@ const DEFAULT_PROPS = {
   isOverwriteAuthorWithCurrentUser: false,
 };
 
-class ImportOptionForRevisions extends GrowiArchiveImportOption {
+export class ImportOptionForRevisions extends GrowiArchiveImportOption {
 
-  constructor(mode, initProps) {
-    super(mode, initProps || DEFAULT_PROPS);
+  constructor(collectionName, mode, initProps) {
+    super(collectionName, mode, initProps || DEFAULT_PROPS);
   }
 
 }
-
-module.exports = ImportOptionForRevisions;

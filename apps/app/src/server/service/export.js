@@ -36,7 +36,6 @@ class ExportService {
     this.crowi = crowi;
     this.appService = crowi.appService;
     this.growiBridgeService = crowi.growiBridgeService;
-    this.getFile = this.growiBridgeService.getFile.bind(this);
     this.baseDir = path.join(crowi.tmpDir, 'downloads');
     this.per = 100;
     this.zlibLevel = 9; // 0(min) - 9(max)
@@ -44,6 +43,15 @@ class ExportService {
     this.adminEvent = crowi.event('admin');
 
     this.currentProgressingStatus = null;
+  }
+
+  /**
+   *
+   * @param {string} fileName
+   * @returns {string} path to the file
+   */
+  getFile(fileName) {
+    return this.growiBridgeService.getFile(fileName, this.baseDir);
   }
 
   /**

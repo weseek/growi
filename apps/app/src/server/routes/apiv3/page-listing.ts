@@ -1,5 +1,5 @@
 import type {
-  IPageInfoForListing, IPageInfo,
+  IPageInfoForListing, IPageInfo, IPage,
 } from '@growi/core';
 import { getIdForRef, isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
@@ -9,7 +9,7 @@ import { query, oneOf } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
-
+import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import loggerFactory from '~/utils/logger';
 
@@ -18,6 +18,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import type { PageDocument, PageModel } from '../../models/page';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
@@ -66,7 +67,7 @@ const routerFactory = (crowi: Crowi): Router => {
 
 
   router.get('/root', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const Page: PageModel = crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     let rootPage;
     try {
@@ -104,8 +105,13 @@ const routerFactory = (crowi: Crowi): Router => {
 
     const pageService = crowi.pageService;
 
+    const hideRestrictedByOwner = await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
+    const hideRestrictedByGroup = await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
+
     try {
-      const pages = await pageService.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
+      const pages = await pageService.findChildrenByParentPathOrIdAndViewer(
+        (id || path)as string, req.user, undefined, !hideRestrictedByOwner, !hideRestrictedByGroup,
+      );
       return res.apiv3({ children: pages });
     }
     catch (err) {
@@ -124,7 +130,8 @@ const routerFactory = (crowi: Crowi): Router => {
     const attachShortBody: boolean = attachShortBodyParam === 'true';
 
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
-    const Bookmark = crowi.model('Bookmark');
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const Bookmark = mongoose.model<any, any>('Bookmark');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pageService = crowi.pageService;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

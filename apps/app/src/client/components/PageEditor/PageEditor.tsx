@@ -211,7 +211,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       mutateWaitingSaveProcessing(false);
     }
-  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, t, mutateIsGrantNormalized]);
+  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, updatePage, mutateIsGrantNormalized, t]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
     const markdown = codeMirrorEditor?.getDoc();

@@ -768,6 +768,7 @@
     "receive_notifications": "接收通知",
     "stop_notification": "停止通知",
     "footprints": "脚印",
+    "login_required": "需要登录",
     "operation": {
       "attention": {
         "rename": "重命名子孙页的路径没有成功，请从三点式阅读器上打开菜单，选择 '路径恢复'。"

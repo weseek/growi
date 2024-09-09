@@ -1,8 +1,35 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.16...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.17...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.17](https://github.com/weseek/growi/compare/v7.0.16...v7.0.17) - 2024-08-26
+
+### 🚀 Improvement
+
+* imprv: Serializers for User model and Attachment model (#9019) @yuki-takei
+* imprv: translation modification (#9035) @maeshinshin
+* imprv: Add UI and logic for disabled user registration (#9034) @maeshinshin
+* imprv: lang attribute in Html element (#8960) @maeshinshin
+
+### 🐛 Bug Fixes
+
+* fix: Serializer for accessing to an empty page (#9042) @yuki-takei
+* fix: Import data (#8994) @yuki-takei
+* fix: Comment operation by API (#9026) @yuki-takei
+* fix: Tests fail due to docker image and Playwright  version mismatch on CI (#9022) @miya
+* fix: Use the scrollbar to prevent the toolbar from being hidden (#8976) @maeshinshin
+* fix: Revision pageId schema type (#9008) @yuki-takei
+* fix: Revision pageId schema type (add a changeset) (#9010) @yuki-takei
+* fix: Hide WideViewMenuItem in search result (#9009) @yuki-takei
+* fix: Wrongly autofocus to PageHeader even after updating (#9011) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Dark mode support for CountBadge (#9036) @satof3
+* support: Update import lines (#9018) @yuki-takei
+* support: Typescriptize REPL launcher (#9013) @yuki-takei
 
 ## [v7.0.16](https://github.com/weseek/growi/compare/v7.0.15...v7.0.16) - 2024-07-31
 

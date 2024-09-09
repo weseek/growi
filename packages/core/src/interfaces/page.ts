@@ -101,23 +101,26 @@ export type IPageInfoForListing = IPageInfoForEntity & HasRevisionShortbody;
 export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperation | IPageInfoForListing;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
+export const isIPageInfo = (pageInfo: any | undefined): pageInfo is IPageInfo => {
   return pageInfo != null && pageInfo instanceof Object
-    && ('isEmpty' in pageInfo)
+    && ('isEmpty' in pageInfo);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
+  return isIPageInfo(pageInfo)
     && pageInfo.isEmpty === false;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForOperation = (pageInfo: any | undefined): pageInfo is IPageInfoForOperation => {
-  return pageInfo != null
-    && isIPageInfoForEntity(pageInfo)
+  return isIPageInfoForEntity(pageInfo)
     && ('isBookmarked' in pageInfo || 'isLiked' in pageInfo || 'subscriptionStatus' in pageInfo);
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForListing = (pageInfo: any | undefined): pageInfo is IPageInfoForListing => {
-  return pageInfo != null
-    && isIPageInfoForEntity(pageInfo)
+  return isIPageInfoForEntity(pageInfo)
     && 'revisionShortBody' in pageInfo;
 };
 

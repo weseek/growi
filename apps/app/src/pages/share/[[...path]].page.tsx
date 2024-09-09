@@ -15,6 +15,7 @@ import { ShareLinkPageView } from '~/components/ShareLinkPageView';
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
@@ -22,6 +23,7 @@ import ShareLink from '~/server/models/share-link';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
+  useIsLocalAccountRegistrationEnabled,
 } from '~/stores-universal/context';
 import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -48,6 +50,7 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
   isEnabledMarp: boolean,
+  isLocalAccountRegistrationEnabled: boolean,
   drawioUri: string | null,
   rendererConfig: RendererConfig,
   skipSSR: boolean,
@@ -98,6 +101,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchServiceReachable(props.isSearchServiceReachable);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
+  useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
   useIsContainerFluid(props.isContainerFluid);
 
   const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
@@ -162,6 +166,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+
+  props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
+    && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.rendererConfig = {
     isSharedPage: true,

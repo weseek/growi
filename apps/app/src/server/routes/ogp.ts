@@ -4,15 +4,16 @@ import path from 'path';
 import { DevidedPagePath } from '@growi/core/dist/models';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
-import {
+import type {
   Request, Response, NextFunction,
 } from 'express';
-import { param, validationResult, ValidationError } from 'express-validator';
+import type { ValidationError } from 'express-validator';
+import { param, validationResult } from 'express-validator';
 
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
-import { Attachment } from '../models';
+import { Attachment } from '../models/attachment';
 import { convertStreamToBuffer } from '../util/stream';
 
 const logger = loggerFactory('growi:routes:ogp');
