@@ -285,7 +285,7 @@ export const useSWRxCurrentGrantData = (
     ? ['/page/grant-data', pageId]
     : null;
 
-  return useSWRImmutable(
+  return useSWR(
     key,
     ([endpoint, pageId]) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
@@ -295,7 +295,7 @@ export const useSWRxApplicableGrant = (
     pageId: string | null | undefined,
 ): SWRResponse<IRecordApplicableGrant, Error> => {
 
-  return useSWRImmutable(
+  return useSWR(
     pageId != null ? ['/page/applicable-grant', pageId] : null,
     ([endpoint, pageId]) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
