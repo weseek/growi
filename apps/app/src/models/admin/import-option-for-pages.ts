@@ -1,4 +1,4 @@
-import { ImportMode } from '~/server/service/import';
+import { ImportMode } from '~/models/admin/import-mode';
 
 import { GrowiArchiveImportOption } from './growi-archive-import-option';
 

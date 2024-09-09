@@ -1,4 +1,4 @@
-import { ImportMode } from '~/server/service/import';
+import { ImportMode } from './import-mode';
 
 export class GrowiArchiveImportOption {
 

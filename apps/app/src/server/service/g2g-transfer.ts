@@ -11,8 +11,9 @@ import mongoose, { Types as MongooseTypes } from 'mongoose';
 
 import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
 import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
+import { ImportMode } from '~/models/admin/import-mode';
 import TransferKeyModel from '~/server/models/transfer-key';
-import { getImportService, ImportMode, type ImportSettings } from '~/server/service/import';
+import { getImportService, type ImportSettings } from '~/server/service/import';
 import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
