@@ -1,6 +1,10 @@
-class GrowiArchiveImportOption {
+export class GrowiArchiveImportOption {
 
-  constructor(collectionName, mode, initProps = {}) {
+  collectionName: string;
+
+  mode: string;
+
+  constructor(collectionName: string, mode: string, initProps = {}) {
     this.collectionName = collectionName;
     this.mode = mode;
 
@@ -10,5 +14,3 @@ class GrowiArchiveImportOption {
   }
 
 }
-
-module.exports = GrowiArchiveImportOption;

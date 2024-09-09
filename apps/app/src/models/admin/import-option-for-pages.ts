@@ -1,4 +1,4 @@
-import GrowiArchiveImportOption from './growi-archive-import-option';
+import { GrowiArchiveImportOption } from './growi-archive-import-option';
 
 const DEFAULT_PROPS = {
   isOverwriteAuthorWithCurrentUser: false,
@@ -20,8 +20,8 @@ export class ImportOptionForPages extends GrowiArchiveImportOption {
 
   initPageMetadatas;
 
-  constructor(collectionName: string, mode: string, initProps) {
-    super(collectionName, mode, initProps || DEFAULT_PROPS);
+  constructor(collectionName: string, mode: string, initProps = DEFAULT_PROPS) {
+    super(collectionName, mode, initProps);
   }
 
 }

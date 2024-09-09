@@ -1,4 +1,4 @@
-const GrowiArchiveImportOption = require('./growi-archive-import-option');
+import { GrowiArchiveImportOption } from './growi-archive-import-option';
 
 const DEFAULT_PROPS = {
   isOverwriteAuthorWithCurrentUser: false,
@@ -6,8 +6,8 @@ const DEFAULT_PROPS = {
 
 export class ImportOptionForRevisions extends GrowiArchiveImportOption {
 
-  constructor(collectionName, mode, initProps) {
-    super(collectionName, mode, initProps || DEFAULT_PROPS);
+  constructor(collectionName: string, mode: string, initProps = DEFAULT_PROPS) {
+    super(collectionName, mode, initProps);
   }
 
 }
