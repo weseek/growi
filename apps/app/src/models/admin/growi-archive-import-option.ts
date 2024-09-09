@@ -1,10 +1,12 @@
+import { ImportMode } from '~/server/service/import';
+
 export class GrowiArchiveImportOption {
 
   collectionName: string;
 
-  mode: string;
+  mode: ImportMode;
 
-  constructor(collectionName: string, mode: string, initProps = {}) {
+  constructor(collectionName: string, mode: ImportMode = ImportMode.insert, initProps = {}) {
     this.collectionName = collectionName;
     this.mode = mode;
 

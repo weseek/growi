@@ -1,3 +1,5 @@
+import { ImportMode } from '~/server/service/import';
+
 import { GrowiArchiveImportOption } from './growi-archive-import-option';
 
 const DEFAULT_PROPS = {
@@ -6,7 +8,7 @@ const DEFAULT_PROPS = {
 
 export class ImportOptionForRevisions extends GrowiArchiveImportOption {
 
-  constructor(collectionName: string, mode: string, initProps = DEFAULT_PROPS) {
+  constructor(collectionName: string, mode: ImportMode = ImportMode.insert, initProps = DEFAULT_PROPS) {
     super(collectionName, mode, initProps);
   }
 

@@ -609,7 +609,7 @@ export class G2GTransferReceiverService implements Receiver {
   ): { [key: string]: ImportSettings; } {
     const importSettingsMap = {};
     innerFileStats.forEach(({ fileName, collectionName }) => {
-      const options = new GrowiArchiveImportOption(collectionName, null, optionsMap[collectionName]);
+      const options = new GrowiArchiveImportOption(collectionName, undefined, optionsMap[collectionName]);
 
       if (collectionName === 'configs' && options.mode !== ImportMode.flushAndInsert) {
         throw new Error('`flushAndInsert` is only available as an import setting for configs collection');
