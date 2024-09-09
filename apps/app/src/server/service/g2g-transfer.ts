@@ -10,7 +10,7 @@ import FormData from 'form-data';
 import mongoose, { Types as MongooseTypes } from 'mongoose';
 
 import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
-import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
+import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { getImportService, ImportMode, type ImportSettings } from '~/server/service/import';
 import { createBatchStream } from '~/server/util/batch-stream';

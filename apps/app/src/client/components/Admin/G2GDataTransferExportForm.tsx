@@ -4,7 +4,7 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 
-import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
+import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
 import { ImportOptionForPages } from '~/models/admin/import-option-for-pages';
 import { ImportOptionForRevisions } from '~/models/admin/import-option-for-revisions';
 
@@ -22,7 +22,7 @@ const GROUPS_CONFIG = [
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
 
-const IMPORT_OPTION_CLASS_MAPPING = {
+const IMPORT_OPTION_CLASS_MAPPING: Record<string, typeof GrowiArchiveImportOption> = {
   pages: ImportOptionForPages,
   revisions: ImportOptionForRevisions,
 };
