@@ -10,7 +10,7 @@ import FormData from 'form-data';
 import mongoose, { Types as MongooseTypes } from 'mongoose';
 
 import { G2G_PROGRESS_STATUS } from '~/interfaces/g2g-transfer';
-import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
+import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
 import TransferKeyModel from '~/server/models/transfer-key';
 import { getImportService, ImportMode, type ImportSettings } from '~/server/service/import';
 import { createBatchStream } from '~/server/util/batch-stream';
@@ -609,12 +609,12 @@ export class G2GTransferReceiverService implements Receiver {
   ): { [key: string]: ImportSettings; } {
     const importSettingsMap = {};
     innerFileStats.forEach(({ fileName, collectionName }) => {
-      const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
+      const options = new GrowiArchiveImportOption(collectionName, undefined, optionsMap[collectionName]);
 
       if (collectionName === 'configs' && options.mode !== ImportMode.flushAndInsert) {
         throw new Error('`flushAndInsert` is only available as an import setting for configs collection');
       }
-      if (collectionName === 'pages' && options.mode === 'insert') {
+      if (collectionName === 'pages' && options.mode === ImportMode.insert) {
         throw new Error('`insert` is not available as an import setting for pages collection');
       }
       if (collectionName === 'attachmentFiles.chunks') {

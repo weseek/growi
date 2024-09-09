@@ -303,14 +303,12 @@ export class ImportService {
 
   /**
    * process bulk operation
-   * @param {object} bulk MongoDB Bulk instance
-   * @param {string} collectionName collection name
-   * @param {object} document
-   * @param {ImportSettings} importSettings
+   * @param bulk MongoDB Bulk instance
+   * @param collectionName collection name
    */
-  bulkOperate(bulk, collectionName, document, importSettings) {
+  bulkOperate(bulk, collectionName: string, document, importSettings: ImportSettings) {
     // insert
-    if (importSettings.mode !== 'upsert') {
+    if (importSettings.mode !== ImportMode.upsert) {
       return bulk.insert(document);
     }
 
