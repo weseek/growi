@@ -2238,6 +2238,7 @@ class PageService implements IPageService {
         lastUpdateUser: user._id,
         deleteUser: null,
         deletedAt: null,
+        updatedAt: Date.now(),
         parent: parent._id,
         descendantCount: shouldReplace ? originPage.descendantCount : 0,
       },
