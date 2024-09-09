@@ -7,6 +7,7 @@ on:
       - dev/7.*.x
       - dev/6.*.x
     paths:
+      - .github/mergify.yml
       - .github/workflows/ci-app-prod.yml
       - .github/workflows/reusable-app-prod.yml
       - .github/workflows/reusable-app-reg-suit.yml
@@ -24,6 +25,7 @@ on:
       - dev/6.*.x
     types: [opened, reopened, synchronize]
     paths:
+      - .github/mergify.yml
       - .github/workflows/ci-app-prod.yml
       - .github/workflows/reusable-app-prod.yml
       - .github/workflows/reusable-app-reg-suit.yml

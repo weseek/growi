@@ -86,18 +86,21 @@ export const InAppNotificationDropdown = (): JSX.Element => {
       <DropdownToggle className="px-3" color="primary" innerRef={buttonRef}>
         <span className="material-symbols-outlined">notifications</span> {badge}
       </DropdownToggle>
-      <DropdownMenu end>
-        { inAppNotificationData != null && inAppNotificationData.docs.length === 0
+
+      { isOpen && (
+        <DropdownMenu end>
+          { inAppNotificationData != null && inAppNotificationData.docs.length === 0
           // no items
-          ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>
+            ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>
           // render DropdownItem
-          : <InAppNotificationList inAppNotificationData={inAppNotificationData} />
-        }
-        <DropdownItem divider />
-        <DropdownItem tag="a" href="/me/all-in-app-notifications">
-          { t('in_app_notification.see_all') }
-        </DropdownItem>
-      </DropdownMenu>
+            : <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+          }
+          <DropdownItem divider />
+          <DropdownItem tag="a" href="/me/all-in-app-notifications">
+            { t('in_app_notification.see_all') }
+          </DropdownItem>
+        </DropdownMenu>
+      ) }
     </Dropdown>
   );
 };

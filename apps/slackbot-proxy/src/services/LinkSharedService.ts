@@ -3,6 +3,8 @@ import type { WebClient } from '@slack/web-api';
 import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 
+// needed to import class (not type) for injection
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 import { RelationRepository } from '~/repositories/relation';
 import loggerFactory from '~/utils/logger';
 
@@ -42,7 +44,7 @@ type PublicData = {
 export type DataForLinkShared = PrivateData | PublicData;
 
 @Service()
-export class LinkSharedService implements GrowiEventProcessor {
+export class LinkSharedService implements GrowiEventProcessor<LinkSharedRequestEvent> {
 
   @Inject()
   relationRepository: RelationRepository;
