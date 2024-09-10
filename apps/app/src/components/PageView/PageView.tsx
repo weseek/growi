@@ -128,8 +128,6 @@ export const PageView = (props: Props): JSX.Element => {
     const markdown = page.revision.body;
     const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
 
-    console.log('markdown', markdown);
-
     return (
       <>
         <PageContentsUtilities />

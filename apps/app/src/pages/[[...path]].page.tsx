@@ -190,7 +190,6 @@ type Props = CommonProps & {
   yjsData: CurrentPageYjsData,
 
   rendererConfig: RendererConfig,
-  isPastRevisionSelected: boolean,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -251,7 +250,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useCurrentPathname(props.currentPathname);
 
-  const { data: currentPage } = useSWRxCurrentPage(pageWithMeta?.data ?? null, props.isPastRevisionSelected); // store initial data
+  const { data: currentPage } = useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
@@ -432,8 +431,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
-
-  props.isPastRevisionSelected = revisionId != null;
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
