@@ -13,6 +13,7 @@ import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
 
+import { ImportMode } from '~/models/admin/import-mode';
 import type Crowi from '~/server/crowi';
 import { setupIndependentModels } from '~/server/crowi/setup-models';
 import type CollectionProgress from '~/server/models/vo/collection-progress';
@@ -25,7 +26,6 @@ import { configManager } from '../config-manager';
 import type { ConvertMap } from './construct-convert-map';
 import { constructConvertMap } from './construct-convert-map';
 import { getModelFromCollectionName } from './get-model-from-collection-name';
-import { ImportMode } from './import-mode';
 import type { ImportSettings, OverwriteParams } from './import-settings';
 import { keepOriginal } from './overwrite-function';
 
@@ -303,14 +303,12 @@ export class ImportService {
 
   /**
    * process bulk operation
-   * @param {object} bulk MongoDB Bulk instance
-   * @param {string} collectionName collection name
-   * @param {object} document
-   * @param {ImportSettings} importSettings
+   * @param bulk MongoDB Bulk instance
+   * @param collectionName collection name
    */
-  bulkOperate(bulk, collectionName, document, importSettings) {
+  bulkOperate(bulk, collectionName: string, document, importSettings: ImportSettings) {
     // insert
-    if (importSettings.mode !== 'upsert') {
+    if (importSettings.mode !== ImportMode.upsert) {
       return bulk.insert(document);
     }
 

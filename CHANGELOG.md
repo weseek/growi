@@ -1,8 +1,32 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.17...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.18...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.18](https://github.com/weseek/growi/compare/v7.0.17...v7.0.18) - 2024-09-09
+
+### 🚀 Improvement
+
+* imprv: Prevent looping to update a hook for TrashPageAlert (#9066) @yuki-takei
+* imprv: Display page tree in page select modal with scrollbar (#9023) @kazutoweseek
+
+### 🐛 Bug Fixes
+
+* fix: issue that material symbols icons are not displayed in ReplyComments component (#9076) @WNomunomu
+* fix: Unable to navigate to the data transfer page (#9071) @miya
+* fix: Page content does not update when switching revisions (#9072) @miya
+* fix: Supress rendering too many invisible DropdownMenu components (#9073) @yuki-takei
+* fix: Return error when grant is string for PUT /_api/v3/page (#9069) @arafubeatbox
+* fix: Scrolling may not occurs when clicking on the edit button next to the header (#9043) @reiji-h
+* fix: API v3 Page update (#9053) @maeshinshin
+* fix: Input text becomes empty when opening the ReadOnlyEditor (#9059) @miya
+* fix: Show pages with grants that are set to be visible in security settings on RecentChanges and PageTree as well (#9044) @miya
+
+### 🧰 Maintenance
+
+* support: Omit Cypress (#9065) @miya
+* ci(deps): bump unzip-stream from 0.3.1 to 0.3.2 (#9049) @dependabot
 
 ## [v7.0.17](https://github.com/weseek/growi/compare/v7.0.16...v7.0.17) - 2024-08-26
 
