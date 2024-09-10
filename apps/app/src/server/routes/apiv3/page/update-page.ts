@@ -175,10 +175,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
           if (isGrantImmutable) {
             return res.apiv3Err(new ErrorV3('The grant settings for the specified page cannot be modified.', PageUpdateErrorCode.FORBIDDEN), 403);
           }
-          else {
-            options.grant = grant;
-            options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
-          }
+          options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
         }
         previousRevision = await Revision.findById(sanitizeRevisionId);
         updatedPage = await crowi.pageService.updatePage(currentPage, body, previousRevision?.body ?? null, req.user, options);
