@@ -50,7 +50,7 @@ export interface PageDocument extends IPage, Document<Types.ObjectId> {
   [x:string]: any // for obsolete methods
   getLatestRevisionBodyLength(): Promise<number | null | undefined>
   calculateAndUpdateLatestRevisionBodyLength(this: PageDocument): Promise<void>
-  populateDataToShowRevision(shouldExcludeBody: boolean): Promise<PageDocument>
+  populateDataToShowRevision(shouldExcludeBody?: boolean): Promise<PageDocument>
 }
 
 

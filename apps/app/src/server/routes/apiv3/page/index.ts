@@ -302,7 +302,7 @@ module.exports = (crowi) => {
       }
 
       const relatedPage = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
-      const pagePopulateDataToShowRevision = await relatedPage?.populateDataToShowRevision(false);
+      const pagePopulateDataToShowRevision = await relatedPage?.populateDataToShowRevision();
       return res.apiv3({ page: pagePopulateDataToShowRevision });
     }
 
