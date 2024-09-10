@@ -156,7 +156,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
       </span>
       <Tooltip
         placement="left"
-        isOpen={isBulkExportTooltipOpen}
+        isOpen={!isPageBulkExportEnabled && isBulkExportTooltipOpen}
         // Tooltip cannot be activated when target is disabled so set the target to wrapper span
         target="bulkExportDropdownItem"
         toggle={() => setIsBulkExportTooltipOpen(!isBulkExportTooltipOpen)}
