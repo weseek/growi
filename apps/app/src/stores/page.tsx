@@ -54,7 +54,9 @@ export const useTemplateBodyData = (initialData?: string): SWRResponse<string, E
 };
 
 /** "useSWRxCurrentPage" is intended for initial data retrieval only. Use "useSWRMUTxCurrentPage" for revalidation */
-export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
+export const useSWRxCurrentPage = (
+    initialData?: IPagePopulatedToShowRevision|null, isPastRevisionSelected = false,
+): SWRResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
 
   const { cache } = useSWRConfig();
@@ -81,23 +83,24 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
       return true;
     }
 
-    // mutate When a different revision is opened
-    if (cachedData.revision?._id != null && initialData.revision?._id != null && cachedData.revision._id !== initialData.revision._id) {
-      return true;
-    }
+    // // mutate When a different revision is opened
+    // if (cachedData.revision?._id != null && initialData.revision?._id != null && cachedData.revision._id !== initialData.revision._id) {
+    //   console.log('initialData', initialData);
+    //   return true;
+    // }
 
     return false;
   })();
 
   useEffect(() => {
-    if (shouldMutate) {
+    if (shouldMutate || isPastRevisionSelected) {
       mutate(key, initialData, {
         optimisticData: initialData,
         populateCache: true,
         revalidate: false,
       });
     }
-  }, [initialData, key, shouldMutate]);
+  }, [initialData, isPastRevisionSelected, key, shouldMutate]);
 
   return useSWR(key, null, {
     keepPreviousData: true,
