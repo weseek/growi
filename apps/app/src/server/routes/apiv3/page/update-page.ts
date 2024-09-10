@@ -143,7 +143,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       const isGrantImmutable = isTopPage(currentPage.path) || isUsersProtectedPages(currentPage.path);
 
-      if (grant && grant !== currentPage.grant && isGrantImmutable) {
+      if (grant != null && grant !== currentPage.grant && isGrantImmutable) {
         return res.apiv3Err(new ErrorV3('The grant settings for the specified page cannot be modified.', PageUpdateErrorCode.FORBIDDEN), 403);
       }
 
