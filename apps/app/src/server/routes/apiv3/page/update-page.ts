@@ -27,6 +27,8 @@ import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
+import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
+
 const logger = loggerFactory('growi:routes:apiv3:page:update-page');
 
 
@@ -119,7 +121,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,
     validator, apiV3FormValidator,
-    async(req: UpdatePageRequest, res: ApiV3Response) => {
+    async (req: UpdatePageRequest, res: ApiV3Response) => {
       const {
         pageId, revisionId, body, origin,
       } = req.body;
@@ -160,6 +162,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
+      const isGrantImmutable = isTopPage(currentPage.path) || isUsersProtectedPages(currentPage.path);
+
       let updatedPage: PageDocument;
       let previousRevision: IRevisionHasId | null;
       try {
@@ -168,8 +172,13 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         } = req.body;
         const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin, wip };
         if (grant != null) {
-          options.grant = grant;
-          options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
+          if (isGrantImmutable) {
+            return res.apiv3Err(new ErrorV3('The grant settings for the specified page cannot be modified.', PageUpdateErrorCode.FORBIDDEN), 403);
+          }
+          else {
+            options.grant = grant;
+            options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
+          }
         }
         previousRevision = await Revision.findById(sanitizeRevisionId);
         updatedPage = await crowi.pageService.updatePage(currentPage, body, previousRevision?.body ?? null, req.user, options);
