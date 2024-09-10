@@ -4,6 +4,7 @@ import type {
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
@@ -27,7 +28,6 @@ import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 
 const logger = loggerFactory('growi:routes:apiv3:page:update-page');
 
@@ -121,7 +121,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,
     validator, apiV3FormValidator,
-    async (req: UpdatePageRequest, res: ApiV3Response) => {
+    async(req: UpdatePageRequest, res: ApiV3Response) => {
       const {
         pageId, revisionId, body, origin,
       } = req.body;
