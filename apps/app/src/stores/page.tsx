@@ -83,7 +83,7 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
       return true;
     }
 
-    // mutate When a different revision is opened
+    // mutate when opening a previous revision.
     if (!isLatestRevision
         && cachedData.revision?._id != null && initialData.revision?._id != null
         && cachedData.revision._id !== initialData.revision._id
