@@ -2860,16 +2860,6 @@
     markdown-it-front-matter "^0.2.3"
     postcss "^8.4.29"
 
-"@microflash/remark-callout-directives@^4.3.1":
-  version "4.3.1"
-  resolved "https://registry.yarnpkg.com/@microflash/remark-callout-directives/-/remark-callout-directives-4.3.1.tgz#ba71c740f3478a28f133ddd6d571c507644a8bf9"
-  integrity sha512-ZCS8+6ykJ4AqKPi6w1q3oV8RnRkaU+jOyT8b8LcvF1sNe9aufqgkInXvE93lrYyD7+04cVtmdtiUa07dI7KTNA==
-  dependencies:
-    defu "^6.1.4"
-    hastscript "^9.0.0"
-    mdast-util-from-markdown "^2.0.1"
-    unist-util-visit "^5.0.0"
-
 "@microsoft/api-extractor-model@7.28.13":
   version "7.28.13"
   resolved "https://registry.yarnpkg.com/@microsoft/api-extractor-model/-/api-extractor-model-7.28.13.tgz#96fbc52155e0d07e0eabbd9699065b77702fe33a"
@@ -7867,11 +7857,6 @@ define-property@^2.0.2:
     is-descriptor "^1.0.2"
     isobject "^3.0.1"
 
-defu@^6.1.4:
-  version "6.1.4"
-  resolved "https://registry.yarnpkg.com/defu/-/defu-6.1.4.tgz#4e0c9cf9ff68fe5f3d7f2765cc1a012dfdcb0479"
-  integrity sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==
-
 del@6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/del/-/del-6.0.0.tgz#0b40d0332cea743f1614f818be4feb717714c952"
@@ -10310,17 +10295,6 @@ hastscript@^8.0.0:
   version "8.0.0"
   resolved "https://registry.yarnpkg.com/hastscript/-/hastscript-8.0.0.tgz#4ef795ec8dee867101b9f23cc830d4baf4fd781a"
   integrity sha512-dMOtzCEd3ABUeSIISmrETiKuyydk1w0pa+gE/uormcTpSYuaNJPbX1NU3JLyscSLjwAQM8bWMhhIlnCqnRvDTw==
-  dependencies:
-    "@types/hast" "^3.0.0"
-    comma-separated-tokens "^2.0.0"
-    hast-util-parse-selector "^4.0.0"
-    property-information "^6.0.0"
-    space-separated-tokens "^2.0.0"
-
-hastscript@^9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/hastscript/-/hastscript-9.0.0.tgz#2b76b9aa3cba8bf6d5280869f6f6f7165c230763"
-  integrity sha512-jzaLBGavEDKHrc5EfFImKN7nZKKBdSLIdGvCwDZ9TfzbF2ffXiov8CKE445L2Z1Ek2t/m4SKQ2j6Ipv7NyUolw==
   dependencies:
     "@types/hast" "^3.0.0"
     comma-separated-tokens "^2.0.0"
@@ -16187,10 +16161,10 @@ remark-gfm@^4.0.0:
     remark-stringify "^11.0.0"
     unified "^11.0.0"
 
-remark-github-admonitions-to-directives@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/remark-github-admonitions-to-directives/-/remark-github-admonitions-to-directives-1.0.5.tgz#60bf09a31ff309b6d9a16a36d4c6850012d28cfd"
-  integrity sha512-MSRzDs51HGbUrHJ0es8POuxwJiUycWw4aYCTN2RZhdOm5UvyqdB8ApWoGBj9QAiPSHKw2HWl1hd5rRzWxVfNew==
+remark-github-admonitions-to-directives@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/remark-github-admonitions-to-directives/-/remark-github-admonitions-to-directives-2.0.0.tgz#88a9a1dde87e65890f0eb5b48502cd798ca12543"
+  integrity sha512-/fXZWZrU+mr5VeRShPPnzUbWPmOktBAN1vqSwzktVdchhhsL1CqfdBwiQH7mkh8yaxOo/RtXysxlVLXwD2a/Dw==
   dependencies:
     "@types/mdast" "^4.0.0"
     mdast-util-directive "^3.0.0"
