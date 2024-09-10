@@ -123,7 +123,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     validator, apiV3FormValidator,
     async(req: UpdatePageRequest, res: ApiV3Response) => {
       const {
-        pageId, revisionId, body, origin,
+        pageId, revisionId, body, origin, grant,
       } = req.body;
 
       const sanitizeRevisionId = revisionId == null ? undefined : generalXssFilter.process(revisionId);
@@ -139,6 +139,12 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       // check page existence (for type safety)
       if (currentPage == null) {
         return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
+      }
+
+      const isGrantImmutable = isTopPage(currentPage.path) || isUsersProtectedPages(currentPage.path);
+
+      if (grant && isGrantImmutable) {
+        return res.apiv3Err(new ErrorV3('The grant settings for the specified page cannot be modified.', PageUpdateErrorCode.FORBIDDEN), 403);
       }
 
       if (currentPage != null) {
@@ -162,19 +168,15 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
-      const isGrantImmutable = isTopPage(currentPage.path) || isUsersProtectedPages(currentPage.path);
-
       let updatedPage: PageDocument;
       let previousRevision: IRevisionHasId | null;
       try {
         const {
-          grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
+          userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
         } = req.body;
         const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin, wip };
         if (grant != null) {
-          if (isGrantImmutable) {
-            return res.apiv3Err(new ErrorV3('The grant settings for the specified page cannot be modified.', PageUpdateErrorCode.FORBIDDEN), 403);
-          }
+          options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
         }
         previousRevision = await Revision.findById(sanitizeRevisionId);
