@@ -20,6 +20,7 @@ import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
+import ShareLink from '~/server/models/share-link';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
@@ -202,6 +203,7 @@ module.exports = (crowi) => {
       query('pageId').optional().isString(),
       query('path').optional().isString(),
       query('findAll').optional().isBoolean(),
+      query('shareLinkId').optional().isMongoId(),
     ],
     likes: [
       body('pageId').isString(),
@@ -284,13 +286,24 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
-    const { user } = req;
+    const { user, isSharedPage } = req;
     const {
-      pageId, path, findAll, revisionId,
+      pageId, path, findAll, revisionId, shareLinkId,
     } = req.query;
 
     if (pageId == null && path == null) {
       return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
+    }
+
+    if (isSharedPage) {
+      const shareLink = await ShareLink.findOne({ _id: shareLinkId }).populate('relatedPage');
+      if (shareLink == null) {
+        return res.apiv3Err(new ErrorV3('ShareLink is not found'), 404);
+      }
+
+      const relatedPage = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
+      const pagePopulateDataToShowRevision = await relatedPage?.populateDataToShowRevision(false);
+      return res.apiv3({ page: pagePopulateDataToShowRevision });
     }
 
     let page;
