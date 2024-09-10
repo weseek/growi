@@ -21,6 +21,7 @@ import { Header } from '~/client/components/ReactMarkdownComponents/Header';
 import { LightBox } from '~/client/components/ReactMarkdownComponents/LightBox';
 import { RichAttachment } from '~/client/components/ReactMarkdownComponents/RichAttachment';
 import { TableWithEditButton } from '~/client/components/ReactMarkdownComponents/TableWithEditButton';
+import * as callout from '~/features/callout';
 import * as mermaid from '~/features/mermaid';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -69,6 +70,7 @@ export const generateViewOptions = (
     attachment.remarkPlugin,
     remarkGithubAdmonitionsToDirectives,
     remarkDirective,
+    callout.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -82,6 +84,7 @@ export const generateViewOptions = (
       presentation.sanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      callout.sanitizeOption,
       attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
@@ -116,6 +119,7 @@ export const generateViewOptions = (
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
     components.mermaid = mermaid.MermaidViewer;
+    components.callout = callout.CalloutViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
   }
@@ -175,6 +179,7 @@ export const generateSimpleViewOptions = (
     attachment.remarkPlugin,
     remarkGithubAdmonitionsToDirectives,
     remarkDirective,
+    callout.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -191,6 +196,7 @@ export const generateSimpleViewOptions = (
       presentation.sanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      callout.sanitizeOption,
       attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
@@ -217,6 +223,7 @@ export const generateSimpleViewOptions = (
     components.gallery = refsGrowiDirective.GalleryImmutable;
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
+    components.callout = callout.CalloutViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
   }
@@ -270,6 +277,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     attachment.remarkPlugin,
     remarkGithubAdmonitionsToDirectives,
     remarkDirective,
+    callout.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -282,6 +290,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       getCommonSanitizeOption(config),
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      callout.sanitizeOption,
       attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
@@ -309,6 +318,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.gallery = refsGrowiDirective.GalleryImmutable;
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
+    components.callout = callout.CalloutViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
   }
