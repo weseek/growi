@@ -225,6 +225,7 @@ module.exports = (crowi) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
+    const includeTrashed = req.query.includeTrashed === 'true';
 
     const hideRestrictedByOwner = await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
     const hideRestrictedByGroup = await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
@@ -236,7 +237,7 @@ module.exports = (crowi) => {
       offset,
       limit,
       includeWipPage,
-      includeTrashed: true,
+      includeTrashed,
       isRegExpEscapedFromPath: true,
       sort: 'updatedAt',
       desc: -1,
