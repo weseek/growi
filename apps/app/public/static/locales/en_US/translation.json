@@ -845,6 +845,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "Show WIP",
+    "show_trashed": "Show Trashed",
     "size_s": "Size: S",
     "size_l": "Size: L"
   },

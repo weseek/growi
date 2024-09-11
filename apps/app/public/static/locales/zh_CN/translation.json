@@ -848,6 +848,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "显示 WIP",
+    "show_trashed": "显示垃圾",
     "size_s": "尺寸: S",
     "size_l": "尺寸: L"
   },

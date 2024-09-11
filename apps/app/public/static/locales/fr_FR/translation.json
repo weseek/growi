@@ -839,6 +839,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "Voir brouillon",
+    "show_trashed": "Afficher corbeille",
     "size_s": "Taille: P",
     "size_l": "Taille: G"
   },
