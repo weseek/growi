@@ -47,11 +47,9 @@ class PageBulkExportJobCronService extends CronService {
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
     });
 
-    await this.cleanUpAndDeleteBulkExportJobs(expiredExportJobs, async(job) => {
-      if (pageBulkExportService != null) {
-        pageBulkExportService.cleanUpExportJobResources(job);
-      }
-    });
+    if (pageBulkExportService != null) {
+      await this.cleanUpAndDeleteBulkExportJobs(expiredExportJobs, pageBulkExportService.cleanUpExportJobResources.bind(pageBulkExportService));
+    }
   }
 
   /**
@@ -88,11 +86,9 @@ class PageBulkExportJobCronService extends CronService {
   async deleteFailedExportJobs() {
     const failedExportJobs = await PageBulkExportJob.find({ status: PageBulkExportJobStatus.failed });
 
-    await this.cleanUpAndDeleteBulkExportJobs(failedExportJobs, async(job) => {
-      if (pageBulkExportService != null) {
-        pageBulkExportService.cleanUpExportJobResources(job);
-      }
-    });
+    if (pageBulkExportService != null) {
+      await this.cleanUpAndDeleteBulkExportJobs(failedExportJobs, pageBulkExportService.cleanUpExportJobResources.bind(pageBulkExportService));
+    }
   }
 
   async cleanUpAndDeleteBulkExportJobs(
