@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import mermaid from 'mermaid';
 
@@ -13,7 +14,8 @@ export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element
 
   useEffect(() => {
     if (ref.current != null && children != null) {
-      mermaid.init({}, ref.current);
+      mermaid.initialize({});
+      mermaid.run({ nodes: [ref.current] });
     }
   }, [children]);
 
@@ -24,7 +26,7 @@ export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element
           {children}
         </div>
       )
-      : <div key={children as string} />
+      : <div key={children as string}></div>
   );
 });
 MermaidViewer.displayName = 'MermaidViewer';
