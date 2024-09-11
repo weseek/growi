@@ -236,7 +236,7 @@ module.exports = (crowi) => {
       offset,
       limit,
       includeWipPage,
-      includeTrashed: false,
+      includeTrashed: true,
       isRegExpEscapedFromPath: true,
       sort: 'updatedAt',
       desc: -1,
