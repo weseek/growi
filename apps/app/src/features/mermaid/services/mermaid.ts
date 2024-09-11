@@ -1,6 +1,6 @@
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
-import { Plugin } from 'unified';
-import { Node } from 'unist';
+import type { Plugin } from 'unified';
+import type { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
 function rewriteNode(node: Node) {
