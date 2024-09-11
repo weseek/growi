@@ -291,25 +291,25 @@ module.exports = (crowi) => {
       pageId, path, findAll, revisionId, shareLinkId,
     } = req.query;
 
-    if (pageId == null && path == null) {
-      return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
+    if (isSharedPage && path != null) {
+      return res.apiv3Err(new ErrorV3('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.', 'invalid-request'));
     }
 
-    if (isSharedPage) {
-      const shareLink = await ShareLink.findOne({ _id: shareLinkId }).populate('relatedPage');
-      if (shareLink == null) {
-        return res.apiv3Err(new ErrorV3('ShareLink is not found'), 404);
-      }
-
-      const relatedPage = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
-      const pagePopulateDataToShowRevision = await relatedPage?.populateDataToShowRevision();
-      return res.apiv3({ page: pagePopulateDataToShowRevision });
+    if (!isSharedPage && (pageId == null && path == null)) {
+      return res.apiv3Err(new ErrorV3('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.', 'invalid-request'));
     }
 
     let page;
     let pages;
     try {
-      if (pageId != null) { // prioritized
+      if (isSharedPage) {
+        const shareLink = await ShareLink.findOne({ _id: shareLinkId }).populate('relatedPage');
+        if (shareLink == null) {
+          throw new Error('ShareLink is not found');
+        }
+        page = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
+      }
+      else if (pageId != null) { // prioritized
         page = await Page.findByIdAndViewer(pageId, user);
       }
       else if (!findAll) {
