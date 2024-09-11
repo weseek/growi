@@ -291,12 +291,9 @@ module.exports = (crowi) => {
       pageId, path, findAll, revisionId, shareLinkId,
     } = req.query;
 
-    if (isSharedPage && path != null) {
-      return res.apiv3Err(new ErrorV3('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.', 'invalid-request'));
-    }
-
-    if (!isSharedPage && (pageId == null && path == null)) {
-      return res.apiv3Err(new ErrorV3('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.', 'invalid-request'));
+    const isValid = (shareLinkId != null && pageId != null && path == null) || (shareLinkId == null && (pageId != null || path != null));
+    if (!isValid) {
+      return res.apiv3Err(new Error('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.'), 400);
     }
 
     let page;
