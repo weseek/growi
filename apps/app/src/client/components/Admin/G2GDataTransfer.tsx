@@ -126,7 +126,7 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [setTransferring, startTransferKey, selectedCollections, optionsMap]);
 
-  const growiDataTransferHelpPage = growiCloudUri != null && growiAppIdForGrowiCloud != null ? 'growi.cloud' : 'docs.growi.org';
+  const growiDataTransferHelpPage = growiCloudUri != null && growiAppIdForGrowiCloud != null ? 'growi.cloud/help' : 'docs.growi.org';
 
   // File upload
   // const onChangeFileUploadTypeHandler = useCallback((e: ChangeEvent, type: string) => {

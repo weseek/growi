@@ -12,7 +12,7 @@ const DataTransferForm = (): JSX.Element => {
   const { transferKey, generateTransferKey } = useGenerateTransferKey();
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
-  const growiDataTransferHelpPage = growiCloudUri != null && growiAppIdForGrowiCloud != null ? 'growi.cloud' : 'docs.growi.org';
+  const growiDataTransferHelpPage = growiCloudUri != null && growiAppIdForGrowiCloud != null ? 'growi.cloud/help' : 'docs.growi.org';
   return (
     <div data-testid="installerForm" className="py-3 px-4">
       <p className="text-white fs-5 mt-2">
