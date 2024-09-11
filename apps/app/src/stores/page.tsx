@@ -63,6 +63,8 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
 
   // Problem 1: https://github.com/weseek/growi/pull/7772/files#diff-4c1708c4f959974166c15435c6b35950ba01bbf35e7e4b8e99efeb125a8000a7
   // Problem 2: https://redmine.weseek.co.jp/issues/141027
+  // Problem 3: https://redmine.weseek.co.jp/issues/153618
+  // Problem 4: https://redmine.weseek.co.jp/issues/153759
   const shouldMutate = (() => {
     if (initialData === undefined) {
       return false;
