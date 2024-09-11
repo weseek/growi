@@ -100,10 +100,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
         return;
       }
 
-      if (onUpload != null && event.clipboardData.types.includes('Files')) {
-        onUpload(Array.from(event.clipboardData.files));
-      }
-
       if (event.clipboardData.types.includes('text/plain')) {
 
         const textData = event.clipboardData.getData('text/plain');
@@ -114,6 +110,10 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
         codeMirrorEditor?.replaceText(adjusted);
       }
+      else if (onUpload != null && event.clipboardData.types.includes('Files')) {
+        onUpload(Array.from(event.clipboardData.files));
+      }
+
     };
 
     const extension = EditorView.domEventHandlers({
