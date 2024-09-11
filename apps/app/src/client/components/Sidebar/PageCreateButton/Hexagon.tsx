@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
 type Props = {
-  className?: string;
-};
+  className?: string,
+}
 
 // eslint-disable-next-line react/prop-types
 export const Hexagon: React.FC<Props> = React.memo(({ className }) => {
