@@ -1678,7 +1678,7 @@ class PageService implements IPageService {
 
     const deletedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
-        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), parent: null, descendantCount: 0, // set parent as null
+        path: newPath, status: Page.STATUS_DELETED, deleteUser: user._id, deletedAt: Date.now(), updatedAt: Date.now(), parent: null, descendantCount: 0, // set parent as null
       },
     }, { new: true });
 
