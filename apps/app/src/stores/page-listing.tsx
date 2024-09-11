@@ -33,19 +33,23 @@ type RecentApiResult = {
   totalCount: number,
   offset: number,
 }
-export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolean, config?: SWRConfiguration) : SWRInfiniteResponse<RecentApiResult, Error> => {
+export const useSWRINFxRecentlyUpdated = (
+    limit: number, includeWipPage?: boolean, includeTrashed?: boolean, config?: SWRConfiguration,
+) : SWRInfiniteResponse<RecentApiResult, Error> => {
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (previousPageData != null && previousPageData.pages.length === 0) return null;
 
       if (pageIndex === 0 || previousPageData == null) {
-        return ['/pages/recent', undefined, limit, includeWipPage];
+        return ['/pages/recent', undefined, limit, includeWipPage, includeTrashed];
       }
 
       const offset = previousPageData.offset + limit;
-      return ['/pages/recent', offset, limit, includeWipPage];
+      return ['/pages/recent', offset, limit, includeWipPage, includeTrashed];
     },
-    ([endpoint, offset, limit, includeWipPage]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit, includeWipPage }).then(response => response.data),
+    ([endpoint, offset, limit, includeWipPage, includeTrashed]) => apiv3Get<RecentApiResult>(endpoint, {
+      offset, limit, includeWipPage, includeTrashed,
+    }).then(response => response.data),
     {
       ...config,
       revalidateFirstPage: false,

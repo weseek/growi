@@ -17,6 +17,7 @@ export const RecentChanges = (): JSX.Element => {
 
   const [isSmall, setIsSmall] = useState(false);
   const [isWipPageShown, setIsWipPageShown] = useState(true);
+  const [isTrashedShown, setIsTrashedShown] = useState(true);
 
   return (
     <div className="px-3" data-testid="grw-recent-changes">
@@ -28,12 +29,14 @@ export const RecentChanges = (): JSX.Element => {
             onSizeChange={setIsSmall}
             isWipPageShown={isWipPageShown}
             onWipPageShownChange={() => { setIsWipPageShown(!isWipPageShown) }}
+            isTrashedShown={isTrashedShown}
+            onTrashedShownChange={() => { setIsTrashedShown(!isTrashedShown) }}
           />
         </Suspense>
       </div>
 
       <Suspense fallback={<RecentChangesContentSkeleton />}>
-        <RecentChangesContent isWipPageShown={isWipPageShown} isSmall={isSmall} />
+        <RecentChangesContent isWipPageShown={isWipPageShown} isSmall={isSmall} isTrashedShown={isTrashedShown} />
       </Suspense>
     </div>
   );

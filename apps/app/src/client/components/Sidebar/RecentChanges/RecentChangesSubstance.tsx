@@ -149,15 +149,17 @@ type HeaderProps = {
   onSizeChange: (isSmall: boolean) => void,
   isWipPageShown: boolean,
   onWipPageShownChange: () => void,
+  isTrashedShown: boolean,
+  onTrashedShownChange: () => void,
 }
 
 const PER_PAGE = 20;
 export const RecentChangesHeader = ({
-  isSmall, onSizeChange, isWipPageShown, onWipPageShownChange,
+  isSmall, onSizeChange, isWipPageShown, onWipPageShownChange, isTrashedShown, onTrashedShownChange,
 }: HeaderProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, { suspense: true });
+  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, isTrashedShown, { suspense: true });
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
@@ -220,6 +222,20 @@ export const RecentChangesHeader = ({
               </label>
             </div>
           </li>
+
+          <li className="dropdown-item" onClick={onTrashedShownChange}>
+            <div className="form-check form-switch mb-0">
+              <input
+                id="trashedVisibility"
+                className="form-check-input"
+                type="checkbox"
+                checked={isTrashedShown}
+              />
+              <label className="form-check-label pe-none">
+                {t('sidebar_header.show_trashed')}
+              </label>
+            </div>
+          </li>
         </ul>
       </div>
     </>
@@ -229,10 +245,11 @@ export const RecentChangesHeader = ({
 type ContentProps = {
   isSmall: boolean,
   isWipPageShown: boolean,
+  isTrashedShown: boolean,
 }
 
-export const RecentChangesContent = ({ isSmall, isWipPageShown }: ContentProps): JSX.Element => {
-  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, { suspense: true });
+export const RecentChangesContent = ({ isSmall, isWipPageShown, isTrashedShown }: ContentProps): JSX.Element => {
+  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, isTrashedShown, { suspense: true });
   const { data } = swrInifinitexRecentlyUpdated;
 
   const { pushState } = useKeywordManager();
