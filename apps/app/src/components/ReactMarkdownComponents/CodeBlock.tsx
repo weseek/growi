@@ -44,7 +44,8 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   // see: https://github.com/weseek/growi/pull/7484
   //
   // Note: You can also remove this code if the user requests to see the code highlighted in Prism as-is.
-  const isSimpleString = Array.isArray(children) && children.length === 1 && typeof children[0] === 'string';
+
+  const isSimpleString = typeof children === 'string' || (Array.isArray(children) && children.length === 1 && typeof children[0] === 'string');
   if (!isSimpleString) {
     return (
       <div style={oneDark['pre[class*="language-"]']}>
@@ -67,7 +68,7 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
 }
 
 type CodeBlockProps = {
-  children: JSX.Element,
+  children: ReactNode,
   className?: string,
   inline?: string, // "" or undefined
 }
