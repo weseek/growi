@@ -3,6 +3,7 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useIsReadOnlyUser } from '~/stores-universal/context';
+import { useSecuritySettings } from '~/stores/security-setting';
 
 import { NotAvailable } from './NotAvailable';
 
@@ -27,15 +28,24 @@ export const NotAvailableForReadOnlyUser: React.FC<{
 });
 NotAvailableForReadOnlyUser.displayName = 'NotAvailableForReadOnlyUser';
 
-
-export const NotAvailableWhenReadOnlyUserNotAllowedToComment: React.FC<{
+export const NotAvailableIfReadOnlyUserNotAllowedToComment: React.FC<{
   children: JSX.Element
 }> = React.memo(({ children }) => {
   const { t } = useTranslation();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
-  const isDisabled = !!isReadOnlyUser;
-  const title = t('Not available for read only user');
+  const { data: securitySettings } = useSecuritySettings();
+
+  if (securitySettings == null) {
+    return;
+  }
+
+  const isRomUserAllowedToComment = securitySettings.generalSetting.isRomUserAllowedToComment;
+
+  console.log(isRomUserAllowedToComment);
+
+  const isDisabled = !!isReadOnlyUser && !isRomUserAllowedToComment;
+  const title = t('Not available for read only user if not allowed to comment');
 
   return (
     <NotAvailable
@@ -47,3 +57,4 @@ export const NotAvailableWhenReadOnlyUserNotAllowedToComment: React.FC<{
     </NotAvailable>
   );
 });
+NotAvailableIfReadOnlyUserNotAllowedToComment.displayName = 'NotAvailableIfReadOnlyUserNotAllowedToComment';
