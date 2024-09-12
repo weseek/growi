@@ -11,7 +11,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
+import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
 
 // import { toastSuccess, toastError } from '~/client/util/toastr';
 
