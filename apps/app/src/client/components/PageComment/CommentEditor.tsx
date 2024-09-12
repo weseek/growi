@@ -33,7 +33,6 @@ import loggerFactory from '~/utils/logger';
 
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '../NotAvailableForReadOnlyUser';
-// import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '../NotAvailableIfReadOnlyUserNotAllowedToComment';
 
 import { CommentPreview } from './CommentPreview';
 import { SwitchingButtonGroup } from './SwitchingButtonGroup';
