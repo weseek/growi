@@ -124,7 +124,7 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [setTransferring, startTransferKey, selectedCollections, optionsMap]);
 
-  const { data: growiHelpUrl } = useGrowiHelpUrl();
+  const { data: growiHelpDomain } = useGrowiHelpUrl();
 
   // File upload
   // const onChangeFileUploadTypeHandler = useCallback((e: ChangeEvent, type: string) => {
@@ -279,7 +279,7 @@ const G2GDataTransfer = (): JSX.Element => {
         <p className="mb-1">{t('commons:g2g_data_transfer.transfer_key_limit')}</p>
         <p className="mb-1">{t('commons:g2g_data_transfer.once_transfer_key_used')}</p>
         {/* eslint-disable-next-line react/no-danger */}
-        <p className="mb-0" dangerouslySetInnerHTML={{ __html: t('commons:g2g_data_transfer.transfer_to_growi_cloud', { growiHelpUrl }) }} />
+        <p className="mb-0" dangerouslySetInnerHTML={{ __html: t('commons:g2g_data_transfer.transfer_to_growi_cloud', { growiHelpDomain }) }} />
       </div>
     </div>
   );

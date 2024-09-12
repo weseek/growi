@@ -10,7 +10,7 @@ import CustomCopyToClipBoard from './Common/CustomCopyToClipBoard';
 const DataTransferForm = (): JSX.Element => {
   const { t } = useTranslation('commons');
   const { transferKey, generateTransferKey } = useGenerateTransferKey();
-  const { data: growiHelpUrl } = useGrowiHelpUrl();
+  const { data: growiHelpDomain } = useGrowiHelpUrl();
 
   return (
     <div data-testid="installerForm" className="py-3 px-4">
@@ -36,7 +36,7 @@ const DataTransferForm = (): JSX.Element => {
         <p className="mb-1">{t('g2g_data_transfer.transfer_key_limit')}</p>
         <p className="mb-1">{t('g2g_data_transfer.once_transfer_key_used')}</p>
         {/* eslint-disable-next-line react/no-danger */}
-        <p className="mb-0" dangerouslySetInnerHTML={{ __html: t('g2g_data_transfer.transfer_to_growi_cloud', { growiHelpUrl }) }} />
+        <p className="mb-0" dangerouslySetInnerHTML={{ __html: t('g2g_data_transfer.transfer_to_growi_cloud', { growiHelpDomain }) }} />
       </div>
     </div>
   );
