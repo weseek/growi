@@ -20,15 +20,6 @@ pull_request_rules:
     actions:
       queue:
 
-  - name: Automatic queue for Dependabot pull requests
-    conditions:
-      - author = dependabot[bot]
-      - '#approved-reviews-by >= 1'
-      - '#check-failure = 0'
-      - check-success = "check-title"
-    actions:
-      queue:
-
   - name: Automatic merge for Preparing next version
     conditions:
       - author = github-actions[bot]
