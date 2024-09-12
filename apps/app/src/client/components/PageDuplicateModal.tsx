@@ -12,11 +12,11 @@ import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useIsSearchServiceReachable, useSiteUrl } from '~/stores-universal/context';
 import { usePageDuplicateModal } from '~/stores/modal';
+import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 
 import DuplicatePathsTable from './DuplicatedPathsTable';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import PagePathAutoComplete from './PagePathAutoComplete';
-
 
 const PageDuplicateModal = (): JSX.Element => {
   const { t } = useTranslation();
@@ -38,6 +38,7 @@ const PageDuplicateModal = (): JSX.Element => {
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
   const [onlyDuplicateUserRelatedResources, setOnlyDuplicateUserRelatedResources] = useState(false);
+  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
 
   const updateSubordinatedList = useCallback(async() => {
     if (page == null) {
@@ -126,11 +127,20 @@ const PageDuplicateModal = (): JSX.Element => {
         onDuplicated(fromPath, toPath);
       }
       closeDuplicateModal();
+      mutateRecentlyUpdated();
     }
     catch (err) {
       setErrs(err);
     }
-  }, [closeDuplicateModal, duplicateModalData?.opts?.onDuplicated, isDuplicateRecursively, page, pageNameInput, onlyDuplicateUserRelatedResources]);
+  }, [
+    closeDuplicateModal,
+    duplicateModalData?.opts?.onDuplicated,
+    isDuplicateRecursively,
+    page,
+    pageNameInput,
+    onlyDuplicateUserRelatedResources,
+    mutateRecentlyUpdated,
+  ]);
 
   useEffect(() => {
     if (isOpened) {
