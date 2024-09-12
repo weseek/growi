@@ -27,7 +27,7 @@ export const excludeReadOnlyUser = (req: Request, res: Response & { apiv3Err }, 
   return next();
 };
 
-export const excludeReadOnlyUserWhenCommentNotAllowed = (req: Request, res: Response & { apiv3Err }, next: () => NextFunction): NextFunction => {
+export const excludeReadOnlyUserIfCommentNotAllowed = (req: Request, res: Response & { apiv3Err }, next: () => NextFunction): NextFunction => {
   const user = req.user;
 
   const isRomUserAllowedToComment = configManager.getConfig('crowi', 'security:isRomUserAllowedToComment');
