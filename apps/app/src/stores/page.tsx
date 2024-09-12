@@ -57,10 +57,14 @@ export const useTemplateBodyData = (initialData?: string): SWRResponse<string, E
 export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
 
+  const { data: isLatestRevision } = useIsLatestRevision();
+
   const { cache } = useSWRConfig();
 
   // Problem 1: https://github.com/weseek/growi/pull/7772/files#diff-4c1708c4f959974166c15435c6b35950ba01bbf35e7e4b8e99efeb125a8000a7
   // Problem 2: https://redmine.weseek.co.jp/issues/141027
+  // Problem 3: https://redmine.weseek.co.jp/issues/153618
+  // Problem 4: https://redmine.weseek.co.jp/issues/153759
   const shouldMutate = (() => {
     if (initialData === undefined) {
       return false;
@@ -81,8 +85,11 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
       return true;
     }
 
-    // mutate When a different revision is opened
-    if (cachedData.revision?._id != null && initialData.revision?._id != null && cachedData.revision._id !== initialData.revision._id) {
+    // mutate when opening a previous revision.
+    if (!isLatestRevision
+        && cachedData.revision?._id != null && initialData.revision?._id != null
+        && cachedData.revision._id !== initialData.revision._id
+    ) {
       return true;
     }
 
@@ -285,7 +292,7 @@ export const useSWRxCurrentGrantData = (
     ? ['/page/grant-data', pageId]
     : null;
 
-  return useSWRImmutable(
+  return useSWR(
     key,
     ([endpoint, pageId]) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
@@ -295,7 +302,7 @@ export const useSWRxApplicableGrant = (
     pageId: string | null | undefined,
 ): SWRResponse<IRecordApplicableGrant, Error> => {
 
-  return useSWRImmutable(
+  return useSWR(
     pageId != null ? ['/page/applicable-grant', pageId] : null,
     ([endpoint, pageId]) => apiv3Get(endpoint, { pageId }).then(response => response.data),
   );
