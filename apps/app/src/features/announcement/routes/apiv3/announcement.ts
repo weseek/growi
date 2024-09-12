@@ -20,12 +20,34 @@ module.exports = (crowi: Crowi): Router => {
 
   const validators = {
     doAnnouncement: [
-      body('sender').exists({ checkFalsy: true }),
-      body('comment').optional({ nullable: true }).isString(),
-      body('emoji').optional({ nullable: true }).isString(),
-      body('isReadReceiptTrackingEnabled').exists().isBoolean(),
-      body('pageId').exists({ checkFalsy: true }),
-      body('receivers').exists({ checkFalsy: true }).isArray(),
+      body('sender')
+        .exists({ checkFalsy: true })
+        .withMessage('sender is required')
+        .isMongoId()
+        .withMessage('sender must be mongo id'),
+      body('comment')
+        .optional({ nullable: true })
+        .isString()
+        .withMessage('comment must be string'),
+      body('emoji')
+        .optional({ nullable: true })
+        .isString()
+        .withMessage('emoji must be string'),
+      body('isReadReceiptTrackingEnabled')
+        .exists()
+        .withMessage('isReadReceiptTrackingEnabled is required')
+        .isBoolean()
+        .withMessage('isReadReceiptTrackingEnabled must be boolean'),
+      body('pageId')
+        .exists({ checkFalsy: true })
+        .withMessage('pageId is required')
+        .isMongoId()
+        .withMessage('pageId must be mongo id'),
+      body('receivers')
+        .exists({ checkFalsy: true })
+        .withMessage('receivers is required')
+        .isArray()
+        .withMessage('receivers must be an array'),
     ],
   };
 
