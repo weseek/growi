@@ -15,6 +15,7 @@
     "scope_of_page_disclosure": "Confidentialité de la page",
     "set_point": "Valeur",
     "Guest Users Access": "Accès invité",
+    "readonly_users_access": "",
     "always_hidden": "Toujours caché",
     "always_displayed": "Toujours affiché",
     "displayed_or_hidden": "Caché / Affiché",
@@ -37,6 +38,7 @@
     "page_delete_rights": "Droits de suppression",
     "page_delete": "Suppression de page",
     "page_delete_completely": "Suppression complète de page",
+    "comment_manage_rights": "",
     "other_options": "Paramètres supplémentaires",
     "deletion_explanation": "Restreindre les utilisateurs pouvant supprimer une page.",
     "complete_deletion_explanation": "Restreindre les utilisateurs pouvant supprimer complètement une page.",
@@ -84,6 +86,10 @@
     "guest_mode": {
       "deny": "Refuser (Utilisateurs inscrits seulement)",
       "readonly": "Autoriser (Lecture seule)"
+    },
+    "rom_users_comment": {
+      "deny": "拒否 (ROMユーザーのコメント禁止)",
+      "accept": "許可 (ROMユーザーもコメント可能)"
     },
     "registration_mode": {
       "open": "Ouvert (Tout le monde peut s'inscrire)",
