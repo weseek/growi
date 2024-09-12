@@ -41,6 +41,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isShowRestrictedByGroup: false,
       isUsersHomepageDeletionEnabled: false,
       isForceDeleteUserHomepageOnUserDeletion: false,
+      isRomUserAllowedToComment: false,
       isLocalEnabled: false,
       isLdapEnabled: false,
       isSamlEnabled: false,
@@ -79,6 +80,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
       isUsersHomepageDeletionEnabled: generalSetting.isUsersHomepageDeletionEnabled,
       isForceDeleteUserHomepageOnUserDeletion: generalSetting.isForceDeleteUserHomepageOnUserDeletion,
+      isRomUserAllowedToComment: generalSetting.isRomUserAllowedToComment,
       sessionMaxAge: generalSetting.sessionMaxAge,
       wikiMode: generalSetting.wikiMode,
       disableLinkSharing: shareLinkSetting.disableLinkSharing,
@@ -221,6 +223,14 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
+   * Switch isForceDeleteUserHomepageOnUserDeletion
+   */
+  switchIsRomUserAllowedToComment() {
+    this.setState({ isRomUserAllowedToComment: !this.state.isRomUserAllowedToComment });
+  }
+
+
+  /**
    * Update restrictGuestMode
    * @memberOf AdminGeneralSecuritySContainer
    * @return {string} Appearance
@@ -239,6 +249,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
       isUsersHomepageDeletionEnabled: this.state.isUsersHomepageDeletionEnabled,
       isForceDeleteUserHomepageOnUserDeletion: this.state.isForceDeleteUserHomepageOnUserDeletion,
+      isRomUserAllowedToComment: this.state.isRomUserAllowedToComment,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);

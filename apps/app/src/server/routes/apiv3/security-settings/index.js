@@ -637,6 +637,7 @@ module.exports = (crowi) => {
       'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': req.body.isUsersHomepageDeletionEnabled
         ? req.body.isForceDeleteUserHomepageOnUserDeletion
         : false,
+      'security:isRomUserAllowedToComment': req.body.isRomUserAllowedToComment,
     };
 
     // Validate delete config
@@ -670,6 +671,7 @@ module.exports = (crowi) => {
         isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),
         isForceDeleteUserHomepageOnUserDeletion:
         await configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
+        isRomUserAllowedToComment: await configManager.getConfig('crowi', 'security:isRomUserAllowedToComment'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_SECURITY_SETTINGS_UPDATE };
