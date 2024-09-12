@@ -1,12 +1,11 @@
 import type { Router } from 'express';
-import {
-  body, param, query, validationResult,
-} from 'express-validator';
+import { body } from 'express-validator';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
-import type { ParamsForAnnouncement } from '~/interfaces/announcement';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type Crowi from '~/server/crowi';
+
+import type { ParamsForAnnouncement } from '../../interfaces/announcement';
 
 
 const express = require('express');
@@ -30,11 +29,11 @@ module.exports = (crowi: Crowi): Router => {
     ],
   };
 
-  router.post('/:id/doAnnouncement', loginRequiredStrictly, validators.doAnnouncement, async (req: CrowiRequest) => {
+  router.post('/doAnnouncement', loginRequiredStrictly, validators.doAnnouncement, async(req: CrowiRequest) => {
 
     const params: ParamsForAnnouncement = req.body;
 
-    const { id: pageId } = req.params;
+    const pageId = params.pageId;
 
     const page = await Page.findById(pageId);
 
