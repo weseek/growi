@@ -150,7 +150,7 @@
     "next-themes": "^0.2.1",
     "nocache": "^4.0.0",
     "node-cron": "^3.0.2",
-    "nodemailer": "^6.9.14",
+    "nodemailer": "^6.9.15",
     "nodemailer-ses-transport": "~1.5.0",
     "openid-client": "^5.4.0",
     "p-retry": "^4.0.0",
