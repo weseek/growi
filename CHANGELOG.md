@@ -1,8 +1,21 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.18...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.19...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.19](https://github.com/weseek/growi/compare/v7.0.18...v7.0.19) - 2024-09-12
+
+### 🚀 Improvement
+
+* imprv: Corrected wording on admin page (/admin/data-transfer) (#9098) @shironegi39
+
+### 🐛 Bug Fixes
+
+* fix: Shared page is not displayed when skipping SSR (#9089) @miya
+* fix: The grant of pages can be changed via api even if restricted (#9087) @WNomunomu
+* fix: Updated content is not reflected on the View screen even after refreshing the page (#9086) @miya
+* fix: Removing comment doesn't work (#9083) @yuki-takei
 
 ## [v7.0.18](https://github.com/weseek/growi/compare/v7.0.17...v7.0.18) - 2024-09-09
 
