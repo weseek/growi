@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import type { IApiv3PageUpdateParams, IApiv3PageUpdateResponse } from '~/interfaces/apiv3';
+import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import { useIsUntitledPage } from '~/stores/ui';
 
 import { updatePage } from './update-page';
@@ -11,15 +12,16 @@ type UseUpdatePage = (params: IApiv3PageUpdateParams) => Promise<IApiv3PageUpdat
 
 export const useUpdatePage = (): UseUpdatePage => {
   const { mutate: mutateUntitledPage } = useIsUntitledPage();
-
+  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
   const updatePageExt: UseUpdatePage = useCallback(async(params) => {
     const result = await updatePage(params);
 
     // set false to isUntitledPage
     mutateUntitledPage(false);
+    mutateRecentlyUpdated();
 
     return result;
-  }, [mutateUntitledPage]);
+  }, [mutateUntitledPage, mutateRecentlyUpdated]);
 
   return updatePageExt;
 };
