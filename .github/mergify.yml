@@ -2,28 +2,37 @@ queue_rules:
   - name: default
     allow_inplace_checks: false
     queue_conditions:
-      - '#check-failure = 0'
-      - '#check-pending = 0'
-      - check-success ~= ci-app-
+      - check-success ~= ci-app-lint
+      - check-success ~= ci-app-test
+      - check-success ~= ci-app-launch-dev
+      - check-success = test-prod-node20 / build-prod
+      - check-success = test-prod-node20 / launch-prod
+      - -check-failure ~= ci-app-
+      - -check-failure ~= ci-slackbot-
     merge_conditions:
-      - '#check-failure = 0'
-      - '#check-pending = 0'
-      - check-success ~= ci-app-
-      - check-success ~= test-prod-node20 /
+      - check-success ~= ci-app-lint
+      - check-success ~= ci-app-test
+      - check-success ~= ci-app-launch-dev
+      - check-success = test-prod-node20 / build-prod
+      - check-success = test-prod-node20 / launch-prod
+      - check-success ~= test-prod-node20 / run-playwright
+      - -check-failure ~= ci-app-
+      - -check-failure ~= ci-slackbot-
+      - -check-failure ~= test-prod-node20 /
 
 pull_request_rules:
   - name: Automatic queue to merge
     conditions:
       - '#approved-reviews-by >= 1'
       - '#review-requested = 0'
-      - check-success = "check-title"
+      - check-success = check-title
     actions:
       queue:
 
   - name: Automatic merge for Preparing next version
     conditions:
       - author = github-actions[bot]
-      - label = "type/prepare-next-version"
+      - label = type/prepare-next-version
     actions:
       merge:
         method: merge
