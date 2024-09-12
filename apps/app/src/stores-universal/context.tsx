@@ -286,7 +286,7 @@ export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType,
   );
 };
 
-export const useGrowiHelpUrl = (): SWRResponse<'growi.cloud/help' | 'docs.growi.org', Error> => {
+export const useGrowiHelpDomain = (): SWRResponse<'growi.cloud/help' | 'docs.growi.org', Error> => {
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
 
