@@ -3,16 +3,15 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useGenerateTransferKey } from '~/client/services/g2g-transfer';
-import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '~/stores-universal/context';
+import { useIsGrowiHelpUrl } from '~/stores-universal/context';
 
 import CustomCopyToClipBoard from './Common/CustomCopyToClipBoard';
 
 const DataTransferForm = (): JSX.Element => {
   const { t } = useTranslation('commons');
   const { transferKey, generateTransferKey } = useGenerateTransferKey();
-  const { data: growiCloudUri } = useGrowiCloudUri();
-  const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
-  const growiHelpUrl = growiCloudUri != null && growiAppIdForGrowiCloud != null ? 'growi.cloud/help' : 'docs.growi.org';
+  const { data: growiHelpUrl } = useIsGrowiHelpUrl();
+
   return (
     <div data-testid="installerForm" className="py-3 px-4">
       <p className="text-white fs-5 mt-2">

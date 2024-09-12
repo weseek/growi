@@ -8,7 +8,7 @@ import { useGenerateTransferKey } from '~/client/services/g2g-transfer';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { G2G_PROGRESS_STATUS, type G2GProgress } from '~/interfaces/g2g-transfer';
-import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '~/stores-universal/context';
+import { useIsGrowiHelpUrl } from '~/stores-universal/context';
 import { useAdminSocket } from '~/stores/socket-io';
 
 import CustomCopyToClipBoard from '../Common/CustomCopyToClipBoard';
@@ -35,8 +35,6 @@ const G2GDataTransfer = (): JSX.Element => {
     mongo: G2G_PROGRESS_STATUS.PENDING,
     attachments: G2G_PROGRESS_STATUS.PENDING,
   });
-  const { data: growiCloudUri } = useGrowiCloudUri();
-  const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
 
   // File upload settings
   // const [fileUploadType, setFileUploadType] = useState('aws');
@@ -126,7 +124,7 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [setTransferring, startTransferKey, selectedCollections, optionsMap]);
 
-  const growiHelpUrl = growiCloudUri != null && growiAppIdForGrowiCloud != null ? 'growi.cloud/help' : 'docs.growi.org';
+  const { data: growiHelpUrl } = useIsGrowiHelpUrl();
 
   // File upload
   // const onChangeFileUploadTypeHandler = useCallback((e: ChangeEvent, type: string) => {
