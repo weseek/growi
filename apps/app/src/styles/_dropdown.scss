@@ -1,0 +1,16 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+
+
+// == Colors
+@include bs.color-mode(light) {
+  .dropdown-item:active{
+    color: #403c39;
+    background-color: #efeeed;
+  }
+}
+
+@include bs.color-mode(dark) {
+  .dropdown-item:active{
+    background-color: #535c5a;
+  }
+}
