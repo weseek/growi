@@ -223,10 +223,10 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Switch isForceDeleteUserHomepageOnUserDeletion
+   * switch isRomUserAllowedToComment
    */
-  switchIsRomUserAllowedToComment() {
-    this.setState({ isRomUserAllowedToComment: !this.state.isRomUserAllowedToComment });
+  switchIsRomUserAllowedToComment(bool) {
+    this.setState({ isRomUserAllowedToComment: bool });
   }
 
 

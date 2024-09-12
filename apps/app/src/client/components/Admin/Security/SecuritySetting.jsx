@@ -526,15 +526,15 @@ class SecuritySetting extends React.Component {
                 aria-expanded="true"
               >
                 <span className="float-start">
-                  {isRomUserAllowedToComment === true && t('security_settings.rom_users_comment.deny')}
-                  {isRomUserAllowedToComment === false && t('security_settings.rom_users_comment.accept')}
+                  {isRomUserAllowedToComment === true && t('security_settings.rom_users_comment.accept')}
+                  {isRomUserAllowedToComment === false && t('security_settings.rom_users_comment.deny')}
                 </span>
               </button>
               <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.switchIsRomUserAllowedToComment() }}>
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.switchIsRomUserAllowedToComment(false) }}>
                   {t('security_settings.rom_users_comment.deny')}
                 </button>
-                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.switchIsRomUserAllowedToComment() }}>
+                <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.switchIsRomUserAllowedToComment(true) }}>
                   {t('security_settings.rom_users_comment.accept')}
                 </button>
               </div>
