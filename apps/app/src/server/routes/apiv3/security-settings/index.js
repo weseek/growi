@@ -364,6 +364,7 @@ module.exports = (crowi) => {
         isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),
         isForceDeleteUserHomepageOnUserDeletion:
         await configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
+        isRomUserAllowedToComment: await configManager.getConfig('crowi', 'security:isRomUserAllowedToComment'),
         wikiMode: await configManager.getConfig('crowi', 'security:wikiMode'),
         sessionMaxAge: await configManager.getConfig('crowi', 'security:sessionMaxAge'),
       },
