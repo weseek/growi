@@ -3,7 +3,6 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useIsReadOnlyUser, useIsRomUserAllowedToComment } from '~/stores-universal/context';
-import { useSecuritySettings } from '~/stores/security-setting';
 
 import { NotAvailable } from './NotAvailable';
 
