@@ -20,7 +20,7 @@ pull_request_rules:
     actions:
       queue:
 
-  - name: Automatic merge for Dependabot pull requests
+  - name: Automatic queue for Dependabot pull requests
     conditions:
       - author = dependabot[bot]
       - '#approved-reviews-by >= 1'

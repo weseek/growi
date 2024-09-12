@@ -2,8 +2,6 @@ name: Auto approve PR
 
 on:
   pull_request_target:
-    branches:
-      - dependabot/*
     types: [opened, reopened, synchronize]
 
 permissions:
