@@ -25,8 +25,7 @@ pull_request_rules:
       - '#check-failure = 0'
       - check-success = "check-title"
     actions:
-      merge:
-        method: merge
+      queue:
 
   - name: Automatic merge for Preparing next version
     conditions:
