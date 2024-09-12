@@ -36,7 +36,7 @@ export const NotAvailableIfReadOnlyUserNotAllowedToComment: React.FC<{
   const { data: isRomUserAllowedToComment } = useIsRomUserAllowedToComment();
 
   const isDisabled = !!isReadOnlyUser && !isRomUserAllowedToComment;
-  const title = t('Not available for read only user if not allowed to comment');
+  const title = t('page_comment.comment_management_is_not_allowed');
 
   return (
     <NotAvailable
