@@ -285,18 +285,3 @@ export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType,
     },
   );
 };
-
-export const useGrowiHelpDomain = (): SWRResponse<'growi.cloud/help' | 'docs.growi.org', Error> => {
-  const { data: growiCloudUri } = useGrowiCloudUri();
-  const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
-
-  return useSWRImmutable(
-    [growiCloudUri, growiAppIdForGrowiCloud],
-    ([growiCloudUri, growiAppIdForGrowiCloud]) => {
-      if (growiCloudUri != null && growiAppIdForGrowiCloud != null) {
-        return 'growi.cloud/help';
-      }
-      return 'docs.growi.org';
-    },
-  );
-};
