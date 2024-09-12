@@ -3,19 +3,11 @@ queue_rules:
     allow_inplace_checks: false
     queue_conditions:
       - '#check-failure = 0'
-      - or:
-        - and:
-            - check-success ~= ci-slackbot-proxy-
-        - and:
-            - check-success ~= ci-app-
+      - check-success ~= ci-app-
     merge_conditions:
       - '#check-failure = 0'
-      - or:
-        - and:
-            - check-success ~= ci-slackbot-proxy-
-        - and:
-            - check-success ~= ci-app-
-            - check-success ~= test-prod-node20 /
+      - check-success ~= ci-app-
+      - check-success ~= test-prod-node20 /
 
 pull_request_rules:
   - name: Automatic queue to merge

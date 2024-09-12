@@ -23,6 +23,7 @@ on:
       - master
       - dev/7.*.x
       - dev/6.*.x
+      - release/*
     types: [opened, reopened, synchronize]
     paths:
       - .github/mergify.yml
