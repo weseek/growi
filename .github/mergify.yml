@@ -5,10 +5,9 @@ queue_rules:
       - check-success ~= ci-app-lint
       - check-success ~= ci-app-test
       - check-success ~= ci-app-launch-dev
-      - check-success = test-prod-node20 / build-prod
-      - check-success = test-prod-node20 / launch-prod
       - -check-failure ~= ci-app-
       - -check-failure ~= ci-slackbot-
+      - -check-failure ~= test-prod-node20 /
     merge_conditions:
       - check-success ~= ci-app-lint
       - check-success ~= ci-app-test
