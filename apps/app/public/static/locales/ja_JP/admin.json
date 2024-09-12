@@ -97,8 +97,8 @@
       "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"
     },
     "rom_users_comment": {
-      "deny": "拒否 (ROMユーザーのコメントを禁止)",
-      "accept": "許可 (ROMユーザーもコメント可能)"
+      "deny": "拒否 (ROMユーザーのコメント操作を禁止)",
+      "accept": "許可 (ROMユーザーもコメント操作可能)"
     },
     "registration_mode": {
       "open": "公開 (だれでも登録可能)",

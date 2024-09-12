@@ -27,7 +27,7 @@
     "always_hidden": "总是隐藏",
     "displayed_or_hidden": "隐藏 / 显示",
     "Guest Users Access": "来宾用户访问",
-    "readonly_users_access": "",
+    "readonly_users_access": "ROM用户的访问",
 		"Fixed by env var": "这是由env var<code>%s=%s</code>修复的。",
 		"register_limitation": "注册限制",
 		"register_limitation_desc": "限制新用户注册",
@@ -47,7 +47,7 @@
     "page_delete_rights": "删除权限",
     "page_delete": "删除",
     "page_delete_completely": "彻底删除",
-    "comment_manage_rights": "",
+    "comment_manage_rights": "评论管理权限",
     "other_options": "其他选项",
     "deletion_explanation": "限制用户对选定的单一页面进行垃圾处理。",
     "complete_deletion_explanation": "限制可以完全删除所选单页的用户。",
@@ -97,8 +97,8 @@
 			"readonly": "接受（来宾可以只读）"
 		},
     "rom_users_comment": {
-      "deny": "拒否 (ROMユーザーのコメント禁止)",
-      "accept": "許可 (ROMユーザーもコメント可能)"
+      "deny": "拒绝 (禁止ROM用户操作评论)",
+      "accept": "允许 (ROM用户可以管理评论)"
     },
 		"registration_mode": {
 			"open": "打开（任何人都可以注册）",

@@ -15,7 +15,7 @@
     "scope_of_page_disclosure": "Scope of page disclosure",
     "set_point": "Set point",
     "Guest Users Access": "Guest users access",
-    "readonly_users_access": "",
+    "readonly_users_access": "ROM users' access",
     "always_hidden": "Always hidden",
     "always_displayed": "Always displayed",
     "displayed_or_hidden": "Hidden / Displayed",
@@ -38,7 +38,7 @@
     "page_delete_rights": "Delete rights",
     "page_delete": "Page Delete",
     "page_delete_completely": "Page Delete Completely",
-    "comment_manage_rights": "",
+    "comment_manage_rights": "Comment management rights",
     "other_options": "Other options",
     "deletion_explanation": "Restricts users who can trash the selected single page.",
     "complete_deletion_explanation": "Restricts users who can completely delete  selected single page.",
@@ -88,8 +88,8 @@
       "readonly": "Accept (Guests can read only)"
     },
     "rom_users_comment": {
-      "deny": "拒否 (ROMユーザーのコメント禁止)",
-      "accept": "許可 (ROMユーザーもコメント可能)"
+      "deny": "Deny (Prohibit ROM users from comment management)",
+      "accept": "Allow (ROM users can manage comments)"
     },
     "registration_mode": {
       "open": "Open (Anyone can register)",
