@@ -9,6 +9,7 @@ import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
+import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import { useIsUntitledPage } from '~/stores/ui';
 
 import { createPage } from './create-page';
@@ -56,6 +57,8 @@ export const useCreatePage: UseCreatePage = () => {
   const { open: openGrantedGroupsInheritanceSelectModal, close: closeGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModal();
 
   const [isCreating, setCreating] = useState(false);
+
+  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
 
   const create: CreatePage = useCallback(async(params, opts = {}) => {
     const {
@@ -114,6 +117,7 @@ export const useCreatePage: UseCreatePage = () => {
         }
 
         onCreated?.();
+        mutateRecentlyUpdated();
       }
       catch (err) {
         throw err;
@@ -135,7 +139,14 @@ export const useCreatePage: UseCreatePage = () => {
     }
 
     await _create();
-  }, [currentPagePath, mutateEditorMode, router, t, closeGrantedGroupsInheritanceSelectModal, mutateIsUntitledPage, openGrantedGroupsInheritanceSelectModal]);
+  }, [
+    currentPagePath,
+    mutateEditorMode,
+    router, t,
+    closeGrantedGroupsInheritanceSelectModal,
+    mutateIsUntitledPage, openGrantedGroupsInheritanceSelectModal,
+    mutateRecentlyUpdated,
+  ]);
 
   return {
     isCreating,
