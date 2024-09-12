@@ -9,6 +9,8 @@ import {
 import { apiPost } from '~/client/util/apiv1-client';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo } from '~/stores/page';
+import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -24,6 +26,8 @@ const PutBackPageModal = () => {
   const [targetPath, setTargetPath] = useState(null);
 
   const [isPutbackRecursively, setIsPutbackRecursively] = useState(true);
+
+  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
 
   function changeIsPutbackRecursivelyHandler() {
     setIsPutbackRecursively(!isPutbackRecursively);
@@ -47,6 +51,7 @@ const PutBackPageModal = () => {
         onPutBacked(response.page.path);
       }
       closePutBackPageModal();
+      mutateRecentlyUpdated();
     }
     catch (err) {
       setTargetPath(err.data);
