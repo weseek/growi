@@ -3,9 +3,11 @@ queue_rules:
     allow_inplace_checks: false
     queue_conditions:
       - '#check-failure = 0'
+      - '#check-pending = 0'
       - check-success ~= ci-app-
     merge_conditions:
       - '#check-failure = 0'
+      - '#check-pending = 0'
       - check-success ~= ci-app-
       - check-success ~= test-prod-node20 /
 
