@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useIsReadOnlyUser } from '~/stores-universal/context';
+import { useIsReadOnlyUser, useIsRomUserAllowedToComment } from '~/stores-universal/context';
 import { useSecuritySettings } from '~/stores/security-setting';
 
 import { NotAvailable } from './NotAvailable';
@@ -34,15 +34,7 @@ export const NotAvailableIfReadOnlyUserNotAllowedToComment: React.FC<{
   const { t } = useTranslation();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
-  const { data: securitySettings } = useSecuritySettings();
-
-  if (securitySettings == null) {
-    return;
-  }
-
-  const isRomUserAllowedToComment = securitySettings.generalSetting.isRomUserAllowedToComment;
-
-  console.log(isRomUserAllowedToComment);
+  const { data: isRomUserAllowedToComment } = useIsRomUserAllowedToComment();
 
   const isDisabled = !!isReadOnlyUser && !isRomUserAllowedToComment;
   const title = t('Not available for read only user if not allowed to comment');
