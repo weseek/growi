@@ -11,12 +11,12 @@ import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
+import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
 import { useCreatePage } from '~/client/services/create-page';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
-import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
-import { mutatePageTree } from '~/stores/page-listing';
+import { mutatePageTree, useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
 import { shouldCreateWipPage } from '../../../../utils/should-create-wip-page';
@@ -89,6 +89,8 @@ export const useNewPageInput = (): UseNewPageInput => {
       setShowInput(false);
     }, []);
 
+    const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
+
     const create = useCallback(async(inputText) => {
       if (inputText.trim() === '') {
         return cancel();
@@ -123,6 +125,7 @@ export const useNewPageInput = (): UseNewPageInput => {
             skipTransition: true,
             onCreated: () => {
               mutatePageTree();
+              mutateRecentlyUpdated();
 
               if (!hasDescendants) {
                 stateHandlers?.setIsOpen(true);
@@ -139,7 +142,7 @@ export const useNewPageInput = (): UseNewPageInput => {
       finally {
         setProcessingSubmission(false);
       }
-    }, [cancel, hasDescendants, page.path, stateHandlers, t, createPage]);
+    }, [cancel, hasDescendants, page.path, stateHandlers, t, createPage, mutateRecentlyUpdated]);
 
     const inputContainerClass = newPageInputStyles['new-page-input-container'] ?? '';
     const isInvalid = validationResult != null;

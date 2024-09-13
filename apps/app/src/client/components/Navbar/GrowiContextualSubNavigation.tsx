@@ -34,7 +34,7 @@ import {
 import {
   useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
 } from '~/stores/page';
-import { mutatePageTree } from '~/stores/page-listing';
+import { mutatePageTree, useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import {
   useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
@@ -247,6 +247,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
 
   const [isStickyActive, setStickyActive] = useState(false);
 
@@ -271,9 +272,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
+      mutateRecentlyUpdated();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
-  }, [mutateCurrentPage, mutatePageInfo, openRenameModal]);
+  }, [mutateCurrentPage, mutatePageInfo, openRenameModal, mutateRecentlyUpdated]);
 
   const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
     const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -294,9 +296,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
+      mutateRecentlyUpdated();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
+  }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo, mutateRecentlyUpdated]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     if (!isSharedPage) {
