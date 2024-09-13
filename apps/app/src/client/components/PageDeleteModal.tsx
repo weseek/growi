@@ -17,8 +17,9 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import type { IDeleteSinglePageApiv1Result, IDeleteManyPageApiv3Result } from '~/interfaces/page';
 import { usePageDeleteModal } from '~/stores/modal';
-import { useSWRxPageInfoForList, useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { useSWRxPageInfoForList } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
+
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -50,7 +51,6 @@ const PageDeleteModal: FC = () => {
   const { t } = useTranslation();
 
   const { data: deleteModalData, close: closeDeleteModal } = usePageDeleteModal();
-  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
 
   const isOpened = deleteModalData?.isOpened ?? false;
 
@@ -146,7 +146,6 @@ const PageDeleteModal: FC = () => {
           onDeleted(data.paths, data.isRecursively, data.isCompletely);
         }
         closeDeleteModal();
-        mutateRecentlyUpdated();
       }
       catch (err) {
         setErrs([err]);
@@ -175,7 +174,6 @@ const PageDeleteModal: FC = () => {
         }
 
         closeDeleteModal();
-        mutateRecentlyUpdated();
       }
       catch (err) {
         setErrs([err]);

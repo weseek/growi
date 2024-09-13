@@ -15,7 +15,6 @@ import { toastError } from '~/client/util/toastr';
 import { useSiteUrl, useIsSearchServiceReachable } from '~/stores-universal/context';
 import { usePageRenameModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
-import { useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 
 import DuplicatedPathsTable from './DuplicatedPathsTable';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
@@ -39,8 +38,6 @@ const PageRenameModal = (): JSX.Element => {
 
   const shouldFetch = isOpened && page != null && !isIPageInfoForEntity(page.meta);
   const { data: pageInfo } = useSWRxPageInfo(shouldFetch ? page?.data._id : null);
-
-  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
 
   if (page != null && pageInfo != null) {
     page.meta = pageInfo;
@@ -124,22 +121,11 @@ const PageRenameModal = (): JSX.Element => {
         onRenamed(path);
       }
       closeRenameModal();
-      mutateRecentlyUpdated();
     }
     catch (err) {
       setErrs(err);
     }
-  }, [
-    closeRenameModal,
-    canRename,
-    isRemainMetadata,
-    isRenameRecursively,
-    isRenameRedirect,
-    page,
-    pageNameInput,
-    renameModalData?.opts?.onRenamed,
-    mutateRecentlyUpdated,
-  ]);
+  }, [closeRenameModal, canRename, isRemainMetadata, isRenameRecursively, isRenameRedirect, page, pageNameInput, renameModalData?.opts?.onRenamed]);
 
   const checkExistPaths = useCallback(async(fromPath, toPath) => {
     if (page == null) {
