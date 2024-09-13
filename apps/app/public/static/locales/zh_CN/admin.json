@@ -1141,5 +1141,8 @@
   },
   "forbidden_page": {
     "do_not_have_admin_permission": "没有管理权限的用户无法访问管理屏幕"
+  },
+  "openai_management": {
+    "openai_management": "OpenAI 管理层"
   }
 }

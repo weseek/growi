@@ -1132,5 +1132,8 @@
   },
   "forbidden_page": {
     "do_not_have_admin_permission": "Users without administrative rights cannot access the administration screen"
+  },
+  "openai_management": {
+    "openai_management": "OpenAI Management"
   }
 }

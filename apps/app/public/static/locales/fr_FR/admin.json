@@ -1131,5 +1131,8 @@
   },
   "forbidden_page": {
     "do_not_have_admin_permission": "Seul les administrateurs peuvent accéder à cette page."
+  },
+  "openai_management": {
+    "openai_management": "Gestion de l'OpenAI"
   }
 }
