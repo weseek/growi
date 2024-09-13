@@ -291,7 +291,7 @@ export const useGrowiDocumentationUrl = (): SWRResponse<'growi.cloud/help' | 'do
   const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
 
   return useSWRImmutable(
-    [growiCloudUri, growiAppIdForGrowiCloud],
+    ['growiDocumentationUrl', growiCloudUri, growiAppIdForGrowiCloud],
     ([growiCloudUri, growiAppIdForGrowiCloud]) => {
       if (growiCloudUri != null && growiAppIdForGrowiCloud != null) {
         return 'growi.cloud/help';
