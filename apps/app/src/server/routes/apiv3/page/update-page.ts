@@ -4,6 +4,7 @@ import type {
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
@@ -26,6 +27,7 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page:update-page');
 
@@ -121,7 +123,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     validator, apiV3FormValidator,
     async(req: UpdatePageRequest, res: ApiV3Response) => {
       const {
-        pageId, revisionId, body, origin,
+        pageId, revisionId, body, origin, grant,
       } = req.body;
 
       const sanitizeRevisionId = revisionId == null ? undefined : generalXssFilter.process(revisionId);
@@ -137,6 +139,12 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       // check page existence (for type safety)
       if (currentPage == null) {
         return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
+      }
+
+      const isGrantImmutable = isTopPage(currentPage.path) || isUsersProtectedPages(currentPage.path);
+
+      if (grant != null && grant !== currentPage.grant && isGrantImmutable) {
+        return res.apiv3Err(new ErrorV3('The grant settings for the specified page cannot be modified.', PageUpdateErrorCode.FORBIDDEN), 403);
       }
 
       if (currentPage != null) {
@@ -164,7 +172,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       let previousRevision: IRevisionHasId | null;
       try {
         const {
-          grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
+          userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
         } = req.body;
         const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin, wip };
         if (grant != null) {
