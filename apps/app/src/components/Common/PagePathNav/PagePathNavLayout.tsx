@@ -1,10 +1,8 @@
 import type { ReactNode } from 'react';
-import { useState } from 'react';
 
 import dynamic from 'next/dynamic';
 
 import { useIsNotFound } from '~/stores/page';
-import { useIsDeviceLargerThanMd } from '~/stores/ui';
 
 import styles from './PagePathNav.module.scss';
 
@@ -38,17 +36,13 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
   } = props;
 
   const { data: isNotFound } = useIsNotFound();
-  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
-  const [isHovered, setIsHovered] = useState(false);
 
   const copyDropdownId = `copydropdown-${pageId}`;
 
   return (
     <div
-      className={className}
+      className={`${className} ${styles['grw-page-path-nav-layout']}`}
       style={{ maxWidth }}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
       <span className={`${formerLinkClassName ?? ''} ${styles['grw-former-link']}`}>{formerLink}</span>
       <div className="d-flex align-items-center">
@@ -60,13 +54,9 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
             { isWipPage && (
               <span className="badge text-bg-secondary ms-1 me-1">WIP</span>
             )}
-            {
-              (!isDeviceLargerThanMd || isHovered) && (
-                <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
-                  <span className="material-symbols-outlined">content_paste</span>
-                </CopyDropdown>
-              )
-            }
+            <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
+              <span className="material-symbols-outlined grw-page-path-nav-copydropdown">content_paste</span>
+            </CopyDropdown>
           </div>
         ) }
       </div>
