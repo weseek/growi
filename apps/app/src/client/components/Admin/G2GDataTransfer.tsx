@@ -8,7 +8,7 @@ import { useGenerateTransferKey } from '~/client/services/g2g-transfer';
 import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { G2G_PROGRESS_STATUS, type G2GProgress } from '~/interfaces/g2g-transfer';
-import { useGrowiHelpDomain } from '~/stores-universal/context';
+import { useGrowiDocumentationUrl } from '~/stores-universal/context';
 import { useAdminSocket } from '~/stores/socket-io';
 
 import CustomCopyToClipBoard from '../Common/CustomCopyToClipBoard';
@@ -124,7 +124,7 @@ const G2GDataTransfer = (): JSX.Element => {
     }
   }, [setTransferring, startTransferKey, selectedCollections, optionsMap]);
 
-  const { data: growiHelpDomain } = useGrowiHelpDomain();
+  const { data: documentationUrl } = useGrowiDocumentationUrl();
 
   // File upload
   // const onChangeFileUploadTypeHandler = useCallback((e: ChangeEvent, type: string) => {
@@ -279,7 +279,7 @@ const G2GDataTransfer = (): JSX.Element => {
         <p className="mb-1">{t('commons:g2g_data_transfer.transfer_key_limit')}</p>
         <p className="mb-1">{t('commons:g2g_data_transfer.once_transfer_key_used')}</p>
         {/* eslint-disable-next-line react/no-danger */}
-        <p className="mb-0" dangerouslySetInnerHTML={{ __html: t('commons:g2g_data_transfer.transfer_to_growi_cloud', { growiHelpDomain }) }} />
+        <p className="mb-0" dangerouslySetInnerHTML={{ __html: t('commons:g2g_data_transfer.transfer_to_growi_cloud', { documentationUrl }) }} />
       </div>
     </div>
   );
