@@ -337,11 +337,25 @@ export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Er
  *********************************************************** */
 
 export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser } = useCurrentUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
-  const { data: isTrashPage } = useIsTrashPage();
+  const key = 'isAbleToShowTrashPageManagementButtons';
 
-  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isTrashPage && currentUser != null && !isReadOnlyUser);
+  const { data: _currentUser } = useCurrentUser();
+  const isCurrentUserExist = _currentUser != null;
+
+  const { data: _currentPageId } = useCurrentPageId();
+  const { data: _isNotFound } = useIsNotFound();
+  const { data: _isTrashPage } = useIsTrashPage();
+  const { data: _isReadOnlyUser } = useIsReadOnlyUser();
+  const isPageExist = _currentPageId != null && _isNotFound === false;
+  const isTrashPage = isPageExist && _isTrashPage === true;
+  const isReadOnlyUser = isPageExist && _isReadOnlyUser === true;
+
+  const includesUndefined = [_currentUser, _currentPageId, _isNotFound, _isReadOnlyUser, _isTrashPage].some(v => v === undefined);
+
+  return useSWRImmutable(
+    includesUndefined ? null : [key, isTrashPage, isCurrentUserExist, isReadOnlyUser],
+    ([, isTrashPage, isCurrentUserExist, isReadOnlyUser]) => isTrashPage && isCurrentUserExist && !isReadOnlyUser,
+  );
 };
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
