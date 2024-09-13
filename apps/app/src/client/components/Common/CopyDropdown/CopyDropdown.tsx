@@ -1,10 +1,13 @@
+import type {
+  ReactNode,
+  CSSProperties,
+} from 'react';
 import React, {
   useState, useMemo, useCallback,
 } from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -15,19 +18,35 @@ import styles from './CopyDropdown.module.scss';
 
 const { encodeSpaces } = pagePathUtils;
 
-/* eslint-disable react/prop-types */
-const DropdownItemContents = ({
-  title, contents, className, style,
-}) => (
-  <>
-    <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
-    <div className={`card mb-1 p-2 ${className}`} style={style}>{contents}</div>
-  </>
-);
-/* eslint-enable react/prop-types */
+type DropdownItemContentsProps = {
+  title: string,
+  contents: ReactNode,
+  className?: string,
+  style?: CSSProperties,
+}
+const DropdownItemContents = (props: DropdownItemContentsProps) => {
+  const {
+    title, contents, className, style,
+  } = props;
+  return (
+    <>
+      <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
+      <div className={`card mb-1 p-2 ${className}`} style={style}>{contents}</div>
+    </>
+  );
+};
 
 
-export const CopyDropdown = (props) => {
+type CopyDropdownProps = {
+  children: ReactNode,
+  dropdownToggleId: string,
+  pagePath: string,
+  pageId?: string,
+  dropdownToggleClassName?: string,
+  isShareLinkMode?: boolean,
+}
+
+export const CopyDropdown = (props: CopyDropdownProps): JSX.Element => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [tooltipOpen, setTooltipOpen] = useState(false);
   const [isParamsAppended, setParamsAppended] = useState(!props.isShareLinkMode);
@@ -208,7 +227,7 @@ export const CopyDropdown = (props) => {
           { pageId && (
             <CopyToClipboard text={markdownLink} onCopy={showToolTip}>
               <DropdownItem className="px-3 text-wrap">
-                <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={markdownLink} isContentsWrap />
+                <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={markdownLink} />
               </DropdownItem>
             </CopyToClipboard>
           )}
@@ -221,14 +240,4 @@ export const CopyDropdown = (props) => {
       </Tooltip>
     </>
   );
-};
-
-CopyDropdown.propTypes = {
-  children: PropTypes.node.isRequired,
-  dropdownToggleId: PropTypes.string.isRequired,
-  pagePath: PropTypes.string.isRequired,
-
-  pageId: PropTypes.string,
-  dropdownToggleClassName: PropTypes.string,
-  isShareLinkMode: PropTypes.bool,
 };
