@@ -1,16 +1,22 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '@growi/ui/scss/atoms/btn-muted';
 
+
 .grw-page-path-nav-layout :global {
   .grw-page-path-nav-copydropdown {
-    opacity: 0;
+    display: none;
     @include bs.media-breakpoint-down(md) {
-      opacity: 1;
+      display: block;
     }
   }
-  &:hover {
-    .grw-page-path-nav-copydropdown {
-      opacity: 1;
+}
+
+.grw-page-path-nav-layout {
+  &:global {
+    &:hover {
+      .grw-page-path-nav-copydropdown {
+        display: block;
+      }
     }
   }
 }
@@ -24,7 +30,7 @@
 // == Colors
 .grw-former-link :global {
   .separator {
-    opacity: 0.75;
+    // opacity: 0.75;
   }
 }
 
