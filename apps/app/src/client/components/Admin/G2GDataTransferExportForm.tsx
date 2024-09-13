@@ -4,7 +4,7 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 
-import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
+import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
 import { ImportOptionForPages } from '~/models/admin/import-option-for-pages';
 import { ImportOptionForRevisions } from '~/models/admin/import-option-for-revisions';
 
@@ -22,7 +22,7 @@ const GROUPS_CONFIG = [
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
 
-const IMPORT_OPTION_CLASS_MAPPING = {
+const IMPORT_OPTION_CLASS_MAPPING: Record<string, typeof GrowiArchiveImportOption> = {
   pages: ImportOptionForPages,
   revisions: ImportOptionForRevisions,
 };
@@ -188,7 +188,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
         ? MODE_RESTRICTED_COLLECTION[collectionName][0]
         : DEFAULT_MODE;
       const ImportOption = IMPORT_OPTION_CLASS_MAPPING[collectionName] || GrowiArchiveImportOption;
-      initialOptionsMap[collectionName] = new ImportOption(initialMode);
+      initialOptionsMap[collectionName] = new ImportOption(collectionName, initialMode);
     });
     updateOptionsMap(initialOptionsMap);
   }, [allCollectionNames, updateOptionsMap]);

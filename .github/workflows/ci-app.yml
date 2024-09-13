@@ -7,6 +7,7 @@ on:
       - rc/**
       - changeset-release/**
     paths:
+      - .github/mergify.yml
       - .github/workflows/ci-app.yml
       - .eslint*
       - tsconfig.base.json
@@ -205,11 +206,11 @@ jobs:
           yarn global add node-gyp
           yarn --frozen-lockfile
 
-      - name: turbo run dev:ci
+      - name: turbo run launch-dev:ci
         working-directory: ./apps/app
         run: |
           cp config/ci/.env.local.for-ci .env.development.local
-          turbo run dev:ci --env-mode=loose
+          turbo run launch-dev:ci --env-mode=loose
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 

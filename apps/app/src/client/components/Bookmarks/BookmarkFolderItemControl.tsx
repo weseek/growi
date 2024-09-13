@@ -26,37 +26,40 @@ export const BookmarkFolderItemControl: React.FC<{
           <span className="material-symbols-outlined">more_horiz</span>
         </DropdownToggle>
       ) }
-      <DropdownMenu
-        container="body"
-        style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
-      >
-        {onClickMoveToRoot && (
+
+      { isOpen && (
+        <DropdownMenu
+          container="body"
+          style={{ zIndex: 1055 }}
+        >
+          {onClickMoveToRoot && (
+            <DropdownItem
+              onClick={onClickMoveToRoot}
+              className="grw-page-control-dropdown-item"
+            >
+              <span className="material-symbols-outlined grw-page-control-dropdown-icon">bookmark</span>
+              {t('bookmark_folder.move_to_root')}
+            </DropdownItem>
+          )}
           <DropdownItem
-            onClick={onClickMoveToRoot}
+            onClick={onClickRename}
             className="grw-page-control-dropdown-item"
           >
-            <span className="material-symbols-outlined grw-page-control-dropdown-icon">bookmark</span>
-            {t('bookmark_folder.move_to_root')}
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">redo</span>
+            {t('Rename')}
           </DropdownItem>
-        )}
-        <DropdownItem
-          onClick={onClickRename}
-          className="grw-page-control-dropdown-item"
-        >
-          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">redo</span>
-          {t('Rename')}
-        </DropdownItem>
 
-        <DropdownItem divider />
+          <DropdownItem divider />
 
-        <DropdownItem
-          className="pt-2 grw-page-control-dropdown-item text-danger"
-          onClick={onClickDelete}
-        >
-          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">delete</span>
-          {t('Delete')}
-        </DropdownItem>
-      </DropdownMenu>
+          <DropdownItem
+            className="pt-2 grw-page-control-dropdown-item text-danger"
+            onClick={onClickDelete}
+          >
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">delete</span>
+            {t('Delete')}
+          </DropdownItem>
+        </DropdownMenu>
+      ) }
     </Dropdown>
   );
 };

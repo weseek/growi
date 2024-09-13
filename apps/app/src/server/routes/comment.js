@@ -1,4 +1,5 @@
 
+import { getIdStringForRef } from '@growi/core';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 
 import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
@@ -56,7 +57,6 @@ module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:comment');
   const User = crowi.model('User');
   const Page = crowi.model('Page');
-  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const ApiResponse = require('../util/apiResponse');
 
   const activityEvent = crowi.event('activity');
@@ -465,6 +465,7 @@ module.exports = function(crowi, app) {
     }
 
     try {
+      /** @type {import('mongoose').HydratedDocument<import('~/interfaces/comment').IComment>} */
       const comment = await Comment.findById(commentId).exec();
 
       if (comment == null) {
@@ -472,12 +473,12 @@ module.exports = function(crowi, app) {
       }
 
       // check whether accessible
-      const pageId = comment.page;
+      const pageId = getIdStringForRef(comment.page);
       const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
       if (!isAccessible) {
         throw new Error('Current user is not accessible to this page.');
       }
-      if (req.user._id !== comment.creator.toString()) {
+      if (getIdStringForRef(req.user) !== getIdStringForRef(comment.creator)) {
         throw new Error('Current user is not operatable to this comment.');
       }
 
