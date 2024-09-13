@@ -56,7 +56,6 @@ const getTranspilePackages = () => {
     'github-slugger',
     'html-url-attributes',
     'estree-util-is-identifier-name',
-    '@microflash/remark-callout-directives',
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'unist-']),
   ];
 
