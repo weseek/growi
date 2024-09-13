@@ -1143,7 +1143,7 @@
   "forbidden_page": {
     "do_not_have_admin_permission": "管理者権限のないユーザーでは管理画面にはアクセスできません"
   },
-  "openai_management": {
-    "openai_management": "OpenAI 管理"
+  "ai_search_management": {
+    "ai_search_management": "AI 検索管理"
   }
 }

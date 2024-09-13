@@ -18,10 +18,10 @@ type Props = CommonProps & {
   //
 };
 
-const AdminOpenaiPage: NextPage<Props> = (props) => {
+const AdminAiSearchPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('admin');
 
-  const title = t('openai_management.openai_management');
+  const title = t('ai_search_management.ai_search_management');
   const headTitle = generateCustomTitle(props, title);
 
   if (props.isAccessDeniedForNonAdminUser) {
@@ -47,4 +47,4 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   return props;
 };
 
-export default AdminOpenaiPage;
+export default AdminAiSearchPage;
