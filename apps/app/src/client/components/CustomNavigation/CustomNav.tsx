@@ -33,11 +33,13 @@ type CustomNavDropdownProps = {
   navTabMapping: ICustomNavTabMappings,
   activeTab: string,
   onNavSelected?: (selectedTabKey: string) => void,
+  breakpointToHideDropDown?: Breakpoint,
 };
 
 export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element => {
   const {
     activeTab, navTabMapping, onNavSelected,
+    breakpointToHideDropDown,
   } = props;
 
   const { Icon, i18n } = navTabMapping[activeTab];
@@ -48,10 +50,17 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
     }
   }, [onNavSelected]);
 
+  // Set classes to hide dropdown
+  const dropdownVisibilityClassnames: string[] = [];
+  if (breakpointToHideDropDown != null) {
+    const breakpointOneLevelLarger = getBreakpointOneLevelLarger(breakpointToHideDropDown);
+    dropdownVisibilityClassnames.push(`d-${breakpointOneLevelLarger}-none`);
+  }
+
   return (
     <div className="btn-group">
       <button
-        className="btn btn-outline-primary btn-lg dropdown-toggle text-end"
+        className={`btn btn-outline-primary btn-lg dropdown-toggle text-end ${dropdownVisibilityClassnames.join(' ')}`}
         type="button"
         data-bs-toggle="dropdown"
         aria-haspopup="true"
@@ -160,10 +169,13 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
 
   // determine inactive classes to hide NavItem
   const inactiveClassnames: string[] = [];
+  const slideHrVisibilityClassnames: string[] = [];
   if (breakpointToHideInactiveTabsDown != null) {
     const breakpointOneLevelLarger = getBreakpointOneLevelLarger(breakpointToHideInactiveTabsDown);
-    // inactiveClassnames.push('d-none');
-    // inactiveClassnames.push(`d-${breakpointOneLevelLarger}-block`);
+    inactiveClassnames.push('d-none');
+    inactiveClassnames.push(`d-${breakpointOneLevelLarger}-block`);
+    // slideHrVisibilityClassnames.push('d-none');
+    // slideHrVisibilityClassnames.push(`d-${breakpointOneLevelLarger}-block`);
   }
 
   return (
@@ -191,7 +203,10 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
         </Nav>
         {navRightElement}
       </div>
-      <hr className="my-0 grw-nav-slide-hr border-none" style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%` }} />
+      <hr
+        className={`my-0 grw-nav-slide-hr border-none ${slideHrVisibilityClassnames.join(' ')}`}
+        style={{ width: `${sliderWidth}%`, marginLeft: `${sliderMarginLeft}%`, display: 'inline-block' }}
+      />
       { !hideBorderBottom && <hr className="my-0 border-top-0 border-bottom" /> }
     </div>
   );

@@ -11,7 +11,7 @@ import {
 import { useIsSharedUser } from '~/stores-universal/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 
-import CustomNav, { CustomNavTab } from './CustomNavigation/CustomNav';
+import { CustomNavDropdown, CustomNavTab } from './CustomNavigation/CustomNav';
 import CustomTabContent from './CustomNavigation/CustomTabContent';
 import type { DescendantsPageListProps } from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
@@ -94,16 +94,21 @@ export const DescendantsPageListModal = (): JSX.Element => {
       className={`grw-descendants-page-list-modal ${styles['grw-descendants-page-list-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
       <ModalHeader className="p-0" toggle={close} close={buttons}>
-        <CustomNav
+        <CustomNavTab
           activeTab={activeTab}
           navTabMapping={navTabMapping}
           breakpointToHideInactiveTabsDown="md"
-          breakpointToSwitchDropdownDown="md"
           onNavSelected={v => setActiveTab(v)}
           hideBorderBottom
         />
       </ModalHeader>
       <ModalBody>
+        <CustomNavDropdown
+          activeTab={activeTab}
+          navTabMapping={navTabMapping}
+          breakpointToHideDropDown="md"
+          onNavSelected={v => setActiveTab(v)}
+        />
         <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} />
       </ModalBody>
     </Modal>
