@@ -14,5 +14,8 @@
     border-bottom: 3px solid;
     transition: 0.3s ease-in-out;
   }
+}
 
+.dropdown-menu :global {
+  width: 100%;
 }

@@ -61,7 +61,7 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
           { Icon != null && <Icon /> } {i18n}
         </span>
       </button>
-      <div className="dropdown-menu dropdown-menu-right">
+      <div className={`dropdown-menu dropdown-menu-right ${styles['dropdown-menu']}`}>
         {Object.entries(navTabMapping).map(([key, value]) => {
 
           const isActive = activeTab === key;
@@ -162,8 +162,8 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
   const inactiveClassnames: string[] = [];
   if (breakpointToHideInactiveTabsDown != null) {
     const breakpointOneLevelLarger = getBreakpointOneLevelLarger(breakpointToHideInactiveTabsDown);
-    inactiveClassnames.push('d-none');
-    inactiveClassnames.push(`d-${breakpointOneLevelLarger}-block`);
+    // inactiveClassnames.push('d-none');
+    // inactiveClassnames.push(`d-${breakpointOneLevelLarger}-block`);
   }
 
   return (
