@@ -1,0 +1,6 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+
+.dropdown-item:active{
+  --bs-dropdown-link-active-color: #{( bs.$gray-600 )};
+  --bs-dropdown-link-active-bg: #{( bs.$gray-200 )};
+}
