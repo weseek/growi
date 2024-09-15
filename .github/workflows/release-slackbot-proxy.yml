@@ -17,7 +17,7 @@ jobs:
         ref: ${{ github.event.pull_request.base.ref }}
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.2.0
+      uses: myrotvorets/info-from-package-json-action@2.0.1
       id: package-json
       with:
         workingDir: apps/slackbot-proxy
@@ -110,7 +110,7 @@ jobs:
         turbo run version --filter=@growi/slackbot-proxy -- --prerelease
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.2.0
+      uses: myrotvorets/info-from-package-json-action@2.0.1
       id: package-json
       with:
         workingDir: apps/slackbot-proxy
