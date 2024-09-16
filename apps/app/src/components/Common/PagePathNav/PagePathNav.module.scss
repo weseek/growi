@@ -1,6 +1,26 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '@growi/ui/scss/atoms/btn-muted';
 
+
+.grw-page-path-nav-layout :global {
+  .grw-page-path-nav-copydropdown {
+    display: none;
+    @include bs.media-breakpoint-down(md) {
+      display: block;
+    }
+  }
+}
+
+.grw-page-path-nav-layout {
+  &:global {
+    &:hover {
+      .grw-page-path-nav-copydropdown {
+        display: block;
+      }
+    }
+  }
+}
+
 .grw-page-path-nav :global {
   .btn-copy {
     @include btn-muted.colorize(bs.$orange);
