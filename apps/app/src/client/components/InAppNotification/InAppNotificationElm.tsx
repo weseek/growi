@@ -1,10 +1,13 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import type { HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import type { IInAppNotification } from '~/interfaces/in-app-notification';
+import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 
 import { useModelNotification } from './PageNotification';
 
@@ -21,16 +24,18 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const Notification = modelNotificationUtils?.Notification;
   const publishOpen = modelNotificationUtils?.publishOpen;
+  const { mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
 
   if (Notification == null || publishOpen == null) {
     return <></>;
   }
 
   const clickHandler = async(notification: IInAppNotification & HasObjectId): Promise<void> => {
-    if (notification.status === InAppNotificationStatuses.STATUS_UNOPENED) {
+    if (notification.status === InAppNotificationStatuses.STATUS_UNREAD) {
       // set notification status "OPEND"
       await apiv3Post('/in-app-notification/open', { id: notification._id });
       onUnopenedNotificationOpend?.();
+      mutateNotificationCount();
     }
 
     publishOpen();
@@ -59,7 +64,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     <div className="list-group-item list-group-item-action" onClick={() => clickHandler(notification)} style={{ cursor: 'pointer' }}>
       <div className="d-flex align-items-center">
         <span
-          className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
+          className={`${notification.status === InAppNotificationStatuses.STATUS_UNREAD
             ? 'grw-unopend-notification'
             : 'ms-2'
           } rounded-circle me-3`}
