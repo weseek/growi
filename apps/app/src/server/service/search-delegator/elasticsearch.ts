@@ -20,8 +20,8 @@ import type { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
 import { configManager } from '../config-manager';
 import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
-import { embed, openaiClient, fileUpload } from '../openai';
-import { getOrCreateSearchAssistant } from '../openai/assistant';
+// // import { embed, openaiClient, fileUpload } from '../openai';
+// import { getOrCreateSearchAssistant } from '../openai/assistant';
 
 import { aggregatePipelineToIndex } from './aggregate-to-index';
 import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
@@ -481,27 +481,27 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     });
 
-    const appendEmbeddingStream = new Transform({
-      objectMode: true,
-      async transform(chunk: AggregatedPage[], encoding, callback) {
-        // append embedding
-        for await (const doc of chunk) {
-          doc.revisionBodyEmbedded = (await embed(doc.revision.body, doc.creator?.username))[0].embedding;
-        }
+    // const appendEmbeddingStream = new Transform({
+    //   objectMode: true,
+    //   async transform(chunk: AggregatedPage[], encoding, callback) {
+    //     // append embedding
+    //     for await (const doc of chunk) {
+    //       doc.revisionBodyEmbedded = (await embed(doc.revision.body, doc.creator?.username))[0].embedding;
+    //     }
 
-        this.push(chunk);
-        callback();
-      },
-    });
+    //     this.push(chunk);
+    //     callback();
+    //   },
+    // });
 
-    const appendFileUploadedStream = new Transform({
-      objectMode: true,
-      async transform(chunk, encoding, callback) {
-        await fileUpload(chunk);
-        this.push(chunk);
-        callback();
-      },
-    });
+    // const appendFileUploadedStream = new Transform({
+    //   objectMode: true,
+    //   async transform(chunk, encoding, callback) {
+    //     await fileUpload(chunk);
+    //     this.push(chunk);
+    //     callback();
+    //   },
+    // });
 
     let count = 0;
     const writeStream = new Writable({
@@ -556,8 +556,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     readStream
       .pipe(batchStream)
       .pipe(appendTagNamesStream)
-      .pipe(appendEmbeddingStream)
-      .pipe(appendFileUploadedStream)
+      // .pipe(appendEmbeddingStream)
+      // .pipe(appendFileUploadedStream)
       .pipe(writeStream);
 
     return streamToPromise(writeStream);
@@ -858,41 +858,41 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     };
   }
 
-  async appendVectorScore(query, queryString: string, username?: string): Promise<void> {
+  // async appendVectorScore(query, queryString: string, username?: string): Promise<void> {
 
-    const searchAssistant = await getOrCreateSearchAssistant();
+  //   const searchAssistant = await getOrCreateSearchAssistant();
 
-    // generate keywords for vector
-    const run = await openaiClient.beta.threads.createAndRunPoll({
-      assistant_id: searchAssistant.id,
-      thread: {
-        messages: [
-          { role: 'user', content: 'globalLang: "en_US", userLang: "ja_JP", user_input: "武井さんがジョインしたのはいつですか？"' },
-          { role: 'assistant', content: '武井さん 武井 takei yuki ジョイン join 入社 加入 雇用開始 年月日 start date join employee' },
-          { role: 'user', content: `globalLang: "en_US", userLang: "ja_JP", user_input: "${queryString}"` },
-        ],
-      },
-    });
-    const messages = await openaiClient.beta.threads.messages.list(run.thread_id, {
-      limit: 1,
-    });
-    const content = messages.data[0].content[0];
-    const keywordsForVector = content.type === 'text' ? content.text.value : queryString;
+  //   // generate keywords for vector
+  //   const run = await openaiClient.beta.threads.createAndRunPoll({
+  //     assistant_id: searchAssistant.id,
+  //     thread: {
+  //       messages: [
+  //         { role: 'user', content: 'globalLang: "en_US", userLang: "ja_JP", user_input: "武井さんがジョインしたのはいつですか？"' },
+  //         { role: 'assistant', content: '武井さん 武井 takei yuki ジョイン join 入社 加入 雇用開始 年月日 start date join employee' },
+  //         { role: 'user', content: `globalLang: "en_US", userLang: "ja_JP", user_input: "${queryString}"` },
+  //       ],
+  //     },
+  //   });
+  //   const messages = await openaiClient.beta.threads.messages.list(run.thread_id, {
+  //     limit: 1,
+  //   });
+  //   const content = messages.data[0].content[0];
+  //   const keywordsForVector = content.type === 'text' ? content.text.value : queryString;
 
-    logger.debug('keywordsFor: ', keywordsForVector);
+  //   logger.debug('keywordsFor: ', keywordsForVector);
 
-    const queryVector = (await embed(queryString, username))[0].embedding;
+  //   const queryVector = (await embed(queryString, username))[0].embedding;
 
-    query.body.query = {
-      script_score: {
-        query: { ...query.body.query },
-        script: {
-          source: "cosineSimilarity(params.query_vector, 'body_embedded') + 1.0",
-          params: { query_vector: queryVector },
-        },
-      },
-    };
-  }
+  //   query.body.query = {
+  //     script_score: {
+  //       query: { ...query.body.query },
+  //       script: {
+  //         source: "cosineSimilarity(params.query_vector, 'body_embedded') + 1.0",
+  //         params: { query_vector: queryVector },
+  //       },
+  //     },
+  //   };
+  // }
 
   appendHighlight(query) {
     query.body.highlight = {
@@ -928,8 +928,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const query = this.createSearchQuery();
 
     if (option?.vector) {
-      await this.filterPagesByViewer(query, user, userGroups);
-      await this.appendVectorScore(query, queryString, user?.username);
+      // await this.filterPagesByViewer(query, user, userGroups);
+      // await this.appendVectorScore(query, queryString, user?.username);
     }
     else {
       this.appendCriteriaForQueryString(query, terms);
