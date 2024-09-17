@@ -1132,7 +1132,7 @@
   "forbidden_page": {
     "do_not_have_admin_permission": "Seul les administrateurs peuvent accéder à cette page."
   },
-  "ai_search_management": {
-    "ai_search_management": "Gestion de la recherche en IA"
+  "ai_integration": {
+    "ai_integration": "Intégration de l'IA"
   }
 }

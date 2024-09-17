@@ -1133,7 +1133,7 @@
   "forbidden_page": {
     "do_not_have_admin_permission": "Users without administrative rights cannot access the administration screen"
   },
-  "ai_search_management": {
-    "ai_search_management": "AI Search Management"
+  "ai_integration": {
+    "ai_integration": "AI Integration"
   }
 }
