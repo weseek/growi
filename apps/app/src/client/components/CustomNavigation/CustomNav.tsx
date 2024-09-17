@@ -33,13 +33,11 @@ type CustomNavDropdownProps = {
   navTabMapping: ICustomNavTabMappings,
   activeTab: string,
   onNavSelected?: (selectedTabKey: string) => void,
-  breakpointToHideDropDown?: Breakpoint,
 };
 
 export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element => {
   const {
     activeTab, navTabMapping, onNavSelected,
-    breakpointToHideDropDown,
   } = props;
 
   const { Icon, i18n } = navTabMapping[activeTab];
@@ -49,7 +47,6 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
       onNavSelected(key);
     }
   }, [onNavSelected]);
-
 
   return (
     <div className="btn-group">

@@ -112,7 +112,6 @@ export const DescendantsPageListModal = (): JSX.Element => {
           <CustomNavDropdown
             activeTab={activeTab}
             navTabMapping={navTabMapping}
-            breakpointToHideDropDown="md"
             onNavSelected={v => setActiveTab(v)}
           />
         )}
