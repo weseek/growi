@@ -10,6 +10,7 @@ import {
 
 import { useIsSharedUser } from '~/stores-universal/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
+import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { CustomNavDropdown, CustomNavTab } from './CustomNavigation/CustomNav';
 import CustomTabContent from './CustomNavigation/CustomTabContent';
@@ -33,6 +34,8 @@ export const DescendantsPageListModal = (): JSX.Element => {
   const { data: status, close } = useDescendantsPageListModal();
 
   const { events } = useRouter();
+
+  const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
 
   useEffect(() => {
     events.on('routeChangeStart', close);
@@ -94,21 +97,25 @@ export const DescendantsPageListModal = (): JSX.Element => {
       className={`grw-descendants-page-list-modal ${styles['grw-descendants-page-list-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
       <ModalHeader className="p-0" toggle={close} close={buttons}>
-        <CustomNavTab
-          activeTab={activeTab}
-          navTabMapping={navTabMapping}
-          breakpointToHideInactiveTabsDown="md"
-          onNavSelected={v => setActiveTab(v)}
-          hideBorderBottom
-        />
+        {isDeviceLargerThanLg && (
+          <CustomNavTab
+            activeTab={activeTab}
+            navTabMapping={navTabMapping}
+            breakpointToHideInactiveTabsDown="md"
+            onNavSelected={v => setActiveTab(v)}
+            hideBorderBottom
+          />
+        )}
       </ModalHeader>
       <ModalBody>
-        <CustomNavDropdown
-          activeTab={activeTab}
-          navTabMapping={navTabMapping}
-          breakpointToHideDropDown="md"
-          onNavSelected={v => setActiveTab(v)}
-        />
+        {!isDeviceLargerThanLg && (
+          <CustomNavDropdown
+            activeTab={activeTab}
+            navTabMapping={navTabMapping}
+            breakpointToHideDropDown="md"
+            onNavSelected={v => setActiveTab(v)}
+          />
+        )}
         <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} />
       </ModalBody>
     </Modal>
