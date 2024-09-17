@@ -49,7 +49,7 @@
     "openapi:v3": "yarn cross-env API_VERSION=3 yarn swagger-jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
     "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "version": "yarn version --no-git-tag-version --non-interactive --preid=RC"
   },
   "// comments for dependencies": {
     "@aws-skd/*": "fix version above 3.186.0 that is required by mongodb@4.16.0",
