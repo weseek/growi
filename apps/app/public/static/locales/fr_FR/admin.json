@@ -1133,6 +1133,7 @@
     "do_not_have_admin_permission": "Seul les administrateurs peuvent accéder à cette page."
   },
   "ai_integration": {
-    "ai_integration": "Intégration de l'IA"
+    "ai_integration": "Intégration de l'IA",
+    "disable_mode_explanation": "Actuellement, l'intégration de l'IA est désactivée. Pour l'activer, veuillez définir la variable d'environnement <code>AI_ENABLED</code> sur true"
   }
 }

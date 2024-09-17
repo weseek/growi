@@ -736,6 +736,18 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  AI_ENABLED: {
+    ns: 'crowi',
+    key: 'app:aiEnabled',
+    type: ValueType.BOOLEAN,
+    default: false,
+  },
+  AI_SERVICE_TYPE: {
+    ns: 'crowi',
+    key: 'app:aiServiceType',
+    type: ValueType.STRING,
+    default: null,
+  },
   OPENAI_API_KEY: {
     ns: 'crowi',
     key: 'app:openaiApiKey',

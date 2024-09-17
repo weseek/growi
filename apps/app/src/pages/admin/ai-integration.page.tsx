@@ -13,9 +13,12 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const AiIntegrationDisableMode = dynamic(
+  () => import('~/client/components/Admin/AiIntegration/AiIntegrationDisableMode').then(mod => mod.AiIntegrationDisableMode), { ssr: false },
+);
 
 type Props = CommonProps & {
-  //
+  aiEnabled: boolean,
 };
 
 const AdminAiIntegrationPage: NextPage<Props> = (props) => {
@@ -33,6 +36,10 @@ const AdminAiIntegrationPage: NextPage<Props> = (props) => {
       <Head>
         <title>{headTitle}</title>
       </Head>
+      {props.aiEnabled
+        ? <></> // TODO: implement admin page
+        : <AiIntegrationDisableMode />
+      }
     </AdminLayout>
   );
 };
@@ -40,6 +47,9 @@ const AdminAiIntegrationPage: NextPage<Props> = (props) => {
 const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
+  const { configManager } = crowi;
+
+  props.aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
 };
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

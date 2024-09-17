@@ -1134,6 +1134,7 @@
     "do_not_have_admin_permission": "Users without administrative rights cannot access the administration screen"
   },
   "ai_integration": {
-    "ai_integration": "AI Integration"
+    "ai_integration": "AI Integration",
+    "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, please set the environment variable <code>AI_ENABLED</code> to true."
   }
 }
