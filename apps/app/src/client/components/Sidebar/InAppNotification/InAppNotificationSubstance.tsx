@@ -42,7 +42,7 @@ export const InAppNotificationContent = (props: InAppNotificationContentProps): 
   const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(
     6,
     undefined,
-    isUnopendNotificationsVisible ? InAppNotificationStatuses.STATUS_UNOPENED : undefined,
+    isUnopendNotificationsVisible ? InAppNotificationStatuses.STATUS_UNREAD : undefined,
     { keepPreviousData: true },
   );
 
