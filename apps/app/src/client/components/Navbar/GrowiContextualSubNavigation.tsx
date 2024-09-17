@@ -351,7 +351,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       <Sticky
         className="z-1"
         onStateChange={status => setStickyActive(status.status === Sticky.STATUS_FIXED)}
-        innerActiveClass="w-100 position-abolute end-0"
+        innerActiveClass="w-100 end-0"
       >
         <GroundGlassBar>
 
