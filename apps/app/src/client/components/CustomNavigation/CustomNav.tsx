@@ -42,10 +42,17 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
 
   const { Icon, i18n } = navTabMapping[activeTab];
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleDropdownToggle = () => {
+    setIsDropdownOpen(prev => !prev);
+  };
+
   const menuItemClickHandler = useCallback((key) => {
     if (onNavSelected != null) {
       onNavSelected(key);
     }
+    setIsDropdownOpen(false);
   }, [onNavSelected]);
 
   return (
@@ -55,13 +62,14 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
         type="button"
         data-bs-toggle="dropdown"
         aria-haspopup="true"
-        aria-expanded="false"
+        aria-expanded={isDropdownOpen}
+        onClick={handleDropdownToggle}
       >
         <span className="float-start">
           { Icon != null && <Icon /> } {i18n}
         </span>
       </button>
-      <div className={`dropdown-menu dropdown-menu-right ${styles['dropdown-menu']}`}>
+      <div className={`dropdown-menu dropdown-menu-right ${isDropdownOpen ? 'show' : ''} ${styles['dropdown-menu']}`}>
         {Object.entries(navTabMapping).map(([key, value]) => {
 
           const isActive = activeTab === key;
