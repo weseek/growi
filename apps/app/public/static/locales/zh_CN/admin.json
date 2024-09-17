@@ -1141,5 +1141,9 @@
   },
   "forbidden_page": {
     "do_not_have_admin_permission": "没有管理权限的用户无法访问管理屏幕"
+  },
+  "ai_integration": {
+    "ai_integration": "AI 集成",
+    "disable_mode_explanation": "目前，AI 集成已禁用。要启用它，请将环境变量 <code>AI_ENABLED</code> 设置为 true”"
   }
 }
