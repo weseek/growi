@@ -34,7 +34,7 @@ import {
 import {
   useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
 } from '~/stores/page';
-import { mutatePageTree, useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageTree, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import {
   useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
@@ -247,7 +247,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
-  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
 
   const [isStickyActive, setStickyActive] = useState(false);
 
@@ -272,10 +271,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
-      mutateRecentlyUpdated();
+      mutateSWRINFxRecentlyUpdated();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
-  }, [mutateCurrentPage, mutatePageInfo, openRenameModal, mutateRecentlyUpdated]);
+  }, [mutateCurrentPage, mutatePageInfo, openRenameModal]);
 
   const deleteItemClickedHandler = useCallback((pageWithMeta: IPageWithMeta) => {
     const deletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
@@ -296,10 +295,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
-      mutateRecentlyUpdated();
+      mutateSWRINFxRecentlyUpdated();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
-  }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo, mutateRecentlyUpdated]);
+  }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     if (!isSharedPage) {

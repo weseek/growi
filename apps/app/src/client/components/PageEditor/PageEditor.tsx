@@ -41,7 +41,7 @@ import {
 import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
 } from '~/stores/page';
-import { mutatePageTree, useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageTree, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
@@ -165,8 +165,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
-  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
-
 
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || selectedGrant == null) {
@@ -193,7 +191,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
 
-      mutateRecentlyUpdated();
+      mutateSWRINFxRecentlyUpdated();
       // sync current grant data after update
       mutateIsGrantNormalized();
 
@@ -215,7 +213,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       mutateWaitingSaveProcessing(false);
     }
-  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, updatePage, mutateIsGrantNormalized, mutateRecentlyUpdated, t]);
+  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, updatePage, mutateIsGrantNormalized, t]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
     const markdown = codeMirrorEditor?.getDoc();

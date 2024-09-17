@@ -21,7 +21,7 @@ import { useCurrentUser } from '~/stores-universal/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { mutatePageList, mutatePageTree, useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageList, mutatePageTree, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
@@ -126,7 +126,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: rendererOptions } = useSearchResultOptions(pageWithMeta.data.path, highlightKeywords);
   const { data: currentUser } = useCurrentUser();
-  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
+
   const shouldExpandContent = useShouldExpandContent(page);
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
@@ -135,24 +135,24 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
       mutatePageTree();
-      mutateRecentlyUpdated();
+      mutateSWRINFxRecentlyUpdated();
       mutateSearching();
       mutatePageList();
     };
     openDuplicateModal(pageToDuplicate, { onDuplicated: duplicatedHandler });
-  }, [openDuplicateModal, mutateRecentlyUpdated, t]);
+  }, [openDuplicateModal, t]);
 
   const renameItemClickedHandler = useCallback((pageToRename: IPageToRenameWithMeta) => {
     const renamedHandler: OnRenamedFunction = (path) => {
       toastSuccess(t('renamed_pages', { path }));
 
       mutatePageTree();
-      mutateRecentlyUpdated();
+      mutateSWRINFxRecentlyUpdated();
       mutateSearching();
       mutatePageList();
     };
     openRenameModal(pageToRename, { onRenamed: renamedHandler });
-  }, [openRenameModal, mutateRecentlyUpdated, t]);
+  }, [openRenameModal, t]);
 
   const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
@@ -167,10 +167,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       toastSuccess(t('deleted_pages', { path }));
     }
     mutatePageTree();
-    mutateRecentlyUpdated();
+    mutateSWRINFxRecentlyUpdated();
     mutateSearching();
     mutatePageList();
-  }, [mutateRecentlyUpdated, t]);
+  }, [t]);
 
   const deleteItemClickedHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });

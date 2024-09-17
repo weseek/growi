@@ -14,7 +14,7 @@ import type { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores-universal/context';
 import {
   mutatePageTree,
-  useSWRxPageInfoForList, useSWRxPageList, useSWRINFxRecentlyUpdated,
+  useSWRxPageInfoForList, useSWRxPageList, mutateSWRINFxRecentlyUpdated,
 } from '~/stores/page-listing';
 
 import type { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
@@ -47,7 +47,6 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
 
   const pageIds = pagingResult?.items?.map(page => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
-  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
 
   let pageWithMetas: IDataWithMeta<IPageHasId, IPageInfoForOperation>[] = [];
 
@@ -68,22 +67,22 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     else {
       toastSuccess(t('deleted_pages_completely', { path }));
     }
-    mutateRecentlyUpdated();
+    mutateSWRINFxRecentlyUpdated();
     mutatePageTree();
     if (onPagesDeleted != null) {
       onPagesDeleted(...args);
     }
-  }, [onPagesDeleted, mutateRecentlyUpdated, t]);
+  }, [onPagesDeleted, t]);
 
   const pagePutBackedHandler: OnPutBackedFunction = useCallback((path) => {
     toastSuccess(t('page_has_been_reverted', { path }));
 
-    mutateRecentlyUpdated();
+    mutateSWRINFxRecentlyUpdated();
     mutatePageTree();
     if (onPagePutBacked != null) {
       onPagePutBacked(path);
     }
-  }, [onPagePutBacked, mutateRecentlyUpdated, t]);
+  }, [onPagePutBacked, t]);
 
   if (pagingResult == null) {
     return (

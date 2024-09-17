@@ -12,7 +12,7 @@ import type { ISelectable, ISelectableAll } from '~/client/interfaces/selectable
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
-import { mutatePageTree, useSWRxPageInfoForList, useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageTree, useSWRxPageInfoForList, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
@@ -89,24 +89,22 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     });
   }
 
-  const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const duplicatedHandler = useCallback((fromPath, toPath) => {
     toastSuccess(t('duplicated_pages', { fromPath }));
 
     mutatePageTree();
-    mutateRecentlyUpdated();
+    mutateSWRINFxRecentlyUpdated();
     mutateSearching();
-  }, [t, mutateRecentlyUpdated]);
+  }, [t]);
 
   const renamedHandler = useCallback((path) => {
     toastSuccess(t('renamed_pages', { path }));
 
     mutatePageTree();
-    mutateRecentlyUpdated();
+    mutateSWRINFxRecentlyUpdated();
     mutateSearching();
-  }, [t, mutateRecentlyUpdated]);
+  }, [t]);
 
   const deletedHandler = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
@@ -122,9 +120,9 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
       toastSuccess(t('deleted_pages', { path }));
     }
     mutatePageTree();
-    mutateRecentlyUpdated();
+    mutateSWRINFxRecentlyUpdated();
     mutateSearching();
-  }, [t, mutateRecentlyUpdated]);
+  }, [t]);
 
   return (
     <ul data-testid="search-result-list" className="page-list-ul list-group list-group-flush">

@@ -16,7 +16,7 @@ import { useCreatePage } from '~/client/services/create-page';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
-import { mutatePageTree, useSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageTree, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
 import { shouldCreateWipPage } from '../../../../utils/should-create-wip-page';
@@ -89,8 +89,6 @@ export const useNewPageInput = (): UseNewPageInput => {
       setShowInput(false);
     }, []);
 
-    const { mutate: mutateRecentlyUpdated } = useSWRINFxRecentlyUpdated(20, true);
-
     const create = useCallback(async(inputText) => {
       if (inputText.trim() === '') {
         return cancel();
@@ -125,7 +123,7 @@ export const useNewPageInput = (): UseNewPageInput => {
             skipTransition: true,
             onCreated: () => {
               mutatePageTree();
-              mutateRecentlyUpdated();
+              mutateSWRINFxRecentlyUpdated();
 
               if (!hasDescendants) {
                 stateHandlers?.setIsOpen(true);
@@ -142,7 +140,7 @@ export const useNewPageInput = (): UseNewPageInput => {
       finally {
         setProcessingSubmission(false);
       }
-    }, [cancel, hasDescendants, page.path, stateHandlers, t, createPage, mutateRecentlyUpdated]);
+    }, [cancel, hasDescendants, page.path, stateHandlers, t, createPage]);
 
     const inputContainerClass = newPageInputStyles['new-page-input-container'] ?? '';
     const isInvalid = validationResult != null;
