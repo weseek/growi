@@ -11,7 +11,7 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:chat');
+const logger = loggerFactory('growi:routes:apiv3:ai-integration:chat');
 
 type ReqBody = {
   userMessage: string,
