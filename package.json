@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "7.0.19-RC.0",
+  "version": "7.0.20-RC.0",
   "description": "Team collaboration software using markdown",
   "license": "MIT",
   "private": "true",
@@ -41,7 +41,7 @@
     "version-subpackages": "changeset version && yarn upgrade --scope=@growi",
     "release-subpackages": "turbo run build --filter @growi/core --filter @growi/pluginkit && changeset publish",
     "release-subpackages:snapshot": "turbo run build --filter @growi/core --filter @growi/pluginkit && changeset version --snapshot next && changeset publish --no-git-tag --snapshot --tag next",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "version": "yarn version --no-git-tag-version --non-interactive --preid=RC"
   },
   "dependencies": {
     "cross-env": "^7.0.0",
@@ -100,7 +100,7 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "~5.0.0",
     "typescript-transform-paths": "^3.4.7",
-    "vite": "^5.2.9",
+    "vite": "^5.2.14",
     "vite-plugin-dts": "^3.8.3",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "~1.6.0",
