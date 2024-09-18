@@ -9,8 +9,6 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:ai-integration:rebuild-vector-store');
 
-type Req = Request<undefined, ApiV3Response>
-
 type RebuildVectorStoreFactory = (crowi: Crowi) => RequestHandler[];
 
 export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (crowi) => {
@@ -24,7 +22,7 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
 
   return [
     accessTokenParser, loginRequiredStrictly, adminRequired, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    async(req: Request, res: ApiV3Response) => {
       return res.apiv3({});
     },
   ];
