@@ -377,35 +377,11 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_me') }</th>
                 <td>
-                  <div className="form-check form-switch form-check-success">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="isShowRestrictedByOwner"
-                      checked={!adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
-                      onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
-                    />
-                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByOwner">
-                      {t('security_settings.displayed_or_hidden')}
-                    </label>
-                  </div>
                 </td>
               </tr>
               <tr>
                 <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
-                  <div className="form-check form-switch form-check-success">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="isShowRestrictedByGroup"
-                      checked={!adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
-                      onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
-                    />
-                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByGroup">
-                      {t('security_settings.displayed_or_hidden')}
-                    </label>
-                  </div>
                 </td>
               </tr>
             </tbody>
