@@ -28,6 +28,7 @@ export const AiIntegration = (): JSX.Element => {
       <div className="row">
         <label className="col-md-3 col-form-label text-start text-md-end">{ t('ai_integration.rebuild_vector_store_label') }</label>
         <div className="col-md-8">
+          {/* TODO: https://redmine.weseek.co.jp/issues/153978 */}
           <button
             type="submit"
             className="btn btn-primary"
