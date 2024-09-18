@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 import { useShowPageLimitationXL } from '~/stores-universal/context';
-import { useSWRxInAppNotifications } from '~/stores/in-app-notification';
+import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 import PaginationWrapper from '../PaginationWrapper';
@@ -36,6 +36,7 @@ export const InAppNotificationPage: FC = () => {
 
     const { data: notificationData, mutate: mutateNotificationData } = useSWRxInAppNotifications(limit, offset, categoryStatus);
     const { mutate: mutateAllNotificationData } = useSWRxInAppNotifications(limit, offset, undefined);
+    const { mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
 
     const setAllNotificationPageNumber = (selectedPageNumber): void => {
       setActivePage(selectedPageNumber);
@@ -58,6 +59,7 @@ export const InAppNotificationPage: FC = () => {
       mutateNotificationData();
       // mutate notification statuses in 'ALL' Category
       mutateAllNotificationData();
+      mutateNotificationCount();
     };
 
 
