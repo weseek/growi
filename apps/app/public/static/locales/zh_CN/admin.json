@@ -1144,6 +1144,13 @@
   },
   "ai_integration": {
     "ai_integration": "AI 集成",
-    "disable_mode_explanation": "目前，AI 集成已禁用。要启用它，请将环境变量 <code>AI_ENABLED</code> 设置为 true”"
+    "disable_mode_explanation": "目前，AI 集成已禁用。要启用它，请将环境变量 <code>AI_ENABLED</code> 设置为 true",
+    "ai_search_management": "AI 搜索管理",
+    "rebuild_vector_store": "重建矢量商店",
+    "rebuild_vector_store_label": "重建",
+    "rebuild_vector_store_explanation1": "删除现有的矢量存储，在公共页面上重新创建矢量存储。",
+    "rebuild_vector_store_explanation2": "这个过程可能需要几分钟。",
+    "rebuild_vector_store_succeeded": "矢量存储器重建成功",
+    "rebuild_vector_store_failed": "向量存储区重建失败"
   }
 }

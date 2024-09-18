@@ -1135,6 +1135,13 @@
   },
   "ai_integration": {
     "ai_integration": "AI Integration",
-    "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, please set the environment variable <code>AI_ENABLED</code> to true."
+    "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, please set the environment variable <code>AI_ENABLED</code> to true.",
+    "ai_search_management": "AI search management",
+    "rebuild_vector_store": "Rebuild Vector Store",
+    "rebuild_vector_store_label": "Rebuild",
+    "rebuild_vector_store_explanation1": "Delete the existing Vector Store and recreate the Vector Store on the public page.",
+    "rebuild_vector_store_explanation2": "This process may take several minutes.",
+    "rebuild_vector_store_succeeded": "Vector Store rebuild succeeded",
+    "rebuild_vector_store_failed": "Vector Store rebuild failed"
   }
 }
