@@ -46,7 +46,7 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
 
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
 
-  const handleDropdownToggle = () => {
+  const toggleDropdown = () => {
     setIsDropdownOpen(prev => !prev);
   };
 
@@ -70,7 +70,7 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
         data-bs-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded={isDropdownOpen}
-        onClick={handleDropdownToggle}
+        onClick={toggleDropdown}
       >
         <span className="float-start">
           { Icon != null && <Icon /> } {i18n}
