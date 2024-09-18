@@ -44,6 +44,8 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  const dropdownButtonRef = useRef<HTMLButtonElement>(null);
+
   const handleDropdownToggle = () => {
     setIsDropdownOpen(prev => !prev);
   };
@@ -52,12 +54,17 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
     if (onNavSelected != null) {
       onNavSelected(key);
     }
+    // Manually close the dropdown
     setIsDropdownOpen(false);
+    if (dropdownButtonRef.current) {
+      dropdownButtonRef.current.classList.remove('show');
+    }
   }, [onNavSelected]);
 
   return (
     <div className="btn-group">
       <button
+        ref={dropdownButtonRef}
         className="btn btn-outline-primary btn-lg dropdown-toggle text-end"
         type="button"
         data-bs-toggle="dropdown"
