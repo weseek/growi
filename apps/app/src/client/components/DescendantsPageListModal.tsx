@@ -96,7 +96,7 @@ export const DescendantsPageListModal = (): JSX.Element => {
       data-testid="descendants-page-list-modal"
       className={`grw-descendants-page-list-modal ${styles['grw-descendants-page-list-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
-      <ModalHeader className="p-0" toggle={close} close={buttons}>
+      <ModalHeader className={isDeviceLargerThanLg ? 'p-0' : ''} toggle={close} close={buttons}>
         {isDeviceLargerThanLg && (
           <CustomNavTab
             activeTab={activeTab}
@@ -115,7 +115,11 @@ export const DescendantsPageListModal = (): JSX.Element => {
             onNavSelected={v => setActiveTab(v)}
           />
         )}
-        <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} />
+        <CustomTabContent
+          activeTab={activeTab}
+          navTabMapping={navTabMapping}
+          additionalClassNames={!isDeviceLargerThanLg ? ['grw-tab-content-style-md-down'] : undefined}
+        />
       </ModalBody>
     </Modal>
   );
