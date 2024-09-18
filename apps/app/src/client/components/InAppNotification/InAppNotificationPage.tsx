@@ -1,45 +1,25 @@
 import type { FC } from 'react';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Put } from '~/client/util/apiv3-client';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 import { useShowPageLimitationXL } from '~/stores-universal/context';
-import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
-import loggerFactory from '~/utils/logger';
+import { useSWRxInAppNotifications } from '~/stores/in-app-notification';
 
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 import PaginationWrapper from '../PaginationWrapper';
 
 import InAppNotificationList from './InAppNotificationList';
 
-
-const logger = loggerFactory('growi:InAppNotificationPage');
-
-
 export const InAppNotificationPage: FC = () => {
   const { t } = useTranslation('commons');
-  const { mutate } = useSWRxInAppNotificationStatus();
 
   const { data: showPageLimitationXL } = useShowPageLimitationXL();
 
   const limit = showPageLimitationXL != null ? showPageLimitationXL : 20;
-
-  const updateNotificationStatus = useCallback(async() => {
-    try {
-      await apiv3Post('/in-app-notification/read');
-      mutate();
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  }, [mutate]);
-
-  useEffect(() => {
-    updateNotificationStatus();
-  }, [updateNotificationStatus]);
 
   const InAppNotificationCategoryByStatus = (status?: InAppNotificationStatuses) => {
     const [activePage, setActivePage] = useState(1);
