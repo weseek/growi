@@ -4,7 +4,7 @@ GROWI Official docker image
 
 [![Actions Status](https://github.com/weseek/growi/workflows/Release/badge.svg)](https://github.com/weseek/growi/actions) [![docker-pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/) [![](https://images.microbadger.com/badges/image/weseek/growi.svg)](https://microbadger.com/images/weseek/growi)
 
-![GROWI-x-docker](https://user-images.githubusercontent.com/1638767/38307565-105956e2-384f-11e8-8534-b1128522d68d.png)
+![GROWI-x-docker](https://private-user-images.githubusercontent.com/113958844/368474296-1a82236d-5a85-4a2e-842a-971b4c1625e6.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjY2NDY2ODEsIm5iZiI6MTcyNjY0NjM4MSwicGF0aCI6Ii8xMTM5NTg4NDQvMzY4NDc0Mjk2LTFhODIyMzZkLTVhODUtNGEyZS04NDJhLTk3MWI0YzE2MjVlNi5wbmc_WC1BbXotQWxnb3JpdGhtPUFXUzQtSE1BQy1TSEEyNTYmWC1BbXotQ3JlZGVudGlhbD1BS0lBVkNPRFlMU0E1M1BRSzRaQSUyRjIwMjQwOTE4JTJGdXMtZWFzdC0xJTJGczMlMkZhd3M0X3JlcXVlc3QmWC1BbXotRGF0ZT0yMDI0MDkxOFQwNzU5NDFaJlgtQW16LUV4cGlyZXM9MzAwJlgtQW16LVNpZ25hdHVyZT0wYzI3MDI0ZmUzNzExODIxZjNiMTBkZjZhNmJmMWM5YjUwNmM2ODk3MzRkNmJmYTEwMjlkNjFiMjY0MzUyYjkxJlgtQW16LVNpZ25lZEhlYWRlcnM9aG9zdCZhY3Rvcl9pZD0wJmtleV9pZD0wJnJlcG9faWQ9MCJ9.LIae-VaUkj2X9S6e-DBNDv2-JjPa3rfn85YMeyV-lCg)
 
 
 Supported tags and respective Dockerfile links
