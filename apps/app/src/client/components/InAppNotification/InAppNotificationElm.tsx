@@ -31,7 +31,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   }
 
   const clickHandler = async(notification: IInAppNotification & HasObjectId): Promise<void> => {
-    if (notification.status === InAppNotificationStatuses.STATUS_UNREAD) {
+    if (notification.status === InAppNotificationStatuses.STATUS_UNOPENED) {
       // set notification status "OPEND"
       await apiv3Post('/in-app-notification/open', { id: notification._id });
       onUnopenedNotificationOpend?.();
@@ -64,7 +64,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     <div className="list-group-item list-group-item-action" onClick={() => clickHandler(notification)} style={{ cursor: 'pointer' }}>
       <div className="d-flex align-items-center">
         <span
-          className={`${notification.status === InAppNotificationStatuses.STATUS_UNREAD
+          className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
             ? 'grw-unopend-notification'
             : 'ms-2'
           } rounded-circle me-3`}

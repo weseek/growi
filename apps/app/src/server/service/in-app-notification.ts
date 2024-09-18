@@ -93,7 +93,7 @@ export default class InAppNotificationService {
         targetModel,
         target,
         action,
-        status: STATUS_UNREAD,
+        status: STATUS_UNOPENED,
         createdAt: now,
         snapshot,
         $addToSet: { activities: activityId },
@@ -173,7 +173,7 @@ export default class InAppNotificationService {
   };
 
   getUnreadCountByUser = async function(user: Types.ObjectId): Promise<number| undefined> {
-    const query = { user, status: STATUS_UNREAD };
+    const query = { user, status: STATUS_UNOPENED };
 
     try {
       const count = await InAppNotification.countDocuments(query);
