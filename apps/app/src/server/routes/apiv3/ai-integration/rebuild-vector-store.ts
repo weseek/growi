@@ -7,13 +7,13 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-const logger = loggerFactory('growi:routes:apiv3:ai-integration:recreate-vector-store');
+const logger = loggerFactory('growi:routes:apiv3:ai-integration:rebuild-vector-store');
 
 type Req = Request<undefined, ApiV3Response>
 
-type RecreateVectorStoreFactory = (crowi: Crowi) => RequestHandler[];
+type RebuildVectorStoreFactory = (crowi: Crowi) => RequestHandler[];
 
-export const recreateVectorStoreHandlersFactory: RecreateVectorStoreFactory = (crowi) => {
+export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (crowi) => {
   const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
