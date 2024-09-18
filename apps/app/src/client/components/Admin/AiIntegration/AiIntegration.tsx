@@ -21,9 +21,7 @@ export const AiIntegration = (): JSX.Element => {
 
   return (
     <div data-testid="admin-ai-integration">
-      <h2 className="mb-4"> { t('ai_integration.ai_integration') } </h2>
-
-      <h3>{ t('ai_integration.ai_search_management') }</h3>
+      <h2 className="admin-setting-header">{ t('ai_integration.ai_search_management') }</h2>
 
       <div className="row">
         <label className="col-md-3 col-form-label text-start text-md-end">{ t('ai_integration.rebuild_vector_store_label') }</label>
