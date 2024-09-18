@@ -377,11 +377,61 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_me') }</th>
                 <td>
+                  <div className="col-md-8"></div>
+                  <div className="dropdown">
+                    <button
+                      className={`btn btn-outline-secondary dropdown-toggle text-end col-12
+                            col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-bs-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="true"
+                    >
+                      <span className="float-start">
+                        {currentRestrictGuestMode === 'Deny' && t('security_settings.always_displayed')}
+                        {currentRestrictGuestMode === 'Readonly' && t('security_settings.always_not_displayed')}
+                      </span>
+                    </button>
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
+                        {t('security_settings.always_displayed')}
+                      </button>
+                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
+                        {t('security_settings.always_not_displayed')}
+                      </button>
+                    </div>
+                  </div>
                 </td>
               </tr>
               <tr>
                 <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
+                  <div className="col-md-8"></div>
+                  <div className="dropdown">
+                    <button
+                      className={`btn btn-outline-secondary dropdown-toggle text-end col-12
+                            col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-bs-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="true"
+                    >
+                      <span className="float-start">
+                        {currentRestrictGuestMode === 'Deny' && t('security_settings.always_displayed')}
+                        {currentRestrictGuestMode === 'Readonly' && t('security_settings.always_not_displayed')}
+                      </span>
+                    </button>
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
+                        {t('security_settings.always_displayed')}
+                      </button>
+                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
+                        {t('security_settings.always_not_displayed')}
+                      </button>
+                    </div>
+                  </div>
                 </td>
               </tr>
             </tbody>
