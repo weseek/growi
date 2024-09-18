@@ -2,6 +2,7 @@ import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
+import { certifyAiService } from '~/server/middlewares/certify-ai-service';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -21,7 +22,7 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, adminRequired, validator, apiV3FormValidator,
+    accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
     async(req: Request, res: ApiV3Response) => {
       return res.apiv3({});
     },
