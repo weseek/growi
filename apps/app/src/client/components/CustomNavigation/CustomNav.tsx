@@ -71,6 +71,7 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
         aria-haspopup="true"
         aria-expanded={isDropdownOpen}
         onClick={toggleDropdown}
+        data-testid="custom-nav-dropdown"
       >
         <span className="float-start">
           { Icon != null && <Icon /> } {i18n}
@@ -182,7 +183,7 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
   }
 
   return (
-    <div className={`grw-custom-nav-tab ${styles['grw-custom-nav-tab']}`}>
+    <div data-testid="custom-nav-tab" className={`grw-custom-nav-tab ${styles['grw-custom-nav-tab']}`}>
       <div ref={navContainerRef} className="d-flex justify-content-between">
         <Nav className="nav-title">
           {Object.entries(navTabMapping).map(([key, value]) => {
