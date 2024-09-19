@@ -25,7 +25,7 @@ import { preNotifyService, type PreNotify } from './pre-notify';
 import { RoomPrefix, getRoomNameWithId } from './socket-io/helper';
 
 
-const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
+const { STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
 const logger = loggerFactory('growi:service:inAppNotification');
 
@@ -145,14 +145,6 @@ export default class InAppNotificationService {
       logger.error('Error', err);
       throw new Error(err);
     }
-  };
-
-  read = async function(user: Types.ObjectId): Promise<void> {
-    const query = { user, status: STATUS_UNREAD };
-    const parameters = { status: STATUS_UNOPENED };
-    await InAppNotification.updateMany(query, parameters);
-
-    return;
   };
 
   open = async function(user: IUser & HasObjectId, id: Types.ObjectId): Promise<void> {

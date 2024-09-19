@@ -10,7 +10,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 import type { ActivityDocument } from './activity';
 
 
-const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
+const { STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
 export interface InAppNotificationDocument extends Document {
   _id: Types.ObjectId
@@ -31,7 +31,6 @@ export interface InAppNotificationModel extends Model<InAppNotificationDocument>
   open(user, id: Types.ObjectId): Promise<InAppNotificationDocument | null>
   read(user) /* : Promise<Query<any>> */
 
-  STATUS_UNREAD: string
   STATUS_UNOPENED: string
   STATUS_OPENED: string
 }
@@ -94,9 +93,6 @@ inAppNotificationSchema.index({
 
 inAppNotificationSchema.statics.STATUS_UNOPENED = function() {
   return STATUS_UNOPENED;
-};
-inAppNotificationSchema.statics.STATUS_UNREAD = function() {
-  return STATUS_UNREAD;
 };
 inAppNotificationSchema.statics.STATUS_OPENED = function() {
   return STATUS_OPENED;
