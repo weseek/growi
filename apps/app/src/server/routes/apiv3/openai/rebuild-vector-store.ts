@@ -4,9 +4,8 @@ import type { ValidationChain } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
 import { certifyAiService } from '~/server/middlewares/certify-ai-service';
-import loggerFactory from '~/utils/logger';
-
 import { getOpenaiService } from '~/server/service/openai/openai';
+import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
