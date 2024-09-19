@@ -1,5 +1,3 @@
-import { configManager } from '~/server/service/config-manager';
-
 import OpenaiClient from './openai-client-delegator';
 
 export interface IOpenaiService {
@@ -30,26 +28,4 @@ class OpenaiService implements IOpenaiService {
 
 }
 
-let _instance: OpenaiService;
-
-export const initializeOpenaiService = (): void => {
-  const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
-
-  if (!aiEnabled) {
-    return;
-  }
-
-  if (_instance != null) {
-    throw new Error('OpenaiService is already initialized');
-  }
-
-  _instance = new OpenaiService();
-};
-
-export const getOpenaiService = (): OpenaiService => {
-  if (_instance == null) {
-    throw new Error('OpenaiService is not initialized yet');
-  }
-
-  return _instance;
-};
+export const openaiService = new OpenaiService();
