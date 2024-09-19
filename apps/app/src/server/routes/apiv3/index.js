@@ -6,9 +6,9 @@ import injectUserRegistrationOrderByTokenMiddleware from '../../middlewares/inje
 import * as loginFormValidator from '../../middlewares/login-form-validator';
 import * as registerFormValidator from '../../middlewares/register-form-validator';
 
-import aiIntegration from './ai-integration';
 import g2gTransfer from './g2g-transfer';
 import importRoute from './import';
+import openai from './openai';
 import pageListing from './page-listing';
 import securitySettings from './security-settings';
 import * as userActivation from './user-activation';
@@ -120,7 +120,7 @@ module.exports = (crowi, app) => {
   router.use('/questionnaire', require('~/features/questionnaire/server/routes/apiv3/questionnaire')(crowi));
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
 
-  router.use('/ai-integration', aiIntegration(crowi));
+  router.use('/openai', openai(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };

@@ -13,7 +13,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-const logger = loggerFactory('growi:routes:apiv3:ai-integration:chat');
+const logger = loggerFactory('growi:routes:apiv3:openai:chat');
 
 type ReqBody = {
   userMessage: string,
