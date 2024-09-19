@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 
 import { DescendantsPageListModal } from './DescendantsPageListModal';
 
-
 const mockClose = vi.hoisted(() => vi.fn());
 const useIsDeviceLargerThanLg = vi.hoisted(() => vi.fn().mockReturnValue({ data: true }));
 
