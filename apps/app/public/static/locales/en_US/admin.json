@@ -1141,7 +1141,7 @@
     "rebuild_vector_store_label": "Rebuild",
     "rebuild_vector_store_explanation1": "Delete the existing Vector Store and recreate the Vector Store on the public page.",
     "rebuild_vector_store_explanation2": "This process may take several minutes.",
-    "rebuild_vector_store_succeeded": "Vector Store rebuild succeeded",
+    "rebuild_vector_store_requested": "Vector Store rebuild has been requested",
     "rebuild_vector_store_failed": "Vector Store rebuild failed"
   }
 }
