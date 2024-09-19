@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { DescendantsPageListModal } from './DescendantsPageListModal';
