@@ -11,7 +11,7 @@ export const AiIntegration = (): JSX.Element => {
 
   const clickRebuildVectorStoreButtonHandler = useCallback(async() => {
     try {
-      await apiv3Put('/ai-integration/rebuild-vector-store');
+      await apiv3Put('/openai/rebuild-vector-store');
       toastSuccess(t('ai_integration.rebuild_vector_store_succeeded'));
     }
     catch {

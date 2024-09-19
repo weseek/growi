@@ -8,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-const logger = loggerFactory('growi:routes:apiv3:ai-integration:rebuild-vector-store');
+const logger = loggerFactory('growi:routes:apiv3:openai:rebuild-vector-store');
 
 type RebuildVectorStoreFactory = (crowi: Crowi) => RequestHandler[];
 
