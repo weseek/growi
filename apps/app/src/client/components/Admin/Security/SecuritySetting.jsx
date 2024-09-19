@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 /* eslint-disable react/no-danger */
 import React from 'react';
 
@@ -377,6 +378,7 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_me') }</th>
                 <td>
+                  <div className="col-md-8"></div>
                   <div className="dropdown">
                     <button
                       className={`btn btn-outline-secondary dropdown-toggle text-end col-12
@@ -388,15 +390,15 @@ class SecuritySetting extends React.Component {
                       aria-expanded="true"
                     >
                       <span className="float-start">
-                        {currentRestrictGuestMode === 'Deny' && t('security_settings.always_displayed')}
-                        {currentRestrictGuestMode === 'Readonly' && t('security_settings.always_not_displayed')}
+                        { t('security_settings.always_displayed')}
+                        { t('security_settings.always_not_displayed')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
+                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}>
                         {t('security_settings.always_displayed')}
                       </button>
-                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
+                      <button className="dropdown-item" type="button" onClick={() => { !adminGeneralSecurityContainer.state.isShowRestrictedByOwner }}>
                         {t('security_settings.always_not_displayed')}
                       </button>
                     </div>
@@ -406,6 +408,7 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
+                  <div className="col-md-8"></div>
                   <div className="dropdown">
                     <button
                       className={`btn btn-outline-secondary dropdown-toggle text-end col-12
@@ -417,15 +420,15 @@ class SecuritySetting extends React.Component {
                       aria-expanded="true"
                     >
                       <span className="float-start">
-                        {currentRestrictGuestMode === 'Deny' && t('security_settings.always_displayed')}
-                        {currentRestrictGuestMode === 'Readonly' && t('security_settings.always_not_displayed')}
+                        { t('security_settings.always_displayed')}
+                        { t('security_settings.always_not_displayed')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Deny') }}>
+                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}>
                         {t('security_settings.always_displayed')}
                       </button>
-                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.changeRestrictGuestMode('Readonly') }}>
+                      <button className="dropdown-item" type="button" onClick={() => { !adminGeneralSecurityContainer.state.isShowRestrictedByGroup }}>
                         {t('security_settings.always_not_displayed')}
                       </button>
                     </div>
