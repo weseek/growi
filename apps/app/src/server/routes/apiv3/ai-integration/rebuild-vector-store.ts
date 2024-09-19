@@ -40,6 +40,9 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
           });
         }
 
+        // Create all public pages VectorStoreFile
+        // TODO: https://redmine.weseek.co.jp/issues/153988
+
         return res.apiv3({});
 
       }
