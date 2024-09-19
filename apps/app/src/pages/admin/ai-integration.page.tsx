@@ -13,6 +13,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const AiIntegration = dynamic(() => import('~/client/components/Admin/AiIntegration/AiIntegration').then(mod => mod.AiIntegration), { ssr: false });
 const AiIntegrationDisableMode = dynamic(
   () => import('~/client/components/Admin/AiIntegration/AiIntegrationDisableMode').then(mod => mod.AiIntegrationDisableMode), { ssr: false },
 );
@@ -21,7 +22,7 @@ type Props = CommonProps & {
   aiEnabled: boolean,
 };
 
-const AdminAiIntegrationPage: NextPage<Props> = (props) => {
+const AdminAiIntegrationPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
 
   const title = t('ai_integration.ai_integration');
@@ -37,7 +38,7 @@ const AdminAiIntegrationPage: NextPage<Props> = (props) => {
         <title>{headTitle}</title>
       </Head>
       {props.aiEnabled
-        ? <></> // TODO: implement admin page
+        ? <AiIntegration />
         : <AiIntegrationDisableMode />
       }
     </AdminLayout>

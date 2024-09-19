@@ -1134,6 +1134,13 @@
   },
   "ai_integration": {
     "ai_integration": "Intégration de l'IA",
-    "disable_mode_explanation": "Actuellement, l'intégration de l'IA est désactivée. Pour l'activer, veuillez définir la variable d'environnement <code>AI_ENABLED</code> sur true"
+    "disable_mode_explanation": "Actuellement, l'intégration de l'IA est désactivée. Pour l'activer, veuillez définir la variable d'environnement <code>AI_ENABLED</code> sur true",
+    "ai_search_management": "Gestion de la recherche par l'IA",
+    "rebuild_vector_store": "Reconstruire le magasin Vector",
+    "rebuild_vector_store_label": "Reconstruire",
+    "rebuild_vector_store_explanation1": "Supprimez le Vector Store existant et recréez le Vector Store sur la page publique.",
+    "rebuild_vector_store_explanation2": "Ce processus peut prendre plusieurs minutes.",
+    "rebuild_vector_store_requested": "La reconstruction du magasin Vector a été demandée",
+    "rebuild_vector_store_failed": "Échec de la reconstruction du magasin de vecteurs"
   }
 }
