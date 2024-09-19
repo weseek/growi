@@ -3,6 +3,8 @@ import type { ValidationChain } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
 import { certifyAiService } from '~/server/middlewares/certify-ai-service';
+import { configManager } from '~/server/service/config-manager';
+import OpenaiClient from '~/server/service/openai-client-delegator';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -24,6 +26,20 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
   return [
     accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
     async(req: Request, res: ApiV3Response) => {
+
+      const vectorStoreId = configManager.getConfig('crowi', 'app:openaiVectorStoreId');
+
+      const client = new OpenaiClient();
+
+      // Delete an existing VectorStoreFile
+      const vectorStoreFileData = await client.getVectorStoreFiles(vectorStoreId);
+      const vectorStoreFiles = vectorStoreFileData?.data;
+      if (vectorStoreFiles != null && vectorStoreFiles.length > 0) {
+        vectorStoreFiles.forEach(async(vectorStoreFile) => {
+          await client.deleteVectorStoreFiles(vectorStoreId, vectorStoreFile.id);
+        });
+      }
+
       return res.apiv3({});
     },
   ];

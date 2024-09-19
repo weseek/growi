@@ -22,4 +22,16 @@ export default class OpenaiClient {
     this.client = new OpenAI({ apiKey: configManager?.getConfig('crowi', 'app:openaiApiKey') });
   }
 
+  async getVectorStoreFiles(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFilesPage | null> {
+    return this.isOpenai
+      ? this.client.beta.vectorStores.files.list(vectorStoreId)
+      : null;
+  }
+
+  async deleteVectorStoreFiles(vectorStoreId: string, fileId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFileDeleted | null> {
+    return this.isOpenai
+      ? this.client.beta.vectorStores.files.del(vectorStoreId, fileId)
+      : null;
+  }
+
 }
