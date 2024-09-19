@@ -377,7 +377,6 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_me') }</th>
                 <td>
-                  <div className="col-md-8"></div>
                   <div className="dropdown">
                     <button
                       className={`btn btn-outline-secondary dropdown-toggle text-end col-12
@@ -407,7 +406,6 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
-                  <div className="col-md-8"></div>
                   <div className="dropdown">
                     <button
                       className={`btn btn-outline-secondary dropdown-toggle text-end col-12
