@@ -4,8 +4,9 @@ import type { ValidationChain } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
 import { certifyAiService } from '~/server/middlewares/certify-ai-service';
-import OpenaiClient from '~/server/service/openai-client-delegator';
 import loggerFactory from '~/utils/logger';
+
+import { getOpenaiService } from '~/server/service/openai/openai';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
@@ -28,20 +29,8 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
     async(req: Request, res: ApiV3Response) => {
 
       try {
-        const client = new OpenaiClient();
-
-        // Delete an existing VectorStoreFile
-        const vectorStoreFileData = await client.getVectorStoreFiles();
-        const vectorStoreFiles = vectorStoreFileData?.data;
-        if (vectorStoreFiles != null && vectorStoreFiles.length > 0) {
-          vectorStoreFiles.forEach(async(vectorStoreFile) => {
-            await client.deleteVectorStoreFiles(vectorStoreFile.id);
-          });
-        }
-
-        // Create all public pages VectorStoreFile
-        // TODO: https://redmine.weseek.co.jp/issues/153988
-
+        const openaiService = getOpenaiService();
+        await openaiService.rebuildVectorStore();
         return res.apiv3({});
 
       }
