@@ -1,3 +1,5 @@
+import { configManager } from '~/server/service/config-manager';
+
 import OpenaiClient from './openai-client-delegator';
 
 export interface IOpenaiService {
@@ -8,6 +10,10 @@ class OpenaiService implements IOpenaiService {
   private client: OpenaiClient;
 
   constructor() {
+    const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
+    if (!aiEnabled) {
+      return;
+    }
     this.client = new OpenaiClient();
   }
 
