@@ -11,6 +11,11 @@ const configShared = defineConfig({
   test: {
     clearMocks: true,
     globals: true,
+    exclude: [
+      'test/**',
+      'test-with-vite/**',
+      'playwright/**',
+    ]
   },
 });
 
@@ -24,7 +29,6 @@ export default defineWorkspace([
         name: 'app-unit',
         environment: 'node',
         include: ['**/*.spec.{ts,js}'],
-        exclude: ['**/test/**'],
       },
     },
   ),
@@ -37,7 +41,6 @@ export default defineWorkspace([
         name: 'app-integration',
         environment: 'node',
         include: ['**/*.integ.ts'],
-        exclude: ['**/test/**'],
         setupFiles: [
           './test-with-vite/setup/mongoms.ts',
         ],
@@ -56,7 +59,6 @@ export default defineWorkspace([
         include: [
           '**/*.spec.{tsx,jsx}',
         ],
-        exclude: ['**/test/**'],
       },
     },
   ),
