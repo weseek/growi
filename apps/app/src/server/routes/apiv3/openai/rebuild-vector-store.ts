@@ -4,7 +4,6 @@ import type { ValidationChain } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
 import { certifyAiService } from '~/server/middlewares/certify-ai-service';
-import { configManager } from '~/server/service/config-manager';
 import OpenaiClient from '~/server/service/openai-client-delegator';
 import loggerFactory from '~/utils/logger';
 
