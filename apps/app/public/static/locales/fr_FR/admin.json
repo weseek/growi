@@ -17,7 +17,6 @@
     "Guest Users Access": "Accès invité",
     "always_not_displayed": "Toujours non affiché",
     "always_displayed": "Toujours affiché",
-    "displayed_or_hidden": "Caché / Affiché",
     "Fixed by env var": "Configuré par la variable d'environnement <code>{{key}}={{value}}</code>.",
     "register_limitation": "Paramètres d'inscription",
     "register_limitation_desc": "Restreindre l'inscription de nouveaux utilisateurs",

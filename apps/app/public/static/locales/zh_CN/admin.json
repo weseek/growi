@@ -25,7 +25,6 @@
     "set_point": "设定值",
     "always_not_displayed": "不显示",
     "always_displayed": "始终显示",
-    "displayed_or_hidden": "隐藏 / 显示",
     "Guest Users Access": "来宾用户访问",
 		"Fixed by env var": "这是由env var<code>%s=%s</code>修复的。",
 		"register_limitation": "注册限制",

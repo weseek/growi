@@ -17,7 +17,6 @@
     "Guest Users Access": "Guest users access",
     "always_not_displayed": "Always not displayed",
     "always_displayed": "Always displayed",
-    "displayed_or_hidden": "Hidden / Displayed",
     "Fixed by env var": "This is fixed by the env var <code>{{key}}={{value}}</code>.",
     "register_limitation": "Register limitation",
     "register_limitation_desc": "Restriction of new users' registration",
