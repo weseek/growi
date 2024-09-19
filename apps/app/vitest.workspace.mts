@@ -1,8 +1,10 @@
 import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { defineProject, defineWorkspace, mergeConfig } from 'vitest/config';
+import {
+  defineConfig, defineWorkspace, mergeConfig,
+} from 'vitest/config';
 
-const projectShared = defineProject({
+const configShared = defineConfig({
   plugins: [
     tsconfigPaths(),
   ],
@@ -16,23 +18,20 @@ export default defineWorkspace([
 
   // unit test
   mergeConfig(
-    projectShared,
+    configShared,
     {
       test: {
         name: 'app-unit',
         environment: 'node',
         include: ['**/*.spec.{ts,js}'],
         exclude: ['**/test/**'],
-        coverage: {
-          reportsDirectory: './coverage/unit',
-        },
       },
     },
   ),
 
   // integration test
   mergeConfig(
-    projectShared,
+    configShared,
     {
       test: {
         name: 'app-integration',
@@ -42,19 +41,13 @@ export default defineWorkspace([
         setupFiles: [
           './test-with-vite/setup/mongoms.ts',
         ],
-        coverage: {
-          reportsDirectory: './coverage/integ',
-          exclude: [
-            '**/*{.,-}integ.ts',
-          ],
-        },
       },
     },
   ),
 
   // component test
   mergeConfig(
-    projectShared,
+    configShared,
     {
       plugins: [react()],
       test: {
@@ -64,9 +57,6 @@ export default defineWorkspace([
           '**/*.spec.{tsx,jsx}',
         ],
         exclude: ['**/test/**'],
-        coverage: {
-          reportsDirectory: './coverage/components',
-        },
       },
     },
   ),
