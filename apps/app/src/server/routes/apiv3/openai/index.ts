@@ -7,6 +7,6 @@ const router = express.Router();
 
 module.exports = (crowi) => {
   router.post('/chat', chatHandlersFactory(crowi));
-  router.put('/rebuild-vector-store', rebuildVectorStoreHandlersFactory(crowi));
+  router.post('/rebuild-vector-store', rebuildVectorStoreHandlersFactory(crowi));
   return router;
 };
