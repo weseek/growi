@@ -1,3 +1,4 @@
+import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 
@@ -27,20 +28,25 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
     accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
     async(req: Request, res: ApiV3Response) => {
 
-      const vectorStoreId = configManager.getConfig('crowi', 'app:openaiVectorStoreId');
+      try {
+        const client = new OpenaiClient();
 
-      const client = new OpenaiClient();
+        // Delete an existing VectorStoreFile
+        const vectorStoreFileData = await client.getVectorStoreFiles();
+        const vectorStoreFiles = vectorStoreFileData?.data;
+        if (vectorStoreFiles != null && vectorStoreFiles.length > 0) {
+          vectorStoreFiles.forEach(async(vectorStoreFile) => {
+            await client.deleteVectorStoreFiles(vectorStoreFile.id);
+          });
+        }
 
-      // Delete an existing VectorStoreFile
-      const vectorStoreFileData = await client.getVectorStoreFiles(vectorStoreId);
-      const vectorStoreFiles = vectorStoreFileData?.data;
-      if (vectorStoreFiles != null && vectorStoreFiles.length > 0) {
-        vectorStoreFiles.forEach(async(vectorStoreFile) => {
-          await client.deleteVectorStoreFiles(vectorStoreId, vectorStoreFile.id);
-        });
+        return res.apiv3({});
+
       }
-
-      return res.apiv3({});
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Vector Store rebuild failed'));
+      }
     },
   ];
 };

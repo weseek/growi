@@ -9,8 +9,15 @@ export default class OpenaiClient {
 
   private isOpenai: boolean;
 
+  private openaiVectorStoreId: string;
+
   constructor() {
-    const aiServiceType = configManager?.getConfig('crowi', 'app:aiServiceType');
+    const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
+    const aiServiceType = configManager.getConfig('crowi', 'app:aiServiceType');
+
+    if (!aiEnabled) {
+      throw new Error('I_ENABLED is not true');
+    }
 
     if (aiServiceType == null || !aiServiceTypes.includes(aiServiceType)) {
       throw new Error('AI_SERVICE_TYPE is missing or contains an invalid value');
@@ -18,19 +25,37 @@ export default class OpenaiClient {
 
     this.isOpenai = aiServiceType === serviceType.OPEN_AI;
 
-    // TODO: Support for @azure/openai
-    this.client = new OpenAI({ apiKey: configManager?.getConfig('crowi', 'app:openaiApiKey') });
+    // Retrieve OpenAI related values from environment variables
+    if (this.isOpenai) {
+      const apiKey = configManager.getConfig('crowi', 'app:openaiApiKey');
+      const vectorStoreId = configManager.getConfig('crowi', 'app:openaiVectorStoreId');
+
+      const isValid = [apiKey, vectorStoreId].every(value => value != null);
+      if (!isValid) {
+        throw new Error("Environment variables required to use OpenAI's API are not set");
+      }
+
+      this.openaiVectorStoreId = vectorStoreId;
+
+      // initialize client
+      this.client = new OpenAI({ apiKey });
+    }
+
+    // Retrieve Azure OpenAI related values from environment variables
+    else {
+      //
+    }
   }
 
-  async getVectorStoreFiles(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFilesPage | null> {
+  async getVectorStoreFiles(): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFilesPage | null> {
     return this.isOpenai
-      ? this.client.beta.vectorStores.files.list(vectorStoreId)
+      ? this.client.beta.vectorStores.files.list(this.openaiVectorStoreId)
       : null;
   }
 
-  async deleteVectorStoreFiles(vectorStoreId: string, fileId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFileDeleted | null> {
+  async deleteVectorStoreFiles(fileId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFileDeleted | null> {
     return this.isOpenai
-      ? this.client.beta.vectorStores.files.del(vectorStoreId, fileId)
+      ? this.client.beta.vectorStores.files.del(this.openaiVectorStoreId, fileId)
       : null;
   }
 
