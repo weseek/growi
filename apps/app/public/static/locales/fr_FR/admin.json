@@ -1140,7 +1140,7 @@
     "rebuild_vector_store_label": "Reconstruire",
     "rebuild_vector_store_explanation1": "Supprimez le Vector Store existant et recréez le Vector Store sur la page publique.",
     "rebuild_vector_store_explanation2": "Ce processus peut prendre plusieurs minutes.",
-    "rebuild_vector_store_succeeded": "La reconstruction du magasin vectoriel a réussi",
+    "rebuild_vector_store_requested": "La reconstruction du magasin Vector a été demandée",
     "rebuild_vector_store_failed": "Échec de la reconstruction du magasin de vecteurs"
   }
 }

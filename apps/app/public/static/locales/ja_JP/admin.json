@@ -1151,7 +1151,7 @@
     "rebuild_vector_store_label": "リビルド",
     "rebuild_vector_store_explanation1": "既存の Vector Store を削除し、公開ページの Vector Store を再作成します。",
     "rebuild_vector_store_explanation2": "この作業には数分かかる可能性があります。",
-    "rebuild_vector_store_succeeded": "Vector Store のリビルドに成功しました",
+    "rebuild_vector_store_requested": "Vector Store のリビルドを受け付けました",
     "rebuild_vector_store_failed": "Vector Store のリビルドに失敗しました"
   }
 }

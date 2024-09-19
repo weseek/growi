@@ -13,13 +13,13 @@ export const certifyAiService = (req: Request, res: Response & { apiv3Err }, nex
   if (!aiEnabled) {
     const message = 'AI_ENABLED is not true';
     logger.error(message);
-    return res.apiv3Err(message, 400);
+    return res.apiv3Err(message, 403);
   }
 
   if (aiServiceType == null || !aiServiceTypes.includes(aiServiceType)) {
     const message = 'AI_SERVICE_TYPE is missing or contains an invalid value';
     logger.error(message);
-    return res.apiv3Err(message, 400);
+    return res.apiv3Err(message, 403);
   }
 
   next();

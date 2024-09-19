@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 
 
@@ -11,8 +11,8 @@ export const AiIntegration = (): JSX.Element => {
 
   const clickRebuildVectorStoreButtonHandler = useCallback(async() => {
     try {
-      await apiv3Put('/openai/rebuild-vector-store');
-      toastSuccess(t('ai_integration.rebuild_vector_store_succeeded'));
+      toastSuccess(t('ai_integration.rebuild_vector_store_requested'));
+      await apiv3Post('/openai/rebuild-vector-store');
     }
     catch {
       toastError(t('ai_integration.rebuild_vector_store_failed'));
