@@ -4,6 +4,7 @@ import { body } from 'express-validator';
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -559,6 +560,8 @@ module.exports = (crowi) => {
    *            description: Succeeded to send test mail for smtp
    */
   router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+    const { t } = await getTranslation();
+
     try {
       await sendTestEmail(req.user.email);
       const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_TEST_SUBMIT };
@@ -566,7 +569,7 @@ module.exports = (crowi) => {
       return res.apiv3({});
     }
     catch (err) {
-      const msg = req.t('validation.failed_to_send_a_test_email');
+      const msg = t('validation.failed_to_send_a_test_email');
       logger.error('Error', err);
       debug('Error validate mail setting: ', err);
       return res.apiv3Err(new ErrorV3(msg, 'send-email-with-smtp-failed'));
