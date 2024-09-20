@@ -15,7 +15,7 @@ import {
   useIsGuestUser, useIsReadOnlyUser, useIsSearchServiceConfigured, useIsSearchServiceReachable,
 } from '~/stores-universal/context';
 import { usePageDeleteModal } from '~/stores/modal';
-import { mutatePageTree } from '~/stores/page-listing';
+import { mutatePageTree, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
@@ -275,6 +275,7 @@ export const usePageDeleteModalForBulkDeletion = (
           toastSuccess(t('deleted_pages_completely', { path }));
         }
         mutatePageTree();
+        mutateSWRINFxRecentlyUpdated();
 
         if (onDeleted != null) {
           onDeleted(...args);
