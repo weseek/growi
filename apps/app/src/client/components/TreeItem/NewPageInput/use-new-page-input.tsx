@@ -16,7 +16,7 @@ import { useCreatePage } from '~/client/services/create-page';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
-import { mutatePageTree, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
 import { shouldCreateWipPage } from '../../../../utils/should-create-wip-page';
@@ -123,7 +123,7 @@ export const useNewPageInput = (): UseNewPageInput => {
             skipTransition: true,
             onCreated: () => {
               mutatePageTree();
-              mutateSWRINFxRecentlyUpdated();
+              mutateRecentlyUpdated();
 
               if (!hasDescendants) {
                 stateHandlers?.setIsOpen(true);

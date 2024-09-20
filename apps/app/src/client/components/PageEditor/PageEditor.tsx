@@ -41,7 +41,7 @@ import {
 import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
 } from '~/stores/page';
-import { mutatePageTree, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
@@ -191,7 +191,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
 
-      mutateSWRINFxRecentlyUpdated();
+      mutateRecentlyUpdated();
       // sync current grant data after update
       mutateIsGrantNormalized();
 

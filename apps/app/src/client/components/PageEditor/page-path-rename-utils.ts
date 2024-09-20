@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRMUTxCurrentPage } from '~/stores/page';
-import { mutatePageTree, mutatePageList, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageTree, mutatePageList, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useIsUntitledPage } from '~/stores/ui';
 
 
@@ -33,7 +33,7 @@ export const usePagePathRenameHandler = (
 
     const onRenamed = (fromPath: string | undefined, toPath: string) => {
       mutatePageTree();
-      mutateSWRINFxRecentlyUpdated();
+      mutateRecentlyUpdated();
       mutatePageList();
       mutateIsUntitledPage(false);
 

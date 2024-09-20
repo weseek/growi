@@ -12,7 +12,7 @@ import type { ISelectable, ISelectableAll } from '~/client/interfaces/selectable
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
-import { mutatePageTree, useSWRxPageInfoForList, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageTree, useSWRxPageInfoForList, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
@@ -94,7 +94,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     toastSuccess(t('duplicated_pages', { fromPath }));
 
     mutatePageTree();
-    mutateSWRINFxRecentlyUpdated();
+    mutateRecentlyUpdated();
     mutateSearching();
   }, [t]);
 
@@ -102,7 +102,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     toastSuccess(t('renamed_pages', { path }));
 
     mutatePageTree();
-    mutateSWRINFxRecentlyUpdated();
+    mutateRecentlyUpdated();
     mutateSearching();
   }, [t]);
 
@@ -120,7 +120,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
       toastSuccess(t('deleted_pages', { path }));
     }
     mutatePageTree();
-    mutateSWRINFxRecentlyUpdated();
+    mutateRecentlyUpdated();
     mutateSearching();
   }, [t]);
 

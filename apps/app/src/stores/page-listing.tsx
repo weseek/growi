@@ -55,7 +55,7 @@ export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolea
   );
 };
 
-export const mutateSWRINFxRecentlyUpdated = async(): Promise<void[]> => {
+export const mutateRecentlyUpdated = async(): Promise<void[]> => {
   const mutations: Promise<void>[] = [];
 
   for (const key of cache.keys()) {

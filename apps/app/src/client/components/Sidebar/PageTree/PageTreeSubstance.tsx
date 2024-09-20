@@ -8,7 +8,7 @@ import { debounce } from 'throttle-debounce';
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import {
-  mutatePageTree, mutateSWRINFxRecentlyUpdated, useSWRxPageAncestorsChildren, useSWRxRootPage, useSWRxV5MigrationStatus,
+  mutatePageTree, mutateRecentlyUpdated, useSWRxPageAncestorsChildren, useSWRxRootPage, useSWRxV5MigrationStatus,
 } from '~/stores/page-listing';
 import { useSidebarScrollerRef } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -35,7 +35,7 @@ export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: He
   const mutate = useCallback(() => {
     mutateRootPage();
     mutatePageTree();
-    mutateSWRINFxRecentlyUpdated();
+    mutateRecentlyUpdated();
   }, [mutateRootPage]);
 
   return (

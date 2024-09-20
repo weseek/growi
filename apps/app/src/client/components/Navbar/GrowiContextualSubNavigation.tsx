@@ -34,7 +34,7 @@ import {
 import {
   useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
 } from '~/stores/page';
-import { mutatePageTree, mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import {
   useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
@@ -271,7 +271,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
-      mutateSWRINFxRecentlyUpdated();
+      mutateRecentlyUpdated();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
   }, [mutateCurrentPage, mutatePageInfo, openRenameModal]);
@@ -295,7 +295,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
-      mutateSWRINFxRecentlyUpdated();
+      mutateRecentlyUpdated();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
   }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);

@@ -9,7 +9,7 @@ import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage, useSWRMUTxCurrentPage,
 } from '~/stores/page';
-import { mutateSWRINFxRecentlyUpdated } from '~/stores/page-listing';
+import { mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 
 
@@ -58,7 +58,7 @@ export const TrashPageAlert = (): JSX.Element => {
 
         router.push(`/${pageId}`);
         mutateCurrentPage();
-        mutateSWRINFxRecentlyUpdated();
+        mutateRecentlyUpdated();
       }
       catch (err) {
         const toastError = (await import('~/client/util/toastr')).toastError;
