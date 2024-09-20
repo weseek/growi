@@ -7,6 +7,9 @@ function rewriteNode(node: Node) {
   // replace node
   const data = node.data ?? (node.data = {});
   data.hName = 'mermaid';
+  data.hProperties = {
+    value: node.value,
+  };
 }
 
 export const remarkPlugin: Plugin = function() {
@@ -21,4 +24,7 @@ export const remarkPlugin: Plugin = function() {
 
 export const sanitizeOption: SanitizeOption = {
   tagNames: ['mermaid'],
+  attributes: {
+    mermaid: ['value'],
+  },
 };
