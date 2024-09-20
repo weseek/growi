@@ -1,4 +1,4 @@
-import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import type { Options as ReactMarkdownOptions } from 'react-markdown';
 
 import { usePresentationViewOptions } from '~/stores/renderer';
 
