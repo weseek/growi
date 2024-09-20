@@ -4,12 +4,15 @@ import type { Extension } from '@codemirror/state';
 import { Prec } from '@codemirror/state';
 import {
   keymap, type Command, highlightActiveLine, highlightActiveLineGutter,
+  EditorView,
 } from '@codemirror/view';
 
-import type { EditorSettings, KeyMapMode, EditorTheme } from '../../consts';
+import type {
+  EditorSettings, KeyMapMode, EditorTheme,
+} from '../../consts';
 import type { UseCodeMirrorEditor } from '../services';
 import {
-  getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable,
+  getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable, getStrFromBol, adjustPasteData,
 } from '../services-internal';
 
 
@@ -17,6 +20,7 @@ export const useEditorSettings = (
     codeMirrorEditor?: UseCodeMirrorEditor,
     editorSetings?: EditorSettings,
     onSave?: () => void,
+    onUpload?: (files: File[]) => void,
 ): void => {
 
   useEffect(() => {
@@ -89,5 +93,45 @@ export const useEditorSettings = (
     return cleanupFunction;
 
   }, [codeMirrorEditor, keymapExtension]);
+
+  useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      event.preventDefault();
+
+      const editor = codeMirrorEditor?.view;
+
+      if (editor == null) {
+        return;
+      }
+
+      if (event.clipboardData == null) {
+        return;
+      }
+
+      if (editorSetings?.pasteMode !== 'file' && event.clipboardData.types.includes('text/plain')) {
+
+        const textData = event.clipboardData.getData('text/plain');
+
+        const strFromBol = getStrFromBol(editor);
+        const adjusted = adjustPasteData(strFromBol, textData);
+
+        codeMirrorEditor?.replaceText(adjusted);
+      }
+
+      if (editorSetings?.pasteMode !== 'text' && onUpload != null && event.clipboardData.types.includes('Files')) {
+        onUpload(Array.from(event.clipboardData.files));
+      }
+
+    };
+
+    const extension = EditorView.domEventHandlers({
+      paste: handlePaste,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, editorSetings?.pasteMode, onUpload]);
+
 
 };

@@ -12,8 +12,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import type { EditorSettings, GlobalCodeMirrorEditorKey } from '../../../consts';
 import {
-  useFileDropzone, FileDropzoneOverlay,
-  adjustPasteData, getStrFromBol, useShowTableIcon,
+  useFileDropzone, FileDropzoneOverlay, useShowTableIcon,
 } from '../../services-internal';
 import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
 import { useDefaultExtensions } from '../../stores/use-default-extensions';
@@ -70,7 +69,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
   useDefaultExtensions(codeMirrorEditor);
-  useEditorSettings(codeMirrorEditor, editorSettings, onSave);
+  useEditorSettings(codeMirrorEditor, editorSettings, onSave, onUpload);
 
   useShowTableIcon(codeMirrorEditor);
 
@@ -84,46 +83,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor, indentSize]);
-
-
-  useEffect(() => {
-    const handlePaste = (event: ClipboardEvent) => {
-      event.preventDefault();
-
-      const editor = codeMirrorEditor?.view;
-
-      if (editor == null) {
-        return;
-      }
-
-      if (event.clipboardData == null) {
-        return;
-      }
-
-      if (event.clipboardData.types.includes('text/plain')) {
-
-        const textData = event.clipboardData.getData('text/plain');
-
-        const strFromBol = getStrFromBol(editor);
-
-        const adjusted = adjustPasteData(strFromBol, textData);
-
-        codeMirrorEditor?.replaceText(adjusted);
-      }
-      else if (onUpload != null && event.clipboardData.types.includes('Files')) {
-        onUpload(Array.from(event.clipboardData.files));
-      }
-
-    };
-
-    const extension = EditorView.domEventHandlers({
-      paste: handlePaste,
-    });
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, onUpload]);
 
   useEffect(() => {
 
