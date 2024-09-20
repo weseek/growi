@@ -50,6 +50,12 @@ test('admin/export is successfully loaded', async({ page }) => {
   await expect(page.getByTestId('admin-export-archive-data')).toBeVisible();
 });
 
+test('admin/data-transfer is successfully loaded', async({ page }) => {
+  await page.goto('/admin/data-transfer');
+
+  await expect(page.getByTestId('admin-export-archive-data')).toBeVisible();
+});
+
 test('admin/notification is successfully loaded', async({ page }) => {
   await page.goto('/admin/notification');
 
