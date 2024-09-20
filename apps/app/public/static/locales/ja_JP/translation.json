@@ -364,6 +364,12 @@
     "theme": "テーマ",
     "keymap": "キーマップ",
     "indent": "インデント",
+    "paste": {
+      "title": "貼り付け",
+      "both": "両方",
+      "text": "テキスト",
+      "file": "ファイル"
+    },
     "editor_config": "エディタ設定",
     "Show active line": "アクティブ行をハイライト",
     "auto_format_table": "表の自動整形",

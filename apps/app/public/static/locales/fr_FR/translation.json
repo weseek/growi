@@ -331,6 +331,12 @@
     "theme": "Thème",
     "keymap": "Touches",
     "indent": "Indentation",
+    "paste": {
+      "title": "Coller",
+      "both": "Tout",
+      "text": "Texte",
+      "file": "Fichier"
+    },
     "editor_config": "Configuration de l'éditeur",
     "Show active line": "Montrer la ligne active",
     "auto_format_table": "Formattage les tables",
