@@ -10,7 +10,7 @@ import useSWR, {
 import { cache } from 'swr/_internal';
 import useSWRImmutable from 'swr/immutable';
 import type { SWRInfiniteResponse } from 'swr/infinite';
-import useSWRInfinite from 'swr/infinite'; // eslint-disable-line
+import useSWRInfinite from 'swr/infinite';
 
 import type { IPagingResult } from '~/interfaces/paging-result';
 
@@ -50,19 +50,21 @@ export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolea
     {
       ...config,
       revalidateFirstPage: false,
-      revalidateAll: false,
+      revalidateAll: true,
     },
   );
 };
 
-export const mutateSWRINFxRecentlyUpdated = async(): Promise<void[] | undefined> => {
-  const promises: Promise<void>[] = [];
+export const mutateSWRINFxRecentlyUpdated = async(): Promise<void[]> => {
+  const mutations: Promise<void>[] = [];
+
   for (const key of cache.keys()) {
     if (key.includes('/pages/recent')) {
-      promises.push(mutate(key));
+      mutations.push(mutate(key));
     }
   }
-  return Promise.all(promises);
+
+  return Promise.all(mutations);
 };
 
 export const mutatePageList = async(): Promise<void[]> => {
