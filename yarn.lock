@@ -18708,10 +18708,10 @@ vite-node@2.1.1:
     pathe "^1.1.2"
     vite "^5.0.0"
 
-vite-plugin-dts@~4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/vite-plugin-dts/-/vite-plugin-dts-4.1.1.tgz#1837a304cfd83c02bdaed3bb3bec7c3a6ad1ba0d"
-  integrity sha512-SxYXwJQbAZ1IMtGEcOuzzZtDWCdcV2JkU7esvpPA8E5tIWVcJB42rZwN9EdULicWGLfaXrUgPIGVSidXBTae2Q==
+vite-plugin-dts@~4.0.0:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/vite-plugin-dts/-/vite-plugin-dts-4.0.3.tgz#0f452be5ea81a50fa27ade4e0f3a0d750873affc"
+  integrity sha512-+xnTsaONwU2kV6zhRjtbRJSGN41uFR/whqmcb4k4fftLFDJElxthp0PP5Fq8gMeM9ytWMt1yk5gGgekLREWYQQ==
   dependencies:
     "@microsoft/api-extractor" "7.47.4"
     "@rollup/pluginutils" "^5.1.0"
