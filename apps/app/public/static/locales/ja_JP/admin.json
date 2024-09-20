@@ -24,6 +24,7 @@
     "scope_of_page_disclosure": "ページの公開範囲",
     "set_point": "設定値",
     "Guest Users Access":"ゲストユーザーのアクセス",
+    "readonly_users_access": "ROMユーザーのアクセス",
     "always_hidden": "非表示 (固定)",
     "always_displayed": "表示 (固定)",
     "displayed_or_hidden": "非表示 / 表示",
@@ -46,6 +47,7 @@
     "page_delete_rights": "ページの削除権限",
     "page_delete": "ゴミ箱に入れる",
     "page_delete_completely": "完全に削除する",
+    "comment_manage_rights": "コメントの操作権限",
     "other_options": "その他のオプション",
     "deletion_explanation": "ページをゴミ箱に入れることができるユーザーを制限します。",
     "complete_deletion_explanation": "ページを完全削除することができるユーザーを制限します。",
@@ -93,6 +95,10 @@
     "guest_mode": {
       "deny": "拒否 (アカウントを持つユーザーのみ利用可能)",
       "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"
+    },
+    "rom_users_comment": {
+      "deny": "拒否 (ROMユーザーのコメント操作を禁止)",
+      "accept": "許可 (ROMユーザーもコメント操作可能)"
     },
     "registration_mode": {
       "open": "公開 (だれでも登録可能)",
