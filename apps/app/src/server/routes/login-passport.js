@@ -3,6 +3,7 @@ import next from 'next';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { ExternalAccountLoginError } from '~/models/vo/external-account-login-error';
+import { getTranslation } from '~/server/service/i18next';
 import { createRedirectToForUnauthenticated } from '~/server/util/createRedirectToForUnauthenticated';
 import loggerFactory from '~/utils/logger';
 
@@ -241,12 +242,14 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  const testLdapCredentials = (req, res) => {
+  const testLdapCredentials = async(req, res) => {
+    const { t } = await getTranslation();
+
     if (!passportService.isLdapStrategySetup) {
       debug('LdapStrategy has not been set up');
       return res.json(ApiResponse.success({
         status: 'warning',
-        message: req.t('message.strategy_has_not_been_set_up', { strategy: 'LdapStrategy' }),
+        message: t('message.strategy_has_not_been_set_up', { strategy: 'LdapStrategy' }),
       }));
     }
 
