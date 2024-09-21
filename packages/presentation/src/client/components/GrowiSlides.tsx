@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { ReactMarkdown } from 'react-markdown/lib/react-markdown';
+import ReactMarkdown from 'react-markdown';
 
 import type { PresentationOptions } from '../consts';
 import { MARP_CONTAINER_CLASS_NAME, presentationMarpit, slideMarpit } from '../services/growi-marpit';
