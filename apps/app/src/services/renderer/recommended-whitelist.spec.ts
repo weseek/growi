@@ -14,6 +14,9 @@ describe('recommended-whitelist', () => {
 
   test('.attributes should return data attributes', () => {
     expect(attributes).not.toBeNull();
+
+    assert(attributes != null);
+
     expect(Object.keys(attributes)).includes('*');
     expect(attributes['*']).includes('alt');
     expect(attributes['*']).includes('align');
@@ -25,12 +28,18 @@ describe('recommended-whitelist', () => {
 
   test('.attributes should return iframe attributes', () => {
     expect(attributes).not.toBeNull();
+
+    assert(attributes != null);
+
     expect(Object.keys(attributes)).includes('iframe');
     expect(attributes.iframe).includes('src');
   });
 
   test('.attributes should return video attributes', () => {
     expect(attributes).not.toBeNull();
+
+    assert(attributes != null);
+
     expect(Object.keys(attributes)).includes('video');
     expect(attributes.iframe).includes('src');
   });

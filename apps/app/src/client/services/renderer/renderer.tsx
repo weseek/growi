@@ -26,6 +26,7 @@ import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-
 import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-highlighter';
 import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
 import * as attachment from '~/services/renderer/remark-plugins/attachment';
+import * as codeBlock from '~/services/renderer/remark-plugins/codeblock';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
@@ -71,7 +72,7 @@ export const generateViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       getCommonSanitizeOption(config),
       presentation.sanitizeOption,
@@ -80,6 +81,7 @@ export const generateViewOptions = (
       attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
+      codeBlock.sanitizeOption,
     )]
     : () => {};
 
@@ -129,9 +131,10 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       getCommonSanitizeOption(config),
+      codeBlock.sanitizeOption,
     )]
     : () => {};
 
@@ -176,7 +179,7 @@ export const generateSimpleViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       getCommonSanitizeOption(config),
       presentation.sanitizeOption,
@@ -185,6 +188,7 @@ export const generateSimpleViewOptions = (
       attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
+      codeBlock.sanitizeOption,
     )]
     : () => {};
 
@@ -227,7 +231,7 @@ export const generatePresentationViewOptions = (
   const { rehypePlugins } = options;
 
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       addLineNumberAttribute.sanitizeOption,
     )]
@@ -265,7 +269,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     remarkPlugins.push(breaks);
   }
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       getCommonSanitizeOption(config),
       drawio.sanitizeOption,
@@ -274,6 +278,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
+      codeBlock.sanitizeOption,
     )]
     : () => {};
 
