@@ -8,7 +8,7 @@ import { mock } from 'vitest-mock-extended';
 
 import { EditorMode } from '~/stores-universal/ui';
 
-import { PageTitleHeader } from './PageTitleHeader'; // Adjust the import path as necessary
+import { PageTitleHeader } from './PageTitleHeader';
 
 const mocks = vi.hoisted(() => ({
   useIsUntitledPageMock: vi.fn(),
