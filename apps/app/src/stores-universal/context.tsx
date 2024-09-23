@@ -286,7 +286,7 @@ export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType,
   );
 };
 
-export const useGrowiDocumentationUrl = (): SWRResponse<'growi.cloud/help' | 'docs.growi.org', Error> => {
+export const useGrowiDocumentationUrl = (): SWRResponse<'https://growi.cloud/help' | 'https://docs.growi.org', Error> => {
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
 
@@ -294,9 +294,9 @@ export const useGrowiDocumentationUrl = (): SWRResponse<'growi.cloud/help' | 'do
     ['documentationUrl', growiCloudUri, growiAppIdForGrowiCloud],
     ([growiCloudUri, growiAppIdForGrowiCloud]) => {
       if (growiCloudUri != null && growiAppIdForGrowiCloud != null) {
-        return 'growi.cloud/help';
+        return 'https://growi.cloud/help';
       }
-      return 'docs.growi.org';
+      return 'https://docs.growi.org';
     },
   );
 };
