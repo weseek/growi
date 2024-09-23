@@ -282,7 +282,7 @@ const G2GDataTransfer = (): JSX.Element => {
           className="mb-0"
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
-            __html: t('commons:g2g_data_transfer.transfer_to_growi_cloud', { documentationUrl: documentationUrl || 'https://docs.growi.org' }),
+            __html: t('commons:g2g_data_transfer.transfer_to_growi_cloud', { documentationUrl }),
           }}
         />
       </div>

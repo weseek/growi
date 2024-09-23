@@ -1,5 +1,3 @@
-import { useCallback, useEffect } from 'react';
-
 import type EventEmitter from 'events';
 
 import { AcceptedUploadFileType } from '@growi/core';
@@ -286,17 +284,22 @@ export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType,
   );
 };
 
-export const useGrowiDocumentationUrl = (): SWRResponse<'https://growi.cloud/help' | 'https://docs.growi.org', Error> => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const useGrowiDocumentationUrl = () => {
   const { data: growiCloudUri } = useGrowiCloudUri();
-  const { data: growiAppIdForGrowiCloud } = useGrowiAppIdForGrowiCloud();
 
-  return useSWRImmutable(
-    ['documentationUrl', growiCloudUri, growiAppIdForGrowiCloud],
-    ([growiCloudUri, growiAppIdForGrowiCloud]) => {
-      if (growiCloudUri != null && growiAppIdForGrowiCloud != null) {
-        return 'https://growi.cloud/help';
-      }
-      return 'https://docs.growi.org';
+  return useSWR(
+    ['documentationUrl', growiCloudUri],
+    ([, growiCloudUri]) => {
+      const url = growiCloudUri != null
+        ? new URL('/help', growiCloudUri)
+        : new URL('https://docs.growi.org');
+      return url.toString();
+    },
+    {
+      fallbackData: 'https://docs.growi.org',
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
