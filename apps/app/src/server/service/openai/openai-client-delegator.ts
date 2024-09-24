@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { type Uploadable } from 'openai/uploads';
 
 import { aiServiceType as serviceType, aiServiceTypes } from '~/interfaces/ai';
 import { configManager } from '~/server/service/config-manager';
@@ -16,7 +17,7 @@ export default class OpenaiClient {
     const aiServiceType = configManager.getConfig('crowi', 'app:aiServiceType');
 
     if (!aiEnabled) {
-      throw new Error('I_ENABLED is not true');
+      throw new Error('AI_ENABLED is not true');
     }
 
     if (aiServiceType == null || !aiServiceTypes.includes(aiServiceType)) {
@@ -56,6 +57,12 @@ export default class OpenaiClient {
   async deleteVectorStoreFiles(fileId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFileDeleted | null> {
     return this.isOpenai
       ? this.client.beta.vectorStores.files.del(this.openaiVectorStoreId, fileId)
+      : null;
+  }
+
+  async uploadAndPoll(files: Uploadable[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch | null> {
+    return this.isOpenai
+      ? this.client.beta.vectorStores.fileBatches.uploadAndPoll(this.openaiVectorStoreId, { files })
       : null;
   }
 
