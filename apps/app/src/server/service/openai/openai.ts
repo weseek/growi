@@ -26,14 +26,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async rebuildVectorStore() {
-    // Delete an existing VectorStoreFile
-    // const vectorStoreFileData = await this.client.getVectorStoreFiles();
-    // const vectorStoreFiles = vectorStoreFileData?.data;
-    // if (vectorStoreFiles != null && vectorStoreFiles.length > 0) {
-    //   vectorStoreFiles.forEach(async(vectorStoreFile) => {
-    //     await this.client.deleteVectorStoreFiles(vectorStoreFile.id);
-    //   });
-    // }
+    // TODO: https://redmine.weseek.co.jp/issues/154364
 
     // Create all public pages VectorStoreFile
     const page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
