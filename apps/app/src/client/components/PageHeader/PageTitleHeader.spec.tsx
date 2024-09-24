@@ -1,10 +1,12 @@
 import '@testing-library/jest-dom/vitest';
 
+import { faker } from '@faker-js/faker';
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import {
   fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import { mock } from 'vitest-mock-extended';
+
 
 import { EditorMode } from '~/stores-universal/ui';
 
@@ -32,7 +34,7 @@ describe('PageTitleHeader Component with untitled page', () => {
   it('should render the textbox correctly', async() => {
     // arrange
     const currentPage = mock<IPagePopulatedToShowRevision>({
-      _id: 'dummy-id',
+      _id: faker.database.mongodbObjectId(),
       path: '/path/to/page/Untitled-1',
     });
 
@@ -63,9 +65,10 @@ describe('PageTitleHeader Component', () => {
 
   it('should render the title correctly', async() => {
     // arrange
+    const pageTitle = faker.lorem.slug();
     const currentPage = mock<IPagePopulatedToShowRevision>({
-      _id: 'dummy-id',
-      path: '/path/to/page/page-title',
+      _id: faker.database.mongodbObjectId(),
+      path: `/path/to/page/${pageTitle}`,
     });
 
     // act
@@ -73,7 +76,7 @@ describe('PageTitleHeader Component', () => {
 
     // assert
     // header should be rendered
-    const headerElement = screen.getByText('page-title');
+    const headerElement = screen.getByText(pageTitle);
     await waitFor(() => {
       expect(headerElement).toBeInTheDocument();
       expect(headerElement).not.toHaveClass('invisible');
@@ -85,15 +88,16 @@ describe('PageTitleHeader Component', () => {
 
   it('should render text input after clicking', async() => {
     // arrange
+    const pageTitle = faker.lorem.slug();
     const currentPage = mock<IPagePopulatedToShowRevision>({
-      _id: 'dummy-id',
-      path: '/path/to/page/page-title',
+      _id: faker.database.mongodbObjectId(),
+      path: `/path/to/page/${pageTitle}`,
     });
 
     // act
     render(<PageTitleHeader currentPage={currentPage} />);
 
-    const headerElement = screen.getByText('page-title');
+    const headerElement = screen.getByText(pageTitle);
     await waitFor(() => expect(headerElement).toBeInTheDocument());
 
     // click
@@ -103,7 +107,7 @@ describe('PageTitleHeader Component', () => {
     const inputElement = screen.getByRole('textbox');
     await waitFor(() => {
       expect(inputElement).toBeInTheDocument();
-      expect(inputElement).toHaveValue('page-title');
+      expect(inputElement).toHaveValue(pageTitle);
       expect(headerElement).toHaveClass('invisible');
     });
   });
