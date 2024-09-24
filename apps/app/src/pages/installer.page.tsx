@@ -11,7 +11,7 @@ import Head from 'next/head';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import {
-  useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
+  useCsrfToken, useAppTitle, useSiteUrl, useConfidential, useGrowiCloudUri,
 } from '~/stores-universal/context';
 
 import type { CommonProps } from './utils/commons';
@@ -57,6 +57,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   const title = generateCustomTitle(props, t('installer.title'));
   const classNames: string[] = [];
