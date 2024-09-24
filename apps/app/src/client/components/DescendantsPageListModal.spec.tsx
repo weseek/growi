@@ -59,7 +59,7 @@ describe('DescendantsPageListModal.tsx', () => {
 
     it('should render CustomNavDropdown on devices smaller than lg', () => {
       render(<DescendantsPageListModal />);
-      expect(screen.queryByTestId('custom-nav-dropdown')).not.toBeNull();
+      expect(screen.getByTestId('custom-nav-dropdown')).not.toBeNull();
     });
 
     it('should not render CustomNavTab', () => {
