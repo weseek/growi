@@ -9,8 +9,6 @@ export default class OpenaiClient {
 
   private client: OpenAI | AzureOpenAI;
 
-  private isOpenai: boolean;
-
   private openaiVectorStoreId: string;
 
   constructor() {
@@ -25,10 +23,8 @@ export default class OpenaiClient {
       throw new Error('AI_SERVICE_TYPE is missing or contains an invalid value');
     }
 
-    this.isOpenai = aiServiceType === serviceType.OPEN_AI;
-
     // Retrieve OpenAI related values from environment variables
-    if (this.isOpenai) {
+    if (aiServiceType === serviceType.OPEN_AI) {
       const apiKey = configManager.getConfig('crowi', 'app:openaiApiKey');
       const vectorStoreId = configManager.getConfig('crowi', 'app:openaiVectorStoreId');
 
@@ -58,6 +54,10 @@ export default class OpenaiClient {
 
   async deleteVectorStoreFiles(fileId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFileDeleted> {
     return this.client.beta.vectorStores.files.del(this.openaiVectorStoreId, fileId);
+  }
+
+  async deleteFile(fileId: string): Promise<OpenAI.Files.FileDeleted> {
+    return this.client.files.del(fileId);
   }
 
   async uploadAndPoll(files: Uploadable[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch> {
