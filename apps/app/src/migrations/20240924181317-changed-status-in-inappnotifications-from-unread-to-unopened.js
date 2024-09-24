@@ -1,6 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:non-null-granted-groups');
+const logger = loggerFactory('growi:changed-status-in-inappnotifications-from-unread-to-unopened');
 
 module.exports = {
   async up(db) {
