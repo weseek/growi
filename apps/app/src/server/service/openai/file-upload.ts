@@ -3,12 +3,14 @@ import { Readable } from 'stream';
 import type { IPageHasId } from '@growi/core';
 import { toFile } from 'openai';
 
+import { configManager } from '~/server/service/config-manager';
+
 import { openaiClient } from './client';
 
 type PageToUpload = Omit<IPageHasId, 'revision'> & { revision: { body: string } };
 
 export const fileUpload = async(pages: PageToUpload[]): Promise<void> => {
-  const vectorStoreId = process.env.OPENAI_VECTOR_STORE_ID;
+  const vectorStoreId = configManager.getConfig('crowi', 'app:openaiVectorStoreId');
   if (vectorStoreId == null) {
     return;
   }

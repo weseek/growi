@@ -3,11 +3,14 @@ import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
+import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import { certifyAiService } from '~/server/middlewares/certify-ai-service';
+import { configManager } from '~/server/service/config-manager';
 import { openaiClient } from '~/server/service/openai';
 import { getOrCreateChatAssistant } from '~/server/service/openai/assistant';
 import loggerFactory from '~/utils/logger';
 
-import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
+
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:chat');
@@ -31,9 +34,9 @@ export const chatHandlersFactory: ChatHandlersFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, validator, apiV3FormValidator,
+    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
-      const vectorStoreId = process.env.OPENAI_VECTOR_STORE_ID;
+      const vectorStoreId = configManager.getConfig('crowi', 'app:openaiVectorStoreId');
       if (vectorStoreId == null) {
         return res.apiv3Err('OPENAI_VECTOR_STORE_ID is not setup', 503);
       }
