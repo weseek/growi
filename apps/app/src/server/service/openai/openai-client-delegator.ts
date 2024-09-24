@@ -1,4 +1,5 @@
-import OpenAI from 'openai';
+import { DefaultAzureCredential, getBearerTokenProvider } from '@azure/identity';
+import OpenAI, { AzureOpenAI } from 'openai';
 import { type Uploadable } from 'openai/uploads';
 
 import { aiServiceType as serviceType, aiServiceTypes } from '~/interfaces/ai';
@@ -6,7 +7,7 @@ import { configManager } from '~/server/service/config-manager';
 
 export default class OpenaiClient {
 
-  private client: OpenAI;
+  private client: OpenAI | AzureOpenAI;
 
   private isOpenai: boolean;
 
@@ -44,26 +45,23 @@ export default class OpenaiClient {
 
     // Retrieve Azure OpenAI related values from environment variables
     else {
-      //
+      const credential = new DefaultAzureCredential();
+      const scope = 'https://cognitiveservices.azure.com/.default';
+      const azureADTokenProvider = getBearerTokenProvider(credential, scope);
+      this.client = new AzureOpenAI({ azureADTokenProvider });
     }
   }
 
-  async getVectorStoreFiles(): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFilesPage | null> {
-    return this.isOpenai
-      ? this.client.beta.vectorStores.files.list(this.openaiVectorStoreId)
-      : null;
+  async getVectorStoreFiles(): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFilesPage> {
+    return this.client.beta.vectorStores.files.list(this.openaiVectorStoreId);
   }
 
-  async deleteVectorStoreFiles(fileId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFileDeleted | null> {
-    return this.isOpenai
-      ? this.client.beta.vectorStores.files.del(this.openaiVectorStoreId, fileId)
-      : null;
+  async deleteVectorStoreFiles(fileId: string): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFileDeleted> {
+    return this.client.beta.vectorStores.files.del(this.openaiVectorStoreId, fileId);
   }
 
-  async uploadAndPoll(files: Uploadable[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch | null> {
-    return this.isOpenai
-      ? this.client.beta.vectorStores.fileBatches.uploadAndPoll(this.openaiVectorStoreId, { files })
-      : null;
+  async uploadAndPoll(files: Uploadable[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch> {
+    return this.client.beta.vectorStores.fileBatches.uploadAndPoll(this.openaiVectorStoreId, { files });
   }
 
 }
