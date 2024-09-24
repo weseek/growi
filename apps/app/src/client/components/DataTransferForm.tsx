@@ -3,12 +3,14 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useGenerateTransferKey } from '~/client/services/g2g-transfer';
+import { useGrowiDocumentationUrl } from '~/stores-universal/context';
 
 import CustomCopyToClipBoard from './Common/CustomCopyToClipBoard';
 
 const DataTransferForm = (): JSX.Element => {
   const { t } = useTranslation('commons');
   const { transferKey, generateTransferKey } = useGenerateTransferKey();
+  const { data: documentationUrl } = useGrowiDocumentationUrl();
 
   return (
     <div data-testid="installerForm" className="py-3 px-4">
@@ -33,7 +35,13 @@ const DataTransferForm = (): JSX.Element => {
       <div className="alert alert-warning mt-4">
         <p className="mb-1">{t('g2g_data_transfer.transfer_key_limit')}</p>
         <p className="mb-1">{t('g2g_data_transfer.once_transfer_key_used')}</p>
-        <p className="mb-0">{t('g2g_data_transfer.transfer_to_growi_cloud')}</p>
+        <p
+          className="mb-0"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: t('g2g_data_transfer.transfer_to_growi_cloud', { documentationUrl }),
+          }}
+        />
       </div>
     </div>
   );

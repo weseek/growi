@@ -10,8 +10,9 @@ import {
 
 import { useIsSharedUser } from '~/stores-universal/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
+import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
-import { CustomNavTab } from './CustomNavigation/CustomNav';
+import { CustomNavDropdown, CustomNavTab } from './CustomNavigation/CustomNav';
 import CustomTabContent from './CustomNavigation/CustomTabContent';
 import type { DescendantsPageListProps } from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
@@ -33,6 +34,8 @@ export const DescendantsPageListModal = (): JSX.Element => {
   const { data: status, close } = useDescendantsPageListModal();
 
   const { events } = useRouter();
+
+  const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
 
   useEffect(() => {
     events.on('routeChangeStart', close);
@@ -93,17 +96,30 @@ export const DescendantsPageListModal = (): JSX.Element => {
       data-testid="descendants-page-list-modal"
       className={`grw-descendants-page-list-modal ${styles['grw-descendants-page-list-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
-      <ModalHeader className="p-0" toggle={close} close={buttons}>
-        <CustomNavTab
-          activeTab={activeTab}
-          navTabMapping={navTabMapping}
-          breakpointToHideInactiveTabsDown="md"
-          onNavSelected={v => setActiveTab(v)}
-          hideBorderBottom
-        />
+      <ModalHeader className={isDeviceLargerThanLg ? 'p-0' : ''} toggle={close} close={buttons}>
+        {isDeviceLargerThanLg && (
+          <CustomNavTab
+            activeTab={activeTab}
+            navTabMapping={navTabMapping}
+            breakpointToHideInactiveTabsDown="md"
+            onNavSelected={v => setActiveTab(v)}
+            hideBorderBottom
+          />
+        )}
       </ModalHeader>
       <ModalBody>
-        <CustomTabContent activeTab={activeTab} navTabMapping={navTabMapping} />
+        {!isDeviceLargerThanLg && (
+          <CustomNavDropdown
+            activeTab={activeTab}
+            navTabMapping={navTabMapping}
+            onNavSelected={v => setActiveTab(v)}
+          />
+        )}
+        <CustomTabContent
+          activeTab={activeTab}
+          navTabMapping={navTabMapping}
+          additionalClassNames={!isDeviceLargerThanLg ? ['grw-tab-content-style-md-down'] : undefined}
+        />
       </ModalBody>
     </Modal>
   );
