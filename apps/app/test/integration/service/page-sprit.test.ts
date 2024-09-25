@@ -2,7 +2,7 @@
 
 import type { TiktokenModel } from '@dqbd/tiktoken';
 
-import { splitMarkdownByTokens } from '../../../src/server/service/page-spritter';
+import { splitMarkdownByTokens } from '../../../src/server/util/page-spritter';
 
 describe('splitMarkdownByTokens', () => {
   const model: TiktokenModel = 'gpt-3.5-turbo';
