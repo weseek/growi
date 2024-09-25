@@ -63,7 +63,7 @@ class OpenaiService implements IOpenaiService {
     });
 
     // create vector store file
-    if (page.grant === PageGrant.GRANT_PUBLIC && page.revision != null && isPopulated(page?.revision)) {
+    if (page.grant === PageGrant.GRANT_PUBLIC && page.revision != null && isPopulated(page.revision)) {
       const file = await toFile(Readable.from(page.revision.body), `${page._id}.md`);
       const res = await this.client.uploadAndPoll([file]);
       logger.debug('create vector store: ', res);
