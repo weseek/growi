@@ -1,6 +1,6 @@
 import { Readable } from 'stream';
 
-import { PageGrant } from '@growi/core';
+import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import { toFile } from 'openai';
@@ -11,7 +11,8 @@ import { configManager } from '~/server/service/config-manager';
 import OpenaiClient from './openai-client-delegator';
 
 export interface IOpenaiService {
-  rebuildVectorStore(): Promise<void>;
+  rebuildVectorStoreAll(): Promise<void>;
+  rebuildVectorStore(page: PageDocument): Promise<void>;
 }
 class OpenaiService implements IOpenaiService {
 
@@ -25,7 +26,7 @@ class OpenaiService implements IOpenaiService {
     this.client = new OpenaiClient();
   }
 
-  async rebuildVectorStore() {
+  async rebuildVectorStoreAll() {
     // TODO: https://redmine.weseek.co.jp/issues/154364
 
     // Create all public pages VectorStoreFile
@@ -45,6 +46,16 @@ class OpenaiService implements IOpenaiService {
 
     const files = await Promise.all(filesPromise);
     await this.client.uploadAndPoll(files);
+  }
+
+  async rebuildVectorStore(page: PageDocument) {
+    // delete vector store file
+
+    // create vector store file
+    if (page.grant === PageGrant.GRANT_PUBLIC && page.revision != null && isPopulated(page?.revision)) {
+      const file = await toFile(Readable.from(page.revision.body), `${page._id}.md`);
+      await this.client.uploadAndPoll([file]);
+    }
   }
 
 }

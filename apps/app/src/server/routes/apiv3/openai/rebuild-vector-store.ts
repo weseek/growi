@@ -28,7 +28,7 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
     async(req: Request, res: ApiV3Response) => {
 
       try {
-        await openaiService.rebuildVectorStore();
+        await openaiService.rebuildVectorStoreAll();
         return res.apiv3({});
 
       }
