@@ -55,16 +55,12 @@ export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolea
   );
 };
 
-export const mutateRecentlyUpdated = async(): Promise<void[]> => {
-  const mutations: Promise<void>[] = [];
-
+export const mutateRecentlyUpdated = async(): Promise<undefined> => {
   for (const key of cache.keys()) {
     if (key.includes('/pages/recent')) {
-      mutations.push(mutate(key));
+      mutate(key);
     }
   }
-
-  return Promise.all(mutations);
 };
 
 export const mutatePageList = async(): Promise<void[]> => {
