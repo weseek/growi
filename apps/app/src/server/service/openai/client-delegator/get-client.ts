@@ -1,20 +1,20 @@
-import { aiServiceType } from '~/interfaces/ai';
+import { OpenaiServiceType } from '~/interfaces/ai';
 
 import { AzureOpenaiClientDelegator } from './azure-openai-client-delegator';
 import type { IOpenaiClientDelegator } from './interfaces';
 import { OpenaiClientDelegator } from './openai-client-delegator';
 
 type GetDelegatorOptions = {
-  aiServiceType: aiServiceType;
+  openaiServiceType: OpenaiServiceType;
 }
-type Delegator<Opts = GetDelegatorOptions> = Opts extends { aiServiceType: 'openai' }
+type Delegator<Opts = GetDelegatorOptions> = Opts extends { openaiServiceType: 'openai' }
   ? OpenaiClientDelegator
-  : Opts extends { aiServiceType: 'azure-openai' }
+  : Opts extends { openaiServiceType: 'azure-openai' }
     ? AzureOpenaiClientDelegator
     : IOpenaiClientDelegator;
 
 export const getClient = (opts: GetDelegatorOptions): Delegator => {
-  if (opts.aiServiceType === aiServiceType.AZURE_OPENAI) {
+  if (opts.openaiServiceType === OpenaiServiceType.AZURE_OPENAI) {
     return new AzureOpenaiClientDelegator();
   }
   return new OpenaiClientDelegator();

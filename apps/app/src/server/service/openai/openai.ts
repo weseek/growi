@@ -23,8 +23,8 @@ class OpenaiService implements IOpenaiService {
   }
 
   private get client() {
-    const aiServiceType = configManager.getConfig('crowi', 'app:aiServiceType');
-    return getClient(aiServiceType);
+    const openaiServiceType = configManager.getConfig('crowi', 'app:openaiServiceType');
+    return getClient(openaiServiceType);
   }
 
   async rebuildVectorStore() {
