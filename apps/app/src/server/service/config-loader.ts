@@ -742,7 +742,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.BOOLEAN,
     default: false,
   },
-  AI_SERVICE_TYPE: {
+  OPENAI_SERVICE_TYPE: {
     ns: 'crowi',
     key: 'app:openaiServiceType',
     type: ValueType.STRING,
