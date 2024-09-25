@@ -6,10 +6,6 @@
 
 ## [v7.0.19](https://github.com/weseek/growi/compare/v7.0.18...v7.0.19) - 2024-09-12
 
-### 🚀 Improvement
-
-* imprv: Corrected wording on admin page (/admin/data-transfer) (#9098) @shironegi39
-
 ### 🐛 Bug Fixes
 
 * fix: Shared page is not displayed when skipping SSR (#9089) @miya
