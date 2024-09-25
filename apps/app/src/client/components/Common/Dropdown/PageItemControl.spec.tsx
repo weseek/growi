@@ -1,7 +1,8 @@
 import { type IPageInfoForOperation } from '@growi/core/dist/interfaces';
 import {
-  fireEvent, render, screen, within,
-} from '@testing-library/react';
+  fireEvent, screen, within,
+} from '@testing-library/dom';
+import { render } from '@testing-library/react';
 import { mock } from 'vitest-mock-extended';
 
 import { PageItemControl } from './PageItemControl';
