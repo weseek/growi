@@ -1,8 +1,6 @@
 import type { Tiktoken, TiktokenModel } from '@dqbd/tiktoken';
 import { encoding_for_model } from '@dqbd/tiktoken'; // eslint-disable-line
 import type { Root, Content, Heading } from 'mdast';
-import remarkStringify from 'remark-stringify';
-import { unified } from 'unified';
 
 /**
  * Interface representing a section
@@ -29,7 +27,9 @@ export async function splitMarkdownByTokens(
   const encoding: Tiktoken = encoding_for_model(model);
 
   // Dynamically import remark-parse
-  const { default: remarkParse } = await import('remark-parse');
+  const remarkParse = (await import('remark-parse')).default;
+  const remarkStringify = (await import('remark-stringify')).default;
+  const unified = (await import('unified')).unified;
 
   // Parse Markdown into AST
   const processor = unified().use(remarkParse);
