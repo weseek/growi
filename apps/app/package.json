@@ -63,6 +63,7 @@
     "@azure/identity": "^4.3.0",
     "@azure/storage-blob": "^12.16.0",
     "@browser-bunyan/console-formatted-stream": "^1.8.0",
+    "@dqbd/tiktoken": "^1.0.16",
     "@elastic/elasticsearch7": "npm:@elastic/elasticsearch@^7.17.0",
     "@elastic/elasticsearch8": "npm:@elastic/elasticsearch@^8.7.0",
     "@godaddy/terminus": "^4.9.0",
