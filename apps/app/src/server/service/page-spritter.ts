@@ -1,7 +1,7 @@
 import type { Tiktoken, TiktokenModel } from '@dqbd/tiktoken';
 import { encoding_for_model } from '@dqbd/tiktoken'; // eslint-disable-line
 import type { Root, Content, Heading } from 'mdast';
-import remarkParse from 'remark-parse';
+// import remarkParse from 'remark-parse';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 
@@ -21,14 +21,14 @@ interface Section {
  * @param maxTokens - The maximum number of tokens per section (default: 100)
  * @returns An array of split Markdown sections
  */
-export function splitMarkdownByTokens(
+export async function splitMarkdownByTokens(
     model: TiktokenModel,
     markdownContent: string,
     maxTokens = 100,
-): string[] {
+): Promise<string[]> {
   // Obtain encoding based on the model
   const encoding: Tiktoken = encoding_for_model(model);
-
+  const remarkParse = (await import('remark-parse')).default;
   // Parse Markdown into AST
   const processor = unified().use(remarkParse);
   const tree = processor.parse(markdownContent) as Root;
