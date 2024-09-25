@@ -7,8 +7,11 @@ import { toFile } from 'openai';
 
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
+import loggerFactory from '~/utils/logger';
 
 import OpenaiClient from './openai-client-delegator';
+
+const logger = loggerFactory('growi:service:openai');
 
 export interface IOpenaiService {
   rebuildVectorStoreAll(): Promise<void>;
@@ -49,18 +52,21 @@ class OpenaiService implements IOpenaiService {
   }
 
   async rebuildVectorStore(page: PageDocument) {
+
     // delete vector store file
     const files = await this.client.getFileList();
     files.data.forEach(async(file) => {
       if (file.filename === `${page._id}.md`) {
-        await this.client.deleteFile(file.id);
+        const res = await this.client.deleteFile(file.id);
+        logger.debug('delete vector store: ', res);
       }
     });
 
     // create vector store file
     if (page.grant === PageGrant.GRANT_PUBLIC && page.revision != null && isPopulated(page?.revision)) {
       const file = await toFile(Readable.from(page.revision.body), `${page._id}.md`);
-      await this.client.uploadAndPoll([file]);
+      const res = await this.client.uploadAndPoll([file]);
+      logger.debug('create vector store: ', res);
     }
   }
 
