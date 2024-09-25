@@ -50,6 +50,12 @@ class OpenaiService implements IOpenaiService {
 
   async rebuildVectorStore(page: PageDocument) {
     // delete vector store file
+    const files = await this.client.getFileList();
+    files.data.forEach(async(file) => {
+      if (file.filename === `${page._id}.md`) {
+        await this.client.deleteFile(file.id);
+      }
+    });
 
     // create vector store file
     if (page.grant === PageGrant.GRANT_PUBLIC && page.revision != null && isPopulated(page?.revision)) {

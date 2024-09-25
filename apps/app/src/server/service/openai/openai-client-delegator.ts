@@ -50,6 +50,10 @@ export default class OpenaiClient {
     }
   }
 
+  async getFileList(): Promise<OpenAI.Files.FileObjectsPage> {
+    return this.client.files.list();
+  }
+
   async getVectorStoreFiles(): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFilesPage> {
     return this.client.beta.vectorStores.files.list(this.openaiVectorStoreId);
   }
