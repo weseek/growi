@@ -382,7 +382,7 @@ class SecuritySetting extends React.Component {
                   <div className="dropdown">
                     <button
                       className={`btn btn-outline-secondary dropdown-toggle text-end col-12
-                            col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                            col-md-auto ${adminGeneralSecurityContainer.switchIsShowRestrictedByOwner}`}
                       type="button"
                       id="dropdownMenuButton"
                       data-bs-toggle="dropdown"
@@ -390,8 +390,8 @@ class SecuritySetting extends React.Component {
                       aria-expanded="true"
                     >
                       <span className="float-start">
-                        { t('security_settings.always_displayed')}
-                        { t('security_settings.always_not_displayed')}
+                        {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner === 'Displayed' && t('security_settings.always_displayed')}
+                        {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner === 'NotDisplayed' && t('security_settings.always_not_displayed')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -412,7 +412,7 @@ class SecuritySetting extends React.Component {
                   <div className="dropdown">
                     <button
                       className={`btn btn-outline-secondary dropdown-toggle text-end col-12
-                            col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
+                            col-md-auto ${adminGeneralSecurityContainer.switchIsShowRestrictedByGroup && 'disabled'}`}
                       type="button"
                       id="dropdownMenuButton"
                       data-bs-toggle="dropdown"
@@ -420,8 +420,8 @@ class SecuritySetting extends React.Component {
                       aria-expanded="true"
                     >
                       <span className="float-start">
-                        { t('security_settings.always_displayed')}
-                        { t('security_settings.always_not_displayed')}
+                        {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner === 'Displayed' && t('security_settings.always_displayed')}
+                        {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner === 'NotDisplayed' && t('security_settings.always_not_displayed')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
