@@ -27,7 +27,10 @@ export async function splitMarkdownByTokens(
 ): Promise<string[]> {
   // Obtain encoding based on the model
   const encoding: Tiktoken = encoding_for_model(model);
-  const remarkParse = (await import('remark-parse')).default;
+
+  // Dynamically import remark-parse
+  const { default: remarkParse } = await import('remark-parse');
+
   // Parse Markdown into AST
   const processor = unified().use(remarkParse);
   const tree = processor.parse(markdownContent) as Root;
