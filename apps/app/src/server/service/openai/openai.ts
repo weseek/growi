@@ -8,21 +8,23 @@ import { toFile } from 'openai';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 
-import OpenaiClient from './openai-client-delegator';
+import { getClient } from './client-delegator';
 
 export interface IOpenaiService {
   rebuildVectorStore(): Promise<void>;
 }
 class OpenaiService implements IOpenaiService {
 
-  private client: OpenaiClient;
-
   constructor() {
     const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
     if (!aiEnabled) {
       return;
     }
-    this.client = new OpenaiClient();
+  }
+
+  private get client() {
+    const aiServiceType = configManager.getConfig('crowi', 'app:aiServiceType');
+    return getClient(aiServiceType);
   }
 
   async rebuildVectorStore() {
