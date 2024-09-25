@@ -5,9 +5,11 @@ import { type Uploadable } from 'openai/uploads';
 import { aiServiceType as serviceType, aiServiceTypes } from '~/interfaces/ai';
 import { configManager } from '~/server/service/config-manager';
 
+type Client<isOpenai = boolean> = isOpenai extends true ? OpenAI : AzureOpenAI;
+
 export default class OpenaiClient {
 
-  private client: OpenAI | AzureOpenAI;
+  private client: Client<boolean>;
 
   private openaiVectorStoreId: string;
 
@@ -36,7 +38,7 @@ export default class OpenaiClient {
       this.openaiVectorStoreId = vectorStoreId;
 
       // initialize client
-      this.client = new OpenAI({ apiKey });
+      this.client = new OpenAI({ apiKey }) as Client<true>;
     }
 
     // Retrieve Azure OpenAI related values from environment variables
@@ -44,7 +46,7 @@ export default class OpenaiClient {
       const credential = new DefaultAzureCredential();
       const scope = 'https://cognitiveservices.azure.com/.default';
       const azureADTokenProvider = getBearerTokenProvider(credential, scope);
-      this.client = new AzureOpenAI({ azureADTokenProvider });
+      this.client = new AzureOpenAI({ azureADTokenProvider }) as Client<false>;
     }
   }
 
