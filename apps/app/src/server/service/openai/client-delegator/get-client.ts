@@ -25,6 +25,7 @@ export const getClient = <Opts extends GetDelegatorOptions>(opts: Opts): Delegat
   if (instance == null) {
     if (opts.openaiServiceType === OpenaiServiceType.AZURE_OPENAI) {
       instance = new AzureOpenaiClientDelegator();
+      return instance;
     }
     instance = new OpenaiClientDelegator();
   }
