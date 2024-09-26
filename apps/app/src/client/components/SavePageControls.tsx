@@ -2,9 +2,11 @@ import React, { useCallback, useState, useEffect } from 'react';
 
 import type EventEmitter from 'events';
 
+import { PageGrant } from '@growi/core';
 import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
+import { Disable } from 'react-disable';
 import {
   UncontrolledButtonDropdown, Button,
   DropdownToggle, DropdownMenu, DropdownItem, Modal,
@@ -17,7 +19,7 @@ import {
 import { useEditorMode } from '~/stores-universal/ui';
 import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useSWRxCurrentPage, useCurrentPagePath } from '~/stores/page';
-import { useIsDeviceLargerThanMd } from '~/stores/ui';
+import { useIsDeviceLargerThanMd, useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { GrantSelector } from './SavePageControls/GrantSelector';
@@ -38,6 +40,7 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
   const { t } = useTranslation();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const [isSavePageModalShown, setIsSavePageModalShown] = useState<boolean>(false);
+  const { data: selectedGrant } = useSelectedGrant();
 
   const { slackChannels, isSlackEnabled, isDeviceLargerThanMd } = props;
 
@@ -85,9 +88,11 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
             <>
               <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
               <DropdownMenu container="body" end>
-                <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
-                  {labelOverwriteScopes}
-                </DropdownItem>
+                <Disable disabled={selectedGrant?.grant === PageGrant.GRANT_RESTRICTED}>
+                  <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
+                    {labelOverwriteScopes}
+                  </DropdownItem>
+                </Disable>
                 <DropdownItem onClick={saveAndMakeWip}>
                   {labelUnpublishPage}
                 </DropdownItem>
