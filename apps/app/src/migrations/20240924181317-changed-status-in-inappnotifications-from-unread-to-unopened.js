@@ -1,3 +1,4 @@
+import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:changed-status-in-inappnotifications-from-unread-to-unopened');
@@ -6,13 +7,13 @@ module.exports = {
   async up(db) {
     logger.info('Apply migration');
 
-    const unreadInAppnotifications = await await db.collection('inappnotifications');
+    const unreadInAppnotifications = await db.collection('inappnotifications');
     await unreadInAppnotifications.updateMany(
-      { status: { $eq: 'UNREAD' } },
+      { status: { $eq: InAppNotificationStatuses.STATUS_UNREAD } },
       [
         {
           $set: {
-            status: 'UNOPENED',
+            status: InAppNotificationStatuses.STATUS_UNOPENED,
           },
         },
       ],
