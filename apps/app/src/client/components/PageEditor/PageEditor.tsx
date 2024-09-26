@@ -37,6 +37,7 @@ import {
   useCurrentIndentSize,
   useEditingMarkdown,
   useWaitingSaveProcessing,
+  useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
 import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
@@ -109,6 +110,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
+  const { mutate: mutateUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
   const isYjsEnabled = useIsYjsEnabled();
@@ -162,7 +164,14 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(codeMirrorEditor?.getDoc() ?? '');
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
-  })), []);
+
+    if (!isYjsEnabled && currentPage != null && currentPage.revision?.body != null && value !== currentPage.revision.body) {
+      mutateUnsavedWarning(true);
+      return;
+    }
+
+    mutateUnsavedWarning(false);
+  })), [currentPage, isYjsEnabled, mutateUnsavedWarning]);
 
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
