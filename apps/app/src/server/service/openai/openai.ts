@@ -9,7 +9,7 @@ import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
-import OpenaiClient from './openai-client-delegator';
+import { getClient } from './client-delegator';
 
 const logger = loggerFactory('growi:service:openai');
 
@@ -19,14 +19,16 @@ export interface IOpenaiService {
 }
 class OpenaiService implements IOpenaiService {
 
-  private client: OpenaiClient;
-
   constructor() {
     const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
     if (!aiEnabled) {
       return;
     }
-    this.client = new OpenaiClient();
+  }
+
+  private get client() {
+    const openaiServiceType = configManager.getConfig('crowi', 'app:openaiServiceType');
+    return getClient({ openaiServiceType });
   }
 
   async rebuildVectorStoreAll() {
