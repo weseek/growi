@@ -36,6 +36,10 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.vectorStores.files.del(this.openaiVectorStoreId, fileId);
   }
 
+  async getFileList(): Promise<OpenAI.Files.FileObjectsPage> {
+    return this.client.files.list();
+  }
+
   async deleteFile(fileId: string): Promise<OpenAI.Files.FileDeleted> {
     return this.client.files.del(fileId);
   }
