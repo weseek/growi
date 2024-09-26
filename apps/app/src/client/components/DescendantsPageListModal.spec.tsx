@@ -1,9 +1,24 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { SWRConfig } from 'swr';
 
 import { DescendantsPageListModal } from './DescendantsPageListModal';
 
+let mockMatchMedia;
+
 const mockClose = vi.hoisted(() => vi.fn());
-const useIsDeviceLargerThanLg = vi.hoisted(() => vi.fn().mockReturnValue({ data: true }));
+
+const setMatchMedia = (matches) => {
+  mockMatchMedia.mockImplementationOnce(query => ({
+    matches,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  }));
+};
 
 vi.mock('next/router', () => ({
   useRouter: () => ({
@@ -21,11 +36,27 @@ vi.mock('~/stores/modal', () => ({
   }),
 }));
 
-vi.mock('~/stores/ui', () => ({
-  useIsDeviceLargerThanLg,
-}));
-
 describe('DescendantsPageListModal.tsx', () => {
+  beforeEach(() => {
+    mockMatchMedia = vi.fn();
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      enumerable: true,
+      value: mockMatchMedia,
+    });
+
+    // default settings
+    mockMatchMedia.mockImplementation(query => ({
+      matches: true, // set true
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+  });
 
   it('should render the modal when isOpened is true', () => {
     render(<DescendantsPageListModal />);
@@ -39,32 +70,51 @@ describe('DescendantsPageListModal.tsx', () => {
     expect(mockClose).toHaveBeenCalled();
   });
 
-  describe('when device is larger than lg', () => {
+  it('should render CustomNavTab responsively', () => {
+    const { unmount } = render(
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <DescendantsPageListModal />
+      </SWRConfig>,
+    );
 
-    it('should render CustomNavTab', () => {
-      render(<DescendantsPageListModal />);
-      expect(screen.getByTestId('custom-nav-tab')).not.toBeNull();
-    });
+    expect(screen.getByTestId('custom-nav-tab')).not.toBeNull();
 
-    it('should not render CustomNavDropdown', () => {
-      render(<DescendantsPageListModal />);
-      expect(screen.queryByTestId('custom-nav-dropdown')).toBeNull();
-    });
+    // The rendered component to be unmounted
+    unmount();
+
+    // Set isDeviceLargerThanLg to false by simulating a smaller screen size
+    setMatchMedia(false);
+
+    render(
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <DescendantsPageListModal />
+      </SWRConfig>,
+    );
+
+    expect(screen.queryByTestId('custom-nav-tab')).toBeNull();
   });
 
-  describe('when device is smaller than lg', () => {
-    beforeEach(() => {
-      useIsDeviceLargerThanLg.mockReturnValue({ data: false });
-    });
+  it('should render CustomNavDropdown responsively', () => {
+    const { unmount } = render(
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <DescendantsPageListModal />
+      </SWRConfig>,
+    );
 
-    it('should render CustomNavDropdown on devices smaller than lg', () => {
-      render(<DescendantsPageListModal />);
-      expect(screen.getByTestId('custom-nav-dropdown')).not.toBeNull();
-    });
+    expect(screen.queryByTestId('custom-nav-dropdown')).toBeNull();
 
-    it('should not render CustomNavTab', () => {
-      render(<DescendantsPageListModal />);
-      expect(screen.queryByTestId('custom-nav-tab')).toBeNull();
-    });
+    // The rendered component to be unmounted
+    unmount();
+
+    // Set isDeviceLargerThanLg to false by simulating a smaller screen size
+    setMatchMedia(false);
+
+    render(
+      <SWRConfig value={{ provider: () => new Map() }}>
+        <DescendantsPageListModal />
+      </SWRConfig>,
+    );
+
+    expect(screen.getByTestId('custom-nav-dropdown')).not.toBeNull();
   });
 });
