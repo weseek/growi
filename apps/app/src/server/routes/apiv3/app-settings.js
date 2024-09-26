@@ -190,10 +190,26 @@ module.exports = (crowi) => {
       body('gcsBucket').trim(),
       body('gcsUploadNamespace').trim(),
       body('gcsReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
-      body('s3Region').trim().if(value => value !== '').matches(/^[a-z]+-[a-z]+-\d+$/)
-        .withMessage((value, { req }) => req.t('validation.aws_region')),
-      body('s3CustomEndpoint').trim().if(value => value !== '').matches(/^(https?:\/\/[^/]+|)$/)
-        .withMessage((value, { req }) => req.t('validation.aws_custom_endpoint')),
+      body('s3Region')
+        .trim()
+        .if(value => value !== '')
+        .custom(async(value) => {
+          const { t } = await getTranslation();
+          if (!/^[a-z]+-[a-z]+-\d+$/.test(value)) {
+            throw new Error(t('validation.aws_region'));
+          }
+          return true;
+        }),
+      body('s3CustomEndpoint')
+        .trim()
+        .if(value => value !== '')
+        .custom(async(value) => {
+          const { t } = await getTranslation();
+          if (!/^(https?:\/\/[^/]+|)$/.test(value)) {
+            throw new Error(t('validation.aws_custom_endpoint'));
+          }
+          return true;
+        }),
       body('s3Bucket').trim(),
       body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('s3SecretAccessKey').trim(),
