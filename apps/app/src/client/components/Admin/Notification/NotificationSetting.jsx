@@ -14,7 +14,7 @@ import { toastError } from '~/client/util/toastr';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
-import { CustomNavTab } from '../../CustomNavigation/CustomNav';
+import CustomNav from '../../CustomNavigation/CustomNav';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
@@ -155,7 +155,13 @@ function NotificationSetting(props) {
 
       <h2 className="admin-setting-header mt-5">{t('notification_settings.notification_settings')}</h2>
 
-      <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom />
+      <CustomNav
+        activeTab={activeTab}
+        navTabMapping={navTabMapping}
+        onNavSelected={switchActiveTab}
+        hideBorderBottom
+        breakpointToSwitchDropdownDown="md"
+      />
 
       <TabContent activeTab={activeTab} className="p-5">
         <TabPane tabId="user_trigger_notification">

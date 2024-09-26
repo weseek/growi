@@ -6,6 +6,7 @@ import { useIsNotFound } from '~/stores/page';
 
 import styles from './PagePathNav.module.scss';
 
+const moduleClass = styles['grw-page-path-nav-layout'] ?? '';
 
 export type PagePathNavLayoutProps = {
   className?: string,
@@ -40,7 +41,10 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
   const copyDropdownId = `copydropdown-${pageId}`;
 
   return (
-    <div className={className} style={{ maxWidth }}>
+    <div
+      className={`${className} ${moduleClass}`}
+      style={{ maxWidth }}
+    >
       <span className={`${formerLinkClassName ?? ''} ${styles['grw-former-link']}`}>{formerLink}</span>
       <div className="d-flex align-items-center">
         <h1 className={`m-0 ${latterLinkClassName}`}>
@@ -51,9 +55,11 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
             { isWipPage && (
               <span className="badge text-bg-secondary ms-1 me-1">WIP</span>
             )}
-            <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
-              <span className="material-symbols-outlined">content_paste</span>
-            </CopyDropdown>
+            <span className=" grw-page-path-nav-copydropdown">
+              <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
+                <span className="material-symbols-outlined">content_paste</span>
+              </CopyDropdown>
+            </span>
           </div>
         ) }
       </div>

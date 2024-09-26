@@ -31,11 +31,6 @@
     "test": {
       "dependsOn": ["@growi/slack#dev"],
       "outputLogs": "new-only"
-    },
-
-    "version": {
-      "cache": false,
-      "dependsOn": ["^version", "//#version"]
     }
 
   }
