@@ -6,6 +6,7 @@ import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import { toFile } from 'openai';
 
+import { OpenaiServiceTypes } from '~/interfaces/ai';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
@@ -78,7 +79,9 @@ export const getOpenaiService = (): IOpenaiService | undefined => {
     return instance;
   }
 
-  if (configManager.getConfig('crowi', 'app:aiEnabled')) {
+  const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
+  const openaiServiceType = configManager.getConfig('crowi', 'app:openaiServiceType');
+  if (aiEnabled && openaiServiceType != null && OpenaiServiceTypes.includes(openaiServiceType)) {
     instance = new OpenaiService();
     return instance;
   }
