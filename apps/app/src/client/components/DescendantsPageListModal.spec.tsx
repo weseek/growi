@@ -54,6 +54,7 @@ vi.mock('~/stores/modal', () => ({
   }),
 }));
 
+// Mocking getComputedStyle to simulate the values of Bootstrap's CSS
 Object.defineProperty(window, 'getComputedStyle', {
   value: () => ({
     getPropertyValue: (prop: string) => (prop === '--bs-breakpoint-lg' ? '992px' : ''),
