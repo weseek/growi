@@ -27,8 +27,8 @@ export const CalloutViewer = React.memo((props: CalloutViewerProps): JSX.Element
     <div className={`${moduleClass} callout-viewer`}>
       <div className={`callout callout-${githubCallout[name].title.toLowerCase()}`}>
         <div className="callout-indicator">
-          {/* eslint-disable-next-line react/no-danger */}
-          <div className="callout-hint" dangerouslySetInnerHTML={{ __html: githubCallout[name].hint ?? '' }}>
+          <div className="callout-hint">
+            {githubCallout[name].hint}
           </div>
           <div className="callout-title">
             {githubCallout[name].title}
