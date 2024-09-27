@@ -19,7 +19,7 @@ import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificati
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import { configManager } from '~/server/service/config-manager';
-import { openaiService } from '~/server/service/openai/openai';
+import { getOpenaiService } from '~/server/service/openai/openai';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import { getYjsService } from '~/server/service/yjs';
@@ -121,7 +121,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
     if (aiEnabled) {
       try {
-        await openaiService.rebuildVectorStore(updatedPage);
+        const openaiService = getOpenaiService();
+        await openaiService?.rebuildVectorStore(updatedPage);
       }
       catch (err) {
         logger.error('Rebuild vector store failed', err);

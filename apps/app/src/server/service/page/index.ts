@@ -43,7 +43,7 @@ import {
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import type { UserGroupDocument } from '~/server/models/user-group';
-import { openaiService } from '~/server/service/openai/openai';
+import { getOpenaiService } from '~/server/service/openai/openai';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
 import { generalXssFilter } from '~/services/general-xss-filter';
@@ -1180,7 +1180,8 @@ class PageService implements IPageService {
       );
 
       // Do not await because communication with OpenAI takes time
-      openaiService.createVectorStoreFile([duplicatedTarget]);
+      const openaiService = getOpenaiService();
+      openaiService?.createVectorStoreFile([duplicatedTarget]);
     }
     this.pageEvent.emit('duplicate', page, user);
 
@@ -1416,7 +1417,8 @@ class PageService implements IPageService {
       .find({ _id: { $in: duplicatedPageIds }, grant: PageGrant.GRANT_PUBLIC }).populate('revision') as PageDocument[];
 
     // Do not await because communication with OpenAI takes time
-    openaiService.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
+    const openaiService = getOpenaiService();
+    openaiService?.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
   }
 
   private async duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix) {

@@ -72,4 +72,16 @@ class OpenaiService implements IOpenaiService {
 
 }
 
-export const openaiService = new OpenaiService();
+let instance: OpenaiService;
+export const getOpenaiService = (): IOpenaiService | undefined => {
+  if (instance != null) {
+    return instance;
+  }
+
+  if (configManager.getConfig('crowi', 'app:aiEnabled')) {
+    instance = new OpenaiService();
+    return instance;
+  }
+
+  return;
+};
