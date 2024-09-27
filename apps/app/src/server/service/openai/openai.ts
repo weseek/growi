@@ -1,5 +1,6 @@
 import { Readable } from 'stream';
 
+import type { IRevisionHasId } from '@growi/core';
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
@@ -14,34 +15,24 @@ import { getClient } from './client-delegator';
 const logger = loggerFactory('growi:service:openai');
 
 export interface IOpenaiService {
+  createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
   rebuildVectorStore(page: PageDocument): Promise<void>;
 }
 class OpenaiService implements IOpenaiService {
-
-  constructor() {
-    const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
-    if (!aiEnabled) {
-      return;
-    }
-  }
 
   private get client() {
     const openaiServiceType = configManager.getConfig('crowi', 'app:openaiServiceType');
     return getClient({ openaiServiceType });
   }
 
-  async rebuildVectorStoreAll() {
-    // TODO: https://redmine.weseek.co.jp/issues/154364
-
-    // Create all public pages VectorStoreFile
-    const page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
-    const allPublicPages = await page.find({ grant: PageGrant.GRANT_PUBLIC }).populate('revision');
-
-    const filesPromise = allPublicPages
-      .filter(page => page.revision?.body != null && page.revision.body.length > 0)
+  async createVectorStoreFile(pages: PageDocument[]): Promise<void> {
+    const filesPromise = pages
+      .filter(page => page.grant === PageGrant.GRANT_PUBLIC && page.revision != null && isPopulated(page.revision) && page.revision.body.length > 0)
       .map(async(page) => {
-        const file = await toFile(Readable.from(page.revision.body), `${page._id}.md`);
+        // The above filters ensure that revisions are populated
+        const revision = page?.revision as IRevisionHasId;
+        const file = await toFile(Readable.from(revision.body), `${page._id}.md`);
         return file;
       });
 
@@ -50,7 +41,19 @@ class OpenaiService implements IOpenaiService {
     }
 
     const files = await Promise.all(filesPromise);
-    await this.client.uploadAndPoll(files);
+
+    const res = await this.client.uploadAndPoll(files);
+    logger.debug('create vector store file: ', res);
+  }
+
+  async rebuildVectorStoreAll() {
+    // TODO: https://redmine.weseek.co.jp/issues/154364
+
+    // Create all public pages VectorStoreFile
+    const page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+    const allPublicPages = await page.find({ grant: PageGrant.GRANT_PUBLIC }).populate('revision') as PageDocument[];
+
+    await this.createVectorStoreFile(allPublicPages);
   }
 
   async rebuildVectorStore(page: PageDocument) {
@@ -60,16 +63,11 @@ class OpenaiService implements IOpenaiService {
     files.data.forEach(async(file) => {
       if (file.filename === `${page._id}.md`) {
         const res = await this.client.deleteFile(file.id);
-        logger.debug('delete vector store: ', res);
+        logger.debug('delete vector store file: ', res);
       }
     });
 
-    // create vector store file
-    if (page.grant === PageGrant.GRANT_PUBLIC && page.revision != null && isPopulated(page.revision)) {
-      const file = await toFile(Readable.from(page.revision.body), `${page._id}.md`);
-      const res = await this.client.uploadAndPoll([file]);
-      logger.debug('create vector store: ', res);
-    }
+    await this.createVectorStoreFile([page]);
   }
 
 }
