@@ -203,17 +203,9 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
               const isOldestRevision = revision === oldestRevision;
               const latestRevision = revisions[0];
 
-              const formattedRevisionCreatedAt = new Date(revision.createdAt);
-
-              const isBrokenRevision = formattedRevisionCreatedAt < REVISION_BROKEN_BEFORE;
-
               // set 'true' if undefined for backward compatibility
               const hasDiff = revision.hasDiffToPrev !== false;
-
-              if (!isBrokenRevision) {
-                return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
-              }
-              return;
+              return renderRow(revision, previousRevision, latestRevision, isOldestRevision, hasDiff);
             })
           }
         </tbody>
