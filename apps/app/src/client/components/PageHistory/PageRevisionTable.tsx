@@ -21,8 +21,6 @@ type PageRevisionTableProps = {
   currentPagePath: string
 }
 
-const REVISION_BROKEN_BEFORE = new Date('2023-06-07T23:45:20.348+0000');
-
 export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element => {
   const { t } = useTranslation();
 
