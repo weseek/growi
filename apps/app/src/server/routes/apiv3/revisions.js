@@ -1,7 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
-import mongoose, { connection } from 'mongoose';
+import { connection } from 'mongoose';
 
 import { Revision } from '~/server/models/revision';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
