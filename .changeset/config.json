@@ -15,6 +15,7 @@
     "@growi/app",
     "@growi/slackbot-proxy",
     "@growi/custom-icons",
+    "@growi/page-split",
     "@growi/editor",
     "@growi/presentation",
     "@growi/preset-*",

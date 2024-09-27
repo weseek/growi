@@ -1,0 +1,33 @@
+{
+  "name": "@growi/page-split",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": "true",
+  "keywords": [
+    "unified",
+    "remark",
+    "remark-plugin",
+    "plugin",
+    "mdast",
+    "markdown"
+  ],
+  "type": "module",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "clean": "shx rm -rf dist",
+    "dev": "vite build --mode dev",
+    "watch": "yarn dev -w --emptyOutDir=false",
+    "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
+    "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
+    "lint:typecheck": "tsc",
+    "lint": "run-p lint:*"
+  },
+  "dependencies": {
+    "remark-parse": "^11.0.0"
+  }
+}

@@ -220,6 +220,7 @@
   "devDependencies": {
     "@growi/core-styles": "link:../../packages/core-styles",
     "@growi/custom-icons": "link:../../packages/custom-icons",
+    "@growi/page-split": "link:../../packages/page-split",
     "@growi/editor": "link:../../packages/editor",
     "@growi/ui": "link:../../packages/ui",
     "@handsontable/react": "=2.1.0",
