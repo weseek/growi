@@ -62,11 +62,16 @@ module.exports = (crowi) => {
   }
 
   router.post('/', checkPassportStrategyMiddleware, addActivity, async(req, res) => {
+    const validEmailRegexp = new RegExp(/^[\w+\-.]+@[a-z\d\-.]+\.[a-z]+$/, 'i');
     const { email } = req.body;
     const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
     try {
+      if (!validEmailRegexp.test(email.toString())) {
+        throw new Error('invalid email format.');
+      }
+
       const user = await User.findOne({ email });
 
       // when the user is not found or active
