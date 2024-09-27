@@ -7,8 +7,9 @@ import {
   EditorView,
 } from '@codemirror/view';
 
-import type {
-  EditorSettings, KeyMapMode, EditorTheme,
+import {
+  type EditorSettings, type KeyMapMode, type EditorTheme,
+  PasteMode,
 } from '../../consts';
 import type { UseCodeMirrorEditor } from '../services';
 import {
@@ -108,7 +109,7 @@ export const useEditorSettings = (
         return;
       }
 
-      if (editorSetings?.pasteMode !== 'file' && event.clipboardData.types.includes('text/plain')) {
+      if (editorSetings?.pasteMode !== PasteMode.file && event.clipboardData.types.includes('text/plain')) {
 
         const textData = event.clipboardData.getData('text/plain');
 
@@ -118,7 +119,7 @@ export const useEditorSettings = (
         codeMirrorEditor?.replaceText(adjusted);
       }
 
-      if (editorSetings?.pasteMode !== 'text' && onUpload != null && event.clipboardData.types.includes('Files')) {
+      if (editorSetings?.pasteMode !== PasteMode.text && onUpload != null && event.clipboardData.types.includes('Files')) {
         onUpload(Array.from(event.clipboardData.files));
       }
 
