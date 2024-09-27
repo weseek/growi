@@ -118,15 +118,12 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     }
 
     // Rebuild vector store file
-    const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
-    if (aiEnabled) {
-      try {
-        const openaiService = getOpenaiService();
-        await openaiService?.rebuildVectorStore(updatedPage);
-      }
-      catch (err) {
-        logger.error('Rebuild vector store failed', err);
-      }
+    try {
+      const openaiService = getOpenaiService();
+      await openaiService?.rebuildVectorStore(updatedPage);
+    }
+    catch (err) {
+      logger.error('Rebuild vector store failed', err);
     }
   }
 
