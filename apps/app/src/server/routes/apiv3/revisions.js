@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
+import mongoose, { connection } from 'mongoose';
 
 import { Revision } from '~/server/models/revision';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
@@ -131,6 +132,16 @@ module.exports = (crowi) => {
 
     try {
       const page = await Page.findOne({ _id: pageId });
+
+      const fileName = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js';
+      // const Migration = mongoose.models.Migration;
+      const Migration = connection.collection('migrations');
+      const migration = await Migration.findOne({ fileName });
+      const appliedAt = migration.appliedAt;
+
+      console.log(migration);
+      console.log(appliedAt);
+
       const queryOpts = {
         offset,
         sort: { createdAt: -1 },
@@ -153,6 +164,15 @@ module.exports = (crowi) => {
           doc.author = serializeUserSecurely(doc.author);
         }
       });
+
+      const isNotBrokenRevision = (doc) => {
+        const formattedRevisionCreatedAt = new Date(doc.createdAt);
+        const revisionBrokenBefore = new Date(appliedAt);
+
+        return formattedRevisionCreatedAt > revisionBrokenBefore;
+      };
+
+      paginateResult.docs.filter(isNotBrokenRevision);
 
       const result = {
         revisions: paginateResult.docs,
