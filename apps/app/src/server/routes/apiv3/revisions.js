@@ -134,13 +134,9 @@ module.exports = (crowi) => {
       const page = await Page.findOne({ _id: pageId });
 
       const fileName = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js';
-      // const Migration = mongoose.models.Migration;
-      const Migration = connection.collection('migrations');
-      const migration = await Migration.findOne({ fileName });
+      const migrationCollection = connection.collection('migrations');
+      const migration = await migrationCollection.findOne({ fileName });
       const appliedAt = migration.appliedAt;
-
-      console.log(migration);
-      console.log(appliedAt);
 
       const queryOpts = {
         offset,
@@ -172,10 +168,10 @@ module.exports = (crowi) => {
         return formattedRevisionCreatedAt > revisionBrokenBefore;
       };
 
-      paginateResult.docs.filter(isNotBrokenRevision);
+      const revisions = paginateResult.docs.filter(isNotBrokenRevision);
 
       const result = {
-        revisions: paginateResult.docs,
+        revisions,
         totalCount: paginateResult.totalDocs,
         offset: paginateResult.offset,
       };
