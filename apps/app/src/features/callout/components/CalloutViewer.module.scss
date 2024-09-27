@@ -24,19 +24,50 @@
 .callout-viewer :global{
 
   .callout {
-    --calloutAccent: var(--callout-accent, var(--callout-accent-note));
-    --calloutHeaderFontWeight: var(--callout-header-font-weight, 500);
     padding: 0.5rem 1rem;
     margin: 1rem 0rem;
     color: inherit;
-    border-left: .25em solid var(--calloutAccent);
   }
 
   .callout-indicator {
     display: flex;
     margin-bottom: 16px;
     line-height: 1;
-    color: var(--calloutAccent);
+  }
+
+  .callout-note {
+    .callout-indicator {
+      color: var(--callout-accent-note);
+    }
+    border-left: .25em solid var(--callout-accent-note);
+  }
+
+  .callout-tip {
+    .callout-indicator {
+      color: var(--callout-accent-tip);
+    }
+    border-left: .25em solid var(--callout-accent-tip);
+  }
+
+  .callout-warning {
+    .callout-indicator {
+      color: var(--callout-accent-warning);
+    }
+    border-left:.25em solid var(--callout-accent-warning);
+  }
+
+  .callout-caution {
+    .callout-indicator {
+      color: var(--callout-accent-caution);
+    }
+    border-left:.25em solid var(--callout-accent-caution);
+  }
+
+  .callout-important {
+    .callout-indicator {
+      color: var(--callout-accent-important);
+    }
+    border-left:.25em solid var(--callout-accent-important);
   }
 
   .callout-hint > svg {
@@ -56,20 +87,5 @@
     margin-block-end: 0;
   }
 
-  .callout-tip {
-    --callout-accent: var(--callout-accent-tip);
-  }
-
-  .callout-warning {
-    --callout-accent: var(--callout-accent-warning);
-  }
-
-  .callout-caution {
-    --callout-accent: var(--callout-accent-caution);
-  }
-
-  .callout-important {
-    --callout-accent: var(--callout-accent-important);
-  }
 
 }
