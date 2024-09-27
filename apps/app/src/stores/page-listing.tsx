@@ -61,6 +61,7 @@ export const mutateRecentlyUpdated = async(): Promise<undefined> => {
       mutate(key);
     }
   }
+  return;
 };
 
 export const mutatePageList = async(): Promise<void[]> => {
