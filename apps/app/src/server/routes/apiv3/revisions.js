@@ -15,6 +15,8 @@ const { query, param } = require('express-validator');
 
 const router = express.Router();
 
+const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js';
+
 /**
  * @swagger
  *  tags:
@@ -133,9 +135,8 @@ module.exports = (crowi) => {
     try {
       const page = await Page.findOne({ _id: pageId });
 
-      const fileName = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js';
       const migrationCollection = connection.collection('migrations');
-      const migration = await migrationCollection.findOne({ fileName });
+      const migration = await migrationCollection.findOne({ MIGRATION_FILE_NAME });
       const appliedAt = migration.appliedAt;
 
       const queryOpts = {
