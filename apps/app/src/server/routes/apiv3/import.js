@@ -268,7 +268,7 @@ export default function route(crowi) {
     const importSettingsMap = {};
     fileStatsToImport.forEach(({ fileName, collectionName }) => {
       // instanciate GrowiArchiveImportOption
-      /** @type {GrowiArchiveImportOption} */
+      /** @type {import('~/models/admin/growi-archive-import-option').GrowiArchiveImportOption} */
       const option = options.find(opt => opt.collectionName === collectionName);
 
       // generate options

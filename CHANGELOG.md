@@ -1,8 +1,75 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.17...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.20...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.20](https://github.com/weseek/growi/compare/v7.0.19...v7.0.20) - 2024-09-25
+
+### 🚀 Improvement
+
+* imprv: The color of the dropdown list when it is activated (#9102) @WNomunomu
+* imprv: PageTitleHeader max-width (#9166) @yuki-takei
+* imprv: Documentation URL for g2gtransfer (#9157) @yuki-takei
+* imprv: Corrected wording on admin page (/admin/data-transfer) (#9106) @miya
+* imprv: Add hover-activated clipboard copy button with icon (#9095) @reiji-h
+
+### 🐛 Bug Fixes
+
+* fix: Make PageAccessoriesModal responsive (#9171) @moekumasaka
+* fix: PageControls unexpectedly move in response to opening and closing the sidebar (#9094) @WNomunomu
+* fix: Make CustomNavTab responsive (#9123) @moekumasaka
+
+### 🧰 Maintenance
+
+* ci(deps): bump rollup from 4.22.0 to 4.22.4 (#9160) @dependabot
+* ci(deps): bump google-github-actions/setup-gcloud from 1 to 2 (#9153) @dependabot
+* ci(deps): bump softprops/action-gh-release from 1 to 2 (#9152) @dependabot
+* support: Improve vitest environment (#9144) @yuki-takei
+* ci(deps): bump next from 14.1.3 to 14.2.13 (#9154) @dependabot
+* support: Upgrade @testing-library/react (#9141) @yuki-takei
+* support: Update logo image in README.md for the official docker image (#9139) @satof3
+* ci(deps-dev): bump vite from 5.2.9 to 5.2.14 (#9134) @dependabot
+* ci(deps): bump myrotvorets/info-from-package-json-action from 1.2.0 to 2.0.1 (#9129) @dependabot
+* ci(deps): bump stefanzweifel/git-auto-commit-action from 4 to 5 (#9128) @dependabot
+* ci(deps): bump nodemailer from 6.9.14 to 6.9.15 (#9075) @dependabot
+* ci(deps): bump docker/setup-buildx-action from 2 to 3 (#8207) @dependabot
+* ci(deps): bump jose from 4.11.4 to 4.15.9 (#9114) @dependabot
+* ci(deps): bump express from 4.19.2 to 4.20.0 (#9110) @dependabot
+* ci(deps): bump body-parser from 1.20.2 to 1.20.3 (#9109) @dependabot
+
+## [v7.0.19](https://github.com/weseek/growi/compare/v7.0.18...v7.0.19) - 2024-09-12
+
+### 🐛 Bug Fixes
+
+* fix: Shared page is not displayed when skipping SSR (#9089) @miya
+* fix: The grant of pages can be changed via api even if restricted (#9087) @WNomunomu
+* fix: Updated content is not reflected on the View screen even after refreshing the page (#9086) @miya
+* fix: Removing comment doesn't work (#9083) @yuki-takei
+
+## [v7.0.18](https://github.com/weseek/growi/compare/v7.0.17...v7.0.18) - 2024-09-09
+
+### 🚀 Improvement
+
+* imprv: Prevent looping to update a hook for TrashPageAlert (#9066) @yuki-takei
+* imprv: Display page tree in page select modal with scrollbar (#9023) @kazutoweseek
+
+### 🐛 Bug Fixes
+
+* fix: issue that material symbols icons are not displayed in ReplyComments component (#9076) @WNomunomu
+* fix: Unable to navigate to the data transfer page (#9071) @miya
+* fix: Page content does not update when switching revisions (#9072) @miya
+* fix: Supress rendering too many invisible DropdownMenu components (#9073) @yuki-takei
+* fix: Return error when grant is string for PUT /_api/v3/page (#9069) @arafubeatbox
+* fix: Scrolling may not occurs when clicking on the edit button next to the header (#9043) @reiji-h
+* fix: API v3 Page update (#9053) @maeshinshin
+* fix: Input text becomes empty when opening the ReadOnlyEditor (#9059) @miya
+* fix: Show pages with grants that are set to be visible in security settings on RecentChanges and PageTree as well (#9044) @miya
+
+### 🧰 Maintenance
+
+* support: Omit Cypress (#9065) @miya
+* ci(deps): bump unzip-stream from 0.3.1 to 0.3.2 (#9049) @dependabot
 
 ## [v7.0.17](https://github.com/weseek/growi/compare/v7.0.16...v7.0.17) - 2024-08-26
 

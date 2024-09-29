@@ -1,7 +1,7 @@
 import type { PhrasingContent } from 'mdast';
 import type { Parent } from 'unist';
 
-import { DirectiveType } from './consts.js';
+import type { DirectiveType } from './consts.js';
 
 
 type DirectiveAttributes = Record<string, string>

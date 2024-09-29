@@ -93,8 +93,12 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
       onDeleteCommentAfterOperation();
     }
     catch (error: unknown) {
-      setErrorMessageOnDelete(error as string);
-      toastError(`error: ${error}`);
+      const message = error instanceof Error
+        ? error.message
+        : (error as any).toString();
+
+      setErrorMessageOnDelete(message);
+      toastError(message);
     }
   }, [commentToBeDeleted, onDeleteCommentAfterOperation]);
 

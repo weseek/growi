@@ -49,8 +49,9 @@
       "cache": false,
       "persistent": true
     },
-    "dev:ci": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
+
+    "launch-dev:ci": {
+      "dependsOn": ["^dev", "dev:styles-prebuilt"],
       "cache": false
     },
 

@@ -248,6 +248,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
+  const revisionId = pageWithMeta?.data.revision?._id;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPathname(props.currentPathname);
@@ -280,7 +281,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       return;
     }
 
-    if (currentPageId != null && !props.isNotFound) {
+    if (currentPageId != null && revisionId != null && !props.isNotFound) {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
         mutateEditingMarkdown(pageData?.revision?.body);
@@ -291,7 +292,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [currentPageId, mutateCurrentPage, mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
+  }, [
+    revisionId, currentPageId, mutateCurrentPage,
+    mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR,
+  ]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -311,8 +315,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   useEffect(() => {
-    mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
-  }, [mutateRemoteRevisionId, pageWithMeta?.data.revision?._id]);
+    mutateRemoteRevisionId(revisionId);
+  }, [mutateRemoteRevisionId, revisionId]);
 
   useEffect(() => {
     mutateCurrentPageId(pageId ?? null);

@@ -1,37 +1,55 @@
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event';
+import { type IPageInfoForOperation } from '@growi/core/dist/interfaces';
+import {
+  fireEvent, screen, within,
+} from '@testing-library/dom';
+import { render } from '@testing-library/react';
+import { mock } from 'vitest-mock-extended';
 
 import { PageItemControl } from './PageItemControl';
 
 
+// mock for isIPageInfoForOperation
+
+const mocks = vi.hoisted(() => ({
+  isIPageInfoForOperationMock: vi.fn(),
+}));
+
+vi.mock('@growi/core/dist/interfaces', () => ({
+  isIPageInfoForOperation: mocks.isIPageInfoForOperationMock,
+}));
+
+
 describe('PageItemControl.tsx', () => {
-  it('Should trigger onClickRenameMenuItem() when clicking the rename button with pageInfo.isDeletable being "false"', async() => {
-    // setup
-    const onClickRenameMenuItemMock = vi.fn();
+  describe('Should trigger onClickRenameMenuItem() when clicking the rename button', () => {
+    it('without fetching PageInfo by useSWRxPageInfo', async() => {
+      // setup
+      const pageInfo = mock<IPageInfoForOperation>();
 
-    const pageInfo = {
-      isMovable: true,
-      isV5Compatible: true,
-      isEmpty: false,
-      isDeletable: false,
-      isAbleToDeleteCompletely: true,
-      isRevertible: true,
-    };
+      const onClickRenameMenuItemMock = vi.fn();
+      // return true when the argument is pageInfo in order to supress fetching
+      mocks.isIPageInfoForOperationMock.mockImplementation((arg) => {
+        if (arg === pageInfo) {
+          return true;
+        }
+      });
 
-    const props = {
-      pageId: 'dummy-page-id',
-      isEnableActions: true,
-      pageInfo,
-      onClickRenameMenuItem: onClickRenameMenuItemMock,
-    };
+      const props = {
+        pageId: 'dummy-page-id',
+        isEnableActions: true,
+        pageInfo,
+        onClickRenameMenuItem: onClickRenameMenuItemMock,
+      };
 
-    render(<PageItemControl {...props} />);
+      render(<PageItemControl {...props} />);
 
-    // when
-    const openPageMoveRenameModalButton = screen.getByTestId('rename-page-btn');
-    await waitFor(() => userEvent.click(openPageMoveRenameModalButton, { pointerEventsCheck: PointerEventsCheckLevel.Never }));
+      // when
+      const button = within(screen.getByTestId('open-page-item-control-btn')).getByText(/more_vert/);
+      fireEvent.click(button);
+      const renameMenuItem = await screen.findByTestId('rename-page-btn');
+      fireEvent.click(renameMenuItem);
 
-    // then
-    expect(onClickRenameMenuItemMock).toHaveBeenCalled();
+      // then
+      expect(onClickRenameMenuItemMock).toHaveBeenCalled();
+    });
   });
 });

@@ -20,6 +20,7 @@ import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
+import ShareLink from '~/server/models/share-link';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
 import { exportService } from '~/server/service/export';
@@ -203,6 +204,7 @@ module.exports = (crowi) => {
       query('pageId').optional().isString(),
       query('path').optional().isString(),
       query('findAll').optional().isBoolean(),
+      query('shareLinkId').optional().isMongoId(),
     ],
     likes: [
       body('pageId').isString(),
@@ -285,19 +287,27 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
-    const { user } = req;
+    const { user, isSharedPage } = req;
     const {
-      pageId, path, findAll, revisionId,
+      pageId, path, findAll, revisionId, shareLinkId,
     } = req.query;
 
-    if (pageId == null && path == null) {
-      return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
+    const isValid = (shareLinkId != null && pageId != null && path == null) || (shareLinkId == null && (pageId != null || path != null));
+    if (!isValid) {
+      return res.apiv3Err(new Error('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.'), 400);
     }
 
     let page;
     let pages;
     try {
-      if (pageId != null) { // prioritized
+      if (isSharedPage) {
+        const shareLink = await ShareLink.findOne({ _id: shareLinkId });
+        if (shareLink == null) {
+          throw new Error('ShareLink is not found');
+        }
+        page = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
+      }
+      else if (pageId != null) { // prioritized
         page = await Page.findByIdAndViewer(pageId, user);
       }
       else if (!findAll) {

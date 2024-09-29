@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Progress } from 'reactstrap';
 
-import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
+import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
 
 
 const MODE_ATTR_MAP = {
