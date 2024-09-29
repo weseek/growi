@@ -56,7 +56,7 @@ const AnnouncementSchema = new Schema<AnnouncementDocument>({
 }, {});
 
 AnnouncementSchema.statics.createByParameters = async function(parameters): Promise<IAnnouncement> {
-  const announcement = await this.create(parameters) as IAnnouncement;
+  const announcement = await this.create(parameters);
 
   return announcement;
 };
