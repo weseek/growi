@@ -59,16 +59,16 @@ services:
       - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
   pdf-converter:
-    user: node
     build:
       context: .
       dockerfile: ./pdf-converter/Dockerfile
     restart: unless-stopped
     ports:
       - 3004
-    # volumes:
-    #   - ..:/workspace/pdf-converter:delegated
-    #   - page_bulk_export_tmp:/tmp/page-bulk-export
+    volumes:
+      - ..:/workspace/pdf-converter:delegated
+      - page_bulk_export_tmp:/tmp/page-bulk-export
+    tty: true
 
 volumes:
   node_modules:

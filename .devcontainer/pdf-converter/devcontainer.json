@@ -16,8 +16,5 @@
     }
   },
   "forwardPorts": [3004],
-  "mounts": [
-    "source=${localWorkspaceFolder}/node_modules,target=/workspace/node_modules,type=bind"
-  ],
   "remoteUser": "node"
 }
