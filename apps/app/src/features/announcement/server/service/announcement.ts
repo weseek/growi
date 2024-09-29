@@ -10,7 +10,7 @@ import type { IAnnouncement, ParamsForAnnouncement } from '../../interfaces/anno
 
 const logger = loggerFactory('growi:service:inAppNotification');
 
-export default class AnnouncementService {
+class AnnouncementService {
 
   crowi!: Crowi;
 
@@ -80,4 +80,8 @@ export default class AnnouncementService {
 
 }
 
-module.exports = AnnouncementService;
+// eslint-disable-next-line import/no-mutable-exports
+export let announcementService: AnnouncementService | undefined; // singleton instance
+export function instanciate(crowi: Crowi): void {
+  announcementService = new AnnouncementService(crowi);
+}

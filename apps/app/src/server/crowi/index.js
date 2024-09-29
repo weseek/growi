@@ -17,12 +17,13 @@ import QuestionnaireCronService from '~/features/questionnaire/server/service/qu
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
+import { instanciate as instanciateAnnouncementService } from '../../features/announcement/server/service/announcement';
 import UserEvent from '../events/user';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
-import { instanciate as instanciateExternalAccountService } from '../service/external-account';
+import { instanciate, instanciate as instanciateExternalAccountService } from '../service/external-account';
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { initializeImportService } from '../service/import';
@@ -765,10 +766,7 @@ Crowi.prototype.setupG2GTransferService = async function() {
 };
 
 Crowi.prototype.setupAnnouncementService = async function() {
-  const AnnouncementService = require('../../features/announcement/server/service/announcement');
-  if (this.announcementService == null) {
-    this.announcementService = new AnnouncementService(this);
-  }
+  instanciateAnnouncementService(this);
 };
 
 // execute after setupPassport

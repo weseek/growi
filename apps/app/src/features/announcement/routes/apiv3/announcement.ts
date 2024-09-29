@@ -6,6 +6,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type Crowi from '~/server/crowi';
 
 import type { ParamsForAnnouncement } from '../../interfaces/announcement';
+import AnnouncementService from '../../server/service/announcement';
 
 
 const express = require('express');
@@ -73,7 +74,7 @@ module.exports = (crowi: Crowi): Router => {
 
     const activity = await crowi.activityService.createActivity(parametersForActivity);
 
-    crowi.announcementService.doAnnounce(activity, page, params);
+    AnnouncementService.doAnnounce(activity, page, params);
 
   });
 
