@@ -1,0 +1,7 @@
+{
+  "extends": [
+    "weseek",
+    "weseek/typescript"
+  ],
+  "no-useless-constructor": "off"
+}
