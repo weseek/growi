@@ -4,6 +4,7 @@ import path from 'path';
 import { Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
+
 import type { IUser } from '@growi/core';
 import {
   getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
@@ -27,6 +28,7 @@ import type { IAttachmentDocument } from '~/server/models/attachment';
 import { Attachment } from '~/server/models/attachment';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
+import { configManager } from '~/server/service/config-manager';
 import type { FileUploader } from '~/server/service/file-uploader';
 import type { IMultipartUploader } from '~/server/service/file-uploader/multipart-uploader';
 import { preNotifyService } from '~/server/service/pre-notify';
@@ -279,16 +281,31 @@ class PageBulkExportService implements IPageBulkExportService {
 
     const pagesWritable = this.getPageWritable(pageBulkExportJob);
 
+    if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
+      // start pdf convert
+      const url = `${configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl')}/pdf/start-pdf-convert`;
+      await axios.post(url, { jobId: pageBulkExportJob._id.toString() });
+    }
+
     this.pageBulkExportJobManager.updateJobStream(pageBulkExportJob._id, pageSnapshotsReadable);
 
-    return pipelinePromise(pageSnapshotsReadable, pagesWritable);
+    await pipelinePromise(pageSnapshotsReadable, pagesWritable);
+
+    if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
+      // notify pdf converter of the completion of html export
+      const url = `${configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl')}/pdf/html-export-done`;
+      await axios.patch(url, { jobId: pageBulkExportJob._id.toString() });
+
+      await this.waitPdfExportFinish(pageBulkExportJob);
+    }
   }
 
   /**
    * Get a Writable that writes the page body temporarily to fs
    */
   private getPageWritable(pageBulkExportJob: PageBulkExportJobDocument): Writable {
-    const outputDir = this.getTmpOutputDir(pageBulkExportJob);
+    const isHtmlPath = pageBulkExportJob.format === PageBulkExportFormat.pdf;
+    const outputDir = this.getTmpOutputDir(pageBulkExportJob, isHtmlPath);
     return new Writable({
       objectMode: true,
       write: async(page: PageBulkExportPageSnapshotDocument, encoding, callback) => {
@@ -297,21 +314,18 @@ class PageBulkExportService implements IPageBulkExportService {
 
           if (revision != null && isPopulated(revision)) {
             const markdownBody = revision.body;
+            const format = pageBulkExportJob.format === PageBulkExportFormat.pdf ? 'html' : pageBulkExportJob.format;
+            const pathNormalized = `${normalizePath(page.path)}.${format}`;
+            const fileOutputPath = path.join(outputDir, pathNormalized);
+            const fileOutputParentPath = getParentPath(fileOutputPath);
+            await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
 
             if (pageBulkExportJob.format === PageBulkExportFormat.md) {
-              const pathNormalized = `${normalizePath(page.path)}.${PageBulkExportFormat.md}`;
-              const fileOutputPath = path.join(outputDir, pathNormalized);
-              const fileOutputParentPath = getParentPath(fileOutputPath);
-
-              await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
               await fs.promises.writeFile(fileOutputPath, markdownBody);
             }
             else {
               const htmlString = await this.convertMdToHtml(markdownBody);
-              const pathNormalized = `${normalizePath(page.path)}.${PageBulkExportFormat.pdf}`;
-
-              const url = 'http://growi-pdf-converter:3004/pdf/html-to-pdf';
-              await axios.post(url, { htmlString, fileName: pathNormalized, jobId: pageBulkExportJob._id.toString() });
+              await fs.promises.writeFile(fileOutputPath, htmlString);
             }
             pageBulkExportJob.lastExportedPagePath = page.path;
             await pageBulkExportJob.save();
@@ -333,6 +347,37 @@ class PageBulkExportService implements IPageBulkExportService {
       .toString();
 
     return htmlString;
+  }
+
+  private async waitPdfExportFinish(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+    const jobCreatedAt = pageBulkExportJob.createdAt;
+    if (jobCreatedAt == null) throw new Error('createdAt is not set');
+
+    const exportJobExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportJobExpirationSeconds');
+    return new Promise<void>((resolve, reject) => {
+      const interval = setInterval(async() => {
+        if (Date.now() - jobCreatedAt.getTime() > exportJobExpirationSeconds * 1000) {
+          reject(new BulkExportJobExpiredError());
+        }
+        try {
+          const url = `${configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl')}/pdf/job-status`;
+          const res = await axios.get(url, { params: { jobId: pageBulkExportJob._id.toString() } });
+
+          if (res.data.jobStatus === 'PDF_EXPORT_DONE') {
+            clearInterval(interval);
+            resolve();
+          }
+          else if (res.data.jobStatus === 'FAILED') {
+            clearInterval(interval);
+            reject(new Error('PDF export failed'));
+          }
+        }
+        catch (err) {
+          clearInterval(interval);
+          reject(err);
+        }
+      }, 60 * 1000 * 1);
+    });
   }
 
   /**
@@ -430,8 +475,11 @@ class PageBulkExportService implements IPageBulkExportService {
   /**
    * Get the output directory on the fs to temporarily store page files before compressing and uploading
    */
-  private getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string {
-    return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
+  private getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath = false): string {
+    if (isHtmlPath) {
+      return path.join(this.tmpOutputRootDir, 'html', pageBulkExportJob._id.toString());
+    }
+    return path.join(this.tmpOutputRootDir, pageBulkExportJob._id.toString());
   }
 
   async notifyExportResult(
@@ -465,6 +513,12 @@ class PageBulkExportService implements IPageBulkExportService {
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
     ];
+
+    if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
+      promises.push(
+        fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob, true), { recursive: true, force: true }),
+      );
+    }
 
     const fileUploadService: FileUploader = this.crowi.fileUploadService;
     if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
