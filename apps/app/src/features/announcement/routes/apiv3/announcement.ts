@@ -51,7 +51,7 @@ module.exports = (crowi: Crowi): Router => {
     ],
   };
 
-  router.post('/doAnnouncement', loginRequiredStrictly, validators.doAnnouncement, async(req: CrowiRequest) => {
+  router.post('/do-announcement', loginRequiredStrictly, validators.doAnnouncement, async(req: CrowiRequest) => {
 
     const params: ParamsForAnnouncement = req.body;
 
