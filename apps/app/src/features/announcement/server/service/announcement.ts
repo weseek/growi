@@ -28,7 +28,7 @@ export default class AnnouncementService {
 
   getReadRate = async() => { };
 
-  insertAnnouncement = async(
+  private insertAnnouncement = async(
       params: ParamsForAnnouncement,
   ): Promise<void> => {
 
