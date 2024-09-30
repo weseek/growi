@@ -12,14 +12,6 @@ import {
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
 
 
-const onDeletedHandler = (pathOrPathsToDelete) => {
-  if (typeof pathOrPathsToDelete !== 'string') {
-    return;
-  }
-
-  window.location.href = '/';
-};
-
 export const TrashPageAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
@@ -66,6 +58,14 @@ export const TrashPageAlert = (): JSX.Element => {
     openPutBackPageModal({ pageId, path: pagePath }, { onPutBacked: putBackedHandler });
   }, [currentPagePath, mutateCurrentPage, openPutBackPageModal, pageId, pagePath, router, isEmptyPage]);
 
+
+  const onDeletedHandler = useCallback((pathOrPathsToDelete) => {
+    if (typeof pathOrPathsToDelete !== 'string') {
+      return <></>;
+    }
+    router.push('/');
+  }, [router]);
+
   const openPageDeleteModalHandler = useCallback(() => {
     // User cannot operate empty page.
     if (isEmptyPage) {
@@ -80,7 +80,7 @@ export const TrashPageAlert = (): JSX.Element => {
       meta: pageInfo,
     };
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
-  }, [openDeleteModal, pageId, pageInfo, pagePath, revisionId, isEmptyPage]);
+  }, [openDeleteModal, pageId, pageInfo, pagePath, revisionId, isEmptyPage, onDeletedHandler]);
 
   const renderTrashPageManagementButtons = useCallback(() => {
     return (
