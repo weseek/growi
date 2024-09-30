@@ -1,10 +1,10 @@
 import { Readable } from 'stream';
 
-import type { IRevisionHasId } from '@growi/core';
 import { PageGrant, isPopulated } from '@growi/core';
-import type { HydratedDocument } from 'mongoose';
+import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
 import { toFile } from 'openai';
+import type { FileLike } from 'openai/uploads.mjs';
 
 import { OpenaiServiceTypes } from '~/interfaces/ai';
 import type { PageDocument, PageModel } from '~/server/models/page';
@@ -14,6 +14,10 @@ import loggerFactory from '~/utils/logger';
 import { getClient } from './client-delegator';
 
 const logger = loggerFactory('growi:service:openai');
+
+const createFileForVectorStore = async(pageId: Types.ObjectId, body: string): Promise<FileLike> => {
+  return toFile(Readable.from(body), `${pageId}.md`);
+};
 
 export interface IOpenaiService {
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
@@ -28,14 +32,19 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createVectorStoreFile(pages: PageDocument[]): Promise<void> {
-    const filesPromise = pages
-      .filter(page => page.grant === PageGrant.GRANT_PUBLIC && page.revision != null && isPopulated(page.revision) && page.revision.body.length > 0)
-      .map(async(page) => {
-        // The above filters ensure that revisions are populated
-        const revision = page?.revision as IRevisionHasId;
-        const file = await toFile(Readable.from(revision.body), `${page._id}.md`);
-        return file;
-      });
+    const filesPromise: Promise<FileLike>[] = [];
+    pages.forEach(async(page) => {
+      if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
+        if (isPopulated(page.revision) && page.revision.body.length > 0) {
+          filesPromise.push(createFileForVectorStore(page._id, page.revision.body));
+        }
+
+        const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
+        if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
+          filesPromise.push(createFileForVectorStore(page._id, pagePopulatedToShowRevision.revision.body));
+        }
+      }
+    });
 
     if (filesPromise.length === 0) {
       return;
