@@ -69,7 +69,7 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
     pagePath: removeTrailingSlash(req.query.pagePath.toString()),
     offset: req.query?.offset != null ? Number(req.query.offset) : undefined,
     limit: req.query?.limit != null ? Number(req.query?.limit) : undefined,
-    options: req.query?.options != null ? JSON.parse(req.query.options.toString()) : {},
+    options: req.query?.options != null ? JSON.parse(JSON.stringify(req.query.options)) : {},
   };
 
   const {
