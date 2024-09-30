@@ -1,4 +1,4 @@
-import { Readable } from 'stream';
+import { Readable, Transform } from 'stream';
 
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
@@ -9,9 +9,13 @@ import type { FileLike } from 'openai/uploads.mjs';
 import { OpenaiServiceTypes } from '~/interfaces/ai';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
+import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
+
 import { getClient } from './client-delegator';
+
+const BATCH_SIZE = 100;
 
 const logger = loggerFactory('growi:service:openai');
 
@@ -60,10 +64,23 @@ class OpenaiService implements IOpenaiService {
     // TODO: https://redmine.weseek.co.jp/issues/154364
 
     // Create all public pages VectorStoreFile
-    const page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
-    const allPublicPages = await page.find({ grant: PageGrant.GRANT_PUBLIC }).populate('revision') as PageDocument[];
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+    const pagesStream = Page.find({ grant: PageGrant.GRANT_PUBLIC }).populate('revision').cursor({ batch_size: BATCH_SIZE });
+    const batchStrem = createBatchStream(BATCH_SIZE);
 
-    await this.createVectorStoreFile(allPublicPages);
+    const createVectorStoreFile = this.createVectorStoreFile.bind(this);
+    const createVectorStoreFileStream = new Transform({
+      objectMode: true,
+      async transform(chunk: PageDocument[], encoding, callback) {
+        await createVectorStoreFile(chunk);
+        this.push(chunk);
+        callback();
+      },
+    });
+
+    pagesStream
+      .pipe(batchStrem)
+      .pipe(createVectorStoreFileStream);
   }
 
   async rebuildVectorStore(page: PageDocument) {
