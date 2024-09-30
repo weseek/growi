@@ -10,7 +10,7 @@ import useSWR, {
 import { cache } from 'swr/_internal';
 import useSWRImmutable from 'swr/immutable';
 import type { SWRInfiniteResponse } from 'swr/infinite';
-import useSWRInfinite from 'swr/infinite';
+import useSWRInfinite, { unstable_serialize } from 'swr/infinite'; // eslint-disable-line camelcase
 
 import type { IPagingResult } from '~/interfaces/paging-result';
 
@@ -58,7 +58,7 @@ export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolea
 export const mutateRecentlyUpdated = async(): Promise<undefined> => {
   for (const key of cache.keys()) {
     if (key.includes('/pages/recent')) {
-      mutate(key);
+      mutate(unstable_serialize(() => key));
     }
   }
   return;
