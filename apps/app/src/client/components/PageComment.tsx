@@ -20,7 +20,7 @@ import type { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment'
 import { useSWRxPageComment } from '../../stores/comment';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
-import { NotAvailableForReadOnlyUser } from './NotAvailableForReadOnlyUser';
+import { NotAvailableIfReadOnlyUserNotAllowedToComment } from './NotAvailableForReadOnlyUser';
 import { Comment } from './PageComment/Comment';
 import { CommentEditor } from './PageComment/CommentEditor';
 import { DeleteCommentModal } from './PageComment/DeleteCommentModal';
@@ -183,7 +183,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                 {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                   <div className="d-flex flex-row-reverse">
                     <NotAvailableForGuest>
-                      <NotAvailableForReadOnlyUser>
+                      <NotAvailableIfReadOnlyUserNotAllowedToComment>
                         <button
                           type="button"
                           data-testid="comment-reply-button"
@@ -193,7 +193,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                           <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-2" />
                           <span className="material-symbols-outlined me-1 fs-5 pb-1">reply</span><small>{t('page_comment.reply')}...</small>
                         </button>
-                      </NotAvailableForReadOnlyUser>
+                      </NotAvailableIfReadOnlyUserNotAllowedToComment>
                     </NotAvailableForGuest>
                   </div>
                 )}
