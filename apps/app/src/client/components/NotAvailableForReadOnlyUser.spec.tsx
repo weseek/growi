@@ -1,9 +1,9 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import { PointerEventsCheckLevel, userEvent } from '@testing-library/user-event';
 import {
   describe, it, expect, vi,
 } from 'vitest';
 
-// import { NotAvailableForReadOnlyUser } from './NotAvailableForReadOnlyUser';
 import { CommentControl } from './PageComment/CommentControl';
 
 import '@testing-library/jest-dom/vitest';
@@ -23,23 +23,9 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
 
   const onClickEditBtnMock = vi.fn();
   const onClickDeleteBtnMock = vi.fn();
+  const user = userEvent.setup({ pointerEventsCheck: PointerEventsCheckLevel.Never });
 
-  // const ButtonForTest = (props: { onClickButtonForTest: () => void }) => {
-
-  //   const { onClickButtonForTest } = props;
-
-  //   return (
-  //     <button
-  //       type="button"
-  //       data-testid="button-for-test"
-  //       onClick={onClickButtonForTest}
-  //     >
-  //       button
-  //     </button>
-  //   );
-  // };
-
-  it('renders NotAvailable component as enable when user is read-only and comments by rom users is allowed', () => {
+  it('renders NotAvailable component as enable when user is read-only and comments by rom users is allowed', async() => {
     mocks.useIsReadOnlyUserMock.mockReturnValueOnce({ data: true });
     mocks.useIsRomUserAllowedToComment.mockReturnValueOnce({ data: true });
 
@@ -52,14 +38,15 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
 
     // when
     const button = screen.getByTestId('comment-delete-button');
-    fireEvent.click(button);
+    // fireEvent.click(button);
+    await user.click(button);
 
     // then
-    // expect(onClickDeleteBtnMock).toHaveBeenCalled();
-    expect(button).not.toBeDisabled();
+    expect(onClickDeleteBtnMock).toHaveBeenCalled();
+    // expect(button).not.toBeDisabled();
   });
 
-  it('renders NotAvailable component as disable when user is read-only and comments by rom users is not allowed', () => {
+  it('renders NotAvailable component as disable when user is read-only and comments by rom users is not allowed', async() => {
     mocks.useIsReadOnlyUserMock.mockReturnValueOnce({ data: true });
     mocks.useIsRomUserAllowedToComment.mockReturnValueOnce({ data: false });
 
@@ -72,14 +59,15 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
 
     // when
     const button = screen.getByTestId('comment-delete-button');
-    fireEvent.click(button);
+    // fireEvent.click(button);
+    await user.click(button);
 
     // then
-    // expect(onClickDeleteBtnMock).not.toHaveBeenCalled();
-    expect(button).toBeDisabled();
+    expect(onClickDeleteBtnMock).not.toHaveBeenCalled();
+    // expect(button).toBeDisabled();
   });
 
-  it('renders NotAvailable component as enable when user is not read-only and comments by rom users is allowed', () => {
+  it('renders NotAvailable component as enable when user is not read-only and comments by rom users is allowed', async() => {
     mocks.useIsReadOnlyUserMock.mockReturnValueOnce({ data: false });
     mocks.useIsRomUserAllowedToComment.mockReturnValueOnce({ data: true });
 
@@ -92,14 +80,15 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
 
     // when
     const button = screen.getByTestId('comment-delete-button');
-    fireEvent.click(button);
+    // fireEvent.click(button);
+    await user.click(button);
 
     // then
-    // expect(onClickDeleteBtnMock).toHaveBeenCalled();
-    expect(button).not.toBeDisabled();
+    expect(onClickDeleteBtnMock).toHaveBeenCalled();
+    // expect(button).not.toBeDisabled();
   });
 
-  it('renders NotAvailable component as enable when user is not read-only and comments by rom users is not allowed', () => {
+  it('renders NotAvailable component as enable when user is not read-only and comments by rom users is not allowed', async() => {
     mocks.useIsReadOnlyUserMock.mockReturnValueOnce({ data: false });
     mocks.useIsRomUserAllowedToComment.mockReturnValueOnce({ data: false });
 
@@ -112,11 +101,12 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
 
     // when
     const button = screen.getByTestId('comment-delete-button');
-    fireEvent.click(button);
+    // fireEvent.click(button);
+    await user.click(button);
 
     // then
-    // expect(onClickDeleteBtnMock).toHaveBeenCalled();
-    expect(button).not.toBeDisabled();
+    expect(onClickDeleteBtnMock).toHaveBeenCalled();
+    // expect(button).not.toBeDisabled();
   });
 
 });
