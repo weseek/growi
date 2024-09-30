@@ -1,4 +1,3 @@
-import ejs from 'ejs';
 import type OpenAI from 'openai';
 
 import { configManager } from '../../config-manager';
@@ -73,16 +72,7 @@ export const getOrCreateChatAssistant = async(): Promise<OpenAI.Beta.Assistant> 
     return chatAssistant;
   }
 
-  let instructions;
-  if (configManager.getConfig('crowi', 'app:openaiChatAssistantCustomFullInstructions')) {
-    instructions = configManager.getConfig('crowi', 'app:openaiChatAssistantCustomFullInstructions');
-  }
-  else {
-    instructions = configManager.getConfig('crowi', 'app:openaiChatAssistantInstructions').join('');
-    instructions = ejs.render(instructions, {
-      customInstruction: configManager.getConfig('crowi', 'app:openaiChatAssistantCustomInstructions'),
-    });
-  }
+  const instructions = configManager.getConfig('crowi', 'app:openaiChatAssistantInstructions').join('');
 
   chatAssistant = await getOrCreateAssistant(AssistantType.CHAT);
   openaiClient.beta.assistants.update(chatAssistant.id, {
