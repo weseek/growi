@@ -4,45 +4,42 @@ import type { Extension } from '@codemirror/state';
 import { Prec } from '@codemirror/state';
 import {
   keymap, type Command, highlightActiveLine, highlightActiveLineGutter,
-  EditorView,
 } from '@codemirror/view';
 
 import {
   type EditorSettings, type KeyMapMode, type EditorTheme,
-  PasteMode,
 } from '../../consts';
 import type { UseCodeMirrorEditor } from '../services';
 import {
-  getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable, getStrFromBol, adjustPasteData,
+  getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable,
 } from '../services-internal';
 
 
 export const useEditorSettings = (
     codeMirrorEditor?: UseCodeMirrorEditor,
-    editorSetings?: EditorSettings,
+    editorSettings?: EditorSettings,
     onSave?: () => void,
-    onUpload?: (files: File[]) => void,
 ): void => {
 
   useEffect(() => {
-    if (editorSetings?.styleActiveLine == null) {
+    if (editorSettings?.styleActiveLine == null) {
       return;
     }
-    const extensions = (editorSetings?.styleActiveLine) ? [[highlightActiveLine(), highlightActiveLineGutter()]] : [[]];
+    const extensions = (editorSettings?.styleActiveLine) ? [[highlightActiveLine(), highlightActiveLineGutter()]] : [[]];
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extensions);
     return cleanupFunction;
 
-  }, [codeMirrorEditor, editorSetings?.styleActiveLine]);
+  }, [codeMirrorEditor, editorSettings?.styleActiveLine]);
 
   const onPressEnter: Command = useCallback((editor) => {
-    if (isInTable(editor) && editorSetings?.autoFormatMarkdownTable) {
+    if (isInTable(editor) && editorSettings?.autoFormatMarkdownTable) {
       insertNewRowToMarkdownTable(editor);
       return true;
     }
     insertNewlineContinueMarkup(editor);
     return true;
-  }, [editorSetings?.autoFormatMarkdownTable]);
+  }, [editorSettings?.autoFormatMarkdownTable]);
 
 
   useEffect(() => {
@@ -61,8 +58,8 @@ export const useEditorSettings = (
     const settingTheme = async(name?: EditorTheme) => {
       setThemeExtension(await getEditorTheme(name));
     };
-    settingTheme(editorSetings?.theme);
-  }, [codeMirrorEditor, editorSetings?.theme, setThemeExtension]);
+    settingTheme(editorSettings?.theme);
+  }, [codeMirrorEditor, editorSettings?.theme, setThemeExtension]);
 
   useEffect(() => {
     if (themeExtension == null) {
@@ -80,9 +77,9 @@ export const useEditorSettings = (
     const settingKeyMap = async(name?: KeyMapMode) => {
       setKeymapExtension(await getKeymap(name, onSave));
     };
-    settingKeyMap(editorSetings?.keymapMode);
+    settingKeyMap(editorSettings?.keymapMode);
 
-  }, [codeMirrorEditor, editorSetings?.keymapMode, setKeymapExtension, onSave]);
+  }, [codeMirrorEditor, editorSettings?.keymapMode, setKeymapExtension, onSave]);
 
   useEffect(() => {
     if (keymapExtension == null) {
@@ -94,45 +91,6 @@ export const useEditorSettings = (
     return cleanupFunction;
 
   }, [codeMirrorEditor, keymapExtension]);
-
-  useEffect(() => {
-    const handlePaste = (event: ClipboardEvent) => {
-      event.preventDefault();
-
-      const editor = codeMirrorEditor?.view;
-
-      if (editor == null) {
-        return;
-      }
-
-      if (event.clipboardData == null) {
-        return;
-      }
-
-      if (editorSetings?.pasteMode !== PasteMode.file && event.clipboardData.types.includes('text/plain')) {
-
-        const textData = event.clipboardData.getData('text/plain');
-
-        const strFromBol = getStrFromBol(editor);
-        const adjusted = adjustPasteData(strFromBol, textData);
-
-        codeMirrorEditor?.replaceText(adjusted);
-      }
-
-      if (editorSetings?.pasteMode !== PasteMode.text && onUpload != null && event.clipboardData.types.includes('Files')) {
-        onUpload(Array.from(event.clipboardData.files));
-      }
-
-    };
-
-    const extension = EditorView.domEventHandlers({
-      paste: handlePaste,
-    });
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, editorSetings?.pasteMode, onUpload]);
 
 
 };

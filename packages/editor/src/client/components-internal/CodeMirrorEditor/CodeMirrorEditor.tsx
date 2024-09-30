@@ -10,9 +10,9 @@ import {
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import type { EditorSettings, GlobalCodeMirrorEditorKey } from '../../../consts';
+import { PasteMode, type EditorSettings, type GlobalCodeMirrorEditorKey } from '../../../consts';
 import {
-  useFileDropzone, FileDropzoneOverlay, useShowTableIcon,
+  useFileDropzone, FileDropzoneOverlay, useShowTableIcon, getStrFromBol, adjustPasteData,
 } from '../../services-internal';
 import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
 import { useDefaultExtensions } from '../../stores/use-default-extensions';
@@ -69,7 +69,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
   useDefaultExtensions(codeMirrorEditor);
-  useEditorSettings(codeMirrorEditor, editorSettings, onSave, onUpload);
+  useEditorSettings(codeMirrorEditor, editorSettings, onSave);
 
   useShowTableIcon(codeMirrorEditor);
 
@@ -117,6 +117,45 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [onScroll, codeMirrorEditor]);
+
+
+  useEffect(() => {
+    const handlePaste = (event: ClipboardEvent) => {
+      event.preventDefault();
+
+      const editor = codeMirrorEditor?.view;
+
+      if (editor == null) {
+        return;
+      }
+
+      if (event.clipboardData == null) {
+        return;
+      }
+
+      if (editorSettings?.pasteMode !== PasteMode.file && event.clipboardData.types.includes('text/plain')) {
+
+        const textData = event.clipboardData.getData('text/plain');
+
+        const strFromBol = getStrFromBol(editor);
+        const adjusted = adjustPasteData(strFromBol, textData);
+
+        codeMirrorEditor?.replaceText(adjusted);
+      }
+
+      if (editorSettings?.pasteMode !== PasteMode.text && onUpload != null && event.clipboardData.types.includes('Files')) {
+        onUpload(Array.from(event.clipboardData.files));
+      }
+    };
+
+    const extension = EditorView.domEventHandlers({
+      paste: handlePaste,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, editorSettings?.pasteMode, onUpload]);
 
   const {
     getRootProps,
