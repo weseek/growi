@@ -2179,7 +2179,7 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
-"@growi/page-split@link:packages/page-split":
+"@growi/markdown-token-splitter@link:packages/markdown-token-splitter":
   version "1.0.0"
   dependencies:
     js-tiktoken "^1.0.14"

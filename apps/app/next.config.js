@@ -65,7 +65,7 @@ const getTranspilePackages = () => {
 const optimizePackageImports = [
   '@growi/core',
   '@growi/editor',
-  '@growi/page-split',
+  '@growi/markdown-token-splitter',
   '@growi/pluginkit',
   '@growi/presentation',
   '@growi/preset-themes',
