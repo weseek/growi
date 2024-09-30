@@ -42,7 +42,6 @@ const middleware = (crowi: any, app: any): void => {
   const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
   const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
 
-  // app.get('/_api/lsx', accessTokenParser, loginRequired, listPages);
   app.get('/_api/lsx', accessTokenParser, loginRequired, lsxValidator, listPages);
 };
 
