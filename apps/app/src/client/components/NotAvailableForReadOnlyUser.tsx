@@ -43,6 +43,7 @@ export const NotAvailableIfReadOnlyUserNotAllowedToComment: React.FC<{
       isDisabled={isDisabled}
       title={title}
       classNamePrefix="grw-not-available-for-read-only-user"
+      data-testid="not-available-if-read-only-user-not-allowed-to-comment"
     >
       {children}
     </NotAvailable>
