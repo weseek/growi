@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { query } from 'express-validator';
+import { FilterXSS } from 'xss';
 
 import type { LsxApiOptions } from '../interfaces/api';
 
@@ -10,14 +11,7 @@ const loginRequiredFallback = (req: Request, res: Response) => {
   return res.status(403).send('login required');
 };
 
-const escapeSpecialCharacters = (text: string): string => {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-};
+const filterXSS = new FilterXSS();
 
 const lsxValidator = [
   query('options')
@@ -26,7 +20,7 @@ const lsxValidator = [
         const jsonData: LsxApiOptions = JSON.parse(options);
 
         Object.keys(jsonData).forEach((key) => {
-          jsonData[key] = escapeSpecialCharacters(jsonData[key]);
+          jsonData[key] = filterXSS.process(jsonData[key]);
         });
 
         return jsonData;
