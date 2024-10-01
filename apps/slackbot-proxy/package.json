@@ -1,6 +1,6 @@
 {
   "name": "@growi/slackbot-proxy",
-  "version": "7.0.20-slackbot-proxy.0",
+  "version": "7.0.21-slackbot-proxy.0",
   "license": "MIT",
   "private": "true",
   "scripts": {
@@ -20,7 +20,7 @@
     "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
     "lint:typecheck": "tspc",
     "lint": "run-p lint:*",
-    "version": "yarn version --no-git-tag-version --preid=slackbot-proxy",
+    "version": "yarn version --no-git-tag-version --non-interactive --preid=slackbot-proxy",
     "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config"
   },
   "// comments for dependencies": {
