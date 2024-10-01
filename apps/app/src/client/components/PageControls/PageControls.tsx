@@ -36,6 +36,7 @@ import {
 
 import { BookmarkButtons } from './BookmarkButtons';
 import LikeButtons from './LikeButtons';
+import RagSearchButton from './RagSearchButton';
 import SearchButton from './SearchButton';
 import SeenUserInfo from './SeenUserInfo';
 import SubscribeButton from './SubscribeButton';
@@ -282,7 +283,10 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
       { isViewMode && isDeviceLargerThanMd && !isSearchPage && !isSearchPage && (
-        <SearchButton />
+        <>
+          <SearchButton />
+          <RagSearchButton />
+        </>
       )}
 
       {revisionId != null && !isViewMode && _isIPageInfoForOperation && (

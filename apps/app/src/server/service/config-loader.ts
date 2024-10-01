@@ -736,6 +736,54 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  AI_ENABLED: {
+    ns: 'crowi',
+    key: 'app:aiEnabled',
+    type: ValueType.BOOLEAN,
+    default: false,
+  },
+  OPENAI_SERVICE_TYPE: {
+    ns: 'crowi',
+    key: 'app:openaiServiceType',
+    type: ValueType.STRING,
+    default: null,
+  },
+  OPENAI_API_KEY: {
+    ns: 'crowi',
+    key: 'app:openaiApiKey',
+    type: ValueType.STRING,
+    default: null,
+  },
+  OPENAI_DIMENSIONS: {
+    ns: 'crowi',
+    key: 'app:openaiDimensions',
+    type: ValueType.NUMBER,
+    default: null,
+  },
+  OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS: {
+    ns: 'crowi',
+    key: 'app:openaiSearchAssistantInstructions',
+    type: ValueType.STRING,
+    default: null,
+  },
+  OPENAI_CHAT_ASSISTANT_INSTRUCTIONS: {
+    ns: 'crowi',
+    key: 'app:openaiChatAssistantInstructions',
+    type: ValueType.STRING,
+    default: null,
+  },
+  OPENAI_ASSISTANT_NAME_SUFFIX: {
+    ns: 'crowi',
+    key: 'app:openaiAssistantNameSuffix',
+    type: ValueType.STRING,
+    default: null,
+  },
+  OPENAI_VECTOR_STORE_ID: {
+    ns: 'crowi',
+    key: 'app:openaiVectorStoreId',
+    type: ValueType.STRING,
+    default: null,
+  },
 };
 
 

@@ -10,8 +10,9 @@ import {
   useDisableLinkSharing, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser,
 } from '~/stores-universal/context';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
+import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
-import { CustomNavTab } from '../CustomNavigation/CustomNav';
+import { CustomNavDropdown, CustomNavTab } from '../CustomNavigation/CustomNav';
 import CustomTabContent from '../CustomNavigation/CustomTabContent';
 import ExpandOrContractButton from '../ExpandOrContractButton';
 
@@ -35,6 +36,7 @@ export const PageAccessoriesModal = (): JSX.Element => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isLinkSharingDisabled } = useDisableLinkSharing();
+  const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
 
   const { data: status, close, selectContents } = usePageAccessoriesModal();
 
@@ -93,17 +95,30 @@ export const PageAccessoriesModal = (): JSX.Element => {
       data-testid="page-accessories-modal"
       className={`grw-page-accessories-modal ${styles['grw-page-accessories-modal']} ${isWindowExpanded ? 'grw-modal-expanded' : ''} `}
     >
-      <ModalHeader className="p-0" toggle={close} close={buttons}>
-        <CustomNavTab
-          activeTab={status.activatedContents}
-          navTabMapping={navTabMapping}
-          breakpointToHideInactiveTabsDown="md"
-          onNavSelected={selectContents}
-          hideBorderBottom
-        />
+      <ModalHeader className={isDeviceLargerThanLg ? 'p-0' : ''} toggle={close} close={buttons}>
+        {isDeviceLargerThanLg && (
+          <CustomNavTab
+            activeTab={status.activatedContents}
+            navTabMapping={navTabMapping}
+            breakpointToHideInactiveTabsDown="md"
+            onNavSelected={selectContents}
+            hideBorderBottom
+          />
+        )}
       </ModalHeader>
       <ModalBody className="overflow-auto grw-modal-body-style">
-        <CustomTabContent activeTab={status.activatedContents} navTabMapping={navTabMapping} />
+        {!isDeviceLargerThanLg && (
+          <CustomNavDropdown
+            activeTab={status.activatedContents}
+            navTabMapping={navTabMapping}
+            onNavSelected={selectContents}
+          />
+        )}
+        <CustomTabContent
+          activeTab={status.activatedContents}
+          navTabMapping={navTabMapping}
+          additionalClassNames={!isDeviceLargerThanLg ? ['grw-tab-content-style-md-down'] : undefined}
+        />
       </ModalBody>
     </Modal>
   );

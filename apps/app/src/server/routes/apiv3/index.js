@@ -8,6 +8,7 @@ import * as registerFormValidator from '../../middlewares/register-form-validato
 
 import g2gTransfer from './g2g-transfer';
 import importRoute from './import';
+import openai from './openai';
 import pageListing from './page-listing';
 import securitySettings from './security-settings';
 import * as userActivation from './user-activation';
@@ -118,6 +119,8 @@ module.exports = (crowi, app) => {
   router.use('/bookmark-folder', require('./bookmark-folder')(crowi));
   router.use('/questionnaire', require('~/features/questionnaire/server/routes/apiv3/questionnaire')(crowi));
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
+
+  router.use('/openai', openai(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };

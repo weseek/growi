@@ -1,7 +1,9 @@
-import useSWR, { mutate, SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+import useSWR, { mutate } from 'swr';
 
 import { apiGet } from '~/client/util/apiv1-client';
-import { IFormattedSearchResult, SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
+import type { IFormattedSearchResult } from '~/interfaces/search';
+import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 
 
 export type ISearchConfigurations = {
