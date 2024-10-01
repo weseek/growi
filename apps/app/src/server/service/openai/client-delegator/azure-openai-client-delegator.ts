@@ -22,6 +22,10 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     // TODO: initialize openaiVectorStoreId property
   }
 
+  async getFileList(): Promise<OpenAI.Files.FileObjectsPage> {
+    return this.client.files.list();
+  }
+
   async getVectorStoreFiles(): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFilesPage> {
     return this.client.beta.vectorStores.files.list(this.openaiVectorStoreId);
   }

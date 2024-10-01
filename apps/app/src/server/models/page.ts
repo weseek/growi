@@ -7,6 +7,7 @@ import {
   type IPage,
   GroupType, type HasObjectId,
 } from '@growi/core';
+import type { IPagePopulatedToShowRevision } from '@growi/core/dist/interfaces';
 import { getIdForRef, isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -50,9 +51,8 @@ export interface PageDocument extends IPage, Document<Types.ObjectId> {
   [x:string]: any // for obsolete methods
   getLatestRevisionBodyLength(): Promise<number | null | undefined>
   calculateAndUpdateLatestRevisionBodyLength(this: PageDocument): Promise<void>
-  populateDataToShowRevision(shouldExcludeBody?: boolean): Promise<PageDocument>
+  populateDataToShowRevision(shouldExcludeBody?: boolean): Promise<IPagePopulatedToShowRevision>
 }
-
 
 type TargetAndAncestorsResult = {
   targetAndAncestors: PageDocument[]

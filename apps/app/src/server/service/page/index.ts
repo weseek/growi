@@ -43,6 +43,7 @@ import {
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import type { UserGroupDocument } from '~/server/models/user-group';
+import { getOpenaiService } from '~/server/service/openai/openai';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
 import { generalXssFilter } from '~/services/general-xss-filter';
@@ -1177,6 +1178,10 @@ class PageService implements IPageService {
       duplicatedTarget = await (this.create as CreateMethod)(
         newPagePath, populatedPage?.revision?.body ?? '', user, options,
       );
+
+      // Do not await because communication with OpenAI takes time
+      const openaiService = getOpenaiService();
+      openaiService?.createVectorStoreFile([duplicatedTarget]);
     }
     this.pageEvent.emit('duplicate', page, user);
 
@@ -1402,9 +1407,18 @@ class PageService implements IPageService {
       }
     });
 
-    await Page.insertMany(newPages, { ordered: false });
+    const duplicatedPages = await Page.insertMany(newPages, { ordered: false });
+    const duplicatedPageIds = duplicatedPages.map(duplicatedPage => duplicatedPage._id);
+
     await Revision.insertMany(newRevisions, { ordered: false });
     await this.duplicateTags(pageIdMapping);
+
+    const duplicatedPagesWithPopulatedToShowRevison = await Page
+      .find({ _id: { $in: duplicatedPageIds }, grant: PageGrant.GRANT_PUBLIC }).populate('revision') as PageDocument[];
+
+    // Do not await because communication with OpenAI takes time
+    const openaiService = getOpenaiService();
+    openaiService?.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
   }
 
   private async duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix) {
