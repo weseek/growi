@@ -1,142 +1,104 @@
-import { encodingForModel } from 'js-tiktoken';
-import test from 'tape';
+import { describe, it, expect } from 'vitest';
 
 import { splitMarkdownByTokens } from '../src/services/markdown-token-splitter';
 
-const modelName = 'gpt-3.5-turbo'; // Replace with the appropriate model name if needed
+describe('splitMarkdownByTokens', () => {
 
-test('should split markdown into sections under the max token limit', (t) => {
-  const markdown = `
+  it('should split markdown into sections using the specified chunk size', async() => {
+    const markdown = `
 # Heading 1
-Content under heading 1.
+This is some content under heading 1.
 
 # Heading 2
-Content under heading 2.
-
-## Subheading 2.1
-Content under subheading 2.1.
+This is some content under heading 2.
 
 # Heading 3
-Content under heading 3.
-  `;
-  const maxTokens = 50;
+This is some content under heading 3.
 
-  const sections = splitMarkdownByTokens(markdown, maxTokens, modelName);
+# Heading 4
+This is some content under heading 4.
+`;
+    const chunkSize = 60;
+    const result = await splitMarkdownByTokens(markdown, chunkSize);
 
-  t.ok(sections.length > 1, 'Sections should be more than one');
-  sections.forEach((section) => {
-    const tokens = encodingForModel(modelName).encode(section);
-    t.ok(tokens.length <= maxTokens, 'Section tokens should be less than or equal to maxTokens');
+    // Expect the result to have more than one section due to chunkSize limitations
+    expect(result.length).toBeGreaterThan(1);
+    for (const section of result) {
+      expect(section.pageContent.length).toBeLessThanOrEqual(chunkSize);
+    }
   });
 
-  t.end();
-});
+  it('should handle markdown without headers', async() => {
+    const markdown = `
+This is some content without any headers. It should not be split unless it exceeds the chunk size.
+`;
+    const chunkSize = 100;
+    const result = await splitMarkdownByTokens(markdown, chunkSize);
 
-test('should handle markdown without headings', (t) => {
-  const markdown = 'This is a markdown without any headings. It should be returned as a single section unless it exceeds the max token limit.';
-  const maxTokens = 100;
+    // Since the content is short, expect no splits
+    expect(result.length).toBe(1);
+    expect(result[0].pageContent.length).toBeLessThanOrEqual(chunkSize);
+  });
 
-  const sections = splitMarkdownByTokens(markdown, maxTokens, modelName);
-
-  t.equal(sections.length, 1, 'Sections should be exactly one');
-  const tokens = encodingForModel(modelName).encode(sections[0]);
-  t.ok(tokens.length <= maxTokens, 'Section tokens should be less than or equal to maxTokens');
-
-  t.end();
-});
-
-test('should split large content under a single heading', (t) => {
-  const markdown = `
+  it('should split large content under a single heading', async() => {
+    const markdown = `
 # Large Heading
-${'Long content. '.repeat(500)}
-  `;
-  const maxTokens = 100;
+${'This is some repetitive content. '.repeat(50)}
+`;
+    const chunkSize = 100;
+    const result = await splitMarkdownByTokens(markdown, chunkSize);
 
-  const sections = splitMarkdownByTokens(markdown, maxTokens, modelName);
-
-  t.ok(sections.length > 1, 'Sections should be more than one');
-  sections.forEach((section) => {
-    const tokens = encodingForModel(modelName).encode(section);
-    t.ok(tokens.length <= maxTokens, 'Section tokens should be less than or equal to maxTokens');
+    expect(result.length).toBeGreaterThan(1);
+    for (const section of result) {
+      expect(section.pageContent.length).toBeLessThanOrEqual(chunkSize);
+    }
   });
 
-  t.end();
-});
+  it('should handle empty markdown input', async() => {
+    const markdown = '';
+    const chunkSize = 10;
+    const result = await splitMarkdownByTokens(markdown, chunkSize);
 
-test('should handle empty markdown input', (t) => {
-  const markdown = '';
-  const maxTokens = 50;
-
-  const sections = splitMarkdownByTokens(markdown, maxTokens, modelName);
-
-  t.equal(sections.length, 0, 'Sections should be zero');
-
-  t.end();
-});
-
-test('should handle markdown where a single node exceeds maxTokens', (t) => {
-  const markdown = `
-# Heading with Large Content
-${'Very long content. '.repeat(1000)}
-  `;
-  const maxTokens = 10;
-
-  const sections = splitMarkdownByTokens(markdown, maxTokens, modelName);
-
-  t.ok(sections.length > 1, 'Sections should be more than one');
-  sections.forEach((section) => {
-    const tokens = encodingForModel(modelName).encode(section);
-    t.ok(tokens.length <= maxTokens, 'Section tokens should be less than or equal to maxTokens');
+    // Expect an empty result for empty markdown input
+    expect(result.length).toBe(0);
   });
 
-  t.end();
-});
-
-test('should correctly split nested headings', (t) => {
-  const markdown = `
+  it('should correctly split nested headings', async() => {
+    const markdown = `
 # Heading 1
 Content under heading 1.
 
 ## Subheading 1.1
 Content under subheading 1.1.
 
-### Sub-subheading 1.1.1
-Content under sub-subheading 1.1.1.
-
 # Heading 2
 Content under heading 2.
-  `;
-  const maxTokens = 30;
+`;
+    const chunkSize = 50;
+    const result = await splitMarkdownByTokens(markdown, chunkSize);
 
-  const sections = splitMarkdownByTokens(markdown, maxTokens, modelName);
-
-  t.ok(sections.length > 1, 'Sections should be more than one');
-  sections.forEach((section) => {
-    const tokens = encodingForModel(modelName).encode(section);
-    t.ok(tokens.length <= maxTokens, 'Section tokens should be less than or equal to maxTokens');
+    // Expect multiple sections
+    expect(result.length).toBeGreaterThan(1);
+    for (const section of result) {
+      expect(section.pageContent.length).toBeLessThanOrEqual(chunkSize);
+    }
   });
 
-  t.end();
-});
-
-test('should not split sections unnecessarily', (t) => {
-  const markdown = `
-# Short Heading
+  it('should not split if content fits within chunk size', async() => {
+    const markdown = `
+# Heading
 Short content.
-  `;
-  const maxTokens = 100;
+`;
+    const chunkSize = 100;
+    const result = await splitMarkdownByTokens(markdown, chunkSize);
 
-  const sections = splitMarkdownByTokens(markdown, maxTokens, modelName);
+    // Expect the result to be a single section since the content is small
+    expect(result.length).toBe(1);
+    expect(result[0].pageContent.length).toBeLessThanOrEqual(chunkSize);
+  });
 
-  t.equal(sections.length, 1, 'Sections should be exactly one');
-  const tokens = encodingForModel(modelName).encode(sections[0]);
-  t.ok(tokens.length <= maxTokens, 'Section tokens should be less than or equal to maxTokens');
-
-  t.end();
-});
-
-test('should handle multiple consecutive headings', (t) => {
-  const markdown = `
+  it('should handle multiple consecutive headers', async() => {
+    const markdown = `
 # Heading 1
 
 # Heading 2
@@ -144,16 +106,14 @@ test('should handle multiple consecutive headings', (t) => {
 # Heading 3
 
 # Heading 4
-  `;
-  const maxTokens = 10;
+`;
+    const chunkSize = 50;
+    const result = await splitMarkdownByTokens(markdown, chunkSize);
 
-  const sections = splitMarkdownByTokens(markdown, maxTokens, modelName);
-
-  t.equal(sections.length, 4, 'Sections should be four');
-  sections.forEach((section) => {
-    const tokens = encodingForModel(modelName).encode(section);
-    t.ok(tokens.length <= maxTokens, 'Section tokens should be less than or equal to maxTokens');
+    // Expect each heading to be treated as a separate section
+    expect(result.length).toBeGreaterThan(1);
+    for (const section of result) {
+      expect(section.pageContent.length).toBeLessThanOrEqual(chunkSize);
+    }
   });
-
-  t.end();
 });

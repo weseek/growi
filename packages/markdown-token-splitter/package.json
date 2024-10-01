@@ -34,10 +34,7 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
-    "js-tiktoken": "^1.0.14",
-    "remark-parse": "^10.0.0",
-    "remark-stringify": "^10.0.0",
-    "tiktoken": "^1.0.16",
-    "unified": "^10.1.2"
+    "@langchain/core": "^0.3.5",
+    "langchain": "^0.3.2"
   }
 }
