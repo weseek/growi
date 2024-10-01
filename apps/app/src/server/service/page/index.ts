@@ -1893,6 +1893,8 @@ class PageService implements IPageService {
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
+    const openaiService = getOpenaiService();
+
     await Promise.all([
       Comment.deleteMany({ page: { $in: pageIds } }),
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
@@ -1904,6 +1906,8 @@ class PageService implements IPageService {
 
       // Leave bookmarks without deleting -- 2024.05.17 Yuki Takei
     ]);
+
+    await openaiService?.deleteVectorStoreFile(pageIds);
   }
 
   // delete multiple pages

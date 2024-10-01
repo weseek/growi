@@ -25,6 +25,7 @@ const createFileForVectorStore = async(pageId: Types.ObjectId, body: string): Pr
 
 export interface IOpenaiService {
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
+  deleteVectorStoreFile(pageIds: Types.ObjectId[]): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
   rebuildVectorStore(page: PageDocument): Promise<void>;
 }
@@ -60,6 +61,19 @@ class OpenaiService implements IOpenaiService {
     logger.debug('create vector store file: ', res);
   }
 
+  async deleteVectorStoreFile(pageIds: Types.ObjectId[]): Promise<void> {
+    const files = await this.client.getFileList();
+    pageIds.forEach(async(pageId) => {
+      const targetFiles = files.data.filter(file => file.filename === `${pageId}.md`);
+      if (targetFiles.length > 0) {
+        targetFiles.forEach(async(file) => {
+          const res = await this.client.deleteFile(file.id);
+          logger.debug('delete vector store file: ', res);
+        });
+      }
+    });
+  }
+
   async rebuildVectorStoreAll() {
     // TODO: https://redmine.weseek.co.jp/issues/154364
 
@@ -84,17 +98,10 @@ class OpenaiService implements IOpenaiService {
   }
 
   async rebuildVectorStore(page: PageDocument) {
-
-    // delete vector store file
-    const files = await this.client.getFileList();
-    files.data.forEach(async(file) => {
-      if (file.filename === `${page._id}.md`) {
-        const res = await this.client.deleteFile(file.id);
-        logger.debug('delete vector store file: ', res);
-      }
-    });
-
-    await this.createVectorStoreFile([page]);
+    if (page._id != null) {
+      await this.deleteVectorStoreFile([page._id]);
+      await this.createVectorStoreFile([page]);
+    }
   }
 
 }
