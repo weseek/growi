@@ -2,16 +2,15 @@
   "$schema": "http://json.schemastore.org/tsconfig",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "jsx": "react-jsx",
-
     "baseUrl": ".",
     "paths": {
+      "~/*": ["./src/*"]
     },
-
-    /* TODO: remove below flags for strict checking */
-    "noImplicitAny": false
+    "types": [
+      "vitest/globals"
+    ]
   },
   "include": [
-    "src"
+    "src", "test"
   ]
 }

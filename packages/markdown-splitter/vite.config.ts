@@ -1,6 +1,5 @@
 import path from 'path';
 
-import react from '@vitejs/plugin-react';
 import glob from 'glob';
 import { nodeExternals } from 'rollup-plugin-node-externals';
 import { defineConfig } from 'vite';
@@ -9,8 +8,9 @@ import dts from 'vite-plugin-dts';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    react(),
-    dts({ copyDtsFiles: true }),
+    dts({
+      copyDtsFiles: true,
+    }),
     {
       ...nodeExternals({
         devDeps: true,
@@ -26,8 +26,8 @@ export default defineConfig({
       entry: glob.sync(path.resolve(__dirname, 'src/**/*.ts'), {
         ignore: '**/*.spec.ts',
       }),
-      name: 'presentation-libs',
-      formats: ['es'],
+      name: 'core-libs',
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
       output: {
