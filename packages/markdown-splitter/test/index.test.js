@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 
-import { splitMarkdownByTokens } from '../src/services/markdown-token-splitter';
+import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter';
 
-describe('splitMarkdownByTokens', () => {
+describe('splitMarkdownIntoChunks', () => {
 
   it('should split markdown into sections using the specified chunk size', async() => {
     const markdown = `
@@ -19,7 +19,7 @@ This is some content under heading 3.
 This is some content under heading 4.
 `;
     const chunkSize = 60;
-    const result = await splitMarkdownByTokens(markdown, chunkSize);
+    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
 
     // Expect the result to have more than one section due to chunkSize limitations
     expect(result.length).toBeGreaterThan(1);
@@ -33,7 +33,7 @@ This is some content under heading 4.
 This is some content without any headers. It should not be split unless it exceeds the chunk size.
 `;
     const chunkSize = 100;
-    const result = await splitMarkdownByTokens(markdown, chunkSize);
+    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
 
     // Since the content is short, expect no splits
     expect(result.length).toBe(1);
@@ -46,7 +46,7 @@ This is some content without any headers. It should not be split unless it excee
 ${'This is some repetitive content. '.repeat(50)}
 `;
     const chunkSize = 100;
-    const result = await splitMarkdownByTokens(markdown, chunkSize);
+    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
 
     expect(result.length).toBeGreaterThan(1);
     for (const section of result) {
@@ -57,7 +57,7 @@ ${'This is some repetitive content. '.repeat(50)}
   it('should handle empty markdown input', async() => {
     const markdown = '';
     const chunkSize = 10;
-    const result = await splitMarkdownByTokens(markdown, chunkSize);
+    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
 
     // Expect an empty result for empty markdown input
     expect(result.length).toBe(0);
@@ -75,7 +75,7 @@ Content under subheading 1.1.
 Content under heading 2.
 `;
     const chunkSize = 50;
-    const result = await splitMarkdownByTokens(markdown, chunkSize);
+    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
 
     // Expect multiple sections
     expect(result.length).toBeGreaterThan(1);
@@ -90,7 +90,7 @@ Content under heading 2.
 Short content.
 `;
     const chunkSize = 100;
-    const result = await splitMarkdownByTokens(markdown, chunkSize);
+    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
 
     // Expect the result to be a single section since the content is small
     expect(result.length).toBe(1);
@@ -108,7 +108,7 @@ Short content.
 # Heading 4
 `;
     const chunkSize = 50;
-    const result = await splitMarkdownByTokens(markdown, chunkSize);
+    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
 
     // Expect each heading to be treated as a separate section
     expect(result.length).toBeGreaterThan(1);

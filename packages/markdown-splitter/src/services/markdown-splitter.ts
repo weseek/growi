@@ -1,4 +1,5 @@
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
+import type { Document } from 'langchain/document';
 
 /**
  * Function to recursively split a markdown string by header sections (and within subsections if they exceed the specified max token count).
@@ -7,7 +8,7 @@ import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
  * @param chunkSize - The chunk size for splitting (default is 1000)
  * @returns An array of split markdown sections
  */
-export async function splitMarkdownByTokens(
+export async function splitMarkdownIntoChunks(
     markdownString: string,
     chunkSize = 1000, // Default chunk size set to 1000
 ): Promise<Document[]> {
