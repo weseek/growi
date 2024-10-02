@@ -72,6 +72,7 @@ export const mutateRecentlyUpdated = async(): Promise<undefined> => {
       (pageIndex, previousPageData) => getRecentlyUpdatedKey(pageIndex, previousPageData, includeWipPage),
     ),
   ));
+  return;
 };
 
 export const mutatePageList = async(): Promise<void[]> => {
