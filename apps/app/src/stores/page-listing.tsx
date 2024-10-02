@@ -39,14 +39,14 @@ export const getRecentlyUpdatedKey = (
     pageIndex: number,
     previousPageData: RecentApiResult | null,
     includeWipPage?: boolean,
-): [string, number | undefined, boolean | undefined] | null => {
+): [string, number | undefined, number | undefined, boolean | undefined] | null => {
   if (previousPageData != null && previousPageData.pages.length === 0) return null;
 
   if (pageIndex === 0 || previousPageData == null) {
-    return ['/pages/recent', undefined, includeWipPage];
+    return ['/pages/recent', undefined, undefined, includeWipPage];
   }
   const offset = previousPageData.offset + previousPageData.pages.length;
-  return ['/pages/recent', offset, includeWipPage];
+  return ['/pages/recent', offset, previousPageData.pages.length, includeWipPage];
 
 };
 
@@ -57,7 +57,7 @@ export const useSWRINFxRecentlyUpdated = (
 ): SWRInfiniteResponse<RecentApiResult, Error> => {
   return useSWRInfinite(
     (pageIndex, previousPageData) => getRecentlyUpdatedKey(pageIndex, previousPageData, includeWipPage),
-    ([endpoint, offset, includeWipPage]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit, includeWipPage }).then(response => response.data),
+    ([endpoint, offset, , includeWipPage]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit, includeWipPage }).then(response => response.data),
     {
       ...config,
       revalidateFirstPage: false,
