@@ -552,8 +552,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
 
-  console.log('props.aiEnabled', props.aiEnabled);
-
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
