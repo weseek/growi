@@ -332,10 +332,10 @@
     "keymap": "Touches",
     "indent": "Indentation",
     "paste": {
-      "title": "Coller",
-      "both": "Tout",
-      "text": "Texte",
-      "file": "Fichier"
+      "title": "Comportement du collage",
+      "both": "Les deux",
+      "text": "Texte seulement",
+      "file": "Fichier seulement"
     },
     "editor_config": "Configuration de l'éditeur",
     "Show active line": "Montrer la ligne active",

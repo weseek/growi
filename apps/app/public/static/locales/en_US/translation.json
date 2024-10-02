@@ -332,10 +332,10 @@
     "keymap": "Keymap",
     "indent": "Indent",
     "paste": {
-      "title": "Paste",
+      "title": "Paste behavior",
       "both": "Both",
-      "text": "Text",
-      "file": "File"
+      "text": "Text only",
+      "file": "File only"
     },
     "editor_config": "Editor Config",
     "Show active line": "Show active line",

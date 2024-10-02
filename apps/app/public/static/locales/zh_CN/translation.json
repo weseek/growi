@@ -322,10 +322,10 @@
     "keymap": "键表",
     "indent": "缩进",
     "paste": {
-      "title": "粘贴",
+      "title": "粘贴行为",
       "both": "两者",
-      "text": "文本",
-      "file": "文件"
+      "text": "仅文本",
+      "file": "仅文件"
     },
     "editor_config": "编辑器配置",
 		"Show active line": "显示活动行",

@@ -365,10 +365,10 @@
     "keymap": "キーマップ",
     "indent": "インデント",
     "paste": {
-      "title": "貼り付け",
+      "title": "ペースト時の動作",
       "both": "両方",
-      "text": "テキスト",
-      "file": "ファイル"
+      "text": "テキストのみ",
+      "file": "ファイルのみ"
     },
     "editor_config": "エディタ設定",
     "Show active line": "アクティブ行をハイライト",
