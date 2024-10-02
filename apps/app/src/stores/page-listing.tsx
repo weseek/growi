@@ -34,19 +34,30 @@ type RecentApiResult = {
   totalCount: number,
   offset: number,
 }
-export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolean, config?: SWRConfiguration) : SWRInfiniteResponse<RecentApiResult, Error> => {
+
+export const getRecentlyUpdatedKey = (
+    pageIndex: number,
+    previousPageData: RecentApiResult | null,
+    includeWipPage?: boolean,
+): [string, number | undefined, boolean | undefined] | null => {
+  if (previousPageData != null && previousPageData.pages.length === 0) return null;
+
+  if (pageIndex === 0 || previousPageData == null) {
+    return ['/pages/recent', undefined, includeWipPage];
+  }
+  const offset = previousPageData.offset + previousPageData.pages.length;
+  return ['/pages/recent', offset, includeWipPage];
+
+};
+
+export const useSWRINFxRecentlyUpdated = (
+    limit: number,
+    includeWipPage?: boolean,
+    config?: SWRConfiguration,
+): SWRInfiniteResponse<RecentApiResult, Error> => {
   return useSWRInfinite(
-    (pageIndex, previousPageData) => {
-      if (previousPageData != null && previousPageData.pages.length === 0) return null;
-
-      if (pageIndex === 0 || previousPageData == null) {
-        return ['/pages/recent', undefined, limit, includeWipPage];
-      }
-
-      const offset = previousPageData.offset + limit;
-      return ['/pages/recent', offset, limit, includeWipPage];
-    },
-    ([endpoint, offset, limit, includeWipPage]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit, includeWipPage }).then(response => response.data),
+    (pageIndex, previousPageData) => getRecentlyUpdatedKey(pageIndex, previousPageData, includeWipPage),
+    ([endpoint, offset, includeWipPage]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit, includeWipPage }).then(response => response.data),
     {
       ...config,
       revalidateFirstPage: false,
@@ -56,12 +67,11 @@ export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolea
 };
 
 export const mutateRecentlyUpdated = async(): Promise<undefined> => {
-  for (const key of cache.keys()) {
-    if (key.includes('/pages/recent')) {
-      mutate(unstable_serialize(() => key));
-    }
-  }
-  return;
+  [true, false].forEach(includeWipPage => mutate(
+    unstable_serialize(
+      (pageIndex, previousPageData) => getRecentlyUpdatedKey(pageIndex, previousPageData, includeWipPage),
+    ),
+  ));
 };
 
 export const mutatePageList = async(): Promise<void[]> => {
