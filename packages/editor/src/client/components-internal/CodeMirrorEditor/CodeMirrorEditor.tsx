@@ -85,41 +85,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [codeMirrorEditor, indentSize]);
 
   useEffect(() => {
-
-    const handleDrop = (event: DragEvent) => {
-      // prevents conflicts between codemirror and react-dropzone during file drops.
-      event.preventDefault();
-    };
-
-    const extension = EditorView.domEventHandlers({
-      drop: handleDrop,
-    });
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
-    return cleanupFunction;
-
-  }, [codeMirrorEditor]);
-
-  useEffect(() => {
-
-    const handleScroll = (event: Event) => {
-      event.preventDefault();
-      if (onScroll != null) {
-        onScroll();
-      }
-    };
-
-    const extension = EditorView.domEventHandlers({
-      scroll: handleScroll,
-    });
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
-    return cleanupFunction;
-
-  }, [onScroll, codeMirrorEditor]);
-
-
-  useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
       event.preventDefault();
 
@@ -156,6 +121,40 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor, editorSettings?.pasteMode, onUpload]);
+
+  useEffect(() => {
+
+    const handleDrop = (event: DragEvent) => {
+      // prevents conflicts between codemirror and react-dropzone during file drops.
+      event.preventDefault();
+    };
+
+    const extension = EditorView.domEventHandlers({
+      drop: handleDrop,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor]);
+
+  useEffect(() => {
+
+    const handleScroll = (event: Event) => {
+      event.preventDefault();
+      if (onScroll != null) {
+        onScroll();
+      }
+    };
+
+    const extension = EditorView.domEventHandlers({
+      scroll: handleScroll,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [onScroll, codeMirrorEditor]);
 
   const {
     getRootProps,
