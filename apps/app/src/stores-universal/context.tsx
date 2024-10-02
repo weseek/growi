@@ -206,6 +206,10 @@ export const useIsLocalAccountRegistrationEnabled = (initialData?: boolean): SWR
   return useContextSWR('isLocalAccountRegistrationEnabled', initialData);
 };
 
+export const useIsRomUserAllowedToComment = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isRomUserAllowedToComment', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
