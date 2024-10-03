@@ -1,14 +1,10 @@
 import { memo, useCallback, useEffect } from 'react';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import { useDefaultSocket } from '~/stores/socket-io';
-import loggerFactory from '~/utils/logger';
 
 import { PrimaryItem, type Props } from '../SidebarNav/PrimaryItem';
-
-const logger = loggerFactory('growi:PrimaryItemsForNotification');
 
 type PrimaryItemForNotificationProps = Omit<Props, 'onClick' | 'label' | 'iconName' | 'contents' | 'badgeContents' >
 
@@ -22,20 +18,9 @@ export const PrimaryItemForNotification = memo((props: PrimaryItemForNotificatio
 
   const badgeContents = notificationCount != null && notificationCount > 0 ? notificationCount : undefined;
 
-  const updateNotificationStatus = useCallback(async() => {
-    try {
-      await apiv3Post('/in-app-notification/read');
-      mutateNotificationCount();
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  }, [mutateNotificationCount]);
-
   const itemHoverHandler = useCallback((contents: SidebarContentsType) => {
     onHover?.(contents);
-    updateNotificationStatus();
-  }, [onHover, updateNotificationStatus]);
+  }, [onHover]);
 
   useEffect(() => {
     if (socket != null) {
@@ -57,7 +42,6 @@ export const PrimaryItemForNotification = memo((props: PrimaryItemForNotificatio
       label="In-App Notification"
       iconName="notifications"
       badgeContents={badgeContents}
-      onClick={updateNotificationStatus}
       onHover={itemHoverHandler}
     />
   );

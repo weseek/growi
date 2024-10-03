@@ -22,6 +22,7 @@ import PageTagRelation from '~/server/models/page-tag-relation';
 import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import { configManager } from '~/server/service/config-manager';
 import { getTranslation } from '~/server/service/i18next';
+import { getOpenaiService } from '~/server/service/openai/openai';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -197,6 +198,15 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     }
     catch (err) {
       logger.error('Failed to create subscription document', err);
+    }
+
+    // Rebuild vector store file
+    try {
+      const openaiService = getOpenaiService();
+      await openaiService?.rebuildVectorStore(createdPage);
+    }
+    catch (err) {
+      logger.error('Rebuild vector store failed', err);
     }
   }
 

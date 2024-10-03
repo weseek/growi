@@ -7,13 +7,7 @@ export default defineConfig({
   ],
   test: {
     environment: 'node',
-    exclude: [
-      '**/test/**', '**/*.spec.{tsx,jsx}',
-    ],
     clearMocks: true,
     globals: true,
-    coverage: {
-      reportsDirectory: './coverage/unit',
-    },
   },
 });

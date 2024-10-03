@@ -18,6 +18,8 @@ import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
+import { configManager } from '~/server/service/config-manager';
+import { getOpenaiService } from '~/server/service/openai/openai';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import { getYjsService } from '~/server/service/yjs';
@@ -113,6 +115,15 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       catch (err) {
         logger.error('Create user notification failed', err);
       }
+    }
+
+    // Rebuild vector store file
+    try {
+      const openaiService = getOpenaiService();
+      await openaiService?.rebuildVectorStore(updatedPage);
+    }
+    catch (err) {
+      logger.error('Rebuild vector store failed', err);
     }
   }
 

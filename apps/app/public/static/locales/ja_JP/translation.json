@@ -364,6 +364,12 @@
     "theme": "テーマ",
     "keymap": "キーマップ",
     "indent": "インデント",
+    "paste": {
+      "title": "ペースト時の動作",
+      "both": "両方",
+      "text": "テキストのみ",
+      "file": "ファイルのみ"
+    },
     "editor_config": "エディタ設定",
     "Show active line": "アクティブ行をハイライト",
     "auto_format_table": "表の自動整形",
@@ -382,7 +388,8 @@
     "display_the_page_when_posting_this_comment": "投稿時のページを表示する",
     "no_user_found": "ユーザー名が見つかりません",
     "reply": "返信",
-    "delete_comment": "コメントを削除しますか？"
+    "delete_comment": "コメントを削除しますか？",
+    "comment_management_is_not_allowed": "コメントの操作が許可されていません。"
   },
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
