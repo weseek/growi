@@ -16,7 +16,8 @@ import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password'
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body, validationResult } = require('express-validator');
+const { body } = require('express-validator');
+
 
 const router = express.Router();
 
@@ -69,7 +70,7 @@ module.exports = (crowi) => {
   }
 
   router.post('/', checkPassportStrategyMiddleware, validator.email, apiV3FormValidator, addActivity, async(req, res) => {
-    const { email } = req.query;
+    const { email } = req.body;
     const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
@@ -107,7 +108,6 @@ module.exports = (crowi) => {
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = grobalLang || req.language;
-
     const { newPassword } = req.body;
 
     const user = await User.findOne({ email });
