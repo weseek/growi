@@ -1,7 +1,6 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { format, subSeconds } from 'date-fns';
-import { FilterXSS } from 'xss';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -17,7 +16,7 @@ import { checkForgotPasswordEnabledMiddlewareFactory } from '../forgot-password'
 const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
-const { body } = require('express-validator');
+const { body, validationResult } = require('express-validator');
 
 const router = express.Router();
 
@@ -46,8 +45,9 @@ module.exports = (crowi) => {
     email: [
       body('email')
         .isEmail()
+        .escape()
         .withMessage('message.Email format is invalid')
-        .exists()
+        .notEmpty()
         .withMessage('message.Email field is required'),
     ],
   };
@@ -69,12 +69,16 @@ module.exports = (crowi) => {
   }
 
   router.post('/', checkPassportStrategyMiddleware, validator.email, addActivity, async(req, res) => {
-    const { email } = req.body;
     const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
     try {
 
+      const error = validationResult(req);
+      if (!error.isEmpty()) {
+        throw Error('invalid email format');
+      }
+      const email = req.query.email;
       const user = await User.findOne({ email });
 
       // when the user is not found or active
