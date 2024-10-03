@@ -56,8 +56,11 @@ function addExceptCondition(query, pagePath, optionsFilter): PageQuery {
   return addFilterCondition(query, pagePath, optionsFilter, true);
 }
 
+interface listPagesRequest extends Request<undefined, undefined, undefined, LsxApiParams> {
+  user: IUser,
+}
 
-export const listPages = async(req: Request & { user: IUser }, res: Response): Promise<Response> => {
+export const listPages = async(req: listPagesRequest, res: Response): Promise<Response> => {
   const user = req.user;
 
   // TODO: use express-validator
@@ -66,10 +69,10 @@ export const listPages = async(req: Request & { user: IUser }, res: Response): P
   }
 
   const params: LsxApiParams = {
-    pagePath: removeTrailingSlash(req.query.pagePath.toString()),
-    offset: req.query?.offset != null ? Number(req.query.offset) : undefined,
-    limit: req.query?.limit != null ? Number(req.query?.limit) : undefined,
-    options: req.query?.options != null ? JSON.parse(JSON.stringify(req.query.options)) : {},
+    pagePath: removeTrailingSlash(req.query.pagePath),
+    offset: req.query?.offset != null ? req.query.offset : undefined,
+    limit: req.query?.limit != null ? req.query.limit : undefined,
+    options: req.query?.options != null ? req.query.options : {},
   };
 
   const {
