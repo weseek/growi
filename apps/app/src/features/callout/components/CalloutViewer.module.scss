@@ -31,8 +31,16 @@
 
   .callout-indicator {
     display: flex;
+    align-items: center;
     margin-bottom: 16px;
     line-height: 1;
+  }
+
+  .callout-hint {
+    display: inline-block;
+    margin-right: 0.3rem;
+    vertical-align: text-bottom;
+    fill: currentColor;
   }
 
   .callout-note {
@@ -70,13 +78,6 @@
     border-left:.25em solid var(--callout-accent-important);
   }
 
-  .callout-hint > svg {
-    display: inline-block;
-    margin-right: 0.5rem;
-    vertical-align: text-bottom;
-    fill: currentColor;
-  }
-
   .callout-content:first-child,
   .callout-content:only-child {
     margin-block-start: 0;
@@ -86,6 +87,4 @@
   .callout-content:only-child {
     margin-block-end: 0;
   }
-
-
 }

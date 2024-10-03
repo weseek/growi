@@ -2,12 +2,12 @@ import type { ContainerDirective } from 'mdast-util-directive';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-import { githubCallout } from './consts';
+import { AllCallout } from './consts';
 
 export const remarkPlugin: Plugin = () => {
   return (tree) => {
     visit(tree, 'containerDirective', (node: ContainerDirective) => {
-      if (githubCallout[node.name] != null) {
+      if (AllCallout.some(name => name === node.name)) {
         const data = node.data ?? (node.data = {});
         data.hName = 'callout';
         data.hProperties = {

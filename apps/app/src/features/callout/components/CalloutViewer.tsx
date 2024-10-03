@@ -3,11 +3,31 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 
-import { githubCallout } from '../services/consts';
+import { type Callout } from '../services/consts';
 
 import styles from './CalloutViewer.module.scss';
 
 const moduleClass = styles['callout-viewer'];
+
+type CALLOUT_TO = {
+  [key in Callout]: string;
+}
+
+const CALLOUT_TO_TITLE: CALLOUT_TO = {
+  note: 'Note',
+  tip: 'Tip',
+  important: 'Important',
+  warning: 'Warning',
+  caution: 'Caution',
+};
+
+const CALLOUT_TO_ICON: CALLOUT_TO = {
+  note: 'info',
+  tip: 'lightbulb',
+  important: 'feedback',
+  warning: 'warning',
+  caution: 'report',
+};
 
 type CalloutViewerProps = {
   children: ReactNode,
@@ -25,13 +45,13 @@ export const CalloutViewer = React.memo((props: CalloutViewerProps): JSX.Element
 
   return (
     <div className={`${moduleClass} callout-viewer`}>
-      <div className={`callout callout-${githubCallout[name].title.toLowerCase()}`}>
+      <div className={`callout callout-${CALLOUT_TO_TITLE[name].toLowerCase()}`}>
         <div className="callout-indicator">
           <div className="callout-hint">
-            {githubCallout[name].hint}
+            <span className="material-symbols-outlined">{CALLOUT_TO_ICON[name]}</span>
           </div>
           <div className="callout-title">
-            {githubCallout[name].title}
+            {CALLOUT_TO_TITLE[name]}
           </div>
         </div>
         <div className="callout-content">
