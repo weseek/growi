@@ -44,7 +44,7 @@ import {
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
   useElasticsearchMaxBodyLengthToIndex,
-  useIsLocalAccountRegistrationEnabled,
+  useIsLocalAccountRegistrationEnabled, useIsAiEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -190,6 +190,8 @@ type Props = CommonProps & {
   yjsData: CurrentPageYjsData,
 
   rendererConfig: RendererConfig,
+
+  aiEnabled: boolean,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -241,6 +243,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadEnabled(props.isUploadEnabled);
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
+
+  useIsAiEnabled(props.aiEnabled);
 
   const { pageWithMeta } = props;
 
@@ -545,6 +549,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const {
     searchService, configManager, aclService,
   } = crowi;
+
+  props.aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
