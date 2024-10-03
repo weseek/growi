@@ -151,8 +151,13 @@ module.exports = (crowi) => {
         queryOpts.pagination = true;
       }
 
+      const queryCondition = {
+        pageId: page._id,
+        createdAt: { $gt: appliedAt },
+      };
+
       const paginateResult = await Revision.paginate(
-        { pageId: page._id },
+        queryCondition,
         queryOpts,
       );
 
@@ -162,17 +167,8 @@ module.exports = (crowi) => {
         }
       });
 
-      const isNotBrokenRevision = (doc) => {
-        const formattedRevisionCreatedAt = new Date(doc.createdAt);
-        const revisionBrokenBefore = new Date(appliedAt);
-
-        return formattedRevisionCreatedAt > revisionBrokenBefore;
-      };
-
-      const revisions = paginateResult.docs.filter(isNotBrokenRevision);
-
       const result = {
-        revisions,
+        revisions: paginateResult.docs,
         totalCount: paginateResult.totalDocs,
         offset: paginateResult.offset,
       };
