@@ -136,7 +136,7 @@ module.exports = (crowi) => {
       const page = await Page.findOne({ _id: pageId });
 
       const migrationCollection = connection.collection('migrations');
-      const migration = await migrationCollection.findOne({ MIGRATION_FILE_NAME });
+      const migration = await migrationCollection.findOne({ fileName: MIGRATION_FILE_NAME });
       const appliedAt = migration.appliedAt;
 
       const queryOpts = {
