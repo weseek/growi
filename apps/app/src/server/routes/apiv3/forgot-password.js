@@ -68,17 +68,12 @@ module.exports = (crowi) => {
     });
   }
 
-  router.post('/', checkPassportStrategyMiddleware, validator.email, addActivity, async(req, res) => {
+  router.post('/', checkPassportStrategyMiddleware, validator.email, apiV3FormValidator, addActivity, async(req, res) => {
+    const { email } = req.query;
     const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
     try {
-
-      const error = validationResult(req);
-      if (!error.isEmpty()) {
-        throw Error('invalid email format');
-      }
-      const email = req.query.email;
       const user = await User.findOne({ email });
 
       // when the user is not found or active
@@ -113,6 +108,7 @@ module.exports = (crowi) => {
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = grobalLang || req.language;
 
+    const { newPassword } = req.body;
 
     const user = await User.findOne({ email });
 
@@ -122,11 +118,6 @@ module.exports = (crowi) => {
     }
 
     try {
-      const error = validationResult(req);
-      if (!error.isEmpty) {
-        throw Error('invalid password format');
-      }
-      const { newPassword } = req.body;
       const userData = await user.updatePassword(newPassword);
       const serializedUserData = serializeUserSecurely(userData);
       passwordResetOrder.revokeOneTimeToken();
