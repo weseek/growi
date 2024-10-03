@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { format, subSeconds } from 'date-fns';
+import { FilterXSS } from 'xss';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -18,6 +19,7 @@ const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-dis
 const express = require('express');
 const { body } = require('express-validator');
 
+const filterXss = new FilterXSS();
 
 const router = express.Router();
 
@@ -62,15 +64,11 @@ module.exports = (crowi) => {
   }
 
   router.post('/', checkPassportStrategyMiddleware, addActivity, async(req, res) => {
-    const validEmailRegexp = new RegExp(/^[\w+\-.]+@[a-z\d\-.]+\.[a-z]+$/, 'i');
-    const { email } = req.body;
+    const email = filterXss.process(req.body.email);
     const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
     try {
-      if (!validEmailRegexp.test(email.toString())) {
-        throw new Error('invalid email format.');
-      }
 
       const user = await User.findOne({ email });
 
@@ -102,7 +100,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, addActivity, async(req, res) => {
     const { passwordResetOrder } = req;
-    const { email } = passwordResetOrder;
+    const email = filterXss.process(passwordResetOrder.email);
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = grobalLang || req.language;
     const { newPassword } = req.body;
