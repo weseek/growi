@@ -112,7 +112,7 @@ module.exports = (crowi) => {
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = grobalLang || req.language;
-    const { newPassword } = req.body;
+
 
     const user = await User.findOne({ email });
 
@@ -122,6 +122,11 @@ module.exports = (crowi) => {
     }
 
     try {
+      const error = validationResult(req);
+      if (!error.isEmpty) {
+        throw Error('invalid password format');
+      }
+      const { newPassword } = req.body;
       const userData = await user.updatePassword(newPassword);
       const serializedUserData = serializeUserSecurely(userData);
       passwordResetOrder.revokeOneTimeToken();
