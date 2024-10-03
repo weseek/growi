@@ -1,5 +1,3 @@
-import { describe, it, expect } from 'vitest';
-
 import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter';
 
 describe('splitMarkdownIntoChunks', () => {
