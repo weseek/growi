@@ -331,6 +331,12 @@
     "theme": "Theme",
     "keymap": "Keymap",
     "indent": "Indent",
+    "paste": {
+      "title": "Paste behavior",
+      "both": "Both",
+      "text": "Text only",
+      "file": "File only"
+    },
     "editor_config": "Editor Config",
     "Show active line": "Show active line",
     "auto_format_table": "Auto format table",
