@@ -14,7 +14,7 @@ export async function splitMarkdownIntoChunks(
 ): Promise<Document[]> {
   const validMarkdownString = markdownString || '';
 
-  const mdSplitter = new RecursiveCharacterTextSplitter({
+  const mdSplitter = RecursiveCharacterTextSplitter.fromLanguage('markdown', {
     chunkSize, // Use the provided chunkSize
     chunkOverlap: 0,
   });
