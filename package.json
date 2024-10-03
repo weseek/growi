@@ -82,7 +82,6 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-rulesdir": "^0.2.2",
     "eslint-plugin-vitest": "^0.2.3",
-    "@faker-js/faker": "^9.0.1",
     "glob": "^8.1.0",
     "mock-require": "^3.0.3",
     "nodemon": "^3.1.3",
