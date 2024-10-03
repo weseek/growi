@@ -321,6 +321,12 @@
     "theme": "主题",
     "keymap": "键表",
     "indent": "缩进",
+    "paste": {
+      "title": "粘贴行为",
+      "both": "两者",
+      "text": "仅文本",
+      "file": "仅文件"
+    },
     "editor_config": "编辑器配置",
 		"Show active line": "显示活动行",
 		"auto_format_table": "自动格式化表格",
