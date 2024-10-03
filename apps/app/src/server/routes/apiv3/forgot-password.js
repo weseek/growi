@@ -19,8 +19,6 @@ const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-dis
 const express = require('express');
 const { body } = require('express-validator');
 
-const filterXss = new FilterXSS();
-
 const router = express.Router();
 
 module.exports = (crowi) => {
@@ -45,6 +43,13 @@ module.exports = (crowi) => {
           return (value === req.body.newPassword);
         }),
     ],
+    email: [
+      body('email')
+        .isEmail()
+        .withMessage('message.Email format is invalid')
+        .exists()
+        .withMessage('message.Email field is required'),
+    ],
   };
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
@@ -63,8 +68,8 @@ module.exports = (crowi) => {
     });
   }
 
-  router.post('/', checkPassportStrategyMiddleware, addActivity, async(req, res) => {
-    const email = filterXss.process(req.body.email);
+  router.post('/', checkPassportStrategyMiddleware, validator.email, addActivity, async(req, res) => {
+    const { email } = req.body;
     const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
 
@@ -100,7 +105,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, addActivity, async(req, res) => {
     const { passwordResetOrder } = req;
-    const email = filterXss.process(passwordResetOrder.email);
+    const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
     const i18n = grobalLang || req.language;
     const { newPassword } = req.body;
