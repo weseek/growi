@@ -7,9 +7,8 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { useRagSearchModal } from '~/stores/rag-search';
 import loggerFactory from '~/utils/logger';
 
-import { AutoResizeTextarea } from './AutoResizeTextarea';
 import { MessageCard } from './MessageCard';
-
+import { useResizableTextarea } from './use-resizable-textarea';
 
 import styles from './RagSearchModal.module.scss';
 
@@ -35,6 +34,7 @@ const RagSearchModal = (): JSX.Element => {
       input: '',
     },
   });
+  const resizable = useResizableTextarea();
 
   const [threadId, setThreadId] = useState<string | undefined>();
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
@@ -166,16 +166,11 @@ const RagSearchModal = (): JSX.Element => {
           <form onSubmit={clickSubmitUserMessageHandler} className="hstack gap-2 align-items-end mt-4">
             <textarea
               {...form.register('input')}
+              {...resizable.register()}
               required
               className="form-control textarea-ask"
               style={{ resize: 'none' }}
               rows={1}
-              // auto resize
-              // refs: https://zenn.dev/soma3134/articles/1e2fb0eab75b2d
-              onChange={(e) => {
-                e.target.style.height = 'auto';
-                e.target.style.height = `${e.target.scrollHeight + 4}px`;
-              }}
               placeholder="ききたいことを入力してください"
             />
             <button
