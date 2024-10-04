@@ -3,11 +3,12 @@ import { Readable, Transform } from 'stream';
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
+import type OpenAI from 'openai';
 import { toFile } from 'openai';
-import type { FileLike } from 'openai/uploads.mjs';
 
 import { OpenaiServiceTypes } from '~/interfaces/ai';
 import type { PageDocument, PageModel } from '~/server/models/page';
+import VectorStoreRelation from '~/server/models/vector-store-relation';
 import { configManager } from '~/server/service/config-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -19,9 +20,6 @@ const BATCH_SIZE = 100;
 
 const logger = loggerFactory('growi:service:openai');
 
-const createFileForVectorStore = async(pageId: Types.ObjectId, body: string): Promise<FileLike> => {
-  return toFile(Readable.from(body), `${pageId}.md`);
-};
 
 export interface IOpenaiService {
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
@@ -35,28 +33,48 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  async createVectorStoreFile(pages: PageDocument[]): Promise<void> {
-    const filesPromise: Promise<FileLike>[] = [];
-    pages.forEach(async(page) => {
+  private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
+    const file = await toFile(Readable.from(body), `${pageId}.md`);
+    const uploadedFile = await this.client.uploadFile(file);
+    await VectorStoreRelation.create({ pageId, fileId: uploadedFile.id });
+    return uploadedFile;
+  }
+
+  async createVectorStoreFile(pages: Array<PageDocument>): Promise<void> {
+    const uploadedFileIds: string[] = [];
+
+    const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
-          filesPromise.push(createFileForVectorStore(page._id, page.revision.body));
+          const uploadedFile = await this.uploadFile(page._id, page.revision.body);
+          uploadedFileIds.push(uploadedFile.id);
+          return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
-          filesPromise.push(createFileForVectorStore(page._id, pagePopulatedToShowRevision.revision.body));
+          const uploadedFile = await this.uploadFile(page._id, pagePopulatedToShowRevision.revision.body);
+          uploadedFileIds.push(uploadedFile.id);
         }
       }
-    });
+    };
 
-    if (filesPromise.length === 0) {
+    if (uploadedFileIds.length === 0) {
       return;
     }
 
-    const files = await Promise.all(filesPromise);
+    // Start workers to process results
+    const workers = pages.map(processUploadFile);
 
-    const res = await this.client.uploadAndPoll(files);
+    // Wait for all processing to complete.
+    const fileUploadResult = await Promise.allSettled(workers);
+    fileUploadResult.forEach((result) => {
+      if (result.status === 'rejected') {
+        logger.error(result.reason);
+      }
+    });
+
+    const res = await this.client.createVectorStoreFileBatch(uploadedFileIds);
     logger.debug('create vector store file: ', res);
   }
 
