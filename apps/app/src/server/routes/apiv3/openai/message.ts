@@ -1,6 +1,6 @@
 import assert from 'assert';
 
-import type { Request, RequestHandler } from 'express';
+import type { Request, RequestHandler, Response } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import type { AssistantStream } from 'openai/lib/AssistantStream';
@@ -12,7 +12,6 @@ import { getOrCreateChatAssistant } from '~/server/service/openai/assistant';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
-import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 
 const logger = loggerFactory('growi:routes:apiv3:openai:chat');
@@ -23,7 +22,7 @@ type ReqBody = {
   threadId?: string,
 }
 
-type Req = Request<undefined, ApiV3Response, ReqBody>
+type Req = Request<undefined, Response, ReqBody>
 
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
@@ -38,7 +37,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
 
   return [
     accessTokenParser, loginRequiredStrictly, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    async(req: Req, res: Response) => {
 
       const threadId = req.body.threadId;
 
