@@ -26,6 +26,9 @@ export const WipPageAlert = (): JSX.Element => {
       const mutatePageTree = (await import('~/stores/page-listing')).mutatePageTree;
       await mutatePageTree();
 
+      const mutateRecentlyUpdated = (await import('~/stores/page-listing')).mutateRecentlyUpdated;
+      await mutateRecentlyUpdated();
+
       const toastSuccess = (await import('~/client/util/toastr')).toastSuccess;
       toastSuccess(t('wip_page.success_publish_page'));
     }
