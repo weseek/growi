@@ -1,117 +1,255 @@
-import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter';
+// splitMarkdownIntoChunks.test.ts
+
+import type { Chunk } from '../src/services/markdown-splitter';
+import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter'; // パスはプロジェクト構造に応じて調整してください
 
 describe('splitMarkdownIntoChunks', () => {
 
-  it('should split markdown into sections using the specified chunk size', async() => {
-    const markdown = `
-# Heading 1
-This is some content under heading 1.
-
-# Heading 2
-This is some content under heading 2.
-
-# Heading 3
-This is some content under heading 3.
-
-# Heading 4
-This is some content under heading 4.
-`;
-    const chunkSize = 60;
-    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
-
-    // Expect the result to have more than one section due to chunkSize limitations
-    expect(result.length).toBeGreaterThan(1);
-    for (const section of result) {
-      expect(section.pageContent.length).toBeLessThanOrEqual(chunkSize);
-    }
-  });
-
-  it('should handle markdown without headers', async() => {
-    const markdown = `
-This is some content without any headers. It should not be split unless it exceeds the chunk size.
-`;
-    const chunkSize = 100;
-    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
-
-    // Since the content is short, expect no splits
-    expect(result.length).toBe(1);
-    expect(result[0].pageContent.length).toBeLessThanOrEqual(chunkSize);
-  });
-
-  it('should split large content under a single heading', async() => {
-    const markdown = `
-# Large Heading
-${'This is some repetitive content. '.repeat(50)}
-`;
-    const chunkSize = 100;
-    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
-
-    expect(result.length).toBeGreaterThan(1);
-    for (const section of result) {
-      expect(section.pageContent.length).toBeLessThanOrEqual(chunkSize);
-    }
-  });
-
-  it('should handle empty markdown input', async() => {
+  test('handles empty markdown string', () => {
     const markdown = '';
-    const chunkSize = 10;
-    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
-
-    // Expect an empty result for empty markdown input
-    expect(result.length).toBe(0);
+    const expected: Chunk[] = [];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
   });
 
-  it('should correctly split nested headings', async() => {
+  test('handles markdown with only content and no headers', () => {
+    const markdown = `This is some content without any headers.
+It spans multiple lines.
+
+Another paragraph.
+    `;
+    const expected: Chunk[] = [
+      {
+        label: '0-content',
+        content: 'This is some content without any headers.\nIt spans multiple lines.\n\nAnother paragraph.',
+      },
+    ];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
+  });
+
+  test('handles markdown starting with a header', () => {
     const markdown = `
-# Heading 1
-Content under heading 1.
+# Header 1
+Content under header 1.
 
-## Subheading 1.1
-Content under subheading 1.1.
+## Header 1.1
+Content under header 1.1.
 
-# Heading 2
-Content under heading 2.
-`;
-    const chunkSize = 50;
-    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
-
-    // Expect multiple sections
-    expect(result.length).toBeGreaterThan(1);
-    for (const section of result) {
-      expect(section.pageContent.length).toBeLessThanOrEqual(chunkSize);
-    }
+# Header 2
+Content under header 2.
+    `;
+    const expected: Chunk[] = [
+      { label: '1', content: '# Header 1' },
+      { label: '1-content', content: 'Content under header 1.' },
+      { label: '1-1', content: '## Header 1.1' },
+      { label: '1-1-content', content: 'Content under header 1.1.' },
+      { label: '2', content: '# Header 2' },
+      { label: '2-content', content: 'Content under header 2.' },
+    ];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
   });
 
-  it('should not split if content fits within chunk size', async() => {
+  test('handles markdown with non-consecutive heading levels', () => {
     const markdown = `
-# Heading
-Short content.
-`;
-    const chunkSize = 100;
-    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
+Introduction without a header.
 
-    // Expect the result to be a single section since the content is small
-    expect(result.length).toBe(1);
-    expect(result[0].pageContent.length).toBeLessThanOrEqual(chunkSize);
+# Chapter 1
+Content of chapter 1.
+
+### Section 1.1.1
+Content of section 1.1.1.
+
+## Section 1.2
+Content of section 1.2.
+
+# Chapter 2
+Content of chapter 2.
+
+## Section 2.1
+Content of section 2.1.
+    `;
+    const expected: Chunk[] = [
+      {
+        label: '0-content',
+        content: 'Introduction without a header.',
+      },
+      {
+        label: '1',
+        content: '# Chapter 1',
+      },
+      {
+        label: '1-content',
+        content: 'Content of chapter 1.',
+      },
+      {
+        label: '1-1-1',
+        content: '### Section 1.1.1',
+      },
+      {
+        label: '1-1-1-content',
+        content: 'Content of section 1.1.1.',
+      },
+      {
+        label: '1-2',
+        content: '## Section 1.2',
+      },
+      {
+        label: '1-2-content',
+        content: 'Content of section 1.2.',
+      },
+      {
+        label: '2',
+        content: '# Chapter 2',
+      },
+      {
+        label: '2-content',
+        content: 'Content of chapter 2.',
+      },
+      {
+        label: '2-1',
+        content: '## Section 2.1',
+      },
+      {
+        label: '2-1-content',
+        content: 'Content of section 2.1.',
+      },
+    ];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
   });
 
-  it('should handle multiple consecutive headers', async() => {
+  test('handles markdown with skipped heading levels', () => {
     const markdown = `
-# Heading 1
+# Header 1
+Content under header 1.
 
-# Heading 2
+#### Header 1.1.1.1
+Content under header 1.1.1.1.
 
-# Heading 3
+## Header 1.2
+Content under header 1.2.
 
-# Heading 4
-`;
-    const chunkSize = 50;
-    const result = await splitMarkdownIntoChunks(markdown, chunkSize);
-
-    // Expect each heading to be treated as a separate section
-    expect(result.length).toBeGreaterThan(1);
-    for (const section of result) {
-      expect(section.pageContent.length).toBeLessThanOrEqual(chunkSize);
-    }
+# Header 2
+Content under header 2.
+    `;
+    const expected: Chunk[] = [
+      { label: '1', content: '# Header 1' },
+      { label: '1-content', content: 'Content under header 1.' },
+      { label: '1-1-1-1', content: '#### Header 1.1.1.1' },
+      { label: '1-1-1-1-content', content: 'Content under header 1.1.1.1.' },
+      { label: '1-2', content: '## Header 1.2' },
+      { label: '1-2-content', content: 'Content under header 1.2.' },
+      { label: '2', content: '# Header 2' },
+      { label: '2-content', content: 'Content under header 2.' },
+    ];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
   });
+
+  test('handles malformed headings', () => {
+    const markdown = `
+# Header 1
+Content under header 1.
+
+#### Header 1.1.1.1
+Content under header 1.1.1.1.
+    `;
+    const expected: Chunk[] = [
+      { label: '1', content: '# Header 1' },
+      { label: '1-content', content: 'Content under header 1.' },
+      // Malformed heading '### ' is skipped or handled as content
+      { label: '1-1-1-1', content: '#### Header 1.1.1.1' },
+      { label: '1-1-1-1-content', content: 'Content under header 1.1.1.1.' },
+    ];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
+  });
+
+  test('handles multiple content blocks before any headers', () => {
+    const markdown = `
+This is the first paragraph without a header.
+
+This is the second paragraph without a header.
+
+# Header 1
+Content under header 1.
+    `;
+    const expected: Chunk[] = [
+      {
+        label: '0-content',
+        content: 'This is the first paragraph without a header.\n\nThis is the second paragraph without a header.',
+      },
+      { label: '1', content: '# Header 1' },
+      { label: '1-content', content: 'Content under header 1.' },
+    ];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
+  });
+
+  test('handles markdown with only headers and no content', () => {
+    const markdown = `
+# Header 1
+
+## Header 1.1
+
+### Header 1.1.1
+    `;
+    const expected: Chunk[] = [
+      { label: '1', content: '# Header 1' },
+      { label: '1-1', content: '## Header 1.1' },
+      { label: '1-1-1', content: '### Header 1.1.1' },
+    ];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
+  });
+
+  test('handles markdown with mixed content and headers', () => {
+    const markdown = `
+# Header 1
+Content under header 1.
+
+## Header 1.1
+Content under header 1.1.
+Another piece of content.
+
+# Header 2
+Content under header 2.
+    `;
+    const expected: Chunk[] = [
+      { label: '1', content: '# Header 1' },
+      { label: '1-content', content: 'Content under header 1.' },
+      { label: '1-1', content: '## Header 1.1' },
+      { label: '1-1-content', content: 'Content under header 1.1.\nAnother piece of content.' },
+      { label: '2', content: '# Header 2' },
+      { label: '2-content', content: 'Content under header 2.' },
+    ];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
+  });
+
+  test('preserves list indentation and reduces unnecessary line breaks', () => {
+    const markdown = `
+# Header 1
+Content under header 1.
+
+- Item 1
+  - Subitem 1
+- Item 2
+
+
+# Header 2
+Content under header 2.
+    `;
+    const expected: Chunk[] = [
+      { label: '1', content: '# Header 1' },
+      { label: '1-content', content: 'Content under header 1.\n\n- Item 1\n  - Subitem 1\n- Item 2' },
+      { label: '2', content: '# Header 2' },
+      { label: '2-content', content: 'Content under header 2.' },
+    ];
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
+  });
+
 });
