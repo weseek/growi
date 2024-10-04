@@ -1,0 +1,21 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '@growi/ui/scss/atoms/btn-muted';
+
+.rag-search-modal :global {
+
+  .textarea-ask {
+    max-height: 30vh;
+  }
+
+  .btn-submit {
+    font-size: 1.1em;
+  }
+}
+
+
+// == Colors
+.rag-search-modal :global {
+  .btn-submit {
+    @include btn-muted.colorize(bs.$purple, bs.$purple);
+  }
+}
