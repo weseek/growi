@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 
@@ -56,7 +56,7 @@ const RagSearchModal = (): JSX.Element => {
     createThread();
   }, [isOpened, threadId]);
 
-  const onClickSubmitUserMessageHandler = async() => {
+  const onClickSubmitUserMessageHandler = useCallback(async() => {
     const newUserMessage = { id: messages.length.toString(), content: input, isUserMessage: true };
     setMessages(msgs => [...msgs, newUserMessage]);
 
@@ -64,11 +64,31 @@ const RagSearchModal = (): JSX.Element => {
 
     // post message
     try {
-      const res = await apiv3Post('/openai/message', { userMessage: input, threadId });
+      const res = await fetch('/_api/v3/openai/message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userMessage: input, threadId }),
+      });
 
-      if (res.data) {
-        console.log(res.data);
-      }
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder('utf-8');
+
+      const read = async() => {
+        if (reader == null) return;
+
+        const { done, value } = await reader.read();
+        if (done) {
+          console.log('ストリームの読み込みが完了しました');
+          return;
+        }
+        const chunk = decoder.decode(value);
+        console.log('受信したデータ:', chunk);
+        read();
+      };
+      read();
+
+      // const res = await apiv3Post('/openai/message', { userMessage: input, threadId });
+
       // if (res.data) {
       //   const newMessages: Message[] = assistantMessageData.data.reverse()
       //     .map((message: any) => {
@@ -85,7 +105,7 @@ const RagSearchModal = (): JSX.Element => {
     catch (err) {
       logger.error(err.toString());
     }
-  };
+  }, [input, messages.length, threadId]);
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRagSearchModal} data-testid="search-modal">
