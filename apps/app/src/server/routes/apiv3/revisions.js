@@ -156,6 +156,7 @@ module.exports = (crowi) => {
         createdAt: { $gt: appliedAt },
       };
 
+      // https://redmine.weseek.co.jp/issues/151652
       const paginateResult = await Revision.paginate(
         queryCondition,
         queryOpts,
