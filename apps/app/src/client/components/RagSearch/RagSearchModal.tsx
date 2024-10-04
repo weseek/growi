@@ -45,13 +45,16 @@ const RagSearchModal = (): JSX.Element => {
   const isOpened = ragSearchModalData?.isOpened ?? false;
 
   useEffect(() => {
-    // do nothing when modal is not opened
+    // clear states when the modal is closed
     if (!isOpened) {
-      return;
+      setMessageLogs([]);
+      setThreadId(undefined);
     }
+  }, [isOpened]);
 
-    // do nothing when threadId is already set
-    if (threadId != null) {
+  useEffect(() => {
+    // do nothing when the modal is closed or threadId is already set
+    if (!isOpened || threadId != null) {
       return;
     }
 
@@ -115,8 +118,11 @@ const RagSearchModal = (): JSX.Element => {
 
         // add assistant message to the logs
         if (done) {
-          setMessageLogs(msgs => [...msgs, newAssistantMessage]);
-          setLastMessage(undefined);
+          setLastMessage((lastMessage) => {
+            if (lastMessage == null) return;
+            setMessageLogs(msgs => [...msgs, lastMessage]);
+            return undefined;
+          });
           return;
         }
 
@@ -132,8 +138,13 @@ const RagSearchModal = (): JSX.Element => {
           });
 
         // append text values to the assistant message
-        newAssistantMessage.content += textValues.join('');
-        setLastMessage(newAssistantMessage);
+        setLastMessage((prevMessage) => {
+          if (prevMessage == null) return;
+          return {
+            ...prevMessage,
+            content: prevMessage.content + textValues.join(''),
+          };
+        });
 
         read();
       };
