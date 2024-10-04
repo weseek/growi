@@ -11,9 +11,9 @@ type VectorStoreRelation = {
   fileId: string;
 }
 
-export interface VectorStoreRelationDocument extends VectorStoreRelation, Document {}
+interface VectorStoreRelationDocument extends VectorStoreRelation, Document {}
 
-export type VectorStoreRelationModel = Model<VectorStoreRelationDocument>
+type VectorStoreRelationModel = Model<VectorStoreRelationDocument>
 
 const schema = new Schema<VectorStoreRelationDocument, VectorStoreRelationModel>({
   pageId: { type: Schema.Types.ObjectId, ref: 'Page', required: true },
