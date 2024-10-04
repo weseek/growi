@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import type { KeyboardEvent } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
@@ -74,7 +75,7 @@ const RagSearchModal = (): JSX.Element => {
     createThread();
   }, [isOpened, threadId]);
 
-  const clickSubmitUserMessageHandler = form.handleSubmit(async(data) => {
+  const submit = useCallback(async(data: FormData) => {
     const { length: logLength } = messageLogs;
 
     // post message
@@ -155,7 +156,13 @@ const RagSearchModal = (): JSX.Element => {
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  });
+  }, [form, messageLogs, threadId]);
+
+  const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
+      form.handleSubmit(submit)();
+    }
+  };
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRagSearchModal} className={moduleClass}>
@@ -174,15 +181,16 @@ const RagSearchModal = (): JSX.Element => {
         </div>
 
         <div>
-          <form onSubmit={clickSubmitUserMessageHandler} className="hstack gap-2 align-items-end mt-4">
+          <form onSubmit={form.handleSubmit(submit)} className="hstack gap-2 align-items-end mt-4">
             <textarea
               {...form.register('input')}
-              {...resizable.register()}
+              // {...resizable.register()}
               required
               className="form-control textarea-ask"
               style={{ resize: 'none' }}
               rows={1}
               placeholder="ききたいことを入力してください"
+              onKeyDown={keyDownHandler}
             />
             <button
               type="submit"
