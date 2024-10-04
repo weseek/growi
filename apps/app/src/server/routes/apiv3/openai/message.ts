@@ -4,6 +4,7 @@ import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import type { AssistantStream } from 'openai/lib/AssistantStream';
+import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
 import type Crowi from '~/server/crowi';
 import { openaiClient } from '~/server/service/openai';
@@ -15,6 +16,7 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 
 const logger = loggerFactory('growi:routes:apiv3:openai:chat');
+
 
 type ReqBody = {
   userMessage: string,
@@ -60,20 +62,25 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         return res.status(500).send(err);
       }
 
-      res.setHeader('Content-Type', 'text/event-stream;charset=utf-8');
-      res.setHeader('Cache-Control', 'no-cache, no-transform');
-      res.setHeader('X-Accel-Buffering', 'no');
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream;charset=utf-8',
+        'Cache-Control': 'no-cache, no-transform',
+      });
 
-      try {
-        res.send(stream.toReadableStream());
-      }
-      catch (e) {
-        return res.status(500).send({ message: 'Internal server error', error: e });
-      }
-      finally {
+      const messageDeltaHandler = (delta: MessageDelta) => {
+        res.write(`data: ${JSON.stringify(delta)}\n\n`);
+      };
+
+      stream.on('messageDelta', messageDeltaHandler);
+      stream.once('messageDone', () => {
+        stream.off('messageDelta', messageDeltaHandler);
         res.end();
-      }
-
+      });
+      stream.once('error', (err) => {
+        logger.error(err);
+        stream.off('messageDelta', messageDeltaHandler);
+        res.end();
+      });
     },
   ];
 };
