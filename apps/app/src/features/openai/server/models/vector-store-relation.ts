@@ -4,7 +4,7 @@ import {
   Schema,
 } from 'mongoose';
 
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 type VectorStoreRelation = {
   pageId: mongoose.Types.ObjectId;

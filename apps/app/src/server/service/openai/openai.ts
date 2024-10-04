@@ -6,9 +6,9 @@ import mongoose from 'mongoose';
 import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
+import VectorStoreRelation from '~/features/openai/server/models/vector-store-relation';
 import { OpenaiServiceTypes } from '~/interfaces/ai';
 import type { PageDocument, PageModel } from '~/server/models/page';
-import VectorStoreRelation from '~/server/models/vector-store-relation';
 import { configManager } from '~/server/service/config-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
