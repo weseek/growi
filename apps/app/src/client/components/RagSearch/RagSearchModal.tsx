@@ -78,11 +78,22 @@ const RagSearchModal = (): JSX.Element => {
 
         const { done, value } = await reader.read();
         if (done) {
-          console.log('ストリームの読み込みが完了しました');
           return;
         }
+
         const chunk = decoder.decode(value);
-        console.log('受信したデータ:', chunk);
+
+        // Extract text values from the chunk
+        const textValues = chunk
+          .split('\n\n')
+          .filter(line => line.trim().startsWith('data:'))
+          .map((line) => {
+            const data = JSON.parse(line.replace('data: ', ''));
+            return data.content[0].text.value;
+          });
+
+        console.log(textValues.join(''));
+
         read();
       };
       read();
