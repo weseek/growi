@@ -11,12 +11,10 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:chat');
 
-type ReqBody = {
+type CreateThreadReq = Request<undefined, ApiV3Response, {
   userMessage: string,
   threadId?: string,
-}
-
-type Req = Request<undefined, ApiV3Response, ReqBody>
+}>
 
 type CreateThreadFactory = (crowi: Crowi) => RequestHandler[];
 
@@ -30,7 +28,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
 
   return [
     accessTokenParser, loginRequiredStrictly, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    async(req: CreateThreadReq, res: ApiV3Response) => {
 
       const vectorStoreId = process.env.OPENAI_VECTOR_STORE_ID;
       if (vectorStoreId == null) {
