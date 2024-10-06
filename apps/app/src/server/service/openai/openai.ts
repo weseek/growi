@@ -47,8 +47,8 @@ class OpenaiService implements IOpenaiService {
       for (const fileId of vectorStoreFileRelation.fileIds) {
         try {
           // eslint-disable-next-line no-await-in-loop
-          const res = await this.client.deleteFile(fileId);
-          logger.debug('Delete vector store file', res);
+          const deleteFileRes = await this.client.deleteFile(fileId);
+          logger.debug('Delete vector store file', deleteFileRes);
           deletedFileIds.push(fileId);
         }
         catch (err) {
@@ -94,8 +94,8 @@ class OpenaiService implements IOpenaiService {
     try {
       // Create vector store file
       const uploadedFileIds = vectorStoreFileRelations.map(data => data.fileIds).flat();
-      const res = await this.client.createVectorStoreFileBatch(uploadedFileIds);
-      logger.debug('Create vector store file', res);
+      const createVectorStoreFileBatchRes = await this.client.createVectorStoreFileBatch(uploadedFileIds);
+      logger.debug('Create vector store file', createVectorStoreFileBatchRes);
 
       // Save vector store file relation
       await VectorStoreFileRelationModel.updateOrCreateDocument(vectorStoreFileRelations);
