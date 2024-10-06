@@ -41,6 +41,29 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
+  private async deleteFile(page: PageDocument): Promise<void> {
+    // Delete vector store file and delete vector store file relation
+    const vectorStoreFileRelation = await VectorStoreRelationModel.findOne({ pageId: page._id });
+    if (vectorStoreFileRelation != null) {
+      const deletedFileIds: string[] = [];
+      for (const fileId of vectorStoreFileRelation.fileIds) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const res = await this.client.deleteFile(fileId);
+          logger.debug('Delete vector store file', res);
+          deletedFileIds.push(fileId);
+        }
+        catch (err) {
+          logger.error(err);
+        }
+      }
+
+      const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
+      vectorStoreFileRelation.fileIds = undeletedFileIds;
+      vectorStoreFileRelation.save();
+    }
+  }
+
   async createVectorStoreFile(pages: Array<PageDocument>): Promise<void> {
     const vectorStoreFileRelations: VectorStoreRelation[] = [];
     const processUploadFile = async(page: PageDocument) => {
@@ -109,27 +132,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async rebuildVectorStore(page: PageDocument) {
-    // Delete vector store file and delete vector store file relation
-    const vectorStoreFileRelation = await VectorStoreRelationModel.findOne({ pageId: page._id });
-    if (vectorStoreFileRelation != null) {
-      const deletedFileIds: string[] = [];
-      for (const fileId of vectorStoreFileRelation.fileIds) {
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          const res = await this.client.deleteFile(fileId);
-          logger.debug('Delete vector store file', res);
-          deletedFileIds.push(fileId);
-        }
-        catch (err) {
-          logger.error(err);
-        }
-      }
-
-      const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
-      vectorStoreFileRelation.fileIds = undeletedFileIds;
-      vectorStoreFileRelation.save();
-    }
-
+    await this.deleteFile(page);
     await this.createVectorStoreFile([page]);
   }
 
