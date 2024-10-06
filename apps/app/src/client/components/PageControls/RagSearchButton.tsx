@@ -10,8 +10,6 @@ const RagSearchButton = (): JSX.Element => {
   const { data: isAiEnabled } = useIsAiEnabled();
   const { open: openRagSearchModal } = useRagSearchModal();
 
-  console.log('isAiEnabled', isAiEnabled);
-
   const ragSearchButtonClickHandler = useCallback(() => {
     openRagSearchModal();
   }, [openRagSearchModal]);
