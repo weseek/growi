@@ -12,7 +12,7 @@ export interface VectorStoreFileRelation {
 interface VectorStoreFileRelationDocument extends VectorStoreFileRelation, Document {}
 
 interface VectorStoreFileRelationModel extends Model<VectorStoreFileRelation> {
-  updateOrCreateDocument(requestData: VectorStoreFileRelation[]): Promise<void>;
+  upsertVectorStoreFileRelations(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void>;
 }
 
 export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, vectorStoreFileRelations: VectorStoreFileRelation[]): VectorStoreFileRelation[] => {
@@ -46,7 +46,7 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
   }],
 });
 
-schema.statics.updateOrCreateDocument = async function(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
+schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
   await this.bulkWrite(
     vectorStoreFileRelations.map((data) => {
       return {

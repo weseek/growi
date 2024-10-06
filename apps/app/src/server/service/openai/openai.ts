@@ -98,7 +98,7 @@ class OpenaiService implements IOpenaiService {
       logger.debug('Create vector store file', createVectorStoreFileBatchRes);
 
       // Save vector store file relation
-      await VectorStoreFileRelationModel.updateOrCreateDocument(vectorStoreFileRelations);
+      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
     }
     catch (err) {
       logger.error(err);
