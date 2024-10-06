@@ -4,18 +4,18 @@ import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-export interface VectorStoreRelation {
+export interface VectorStoreFileRelation {
   pageId: mongoose.Types.ObjectId;
   fileIds: string[];
 }
 
-interface VectorStoreRelationDocument extends VectorStoreRelation, Document {}
+interface VectorStoreFileRelationDocument extends VectorStoreFileRelation, Document {}
 
-interface VectorStoreRelationModel extends Model<VectorStoreRelation> {
-  updateOrCreateDocument(requestData: VectorStoreRelation[]): Promise<void>;
+interface VectorStoreFileRelationModel extends Model<VectorStoreFileRelation> {
+  updateOrCreateDocument(requestData: VectorStoreFileRelation[]): Promise<void>;
 }
 
-export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, vectorStoreFileRelations: VectorStoreRelation[]): VectorStoreRelation[] => {
+export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, vectorStoreFileRelations: VectorStoreFileRelation[]): VectorStoreFileRelation[] => {
   const existingData = vectorStoreFileRelations.find(relation => relation.pageId.equals(pageId));
 
   // If the data exists, add the fileId to the fileIds array
@@ -33,7 +33,7 @@ export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, vect
   return vectorStoreFileRelations;
 };
 
-const schema = new Schema<VectorStoreRelationDocument, VectorStoreRelationModel>({
+const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelationModel>({
   pageId: {
     type: Schema.Types.ObjectId,
     ref: 'Page',
@@ -46,7 +46,7 @@ const schema = new Schema<VectorStoreRelationDocument, VectorStoreRelationModel>
   }],
 });
 
-schema.statics.updateOrCreateDocument = async function(vectorStoreFileRelations: VectorStoreRelation[]): Promise<void> {
+schema.statics.updateOrCreateDocument = async function(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
   await this.bulkWrite(
     vectorStoreFileRelations.map((data) => {
       return {
@@ -60,4 +60,4 @@ schema.statics.updateOrCreateDocument = async function(vectorStoreFileRelations:
   );
 };
 
-export default getOrCreateModel<VectorStoreRelationDocument, VectorStoreRelationModel>('VectorStoreRelation', schema);
+export default getOrCreateModel<VectorStoreFileRelationDocument, VectorStoreFileRelationModel>('VectorStoreFileRelation', schema);

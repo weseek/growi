@@ -1,14 +1,12 @@
-import { error } from 'console';
 import { Readable, Transform } from 'stream';
 
-import { fi } from '@faker-js/faker';
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
 import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
-import VectorStoreRelationModel, { type VectorStoreRelation, prepareDocumentData } from '~/features/openai/server/models/vector-store-relation';
+import VectorStoreFileRelationModel, { type VectorStoreFileRelation, prepareDocumentData } from '~/features/openai/server/models/vector-store-file-relation';
 import { OpenaiServiceTypes } from '~/interfaces/ai';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
@@ -43,7 +41,7 @@ class OpenaiService implements IOpenaiService {
 
   private async deleteFile(page: PageDocument): Promise<void> {
     // Delete vector store file and delete vector store file relation
-    const vectorStoreFileRelation = await VectorStoreRelationModel.findOne({ pageId: page._id });
+    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ pageId: page._id });
     if (vectorStoreFileRelation != null) {
       const deletedFileIds: string[] = [];
       for (const fileId of vectorStoreFileRelation.fileIds) {
@@ -65,7 +63,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createVectorStoreFile(pages: Array<PageDocument>): Promise<void> {
-    const vectorStoreFileRelations: VectorStoreRelation[] = [];
+    const vectorStoreFileRelations: VectorStoreFileRelation[] = [];
     const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
@@ -100,7 +98,7 @@ class OpenaiService implements IOpenaiService {
       logger.debug('Create vector store file', res);
 
       // Save vector store file relation
-      await VectorStoreRelationModel.updateOrCreateDocument(vectorStoreFileRelations);
+      await VectorStoreFileRelationModel.updateOrCreateDocument(vectorStoreFileRelations);
     }
     catch (err) {
       logger.error(err);
