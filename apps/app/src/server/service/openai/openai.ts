@@ -58,7 +58,7 @@ class OpenaiService implements IOpenaiService {
 
       const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
       vectorStoreFileRelation.fileIds = undeletedFileIds;
-      vectorStoreFileRelation.save();
+      await vectorStoreFileRelation.save();
     }
   }
 
