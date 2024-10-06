@@ -248,6 +248,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
 
+  useIsAiEnabled(props.aiEnabled);
+
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
