@@ -16,5 +16,6 @@
     }
   },
   "forwardPorts": [3004],
+  "postCreateCommand": "git-lfs pull",
   "remoteUser": "node"
 }

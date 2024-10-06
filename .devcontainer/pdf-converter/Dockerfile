@@ -29,5 +29,6 @@ RUN chown -R $USER_UID:$USER_GID /home/$USERNAME /workspace;
 # USER $USER_UID
 
 RUN apt-get update \
-    && apt-get install -y chromium locales fonts-ipafont fonts-ipaexfont fonts-ipafont-gothic fonts-ipafont-mincho && \
+    && apt-get -y install --no-install-recommends \
+    chromium locales fonts-ipafont fonts-ipaexfont fonts-ipafont-gothic fonts-ipafont-mincho git-lfs && \
     echo "ja_JP UTF-8" > /etc/locale.gen && locale-gen
