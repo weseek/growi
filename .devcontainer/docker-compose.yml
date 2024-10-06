@@ -24,6 +24,7 @@ services:
       - node_modules_slackbot-proxy:/workspace/growi/apps/slackbot-proxy/node_modules
       - buildcache_app:/workspace/growi/apps/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
+      - page_bulk_export_tmp:/tmp/page-bulk-export
 
     tty: true
 
@@ -58,8 +59,19 @@ services:
       - /usr/share/elasticsearch/data
       - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
+  growi-pdf-converter:
+    build:
+      context: ../../growi-pdf-converter
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    ports:
+      - 3004
+    volumes:
+      - page_bulk_export_tmp:/tmp/page-bulk-export
+
 volumes:
   node_modules:
   node_modules_app:
   node_modules_slackbot-proxy:
   buildcache_app:
+  page_bulk_export_tmp:
