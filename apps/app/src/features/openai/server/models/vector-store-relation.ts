@@ -15,8 +15,8 @@ interface VectorStoreRelationModel extends Model<VectorStoreRelation> {
   updateOrCreateDocument(requestData: VectorStoreRelation[]): Promise<void>;
 }
 
-export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, updateArray: VectorStoreRelation[]): VectorStoreRelation[] => {
-  const existingData = updateArray.find(relation => relation.pageId.equals(pageId));
+export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, vectorStoreFileRelations: VectorStoreRelation[]): VectorStoreRelation[] => {
+  const existingData = vectorStoreFileRelations.find(relation => relation.pageId.equals(pageId));
 
   // If the data exists, add the fileId to the fileIds array
   if (existingData != null) {
@@ -24,13 +24,13 @@ export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, upda
   }
   // If the data doesn't exist, create a new one and add it to the array
   else {
-    updateArray.push({
+    vectorStoreFileRelations.push({
       pageId,
       fileIds: [fileId],
     });
   }
 
-  return updateArray;
+  return vectorStoreFileRelations;
 };
 
 const schema = new Schema<VectorStoreRelationDocument, VectorStoreRelationModel>({
@@ -46,9 +46,9 @@ const schema = new Schema<VectorStoreRelationDocument, VectorStoreRelationModel>
   }],
 });
 
-schema.statics.updateOrCreateDocument = async function(requestData: VectorStoreRelation[]): Promise<void> {
+schema.statics.updateOrCreateDocument = async function(vectorStoreFileRelations: VectorStoreRelation[]): Promise<void> {
   await this.bulkWrite(
-    requestData.map((data) => {
+    vectorStoreFileRelations.map((data) => {
       return {
         updateOne: {
           filter: { pageId: data.pageId },

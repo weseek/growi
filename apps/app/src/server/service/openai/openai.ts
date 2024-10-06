@@ -40,19 +40,19 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createVectorStoreFile(pages: Array<PageDocument>): Promise<void> {
-    const vectorStoreFileRelationData: VectorStoreRelation[] = [];
+    const vectorStoreFileRelations: VectorStoreRelation[] = [];
     const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(page._id, page.revision.body);
-          prepareDocumentData(page._id, uploadedFile.id, vectorStoreFileRelationData);
+          prepareDocumentData(page._id, uploadedFile.id, vectorStoreFileRelations);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(page._id, pagePopulatedToShowRevision.revision.body);
-          prepareDocumentData(page._id, uploadedFile.id, vectorStoreFileRelationData);
+          prepareDocumentData(page._id, uploadedFile.id, vectorStoreFileRelations);
         }
       }
     };
@@ -69,10 +69,13 @@ class OpenaiService implements IOpenaiService {
     });
 
     try {
-      const uploadedFileIds = vectorStoreFileRelationData.map(data => data.fileIds).flat();
+      // Create vector store file
+      const uploadedFileIds = vectorStoreFileRelations.map(data => data.fileIds).flat();
       const res = await this.client.createVectorStoreFileBatch(uploadedFileIds);
       logger.debug('create vector store file: ', res);
-      await VectorStoreRelationModel.updateOrCreateDocument(vectorStoreFileRelationData);
+
+      // Save vector store file relation
+      await VectorStoreRelationModel.updateOrCreateDocument(vectorStoreFileRelations);
     }
     catch (err) {
       logger.error(err);
