@@ -66,7 +66,6 @@ class PdfConvertService {
   }
 
   private async readHtmlAndConvertToPdfUntilFinish(jobId: string): Promise<void> {
-    // TODO: expire 期限の条件も加える
     while(![JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(this.jobList[jobId].status)) {
       await new Promise(resolve => setTimeout(resolve, 60 * 1000));
 

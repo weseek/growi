@@ -1,7 +1,7 @@
 import { BodyParams, QueryParams, Logger } from '@tsed/common';
 import { Controller, Inject } from '@tsed/di';
 import { InternalServerError } from '@tsed/exceptions';
-import { Get, Patch, Post, Returns } from '@tsed/schema';
+import { Get, Post, Returns } from '@tsed/schema';
 
 import PdfConvertService, { JobStatusSharedWithGrowi } from '../service/pdf-convert';
 
