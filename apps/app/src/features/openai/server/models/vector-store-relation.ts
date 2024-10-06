@@ -1,23 +1,29 @@
-import type { HydratedDocument, Types } from 'mongoose';
+import type { Types } from 'mongoose';
 import type mongoose from 'mongoose';
-import { type Model, Schema } from 'mongoose';
+import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-export type VectorStoreRelation = {
+export interface VectorStoreRelation {
   pageId: mongoose.Types.ObjectId;
   fileIds: string[];
+}
+
+interface VectorStoreRelationDocument extends VectorStoreRelation, Document {}
+
+interface VectorStoreRelationModel extends Model<VectorStoreRelation> {
+  updateOrCreateDocument(requestData: VectorStoreRelation[]): Promise<void>;
 }
 
 export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, updateArray: VectorStoreRelation[]): VectorStoreRelation[] => {
   const existingData = updateArray.find(relation => relation.pageId.equals(pageId));
 
+  // If the data exists, add the fileId to the fileIds array
   if (existingData != null) {
-    // If the data exists, add the fileId to the fileIds array
     existingData.fileIds.push(fileId);
   }
+  // If the data doesn't exist, create a new one and add it to the array
   else {
-    // If the data doesn't exist, create a new one and add it to the array
     updateArray.push({
       pageId,
       fileIds: [fileId],
@@ -27,13 +33,7 @@ export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, upda
   return updateArray;
 };
 
-type VectorStoreRelationDocument = HydratedDocument<VectorStoreRelation>;
-
-type VectorStoreRelationModel = Model<VectorStoreRelation, undefined, undefined, undefined, VectorStoreRelationDocument> & {
-  updateOrCreateDocument(requestData: VectorStoreRelation[]): Promise<void>;
-}
-
-const schema = new Schema<VectorStoreRelation, VectorStoreRelationModel>({
+const schema = new Schema<VectorStoreRelationDocument, VectorStoreRelationModel>({
   pageId: {
     type: Schema.Types.ObjectId,
     ref: 'Page',
