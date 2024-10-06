@@ -15,7 +15,9 @@ interface VectorStoreFileRelationModel extends Model<VectorStoreFileRelation> {
   upsertVectorStoreFileRelations(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void>;
 }
 
-export const prepareDocumentData = (pageId: Types.ObjectId, fileId: string, vectorStoreFileRelations: VectorStoreFileRelation[]): VectorStoreFileRelation[] => {
+export const prepareVectorStoreFileRelations = (
+    pageId: Types.ObjectId, fileId: string, vectorStoreFileRelations: VectorStoreFileRelation[],
+): VectorStoreFileRelation[] => {
   const existingData = vectorStoreFileRelations.find(relation => relation.pageId.equals(pageId));
 
   // If the data exists, add the fileId to the fileIds array
