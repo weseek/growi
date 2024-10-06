@@ -11,7 +11,7 @@ interface PageInfo {
   htmlFilePath: string;
 }
 
-enum JobStatus {
+export enum JobStatus {
   HTML_EXPORT_IN_PROGRESS = 'HTML_EXPORT_IN_PROGRESS',
   HTML_EXPORT_DONE = 'HTML_EXPORT_DONE',
   PDF_EXPORT_DONE = 'PDF_EXPORT_DONE',
@@ -51,16 +51,29 @@ class PdfConvertService {
   }
 
   registerOrUpdateJob(jobId: string, expirationDate: Date, status: JobStatusSharedWithGrowi): void {
-    if (!(jobId in this.jobList) && status !== JobStatus.FAILED) {
+    const isJobNew = !(jobId in this.jobList);
+
+    if (isJobNew && status !== JobStatus.FAILED) {
       this.readHtmlAndConvertToPdfUntilFinish(jobId);
-    };
-    this.jobList[jobId] = { expirationDate, status };
+    }
+
+    if (isJobNew) {
+      this.jobList[jobId] = { expirationDate, status };
+    } else {
+      const jobInfo = this.jobList[jobId];
+      jobInfo.expirationDate = expirationDate;
+
+      if (jobInfo.status !== JobStatus.PDF_EXPORT_DONE) {
+        jobInfo.status = status;
+      }
+    }
+
     if (status === JobStatus.FAILED) {
       this.jobList[jobId].currentStream?.destroy(new Error('job failed inside GROWI'));
     }
   }
 
-  getJobStatus(jobId: string): string {
+  getJobStatus(jobId: string): JobStatus {
     if (!(jobId in this.jobList)) throw new Error('Job not found');
     return this.jobList[jobId].status;
   }

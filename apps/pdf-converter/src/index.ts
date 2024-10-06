@@ -5,6 +5,7 @@ import Server from './server';
 
 async function bootstrap() {
   try {
+    $log.debug(process.env.TEST_VAR);
     $log.debug('Start server...');
     const platform = await PlatformExpress.bootstrap(Server, {});
 

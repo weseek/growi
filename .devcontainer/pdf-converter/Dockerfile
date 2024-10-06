@@ -14,7 +14,6 @@ ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
 ENV LANG=ja_JP.UTF-8
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 RUN mkdir -p /workspace/pdf-converter/node_modules
 
@@ -32,3 +31,5 @@ RUN apt-get update \
     && apt-get -y install --no-install-recommends \
     chromium locales fonts-ipafont fonts-ipaexfont fonts-ipafont-gothic fonts-ipafont-mincho git-lfs && \
     echo "ja_JP UTF-8" > /etc/locale.gen && locale-gen
+
+RUN yarn global add turbo

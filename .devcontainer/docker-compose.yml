@@ -59,6 +59,7 @@ services:
       - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
   pdf-converter:
+    user: node
     build:
       context: .
       dockerfile: ./pdf-converter/Dockerfile
