@@ -1,5 +1,7 @@
+import { error } from 'console';
 import { Readable, Transform } from 'stream';
 
+import { fi } from '@faker-js/faker';
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
@@ -72,7 +74,7 @@ class OpenaiService implements IOpenaiService {
       // Create vector store file
       const uploadedFileIds = vectorStoreFileRelations.map(data => data.fileIds).flat();
       const res = await this.client.createVectorStoreFileBatch(uploadedFileIds);
-      logger.debug('create vector store file: ', res);
+      logger.debug('Create vector store file', res);
 
       // Save vector store file relation
       await VectorStoreRelationModel.updateOrCreateDocument(vectorStoreFileRelations);
@@ -107,15 +109,26 @@ class OpenaiService implements IOpenaiService {
   }
 
   async rebuildVectorStore(page: PageDocument) {
-
-    // delete vector store file
-    const files = await this.client.getFileList();
-    files.data.forEach(async(file) => {
-      if (file.filename === `${page._id}.md`) {
-        const res = await this.client.deleteFile(file.id);
-        logger.debug('delete vector store file: ', res);
+    // Delete vector store file and delete vector store file relation
+    const vectorStoreFileRelation = await VectorStoreRelationModel.findOne({ pageId: page._id });
+    if (vectorStoreFileRelation != null) {
+      const deletedFileIds: string[] = [];
+      for (const fileId of vectorStoreFileRelation.fileIds) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const res = await this.client.deleteFile(fileId);
+          logger.debug('Delete vector store file', res);
+          deletedFileIds.push(fileId);
+        }
+        catch (err) {
+          logger.error(err);
+        }
       }
-    });
+
+      const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
+      vectorStoreFileRelation.fileIds = undeletedFileIds;
+      vectorStoreFileRelation.save();
+    }
 
     await this.createVectorStoreFile([page]);
   }
