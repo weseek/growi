@@ -1,15 +1,34 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '@growi/core-styles/scss/variables/growi-official-colors';
 
+// remove margin from last child
 .message-card :global {
   .card-body {
-    --bs-card-spacer-x: 1.25rem;
-    --bs-card-spacer-y: 0.8rem;
-
-    // remove margin from last child
     p:last-child {
       margin-bottom: 0;
     }
+  }
+}
+
+
+/*************************
+ * AssistantMessageCard
+ ************************/
+.assistant-message-card :global {
+  .card-body {
+    --bs-card-spacer-x: 0;
+    --bs-card-spacer-y: 0.8rem;
+  }
+}
+
+ /*******************
+ * UserMessageCard
+ *******************/
+
+.user-message-card :global {
+  .card-body {
+    --bs-card-spacer-x: 1.25rem;
+    --bs-card-spacer-y: 0.8rem;
   }
 }
 
