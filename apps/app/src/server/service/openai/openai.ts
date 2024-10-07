@@ -42,29 +42,6 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  private async deleteFile(page: PageDocument): Promise<void> {
-    // Delete vector store file and delete vector store file relation
-    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ pageId: page._id });
-    if (vectorStoreFileRelation != null) {
-      const deletedFileIds: string[] = [];
-      for (const fileId of vectorStoreFileRelation.fileIds) {
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          const deleteFileResponse = await this.client.deleteFile(fileId);
-          logger.debug('Delete vector store file', deleteFileResponse);
-          deletedFileIds.push(fileId);
-        }
-        catch (err) {
-          logger.error(err);
-        }
-      }
-
-      const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
-      vectorStoreFileRelation.fileIds = undeletedFileIds;
-      await vectorStoreFileRelation.save();
-    }
-  }
-
   async createVectorStoreFile(pages: Array<PageDocument>): Promise<void> {
     const preparedVectorStoreFileRelations: VectorStoreFileRelation[] = [];
     const processUploadFile = async(page: PageDocument) => {
@@ -109,6 +86,29 @@ class OpenaiService implements IOpenaiService {
 
   }
 
+  private async deleteVectorStoreFile(page: PageDocument): Promise<void> {
+    // Delete vector store file and delete vector store file relation
+    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ pageId: page._id });
+    if (vectorStoreFileRelation != null) {
+      const deletedFileIds: string[] = [];
+      for (const fileId of vectorStoreFileRelation.fileIds) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const deleteFileResponse = await this.client.deleteFile(fileId);
+          logger.debug('Delete vector store file', deleteFileResponse);
+          deletedFileIds.push(fileId);
+        }
+        catch (err) {
+          logger.error(err);
+        }
+      }
+
+      const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
+      vectorStoreFileRelation.fileIds = undeletedFileIds;
+      await vectorStoreFileRelation.save();
+    }
+  }
+
   async rebuildVectorStoreAll() {
     // TODO: https://redmine.weseek.co.jp/issues/154364
 
@@ -133,7 +133,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async rebuildVectorStore(page: PageDocument) {
-    await this.deleteFile(page);
+    await this.deleteVectorStoreFile(page);
     await this.createVectorStoreFile([page]);
   }
 
