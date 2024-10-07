@@ -1,7 +1,7 @@
 import type { KeyboardEvent } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -9,7 +9,7 @@ import { useRagSearchModal } from '~/stores/rag-search';
 import loggerFactory from '~/utils/logger';
 
 import { MessageCard } from './MessageCard';
-import { useResizableTextarea } from './use-resizable-textarea';
+import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './RagSearchModal.module.scss';
 
@@ -35,7 +35,6 @@ const RagSearchModal = (): JSX.Element => {
       input: '',
     },
   });
-  const resizable = useResizableTextarea();
 
   const [threadId, setThreadId] = useState<string | undefined>();
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
@@ -182,15 +181,20 @@ const RagSearchModal = (): JSX.Element => {
 
         <div>
           <form onSubmit={form.handleSubmit(submit)} className="hstack gap-2 align-items-end mt-4">
-            <textarea
-              {...form.register('input')}
-              // {...resizable.register()}
-              required
-              className="form-control textarea-ask"
-              style={{ resize: 'none' }}
-              rows={1}
-              placeholder="ききたいことを入力してください"
-              onKeyDown={keyDownHandler}
+            <Controller
+              name="input"
+              control={form.control}
+              render={({ field }) => (
+                <ResizableTextarea
+                  {...field}
+                  required
+                  className="form-control textarea-ask"
+                  style={{ resize: 'none' }}
+                  rows={1}
+                  placeholder="ききたいことを入力してください"
+                  onKeyDown={keyDownHandler}
+                />
+              )}
             />
             <button
               type="submit"
