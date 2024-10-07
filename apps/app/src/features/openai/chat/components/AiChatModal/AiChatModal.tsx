@@ -75,6 +75,11 @@ const AiChatModalSubstance = (): JSX.Element => {
       return;
     }
 
+    // do nothing when the input is empty
+    if (data.input.trim().length === 0) {
+      return;
+    }
+
     const { length: logLength } = messageLogs;
 
     // add user message to the logs
