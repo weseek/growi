@@ -70,10 +70,19 @@ const AiChatModalSubstance = (): JSX.Element => {
   const submit = useCallback(async(data: FormData) => {
     const { length: logLength } = messageLogs;
 
+    // add user message to the logs
+    const newUserMessage = { id: logLength.toString(), content: data.input, isUserMessage: true };
+    setMessageLogs(msgs => [...msgs, newUserMessage]);
+
+    // reset form
+    form.reset();
+
+    // add an empty assistant message
+    const newAssistantMessage = { id: (logLength + 1).toString(), content: '' };
+    setLastMessage(newAssistantMessage);
+
     // post message
     try {
-      form.clearErrors();
-
       const response = await fetch('/_api/v3/openai/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -87,19 +96,9 @@ const AiChatModalSubstance = (): JSX.Element => {
           const errors = resJson.errors.map(({ message }) => message).join(', ');
           form.setError('input', { type: 'manual', message: `[${response.status}] ${errors}` });
         }
+        setLastMessage(undefined);
         return;
       }
-
-      // add user message to the logs
-      const newUserMessage = { id: logLength.toString(), content: data.input, isUserMessage: true };
-      setMessageLogs(msgs => [...msgs, newUserMessage]);
-
-      // reset form
-      form.reset();
-
-      // add assistant message
-      const newAssistantMessage = { id: (logLength + 1).toString(), content: '' };
-      setLastMessage(newAssistantMessage);
 
       const reader = response.body?.getReader();
       const decoder = new TextDecoder('utf-8');
