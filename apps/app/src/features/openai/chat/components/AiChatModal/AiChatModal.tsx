@@ -155,20 +155,20 @@ const AiChatModalSubstance = (): JSX.Element => {
 
   return (
     <>
-      <ModalBody className="vstack gap-4 pb-0 pt-3 pt-lg-4 px-3 px-lg-4">
-        <div className="pb-4">
+      <ModalBody className="pb-0 pt-3 pt-lg-4 px-3 px-lg-4">
+        <div className="vstack gap-4 pb-4">
           { messageLogs.map(message => (
             <MessageCard key={message.id} role={message.isUserMessage ? 'user' : 'assistant'}>{message.content}</MessageCard>
           )) }
           { lastMessage != null && (
-            <>
-              <MessageCard role="assistant">{lastMessage.content}</MessageCard>
-              <div className="d-flex justify-content-center">
-                <span className="bg-secondary-subtle text-body-secondary rounded-pill px-3 py-1">
-                  情報が正しいか出典を確認しましょう
-                </span>
-              </div>
-            </>
+            <MessageCard role="assistant">{lastMessage.content}</MessageCard>
+          )}
+          { messageLogs.length > 0 && (
+            <div className="d-flex justify-content-center">
+              <span className="bg-body-tertiary text-body-secondary rounded-pill px-3 py-1" style={{ fontSize: 'smaller' }}>
+                情報が正しいか出典を確認しましょう
+              </span>
+            </div>
           )}
         </div>
       </ModalBody>
