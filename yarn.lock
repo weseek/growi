@@ -1870,11 +1870,6 @@
   resolved "https://registry.yarnpkg.com/@discoveryjs/json-ext/-/json-ext-0.5.7.tgz#1d572bfbbe14b7704e0ba0f39b74815b84870d70"
   integrity sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==
 
-"@dqbd/tiktoken@^1.0.16":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@dqbd/tiktoken/-/tiktoken-1.0.16.tgz#374c201d84158b50babff84e77aa3504564f510b"
-  integrity sha512-4uIrs5qxAwFVFFEP507HZIZhGOsgfaEMEWDXWalr+v+XP+wJwP60EVmkZtQyQe70IsKGVkx5umBxw4NfmU0pPg==
-
 "@dual-bundle/import-meta-resolve@^4.0.0":
   version "4.1.0"
   resolved "https://registry.yarnpkg.com/@dual-bundle/import-meta-resolve/-/import-meta-resolve-4.1.0.tgz#519c1549b0e147759e7825701ecffd25e5819f7b"

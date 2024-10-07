@@ -64,7 +64,6 @@
     "@azure/openai": "^2.0.0-beta.2",
     "@azure/storage-blob": "^12.16.0",
     "@browser-bunyan/console-formatted-stream": "^1.8.0",
-    "@dqbd/tiktoken": "^1.0.16",
     "@elastic/elasticsearch7": "npm:@elastic/elasticsearch@^7.17.0",
     "@elastic/elasticsearch8": "npm:@elastic/elasticsearch@^8.7.0",
     "@godaddy/terminus": "^4.9.0",
@@ -222,8 +221,8 @@
   "devDependencies": {
     "@growi/core-styles": "link:../../packages/core-styles",
     "@growi/custom-icons": "link:../../packages/custom-icons",
-    "@growi/markdown-splitter": "link:../../packages/markdown-splitter",
     "@growi/editor": "link:../../packages/editor",
+    "@growi/markdown-splitter": "link:../../packages/markdown-splitter",
     "@growi/ui": "link:../../packages/ui",
     "@handsontable/react": "=2.1.0",
     "@next/bundle-analyzer": "^14.1.3",
