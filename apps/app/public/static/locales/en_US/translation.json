@@ -484,6 +484,12 @@
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
+  "modal_aichat": {
+    "title": "Knowledge Assistant",
+    "title_beta_label": "(Beta)",
+    "placeholder": "Ask me anything.",
+    "caution_against_hallucination": "Please verify the information and check the sources."
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",
