@@ -1,110 +1,105 @@
 export type Chunk = {
   label: string;
-  content: string;
-}
+  text: string;
+};
 
 /**
- * Adds a new chunk to the chunks array if content is not empty.
- * Trims trailing whitespace and newlines to avoid unnecessary line breaks.
- * @param chunks - The array to store chunks
- * @param content - The content of the chunk
- * @param label - The label of the chunk
+ * Processes and adds a new chunk to the chunks array if content is not empty.
+ * Clears the contentLines array after processing.
+ * @param chunks - The array to store chunks.
+ * @param contentLines - The array of content lines.
+ * @param label - The label for the content chunk.
  */
-function createChunk(chunks: Chunk[], content: string, label: string) {
-  const trimmedContent = content.trimEnd();
-  if (trimmedContent !== '') {
-    chunks.push({ label, content: trimmedContent });
+function processPendingContent(chunks: Chunk[], contentLines: string[], label: string) {
+  const text = contentLines.join('\n').trimEnd();
+  if (text !== '') {
+    chunks.push({ label, text });
   }
+  contentLines.length = 0; // Clear the contentLines array
 }
 
 /**
- * Updates the section label based on the heading depth.
- * Allows non-consecutive heading levels by initializing missing levels with 1.
- * @param sectionCounters - The current section counters
- * @param depth - The depth of the heading (e.g., # is depth 1, ## is depth 2)
- * @returns The updated section label
+ * Updates the section numbers based on the heading depth and returns the updated section label.
+ * Handles non-consecutive heading levels by initializing missing levels with 1.
+ * @param sectionNumbers - The current section numbers.
+ * @param depth - The depth of the heading (e.g., # is depth 1).
+ * @returns The updated section label.
  */
-function updateSectionLabel(sectionCounters: number[], depth: number): string {
-  if (depth > sectionCounters.length) {
-    // If depth increases by more than one, initialize missing levels with 1
-    while (sectionCounters.length < depth) {
-      sectionCounters.push(1);
+function updateSectionNumbers(sectionNumbers: number[], depth: number): string {
+  if (depth > sectionNumbers.length) {
+    // If depth increases, initialize missing levels with 1
+    while (sectionNumbers.length < depth) {
+      sectionNumbers.push(1);
     }
   }
-  else if (depth === sectionCounters.length) {
-    // If the same level, increment the last counter
-    sectionCounters[depth - 1]++;
+  else if (depth === sectionNumbers.length) {
+    // Same level, increment the last number
+    sectionNumbers[depth - 1]++;
   }
   else {
-    // If depth decreases, remove deeper levels and increment the current level
-    sectionCounters.splice(depth);
-    sectionCounters[depth - 1]++;
+    // Depth decreases, remove deeper levels and increment current level
+    sectionNumbers.splice(depth);
+    sectionNumbers[depth - 1]++;
   }
-  return sectionCounters.join('-');
+  return sectionNumbers.join('-');
 }
 
 /**
  * Splits Markdown text into labeled chunks, considering content that may start before any headers
- * and handling non-consecutive heading levels. Reduces unnecessary line breaks while preserving
- * list indentation and leading spaces. Ensures that no empty line is added between sections.
- * @param markdown - The input Markdown string
- * @returns An array of chunks
+ * and handling non-consecutive heading levels. Preserves list indentation and leading spaces while
+ * reducing unnecessary line breaks. Ensures that no empty line is added between sections.
+ * @param markdown - The input Markdown string.
+ * @returns An array of labeled chunks.
  */
 export function splitMarkdownIntoChunks(markdown: string): Chunk[] {
   const chunks: Chunk[] = [];
-  const sectionCounters: number[] = [];
+  const sectionNumbers: number[] = [];
 
-  if (!markdown || typeof markdown !== 'string' || markdown.trim() === '') {
+  if (typeof markdown !== 'string' || markdown.trim() === '') {
     return chunks;
   }
 
   const lines = markdown.split('\n');
-  let currentContent: string[] = [];
-  let currentSectionLabel = '';
+  const contentLines: string[] = [];
+  let currentLabel = '';
   let previousLineEmpty = false;
 
-  lines.forEach((line) => {
+  for (const line of lines) {
     const trimmedLine = line.trim();
 
     if (trimmedLine.startsWith('#')) {
-      if (currentContent.length > 0) {
-        if (currentSectionLabel !== '') {
-          const contentLabel = `${currentSectionLabel}-content`;
-          createChunk(chunks, currentContent.join('\n'), contentLabel);
-        }
-        else {
-          createChunk(chunks, currentContent.join('\n'), '0-content');
-        }
-        currentContent = [];
+      // Process any pending content before starting a new section
+      if (contentLines.length > 0) {
+        const contentLabel = currentLabel !== '' ? `${currentLabel}-content` : '0-content';
+        processPendingContent(chunks, contentLines, contentLabel);
       }
 
+      // Match heading level and text
       const headerMatch = trimmedLine.match(/^(#+)\s+(.*)/);
       if (headerMatch) {
-        const headerDepth = headerMatch[1].length;
-        currentSectionLabel = updateSectionLabel(sectionCounters, headerDepth);
-        createChunk(chunks, line, currentSectionLabel);
+        const headingDepth = headerMatch[1].length;
+        currentLabel = updateSectionNumbers(sectionNumbers, headingDepth);
+        chunks.push({ label: `${currentLabel}-heading`, text: line });
       }
     }
     else if (trimmedLine === '') {
-      if (!previousLineEmpty && currentContent.length > 0) {
-        currentContent.push('');
+      // Handle empty lines to avoid multiple consecutive empty lines
+      if (!previousLineEmpty && contentLines.length > 0) {
+        contentLines.push('');
         previousLineEmpty = true;
       }
     }
     else {
-      currentContent.push(line);
+      // Add non-empty lines to the current content
+      contentLines.push(line);
       previousLineEmpty = false;
     }
-  });
+  }
 
-  if (currentContent.length > 0) {
-    if (currentSectionLabel !== '') {
-      const contentLabel = `${currentSectionLabel}-content`;
-      createChunk(chunks, currentContent.join('\n'), contentLabel);
-    }
-    else {
-      createChunk(chunks, currentContent.join('\n'), '0-content');
-    }
+  // Process any remaining content after the last line
+  if (contentLines.length > 0) {
+    const contentLabel = currentLabel !== '' ? `${currentLabel}-content` : '0-content';
+    processPendingContent(chunks, contentLines, contentLabel);
   }
 
   return chunks;
