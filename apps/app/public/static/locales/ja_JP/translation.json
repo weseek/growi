@@ -521,7 +521,8 @@
     "title": "ナレッジアシスタント",
     "title_beta_label": "(ベータ)",
     "placeholder": "ききたいことを入力してください",
-    "caution_against_hallucination": "情報が正しいか出典を確認しましょう"
+    "caution_against_hallucination": "情報が正しいか出典を確認しましょう",
+    "progress_label": "回答を生成しています"
   },
   "link_edit": {
     "edit_link": "リンク編集",
