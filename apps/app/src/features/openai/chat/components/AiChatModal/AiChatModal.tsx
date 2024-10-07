@@ -158,11 +158,11 @@ const AiChatModalSubstance = (): JSX.Element => {
       <ModalBody className="vstack gap-4 pb-0 pt-3 pt-lg-4 px-3 px-lg-4">
         <div className="pb-4">
           { messageLogs.map(message => (
-            <MessageCard key={message.id} right={message.isUserMessage}>{message.content}</MessageCard>
+            <MessageCard key={message.id} role={message.isUserMessage ? 'user' : 'assistant'}>{message.content}</MessageCard>
           )) }
           { lastMessage != null && (
             <>
-              <MessageCard>{lastMessage.content}</MessageCard>
+              <MessageCard role="assistant">{lastMessage.content}</MessageCard>
               <div className="d-flex justify-content-center">
                 <span className="bg-secondary-subtle text-body-secondary rounded-pill px-3 py-1">
                   情報が正しいか出典を確認しましょう
