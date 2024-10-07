@@ -389,7 +389,7 @@ class SecuritySetting extends React.Component {
                       aria-haspopup="true"
                       aria-expanded="true"
                     >
-                      <span className="float-start">
+                      <span>
                         {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner === 'Displayed' && t('security_settings.always_displayed')}
                         {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner === 'NotDisplayed' && t('security_settings.always_not_displayed')}
                       </span>
@@ -419,7 +419,7 @@ class SecuritySetting extends React.Component {
                       aria-haspopup="true"
                       aria-expanded="true"
                     >
-                      <span className="float-start">
+                      <span>
                         {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner === 'Displayed' && t('security_settings.always_displayed')}
                         {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner === 'NotDisplayed' && t('security_settings.always_not_displayed')}
                       </span>
