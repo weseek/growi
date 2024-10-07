@@ -15,7 +15,7 @@ const { query, param } = require('express-validator');
 
 const router = express.Router();
 
-const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js';
+const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549';
 
 /**
  * @swagger
@@ -113,6 +113,23 @@ module.exports = (crowi) => {
    *            description: Return revisions belong to page
    *
    */
+  let cachedAppliedAt = null;
+
+  const getAppliedAtOfTheMigrationFile = async() => {
+
+    if (cachedAppliedAt != null) {
+      return cachedAppliedAt;
+    }
+
+    const migrationCollection = connection.collection('migrations');
+    const migration = await migrationCollection.findOne({ fileName: { $regex: `^${MIGRATION_FILE_NAME}` } });
+    const appliedAt = migration.appliedAt;
+
+    cachedAppliedAt = appliedAt;
+
+    return appliedAt;
+  };
+
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
     const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
@@ -135,9 +152,7 @@ module.exports = (crowi) => {
     try {
       const page = await Page.findOne({ _id: pageId });
 
-      const migrationCollection = connection.collection('migrations');
-      const migration = await migrationCollection.findOne({ fileName: MIGRATION_FILE_NAME });
-      const appliedAt = migration.appliedAt;
+      const appliedAt = await getAppliedAtOfTheMigrationFile();
 
       const queryOpts = {
         offset,
