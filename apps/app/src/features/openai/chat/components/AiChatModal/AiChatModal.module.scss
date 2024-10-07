@@ -1,4 +1,5 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/variables/growi-official-colors';
 @use '@growi/ui/scss/atoms/btn-muted';
 
 .rag-search-modal :global {
@@ -15,6 +16,10 @@
 
 // == Colors
 .rag-search-modal :global {
+  .growi-ai-chat-icon {
+    color: growi-official-colors.$growi-ai-purple;
+  }
+
   .btn-submit {
     @include btn-muted.colorize(bs.$purple, bs.$purple);
   }
