@@ -420,8 +420,8 @@ class SecuritySetting extends React.Component {
                       aria-expanded="true"
                     >
                       <span>
-                        {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner && t('security_settings.always_displayed')}
-                        {!adminGeneralSecurityContainer.switchIsShowRestrictedByOwner && t('security_settings.always_not_displayed')}
+                        {adminGeneralSecurityContainer.switchIsShowRestrictedByGroup && t('security_settings.always_displayed')}
+                        {!adminGeneralSecurityContainer.state.isShowRestrictedByGroup && t('security_settings.always_not_displayed')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
