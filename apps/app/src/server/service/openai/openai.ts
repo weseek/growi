@@ -71,9 +71,9 @@ class OpenaiService implements IOpenaiService {
       }
     });
 
+    const uploadedFileIds = preparedVectorStoreFileRelations.map(data => data.fileIds).flat();
     try {
       // Create vector store file
-      const uploadedFileIds = preparedVectorStoreFileRelations.map(data => data.fileIds).flat();
       const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
 
@@ -82,6 +82,12 @@ class OpenaiService implements IOpenaiService {
     }
     catch (err) {
       logger.error(err);
+
+      // Delete all uploaded files if createVectorStoreFileBatch fails
+      uploadedFileIds.forEach(async(fileId) => {
+        const deleteFileResponse = await this.client.deleteFile(fileId);
+        logger.debug('Delete vector store file (Due to createVectorStoreFileBatch failure)', deleteFileResponse);
+      });
     }
 
   }
