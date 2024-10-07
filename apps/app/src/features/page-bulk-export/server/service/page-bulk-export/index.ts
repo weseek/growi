@@ -283,9 +283,8 @@ class PageBulkExportService implements IPageBulkExportService {
 
     this.pageBulkExportJobManager.updateJobStream(pageBulkExportJob._id, pageSnapshotsReadable);
 
-
     if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
-      pipeline(pageSnapshotsReadable, pagesWritable, (err) => { logger.error(err) });
+      pipeline(pageSnapshotsReadable, pagesWritable, (err) => { if (err != null) logger.error(err); });
       await this.waitPdfExportFinish(pageBulkExportJob);
     }
     else {
@@ -373,7 +372,8 @@ class PageBulkExportService implements IPageBulkExportService {
           }
 
           const url = `${configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl')}/pdf/sync-job`;
-          const res = await axios.get(url, { params: { jobId: pageBulkExportJob._id.toString(), expirationDate: jobExpirationDate, status } });
+          const res = await axios.post(url, { jobId: pageBulkExportJob._id.toString(), expirationDate: jobExpirationDate, status });
+          console.log(res.data.status);
 
           if (res.data.status === 'PDF_EXPORT_DONE') {
             clearInterval(interval);
@@ -385,8 +385,11 @@ class PageBulkExportService implements IPageBulkExportService {
           }
         }
         catch (err) {
-          clearInterval(interval);
-          reject(err);
+          // continue the loop if the host is not ready
+          if (!['ENOTFOUND', 'ECONNREFUSED'].includes(err.code)) {
+            clearInterval(interval);
+            reject(err);
+          }
         }
       }, 60 * 1000 * 1);
     });

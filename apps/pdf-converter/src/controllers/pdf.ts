@@ -18,6 +18,7 @@ class PdfCtrl {
   @Returns(500)
   async syncJobStatus(@BodyParams('jobId') jobId: string, @BodyParams('expirationDate') expirationDateStr: string, @BodyParams('status') growiJobStatus: JobStatusSharedWithGrowi): Promise<{ status: JobStatus }> {
     const expirationDate = new Date(expirationDateStr);
+    console.log(expirationDate);
     try {
       this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus);
       return { status: this.pdfConvertService.getJobStatus(jobId)};

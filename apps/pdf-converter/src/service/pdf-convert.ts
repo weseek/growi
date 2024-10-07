@@ -53,23 +53,23 @@ class PdfConvertService {
   registerOrUpdateJob(jobId: string, expirationDate: Date, status: JobStatusSharedWithGrowi): void {
     const isJobNew = !(jobId in this.jobList);
 
-    if (isJobNew && status !== JobStatus.FAILED) {
-      this.readHtmlAndConvertToPdfUntilFinish(jobId);
-    }
-
     if (isJobNew) {
       this.jobList[jobId] = { expirationDate, status };
     } else {
       const jobInfo = this.jobList[jobId];
       jobInfo.expirationDate = expirationDate;
 
-      if (jobInfo.status !== JobStatus.PDF_EXPORT_DONE) {
+      if (![JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(jobInfo.status)) {
         jobInfo.status = status;
       }
     }
 
     if (status === JobStatus.FAILED) {
-      this.jobList[jobId].currentStream?.destroy(new Error('job failed inside GROWI'));
+      this.jobList[jobId].currentStream?.destroy(new Error('job failed'));
+    }
+
+    if (isJobNew && status !== JobStatus.FAILED) {
+      this.readHtmlAndConvertToPdfUntilFinish(jobId);
     }
   }
 
@@ -83,7 +83,7 @@ class PdfConvertService {
       await new Promise(resolve => setTimeout(resolve, 60 * 1000));
 
       try {
-        if (new Date() < this.jobList[jobId].expirationDate) {
+        if (new Date() > this.jobList[jobId].expirationDate) {
           throw new Error('Job expired');
         }
 
@@ -126,6 +126,9 @@ class PdfConvertService {
         logger.info('超えたー');
 
         const entry = htmlFileEntries[index];
+        logger.info(entry);
+        logger.info(entry.parentPath);
+        logger.info(entry.name);
         const htmlFilePath = path.join(entry.parentPath, entry.name);
         const htmlString = await fs.promises.readFile(htmlFilePath, 'utf-8');
         logger.info('read html string');
