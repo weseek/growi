@@ -3,9 +3,13 @@ import { Readable, Transform } from 'stream';
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
+import type OpenAI from 'openai';
 import { toFile } from 'openai';
-import type { FileLike } from 'openai/uploads.mjs';
 
+import VectorStoreFileRelationModel, {
+  type VectorStoreFileRelation,
+  prepareVectorStoreFileRelations,
+} from '~/features/openai/server/models/vector-store-file-relation';
 import { OpenaiServiceTypes } from '~/interfaces/ai';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
@@ -19,9 +23,6 @@ const BATCH_SIZE = 100;
 
 const logger = loggerFactory('growi:service:openai');
 
-const createFileForVectorStore = async(pageId: Types.ObjectId, body: string): Promise<FileLike> => {
-  return toFile(Readable.from(body), `${pageId}.md`);
-};
 
 export interface IOpenaiService {
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
@@ -35,29 +36,83 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  async createVectorStoreFile(pages: PageDocument[]): Promise<void> {
-    const filesPromise: Promise<FileLike>[] = [];
-    pages.forEach(async(page) => {
+  private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
+    const file = await toFile(Readable.from(body), `${pageId}.md`);
+    const uploadedFile = await this.client.uploadFile(file);
+    return uploadedFile;
+  }
+
+  async createVectorStoreFile(pages: Array<PageDocument>): Promise<void> {
+    const preparedVectorStoreFileRelations: VectorStoreFileRelation[] = [];
+    const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
-          filesPromise.push(createFileForVectorStore(page._id, page.revision.body));
+          const uploadedFile = await this.uploadFile(page._id, page.revision.body);
+          prepareVectorStoreFileRelations(page._id, uploadedFile.id, preparedVectorStoreFileRelations);
+          return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
-          filesPromise.push(createFileForVectorStore(page._id, pagePopulatedToShowRevision.revision.body));
+          const uploadedFile = await this.uploadFile(page._id, pagePopulatedToShowRevision.revision.body);
+          prepareVectorStoreFileRelations(page._id, uploadedFile.id, preparedVectorStoreFileRelations);
         }
+      }
+    };
+
+    // Start workers to process results
+    const workers = pages.map(processUploadFile);
+
+    // Wait for all processing to complete.
+    const fileUploadResult = await Promise.allSettled(workers);
+    fileUploadResult.forEach((result) => {
+      if (result.status === 'rejected') {
+        logger.error(result.reason);
       }
     });
 
-    if (filesPromise.length === 0) {
-      return;
+    try {
+      // Create vector store file
+      const uploadedFileIds = preparedVectorStoreFileRelations.map(data => data.fileIds).flat();
+      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(uploadedFileIds);
+      logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
+
+      // Save vector store file relation
+      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(preparedVectorStoreFileRelations);
+    }
+    catch (err) {
+      logger.error(err);
     }
 
-    const files = await Promise.all(filesPromise);
+  }
 
-    const res = await this.client.uploadAndPoll(files);
-    logger.debug('create vector store file: ', res);
+  private async deleteVectorStoreFile(page: PageDocument): Promise<void> {
+    // Delete vector store file and delete vector store file relation
+    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ pageId: page._id });
+    if (vectorStoreFileRelation != null) {
+      const deletedFileIds: string[] = [];
+      for (const fileId of vectorStoreFileRelation.fileIds) {
+        try {
+          // eslint-disable-next-line no-await-in-loop
+          const deleteFileResponse = await this.client.deleteFile(fileId);
+          logger.debug('Delete vector store file', deleteFileResponse);
+          deletedFileIds.push(fileId);
+        }
+        catch (err) {
+          logger.error(err);
+        }
+      }
+
+      const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
+
+      if (undeletedFileIds.length === 0) {
+        await vectorStoreFileRelation.remove();
+        return;
+      }
+
+      vectorStoreFileRelation.fileIds = undeletedFileIds;
+      await vectorStoreFileRelation.save();
+    }
   }
 
   async rebuildVectorStoreAll() {
@@ -84,16 +139,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async rebuildVectorStore(page: PageDocument) {
-
-    // delete vector store file
-    const files = await this.client.getFileList();
-    files.data.forEach(async(file) => {
-      if (file.filename === `${page._id}.md`) {
-        const res = await this.client.deleteFile(file.id);
-        logger.debug('delete vector store file: ', res);
-      }
-    });
-
+    await this.deleteVectorStoreFile(page);
     await this.createVectorStoreFile([page]);
   }
 
