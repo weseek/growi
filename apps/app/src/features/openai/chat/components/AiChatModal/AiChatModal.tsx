@@ -11,7 +11,7 @@ import loggerFactory from '~/utils/logger';
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
 
-import styles from './RagSearchModal.module.scss';
+import styles from './AiChatModal.module.scss';
 
 const moduleClass = styles['rag-search-modal'];
 
@@ -28,7 +28,7 @@ type FormData = {
   input: string;
 };
 
-const RagSearchModal = (): JSX.Element => {
+const AiChatModalSubstance = (): JSX.Element => {
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -40,21 +40,9 @@ const RagSearchModal = (): JSX.Element => {
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
   const [lastMessage, setLastMessage] = useState<Message>();
 
-  const { data: ragSearchModalData, close: closeRagSearchModal } = useRagSearchModal();
-
-  const isOpened = ragSearchModalData?.isOpened ?? false;
-
-  useEffect(() => {
-    // clear states when the modal is closed
-    if (!isOpened) {
-      setMessageLogs([]);
-      setThreadId(undefined);
-    }
-  }, [isOpened]);
-
   useEffect(() => {
     // do nothing when the modal is closed or threadId is already set
-    if (!isOpened || threadId != null) {
+    if (threadId != null) {
       return;
     }
 
@@ -72,7 +60,7 @@ const RagSearchModal = (): JSX.Element => {
     };
 
     createThread();
-  }, [isOpened, threadId]);
+  }, [threadId]);
 
   const submit = useCallback(async(data: FormData) => {
     const { length: logLength } = messageLogs;
@@ -164,54 +152,71 @@ const RagSearchModal = (): JSX.Element => {
   };
 
   return (
+    <>
+      <div className="vstack gap-4">
+        { messageLogs.map(message => (
+          <MessageCard key={message.id} right={message.isUserMessage}>{message.content}</MessageCard>
+        )) }
+        { lastMessage != null && (
+          <MessageCard>{lastMessage.content}</MessageCard>
+        )}
+      </div>
+
+      <div>
+        <form onSubmit={form.handleSubmit(submit)} className="hstack gap-2 align-items-end mt-4">
+          <Controller
+            name="input"
+            control={form.control}
+            render={({ field }) => (
+              <ResizableTextarea
+                {...field}
+                required
+                className="form-control textarea-ask"
+                style={{ resize: 'none' }}
+                rows={1}
+                placeholder="ききたいことを入力してください"
+                onKeyDown={keyDownHandler}
+              />
+            )}
+          />
+          <button
+            type="submit"
+            className="btn btn-submit no-border"
+            disabled={form.formState.isSubmitting}
+          >
+            <span className="material-symbols-outlined">send</span>
+          </button>
+        </form>
+
+        {form.formState.errors.input != null && (
+          <span className="text-danger small">{form.formState.errors.input?.message}</span>
+        )}
+      </div>
+    </>
+  );
+};
+
+
+export const AiChatModal = (): JSX.Element => {
+
+  const { data: ragSearchModalData, close: closeRagSearchModal } = useRagSearchModal();
+
+  const isOpened = ragSearchModalData?.isOpened ?? false;
+
+  return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRagSearchModal} className={moduleClass}>
+
       <ModalHeader tag="h4" toggle={closeRagSearchModal} className="pe-4">
         <span className="material-symbols-outlined text-primary">psychology</span>
         GROWI Assistant
       </ModalHeader>
-      <ModalBody className="px-lg-5 py-4">
-        <div className="vstack gap-4">
-          { messageLogs.map(message => (
-            <MessageCard key={message.id} right={message.isUserMessage}>{message.content}</MessageCard>
-          )) }
-          { lastMessage != null && (
-            <MessageCard>{lastMessage.content}</MessageCard>
-          )}
-        </div>
 
-        <div>
-          <form onSubmit={form.handleSubmit(submit)} className="hstack gap-2 align-items-end mt-4">
-            <Controller
-              name="input"
-              control={form.control}
-              render={({ field }) => (
-                <ResizableTextarea
-                  {...field}
-                  required
-                  className="form-control textarea-ask"
-                  style={{ resize: 'none' }}
-                  rows={1}
-                  placeholder="ききたいことを入力してください"
-                  onKeyDown={keyDownHandler}
-                />
-              )}
-            />
-            <button
-              type="submit"
-              className="btn btn-submit no-border"
-              disabled={form.formState.isSubmitting}
-            >
-              <span className="material-symbols-outlined">send</span>
-            </button>
-          </form>
+      { isOpened && (
+        <ModalBody className="px-lg-5 py-4">
+          <AiChatModalSubstance />
+        </ModalBody>
+      ) }
 
-          {form.formState.errors.input != null && (
-            <span className="text-danger small">{form.formState.errors.input?.message}</span>
-          )}
-        </div>
-      </ModalBody>
     </Modal>
   );
 };
-
-export default RagSearchModal;
