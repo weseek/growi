@@ -473,6 +473,12 @@
     "latest_revision": "最新页面正文",
     "selected_editable_revision": "选定的可编辑页面正文"
   },
+  "modal_aichat": {
+    "title": "知识助手",
+    "title_beta_label": "(测试版)",
+    "placeholder": "问我任何问题。",
+    "caution_against_hallucination": "请核实信息并检查来源。"
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",

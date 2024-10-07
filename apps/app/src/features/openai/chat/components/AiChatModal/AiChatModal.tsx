@@ -2,6 +2,7 @@ import type { KeyboardEvent } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useForm, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalBody, ModalFooter, ModalHeader,
 } from 'reactstrap';
@@ -31,6 +32,8 @@ type FormData = {
 };
 
 const AiChatModalSubstance = (): JSX.Element => {
+
+  const { t } = useTranslation();
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -166,7 +169,7 @@ const AiChatModalSubstance = (): JSX.Element => {
           { messageLogs.length > 0 && (
             <div className="d-flex justify-content-center">
               <span className="bg-body-tertiary text-body-secondary rounded-pill px-3 py-1" style={{ fontSize: 'smaller' }}>
-                情報が正しいか出典を確認しましょう
+                {t('modal_aichat.caution_against_hallucination')}
               </span>
             </div>
           )}
@@ -185,7 +188,7 @@ const AiChatModalSubstance = (): JSX.Element => {
                 className="form-control textarea-ask"
                 style={{ resize: 'none' }}
                 rows={1}
-                placeholder="ききたいことを入力してください"
+                placeholder={t('modal_aichat.placeholder')}
                 onKeyDown={keyDownHandler}
               />
             )}
@@ -210,6 +213,8 @@ const AiChatModalSubstance = (): JSX.Element => {
 
 export const AiChatModal = (): JSX.Element => {
 
+  const { t } = useTranslation();
+
   const { data: ragSearchModalData, close: closeRagSearchModal } = useRagSearchModal();
 
   const isOpened = ragSearchModalData?.isOpened ?? false;
@@ -219,8 +224,8 @@ export const AiChatModal = (): JSX.Element => {
 
       <ModalHeader tag="h4" toggle={closeRagSearchModal} className="pe-4">
         <span className="material-symbols-outlined growi-ai-chat-icon me-3">chat</span>
-        <span className="fw-bold">GROWI Assistant</span>
-        <span className="fs-5 text-body-secondary ms-3">(Beta)</span>
+        <span className="fw-bold">{t('modal_aichat.title')}</span>
+        <span className="fs-5 text-body-secondary ms-3">{t('modal_aichat.title_beta_label')}</span>
       </ModalHeader>
 
       { isOpened && (
