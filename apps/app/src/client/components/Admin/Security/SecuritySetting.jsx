@@ -387,18 +387,27 @@ class SecuritySetting extends React.Component {
                       id="dropdownMenuButton"
                       data-bs-toggle="dropdown"
                       aria-haspopup="true"
-                      aria-expanded="true"
+                      aria-expanded="false"
                     >
                       <span>
-                        {adminGeneralSecurityContainer.switchIsShowRestrictedByOwner && t('security_settings.always_displayed')}
-                        {!adminGeneralSecurityContainer.switchIsShowRestrictedByOwner && t('security_settings.always_not_displayed')}
+                        {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
+                          ? t('security_settings.always_displayed')
+                          : t('security_settings.always_not_displayed')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
+                      >
                         {t('security_settings.always_displayed')}
                       </button>
-                      <button className="dropdown-item" type="button" onClick={() => { !adminGeneralSecurityContainer.state.isShowRestrictedByOwner }}>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
+                      >
                         {t('security_settings.always_not_displayed')}
                       </button>
                     </div>
@@ -417,18 +426,27 @@ class SecuritySetting extends React.Component {
                       id="dropdownMenuButton"
                       data-bs-toggle="dropdown"
                       aria-haspopup="true"
-                      aria-expanded="true"
+                      aria-expanded="false"
                     >
                       <span>
-                        {adminGeneralSecurityContainer.switchIsShowRestrictedByGroup && t('security_settings.always_displayed')}
-                        {!adminGeneralSecurityContainer.state.isShowRestrictedByGroup && t('security_settings.always_not_displayed')}
+                        {adminGeneralSecurityContainer.state.isShowRestrictedByGroup
+                          ? t('security_settings.always_displayed')
+                          : t('security_settings.always_not_displayed')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <button className="dropdown-item" type="button" onClick={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: true }) }}
+                      >
                         {t('security_settings.always_displayed')}
                       </button>
-                      <button className="dropdown-item" type="button" onClick={() => { !adminGeneralSecurityContainer.state.isShowRestrictedByGroup }}>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: false }) }}
+                      >
                         {t('security_settings.always_not_displayed')}
                       </button>
                     </div>
