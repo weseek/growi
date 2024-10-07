@@ -16,7 +16,7 @@ import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiChatModal.module.scss';
 
-const moduleClass = styles['rag-search-modal'];
+const moduleClass = styles['grw-aichat-modal'] ?? '';
 
 const logger = loggerFactory('growi:clinet:components:RagSearchModal');
 
