@@ -2,7 +2,9 @@ import type { KeyboardEvent } from 'react';
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useForm, Controller } from 'react-hook-form';
-import { Modal, ModalBody, ModalHeader } from 'reactstrap';
+import {
+  Modal, ModalBody, ModalFooter, ModalHeader,
+} from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { useRagSearchModal } from '~/stores/rag-search';
@@ -153,17 +155,26 @@ const AiChatModalSubstance = (): JSX.Element => {
 
   return (
     <>
-      <div className="vstack gap-4">
-        { messageLogs.map(message => (
-          <MessageCard key={message.id} right={message.isUserMessage}>{message.content}</MessageCard>
-        )) }
-        { lastMessage != null && (
-          <MessageCard>{lastMessage.content}</MessageCard>
-        )}
-      </div>
+      <ModalBody className="vstack gap-4 pb-0 pt-3 pt-lg-4 px-3 px-lg-4">
+        <div className="pb-4">
+          { messageLogs.map(message => (
+            <MessageCard key={message.id} right={message.isUserMessage}>{message.content}</MessageCard>
+          )) }
+          { lastMessage != null && (
+            <>
+              <MessageCard>{lastMessage.content}</MessageCard>
+              <div className="d-flex justify-content-center">
+                <span className="bg-secondary-subtle text-body-secondary rounded-pill px-3 py-1">
+                  情報が正しいか出典を確認しましょう
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+      </ModalBody>
 
-      <div>
-        <form onSubmit={form.handleSubmit(submit)} className="hstack gap-2 align-items-end mt-4">
+      <ModalFooter className="pt-0 pb-3 pb-lg-4 px-3 px-lg-4">
+        <form onSubmit={form.handleSubmit(submit)} className="flex-fill hstack gap-2 align-items-end m-0">
           <Controller
             name="input"
             control={form.control}
@@ -191,7 +202,7 @@ const AiChatModalSubstance = (): JSX.Element => {
         {form.formState.errors.input != null && (
           <span className="text-danger small">{form.formState.errors.input?.message}</span>
         )}
-      </div>
+      </ModalFooter>
     </>
   );
 };
@@ -204,7 +215,7 @@ export const AiChatModal = (): JSX.Element => {
   const isOpened = ragSearchModalData?.isOpened ?? false;
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeRagSearchModal} className={moduleClass}>
+    <Modal size="lg" isOpen={isOpened} toggle={closeRagSearchModal} className={moduleClass} scrollable>
 
       <ModalHeader tag="h4" toggle={closeRagSearchModal} className="pe-4">
         <span className="material-symbols-outlined text-primary">psychology</span>
@@ -212,9 +223,7 @@ export const AiChatModal = (): JSX.Element => {
       </ModalHeader>
 
       { isOpened && (
-        <ModalBody className="px-lg-5 py-4">
-          <AiChatModalSubstance />
-        </ModalBody>
+        <AiChatModalSubstance />
       ) }
 
     </Modal>
