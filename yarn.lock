@@ -2157,6 +2157,9 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
+"@growi/markdown-splitter@link:packages/markdown-splitter":
+  version "1.0.0"
+
 "@growi/pluginkit@link:packages/pluginkit":
   version "1.0.1"
   dependencies:
