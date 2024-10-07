@@ -1,4 +1,5 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/variables/growi-official-colors';
 
 .message-card :global {
   .card-body {
@@ -25,5 +26,15 @@
   max-width: 85%;
   @include bs.media-breakpoint-up(lg) {
     max-width: 75%;
+  }
+}
+
+
+
+// == Colors
+.assistant-message-card :global {
+  .grw-ai-icon {
+    color: white;
+    background-color: growi-official-colors.$growi-ai-purple;
   }
 }
