@@ -482,7 +482,8 @@
     "title": "Assistant de Connaissance",
     "title_beta_label": "(Bêta)",
     "placeholder": "Demandez-moi n'importe quoi.",
-    "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources."
+    "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
+    "progress_label": "Génération des réponses"
   },
   "link_edit": {
     "edit_link": "Modifier lien",

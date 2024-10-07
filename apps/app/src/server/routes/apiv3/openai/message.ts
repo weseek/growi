@@ -31,7 +31,11 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
-    body('userMessage').isString().withMessage('userMessage must be string'),
+    body('userMessage')
+      .isString()
+      .withMessage('userMessage must be string')
+      .notEmpty()
+      .withMessage('userMessage must be set'),
     body('threadId').isString().withMessage('threadId must be string'),
   ];
 

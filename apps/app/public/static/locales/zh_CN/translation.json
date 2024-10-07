@@ -477,7 +477,8 @@
     "title": "知识助手",
     "title_beta_label": "(测试版)",
     "placeholder": "问我任何问题。",
-    "caution_against_hallucination": "请核实信息并检查来源。"
+    "caution_against_hallucination": "请核实信息并检查来源。",
+    "progress_label": "生成答案中"
   },
   "link_edit": {
     "edit_link": "Edit Link",
