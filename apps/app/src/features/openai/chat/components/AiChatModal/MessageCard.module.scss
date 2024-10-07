@@ -1,0 +1,29 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+
+.message-card :global {
+  .card-body {
+    --bs-card-spacer-x: 1.25rem;
+    --bs-card-spacer-y: 0.8rem;
+
+    // remove margin from last child
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+// baloon style
+.user-message-card :global {
+  border: 0;
+
+  --bs-card-border-radius: var(--bs-border-radius-xxl);
+  border-bottom-right-radius: var(--bs-border-radius-lg);
+}
+
+// max width
+.user-message-card :global {
+  max-width: 85%;
+  @include bs.media-breakpoint-up(lg) {
+    max-width: 75%;
+  }
+}

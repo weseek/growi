@@ -1,8 +1,14 @@
 import ReactMarkdown from 'react-markdown';
 
+import styles from './MessageCard.module.scss';
+
+const moduleClass = styles['message-card'] ?? '';
+
+
+const userMessageCardModuleClass = styles['user-message-card'] ?? '';
 
 const UserMessageCard = ({ children }: { children?: string }): JSX.Element => (
-  <div className="card d-inline-flex align-self-end bg-success-subtle bg-info-subtle" style={{ maxWidth: '75%' }}>
+  <div className={`card d-inline-flex align-self-end bg-success-subtle bg-info-subtle ${moduleClass} ${userMessageCardModuleClass}`}>
     <div className="card-body">
       { children != null && children.length > 0 && (
         <ReactMarkdown>{children}</ReactMarkdown>
@@ -11,8 +17,11 @@ const UserMessageCard = ({ children }: { children?: string }): JSX.Element => (
   </div>
 );
 
+
+const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
+
 const AssistantMessageCard = ({ children }: { children?: string }): JSX.Element => (
-  <div className="card d-inline-flex align-self-start" style={{ maxWidth: '75%' }}>
+  <div className={`card d-inline-flex align-self-start border-0 ${moduleClass} ${assistantMessageCardModuleClass}`}>
     <div className="card-body">
       { children != null && children.length > 0 && (
         <ReactMarkdown>{children}</ReactMarkdown>
