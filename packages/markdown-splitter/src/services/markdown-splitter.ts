@@ -11,7 +11,7 @@ export type Chunk = {
  * @param label - The label of the chunk
  */
 function createChunk(chunks: Chunk[], content: string, label: string) {
-  const trimmedContent = content.trimEnd(); // 末尾の空白と改行を削除
+  const trimmedContent = content.trimEnd();
   if (trimmedContent !== '') {
     chunks.push({ label, content: trimmedContent });
   }

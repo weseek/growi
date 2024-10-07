@@ -1,7 +1,7 @@
 // splitMarkdownIntoChunks.test.ts
 
 import type { Chunk } from '../src/services/markdown-splitter';
-import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter'; // パスはプロジェクト構造に応じて調整してください
+import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter';
 
 describe('splitMarkdownIntoChunks', () => {
 
