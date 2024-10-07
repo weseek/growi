@@ -218,8 +218,9 @@ export const AiChatModal = (): JSX.Element => {
     <Modal size="lg" isOpen={isOpened} toggle={closeRagSearchModal} className={moduleClass} scrollable>
 
       <ModalHeader tag="h4" toggle={closeRagSearchModal} className="pe-4">
-        <span className="material-symbols-outlined text-primary">psychology</span>
-        GROWI Assistant
+        <span className="material-symbols-outlined growi-ai-chat-icon me-3">chat</span>
+        <span className="fw-bold">GROWI Assistant</span>
+        <span className="fs-5 text-body-secondary ms-3">(Beta)</span>
       </ModalHeader>
 
       { isOpened && (
