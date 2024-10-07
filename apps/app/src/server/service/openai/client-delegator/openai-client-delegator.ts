@@ -28,6 +28,14 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     this.client = new OpenAI({ apiKey });
   }
 
+  async uploadFile(file: Uploadable): Promise<OpenAI.Files.FileObject> {
+    return this.client.files.create({ file, purpose: 'assistants' });
+  }
+
+  async createVectorStoreFileBatch(fileIds: string[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch> {
+    return this.client.beta.vectorStores.fileBatches.create(this.openaiVectorStoreId, { file_ids: fileIds });
+  }
+
   async getVectorStoreFiles(): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFilesPage> {
     return this.client.beta.vectorStores.files.list(this.openaiVectorStoreId);
   }
