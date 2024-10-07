@@ -43,7 +43,9 @@ const AiChatModalSubstance = (): JSX.Element => {
 
   const [threadId, setThreadId] = useState<string | undefined>();
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
-  const [lastMessage, setLastMessage] = useState<Message>();
+  const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
+
+  const isGenerating = generatingAnswerMessage != null;
 
   useEffect(() => {
     // do nothing when the modal is closed or threadId is already set
@@ -68,6 +70,11 @@ const AiChatModalSubstance = (): JSX.Element => {
   }, [threadId]);
 
   const submit = useCallback(async(data: FormData) => {
+    // do nothing when the assistant is generating an answer
+    if (isGenerating) {
+      return;
+    }
+
     const { length: logLength } = messageLogs;
 
     // add user message to the logs
@@ -78,8 +85,8 @@ const AiChatModalSubstance = (): JSX.Element => {
     form.reset();
 
     // add an empty assistant message
-    const newAssistantMessage = { id: (logLength + 1).toString(), content: '' };
-    setLastMessage(newAssistantMessage);
+    const newAnswerMessage = { id: (logLength + 1).toString(), content: '' };
+    setGeneratingAnswerMessage(newAnswerMessage);
 
     // post message
     try {
@@ -96,7 +103,7 @@ const AiChatModalSubstance = (): JSX.Element => {
           const errors = resJson.errors.map(({ message }) => message).join(', ');
           form.setError('input', { type: 'manual', message: `[${response.status}] ${errors}` });
         }
-        setLastMessage(undefined);
+        setGeneratingAnswerMessage(undefined);
         return;
       }
 
@@ -110,9 +117,9 @@ const AiChatModalSubstance = (): JSX.Element => {
 
         // add assistant message to the logs
         if (done) {
-          setLastMessage((lastMessage) => {
-            if (lastMessage == null) return;
-            setMessageLogs(msgs => [...msgs, lastMessage]);
+          setGeneratingAnswerMessage((generatingAnswerMessage) => {
+            if (generatingAnswerMessage == null) return;
+            setMessageLogs(msgs => [...msgs, generatingAnswerMessage]);
             return undefined;
           });
           return;
@@ -130,7 +137,7 @@ const AiChatModalSubstance = (): JSX.Element => {
           });
 
         // append text values to the assistant message
-        setLastMessage((prevMessage) => {
+        setGeneratingAnswerMessage((prevMessage) => {
           if (prevMessage == null) return;
           return {
             ...prevMessage,
@@ -147,7 +154,7 @@ const AiChatModalSubstance = (): JSX.Element => {
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [form, messageLogs, threadId]);
+  }, [form, isGenerating, messageLogs, threadId]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -162,8 +169,8 @@ const AiChatModalSubstance = (): JSX.Element => {
           { messageLogs.map(message => (
             <MessageCard key={message.id} role={message.isUserMessage ? 'user' : 'assistant'}>{message.content}</MessageCard>
           )) }
-          { lastMessage != null && (
-            <MessageCard role="assistant">{lastMessage.content}</MessageCard>
+          { generatingAnswerMessage != null && (
+            <MessageCard role="assistant">{generatingAnswerMessage.content}</MessageCard>
           )}
           { messageLogs.length > 0 && (
             <div className="d-flex justify-content-center">
@@ -187,15 +194,16 @@ const AiChatModalSubstance = (): JSX.Element => {
                 className="form-control textarea-ask"
                 style={{ resize: 'none' }}
                 rows={1}
-                placeholder={t('modal_aichat.placeholder')}
+                placeholder={!form.formState.isSubmitting ? t('modal_aichat.placeholder') : ''}
                 onKeyDown={keyDownHandler}
+                disabled={form.formState.isSubmitting}
               />
             )}
           />
           <button
             type="submit"
             className="btn btn-submit no-border"
-            disabled={form.formState.isSubmitting}
+            disabled={form.formState.isSubmitting || isGenerating}
           >
             <span className="material-symbols-outlined">send</span>
           </button>
