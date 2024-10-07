@@ -176,7 +176,7 @@ const AiChatModalSubstance = (): JSX.Element => {
         </div>
       </ModalBody>
 
-      <ModalFooter className="pt-0 pb-3 pb-lg-4 px-3 px-lg-4">
+      <ModalFooter className="flex-column align-items-start pt-0 pb-3 pb-lg-4 px-3 px-lg-4">
         <form onSubmit={form.handleSubmit(submit)} className="flex-fill hstack gap-2 align-items-end m-0">
           <Controller
             name="input"
