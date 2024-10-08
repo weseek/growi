@@ -2,6 +2,7 @@ import type OpenAI from 'openai';
 import type { Uploadable } from 'openai/uploads';
 
 export interface IOpenaiClientDelegator {
+  createVectorStore(): Promise<OpenAI.Beta.VectorStores.VectorStore>
   uploadFile(file: Uploadable): Promise<OpenAI.Files.FileObject>
   createVectorStoreFileBatch(fileIds: string[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch>
   getVectorStoreFiles(): Promise<OpenAI.Beta.VectorStores.Files.VectorStoreFilesPage>;

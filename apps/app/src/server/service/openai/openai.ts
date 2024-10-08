@@ -36,6 +36,20 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
+  private async getOrCreateVectorStoreId(): Promise<string> {
+    const configKey = 'app:openaiVectorStoreId';
+
+    const vectorStoreId = configManager.getConfig('crowi', configKey);
+    if (vectorStoreId != null) {
+      return vectorStoreId;
+    }
+
+    const newVectorStore = await this.client.createVectorStore();
+    const newVectorStoreId = newVectorStore.id;
+    configManager.updateConfigsInTheSameNamespace('crowi', { [configKey]: newVectorStoreId });
+    return newVectorStoreId;
+  }
+
   private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
     const file = await toFile(Readable.from(body), `${pageId}.md`);
     const uploadedFile = await this.client.uploadFile(file);
