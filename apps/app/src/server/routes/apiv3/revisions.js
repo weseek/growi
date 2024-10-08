@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
+import { connection } from 'mongoose';
 
 import { Revision } from '~/server/models/revision';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
@@ -13,6 +14,8 @@ const logger = loggerFactory('growi:routes:apiv3:pages');
 const { query, param } = require('express-validator');
 
 const router = express.Router();
+
+const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549';
 
 /**
  * @swagger
@@ -110,6 +113,23 @@ module.exports = (crowi) => {
    *            description: Return revisions belong to page
    *
    */
+  let cachedAppliedAt = null;
+
+  const getAppliedAtOfTheMigrationFile = async() => {
+
+    if (cachedAppliedAt != null) {
+      return cachedAppliedAt;
+    }
+
+    const migrationCollection = connection.collection('migrations');
+    const migration = await migrationCollection.findOne({ fileName: { $regex: `^${MIGRATION_FILE_NAME}` } });
+    const appliedAt = migration.appliedAt;
+
+    cachedAppliedAt = appliedAt;
+
+    return appliedAt;
+  };
+
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
     const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
@@ -131,6 +151,9 @@ module.exports = (crowi) => {
 
     try {
       const page = await Page.findOne({ _id: pageId });
+
+      const appliedAt = await getAppliedAtOfTheMigrationFile();
+
       const queryOpts = {
         offset,
         sort: { createdAt: -1 },
@@ -143,8 +166,14 @@ module.exports = (crowi) => {
         queryOpts.pagination = true;
       }
 
+      const queryCondition = {
+        pageId: page._id,
+        createdAt: { $gt: appliedAt },
+      };
+
+      // https://redmine.weseek.co.jp/issues/151652
       const paginateResult = await Revision.paginate(
-        { pageId: page._id },
+        queryCondition,
         queryOpts,
       );
 
