@@ -63,11 +63,21 @@ export function splitMarkdownIntoChunks(markdown: string): Chunk[] {
   const contentLines: string[] = [];
   let currentLabel = '';
   let previousLineEmpty = false;
-
+  let inCodeBlock = false;
   for (const line of lines) {
     const trimmedLine = line.trim();
 
-    if (trimmedLine.startsWith('#')) {
+    if (trimmedLine.startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      contentLines.push(line);
+      previousLineEmpty = false;
+    }
+    else if (inCodeBlock) {
+      // Inside code block, add line to content
+      contentLines.push(line);
+      previousLineEmpty = false;
+    }
+    else if (trimmedLine.startsWith('#')) {
       // Process any pending content before starting a new section
       if (contentLines.length > 0) {
         const contentLabel = currentLabel !== '' ? `${currentLabel}-content` : '0-content';
@@ -81,6 +91,7 @@ export function splitMarkdownIntoChunks(markdown: string): Chunk[] {
         currentLabel = updateSectionNumbers(sectionNumbers, headingDepth);
         chunks.push({ label: `${currentLabel}-heading`, text: line });
       }
+      previousLineEmpty = false;
     }
     else if (trimmedLine === '') {
       // Handle empty lines to avoid multiple consecutive empty lines
