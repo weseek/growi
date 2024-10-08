@@ -87,8 +87,9 @@ class OpenaiService implements IOpenaiService {
 
     try {
       // Create vector store file
+      const vectorStoreId = await this.getOrCreateVectorStoreId();
       const uploadedFileIds = preparedVectorStoreFileRelations.map(data => data.fileIds).flat();
-      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(uploadedFileIds);
+      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStoreId, uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
 
       // Save vector store file relation
