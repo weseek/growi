@@ -1,6 +1,6 @@
 module.exports = {
-  extends: '../../.eslintrc.json',
+  extends: '../../.eslintrc.js',
   rules: {
     'no-useless-constructor': 'off',
   },
-}
+};

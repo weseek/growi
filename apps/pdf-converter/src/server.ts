@@ -1,4 +1,4 @@
-import { PlatformApplication } from '@tsed/common';
+import type { PlatformApplication } from '@tsed/common';
 import { Configuration, Inject } from '@tsed/di';
 import express from 'express';
 
@@ -21,7 +21,7 @@ class Server {
   @Inject()
     app: PlatformApplication;
 
-  $beforeRoutesInit() {
+  $beforeRoutesInit(): void {
     this.app
       .use(express.json({ limit: '50mb' }))
       .use(express.urlencoded({ extended: true, limit: '50mb' }));

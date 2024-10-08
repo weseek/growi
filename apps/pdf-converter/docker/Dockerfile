@@ -35,7 +35,7 @@ FROM node:20-slim AS builder
 
 WORKDIR /app
 
-COPY package.json yarn.lock tsconfig.json tsconfig.build.json .eslintrc.json ./
+COPY package.json yarn.lock tsconfig.json tsconfig.build.json .eslintrc.js ./
 COPY src ./src
 COPY --from=deps-resolver /app/node_modules.tar ./
 

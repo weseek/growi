@@ -1,10 +1,11 @@
-import { Logger } from '@tsed/common';
-import { Inject, Service } from '@tsed/di';
-import { Cluster } from 'puppeteer-cluster';
-import { Readable, Writable } from 'stream';
 import fs from 'fs';
 import path from 'path';
+import { Readable, Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
+
+import type { Logger } from '@tsed/common';
+import { Inject, Service } from '@tsed/di';
+import { Cluster } from 'puppeteer-cluster';
 
 interface PageInfo {
   htmlString: string;
@@ -55,7 +56,8 @@ class PdfConvertService {
 
     if (isJobNew) {
       this.jobList[jobId] = { expirationDate, status };
-    } else {
+    }
+    else {
       const jobInfo = this.jobList[jobId];
       jobInfo.expirationDate = expirationDate;
 
@@ -78,18 +80,21 @@ class PdfConvertService {
     return this.jobList[jobId].status;
   }
 
-  cleanUpJobList() {
+  cleanUpJobList(): void {
     const now = new Date();
-    for (const jobId in this.jobList) {
-      if (now > this.jobList[jobId].expirationDate && [JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(this.jobList[jobId].status)) {
-        this.jobList[jobId].currentStream?.destroy(new Error('job expired'));
+    for (const jobId of Object.keys(this.jobList)) {
+      const job = this.jobList[jobId];
+      if (now > job.expirationDate && [JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(job.status)) {
+        job.currentStream?.destroy(new Error('job expired'));
         delete this.jobList[jobId];
       }
     }
   }
 
+
   private async readHtmlAndConvertToPdfUntilFinish(jobId: string): Promise<void> {
-    while(![JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(this.jobList[jobId].status)) {
+    while (![JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(this.jobList[jobId].status)) {
+      // eslint-disable-next-line no-await-in-loop
       await new Promise(resolve => setTimeout(resolve, 60 * 1000));
 
       try {
@@ -101,6 +106,7 @@ class PdfConvertService {
         const pdfWritable = this.getPdfWritable();
         this.jobList[jobId].currentStream = htmlReadable;
 
+        // eslint-disable-next-line no-await-in-loop
         await pipelinePromise(htmlReadable, pdfWritable);
       }
       catch (err) {
@@ -113,11 +119,10 @@ class PdfConvertService {
   }
 
   private getHtmlReadable(jobId: string): Readable {
-    const htmlFileEntries = fs.readdirSync(path.join(this.tmpHtmlDir, jobId), {recursive: true, withFileTypes: true}).filter(entry => entry.isFile());
+    const htmlFileEntries = fs.readdirSync(path.join(this.tmpHtmlDir, jobId), { recursive: true, withFileTypes: true }).filter(entry => entry.isFile());
     let index = 0;
 
     const jobList = this.jobList;
-    const logger = this.logger;
 
     return new Readable({
       objectMode: true,
@@ -137,7 +142,7 @@ class PdfConvertService {
         this.push({ htmlString, htmlFilePath });
 
         index += 1;
-      }
+      },
     });
   }
 
