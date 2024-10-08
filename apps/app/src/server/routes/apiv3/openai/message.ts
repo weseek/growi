@@ -56,7 +56,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
 
         stream = openaiClient.beta.threads.runs.stream(thread.id, {
           assistant_id: assistant.id,
-          additional_messages: [{ role: 'assistant', content: req.body.userMessage }],
+          additional_messages: [{ role: 'user', content: req.body.userMessage }],
         });
 
       }
