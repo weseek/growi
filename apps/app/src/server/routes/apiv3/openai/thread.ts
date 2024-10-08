@@ -4,12 +4,13 @@ import { body } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
 import { openaiClient } from '~/server/service/openai';
+import { getOpenaiService } from '~/server/service/openai/openai';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:chat');
+const logger = loggerFactory('growi:routes:apiv3:openai:thread');
 
 type CreateThreadReq = Request<undefined, ApiV3Response, {
   userMessage: string,
@@ -29,13 +30,13 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
-
-      const vectorStoreId = process.env.OPENAI_VECTOR_STORE_ID;
-      if (vectorStoreId == null) {
-        return res.apiv3Err('OPENAI_VECTOR_STORE_ID is not setup', 503);
+      const openaiService = getOpenaiService();
+      if (openaiService == null) {
+        return res.apiv3Err('OpenaiService is not available', 503);
       }
 
       try {
+        const vectorStoreId = await openaiService.getOrCreateVectorStoreId();
         const threadId = req.body.threadId;
         const thread = threadId == null
           ? await openaiClient.beta.threads.create({

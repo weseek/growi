@@ -25,6 +25,7 @@ const logger = loggerFactory('growi:service:openai');
 
 
 export interface IOpenaiService {
+  getOrCreateVectorStoreId(): Promise<string>;
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
   rebuildVectorStore(page: PageDocument): Promise<void>;
@@ -36,7 +37,7 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  private async getOrCreateVectorStoreId(): Promise<string> {
+  public async getOrCreateVectorStoreId(): Promise<string> {
     const configKey = 'app:openaiVectorStoreId';
 
     const vectorStoreId = configManager.getConfig('crowi', configKey);
