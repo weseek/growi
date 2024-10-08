@@ -248,5 +248,30 @@ Content under header 2.
     const result = splitMarkdownIntoChunks(markdown);
     expect(result).toEqual(expected);
   });
+  test('code blocks containing # are not treated as headings', () => {
+    const markdown = `
+# Header 1
+Some introductory content.
 
+\`\`\`
+# This is a comment with a # symbol
+Some code line
+\`\`\`
+
+Additional content.
+
+# Header 2
+Content under header 2.
+    `;
+
+    const expected: Chunk[] = [
+      { label: '1-heading', text: '# Header 1' },
+      { label: '1-content', text: 'Some introductory content.\n\n```\n# This is a comment with a # symbol\nSome code line\n```\n\nAdditional content.' },
+      { label: '2-heading', text: '# Header 2' },
+      { label: '2-content', text: 'Content under header 2.' },
+    ];
+
+    const result = splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
+  });
 });
