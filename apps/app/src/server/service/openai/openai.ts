@@ -26,6 +26,7 @@ const logger = loggerFactory('growi:service:openai');
 
 export interface IOpenaiService {
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
+  deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
   rebuildVectorStore(page: PageDocument): Promise<void>;
 }
@@ -86,33 +87,35 @@ class OpenaiService implements IOpenaiService {
 
   }
 
-  private async deleteVectorStoreFile(page: PageDocument): Promise<void> {
+  async deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void> {
     // Delete vector store file and delete vector store file relation
-    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ pageId: page._id });
-    if (vectorStoreFileRelation != null) {
-      const deletedFileIds: string[] = [];
-      for (const fileId of vectorStoreFileRelation.fileIds) {
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          const deleteFileResponse = await this.client.deleteFile(fileId);
-          logger.debug('Delete vector store file', deleteFileResponse);
-          deletedFileIds.push(fileId);
-        }
-        catch (err) {
-          logger.error(err);
-        }
-      }
-
-      const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
-
-      if (undeletedFileIds.length === 0) {
-        await vectorStoreFileRelation.remove();
-        return;
-      }
-
-      vectorStoreFileRelation.fileIds = undeletedFileIds;
-      await vectorStoreFileRelation.save();
+    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ pageId });
+    if (vectorStoreFileRelation == null) {
+      return;
     }
+
+    const deletedFileIds: string[] = [];
+    for (const fileId of vectorStoreFileRelation.fileIds) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const deleteFileResponse = await this.client.deleteFile(fileId);
+        logger.debug('Delete vector store file', deleteFileResponse);
+        deletedFileIds.push(fileId);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    }
+
+    const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
+
+    if (undeletedFileIds.length === 0) {
+      await vectorStoreFileRelation.remove();
+      return;
+    }
+
+    vectorStoreFileRelation.fileIds = undeletedFileIds;
+    await vectorStoreFileRelation.save();
   }
 
   async rebuildVectorStoreAll() {
@@ -139,8 +142,10 @@ class OpenaiService implements IOpenaiService {
   }
 
   async rebuildVectorStore(page: PageDocument) {
-    await this.deleteVectorStoreFile(page);
-    await this.createVectorStoreFile([page]);
+    if (page._id != null) {
+      await this.deleteVectorStoreFile(page._id);
+      await this.createVectorStoreFile([page]);
+    }
   }
 
 }
