@@ -96,14 +96,10 @@ class PageCursorsForDescendantsFactory {
 
   private initialCursor: Cursor<any> | never[]; // TODO: wait for mongoose update
 
-  private Page: PageModel;
-
   constructor(user: any, rootPage: any, shouldIncludeEmpty: boolean) {
     this.user = user;
     this.rootPage = rootPage;
     this.shouldIncludeEmpty = shouldIncludeEmpty;
-
-    this.Page = mongoose.model('Page') as unknown as PageModel;
   }
 
   // prepare initial cursor
@@ -150,9 +146,10 @@ class PageCursorsForDescendantsFactory {
       return [];
     }
 
-    const { PageQueryBuilder } = this.Page;
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+    const { PageQueryBuilder } = Page;
 
-    const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
+    const builder = new PageQueryBuilder(Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as Cursor<any>;
@@ -3653,13 +3650,13 @@ class PageService implements IPageService {
 
   // --------- Create ---------
 
-  private async preparePageDocumentToCreate(path: string, shouldNew: boolean): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  private async preparePageDocumentToCreate(path: string, shouldNew: boolean): Promise<HydratedDocument<PageDocument>> {
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const emptyPage = await Page.findOne({ path, isEmpty: true });
 
     // Use empty page if exists, if not, create a new page
-    let page;
+    let page: HydratedDocument<PageDocument>;
     if (shouldNew) {
       page = new Page();
     }
@@ -3773,7 +3770,7 @@ class PageService implements IPageService {
    * Create a page
    * Set options.isSynchronously to true to await all process when you want to run this method multiple times at short intervals.
    */
-  async create(_path: string, body: string, user: HasObjectId, options: IOptionsForCreate = {}): Promise<PageDocument> {
+  async create(_path: string, body: string, user: HasObjectId, options: IOptionsForCreate = {}): Promise<HydratedDocument<PageDocument>> {
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
@@ -3784,7 +3781,7 @@ class PageService implements IPageService {
     const path: string = generalXssFilter.process(_path); // sanitize path
 
     // Retrieve closest ancestor document
-    const Page = mongoose.model<PageDocument, PageModel>('Page');
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
     const closestAncestor = await Page.findNonEmptyClosestAncestor(path);
 
     // Determine grantData
@@ -3902,7 +3899,7 @@ class PageService implements IPageService {
    * V4 compatible create method
    */
   private async createV4(path, body, user, options: any = {}) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const format = options.format || 'markdown';
     const grantUserGroupIds = options.grantUserGroupIds || null;
@@ -4078,7 +4075,7 @@ class PageService implements IPageService {
   }
 
   async updatePageSubOperation(page, user, exPage, options: IOptionsForUpdate, pageOpId: ObjectIdLike): Promise<void> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const currentPage = page;
 
@@ -4143,13 +4140,13 @@ class PageService implements IPageService {
   }
 
   async updatePage(
-      pageData: PageDocument,
+      pageData: HydratedDocument<PageDocument>,
       body: string | null,
       previousBody: string | null,
       user: IUserHasId,
       options: IOptionsForUpdate = {},
-  ): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  ): Promise<HydratedDocument<PageDocument>> {
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
@@ -4291,8 +4288,9 @@ class PageService implements IPageService {
   }
 
 
-  async updatePageV4(pageData: PageDocument, body, previousBody, user, options: IOptionsForUpdate = {}): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  async updatePageV4(
+      pageData: HydratedDocument<PageDocument>, body, previousBody, user, options: IOptionsForUpdate = {},
+  ): Promise<HydratedDocument<PageDocument>> {
 
     // use the previous data if absent
     const grant = options.grant || pageData.grant;
