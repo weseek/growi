@@ -488,7 +488,8 @@
     "title": "Knowledge Assistant",
     "title_beta_label": "(Beta)",
     "placeholder": "Ask me anything.",
-    "caution_against_hallucination": "Please verify the information and check the sources."
+    "caution_against_hallucination": "Please verify the information and check the sources.",
+    "progress_label": "Generating answers"
   },
   "link_edit": {
     "edit_link": "Edit Link",
