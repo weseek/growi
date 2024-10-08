@@ -74,8 +74,18 @@ class PdfConvertService {
   }
 
   getJobStatus(jobId: string): JobStatus {
-    if (!(jobId in this.jobList)) throw new Error('Job not found');
+    if (!(jobId in this.jobList)) return JobStatus.FAILED;
     return this.jobList[jobId].status;
+  }
+
+  cleanUpJobList() {
+    const now = new Date();
+    for (const jobId in this.jobList) {
+      if (now > this.jobList[jobId].expirationDate && [JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(this.jobList[jobId].status)) {
+        this.jobList[jobId].currentStream?.destroy(new Error('job expired'));
+        delete this.jobList[jobId];
+      }
+    }
   }
 
   private async readHtmlAndConvertToPdfUntilFinish(jobId: string): Promise<void> {
@@ -89,7 +99,6 @@ class PdfConvertService {
 
         const htmlReadable = this.getHtmlReadable(jobId);
         const pdfWritable = this.getPdfWritable();
-        this.logger.info(`execute pipeline for job ${jobId}`);
         this.jobList[jobId].currentStream = htmlReadable;
 
         await pipelinePromise(htmlReadable, pdfWritable);
@@ -101,12 +110,10 @@ class PdfConvertService {
         break;
       }
     }
-    this.logger.info('終わりましたーーー');
   }
 
   private getHtmlReadable(jobId: string): Readable {
     const htmlFileEntries = fs.readdirSync(path.join(this.tmpHtmlDir, jobId), {recursive: true, withFileTypes: true}).filter(entry => entry.isFile());
-    this.logger.info(htmlFileEntries.length);
     let index = 0;
 
     const jobList = this.jobList;
@@ -115,7 +122,6 @@ class PdfConvertService {
     return new Readable({
       objectMode: true,
       async read() {
-        logger.info('ここでも開始');
         if (index >= htmlFileEntries.length) {
           if (jobList[jobId].status === JobStatus.HTML_EXPORT_DONE && htmlFileEntries.length === 0) {
             jobList[jobId].status = JobStatus.PDF_EXPORT_DONE;
@@ -123,19 +129,13 @@ class PdfConvertService {
           this.push(null);
           return;
         }
-        logger.info('超えたー');
 
         const entry = htmlFileEntries[index];
-        logger.info(entry);
-        logger.info(entry.parentPath);
-        logger.info(entry.name);
         const htmlFilePath = path.join(entry.parentPath, entry.name);
         const htmlString = await fs.promises.readFile(htmlFilePath, 'utf-8');
-        logger.info('read html string');
 
         this.push({ htmlString, htmlFilePath });
 
-        logger.info('pushed');
         index += 1;
       }
     });
@@ -149,15 +149,11 @@ class PdfConvertService {
         const fileOutputParentPath = this.getParentPath(fileOutputPath);
 
         try {
-          this.logger.info('fileOutputPath: ', fileOutputPath);
-          this.logger.info('fileOutputParentPath: ', fileOutputParentPath);
-          this.logger.info('htmlFilePath: ', pageInfo.htmlFilePath);
           const pdfBody = await this.convertHtmlToPdf(pageInfo.htmlString);
           await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
           await fs.promises.writeFile(fileOutputPath, pdfBody);
 
           await fs.promises.rm(pageInfo.htmlFilePath, { force: true });
-          this.logger.info('wrote');
         }
         catch (err) {
           callback(err);
