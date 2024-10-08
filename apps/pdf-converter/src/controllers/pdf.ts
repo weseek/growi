@@ -1,7 +1,7 @@
-import { BodyParams, QueryParams, Logger } from '@tsed/common';
+import { BodyParams, Logger } from '@tsed/common';
 import { Controller, Inject } from '@tsed/di';
 import { InternalServerError } from '@tsed/exceptions';
-import { Get, Post, Returns } from '@tsed/schema';
+import { Post, Returns } from '@tsed/schema';
 
 import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert';
 
@@ -20,7 +20,7 @@ class PdfCtrl {
     const expirationDate = new Date(expirationDateStr);
     try {
       this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus);
-      this.pdfConvertService.cleanupJobList();
+      this.pdfConvertService.cleanUpJobList();
       return { status: this.pdfConvertService.getJobStatus(jobId)};
     }
     catch (err) {
