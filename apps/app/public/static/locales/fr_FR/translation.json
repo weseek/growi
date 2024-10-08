@@ -478,6 +478,12 @@
     "latest_revision": "les autres",
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
+  "modal_aichat": {
+    "title": "Assistant de Connaissance",
+    "title_beta_label": "(Bêta)",
+    "placeholder": "Demandez-moi n'importe quoi.",
+    "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources."
+  },
   "link_edit": {
     "edit_link": "Modifier lien",
     "set_link_and_label": "Ajouter lien et étiquette",
