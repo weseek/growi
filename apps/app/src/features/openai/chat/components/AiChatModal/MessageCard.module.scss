@@ -86,6 +86,7 @@
 // == Colors
 .assistant-message-card :global {
   .grw-ai-icon {
+    padding: 0.4em;
     color: white;
     background-color: growi-official-colors.$growi-ai-purple;
   }

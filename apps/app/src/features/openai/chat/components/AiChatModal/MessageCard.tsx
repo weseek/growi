@@ -26,8 +26,8 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
   return (
     <div className={`card border-0 ${moduleClass} ${assistantMessageCardModuleClass}`}>
       <div className="card-body d-flex">
-        <div className="me-2 me-lg-3">
-          <span className="growi-custom-icons grw-ai-icon rounded-pill p-1">growi_ai</span>
+        <div className="me-2 me-lg-3 pt-1">
+          <span className="growi-custom-icons grw-ai-icon rounded-pill">growi_ai</span>
         </div>
 
         <div className="mt-1">
