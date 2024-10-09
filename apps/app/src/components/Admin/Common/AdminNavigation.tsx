@@ -32,7 +32,19 @@ const MenuLabel = ({ menu }: { menu: string }) => {
     case 'user-groups':              return <><span className="material-symbols-outlined me-1">group</span>{            t('user_group_management.user_group_management') }</>;
     case 'audit-log':                return <><span className="material-symbols-outlined me-1">feed</span>{             t('audit_log_management.audit_log')}</>;
     case 'plugins':                  return <><span className="material-symbols-outlined me-1">extension</span>{        t('plugins.plugins')}</>;
-    case 'ai-integration':           return <><span className="growi-custom-icons me-1 fs-6">growi_ai</span>{           t('ai_integration.ai_integration')}</>;
+    case 'ai-integration':           return (
+      <>{/* TODO: unify sizing of growi-custom-icons so that simplify code -- 2024.10.09 Yuki Takei */}
+        <span
+          className="growi-custom-icons d-inline-block me-1"
+          style={{
+            fontSize: '18px', width: '24px', height: '24px', lineHeight: '24px', verticalAlign: 'bottom', paddingLeft: '2px',
+          }}
+        >
+          growi_ai
+        </span>
+        {t('ai_integration.ai_integration')}
+      </>
+    );
     case 'search':                   return <><span className="material-symbols-outlined me-1">search</span>{           t('full_text_search_management.full_text_search_management') }</>;
     case 'cloud':                    return <><span className="material-symbols-outlined me-1">share</span>{            t('cloud_setting_management.to_cloud_settings')} </>;
     default:                         return <><span className="material-symbols-outlined me-1">home</span>{             t('wiki_management_homepage') }</>;
