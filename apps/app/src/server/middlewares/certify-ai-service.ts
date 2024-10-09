@@ -8,7 +8,6 @@ const logger = loggerFactory('growi:middlewares:certify-ai-service');
 
 export const certifyAiService = (req: Request, res: Response & { apiv3Err }, next: NextFunction): void => {
   const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
-  const openaiServiceType = configManager.getConfig('crowi', 'app:openaiServiceType');
 
   if (!aiEnabled) {
     const message = 'AI_ENABLED is not true';
@@ -16,6 +15,7 @@ export const certifyAiService = (req: Request, res: Response & { apiv3Err }, nex
     return res.apiv3Err(message, 403);
   }
 
+  const openaiServiceType = configManager.getConfig('crowi', 'openai:serviceType');
   if (openaiServiceType == null || !OpenaiServiceTypes.includes(openaiServiceType)) {
     const message = 'AI_SERVICE_TYPE is missing or contains an invalid value';
     logger.error(message);

@@ -34,7 +34,7 @@ export interface IOpenaiService {
 class OpenaiService implements IOpenaiService {
 
   private get client() {
-    const openaiServiceType = configManager.getConfig('crowi', 'app:openaiServiceType');
+    const openaiServiceType = configManager.getConfig('crowi', 'openai:serviceType');
     return getClient({ openaiServiceType });
   }
 
@@ -157,7 +157,7 @@ export const getOpenaiService = (): IOpenaiService | undefined => {
   }
 
   const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
-  const openaiServiceType = configManager.getConfig('crowi', 'app:openaiServiceType');
+  const openaiServiceType = configManager.getConfig('crowi', 'openai:serviceType');
   if (aiEnabled && openaiServiceType != null && OpenaiServiceTypes.includes(openaiServiceType)) {
     instance = new OpenaiService();
     return instance;

@@ -759,26 +759,26 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   OPENAI_SERVICE_TYPE: {
     ns: 'crowi',
-    key: 'app:openaiServiceType',
+    key: 'openai:serviceType',
     type: ValueType.STRING,
     default: null,
   },
   OPENAI_API_KEY: {
     ns: 'crowi',
-    key: 'app:openaiApiKey',
+    key: 'openai:apiKey',
     type: ValueType.STRING,
     default: null,
     isSecret: true,
   },
   OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS: {
     ns: 'crowi',
-    key: 'app:openaiSearchAssistantInstructions',
+    key: 'openai:searchAssistantInstructions',
     type: ValueType.STRING,
     default: null,
   },
   OPENAI_CHAT_ASSISTANT_INSTRUCTIONS: {
     ns: 'crowi',
-    key: 'app:openaiChatAssistantInstructions',
+    key: 'openai:chatAssistantInstructions',
     type: ValueType.STRING,
     default: [
       '<systemTag>\n',
@@ -802,13 +802,13 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   OPENAI_ASSISTANT_NAME_SUFFIX: {
     ns: 'crowi',
-    key: 'app:openaiAssistantNameSuffix',
+    key: 'openai:assistantNameSuffix',
     type: ValueType.STRING,
     default: null,
   },
   OPENAI_VECTOR_STORE_ID: {
     ns: 'crowi',
-    key: 'app:openaiVectorStoreId',
+    key: 'openai:vectorStoreId',
     type: ValueType.STRING,
     default: null,
   },
