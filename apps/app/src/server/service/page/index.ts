@@ -1165,7 +1165,7 @@ class PageService implements IPageService {
       grant,
       grantUserGroupIds: grantedGroupIds,
     };
-    let duplicatedTarget;
+    let duplicatedTarget: HydratedDocument<PageDocument>;
     if (page.isEmpty) {
       const parent = await this.getParentAndFillAncestorsByUser(user, newPagePath);
       duplicatedTarget = await Page.createEmptyPage(newPagePath, parent);
@@ -1901,6 +1901,10 @@ class PageService implements IPageService {
 
       // Leave bookmarks without deleting -- 2024.05.17 Yuki Takei
     ]);
+
+    const openaiService = getOpenaiService();
+    const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService?.deleteVectorStoreFile(pageId));
+    await Promise.allSettled(deleteVectorStoreFilePromises);
   }
 
   // delete multiple pages
@@ -1913,7 +1917,6 @@ class PageService implements IPageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     this.pageEvent.emit('syncDescendantsDelete', pages, user); // update as renamed page
-
     return;
   }
 

@@ -56,7 +56,7 @@ const AiChatModalSubstance = (): JSX.Element => {
     const createThread = async() => {
       // create thread
       try {
-        const res = await apiv3Post('/openai/thread', { threadId });
+        const res = await apiv3Post('/openai/thread');
         const thread = res.data.thread;
 
         setThreadId(thread.id);
