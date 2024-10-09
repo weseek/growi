@@ -20,6 +20,10 @@
     color: growi-official-colors.$growi-ai-purple;
   }
 
+  .growi-custom-icons {
+    font-size: 1em;
+  }
+
   .btn-submit {
     @include btn-muted.colorize(bs.$purple, bs.$purple);
   }
