@@ -21,6 +21,12 @@
   }
 }
 
+.assistant-message-card :global {
+  .grw-ai-icon {
+    padding: 0.4em;
+  }
+}
+
 // text animation
 // refs: https://web.dev/articles/speedy-css-tip-animated-gradient-text?hl=ja
 .assistant-message-card :global {
@@ -86,7 +92,6 @@
 // == Colors
 .assistant-message-card :global {
   .grw-ai-icon {
-    padding: 0.4em;
     color: white;
     background-color: growi-official-colors.$growi-ai-purple;
   }
