@@ -357,103 +357,93 @@ class SecuritySetting extends React.Component {
         )}
 
         <h4 className="mt-4">{ t('security_settings.page_list_and_search_results') }</h4>
-        <div className="row justify-content-md-center">
-          <table className="table table-bordered col-lg-9 mb-5">
-            <thead>
-              <tr>
-                <th scope="col">{ t('security_settings.scope_of_page_disclosure') }</th>
-                <th scope="col">{ t('security_settings.set_point') }</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">{ t('public') }</th>
-                <td>{ t('security_settings.always_displayed') }</td>
-              </tr>
-              <tr>
-                <th scope="row">{ t('anyone_with_the_link') }</th>
-                <td>{ t('security_settings.always_not_displayed') }</td>
-              </tr>
-              <tr>
-                <th scope="row">{ t('only_me') }</th>
-                <td>
-                  <div className="col-md-8"></div>
-                  <div className="dropdown">
-                    <button
-                      className={`btn btn-outline-secondary dropdown-toggle text-end col-12
+        <div className="row mb-4">
+          <div className="col-md-4 text-md-end py-2">{ t('security_settings.scope_of_page_disclosure') }</div>
+          <div className="col-md-4 text-md-end py-2">{ t('security_settings.set_point') }</div>
+
+
+          <div className="row">{ t('public') }</div>
+          <div>{ t('security_settings.always_displayed') }</div>
+
+
+          <div className="row">{ t('anyone_with_the_link') }</div>
+          <div>{ t('security_settings.always_not_displayed') }</div>
+
+
+          <div className="row">{ t('only_me') }</div>
+
+          <div className="col-md-8"></div>
+          <div className="dropdown">
+            <button
+              className={`btn btn-outline-secondary dropdown-toggle text-end col-12
                             col-md-auto `}
-                      type="button"
-                      id="dropdownMenuButton"
-                      data-bs-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <span>
-                        {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
-                          ? t('security_settings.always_displayed')
-                          : t('security_settings.always_not_displayed')}
-                      </span>
-                    </button>
-                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <button
-                        className="dropdown-item"
-                        type="button"
-                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
-                      >
-                        {t('security_settings.always_displayed')}
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        type="button"
-                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
-                      >
-                        {t('security_settings.always_not_displayed')}
-                      </button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">{ t('only_inside_the_group') }</th>
-                <td>
-                  <div className="col-md-8"></div>
-                  <div className="dropdown">
-                    <button
-                      className={`btn btn-outline-secondary dropdown-toggle text-end col-12
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span>
+                {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
+                  ? t('security_settings.always_displayed')
+                  : t('security_settings.always_not_displayed')}
+              </span>
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
+              >
+                {t('security_settings.always_displayed')}
+              </button>
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
+              >
+                {t('security_settings.always_not_displayed')}
+              </button>
+            </div>
+          </div>
+
+
+          <th scope="row">{ t('only_inside_the_group') }</th>
+
+          <div className="col-md-8"></div>
+          <div className="dropdown">
+            <button
+              className={`btn btn-outline-secondary dropdown-toggle text-end col-12
                             col-md-auto`}
-                      type="button"
-                      id="dropdownMenuButton"
-                      data-bs-toggle="dropdown"
-                      aria-haspopup="true"
-                      aria-expanded="false"
-                    >
-                      <span>
-                        {adminGeneralSecurityContainer.state.isShowRestrictedByGroup
-                          ? t('security_settings.always_displayed')
-                          : t('security_settings.always_not_displayed')}
-                      </span>
-                    </button>
-                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                      <button
-                        className="dropdown-item"
-                        type="button"
-                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: true }) }}
-                      >
-                        {t('security_settings.always_displayed')}
-                      </button>
-                      <button
-                        className="dropdown-item"
-                        type="button"
-                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: false }) }}
-                      >
-                        {t('security_settings.always_not_displayed')}
-                      </button>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span>
+                {adminGeneralSecurityContainer.state.isShowRestrictedByGroup
+                  ? t('security_settings.always_displayed')
+                  : t('security_settings.always_not_displayed')}
+              </span>
+            </button>
+            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: true }) }}
+              >
+                {t('security_settings.always_displayed')}
+              </button>
+              <button
+                className="dropdown-item"
+                type="button"
+                onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: false }) }}
+              >
+                {t('security_settings.always_not_displayed')}
+              </button>
+            </div>
+          </div>
         </div>
 
         <h4 className="mb-3">{t('security_settings.page_access_rights')}</h4>
