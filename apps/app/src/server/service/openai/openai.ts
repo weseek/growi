@@ -40,7 +40,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   public async getOrCreateVectorStoreId(): Promise<string> {
-    const configKey = 'app:openaiVectorStoreId';
+    const configKey = 'openai:vectorStoreId';
 
     const vectorStoreId = configManager.getConfig('crowi', configKey);
     if (vectorStoreId != null) {
