@@ -14,7 +14,11 @@ const loginRequiredFallback = (req: Request, res: Response) => {
 const filterXSS = new FilterXSS();
 
 const lsxValidator = [
+  query('pagePath').notEmpty().isString(),
+  query('offset').optional().isNumeric(),
+  query('limit').optional().isNumeric(),
   query('options')
+    .optional()
     .customSanitizer((options) => {
       try {
         const jsonData: LsxApiOptions = JSON.parse(options);
@@ -29,6 +33,7 @@ const lsxValidator = [
         throw new Error('Invalid JSON format in options');
       }
     }),
+  query('options.*').optional().isString(),
 ];
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any

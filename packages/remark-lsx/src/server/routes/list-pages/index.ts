@@ -4,6 +4,7 @@ import { OptionParser } from '@growi/core/dist/remark-plugins';
 import { pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Request, Response } from 'express';
+import { validationResult } from 'express-validator';
 import createError, { isHttpError } from 'http-errors';
 
 import type { LsxApiParams, LsxApiResponseData } from '../../../interfaces/api';
@@ -56,16 +57,20 @@ function addExceptCondition(query, pagePath, optionsFilter): PageQuery {
   return addFilterCondition(query, pagePath, optionsFilter, true);
 }
 
-interface listPagesRequest extends Request<undefined, undefined, undefined, LsxApiParams> {
+interface IListPagesRequest extends Request<undefined, undefined, undefined, LsxApiParams> {
   user: IUser,
 }
 
-export const listPages = async(req: listPagesRequest, res: Response): Promise<Response> => {
+
+export const listPages = async(req: IListPagesRequest, res: Response): Promise<Response> => {
   const user = req.user;
 
-  // TODO: use express-validator
-  if (req.query.pagePath == null) {
-    return res.status(400).send("The 'pagePath' query must not be null.");
+  const error = validationResult(req);
+  if (!error.isEmpty()) {
+    if (req.query.pagePath == null) {
+      return res.status(400).send("The 'pagePath' query must not be null.");
+    }
+    throw new Error('invalid query');
   }
 
   const params: LsxApiParams = {

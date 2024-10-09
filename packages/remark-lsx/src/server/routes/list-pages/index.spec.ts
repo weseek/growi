@@ -9,7 +9,7 @@ import type { PageQuery, PageQueryBuilder } from './generate-base-query';
 
 import { listPages } from '.';
 
-interface listPagesRequest extends Request<undefined, undefined, undefined, LsxApiParams> {
+interface IListPagesRequest extends Request<undefined, undefined, undefined, LsxApiParams> {
   user: IUser,
 }
 
@@ -33,7 +33,7 @@ describe('listPages', () => {
 
   it("returns 400 HTTP response when the query 'pagePath' is undefined", async() => {
     // setup
-    const reqMock = mock<listPagesRequest>();
+    const reqMock = mock<IListPagesRequest>();
     const resMock = mock<Response>();
     const resStatusMock = mock<Response>();
     resMock.status.calledWith(400).mockReturnValue(resStatusMock);
@@ -49,7 +49,7 @@ describe('listPages', () => {
 
   describe('with num option', () => {
 
-    const reqMock = mock<listPagesRequest>();
+    const reqMock = mock<IListPagesRequest>();
     reqMock.query = { pagePath: '/Sandbox' };
 
     const builderMock = mock<PageQueryBuilder>();
@@ -100,7 +100,7 @@ describe('listPages', () => {
 
     it('returns 500 HTTP response when an unexpected error occured', async() => {
       // setup
-      const reqMock = mock<listPagesRequest>();
+      const reqMock = mock<IListPagesRequest>();
       reqMock.query = { pagePath: '/Sandbox' };
 
       // an Error instance will be thrown by addNumConditionMock
@@ -127,7 +127,7 @@ describe('listPages', () => {
 
     it('returns 400 HTTP response when the value is invalid', async() => {
       // setup
-      const reqMock = mock<listPagesRequest>();
+      const reqMock = mock<IListPagesRequest>();
       reqMock.query = { pagePath: '/Sandbox' };
 
       // an http-errors instance will be thrown by addNumConditionMock
