@@ -72,7 +72,7 @@ export const getOrCreateChatAssistant = async(): Promise<OpenAI.Beta.Assistant> 
     return chatAssistant;
   }
 
-  const instructions = configManager.getConfig('crowi', 'app:openaiChatAssistantInstructions').join('');
+  const instructions = configManager.getConfig('crowi', 'app:openaiChatAssistantInstructions');
 
   chatAssistant = await getOrCreateAssistant(AssistantType.CHAT);
   openaiClient.beta.assistants.update(chatAssistant.id, {
