@@ -21,6 +21,39 @@
   }
 }
 
+// text animation
+// refs: https://web.dev/articles/speedy-css-tip-animated-gradient-text?hl=ja
+.assistant-message-card :global {
+  .text-thinking {
+    --bg-size: 400%;
+    --color-one: var(--bs-tertiary-color);
+    --color-two: var(--grw-highlight-300);
+    color: transparent;
+    background: linear-gradient(
+                  -90deg,
+                  var(--color-one),
+                  var(--color-two),
+                  var(--color-one)
+                ) 0 0 / var(--bg-size) 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .text-thinking {
+      &:local {
+        animation: move-bg 6s linear infinite;
+      }
+    }
+    @keyframes move-bg {
+      from {
+        background-position: var(--bg-size) 0;
+      }
+    }
+  }
+}
+
+
  /*******************
  * UserMessageCard
  *******************/

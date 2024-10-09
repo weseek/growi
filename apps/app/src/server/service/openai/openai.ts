@@ -1,3 +1,4 @@
+import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 
 import { PageGrant, isPopulated } from '@growi/core';
@@ -79,6 +80,7 @@ class OpenaiService implements IOpenaiService {
     const workers = pages.map(processUploadFile);
 
     // Wait for all processing to complete.
+    assert(workers.length <= BATCH_SIZE, 'workers.length must be less than or equal to BATCH_SIZE');
     const fileUploadResult = await Promise.allSettled(workers);
     fileUploadResult.forEach((result) => {
       if (result.status === 'rejected') {

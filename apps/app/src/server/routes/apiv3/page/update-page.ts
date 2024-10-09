@@ -8,6 +8,7 @@ import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-pa
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -70,7 +71,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   ];
 
 
-  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument, previousRevision: IRevisionHasId | null) {
+  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: HydratedDocument<PageDocument>, previousRevision: IRevisionHasId | null) {
     // Reflect the updates in ydoc
     const origin = req.body.origin;
     if (origin === Origin.View || origin === undefined) {
@@ -179,7 +180,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
-      let updatedPage: PageDocument;
+      let updatedPage: HydratedDocument<PageDocument>;
       let previousRevision: IRevisionHasId | null;
       try {
         const {

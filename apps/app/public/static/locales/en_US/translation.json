@@ -64,6 +64,7 @@
   "Presentation Mode": "Presentation",
   "Not available for guest": "Not available for guest",
   "Not available in this version": "Not available in this version",
+  "Not available when \"anyone with the link\" is selected": "If \"anyone with the link\" is selected, the scope cannot be overridden.",
   "No users have liked this yet": "No users have liked this yet",
   "No users have liked this yet.": "No users have liked this yet.",
   "No users have bookmarked yet": "No users have bookmarked yet",
@@ -488,7 +489,8 @@
     "title": "Knowledge Assistant",
     "title_beta_label": "(Beta)",
     "placeholder": "Ask me anything.",
-    "caution_against_hallucination": "Please verify the information and check the sources."
+    "caution_against_hallucination": "Please verify the information and check the sources.",
+    "progress_label": "Generating answers"
   },
   "link_edit": {
     "edit_link": "Edit Link",

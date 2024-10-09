@@ -61,6 +61,7 @@
   "Presentation Mode": "演示文稿",
   "Not available for guest": "不提供给客人",
   "Not available in this version": "此版本中不提供",
+  "Not available when \"anyone with the link\" is selected": "如果选择“任何人”，则无法覆盖范围",
   "No users have liked this yet": "还没有用户喜欢这个",
   "No users have bookmarked yet": "还没有用户加入书签",
   "Create Archive Page": "创建归档页",
@@ -477,7 +478,8 @@
     "title": "知识助手",
     "title_beta_label": "(测试版)",
     "placeholder": "问我任何问题。",
-    "caution_against_hallucination": "请核实信息并检查来源。"
+    "caution_against_hallucination": "请核实信息并检查来源。",
+    "progress_label": "生成答案中"
   },
   "link_edit": {
     "edit_link": "Edit Link",
