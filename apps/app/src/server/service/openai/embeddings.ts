@@ -2,8 +2,6 @@ import crypto from 'crypto';
 
 import type { OpenAI } from 'openai';
 
-import { configManager } from '~/server/service/config-manager';
-
 import { openaiClient } from './client';
 
 
@@ -19,7 +17,7 @@ export const embed = async(input: string, username?: string): Promise<OpenAI.Emb
   const result = await openaiClient.embeddings.create({
     input,
     model: 'text-embedding-3-large',
-    dimensions: configManager.getConfig('crowi', 'app:openaiDimensions'),
+    dimensions: 768, // TODO: Make this configurable
     user,
   });
 
