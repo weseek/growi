@@ -768,12 +768,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     key: 'app:openaiApiKey',
     type: ValueType.STRING,
     default: null,
-  },
-  OPENAI_DIMENSIONS: {
-    ns: 'crowi',
-    key: 'app:openaiDimensions',
-    type: ValueType.NUMBER,
-    default: null,
+    isSecret: true,
   },
   OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS: {
     ns: 'crowi',
