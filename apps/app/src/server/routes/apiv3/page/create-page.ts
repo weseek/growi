@@ -8,6 +8,7 @@ import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-ut
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -158,7 +159,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     return PageTagRelation.listTagNamesByPage(createdPage.id);
   }
 
-  async function postAction(req: CreatePageRequest, res: ApiV3Response, createdPage: PageDocument) {
+  async function postAction(req: CreatePageRequest, res: ApiV3Response, createdPage: HydratedDocument<PageDocument>) {
     // persist activity
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
@@ -238,7 +239,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
 
       const { body, tags } = await determineBodyAndTags(pathToCreate, bodyByParam, tagsByParam);
 
-      let createdPage;
+      let createdPage: HydratedDocument<PageDocument>;
       try {
         const {
           grant, grantUserGroupIds, onlyInheritUserRelatedGrantedGroups, overwriteScopesOfDescendants, wip, origin,

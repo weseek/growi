@@ -29,7 +29,7 @@ export interface IOpenaiService {
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
-  rebuildVectorStore(page: PageDocument): Promise<void>;
+  rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
 }
 class OpenaiService implements IOpenaiService {
 
@@ -143,11 +143,9 @@ class OpenaiService implements IOpenaiService {
       .pipe(createVectorStoreFileStream);
   }
 
-  async rebuildVectorStore(page: PageDocument) {
-    if (page._id != null) {
-      await this.deleteVectorStoreFile(page._id);
-      await this.createVectorStoreFile([page]);
-    }
+  async rebuildVectorStore(page: HydratedDocument<PageDocument>) {
+    await this.deleteVectorStoreFile(page._id);
+    await this.createVectorStoreFile([page]);
   }
 
 }

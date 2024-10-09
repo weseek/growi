@@ -1165,7 +1165,7 @@ class PageService implements IPageService {
       grant,
       grantUserGroupIds: grantedGroupIds,
     };
-    let duplicatedTarget;
+    let duplicatedTarget: HydratedDocument<PageDocument>;
     if (page.isEmpty) {
       const parent = await this.getParentAndFillAncestorsByUser(user, newPagePath);
       duplicatedTarget = await Page.createEmptyPage(newPagePath, parent);
