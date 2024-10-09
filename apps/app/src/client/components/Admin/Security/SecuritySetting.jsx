@@ -358,18 +358,18 @@ class SecuritySetting extends React.Component {
 
         <h4 className="mt-4">{ t('security_settings.page_list_and_search_results') }</h4>
         <div className="row mb-4">
-          <div className="col-md-4 text-md-end py-2">{ t('security_settings.scope_of_page_disclosure') }</div>
-          <div className="col-md-4 text-md-end py-2">{ t('security_settings.set_point') }</div>
+          <strong>{ t('security_settings.scope_of_page_disclosure') }</strong>
+          <strong>{ t('security_settings.set_point') }</strong>
 
           <div className="row mb-4"></div>
-          <div className="col-md-4 text-md-end py-2">{ t('public') }</div>
+          <strong>{ t('public') }</strong>
           <div className="col-md-4 text-md-end py-2">{ t('security_settings.always_displayed') }</div>
 
           <div className="row mb-4"></div>
-          <div className="col-md-4 text-md-end py-2">{ t('anyone_with_the_link') }</div>
+          <strong>{ t('anyone_with_the_link') }</strong>
           <div className="col-md-4 text-md-end py-2">{ t('security_settings.always_not_displayed') }</div>
 
-          <div className='"col-md-4 py-2'>{ t('only_me') }</div>
+          <strong>{ t('only_me') }</strong>
           <div className="dropdown">
             <button
               className={`btn btn-outline-secondary dropdown-toggle text-end col-12
@@ -405,7 +405,7 @@ class SecuritySetting extends React.Component {
           </div>
 
 
-          <div className="row">{ t('only_inside_the_group') }</div>
+          <strong>{ t('only_inside_the_group') }</strong>
 
           <div className="col-md-8"></div>
           <div className="dropdown">
