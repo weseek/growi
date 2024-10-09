@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 /* eslint-disable react/no-danger */
 import React from 'react';
 
@@ -382,7 +381,7 @@ class SecuritySetting extends React.Component {
                   <div className="dropdown">
                     <button
                       className={`btn btn-outline-secondary dropdown-toggle text-end col-12
-                            col-md-auto ${adminGeneralSecurityContainer.switchIsShowRestrictedByOwner}`}
+                            col-md-auto `}
                       type="button"
                       id="dropdownMenuButton"
                       data-bs-toggle="dropdown"
@@ -421,7 +420,7 @@ class SecuritySetting extends React.Component {
                   <div className="dropdown">
                     <button
                       className={`btn btn-outline-secondary dropdown-toggle text-end col-12
-                            col-md-auto ${adminGeneralSecurityContainer.switchIsShowRestrictedByGroup}`}
+                            col-md-auto`}
                       type="button"
                       id="dropdownMenuButton"
                       data-bs-toggle="dropdown"
