@@ -45,19 +45,19 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createVectorStoreFile(pages: Array<PageDocument>): Promise<void> {
-    const preparedVectorStoreFileRelations: VectorStoreFileRelation[] = [];
+    const vectorStoreFileRelationsMap: Map<string, VectorStoreFileRelation> = new Map();
     const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(page._id, page.revision.body);
-          prepareVectorStoreFileRelations(page._id, uploadedFile.id, preparedVectorStoreFileRelations);
+          prepareVectorStoreFileRelations(page._id, uploadedFile.id, vectorStoreFileRelationsMap);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(page._id, pagePopulatedToShowRevision.revision.body);
-          prepareVectorStoreFileRelations(page._id, uploadedFile.id, preparedVectorStoreFileRelations);
+          prepareVectorStoreFileRelations(page._id, uploadedFile.id, vectorStoreFileRelationsMap);
         }
       }
     };
@@ -74,17 +74,24 @@ class OpenaiService implements IOpenaiService {
       }
     });
 
+    const vectorStoreFileRelations = Array.from(vectorStoreFileRelationsMap.values());
+    const uploadedFileIds = vectorStoreFileRelations.map(data => data.fileIds).flat();
     try {
       // Create vector store file
-      const uploadedFileIds = preparedVectorStoreFileRelations.map(data => data.fileIds).flat();
       const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
 
       // Save vector store file relation
-      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(preparedVectorStoreFileRelations);
+      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
     }
     catch (err) {
       logger.error(err);
+
+      // Delete all uploaded files if createVectorStoreFileBatch fails
+      uploadedFileIds.forEach(async(fileId) => {
+        const deleteFileResponse = await this.client.deleteFile(fileId);
+        logger.debug('Delete vector store file (Due to createVectorStoreFileBatch failure)', deleteFileResponse);
+      });
     }
 
   }

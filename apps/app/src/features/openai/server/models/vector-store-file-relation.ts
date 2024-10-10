@@ -16,23 +16,24 @@ interface VectorStoreFileRelationModel extends Model<VectorStoreFileRelation> {
 }
 
 export const prepareVectorStoreFileRelations = (
-    pageId: Types.ObjectId, fileId: string, vectorStoreFileRelations: VectorStoreFileRelation[],
-): VectorStoreFileRelation[] => {
-  const existingData = vectorStoreFileRelations.find(relation => relation.pageId.equals(pageId));
+    pageId: Types.ObjectId, fileId: string, relationsMap: Map<string, VectorStoreFileRelation>,
+): Map<string, VectorStoreFileRelation> => {
+  const pageIdStr = pageId.toHexString();
+  const existingData = relationsMap.get(pageIdStr);
 
   // If the data exists, add the fileId to the fileIds array
   if (existingData != null) {
     existingData.fileIds.push(fileId);
   }
-  // If the data doesn't exist, create a new one and add it to the array
+  // If the data doesn't exist, create a new one and add it to the map
   else {
-    vectorStoreFileRelations.push({
+    relationsMap.set(pageIdStr, {
       pageId,
       fileIds: [fileId],
     });
   }
 
-  return vectorStoreFileRelations;
+  return relationsMap;
 };
 
 const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelationModel>({
