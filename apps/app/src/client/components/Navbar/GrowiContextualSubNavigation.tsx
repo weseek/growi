@@ -34,7 +34,7 @@ import {
 import {
   useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
 } from '~/stores/page';
-import { mutatePageTree } from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import {
   useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
@@ -271,6 +271,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
+      mutateRecentlyUpdated();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
   }, [mutateCurrentPage, mutatePageInfo, openRenameModal]);
@@ -294,6 +295,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
+      mutateRecentlyUpdated();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
   }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
@@ -348,7 +350,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     <>
       <GroundGlassBar className="py-4 d-block d-md-none d-print-none border-bottom" />
 
-      <Sticky className="z-1" onStateChange={status => setStickyActive(status.status === Sticky.STATUS_FIXED)}>
+      <Sticky
+        className="z-1"
+        onStateChange={status => setStickyActive(status.status === Sticky.STATUS_FIXED)}
+        innerActiveClass="w-100 end-0"
+      >
         <GroundGlassBar>
 
           <nav

@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import type EventEmitter from 'events';
 
-import type { Element } from 'react-markdown/lib/rehype-filter';
+import type { Element } from 'hast';
 
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
@@ -23,8 +23,7 @@ type TableWithEditButtonProps = {
   className?: string
 }
 
-export const TableWithEditButton = React.memo((props: TableWithEditButtonProps): JSX.Element => {
-
+const TableWithEditButtonNoMemorized = (props: TableWithEditButtonProps): JSX.Element => {
   const { children, node, className } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -61,5 +60,6 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
       </table>
     </div>
   );
-});
-TableWithEditButton.displayName = 'TableWithEditButton';
+};
+TableWithEditButtonNoMemorized.displayName = 'TableWithEditButton';
+export const TableWithEditButton = React.memo(TableWithEditButtonNoMemorized) as typeof TableWithEditButtonNoMemorized;

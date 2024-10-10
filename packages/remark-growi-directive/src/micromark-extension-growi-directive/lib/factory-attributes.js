@@ -11,8 +11,7 @@ import {
   markdownLineEndingOrSpace,
   markdownSpace,
 } from 'micromark-util-character';
-import { codes } from 'micromark-util-symbol/codes.js';
-import { types } from 'micromark-util-symbol/types.js';
+import { codes, types } from 'micromark-util-symbol';
 import { ok as assert } from 'uvu/assert';
 
 import { markdownLineEndingOrSpaceOrComma, factoryAttributesDevider } from '../../micromark-factory-attributes-devider/index.js';

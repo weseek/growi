@@ -42,26 +42,42 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
 
   const { Icon, i18n } = navTabMapping[activeTab];
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const dropdownButtonRef = useRef<HTMLButtonElement>(null);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(prev => !prev);
+  };
+
   const menuItemClickHandler = useCallback((key) => {
     if (onNavSelected != null) {
       onNavSelected(key);
+    }
+    // Manually close the dropdown
+    setIsDropdownOpen(false);
+    if (dropdownButtonRef.current) {
+      dropdownButtonRef.current.classList.remove('show');
     }
   }, [onNavSelected]);
 
   return (
     <div className="btn-group">
       <button
+        ref={dropdownButtonRef}
         className="btn btn-outline-primary btn-lg dropdown-toggle text-end"
         type="button"
         data-bs-toggle="dropdown"
         aria-haspopup="true"
-        aria-expanded="false"
+        aria-expanded={isDropdownOpen}
+        onClick={toggleDropdown}
+        data-testid="custom-nav-dropdown"
       >
         <span className="float-start">
           { Icon != null && <Icon /> } {i18n}
         </span>
       </button>
-      <div className="dropdown-menu dropdown-menu-right">
+      <div className={`dropdown-menu dropdown-menu-right w-100 ${isDropdownOpen ? 'show' : ''} ${styles['dropdown-menu']}`}>
         {Object.entries(navTabMapping).map(([key, value]) => {
 
           const isActive = activeTab === key;
@@ -167,7 +183,7 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
   }
 
   return (
-    <div className={`grw-custom-nav-tab ${styles['grw-custom-nav-tab']}`}>
+    <div data-testid="custom-nav-tab" className={`grw-custom-nav-tab ${styles['grw-custom-nav-tab']}`}>
       <div ref={navContainerRef} className="d-flex justify-content-between">
         <Nav className="nav-title">
           {Object.entries(navTabMapping).map(([key, value]) => {

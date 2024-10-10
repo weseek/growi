@@ -2,10 +2,11 @@ import { useCallback } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import type { EditorTheme, KeyMapMode } from '../../../consts';
+import type { EditorTheme, KeyMapMode, PasteMode } from '../../../consts';
 import {
   GlobalCodeMirrorEditorKey,
   AllEditorTheme, AllKeyMap,
+  AllPasteMode,
 } from '../../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
 
@@ -111,16 +112,18 @@ const SetParamRow = (
 type PlaygroundControllerProps = {
   setEditorTheme: (value: EditorTheme) => void
   setEditorKeymap: (value: KeyMapMode) => void
+  setEditorPaste: (value: PasteMode) => void
 };
 
 export const PlaygroundController = (props: PlaygroundControllerProps): JSX.Element => {
-  const { setEditorTheme, setEditorKeymap } = props;
+  const { setEditorTheme, setEditorKeymap, setEditorPaste } = props;
   return (
     <div className="container mt-5">
       <InitEditorValueRow />
       <SetCaretLineRow />
       <SetParamRow update={setEditorTheme} items={AllEditorTheme} />
       <SetParamRow update={setEditorKeymap} items={AllKeyMap} />
+      <SetParamRow update={setEditorPaste} items={AllPasteMode} />
     </div>
   );
 };

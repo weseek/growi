@@ -6,8 +6,7 @@
 
 import { factorySpace } from 'micromark-factory-space';
 import { markdownLineEnding } from 'micromark-util-character';
-import { codes } from 'micromark-util-symbol/codes.js';
-import { types } from 'micromark-util-symbol/types.js';
+import { codes, types } from 'micromark-util-symbol';
 import { ok as assert } from 'uvu/assert';
 
 import { factoryAttributes } from './factory-attributes.js';

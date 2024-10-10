@@ -9,8 +9,9 @@ import Head from 'next/head';
 import type { Container } from 'unstated';
 import { Provider } from 'unstated';
 
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { CommonProps } from '~/pages/utils/commons';
-import { useCurrentUser } from '~/stores-universal/context';
+import { useCurrentUser, useGrowiCloudUri } from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -25,6 +26,7 @@ type Props = CommonProps;
 const DataTransferPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('commons');
   useCurrentUser(props.currentUser ?? null);
+  useGrowiCloudUri(props.growiCloudUri);
 
   const title = t('g2g_data_transfer.data_transfer');
 
@@ -54,9 +56,15 @@ const DataTransferPage: NextPage<Props> = (props) => {
   );
 };
 
+const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+
+  props.growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
+};
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const props = await retrieveServerSideProps(context);
+  const props = await retrieveServerSideProps(context, injectServerConfigurations);
   return props;
 };
 

@@ -93,18 +93,6 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/read', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
-    const user = req.user;
-
-    try {
-      await inAppNotificationService.read(user);
-      return res.apiv3();
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
-
   router.post('/open', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

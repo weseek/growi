@@ -1,5 +1,5 @@
 import tsconfigPaths from 'vite-tsconfig-paths';
-import { defineConfig } from 'vitest/config';
+import { defineConfig, coverageConfigDefaults } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
@@ -10,11 +10,16 @@ export default defineConfig({
     clearMocks: true,
     globals: true,
     coverage: {
+      exclude: [
+        ...coverageConfigDefaults.exclude,
+        'src/v4/interfaces/**',
+        'src/**/index.ts',
+      ],
       thresholds: {
-        statements: 42.78,
-        branches: 63.15,
-        lines: 42.78,
-        functions: 26.31,
+        statements: 47.59,
+        branches: 89.47,
+        lines: 47.59,
+        functions: 66.66,
       },
     },
   },

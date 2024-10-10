@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React, { useRef, useEffect } from 'react';
 
 import mermaid from 'mermaid';
 
