@@ -26,7 +26,6 @@ const schema = new Schema<VectorStoreDocument, VectorStoreModel>({
   },
   scorpeType: {
     enum: VectorStoreScopeTypes,
-    default: VectorStoreScopeType.PUBLIC,
     type: String,
     required: true,
   },
