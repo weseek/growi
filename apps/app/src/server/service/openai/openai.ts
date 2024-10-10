@@ -76,6 +76,11 @@ class OpenaiService implements IOpenaiService {
 
     const vectorStoreFileRelations = Array.from(vectorStoreFileRelationsMap.values());
     const uploadedFileIds = vectorStoreFileRelations.map(data => data.fileIds).flat();
+
+    if (uploadedFileIds.length === 0) {
+      return;
+    }
+
     try {
       // Create vector store file
       const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(uploadedFileIds);
