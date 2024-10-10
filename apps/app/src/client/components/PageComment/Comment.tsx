@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useCallback, useMemo, useState } from 'react';
 
 import { isPopulated, type IUser } from '@growi/core';
 import * as pathUtils from '@growi/core/dist/utils/path-utils';
@@ -19,6 +19,10 @@ import FormattedDistanceDate from '../FormattedDistanceDate';
 
 import { CommentControl } from './CommentControl';
 import { CommentEditor } from './CommentEditor';
+
+import { useSWRxUsersList } from '../../../stores/user';
+import LikeButtons from './LikeButtons';
+import { apiPost } from '~/client/util/apiv1-client';
 
 import styles from './Comment.module.scss';
 
@@ -111,6 +115,15 @@ export const Comment = (props: CommentProps): JSX.Element => {
     deleteBtnClicked(comment);
   };
 
+  const likeClickhandler = useCallback(async() => {
+    if (isReadOnly ?? true) {
+      return;
+    }
+
+    await apiPost('/comments.like', { comment_id: comment._id });
+    onComment();
+  }, [isReadOnly, comment]);
+
   const commentBody = useMemo(() => {
     if (rendererOptions == null) {
       return <></>;
@@ -129,6 +142,11 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const revHref = `?revisionId=${comment.revision}`;
   const editedDateId = `editedDate-${comment._id}`;
   const editedDateFormatted = isEdited ? format(updatedAt, 'yyyy/MM/dd HH:mm') : null;
+
+  const commentLikers = comment?.liker ?? [];
+  const { data: usersList } = useSWRxUsersList([...commentLikers]);
+  const likers = usersList != null ? usersList.filter(({ _id }) => commentLikers.includes(_id)).slice(0, 15) : [];
+  const isLiked = commentLikers.includes(currentUser._id) ?? false;
 
   return (
     <div className={`${styles['comment-styles']}`}>
@@ -169,15 +187,22 @@ export const Comment = (props: CommentProps): JSX.Element => {
                   {t('page_comment.display_the_page_when_posting_this_comment')}
                 </UncontrolledTooltip>
               </span>
-            </div>
-            <div className="page-comment-body">{commentBody}</div>
-            <div className="page-comment-meta">
               { isEdited && (
                 <>
-                  <span id={editedDateId}>&nbsp;(edited)</span>
+                  <span id={editedDateId} className="small">&nbsp;(edited)</span>
                   <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
                 </>
               ) }
+            </div>
+            <div className="page-comment-body">{commentBody}</div>
+            <div className="page-comment-meta">
+              <LikeButtons
+                onLikeClicked={likeClickhandler}
+                sumOfLikers={likers.length}
+                isLiked={isLiked}
+                likers={likers}
+                commentId={commentId}
+              />
             </div>
             { (isCurrentUserEqualsToAuthor() && !isReadOnly) && (
               <CommentControl

@@ -23,6 +23,7 @@ type Add = (
   comment: string,
   commentPosition: number,
   replyTo?: Types.ObjectId | null,
+  liker?: Array<Types.ObjectId>,
 ) => Promise<CommentDocument>;
 type FindCommentsByPageId = (pageId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
 type FindCommentsByRevisionId = (revisionId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
@@ -44,6 +45,7 @@ const commentSchema = new Schema<CommentDocument, CommentModel>({
   comment: { type: String, required: true },
   commentPosition: { type: Number, default: -1 },
   replyTo: { type: Schema.Types.ObjectId },
+  liker: { type: Array<Schema.Types.ObjectId> },
 }, {
   timestamps: true,
 });
@@ -65,6 +67,7 @@ const add: Add = async function(
       comment,
       commentPosition,
       replyTo,
+      liker: [],
     });
     logger.debug('Comment saved.', data);
 
