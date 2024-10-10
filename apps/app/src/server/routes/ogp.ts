@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import path from 'path';
 
+import type { IUser } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
@@ -9,11 +10,13 @@ import type {
 } from 'express';
 import type { ValidationError } from 'express-validator';
 import { param, validationResult } from 'express-validator';
+import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import { Attachment } from '../models/attachment';
+import { configManager } from '../service/config-manager';
 import { convertStreamToBuffer } from '../util/stream';
 
 const logger = loggerFactory('growi:routes:ogp');
@@ -56,19 +59,21 @@ module.exports = function(crowi) {
 
   const renderOgp = async(req: Request, res: Response) => {
 
-    const { configManager } = crowi;
+    const User = mongoose.model<IUser>('User');
     const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
     const page = req.body.page;
 
-    let user;
+    let user: IUser | null;
     let pageTitle: string;
     let bufferedUserImage: Buffer;
 
     try {
-      const User = crowi.model('User');
       user = await User.findById(page.creator._id.toString());
 
-      bufferedUserImage = user.imageUrlCached === DEFAULT_USER_IMAGE_URL ? bufferedDefaultUserImageCache : (await getBufferedUserImage(user.imageUrlCached));
+      bufferedUserImage = user == null || user.imageUrlCached !== DEFAULT_USER_IMAGE_URL
+        ? bufferedDefaultUserImageCache
+        : await getBufferedUserImage(user.imageUrlCached);
+
       // todo: consider page title
       pageTitle = (new DevidedPagePath(page.path)).latter;
     }
@@ -83,7 +88,7 @@ module.exports = function(crowi) {
         ogpUri, {
           data: {
             title: pageTitle,
-            userName: user.username,
+            userName: user?.username ?? '(unknown)',
             userImage: bufferedUserImage,
           },
         }, {
