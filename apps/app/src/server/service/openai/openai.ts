@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
+import VectorStoreModel, { VectorStoreScopeType } from '~/features/openai/server/models/vector-store';
 import VectorStoreFileRelationModel, {
   type VectorStoreFileRelation,
   prepareVectorStoreFileRelations,
@@ -26,6 +27,7 @@ const logger = loggerFactory('growi:service:openai');
 
 
 export interface IOpenaiService {
+  getOrCreateVectorStoreIdForPublicScope(): Promise<string>
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
@@ -36,6 +38,23 @@ class OpenaiService implements IOpenaiService {
   private get client() {
     const openaiServiceType = configManager.getConfig('crowi', 'openai:serviceType');
     return getClient({ openaiServiceType });
+  }
+
+  public async getOrCreateVectorStoreIdForPublicScope(): Promise<string> {
+    const vectorStore = await VectorStoreModel.findOne({ scorpeType: VectorStoreScopeType.PUBLIC });
+    if (vectorStore != null) {
+      return vectorStore.vectorStoreId;
+    }
+
+    const newVectorStore = await this.client.createVectorStore(VectorStoreScopeType.PUBLIC);
+    const newVectorStoreId = newVectorStore.id;
+
+    await VectorStoreModel.create({
+      vectorStoreId: newVectorStoreId,
+      scorpeType: VectorStoreScopeType.PUBLIC,
+    });
+
+    return newVectorStoreId;
   }
 
   private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
@@ -83,7 +102,8 @@ class OpenaiService implements IOpenaiService {
 
     try {
       // Create vector store file
-      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(uploadedFileIds);
+      const vectorStoreId = await this.getOrCreateVectorStoreIdForPublicScope();
+      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStoreId, uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
 
       // Save vector store file relation
