@@ -9,6 +9,7 @@ import {
 import { apiPost } from '~/client/util/apiv1-client';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo } from '~/stores/page';
+import { mutatePageTree } from '~/stores/page-listing';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
@@ -42,6 +43,7 @@ const PutBackPageModal = () => {
         recursively,
       });
       mutateAllPageInfo();
+      mutatePageTree();
 
       if (onPutBacked != null) {
         onPutBacked(response.page.path);
