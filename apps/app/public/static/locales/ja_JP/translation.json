@@ -61,6 +61,7 @@
   "Presentation Mode": "プレゼンテーション",
   "Not available for guest": "ゲストユーザーは利用できません",
   "Not available in this version": "このバージョンでは利用できません",
+  "Not available when \"anyone with the link\" is selected": "「リンクを知っている人のみ」を選択している場合はスコープを上書きできません。",
   "No users have liked this yet": "いいねをしているユーザーはいません",
   "No users have bookmarked yet": "ブックマークしているユーザーはいません",
   "Create Archive Page": "アーカイブページの作成",

@@ -21,7 +21,7 @@ import { useCurrentUser } from '~/stores-universal/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { mutatePageList, mutatePageTree } from '~/stores/page-listing';
+import { mutatePageList, mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
@@ -135,6 +135,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
       mutatePageTree();
+      mutateRecentlyUpdated();
       mutateSearching();
       mutatePageList();
     };
@@ -146,6 +147,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       toastSuccess(t('renamed_pages', { path }));
 
       mutatePageTree();
+      mutateRecentlyUpdated();
       mutateSearching();
       mutatePageList();
     };
@@ -165,6 +167,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       toastSuccess(t('deleted_pages', { path }));
     }
     mutatePageTree();
+    mutateRecentlyUpdated();
     mutateSearching();
     mutatePageList();
   }, [t]);

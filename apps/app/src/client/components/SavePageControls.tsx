@@ -2,6 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 
 import type EventEmitter from 'events';
 
+import { PageGrant } from '@growi/core';
 import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
@@ -17,9 +18,10 @@ import {
 import { useEditorMode } from '~/stores-universal/ui';
 import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useSWRxCurrentPage, useCurrentPagePath } from '~/stores/page';
-import { useIsDeviceLargerThanMd } from '~/stores/ui';
+import { useIsDeviceLargerThanMd, useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
+import { NotAvailable } from './NotAvailable';
 import { GrantSelector } from './SavePageControls/GrantSelector';
 import { SlackNotification } from './SlackNotification';
 
@@ -38,6 +40,7 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
   const { t } = useTranslation();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const [isSavePageModalShown, setIsSavePageModalShown] = useState<boolean>(false);
+  const { data: selectedGrant } = useSelectedGrant();
 
   const { slackChannels, isSlackEnabled, isDeviceLargerThanMd } = props;
 
@@ -63,6 +66,7 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
   const labelSubmitButton = t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
   const labelUnpublishPage = t('wip_page.save_as_wip');
+  const restrictedGrantOverrideErrorTitle = t('Not available when "anyone with the link" is selected');
 
   return (
     <>
@@ -85,9 +89,15 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
             <>
               <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
               <DropdownMenu container="body" end>
-                <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
-                  {labelOverwriteScopes}
-                </DropdownItem>
+                <NotAvailable
+                  isDisabled={selectedGrant?.grant === PageGrant.GRANT_RESTRICTED}
+                  classNamePrefix="grw-not-available-when-grant-restricted-is-selected"
+                  title={restrictedGrantOverrideErrorTitle}
+                >
+                  <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
+                    {labelOverwriteScopes}
+                  </DropdownItem>
+                </NotAvailable>
                 <DropdownItem onClick={saveAndMakeWip}>
                   {labelUnpublishPage}
                 </DropdownItem>
@@ -102,9 +112,15 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
                 toggle={() => setIsSavePageModalShown(false)}
               >
                 <div className="d-flex flex-column pt-4 pb-3 px-4 gap-4">
-                  <button type="button" className="btn btn-primary" onClick={() => { setIsSavePageModalShown(false); saveAndOverwriteScopesOfDescendants() }}>
-                    {labelOverwriteScopes}
-                  </button>
+                  <NotAvailable
+                    isDisabled={selectedGrant?.grant === PageGrant.GRANT_RESTRICTED}
+                    classNamePrefix="grw-not-available-when-grant-restricted-is-selected"
+                    title={restrictedGrantOverrideErrorTitle}
+                  >
+                    <button type="button" className="btn btn-primary" onClick={() => { setIsSavePageModalShown(false); saveAndOverwriteScopesOfDescendants() }}>
+                      {labelOverwriteScopes}
+                    </button>
+                  </NotAvailable>
                   <button type="button" className="btn btn-primary" onClick={() => { setIsSavePageModalShown(false); saveAndMakeWip() }}>
                     {labelUnpublishPage}
                   </button>
