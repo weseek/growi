@@ -8,6 +8,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 import { configManager } from '~/server/service/config-manager';
+import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:user-activation');
@@ -75,6 +76,8 @@ export const completeRegistrationAction = (crowi) => {
   } = crowi;
 
   return async function(req, res) {
+    const { t } = await getTranslation();
+
     if (req.user != null) {
       return res.apiv3Err(new ErrorV3('You have been logged in', 'registration-failed'), 403);
     }
@@ -103,16 +106,16 @@ export const completeRegistrationAction = (crowi) => {
       let errorMessage = '';
       if (!User.isEmailValid(email)) {
         isError = true;
-        errorMessage += req.t('message.email_address_could_not_be_used');
+        errorMessage += t('message.email_address_could_not_be_used');
       }
       if (!isRegisterable) {
         if (!errOn.username) {
           isError = true;
-          errorMessage += req.t('message.user_id_is_not_available');
+          errorMessage += t('message.user_id_is_not_available');
         }
         if (!errOn.email) {
           isError = true;
-          errorMessage += req.t('message.email_address_is_already_registered');
+          errorMessage += t('message.email_address_is_already_registered');
         }
       }
       if (isError) {
@@ -122,10 +125,10 @@ export const completeRegistrationAction = (crowi) => {
       User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
         if (err) {
           if (err.name === 'UserUpperLimitException') {
-            errorMessage = req.t('message.can_not_register_maximum_number_of_users');
+            errorMessage = t('message.can_not_register_maximum_number_of_users');
           }
           else {
-            errorMessage = req.t('message.failed_to_register');
+            errorMessage = t('message.failed_to_register');
           }
           return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
         }
