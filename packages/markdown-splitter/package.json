@@ -39,5 +39,8 @@
     "react-dom": "^18.2.0"
   },
   "dependencies": {
+    "remark-parse": "^11.0.0",
+    "remark-stringify": "^11.0.0",
+    "unified": "^11.0.0"
   }
 }
