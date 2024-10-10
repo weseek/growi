@@ -19,9 +19,9 @@ export type Chunk = {
  * @param label - The label for the content chunk.
  */
 function addContentChunk(chunks: Chunk[], contentBuffer: string[], label: string) {
-  const contentText = contentBuffer.join('\n\n').trimEnd();
-  if (contentText !== '') {
-    chunks.push({ label, text: contentText });
+  const text = contentBuffer.join('\n\n').trimEnd();
+  if (text !== '') {
+    chunks.push({ label, text });
   }
   contentBuffer.length = 0; // Clear the contentBuffer array
 }
