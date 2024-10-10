@@ -49,7 +49,7 @@ class OpenaiService implements IOpenaiService {
     const newVectorStore = await this.client.createVectorStore(VectorStoreScopeType.PUBLIC);
     const newVectorStoreId = newVectorStore.id;
 
-    VectorStoreModel.create({
+    await VectorStoreModel.create({
       vectorStoreId: newVectorStoreId,
       scorpeType: VectorStoreScopeType.PUBLIC,
     });
