@@ -42,7 +42,7 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
-  useIsUploadAllFileAllowed, useIsUploadEnabled,
+  useIsUploadAllFileAllowed, useIsUploadEnabled, useYjsMaxBodyLength,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
 } from '~/stores-universal/context';
@@ -186,6 +186,7 @@ type Props = CommonProps & {
   disableLinkSharing: boolean,
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
+  yjsMaxBodyLength: number,
 
   yjsData: CurrentPageYjsData,
 
@@ -240,6 +241,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
 
+  useYjsMaxBodyLength(props.yjsMaxBodyLength);
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
 
   const { pageWithMeta } = props;
@@ -596,6 +598,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
+  props.yjsMaxBodyLength = configManager.getConfig('crowi', 'app:yjsMaxBodyLength');
   props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
 }
 

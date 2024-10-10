@@ -1,13 +1,13 @@
 import { test, expect } from '@playwright/test';
 
+import { openEditor } from '../utils';
+
 test('Successfully select template and template locale', async({ page }) => {
   const jaText = '今日の目標';
   const enText = "TODAY'S GOALS";
   await page.goto('/Sandbox/TemplateModal');
 
-  // move to edit mode
-  await page.getByTestId('editor-button').click();
-  await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
+  await openEditor(page);
 
   // open TemplateModal
   const templateModal = page.getByTestId('template-modal');
