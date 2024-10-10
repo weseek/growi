@@ -1,6 +1,7 @@
 import OpenAI from 'openai';
 import { type Uploadable } from 'openai/uploads';
 
+import type { VectorStoreScopeType } from '~/features/openai/server/models/vector-store';
 import { configManager } from '~/server/service/config-manager';
 
 import type { IOpenaiClientDelegator } from './interfaces';
@@ -23,8 +24,8 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     this.client = new OpenAI({ apiKey });
   }
 
-  async createVectorStore(): Promise<OpenAI.Beta.VectorStores.VectorStore> {
-    return this.client.beta.vectorStores.create({ name: 'growi-vector-store' });
+  async createVectorStore(scopeType:VectorStoreScopeType): Promise<OpenAI.Beta.VectorStores.VectorStore> {
+    return this.client.beta.vectorStores.create({ name: `growi-vector-store-${scopeType}` });
   }
 
   async uploadFile(file: Uploadable): Promise<OpenAI.Files.FileObject> {

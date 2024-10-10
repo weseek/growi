@@ -36,7 +36,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
       }
 
       try {
-        const vectorStoreId = await openaiService.getOrCreateVectorStoreId();
+        const vectorStoreId = await openaiService.getOrCreateVectorStoreIdForPublicScope();
         const threadId = req.body.threadId;
         const thread = threadId == null
           ? await openaiClient.beta.threads.create({
