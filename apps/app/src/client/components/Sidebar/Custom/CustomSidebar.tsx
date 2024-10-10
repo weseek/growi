@@ -20,10 +20,10 @@ export const CustomSidebar = (): JSX.Element => {
   return (
     <div className="pt-4 pb-3 px-3">
       <div className="grw-sidebar-content-header d-flex">
-        <h4 className="mb-0">
+        <h3 className="fs-6 fw-bold mb-0">
           {t('CustomSidebar')}
           { !isLoading && <Link href="/Sidebar#edit" className="h6 ms-2"><span className="material-symbols-outlined">edit</span></Link> }
-        </h4>
+        </h3>
         { !isLoading && <SidebarHeaderReloadButton onClick={() => mutate()} /> }
       </div>
 

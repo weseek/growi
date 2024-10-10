@@ -1,8 +1,211 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.11...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.20...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.20](https://github.com/weseek/growi/compare/v7.0.19...v7.0.20) - 2024-09-25
+
+### 🚀 Improvement
+
+* imprv: The color of the dropdown list when it is activated (#9102) @WNomunomu
+* imprv: PageTitleHeader max-width (#9166) @yuki-takei
+* imprv: Documentation URL for g2gtransfer (#9157) @yuki-takei
+* imprv: Corrected wording on admin page (/admin/data-transfer) (#9106) @miya
+* imprv: Add hover-activated clipboard copy button with icon (#9095) @reiji-h
+
+### 🐛 Bug Fixes
+
+* fix: Make PageAccessoriesModal responsive (#9171) @moekumasaka
+* fix: PageControls unexpectedly move in response to opening and closing the sidebar (#9094) @WNomunomu
+* fix: Make CustomNavTab responsive (#9123) @moekumasaka
+
+### 🧰 Maintenance
+
+* ci(deps): bump rollup from 4.22.0 to 4.22.4 (#9160) @dependabot
+* ci(deps): bump google-github-actions/setup-gcloud from 1 to 2 (#9153) @dependabot
+* ci(deps): bump softprops/action-gh-release from 1 to 2 (#9152) @dependabot
+* support: Improve vitest environment (#9144) @yuki-takei
+* ci(deps): bump next from 14.1.3 to 14.2.13 (#9154) @dependabot
+* support: Upgrade @testing-library/react (#9141) @yuki-takei
+* support: Update logo image in README.md for the official docker image (#9139) @satof3
+* ci(deps-dev): bump vite from 5.2.9 to 5.2.14 (#9134) @dependabot
+* ci(deps): bump myrotvorets/info-from-package-json-action from 1.2.0 to 2.0.1 (#9129) @dependabot
+* ci(deps): bump stefanzweifel/git-auto-commit-action from 4 to 5 (#9128) @dependabot
+* ci(deps): bump nodemailer from 6.9.14 to 6.9.15 (#9075) @dependabot
+* ci(deps): bump docker/setup-buildx-action from 2 to 3 (#8207) @dependabot
+* ci(deps): bump jose from 4.11.4 to 4.15.9 (#9114) @dependabot
+* ci(deps): bump express from 4.19.2 to 4.20.0 (#9110) @dependabot
+* ci(deps): bump body-parser from 1.20.2 to 1.20.3 (#9109) @dependabot
+
+## [v7.0.19](https://github.com/weseek/growi/compare/v7.0.18...v7.0.19) - 2024-09-12
+
+### 🐛 Bug Fixes
+
+* fix: Shared page is not displayed when skipping SSR (#9089) @miya
+* fix: The grant of pages can be changed via api even if restricted (#9087) @WNomunomu
+* fix: Updated content is not reflected on the View screen even after refreshing the page (#9086) @miya
+* fix: Removing comment doesn't work (#9083) @yuki-takei
+
+## [v7.0.18](https://github.com/weseek/growi/compare/v7.0.17...v7.0.18) - 2024-09-09
+
+### 🚀 Improvement
+
+* imprv: Prevent looping to update a hook for TrashPageAlert (#9066) @yuki-takei
+* imprv: Display page tree in page select modal with scrollbar (#9023) @kazutoweseek
+
+### 🐛 Bug Fixes
+
+* fix: issue that material symbols icons are not displayed in ReplyComments component (#9076) @WNomunomu
+* fix: Unable to navigate to the data transfer page (#9071) @miya
+* fix: Page content does not update when switching revisions (#9072) @miya
+* fix: Supress rendering too many invisible DropdownMenu components (#9073) @yuki-takei
+* fix: Return error when grant is string for PUT /_api/v3/page (#9069) @arafubeatbox
+* fix: Scrolling may not occurs when clicking on the edit button next to the header (#9043) @reiji-h
+* fix: API v3 Page update (#9053) @maeshinshin
+* fix: Input text becomes empty when opening the ReadOnlyEditor (#9059) @miya
+* fix: Show pages with grants that are set to be visible in security settings on RecentChanges and PageTree as well (#9044) @miya
+
+### 🧰 Maintenance
+
+* support: Omit Cypress (#9065) @miya
+* ci(deps): bump unzip-stream from 0.3.1 to 0.3.2 (#9049) @dependabot
+
+## [v7.0.17](https://github.com/weseek/growi/compare/v7.0.16...v7.0.17) - 2024-08-26
+
+### 🚀 Improvement
+
+* imprv: Serializers for User model and Attachment model (#9019) @yuki-takei
+* imprv: translation modification (#9035) @maeshinshin
+* imprv: Add UI and logic for disabled user registration (#9034) @maeshinshin
+* imprv: lang attribute in Html element (#8960) @maeshinshin
+
+### 🐛 Bug Fixes
+
+* fix: Serializer for accessing to an empty page (#9042) @yuki-takei
+* fix: Import data (#8994) @yuki-takei
+* fix: Comment operation by API (#9026) @yuki-takei
+* fix: Tests fail due to docker image and Playwright  version mismatch on CI (#9022) @miya
+* fix: Use the scrollbar to prevent the toolbar from being hidden (#8976) @maeshinshin
+* fix: Revision pageId schema type (#9008) @yuki-takei
+* fix: Revision pageId schema type (add a changeset) (#9010) @yuki-takei
+* fix: Hide WideViewMenuItem in search result (#9009) @yuki-takei
+* fix: Wrongly autofocus to PageHeader even after updating (#9011) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Dark mode support for CountBadge (#9036) @satof3
+* support: Update import lines (#9018) @yuki-takei
+* support: Typescriptize REPL launcher (#9013) @yuki-takei
+
+## [v7.0.16](https://github.com/weseek/growi/compare/v7.0.15...v7.0.16) - 2024-07-31
+
+### 💎 Features
+
+* feat: Automatically repair corrupted data, at least for the latest revision (#9002) @yuki-takei
+
+### 🚀 Improvement
+
+* imprv: User group link in admin page (#8855) @kazutoweseek
+* imprv: Sidebar header text size (#8986) @satof3
+* imprv: Replace possition usericon (#8991) @satof3
+
+### 🐛 Bug Fixes
+
+* fix: Undo in the comment editor (#9005) @yuki-takei
+* fix: Some OIDC authentication settings not being applied (#9000) @WNomunomu
+* fix: font-family for monospace (#9004) @yuki-takei
+* fix: Pointer cursor for the create button in the installer (#9003) @yuki-takei
+* fix: Migration script (20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js) (#8998) @miya
+* fix: Non-admin user gets 500 error when opening history modal (#9001) @miya
+* fix: Enable page creation under GRANT_RESTRICTED pages (#8996) @arafubeatbox
+
+## [v7.0.15](https://github.com/weseek/growi/compare/v7.0.14...v7.0.15) - 2024-07-23
+
+### 🐛 Bug Fixes
+
+* fix: The $size query when aggregation to rebuild the index (#8987) @yuki-takei
+* fix: Regaining lost backward compatibility for MongoDB 4.4 (#8985) @yuki-takei
+* fix: Activate express-session middlewares for all sockets in SocketIoService (#8981) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Chage text size in sidebar (#8965) @satof3
+
+## [v7.0.14](https://github.com/weseek/growi/compare/v7.0.13...v7.0.14) - 2024-07-19
+
+### 🐛 Bug Fixes
+
+### 💎 Features
+
+* feat: Alerts when trying to sync with latest revision when yjs data is corrupt (#8971) @miya
+
+### 🚀 Improvement
+
+* imprv: Restrict use of the editing UI from View if there is at least one user currently editing (#8966) @miya
+
+### 🐛 Bug Fixes
+
+* fix: Handle error when folding drawio blocks (#8977) @yuki-takei
+* fix: Sync the editor text with the latest revision menu (1) (#8975) @yuki-takei
+* fix: Sync the editor text with the latest revision menu (2) (#8978) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Normalize Revision.pageId (for #8954) (#8973) @miya
+
+## [v7.0.13](https://github.com/weseek/growi/compare/v7.0.12...v7.0.13) - 2024-07-16
+
+### 💎 Features
+
+* feat: Sync latest revision body to Yjs draft (#8939) @miya
+
+### 🚀 Improvement
+
+* imprv: Better synchronizing between YDoc and the latest revision (#8959) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Revision model (#8967) @yuki-takei
+* fix: Healthcheck with checkServices=mongo (#8961) @yuki-takei
+* fix: Enable  # next to headline in view (#8826) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump nodemailer from 6.6.2 to 6.9.14 (#8928) @dependabot
+* support: Update favicon (#8957) @satof3
+
+## [v7.0.12](https://github.com/weseek/growi/compare/v7.0.11...v7.0.12) - 2024-07-10
+
+### 🚀 Improvement
+
+* imprv: lang attribute in Html element to correctly reflect locale (#8940) @maeshinshin
+* imprv: Archive importing and exporting (#8943) @yuki-takei
+* imprv: Restrict indexing for full text search when the body length exceeds the threshold (#8937) @yuki-takei
+* imprv: Dark theme support for emoji mart (#8936) @reiji-h
+* imprv: Add env var for set Elasticsearch reindex bulk size (#8933) @yuki-takei
+* imprv: Size for skeleton for tags (#8923) @yuki-takei
+* imprv: Button opacity of TableWithEditButton and DrawioViewerWithEditButton (#8924) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Initialize sanitize option (#8946) @yuki-takei
+* fix: PageTitleHeader rename input status (#8944) @yuki-takei
+* fix: Presentation section tag (#8941) @yuki-takei
+* fix: Page history colorscheme is broken (#8938) @reiji-h
+* imprv: Rename label for bookmark item (#8925) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Refactor Yjs service (#8949) @yuki-takei
+* support: Upgrade y-mongodb-provider (#8953) @yuki-takei
+* support: Typescriptize Revision model (#8954) @yuki-takei
+* support: Typescriptize SocketIoService (#8948) @yuki-takei
+* support: Update GROWI logo type in NoLogin (#8942) @satof3
+* support: Update logo design (#8934) @satof3
+* ci(deps): bump @azure/identity from 4.0.1 to 4.3.0 (#8927) @dependabot
+* support: Upgrade vitest (#8920) @yuki-takei
+* support: Upgrade playwright (#8921) @yuki-takei
 
 ## [v7.0.11](https://github.com/weseek/growi/compare/v7.0.10...v7.0.11) - 2024-06-25
 

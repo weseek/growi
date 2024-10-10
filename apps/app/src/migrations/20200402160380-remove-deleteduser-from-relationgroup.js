@@ -1,8 +1,10 @@
 import mongoose from 'mongoose';
 
+import userModelFactory from '~/server/models/user';
 import UserGroupRelation from '~/server/models/user-group-relation';
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:migrate:remove-deleteduser-from-relationgroup');
 
@@ -11,7 +13,7 @@ module.exports = {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
 
-    const User = getModelSafely('User') || require('~/server/models/user')();
+    const User = userModelFactory();
 
     const deletedUsers = await User.find({ status: 4 }); // deleted user
     const requests = await UserGroupRelation.remove({ relatedUser: deletedUsers });

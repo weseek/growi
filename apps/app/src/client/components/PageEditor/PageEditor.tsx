@@ -3,7 +3,6 @@ import React, {
   useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 
-
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
@@ -14,12 +13,13 @@ import { CodeMirrorEditorMain } from '@growi/editor/dist/client/components/CodeM
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { useRect } from '@growi/ui/dist/utils';
+import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
+import { useUpdatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -32,6 +32,7 @@ import {
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import {
+  useReservedNextCaretLine,
   useEditorSettings,
   useCurrentIndentSize,
   useEditingMarkdown,
@@ -40,7 +41,7 @@ import {
 import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
 } from '~/stores/page';
-import { mutatePageTree } from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
@@ -109,6 +110,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
+  const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -116,6 +118,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
+  const updatePage = useUpdatePage();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
   useConflictEffect();
@@ -157,10 +160,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     setMarkdownToPreview(value);
   })), []);
 
-  const markdownChangedHandler = useCallback((value: string) => {
-    setMarkdownPreviewWithDebounce(value);
-  }, [setMarkdownPreviewWithDebounce]);
-
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 
@@ -191,6 +190,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
+
+      mutateRecentlyUpdated();
       // sync current grant data after update
       mutateIsGrantNormalized();
 
@@ -212,7 +213,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       mutateWaitingSaveProcessing(false);
     }
-  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, t, mutateIsGrantNormalized]);
+  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, updatePage, mutateIsGrantNormalized, t]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
     const markdown = codeMirrorEditor?.getDoc();
@@ -265,6 +266,14 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     });
   }, [codeMirrorEditor, pageId]);
 
+
+  const cmProps = useMemo<ReactCodeMirrorProps>(() => ({
+    onChange: (value: string) => {
+      setMarkdownPreviewWithDebounce(value);
+    },
+  }), [setMarkdownPreviewWithDebounce]);
+
+
   // set handler to save and return to View
   useEffect(() => {
     globalEmitter.on('saveAndReturnToView', saveAndReturnToViewHandler);
@@ -298,19 +307,25 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
-  // set handler to set caret line
+
+  // set caret line if the edit button next to Header is clicked.
   useEffect(() => {
-    const handler = (lineNumber?: number) => {
-      codeMirrorEditor?.setCaretLine(lineNumber);
+    if (codeMirrorEditor?.setCaretLine == null) {
+      return;
+    }
+    if (editorMode === EditorMode.Editor) {
+      codeMirrorEditor.setCaretLine(reservedNextCaretLine ?? 0, true);
+    }
 
-      // TODO: scroll to the caret line
-    };
-    globalEmitter.on('setCaretLine', handler);
+  }, [codeMirrorEditor, editorMode, reservedNextCaretLine]);
 
-    return function cleanup() {
-      globalEmitter.removeListener('setCaretLine', handler);
-    };
-  }, [codeMirrorEditor]);
+  // reset caret line if returning to the View.
+  useEffect(() => {
+    if (editorMode === EditorMode.View) {
+      mutateReservedNextCaretLine(0);
+    }
+  }, [editorMode, mutateReservedNextCaretLine]);
+
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
@@ -355,7 +370,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
             isEditorMode={editorMode === EditorMode.Editor}
-            onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
             acceptedUploadFileType={acceptedUploadFileType}
@@ -366,6 +380,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             initialValue={initialValue}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
+            cmProps={cmProps}
           />
         </div>
         <div

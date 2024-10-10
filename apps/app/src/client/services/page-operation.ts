@@ -4,6 +4,7 @@ import type { IPageHasId } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
+import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import {
   useCurrentPageId, useSWRMUTxCurrentPage, useSWRxApplicableGrant, useSWRxTagsInfo,
@@ -172,5 +173,10 @@ export const publish = async(pageId: string): Promise<IPageHasId> => {
 
 export const unpublish = async(pageId: string): Promise<IPageHasId> => {
   const res = await apiv3Put(`/page/${pageId}/unpublish`);
+  return res.data;
+};
+
+export const syncLatestRevisionBody = async(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody> => {
+  const res = await apiv3Put(`/page/${pageId}/sync-latest-revision-body-to-yjs-draft`, { editingMarkdownLength });
   return res.data;
 };

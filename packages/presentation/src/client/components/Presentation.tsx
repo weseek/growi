@@ -6,10 +6,9 @@ import type { PresentationOptions } from '../consts';
 
 import { Slides } from './Slides';
 
-import 'reveal.js/dist/reveal.css';
-import './Presentation.global.scss';
-
 import styles from './Presentation.module.scss';
+
+const moduleClass = styles['grw-presentation'] ?? '';
 
 
 const baseRevealOptions: Reveal.Options = {
@@ -27,7 +26,7 @@ const baseRevealOptions: Reveal.Options = {
  * @see https://getbootstrap.com/docs/4.6/content/reboot/#html5-hidden-attribute
  */
 const removeAllHiddenElements = () => {
-  const sections = document.querySelectorAll('.grw-presentation section');
+  const sections = document.querySelectorAll(`${moduleClass} section`);
   sections.forEach(section => section.removeAttribute('hidden'));
 };
 
@@ -59,7 +58,7 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   }, [children, revealOptions]);
 
   return (
-    <div className={`grw-presentation ${styles['grw-presentation']} reveal`}>
+    <div className={`${moduleClass} reveal`}>
       <Slides options={options} hasMarpFlag={marp} presentation>{children}</Slides>
     </div>
   );

@@ -94,8 +94,8 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   useEffect(() => {
     setEditedPagePath(currentPagePath);
-    if (isUntitledPage && editorMode === EditorMode.Editor) {
-      setRenameInputShown(true);
+    if (isUntitledPage != null) {
+      setRenameInputShown(isUntitledPage && editorMode === EditorMode.Editor);
     }
   }, [currentPage._id, currentPagePath, editorMode, isUntitledPage]);
 
@@ -129,6 +129,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
             ${isRenameInputShown ? 'invisible' : ''} text-truncate
             ${isMovable ? 'border border-2 rounded-2' : ''} ${borderColorClass}
           `}
+          style={{ maxWidth: inputMaxWidth }}
           onClick={onClickPageTitle}
         >
           {pageTitle}

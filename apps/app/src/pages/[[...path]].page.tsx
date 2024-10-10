@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity } from '@growi/core';
+import { isIPageInfo } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
+  IDataWithMeta, IPageInfo, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
   isClient, pagePathUtils, pathUtils,
@@ -25,6 +25,7 @@ import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
@@ -42,6 +43,9 @@ import {
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
+  useElasticsearchMaxBodyLengthToIndex,
+  useIsLocalAccountRegistrationEnabled,
+  useIsRomUserAllowedToComment,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -97,7 +101,7 @@ const {
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
-type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
+type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfo>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
 
 superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
@@ -105,8 +109,7 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
     isApplicable: (v): v is IPageToShowRevisionWithMeta => {
       return v?.data != null
         && v?.data.toObject != null
-        && v?.meta != null
-        && isIPageInfoForEntity(v.meta);
+        && isIPageInfo(v.meta);
     },
     serialize: (v) => {
       return {
@@ -154,10 +157,15 @@ type Props = CommonProps & {
   templateTagData?: string[],
   templateBodyData?: string,
 
+  isLocalAccountRegistrationEnabled: boolean,
+
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  elasticsearchMaxBodyLengthToIndex: number,
   isEnabledMarp: boolean,
+
+  isRomUserAllowedToComment: boolean,
 
   sidebarConfig: ISidebarConfig,
 
@@ -215,6 +223,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
+  useElasticsearchMaxBodyLengthToIndex(props.elasticsearchMaxBodyLengthToIndex);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useIsSlackConfigured(props.isSlackConfigured);
@@ -234,9 +243,14 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
 
+  useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
+
+  useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
+
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
+  const revisionId = pageWithMeta?.data.revision?._id;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPathname(props.currentPathname);
@@ -269,7 +283,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       return;
     }
 
-    if (currentPageId != null && !props.isNotFound) {
+    if (currentPageId != null && revisionId != null && !props.isNotFound) {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
         mutateEditingMarkdown(pageData?.revision?.body);
@@ -280,7 +294,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [currentPageId, mutateCurrentPage, mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
+  }, [
+    revisionId, currentPageId, mutateCurrentPage,
+    mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR,
+  ]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -300,8 +317,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   useEffect(() => {
-    mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
-  }, [mutateRemoteRevisionId, pageWithMeta?.data.revision?._id]);
+    mutateRemoteRevisionId(revisionId);
+  }, [mutateRemoteRevisionId, revisionId]);
 
   useEffect(() => {
     mutateCurrentPageId(pageId ?? null);
@@ -537,6 +554,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.elasticsearchMaxBodyLengthToIndex = configManager.getConfig('crowi', 'app:elasticsearchMaxBodyLengthToIndex');
+
+  props.isRomUserAllowedToComment = configManager.getConfig('crowi', 'security:isRomUserAllowedToComment');
 
   props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;
@@ -551,6 +571,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
+
+  props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
+  && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');

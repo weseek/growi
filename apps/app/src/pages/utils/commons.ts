@@ -1,10 +1,9 @@
-import type { ColorScheme, IUserHasId } from '@growi/core';
+import type { ColorScheme, IUserHasId, Locale } from '@growi/core';
 import { Lang, AllLang } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
-
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
@@ -106,6 +105,31 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   return { props };
 };
 
+export type LangMap = {
+  readonly [key in Lang]: Locale;
+};
+
+export const langMap: LangMap = {
+  [Lang.ja_JP]: 'ja-JP',
+  [Lang.en_US]: 'en-US',
+  [Lang.zh_CN]: 'zh-CN',
+  [Lang.fr_FR]: 'fr-FR',
+} as const;
+
+// use this function to translate content
+export const getLangAtServerSide = (req: CrowiRequest): Lang => {
+  const { user, headers } = req;
+  const { configManager } = req.crowi;
+
+  return user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
+    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US) ?? Lang.en_US;
+};
+
+// use this function to get locale for html lang attribute
+export const getLocaleAtServerSide = (req: CrowiRequest): Locale => {
+  return langMap[getLangAtServerSide(req)];
+};
+
 export const getNextI18NextConfig = async(
     // 'serverSideTranslations' method should be given from Next.js Page
     //  because importing it in this file causes https://github.com/isaachinman/next-i18next/issues/1545
@@ -115,13 +139,9 @@ export const getNextI18NextConfig = async(
     context: GetServerSidePropsContext, namespacesRequired?: string[] | undefined, preloadAllLang = false,
 ): Promise<SSRConfig> => {
 
-  const req: CrowiRequest = context.req as CrowiRequest;
-  const { crowi, user, headers } = req;
-  const { configManager } = crowi;
-
   // determine language
-  const locale = user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
-    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const lang = getLangAtServerSide(req);
 
   const namespaces = ['commons'];
   if (namespacesRequired != null) {
@@ -132,7 +152,8 @@ export const getNextI18NextConfig = async(
     namespaces.push('translation');
   }
 
-  return serverSideTranslations(locale, namespaces, nextI18NextConfig, preloadAllLang ? AllLang : false);
+  // The first argument must be a language code with an underscore, such as en_US
+  return serverSideTranslations(lang, namespaces, nextI18NextConfig, preloadAllLang ? AllLang : false);
 };
 
 /**

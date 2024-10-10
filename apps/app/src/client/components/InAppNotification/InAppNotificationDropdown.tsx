@@ -6,18 +6,10 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
-
-import { apiv3Post } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/toastr';
 import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import { useDefaultSocket } from '~/stores/socket-io';
-import loggerFactory from '~/utils/logger';
 
 import InAppNotificationList from './InAppNotificationList';
-
-
-const logger = loggerFactory('growi:InAppNotificationDropdown');
-
 
 export const InAppNotificationDropdown = (): JSX.Element => {
   const { t } = useTranslation('commons');
@@ -36,16 +28,6 @@ export const InAppNotificationDropdown = (): JSX.Element => {
   const buttonRef = useRef(null);
   useRipple(buttonRef, { rippleColor: 'rgba(255, 255, 255, 0.3)' });
 
-  const updateNotificationStatus = async() => {
-    try {
-      await apiv3Post('/in-app-notification/read');
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  };
-
   useEffect(() => {
     if (socket != null) {
       socket.on('notificationUpdated', () => {
@@ -62,7 +44,6 @@ export const InAppNotificationDropdown = (): JSX.Element => {
 
   const toggleDropdownHandler = async() => {
     if (!isOpen && inAppNotificationUnreadStatusCount != null && inAppNotificationUnreadStatusCount > 0) {
-      await updateNotificationStatus();
       mutateInAppNotificationUnreadStatusCount();
     }
 
@@ -86,18 +67,21 @@ export const InAppNotificationDropdown = (): JSX.Element => {
       <DropdownToggle className="px-3" color="primary" innerRef={buttonRef}>
         <span className="material-symbols-outlined">notifications</span> {badge}
       </DropdownToggle>
-      <DropdownMenu end>
-        { inAppNotificationData != null && inAppNotificationData.docs.length === 0
+
+      { isOpen && (
+        <DropdownMenu end>
+          { inAppNotificationData != null && inAppNotificationData.docs.length === 0
           // no items
-          ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>
+            ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>
           // render DropdownItem
-          : <InAppNotificationList inAppNotificationData={inAppNotificationData} />
-        }
-        <DropdownItem divider />
-        <DropdownItem tag="a" href="/me/all-in-app-notifications">
-          { t('in_app_notification.see_all') }
-        </DropdownItem>
-      </DropdownMenu>
+            : <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+          }
+          <DropdownItem divider />
+          <DropdownItem tag="a" href="/me/all-in-app-notifications">
+            { t('in_app_notification.see_all') }
+          </DropdownItem>
+        </DropdownMenu>
+      ) }
     </Dropdown>
   );
 };

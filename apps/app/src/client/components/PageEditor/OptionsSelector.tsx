@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import {
-  type EditorTheme, type KeyMapMode, DEFAULT_KEYMAP, DEFAULT_THEME,
+  type EditorTheme, type KeyMapMode, PasteMode, AllPasteMode, DEFAULT_KEYMAP, DEFAULT_PASTE_MODE, DEFAULT_THEME,
 } from '@growi/editor';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
@@ -174,6 +174,29 @@ const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void})
 IndentSizeSelector.displayName = 'IndentSizeSelector';
 
 
+const PasteSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
+
+  const { t } = useTranslation();
+  const { data: editorSettings, update } = useEditorSettings();
+  const selectedPasteMode = editorSettings?.pasteMode ?? DEFAULT_PASTE_MODE;
+
+  const listItems = useMemo(() => (
+    <>
+      { (AllPasteMode).map((pasteMode) => {
+        return (
+          <RadioListItem onClick={() => update({ pasteMode })} text={t(`page_edit.paste.${pasteMode}`) ?? ''} checked={pasteMode === selectedPasteMode} />
+        );
+      }) }
+    </>
+  ), [update, t, selectedPasteMode]);
+
+  return (
+    <Selector header={t('page_edit.paste.title')} onClickBefore={onClickBefore} items={listItems} />
+  );
+});
+PasteSelector.displayName = 'PasteSelector';
+
+
 type SwitchItemProps = {
   inputId: string,
   onChange: () => void,
@@ -269,6 +292,7 @@ const OptionsStatus = {
   Theme: 'Theme',
   Keymap: 'Keymap',
   Indent: 'Indent',
+  Paste: 'Paste',
 } as const;
 type OptionStatus = typeof OptionsStatus[keyof typeof OptionsStatus];
 
@@ -330,6 +354,12 @@ export const OptionsSelector = (): JSX.Element => {
                 data={currentIndentSize.toString() ?? ''}
               />
               <hr className="my-1" />
+              <ChangeStateButton
+                onClick={() => setStatus(OptionsStatus.Paste)}
+                header={t('page_edit.paste.title')}
+                data={t(`page_edit.paste.${editorSettings.pasteMode ?? PasteMode.both}`) ?? ''}
+              />
+              <hr className="my-1" />
               <ConfigurationSelector />
             </div>
           )
@@ -346,6 +376,9 @@ export const OptionsSelector = (): JSX.Element => {
           <IndentSizeSelector onClickBefore={() => setStatus(OptionsStatus.Home)} />
         )
         }
+        { status === OptionsStatus.Paste && (
+          <PasteSelector onClickBefore={() => setStatus(OptionsStatus.Home)} />
+        )}
       </DropdownMenu>
     </Dropdown>
   );

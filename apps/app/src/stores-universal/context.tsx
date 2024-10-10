@@ -1,3 +1,5 @@
+import type EventEmitter from 'events';
+
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
@@ -12,6 +14,10 @@ import type { TargetAndAncestors } from '../interfaces/page-listing-results';
 
 import { useContextSWR } from './use-context-swr';
 
+declare global {
+  // eslint-disable-next-line vars-on-top, no-var
+  var globalEmitter: EventEmitter;
+}
 
 type Nullable<T> = T | null;
 
@@ -86,6 +92,10 @@ export const useIsSearchServiceConfigured = (initialData?: boolean) : SWRRespons
 
 export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSearchServiceReachable', initialData);
+};
+
+export const useElasticsearchMaxBodyLengthToIndex = (initialData?: number) : SWRResponse<number, Error> => {
+  return useContextSWR('elasticsearchMaxBodyLengthToIndex', initialData);
 };
 
 export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, any> => {
@@ -192,6 +202,14 @@ export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean,
   return useContextSWR('isContainerFluid', initialData);
 };
 
+export const useIsLocalAccountRegistrationEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isLocalAccountRegistrationEnabled', initialData);
+};
+
+export const useIsRomUserAllowedToComment = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isRomUserAllowedToComment', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
@@ -266,6 +284,26 @@ export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType,
         return AcceptedUploadFileType.ALL;
       }
       return AcceptedUploadFileType.IMAGE;
+    },
+  );
+};
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const useGrowiDocumentationUrl = () => {
+  const { data: growiCloudUri } = useGrowiCloudUri();
+
+  return useSWR(
+    ['documentationUrl', growiCloudUri],
+    ([, growiCloudUri]) => {
+      const url = growiCloudUri != null
+        ? new URL('/help', growiCloudUri)
+        : new URL('https://docs.growi.org');
+      return url.toString();
+    },
+    {
+      fallbackData: 'https://docs.growi.org',
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };

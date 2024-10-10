@@ -7,20 +7,24 @@ import type {
   IPageToRenameWithMeta, IPageWithMeta, IPageInfoForEntity,
 } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
+import { GlobalCodeMirrorEditorKey } from '@growi/editor';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { auto } from '@popperjs/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import Sticky from 'react-stickynode';
-import { DropdownItem } from 'reactstrap';
+import { DropdownItem, UncontrolledTooltip } from 'reactstrap';
 
-import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
+import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import {
@@ -30,7 +34,7 @@ import {
 import {
   useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
 } from '~/stores/page';
-import { mutatePageTree } from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import {
   useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
@@ -76,8 +80,45 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+
+  const syncLatestRevisionBodyHandler = useCallback(async() => {
+    // eslint-disable-next-line no-alert
+    const answer = window.confirm(t('sync-latest-revision-body.confirm'));
+    if (answer) {
+      try {
+        const editingMarkdownLength = codeMirrorEditor?.getDoc().length;
+        const res = await syncLatestRevisionBody(pageId, editingMarkdownLength);
+
+        if (!res.synced) {
+          toastWarning(t('sync-latest-revision-body.skipped-toaster'));
+          return;
+        }
+
+        if (res?.isYjsDataBroken) {
+          // eslint-disable-next-line no-alert
+          window.alert(t('sync-latest-revision-body.alert'));
+          return;
+        }
+
+        toastSuccess(t('sync-latest-revision-body.success-toaster'));
+      }
+      catch {
+        toastError(t('sync-latest-revision-body.error-toaster'));
+      }
+    }
+  }, [codeMirrorEditor, pageId, t]);
+
   return (
     <>
+      <DropdownItem
+        onClick={() => syncLatestRevisionBodyHandler()}
+        className="grw-page-control-dropdown-item"
+      >
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
+        {t('sync-latest-revision-body.menuitem')}
+      </DropdownItem>
+
       {/* Presentation */}
       <DropdownItem
         onClick={() => openPresentationModal()}
@@ -193,6 +234,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const { data: isLocalAccountRegistrationEnabled } = useIsLocalAccountRegistrationEnabled();
   const { data: isSharedUser } = useIsSharedUser();
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
@@ -229,6 +271,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
+      mutateRecentlyUpdated();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
   }, [mutateCurrentPage, mutatePageInfo, openRenameModal]);
@@ -252,6 +295,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
+      mutateRecentlyUpdated();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
   }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
@@ -306,7 +350,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     <>
       <GroundGlassBar className="py-4 d-block d-md-none d-print-none border-bottom" />
 
-      <Sticky className="z-1" onStateChange={status => setStickyActive(status.status === Sticky.STATUS_FIXED)}>
+      <Sticky
+        className="z-1"
+        onStateChange={status => setStickyActive(status.status === Sticky.STATUS_FIXED)}
+        innerActiveClass="w-100 end-0"
+      >
         <GroundGlassBar>
 
           <nav
@@ -347,9 +395,23 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
             { isGuestUser && (
               <div className="mt-2">
-                <Link href="/login#register" className="btn me-2" prefetch={false}>
-                  <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
-                </Link>
+                <span>
+                  <span className="d-inline-block" id="sign-up-link">
+                    <Link
+                      href={!isLocalAccountRegistrationEnabled ? '#' : '/login#register'}
+                      className={`btn me-2 ${!isLocalAccountRegistrationEnabled ? 'opacity-25' : ''}`}
+                      style={{ pointerEvents: !isLocalAccountRegistrationEnabled ? 'none' : undefined }}
+                      prefetch={false}
+                    >
+                      <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
+                    </Link>
+                  </span>
+                  {!isLocalAccountRegistrationEnabled && (
+                    <UncontrolledTooltip target="sign-up-link" fade={false}>
+                      {t('tooltip.login_required')}
+                    </UncontrolledTooltip>
+                  )}
+                </span>
                 <Link href="/login#login" className="btn btn-primary" prefetch={false}>
                   <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
                 </Link>

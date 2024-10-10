@@ -58,8 +58,18 @@ export const defaultConfig: IApiRateLimitEndpointMap = {
   },
 };
 
+const isDev = process.env.NODE_ENV === 'development';
+const defaultConfigWithRegExpForDev: IApiRateLimitEndpointMap = isDev ? {
+  '/__nextjs_original-stack-frame': {
+    method: 'GET',
+    maxRequests: Infinity,
+  },
+} : {};
+
 // default config with reg exp
-export const defaultConfigWithRegExp = {
+export const defaultConfigWithRegExp: IApiRateLimitEndpointMap = {
+  ...defaultConfigWithRegExpForDev,
+
   '/forgot-password/.*': {
     method: 'ALL',
     maxRequests: MAX_REQUESTS_TIER_1,

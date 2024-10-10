@@ -1,12 +1,17 @@
 import { GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import express from 'express';
+import {
+  body, param, query, sanitizeQuery,
+} from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { toPagingLimit, toPagingOffset } from '~/server/util/express-validator/sanitizer';
 import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
@@ -16,15 +21,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
-const express = require('express');
-
 const router = express.Router();
-
-const { body, param, query } = require('express-validator');
-const { sanitizeQuery } = require('express-validator');
-
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
 
 
 /**

@@ -8,6 +8,8 @@ import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import FormattedDistanceDate from '../../FormattedDistanceDate';
 
+import styles from './ModelNotification.module.scss';
+
 type Props = {
   notification: IInAppNotification & HasObjectId
   actionMsg: string
@@ -21,8 +23,8 @@ export const ModelNotification: FC<Props> = (props) => {
   } = props;
 
   return (
-    <div className="p-2 overflow-hidden">
-      <div className="text-truncate">
+    <div className={`${styles['modal-notification']} p-2 overflow-hidden`}>
+      <div className="text-truncate page-title">
         <b>{actionUsers}</b>
         {actionMsg}
         <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />

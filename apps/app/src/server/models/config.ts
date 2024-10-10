@@ -7,7 +7,7 @@ import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 
-export interface Config {
+export interface IConfig {
   _id: Types.ObjectId;
   ns: string;
   key: string;
@@ -21,7 +21,7 @@ export interface Config {
 interface ModelMethods { any }
 
 
-const schema = new Schema<Config>({
+const schema = new Schema<IConfig>({
   ns: { type: String, required: true },
   key: { type: String, required: true },
   value: { type: String, required: true },
@@ -75,6 +75,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:disableLinkSharing' : false,
   'security:user-homepage-deletion:isEnabled': false,
   'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': false,
+  'security:isRomUserAllowedToComment': false,
 
   'security:passport-local:isEnabled' : true,
   'security:passport-ldap:isEnabled' : false,
@@ -176,4 +177,4 @@ export const defaultNotificationConfigs: { [key: string]: any } = {
   'slack:token': undefined,
 };
 
-export default getOrCreateModel<Config, ModelMethods>('Config', schema);
+export const Config = getOrCreateModel<IConfig, ModelMethods>('Config', schema);

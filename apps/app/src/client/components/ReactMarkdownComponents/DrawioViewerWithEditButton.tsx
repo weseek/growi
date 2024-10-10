@@ -13,6 +13,7 @@ import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
 import { useIsRevisionOutdated } from '~/stores/page';
+import { useCurrentPageYjsData } from '~/stores/yjs';
 
 import '@growi/remark-drawio/dist/style.css';
 import styles from './DrawioViewerWithEditButton.module.scss';
@@ -34,6 +35,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
   const { data: isRevisionOutdated } = useIsRevisionOutdated();
+  const { data: currentPageYjsData } = useCurrentPageYjsData();
 
   const [isRendered, setRendered] = useState(false);
   const [mxfile, setMxfile] = useState('');
@@ -57,7 +59,14 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
     }
   }, []);
 
-  const showEditButton = !isRevisionOutdated && isRendered && !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
+  const isNoEditingUsers = currentPageYjsData?.awarenessStateSize == null || currentPageYjsData?.awarenessStateSize === 0;
+  const showEditButton = isNoEditingUsers
+     && !isRevisionOutdated
+     && isRendered
+     && !isGuestUser
+     && !isReadOnlyUser
+     && !isSharedUser
+     && shareLinkId == null;
 
   return (
     <div className={`drawio-viewer-with-edit-button ${styles['drawio-viewer-with-edit-button']}`}>

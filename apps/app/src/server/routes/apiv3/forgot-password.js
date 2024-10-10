@@ -1,4 +1,5 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { format, subSeconds } from 'date-fns';
 
 import { SupportedAction } from '~/interfaces/activity';
@@ -17,7 +18,6 @@ const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-dis
 const express = require('express');
 const { body } = require('express-validator');
 
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 
@@ -43,6 +43,14 @@ module.exports = (crowi) => {
           return (value === req.body.newPassword);
         }),
     ],
+    email: [
+      body('email')
+        .isEmail()
+        .escape()
+        .withMessage('message.Email format is invalid')
+        .notEmpty()
+        .withMessage('message.Email field is required'),
+    ],
   };
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
@@ -61,7 +69,7 @@ module.exports = (crowi) => {
     });
   }
 
-  router.post('/', checkPassportStrategyMiddleware, addActivity, async(req, res) => {
+  router.post('/', checkPassportStrategyMiddleware, validator.email, apiV3FormValidator, addActivity, async(req, res) => {
     const { email } = req.body;
     const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();

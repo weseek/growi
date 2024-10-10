@@ -44,8 +44,8 @@ const Tag: FC = () => {
   // todo: adjust design by XD
   return (
     <div className="container-lg px-3 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
-      <div className="grw-sidebar-content-header py-3 d-flex">
-        <h4 className="mb-0">{t('Tags')}</h4>
+      <div className="grw-sidebar-content-header pt-4 pb-3 d-flex">
+        <h3 className="fs-6 fw-bold mb-0">{t('Tags')}</h3>
         <SidebarHeaderReloadButton onClick={() => onReload()} />
       </div>
 
@@ -68,7 +68,7 @@ const Tag: FC = () => {
         )
       }
 
-      <div className="d-flex justify-content-center my-5">
+      <div className="d-flex justify-content-center my-5" data-testid="check-all-tags-button">
         <Link
           href="/tags"
           className="btn btn-primary rounded px-4"

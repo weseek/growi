@@ -7,6 +7,7 @@ on:
       - rc/**
       - support/prepare-v**
     paths:
+      - .github/mergify.yml
       - .github/workflows/ci-slackbot-proxy.yml
       - .eslint*
       - tsconfig.base.json
@@ -175,6 +176,9 @@ jobs:
 
 
   ci-slackbot-proxy-launch-prod:
+
+    if: startsWith(github.head_ref, 'mergify/merge-queue/')
+
     runs-on: ubuntu-latest
 
     strategy:

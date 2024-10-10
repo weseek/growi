@@ -61,6 +61,7 @@
   "Presentation Mode": "演示文稿",
   "Not available for guest": "不提供给客人",
   "Not available in this version": "此版本中不提供",
+  "Not available when \"anyone with the link\" is selected": "如果选择“任何人”，则无法覆盖范围",
   "No users have liked this yet": "还没有用户喜欢这个",
   "No users have bookmarked yet": "还没有用户加入书签",
   "Create Archive Page": "创建归档页",
@@ -311,7 +312,9 @@
       "restricted": "访问此页受到限制",
       "stale": "自上次更新以来，已超过{{count}年。",
       "stale_plural": "自上次更新以来已过去{{count}年以上。",
-      "no_deadline": "This page has no expiration date"
+      "no_deadline": "此页面没有到期日期",
+      "not_indexed1": "此页面可能不会被全文搜索引擎索引。",
+      "not_indexed2": "页面正文超过了{{threshold}}指定的阈值。"
 		}
 	},
 	"page_edit": {
@@ -319,6 +322,12 @@
     "theme": "主题",
     "keymap": "键表",
     "indent": "缩进",
+    "paste": {
+      "title": "粘贴行为",
+      "both": "两者",
+      "text": "仅文本",
+      "file": "仅文件"
+    },
     "editor_config": "编辑器配置",
 		"Show active line": "显示活动行",
 		"auto_format_table": "自动格式化表格",
@@ -337,7 +346,8 @@
     "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
     "no_user_found": "未找到用户名",
     "reply": "Reply",
-    "delete_comment": "Delete comment?"
+    "delete_comment": "Delete comment?",
+    "comment_management_is_not_allowed": "不允许操作评论。"
   },
   "page_api_error": {
     "notfound_or_forbidden": "未找到或禁止原始页。",
@@ -710,36 +720,6 @@
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配",
     "please_enable_mailer_alert": "密码重置功能被禁用，因为电子邮件设置尚未完成。请要求管理员完成电子邮件的设置。"
   },
-  "emoji": {
-    "title": "选择一个表情符号",
-    "search": "搜索",
-    "clear": "重置",
-    "notfound": "找不到表情符号",
-    "skintext": "选择您的默认肤色",
-    "categories": {
-      "search": "搜索结果",
-      "recent": "经常使用",
-      "smileys": "笑脸和情感",
-      "people": "人和身体",
-      "nature": "动物与自然",
-      "foods": "食物和饮料",
-      "activity": "活动",
-      "places": "旅行和地方",
-      "objects": "对象",
-      "symbols": "符号",
-      "flags": "旗帜",
-      "custom": "定制"
-    },
-    "categorieslabel": "表情符号类别",
-    "skintones": {
-      "1": "默认肤色",
-      "2": "浅肤色",
-      "3": "中浅肤色",
-      "4": "中等肤色",
-      "5": "中深肤色",
-      "6": "深色肤色"
-    }
-  },
   "maintenance_mode": {
     "maintenance_mode": "维护模式",
     "growi_is_under_maintenance": "GROWI正在进行维护。请等待，直到它结束。",
@@ -796,6 +776,7 @@
     "receive_notifications": "接收通知",
     "stop_notification": "停止通知",
     "footprints": "脚印",
+    "login_required": "需要登录",
     "operation": {
       "attention": {
         "rename": "重命名子孙页的路径没有成功，请从三点式阅读器上打开菜单，选择 '路径恢复'。"
@@ -880,5 +861,13 @@
   },
   "create_page": {
     "untitled": "Untitled"
+  },
+  "sync-latest-revision-body": {
+    "menuitem": "同步编辑器文本与最新修订正文",
+    "confirm": "删除输入编辑器的草稿数据，同步最新文本。 您真的想运行它吗？",
+    "alert": "最新文本可能尚未同步。 请重新加载并再次检查。",
+    "success-toaster": "同步最新文本",
+    "skipped-toaster": "由于编辑器未激活，因此跳过同步。 请打开编辑器并重试。",
+    "error-toaster": "同步最新文本失败"
   }
 }

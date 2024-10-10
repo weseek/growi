@@ -61,6 +61,7 @@
   "Presentation Mode": "プレゼンテーション",
   "Not available for guest": "ゲストユーザーは利用できません",
   "Not available in this version": "このバージョンでは利用できません",
+  "Not available when \"anyone with the link\" is selected": "「リンクを知っている人のみ」を選択している場合はスコープを上書きできません。",
   "No users have liked this yet": "いいねをしているユーザーはいません",
   "No users have bookmarked yet": "ブックマークしているユーザーはいません",
   "Create Archive Page": "アーカイブページの作成",
@@ -354,7 +355,9 @@
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
       "expiration": "この共有パーマリンクの有効期限は <strong>{{expiredAt}}</strong> です。",
-      "no_deadline": "このページに有効期限は設定されていません。"
+      "no_deadline": "このページに有効期限は設定されていません。",
+      "not_indexed1": "このページは全文検索エンジンにインデックスされない可能性があります.",
+      "not_indexed2": "ページ本文が閾値を超えています: {{threshold}}."
     }
   },
   "page_edit": {
@@ -362,6 +365,12 @@
     "theme": "テーマ",
     "keymap": "キーマップ",
     "indent": "インデント",
+    "paste": {
+      "title": "ペースト時の動作",
+      "both": "両方",
+      "text": "テキストのみ",
+      "file": "ファイルのみ"
+    },
     "editor_config": "エディタ設定",
     "Show active line": "アクティブ行をハイライト",
     "auto_format_table": "表の自動整形",
@@ -380,7 +389,8 @@
     "display_the_page_when_posting_this_comment": "投稿時のページを表示する",
     "no_user_found": "ユーザー名が見つかりません",
     "reply": "返信",
-    "delete_comment": "コメントを削除しますか？"
+    "delete_comment": "コメントを削除しますか？",
+    "comment_management_is_not_allowed": "コメントの操作が許可されていません。"
   },
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
@@ -740,36 +750,6 @@
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません",
     "please_enable_mailer_alert": "メール設定が完了していないため、パスワード再設定機能が無効になっています。メール設定を完了させるよう管理者に依頼してください。"
   },
-  "emoji": {
-    "title": "絵文字を選択",
-    "search": "探す",
-    "clear": "リセット",
-    "notfound": "絵文字が見つかりません",
-    "skintext": "デフォルトの肌の色を選択",
-    "categories": {
-      "search": "検索結果",
-      "recent": "最新履歴",
-      "smileys": "スマイリーと感情",
-      "people": "人と体",
-      "nature": "動物と自然",
-      "foods": "食べ物や飲み物",
-      "activity": "アクティビティ",
-      "places": "旅行と場所",
-      "objects": "オブジェクト",
-      "symbols": "シンボル",
-      "flags": "国旗",
-      "custom": "カスタマイズ"
-    },
-    "categorieslabel": "絵文字カテゴリ",
-    "skintones": {
-      "1": "デフォルトの肌の色",
-      "2": "明るい肌のトーン",
-      "3": "ミディアム-明るい肌のトーン",
-      "4": "ミディアムスキントーン",
-      "5": "ミディアムダークスキントーン",
-      "6": "肌の色が濃い"
-    }
-  },
   "maintenance_mode": {
     "maintenance_mode": "メンテナンスモード",
     "growi_is_under_maintenance": "GROWI はメンテナンス中です。終了するまでお待ちください",
@@ -826,6 +806,7 @@
     "receive_notifications": "通知を受け取る",
     "stop_notification": "通知を止める",
     "footprints": "足跡",
+    "login_required": "ログインが必要です",
     "operation": {
       "attention": {
         "rename": "配下のページパスの更新が正常に行われませんでした。3点リーダーからメニューを開き、「パスを修復」を選択してしてください。"
@@ -910,5 +891,13 @@
   },
   "create_page": {
     "untitled": "無題のページ"
+  },
+  "sync-latest-revision-body": {
+    "menuitem": "最新のリビジョンの本文とエディタのテキストを同期",
+    "confirm": "エディターに入力中のドラフトデータを削除して最新の本文を同期します。実行しますか？",
+    "alert": "最新の本文が同期されていない可能性があります。リロードして再度ご確認ください。",
+    "success-toaster": "最新の本文を同期しました",
+    "skipped-toaster": "エディターがアクティブではないため、同期をスキップしました。エディターを開いて再度お試しください。",
+    "error-toaster": "最新の本文の同期に失敗しました"
   }
 }

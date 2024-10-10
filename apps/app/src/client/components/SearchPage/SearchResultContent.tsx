@@ -3,7 +3,7 @@ import React, {
   useCallback, useEffect, useRef,
 } from 'react';
 
-import { getIdForRef } from '@growi/core';
+import { getIdStringForRef } from '@growi/core';
 import type { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -11,7 +11,7 @@ import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { exportAsMarkdown } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import { PagePathNav } from '~/components/Common/PagePathNav';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
@@ -21,7 +21,7 @@ import { useCurrentUser } from '~/stores-universal/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
-import { mutatePageList, mutatePageTree } from '~/stores/page-listing';
+import { mutatePageList, mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
@@ -135,6 +135,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
       mutatePageTree();
+      mutateRecentlyUpdated();
       mutateSearching();
       mutatePageList();
     };
@@ -146,6 +147,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       toastSuccess(t('renamed_pages', { path }));
 
       mutatePageTree();
+      mutateRecentlyUpdated();
       mutateSearching();
       mutatePageList();
     };
@@ -165,6 +167,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       toastSuccess(t('deleted_pages', { path }));
     }
     mutatePageTree();
+    mutateRecentlyUpdated();
     mutateSearching();
     mutatePageList();
   }, [t]);
@@ -173,18 +176,12 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   }, [onDeletedHandler, openDeleteModal]);
 
-  const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
-    await updateContentWidth(pageId, value);
-
-    // TODO: revalidate page data and update shouldExpandContent
-  }, []);
-
   const RightComponent = useCallback(() => {
     if (page == null) {
       return <></>;
     }
 
-    const revisionId = page.revision != null ? getIdForRef(page.revision) : null;
+    const revisionId = page.revision != null ? getIdStringForRef(page.revision) : null;
     const additionalMenuItemRenderer = revisionId != null
       ? props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />
       : undefined;
@@ -202,12 +199,11 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           onClickDuplicateMenuItem={duplicateItemClickedHandler}
           onClickRenameMenuItem={renameItemClickedHandler}
           onClickDeleteMenuItem={deleteItemClickedHandler}
-          onClickSwitchContentWidth={switchContentWidthHandler}
         />
       </div>
     );
   }, [page, shouldExpandContent, showPageControlDropdown, forceHideMenuItems,
-      duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, switchContentWidthHandler]);
+      duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler]);
 
   const fluidLayoutClass = shouldExpandContent ? _fluidLayoutClass : '';
 

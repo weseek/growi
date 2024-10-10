@@ -186,15 +186,18 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
       onToggle={toggleHandler}
     >
       {children}
-      <DropdownMenu
-        end
-        persist
-        strategy="fixed"
-        container="body"
-        className={`grw-bookmark-folder-menu ${styles['grw-bookmark-folder-menu']}`}
-      >
-        { renderBookmarkMenuItem() }
-      </DropdownMenu>
+
+      { isOpen && (
+        <DropdownMenu
+          end
+          persist
+          strategy="fixed"
+          container="body"
+          className={`grw-bookmark-folder-menu ${styles['grw-bookmark-folder-menu']}`}
+        >
+          { renderBookmarkMenuItem() }
+        </DropdownMenu>
+      ) }
     </UncontrolledDropdown>
   );
 };

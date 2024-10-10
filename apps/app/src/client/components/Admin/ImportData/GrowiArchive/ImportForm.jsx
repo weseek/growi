@@ -5,9 +5,9 @@ import PropTypes from 'prop-types';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
-import ImportOptionForPages from '~/models/admin/import-option-for-pages';
-import ImportOptionForRevisions from '~/models/admin/import-option-for-revisions';
+import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
+import { ImportOptionForPages } from '~/models/admin/import-option-for-pages';
+import { ImportOptionForRevisions } from '~/models/admin/import-option-for-revisions';
 import { useAdminSocket } from '~/stores/socket-io';
 
 
@@ -27,6 +27,7 @@ const GROUPS_CONFIG = [
 ];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
 
+/** @type Record<string, typeof GrowiArchiveImportOption> */
 const IMPORT_OPTION_CLASS_MAPPING = {
   pages: ImportOptionForPages,
   revisions: ImportOptionForRevisions,
@@ -41,7 +42,7 @@ class ImportForm extends React.Component {
       isImporting: false,
       isImported: false,
       progressMap: [],
-      errorsMap: [],
+      errorsMap: {},
 
       selectedCollections: new Set(),
 
@@ -73,7 +74,7 @@ class ImportForm extends React.Component {
         : DEFAULT_MODE;
       // create GrowiArchiveImportOption instance
       const ImportOption = IMPORT_OPTION_CLASS_MAPPING[collectionName] || GrowiArchiveImportOption;
-      this.initialState.optionsMap[collectionName] = new ImportOption(initialMode);
+      this.initialState.optionsMap[collectionName] = new ImportOption(collectionName, initialMode);
     });
 
     this.state = this.initialState;
@@ -109,8 +110,10 @@ class ImportForm extends React.Component {
       const { progressMap, errorsMap } = this.state;
       progressMap[collectionName] = collectionProgress;
 
-      const errors = errorsMap[collectionName] || [];
-      errorsMap[collectionName] = errors.concat(appendedErrors);
+      if (appendedErrors != null) {
+        const errors = errorsMap[collectionName] || [];
+        errorsMap[collectionName] = errors.concat(appendedErrors);
+      }
 
       this.setState({
         isImporting: true,
@@ -303,7 +306,7 @@ class ImportForm extends React.Component {
       await apiv3Post('/import', {
         fileName,
         collections: Array.from(selectedCollections),
-        optionsMap,
+        options: Object.values(optionsMap),
       });
 
       if (onPostImport != null) {
@@ -378,7 +381,7 @@ class ImportForm extends React.Component {
       <div className="row">
         {collectionNames.map((collectionName) => {
           const collectionProgress = progressMap[collectionName];
-          const errors = errorsMap[collectionName];
+          const errorsCount = errorsMap[collectionName]?.length ?? 0;
           const isConfigButtonAvailable = Object.keys(IMPORT_OPTION_CLASS_MAPPING).includes(collectionName);
 
           return (
@@ -388,7 +391,7 @@ class ImportForm extends React.Component {
                 isImported={collectionProgress ? isImported : false}
                 insertedCount={collectionProgress ? collectionProgress.insertedCount : 0}
                 modifiedCount={collectionProgress ? collectionProgress.modifiedCount : 0}
-                errorsCount={errors ? errors.length : 0}
+                errorsCount={errorsCount}
                 collectionName={collectionName}
                 isSelected={selectedCollections.has(collectionName)}
                 option={optionsMap[collectionName]}

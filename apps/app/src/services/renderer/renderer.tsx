@@ -25,6 +25,7 @@ import { tagNames as recommendedTagNames, attributes as recommendedAttributes } 
 import * as addClass from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
+import * as codeBlock from './remark-plugins/codeblock';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
@@ -38,21 +39,27 @@ const logger = loggerFactory('growi:services:renderer');
 
 type SanitizePlugin = PluginTuple<[SanitizeOption]>;
 
-export const commonSanitizeOption: SanitizeOption = {
-  tagNames: recommendedTagNames,
-  attributes: recommendedAttributes,
-  clobberPrefix: '', // remove clobber prefix
-};
+let currentInitializedSanitizeType: RehypeSanitizeType = RehypeSanitizeType.RECOMMENDED;
+let commonSanitizeOption: SanitizeOption;
+export const getCommonSanitizeOption = (config:RendererConfig): SanitizeOption => {
+  if (commonSanitizeOption == null || config.sanitizeType !== currentInitializedSanitizeType) {
+    // initialize
+    commonSanitizeOption = {
+      tagNames: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
+        ? recommendedTagNames
+        : config.customTagWhitelist ?? recommendedTagNames,
+      attributes: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
+        ? recommendedAttributes
+        : config.customAttrWhitelist ?? recommendedAttributes,
+      clobberPrefix: '', // remove clobber prefix
+    };
 
-let isInjectedCustomSanitaizeOption = false;
-
-export const injectCustomSanitizeOption = (config: RendererConfig): void => {
-  if (!isInjectedCustomSanitaizeOption && config.isEnabledXssPrevention && config.sanitizeType === RehypeSanitizeType.CUSTOM) {
-    commonSanitizeOption.tagNames = config.customTagWhitelist ?? recommendedTagNames;
-    commonSanitizeOption.attributes = config.customAttrWhitelist ?? recommendedAttributes;
-    isInjectedCustomSanitaizeOption = true;
+    currentInitializedSanitizeType = config.sanitizeType;
   }
+
+  return commonSanitizeOption;
 };
+
 
 const isSanitizePlugin = (pluggable: Pluggable): pluggable is SanitizePlugin => {
   if (!Array.isArray(pluggable) || pluggable.length < 2) {
@@ -90,6 +97,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       pukiwikiLikeLinker,
       growiDirective,
       remarkFrontmatter,
+      codeBlock.remarkPlugin,
     ],
     remarkRehypeOptions: {
       clobberPrefix: '', // remove clobber prefix
@@ -131,13 +139,9 @@ export const generateSSRViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  if (config.sanitizeType === RehypeSanitizeType.CUSTOM) {
-    injectCustomSanitizeOption(config);
-  }
-
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
-      commonSanitizeOption,
+      getCommonSanitizeOption(config),
     )]
     : () => {};
 

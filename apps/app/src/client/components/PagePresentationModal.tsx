@@ -5,7 +5,7 @@ import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useFullScreen } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
-import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
+import type { Options as ReactMarkdownOptions } from 'react-markdown';
 import {
   Modal, ModalBody,
 } from 'reactstrap';
@@ -18,6 +18,8 @@ import { usePresentationViewOptions } from '~/stores/renderer';
 
 
 import styles from './PagePresentationModal.module.scss';
+
+const moduleClass = styles['grw-presentation-modal'] ?? '';
 
 
 const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
@@ -71,7 +73,7 @@ const PagePresentationModal = (): JSX.Element => {
       isOpen={isOpen}
       toggle={closeHandler}
       data-testid="page-presentation-modal"
-      className={`grw-presentation-modal ${styles['grw-presentation-modal']}`}
+      className={moduleClass}
     >
       <div className="grw-presentation-controls d-flex">
         <button
