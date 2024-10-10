@@ -82,6 +82,7 @@ export type CreateMethod = (path: string, body: string, user, options: IOptionsF
 
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
+  createEmptyPage(path: string, parent, descendantCount?: number): Promise<HydratedDocument<PageDocument>>
   findByIdAndViewer(pageId: ObjectIdLike, user, userGroups?, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
   findByIdsAndViewer(
     pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
@@ -570,14 +571,13 @@ export class PageQueryBuilder {
 }
 
 schema.statics.createEmptyPage = async function(
-    path: string, parent: any, descendantCount = 0, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
-): Promise<PageDocument & { _id: any }> {
+    path: string, parent: any, descendantCount = 0,
+): Promise<HydratedDocument<PageDocument>> {
   if (parent == null) {
     throw Error('parent must not be null');
   }
 
-  const Page = this;
-  const page = new Page();
+  const page = new this();
   page.path = path;
   page.isEmpty = true;
   page.parent = parent;

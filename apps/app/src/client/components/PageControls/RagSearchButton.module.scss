@@ -1,4 +1,5 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/variables/growi-official-colors';
 @use '@growi/ui/scss/atoms/btn-muted';
 @use './button-styles';
 
@@ -8,5 +9,5 @@
 
 // == Colors
 .btn-rag-search {
-  @include btn-muted.colorize(bs.$success);
+  @include btn-muted.colorize(bs.$purple);
 }

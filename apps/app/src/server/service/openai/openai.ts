@@ -1,3 +1,4 @@
+import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 
 import { PageGrant, isPopulated } from '@growi/core';
@@ -26,13 +27,14 @@ const logger = loggerFactory('growi:service:openai');
 
 export interface IOpenaiService {
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
+  deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
-  rebuildVectorStore(page: PageDocument): Promise<void>;
+  rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
 }
 class OpenaiService implements IOpenaiService {
 
   private get client() {
-    const openaiServiceType = configManager.getConfig('crowi', 'app:openaiServiceType');
+    const openaiServiceType = configManager.getConfig('crowi', 'openai:serviceType');
     return getClient({ openaiServiceType });
   }
 
@@ -64,6 +66,7 @@ class OpenaiService implements IOpenaiService {
     const workers = pages.map(processUploadFile);
 
     // Wait for all processing to complete.
+    assert(workers.length <= BATCH_SIZE, 'workers.length must be less than or equal to BATCH_SIZE');
     const fileUploadResult = await Promise.allSettled(workers);
     fileUploadResult.forEach((result) => {
       if (result.status === 'rejected') {
@@ -92,33 +95,35 @@ class OpenaiService implements IOpenaiService {
 
   }
 
-  private async deleteVectorStoreFile(page: PageDocument): Promise<void> {
+  async deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void> {
     // Delete vector store file and delete vector store file relation
-    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ pageId: page._id });
-    if (vectorStoreFileRelation != null) {
-      const deletedFileIds: string[] = [];
-      for (const fileId of vectorStoreFileRelation.fileIds) {
-        try {
-          // eslint-disable-next-line no-await-in-loop
-          const deleteFileResponse = await this.client.deleteFile(fileId);
-          logger.debug('Delete vector store file', deleteFileResponse);
-          deletedFileIds.push(fileId);
-        }
-        catch (err) {
-          logger.error(err);
-        }
-      }
-
-      const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
-
-      if (undeletedFileIds.length === 0) {
-        await vectorStoreFileRelation.remove();
-        return;
-      }
-
-      vectorStoreFileRelation.fileIds = undeletedFileIds;
-      await vectorStoreFileRelation.save();
+    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ pageId });
+    if (vectorStoreFileRelation == null) {
+      return;
     }
+
+    const deletedFileIds: string[] = [];
+    for (const fileId of vectorStoreFileRelation.fileIds) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        const deleteFileResponse = await this.client.deleteFile(fileId);
+        logger.debug('Delete vector store file', deleteFileResponse);
+        deletedFileIds.push(fileId);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    }
+
+    const undeletedFileIds = vectorStoreFileRelation.fileIds.filter(fileId => !deletedFileIds.includes(fileId));
+
+    if (undeletedFileIds.length === 0) {
+      await vectorStoreFileRelation.remove();
+      return;
+    }
+
+    vectorStoreFileRelation.fileIds = undeletedFileIds;
+    await vectorStoreFileRelation.save();
   }
 
   async rebuildVectorStoreAll() {
@@ -144,8 +149,8 @@ class OpenaiService implements IOpenaiService {
       .pipe(createVectorStoreFileStream);
   }
 
-  async rebuildVectorStore(page: PageDocument) {
-    await this.deleteVectorStoreFile(page);
+  async rebuildVectorStore(page: HydratedDocument<PageDocument>) {
+    await this.deleteVectorStoreFile(page._id);
     await this.createVectorStoreFile([page]);
   }
 
@@ -158,7 +163,7 @@ export const getOpenaiService = (): IOpenaiService | undefined => {
   }
 
   const aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
-  const openaiServiceType = configManager.getConfig('crowi', 'app:openaiServiceType');
+  const openaiServiceType = configManager.getConfig('crowi', 'openai:serviceType');
   if (aiEnabled && openaiServiceType != null && OpenaiServiceTypes.includes(openaiServiceType)) {
     instance = new OpenaiService();
     return instance;
