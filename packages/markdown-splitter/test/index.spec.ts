@@ -271,4 +271,23 @@ Content under header 2.
     const result = await splitMarkdownIntoChunks(markdown);
     expect(result).toEqual(expected);
   });
+  test('frontmatter is processed and labeled correctly', async() => {
+    const markdown = `---
+title: Test Document
+author: John Doe
+---
+
+# Header 1
+Some introductory content.
+    `;
+
+    const expected: Chunk[] = [
+      { label: 'frontmatter', text: JSON.stringify({ title: 'Test Document', author: 'John Doe' }, null, 2) },
+      { label: '1-heading', text: '# Header 1' },
+      { label: '1-content', text: 'Some introductory content.' },
+    ];
+
+    const result = await splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
+  });
 });
