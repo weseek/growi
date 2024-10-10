@@ -27,21 +27,19 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
     <div className={`card border-0 ${moduleClass} ${assistantMessageCardModuleClass}`}>
       <div className="card-body d-flex">
         <div className="me-2 me-lg-3">
-          <span className="material-symbols-outlined grw-ai-icon rounded-pill p-1">psychology</span>
+          <span className="growi-custom-icons grw-ai-icon rounded-pill">growi_ai</span>
         </div>
 
-        <div className="mt-1">
-          { children.length > 0
-            ? (
-              <ReactMarkdown>{children}</ReactMarkdown>
-            )
-            : (
-              <span className="text-thinking">
-                {t('modal_aichat.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
-              </span>
-            )
-          }
-        </div>
+        { children.length > 0
+          ? (
+            <ReactMarkdown>{children}</ReactMarkdown>
+          )
+          : (
+            <span className="text-thinking">
+              {t('modal_aichat.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
+            </span>
+          )
+        }
       </div>
     </div>
   );
