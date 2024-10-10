@@ -3,14 +3,14 @@ import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter';
 
 describe('splitMarkdownIntoChunks', () => {
 
-  test('handles empty markdown string', () => {
+  test('handles empty markdown string', async() => {
     const markdown = '';
     const expected: Chunk[] = [];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
 
-  test('handles markdown with only content and no headers', () => {
+  test('handles markdown with only content and no headers', async() => {
     const markdown = `This is some content without any headers.
 It spans multiple lines.
 
@@ -22,11 +22,11 @@ Another paragraph.
         text: 'This is some content without any headers.\nIt spans multiple lines.\n\nAnother paragraph.',
       },
     ];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
 
-  test('handles markdown starting with a header', () => {
+  test('handles markdown starting with a header', async() => {
     const markdown = `
 # Header 1
 Content under header 1.
@@ -45,11 +45,11 @@ Content under header 2.
       { label: '2-heading', text: '# Header 2' },
       { label: '2-content', text: 'Content under header 2.' },
     ];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
 
-  test('handles markdown with non-consecutive heading levels', () => {
+  test('handles markdown with non-consecutive heading levels', async() => {
     const markdown = `
 Introduction without a header.
 
@@ -114,11 +114,11 @@ Content of section 2.1.
         text: 'Content of section 2.1.',
       },
     ];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
 
-  test('handles markdown with skipped heading levels', () => {
+  test('handles markdown with skipped heading levels', async() => {
     const markdown = `
 # Header 1
 Content under header 1.
@@ -142,11 +142,11 @@ Content under header 2.
       { label: '2-heading', text: '# Header 2' },
       { label: '2-content', text: 'Content under header 2.' },
     ];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
 
-  test('handles malformed headings', () => {
+  test('handles malformed headings', async() => {
     const markdown = `
 # Header 1
 Content under header 1.
@@ -160,11 +160,11 @@ Content under header 1.1.1.1.
       { label: '1-1-1-1-heading', text: '#### Header 1.1.1.1' },
       { label: '1-1-1-1-content', text: 'Content under header 1.1.1.1.' },
     ];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
 
-  test('handles multiple content blocks before any headers', () => {
+  test('handles multiple content blocks before any headers', async() => {
     const markdown = `
 This is the first paragraph without a header.
 
@@ -181,11 +181,11 @@ Content under header 1.
       { label: '1-heading', text: '# Header 1' },
       { label: '1-content', text: 'Content under header 1.' },
     ];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
 
-  test('handles markdown with only headers and no content', () => {
+  test('handles markdown with only headers and no content', async() => {
     const markdown = `
 # Header 1
 
@@ -198,11 +198,11 @@ Content under header 1.
       { label: '1-1-heading', text: '## Header 1.1' },
       { label: '1-1-1-heading', text: '### Header 1.1.1' },
     ];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
 
-  test('handles markdown with mixed content and headers', () => {
+  test('handles markdown with mixed content and headers', async() => {
     const markdown = `
 # Header 1
 Content under header 1.
@@ -222,11 +222,11 @@ Content under header 2.
       { label: '2-heading', text: '# Header 2' },
       { label: '2-content', text: 'Content under header 2.' },
     ];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
 
-  test('preserves list indentation and reduces unnecessary line breaks', () => {
+  test('preserves list indentation and reduces unnecessary line breaks', async() => {
     const markdown = `
 # Header 1
 Content under header 1.
@@ -245,8 +245,30 @@ Content under header 2.
       { label: '2-heading', text: '# Header 2' },
       { label: '2-content', text: 'Content under header 2.' },
     ];
-    const result = splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown); // Await the result
     expect(result).toEqual(expected);
   });
+  test('code blocks containing # are not treated as headings', async() => {
+    const markdown = `
+# Header 1
+Some introductory content.
+\`\`\`
+# This is a comment with a # symbol
+Some code line
+\`\`\`
+Additional content.
+# Header 2
+Content under header 2.
+    `;
 
+    const expected: Chunk[] = [
+      { label: '1-heading', text: '# Header 1' },
+      { label: '1-content', text: 'Some introductory content.\n\n```\n# This is a comment with a # symbol\nSome code line\n```\n\nAdditional content.' },
+      { label: '2-heading', text: '# Header 2' },
+      { label: '2-content', text: 'Content under header 2.' },
+    ];
+
+    const result = await splitMarkdownIntoChunks(markdown);
+    expect(result).toEqual(expected);
+  });
 });
