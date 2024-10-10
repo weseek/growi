@@ -4,7 +4,6 @@ import { OptionParser } from '@growi/core/dist/remark-plugins';
 import { pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
 import createError, { isHttpError } from 'http-errors';
 
 import type { LsxApiParams, LsxApiResponseData } from '../../../interfaces/api';
@@ -65,19 +64,15 @@ interface IListPagesRequest extends Request<undefined, undefined, undefined, Lsx
 export const listPages = async(req: IListPagesRequest, res: Response): Promise<Response> => {
   const user = req.user;
 
-  const error = validationResult(req);
-  if (!error.isEmpty()) {
-    if (req.query.pagePath == null) {
-      return res.status(400).send("The 'pagePath' query must not be null.");
-    }
-    throw new Error('invalid query');
+  if (req.query.pagePath == null) {
+    return res.status(400).send("the 'pagepath' query must not be null.");
   }
 
   const params: LsxApiParams = {
     pagePath: removeTrailingSlash(req.query.pagePath),
-    offset: req.query?.offset != null ? req.query.offset : undefined,
-    limit: req.query?.limit != null ? req.query.limit : undefined,
-    options: req.query?.options != null ? req.query.options : {},
+    offset: req.query?.offset,
+    limit: req.query?.limit,
+    options: req.query?.options ?? {},
   };
 
   const {
