@@ -14,7 +14,7 @@ interface VectorStore {
   scorpeType: VectorStoreScopeType
 }
 
-interface VectorStoreDocument extends VectorStore, Document {}
+export interface VectorStoreDocument extends VectorStore, Document {}
 
 type VectorStoreModel = Model<VectorStore>
 

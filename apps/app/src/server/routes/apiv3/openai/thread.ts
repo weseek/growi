@@ -42,7 +42,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
           ? await openaiClient.beta.threads.create({
             tool_resources: {
               file_search: {
-                vector_store_ids: [vectorStore.id],
+                vector_store_ids: [vectorStore.vectorStoreId],
               },
             },
           })
