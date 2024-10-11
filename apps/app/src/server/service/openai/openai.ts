@@ -25,9 +25,10 @@ const BATCH_SIZE = 100;
 
 const logger = loggerFactory('growi:service:openai');
 
+let vectorStoreForPublicScope: OpenAI.Beta.VectorStores.VectorStore;
 
 export interface IOpenaiService {
-  getOrCreateVectorStoreIdForPublicScope(): Promise<string>
+  getOrCreateVectorStoreForPublicScope(): Promise<OpenAI.Beta.VectorStores.VectorStore>;
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
@@ -40,21 +41,26 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  public async getOrCreateVectorStoreIdForPublicScope(): Promise<string> {
-    const vectorStore = await VectorStoreModel.findOne({ scorpeType: VectorStoreScopeType.PUBLIC });
-    if (vectorStore != null) {
-      return vectorStore.vectorStoreId;
+  public async getOrCreateVectorStoreForPublicScope(): Promise<OpenAI.Beta.VectorStores.VectorStore> {
+    if (vectorStoreForPublicScope != null) {
+      return vectorStoreForPublicScope;
+    }
+
+    const vectorStoreDocument = await VectorStoreModel.findOne({ scorpeType: VectorStoreScopeType.PUBLIC });
+    if (vectorStoreDocument != null) {
+      vectorStoreForPublicScope = await this.client.retrieveVectorStore(vectorStoreDocument.vectorStoreId);
+      return vectorStoreForPublicScope;
     }
 
     const newVectorStore = await this.client.createVectorStore(VectorStoreScopeType.PUBLIC);
-    const newVectorStoreId = newVectorStore.id;
+    vectorStoreForPublicScope = newVectorStore;
 
     await VectorStoreModel.create({
-      vectorStoreId: newVectorStoreId,
+      vectorStoreId: newVectorStore.id,
       scorpeType: VectorStoreScopeType.PUBLIC,
     });
 
-    return newVectorStoreId;
+    return vectorStoreForPublicScope;
   }
 
   private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
@@ -97,8 +103,8 @@ class OpenaiService implements IOpenaiService {
     const uploadedFileIds = vectorStoreFileRelations.map(data => data.fileIds).flat();
     try {
       // Create vector store file
-      const vectorStoreId = await this.getOrCreateVectorStoreIdForPublicScope();
-      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStoreId, uploadedFileIds);
+      const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
+      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStore.id, uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
 
       // Save vector store file relation

@@ -26,6 +26,10 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.vectorStores.create({ name: `growi-vector-store-{${scopeType}` });
   }
 
+  async retrieveVectorStore(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.VectorStore> {
+    return this.client.beta.vectorStores.retrieve(vectorStoreId);
+  }
+
   async uploadFile(file: Uploadable): Promise<OpenAI.Files.FileObject> {
     return this.client.files.create({ file, purpose: 'assistants' });
   }
