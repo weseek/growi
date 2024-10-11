@@ -11,6 +11,7 @@ import { body } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { getOpenaiService } from '~/features/openai/server/services/openai';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
@@ -23,7 +24,6 @@ import PageTagRelation from '~/server/models/page-tag-relation';
 import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import { configManager } from '~/server/service/config-manager';
 import { getTranslation } from '~/server/service/i18next';
-import { getOpenaiService } from '~/server/service/openai/openai';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';

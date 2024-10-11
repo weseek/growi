@@ -3,11 +3,11 @@ import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
-import { openaiClient } from '~/server/service/openai';
+import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
-import type { ApiV3Response } from '../interfaces/apiv3-response';
+import { openaiClient } from '../services';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:chat');
 
@@ -19,8 +19,9 @@ type CreateThreadReq = Request<undefined, ApiV3Response, {
 type CreateThreadFactory = (crowi: Crowi) => RequestHandler[];
 
 export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
-  const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
+  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
+  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
+
 
   const validator: ValidationChain[] = [
     body('threadId').optional().isString().withMessage('threadId must be string'),

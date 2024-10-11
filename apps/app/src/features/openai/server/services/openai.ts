@@ -7,15 +7,16 @@ import mongoose from 'mongoose';
 import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
-import VectorStoreFileRelationModel, {
-  type VectorStoreFileRelation,
-  prepareVectorStoreFileRelations,
-} from '~/features/openai/server/models/vector-store-file-relation';
-import { OpenaiServiceTypes } from '~/interfaces/ai';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
+
+import { OpenaiServiceTypes } from '../../interfaces/ai';
+import VectorStoreFileRelationModel, {
+  type VectorStoreFileRelation,
+  prepareVectorStoreFileRelations,
+} from '../models/vector-store-file-relation';
 
 
 import { getClient } from './client-delegator';

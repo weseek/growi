@@ -13,9 +13,9 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
-const AiIntegration = dynamic(() => import('~/client/components/Admin/AiIntegration/AiIntegration').then(mod => mod.AiIntegration), { ssr: false });
+const AiIntegration = dynamic(() => import('~/features/openai/client/components/AiIntegration/AiIntegration').then(mod => mod.AiIntegration), { ssr: false });
 const AiIntegrationDisableMode = dynamic(
-  () => import('~/client/components/Admin/AiIntegration/AiIntegrationDisableMode').then(mod => mod.AiIntegrationDisableMode), { ssr: false },
+  () => import('~/features/openai/client/components/AiIntegration/AiIntegrationDisableMode').then(mod => mod.AiIntegrationDisableMode), { ssr: false },
 );
 
 type Props = CommonProps & {

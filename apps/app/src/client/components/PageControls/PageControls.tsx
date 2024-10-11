@@ -16,6 +16,7 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import RagSearchButton from '~/features/openai/client/components/RagSearchButton';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/stores-universal/context';
 import {
   EditorMode, useEditorMode,
@@ -36,7 +37,6 @@ import {
 
 import { BookmarkButtons } from './BookmarkButtons';
 import LikeButtons from './LikeButtons';
-import RagSearchButton from './RagSearchButton';
 import SearchButton from './SearchButton';
 import SeenUserInfo from './SeenUserInfo';
 import SubscribeButton from './SubscribeButton';

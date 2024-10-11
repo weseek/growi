@@ -1,8 +1,9 @@
 import type { NextFunction, Request, Response } from 'express';
 
-import { OpenaiServiceTypes } from '~/interfaces/ai';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
+
+import { OpenaiServiceTypes } from '../../../interfaces/ai';
 
 const logger = loggerFactory('growi:middlewares:certify-ai-service');
 
