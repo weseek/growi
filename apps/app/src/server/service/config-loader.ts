@@ -763,9 +763,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.STRING,
     default: null,
   },
-  OPENAI_API_KEY: {
+  OPENAI_PROJECT_API_KEY: {
     ns: 'crowi',
-    key: 'openai:apiKey',
+    key: 'openai:projectApiKey',
     type: ValueType.STRING,
     default: null,
     isSecret: true,

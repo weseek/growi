@@ -14,7 +14,7 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
 
   constructor() {
     // Retrieve OpenAI related values from environment variables
-    const apiKey = configManager.getConfig('crowi', 'openai:apiKey');
+    const apiKey = configManager.getConfig('crowi', 'openai:projectApiKey');
     const vectorStoreId = configManager.getConfig('crowi', 'openai:vectorStoreId');
 
     const isValid = [apiKey, vectorStoreId].every(value => value != null);
