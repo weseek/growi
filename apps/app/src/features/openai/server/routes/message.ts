@@ -13,8 +13,9 @@ import loggerFactory from '~/utils/logger';
 
 import { openaiClient } from '../services';
 
+import { certifyAiService } from './middlewares/certify-ai-service';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:chat');
+const logger = loggerFactory('growi:routes:apiv3:openai:message');
 
 
 type ReqBody = {
@@ -40,7 +41,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, validator, apiV3FormValidator,
+    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: Response) => {
 
       const threadId = req.body.threadId;

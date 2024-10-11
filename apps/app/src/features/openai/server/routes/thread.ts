@@ -9,7 +9,9 @@ import loggerFactory from '~/utils/logger';
 
 import { openaiClient } from '../services';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:chat');
+import { certifyAiService } from './middlewares/certify-ai-service';
+
+const logger = loggerFactory('growi:routes:apiv3:openai:thread');
 
 type CreateThreadReq = Request<undefined, ApiV3Response, {
   userMessage: string,
@@ -22,13 +24,12 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
-
   const validator: ValidationChain[] = [
     body('threadId').optional().isString().withMessage('threadId must be string'),
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, validator, apiV3FormValidator,
+    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
 
       const vectorStoreId = process.env.OPENAI_VECTOR_STORE_ID;
