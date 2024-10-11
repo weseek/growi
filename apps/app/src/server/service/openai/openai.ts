@@ -49,15 +49,10 @@ class OpenaiService implements IOpenaiService {
     }
 
     if (vectorStoreDocument != null && !isVectorStoreForPublicScopeExist) {
-      try {
-        const vectorStore = await this.client.retrieveVectorStore(vectorStoreDocument.vectorStoreId);
-        if (vectorStore != null) {
-          isVectorStoreForPublicScopeExist = true;
-          return vectorStoreDocument;
-        }
-      }
-      catch (err) {
-        logger.error(err);
+      const vectorStore = await this.client.retrieveVectorStore(vectorStoreDocument.vectorStoreId);
+      if (vectorStore != null) {
+        isVectorStoreForPublicScopeExist = true;
+        return vectorStoreDocument;
       }
     }
 
