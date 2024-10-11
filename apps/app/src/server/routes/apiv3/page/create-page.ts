@@ -8,6 +8,7 @@ import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-ut
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -22,6 +23,7 @@ import PageTagRelation from '~/server/models/page-tag-relation';
 import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import { configManager } from '~/server/service/config-manager';
 import { getTranslation } from '~/server/service/i18next';
+import { getOpenaiService } from '~/server/service/openai/openai';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -157,7 +159,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     return PageTagRelation.listTagNamesByPage(createdPage.id);
   }
 
-  async function postAction(req: CreatePageRequest, res: ApiV3Response, createdPage: PageDocument) {
+  async function postAction(req: CreatePageRequest, res: ApiV3Response, createdPage: HydratedDocument<PageDocument>) {
     // persist activity
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
@@ -198,6 +200,15 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     catch (err) {
       logger.error('Failed to create subscription document', err);
     }
+
+    // Rebuild vector store file
+    try {
+      const openaiService = getOpenaiService();
+      await openaiService?.rebuildVectorStore(createdPage);
+    }
+    catch (err) {
+      logger.error('Rebuild vector store failed', err);
+    }
   }
 
   const addActivity = generateAddActivityMiddleware(crowi);
@@ -228,7 +239,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
 
       const { body, tags } = await determineBodyAndTags(pathToCreate, bodyByParam, tagsByParam);
 
-      let createdPage;
+      let createdPage: HydratedDocument<PageDocument>;
       try {
         const {
           grant, grantUserGroupIds, onlyInheritUserRelatedGrantedGroups, overwriteScopesOfDescendants, wip, origin,

@@ -1,3 +1,11 @@
+import yaml from 'js-yaml';
+import remarkFrontmatter from 'remark-frontmatter'; // Frontmatter processing
+import remarkGfm from 'remark-gfm'; // GFM processing
+import remarkParse from 'remark-parse';
+import type { Options as StringifyOptions } from 'remark-stringify';
+import remarkStringify from 'remark-stringify';
+import { unified } from 'unified';
+
 export type Chunk = {
   label: string;
   text: string;
@@ -5,112 +13,117 @@ export type Chunk = {
 
 /**
  * Processes and adds a new chunk to the chunks array if content is not empty.
- * Clears the contentLines array after processing.
- * @param chunks - The array to store chunks.
- * @param contentLines - The array of content lines.
+ * Clears the contentBuffer array after processing.
+ * @param chunks - The array to store processed chunks.
+ * @param contentBuffer - The array of content lines to be processed.
  * @param label - The label for the content chunk.
  */
-function processPendingContent(chunks: Chunk[], contentLines: string[], label: string) {
-  const text = contentLines.join('\n').trimEnd();
+function addContentChunk(chunks: Chunk[], contentBuffer: string[], label: string) {
+  const text = contentBuffer.join('\n\n').trimEnd();
   if (text !== '') {
     chunks.push({ label, text });
   }
-  contentLines.length = 0; // Clear the contentLines array
+  contentBuffer.length = 0; // Clear the contentBuffer array
 }
 
 /**
  * Updates the section numbers based on the heading depth and returns the updated section label.
  * Handles non-consecutive heading levels by initializing missing levels with 1.
  * @param sectionNumbers - The current section numbers.
- * @param depth - The depth of the heading (e.g., # is depth 1).
+ * @param headingDepth - The depth of the heading (e.g., # is depth 1).
  * @returns The updated section label.
  */
-function updateSectionNumbers(sectionNumbers: number[], depth: number): string {
-  if (depth > sectionNumbers.length) {
-    // If depth increases, initialize missing levels with 1
-    while (sectionNumbers.length < depth) {
+function updateSectionNumbers(sectionNumbers: number[], headingDepth: number): string {
+  if (headingDepth > sectionNumbers.length) {
+    // Initialize missing levels with 1
+    while (sectionNumbers.length < headingDepth) {
       sectionNumbers.push(1);
     }
   }
-  else if (depth === sectionNumbers.length) {
-    // Same level, increment the last number
-    sectionNumbers[depth - 1]++;
+  else if (headingDepth === sectionNumbers.length) {
+    // Increment the last number for the same level
+    sectionNumbers[headingDepth - 1]++;
   }
   else {
-    // Depth decreases, remove deeper levels and increment current level
-    sectionNumbers.splice(depth);
-    sectionNumbers[depth - 1]++;
+    // Remove deeper levels and increment the current level
+    sectionNumbers.splice(headingDepth);
+    sectionNumbers[headingDepth - 1]++;
   }
   return sectionNumbers.join('-');
 }
 
 /**
- * Splits Markdown text into labeled chunks, considering content that may start before any headers
- * and handling non-consecutive heading levels. Preserves list indentation and leading spaces while
- * reducing unnecessary line breaks. Ensures that no empty line is added between sections.
- * @param markdown - The input Markdown string.
+ * Splits Markdown text into labeled chunks using remark-parse and remark-stringify,
+ * considering content that may start before any headers and handling non-consecutive heading levels.
+ * @param markdownText - The input Markdown string.
  * @returns An array of labeled chunks.
  */
-export function splitMarkdownIntoChunks(markdown: string): Chunk[] {
+export async function splitMarkdownIntoChunks(markdownText: string): Promise<Chunk[]> {
   const chunks: Chunk[] = [];
   const sectionNumbers: number[] = [];
+  let frontmatter: Record<string, unknown> | null = null; // Variable to store frontmatter
+  const contentBuffer: string[] = [];
+  let currentSectionLabel = '';
 
-  if (typeof markdown !== 'string' || markdown.trim() === '') {
+  if (typeof markdownText !== 'string' || markdownText.trim() === '') {
     return chunks;
   }
 
-  const lines = markdown.split('\n');
-  const contentLines: string[] = [];
-  let currentLabel = '';
-  let previousLineEmpty = false;
-  let inCodeBlock = false;
-  for (const line of lines) {
-    const trimmedLine = line.trim();
+  const parser = unified()
+    .use(remarkParse)
+    .use(remarkFrontmatter, ['yaml'])
+    .use(remarkGfm); // Enable GFM extensions
 
-    if (trimmedLine.startsWith('```')) {
-      inCodeBlock = !inCodeBlock;
-      contentLines.push(line);
-      previousLineEmpty = false;
+  const stringifyOptions: StringifyOptions = {
+    bullet: '-', // Set list bullet to hyphen
+    rule: '-', // Use hyphen for horizontal rules
+  };
+
+  const stringifier = unified()
+    .use(remarkFrontmatter, ['yaml'])
+    .use(remarkGfm)
+    .use(remarkStringify, stringifyOptions);
+
+  const parsedTree = parser.parse(markdownText);
+
+  // Iterate over top-level nodes to prevent duplication
+  for (const node of parsedTree.children) {
+    if (node.type === 'yaml') {
+      frontmatter = yaml.load(node.value) as Record<string, unknown>;
     }
-    else if (inCodeBlock) {
-      // Inside code block, add line to content
-      contentLines.push(line);
-      previousLineEmpty = false;
-    }
-    else if (trimmedLine.startsWith('#')) {
-      // Process any pending content before starting a new section
-      if (contentLines.length > 0) {
-        const contentLabel = currentLabel !== '' ? `${currentLabel}-content` : '0-content';
-        processPendingContent(chunks, contentLines, contentLabel);
+    else if (node.type === 'heading') {
+      // Process pending content before heading
+      if (contentBuffer.length > 0) {
+        const contentLabel = currentSectionLabel !== '' ? `${currentSectionLabel}-content` : '0-content';
+        addContentChunk(chunks, contentBuffer, contentLabel);
       }
 
-      // Match heading level and text
-      const headerMatch = trimmedLine.match(/^(#+)\s+(.*)/);
-      if (headerMatch) {
-        const headingDepth = headerMatch[1].length;
-        currentLabel = updateSectionNumbers(sectionNumbers, headingDepth);
-        chunks.push({ label: `${currentLabel}-heading`, text: line });
-      }
-      previousLineEmpty = false;
-    }
-    else if (trimmedLine === '') {
-      // Handle empty lines to avoid multiple consecutive empty lines
-      if (!previousLineEmpty && contentLines.length > 0) {
-        contentLines.push('');
-        previousLineEmpty = true;
-      }
+      const headingDepth = node.depth;
+      currentSectionLabel = updateSectionNumbers(sectionNumbers, headingDepth);
+
+      const headingMarkdown = stringifier.stringify(node as any);// eslint-disable-line @typescript-eslint/no-explicit-any
+      chunks.push({ label: `${currentSectionLabel}-heading`, text: headingMarkdown.trim() });
     }
     else {
-      // Add non-empty lines to the current content
-      contentLines.push(line);
-      previousLineEmpty = false;
+      // Add non-heading content to the buffer
+      const contentMarkdown = stringifier.stringify(node as any).trim(); // eslint-disable-line @typescript-eslint/no-explicit-any
+      if (contentMarkdown !== '') {
+        contentBuffer.push(contentMarkdown);
+      }
     }
   }
 
-  // Process any remaining content after the last line
-  if (contentLines.length > 0) {
-    const contentLabel = currentLabel !== '' ? `${currentLabel}-content` : '0-content';
-    processPendingContent(chunks, contentLines, contentLabel);
+  // Process any remaining content
+  if (contentBuffer.length > 0) {
+    const contentLabel = currentSectionLabel !== '' ? `${currentSectionLabel}-content` : '0-content';
+    addContentChunk(chunks, contentBuffer, contentLabel);
+  }
+
+  if (frontmatter) {
+    chunks.unshift({
+      label: 'frontmatter',
+      text: JSON.stringify(frontmatter, null, 2),
+    });
   }
 
   return chunks;

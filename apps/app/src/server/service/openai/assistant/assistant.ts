@@ -35,7 +35,7 @@ const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.As
 
 const getOrCreateAssistant = async(type: AssistantType): Promise<OpenAI.Beta.Assistant> => {
   const appSiteUrl = configManager.getConfig('crowi', 'app:siteUrl');
-  const assistantName = `GROWI ${type} Assistant for ${appSiteUrl} ${configManager.getConfig('crowi', 'app:openaiAssistantNameSuffix')}}`;
+  const assistantName = `GROWI ${type} Assistant for ${appSiteUrl} ${configManager.getConfig('crowi', 'openai:assistantNameSuffix')}`;
 
   const assistantOnRemote = await findAssistantByName(assistantName);
   if (assistantOnRemote != null) {
@@ -58,7 +58,7 @@ export const getOrCreateSearchAssistant = async(): Promise<OpenAI.Beta.Assistant
 
   searchAssistant = await getOrCreateAssistant(AssistantType.SEARCH);
   openaiClient.beta.assistants.update(searchAssistant.id, {
-    instructions: configManager.getConfig('crowi', 'app:openaiSearchAssistantInstructions'),
+    instructions: configManager.getConfig('crowi', 'openai:searchAssistantInstructions'),
     tools: [{ type: 'file_search' }],
   });
 
@@ -72,9 +72,11 @@ export const getOrCreateChatAssistant = async(): Promise<OpenAI.Beta.Assistant> 
     return chatAssistant;
   }
 
+  const instructions = configManager.getConfig('crowi', 'openai:chatAssistantInstructions');
+
   chatAssistant = await getOrCreateAssistant(AssistantType.CHAT);
   openaiClient.beta.assistants.update(chatAssistant.id, {
-    instructions: configManager.getConfig('crowi', 'app:openaiChatAssistantInstructions'),
+    instructions,
     tools: [{ type: 'file_search' }],
   });
 
