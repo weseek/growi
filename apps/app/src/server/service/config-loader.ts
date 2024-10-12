@@ -806,12 +806,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.STRING,
     default: null,
   },
-  OPENAI_VECTOR_STORE_ID: {
-    ns: 'crowi',
-    key: 'openai:vectorStoreId',
-    type: ValueType.STRING,
-    default: null,
-  },
 };
 
 
