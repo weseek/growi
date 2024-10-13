@@ -1,13 +1,18 @@
-const CollectionProgress = require('./collection-progress');
+import CollectionProgress from './collection-progress';
 
 class CollectionProgressingStatus {
 
-  constructor(collections) {
-    this.totalCount = 0;
+  totalCount = 0;
+
+  progressList: CollectionProgress[];
+
+  progressMap: Record<string, CollectionProgress>;
+
+  constructor(collections: string[]) {
     this.progressMap = {};
 
     this.progressList = collections.map((collectionName) => {
-      return new CollectionProgress(collectionName, 0);
+      return new CollectionProgress(collectionName);
     });
 
     // collection name to instance mapping
@@ -16,14 +21,14 @@ class CollectionProgressingStatus {
     });
   }
 
-  recalculateTotalCount() {
+  recalculateTotalCount(): void {
     this.progressList.forEach((p) => {
       this.progressMap[p.collectionName] = p;
       this.totalCount += p.totalCount;
     });
   }
 
-  get currentCount() {
+  get currentCount(): number {
     return this.progressList.reduce(
       (acc, crr) => acc + crr.currentCount,
       0,
@@ -32,4 +37,4 @@ class CollectionProgressingStatus {
 
 }
 
-module.exports = CollectionProgressingStatus;
+export default CollectionProgressingStatus;
