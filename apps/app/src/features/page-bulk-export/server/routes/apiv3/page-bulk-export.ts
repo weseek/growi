@@ -42,7 +42,7 @@ module.exports = (crowi: Crowi): Router => {
     };
 
     try {
-      await pageBulkExportService?.createAndExecuteOrRestartBulkExportJob(path, req.user, activityParameters, restartJob);
+      await pageBulkExportService?.createAndExecuteOrRestartBulkExportJob(path, format, req.user, activityParameters, restartJob);
       return res.apiv3({}, 204);
     }
     catch (err) {
