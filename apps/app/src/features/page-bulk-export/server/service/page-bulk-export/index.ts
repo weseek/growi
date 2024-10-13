@@ -10,6 +10,7 @@ import {
   getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
+import type { PdfConverterRoutes } from '@growi/pdf-converter';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import gc from 'expose-gc/function';
@@ -34,7 +35,6 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
-import type { PdfConverterRoutes } from '../../../../../../../pdf-converter/src/index';
 import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
 import PageBulkExportJob from '../../models/page-bulk-export-job';
