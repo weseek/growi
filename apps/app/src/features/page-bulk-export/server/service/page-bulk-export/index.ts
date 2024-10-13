@@ -34,7 +34,7 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
-import type { PdfSyncJobRouteType } from '../../../../../../../pdf-converter/src/routes/pdf';
+import type { PdfConverterRoutes } from '../../../../../../../pdf-converter/src/index';
 import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
 import PageBulkExportJob from '../../models/page-bulk-export-job';
@@ -346,7 +346,7 @@ class PageBulkExportService implements IPageBulkExportService {
 
   private async waitPdfExportFinish(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
     const url = configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl');
-    const honoClient = hc<PdfSyncJobRouteType>(url);
+    const honoClient = hc<PdfConverterRoutes>(url);
 
     const jobCreatedAt = pageBulkExportJob.createdAt;
     if (jobCreatedAt == null) throw new Error('createdAt is not set');
