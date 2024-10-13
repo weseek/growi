@@ -121,6 +121,7 @@
     "graceful-fs": "^4.1.11",
     "hast-util-select": "^5.0.5",
     "helmet": "^4.6.0",
+    "hono": "^4.6.3",
     "http-errors": "^2.0.0",
     "i18next": "^23.10.1",
     "i18next-resources-to-backend": "^1.2.1",

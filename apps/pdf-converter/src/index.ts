@@ -1,19 +1,17 @@
-import { $log } from '@tsed/common';
-import { PlatformExpress } from '@tsed/platform-express';
+import { serve } from '@hono/node-server';
+import { Hono } from 'hono';
+import { logger } from 'hono/logger';
 
-import Server from './server';
+import pdf from './routes/pdf';
 
-async function bootstrap() {
-  try {
-    $log.debug('Start server...');
-    const platform = await PlatformExpress.bootstrap(Server, {});
 
-    await platform.listen();
-    $log.debug('Server initialized');
-  }
-  catch (error) {
-    $log.error(error);
-  }
-}
+const app = new Hono();
+app.use(logger());
+app.route('/', pdf);
 
-bootstrap();
+const port = 3004;
+
+serve({
+  fetch: app.fetch,
+  port,
+});

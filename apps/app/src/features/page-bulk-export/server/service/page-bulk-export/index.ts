@@ -12,9 +12,8 @@ import {
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
-// eslint-disable-next-line no-restricted-imports
-import axios from 'axios';
 import gc from 'expose-gc/function';
+import { hc } from 'hono/client';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import remark from 'remark';
@@ -35,6 +34,7 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
+import type { PdfSyncJobType } from '../../../../../../../pdf-converter/src/routes/pdf';
 import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
 import PageBulkExportJob from '../../models/page-bulk-export-job';
@@ -345,12 +345,15 @@ class PageBulkExportService implements IPageBulkExportService {
   }
 
   private async waitPdfExportFinish(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+    const url = configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl');
+    const honoClient = hc<PdfSyncJobType>(url);
+
     const jobCreatedAt = pageBulkExportJob.createdAt;
     if (jobCreatedAt == null) throw new Error('createdAt is not set');
 
     const exportJobExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportJobExpirationSeconds');
     const jobExpirationDate = new Date(jobCreatedAt.getTime() + exportJobExpirationSeconds * 1000);
-    let status = 'HTML_EXPORT_IN_PROGRESS';
+    let status: 'HTML_EXPORT_IN_PROGRESS' | 'HTML_EXPORT_DONE' | 'FAILED' = 'HTML_EXPORT_IN_PROGRESS';
 
     const lastExportPagePath = (await PageBulkExportPageSnapshot.findOne({ pageBulkExportJob }).sort({ path: -1 }))?.path;
     if (lastExportPagePath == null) throw new Error('lastExportPagePath is missing');
@@ -371,22 +374,32 @@ class PageBulkExportService implements IPageBulkExportService {
             status = 'FAILED';
           }
 
-          const url = `${configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl')}/pdf/sync-job`;
-          const res = await axios.post(url, { jobId: pageBulkExportJob._id.toString(), expirationDate: jobExpirationDate, status });
-          console.log(res.data.status);
+          const res = await honoClient.pdf['sync-job'].$post({
+            json: {
+              jobId: pageBulkExportJob._id.toString(),
+              expirationDate: jobExpirationDate.toISOString(),
+              status,
+            },
+          });
+          if (res.ok) {
+            const data = await res.json();
 
-          if (res.data.status === 'PDF_EXPORT_DONE') {
-            clearInterval(interval);
-            resolve();
+            if (data.status === 'PDF_EXPORT_DONE') {
+              clearInterval(interval);
+              resolve();
+            }
+            else if (data.status === 'FAILED') {
+              clearInterval(interval);
+              reject(new Error('PDF export failed'));
+            }
           }
-          else if (res.data.status === 'FAILED') {
-            clearInterval(interval);
-            reject(new Error('PDF export failed'));
+          else {
+            throw new Error('Failed to sync job with pdf converter');
           }
         }
         catch (err) {
           // continue the loop if the host is not ready
-          if (!['ENOTFOUND', 'ECONNREFUSED'].includes(err.code)) {
+          if (!['ENOTFOUND', 'ECONNREFUSED'].includes(err.cause?.code)) {
             clearInterval(interval);
             reject(err);
           }

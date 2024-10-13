@@ -3,23 +3,30 @@ import path from 'path';
 import { Readable, Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
-import type { Logger } from '@tsed/common';
-import { Inject, Service } from '@tsed/di';
 import { Cluster } from 'puppeteer-cluster';
+
+import loggerFactory from '../utils/logger';
+
+const logger = loggerFactory('services:PdfConvertService');
 
 interface PageInfo {
   htmlString: string;
   htmlFilePath: string;
 }
 
-export enum JobStatus {
-  HTML_EXPORT_IN_PROGRESS = 'HTML_EXPORT_IN_PROGRESS',
-  HTML_EXPORT_DONE = 'HTML_EXPORT_DONE',
-  PDF_EXPORT_DONE = 'PDF_EXPORT_DONE',
-  FAILED = 'FAILED',
-}
+export const JobStatusSharedWithGrowi = {
+  HTML_EXPORT_IN_PROGRESS: 'HTML_EXPORT_IN_PROGRESS',
+  HTML_EXPORT_DONE: 'HTML_EXPORT_DONE',
+  FAILED: 'FAILED',
+} as const;
 
-export type JobStatusSharedWithGrowi = JobStatus.HTML_EXPORT_IN_PROGRESS | JobStatus.HTML_EXPORT_DONE | JobStatus.FAILED;
+export const JobStatus = {
+  ...JobStatusSharedWithGrowi,
+  PDF_EXPORT_DONE: 'PDF_EXPORT_DONE',
+} as const;
+
+type JobStatusSharedWithGrowi = typeof JobStatusSharedWithGrowi[keyof typeof JobStatusSharedWithGrowi]
+export type JobStatus = typeof JobStatus[keyof typeof JobStatus]
 
 interface JobInfo {
   expirationDate: Date;
@@ -27,7 +34,6 @@ interface JobInfo {
   currentStream?: Readable;
 }
 
-@Service()
 class PdfConvertService {
 
   private puppeteerCluster: Cluster | undefined;
@@ -44,9 +50,6 @@ class PdfConvertService {
     [key: string]: JobInfo;
   } = {};
 
-  @Inject()
-    logger: Logger;
-
   constructor() {
     this.initPuppeteerCluster();
   }
@@ -61,7 +64,7 @@ class PdfConvertService {
       const jobInfo = this.jobList[jobId];
       jobInfo.expirationDate = expirationDate;
 
-      if (![JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(jobInfo.status)) {
+      if (!([JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED] as JobStatus[]).includes(jobInfo.status)) {
         jobInfo.status = status;
       }
     }
@@ -84,7 +87,7 @@ class PdfConvertService {
     const now = new Date();
     for (const jobId of Object.keys(this.jobList)) {
       const job = this.jobList[jobId];
-      if (now > job.expirationDate && [JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(job.status)) {
+      if (now > job.expirationDate && ([JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED] as JobStatus[]).includes(job.status)) {
         job.currentStream?.destroy(new Error('job expired'));
         delete this.jobList[jobId];
       }
@@ -93,7 +96,7 @@ class PdfConvertService {
 
 
   private async readHtmlAndConvertToPdfUntilFinish(jobId: string): Promise<void> {
-    while (![JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(this.jobList[jobId].status)) {
+    while (!([JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED] as JobStatus[]).includes(this.jobList[jobId].status)) {
       // eslint-disable-next-line no-await-in-loop
       await new Promise(resolve => setTimeout(resolve, 60 * 1000));
 
@@ -110,7 +113,7 @@ class PdfConvertService {
         await pipelinePromise(htmlReadable, pdfWritable);
       }
       catch (err) {
-        this.logger.error('Failed to convert html to pdf', err);
+        logger.error('Failed to convert html to pdf', err);
         this.jobList[jobId].status = JobStatus.FAILED;
         this.jobList[jobId].currentStream?.destroy(new Error('Failed to convert html to pdf'));
         break;
@@ -119,7 +122,8 @@ class PdfConvertService {
   }
 
   private getHtmlReadable(jobId: string): Readable {
-    const htmlFileEntries = fs.readdirSync(path.join(this.tmpHtmlDir, jobId), { recursive: true, withFileTypes: true }).filter(entry => entry.isFile());
+    const htmlFileEntries = fs.existsSync(path.join(this.tmpHtmlDir, jobId))
+      ? fs.readdirSync(path.join(this.tmpHtmlDir, jobId), { recursive: true, withFileTypes: true }).filter(entry => entry.isFile()) : [];
     let index = 0;
 
     const jobList = this.jobList;
@@ -161,7 +165,7 @@ class PdfConvertService {
           await fs.promises.rm(pageInfo.htmlFilePath, { force: true });
         }
         catch (err) {
-          callback(err);
+          callback(err instanceof Error ? err : new Error(String(err)));
           return;
         }
         callback();
@@ -170,13 +174,13 @@ class PdfConvertService {
   }
 
   private async convertHtmlToPdf(htmlString: string): Promise<Buffer> {
-    const executeConvert = async(retries: number) => {
+    const executeConvert = async(retries: number): Promise<Buffer> => {
       try {
-        return this.puppeteerCluster.execute(htmlString);
+        return this.puppeteerCluster?.execute(htmlString);
       }
       catch (err) {
         if (retries > 0) {
-          this.logger.error('Failed to convert markdown to pdf. Retrying...', err);
+          logger.error('Failed to convert markdown to pdf. Retrying...', err);
           return executeConvert(retries - 1);
         }
         throw err;
@@ -210,7 +214,7 @@ class PdfConvertService {
 
     // close cluster on app termination
     const handleClose = async() => {
-      this.logger.info('Closing puppeteer cluster...');
+      logger.info('Closing puppeteer cluster...');
       await this.puppeteerCluster?.idle();
       await this.puppeteerCluster?.close();
       process.exit();
@@ -229,4 +233,6 @@ class PdfConvertService {
 
 }
 
-export default PdfConvertService;
+const pdfConvertService = new PdfConvertService();
+
+export default pdfConvertService;
