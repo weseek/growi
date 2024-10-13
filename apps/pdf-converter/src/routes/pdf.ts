@@ -34,4 +34,4 @@ const route = app.post('/sync-job',
 
 export default app;
 
-export type PdfSyncJobType = typeof route;
+export type PdfSyncJobRouteType = typeof route;
