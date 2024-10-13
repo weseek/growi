@@ -4109,7 +4109,7 @@ class PageService implements IPageService {
     }
 
     // 3. Update scopes for descendants
-    if (options.overwriteScopesOfDescendants) {
+    if (options.overwriteScopesOfDescendants && shouldBeOnTree) {
       await this.applyScopesToDescendantsWithStream(currentPage, user);
     }
 

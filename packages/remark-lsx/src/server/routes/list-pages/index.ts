@@ -56,20 +56,23 @@ function addExceptCondition(query, pagePath, optionsFilter): PageQuery {
   return addFilterCondition(query, pagePath, optionsFilter, true);
 }
 
+interface IListPagesRequest extends Request<undefined, undefined, undefined, LsxApiParams> {
+  user: IUser,
+}
 
-export const listPages = async(req: Request & { user: IUser }, res: Response): Promise<Response> => {
+
+export const listPages = async(req: IListPagesRequest, res: Response): Promise<Response> => {
   const user = req.user;
 
-  // TODO: use express-validator
   if (req.query.pagePath == null) {
-    return res.status(400).send("The 'pagePath' query must not be null.");
+    return res.status(400).send("the 'pagepath' query must not be null.");
   }
 
   const params: LsxApiParams = {
-    pagePath: removeTrailingSlash(req.query.pagePath.toString()),
-    offset: req.query?.offset != null ? Number(req.query.offset) : undefined,
-    limit: req.query?.limit != null ? Number(req.query?.limit) : undefined,
-    options: req.query?.options != null ? JSON.parse(req.query.options.toString()) : {},
+    pagePath: removeTrailingSlash(req.query.pagePath),
+    offset: req.query?.offset,
+    limit: req.query?.limit,
+    options: req.query?.options ?? {},
   };
 
   const {

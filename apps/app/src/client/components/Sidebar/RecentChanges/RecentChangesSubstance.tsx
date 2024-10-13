@@ -151,13 +151,12 @@ type HeaderProps = {
   onWipPageShownChange: () => void,
 }
 
-const PER_PAGE = 20;
 export const RecentChangesHeader = ({
   isSmall, onSizeChange, isWipPageShown, onWipPageShownChange,
 }: HeaderProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, { suspense: true });
+  const { mutate } = useSWRINFxRecentlyUpdated(isWipPageShown, { suspense: true });
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
@@ -232,14 +231,13 @@ type ContentProps = {
 }
 
 export const RecentChangesContent = ({ isSmall, isWipPageShown }: ContentProps): JSX.Element => {
-  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, { suspense: true });
+  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(isWipPageShown, { suspense: true });
   const { data } = swrInifinitexRecentlyUpdated;
 
   const { pushState } = useKeywordManager();
-
   const isEmpty = data?.[0]?.pages.length === 0;
-  const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
-
+  const lastPageIndex = data?.length ? data.length - 1 : 0;
+  const isReachingEnd = isEmpty || (data != null && lastPageIndex > 0 && data[lastPageIndex]?.pages.length < data[lastPageIndex - 1]?.pages.length);
   return (
     <div className="grw-recent-changes">
       <ul className="list-group list-group-flush">

@@ -64,6 +64,7 @@
   "Presentation Mode": "Mode présentation",
   "Not available for guest": "Indisponible pour les invités",
   "Not available in this version": "Indisponible dans cette version",
+  "Not available when \"anyone with the link\" is selected": "Si \"Tous les utilisateurs disposant du lien\" est sélectionné, la portée ne peut pas être modifiée",
   "No users have liked this yet": "Aucun utilisateur n'a aimé cette page",
   "No users have liked this yet.": "Aucun utilisateur n'a aimé cette page.",
   "No users have bookmarked yet": "Aucun utilisateur n'a mis en favoris cette page",
