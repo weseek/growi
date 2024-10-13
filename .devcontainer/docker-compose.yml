@@ -67,7 +67,9 @@ services:
     ports:
       - 3004
     volumes:
-      - ..:/workspace/pdf-converter:delegated
+      - ..:/workspace/growi:delegated
+      - node_modules:/workspace/growi/node_modules
+      - node_modules_pdf_converter:/workspace/growi/apps/pdf-converter/node_modules
       - page_bulk_export_tmp:/tmp/page-bulk-export
     tty: true
 
@@ -75,5 +77,6 @@ volumes:
   node_modules:
   node_modules_app:
   node_modules_slackbot-proxy:
+  node_modules_pdf_converter:
   buildcache_app:
   page_bulk_export_tmp:

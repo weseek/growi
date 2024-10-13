@@ -15,7 +15,8 @@ ARG USER_GID=$USER_UID
 
 ENV LANG=ja_JP.UTF-8
 
-RUN mkdir -p /workspace/pdf-converter/node_modules
+RUN mkdir -p /workspace/growi/node_modules
+RUN mkdir -p /workspace/growi/apps/pdf-converter/node_modules
 
 # [Optional] Update UID/GID if needed
 RUN if [ "$USER_GID" != "1000" ] || [ "$USER_UID" != "1000" ]; then \
@@ -33,3 +34,5 @@ RUN apt-get update \
     echo "ja_JP UTF-8" > /etc/locale.gen && locale-gen
 
 RUN yarn global add turbo
+
+RUN git config --global --add safe.directory /workspace/growi

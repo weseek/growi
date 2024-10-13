@@ -2,7 +2,7 @@
   "name": "GROWI-PDF-Converter",
   "dockerComposeFile": "../docker-compose.yml",
   "service": "pdf-converter",
-  "workspaceFolder": "/workspace/pdf-converter",
+  "workspaceFolder": "/workspace/growi",
   "customizations": {
     "vscode": {
       "extensions": [
