@@ -8,6 +8,11 @@ import loggerFactory from '../utils/logger';
 const logger = loggerFactory('routes:pdf');
 
 const app = new Hono()
+  /**
+   * Sync job pdf convert status with GROWI.
+   * Register or update job inside pdf-converter with given jobId, expirationDate, and status.
+   * Return resulting status of job to GROWI.
+   */
   .post('/sync-job',
     zValidator(
       'json',

@@ -54,6 +54,13 @@ class PdfConvertService {
     this.initPuppeteerCluster();
   }
 
+  /**
+   * Register or update job inside jobList with given jobId, expirationDate, and status.
+   * If job is new, start reading html files and convert them to pdf.
+   * @param jobId id of PageBulkExportJob
+   * @param expirationDate expiration date of job
+   * @param status status of job
+   */
   registerOrUpdateJob(jobId: string, expirationDate: Date, status: JobStatusSharedWithGrowi): void {
     const isJobNew = !(jobId in this.jobList);
 
@@ -78,11 +85,19 @@ class PdfConvertService {
     }
   }
 
+  /**
+   * Get job status
+   * @param jobId id of PageBulkExportJob
+   * @returns job status
+   */
   getJobStatus(jobId: string): JobStatus {
     if (!(jobId in this.jobList)) return JobStatus.FAILED;
     return this.jobList[jobId].status;
   }
 
+  /**
+   * Clean up job list by removing expired jobs, finished jobs, and failed jobs
+   */
   cleanUpJobList(): void {
     const now = new Date();
     for (const jobId of Object.keys(this.jobList)) {
@@ -94,7 +109,11 @@ class PdfConvertService {
     }
   }
 
-
+  /**
+   * Read html files from shared fs path, convert them to pdf, and save them to shared fs path.
+   * Repeat this until all html files are converted to pdf or job fails.
+   * @param jobId id of PageBulkExportJob
+   */
   private async readHtmlAndConvertToPdfUntilFinish(jobId: string): Promise<void> {
     while (!([JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED] as JobStatus[]).includes(this.jobList[jobId].status)) {
       // eslint-disable-next-line no-await-in-loop
@@ -121,6 +140,11 @@ class PdfConvertService {
     }
   }
 
+  /**
+   * Get readable stream that reads html files from shared fs path
+   * @param jobId id of PageBulkExportJob
+   * @returns readable stream
+   */
   private getHtmlReadable(jobId: string): Readable {
     const htmlFileEntries = fs.existsSync(path.join(this.tmpHtmlDir, jobId))
       ? fs.readdirSync(path.join(this.tmpHtmlDir, jobId), { recursive: true, withFileTypes: true }).filter(entry => entry.isFile()) : [];
@@ -150,6 +174,10 @@ class PdfConvertService {
     });
   }
 
+  /**
+   * Get writable stream that converts html to pdf, and save it to shared fs path
+   * @returns writable stream
+   */
   private getPdfWritable(): Writable {
     return new Writable({
       objectMode: true,
@@ -173,6 +201,11 @@ class PdfConvertService {
     });
   }
 
+  /**
+   * Convert html to pdf. Retry up to convertRetryLimit if failed.
+   * @param htmlString html to convert to pdf
+   * @returns converted pdf
+   */
   private async convertHtmlToPdf(htmlString: string): Promise<Buffer> {
     const executeConvert = async(retries: number): Promise<Buffer> => {
       try {
@@ -192,6 +225,9 @@ class PdfConvertService {
     return result;
   }
 
+  /**
+   * Initialize puppeteer cluster
+   */
   private async initPuppeteerCluster(): Promise<void> {
     this.puppeteerCluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_PAGE,
@@ -223,6 +259,11 @@ class PdfConvertService {
     process.on('SIGTERM', handleClose);
   }
 
+  /**
+   * Get parent path from given path
+   * @param path target path
+   * @returns parent path
+   */
   private getParentPath(path: string): string {
     const parentPath = path.split('/').slice(0, -1).join('/');
     if (parentPath === '' || parentPath === '/') {
