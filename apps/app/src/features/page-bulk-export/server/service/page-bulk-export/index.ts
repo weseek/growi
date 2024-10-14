@@ -10,11 +10,10 @@ import {
   getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
-import type { PdfConverterRoutes } from '@growi/pdf-converter';
+import { pdfConverterHc } from '@growi/pdf-converter';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import gc from 'expose-gc/function';
-import { hc } from 'hono/client';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import remark from 'remark';
@@ -346,7 +345,7 @@ class PageBulkExportService implements IPageBulkExportService {
 
   private async waitPdfExportFinish(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
     const url = configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl');
-    const honoClient = hc<PdfConverterRoutes>(url);
+    const honoClient = pdfConverterHc(url);
 
     const jobCreatedAt = pageBulkExportJob.createdAt;
     if (jobCreatedAt == null) throw new Error('createdAt is not set');
