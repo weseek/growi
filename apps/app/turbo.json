@@ -14,7 +14,7 @@
       "outputLogs": "new-only"
     },
     "build": {
-      "dependsOn": ["^build", "styles-prebuilt", "@growi/pdf-converter#build"],
+      "dependsOn": ["^build", "styles-prebuilt"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "next.config.js",
@@ -45,7 +45,7 @@
       "outputLogs": "new-only"
     },
     "dev": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt", "@growi/pdf-converter#build"],
       "cache": false,
       "persistent": true
     },
@@ -56,7 +56,7 @@
     },
 
     "lint": {
-      "dependsOn": ["^dev", "dev:styles-prebuilt"]
+      "dependsOn": ["^dev", "dev:styles-prebuilt", "@growi/pdf-converter#build"]
     },
 
     "test": {
