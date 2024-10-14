@@ -77,7 +77,7 @@ RUN tar -xf node_modules.tar \
 # change permission for shared volume
 RUN mkdir -p /tmp/page-bulk-export && chmod -R 777 /tmp/page-bulk-export
 
-EXPOSE 3004
+EXPOSE 3010
 
 ENTRYPOINT ["/usr/bin/tini", "-e", "143", "--"]
 CMD ["node", "dist/index.js"]
