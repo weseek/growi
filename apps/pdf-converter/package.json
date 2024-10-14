@@ -1,0 +1,22 @@
+{
+  "name": "@growi/pdf-converter",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev:pdf-converter": "nodemon --watch \"src/**/*.ts\" --ignore \"node_modules/**/*\" --exec ts-node -r \"dotenv-flow/config\" src/index.ts",
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "yarn eslint **/*.{js,ts}"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.1",
+    "@hono/zod-validator": "^0.4.1",
+    "bunyan": "^1.8.15",
+    "hono": "^4.6.3",
+    "puppeteer": "^23.1.1",
+    "puppeteer-cluster": "^0.24.0",
+    "zod": "^3.23.8"
+  }
+}
