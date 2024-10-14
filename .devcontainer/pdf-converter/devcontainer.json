@@ -1,5 +1,5 @@
 {
-  "name": "GROWI-PDF-Converter",
+  "name": "GROWI-PDF-Converter-Dev",
   "dockerComposeFile": "../docker-compose.yml",
   "service": "pdf-converter",
   "workspaceFolder": "/workspace/growi",
