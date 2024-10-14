@@ -69,8 +69,7 @@ const PageBulkExportSelectModal = (): JSX.Element => {
               <button className="btn btn-primary" type="button" onClick={() => startBulkExport(PageBulkExportFormat.md)}>
                 {t('page_export.markdown')}
               </button>
-              {/* TODO: enable in https://redmine.weseek.co.jp/issues/135772 */}
-              {/* <button className="btn btn-primary ms-2" type="button" onClick={() => startBulkExport(PageBulkExportFormat.pdf)}>PDF</button> */}
+              <button className="btn btn-primary ms-2" type="button" onClick={() => startBulkExport(PageBulkExportFormat.pdf)}>PDF</button>
             </div>
           </ModalBody>
         </Modal>
