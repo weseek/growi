@@ -14,7 +14,7 @@
       "outputLogs": "new-only"
     },
     "build": {
-      "dependsOn": ["^build", "styles-prebuilt"],
+      "dependsOn": ["^build", "styles-prebuilt", "@growi/pdf-converter#build"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "next.config.js",

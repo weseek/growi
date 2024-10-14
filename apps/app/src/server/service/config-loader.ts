@@ -760,6 +760,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 5,
   },
+  BULK_EXPORT_PDF_CONVERTER_URL: {
+    ns: 'crowi',
+    key: 'app:pageBulkExportPdfConverterUrl',
+    type: ValueType.STRING,
+    default: 'http://pdf-converter:3004',
+  },
 };
 
 
