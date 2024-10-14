@@ -10,7 +10,7 @@ const app = new Hono();
 app.use(logger());
 const routes = app.route('/pdf', pdf);
 
-const port = 3004;
+const port = 3010;
 
 serve({
   fetch: app.fetch,

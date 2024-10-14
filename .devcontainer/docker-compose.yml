@@ -65,7 +65,7 @@ services:
       dockerfile: ./pdf-converter/Dockerfile
     restart: unless-stopped
     ports:
-      - 3004
+      - 3010
     volumes:
       - ..:/workspace/growi:delegated
       - node_modules:/workspace/growi/node_modules
