@@ -1,0 +1,21 @@
+{
+  "name": "GROWI-PDF-Converter",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "pdf-converter",
+  "workspaceFolder": "/workspace/growi",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "mhutchie.git-graph",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+  "forwardPorts": [3004],
+  "postCreateCommand": "git-lfs pull",
+  "remoteUser": "node"
+}

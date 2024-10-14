@@ -72,6 +72,10 @@
       ],
       "outputLogs": "new-only"
     },
+    "dev:pdf-converter": {
+      "cache": false,
+      "persistent": true
+    },
 
     "watch": {
       "outputs": ["dist/**"],

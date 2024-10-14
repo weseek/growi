@@ -3,8 +3,8 @@
 // If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
 {
   "name": "GROWI-Dev",
-  "dockerComposeFile": "docker-compose.yml",
-  "service": "node",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
   "workspaceFolder": "/workspace/growi",
 
   // Set *default* container specific settings.json values on container create.
