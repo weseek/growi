@@ -1,5 +1,6 @@
 import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
+import { hc } from 'hono/client';
 import { logger } from 'hono/logger';
 
 import pdf from './routes/pdf';
@@ -16,4 +17,7 @@ serve({
   port,
 });
 
-export type PdfConverterRoutes = typeof routes;
+const client = hc<typeof routes>('');
+export type Client = typeof client
+
+export const pdfConverterHc = (...args: Parameters<typeof hc>): Client => hc<typeof routes>(...args);
