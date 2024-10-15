@@ -57,6 +57,7 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
+    "@types/hast": "^3.0.4",
     "csstype": "^3.0.2",
     "eslint-plugin-regex": "^1.8.0",
     "hast-util-sanitize": "^5.0.1",
