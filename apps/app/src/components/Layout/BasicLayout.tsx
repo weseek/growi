@@ -34,6 +34,7 @@ const DeleteBookmarkFolderModal = dynamic(
   () => import('~/client/components/DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false },
 );
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
+const WorkflowModal = dynamic(() => import('~/features/approval-workflow/client/components/WorkflowModal'), { ssr: false });
 
 
 type Props = {
@@ -67,6 +68,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <DeleteBookmarkFolderModal />
       <PutbackPageModal />
       <SearchModal />
+      <WorkflowModal />
 
       <PagePresentationModal />
       <HotkeysManager />
