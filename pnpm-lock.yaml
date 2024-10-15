@@ -1122,9 +1122,9 @@ importers:
 
   packages/markdown-splitter:
     dependencies:
-      '@types/js-yaml':
-        specifier: ^4.0.9
-        version: 4.0.9
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1147,6 +1147,9 @@ importers:
         specifier: ^11.0.0
         version: 11.0.5
     devDependencies:
+      '@types/js-yaml':
+        specifier: ^4.0.9
+        version: 4.0.9
       eslint-plugin-regex:
         specifier: ^1.8.0
         version: 1.8.0(eslint@8.41.0)
