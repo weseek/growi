@@ -22,6 +22,7 @@ import streamToPromise from 'stream-to-promise';
 import { Comment } from '~/features/comment/server';
 import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+import { getOpenaiService } from '~/features/openai/server/services/openai';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import type { IOptionsForCreate, IOptionsForUpdate } from '~/interfaces/page';
@@ -1164,7 +1165,7 @@ class PageService implements IPageService {
       grant,
       grantUserGroupIds: grantedGroupIds,
     };
-    let duplicatedTarget;
+    let duplicatedTarget: HydratedDocument<PageDocument>;
     if (page.isEmpty) {
       const parent = await this.getParentAndFillAncestorsByUser(user, newPagePath);
       duplicatedTarget = await Page.createEmptyPage(newPagePath, parent);
@@ -1174,6 +1175,10 @@ class PageService implements IPageService {
       duplicatedTarget = await (this.create as CreateMethod)(
         newPagePath, populatedPage?.revision?.body ?? '', user, options,
       );
+
+      // Do not await because communication with OpenAI takes time
+      const openaiService = getOpenaiService();
+      openaiService?.createVectorStoreFile([duplicatedTarget]);
     }
     this.pageEvent.emit('duplicate', page, user);
 
@@ -1399,9 +1404,18 @@ class PageService implements IPageService {
       }
     });
 
-    await Page.insertMany(newPages, { ordered: false });
+    const duplicatedPages = await Page.insertMany(newPages, { ordered: false });
+    const duplicatedPageIds = duplicatedPages.map(duplicatedPage => duplicatedPage._id);
+
     await Revision.insertMany(newRevisions, { ordered: false });
     await this.duplicateTags(pageIdMapping);
+
+    const duplicatedPagesWithPopulatedToShowRevison = await Page
+      .find({ _id: { $in: duplicatedPageIds }, grant: PageGrant.GRANT_PUBLIC }).populate('revision') as PageDocument[];
+
+    // Do not await because communication with OpenAI takes time
+    const openaiService = getOpenaiService();
+    openaiService?.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
   }
 
   private async duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix) {
@@ -1887,6 +1901,10 @@ class PageService implements IPageService {
 
       // Leave bookmarks without deleting -- 2024.05.17 Yuki Takei
     ]);
+
+    const openaiService = getOpenaiService();
+    const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService?.deleteVectorStoreFile(pageId));
+    await Promise.allSettled(deleteVectorStoreFilePromises);
   }
 
   // delete multiple pages
@@ -1899,7 +1917,6 @@ class PageService implements IPageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     this.pageEvent.emit('syncDescendantsDelete', pages, user); // update as renamed page
-
     return;
   }
 

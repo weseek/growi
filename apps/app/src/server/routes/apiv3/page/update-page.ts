@@ -11,6 +11,7 @@ import { body } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { getOpenaiService } from '~/features/openai/server/services/openai';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
@@ -114,6 +115,15 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       catch (err) {
         logger.error('Create user notification failed', err);
       }
+    }
+
+    // Rebuild vector store file
+    try {
+      const openaiService = getOpenaiService();
+      await openaiService?.rebuildVectorStore(updatedPage);
+    }
+    catch (err) {
+      logger.error('Rebuild vector store failed', err);
     }
   }
 
