@@ -42,6 +42,8 @@
   "devDependencies": {
     "@growi/core": "workspace:^",
     "@growi/core-styles": "workspace:^",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
     "date-fns": "^3.6.0",
     "reactstrap": "^9.2.2"
   },

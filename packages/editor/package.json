@@ -67,6 +67,7 @@
     "react-toastify": "^9.1.3",
     "reactstrap": "^9.2.2",
     "string-width": "=4.2.2",
+    "simplebar-react": "^2.3.6",
     "swr": "^2.2.2",
     "ts-deepmerge": "^6.2.0",
     "y-codemirror.next": "^0.3.5",

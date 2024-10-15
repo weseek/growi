@@ -693,7 +693,7 @@ importers:
         specifier: ^14.5.2
         version: 14.5.2(@testing-library/dom@10.4.0)
       '@types/express':
-        specifier: ^4.17.21
+        specifier: ^4
         version: 4.17.21
       '@types/react-input-autosize':
         specifier: ^2.2.4
@@ -1104,6 +1104,9 @@ importers:
       reactstrap:
         specifier: ^9.2.2
         version: 9.2.2(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      simplebar-react:
+        specifier: ^2.3.6
+        version: 2.4.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       string-width:
         specifier: '=4.2.2'
         version: 4.2.2
@@ -1492,6 +1495,12 @@ importers:
         specifier: ^1.0.15
         version: 1.0.15
     devDependencies:
+      '@types/express':
+        specifier: ^4
+        version: 4.17.21
+      '@types/hast':
+        specifier: ^3.0.4
+        version: 3.0.4
       axios:
         specifier: ^0.24.0
         version: 0.24.0
@@ -1563,7 +1572,7 @@ importers:
         version: 4.0.1
     devDependencies:
       '@types/express':
-        specifier: ^4.17.11
+        specifier: ^4
         version: 4.17.21
       eslint-plugin-regex:
         specifier: ^1.8.0
@@ -1587,6 +1596,12 @@ importers:
       '@growi/core-styles':
         specifier: workspace:^
         version: link:../core-styles
+      '@types/react':
+        specifier: ^18.2.14
+        version: 18.3.3
+      '@types/react-dom':
+        specifier: ^18.2.6
+        version: 18.3.0
       date-fns:
         specifier: ^3.6.0
         version: 3.6.0
