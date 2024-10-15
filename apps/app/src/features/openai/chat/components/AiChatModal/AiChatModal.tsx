@@ -8,8 +8,9 @@ import {
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { useRagSearchModal } from '~/stores/rag-search';
 import loggerFactory from '~/utils/logger';
+
+import { useRagSearchModal } from '../../../client/stores/rag-search';
 
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';

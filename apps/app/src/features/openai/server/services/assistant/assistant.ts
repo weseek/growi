@@ -1,6 +1,7 @@
 import type OpenAI from 'openai';
 
-import { configManager } from '../../config-manager';
+import { configManager } from '~/server/service/config-manager';
+
 import { openaiClient } from '../client';
 
 
