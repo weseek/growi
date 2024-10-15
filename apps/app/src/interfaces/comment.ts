@@ -10,6 +10,7 @@ export type IComment = {
   comment: string;
   commentPosition: number,
   replyTo?: string,
+  liker?: Array<Ref<IUser>>,
   createdAt: Date,
   updatedAt: Date,
 };

@@ -1,0 +1,82 @@
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
+
+import type { IUser } from '@growi/core';
+import { useTranslation } from 'next-i18next';
+import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
+
+
+import UserPictureList from '../Common/UserPictureList';
+
+import styles from './LikeButtons.module.scss';
+import popoverStyles from './user-list-popover.module.scss';
+
+type LikeButtonsProps = {
+
+  sumOfLikers: number,
+  likers: IUser[],
+  commentId: string,
+
+  isGuestUser?: boolean,
+  isLiked?: boolean,
+  onLikeClicked?: ()=>void,
+}
+
+const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
+  const { t } = useTranslation();
+
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const togglePopover = () => {
+    setIsPopoverOpen(!isPopoverOpen);
+  };
+
+  const {
+    isGuestUser, isLiked, sumOfLikers, onLikeClicked, commentId,
+  } = props;
+
+  const getTooltipMessage = useCallback(() => {
+
+    if (isLiked) {
+      return 'tooltip.cancel_like';
+    }
+    return 'tooltip.like';
+  }, [isLiked]);
+
+  return (
+    <div className={`btn-group btn-group-like-for-comment ${styles['btn-group-like-for-comment']}`} role="group" aria-label="Like buttons for comment">
+      <button
+        type="button"
+        id={`like-button-${commentId}`}
+        onClick={onLikeClicked}
+        className={`btn btn-like-for-comment toggle-btn-like
+            ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
+      >
+        <span className={`material-symbols-outlined ${isLiked ? 'fill' : ''}`}>favorite</span>
+      </button>
+
+      <UncontrolledTooltip data-testid={`like-button-tooltip-${commentId}`} target={`like-button-${commentId}`} autohide={false} fade={false}>
+        {t(getTooltipMessage())}
+      </UncontrolledTooltip>
+
+      <button
+        type="button"
+        id={`co-total-likes-${commentId}`}
+        className={`btn btn-like-for-comment
+          total-counts ${isLiked ? 'active' : ''}`}
+      >
+        {sumOfLikers}
+      </button>
+      <Popover placement="bottom" isOpen={isPopoverOpen} target={`co-total-likes-${commentId}`} toggle={togglePopover} trigger="legacy">
+        <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
+          <div className="px-2 text-end user-list-content text-truncate text-muted">
+            {props.likers?.length ? <UserPictureList users={props.likers} /> : t('No users have liked this yet.')}
+          </div>
+        </PopoverBody>
+      </Popover>
+    </div>
+  );
+
+};
+
+export default LikeButtons;
