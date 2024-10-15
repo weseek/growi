@@ -75,6 +75,7 @@
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
     "mongoose": "^6.11.3",
+    "socket.io-client": "^4.7.5",
     "swr": "^2.2.2"
   }
 }

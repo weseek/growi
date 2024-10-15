@@ -958,6 +958,9 @@ importers:
       mongoose:
         specifier: ^6.11.3
         version: 6.11.4
+      socket.io-client:
+        specifier: ^4.7.5
+        version: 4.7.5
       swr:
         specifier: ^2.2.2
         version: 2.2.5(react@18.2.0)
@@ -16497,7 +16500,7 @@ snapshots:
       '@swc-node/sourcemap-support': 0.5.0
       '@swc/core': 1.5.25(@swc/helpers@0.5.11)
       colorette: 2.0.20
-      debug: 4.3.5(supports-color@5.5.0)
+      debug: 4.3.7
       pirates: 4.0.6
       tslib: 2.6.2
       typescript: 5.4.2
@@ -19559,7 +19562,7 @@ snapshots:
   engine.io-client@6.5.4:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.5(supports-color@5.5.0)
+      debug: 4.3.7
       engine.io-parser: 5.2.2
       ws: 8.17.1
       xmlhttprequest-ssl: 2.0.0
@@ -21072,7 +21075,7 @@ snapshots:
   https-proxy-agent@7.0.5:
     dependencies:
       agent-base: 7.1.1
-      debug: 4.3.5(supports-color@5.5.0)
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
@@ -23368,7 +23371,7 @@ snapshots:
 
   new-find-package-json@2.0.0:
     dependencies:
-      debug: 4.3.5(supports-color@5.5.0)
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
@@ -25366,7 +25369,7 @@ snapshots:
   socket.io-client@4.7.5:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.5(supports-color@5.5.0)
+      debug: 4.3.7
       engine.io-client: 6.5.4
       socket.io-parser: 4.2.4
     transitivePeerDependencies:
@@ -25377,7 +25380,7 @@ snapshots:
   socket.io-parser@4.2.4:
     dependencies:
       '@socket.io/component-emitter': 3.1.2
-      debug: 4.3.5(supports-color@5.5.0)
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
