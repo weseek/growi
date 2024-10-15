@@ -8,6 +8,7 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import loggerFactory from '~/utils/logger';
 
 import { openaiClient } from '../services';
+import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -31,19 +32,19 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
-
-      const vectorStoreId = process.env.OPENAI_VECTOR_STORE_ID;
-      if (vectorStoreId == null) {
-        return res.apiv3Err('OPENAI_VECTOR_STORE_ID is not setup', 503);
+      const openaiService = getOpenaiService();
+      if (openaiService == null) {
+        return res.apiv3Err('OpenaiService is not available', 503);
       }
 
       try {
+        const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
         const threadId = req.body.threadId;
         const thread = threadId == null
           ? await openaiClient.beta.threads.create({
             tool_resources: {
               file_search: {
-                vector_store_ids: [vectorStoreId],
+                vector_store_ids: [vectorStore.vectorStoreId],
               },
             },
           })

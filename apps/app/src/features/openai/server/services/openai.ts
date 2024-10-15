@@ -7,16 +7,17 @@ import mongoose from 'mongoose';
 import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
+import VectorStoreModel, { VectorStoreScopeType, type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
+import VectorStoreFileRelationModel, {
+  type VectorStoreFileRelation,
+  prepareVectorStoreFileRelations,
+} from '~/features/openai/server/models/vector-store-file-relation';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
-import VectorStoreFileRelationModel, {
-  type VectorStoreFileRelation,
-  prepareVectorStoreFileRelations,
-} from '../models/vector-store-file-relation';
 
 
 import { getClient } from './client-delegator';
@@ -25,8 +26,10 @@ const BATCH_SIZE = 100;
 
 const logger = loggerFactory('growi:service:openai');
 
+let isVectorStoreForPublicScopeExist = false;
 
 export interface IOpenaiService {
+  getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
@@ -37,6 +40,32 @@ class OpenaiService implements IOpenaiService {
   private get client() {
     const openaiServiceType = configManager.getConfig('crowi', 'openai:serviceType');
     return getClient({ openaiServiceType });
+  }
+
+  public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
+    const vectorStoreDocument = await VectorStoreModel.findOne({ scorpeType: VectorStoreScopeType.PUBLIC });
+
+    if (vectorStoreDocument != null && isVectorStoreForPublicScopeExist) {
+      return vectorStoreDocument;
+    }
+
+    if (vectorStoreDocument != null && !isVectorStoreForPublicScopeExist) {
+      const vectorStore = await this.client.retrieveVectorStore(vectorStoreDocument.vectorStoreId);
+      if (vectorStore != null) {
+        isVectorStoreForPublicScopeExist = true;
+        return vectorStoreDocument;
+      }
+    }
+
+    const newVectorStore = await this.client.createVectorStore(VectorStoreScopeType.PUBLIC);
+    const newVectorStoreDocument = await VectorStoreModel.create({
+      vectorStoreId: newVectorStore.id,
+      scorpeType: VectorStoreScopeType.PUBLIC,
+    });
+
+    isVectorStoreForPublicScopeExist = true;
+
+    return newVectorStoreDocument;
   }
 
   private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
@@ -84,7 +113,8 @@ class OpenaiService implements IOpenaiService {
 
     try {
       // Create vector store file
-      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(uploadedFileIds);
+      const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
+      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStore.vectorStoreId, uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
 
       // Save vector store file relation
