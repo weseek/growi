@@ -11,6 +11,7 @@ import { body } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { getOpenaiService } from '~/features/openai/server/services/openai';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
@@ -19,8 +20,6 @@ import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
-import { configManager } from '~/server/service/config-manager';
-import { getOpenaiService } from '~/server/service/openai/openai';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import { getYjsService } from '~/server/service/yjs';

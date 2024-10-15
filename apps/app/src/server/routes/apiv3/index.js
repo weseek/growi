@@ -1,4 +1,5 @@
 import growiPlugin from '~/features/growi-plugin/server/routes/apiv3/admin';
+import openai from '~/features/openai/server/routes';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -8,7 +9,6 @@ import * as registerFormValidator from '../../middlewares/register-form-validato
 
 import g2gTransfer from './g2g-transfer';
 import importRoute from './import';
-import openai from './openai';
 import pageListing from './page-listing';
 import securitySettings from './security-settings';
 import * as userActivation from './user-activation';

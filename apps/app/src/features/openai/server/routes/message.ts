@@ -6,15 +6,16 @@ import { body } from 'express-validator';
 import type { AssistantStream } from 'openai/lib/AssistantStream';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
+import { getOrCreateChatAssistant } from '~/features/openai/server/services/assistant';
 import type Crowi from '~/server/crowi';
-import { openaiClient } from '~/server/service/openai';
-import { getOrCreateChatAssistant } from '~/server/service/openai/assistant';
+import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import loggerFactory from '~/utils/logger';
 
-import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
+import { openaiClient } from '../services';
 
+import { certifyAiService } from './middlewares/certify-ai-service';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:chat');
+const logger = loggerFactory('growi:routes:apiv3:openai:message');
 
 
 type ReqBody = {
@@ -27,8 +28,8 @@ type Req = Request<undefined, Response, ReqBody>
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
 export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) => {
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
-  const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
+  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
+  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
     body('userMessage')
@@ -40,7 +41,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, validator, apiV3FormValidator,
+    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: Response) => {
 
       const threadId = req.body.threadId;
