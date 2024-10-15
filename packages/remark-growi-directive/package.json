@@ -1,9 +1,8 @@
 {
   "name": "@growi/remark-growi-directive",
-  "version": "0.9.0",
-  "description": "Remark plugin to support GROWI original directive (forked from remark-directive@2.0.1)",
+  "version": "1.0.0",
+  "description": "Remark plugin to support GROWI original directive (forked from remark-directive@3.0.0)",
   "license": "MIT",
-  "private": "true",
   "keywords": [
     "unified",
     "remark",

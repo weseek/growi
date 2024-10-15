@@ -210,6 +210,10 @@ export const useIsRomUserAllowedToComment = (initialData?: boolean): SWRResponse
   return useContextSWR('isRomUserAllowedToComment', initialData);
 };
 
+export const useIsAiEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isAiEnabled', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */
