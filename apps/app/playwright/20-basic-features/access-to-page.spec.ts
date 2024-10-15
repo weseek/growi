@@ -1,9 +1,7 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
-const appendTextToEditorUntilContains = async(page: Page, text: string) => {
-  await page.locator('.cm-content').fill(text);
-  await expect(page.getByTestId('page-editor-preview-body')).toContainText(text);
-};
+import { openEditor, appendTextToEditor } from '../utils';
+
 
 test('has title', async({ page }) => {
   await page.goto('/Sandbox');
@@ -43,8 +41,8 @@ test.describe.serial('PageEditor', () => {
   test('Edit and save with save-page-btn', async({ page }) => {
     await page.goto(targetPath);
 
-    await page.getByTestId('editor-button').click();
-    await appendTextToEditorUntilContains(page, body1);
+    await openEditor(page);
+    await appendTextToEditor(page, body1);
     await page.getByTestId('save-page-btn').click();
 
     await expect(page.locator('.wiki').first()).toContainText(body1);
@@ -55,12 +53,11 @@ test.describe.serial('PageEditor', () => {
 
     await page.goto(targetPath);
 
-    await page.getByTestId('editor-button').click();
-
+    await openEditor(page);
     await expect(page.locator('.cm-content')).toContainText(body1);
     await expect(page.getByTestId('page-editor-preview-body')).toContainText(body1);
 
-    await appendTextToEditorUntilContains(page, body1 + body2);
+    await appendTextToEditor(page, body1 + body2);
     await page.keyboard.press(savePageShortcutKey);
     await page.getByTestId('view-button').click();
 
@@ -108,7 +105,7 @@ test.describe.serial('Access to Template Editing Mode', () => {
 
     await page.getByTestId('template-button-children').click();
 
-    await appendTextToEditorUntilContains(page, templateBody1);
+    await appendTextToEditor(page, templateBody1);
     await page.getByTestId('save-page-btn').click();
 
     await expect(page.locator('.wiki').first()).toContainText(templateBody1);
@@ -133,7 +130,7 @@ test.describe.serial('Access to Template Editing Mode', () => {
 
     await page.getByTestId('template-button-descendants').click();
 
-    await appendTextToEditorUntilContains(page, templateBody2);
+    await appendTextToEditor(page, templateBody2);
     await page.getByTestId('save-page-btn').click();
 
     await expect(page.locator('.wiki').first()).toContainText(templateBody2);

@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test';
 
+import { openEditor } from '../utils';
+
 test('Create comment page', async({ page }) => {
   await page.goto('/comment');
-  await page.getByTestId('editor-button').click();
+  await openEditor(page);
   await page.getByTestId('save-page-btn').click();
   await expect(page.locator('.page-meta')).toBeVisible();
 });

@@ -8,9 +8,9 @@ import {
   EditorView,
 } from '@codemirror/view';
 import { AcceptedUploadFileType } from '@growi/core';
-import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import type { EditorSettings, GlobalCodeMirrorEditorKey } from '../../../consts';
+import type { GlobalCodeMirrorEditorKey } from '../../../consts';
+import type { CodeMirrorEditorProps } from '../../interfaces/CodeMirrorEditor';
 import {
   useFileDropzone, FileDropzoneOverlay,
   adjustPasteData, getStrFromBol, useShowTableIcon,
@@ -33,18 +33,6 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement, DetailedHTMLProps<R
   },
 );
 
-export type CodeMirrorEditorProps = {
-  /**
-   * Specity the props for the react-codemirror component. **This must be a memolized object.**
-   */
-  cmProps?: ReactCodeMirrorProps,
-  acceptedUploadFileType?: AcceptedUploadFileType,
-  indentSize?: number,
-  editorSettings?: EditorSettings,
-  onSave?: () => void,
-  onUpload?: (files: File[]) => void,
-  onScroll?: () => void,
-}
 
 type Props = CodeMirrorEditorProps & {
   editorKey: string | GlobalCodeMirrorEditorKey,
