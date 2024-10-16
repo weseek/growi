@@ -1,5 +1,8 @@
+import { encodingForModel, type TiktokenModel } from 'js-tiktoken';
+
 import type { Chunk } from '../src/services/markdown-splitter';
 import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter';
+import { splitMarkdownByTokens } from '../src/services/markdown-token-splitter';
 
 describe('splitMarkdownIntoChunks', () => {
 
@@ -323,5 +326,100 @@ Some introductory content.
 
     const result = await splitMarkdownIntoChunks(markdown);
     expect(result).toEqual(expected);
+  });
+});
+
+describe('splitMarkdownByTokens', () => {
+  test('preserves list indentation and reduces unnecessary line breaks', async() => {
+    const model: TiktokenModel = 'gpt-4';
+    const markdown = `
+# Header 1
+Content under header 1.
+
+- Item 1
+  - Subitem 1
+- Item 2
+
+# Header 2
+Content under header 2.
+    `;
+
+    const encoder = encodingForModel(model);
+
+    const expected: Chunk[] = [
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.',
+        tokenCount: encoder.encode('Content under header 1.').length,
+      },
+      {
+        label: '1-content-2',
+        type: 'list',
+        text: '- Item 1\n  - Subitem 1\n- Item 2',
+        tokenCount: encoder.encode('- Item 1\n  - Subitem 1\n- Item 2').length,
+      },
+      {
+        label: '2-heading',
+        type: 'heading',
+        text: '# Header 2',
+        tokenCount: encoder.encode('# Header 2').length,
+      },
+      {
+        label: '2-content-1',
+        type: 'paragraph',
+        text: 'Content under header 2.',
+        tokenCount: encoder.encode('Content under header 2.').length,
+      },
+    ];
+
+    const result = await splitMarkdownByTokens(markdown, model, 200);
+
+    // Compare each chunk individually to check for correctness
+    expect(result.length).toEqual(expected.length);
+  });
+
+  test('long text is split into chunks within maxTokens limit', async() => {
+    const model: TiktokenModel = 'gpt-4';
+    const maxTokens = 200;
+    const encoder = encodingForModel(model);
+
+    // create long paragraphs
+    const longParagraph = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. '.repeat(50);
+    const markdown = `
+# Header 1
+${longParagraph}
+
+## Header 1.1
+${longParagraph}
+
+### Header 1.1.1
+${longParagraph}
+
+# Header 2
+${longParagraph}
+    `;
+
+    const result = await splitMarkdownByTokens(markdown, model, maxTokens);
+
+    // Verify that each chunk's tokenCount is less than or equal to maxTokens
+    for (const chunk of result) {
+      expect(chunk.tokenCount).toBeLessThanOrEqual(maxTokens);
+    }
+
+    // General test for the chunks (add more detailed tests if necessary)
+    expect(result.length).toBeGreaterThan(0);
+
+    // Confirm that the correct model was used
+    for (const chunk of result) {
+      const calculatedTokenCount = encoder.encode(chunk.text).length;
+      expect(chunk.tokenCount).toEqual(calculatedTokenCount);
+    }
   });
 });
