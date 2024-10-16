@@ -397,83 +397,83 @@ class SecuritySetting extends React.Component {
             <div className="col">
               <strong>{ t('only_me') }</strong>
             </div>
-          </div>
 
-          <div className="col">
-            <div className="dropdown">
-              <button
-                className={`btn btn-outline-secondary dropdown-toggle text-end col-12
+            <div className="col">
+              <div className="dropdown">
+                <button
+                  className={`btn btn-outline-secondary dropdown-toggle text-end col-12
                             col-md-auto `}
-                type="button"
-                id="dropdownMenuButton"
-                data-bs-toggle="dropdown"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <span>
-                  {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
-                    ? t('security_settings.always_displayed')
-                    : t('security_settings.always_not_displayed')}
-                </span>
-              </button>
-            </div>
-
-            <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <button
-                className="dropdown-item"
-                type="button"
-                onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
-              >
-                {t('security_settings.always_displayed')}
-              </button>
-              <button
-                className="dropdown-item"
-                type="button"
-                onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
-              >
-                {t('security_settings.always_not_displayed')}
-              </button>
-            </div>
-          </div>
-
-          <div className="container text-center">
-            <div className="row align-items-start">
-              <div className="col">
-                <strong>{ t('only_inside_the_group') }</strong>
+                  type="button"
+                  id="dropdownMenuButton"
+                  data-bs-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  <span>
+                    {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
+                      ? t('security_settings.always_displayed')
+                      : t('security_settings.always_not_displayed')}
+                  </span>
+                </button>
               </div>
 
-              <div className="col">
-                <div className="dropdown">
-                  <button
-                    className={`btn btn-outline-secondary dropdown-toggle text-end col-12
+              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
+                >
+                  {t('security_settings.always_displayed')}
+                </button>
+                <button
+                  className="dropdown-item"
+                  type="button"
+                  onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
+                >
+                  {t('security_settings.always_not_displayed')}
+                </button>
+              </div>
+            </div>
+
+            <div className="container text-center">
+              <div className="row  justify-content-end">
+                <div className="col">
+                  <strong>{ t('only_inside_the_group') }</strong>
+                </div>
+
+                <div className="col">
+                  <div className="dropdown">
+                    <button
+                      className={`btn btn-outline-secondary dropdown-toggle text-end col-12
                             col-md-auto`}
-                    type="button"
-                    id="dropdownMenuButton"
-                    data-bs-toggle="dropdown"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    <span>
-                      {adminGeneralSecurityContainer.state.isShowRestrictedByGroup
-                        ? t('security_settings.always_displayed')
-                        : t('security_settings.always_not_displayed')}
-                    </span>
-                  </button>
-                  <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <button
-                      className="dropdown-item"
                       type="button"
-                      onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: true }) }}
+                      id="dropdownMenuButton"
+                      data-bs-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded="false"
                     >
-                      {t('security_settings.always_displayed')}
+                      <span>
+                        {adminGeneralSecurityContainer.state.isShowRestrictedByGroup
+                          ? t('security_settings.always_displayed')
+                          : t('security_settings.always_not_displayed')}
+                      </span>
                     </button>
-                    <button
-                      className="dropdown-item"
-                      type="button"
-                      onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: false }) }}
-                    >
-                      {t('security_settings.always_not_displayed')}
-                    </button>
+                    <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: true }) }}
+                      >
+                        {t('security_settings.always_displayed')}
+                      </button>
+                      <button
+                        className="dropdown-item"
+                        type="button"
+                        onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: false }) }}
+                      >
+                        {t('security_settings.always_not_displayed')}
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
