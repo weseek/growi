@@ -1,9 +1,10 @@
 import { pathUtils } from '@growi/core/dist/utils';
+import type { TextGrowiPluginDirective, LeafGrowiPluginDirective } from '@growi/remark-growi-directive';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
-import { Schema as SanitizeOption } from 'hast-util-sanitize';
+import type { Nodes as HastNode } from 'hast';
+import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { selectAll } from 'hast-util-select';
-import type { Node as HastNode } from 'hast-util-select/lib/types';
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 import loggerFactory from '../../../utils/logger';
@@ -21,10 +22,11 @@ const REFS_IMG_SUPPORTED_ATTRIBUTES = [
 ];
 
 type DirectiveAttributes = Record<string, string>
+type GrowiPluginDirective = TextGrowiPluginDirective | LeafGrowiPluginDirective
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
-    visit(tree, (node) => {
+    visit(tree, (node: GrowiPluginDirective) => {
       if (node.type === remarkGrowiDirectivePluginType.Text || node.type === remarkGrowiDirectivePluginType.Leaf) {
         if (typeof node.name !== 'string') {
           return;

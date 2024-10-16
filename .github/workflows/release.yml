@@ -64,7 +64,7 @@ jobs:
         commit_message: Release v${{ steps.package-json.outputs.packageVersion }}
         tagging_message: v${{ steps.package-json.outputs.packageVersion }}
 
-    - uses: softprops/action-gh-release@v1
+    - uses: softprops/action-gh-release@v2
       with:
         body: ${{ github.event.pull_request.body }}
         tag_name: v${{ steps.package-json.outputs.packageVersion }}
