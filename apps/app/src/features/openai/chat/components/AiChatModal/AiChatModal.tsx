@@ -8,9 +8,11 @@ import {
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
 import { useRagSearchModal } from '../../../client/stores/rag-search';
+import { MessageErrorCode } from '../../../interfaces/message-error';
 
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -108,6 +110,11 @@ const AiChatModalSubstance = (): JSX.Element => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           const errors = resJson.errors.map(({ message }) => message).join(', ');
           form.setError('input', { type: 'manual', message: `[${response.status}] ${errors}` });
+
+          const hasThreadIdNotSet = resJson.errors.some(err => err.code === MessageErrorCode.THREAD_ID_IS_NOT_SET);
+          if (hasThreadIdNotSet) {
+            toastError(t('modal_aichat.thread_id_is_not_set'));
+          }
         }
         setGeneratingAnswerMessage(undefined);
         return;
@@ -160,7 +167,7 @@ const AiChatModalSubstance = (): JSX.Element => {
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [form, isGenerating, messageLogs, threadId]);
+  }, [form, isGenerating, messageLogs, t, threadId]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {

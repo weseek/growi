@@ -484,7 +484,8 @@
     "title_beta_label": "(Bêta)",
     "placeholder": "Demandez-moi n'importe quoi.",
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
-    "progress_label": "Génération des réponses"
+    "progress_label": "Génération des réponses",
+    "thread_id_is_not_set": "Échec de la génération d'un fil de discussion"
   },
   "link_edit": {
     "edit_link": "Modifier lien",
