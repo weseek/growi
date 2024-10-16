@@ -357,36 +357,65 @@ class SecuritySetting extends React.Component {
         )}
 
         <h4 className="mt-4">{ t('security_settings.page_list_and_search_results') }</h4>
-        <div style={{ display: 'flex', gap: '40px' }}>
-          <strong>{ t('security_settings.scope_of_page_disclosure') }</strong>
-          <strong>{ t('security_settings.set_point') }</strong>
+
+        <div className="container text-center">
+          <div className="row justify-content-start">
+            <div className="col">
+              <strong>{ t('security_settings.scope_of_page_disclosure') }</strong>
+            </div>
+
+            <div className="col">
+              <strong>{ t('security_settings.set_point') }</strong>
+            </div>
+          </div>
         </div>
 
-        <div className="row mb-4"></div>
-        <strong>{ t('public') }</strong>
-        <div className="col-md-4 text-md-end py-2">{ t('security_settings.always_displayed') }</div>
+        <div className="container text-center">
+          <div className="row justify-content-start">
+            <div className="col">
+              <strong>{ t('public') }</strong>
+            </div>
+            <div className="col">
+              <div className="col-md-4 text-md-end py-2">{ t('security_settings.always_displayed') }</div>
+            </div>
+          </div>
+        </div>
 
-        <div className="row mb-4"></div>
-        <strong>{ t('anyone_with_the_link') }</strong>
-        <div className="col-md-4 text-md-end py-2">{ t('security_settings.always_not_displayed') }</div>
+        <div className="container text-center">
+          <div className="row justify-content-start">
+            <div className="col">
+              <strong>{ t('anyone_with_the_link') }</strong>
+            </div>
+            <div className="col">
+              <div className="col-md-4 text-md-end py-2">{ t('security_settings.always_not_displayed') }</div>
+            </div>
+          </div>
+        </div>
 
-        <strong>{ t('only_me') }</strong>
-        <div className="dropdown">
-          <button
-            className={`btn btn-outline-secondary dropdown-toggle text-end col-12
+        <div className="container text-center">
+          <div className="row justify-content-start">
+            <div className="col">
+              <strong>{ t('only_me') }</strong>
+            </div>
+          </div>
+
+          <div className="dropdown">
+            <button
+              className={`btn btn-outline-secondary dropdown-toggle text-end col-12
                             col-md-auto `}
-            type="button"
-            id="dropdownMenuButton"
-            data-bs-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            <span>
-              {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
-                ? t('security_settings.always_displayed')
-                : t('security_settings.always_not_displayed')}
-            </span>
-          </button>
+              type="button"
+              id="dropdownMenuButton"
+              data-bs-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              <span>
+                {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
+                  ? t('security_settings.always_displayed')
+                  : t('security_settings.always_not_displayed')}
+              </span>
+            </button>
+          </div>
           <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
             <button
               className="dropdown-item"
