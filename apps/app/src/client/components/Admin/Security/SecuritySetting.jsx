@@ -403,23 +403,23 @@ class SecuritySetting extends React.Component {
                       : t('security_settings.not_displayed')}
                   </span>
                 </button>
-              </div>
 
-              <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <button
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
-                >
-                  {t('security_settings.displayed')}
-                </button>
-                <button
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
-                >
-                  {t('security_settings.not_displayed')}
-                </button>
+                <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <button
+                    className="dropdown-item"
+                    type="button"
+                    onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
+                  >
+                    {t('security_settings.displayed')}
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    type="button"
+                    onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
+                  >
+                    {t('security_settings.not_displayed')}
+                  </button>
+                </div>
               </div>
             </div>
 
