@@ -360,7 +360,7 @@ class SecuritySetting extends React.Component {
 
         <div className="container text-center">
           <div className="row justify-content-start">
-            <div className="col mt-4">
+            <div className="col-4 mt-4">
               <strong>{ t('public') }</strong>
             </div>
             <div className="col  mt-4">
@@ -371,7 +371,7 @@ class SecuritySetting extends React.Component {
 
         <div className="container text-center">
           <div className="row justify-content-start">
-            <div className="col  mt-4">
+            <div className="col-4  mt-4">
               <strong>{ t('anyone_with_the_link') }</strong>
             </div>
             <div className="col mt-4">
@@ -382,7 +382,7 @@ class SecuritySetting extends React.Component {
 
         <div className="container text-center">
           <div className="row justify-content-start">
-            <div className="col  mt-4">
+            <div className="col-4  mt-4">
               <strong>{ t('only_me') }</strong>
             </div>
 
@@ -425,7 +425,7 @@ class SecuritySetting extends React.Component {
 
             <div className="container text-center">
               <div className="row  justify-content-end">
-                <div className="col mt-4">
+                <div className="col-4 mt-4">
                   <strong>{ t('only_inside_the_group') }</strong>
                 </div>
 
