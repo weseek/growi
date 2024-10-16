@@ -364,7 +364,7 @@ class SecuritySetting extends React.Component {
               <strong>{ t('public') }</strong>
             </div>
             <div className="col  mt-4">
-              { t('security_settings.always_displayed') }
+              { t('security_settings.displayed') }
             </div>
           </div>
         </div>
@@ -375,7 +375,7 @@ class SecuritySetting extends React.Component {
               <strong>{ t('anyone_with_the_link') }</strong>
             </div>
             <div className="col mt-4">
-              { t('security_settings.always_not_displayed') }
+              { t('security_settings.not_displayed') }
             </div>
           </div>
         </div>
@@ -399,8 +399,8 @@ class SecuritySetting extends React.Component {
                 >
                   <span>
                     {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
-                      ? t('security_settings.always_displayed')
-                      : t('security_settings.always_not_displayed')}
+                      ? t('security_settings.displayed')
+                      : t('security_settings.not_displayed')}
                   </span>
                 </button>
               </div>
@@ -411,14 +411,14 @@ class SecuritySetting extends React.Component {
                   type="button"
                   onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
                 >
-                  {t('security_settings.always_displayed')}
+                  {t('security_settings.displayed')}
                 </button>
                 <button
                   className="dropdown-item"
                   type="button"
                   onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
                 >
-                  {t('security_settings.always_not_displayed')}
+                  {t('security_settings.not_displayed')}
                 </button>
               </div>
             </div>
@@ -442,8 +442,8 @@ class SecuritySetting extends React.Component {
                     >
                       <span>
                         {adminGeneralSecurityContainer.state.isShowRestrictedByGroup
-                          ? t('security_settings.always_displayed')
-                          : t('security_settings.always_not_displayed')}
+                          ? t('security_settings.displayed')
+                          : t('security_settings.not_displayed')}
                       </span>
                     </button>
                     <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -452,14 +452,14 @@ class SecuritySetting extends React.Component {
                         type="button"
                         onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: true }) }}
                       >
-                        {t('security_settings.always_displayed')}
+                        {t('security_settings.displayed')}
                       </button>
                       <button
                         className="dropdown-item"
                         type="button"
                         onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: false }) }}
                       >
-                        {t('security_settings.always_not_displayed')}
+                        {t('security_settings.not_displayed')}
                       </button>
                     </div>
                   </div>
