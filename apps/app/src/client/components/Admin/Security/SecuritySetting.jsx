@@ -376,7 +376,7 @@ class SecuritySetting extends React.Component {
               <strong>{ t('public') }</strong>
             </div>
             <div className="col">
-              <div className="col-md-4 text-md-end py-2">{ t('security_settings.always_displayed') }</div>
+              { t('security_settings.always_displayed') }
             </div>
           </div>
         </div>
@@ -387,7 +387,7 @@ class SecuritySetting extends React.Component {
               <strong>{ t('anyone_with_the_link') }</strong>
             </div>
             <div className="col">
-              <div className="col-md-4 text-md-end py-2">{ t('security_settings.always_not_displayed') }</div>
+              { t('security_settings.always_not_displayed') }
             </div>
           </div>
         </div>
