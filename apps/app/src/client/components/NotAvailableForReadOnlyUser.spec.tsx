@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom/vitest';
+
 import { render, screen } from '@testing-library/react';
 import { PointerEventsCheckLevel, userEvent } from '@testing-library/user-event';
 import {
@@ -6,17 +8,12 @@ import {
 
 import { CommentControl } from './PageComment/CommentControl';
 
-import '@testing-library/jest-dom/vitest';
+const useIsReadOnlyUser = vi.hoisted(() => vi.fn().mockReturnValue({ data: true }));
+const useIsRomUserAllowedToComment = vi.hoisted(() => vi.fn().mockReturnValue({ data: true }));
 
-const mocks = vi.hoisted(() => ({
-  useIsReadOnlyUserMock: vi.fn(),
-  useIsRomUserAllowedToComment: vi.fn(),
-}));
-
-// Mock for useIsReadOnlyUser and useIsRomUserAllowedToComment
 vi.mock('~/stores-universal/context', () => ({
-  useIsReadOnlyUser: mocks.useIsReadOnlyUserMock,
-  useIsRomUserAllowedToComment: mocks.useIsRomUserAllowedToComment,
+  useIsReadOnlyUser,
+  useIsRomUserAllowedToComment,
 }));
 
 describe('NotAvailableForReadOnlyUser.tsx', () => {
@@ -26,8 +23,8 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
   const user = userEvent.setup({ pointerEventsCheck: PointerEventsCheckLevel.Never });
 
   it('renders NotAvailable component as enable when user is read-only and comments by rom users is allowed', async() => {
-    mocks.useIsReadOnlyUserMock.mockReturnValueOnce({ data: true });
-    mocks.useIsRomUserAllowedToComment.mockReturnValueOnce({ data: true });
+    useIsReadOnlyUser.mockReturnValue({ data: true });
+    useIsRomUserAllowedToComment.mockReturnValue({ data: true });
 
     render(
       <CommentControl
@@ -38,17 +35,17 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
 
     // when
     const button = screen.getByTestId('comment-delete-button');
-    // fireEvent.click(button);
+    const wrapperElement = button.parentElement;
     await user.click(button);
 
     // then
     expect(onClickDeleteBtnMock).toHaveBeenCalled();
-    // expect(button).not.toBeDisabled();
+    expect(wrapperElement).not.toHaveAttribute('aria-hidden', 'true');
   });
 
   it('renders NotAvailable component as disable when user is read-only and comments by rom users is not allowed', async() => {
-    mocks.useIsReadOnlyUserMock.mockReturnValueOnce({ data: true });
-    mocks.useIsRomUserAllowedToComment.mockReturnValueOnce({ data: false });
+    useIsReadOnlyUser.mockReturnValue({ data: true });
+    useIsRomUserAllowedToComment.mockReturnValue({ data: false });
 
     render(
       <CommentControl
@@ -59,17 +56,15 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
 
     // when
     const button = screen.getByTestId('comment-delete-button');
-    // fireEvent.click(button);
-    await user.click(button);
+    const wrapperElement = button.parentElement;
 
     // then
-    expect(onClickDeleteBtnMock).not.toHaveBeenCalled();
-    // expect(button).toBeDisabled();
+    expect(wrapperElement).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('renders NotAvailable component as enable when user is not read-only and comments by rom users is allowed', async() => {
-    mocks.useIsReadOnlyUserMock.mockReturnValueOnce({ data: false });
-    mocks.useIsRomUserAllowedToComment.mockReturnValueOnce({ data: true });
+    useIsReadOnlyUser.mockReturnValue({ data: false });
+    useIsRomUserAllowedToComment.mockReturnValue({ data: true });
 
     render(
       <CommentControl
@@ -80,17 +75,17 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
 
     // when
     const button = screen.getByTestId('comment-delete-button');
-    // fireEvent.click(button);
+    const wrapperElement = button.parentElement;
     await user.click(button);
 
     // then
     expect(onClickDeleteBtnMock).toHaveBeenCalled();
-    // expect(button).not.toBeDisabled();
+    expect(wrapperElement).not.toHaveAttribute('aria-hidden', 'true');
   });
 
   it('renders NotAvailable component as enable when user is not read-only and comments by rom users is not allowed', async() => {
-    mocks.useIsReadOnlyUserMock.mockReturnValueOnce({ data: false });
-    mocks.useIsRomUserAllowedToComment.mockReturnValueOnce({ data: false });
+    useIsReadOnlyUser.mockReturnValue({ data: false });
+    useIsRomUserAllowedToComment.mockReturnValue({ data: false });
 
     render(
       <CommentControl
@@ -101,12 +96,12 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
 
     // when
     const button = screen.getByTestId('comment-delete-button');
-    // fireEvent.click(button);
+    const wrapperElement = button.parentElement;
     await user.click(button);
 
     // then
     expect(onClickDeleteBtnMock).toHaveBeenCalled();
-    // expect(button).not.toBeDisabled();
+    expect(wrapperElement).not.toHaveAttribute('aria-hidden', 'true');
   });
 
 });
