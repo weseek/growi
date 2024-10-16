@@ -64,6 +64,10 @@
           }
         }
       },
+      "body_embedded": {
+        "type": "dense_vector",
+        "dims": 768
+      },
       "comments": {
         "type": "text",
         "fields": {
