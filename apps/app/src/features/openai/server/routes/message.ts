@@ -64,7 +64,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       catch (err) {
         logger.error(err);
 
-        // TODO: improve error handling by https://redmine.weseek.co.jp/issues/155304
+        // TODO: improve error handling by https://redmine.weseek.co.jp/issues/155004
         return res.status(500).send(err.message);
       }
 
