@@ -8,23 +8,10 @@ import { unified } from 'unified';
 
 export type Chunk = {
   label: string;
+  type: string;
   text: string;
+  tokenCount?: number;
 };
-
-/**
- * Processes and adds a new chunk to the chunks array if content is not empty.
- * Clears the contentBuffer array after processing.
- * @param chunks - The array to store processed chunks.
- * @param contentBuffer - The array of content lines to be processed.
- * @param label - The label for the content chunk.
- */
-function addContentChunk(chunks: Chunk[], contentBuffer: string[], label: string) {
-  const text = contentBuffer.join('\n\n').trimEnd();
-  if (text !== '') {
-    chunks.push({ label, text });
-  }
-  contentBuffer.length = 0; // Clear the contentBuffer array
-}
 
 /**
  * Updates the section numbers based on the heading depth and returns the updated section label.
@@ -54,7 +41,7 @@ function updateSectionNumbers(sectionNumbers: number[], headingDepth: number): s
 
 /**
  * Splits Markdown text into labeled chunks using remark-parse and remark-stringify,
- * considering content that may start before any headers and handling non-consecutive heading levels.
+ * processing each content node separately and labeling them as 1-content-1, 1-content-2, etc.
  * @param markdownText - The input Markdown string.
  * @returns An array of labeled chunks.
  */
@@ -62,8 +49,8 @@ export async function splitMarkdownIntoChunks(markdownText: string): Promise<Chu
   const chunks: Chunk[] = [];
   const sectionNumbers: number[] = [];
   let frontmatter: Record<string, unknown> | null = null; // Variable to store frontmatter
-  const contentBuffer: string[] = [];
   let currentSectionLabel = '';
+  const contentCounters: Record<string, number> = {};
 
   if (typeof markdownText !== 'string' || markdownText.trim() === '') {
     return chunks;
@@ -92,36 +79,35 @@ export async function splitMarkdownIntoChunks(markdownText: string): Promise<Chu
       frontmatter = yaml.load(node.value) as Record<string, unknown>;
     }
     else if (node.type === 'heading') {
-      // Process pending content before heading
-      if (contentBuffer.length > 0) {
-        const contentLabel = currentSectionLabel !== '' ? `${currentSectionLabel}-content` : '0-content';
-        addContentChunk(chunks, contentBuffer, contentLabel);
-      }
-
       const headingDepth = node.depth;
       currentSectionLabel = updateSectionNumbers(sectionNumbers, headingDepth);
 
-      const headingMarkdown = stringifier.stringify(node as any);// eslint-disable-line @typescript-eslint/no-explicit-any
-      chunks.push({ label: `${currentSectionLabel}-heading`, text: headingMarkdown.trim() });
+      const headingMarkdown = stringifier.stringify(node as any).trim(); // eslint-disable-line @typescript-eslint/no-explicit-any
+      chunks.push({ label: `${currentSectionLabel}-heading`, type: node.type, text: headingMarkdown });
     }
     else {
-      // Add non-heading content to the buffer
+      // Process non-heading content individually
       const contentMarkdown = stringifier.stringify(node as any).trim(); // eslint-disable-line @typescript-eslint/no-explicit-any
       if (contentMarkdown !== '') {
-        contentBuffer.push(contentMarkdown);
+        const contentCountKey = currentSectionLabel || '0';
+        if (!contentCounters[contentCountKey]) {
+          contentCounters[contentCountKey] = 1;
+        }
+        else {
+          contentCounters[contentCountKey]++;
+        }
+        const contentLabel = currentSectionLabel !== ''
+          ? `${currentSectionLabel}-content-${contentCounters[contentCountKey]}`
+          : `0-content-${contentCounters[contentCountKey]}`;
+        chunks.push({ label: contentLabel, type: node.type, text: contentMarkdown });
       }
     }
-  }
-
-  // Process any remaining content
-  if (contentBuffer.length > 0) {
-    const contentLabel = currentSectionLabel !== '' ? `${currentSectionLabel}-content` : '0-content';
-    addContentChunk(chunks, contentBuffer, contentLabel);
   }
 
   if (frontmatter) {
     chunks.unshift({
       label: 'frontmatter',
+      type: 'yaml',
       text: JSON.stringify(frontmatter, null, 2),
     });
   }
