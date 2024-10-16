@@ -111,8 +111,8 @@ const AiChatModalSubstance = (): JSX.Element => {
           const errors = resJson.errors.map(({ message }) => message).join(', ');
           form.setError('input', { type: 'manual', message: `[${response.status}] ${errors}` });
 
-          const hasThreadIdNotSet = resJson.errors.some(err => err.code === MessageErrorCode.THREAD_ID_IS_NOT_SET);
-          if (hasThreadIdNotSet) {
+          const hasThreadIdNotSetError = resJson.errors.some(err => err.code === MessageErrorCode.THREAD_ID_IS_NOT_SET);
+          if (hasThreadIdNotSetError) {
             toastError(t('modal_aichat.thread_id_is_not_set'));
           }
         }
