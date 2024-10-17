@@ -184,6 +184,47 @@ class SecuritySetting extends React.Component {
     return;
   }
 
+  securitysettingdisplay(setState) {
+    const { t, adminGeneralSecurityContainer } = this.props;
+    return (
+      <div className="dropdown">
+        <button
+          className={`btn btn-outline-secondary dropdown-toggle text-end col-12
+                  col-md-auto `}
+          type="button"
+          id="dropdownMenuButton"
+          data-bs-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          <span>
+            {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
+              ? t('security_settings.displayed')
+              : t('security_settings.not_displayed')}
+          </span>
+        </button>
+
+        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <button
+            className="dropdown-item"
+            type="button"
+            onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
+          >
+            {t('security_settings.displayed')}
+          </button>
+          <button
+            className="dropdown-item"
+            type="button"
+            onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
+          >
+            {t('security_settings.not_displayed')}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+
   renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled) {
     const { t } = this.props;
     return (
