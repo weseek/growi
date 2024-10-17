@@ -44,7 +44,8 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
 });
 
 schema.statics.getExpiredThreadRelations = async function(limit?: number): Promise<ThreadRelationDocument[] | undefined> {
-  const expiredThreadRelations = await this.find({ expiredAt: { $lte: new Date() } }).limit(limit ?? 100).exec();
+  const currentDate = new Date();
+  const expiredThreadRelations = await this.find({ expiredAt: { $lte: currentDate } }).limit(limit ?? 100).exec();
   return expiredThreadRelations;
 };
 

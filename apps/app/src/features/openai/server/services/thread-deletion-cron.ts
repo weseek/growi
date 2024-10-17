@@ -38,11 +38,8 @@ class ThreadDeletionCronService {
     this.cronJob.start();
   }
 
-  stopCron(): void {
-    this.cronJob.stop();
-  }
-
-  async executeJob(): Promise<void> {
+  private async executeJob(): Promise<void> {
+    // Delete only 100 by rateLimit countermeasure on OpenAI side
     await this.openaiService.deleteExpiredThreads(DELETE_LIMIT);
   }
 
