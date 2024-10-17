@@ -12,7 +12,7 @@ on:
       - .eslint*
       - tsconfig.base.json
       - turbo.json
-      - yarn.lock
+      - pnpm-lock.yaml
       - package.json
       - apps/slackbot-proxy/**
       - '!apps/slackbot-proxy/docker/**'
@@ -39,16 +39,16 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache-dependency-path: '**/pnpm-lock.yaml'
 
     - name: Cache/Restore node_modules
       uses: actions/cache@v4
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Restore dist
@@ -63,9 +63,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn global add turbo
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add turbo --global
+        pnpm add node-gyp --global
+        pnpm install --frozen-lockfile
 
     - name: Lint
       run: |
@@ -114,16 +114,16 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache-dependency-path: '**/pnpm-lock.yaml'
 
     - name: Cache/Restore node_modules
       uses: actions/cache@v4
       with:
         path: |
           **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
+        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
         restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
+          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
           node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
 
     - name: Restore dist
@@ -138,9 +138,9 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn global add turbo
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add turbo --global
+        pnpm add node-gyp --global
+        pnpm install --frozen-lockfile
 
     - name: yarn dev:ci
       working-directory: ./apps/slackbot-proxy
@@ -202,11 +202,11 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache-dependency-path: '**/pnpm-lock.yaml'
 
     - name: Install turbo
       run: |
-        yarn global add turbo
+        pnpm add turbo --global
 
     - name: Prune repositories
       run: |
@@ -220,14 +220,14 @@ jobs:
       with:
         path: |
           **/node_modules
-        key: node_modules-slackbot-prxy-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-slackbot-prxy-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           node_modules-slackbot-proxy-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add node-gyp --global
+        pnpm install --frozen-lockfile
 
     - name: Restore dist
       uses: actions/cache/restore@v4
@@ -246,7 +246,7 @@ jobs:
 
     - name: Install dependencies for production
       run: |
-        yarn --production
+        pnpm install --prod
 
     - name: yarn start:prod:ci
       working-directory: ./apps/slackbot-proxy

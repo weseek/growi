@@ -97,13 +97,13 @@ jobs:
       with:
         node-version: '18'
         cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache-dependency-path: '**/pnpm-lock.yaml'
 
     - name: Install dependencies
       run: |
-        yarn global add turbo
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add turbo --global
+        pnpm add node-gyp --global
+        pnpm install --frozen-lockfile
 
     - name: Bump versions for next RC
       run: |

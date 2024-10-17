@@ -12,7 +12,7 @@ on:
       - .eslint*
       - tsconfig.base.json
       - turbo.json
-      - yarn.lock
+      - pnpm-lock.yaml
       - package.json
       - apps/app/**
       - '!apps/app/docker/**'
@@ -38,7 +38,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Cache/Restore node_modules
         uses: actions/cache@v4
@@ -46,7 +46,7 @@ jobs:
           path: |
             **/node_modules
             !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
 
@@ -63,9 +63,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
-          yarn global add node-gyp
-          yarn --frozen-lockfile
+          pnpm add turbo --global
+          pnpm add node-gyp --global
+          pnpm install --frozen-lockfile
 
       - name: Lint
         run: |
@@ -102,7 +102,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Cache/Restore node_modules
         uses: actions/cache@v4
@@ -110,7 +110,7 @@ jobs:
           path: |
             **/node_modules
             !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
 
@@ -127,9 +127,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
-          yarn global add node-gyp
-          yarn --frozen-lockfile
+          pnpm add turbo --global
+          pnpm add node-gyp --global
+          pnpm install --frozen-lockfile
 
       - name: Test
         run: |
@@ -176,7 +176,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Cache/Restore node_modules
         uses: actions/cache@v4
@@ -184,7 +184,7 @@ jobs:
           path: |
             **/node_modules
             !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
             node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
@@ -202,9 +202,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
-          yarn global add node-gyp
-          yarn --frozen-lockfile
+          pnpm add turbo --global
+          pnpm add node-gyp --global
+          pnpm install --frozen-lockfile
 
       - name: turbo run launch-dev:ci
         working-directory: ./apps/app
