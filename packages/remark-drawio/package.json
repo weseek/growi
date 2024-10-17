@@ -33,11 +33,11 @@
   "dependencies": {},
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
-    "hast-util-sanitize": "^4.1.0",
+    "hast-util-sanitize": "^5.0.1",
     "pako": "^2.1.0",
     "throttle-debounce": "^5.0.0",
-    "unified": "^10.1.2",
-    "unist-util-visit": "^4.0.0"
+    "unified": "^11.0.0",
+    "unist-util-visit": "^5.0.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",

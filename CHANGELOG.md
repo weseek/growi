@@ -1,8 +1,26 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.20...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.21...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.21](https://github.com/weseek/growi/compare/v7.0.20...v7.0.21) - 2024-10-15
+
+### 🚀 Improvement
+
+* imprv: Update Recent Changes when a page is created, updated, or deleted (#9092) @nHigashiWeseek
+* imprv: Documentation URL for g2gtransfer (#9183) @moekumasaka
+
+### 🐛 Bug Fixes
+
+* fix: Add validators to lsx API (#9182) @WNomunomu
+* fix: Display revisions only if they are not corrupted (#9099) @WNomunomu
+* fix: Make it impossible to overwrite grants on descendant pages when 'anyone with the link' is selected. (#9125) @WNomunomu
+* fix: Forgot password API - reject requests with invalid email format (#9179) @abichan99911111
+
+### 🧰 Maintenance
+
+* support: Upgrade codemirror and yjs packages (#9218) @yuki-takei
 
 ## [v7.0.20](https://github.com/weseek/growi/compare/v7.0.19...v7.0.20) - 2024-09-25
 
