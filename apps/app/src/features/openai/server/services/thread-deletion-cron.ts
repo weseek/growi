@@ -22,11 +22,6 @@ class ThreadDeletionCronService {
       return;
     }
 
-    const openaiService = getOpenaiService();
-    if (openaiService == null) {
-      throw new Error('openaiService is not initialized');
-    }
-
     // Executed at 0 minutes of every hour
     // const cronSchedule = '0 * * * *';
 
@@ -39,8 +34,10 @@ class ThreadDeletionCronService {
   }
 
   private async executeJob(): Promise<void> {
+    const openaiService = getOpenaiService();
+
     // Delete only 100 by rateLimit countermeasure on OpenAI side
-    await this.openaiService.deleteExpiredThreads(DELETE_LIMIT);
+    await openaiService?.deleteExpiredThreads(DELETE_LIMIT);
   }
 
   private generateCronJob(cronSchedule: string) {
