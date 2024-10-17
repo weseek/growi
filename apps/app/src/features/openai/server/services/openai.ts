@@ -29,6 +29,7 @@ const logger = loggerFactory('growi:service:openai');
 let isVectorStoreForPublicScopeExist = false;
 
 export interface IOpenaiService {
+  getOrCreateThread(threadId?: string): Promise<OpenAI.Beta.Threads.Thread>;
   getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
@@ -40,6 +41,15 @@ class OpenaiService implements IOpenaiService {
   private get client() {
     const openaiServiceType = configManager.getConfig('crowi', 'openai:serviceType');
     return getClient({ openaiServiceType });
+  }
+
+  public async getOrCreateThread(threadId?: string): Promise<OpenAI.Beta.Threads.Thread> {
+    const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
+    const thread = threadId == null
+      ? await this.client.createThread(vectorStore.vectorStoreId)
+      : await this.client.retrieveThread(threadId);
+
+    return thread;
   }
 
   public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {

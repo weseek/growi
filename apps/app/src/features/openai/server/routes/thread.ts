@@ -7,7 +7,6 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { openaiClient } from '../services';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -32,24 +31,9 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
-      const openaiService = getOpenaiService();
-      if (openaiService == null) {
-        return res.apiv3Err('OpenaiService is not available', 503);
-      }
-
       try {
-        const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
-        const threadId = req.body.threadId;
-        const thread = threadId == null
-          ? await openaiClient.beta.threads.create({
-            tool_resources: {
-              file_search: {
-                vector_store_ids: [vectorStore.vectorStoreId],
-              },
-            },
-          })
-          : await openaiClient.beta.threads.retrieve(threadId);
-
+        const openaiService = getOpenaiService();
+        const thread = await openaiService?.getOrCreateThread(req.body.threadId);
         return res.apiv3({ thread });
       }
       catch (err) {

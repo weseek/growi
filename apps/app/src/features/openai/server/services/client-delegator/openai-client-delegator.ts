@@ -24,6 +24,20 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     this.client = new OpenAI({ apiKey });
   }
 
+  async createThread(vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.create({
+      tool_resources: {
+        file_search: {
+          vector_store_ids: [vectorStoreId],
+        },
+      },
+    });
+  }
+
+  async retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.retrieve(threadId);
+  }
+
   async createVectorStore(scopeType:VectorStoreScopeType): Promise<OpenAI.Beta.VectorStores.VectorStore> {
     return this.client.beta.vectorStores.create({ name: `growi-vector-store-${scopeType}` });
   }
