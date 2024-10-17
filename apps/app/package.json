@@ -130,7 +130,7 @@
     "lucene-query-parser": "^1.2.0",
     "markdown-table": "^3.0.3",
     "md5": "^2.2.1",
-    "mermaid": "^10.1.0",
+    "mermaid": "^11.2.0",
     "method-override": "^3.0.0",
     "migrate-mongo": "^11.0.0",
     "mkdirp": "^1.0.3",
