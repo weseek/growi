@@ -1,12 +1,17 @@
+import { encodingForModel, type TiktokenModel } from 'js-tiktoken';
+
 import type { Chunk } from '../src/services/markdown-splitter';
 import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter';
+
+const MODEL: TiktokenModel = 'gpt-4';
+const encoder = encodingForModel(MODEL);
 
 describe('splitMarkdownIntoChunks', () => {
 
   test('handles empty markdown string', async() => {
     const markdown = '';
     const expected: Chunk[] = [];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -16,13 +21,23 @@ It spans multiple lines.
 
 Another paragraph.
     `;
+
     const expected: Chunk[] = [
       {
-        label: '0-content',
-        text: 'This is some content without any headers.\nIt spans multiple lines.\n\nAnother paragraph.',
+        label: '0-content-1',
+        type: 'paragraph',
+        text: 'This is some content without any headers.\nIt spans multiple lines.',
+        tokenCount: encoder.encode('This is some content without any headers.\nIt spans multiple lines.').length,
+      },
+      {
+        label: '0-content-2',
+        type: 'paragraph',
+        text: 'Another paragraph.',
+        tokenCount: encoder.encode('Another paragraph.').length,
       },
     ];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -37,15 +52,47 @@ Content under header 1.1.
 # Header 2
 Content under header 2.
     `;
+
     const expected: Chunk[] = [
-      { label: '1-heading', text: '# Header 1' },
-      { label: '1-content', text: 'Content under header 1.' },
-      { label: '1-1-heading', text: '## Header 1.1' },
-      { label: '1-1-content', text: 'Content under header 1.1.' },
-      { label: '2-heading', text: '# Header 2' },
-      { label: '2-content', text: 'Content under header 2.' },
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.',
+        tokenCount: encoder.encode('Content under header 1.').length,
+      },
+      {
+        label: '1-1-heading',
+        type: 'heading',
+        text: '## Header 1.1',
+        tokenCount: encoder.encode('## Header 1.1').length,
+      },
+      {
+        label: '1-1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.1.',
+        tokenCount: encoder.encode('Content under header 1.1.').length,
+      },
+      {
+        label: '2-heading',
+        type: 'heading',
+        text: '# Header 2',
+        tokenCount: encoder.encode('# Header 2').length,
+      },
+      {
+        label: '2-content-1',
+        type: 'paragraph',
+        text: 'Content under header 2.',
+        tokenCount: encoder.encode('Content under header 2.').length,
+      },
     ];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -68,53 +115,77 @@ Content of chapter 2.
 ## Section 2.1
 Content of section 2.1.
     `;
+
     const expected: Chunk[] = [
       {
-        label: '0-content',
+        label: '0-content-1',
+        type: 'paragraph',
         text: 'Introduction without a header.',
+        tokenCount: encoder.encode('Introduction without a header.').length,
       },
       {
         label: '1-heading',
+        type: 'heading',
         text: '# Chapter 1',
+        tokenCount: encoder.encode('# Chapter 1').length,
       },
       {
-        label: '1-content',
+        label: '1-content-1',
+        type: 'paragraph',
         text: 'Content of chapter 1.',
+        tokenCount: encoder.encode('Content of chapter 1.').length,
       },
       {
         label: '1-1-1-heading',
+        type: 'heading',
         text: '### Section 1.1.1',
+        tokenCount: encoder.encode('### Section 1.1.1').length,
       },
       {
-        label: '1-1-1-content',
+        label: '1-1-1-content-1',
+        type: 'paragraph',
         text: 'Content of section 1.1.1.',
+        tokenCount: encoder.encode('Content of section 1.1.1.').length,
       },
       {
         label: '1-2-heading',
+        type: 'heading',
         text: '## Section 1.2',
+        tokenCount: encoder.encode('## Section 1.2').length,
       },
       {
-        label: '1-2-content',
+        label: '1-2-content-1',
+        type: 'paragraph',
         text: 'Content of section 1.2.',
+        tokenCount: encoder.encode('Content of section 1.2.').length,
       },
       {
         label: '2-heading',
+        type: 'heading',
         text: '# Chapter 2',
+        tokenCount: encoder.encode('# Chapter 2').length,
       },
       {
-        label: '2-content',
+        label: '2-content-1',
+        type: 'paragraph',
         text: 'Content of chapter 2.',
+        tokenCount: encoder.encode('Content of chapter 2.').length,
       },
       {
         label: '2-1-heading',
+        type: 'heading',
         text: '## Section 2.1',
+        tokenCount: encoder.encode('## Section 2.1').length,
       },
       {
-        label: '2-1-content',
+        label: '2-1-content-1',
+        type: 'paragraph',
         text: 'Content of section 2.1.',
+        tokenCount: encoder.encode('Content of section 2.1.').length,
       },
     ];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -132,17 +203,59 @@ Content under header 1.2.
 # Header 2
 Content under header 2.
     `;
+
     const expected: Chunk[] = [
-      { label: '1-heading', text: '# Header 1' },
-      { label: '1-content', text: 'Content under header 1.' },
-      { label: '1-1-1-1-heading', text: '#### Header 1.1.1.1' },
-      { label: '1-1-1-1-content', text: 'Content under header 1.1.1.1.' },
-      { label: '1-2-heading', text: '## Header 1.2' },
-      { label: '1-2-content', text: 'Content under header 1.2.' },
-      { label: '2-heading', text: '# Header 2' },
-      { label: '2-content', text: 'Content under header 2.' },
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.',
+        tokenCount: encoder.encode('Content under header 1.').length,
+      },
+      {
+        label: '1-1-1-1-heading',
+        type: 'heading',
+        text: '#### Header 1.1.1.1',
+        tokenCount: encoder.encode('#### Header 1.1.1.1').length,
+      },
+      {
+        label: '1-1-1-1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.1.1.1.',
+        tokenCount: encoder.encode('Content under header 1.1.1.1.').length,
+      },
+      {
+        label: '1-2-heading',
+        type: 'heading',
+        text: '## Header 1.2',
+        tokenCount: encoder.encode('## Header 1.2').length,
+      },
+      {
+        label: '1-2-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.2.',
+        tokenCount: encoder.encode('Content under header 1.2.').length,
+      },
+      {
+        label: '2-heading',
+        type: 'heading',
+        text: '# Header 2',
+        tokenCount: encoder.encode('# Header 2').length,
+      },
+      {
+        label: '2-content-1',
+        type: 'paragraph',
+        text: 'Content under header 2.',
+        tokenCount: encoder.encode('Content under header 2.').length,
+      },
     ];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -154,13 +267,35 @@ Content under header 1.
 #### Header 1.1.1.1
 Content under header 1.1.1.1.
     `;
+
     const expected: Chunk[] = [
-      { label: '1-heading', text: '# Header 1' },
-      { label: '1-content', text: 'Content under header 1.' },
-      { label: '1-1-1-1-heading', text: '#### Header 1.1.1.1' },
-      { label: '1-1-1-1-content', text: 'Content under header 1.1.1.1.' },
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.',
+        tokenCount: encoder.encode('Content under header 1.').length,
+      },
+      {
+        label: '1-1-1-1-heading',
+        type: 'heading',
+        text: '#### Header 1.1.1.1',
+        tokenCount: encoder.encode('#### Header 1.1.1.1').length,
+      },
+      {
+        label: '1-1-1-1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.1.1.1.',
+        tokenCount: encoder.encode('Content under header 1.1.1.1.').length,
+      },
     ];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -173,15 +308,35 @@ This is the second paragraph without a header.
 # Header 1
 Content under header 1.
     `;
+
     const expected: Chunk[] = [
       {
-        label: '0-content',
-        text: 'This is the first paragraph without a header.\n\nThis is the second paragraph without a header.',
+        label: '0-content-1',
+        type: 'paragraph',
+        text: 'This is the first paragraph without a header.',
+        tokenCount: encoder.encode('This is the first paragraph without a header.').length,
       },
-      { label: '1-heading', text: '# Header 1' },
-      { label: '1-content', text: 'Content under header 1.' },
+      {
+        label: '0-content-2',
+        type: 'paragraph',
+        text: 'This is the second paragraph without a header.',
+        tokenCount: encoder.encode('This is the second paragraph without a header.').length,
+      },
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.',
+        tokenCount: encoder.encode('Content under header 1.').length,
+      },
     ];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -193,12 +348,29 @@ Content under header 1.
 
 ### Header 1.1.1
     `;
+
     const expected: Chunk[] = [
-      { label: '1-heading', text: '# Header 1' },
-      { label: '1-1-heading', text: '## Header 1.1' },
-      { label: '1-1-1-heading', text: '### Header 1.1.1' },
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-1-heading',
+        type: 'heading',
+        text: '## Header 1.1',
+        tokenCount: encoder.encode('## Header 1.1').length,
+      },
+      {
+        label: '1-1-1-heading',
+        type: 'heading',
+        text: '### Header 1.1.1',
+        tokenCount: encoder.encode('### Header 1.1.1').length,
+      },
     ];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -214,15 +386,47 @@ Another piece of content.
 # Header 2
 Content under header 2.
     `;
+
     const expected: Chunk[] = [
-      { label: '1-heading', text: '# Header 1' },
-      { label: '1-content', text: 'Content under header 1.' },
-      { label: '1-1-heading', text: '## Header 1.1' },
-      { label: '1-1-content', text: 'Content under header 1.1.\nAnother piece of content.' },
-      { label: '2-heading', text: '# Header 2' },
-      { label: '2-content', text: 'Content under header 2.' },
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.',
+        tokenCount: encoder.encode('Content under header 1.').length,
+      },
+      {
+        label: '1-1-heading',
+        type: 'heading',
+        text: '## Header 1.1',
+        tokenCount: encoder.encode('## Header 1.1').length,
+      },
+      {
+        label: '1-1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.1.\nAnother piece of content.',
+        tokenCount: encoder.encode('Content under header 1.1.\nAnother piece of content.').length,
+      },
+      {
+        label: '2-heading',
+        type: 'heading',
+        text: '# Header 2',
+        tokenCount: encoder.encode('# Header 2').length,
+      },
+      {
+        label: '2-content-1',
+        type: 'paragraph',
+        text: 'Content under header 2.',
+        tokenCount: encoder.encode('Content under header 2.').length,
+      },
     ];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -239,15 +443,44 @@ Content under header 1.
 # Header 2
 Content under header 2.
     `;
+
     const expected: Chunk[] = [
-      { label: '1-heading', text: '# Header 1' },
-      { label: '1-content', text: 'Content under header 1.\n\n- Item 1\n  - Subitem 1\n- Item 2' },
-      { label: '2-heading', text: '# Header 2' },
-      { label: '2-content', text: 'Content under header 2.' },
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-content-1',
+        type: 'paragraph',
+        text: 'Content under header 1.',
+        tokenCount: encoder.encode('Content under header 1.').length,
+      },
+      {
+        label: '1-content-2',
+        type: 'list',
+        text: '- Item 1\n  - Subitem 1\n- Item 2',
+        tokenCount: encoder.encode('- Item 1\n  - Subitem 1\n- Item 2').length,
+      },
+      {
+        label: '2-heading',
+        type: 'heading',
+        text: '# Header 2',
+        tokenCount: encoder.encode('# Header 2').length,
+      },
+      {
+        label: '2-content-1',
+        type: 'paragraph',
+        text: 'Content under header 2.',
+        tokenCount: encoder.encode('Content under header 2.').length,
+      },
     ];
-    const result = await splitMarkdownIntoChunks(markdown); // Await the result
+
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
+
   test('code blocks containing # are not treated as headings', async() => {
     const markdown = `
 # Header 1
@@ -262,15 +495,48 @@ Content under header 2.
     `;
 
     const expected: Chunk[] = [
-      { label: '1-heading', text: '# Header 1' },
-      { label: '1-content', text: 'Some introductory content.\n\n```\n# This is a comment with a # symbol\nSome code line\n```\n\nAdditional content.' },
-      { label: '2-heading', text: '# Header 2' },
-      { label: '2-content', text: 'Content under header 2.' },
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-content-1',
+        type: 'paragraph',
+        text: 'Some introductory content.',
+        tokenCount: encoder.encode('Some introductory content.').length,
+      },
+      {
+        label: '1-content-2',
+        type: 'code',
+        text: '```\n# This is a comment with a # symbol\nSome code line\n```',
+        tokenCount: encoder.encode('```\n# This is a comment with a # symbol\nSome code line\n```').length,
+      },
+      {
+        label: '1-content-3',
+        type: 'paragraph',
+        text: 'Additional content.',
+        tokenCount: encoder.encode('Additional content.').length,
+      },
+      {
+        label: '2-heading',
+        type: 'heading',
+        text: '# Header 2',
+        tokenCount: encoder.encode('# Header 2').length,
+      },
+      {
+        label: '2-content-1',
+        type: 'paragraph',
+        text: 'Content under header 2.',
+        tokenCount: encoder.encode('Content under header 2.').length,
+      },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
+
   test('frontmatter is processed and labeled correctly', async() => {
     const markdown = `---
 title: Test Document
@@ -282,12 +548,27 @@ Some introductory content.
     `;
 
     const expected: Chunk[] = [
-      { label: 'frontmatter', text: JSON.stringify({ title: 'Test Document', author: 'John Doe' }, null, 2) },
-      { label: '1-heading', text: '# Header 1' },
-      { label: '1-content', text: 'Some introductory content.' },
+      {
+        label: 'frontmatter',
+        type: 'yaml',
+        text: JSON.stringify({ title: 'Test Document', author: 'John Doe' }, null, 2),
+        tokenCount: encoder.encode(JSON.stringify({ title: 'Test Document', author: 'John Doe' }, null, 2)).length,
+      },
+      {
+        label: '1-heading',
+        type: 'heading',
+        text: '# Header 1',
+        tokenCount: encoder.encode('# Header 1').length,
+      },
+      {
+        label: '1-content-1',
+        type: 'paragraph',
+        text: 'Some introductory content.',
+        tokenCount: encoder.encode('Some introductory content.').length,
+      },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown);
+    const result = await splitMarkdownIntoChunks(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 });
