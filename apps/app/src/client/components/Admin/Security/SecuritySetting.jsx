@@ -363,7 +363,7 @@ class SecuritySetting extends React.Component {
             <div className="col-4 mt-4">
               <strong>{ t('public') }</strong>
             </div>
-            <div className="col  mt-4">
+            <div className="col-auto mr-auto mt-4 ">
               { t('security_settings.displayed') }
             </div>
           </div>
@@ -374,7 +374,7 @@ class SecuritySetting extends React.Component {
             <div className="col-4  mt-4">
               <strong>{ t('anyone_with_the_link') }</strong>
             </div>
-            <div className="col mt-4">
+            <div className="col-auto mr-auto mt-4">
               { t('security_settings.not_displayed') }
             </div>
           </div>
@@ -386,7 +386,7 @@ class SecuritySetting extends React.Component {
               <strong>{ t('only_me') }</strong>
             </div>
 
-            <div className="col mt-4">
+            <div className="col-auto mt-4">
               <div className="dropdown">
                 <button
                   className={`btn btn-outline-secondary dropdown-toggle text-end col-12
