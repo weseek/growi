@@ -14,7 +14,6 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 const logger = loggerFactory('growi:routes:apiv3:openai:thread');
 
 type CreateThreadReq = Request<undefined, ApiV3Response, {
-  userMessage: string,
   threadId?: string,
 }>
 
