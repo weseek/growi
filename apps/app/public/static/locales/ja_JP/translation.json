@@ -524,7 +524,7 @@
     "placeholder": "ききたいことを入力してください",
     "caution_against_hallucination": "情報が正しいか出典を確認しましょう",
     "progress_label": "回答を生成しています",
-    "thread_id_is_not_set": "スレッドの生成に失敗しました"
+    "failed_to_create_or_retrieve_thread": "スレッドの作成または取得に失敗しました"
   },
   "link_edit": {
     "edit_link": "リンク編集",

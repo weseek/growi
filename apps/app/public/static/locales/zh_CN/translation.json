@@ -480,7 +480,7 @@
     "placeholder": "问我任何问题。",
     "caution_against_hallucination": "请核实信息并检查来源。",
     "progress_label": "生成答案中",
-    "thread_id_is_not_set": "生成线程失败"
+    "failed_to_create_or_retrieve_thread": "创建或获取线程失败"
   },
   "link_edit": {
     "edit_link": "Edit Link",

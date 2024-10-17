@@ -66,11 +66,12 @@ const AiChatModalSubstance = (): JSX.Element => {
       }
       catch (err) {
         logger.error(err.toString());
+        toastError(t('modal_aichat.failed_to_create_or_retrieve_thread'));
       }
     };
 
     createThread();
-  }, [threadId]);
+  }, [t, threadId]);
 
   const submit = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
@@ -113,7 +114,7 @@ const AiChatModalSubstance = (): JSX.Element => {
 
           const hasThreadIdNotSetError = resJson.errors.some(err => err.code === MessageErrorCode.THREAD_ID_IS_NOT_SET);
           if (hasThreadIdNotSetError) {
-            toastError(t('modal_aichat.thread_id_is_not_set'));
+            toastError(t('modal_aichat.failed_to_create_or_retrieve_thread'));
           }
         }
         setGeneratingAnswerMessage(undefined);

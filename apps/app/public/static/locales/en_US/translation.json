@@ -491,7 +491,7 @@
     "placeholder": "Ask me anything.",
     "caution_against_hallucination": "Please verify the information and check the sources.",
     "progress_label": "Generating answers",
-    "thread_id_is_not_set": "Failed to generate thread"
+    "failed_to_create_or_retrieve_thread": "Failed to create or retrieve thread"
   },
   "link_edit": {
     "edit_link": "Edit Link",
