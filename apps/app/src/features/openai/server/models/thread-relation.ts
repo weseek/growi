@@ -50,9 +50,7 @@ interface ThreadRelation {
   userId: mongoose.Types.ObjectId;
   threads: ThreadDocument[];
 }
-interface ThreadRelationDocument extends ThreadRelation, Document {
-  updateExpiration(threadId: string): Promise<void>;
-}
+interface ThreadRelationDocument extends ThreadRelation, Document {}
 
 interface ThreadRelationModel extends Model<ThreadRelationDocument> {
   upsertThreadRelation(userId: string, threadId: string): Promise<void>;
