@@ -17,16 +17,20 @@ const CALLOUT_TO_TITLE: CALLOUT_TO = {
   note: 'Note',
   tip: 'Tip',
   important: 'Important',
+  info: 'Important',
   warning: 'Warning',
   caution: 'Caution',
+  danger: 'Caution',
 };
 
 const CALLOUT_TO_ICON: CALLOUT_TO = {
   note: 'info',
   tip: 'lightbulb',
   important: 'feedback',
+  info: 'feedback',
   warning: 'warning',
   caution: 'report',
+  danger: 'report',
 };
 
 type CalloutViewerProps = {
