@@ -1,3 +1,5 @@
+import type { TiktokenModel } from 'js-tiktoken';
+import { encodingForModel } from 'js-tiktoken';
 import yaml from 'js-yaml';
 import remarkFrontmatter from 'remark-frontmatter'; // Frontmatter processing
 import remarkGfm from 'remark-gfm'; // GFM processing
@@ -8,9 +10,9 @@ import { unified } from 'unified';
 
 export type Chunk = {
   label: string;
-  type: string;
+  type?: string;
   text: string;
-  tokenCount?: number;
+  tokenCount: number;
 };
 
 /**
@@ -45,16 +47,17 @@ function updateSectionNumbers(sectionNumbers: number[], headingDepth: number): s
  * @param markdownText - The input Markdown string.
  * @returns An array of labeled chunks.
  */
-export async function splitMarkdownIntoChunks(markdownText: string): Promise<Chunk[]> {
+export async function splitMarkdownIntoChunks(markdownText: string, model: TiktokenModel): Promise<Chunk[]> {
   const chunks: Chunk[] = [];
   const sectionNumbers: number[] = [];
-  let frontmatter: Record<string, unknown> | null = null; // Variable to store frontmatter
   let currentSectionLabel = '';
   const contentCounters: Record<string, number> = {};
 
   if (typeof markdownText !== 'string' || markdownText.trim() === '') {
     return chunks;
   }
+
+  const encoder = encodingForModel(model);
 
   const parser = unified()
     .use(remarkParse)
@@ -76,14 +79,26 @@ export async function splitMarkdownIntoChunks(markdownText: string): Promise<Chu
   // Iterate over top-level nodes to prevent duplication
   for (const node of parsedTree.children) {
     if (node.type === 'yaml') {
-      frontmatter = yaml.load(node.value) as Record<string, unknown>;
+      // Frontmatter block found, handle only the first instance
+      const frontmatter = yaml.load(node.value) as Record<string, unknown>;
+      const frontmatterText = JSON.stringify(frontmatter, null, 2);
+      const tokenCount = encoder.encode(frontmatterText).length;
+      chunks.push({
+        label: 'frontmatter',
+        type: 'yaml',
+        text: frontmatterText,
+        tokenCount,
+      });
     }
     else if (node.type === 'heading') {
       const headingDepth = node.depth;
       currentSectionLabel = updateSectionNumbers(sectionNumbers, headingDepth);
 
       const headingMarkdown = stringifier.stringify(node as any).trim(); // eslint-disable-line @typescript-eslint/no-explicit-any
-      chunks.push({ label: `${currentSectionLabel}-heading`, type: node.type, text: headingMarkdown });
+      const tokenCount = encoder.encode(headingMarkdown).length;
+      chunks.push({
+        label: `${currentSectionLabel}-heading`, type: node.type, text: headingMarkdown, tokenCount,
+      });
     }
     else {
       // Process non-heading content individually
@@ -99,17 +114,12 @@ export async function splitMarkdownIntoChunks(markdownText: string): Promise<Chu
         const contentLabel = currentSectionLabel !== ''
           ? `${currentSectionLabel}-content-${contentCounters[contentCountKey]}`
           : `0-content-${contentCounters[contentCountKey]}`;
-        chunks.push({ label: contentLabel, type: node.type, text: contentMarkdown });
+        const tokenCount = encoder.encode(contentMarkdown).length;
+        chunks.push({
+          label: contentLabel, type: node.type, text: contentMarkdown, tokenCount,
+        });
       }
     }
-  }
-
-  if (frontmatter) {
-    chunks.unshift({
-      label: 'frontmatter',
-      type: 'yaml',
-      text: JSON.stringify(frontmatter, null, 2),
-    });
   }
 
   return chunks;
