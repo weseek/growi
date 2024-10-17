@@ -1,15 +1,13 @@
-import type { ReactNode } from 'react';
 import React, { useRef, useEffect } from 'react';
 
 import mermaid from 'mermaid';
 
 type MermaidViewerProps = {
-  children: ReactNode,
   value: string
 }
 
 export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element => {
-  const { children, value } = props;
+  const { value } = props;
 
   const ref = useRef<HTMLDivElement>(null);
 
@@ -21,13 +19,13 @@ export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element
   }, [value]);
 
   return (
-    children
+    value
       ? (
-        <div ref={ref} key={children as string}>
+        <div ref={ref} key={value as string}>
           {value}
         </div>
       )
-      : <div key={children as string}></div>
+      : <div key={value as string}></div>
   );
 });
 MermaidViewer.displayName = 'MermaidViewer';
