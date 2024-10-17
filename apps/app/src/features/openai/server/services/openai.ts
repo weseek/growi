@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
+import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
 import VectorStoreModel, { VectorStoreScopeType, type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
 import VectorStoreFileRelationModel, {
   type VectorStoreFileRelation,
@@ -29,7 +30,7 @@ const logger = loggerFactory('growi:service:openai');
 let isVectorStoreForPublicScopeExist = false;
 
 export interface IOpenaiService {
-  getOrCreateThread(threadId?: string): Promise<OpenAI.Beta.Threads.Thread>;
+  getOrCreateThread(userId: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
   getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
@@ -43,13 +44,20 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  public async getOrCreateThread(threadId?: string): Promise<OpenAI.Beta.Threads.Thread> {
-    const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
-    const thread = threadId == null
-      ? await this.client.createThread(vectorStore.vectorStoreId)
-      : await this.client.retrieveThread(threadId);
+  public async getOrCreateThread(userId: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined> {
+    if (threadId == null) {
+      const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
+      const thread = await this.client.createThread(vectorStore.vectorStoreId);
+      await ThreadRelationModel.upsertThreadRelation(userId, thread.id);
+      return thread;
+    }
 
-    return thread;
+    const threadDocument = await ThreadRelationModel.getThread(userId, threadId);
+    if (threadDocument != null) {
+      // Check if a thread entity exists
+      const thread = await this.client.retrieveThread(threadDocument.threadId);
+      return thread;
+    }
   }
 
   public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
