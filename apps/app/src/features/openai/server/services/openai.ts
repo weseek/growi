@@ -48,21 +48,20 @@ class OpenaiService implements IOpenaiService {
     if (threadId == null) {
       const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
       const thread = await this.client.createThread(vectorStore.vectorStoreId);
-      await ThreadRelationModel.upsertThreadRelation(userId, thread.id);
+      await ThreadRelationModel.create({ userId, threadId: thread.id });
       return thread;
     }
 
-    const threadRelation = await ThreadRelationModel.getThreadRelation(userId, threadId);
-    const threadDocument = threadRelation?.threads.find(thread => thread.threadId === threadId);
-    if (threadDocument == null) {
+    const threadRelation = await ThreadRelationModel.findOne({ threadId });
+    if (threadRelation == null) {
       return;
     }
 
     // Check if a thread entity exists
-    const thread = await this.client.retrieveThread(threadDocument.threadId);
+    const thread = await this.client.retrieveThread(threadRelation.threadId);
 
     // Update expiration date if thread entity exists
-    await threadDocument.updateExpiration();
+    await threadRelation.updateThreadExpiration();
 
     return thread;
   }

@@ -2,6 +2,7 @@ import type { IUserHasId } from '@growi/core/dist/interfaces';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
+import { filterXSS } from 'xss';
 
 import type Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -30,9 +31,9 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
       try {
-        const user = req.user;
+        const filterdThreadId = req.body.threadId != null ? filterXSS(req.body.threadId) : undefined;
         const openaiService = getOpenaiService();
-        const thread = await openaiService?.getOrCreateThread(user._id, req.body.threadId);
+        const thread = await openaiService?.getOrCreateThread(req.user._id, filterdThreadId);
         return res.apiv3({ thread });
       }
       catch (err) {

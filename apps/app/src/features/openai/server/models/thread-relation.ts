@@ -11,84 +11,42 @@ const generateExpirationDate = (): Date => {
   return expirationDate;
 };
 
-
-/*
-*  Thread Model
-*/
-interface Thread {
+interface ThreadRelation {
+  userId: mongoose.Types.ObjectId;
   threadId: string;
   expiredAt: Date;
 }
 
-interface ThreadDocument extends Thread, Document {
-  updateExpiration(): Promise<void>;
+interface ThreadRelationDocument extends ThreadRelation, Document {
+  updateThreadExpiration(): Promise<void>;
 }
-
-type ThreadModel = Model<ThreadDocument>
-
-const threadSchema = new Schema<Thread, ThreadDocument, ThreadModel>({
-  threadId: {
-    type: String,
-    required: true,
-  },
-  expiredAt: {
-    type: Date,
-    required: true,
-  },
-});
-
-threadSchema.methods.updateExpiration = async function(): Promise<void> {
-  this.expiredAt = generateExpirationDate();
-  this.parent().save();
-};
-
-
-/*
-*  Thread Relation Model
-*/
-interface ThreadRelation {
-  userId: mongoose.Types.ObjectId;
-  threads: ThreadDocument[];
-}
-interface ThreadRelationDocument extends ThreadRelation, Document {}
 
 interface ThreadRelationModel extends Model<ThreadRelationDocument> {
   upsertThreadRelation(userId: string, threadId: string): Promise<void>;
   getThreadRelation(userId: string, threadId: string): Promise<ThreadRelationDocument | null>
 }
 
-const threadRelationSchema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
+const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
+  },
+  threadId: {
+    type: String,
+    required: true,
     unique: true,
   },
-  threads: [threadSchema],
+  expiredAt: {
+    type: Date,
+    default: generateExpirationDate,
+    required: true,
+  },
 });
 
-
-threadRelationSchema.statics.upsertThreadRelation = async function(userId: string, threadId: string): Promise<void> {
-  const expirationDate = generateExpirationDate();
-
-  await this.updateOne(
-    { userId },
-    {
-      $push: {
-        threads: {
-          threadId,
-          expiredAt: expirationDate,
-        },
-      },
-    },
-    { upsert: true },
-  );
+schema.methods.updateThreadExpiration = async function(): Promise<void> {
+  this.expiredAt = generateExpirationDate();
+  await this.save();
 };
 
-
-threadRelationSchema.statics.getThreadRelation = async function(userId: string, threadId: string): Promise<ThreadRelationDocument | null> {
-  const result = await this.findOne({ userId, 'threads.threadId': threadId });
-  return result;
-};
-
-export default getOrCreateModel<ThreadRelationDocument, ThreadRelationModel>('ThreadRelation', threadRelationSchema);
+export default getOrCreateModel<ThreadRelationDocument, ThreadRelationModel>('ThreadRelation', schema);
