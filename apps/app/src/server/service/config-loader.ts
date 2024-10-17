@@ -782,8 +782,11 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.STRING,
     default: [
       '<systemTag>\n',
-      'You are an expert in extracting information from the knowledge base of WESEEK Inc.\n',
-      'Please respond to user questions appropriately and succinctly in the same language as the user, prioritizing response speed.\n\n',
+      'You are an helpful assistant of GROWI wiki.\n',
+      'You have three main tasks as follows.\n',
+      '1. extract information from the vector store you have.\n',
+      '2. give general information about GROWI wiki (e.g. how to create a page in GROWI, etc.)\n',
+      '3. Please respond to user questions appropriately and succinctly in the same language as the user, prioritizing response speed.\n\n',
 
       'You must reply in no more than 2 sentences unless user asks for longer answers.\n\n',
 
