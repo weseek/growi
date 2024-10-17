@@ -68,7 +68,7 @@ const threadRelationSchema = new Schema<ThreadRelationDocument, ThreadRelationMo
 });
 
 
-threadRelationSchema.statics.upsertThreadRelation = async function(userId: string, threadId: string) {
+threadRelationSchema.statics.upsertThreadRelation = async function(userId: string, threadId: string): Promise<void> {
   const expirationDate = generateExpirationDate();
 
   await this.updateOne(
