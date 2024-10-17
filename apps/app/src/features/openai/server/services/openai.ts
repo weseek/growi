@@ -52,7 +52,7 @@ class OpenaiService implements IOpenaiService {
       return thread;
     }
 
-    const threadRelation = await ThreadRelationModel.getThreadRelationAndUpdateExpiration(userId, threadId);
+    const threadRelation = await ThreadRelationModel.getThreadRelation(userId, threadId);
     const threadDocument = threadRelation?.threads.find(thread => thread.threadId === threadId);
     if (threadDocument == null) {
       return;
@@ -60,6 +60,10 @@ class OpenaiService implements IOpenaiService {
 
     // Check if a thread entity exists
     const thread = await this.client.retrieveThread(threadDocument.threadId);
+
+    // Update expiration date if thread entity exists
+    await threadDocument.updateExpiration();
+
     return thread;
   }
 
