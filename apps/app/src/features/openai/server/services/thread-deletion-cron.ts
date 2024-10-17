@@ -3,12 +3,12 @@ import nodeCron from 'node-cron';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
-import ThreadRelationModel from '../models/thread-relation';
-
 import { getOpenaiService, type IOpenaiService } from './openai';
 
 
 const logger = loggerFactory('growi:service:thread-deletion-cron');
+
+const DELETE_LIMIT = 100;
 
 class ThreadDeletionCronService {
 
@@ -43,13 +43,13 @@ class ThreadDeletionCronService {
   }
 
   async executeJob(): Promise<void> {
-    // important
+    await this.openaiService.deleteExpiredThreads(DELETE_LIMIT);
   }
 
   private generateCronJob(cronSchedule: string) {
     return nodeCron.schedule(cronSchedule, async() => {
       try {
-        this.executeJob();
+        await this.executeJob();
       }
       catch (e) {
         logger.error(e);
