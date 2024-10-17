@@ -523,7 +523,8 @@
     "title_beta_label": "(ベータ)",
     "placeholder": "ききたいことを入力してください",
     "caution_against_hallucination": "情報が正しいか出典を確認しましょう",
-    "progress_label": "回答を生成しています"
+    "progress_label": "回答を生成しています",
+    "failed_to_create_or_retrieve_thread": "スレッドの作成または取得に失敗しました"
   },
   "link_edit": {
     "edit_link": "リンク編集",
