@@ -21,10 +21,7 @@ interface ThreadRelationDocument extends ThreadRelation, Document {
   updateThreadExpiration(): Promise<void>;
 }
 
-interface ThreadRelationModel extends Model<ThreadRelationDocument> {
-  upsertThreadRelation(userId: string, threadId: string): Promise<void>;
-  getThreadRelation(userId: string, threadId: string): Promise<ThreadRelationDocument | null>
-}
+type ThreadRelationModel = Model<ThreadRelationDocument>
 
 const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   userId: {
