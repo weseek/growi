@@ -13134,19 +13134,6 @@ micromark-core-commonmark@^2.0.0:
     micromark-util-symbol "^2.0.0"
     micromark-util-types "^2.0.0"
 
-micromark-extension-directive@^3.0.0:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/micromark-extension-directive/-/micromark-extension-directive-3.0.2.tgz#2eb61985d1995a7c1ff7621676a4f32af29409e8"
-  integrity sha512-wjcXHgk+PPdmvR58Le9d7zQYWy+vKEU9Se44p2CrCDPiLr2FMyiT4Fyb5UFKFC66wGB3kPlgD7q3TnoqPS7SZA==
-  dependencies:
-    devlop "^1.0.0"
-    micromark-factory-space "^2.0.0"
-    micromark-factory-whitespace "^2.0.0"
-    micromark-util-character "^2.0.0"
-    micromark-util-symbol "^2.0.0"
-    micromark-util-types "^2.0.0"
-    parse-entities "^4.0.0"
-
 micromark-extension-frontmatter@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/micromark-extension-frontmatter/-/micromark-extension-frontmatter-2.0.0.tgz#651c52ffa5d7a8eeed687c513cd869885882d67a"
@@ -16122,16 +16109,6 @@ remark-breaks@^4.0.0:
   dependencies:
     "@types/mdast" "^4.0.0"
     mdast-util-newline-to-break "^2.0.0"
-    unified "^11.0.0"
-
-remark-directive@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/remark-directive/-/remark-directive-3.0.0.tgz#34452d951b37e6207d2e2a4f830dc33442923268"
-  integrity sha512-l1UyWJ6Eg1VPU7Hm/9tt0zKtReJQNOA4+iDMAxTyZNWnJnFlbS/7zhiel/rogTLQ2vMYwDzSJa4BiVNqGlqIMA==
-  dependencies:
-    "@types/mdast" "^4.0.0"
-    mdast-util-directive "^3.0.0"
-    micromark-extension-directive "^3.0.0"
     unified "^11.0.0"
 
 remark-emoji@^5.0.0:
