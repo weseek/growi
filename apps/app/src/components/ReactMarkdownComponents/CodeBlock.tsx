@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-import type { CodeComponent, CodeProps } from 'react-markdown/lib/ast-to-react';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
@@ -45,7 +44,8 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   // see: https://github.com/weseek/growi/pull/7484
   //
   // Note: You can also remove this code if the user requests to see the code highlighted in Prism as-is.
-  const isSimpleString = Array.isArray(children) && children.length === 1 && typeof children[0] === 'string';
+
+  const isSimpleString = typeof children === 'string' || (Array.isArray(children) && children.length === 1 && typeof children[0] === 'string');
   if (!isSimpleString) {
     return (
       <div style={oneDark['pre[class*="language-"]']}>
@@ -67,13 +67,19 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   );
 }
 
-export const CodeBlock: CodeComponent = ({ inline, className, children }: CodeProps) => {
+type CodeBlockProps = {
+  children: ReactNode,
+  className?: string,
+  inline?: string, // "" or undefined
+}
 
-  if (inline) {
-    return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
-  }
+export const CodeBlock = (props: CodeBlockProps): JSX.Element => {
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
+  const { className, children, inline } = props;
+  if (inline != null) {
+    return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
+  }
 
   const match = /language-(\w+)(:?.+)?/.exec(className || '');
   const lang = match && match[1] ? match[1] : '';

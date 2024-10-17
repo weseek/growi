@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import { FilterXSS } from 'xss';
 
 import { CommentEvent, commentEvent } from '~/features/comment/server';
+import { isIncludeAiMenthion, removeAiMenthion } from '~/features/search/utils/ai';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import type { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
@@ -39,7 +40,8 @@ const filterXss = new FilterXSS(filterXssOptions);
 
 const normalizeQueryString = (_queryString: string): string => {
   let queryString = _queryString.trim();
-  queryString = queryString.replace(/\s+/g, ' ');
+  queryString = removeAiMenthion(queryString)
+    .replace(/\s+/g, ' ');
 
   return queryString;
 };
@@ -298,6 +300,10 @@ class SearchService implements SearchQueryParser, SearchResolver {
     catch (err) {
       logger.error('Error occurred while parseSearchQuery', err);
       throw err;
+    }
+
+    if (isIncludeAiMenthion(keyword)) {
+      searchOpts.vector = true;
     }
 
     let delegator: SearchDelegator;

@@ -1,9 +1,8 @@
 import type { IUser } from '@growi/core';
 
-import { SupportedTargetModelType, SupportedActionType } from './activity';
+import type { SupportedTargetModelType, SupportedActionType } from './activity';
 
 export enum InAppNotificationStatuses {
-  STATUS_UNREAD = 'UNREAD',
   STATUS_UNOPENED = 'UNOPENED',
   STATUS_OPENED = 'OPENED',
 }
