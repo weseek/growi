@@ -24,7 +24,7 @@ interface ThreadDocument extends ThreadRelation, Document {}
 
 interface ThreadRelationModel extends Model<ThreadDocument> {
   upsertThreadRelation(userId: string, threadId: string): Promise<void>;
-  getThreadRelationAndUpdateExpiration(userId: string, threadId: string): Promise<ThreadRelation | null>
+  getThreadRelationAndUpdateExpiration(userId: string, threadId: string): Promise<ThreadDocument | null>
 }
 
 const schema = new Schema<ThreadDocument, ThreadRelationModel>({
@@ -66,7 +66,7 @@ schema.statics.upsertThreadRelation = async function(userId: string, threadId: s
 };
 
 
-schema.statics.getThreadRelationAndUpdateExpiration = async function(userId: string, threadId: string): Promise<ThreadRelation | null> {
+schema.statics.getThreadRelationAndUpdateExpiration = async function(userId: string, threadId: string): Promise<ThreadDocument | null> {
   const expirationDate = generateExpirationDate();
 
   const result = await this.findOneAndUpdate(
@@ -77,6 +77,5 @@ schema.statics.getThreadRelationAndUpdateExpiration = async function(userId: str
 
   return result;
 };
-
 
 export default getOrCreateModel<ThreadDocument, ThreadRelationModel>('ThreadRelation', schema);
