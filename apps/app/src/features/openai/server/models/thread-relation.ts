@@ -5,6 +5,12 @@ import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 const DAYS_UNTIL_EXPIRATION = 30;
 
+const generateExpirationDate = (): Date => {
+  const currentDate = new Date();
+  const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + DAYS_UNTIL_EXPIRATION));
+  return expirationDate;
+};
+
 interface Thread {
   threadId: string;
   expiredAt: Date;
@@ -18,7 +24,7 @@ interface ThreadDocument extends ThreadRelation, Document {}
 
 interface ThreadRelationModel extends Model<ThreadDocument> {
   upsertThreadRelation(userId: string, threadId: string): Promise<void>;
-  getThread(userId: string, threadId: string): Promise<Thread | undefined>;
+  getThreadRelationAndUpdateExpiration(userId: string, threadId: string): Promise<ThreadRelation | null>
 }
 
 const schema = new Schema<ThreadDocument, ThreadRelationModel>({
@@ -43,8 +49,7 @@ const schema = new Schema<ThreadDocument, ThreadRelationModel>({
 
 
 schema.statics.upsertThreadRelation = async function(userId: string, threadId: string) {
-  const currentDate = new Date();
-  const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + DAYS_UNTIL_EXPIRATION));
+  const expirationDate = generateExpirationDate();
 
   await this.updateOne(
     { userId },
@@ -60,18 +65,20 @@ schema.statics.upsertThreadRelation = async function(userId: string, threadId: s
   );
 };
 
-schema.statics.getThread = async function(userId: string, threadId: string): Promise<Thread | undefined> {
-  const result = await this.findOne(
+
+schema.statics.getThreadRelationAndUpdateExpiration = async function(userId: string, threadId: string): Promise<ThreadRelation | null> {
+  const expirationDate = generateExpirationDate();
+
+  const result = await this.findOneAndUpdate(
     { userId, 'threads.threadId': threadId },
-    { threads: { $elemMatch: { threadId } } },
+    {
+      $set: { 'threads.$.expiredAt': expirationDate }, // Extend DAYS_UNTIL_EXPIRATION days from the retrieved time.
+    },
+    { new: true }, // 更新後のドキュメントを返す
   );
 
-  if (result != null && result.threads.length > 0) {
-    return {
-      threadId: result.threads[0].threadId,
-      expiredAt: result.threads[0].expiredAt,
-    };
-  }
+  return result;
 };
+
 
 export default getOrCreateModel<ThreadDocument, ThreadRelationModel>('ThreadRelation', schema);

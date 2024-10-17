@@ -52,12 +52,15 @@ class OpenaiService implements IOpenaiService {
       return thread;
     }
 
-    const threadDocument = await ThreadRelationModel.getThread(userId, threadId);
-    if (threadDocument != null) {
-      // Check if a thread entity exists
-      const thread = await this.client.retrieveThread(threadDocument.threadId);
-      return thread;
+    const threadRelation = await ThreadRelationModel.getThreadRelationAndUpdateExpiration(userId, threadId);
+    const threadDocument = threadRelation?.threads.find(thread => thread.threadId === threadId);
+    if (threadDocument == null) {
+      return;
     }
+
+    // Check if a thread entity exists
+    const thread = await this.client.retrieveThread(threadDocument.threadId);
+    return thread;
   }
 
   public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
