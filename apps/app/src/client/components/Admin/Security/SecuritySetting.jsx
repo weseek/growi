@@ -469,7 +469,7 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
 
-        <h4 className="my-4">{t('security_settings.page_access_rights')}</h4>
+        <h4 className="my-5">{t('security_settings.page_access_rights')}</h4>
         <div className="row mb-4">
           <div className="col-md-4 text-md-end py-2">
             <strong>{t('security_settings.Guest Users Access')}</strong>
@@ -514,7 +514,7 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
 
-        <h4 className="mb-3">{t('security_settings.page_delete_rights')}</h4>
+        <h4 className="my-5">{t('security_settings.page_delete_rights')}</h4>
         {/* Render PageDeletePermission */}
         {
           [
