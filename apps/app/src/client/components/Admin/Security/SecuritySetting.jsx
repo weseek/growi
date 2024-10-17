@@ -424,12 +424,12 @@ class SecuritySetting extends React.Component {
             </div>
 
             <div className="container text-center">
-              <div className="row  justify-content-end">
+              <div className="row  justify-content-start">
                 <div className="col-4 mt-4">
                   <strong>{ t('only_inside_the_group') }</strong>
                 </div>
 
-                <div className="col mt-4">
+                <div className="col-auto mt-4">
                   <div className="dropdown">
                     <button
                       className={`btn btn-outline-secondary dropdown-toggle text-end col-12
