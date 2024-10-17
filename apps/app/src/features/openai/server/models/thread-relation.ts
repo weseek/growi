@@ -71,10 +71,8 @@ schema.statics.getThreadRelationAndUpdateExpiration = async function(userId: str
 
   const result = await this.findOneAndUpdate(
     { userId, 'threads.threadId': threadId },
-    {
-      $set: { 'threads.$.expiredAt': expirationDate }, // Extend DAYS_UNTIL_EXPIRATION days from the retrieved time.
-    },
-    { new: true }, // 更新後のドキュメントを返す
+    { $set: { 'threads.$.expiredAt': expirationDate } }, // Extend DAYS_UNTIL_EXPIRATION days from the retrieved time
+    { new: true },
   );
 
   return result;
