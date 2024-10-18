@@ -31,9 +31,10 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
       try {
-        const filterdThreadId = req.body.threadId != null ? filterXSS(req.body.threadId) : undefined;
         const openaiService = getOpenaiService();
-        const thread = await openaiService?.getOrCreateThread(req.user._id, filterdThreadId);
+        const filterdThreadId = req.body.threadId != null ? filterXSS(req.body.threadId) : undefined;
+        const vectorStore = await openaiService?.getOrCreateVectorStoreForPublicScope();
+        const thread = await openaiService?.getOrCreateThread(req.user._id, vectorStore?.vectorStoreId, filterdThreadId);
         return res.apiv3({ thread });
       }
       catch (err) {

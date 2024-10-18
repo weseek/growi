@@ -30,7 +30,7 @@ const logger = loggerFactory('growi:service:openai');
 let isVectorStoreForPublicScopeExist = false;
 
 export interface IOpenaiService {
-  getOrCreateThread(userId: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
+  getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
   getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
@@ -44,10 +44,9 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  public async getOrCreateThread(userId: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined> {
-    if (threadId == null) {
-      const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
-      const thread = await this.client.createThread(vectorStore.vectorStoreId);
+  public async getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined> {
+    if (vectorStoreId != null && threadId == null) {
+      const thread = await this.client.createThread(vectorStoreId);
       await ThreadRelationModel.create({ userId, threadId: thread.id });
       return thread;
     }
