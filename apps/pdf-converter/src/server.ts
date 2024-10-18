@@ -1,7 +1,6 @@
 import type { PlatformApplication } from '@tsed/common';
 import { Configuration, Inject } from '@tsed/di';
-import express from 'express';
-import '@tsed/swagger';
+import bodyParser from 'body-parser';
 
 import * as Controllers from './controllers';
 
@@ -15,7 +14,11 @@ const PORT = Number(process.env.PORT || 3004);
   mount: {
     '/': [...Object.values(Controllers)],
   },
-  middlewares: ['json-parser'],
+  middlewares: [
+    'json-parser',
+    bodyParser.json({ limit: '50mb' }),
+    bodyParser.urlencoded({ extended: true, limit: '50mb' }),
+  ],
   swagger: [
     {
       path: '/v3/docs',
@@ -27,12 +30,6 @@ class Server {
 
   @Inject()
     app: PlatformApplication;
-
-  $beforeRoutesInit(): void {
-    this.app
-      .use(express.json({ limit: '50mb' }))
-      .use(express.urlencoded({ extended: true, limit: '50mb' }));
-  }
 
 }
 
