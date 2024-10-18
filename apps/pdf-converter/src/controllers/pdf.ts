@@ -2,9 +2,10 @@ import type { Logger } from '@tsed/common';
 import { BodyParams } from '@tsed/common';
 import { Controller, Inject } from '@tsed/di';
 import { InternalServerError } from '@tsed/exceptions';
-import { Post, Returns } from '@tsed/schema';
+import { Post, Returns, Enum } from '@tsed/schema';
 
-import type { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert';
+import { JobStatusSharedWithGrowi } from '../service/pdf-convert';
+import type { JobStatus } from '../service/pdf-convert';
 import type PdfConvertService from '../service/pdf-convert';
 
 @Controller('/pdf')
@@ -21,11 +22,11 @@ class PdfCtrl {
   async syncJobStatus(
     @BodyParams('jobId') jobId: string,
     @BodyParams('expirationDate') expirationDateStr: string,
-    @BodyParams('status') growiJobStatus: JobStatusSharedWithGrowi,
+    @BodyParams('status') @Enum(Object.values(JobStatusSharedWithGrowi)) growiJobStatus: JobStatusSharedWithGrowi,
   ): Promise<{ status: JobStatus }> {
     const expirationDate = new Date(expirationDateStr);
     try {
-      this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus);
+      await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus);
       this.pdfConvertService.cleanUpJobList();
       return { status: this.pdfConvertService.getJobStatus(jobId) };
     }

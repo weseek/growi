@@ -12,14 +12,19 @@ interface PageInfo {
   htmlFilePath: string;
 }
 
-export enum JobStatus {
-  HTML_EXPORT_IN_PROGRESS = 'HTML_EXPORT_IN_PROGRESS',
-  HTML_EXPORT_DONE = 'HTML_EXPORT_DONE',
-  PDF_EXPORT_DONE = 'PDF_EXPORT_DONE',
-  FAILED = 'FAILED',
-}
+export const JobStatusSharedWithGrowi = {
+  HTML_EXPORT_IN_PROGRESS: 'HTML_EXPORT_IN_PROGRESS',
+  HTML_EXPORT_DONE: 'HTML_EXPORT_DONE',
+  FAILED: 'FAILED',
+} as const;
 
-export type JobStatusSharedWithGrowi = JobStatus.HTML_EXPORT_IN_PROGRESS | JobStatus.HTML_EXPORT_DONE | JobStatus.FAILED;
+export const JobStatus = {
+  ...JobStatusSharedWithGrowi,
+  PDF_EXPORT_DONE: 'PDF_EXPORT_DONE',
+} as const;
+
+export type JobStatusSharedWithGrowi = typeof JobStatusSharedWithGrowi[keyof typeof JobStatusSharedWithGrowi]
+export type JobStatus = typeof JobStatus[keyof typeof JobStatus]
 
 interface JobInfo {
   expirationDate: Date;
@@ -47,11 +52,9 @@ class PdfConvertService {
   @Inject()
     logger: Logger;
 
-  constructor() {
-    this.initPuppeteerCluster();
-  }
+  async registerOrUpdateJob(jobId: string, expirationDate: Date, status: JobStatusSharedWithGrowi): Promise<void> {
+    if (this.puppeteerCluster == null) await this.initPuppeteerCluster();
 
-  registerOrUpdateJob(jobId: string, expirationDate: Date, status: JobStatusSharedWithGrowi): void {
     const isJobNew = !(jobId in this.jobList);
 
     if (isJobNew) {
@@ -61,7 +64,7 @@ class PdfConvertService {
       const jobInfo = this.jobList[jobId];
       jobInfo.expirationDate = expirationDate;
 
-      if (![JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(jobInfo.status)) {
+      if (!this.isJobCompleted(jobId)) {
         jobInfo.status = status;
       }
     }
@@ -84,16 +87,20 @@ class PdfConvertService {
     const now = new Date();
     for (const jobId of Object.keys(this.jobList)) {
       const job = this.jobList[jobId];
-      if (now > job.expirationDate && [JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(job.status)) {
+      if (now > job.expirationDate || this.isJobCompleted(jobId)) {
         job.currentStream?.destroy(new Error('job expired'));
         delete this.jobList[jobId];
       }
     }
   }
 
+  private isJobCompleted(jobId: string): boolean {
+    return this.jobList[jobId].status === JobStatus.PDF_EXPORT_DONE || this.jobList[jobId].status === JobStatus.FAILED;
+  }
+
 
   private async readHtmlAndConvertToPdfUntilFinish(jobId: string): Promise<void> {
-    while (![JobStatus.PDF_EXPORT_DONE, JobStatus.FAILED].includes(this.jobList[jobId].status)) {
+    while (!this.isJobCompleted(jobId)) {
       // eslint-disable-next-line no-await-in-loop
       await new Promise(resolve => setTimeout(resolve, 60 * 1000));
 
@@ -108,6 +115,7 @@ class PdfConvertService {
 
         // eslint-disable-next-line no-await-in-loop
         await pipelinePromise(htmlReadable, pdfWritable);
+        this.jobList[jobId].currentStream = null;
       }
       catch (err) {
         this.logger.error('Failed to convert html to pdf', err);

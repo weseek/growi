@@ -1,6 +1,7 @@
 import type { PlatformApplication } from '@tsed/common';
 import { Configuration, Inject } from '@tsed/di';
 import bodyParser from 'body-parser';
+import '@tsed/swagger';
 
 import * as Controllers from './controllers';
 
