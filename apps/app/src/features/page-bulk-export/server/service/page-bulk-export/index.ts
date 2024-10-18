@@ -10,11 +10,9 @@ import {
   getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
-import { pdfCtrlSyncJobStatus, PdfCtrlSyncJobStatusBodyStatus } from '@growi/pdf-converter/dist/client-library';
+import { pdfCtrlSyncJobStatus, PdfCtrlSyncJobStatus202Status, PdfCtrlSyncJobStatusBodyStatus } from '@growi/pdf-converter/dist/client-library';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
-// eslint-disable-next-line no-restricted-imports
-import axios from 'axios';
 import gc from 'expose-gc/function';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
@@ -377,11 +375,11 @@ class PageBulkExportService implements IPageBulkExportService {
             jobId: pageBulkExportJob._id.toString(), expirationDate: jobExpirationDate.toISOString(), status,
           }, { baseURL: url });
 
-          if (res.data.status === 'PDF_EXPORT_DONE') {
+          if (res.data.status === PdfCtrlSyncJobStatus202Status.PDF_EXPORT_DONE) {
             clearInterval(interval);
             resolve();
           }
-          else if (res.data.status === PdfCtrlSyncJobStatusBodyStatus.FAILED) {
+          else if (res.data.status === PdfCtrlSyncJobStatus202Status.FAILED) {
             clearInterval(interval);
             reject(new Error('PDF export failed'));
           }

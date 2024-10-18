@@ -4,8 +4,7 @@ import { Controller, Inject } from '@tsed/di';
 import { InternalServerError } from '@tsed/exceptions';
 import { Post, Returns, Enum } from '@tsed/schema';
 
-import { JobStatusSharedWithGrowi } from '../service/pdf-convert';
-import type { JobStatus } from '../service/pdf-convert';
+import { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert';
 import type PdfConvertService from '../service/pdf-convert';
 
 @Controller('/pdf')
@@ -17,7 +16,13 @@ class PdfCtrl {
   constructor(private readonly pdfConvertService: PdfConvertService) {}
 
   @Post('/sync-job')
-  @Returns(202)
+  @(Returns(202).ContentType('application/json').Schema({
+    type: 'object',
+    properties: {
+      status: { type: 'string', enum: Object.values(JobStatus) },
+    },
+    required: ['status'],
+  }))
   @Returns(500)
   async syncJobStatus(
     @BodyParams('jobId') jobId: string,
