@@ -575,7 +575,11 @@ Some introductory content.
 
 describe('splitMarkdownIntoChunks', () => {
   const repeatedText = 'This is a repeated sentence for testing purposes. '.repeat(100);
-  const markdown = `
+  const markdown = `---
+title: Test Document
+author: John Doe
+---
+
 ${repeatedText}
 
 # Header 1
@@ -587,7 +591,6 @@ This paragraph is extended with more content to ensure proper chunking behavior.
 
 This is the first paragraph under header 1-1. The text is a bit longer to ensure proper chunking. More text follows.
 
-${repeatedText}
 
 ### Header 1-1-1
 
@@ -606,11 +609,11 @@ This is another paragraph under header 1-1-1-1. It should be grouped with the co
 
 Here is some content under header 2. This section should also be sufficiently long to ensure that the token count threshold is reached in the test.
 
+${repeatedText}
+
 ### Header 2-1
 
 Another sub-header under header 2 with text for testing chunking behavior. This is a fairly lengthy paragraph as well.
-
-#### Header 2-1-1
 
 We now have a fourth-level sub-header under header 2-1. This ensures that the chunking logic can handle deeply nested content.
 
@@ -676,5 +679,19 @@ Another section with a shorter header, but enough content to ensure proper chunk
         throw new Error('An unknown error occurred');
       }
     }
+  });
+
+  test('Should return the entire markdown as a single chunk if token count is less than or equal to maxToken', async() => {
+    const markdownText = `
+    # Header 1
+    This is a short paragraph under header 1. It contains only a few sentences to ensure that the total token count remains under the maxToken limit.
+    `;
+
+    const maxToken = 800; // maxToken
+
+    const result = await splitMarkdownIntoChunks(markdownText, MODEL, maxToken);
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toBe(markdownText);
   });
 });
