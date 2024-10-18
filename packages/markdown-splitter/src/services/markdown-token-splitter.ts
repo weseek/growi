@@ -8,17 +8,14 @@ function groupMarkdownFragments(
     markdownFragments: MarkdownFragment[],
     maxToken: number,
 ): MarkdownFragmentGroups {
-  const labels = markdownFragments.map(fragment => fragment.label);
 
-  // Get a list of unique prefixes
-  const uniquePrefixes: string[] = [...new Set(labels.map((label) => {
-    if (label === 'frontmatter') {
-      return 'frontmatter';
-    }
-    const match = label.match(/^\d+(-\d+)*/); // Match the prefix part
-    return match ? match[0] : ''; // Ensure a string is returned
-  }).filter((prefix): prefix is string => prefix !== ''))]; // Type narrowing to string
+  const prefixes = markdownFragments.map(({ label }) => {
+    if (label === 'frontmatter') return 'frontmatter';
+    const match = label.match(/^\d+(?:-\d+)*/);
+    return match[0];
+  });
 
+  const uniquePrefixes = [...new Set(prefixes.filter(Boolean))];
 
   // Group chunks by prefix
   const fragmentGroupes: MarkdownFragmentGroups = [];
