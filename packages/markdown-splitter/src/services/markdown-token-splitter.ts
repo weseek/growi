@@ -1,14 +1,14 @@
 import type { TiktokenModel } from 'js-tiktoken';
 
-import { splitMarkdownIntoChunks, type Chunk } from './markdown-splitter';
+import { splitMarkdownIntoFragments, type MarkdownFragment } from './markdown-splitter';
 
-type GroupedChunks = { [prefix: string]: Chunk[] };
+type MarkdownFragmentGroups = MarkdownFragment[][] ;
 
 function assembleMarkdownRecursively(
-    chunks: Chunk[],
+    markdownFragments: MarkdownFragment[],
     maxToken: number,
-): GroupedChunks {
-  const labels = chunks.map(chunk => chunk.label);
+): MarkdownFragmentGroups {
+  const labels = markdownFragments.map(fragment => fragment.label);
 
   // Get a list of unique prefixes
   const uniquePrefixes: string[] = [...new Set(labels.map((label) => {
@@ -21,7 +21,7 @@ function assembleMarkdownRecursively(
 
 
   // Group chunks by prefix
-  const groupedChunks: GroupedChunks = {};
+  const fragmentGroupes: MarkdownFragmentGroups = [];
   let remainingPrefixes = [...uniquePrefixes];
 
   // Process chunks so that the total token count per level doesn't exceed maxToken
@@ -31,65 +31,65 @@ function assembleMarkdownRecursively(
 
     if (!hasNextLevelPrefix) {
       // If there is no prefix that starts with the current prefix, group the chunks directly
-      let strictMatchingChunks = chunks.filter(chunk => chunk.label === prefix);
+      let matchingFragments = markdownFragments.filter(fragment => fragment.label === prefix);
 
       // Add parent heading if it exists
       const parts = prefix.split('-');
       for (let i = 1; i < parts.length; i++) {
         const parentPrefix = parts.slice(0, i).join('-');
-        const parentHeading = chunks.find(chunk => chunk.label === `${parentPrefix}-heading`);
+        const parentHeading = markdownFragments.find(fragment => fragment.label === `${parentPrefix}-heading`);
         if (parentHeading) {
-          strictMatchingChunks = [parentHeading, ...strictMatchingChunks]; // Add the heading at the front
+          matchingFragments = [parentHeading, ...matchingFragments]; // Add the heading at the front
         }
       }
 
-      groupedChunks[prefix] = strictMatchingChunks;
+      fragmentGroupes.push(matchingFragments);
     }
     else {
       // Filter chunks that start with the current prefix
-      let matchingChunks = chunks.filter(chunk => chunk.label.startsWith(prefix));
+      let matchingFragments = markdownFragments.filter(fragment => fragment.label.startsWith(prefix));
 
       // Add parent heading if it exists
       const parts = prefix.split('-');
       for (let i = 1; i < parts.length; i++) {
         const parentPrefix = parts.slice(0, i).join('-');
-        const parentHeading = chunks.find(chunk => chunk.label === `${parentPrefix}-heading`);
+        const parentHeading = markdownFragments.find(fragment => fragment.label === `${parentPrefix}-heading`);
         if (parentHeading) {
-          matchingChunks = [parentHeading, ...matchingChunks];
+          matchingFragments = [parentHeading, ...matchingFragments];
         }
       }
 
       // Calculate total token count including parent headings
-      const totalTokenCount = matchingChunks.reduce((sum, chunk) => sum + chunk.tokenCount, 0);
+      const totalTokenCount = matchingFragments.reduce((sum, fragment) => sum + fragment.tokenCount, 0);
 
       // If the total token count doesn't exceed maxToken, group the chunks
       if (totalTokenCount <= maxToken) {
-        groupedChunks[prefix] = matchingChunks;
+        fragmentGroupes.push(matchingFragments);
         remainingPrefixes = remainingPrefixes.filter(p => !p.startsWith(`${prefix}-`));
       }
       else {
         // If it exceeds maxToken, strictly filter chunks by the exact numeric prefix
-        const strictMatchingChunks = chunks.filter((chunk) => {
-          const match = chunk.label.match(/^\d+(-\d+)*(?=-)/);
+        const strictMatchingFragments = markdownFragments.filter((fragment) => {
+          const match = fragment.label.match(/^\d+(-\d+)*(?=-)/);
           return match && match[0] === prefix;
         });
 
         // Add parent heading if it exists
         for (let i = 1; i < parts.length; i++) {
           const parentPrefix = parts.slice(0, i).join('-');
-          const parentHeading = chunks.find(chunk => chunk.label === `${parentPrefix}-heading`);
+          const parentHeading = markdownFragments.find(fragment => fragment.label === `${parentPrefix}-heading`);
           if (parentHeading) {
-            strictMatchingChunks.unshift(parentHeading); // Add the heading at the front
+            strictMatchingFragments.unshift(parentHeading); // Add the heading at the front
           }
         }
 
-        groupedChunks[prefix] = strictMatchingChunks;
+        fragmentGroupes.push(strictMatchingFragments);
       }
     }
     remainingPrefixes.shift();
   }
 
-  return groupedChunks;
+  return fragmentGroupes;
 }
 
 // Function to group markdown into chunks based on token count
@@ -97,104 +97,88 @@ export async function assembleMarkdownIntoChunk(
     markdownText: string,
     model = 'gpt-4' as TiktokenModel,
     maxToken = 800,
-): Promise<GroupedChunks> {
+): Promise<string[]> {
   // Split markdown text into chunks
-  const chunks = await splitMarkdownIntoChunks(markdownText, model);
+  const markdownFragments = await splitMarkdownIntoFragments(markdownText, model);
+  const chunks = [] as string[];
 
   // Group the chunks based on token count
-  const groupedChunks = assembleMarkdownRecursively(chunks, maxToken);
+  const fragmentGroupes = assembleMarkdownRecursively(markdownFragments, maxToken);
 
-  for (const prefix of Object.keys(groupedChunks)) {
-    const chunks = groupedChunks[prefix];
-
+  fragmentGroupes.forEach((fragmentGroupe) => {
     // Calculate the total token count for each group
-    const totalTokenCount = chunks.reduce((sum, chunk) => sum + chunk.tokenCount, 0);
+    const totalTokenCount = fragmentGroupe.reduce((sum, fragment) => sum + fragment.tokenCount, 0);
 
     // If the total token count doesn't exceed maxToken, combine the chunks into one
     if (totalTokenCount <= maxToken) {
-      const combinedContent = chunks.map((chunk, index) => {
-        const nextChunk = chunks[index + 1];
-        if (nextChunk) {
+      const chunk = fragmentGroupe.map((fragment, index) => {
+        const nextFragment = fragmentGroupe[index + 1];
+        if (nextFragment) {
           // If both the current and next chunks are headings, add a single newline
-          if (chunk.type === 'heading' && nextChunk.type === 'heading') {
-            return `${chunk.text}\n`;
+          if (fragment.type === 'heading' && nextFragment.type === 'heading') {
+            return `${fragment.text}\n`;
           }
           // Add two newlines for other cases
-          return `${chunk.text}\n\n`;
+          return `${fragment.text}\n\n`;
         }
-        return chunk.text; // No newlines for the last chunk
+        return fragment.text; // No newlines for the last chunk
       }).join('');
 
-      // Combine into one chunk while maintaining the token count
-      groupedChunks[prefix] = [{
-        label: prefix,
-        text: combinedContent,
-        tokenCount: totalTokenCount,
-      }];
+      chunks.push(chunk);
     }
     else {
       // If the total token count exceeds maxToken, split content
-      const headingChunks = chunks.filter(chunk => chunk.type === 'heading'); // Find all headings
-      const headingText = headingChunks.map(heading => heading.text).join('\n'); // Combine headings with one newline
+      const headingFragments = fragmentGroupe.filter(fragment => fragment.type === 'heading'); // Find all headings
+      const headingText = headingFragments.map(heading => heading.text).join('\n'); // Combine headings with one newline
 
-      const newGroupedChunks = []; // Create a new group of chunks
-
-      for (const chunk of chunks) {
-        if (chunk.label.includes('content')) {
+      for (const fragment of fragmentGroupe) {
+        if (fragment.label.includes('content')) {
           // Combine heading and paragraph content
-          const combinedText = `${headingText}\n\n${chunk.text}`;
-          const combinedTokenCount = headingChunks.reduce((sum, heading) => sum + heading.tokenCount, 0) + chunk.tokenCount;
+          const combinedTokenCount = headingFragments.reduce((sum, heading) => sum + heading.tokenCount, 0) + fragment.tokenCount;
           // Check if headingChunks alone exceed maxToken
-          const headingTokenCount = headingChunks.reduce((sum, heading) => sum + heading.tokenCount, 0);
-          if (headingTokenCount > maxToken) {
+          const headingTokenCount = headingFragments.reduce((sum, heading) => sum + heading.tokenCount, 0);
+
+          if (headingTokenCount > maxToken / 2) {
             console.error(`Heading token count exceeds maxToken. Heading token count: ${headingTokenCount}, maxToken: ${maxToken}`);
             break; // Exit the loop
           }
 
           // If the combined token count exceeds maxToken, split the content by character count
           if (combinedTokenCount > maxToken) {
-            const headingTokenCount = headingChunks.reduce((sum, heading) => sum + heading.tokenCount, 0);
+            const headingTokenCount = headingFragments.reduce((sum, heading) => sum + heading.tokenCount, 0);
             const remainingTokenCount = maxToken - headingTokenCount;
 
             // Calculate the total character count and token count
-            const totalCharCount = chunk.text.length;
-            const totalTokenCount = chunk.tokenCount;
+            const fragmentCharCount = fragment.text.length;
+            const fragmenTokenCount = fragment.tokenCount;
 
             // Calculate the character count for splitting
-            const charCountForSplit = Math.floor((remainingTokenCount / totalTokenCount) * totalCharCount);
+            const charCountForSplit = Math.floor((remainingTokenCount / fragmenTokenCount) * fragmentCharCount);
 
             // Split content based on character count
             const splitContents = [];
-            for (let i = 0; i < chunk.text.length; i += charCountForSplit) {
-              splitContents.push(chunk.text.slice(i, i + charCountForSplit));
+            for (let i = 0; i < fragment.text.length; i += charCountForSplit) {
+              splitContents.push(fragment.text.slice(i, i + charCountForSplit));
             }
 
             // Add each split content to the new group of chunks
-            splitContents.forEach((splitText, i) => {
-              newGroupedChunks.push({
-                label: `${chunk.label}-split-${i + 1}`,
-                text: `${headingText}\n\n${splitText}`,
-                tokenCount: remainingTokenCount,
-                type: 'split',
-              });
+            splitContents.forEach((splitText) => {
+              const chunk = headingText
+                ? `${headingText}\n\n${splitText}`
+                : `${splitText}`;
+              chunks.push(chunk);
             });
           }
           else {
-            // If the combined token count doesn't exceed maxToken, add as-is
-            newGroupedChunks.push({
-              label: chunk.label,
-              text: combinedText,
-              tokenCount: combinedTokenCount,
-              type: 'combined',
-            });
+            const chunk = headingText
+              ? `${headingText}\n\n${fragment.text}`
+              : `${fragment.text}`;
+            chunks.push(chunk);
           }
         }
       }
-
-      // Update grouped chunks with the new group
-      groupedChunks[prefix] = newGroupedChunks;
     }
-  }
+  });
 
-  return groupedChunks;
+  return chunks;
 }

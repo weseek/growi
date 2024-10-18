@@ -1,17 +1,17 @@
 import { encodingForModel, type TiktokenModel } from 'js-tiktoken';
 
-import type { Chunk } from '../src/services/markdown-splitter';
-import { splitMarkdownIntoChunks } from '../src/services/markdown-splitter';
+import type { MarkdownFragment } from '../src/services/markdown-splitter';
+import { splitMarkdownIntoFragments } from '../src/services/markdown-splitter';
 
 const MODEL: TiktokenModel = 'gpt-4';
 const encoder = encodingForModel(MODEL);
 
-describe('splitMarkdownIntoChunks', () => {
+describe('splitMarkdownIntoFragments', () => {
 
   test('handles empty markdown string', async() => {
     const markdown = '';
-    const expected: Chunk[] = [];
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const expected: MarkdownFragment[] = [];
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -22,7 +22,7 @@ It spans multiple lines.
 Another paragraph.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '0-content-1',
         type: 'paragraph',
@@ -37,7 +37,7 @@ Another paragraph.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -53,7 +53,7 @@ Content under header 1.1.
 Content under header 2.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '1-heading',
         type: 'heading',
@@ -92,7 +92,7 @@ Content under header 2.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -116,7 +116,7 @@ Content of chapter 2.
 Content of section 2.1.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '0-content-1',
         type: 'paragraph',
@@ -185,7 +185,7 @@ Content of section 2.1.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -204,7 +204,7 @@ Content under header 1.2.
 Content under header 2.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '1-heading',
         type: 'heading',
@@ -255,7 +255,7 @@ Content under header 2.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -268,7 +268,7 @@ Content under header 1.
 Content under header 1.1.1.1.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '1-heading',
         type: 'heading',
@@ -295,7 +295,7 @@ Content under header 1.1.1.1.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -309,7 +309,7 @@ This is the second paragraph without a header.
 Content under header 1.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '0-content-1',
         type: 'paragraph',
@@ -336,7 +336,7 @@ Content under header 1.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -349,7 +349,7 @@ Content under header 1.
 ### Header 1.1.1
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '1-heading',
         type: 'heading',
@@ -370,7 +370,7 @@ Content under header 1.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -387,7 +387,7 @@ Another piece of content.
 Content under header 2.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '1-heading',
         type: 'heading',
@@ -426,7 +426,7 @@ Content under header 2.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -444,7 +444,7 @@ Content under header 1.
 Content under header 2.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '1-heading',
         type: 'heading',
@@ -477,7 +477,7 @@ Content under header 2.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -494,7 +494,7 @@ Additional content.
 Content under header 2.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: '1-heading',
         type: 'heading',
@@ -533,7 +533,7 @@ Content under header 2.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 
@@ -547,7 +547,7 @@ author: John Doe
 Some introductory content.
     `;
 
-    const expected: Chunk[] = [
+    const expected: MarkdownFragment[] = [
       {
         label: 'frontmatter',
         type: 'yaml',
@@ -568,7 +568,7 @@ Some introductory content.
       },
     ];
 
-    const result = await splitMarkdownIntoChunks(markdown, MODEL);
+    const result = await splitMarkdownIntoFragments(markdown, MODEL);
     expect(result).toEqual(expected);
   });
 });

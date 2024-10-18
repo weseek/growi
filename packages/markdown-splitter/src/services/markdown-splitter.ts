@@ -8,9 +8,9 @@ import type { Options as StringifyOptions } from 'remark-stringify';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 
-export type Chunk = {
+export type MarkdownFragment = {
   label: string;
-  type?: string;
+  type: string;
   text: string;
   tokenCount: number;
 };
@@ -42,19 +42,19 @@ function updateSectionNumbers(sectionNumbers: number[], headingDepth: number): s
 }
 
 /**
- * Splits Markdown text into labeled chunks using remark-parse and remark-stringify,
+ * Splits Markdown text into labeled markdownFragments using remark-parse and remark-stringify,
  * processing each content node separately and labeling them as 1-content-1, 1-content-2, etc.
  * @param markdownText - The input Markdown string.
- * @returns An array of labeled chunks.
+ * @returns An array of labeled markdownFragments.
  */
-export async function splitMarkdownIntoChunks(markdownText: string, model: TiktokenModel): Promise<Chunk[]> {
-  const chunks: Chunk[] = [];
+export async function splitMarkdownIntoFragments(markdownText: string, model: TiktokenModel): Promise<MarkdownFragment[]> {
+  const markdownFragments: MarkdownFragment[] = [];
   const sectionNumbers: number[] = [];
   let currentSectionLabel = '';
   const contentCounters: Record<string, number> = {};
 
   if (typeof markdownText !== 'string' || markdownText.trim() === '') {
-    return chunks;
+    return markdownFragments;
   }
 
   const encoder = encodingForModel(model);
@@ -83,7 +83,7 @@ export async function splitMarkdownIntoChunks(markdownText: string, model: Tikto
       const frontmatter = yaml.load(node.value) as Record<string, unknown>;
       const frontmatterText = JSON.stringify(frontmatter, null, 2);
       const tokenCount = encoder.encode(frontmatterText).length;
-      chunks.push({
+      markdownFragments.push({
         label: 'frontmatter',
         type: 'yaml',
         text: frontmatterText,
@@ -96,7 +96,7 @@ export async function splitMarkdownIntoChunks(markdownText: string, model: Tikto
 
       const headingMarkdown = stringifier.stringify(node as any).trim(); // eslint-disable-line @typescript-eslint/no-explicit-any
       const tokenCount = encoder.encode(headingMarkdown).length;
-      chunks.push({
+      markdownFragments.push({
         label: `${currentSectionLabel}-heading`, type: node.type, text: headingMarkdown, tokenCount,
       });
     }
@@ -115,12 +115,12 @@ export async function splitMarkdownIntoChunks(markdownText: string, model: Tikto
           ? `${currentSectionLabel}-content-${contentCounters[contentCountKey]}`
           : `0-content-${contentCounters[contentCountKey]}`;
         const tokenCount = encoder.encode(contentMarkdown).length;
-        chunks.push({
+        markdownFragments.push({
           label: contentLabel, type: node.type, text: contentMarkdown, tokenCount,
         });
       }
     }
   }
 
-  return chunks;
+  return markdownFragments;
 }
