@@ -628,8 +628,6 @@ This is a sub-header under header 3. The content here continues to grow, ensurin
 
 Here is a fourth-level sub-header under header 3-1. This paragraph is designed to create a larger markdown file for testing purposes.
 `;
-
-
   test('Each chunk should not exceed the specified token count', async() => {
     const maxToken = 800;
     const result = await splitMarkdownIntoChunks(markdown, MODEL, maxToken);
@@ -650,5 +648,33 @@ Here is a fourth-level sub-header under header 3-1. This paragraph is designed t
 
       expect(containsHeader1 || containsHeader2 || containsHeader3 || doesNotContainHash).toBe(true);
     });
+  });
+  test('Should throw an error if a header exceeds half of maxToken size with correct error message', async() => {
+    const maxToken = 800;
+    const markdownWithLongHeader = `
+# Short Header 1
+
+This is the first paragraph under short header 1. It contains some text for testing purposes.
+
+## ${repeatedText}
+
+This is the first paragraph under the long header. It contains text to ensure that the header length check is triggered if the header is too long.
+
+# Short Header 2
+
+Another section with a shorter header, but enough content to ensure proper chunking.
+`;
+
+    try {
+      await splitMarkdownIntoChunks(markdownWithLongHeader, MODEL, maxToken);
+    }
+    catch (error) {
+      if (error instanceof Error) {
+        expect(error.message).toContain('Heading token count is too large');
+      }
+      else {
+        throw new Error('An unknown error occurred');
+      }
+    }
   });
 });
