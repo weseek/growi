@@ -93,7 +93,7 @@ function groupMarkdownFragments(
 }
 
 // Function to group markdown into chunks based on token count
-export async function assembleMarkdownIntoChunk(
+export async function splitMarkdownIntoChunks(
     markdownText: string,
     model: TiktokenModel,
     maxToken = 800,
