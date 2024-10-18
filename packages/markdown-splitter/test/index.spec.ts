@@ -609,13 +609,17 @@ This is another paragraph under header 1-1-1-1. It should be grouped with the co
 
 Here is some content under header 2. This section should also be sufficiently long to ensure that the token count threshold is reached in the test.
 
+## Header 2-1
+
 ${repeatedText}
 
-### Header 2-1
+${repeatedText}
 
 Another sub-header under header 2 with text for testing chunking behavior. This is a fairly lengthy paragraph as well.
 
 We now have a fourth-level sub-header under header 2-1. This ensures that the chunking logic can handle deeply nested content.
+
+### Header 2-1-1
 
 Here is another paragraph under header 2-1-1. This paragraph is part of a more deeply nested section.
 
