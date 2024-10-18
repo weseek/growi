@@ -370,10 +370,9 @@ class PageBulkExportService implements IPageBulkExportService {
             status = PdfCtrlSyncJobStatusBodyStatus.FAILED;
           }
 
-          const url = `${configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl')}/pdf/sync-job`;
           const res = await pdfCtrlSyncJobStatus({
             jobId: pageBulkExportJob._id.toString(), expirationDate: jobExpirationDate.toISOString(), status,
-          }, { baseURL: url });
+          }, { baseURL: configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl') });
 
           if (res.data.status === PdfCtrlSyncJobStatus202Status.PDF_EXPORT_DONE) {
             clearInterval(interval);
