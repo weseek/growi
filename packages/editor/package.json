@@ -42,7 +42,7 @@
     "@growi/core-styles": "link:../core-styles",
     "@popperjs/core": "^2.11.8",
     "@replit/codemirror-emacs": "^6.1.0",
-    "@replit/codemirror-vim": "6.2.1",
+    "@replit/codemirror-vim": "^6.2.1",
     "@replit/codemirror-vscode-keymap": "^6.0.2",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",
