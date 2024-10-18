@@ -1,4 +1,4 @@
-import type { TiktokenModel } from 'js-tiktoken';
+import { encodingForModel, type TiktokenModel } from 'js-tiktoken';
 
 import { splitMarkdownIntoFragments, type MarkdownFragment } from './markdown-splitter';
 
@@ -98,6 +98,14 @@ export async function splitMarkdownIntoChunks(
     model: TiktokenModel,
     maxToken = 800,
 ): Promise<string[]> {
+  const encoder = encodingForModel(model);
+
+  // If the total token count for the entire markdown text is less than or equal to maxToken,
+  // return the entire markdown as a single chunk.
+  if (encoder.encode(markdownText).length <= maxToken) {
+    return [markdownText];
+  }
+
   // Split markdown text into chunks
   const markdownFragments = await splitMarkdownIntoFragments(markdownText, model);
   const chunks = [] as string[];
