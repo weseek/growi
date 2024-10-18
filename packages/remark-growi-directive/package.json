@@ -28,7 +28,7 @@
     "lint:fix": "eslint \"**/*.{cjs, js,jsx,ts,tsx}\" --fix"
   },
   "dependencies": {
-    "@types/mdast": "^4.0.0",
+    "@types/mdast": "^4.0.4",
     "@types/unist": "^3.0.0",
     "mdast-util-to-markdown": "^2.1.0",
     "micromark-factory-space": "^2.0.0",

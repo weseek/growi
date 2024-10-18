@@ -262,12 +262,6 @@ importers:
       '@slack/webhook':
         specifier: ^6.0.0
         version: 6.1.0
-      '@types/jest':
-        specifier: ^29.5.2
-        version: 29.5.12
-      '@types/ldapjs':
-        specifier: ^2.2.5
-        version: 2.2.5
       JSONStream:
         specifier: ^1.3.5
         version: 1.3.5
@@ -376,6 +370,9 @@ importers:
       graceful-fs:
         specifier: ^4.1.11
         version: 4.2.11
+      hast-util-sanitize:
+        specifier: ^5.0.1
+        version: 5.0.1
       hast-util-select:
         specifier: ^6.0.2
         version: 6.0.2
@@ -409,12 +406,27 @@ importers:
       md5:
         specifier: ^2.2.1
         version: 2.3.0
+      mdast-util-from-markdown:
+        specifier: ^2.0.1
+        version: 2.0.1
+      mdast-util-gfm-table:
+        specifier: ^2.0.0
+        version: 2.0.0
+      mdast-util-wiki-link:
+        specifier: ^0.1.2
+        version: 0.1.2
       mermaid:
         specifier: ^11.2.0
         version: 11.2.0
       method-override:
         specifier: ^3.0.0
         version: 3.0.0
+      micromark-extension-gfm-table:
+        specifier: ^2.1.0
+        version: 2.1.0
+      micromark-extension-wiki-link:
+        specifier: ^0.0.4
+        version: 0.0.4
       migrate-mongo:
         specifier: ^11.0.0
         version: 11.0.0(mongodb@4.16.0)
@@ -589,9 +601,6 @@ importers:
       remark-toc:
         specifier: ^9.0.0
         version: 9.0.0
-      remark-wiki-link:
-        specifier: ^2.0.1
-        version: 2.0.1
       sanitize-filename:
         specifier: ^1.6.3
         version: 1.6.3
@@ -619,6 +628,12 @@ importers:
       uglifycss:
         specifier: ^0.0.29
         version: 0.0.29
+      unified:
+        specifier: ^11.0.0
+        version: 11.0.5
+      unist-util-visit:
+        specifier: ^5.0.0
+        version: 5.0.0
       universal-bunyan:
         specifier: ^0.9.2
         version: 0.9.2(@browser-bunyan/console-formatted-stream@1.8.0)(browser-bunyan@1.8.0)(bunyan@1.8.15)
@@ -698,6 +713,18 @@ importers:
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
+      '@types/hast':
+        specifier: ^3.0.4
+        version: 3.0.4
+      '@types/jest':
+        specifier: ^29.5.2
+        version: 29.5.12
+      '@types/ldapjs':
+        specifier: ^2.2.5
+        version: 2.2.5
+      '@types/mdast':
+        specifier: ^4.0.4
+        version: 4.0.4
       '@types/react-input-autosize':
         specifier: ^2.2.4
         version: 2.2.4
@@ -713,6 +740,9 @@ importers:
       '@types/throttle-debounce':
         specifier: ^5.0.1
         version: 5.0.2
+      '@types/unist':
+        specifier: ^3.0.3
+        version: 3.0.3
       '@types/unzip-stream':
         specifier: ^0.3.4
         version: 0.3.4
@@ -776,6 +806,9 @@ importers:
       material-icons:
         specifier: ^1.11.3
         version: 1.13.12
+      mdast-util-directive:
+        specifier: ^3.0.0
+        version: 3.0.0
       mongodb:
         specifier: 4.16.0
         version: 4.16.0
@@ -806,6 +839,9 @@ importers:
       react-dropzone:
         specifier: ^14.2.3
         version: 14.2.3(react@18.2.0)
+      react-hook-form:
+        specifier: ^7.45.4
+        version: 7.52.0(react@18.2.0)
       react-hotkeys:
         specifier: ^2.0.0
         version: 2.0.0(react@18.2.0)
@@ -1134,9 +1170,12 @@ importers:
 
   packages/markdown-splitter:
     dependencies:
-      '@types/js-yaml':
-        specifier: ^4.0.9
-        version: 4.0.9
+      js-tiktoken:
+        specifier: ^1.0.15
+        version: 1.0.15
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1159,6 +1198,9 @@ importers:
         specifier: ^11.0.0
         version: 11.0.5
     devDependencies:
+      '@types/js-yaml':
+        specifier: ^4.0.9
+        version: 4.0.9
       eslint-plugin-regex:
         specifier: ^1.8.0
         version: 1.8.0(eslint@8.41.0)
@@ -1362,7 +1404,7 @@ importers:
         specifier: ^3.0.4
         version: 3.0.4
       '@types/mdast':
-        specifier: ^4.0.0
+        specifier: ^4.0.4
         version: 4.0.4
       '@types/react':
         specifier: ^18.2.14
@@ -1392,7 +1434,7 @@ importers:
   packages/remark-growi-directive:
     dependencies:
       '@types/mdast':
-        specifier: ^4.0.0
+        specifier: ^4.0.4
         version: 4.0.4
       '@types/unist':
         specifier: ^3.0.0
@@ -1927,10 +1969,6 @@ packages:
   '@aws-sdk/util-format-url@3.451.0':
     resolution: {integrity: sha512-gmcqSFTIISU9iN6rSbc8HVqB9ACluPbo4mS0ztkk9DaDz5zK/YxoKBJSfqkZFidMzxYiXeWruDCxD8ZgYRn6ug==}
     engines: {node: '>=14.0.0'}
-
-  '@aws-sdk/util-locate-window@3.55.0':
-    resolution: {integrity: sha512-0sPmK2JaJE2BbTcnvybzob/VrFKCXKfN4CUKcvn0yGg/me7Bz+vtzQRB3Xp+YSx+7OtWxzv63wsvHoAnXvgxgg==}
-    engines: {node: '>= 12.0.0'}
 
   '@aws-sdk/util-locate-window@3.568.0':
     resolution: {integrity: sha512-3nh4TINkXYr+H41QaPelCceEB2FXP3fxp93YZXB/kqJvX0U9j0N0Uk45gvsjmEPzG8XxkPEeLIfT2I1M7A6Lig==}
@@ -7239,15 +7277,6 @@ packages:
     resolution: {integrity: sha512-CtbfI3oFFc3nbdIoHycrfbrxiGgxXBXXuyOl49h47JawM1mYrqpiRqnH5CB2mBatdXvHHOUO6a+RiAuuvKt0lw==}
     engines: {node: '>=8'}
 
-  follow-redirects@1.15.3:
-    resolution: {integrity: sha512-1VzOtuEM8pC9SFU1E+8KfTjZyMztRsgEfwQl44z8A25uy13jSzTj6dyK2Df52iV0vgHCfBwLhDWevLn95w5v6Q==}
-    engines: {node: '>=4.0'}
-    peerDependencies:
-      debug: '*'
-    peerDependenciesMeta:
-      debug:
-        optional: true
-
   follow-redirects@1.15.6:
     resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
     engines: {node: '>=4.0'}
@@ -8363,6 +8392,9 @@ packages:
 
   js-sha256@0.9.0:
     resolution: {integrity: sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==}
+
+  js-tiktoken@1.0.15:
+    resolution: {integrity: sha512-65ruOWWXDEZHHbAo7EjOcNxOGasQKbL4Fq3jEr2xsCqSsoOo6VVSqzWQb6PRIqypFSDcma4jO90YP0w5X8qVXQ==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -9840,9 +9872,6 @@ packages:
   parse-entities@2.0.0:
     resolution: {integrity: sha512-kkywGpCcRYhqQIchaWqZ875wzpS/bMKhz5HnN3p7wveJTkTtyAB/AlnS0f8DFSqYW1T82t6yEAkEcB+A1I3MbQ==}
 
-  parse-entities@4.0.0:
-    resolution: {integrity: sha512-5nk9Fn03x3rEhGaX1FU6IDwG/k+GxLXlFAkgrbM1asuAFl3BhdQWvASaIsmwWypRNcZKHPYnIuOSfIWEyEQnPQ==}
-
   parse-entities@4.0.1:
     resolution: {integrity: sha512-SWzvYcSJh4d/SGLIOQfZ/CoNv6BTlI6YEQ7Nj82oDVnRpwe/Z/F1EMx42x3JAOwGBlCjeCH0BRJQbQ/opHL17w==}
 
@@ -10673,9 +10702,6 @@ packages:
   remark-toc@9.0.0:
     resolution: {integrity: sha512-KJ9txbo33GjDAV1baHFze7ij4G8c7SGYoY8Kzsm2gzFpbhL/bSoVpMMzGa3vrNDSWASNd/3ppAqL7cP2zD6JIA==}
 
-  remark-wiki-link@2.0.1:
-    resolution: {integrity: sha512-F8Eut1E7GWfFm4ZDTI6/4ejeZEHZgnVk6E933Yqd/ssYsc4AyI32aGakxwsGcEzbbE7dkWi1EfLlGAdGgOZOsA==}
-
   remark@15.0.1:
     resolution: {integrity: sha512-Eht5w30ruCXgFmxVUSlNWQ9iiimq07URKeFS3hNc8cUWy1llX4KDWfyEDZRycMc+znsN9Ux5/tJ/BFdgdOwA3A==}
 
@@ -11337,9 +11363,6 @@ packages:
 
   string_decoder@1.2.0:
     resolution: {integrity: sha512-6YqyX6ZWEYguAxgZzHGL7SsCeGx3V2TtOTqZz1xSTSWnqsbWwbptafNyvf/ACquZUXV3DANr5BDIwNYe1mN42w==}
-
-  stringify-entities@4.0.3:
-    resolution: {integrity: sha512-BP9nNHMhhfcMbiuQKCqMjhDP5yBCAxsPu4pHFFzJ6Alo9dZgY4VLDPutXqIjpRiMoKdp7Av85Gr73Q5uH9k7+g==}
 
   stringify-entities@4.0.4:
     resolution: {integrity: sha512-IwfBptatlO+QCJUo19AqvrPNqlVMpW9YEL2LIVY+Rpv2qsjCGxaDLNRgeGsQWJhfItebuJhsGSLjaBbNSQ+ieg==}
@@ -12829,8 +12852,8 @@ snapshots:
       '@aws-crypto/supports-web-crypto': 5.2.0
       '@aws-crypto/util': 5.2.0
       '@aws-sdk/types': 3.598.0
-      '@aws-sdk/util-locate-window': 3.55.0
-      '@smithy/util-utf8': 2.0.2
+      '@aws-sdk/util-locate-window': 3.568.0
+      '@smithy/util-utf8': 2.3.0
       tslib: 2.7.0
     optional: true
 
@@ -12865,7 +12888,7 @@ snapshots:
   '@aws-crypto/util@5.2.0':
     dependencies:
       '@aws-sdk/types': 3.598.0
-      '@smithy/util-utf8': 2.0.2
+      '@smithy/util-utf8': 2.3.0
       tslib: 2.7.0
     optional: true
 
@@ -13749,11 +13772,6 @@ snapshots:
       '@smithy/querystring-builder': 2.2.0
       '@smithy/types': 2.12.0
       tslib: 2.6.2
-
-  '@aws-sdk/util-locate-window@3.55.0':
-    dependencies:
-      tslib: 2.7.0
-    optional: true
 
   '@aws-sdk/util-locate-window@3.568.0':
     dependencies:
@@ -20539,8 +20557,6 @@ snapshots:
 
   fn-args@5.0.0: {}
 
-  follow-redirects@1.15.3: {}
-
   follow-redirects@1.15.6(debug@4.3.5):
     optionalDependencies:
       debug: 4.3.5(supports-color@5.5.0)
@@ -21215,7 +21231,7 @@ snapshots:
   http-proxy@1.18.1:
     dependencies:
       eventemitter3: 4.0.7
-      follow-redirects: 1.15.3
+      follow-redirects: 1.15.6(debug@4.3.5)
       requires-port: 1.0.0
     transitivePeerDependencies:
       - debug
@@ -21965,6 +21981,10 @@ snapshots:
 
   js-sha256@0.9.0: {}
 
+  js-tiktoken@1.0.15:
+    dependencies:
+      base64-js: 1.5.1
+
   js-tokens@4.0.0: {}
 
   js-yaml@3.14.1:
@@ -22513,8 +22533,8 @@ snapshots:
       devlop: 1.1.0
       mdast-util-from-markdown: 2.0.1
       mdast-util-to-markdown: 2.1.0
-      parse-entities: 4.0.0
-      stringify-entities: 4.0.3
+      parse-entities: 4.0.1
+      stringify-entities: 4.0.4
       unist-util-visit-parents: 6.0.1
     transitivePeerDependencies:
       - supports-color
@@ -22644,8 +22664,8 @@ snapshots:
       devlop: 1.1.0
       mdast-util-from-markdown: 2.0.1
       mdast-util-to-markdown: 2.1.0
-      parse-entities: 4.0.0
-      stringify-entities: 4.0.3
+      parse-entities: 4.0.1
+      stringify-entities: 4.0.4
       unist-util-stringify-position: 4.0.0
       vfile-message: 4.0.2
     transitivePeerDependencies:
@@ -23876,17 +23896,6 @@ snapshots:
       is-decimal: 1.0.4
       is-hexadecimal: 1.0.4
 
-  parse-entities@4.0.0:
-    dependencies:
-      '@types/unist': 2.0.3
-      character-entities: 2.0.2
-      character-entities-legacy: 3.0.0
-      character-reference-invalid: 2.0.1
-      decode-named-character-reference: 1.0.2
-      is-alphanumerical: 2.0.1
-      is-decimal: 2.0.1
-      is-hexadecimal: 2.0.1
-
   parse-entities@4.0.1:
     dependencies:
       '@types/unist': 2.0.3
@@ -24870,12 +24879,6 @@ snapshots:
       '@types/mdast': 4.0.4
       mdast-util-toc: 7.1.0
 
-  remark-wiki-link@2.0.1:
-    dependencies:
-      '@babel/runtime': 7.25.4
-      mdast-util-wiki-link: 0.1.2
-      micromark-extension-wiki-link: 0.0.4
-
   remark@15.0.1:
     dependencies:
       '@types/mdast': 4.0.4
@@ -25681,11 +25684,6 @@ snapshots:
   string_decoder@1.2.0:
     dependencies:
       safe-buffer: 5.1.2
-
-  stringify-entities@4.0.3:
-    dependencies:
-      character-entities-html4: 2.1.0
-      character-entities-legacy: 3.0.0
 
   stringify-entities@4.0.4:
     dependencies:
