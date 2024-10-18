@@ -1,6 +1,7 @@
 import type { PlatformApplication } from '@tsed/common';
 import { Configuration, Inject } from '@tsed/di';
 import express from 'express';
+import '@tsed/swagger';
 
 import * as Controllers from './controllers';
 
@@ -15,6 +16,12 @@ const PORT = Number(process.env.PORT || 3004);
     '/': [...Object.values(Controllers)],
   },
   middlewares: ['json-parser'],
+  swagger: [
+    {
+      path: '/v3/docs',
+      specVersion: '3.0.1',
+    },
+  ],
 })
 class Server {
 
