@@ -25,15 +25,17 @@
   },
   "// comments for devDependencies": {
     "string-width": "5.0.0 or above exports only ESM.",
+    "@codemirror/*": "Fix version of @codemirror/state < 6.4.0 due to fix the issue of https://redmine.weseek.co.jp/issues/155911",
     "@codemirror/merge": "Fixed version at 6.0.0 due to errors caused by dependent packages"
   },
   "devDependencies": {
-    "@codemirror/lang-markdown": "^6.3.0",
-    "@codemirror/language": "^6.10.3",
+    "@codemirror/commands": "~6.2.5",
+    "@codemirror/lang-markdown": "~6.2.5",
+    "@codemirror/language": "~6.9.3",
     "@codemirror/language-data": "^6.5.1",
     "@codemirror/merge": "6.0.0",
-    "@codemirror/state": "^6.4.1",
-    "@codemirror/view": "^6.34.1",
+    "@codemirror/state": "~6.3.0",
+    "@codemirror/view": "~6.22.3",
     "@emoji-mart/data": "^1.2.1",
     "@emoji-mart/react": "^1.1.1",
     "@growi/core": "link:../core",
