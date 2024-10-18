@@ -27,7 +27,7 @@ function groupMarkdownFragments(
   // Process chunks so that the total token count per level doesn't exceed maxToken
   while (remainingPrefixes.length > 0) {
     const prefix = remainingPrefixes[0]; // Get the first prefix
-    const hasNextLevelPrefix = uniquePrefixes.some(p => p.startsWith(prefix));
+    const hasNextLevelPrefix = uniquePrefixes.some(p => p !== prefix && p.startsWith(prefix));
 
     if (!hasNextLevelPrefix) {
       // If there is no prefix that starts with the current prefix, group the chunks directly
