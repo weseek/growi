@@ -25,7 +25,7 @@
   },
   "// comments for devDependencies": {
     "string-width": "5.0.0 or above exports only ESM.",
-    "@codemirror/*": "Fix version of @codemirror/state < 6.4.0 due to fix the issue of https://redmine.weseek.co.jp/issues/155911",
+    "@codemirror/*": "Fix version of @codemirror/state < 6.4.0 due to fix the issue of https://github.com/weseek/growi/pull/9267 and https://github.com/weseek/growi/pull/9043",
     "@codemirror/merge": "Fixed version at 6.0.0 due to errors caused by dependent packages"
   },
   "devDependencies": {
