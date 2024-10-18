@@ -4,7 +4,7 @@ import { splitMarkdownIntoFragments, type MarkdownFragment } from './markdown-sp
 
 type MarkdownFragmentGroups = MarkdownFragment[][] ;
 
-function assembleMarkdownRecursively(
+function groupMarkdownFragments(
     markdownFragments: MarkdownFragment[],
     maxToken: number,
 ): MarkdownFragmentGroups {
@@ -95,7 +95,7 @@ function assembleMarkdownRecursively(
 // Function to group markdown into chunks based on token count
 export async function assembleMarkdownIntoChunk(
     markdownText: string,
-    model = 'gpt-4' as TiktokenModel,
+    model: TiktokenModel,
     maxToken = 800,
 ): Promise<string[]> {
   // Split markdown text into chunks
@@ -103,7 +103,7 @@ export async function assembleMarkdownIntoChunk(
   const chunks = [] as string[];
 
   // Group the chunks based on token count
-  const fragmentGroupes = assembleMarkdownRecursively(markdownFragments, maxToken);
+  const fragmentGroupes = groupMarkdownFragments(markdownFragments, maxToken);
 
   fragmentGroupes.forEach((fragmentGroupe) => {
     // Calculate the total token count for each group
@@ -139,8 +139,9 @@ export async function assembleMarkdownIntoChunk(
           const headingTokenCount = headingFragments.reduce((sum, heading) => sum + heading.tokenCount, 0);
 
           if (headingTokenCount > maxToken / 2) {
-            console.error(`Heading token count exceeds maxToken. Heading token count: ${headingTokenCount}, maxToken: ${maxToken}`);
-            break; // Exit the loop
+            throw new Error(
+              `Heading token count is too large. Heading token count: ${headingTokenCount}, allowed maximum: ${Math.ceil(maxToken / 2)}`,
+            );
           }
 
           // If the combined token count exceeds maxToken, split the content by character count
