@@ -26,25 +26,24 @@
     "lint": "npm-run-all -p lint:*",
     "test": "vitest run --coverage"
   },
-  "devDependencies": {
-    "eslint-plugin-regex": "^1.8.0",
-    "hast-util-sanitize": "^4.1.0",
-    "pako": "^2.1.0",
-    "throttle-debounce": "^5.0.0",
-    "unified": "^10.1.2",
-    "unist-util-visit": "^4.0.0"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
   "dependencies": {
-    "@types/js-yaml": "^4.0.9",
     "js-tiktoken": "^1.0.15",
+    "js-yaml": "^4.1.0",
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.0",
     "remark-parse": "^11.0.0",
     "remark-stringify": "^11.0.0",
     "unified": "^11.0.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "eslint-plugin-regex": "^1.8.0",
+    "hast-util-sanitize": "^4.1.0",
+    "pako": "^2.1.0",
+    "throttle-debounce": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
