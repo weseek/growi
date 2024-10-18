@@ -46,14 +46,19 @@ class OpenaiService implements IOpenaiService {
 
   public async getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined> {
     if (vectorStoreId != null && threadId == null) {
-      const thread = await this.client.createThread(vectorStoreId);
-      await ThreadRelationModel.create({ userId, threadId: thread.id });
-      return thread;
+      try {
+        const thread = await this.client.createThread(vectorStoreId);
+        await ThreadRelationModel.create({ userId, threadId: thread.id });
+        return thread;
+      }
+      catch (err) {
+        throw new Error(err);
+      }
     }
 
     const threadRelation = await ThreadRelationModel.findOne({ threadId });
     if (threadRelation == null) {
-      return;
+      throw new Error('ThreadRelation document is not exists');
     }
 
     // Check if a thread entity exists
