@@ -1,1 +1,3 @@
-/dist/**
+/dist
+/specs
+/src/client-library
