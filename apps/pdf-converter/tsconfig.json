@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
     "outDir": "dist",
@@ -10,7 +11,8 @@
     "rootDir": "src",
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "strict": false
   },
   "include": ["./src/**/*", "./test/**/*"],
   "exclude": ["node_modules", "dist"]

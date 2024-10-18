@@ -115,7 +115,7 @@ class PdfConvertService {
 
         // eslint-disable-next-line no-await-in-loop
         await pipelinePromise(htmlReadable, pdfWritable);
-        this.jobList[jobId].currentStream = null;
+        this.jobList[jobId].currentStream = undefined;
       }
       catch (err) {
         this.logger.error('Failed to convert html to pdf', err);

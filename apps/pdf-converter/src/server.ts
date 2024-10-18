@@ -1,6 +1,6 @@
-import type { PlatformApplication } from '@tsed/common';
+import { PlatformApplication } from '@tsed/common';
 import { Configuration, Inject } from '@tsed/di';
-import bodyParser from 'body-parser';
+import express from 'express';
 import '@tsed/swagger';
 
 import * as Controllers from './controllers';
@@ -17,8 +17,8 @@ const PORT = Number(process.env.PORT || 3004);
   },
   middlewares: [
     'json-parser',
-    bodyParser.json({ limit: '50mb' }),
-    bodyParser.urlencoded({ extended: true, limit: '50mb' }),
+    express.json({ limit: '50mb' }),
+    express.urlencoded({ extended: true, limit: '50mb' }),
   ],
   swagger: [
     {

@@ -1,11 +1,9 @@
-import type { Logger } from '@tsed/common';
-import { BodyParams } from '@tsed/common';
+import { BodyParams, Logger } from '@tsed/common';
 import { Controller, Inject } from '@tsed/di';
 import { InternalServerError } from '@tsed/exceptions';
 import { Post, Returns, Enum } from '@tsed/schema';
 
-import { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert';
-import type PdfConvertService from '../service/pdf-convert';
+import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert';
 
 @Controller('/pdf')
 class PdfCtrl {
