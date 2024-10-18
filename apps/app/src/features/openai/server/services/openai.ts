@@ -72,18 +72,18 @@ class OpenaiService implements IOpenaiService {
   }
 
   public async deleteExpiredThreads(limit: number): Promise<void> {
-    const threadRelations = await ThreadRelationModel.getExpiredThreadRelations(limit);
-    if (threadRelations == null) {
+    const expiredThreadRelations = await ThreadRelationModel.getExpiredThreadRelations(limit);
+    if (expiredThreadRelations == null) {
       return;
     }
 
     const deletedThreadIds: string[] = [];
-    for (const threadRelation of threadRelations) {
+    for (const expiredThreadRelation of expiredThreadRelations) {
       try {
         // eslint-disable-next-line no-await-in-loop
-        const deleteThreadResponse = await this.client.deleteThread(threadRelation.threadId);
+        const deleteThreadResponse = await this.client.deleteThread(expiredThreadRelation.threadId);
         logger.debug('Delete thread', deleteThreadResponse);
-        deletedThreadIds.push(threadRelation.threadId);
+        deletedThreadIds.push(expiredThreadRelation.threadId);
       }
       catch (err) {
         logger.error(err);
