@@ -10,6 +10,7 @@ import {
   getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
+import { pdfCtrlSyncJobStatus, PdfCtrlSyncJobStatusBodyStatus } from '@growi/pdf-converter/dist/client-library';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 // eslint-disable-next-line no-restricted-imports
@@ -350,7 +351,7 @@ class PageBulkExportService implements IPageBulkExportService {
 
     const exportJobExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportJobExpirationSeconds');
     const jobExpirationDate = new Date(jobCreatedAt.getTime() + exportJobExpirationSeconds * 1000);
-    let status = 'HTML_EXPORT_IN_PROGRESS';
+    let status: PdfCtrlSyncJobStatusBodyStatus = PdfCtrlSyncJobStatusBodyStatus.HTML_EXPORT_IN_PROGRESS;
 
     const lastExportPagePath = (await PageBulkExportPageSnapshot.findOne({ pageBulkExportJob }).sort({ path: -1 }))?.path;
     if (lastExportPagePath == null) throw new Error('lastExportPagePath is missing');
@@ -364,22 +365,23 @@ class PageBulkExportService implements IPageBulkExportService {
           const latestPageBulkExportJob = await PageBulkExportJob.findById(pageBulkExportJob._id);
           if (latestPageBulkExportJob == null) throw new Error('pageBulkExportJob is missing');
           if (latestPageBulkExportJob.lastExportedPagePath === lastExportPagePath) {
-            status = 'HTML_EXPORT_DONE';
+            status = PdfCtrlSyncJobStatusBodyStatus.HTML_EXPORT_DONE;
           }
 
           if (latestPageBulkExportJob.status === PageBulkExportJobStatus.failed) {
-            status = 'FAILED';
+            status = PdfCtrlSyncJobStatusBodyStatus.FAILED;
           }
 
           const url = `${configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl')}/pdf/sync-job`;
-          const res = await axios.post(url, { jobId: pageBulkExportJob._id.toString(), expirationDate: jobExpirationDate, status });
-          console.log(res.data.status);
+          const res = await pdfCtrlSyncJobStatus({
+            jobId: pageBulkExportJob._id.toString(), expirationDate: jobExpirationDate.toISOString(), status,
+          }, { baseURL: url });
 
           if (res.data.status === 'PDF_EXPORT_DONE') {
             clearInterval(interval);
             resolve();
           }
-          else if (res.data.status === 'FAILED') {
+          else if (res.data.status === PdfCtrlSyncJobStatusBodyStatus.FAILED) {
             clearInterval(interval);
             reject(new Error('PDF export failed'));
           }

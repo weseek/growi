@@ -2323,6 +2323,21 @@
     react "^18.2.0"
     react-dom "^18.2.0"
 
+"@growi/pdf-converter@link:apps/pdf-converter":
+  version "1.0.0"
+  dependencies:
+    "@tsed/cli" "^5.4.3"
+    "@tsed/cli-core" "^5.4.3"
+    "@tsed/cli-generate-swagger" "^5.4.3"
+    "@tsed/common" "7.70.2"
+    "@tsed/components-scan" "7.70.2"
+    "@tsed/di" "7.70.2"
+    "@tsed/platform-express" "7.70.2"
+    "@tsed/swagger" "7.70.2"
+    express "^4.19.2"
+    puppeteer "^23.1.1"
+    puppeteer-cluster "^0.24.0"
+
 "@growi/pluginkit@link:packages/pluginkit":
   version "1.0.1"
   dependencies:
