@@ -7,6 +7,7 @@ import { UserPicture } from '@growi/ui/dist/components';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 
 import { useModelNotification } from './ModelNotification';
 
@@ -25,6 +26,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   const publishOpen = modelNotificationUtils?.publishOpen;
   const clickLink = modelNotificationUtils?.clickLink;
   const isDisabled = modelNotificationUtils?.isDisabled;
+  const { mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
 
   if (Notification == null) {
     return <></>;
@@ -35,6 +37,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       // set notification status "OPEND"
       await apiv3Post('/in-app-notification/open', { id: notification._id });
       onUnopenedNotificationOpend?.();
+      mutateNotificationCount();
     }
 
     if (isDisabled) return;

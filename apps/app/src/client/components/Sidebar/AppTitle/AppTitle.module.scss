@@ -39,13 +39,13 @@
 // == App title truncation
 .on-subnavigation {
   // set width for truncation
-  $grw-page-controls-width: 280px;
+  $grw-page-controls-width: 324px;
   $grw-page-editor-mode-manager-width: 90px;
   $grw-contextual-subnavigation-padding-right: 12px;
   $gap: 8px;
 
   @include bs.media-breakpoint-up(sm) {
-    width: calc(100vw - #{$grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
+    width: calc(100% - #{$grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
   }
 
   @include bs.media-breakpoint-up(md) {
@@ -53,7 +53,7 @@
     $gap: 24px;
     $grw-contextual-subnavigation-padding-right: 24px;
 
-    width: calc(100vw - #{var.$grw-sidebar-nav-width + $grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
+    width: calc(100% - #{var.$grw-sidebar-nav-width + $grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
   }
 }
 

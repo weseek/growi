@@ -109,7 +109,7 @@ module.exports = function(crowi, app) {
   api.search = async function(req, res) {
     const user = req.user;
     const {
-      q = null, nq = null, type = null, sort = null, order = null,
+      q = null, nq = null, type = null, sort = null, order = null, vector = null,
     } = req.query;
     let paginateOpts;
 
@@ -135,15 +135,15 @@ module.exports = function(crowi, app) {
     ] : null;
 
     const searchOpts = {
-      ...paginateOpts, type, sort, order,
+      ...paginateOpts, type, sort, order, vector,
     };
 
     let searchResult;
     let delegatorName;
     try {
-      const keyword = decodeURIComponent(q);
+      const query = decodeURIComponent(q);
       const nqName = nq ?? decodeURIComponent(nq);
-      [searchResult, delegatorName] = await searchService.searchKeyword(keyword, nqName, user, userGroups, searchOpts);
+      [searchResult, delegatorName] = await searchService.searchKeyword(query, nqName, user, userGroups, searchOpts);
     }
     catch (err) {
       logger.error('Failed to search', err);
