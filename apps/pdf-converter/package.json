@@ -10,10 +10,14 @@
     "lint": "yarn eslint **/*.{js,ts}"
   },
   "dependencies": {
+    "@tsed/cli": "^5.4.3",
+    "@tsed/cli-core": "^5.4.3",
+    "@tsed/cli-generate-swagger": "^5.4.3",
     "@tsed/common": "7.70.2",
     "@tsed/components-scan": "7.70.2",
     "@tsed/di": "7.70.2",
     "@tsed/platform-express": "7.70.2",
+    "@tsed/swagger": "^7.18.2",
     "express": "^4.19.2",
     "puppeteer": "^23.1.1",
     "puppeteer-cluster": "^0.24.0"
