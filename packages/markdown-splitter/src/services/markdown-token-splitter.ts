@@ -31,7 +31,7 @@ function groupMarkdownFragments(
 
     if (!hasNextLevelPrefix) {
       // If there is no prefix that starts with the current prefix, group the chunks directly
-      let matchingFragments = markdownFragments.filter(fragment => fragment.label === prefix);
+      let matchingFragments = markdownFragments.filter(fragment => fragment.label.startsWith(prefix));
 
       // Add parent heading if it exists
       const parts = prefix.split('-');
@@ -179,9 +179,7 @@ export async function splitMarkdownIntoChunks(
             });
           }
           else {
-            const chunk = headingText
-              ? `${headingText}\n\n${fragment.text}`
-              : `${fragment.text}`;
+            const chunk = `${headingText}\n\n${fragment.text}`;
             chunks.push(chunk);
           }
         }
