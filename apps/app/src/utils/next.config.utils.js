@@ -25,14 +25,17 @@ exports.listScopedPackages = (scopes, opts = defaultOpts) => {
       fs.readdirSync(path.resolve(nodeModulesPath, scope))
         .filter(name => !name.startsWith('.'))
         .forEach((folderName) => {
-          const { name } = require(path.resolve(
+          const packageJsonPath = path.resolve(
             nodeModulesPath,
             scope,
             folderName,
             'package.json',
-          ));
-          if (!opts.ignorePackageNames.includes(name)) {
-            scopedPackages.push(name);
+          );
+          if (fs.existsSync(packageJsonPath)) {
+            const { name } = require(packageJsonPath);
+            if (!opts.ignorePackageNames.includes(name)) {
+              scopedPackages.push(name);
+            }
           }
         });
     });
@@ -51,13 +54,16 @@ exports.listPrefixedPackages = (prefixes, opts = defaultOpts) => {
     .filter(name => prefixes.some(prefix => name.startsWith(prefix)))
     .filter(name => !name.startsWith('.'))
     .forEach((folderName) => {
-      const { name } = require(path.resolve(
+      const packageJsonPath = path.resolve(
         nodeModulesPath,
         folderName,
         'package.json',
-      ));
-      if (!opts.ignorePackageNames.includes(name)) {
-        prefixedPackages.push(name);
+      );
+      if (fs.existsSync(packageJsonPath)) {
+        const { name } = require(packageJsonPath);
+        if (!opts.ignorePackageNames.includes(name)) {
+          prefixedPackages.push(name);
+        }
       }
     });
 
