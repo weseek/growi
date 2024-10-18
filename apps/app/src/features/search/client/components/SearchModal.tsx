@@ -7,6 +7,7 @@ import Downshift, { type DownshiftState, type StateChangeOptions } from 'downshi
 import { useRouter } from 'next/router';
 import { Modal, ModalBody } from 'reactstrap';
 
+import { isIncludeAiMenthion, removeAiMenthion } from '../../utils/ai';
 import type { DownshiftItem } from '../interfaces/downshift';
 import { useSearchModal } from '../stores/search';
 
@@ -16,7 +17,9 @@ import { SearchMethodMenuItem } from './SearchMethodMenuItem';
 import { SearchResultMenuItem } from './SearchResultMenuItem';
 
 const SearchModal = (): JSX.Element => {
+
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [isMenthionedToAi, setMenthionedToAi] = useState(false);
 
   const { data: searchModalData, close: closeSearchModal } = useSearchModal();
 
@@ -32,7 +35,9 @@ const SearchModal = (): JSX.Element => {
   }, [closeSearchModal, router]);
 
   const submitHandler = useCallback(() => {
-    router.push(`/_search?q=${searchKeyword}`);
+    const url = new URL('_search', 'http://example.com');
+    url.searchParams.set('q', searchKeyword);
+    router.push(url.pathname + url.search);
     closeSearchModal();
   }, [closeSearchModal, router, searchKeyword]);
 
@@ -60,6 +65,12 @@ const SearchModal = (): JSX.Element => {
     }
   }, [searchModalData?.isOpened, searchModalData?.searchKeyword]);
 
+  useEffect(() => {
+    setMenthionedToAi(isIncludeAiMenthion(searchKeyword));
+  }, [searchKeyword]);
+
+  const searchKeywordWithoutAi = removeAiMenthion(searchKeyword);
+
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal} data-testid="search-modal">
       <ModalBody className="pb-2">
@@ -77,7 +88,9 @@ const SearchModal = (): JSX.Element => {
           }) => (
             <div {...getRootProps({}, { suppressRefError: true })}>
               <div className="text-muted d-flex justify-content-center align-items-center p-1">
-                <span className="material-symbols-outlined fs-4 me-3">search</span>
+                <span className={`material-symbols-outlined fs-4 me-3 ${isMenthionedToAi ? 'text-primary' : ''}`}>
+                  {isMenthionedToAi ? 'psychology' : 'search'}
+                </span>
                 <SearchForm
                   searchKeyword={searchKeyword}
                   onChange={changeSearchTextHandler}
@@ -97,12 +110,12 @@ const SearchModal = (): JSX.Element => {
                 <div className="border-top mt-2 mb-2" />
                 <SearchMethodMenuItem
                   activeIndex={highlightedIndex}
-                  searchKeyword={searchKeyword}
+                  searchKeyword={searchKeywordWithoutAi}
                   getItemProps={getItemProps}
                 />
                 <SearchResultMenuItem
                   activeIndex={highlightedIndex}
-                  searchKeyword={searchKeyword}
+                  searchKeyword={searchKeywordWithoutAi}
                   getItemProps={getItemProps}
                 />
                 <div className="border-top mt-2 mb-2" />

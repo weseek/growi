@@ -10,6 +10,7 @@ import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import type { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
+import remarkGithubAdmonitionsToDirectives from 'remark-github-admonitions-to-directives';
 import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
@@ -19,6 +20,7 @@ import { Header } from '~/client/components/ReactMarkdownComponents/Header';
 import { LightBox } from '~/client/components/ReactMarkdownComponents/LightBox';
 import { RichAttachment } from '~/client/components/ReactMarkdownComponents/RichAttachment';
 import { TableWithEditButton } from '~/client/components/ReactMarkdownComponents/TableWithEditButton';
+import * as callout from '~/features/callout';
 import * as mermaid from '~/features/mermaid';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -26,6 +28,7 @@ import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-
 import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-highlighter';
 import * as relocateToc from '~/services/renderer/rehype-plugins/relocate-toc';
 import * as attachment from '~/services/renderer/remark-plugins/attachment';
+import * as codeBlock from '~/services/renderer/remark-plugins/codeblock';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
 import {
@@ -64,6 +67,8 @@ export const generateViewOptions = (
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
+    remarkGithubAdmonitionsToDirectives,
+    callout.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -71,15 +76,17 @@ export const generateViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       getCommonSanitizeOption(config),
       presentation.sanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      callout.sanitizeOption,
       attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
+      codeBlock.sanitizeOption,
     )]
     : () => {};
 
@@ -110,6 +117,7 @@ export const generateViewOptions = (
     components.drawio = DrawioViewerWithEditButton;
     components.table = TableWithEditButton;
     components.mermaid = mermaid.MermaidViewer;
+    components.callout = callout.CalloutViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
   }
@@ -129,9 +137,10 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       getCommonSanitizeOption(config),
+      codeBlock.sanitizeOption,
     )]
     : () => {};
 
@@ -166,6 +175,8 @@ export const generateSimpleViewOptions = (
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
+    remarkGithubAdmonitionsToDirectives,
+    callout.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -176,15 +187,17 @@ export const generateSimpleViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       getCommonSanitizeOption(config),
       presentation.sanitizeOption,
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      callout.sanitizeOption,
       attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
+      codeBlock.sanitizeOption,
     )]
     : () => {};
 
@@ -207,6 +220,7 @@ export const generateSimpleViewOptions = (
     components.gallery = refsGrowiDirective.GalleryImmutable;
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
+    components.callout = callout.CalloutViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
   }
@@ -227,7 +241,7 @@ export const generatePresentationViewOptions = (
   const { rehypePlugins } = options;
 
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       addLineNumberAttribute.sanitizeOption,
     )]
@@ -258,6 +272,8 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
+    remarkGithubAdmonitionsToDirectives,
+    callout.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
@@ -265,15 +281,17 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     remarkPlugins.push(breaks);
   }
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
     ? [sanitize, deepmerge(
       getCommonSanitizeOption(config),
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
+      callout.sanitizeOption,
       attachment.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
+      codeBlock.sanitizeOption,
     )]
     : () => {};
 
@@ -296,6 +314,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.gallery = refsGrowiDirective.GalleryImmutable;
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
+    components.callout = callout.CalloutViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
   }
