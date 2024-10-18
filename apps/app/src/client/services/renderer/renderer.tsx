@@ -10,7 +10,6 @@ import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import type { HtmlElementNode } from 'rehype-toc';
 import breaks from 'remark-breaks';
-import remarkDirective from 'remark-directive';
 import remarkGithubAdmonitionsToDirectives from 'remark-github-admonitions-to-directives';
 import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
@@ -69,7 +68,6 @@ export const generateViewOptions = (
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
     remarkGithubAdmonitionsToDirectives,
-    remarkDirective,
     callout.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
@@ -178,7 +176,6 @@ export const generateSimpleViewOptions = (
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
     remarkGithubAdmonitionsToDirectives,
-    remarkDirective,
     callout.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
@@ -276,7 +273,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     xsvToTable.remarkPlugin,
     attachment.remarkPlugin,
     remarkGithubAdmonitionsToDirectives,
-    remarkDirective,
     callout.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
