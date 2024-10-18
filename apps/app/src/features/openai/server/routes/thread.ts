@@ -1,23 +1,21 @@
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
+import { filterXSS } from 'xss';
 
 import type Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { openaiClient } from '../services';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:thread');
 
-type CreateThreadReq = Request<undefined, ApiV3Response, {
-  userMessage: string,
-  threadId?: string,
-}>
+type CreateThreadReq = Request<undefined, ApiV3Response, { threadId?: string }> & { user: IUserHasId };
 
 type CreateThreadFactory = (crowi: Crowi) => RequestHandler[];
 
@@ -32,24 +30,11 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
-      const openaiService = getOpenaiService();
-      if (openaiService == null) {
-        return res.apiv3Err('OpenaiService is not available', 503);
-      }
-
       try {
-        const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
-        const threadId = req.body.threadId;
-        const thread = threadId == null
-          ? await openaiClient.beta.threads.create({
-            tool_resources: {
-              file_search: {
-                vector_store_ids: [vectorStore.vectorStoreId],
-              },
-            },
-          })
-          : await openaiClient.beta.threads.retrieve(threadId);
-
+        const openaiService = getOpenaiService();
+        const filterdThreadId = req.body.threadId != null ? filterXSS(req.body.threadId) : undefined;
+        const vectorStore = await openaiService?.getOrCreateVectorStoreForPublicScope();
+        const thread = await openaiService?.getOrCreateThread(req.user._id, vectorStore?.vectorStoreId, filterdThreadId);
         return res.apiv3({ thread });
       }
       catch (err) {
