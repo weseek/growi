@@ -12,6 +12,7 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
+import OpenaiThreadDeletionCronService from '~/features/openai/server/services/thread-deletion-cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
@@ -102,6 +103,7 @@ class Crowi {
     this.commentService = null;
     this.questionnaireService = null;
     this.questionnaireCronService = null;
+    this.openaiThreadDeletionCronService = null;
 
     this.tokens = null;
 
@@ -312,6 +314,9 @@ Crowi.prototype.setupSocketIoService = async function() {
 Crowi.prototype.setupCron = function() {
   this.questionnaireCronService = new QuestionnaireCronService(this);
   this.questionnaireCronService.startCron();
+
+  this.openaiThreadDeletionCronService = new OpenaiThreadDeletionCronService();
+  this.openaiThreadDeletionCronService.startCron();
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {

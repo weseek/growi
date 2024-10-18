@@ -38,6 +38,10 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.threads.retrieve(threadId);
   }
 
+  async deleteThread(threadId: string): Promise<OpenAI.Beta.Threads.ThreadDeleted> {
+    return this.client.beta.threads.del(threadId);
+  }
+
   async createVectorStore(scopeType:VectorStoreScopeType): Promise<OpenAI.Beta.VectorStores.VectorStore> {
     return this.client.beta.vectorStores.create({ name: `growi-vector-store-${scopeType}` });
   }
