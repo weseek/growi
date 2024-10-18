@@ -1,3 +1,5 @@
+import type { TiktokenModel } from 'js-tiktoken';
+import { encodingForModel } from 'js-tiktoken';
 import yaml from 'js-yaml';
 import remarkFrontmatter from 'remark-frontmatter'; // Frontmatter processing
 import remarkGfm from 'remark-gfm'; // GFM processing
@@ -6,25 +8,12 @@ import type { Options as StringifyOptions } from 'remark-stringify';
 import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 
-export type Chunk = {
+export type MarkdownFragment = {
   label: string;
+  type: string;
   text: string;
+  tokenCount: number;
 };
-
-/**
- * Processes and adds a new chunk to the chunks array if content is not empty.
- * Clears the contentBuffer array after processing.
- * @param chunks - The array to store processed chunks.
- * @param contentBuffer - The array of content lines to be processed.
- * @param label - The label for the content chunk.
- */
-function addContentChunk(chunks: Chunk[], contentBuffer: string[], label: string) {
-  const text = contentBuffer.join('\n\n').trimEnd();
-  if (text !== '') {
-    chunks.push({ label, text });
-  }
-  contentBuffer.length = 0; // Clear the contentBuffer array
-}
 
 /**
  * Updates the section numbers based on the heading depth and returns the updated section label.
@@ -53,21 +42,22 @@ function updateSectionNumbers(sectionNumbers: number[], headingDepth: number): s
 }
 
 /**
- * Splits Markdown text into labeled chunks using remark-parse and remark-stringify,
- * considering content that may start before any headers and handling non-consecutive heading levels.
+ * Splits Markdown text into labeled markdownFragments using remark-parse and remark-stringify,
+ * processing each content node separately and labeling them as 1-content-1, 1-content-2, etc.
  * @param markdownText - The input Markdown string.
- * @returns An array of labeled chunks.
+ * @returns An array of labeled markdownFragments.
  */
-export async function splitMarkdownIntoChunks(markdownText: string): Promise<Chunk[]> {
-  const chunks: Chunk[] = [];
+export async function splitMarkdownIntoFragments(markdownText: string, model: TiktokenModel): Promise<MarkdownFragment[]> {
+  const markdownFragments: MarkdownFragment[] = [];
   const sectionNumbers: number[] = [];
-  let frontmatter: Record<string, unknown> | null = null; // Variable to store frontmatter
-  const contentBuffer: string[] = [];
   let currentSectionLabel = '';
+  const contentCounters: Record<string, number> = {};
 
   if (typeof markdownText !== 'string' || markdownText.trim() === '') {
-    return chunks;
+    return markdownFragments;
   }
+
+  const encoder = encodingForModel(model);
 
   const parser = unified()
     .use(remarkParse)
@@ -89,42 +79,48 @@ export async function splitMarkdownIntoChunks(markdownText: string): Promise<Chu
   // Iterate over top-level nodes to prevent duplication
   for (const node of parsedTree.children) {
     if (node.type === 'yaml') {
-      frontmatter = yaml.load(node.value) as Record<string, unknown>;
+      // Frontmatter block found, handle only the first instance
+      const frontmatter = yaml.load(node.value) as Record<string, unknown>;
+      const frontmatterText = JSON.stringify(frontmatter, null, 2);
+      const tokenCount = encoder.encode(frontmatterText).length;
+      markdownFragments.push({
+        label: 'frontmatter',
+        type: 'yaml',
+        text: frontmatterText,
+        tokenCount,
+      });
     }
     else if (node.type === 'heading') {
-      // Process pending content before heading
-      if (contentBuffer.length > 0) {
-        const contentLabel = currentSectionLabel !== '' ? `${currentSectionLabel}-content` : '0-content';
-        addContentChunk(chunks, contentBuffer, contentLabel);
-      }
-
       const headingDepth = node.depth;
       currentSectionLabel = updateSectionNumbers(sectionNumbers, headingDepth);
 
-      const headingMarkdown = stringifier.stringify(node as any);// eslint-disable-line @typescript-eslint/no-explicit-any
-      chunks.push({ label: `${currentSectionLabel}-heading`, text: headingMarkdown.trim() });
+      const headingMarkdown = stringifier.stringify(node as any).trim(); // eslint-disable-line @typescript-eslint/no-explicit-any
+      const tokenCount = encoder.encode(headingMarkdown).length;
+      markdownFragments.push({
+        label: `${currentSectionLabel}-heading`, type: node.type, text: headingMarkdown, tokenCount,
+      });
     }
     else {
-      // Add non-heading content to the buffer
+      // Process non-heading content individually
       const contentMarkdown = stringifier.stringify(node as any).trim(); // eslint-disable-line @typescript-eslint/no-explicit-any
       if (contentMarkdown !== '') {
-        contentBuffer.push(contentMarkdown);
+        const contentCountKey = currentSectionLabel || '0';
+        if (!contentCounters[contentCountKey]) {
+          contentCounters[contentCountKey] = 1;
+        }
+        else {
+          contentCounters[contentCountKey]++;
+        }
+        const contentLabel = currentSectionLabel !== ''
+          ? `${currentSectionLabel}-content-${contentCounters[contentCountKey]}`
+          : `0-content-${contentCounters[contentCountKey]}`;
+        const tokenCount = encoder.encode(contentMarkdown).length;
+        markdownFragments.push({
+          label: contentLabel, type: node.type, text: contentMarkdown, tokenCount,
+        });
       }
     }
   }
 
-  // Process any remaining content
-  if (contentBuffer.length > 0) {
-    const contentLabel = currentSectionLabel !== '' ? `${currentSectionLabel}-content` : '0-content';
-    addContentChunk(chunks, contentBuffer, contentLabel);
-  }
-
-  if (frontmatter) {
-    chunks.unshift({
-      label: 'frontmatter',
-      text: JSON.stringify(frontmatter, null, 2),
-    });
-  }
-
-  return chunks;
+  return markdownFragments;
 }

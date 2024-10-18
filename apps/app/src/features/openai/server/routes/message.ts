@@ -1,5 +1,4 @@
-import assert from 'assert';
-
+import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler, Response } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
@@ -9,8 +8,10 @@ import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 import { getOrCreateChatAssistant } from '~/features/openai/server/services/assistant';
 import type Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import { MessageErrorCode } from '../../interfaces/message-error';
 import { openaiClient } from '../services';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -37,16 +38,18 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       .withMessage('userMessage must be string')
       .notEmpty()
       .withMessage('userMessage must be set'),
-    body('threadId').isString().withMessage('threadId must be string'),
+    body('threadId').optional().isString().withMessage('threadId must be string'),
   ];
 
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: Response) => {
+    async(req: Req, res: ApiV3Response) => {
 
       const threadId = req.body.threadId;
 
-      assert(threadId != null);
+      if (threadId == null) {
+        return res.apiv3Err(new ErrorV3('threadId is not set', MessageErrorCode.THREAD_ID_IS_NOT_SET), 400);
+      }
 
       let stream: AssistantStream;
 
@@ -64,7 +67,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       catch (err) {
         logger.error(err);
 
-        // TODO: improve error handling by https://redmine.weseek.co.jp/issues/155304
+        // TODO: improve error handling by https://redmine.weseek.co.jp/issues/155004
         return res.status(500).send(err.message);
       }
 
