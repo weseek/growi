@@ -687,11 +687,28 @@ Another section with a shorter header, but enough content to ensure proper chunk
     This is a short paragraph under header 1. It contains only a few sentences to ensure that the total token count remains under the maxToken limit.
     `;
 
-    const maxToken = 800; // maxToken
+    const maxToken = 800;
 
     const result = await splitMarkdownIntoChunks(markdownText, MODEL, maxToken);
 
     expect(result).toHaveLength(1);
     expect(result[0]).toBe(markdownText);
+  });
+
+  test('Should return the entire markdown as a single chunk if token count is less than or equal to maxToken', async() => {
+    const markdownWithContentBeforeHeading = `
+This is a short paragraph
+
+# Header 1
+${repeatedText}
+    `;
+
+    const maxToken = 800;
+
+    const result = await splitMarkdownIntoChunks(markdownWithContentBeforeHeading, MODEL, maxToken);
+    result.forEach((chunk) => {
+      const tokenCount = encoder.encode(chunk).length;
+      expect(tokenCount).toBeLessThanOrEqual(maxToken * 1.1);
+    });
   });
 });
