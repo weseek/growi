@@ -11,7 +11,7 @@ function groupMarkdownFragments(
 
   const prefixes = markdownFragments.map(({ label }) => {
     if (label === 'frontmatter') return 'frontmatter';
-    const match = label.match(/^\d+(?:-\d+)*/);
+    const match = label.match(/^\d+(?:-\d+)*/)!; // eslint-disable-line @typescript-eslint/no-non-null-assertion
     return match[0];
   });
 
