@@ -1,7 +1,7 @@
 import path from 'path';
 
 import { GrowiPluginType } from '@growi/core';
-import { TemplateSummary } from '@growi/pluginkit/dist/v4';
+import type { TemplateSummary } from '@growi/pluginkit/dist/v4';
 import { scanAllTemplates, getMarkdown } from '@growi/pluginkit/dist/v4/server/index.cjs';
 import express from 'express';
 import { param, query } from 'express-validator';
@@ -9,7 +9,7 @@ import { param, query } from 'express-validator';
 import { PLUGIN_STORING_PATH } from '~/features/growi-plugin/server/consts';
 import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -40,7 +40,7 @@ module.exports = (crowi) => {
 
     // scan preset templates
     if (presetTemplateSummaries == null) {
-      const presetTemplatesRoot = resolveFromRoot('../../node_modules/@growi/preset-templates');
+      const presetTemplatesRoot = resolveFromRoot('node_modules/@growi/preset-templates');
 
       try {
         presetTemplateSummaries = await scanAllTemplates(presetTemplatesRoot, {
@@ -76,7 +76,7 @@ module.exports = (crowi) => {
       templateId, locale,
     } = req.params;
 
-    const presetTemplatesRoot = resolveFromRoot('../../node_modules/@growi/preset-templates');
+    const presetTemplatesRoot = resolveFromRoot('node_modules/@growi/preset-templates');
 
     try {
       const markdown = await getMarkdown(presetTemplatesRoot, templateId, locale);

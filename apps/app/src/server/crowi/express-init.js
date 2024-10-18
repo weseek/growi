@@ -85,7 +85,7 @@ module.exports = function(crowi, app) {
   const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
   app.use('/static/preset-themes', express.static(
-    resolveFromRoot(`../../node_modules/@growi/preset-themes/${presetThemesRootPath}`),
+    resolveFromRoot(`node_modules/@growi/preset-themes/${presetThemesRootPath}`),
   ));
   app.use(PLUGIN_EXPRESS_STATIC_DIR, express.static(PLUGIN_STORING_PATH));
 

@@ -13,7 +13,7 @@ on:
       - .github/workflows/reusable-app-reg-suit.yml
       - tsconfig.base.json
       - turbo.json
-      - yarn.lock
+      - pnpm-lock.yaml
       - package.json
       - apps/app/**
       - '!apps/app/docker/**'
@@ -26,7 +26,7 @@ on:
       - .github/workflows/reusable-app-prod.yml
       - .github/workflows/reusable-app-reg-suit.yml
       - tsconfig.base.json
-      - yarn.lock
+      - pnpm-lock.yaml
       - turbo.json
       - package.json
       - apps/app/**
