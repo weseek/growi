@@ -262,7 +262,7 @@
     "jest-localstorage-mock": "^2.4.14",
     "load-css-file": "^1.0.0",
     "material-icons": "^1.11.3",
-    "mongodb": "4.16.0",
+    "mongodb": "4.17.0",
     "mongodb-memory-server-core": "^9.1.1",
     "morgan": "^1.10.0",
     "null-loader": "^4.0.1",
