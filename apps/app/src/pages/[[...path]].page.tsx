@@ -282,7 +282,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
         mutateEditingMarkdown(pageData?.revision?.body);
-        mutateCurrentPageYjsDataFromApi();
       };
 
       // If skipSSR is true, use the API to retrieve page data.
@@ -293,6 +292,13 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     revisionId, currentPageId, mutateCurrentPage,
     mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR,
   ]);
+
+  // Load current yjs data
+  useEffect(() => {
+    if (currentPageId != null && revisionId != null && !props.isNotFound) {
+      mutateCurrentPageYjsDataFromApi();
+    }
+  }, [currentPageId, mutateCurrentPageYjsDataFromApi, props.isNotFound, revisionId]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
