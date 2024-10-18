@@ -8,7 +8,9 @@ import {
   type Types, type Document, type Model, Schema,
 } from 'mongoose';
 
-import { AllSupportedTargetModels } from '~/interfaces/activity';
+import type { IPageBulkExportJob } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import type { SupportedTargetModelType } from '~/interfaces/activity';
+import { AllSupportedTargetModels, SupportedTargetModel } from '~/interfaces/activity';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 
@@ -17,7 +19,7 @@ export interface SubscriptionDocument extends ISubscription, Document {}
 
 export interface SubscriptionModel extends Model<SubscriptionDocument> {
   findByUserIdAndTargetId(userId: Types.ObjectId | string, targetId: Types.ObjectId | string): any
-  upsertSubscription(user: Ref<IUser>, targetModel: string, target: Ref<IPage>, status: string): any
+  upsertSubscription(user: Ref<IUser>, targetModel: SupportedTargetModelType, target: Ref<IPage> | Ref<IUser> | Ref<IPageBulkExportJob>, status: string): any
   subscribeByPageId(userId: Types.ObjectId, pageId: Types.ObjectId, status: string): any
   getSubscription(target: Ref<IPage>): Promise<Ref<IUser>[]>
   getUnsubscription(target: Ref<IPage>): Promise<Ref<IUser>[]>
@@ -63,7 +65,9 @@ subscriptionSchema.statics.findByUserIdAndTargetId = function(userId, targetId) 
   return this.findOne({ user: userId, target: targetId });
 };
 
-subscriptionSchema.statics.upsertSubscription = function(user, targetModel, target, status) {
+subscriptionSchema.statics.upsertSubscription = function(
+    user: Ref<IUser>, targetModel: SupportedTargetModelType, target: Ref<IPage>, status: SubscriptionStatusType,
+) {
   const query = { user, targetModel, target };
   const doc = { ...query, status };
   const options = {
@@ -73,7 +77,7 @@ subscriptionSchema.statics.upsertSubscription = function(user, targetModel, targ
 };
 
 subscriptionSchema.statics.subscribeByPageId = function(userId, pageId, status) {
-  return this.upsertSubscription(userId, 'Page', pageId, status);
+  return this.upsertSubscription(userId, SupportedTargetModel.MODEL_PAGE, pageId, status);
 };
 
 subscriptionSchema.statics.getSubscription = async function(target: Ref<IPage>) {
