@@ -5,7 +5,7 @@ import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter
 
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
-import { excludeReadOnlyUser } from '../middlewares/exclude-read-only-user';
+import { excludeReadOnlyUser, excludeReadOnlyUserIfCommentNotAllowed } from '../middlewares/exclude-read-only-user';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
 import * as loginFormValidator from '../middlewares/login-form-validator';
@@ -131,9 +131,9 @@ module.exports = function(crowi, app) {
   apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
   apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, tag.api.update);
   apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
-  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.add);
-  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.update);
-  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.remove);
+  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.add);
+  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.update);
+  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.remove);
 
   apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
   apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);

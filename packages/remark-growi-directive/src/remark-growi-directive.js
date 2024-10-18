@@ -1,7 +1,6 @@
 /**
  * @typedef {import('mdast').Root} Root
- *
- * @typedef {import('mdast-util-directive')} DoNotTouchAsThisImportIncludesDirectivesInTree
+ * @typedef {import('unified').Processor<Root>} Processor
  */
 
 import { directiveFromMarkdown, directiveToMarkdown } from './mdast-util-growi-directive/index.js';
@@ -10,26 +9,26 @@ import { directive } from './micromark-extension-growi-directive/index.js';
 /**
     * Plugin to support GROWI plugin (`$lsx(/path, depth=2)`).
     *
-    * @type {import('unified').Plugin<void[], Root>}
+    * Add support for generic directives.
+    *
+    * ###### Notes
+    *
+    * Doesn’t handle the directives: create your own plugin to do that.
+    *
+    * @returns {undefined}
+    *   Nothing.
     */
 export function remarkGrowiDirectivePlugin() {
-  const data = this.data();
+  // @ts-expect-error: TS is wrong about `this`.
+  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  const self = /** @type {Processor} */ (this);
+  const data = self.data();
 
-  add('micromarkExtensions', directive());
-  add('fromMarkdownExtensions', directiveFromMarkdown);
-  add('toMarkdownExtensions', directiveToMarkdown);
+  const micromarkExtensions = data.micromarkExtensions || (data.micromarkExtensions = []);
+  const fromMarkdownExtensions = data.fromMarkdownExtensions || (data.fromMarkdownExtensions = []);
+  const toMarkdownExtensions = data.toMarkdownExtensions || (data.toMarkdownExtensions = []);
 
-  /**
-      * @param {string} field
-      * @param {unknown} value
-      */
-  function add(field, value) {
-    const list = /** @type {unknown[]} */ (
-      // Other extensions
-      /* c8 ignore next 2 */
-      data[field] ? data[field] : (data[field] = [])
-    );
-
-    list.push(value);
-  }
+  micromarkExtensions.push(directive());
+  fromMarkdownExtensions.push(directiveFromMarkdown());
+  toMarkdownExtensions.push(directiveToMarkdown());
 }

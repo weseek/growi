@@ -6,7 +6,9 @@ import {
   keymap, type Command, highlightActiveLine, highlightActiveLineGutter,
 } from '@codemirror/view';
 
-import type { EditorSettings, KeyMapMode, EditorTheme } from '../../consts';
+import {
+  type EditorSettings, type KeyMapMode, type EditorTheme,
+} from '../../consts';
 import type { UseCodeMirrorEditor } from '../services';
 import {
   getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable,
@@ -15,29 +17,29 @@ import {
 
 export const useEditorSettings = (
     codeMirrorEditor?: UseCodeMirrorEditor,
-    editorSetings?: EditorSettings,
+    editorSettings?: EditorSettings,
     onSave?: () => void,
 ): void => {
 
   useEffect(() => {
-    if (editorSetings?.styleActiveLine == null) {
+    if (editorSettings?.styleActiveLine == null) {
       return;
     }
-    const extensions = (editorSetings?.styleActiveLine) ? [[highlightActiveLine(), highlightActiveLineGutter()]] : [[]];
+    const extensions = (editorSettings?.styleActiveLine) ? [[highlightActiveLine(), highlightActiveLineGutter()]] : [[]];
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extensions);
     return cleanupFunction;
 
-  }, [codeMirrorEditor, editorSetings?.styleActiveLine]);
+  }, [codeMirrorEditor, editorSettings?.styleActiveLine]);
 
   const onPressEnter: Command = useCallback((editor) => {
-    if (isInTable(editor) && editorSetings?.autoFormatMarkdownTable) {
+    if (isInTable(editor) && editorSettings?.autoFormatMarkdownTable) {
       insertNewRowToMarkdownTable(editor);
       return true;
     }
     insertNewlineContinueMarkup(editor);
     return true;
-  }, [editorSetings?.autoFormatMarkdownTable]);
+  }, [editorSettings?.autoFormatMarkdownTable]);
 
 
   useEffect(() => {
@@ -56,8 +58,8 @@ export const useEditorSettings = (
     const settingTheme = async(name?: EditorTheme) => {
       setThemeExtension(await getEditorTheme(name));
     };
-    settingTheme(editorSetings?.theme);
-  }, [codeMirrorEditor, editorSetings?.theme, setThemeExtension]);
+    settingTheme(editorSettings?.theme);
+  }, [codeMirrorEditor, editorSettings?.theme, setThemeExtension]);
 
   useEffect(() => {
     if (themeExtension == null) {
@@ -75,9 +77,9 @@ export const useEditorSettings = (
     const settingKeyMap = async(name?: KeyMapMode) => {
       setKeymapExtension(await getKeymap(name, onSave));
     };
-    settingKeyMap(editorSetings?.keymapMode);
+    settingKeyMap(editorSettings?.keymapMode);
 
-  }, [codeMirrorEditor, editorSetings?.keymapMode, setKeymapExtension, onSave]);
+  }, [codeMirrorEditor, editorSettings?.keymapMode, setKeymapExtension, onSave]);
 
   useEffect(() => {
     if (keymapExtension == null) {
@@ -89,5 +91,6 @@ export const useEditorSettings = (
     return cleanupFunction;
 
   }, [codeMirrorEditor, keymapExtension]);
+
 
 };

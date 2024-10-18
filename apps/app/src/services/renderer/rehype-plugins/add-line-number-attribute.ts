@@ -1,5 +1,5 @@
+import type { Element } from 'hast';
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
-import type { Element } from 'hast-util-select/lib/types';
 import type { Plugin } from 'unified';
 import { visit, EXIT, CONTINUE } from 'unist-util-visit';
 

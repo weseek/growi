@@ -1,5 +1,7 @@
 import type { ITag } from '@growi/core';
-import type { Document, Model, ObjectId } from 'mongoose';
+import type {
+  Document, Model, ObjectId, Types,
+} from 'mongoose';
 import mongoose from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -9,7 +11,7 @@ import type { IPageTagRelation } from '~/interfaces/page-tag-relation';
 import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-import type { IdToNameMap, IdToNamesMap } from './tag';
+import type { IdToNamesMap } from './tag';
 import Tag from './tag';
 
 
@@ -33,14 +35,18 @@ type CreateTagListWithCountResult = {
 }
 type CreateTagListWithCount = (this: PageTagRelationModel, opts?: CreateTagListWithCountOpts) => Promise<CreateTagListWithCountResult>;
 
+type ListTagNamesByPage = (pageId: Types.ObjectId | string) => Promise<PageTagRelationDocument[]>;
+
+type FindByPageId = (pageId: Types.ObjectId | string, options?: { nullable?: boolean }) => Promise<PageTagRelationDocument[]>;
+
 type GetIdToTagNamesMap = (this: PageTagRelationModel, pageIds: string[]) => Promise<IdToNamesMap>;
 
-type UpdatePageTags = (this: PageTagRelationModel, pageId: string, tags: string[]) => Promise<void>
+type UpdatePageTags = (this: PageTagRelationModel, pageId: Types.ObjectId | string, tags: string[]) => Promise<void>
 
 export interface PageTagRelationModel extends Model<PageTagRelationDocument> {
   createTagListWithCount: CreateTagListWithCount
-  findByPageId(pageId: string, options?: { nullable?: boolean }): Promise<PageTagRelationDocument[]>
-  listTagNamesByPage(pageId: string): Promise<PageTagRelationDocument[]>
+  findByPageId: FindByPageId
+  listTagNamesByPage: ListTagNamesByPage
   getIdToTagNamesMap: GetIdToTagNamesMap
   updatePageTags: UpdatePageTags
 }
@@ -102,17 +108,18 @@ const createTagListWithCount: CreateTagListWithCount = async function(this, opts
 };
 schema.statics.createTagListWithCount = createTagListWithCount;
 
-schema.statics.findByPageId = async function(pageId, options = {}) {
+const findByPageId: FindByPageId = async function(pageId, options = {}) {
   const isAcceptRelatedTagNull = options.nullable || null;
   const relations = await this.find({ relatedPage: pageId }).populate('relatedTag').select('relatedTag');
   return isAcceptRelatedTagNull ? relations : relations.filter((relation) => { return relation.relatedTag !== null });
 };
+schema.statics.findByPageId = findByPageId;
 
-schema.statics.listTagNamesByPage = async function(pageId) {
+const listTagNamesByPage: ListTagNamesByPage = async function(pageId) {
   const relations = await this.findByPageId(pageId);
   return relations.map((relation) => { return relation.relatedTag.name });
 };
-
+schema.statics.listTagNamesByPage = listTagNamesByPage;
 
 const getIdToTagNamesMap: GetIdToTagNamesMap = async function(this, pageIds) {
   /**
