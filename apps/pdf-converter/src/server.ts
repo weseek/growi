@@ -7,7 +7,7 @@ import * as Controllers from './controllers';
 
 import '@tsed/platform-express';
 
-const PORT = Number(process.env.PORT || 3004);
+const PORT = Number(process.env.PORT || 3010);
 
 @Configuration({
   port: PORT,
