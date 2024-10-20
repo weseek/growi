@@ -775,6 +775,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.NUMBER,
     default: 5,
   },
+  BULK_EXPORT_PDF_CONVERTER_URL: {
+    ns: 'crowi',
+    key: 'app:pageBulkExportPdfConverterUrl',
+    type: ValueType.STRING,
+    default: 'http://pdf-converter:3004',
+  },
   AI_ENABLED: {
     ns: 'crowi',
     key: 'app:aiEnabled',
