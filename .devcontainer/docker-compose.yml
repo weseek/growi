@@ -3,9 +3,8 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 
-version: '3'
 services:
-  node:
+  app:
     # Uncomment the next line to use a non-root user for all processes. You can also
     # simply use the "remoteUser" property in devcontainer.json if you just want VS Code
     # and its sub-processes (terminals, tasks, debugging) to execute as the user. On Linux,
@@ -15,7 +14,7 @@ services:
 
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./app/Dockerfile
 
     volumes:
       - ..:/workspace/growi:delegated
@@ -24,6 +23,7 @@ services:
       - node_modules_slackbot-proxy:/workspace/growi/apps/slackbot-proxy/node_modules
       - buildcache_app:/workspace/growi/apps/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
+      - page_bulk_export_tmp:/tmp/page-bulk-export
 
     tty: true
 
@@ -58,8 +58,25 @@ services:
       - /usr/share/elasticsearch/data
       - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
+  pdf-converter:
+    user: node
+    build:
+      context: .
+      dockerfile: ./pdf-converter/Dockerfile
+    restart: unless-stopped
+    ports:
+      - 3010
+    volumes:
+      - ..:/workspace/growi:delegated
+      - node_modules:/workspace/growi/node_modules
+      - node_modules_pdf_converter:/workspace/growi/apps/pdf-converter/node_modules
+      - page_bulk_export_tmp:/tmp/page-bulk-export
+    tty: true
+
 volumes:
   node_modules:
   node_modules_app:
   node_modules_slackbot-proxy:
+  node_modules_pdf_converter:
   buildcache_app:
+  page_bulk_export_tmp:
