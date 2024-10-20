@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@tsed/cli": "^5.4.3",
-    "@tsed/cli-core": "^5.4.3",
     "@tsed/cli-generate-swagger": "^5.4.3",
     "@tsed/common": "7.83.4",
     "@tsed/components-scan": "7.83.4",

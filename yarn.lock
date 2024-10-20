@@ -4800,7 +4800,7 @@
   resolved "https://registry.yarnpkg.com/@tsconfig/node16/-/node16-1.0.3.tgz#472eaab5f15c1ffdd7f8628bd4c4f753995ec79e"
   integrity sha512-yOlFc+7UtL/89t2ZhjPvvB/DeAr3r+Dq58IgzsFkOAvVC6NMJXmCGjbptdXdR9qsX7pKcTL+s87FtYREi2dEEQ==
 
-"@tsed/cli-core@5.4.3", "@tsed/cli-core@^5.4.3":
+"@tsed/cli-core@5.4.3":
   version "5.4.3"
   resolved "https://registry.yarnpkg.com/@tsed/cli-core/-/cli-core-5.4.3.tgz#1ad49a012d3c9ba0106c1d58bb13e776fb1e3c7d"
   integrity sha512-o9Zg7JCffdXtcCpAQZXUmPVBqCq8DCzmt8XphmZbwQfTgPQKpnnHEt/8bylrFgpRVVVQTV4DE8ooBVYQGYnh5A==
