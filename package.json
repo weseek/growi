@@ -23,13 +23,13 @@
   "packageManager": "pnpm@9.4.0",
   "scripts": {
     "bootstrap": "pnpm install",
-    "start": "yarn app:server",
-    "prestart": "yarn app:build",
+    "start": "pnpm run app:server",
+    "prestart": "pnpm run app:build",
     "app:build": "turbo run build --filter @growi/app",
-    "app:server": "cd apps/app && yarn server",
+    "app:server": "cd apps/app && pnpm run server",
     "slackbot-proxy:build": "turbo run build --filter @growi/slackbot-proxy",
-    "slackbot-proxy:server": "cd apps/slackbot-proxy && yarn start:prod",
-    "version-subpackages": "changeset version && yarn upgrade --scope=@growi",
+    "slackbot-proxy:server": "cd apps/slackbot-proxy && pnpm run start:prod",
+    "version-subpackages": "changeset version && pnpm run upgrade --scope=@growi",
     "release-subpackages": "turbo run build --filter @growi/core --filter @growi/pluginkit && changeset publish",
     "release-subpackages:snapshot": "turbo run build --filter @growi/core --filter @growi/pluginkit && changeset version --snapshot next && changeset publish --no-git-tag --snapshot --tag next",
     "version": "yarn version --no-git-tag-version --non-interactive --preid=RC"
