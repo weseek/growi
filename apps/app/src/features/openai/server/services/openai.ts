@@ -4,7 +4,8 @@ import { Readable, Transform } from 'stream';
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
-import OpenAI, { toFile } from 'openai';
+import type OpenAI from 'openai';
+import { toFile } from 'openai';
 
 import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
 import VectorStoreModel, { VectorStoreScopeType, type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
@@ -19,8 +20,8 @@ import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
 
-
 import { getClient } from './client-delegator';
+import { oepnaiApiErrorHandler } from './openai-api-error-handler';
 
 const BATCH_SIZE = 100;
 
@@ -72,11 +73,7 @@ class OpenaiService implements IOpenaiService {
       return thread;
     }
     catch (err) {
-      if (err instanceof OpenAI.APIError) {
-        if (err.status === 404) {
-          await threadRelation.remove();
-        }
-      }
+      await oepnaiApiErrorHandler(err, { notFoundError: async() => { await threadRelation.remove() } });
       throw new Error(err);
     }
   }
@@ -116,12 +113,7 @@ class OpenaiService implements IOpenaiService {
         return vectorStoreDocument;
       }
       catch (err) {
-        if (err instanceof OpenAI.APIError) {
-          if (err.status === 404) {
-            vectorStoreDocument.remove();
-          }
-        }
-        logger.error(err);
+        await oepnaiApiErrorHandler(err, { notFoundError: async() => { await vectorStoreDocument.remove() } });
         throw new Error(err);
       }
     }
