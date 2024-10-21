@@ -23,8 +23,6 @@ jobs:
         ref: ${{ github.event.pull_request.base.ref }}
 
     - uses: pnpm/action-setup@v4
-      with:
-        version: 9
 
     - uses: actions/setup-node@v4
       with:
@@ -166,8 +164,6 @@ jobs:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
     - uses: pnpm/action-setup@v4
-      with:
-        version: 9
 
     - uses: actions/setup-node@v4
       with:
