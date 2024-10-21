@@ -41,11 +41,11 @@ function tokenizeDirectiveText(effects, ok, nok) {
   function start(code) {
     assert(code === codes.dollarSign, 'expected `$`');
     assert(previous.call(self, self.previous), 'expected correct previous');
-    effects.enter('directiveText');
-    effects.enter('directiveTextMarker');
+    effects.enter('directiveGrowiText');
+    effects.enter('directiveGrowiTextMarker');
     effects.consume(code);
-    effects.exit('directiveTextMarker');
-    return factoryName.call(self, effects, afterName, nok, 'directiveTextName');
+    effects.exit('directiveGrowiTextMarker');
+    return factoryName.call(self, effects, afterName, nok, 'directiveGrowiTextName');
   }
 
   /** @type {State} */
@@ -79,9 +79,9 @@ function tokenizeLabel(effects, ok, nok) {
     effects,
     ok,
     nok,
-    'directiveTextLabel',
-    'directiveTextLabelMarker',
-    'directiveTextLabelString',
+    'directiveGrowiTextLabel',
+    'directiveGrowiTextLabelMarker',
+    'directiveGrowiTextLabelString',
   );
 }
 
@@ -92,14 +92,14 @@ function tokenizeAttributes(effects, ok, nok) {
     effects,
     ok,
     nok,
-    'directiveTextAttributes',
-    'directiveTextAttributesMarker',
-    'directiveTextAttribute',
-    'directiveTextAttributeName',
-    'directiveTextAttributeInitializerMarker',
-    'directiveTextAttributeValueLiteral',
-    'directiveTextAttributeValue',
-    'directiveTextAttributeValueMarker',
-    'directiveTextAttributeValueData',
+    'directiveGrowiTextAttributes',
+    'directiveGrowiTextAttributesMarker',
+    'directiveGrowiTextAttribute',
+    'directiveGrowiTextAttributeName',
+    'directiveGrowiTextAttributeInitializerMarker',
+    'directiveGrowiTextAttributeValueLiteral',
+    'directiveGrowiTextAttributeValue',
+    'directiveGrowiTextAttributeValueMarker',
+    'directiveGrowiTextAttributeValueData',
   );
 }
