@@ -3,11 +3,11 @@
 // == Colors
 @include bs.color-mode(light) {
   .callout-viewer {
-    --callout-accent-note: hsl(212, 92%, 45%);
-    --callout-accent-tip: hsl(137, 66%, 30%);
-    --callout-accent-important: hsl(261, 69%, 59%);
-    --callout-accent-warning: hsl(40, 100%, 30%);
-    --callout-accent-caution: hsl(356, 71%, 48%);
+    --callout-accent-note: var(--bs-info);
+    --callout-accent-tip: var(--bs-success);
+    --callout-accent-important: var(--bs-primary);
+    --callout-accent-warning: var(--bs-warning);
+    --callout-accent-caution: var(--bs-danger);
   }
 }
 
