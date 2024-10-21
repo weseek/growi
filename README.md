@@ -95,11 +95,11 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 
 ## Command details
 
-| command           | desc                                                    |
-| ------------------| ------------------------------------------------------- |
-| `yarn app:build`  | Build GROWI app client                                  |
-| `yarn app:server` | Launch GROWI app server                                 |
-| `yarn start`      | Invoke `yarn app:build` and `yarn app:server`           |
+| command               | desc                                                    |
+| --------------------- | ------------------------------------------------------- |
+| `pnpm run app:build`  | Build GROWI app client                                  |
+| `pnpm run app:server` | Launch GROWI app server                                 |
+| `pnpm run start`      | Invoke `pnpm run app:build` and `pnpm run app:server`   |
 
 For more info, see [GROWI Docs: List of npm Scripts](https://docs.growi.org/en/dev/startup-v5/start-development.html#list-of-npm-scripts).
 

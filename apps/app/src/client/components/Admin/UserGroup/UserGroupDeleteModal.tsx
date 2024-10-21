@@ -120,7 +120,6 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       <select
         name="actionName"
         className="form-control"
-        placeholder="select"
         value={actionName ?? ''}
         onChange={handleActionChange}
       >

@@ -1,7 +1,6 @@
-// 'mdast-util-wiki-link' and 'micromark-extension-wiki-link' are included in 'remark-wiki-link' package
 import { fromMarkdown, toMarkdown } from 'mdast-util-wiki-link';
 import { syntax } from 'micromark-extension-wiki-link';
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
 
 
 type FromMarkdownExtension = {

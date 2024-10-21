@@ -1,18 +1,21 @@
-import type { IUser } from '@growi/core';
+import type { IUser } from '@growi/core/dist/interfaces';
 import type { Request, Router } from 'express';
 import express from 'express';
 import mongoose from 'mongoose';
+
+import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
 import { invitedRules, invitedValidation } from '../../middlewares/invited-form-validator';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
+const logger = loggerFactory('growi:routes:login');
+
 type InvitedFormRequest = Request & { form: any, user: any };
 
 module.exports = (crowi: Crowi): Router => {
   const applicationInstalled = require('../../middlewares/application-installed')(crowi);
-  const debug = require('debug')('growi:routes:login');
   const router = express.Router();
 
   router.post('/', applicationInstalled, invitedRules(), invitedValidation, async(req: InvitedFormRequest, res: ApiV3Response) => {
@@ -41,7 +44,7 @@ module.exports = (crowi: Crowi): Router => {
 
     const creatable = await User.isRegisterableUsername(username);
     if (!creatable) {
-      debug('username', username);
+      logger.debug('username', username);
       return res.apiv3Err('message.unable_to_use_this_user', 403);
     }
 

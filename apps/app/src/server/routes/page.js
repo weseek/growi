@@ -132,7 +132,6 @@ import UpdatePost from '../models/update-post';
  * @type { (crowi: import('../crowi').default, app) => any }
  */
 module.exports = function(crowi, app) {
-  const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
 
   const { pagePathUtils } = require('@growi/core/dist/utils');
@@ -302,12 +301,12 @@ module.exports = function(crowi, app) {
         data = data.map((e) => {
           return e.channel;
         });
-        debug('Found updatePost data', data);
+        logger.debug('Found updatePost data', data);
         const result = { updatePost: data };
         return res.json(ApiResponse.success(result));
       })
       .catch((err) => {
-        debug('Error occured while get setting', err);
+        logger.debug('Error occured while get setting', err);
         return res.json(ApiResponse.error({}));
       });
   };
@@ -355,7 +354,7 @@ module.exports = function(crowi, app) {
 
     const creatorId = await crowi.pageService.getCreatorIdForCanDelete(page);
 
-    debug('Delete page', page._id, page.path);
+    logger.debug('Delete page', page._id, page.path);
 
     try {
       if (isCompletely) {
@@ -408,7 +407,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Failed to delete page.', err.message));
     }
 
-    debug('Page deleted', page.path);
+    logger.debug('Page deleted', page.path);
     const result = {};
     result.path = page.path;
     result.isRecursively = isRecursively;

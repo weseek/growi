@@ -59,8 +59,8 @@
     "build": "vite build",
     "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
-    "watch": "yarn dev -w --emptyOutDir=false",
-    "lint:js": "yarn eslint **/*.{js,ts}",
+    "watch": "pnpm run dev -w --emptyOutDir=false",
+    "lint:js": "eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*",
     "test": "vitest run --coverage"
@@ -75,6 +75,7 @@
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
     "mongoose": "^6.11.3",
+    "socket.io-client": "^4.7.5",
     "swr": "^2.2.2"
   }
 }

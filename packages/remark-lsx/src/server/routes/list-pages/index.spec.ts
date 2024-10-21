@@ -63,7 +63,7 @@ describe('listPages', () => {
     it('returns 200 HTTP response', async() => {
       // setup query.clone().count()
       const queryClonedMock = mock<PageQuery>();
-      queryMock.clone.mockImplementation(() => queryClonedMock);
+      queryMock.clone.mockReturnValue(queryClonedMock);
       queryClonedMock.count.mockResolvedValue(9);
 
       // setup addNumCondition
@@ -73,7 +73,7 @@ describe('listPages', () => {
 
       // setup query.exec()
       const pageMock = mock<IPageHasId>();
-      queryMock.exec.mockImplementation(async() => [pageMock]);
+      queryMock.exec.mockResolvedValue([pageMock]);
       mocks.addSortConditionMock.mockImplementation(() => queryMock);
 
       const resMock = mock<Response>();

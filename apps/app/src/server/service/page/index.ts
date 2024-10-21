@@ -2,15 +2,16 @@ import type EventEmitter from 'events';
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
+import {
+  PageStatus, YDocStatus, getIdForRef,
+  getIdStringForRef,
+} from '@growi/core';
+import { PageGrant } from '@growi/core/dist/interfaces';
 import type {
   Ref, HasObjectId, IUserHasId, IUser,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IGrantedGroup, IRevisionHasId,
   IDataWithMeta,
-} from '@growi/core';
-import {
-  PageGrant, PageStatus, YDocStatus, getIdForRef,
-  getIdStringForRef,
-} from '@growi/core';
+} from '@growi/core/dist/interfaces';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
@@ -75,8 +76,6 @@ import { shouldUseV4Process } from './should-use-v4-process';
 
 export * from './page-service';
 
-
-const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
@@ -2378,7 +2377,7 @@ class PageService implements IPageService {
 
     page.status = Page.STATUS_PUBLISHED;
     page.lastUpdateUser = user;
-    debug('Revert deleted the page', page, newPath);
+    logger.debug('Revert deleted the page', page, newPath);
     const updatedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
         path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,

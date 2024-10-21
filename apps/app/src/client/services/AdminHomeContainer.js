@@ -103,7 +103,7 @@ export default class AdminHomeContainer extends Container {
 |GROWI     |${this.state.growiVersion}|
 |node.js   |${this.state.nodeVersion}|
 |npm       |${this.state.npmVersion}|
-|yarn      |${this.state.yarnVersion}|
+|pnpm      |${this.state.pnpmVersion}|
 |Using Docker|yes/no|
 |Using [growi-docker-compose][growi-docker-compose]|yes/no|
 

@@ -18,8 +18,11 @@
     "@growi/markdown-splitter",
     "@growi/editor",
     "@growi/presentation",
-    "@growi/preset-*",
-    "@growi/remark-*",
+    "@growi/preset-templates",
+    "@growi/preset-themes",
+    "@growi/remark-attachment-refs",
+    "@growi/remark-drawio",
+    "@growi/remark-lsx",
     "@growi/slack",
     "@growi/ui"
   ]

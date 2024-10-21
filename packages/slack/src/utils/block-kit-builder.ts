@@ -1,6 +1,7 @@
 import type {
   SectionBlock, HeaderBlock, InputBlock, DividerBlock, ActionsBlock,
   Button, Overflow, Datepicker, Select, RadioButtons, Checkboxes, Action, MultiSelect, PlainTextInput, Option,
+  ActionsBlockElement,
 } from '@slack/types';
 
 
@@ -50,12 +51,10 @@ export function inputSectionBlock(blockId: string, labelText: string, actionId: 
   };
 }
 
-export function actionsBlock(...elements: (Button | Overflow | Datepicker | Select | RadioButtons | Checkboxes | Action)[]): ActionsBlock {
+export function actionsBlock(...elements: ActionsBlockElement[]): ActionsBlock {
   return {
     type: 'actions',
-    elements: [
-      ...elements,
-    ],
+    elements,
   };
 }
 

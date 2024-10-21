@@ -1,9 +1,9 @@
+import { allOrigin } from '@growi/core';
 import type {
   HasObjectId,
   IRevision,
   Origin,
-} from '@growi/core';
-import { allOrigin } from '@growi/core';
+} from '@growi/core/dist/interfaces';
 import type { Types } from 'mongoose';
 import {
   Schema, type Document, type Model,

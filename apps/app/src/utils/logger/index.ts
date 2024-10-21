@@ -1,4 +1,4 @@
-import Logger from 'bunyan';
+import type Logger from 'bunyan';
 import { createLogger, type UniversalBunyanConfig } from 'universal-bunyan';
 
 import configForDev from '^/config/logger/config.dev';
