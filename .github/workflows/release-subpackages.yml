@@ -28,21 +28,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-release-subpackages-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          node_modules-release-subpackages-${{ runner.OS }}-node${{ inputs.node-version }}-
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
@@ -81,21 +74,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-release-subpackages-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          node_modules-release-subpackages-${{ runner.OS }}-node${{ inputs.node-version }}-
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |

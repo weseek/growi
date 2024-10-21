@@ -35,21 +35,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
-
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
-        restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+        cache: 'pnpm'
 
     - name: Restore dist
       uses: actions/cache/restore@v4
@@ -110,21 +103,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
-
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
-        restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}-
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+        cache: 'pnpm'
 
     - name: Restore dist
       uses: actions/cache/restore@v4
@@ -198,11 +184,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
+        cache: 'pnpm'
 
     - name: Install turbo
       run: |
@@ -213,16 +202,6 @@ jobs:
         turbo prune @growi/slackbot-proxy
         rm -rf apps packages
         mv out/* .
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-slackbot-prxy-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          node_modules-slackbot-proxy-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |

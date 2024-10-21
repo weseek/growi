@@ -22,11 +22,14 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.base.ref }}
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
@@ -162,11 +165,14 @@ jobs:
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |

@@ -26,11 +26,14 @@ jobs:
         # retrieve local font files
         lfs: true
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
+        cache: 'pnpm'
 
     - name: Install turbo
       run: |
@@ -41,16 +44,6 @@ jobs:
         turbo prune @growi/app
         rm -rf apps packages
         mv out/* .
-
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-          !**/node_modules/.cache/turbo
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
@@ -137,11 +130,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
+        cache: 'pnpm'
 
     - name: Install turbo
       run: |
@@ -152,16 +148,6 @@ jobs:
         turbo prune @growi/app
         rm -rf apps packages
         mv out/* .
-
-    - name: Restore node_modules
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          **/node_modules
-        # shared key with build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
@@ -228,21 +214,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/pnpm-lock.yaml'
-
-    - name: Restore node_modules
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          **/node_modules
-        # saved key by build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |

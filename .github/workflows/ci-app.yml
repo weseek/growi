@@ -34,21 +34,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/pnpm-lock.yaml'
-
-      - name: Cache/Restore node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-            !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
+          cache: 'pnpm'
 
       - name: Cache/Restore dist
         uses: actions/cache@v4
@@ -98,21 +91,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/pnpm-lock.yaml'
-
-      - name: Cache/Restore node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-            !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
+          cache: 'pnpm'
 
       - name: Cache/Restore dist
         uses: actions/cache@v4
@@ -172,22 +158,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/pnpm-lock.yaml'
-
-      - name: Cache/Restore node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-            !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
-            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
+          cache: 'pnpm'
 
       - name: Cache/Restore dist
         uses: actions/cache@v4
