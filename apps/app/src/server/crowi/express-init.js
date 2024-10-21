@@ -11,7 +11,6 @@ import registerSafeRedirectFactory from '../middlewares/safe-redirect';
 const logger = loggerFactory('growi:crowi:express-init');
 
 module.exports = function(crowi, app) {
-  const debug = require('debug')('growi:crowi:express-init');
   const express = require('express');
   const compression = require('compression');
   const helmet = require('helmet');
@@ -124,7 +123,7 @@ module.exports = function(crowi, app) {
   app.use(csrf({ ignoreMethods: ['GET', 'HEAD', 'OPTIONS', 'PUT', 'POST', 'DELETE'], cookie: false }));
 
   // passport
-  debug('initialize Passport');
+  logger.debug('initialize Passport');
   app.use(passport.initialize());
   app.use(passport.session());
 
