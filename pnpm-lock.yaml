@@ -293,7 +293,7 @@ importers:
         specifier: ^1.8.15
         version: 1.8.15
       check-node-version:
-        specifier: ^4.1.0
+        specifier: ^4.2.1
         version: 4.2.1
       compression:
         specifier: ^1.7.4
@@ -10867,9 +10867,6 @@ packages:
     resolution: {integrity: sha512-tvVnVv01b8c1RrA6Ep7JkStj85Guv/YrMcwqYQnwjsAS2cTmmPGBBjAjpCW7RrSodNSoE2/qg9O4bceNvUuDgQ==}
     engines: {node: '>=0.12.0'}
 
-  run-parallel@1.1.9:
-    resolution: {integrity: sha512-DEqnSRTDw/Tc3FXf49zedI638Z9onwUotBMiUFKmrO2sdFKIbXamXGQ3Axd4qgphxKB4kw/qP1w5kTxnfU1B9Q==}
-
   run-parallel@1.2.0:
     resolution: {integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==}
 
@@ -15619,7 +15616,7 @@ snapshots:
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
       '@nodelib/fs.stat': 2.0.5
-      run-parallel: 1.1.9
+      run-parallel: 1.2.0
 
   '@nodelib/fs.stat@2.0.5': {}
 
@@ -18715,7 +18712,7 @@ snapshots:
       map-values: 1.0.1
       minimist: 1.2.8
       object-filter: 1.0.2
-      run-parallel: 1.1.9
+      run-parallel: 1.2.0
       semver: 6.3.1
 
   cheerio-select@2.1.0:
@@ -22061,7 +22058,7 @@ snapshots:
       acorn: 8.11.3
       eslint-visitor-keys: 3.4.3
       espree: 9.6.1
-      semver: 7.6.2
+      semver: 7.6.3
 
   jsonc-parser@3.2.0: {}
 
@@ -23572,7 +23569,7 @@ snapshots:
       nopt: 6.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.6.2
+      semver: 7.6.3
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:
@@ -25071,8 +25068,6 @@ snapshots:
       points-on-path: 0.2.1
 
   run-async@2.4.1: {}
-
-  run-parallel@1.1.9: {}
 
   run-parallel@1.2.0:
     dependencies:
