@@ -728,6 +728,12 @@ importers:
       '@types/node-cron':
         specifier: ^3.0.11
         version: 3.0.11
+      '@types/react':
+        specifier: ^18.2.14
+        version: 18.3.3
+      '@types/react-dom':
+        specifier: ^18.2.6
+        version: 18.3.0
       '@types/react-input-autosize':
         specifier: ^2.2.4
         version: 2.2.4
