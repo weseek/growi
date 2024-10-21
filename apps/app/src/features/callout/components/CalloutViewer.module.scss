@@ -1,24 +1,12 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 // == Colors
-@include bs.color-mode(light) {
-  .callout-viewer {
-    --callout-accent-note: var(--bs-info);
-    --callout-accent-tip: var(--bs-success);
-    --callout-accent-important: var(--bs-primary);
-    --callout-accent-warning: var(--bs-warning);
-    --callout-accent-caution: var(--bs-danger);
-  }
-}
-
-@include bs.color-mode(dark) {
-  .callout-viewer {
-    --callout-accent-note: hsl(215, 93%, 58%);
-    --callout-accent-tip: hsl(128, 49%, 49%);
-    --callout-accent-important: hsl(262, 89%, 71%);
-    --callout-accent-warning: hsl(41, 72%, 48%);
-    --callout-accent-caution: hsl(3, 93%, 63%);
-  }
+.callout-viewer {
+  --callout-accent-note: var(--bs-info);
+  --callout-accent-tip: var(--bs-success);
+  --callout-accent-important: var(--bs-primary);
+  --callout-accent-warning: var(--bs-warning);
+  --callout-accent-caution: var(--bs-danger);
 }
 
 .callout-viewer :global{
