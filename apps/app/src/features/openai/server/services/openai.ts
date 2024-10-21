@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
+import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
 import VectorStoreModel, { VectorStoreScopeType, type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
 import VectorStoreFileRelationModel, {
   type VectorStoreFileRelation,
@@ -19,8 +20,8 @@ import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
 
-
 import { getClient } from './client-delegator';
+import { oepnaiApiErrorHandler } from './openai-api-error-handler';
 
 const BATCH_SIZE = 100;
 
@@ -29,7 +30,9 @@ const logger = loggerFactory('growi:service:openai');
 let isVectorStoreForPublicScopeExist = false;
 
 export interface IOpenaiService {
+  getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
   getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
+  deleteExpiredThreads(limit: number): Promise<void>;
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
@@ -42,6 +45,60 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
+  public async getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread> {
+    if (vectorStoreId != null && threadId == null) {
+      try {
+        const thread = await this.client.createThread(vectorStoreId);
+        await ThreadRelationModel.create({ userId, threadId: thread.id });
+        return thread;
+      }
+      catch (err) {
+        throw new Error(err);
+      }
+    }
+
+    const threadRelation = await ThreadRelationModel.findOne({ threadId });
+    if (threadRelation == null) {
+      throw new Error('ThreadRelation document is not exists');
+    }
+
+    // Check if a thread entity exists
+    // If the thread entity does not exist, the thread-relation document is deleted
+    try {
+      const thread = await this.client.retrieveThread(threadRelation.threadId);
+
+      // Update expiration date if thread entity exists
+      await threadRelation.updateThreadExpiration();
+
+      return thread;
+    }
+    catch (err) {
+      await oepnaiApiErrorHandler(err, { notFoundError: async() => { await threadRelation.remove() } });
+      throw new Error(err);
+    }
+  }
+
+  public async deleteExpiredThreads(limit: number): Promise<void> {
+    const expiredThreadRelations = await ThreadRelationModel.getExpiredThreadRelations(limit);
+    if (expiredThreadRelations == null) {
+      return;
+    }
+
+    const deletedThreadIds: string[] = [];
+    for await (const expiredThreadRelation of expiredThreadRelations) {
+      try {
+        const deleteThreadResponse = await this.client.deleteThread(expiredThreadRelation.threadId);
+        logger.debug('Delete thread', deleteThreadResponse);
+        deletedThreadIds.push(expiredThreadRelation.threadId);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    }
+
+    await ThreadRelationModel.deleteMany({ threadId: { $in: deletedThreadIds } });
+  }
+
   public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
     const vectorStoreDocument = await VectorStoreModel.findOne({ scorpeType: VectorStoreScopeType.PUBLIC });
 
@@ -50,10 +107,16 @@ class OpenaiService implements IOpenaiService {
     }
 
     if (vectorStoreDocument != null && !isVectorStoreForPublicScopeExist) {
-      const vectorStore = await this.client.retrieveVectorStore(vectorStoreDocument.vectorStoreId);
-      if (vectorStore != null) {
+      try {
+        // Check if vector store entity exists
+        // If the vector store entity does not exist, the vector store document is deleted
+        await this.client.retrieveVectorStore(vectorStoreDocument.vectorStoreId);
         isVectorStoreForPublicScopeExist = true;
         return vectorStoreDocument;
+      }
+      catch (err) {
+        await oepnaiApiErrorHandler(err, { notFoundError: async() => { await vectorStoreDocument.remove() } });
+        throw new Error(err);
       }
     }
 
@@ -74,7 +137,7 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  async createVectorStoreFile(pages: Array<PageDocument>): Promise<void> {
+  async createVectorStoreFile(pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
     const vectorStoreFileRelationsMap: Map<string, VectorStoreFileRelation> = new Map();
     const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
@@ -112,22 +175,22 @@ class OpenaiService implements IOpenaiService {
     }
 
     try {
+      // Save vector store file relation
+      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
+
       // Create vector store file
       const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
       const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStore.vectorStoreId, uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
-
-      // Save vector store file relation
-      await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
     }
     catch (err) {
       logger.error(err);
 
       // Delete all uploaded files if createVectorStoreFileBatch fails
-      uploadedFileIds.forEach(async(fileId) => {
-        const deleteFileResponse = await this.client.deleteFile(fileId);
-        logger.debug('Delete vector store file (Due to createVectorStoreFileBatch failure)', deleteFileResponse);
-      });
+      const pageIds = pages.map(page => page._id);
+      for await (const pageId of pageIds) {
+        await this.deleteVectorStoreFile(pageId);
+      }
     }
 
   }
@@ -140,9 +203,8 @@ class OpenaiService implements IOpenaiService {
     }
 
     const deletedFileIds: string[] = [];
-    for (const fileId of vectorStoreFileRelation.fileIds) {
+    for await (const fileId of vectorStoreFileRelation.fileIds) {
       try {
-        // eslint-disable-next-line no-await-in-loop
         const deleteFileResponse = await this.client.deleteFile(fileId);
         logger.debug('Delete vector store file', deleteFileResponse);
         deletedFileIds.push(fileId);
@@ -174,7 +236,7 @@ class OpenaiService implements IOpenaiService {
     const createVectorStoreFile = this.createVectorStoreFile.bind(this);
     const createVectorStoreFileStream = new Transform({
       objectMode: true,
-      async transform(chunk: PageDocument[], encoding, callback) {
+      async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
         await createVectorStoreFile(chunk);
         this.push(chunk);
         callback();
