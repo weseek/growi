@@ -394,6 +394,9 @@ importers:
       is-iso-date:
         specifier: ^0.0.1
         version: 0.0.1
+      katex:
+        specifier: ^0.16.11
+        version: 0.16.11
       ldapjs:
         specifier: ^3.0.2
         version: 3.0.7
@@ -569,7 +572,7 @@ importers:
         specifier: ^3.0.2
         version: 3.1.2
       rehype-katex:
-        specifier: ^7.0.0
+        specifier: ^7.0.1
         version: 7.0.1
       rehype-raw:
         specifier: ^7.0.0
@@ -8523,10 +8526,6 @@ packages:
     resolution: {integrity: sha512-7jFxRVm+jD+rkq3kY0iZDJfsO2/t4BBPeEb2qKn2lR/9KhuksYk5hxzfRYWMPV8P/x2d0kHD306YyWLzjjH+uA==}
     engines: {node: '>=12.0.0'}
 
-  katex@0.16.10:
-    resolution: {integrity: sha512-ZiqaC04tp2O5utMsl2TEZTXxa6WSC4yo0fv5ML++D3QZv/vx2Mct0mTlRx3O+uUkjfuAgOkzsCmq5MiUEsDDdA==}
-    hasBin: true
-
   katex@0.16.11:
     resolution: {integrity: sha512-RQrI8rlHY92OLf3rho/Ts8i/XvjgguEjOkO1BEXcU3N8BqPpSzBNwV/G0Ukr+P/l3ivvJUE/Fa/CwbS6HesGNQ==}
     hasBin: true
@@ -15407,7 +15406,7 @@ snapshots:
       '@marp-team/marpit': 2.6.1
       '@marp-team/marpit-svg-polyfill': 2.1.0(@marp-team/marpit@2.6.1)
       highlight.js: 11.8.0
-      katex: 0.16.10
+      katex: 0.16.11
       mathjax-full: 3.2.2
       postcss: 8.4.38
       postcss-selector-parser: 6.1.0
@@ -22124,10 +22123,6 @@ snapshots:
       safe-buffer: 5.2.1
 
   kareem@2.5.1: {}
-
-  katex@0.16.10:
-    dependencies:
-      commander: 8.3.0
 
   katex@0.16.11:
     dependencies:
