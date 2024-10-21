@@ -35,12 +35,12 @@ exports.listScopedPackages = (scopes, opts = defaultOpts) => {
               folderName,
               'package.json',
             );
-          if (fs.existsSync(packageJsonPath)) {
-            const { name } = require(packageJsonPath);
+            if (fs.existsSync(packageJsonPath)) {
+              const { name } = require(packageJsonPath);
               if (!opts.ignorePackageNames.includes(name)) {
                 scopedPackages.push(name);
               }
-          }
+            }
           });
       });
   });
@@ -65,12 +65,12 @@ exports.listPrefixedPackages = (prefixes, opts = defaultOpts) => {
           folderName,
           'package.json',
         );
-      if (fs.existsSync(packageJsonPath)) {
-        const { name } = require(packageJsonPath);
+        if (fs.existsSync(packageJsonPath)) {
+          const { name } = require(packageJsonPath);
           if (!opts.ignorePackageNames.includes(name)) {
             prefixedPackages.push(name);
           }
-      }
+        }
       });
   });
 
