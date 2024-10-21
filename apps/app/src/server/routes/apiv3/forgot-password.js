@@ -79,7 +79,8 @@ module.exports = (crowi) => {
 
       // when the user is not found or active
       if (user == null || user.status !== 2) {
-        await sendPasswordResetEmail('notActiveUser', locale, email, appUrl);
+        // Do not send emails to non GROWI user
+        // For security reason, do not use error messages like "Email does not exist"
         return res.apiv3();
       }
 
