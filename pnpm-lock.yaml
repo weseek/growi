@@ -640,6 +640,9 @@ importers:
       uglifycss:
         specifier: ^0.0.29
         version: 0.0.29
+      uid-safe:
+        specifier: ^2.1.5
+        version: 2.1.5
       unified:
         specifier: ^11.0.0
         version: 11.0.5

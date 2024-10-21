@@ -204,6 +204,7 @@
     "swagger-jsdoc": "^6.1.0",
     "swr": "^2.2.2",
     "throttle-debounce": "^5.0.0",
+    "uid-safe": "^2.1.5",
     "uglifycss": "^0.0.29",
     "unified": "^11.0.0",
     "unist-util-visit": "^5.0.0",
