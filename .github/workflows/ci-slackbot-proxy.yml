@@ -124,7 +124,7 @@ jobs:
         pnpm add node-gyp --global
         pnpm install --frozen-lockfile
 
-    - name: yarn dev:ci
+    - name: turbo run dev:ci
       working-directory: ./apps/slackbot-proxy
       run: |
         cp config/ci/.env.local.for-ci .env.development.local
@@ -221,11 +221,11 @@ jobs:
       run: |
         pnpm install --prod
 
-    - name: yarn start:prod:ci
+    - name: pnpm run start:prod:ci
       working-directory: ./apps/slackbot-proxy
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
-        yarn start:prod:ci
+        pnpm run start:prod:ci
       env:
         SERVER_URI: http://localhost:8080
         TYPEORM_CONNECTION: mysql
