@@ -108,6 +108,8 @@ class OpenaiService implements IOpenaiService {
 
     if (vectorStoreDocument != null && !isVectorStoreForPublicScopeExist) {
       try {
+        // Check if vector store entity exists
+        // If the vector store entity does not exist, the vector store document is deleted
         await this.client.retrieveVectorStore(vectorStoreDocument.vectorStoreId);
         isVectorStoreForPublicScopeExist = true;
         return vectorStoreDocument;
