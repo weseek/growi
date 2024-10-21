@@ -67,7 +67,7 @@ function tokenizeDirectiveText(effects, ok, nok) {
 
   /** @type {State} */
   function afterAttributes(code) {
-    effects.exit('directiveText');
+    effects.exit('directiveGrowiText');
     return ok(code);
   }
 }
