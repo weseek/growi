@@ -725,6 +725,9 @@ importers:
       '@types/mdast':
         specifier: ^4.0.4
         version: 4.0.4
+      '@types/node-cron':
+        specifier: ^3.0.11
+        version: 3.0.11
       '@types/react-input-autosize':
         specifier: ^2.2.4
         version: 2.2.4
@@ -4471,6 +4474,9 @@ packages:
 
   '@types/multer@1.4.11':
     resolution: {integrity: sha512-svK240gr6LVWvv3YGyhLlA+6LRRWA4mnGIU7RcNmgjBYFl6665wcXrRfxGp5tEPVHUNm5FMcmq7too9bxCwX/w==}
+
+  '@types/node-cron@3.0.11':
+    resolution: {integrity: sha512-0ikrnug3/IyneSHqCBeslAhlK2aBfYek1fGo4bP4QnZPmiqSGRK+Oy7ZMisLWkesffJvQ1cqAcBnJC+8+nxIAg==}
 
   '@types/node-fetch@2.6.11':
     resolution: {integrity: sha512-24xFj9R5+rfQJLRyM56qh+wnVSYhyXC2tkoBndtY0U+vubqNsYXGjufB2nn8Q6gt0LrARwL6UBtMCSVCwl4B1g==}
@@ -17296,6 +17302,8 @@ snapshots:
   '@types/multer@1.4.11':
     dependencies:
       '@types/express': 4.17.21
+
+  '@types/node-cron@3.0.11': {}
 
   '@types/node-fetch@2.6.11':
     dependencies:
