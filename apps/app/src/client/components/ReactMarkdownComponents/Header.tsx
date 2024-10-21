@@ -67,7 +67,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPageYjsData } = useCurrentPageYjsData();
+  const { data: currentPageYjsData, isLoading: isLoadingCurrentPageYjsData } = useCurrentPageYjsData();
 
   const router = useRouter();
 
@@ -118,7 +118,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   // It will be possible to address this TODO ySyncAnnotation become available for import.
   // Ref: https://github.com/yjs/y-codemirror.next/pull/30
   const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null
-                            && currentPageYjsData?.hasYdocsNewerThanLatestRevision === false;
+                            && (!isLoadingCurrentPageYjsData && !currentPageYjsData?.hasYdocsNewerThanLatestRevision);
 
   return (
     <>
