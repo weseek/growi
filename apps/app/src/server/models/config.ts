@@ -75,6 +75,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:disableLinkSharing' : false,
   'security:user-homepage-deletion:isEnabled': false,
   'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': false,
+  'security:isRomUserAllowedToComment': false,
 
   'security:passport-local:isEnabled' : true,
   'security:passport-ldap:isEnabled' : false,

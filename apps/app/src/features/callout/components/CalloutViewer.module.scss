@@ -1,0 +1,90 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+
+// == Colors
+@include bs.color-mode(light) {
+  .callout-viewer {
+    --callout-accent-note: hsl(212, 92%, 45%);
+    --callout-accent-tip: hsl(137, 66%, 30%);
+    --callout-accent-important: hsl(261, 69%, 59%);
+    --callout-accent-warning: hsl(40, 100%, 30%);
+    --callout-accent-caution: hsl(356, 71%, 48%);
+  }
+}
+
+@include bs.color-mode(dark) {
+  .callout-viewer {
+    --callout-accent-note: hsl(215, 93%, 58%);
+    --callout-accent-tip: hsl(128, 49%, 49%);
+    --callout-accent-important: hsl(262, 89%, 71%);
+    --callout-accent-warning: hsl(41, 72%, 48%);
+    --callout-accent-caution: hsl(3, 93%, 63%);
+  }
+}
+
+.callout-viewer :global{
+
+  .callout {
+    padding: 0.5rem 1rem;
+    margin: 1rem 0rem;
+    color: inherit;
+  }
+
+  .callout-indicator {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+    line-height: 1;
+  }
+
+  .callout-hint {
+    display: inline-block;
+    margin-right: 0.3rem;
+    vertical-align: text-bottom;
+    fill: currentColor;
+  }
+
+  .callout-note {
+    .callout-indicator {
+      color: var(--callout-accent-note);
+    }
+    border-left: .25em solid var(--callout-accent-note);
+  }
+
+  .callout-tip {
+    .callout-indicator {
+      color: var(--callout-accent-tip);
+    }
+    border-left: .25em solid var(--callout-accent-tip);
+  }
+
+  .callout-warning {
+    .callout-indicator {
+      color: var(--callout-accent-warning);
+    }
+    border-left:.25em solid var(--callout-accent-warning);
+  }
+
+  .callout-caution {
+    .callout-indicator {
+      color: var(--callout-accent-caution);
+    }
+    border-left:.25em solid var(--callout-accent-caution);
+  }
+
+  .callout-important {
+    .callout-indicator {
+      color: var(--callout-accent-important);
+    }
+    border-left:.25em solid var(--callout-accent-important);
+  }
+
+  .callout-content:first-child,
+  .callout-content:only-child {
+    margin-block-start: 0;
+  }
+
+  .callout-content:last-child,
+  .callout-content:only-child {
+    margin-block-end: 0;
+  }
+}

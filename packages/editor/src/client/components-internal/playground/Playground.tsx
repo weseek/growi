@@ -7,7 +7,9 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { toast } from 'react-toastify';
 
 import { GlobalCodeMirrorEditorKey } from '../../../consts';
-import type { EditorSettings, EditorTheme, KeyMapMode } from '../../../consts';
+import type {
+  EditorSettings, EditorTheme, KeyMapMode, PasteMode,
+} from '../../../consts';
 import { CodeMirrorEditorMain } from '../../components/CodeMirrorEditorMain';
 import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
 
@@ -19,6 +21,7 @@ export const Playground = (): JSX.Element => {
   const [markdownToPreview, setMarkdownToPreview] = useState('');
   const [editorTheme, setEditorTheme] = useState<EditorTheme>('defaultlight');
   const [editorKeymap, setEditorKeymap] = useState<KeyMapMode>('default');
+  const [editorPaste, setEditorPaste] = useState<PasteMode>('both');
   const [editorSettings, setEditorSettings] = useState<EditorSettings>();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -42,8 +45,9 @@ export const Playground = (): JSX.Element => {
       keymapMode: editorKeymap,
       styleActiveLine: true,
       autoFormatMarkdownTable: true,
+      pasteMode: editorPaste,
     });
-  }, [setEditorSettings, editorKeymap, editorTheme]);
+  }, [setEditorSettings, editorKeymap, editorTheme, editorPaste]);
 
   // set handler to save with shortcut key
   const saveHandler = useCallback(() => {
@@ -86,7 +90,7 @@ export const Playground = (): JSX.Element => {
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
           <Preview markdown={markdownToPreview} />
-          <PlaygroundController setEditorTheme={setEditorTheme} setEditorKeymap={setEditorKeymap} />
+          <PlaygroundController setEditorTheme={setEditorTheme} setEditorKeymap={setEditorKeymap} setEditorPaste={setEditorPaste} />
         </div>
       </div>
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '50px' }}>

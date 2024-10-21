@@ -1,24 +1,26 @@
 import assert from 'assert';
 
 import { hasHeadingSlash, removeTrailingSlash, addTrailingSlash } from '@growi/core/dist/utils/path-utils';
+import type { TextGrowiPluginDirective, LeafGrowiPluginDirective } from '@growi/remark-growi-directive';
 import { remarkGrowiDirectivePluginType } from '@growi/remark-growi-directive';
-import { Schema as SanitizeOption } from 'hast-util-sanitize';
+import type { Nodes as HastNode } from 'hast';
+import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import { selectAll } from 'hast-util-select';
-import type { Node as HastNode } from 'hast-util-select/lib/types';
 import isAbsolute from 'is-absolute-url';
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 const NODE_NAME_PATTERN = new RegExp(/ls|lsx/);
 const SUPPORTED_ATTRIBUTES = ['prefix', 'num', 'depth', 'sort', 'reverse', 'filter', 'except', 'isSharedPage'];
 
 type DirectiveAttributes = Record<string, string>
-
+type GrowiPluginDirective = TextGrowiPluginDirective | LeafGrowiPluginDirective
 
 export const remarkPlugin: Plugin = function() {
   return (tree) => {
-    visit(tree, (node) => {
-      if (node.type === remarkGrowiDirectivePluginType.Text || node.type === remarkGrowiDirectivePluginType.Leaf) {
+    visit(tree, (node: GrowiPluginDirective) => {
+      if (node.type === remarkGrowiDirectivePluginType.Leaf || node.type === remarkGrowiDirectivePluginType.Text) {
+
         if (typeof node.name !== 'string') {
           return;
         }

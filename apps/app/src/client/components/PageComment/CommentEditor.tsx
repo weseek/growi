@@ -32,7 +32,7 @@ import { useCommentEditorDirtyMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
-import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
+import { NotAvailableIfReadOnlyUserNotAllowedToComment } from '../NotAvailableForReadOnlyUser';
 
 import { CommentPreview } from './CommentPreview';
 import { SwitchingButtonGroup } from './SwitchingButtonGroup';
@@ -330,7 +330,7 @@ export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
     return (
       <CommentEditorLayout>
         <NotAvailableForGuest>
-          <NotAvailableForReadOnlyUser>
+          <NotAvailableIfReadOnlyUserNotAllowedToComment>
             <button
               type="button"
               className="btn btn-outline-primary w-100 text-start py-3"
@@ -341,7 +341,7 @@ export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
               <span className="material-symbols-outlined me-1 fs-5">add_comment</span>
               <small>{t('page_comment.add_a_comment')}...</small>
             </button>
-          </NotAvailableForReadOnlyUser>
+          </NotAvailableIfReadOnlyUserNotAllowedToComment>
         </NotAvailableForGuest>
       </CommentEditorLayout>
     );

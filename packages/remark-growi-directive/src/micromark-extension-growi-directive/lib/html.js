@@ -23,7 +23,7 @@
 import { parseEntities } from 'parse-entities';
 import { ok as assert } from 'uvu/assert';
 
-import { DirectiveType } from '../../mdast-util-growi-directive/consts.js';
+import { DirectiveType } from '../../mdast-util-growi-directive/lib/index.js';
 
 const own = {}.hasOwnProperty;
 

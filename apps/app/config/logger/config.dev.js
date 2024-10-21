@@ -43,5 +43,5 @@ module.exports = {
   // 'growi:cli:StickyStretchableScroller': 'debug',
   // 'growi:cli:ItemsTree': 'debug',
   'growi:searchResultList': 'debug',
-
+  'growi:service:openai': 'debug',
 };
