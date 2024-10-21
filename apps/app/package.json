@@ -191,6 +191,8 @@
     "remark-frontmatter": "^5.0.0",
     "remark-gfm": "^4.0.0",
     "remark-math": "^6.0.0",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.1",
     "remark-toc": "^9.0.0",
     "sanitize-filename": "^1.6.3",
     "socket.io": "^4.7.5",
