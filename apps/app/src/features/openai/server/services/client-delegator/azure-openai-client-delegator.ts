@@ -22,6 +22,24 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     // TODO: initialize openaiVectorStoreId property
   }
 
+  async createThread(vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.create({
+      tool_resources: {
+        file_search: {
+          vector_store_ids: [vectorStoreId],
+        },
+      },
+    });
+  }
+
+  async retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.retrieve(threadId);
+  }
+
+  async deleteThread(threadId: string): Promise<OpenAI.Beta.Threads.ThreadDeleted> {
+    return this.client.beta.threads.del(threadId);
+  }
+
   async createVectorStore(scopeType:VectorStoreScopeType): Promise<OpenAI.Beta.VectorStores.VectorStore> {
     return this.client.beta.vectorStores.create({ name: `growi-vector-store-{${scopeType}` });
   }

@@ -44,15 +44,18 @@ let commonSanitizeOption: SanitizeOption;
 export const getCommonSanitizeOption = (config:RendererConfig): SanitizeOption => {
   if (commonSanitizeOption == null || config.sanitizeType !== currentInitializedSanitizeType) {
     // initialize
-    commonSanitizeOption = {
-      tagNames: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
-        ? recommendedTagNames
-        : config.customTagWhitelist ?? recommendedTagNames,
-      attributes: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
-        ? recommendedAttributes
-        : config.customAttrWhitelist ?? recommendedAttributes,
-      clobberPrefix: '', // remove clobber prefix
-    };
+    commonSanitizeOption = deepmerge(
+      {
+        tagNames: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
+          ? recommendedTagNames
+          : config.customTagWhitelist ?? recommendedTagNames,
+        attributes: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
+          ? recommendedAttributes
+          : config.customAttrWhitelist ?? recommendedAttributes,
+        clobberPrefix: '', // remove clobber prefix
+      },
+      codeBlock.sanitizeOption,
+    );
 
     currentInitializedSanitizeType = config.sanitizeType;
   }
@@ -123,6 +126,7 @@ export const generateSSRViewOptions = (
     config: RendererConfig,
     pagePath: string,
 ): RendererOptions => {
+
   const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins } = options;
@@ -140,9 +144,7 @@ export const generateSSRViewOptions = (
   }
 
   const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      getCommonSanitizeOption(config),
-    )]
+    ? [sanitize, getCommonSanitizeOption(config)]
     : () => {};
 
   // add rehype plugins
