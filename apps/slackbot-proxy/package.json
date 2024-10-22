@@ -24,6 +24,7 @@
     "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config"
   },
   "// comments for dependencies": {
+    "@tsed/*": "v6.133.1 causes 'TypeError: Cannot read properties of undefined (reading 'prototype')' with `@Middleware()`",
     "read-pkg-up": "v8 doesn't support CommonJS anymore. https://github.com/sindresorhus/read-pkg-up/issues/17",
     "typeorm": "Upgrading to v0.3.x requires significant changes. https://github.com/tsedio/tsed/blob/production/docs/tutorials/typeorm.md"
   },
@@ -32,11 +33,11 @@
     "@growi/slack": "workspace:^",
     "@slack/oauth": "^2.0.1",
     "@slack/web-api": "^6.2.4",
-    "@tsed/common": "^6.43.0",
-    "@tsed/di": "^6.43.0",
-    "@tsed/platform-express": "^6.43.0",
-    "@tsed/swagger": "^6.43.0",
-    "@tsed/typeorm": "^6.43.0",
+    "@tsed/common": "=6.43.0",
+    "@tsed/di": "=6.43.0",
+    "@tsed/platform-express": "=6.43.0",
+    "@tsed/swagger": "=6.43.0",
+    "@tsed/typeorm": "=6.43.0",
     "axios": "^0.24.0",
     "body-parser": "^1.20.3",
     "browser-bunyan": "^1.6.3",
@@ -56,14 +57,15 @@
     "universal-bunyan": "^0.9.2"
   },
   "// comments for devDependencies": {
+    "@tsed/*": "v6.133.1 causes 'TypeError: Cannot read properties of undefined (reading 'prototype')' with `@Middleware()`",
     "bootstrap": "v5.3.3 has a bug. refs: https://github.com/twbs/bootstrap/issues/39798"
   },
   "devDependencies": {
     "@popperjs/core": "^2.11.8",
-    "@tsed/core": "^6.43.0",
-    "@tsed/exceptions": "^6.43.0",
-    "@tsed/json-mapper": "^6.43.0",
-    "@tsed/schema": "^6.43.0",
+    "@tsed/core": "=6.43.0",
+    "@tsed/exceptions": "=6.43.0",
+    "@tsed/json-mapper": "=6.43.0",
+    "@tsed/schema": "=6.43.0",
     "bootstrap": "=5.3.2",
     "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",
