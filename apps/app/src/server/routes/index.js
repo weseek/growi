@@ -3,6 +3,7 @@ import express from 'express';
 
 import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter';
 
+import { accessTokenParser } from '../middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import { excludeReadOnlyUser, excludeReadOnlyUserIfCommentNotAllowed } from '../middlewares/exclude-read-only-user';
@@ -30,7 +31,6 @@ module.exports = function(crowi, app) {
   const autoReconnectToSearch = require('../middlewares/auto-reconnect-to-search')(crowi);
   const applicationNotInstalled = require('../middlewares/application-not-installed')(crowi);
   const applicationInstalled = require('../middlewares/application-installed')(crowi);
-  const accessTokenParser = require('../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);

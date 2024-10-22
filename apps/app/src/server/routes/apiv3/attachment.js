@@ -6,6 +6,7 @@ import autoReap from 'multer-autoreap';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { Attachment } from '~/server/models/attachment';
 import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import loggerFactory from '~/utils/logger';
@@ -89,7 +90,6 @@ const {
  */
 
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const Page = crowi.model('Page');

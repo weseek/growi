@@ -1,6 +1,7 @@
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
 import { preNotifyService } from '~/server/service/pre-notify';
@@ -74,7 +75,6 @@ const router = express.Router();
  */
 
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const addActivity = generateAddActivityMiddleware(crowi);

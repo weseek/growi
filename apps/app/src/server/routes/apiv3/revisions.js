@@ -3,6 +3,7 @@ import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
 import { connection } from 'mongoose';
 
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { Revision } from '~/server/models/revision';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import loggerFactory from '~/utils/logger';
@@ -64,7 +65,6 @@ const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migr
  */
 module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const {
