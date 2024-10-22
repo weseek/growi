@@ -801,6 +801,24 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.STRING,
     default: null,
   },
+  OPENAI_THREAD_DELETION_CRON_EXPRESSION: {
+    ns: 'crowi',
+    key: 'openai:threadDeletionCronExpression',
+    type: ValueType.STRING,
+    default: '0 * * * *', // every hour
+  },
+  OPENAI_THREAD_DELETION_BARCH_SIZE: {
+    ns: 'crowi',
+    key: 'openai:threadDeletionBarchSize',
+    type: ValueType.NUMBER,
+    default: 100,
+  },
+  OPENAI_THREAD_DELETION_API_CALL_INTERVAL: {
+    ns: 'crowi',
+    key: 'openai:threadDeletionApiCallInterval',
+    type: ValueType.NUMBER,
+    default: 36000, // msec
+  },
 };
 
 
