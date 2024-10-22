@@ -9,10 +9,11 @@ import {
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
+import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import { useRagSearchModal } from '../../../client/stores/rag-search';
-import { MessageErrorCode } from '../../../interfaces/message-error';
+import { MessageErrorCode, StreamErrorCode } from '../../../interfaces/message-error';
 
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -47,6 +48,8 @@ const AiChatModalSubstance = (): JSX.Element => {
   const [threadId, setThreadId] = useState<string | undefined>();
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
+
+  const { data: growiCloudUri } = useGrowiCloudUri();
 
   const isGenerating = generatingAnswerMessage != null;
 
@@ -141,14 +144,28 @@ const AiChatModalSubstance = (): JSX.Element => {
 
         const chunk = decoder.decode(value);
 
-        // Extract text values from the chunk
-        const textValues = chunk
-          .split('\n\n')
-          .filter(line => line.trim().startsWith('data:'))
-          .map((line) => {
+        const textValues: string[] = [];
+        const lines = chunk.split('\n\n');
+        lines.forEach((line) => {
+          const trimedLine = line.trim();
+          if (trimedLine.startsWith('data:')) {
             const data = JSON.parse(line.replace('data: ', ''));
-            return data.content[0].text.value;
-          });
+            textValues.push(data.content[0].text.value);
+          }
+          else if (trimedLine.startsWith('error:')) {
+            const error = JSON.parse(line.replace('error: ', ''));
+            logger.error(error.errorMessage);
+            form.setError('input', { type: 'manual', message: error.message });
+
+            if (error.code === StreamErrorCode.RATE_LIMIT_EXCEEDED) {
+              const toastErrorMessage = growiCloudUri != null
+                ? 'modal_aichat.rate_limit_exceeded_for_growi_cloud'
+                : 'modal_aichat.rate_limit_exceeded';
+              toastError(t(toastErrorMessage));
+            }
+          }
+        });
+
 
         // append text values to the assistant message
         setGeneratingAnswerMessage((prevMessage) => {
@@ -168,7 +185,7 @@ const AiChatModalSubstance = (): JSX.Element => {
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [form, isGenerating, messageLogs, t, threadId]);
+  }, [form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
