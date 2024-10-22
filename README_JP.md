@@ -80,9 +80,9 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
 - Node.js v18.x or v20.x
 - npm 6.x
-- yarn
+- pnpm 9.x
 - [Turborepo](https://turbo.build/repo)
-- MongoDB 4.4 以上
+- MongoDB 6.0 以上
 
 ### オプションの依存関係
 
