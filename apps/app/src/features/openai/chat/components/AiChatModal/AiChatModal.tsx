@@ -12,7 +12,7 @@ import { toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
 import { useRagSearchModal } from '../../../client/stores/rag-search';
-import { MessageErrorCode } from '../../../interfaces/message-error';
+import { MessageErrorCode, StreamErrorCode } from '../../../interfaces/message-error';
 
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -140,6 +140,15 @@ const AiChatModalSubstance = (): JSX.Element => {
         }
 
         const chunk = decoder.decode(value);
+
+        if (chunk.startsWith('error:')) {
+          const error = JSON.parse(chunk.replace('error: ', ''));
+          logger.error(error.errorMessage);
+          form.setError('input', { type: 'manual', message: error.message });
+          if (error.code === StreamErrorCode.RATE_LIMIT_EXCEEDED) {
+            toastError(t('API の利用条件に達しました'));
+          }
+        }
 
         // Extract text values from the chunk
         const textValues = chunk
