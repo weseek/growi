@@ -449,7 +449,7 @@ const factory = (crowi) => {
     if (apiToken == null) {
       return Promise.resolve(null);
     }
-    return this.findOne({ apiToken });
+    return this.findOne({ apiToken }).lean();
   };
 
   userSchema.statics.findUserByGoogleId = function(googleId, callback) {
