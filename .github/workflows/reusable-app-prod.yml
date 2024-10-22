@@ -44,9 +44,9 @@ jobs:
         mv out/* .
 
     - name: Install dependencies
-      # Run pnpm install without '--frozen-lockfile' option to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
+      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        pnpm install
+        pnpm install --no-frozen-lockfile
 
     - name: Cache/Restore dist
       uses: actions/cache@v4
@@ -146,9 +146,9 @@ jobs:
         mv out/* .
 
     - name: Install dependencies
-      # Run pnpm install without '--frozen-lockfile' option to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
+      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        pnpm install --prod
+        pnpm install --no-frozen-lockfile --prod
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
@@ -220,7 +220,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pnpm install --frozen-lockfile
+        pnpm install
 
     - name: Install Playwright browsers
       run: |

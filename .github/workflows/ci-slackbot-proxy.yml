@@ -55,7 +55,7 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm install --frozen-lockfile
+        pnpm install
 
     - name: Lint
       run: |
@@ -120,7 +120,7 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm install --frozen-lockfile
+        pnpm install
 
     - name: turbo run dev:ci
       working-directory: ./apps/slackbot-proxy
@@ -196,9 +196,9 @@ jobs:
         mv out/* .
 
     - name: Install dependencies
-      # Run pnpm install without '--frozen-lockfile' option to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
+      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        pnpm install
+        pnpm install --no-frozen-lockfile
 
     - name: Restore dist
       uses: actions/cache/restore@v4
@@ -216,8 +216,9 @@ jobs:
         turbo run build
 
     - name: Install dependencies for production
+      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        pnpm install --prod
+        pnpm install --no-frozen-lockfile --prod
 
     - name: pnpm run start:prod:ci
       working-directory: ./apps/slackbot-proxy
