@@ -491,7 +491,8 @@
     "placeholder": "Ask me anything.",
     "caution_against_hallucination": "Please verify the information and check the sources.",
     "progress_label": "Generating answers",
-    "failed_to_create_or_retrieve_thread": "Failed to create or retrieve thread"
+    "failed_to_create_or_retrieve_thread": "Failed to create or retrieve thread",
+    "rate_limit_exceeded": "You have reached your usage limit for OpenAI's API. To use the Knowledge Assistant again, please add credits from the OpenAI billing page."
   },
   "link_edit": {
     "edit_link": "Edit Link",

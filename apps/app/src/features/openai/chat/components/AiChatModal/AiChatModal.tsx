@@ -146,7 +146,7 @@ const AiChatModalSubstance = (): JSX.Element => {
           logger.error(error.errorMessage);
           form.setError('input', { type: 'manual', message: error.message });
           if (error.code === StreamErrorCode.RATE_LIMIT_EXCEEDED) {
-            toastError(t('API の利用条件に達しました'));
+            toastError(t('modal_aichat.rate_limit_exceeded'));
           }
         }
 
