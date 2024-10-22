@@ -27,7 +27,7 @@ const router = express.Router();
  *          npmVersion:
  *            type: string
  *            description: version of npm
- *          yarnVersion:
+ *          pnpmVersion:
  *            type: string
  *            description: version of yarn
  *      InstalledPluginsParams:

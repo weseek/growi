@@ -25,10 +25,6 @@ const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenP
 
 
 type Props = CommonProps & {
-  nodeVersion: string,
-  npmVersion: string,
-  yarnVersion: string,
-  installedPlugins: any,
   growiCloudUri: string,
   growiAppIdForGrowiCloud: number,
 };
@@ -64,12 +60,7 @@ const AdminHomepage: NextPage<Props> = (props) => {
         <Head>
           <title>{title}</title>
         </Head>
-        <AdminHome
-          nodeVersion={props.nodeVersion}
-          npmVersion={props.npmVersion}
-          yarnVersion={props.yarnVersion}
-          installedPlugins={props.installedPlugins}
-        />
+        <AdminHome />
       </AdminLayout>
     </Provider>
   );
@@ -80,9 +71,6 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
 
-  props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
-  props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
-  props.pnpmVersion = crowi.runtimeVersions.versions.pnpm ? crowi.runtimeVersions.versions.pnpm.version.version : null;
   props.growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
   props.growiAppIdForGrowiCloud = await crowi.configManager.getConfig('crowi', 'app:growiAppIdForCloud');
 };
