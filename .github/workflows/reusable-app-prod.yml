@@ -72,6 +72,7 @@ jobs:
       run: |
         tar -zcf production.tar.gz \
           package.json \
+          !apps/app/.next/cache \
           apps/app/.next \
           apps/app/config \
           apps/app/dist \

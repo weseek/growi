@@ -70,6 +70,7 @@ FROM deps-resolver AS deps-resolver-prod
 
 RUN pnpm install --no-frozen-lockfile --prod
 # make artifacts
+RUN rm -rf node_modules/.pnpm
 RUN tar -cf node_modules.tar \
   node_modules \
   apps/*/node_modules \
@@ -104,6 +105,7 @@ RUN turbo run clean
 RUN turbo run build
 
 # make artifacts
+RUN rm -rf apps/app/.next/cache
 RUN tar -cf packages.tar \
   package.json \
   apps/app/.next \
