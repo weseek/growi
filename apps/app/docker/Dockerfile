@@ -10,7 +10,26 @@ ENV optDir /opt
 
 WORKDIR ${optDir}
 
-RUN yarn global add turbo
+# install pnpm
+RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
+  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
+ENV PNPM_HOME "/root/.local/share/pnpm"
+ENV PATH "$PNPM_HOME:$PATH"
+
+# install turbo
+RUN pnpm add turbo --global
+
+
+
+##
+## partialrepos
+##
+FROM base AS partialrepos
+
+ENV optDir /opt
+
+WORKDIR ${optDir}
+
 COPY . .
 RUN turbo prune @growi/app --docker
 
@@ -18,7 +37,7 @@ RUN turbo prune @growi/app --docker
 ##
 ## deps-resolver
 ##
-FROM node:20-slim AS deps-resolver
+FROM base AS deps-resolver
 
 ENV optDir /opt
 
@@ -29,13 +48,12 @@ RUN set -eux; \
 	apt-get install -y python3 build-essential;
 
 # copy files
-COPY --from=base ${optDir}/out/json/ .
-COPY --from=base ${optDir}/out/yarn.lock ./yarn.lock
+COPY --from=partialrepos ${optDir}/out/json/ .
+COPY --from=partialrepos ${optDir}/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
 # setup (with network-timeout = 1 hour)
-RUN yarn config set network-timeout 3600000
-RUN yarn global add node-gyp
-RUN yarn --frozen-lockfile
+RUN pnpm add node-gyp --global
+RUN pnpm install --no-frozen-lockfile
 
 # make artifacts
 RUN tar -cf node_modules.tar \
@@ -50,7 +68,7 @@ RUN tar -cf node_modules.tar \
 ##
 FROM deps-resolver AS deps-resolver-prod
 
-RUN yarn --production
+RUN pnpm install --no-frozen-lockfile --prod
 # make artifacts
 RUN tar -cf node_modules.tar \
   node_modules \
@@ -62,17 +80,15 @@ RUN tar -cf node_modules.tar \
 ##
 ## builder
 ##
-FROM node:20-slim AS builder
+FROM base AS builder
 
 ENV optDir /opt
 
 WORKDIR ${optDir}
 
-RUN yarn global add turbo
-
 # copy files
-COPY --from=base ${optDir}/out/full/ .
-COPY --from=base ${optDir}/out/yarn.lock ./yarn.lock
+COPY --from=partialrepos ${optDir}/out/full/ .
+COPY --from=partialrepos ${optDir}/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY ["tsconfig.base.json", "./"]
 
 # copy dependent packages
@@ -115,6 +131,13 @@ ENV NODE_ENV production
 ENV optDir /opt
 ENV appDir ${optDir}/growi
 
+# Add pnpm
+RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
+  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh - \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+ENV PNPM_HOME "/root/.local/share/pnpm"
+ENV PATH "$PNPM_HOME:$PATH"
+
 # Add gosu
 # see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
 RUN set -eux; \
@@ -145,4 +168,4 @@ VOLUME /data
 EXPOSE 3000
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["yarn migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
+CMD ["pnpm run migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
