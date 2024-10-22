@@ -44,8 +44,9 @@ jobs:
         mv out/* .
 
     - name: Install dependencies
+      # Run pnpm install without '--frozen-lockfile' option to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        pnpm install --frozen-lockfile
+        pnpm install
 
     - name: Cache/Restore dist
       uses: actions/cache@v4
@@ -145,6 +146,7 @@ jobs:
         mv out/* .
 
     - name: Install dependencies
+      # Run pnpm install without '--frozen-lockfile' option to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
         pnpm install --prod
 
