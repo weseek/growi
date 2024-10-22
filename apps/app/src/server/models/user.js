@@ -7,6 +7,8 @@ import { i18n } from '^/config/next-i18next.config';
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
 
+import { aclService } from '../service/acl';
+import { configManager } from '../service/config-manager';
 import { getModelSafely } from '../util/mongoose-utils';
 
 import { Attachment } from './attachment';
@@ -98,8 +100,6 @@ const factory = (crowi) => {
 
   function decideUserStatusOnRegistration() {
     validateCrowi();
-
-    const { configManager, aclService } = crowi;
 
     const isInstalled = configManager.getConfig('crowi', 'app:installed');
     if (!isInstalled) {
@@ -278,7 +278,7 @@ const factory = (crowi) => {
     this.name = name;
     this.username = username;
     this.status = STATUS_ACTIVE;
-    this.isEmailPublished = crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
+    this.isEmailPublished = configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
 
     this.save((err, userData) => {
       userEvent.emit('activated', userData);
@@ -371,7 +371,7 @@ const factory = (crowi) => {
   userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
-    const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhitelist');
+    const whitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
       return whitelist.some((allowedEmail) => {
@@ -480,8 +480,6 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.isUserCountExceedsUpperLimit = async function() {
-    const { configManager } = crowi;
-
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
 
     const activeUsers = await this.countActiveUsers();
@@ -565,8 +563,6 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.createUserByEmail = async function(email) {
-    const configManager = crowi.configManager;
-
     const User = this;
     const newUser = new User();
 
@@ -653,8 +649,6 @@ const factory = (crowi) => {
     if (password != null) {
       newUser.setPassword(password);
     }
-
-    const configManager = crowi.configManager;
 
     // Default email show/hide is up to the administrator
     newUser.isEmailPublished = configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
