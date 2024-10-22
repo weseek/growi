@@ -481,8 +481,8 @@
     "caution_against_hallucination": "请核实信息并检查来源。",
     "progress_label": "生成答案中",
     "failed_to_create_or_retrieve_thread": "创建或获取线程失败",
-    "rate_limit_exceeded": "您已达到 OpenAI API 的使用上限。要再次使用知识助手，请从 OpenAI 账单页面添加点数。"
-
+    "rate_limit_exceeded": "您已达到 OpenAI API 的使用上限。要再次使用知识助手，请从 OpenAI 账单页面添加点数。",
+    "rate_limit_exceeded_for_growi_cloud": "您已达到 OpenAI API 使用上限。如需再次使用知识助手，请从GROWI.cloud管理页面为托管用户添加点数，或从OpenAI计费页面为自有用户添加点数。"
   },
   "link_edit": {
     "edit_link": "Edit Link",

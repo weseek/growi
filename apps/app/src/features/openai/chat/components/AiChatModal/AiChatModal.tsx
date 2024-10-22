@@ -9,6 +9,7 @@ import {
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
+import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import { useRagSearchModal } from '../../../client/stores/rag-search';
@@ -47,6 +48,8 @@ const AiChatModalSubstance = (): JSX.Element => {
   const [threadId, setThreadId] = useState<string | undefined>();
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
+
+  const { data: growiCloudUri } = useGrowiCloudUri();
 
   const isGenerating = generatingAnswerMessage != null;
 
@@ -146,7 +149,12 @@ const AiChatModalSubstance = (): JSX.Element => {
           logger.error(error.errorMessage);
           form.setError('input', { type: 'manual', message: error.message });
           if (error.code === StreamErrorCode.RATE_LIMIT_EXCEEDED) {
-            toastError(t('modal_aichat.rate_limit_exceeded'));
+
+            const toastErrorMessage = growiCloudUri != null
+              ? 'modal_aichat.rate_limit_exceeded_for_growi_cloud'
+              : 'modal_aichat.rate_limit_exceeded';
+
+            toastError(t(toastErrorMessage));
           }
         }
 
