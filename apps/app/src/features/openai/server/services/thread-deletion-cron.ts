@@ -5,16 +5,19 @@ import loggerFactory from '~/utils/logger';
 
 import { getOpenaiService, type IOpenaiService } from './openai';
 
-
 const logger = loggerFactory('growi:service:thread-deletion-cron');
-
-const DELETE_LIMIT = 100;
 
 class ThreadDeletionCronService {
 
   cronJob: nodeCron.ScheduledTask;
 
   openaiService: IOpenaiService;
+
+  threadDeletionCronExpression: string;
+
+  threadDeletionBarchSize: number;
+
+  threadDeletionApiCallInterval: number;
 
   startCron(): void {
     const isAiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
@@ -28,23 +31,22 @@ class ThreadDeletionCronService {
     }
 
     this.openaiService = openaiService;
-
-    // Executed at 0 minutes of every hour
-    const cronSchedule = '0 * * * *';
+    this.threadDeletionCronExpression = configManager.getConfig('crowi', 'openai:threadDeletionCronExpression');
+    this.threadDeletionBarchSize = configManager.getConfig('crowi', 'openai:threadDeletionBarchSize');
+    this.threadDeletionApiCallInterval = configManager.getConfig('crowi', 'openai:threadDeletionApiCallInterval');
 
     this.cronJob?.stop();
-    this.cronJob = this.generateCronJob(cronSchedule);
+    this.cronJob = this.generateCronJob();
     this.cronJob.start();
   }
 
   private async executeJob(): Promise<void> {
     // Must be careful of OpenAI's rate limit
-    // Delete up to 100 threads per hour
-    await this.openaiService.deleteExpiredThreads(DELETE_LIMIT);
+    await this.openaiService.deleteExpiredThreads(this.threadDeletionBarchSize, this.threadDeletionApiCallInterval);
   }
 
-  private generateCronJob(cronSchedule: string) {
-    return nodeCron.schedule(cronSchedule, async() => {
+  private generateCronJob() {
+    return nodeCron.schedule(this.threadDeletionCronExpression, async() => {
       try {
         await this.executeJob();
       }
