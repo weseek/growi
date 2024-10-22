@@ -32,7 +32,7 @@ let isVectorStoreForPublicScopeExist = false;
 export interface IOpenaiService {
   getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
   getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
-  deleteExpiredThreads(limit: number): Promise<void>;
+  deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>;
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
@@ -78,7 +78,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  public async deleteExpiredThreads(limit: number): Promise<void> {
+  public async deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void> {
     const expiredThreadRelations = await ThreadRelationModel.getExpiredThreadRelations(limit);
     if (expiredThreadRelations == null) {
       return;
@@ -90,6 +90,9 @@ class OpenaiService implements IOpenaiService {
         const deleteThreadResponse = await this.client.deleteThread(expiredThreadRelation.threadId);
         logger.debug('Delete thread', deleteThreadResponse);
         deletedThreadIds.push(expiredThreadRelation.threadId);
+
+        // sleep
+        await new Promise(resolve => setTimeout(resolve, apiCallInterval));
       }
       catch (err) {
         logger.error(err);
