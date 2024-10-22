@@ -81,7 +81,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       };
 
       const sendError = (code: StreamErrorCode, message: string) => {
-        res.write(`error: ${JSON.stringify({ code, message })}`);
+        res.write(`error: ${JSON.stringify({ code, message })}\n\n`);
       };
 
       stream.on('event', (delta) => {
