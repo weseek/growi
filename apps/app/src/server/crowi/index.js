@@ -19,6 +19,7 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import UserEvent from '../events/user';
+import { accessTokenParser } from '../middlewares/access-token-parser';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
@@ -51,6 +52,12 @@ const sep = path.sep;
 
 class Crowi {
 
+  /**
+   * For retrieving other packages
+   * @type {(req: import('express').Request, res: import('express').Response, next: import('express').NextFunction) => Promise<void>}
+   */
+  accessTokenParser;
+
   /** @type {AppService} */
   appService;
 
@@ -78,6 +85,8 @@ class Crowi {
     this.cacheDir = path.join(this.tmpDir, 'cache');
 
     this.express = null;
+
+    this.accessTokenParser = accessTokenParser;
 
     this.config = {};
     this.configManager = null;
