@@ -1,13 +1,18 @@
 import { faker } from '@faker-js/faker';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import type { Response } from 'express';
 import { mock } from 'vitest-mock-extended';
 
 import type Crowi from '~/server/crowi';
 import type UserEvent from '~/server/events/user';
 
+
 import type { AccessTokenParserReq } from './interfaces';
 
 import { accessTokenParser } from '.';
+
+
+vi.mock('@growi/core/dist/models/serializers', { spy: true });
 
 
 describe('access-token-parser middleware', () => {
@@ -43,6 +48,7 @@ describe('access-token-parser middleware', () => {
 
     // assert
     expect(reqMock.user).toBeUndefined();
+    expect(serializeUserSecurely).not.toHaveBeenCalled();
     expect(nextMock).toHaveBeenCalled();
   });
 
@@ -62,6 +68,7 @@ describe('access-token-parser middleware', () => {
 
     // assert
     expect(reqMock.user).toBeUndefined();
+    expect(serializeUserSecurely).not.toHaveBeenCalled();
     expect(nextMock).toHaveBeenCalled();
   });
 
@@ -91,6 +98,7 @@ describe('access-token-parser middleware', () => {
     // assert
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
+    expect(serializeUserSecurely).toHaveBeenCalledOnce();
     expect(nextMock).toHaveBeenCalled();
   });
 
@@ -120,6 +128,7 @@ describe('access-token-parser middleware', () => {
     // assert
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
+    expect(serializeUserSecurely).toHaveBeenCalledOnce();
     expect(nextMock).toHaveBeenCalled();
   });
 
