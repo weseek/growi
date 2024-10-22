@@ -32,7 +32,6 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm add node-gyp --global
         pnpm install --frozen-lockfile
 
     - name: Bump versions
@@ -173,7 +172,6 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm add node-gyp --global
         pnpm install --frozen-lockfile
 
     - name: Bump versions for next RC

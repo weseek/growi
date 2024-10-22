@@ -38,7 +38,6 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm add node-gyp --global
         pnpm install --frozen-lockfile
 
     - name: Setup .npmrc
@@ -82,7 +81,6 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm add node-gyp --global
         pnpm install --frozen-lockfile
 
     - name: Create Release Pull Request or Publish to npm

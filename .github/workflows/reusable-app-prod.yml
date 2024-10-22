@@ -45,7 +45,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pnpm add node-gyp --global
         pnpm install --frozen-lockfile
 
     - name: Cache/Restore dist
@@ -219,7 +218,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pnpm add add node-gyp --global
         pnpm install --frozen-lockfile
 
     - name: Install Playwright browsers

@@ -55,7 +55,6 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm add node-gyp --global
         pnpm install --frozen-lockfile
 
     - name: Lint
@@ -121,7 +120,6 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm add node-gyp --global
         pnpm install --frozen-lockfile
 
     - name: turbo run dev:ci
@@ -199,7 +197,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pnpm add node-gyp --global
         pnpm install --frozen-lockfile
 
     - name: Restore dist
