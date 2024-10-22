@@ -32,7 +32,11 @@
     "version-subpackages": "changeset version && pnpm run upgrade --scope=@growi",
     "release-subpackages": "turbo run build --filter @growi/core --filter @growi/pluginkit && changeset publish",
     "release-subpackages:snapshot": "turbo run build --filter @growi/core --filter @growi/pluginkit && changeset version --snapshot next && changeset publish --no-git-tag --snapshot --tag next",
-    "version": "yarn version --no-git-tag-version --non-interactive --preid=RC"
+    "version:patch": "pnpm version patch --no-git-tag-version",
+    "version:prerelease": "pnpm version prerelease --preid=RC --no-git-tag-version",
+    "version:prepatch": "pnpm version prepatch --preid=RC --no-git-tag-version",
+    "version:preminor": "pnpm version preminor --preid=RC --no-git-tag-version",
+    "version:premajor": "pnpm version premajor --preid=RC --no-git-tag-version"
   },
   "dependencies": {
     "cross-env": "^7.0.0",

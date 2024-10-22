@@ -107,7 +107,7 @@ jobs:
 
     - name: Bump versions for next RC
       run: |
-        turbo run version --filter=@growi/slackbot-proxy -- --prerelease
+        turbo run version:prerelease --filter=@growi/slackbot-proxy
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@2.0.1

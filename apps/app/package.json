@@ -45,7 +45,11 @@
     "openapi:v3": "cross-env API_VERSION=3 pnpm run swagger-jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "openapi:v1": "cross-env API_VERSION=1 pnpm run swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
     "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config",
-    "version": "yarn version --no-git-tag-version --non-interactive --preid=RC"
+    "version:patch": "pnpm version patch",
+    "version:prerelease": "pnpm version prerelease --preid=RC",
+    "version:prepatch": "pnpm version prepatch --preid=RC",
+    "version:preminor": "pnpm version preminor --preid=RC",
+    "version:premajor": "pnpm version premajor --preid=RC"
   },
   "// comments for dependencies": {
     "@aws-skd/*": "fix version above 3.186.0 that is required by mongodb@4.16.0",
