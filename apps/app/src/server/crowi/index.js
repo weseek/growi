@@ -12,6 +12,7 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
+import OpenaiThreadDeletionCronService from '~/features/openai/server/services/thread-deletion-cron';
 import { PageBulkExportJobInProgressStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
 import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
@@ -106,6 +107,7 @@ class Crowi {
     this.activityService = null;
     this.commentService = null;
     this.questionnaireService = null;
+    this.openaiThreadDeletionCronService = null;
 
     this.tokens = null;
 
@@ -321,6 +323,9 @@ Crowi.prototype.setupCron = function() {
 
   instanciatePageBulkExportJobCronService(this);
   pageBulkExportJobCronService.startCron();
+
+  this.openaiThreadDeletionCronService = new OpenaiThreadDeletionCronService();
+  this.openaiThreadDeletionCronService.startCron();
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {

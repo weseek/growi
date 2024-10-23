@@ -524,7 +524,9 @@
     "placeholder": "ききたいことを入力してください",
     "caution_against_hallucination": "情報が正しいか出典を確認しましょう",
     "progress_label": "回答を生成しています",
-    "failed_to_create_or_retrieve_thread": "スレッドの作成または取得に失敗しました"
+    "failed_to_create_or_retrieve_thread": "スレッドの作成または取得に失敗しました",
+    "rate_limit_exceeded": "OpenAI の API の利用上限に達しました。ナレッジアシスタントを再度利用するには OpenAI の請求ページからクレジットを追加してください。",
+    "rate_limit_exceeded_for_growi_cloud": "OpenAI の API の利用上限に達しました。ナレッジアシスタントを再度利用するには Hosted の場合は GROWI.cloud の管理画面から Owned の場合は OpenAI の請求ページからクレジットを追加してください。"
   },
   "link_edit": {
     "edit_link": "リンク編集",
