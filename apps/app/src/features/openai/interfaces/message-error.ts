@@ -7,7 +7,3 @@ export const StreamErrorCode = {
 } as const;
 
 export type StreamErrorCode = typeof StreamErrorCode[keyof typeof StreamErrorCode];
-
-export const OpenaiStreamErrorMessageRegExp = {
-  BUDGET_EXCEEDED: /exceeded your current quota/i,
-} as const;
