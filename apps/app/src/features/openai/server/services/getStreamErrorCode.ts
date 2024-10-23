@@ -5,9 +5,9 @@ const OpenaiStreamErrorMessageRegExp = {
 } as const;
 
 export const getStreamErrorCode = (errorMessage: string): StreamErrorCode | undefined => {
-  if (OpenaiStreamErrorMessageRegExp.BUDGET_EXCEEDED.test(errorMessage)) {
-    return StreamErrorCode.BUDGET_EXCEEDED;
+  for (const [code, regExp] of Object.entries(OpenaiStreamErrorMessageRegExp)) {
+    if (regExp.test(errorMessage)) {
+      return StreamErrorCode[code];
+    }
   }
-
-  return;
 };
