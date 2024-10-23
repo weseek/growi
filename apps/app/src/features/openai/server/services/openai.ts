@@ -21,6 +21,7 @@ import loggerFactory from '~/utils/logger';
 import { OpenaiServiceTypes } from '../../interfaces/ai';
 
 import { getClient } from './client-delegator';
+import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { oepnaiApiErrorHandler } from './openai-api-error-handler';
 
 const BATCH_SIZE = 100;
@@ -135,6 +136,12 @@ class OpenaiService implements IOpenaiService {
   }
 
   private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
+
+    // const splitMarkdownIntoChunks = (await import('./markdown-splitter/markdown-token-splitter')).splitMarkdownIntoChunks;
+    const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
+    console.log('chunks', chunks);
+
+
     const file = await toFile(Readable.from(body), `${pageId}.md`);
     const uploadedFile = await this.client.uploadFile(file);
     return uploadedFile;
@@ -172,6 +179,8 @@ class OpenaiService implements IOpenaiService {
 
     const vectorStoreFileRelations = Array.from(vectorStoreFileRelationsMap.values());
     const uploadedFileIds = vectorStoreFileRelations.map(data => data.fileIds).flat();
+
+    console.log('uploadedFileIds', uploadedFileIds);
 
     if (uploadedFileIds.length === 0) {
       return;
