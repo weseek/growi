@@ -11,7 +11,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { MessageErrorCode, StreamErrorCode } from '../../interfaces/message-error';
+import { MessageErrorCode, StreamErrorCode, OpenaiStreamErrorMessage } from '../../interfaces/message-error';
 import { openaiClient } from '../services';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -80,16 +80,25 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         res.write(`data: ${JSON.stringify(delta)}\n\n`);
       };
 
-      const sendError = (code: StreamErrorCode, message: string) => {
+      const sendError = (message: string, code?: StreamErrorCode) => {
         res.write(`error: ${JSON.stringify({ code, message })}\n\n`);
       };
 
       stream.on('event', (delta) => {
         if (delta.event === 'thread.run.failed') {
-          if (delta.data.last_error?.code === StreamErrorCode.RATE_LIMIT_EXCEEDED) {
-            logger.error(delta.data.last_error.message);
-            sendError(StreamErrorCode.RATE_LIMIT_EXCEEDED, delta.data.last_error.message);
+          const errorMessage = delta.data.last_error?.message;
+          if (errorMessage == null) {
+            return;
           }
+
+          logger.error(errorMessage);
+
+          if (errorMessage === OpenaiStreamErrorMessage.BUDGET_EXCEEDED) {
+            sendError(errorMessage, StreamErrorCode.BUDGET_EXCEEDED);
+            return;
+          }
+
+          sendError(errorMessage);
         }
       });
       stream.on('messageDelta', messageDeltaHandler);
