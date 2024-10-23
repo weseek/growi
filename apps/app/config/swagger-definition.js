@@ -11,13 +11,7 @@ module.exports = {
   },
   servers: [
     {
-      url: 'https://demo.growi.org{basePath}',
-      variables: {
-        basePath: {
-          default: basePath,
-          description: 'base path',
-        },
-      },
+      url: `https://demo.growi.org${basePath}`,
     },
   ],
   security: [
