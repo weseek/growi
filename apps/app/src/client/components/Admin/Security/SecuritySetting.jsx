@@ -184,8 +184,8 @@ class SecuritySetting extends React.Component {
     return;
   }
 
-  securitysettingDropdown() {
-    const { t, adminGeneralSecurityContainer } = this.props;
+  securitysettingDropdown(isDisplayed, setIsDisplayed, label) {
+    const { t } = this.props;
     return (
       <div className="dropdown">
         <button
@@ -197,27 +197,23 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span>
-            {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
-              ? t('security_settings.displayed')
-              : t('security_settings.not_displayed')}
-          </span>
+          <span>{isDisplayed ? label.displayed : label.notDisplayed} </span>
         </button>
 
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true }) }}
+            onClick={() => setIsDisplayed(true)}
           >
-            {t('security_settings.displayed')}
+            {label.displayed}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => { adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false }) }}
+            onClick={() => setIsDisplayed(false)}
           >
-            {t('security_settings.not_displayed')}
+            {label.notDisplayed}
           </button>
         </div>
       </div>
