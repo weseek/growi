@@ -54,6 +54,20 @@ const getDeleteConfigValueForT = (DeleteConfigValue) => {
   }
 };
 
+const getDisplaysettings = (Displaysettings) => {
+  // eslint-disable-next-line no-empty
+  switch (Displaysettings) {
+    // case isShowRestrictedByOwner: true;
+    //   return 'security_settings.displayed';
+    // case isShowRestrictedByOwner: false;
+    //   return 'security_settings.not_displayed';
+    // case isShowRestrictedByGroup: true;
+    //   return 'security_settings.displayed';
+    // case isShowRestrictedByGroup: false;
+    //   return 'security_settings.not_displayed';
+  }
+};
+
 /**
  * Return true if "deletionType" is DeletionType.RecursiveDeletion or DeletionType.RecursiveCompleteDeletion.
  * @param deletionType Deletion type
@@ -185,7 +199,9 @@ class SecuritySetting extends React.Component {
     return;
   }
 
-  securitysettingDropdown() {
+
+  securitysettingDropdown(currentState) {
+    const { t } = this.props;
     return (
       <div className="dropdown">
         <button
@@ -196,6 +212,9 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
+          <span className="float-start">
+            {t(getDisplaysettings)}
+          </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <button
