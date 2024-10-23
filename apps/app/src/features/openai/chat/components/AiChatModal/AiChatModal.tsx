@@ -162,7 +162,7 @@ const AiChatModalSubstance = (): JSX.Element => {
             form.setError('input', { type: 'manual', message: error.message });
 
             if (error.code === StreamErrorCode.BUDGET_EXCEEDED) {
-              setErrorMessage(growiCloudUri != null ? 'modal_aichat.rate_limit_exceeded' : 'modal_aichat.rate_limit_exceeded_for_growi_cloud');
+              setErrorMessage(growiCloudUri != null ? 'modal_aichat.budget_exceeded' : 'modal_aichat.budget_exceeded_for_growi_cloud');
             }
           }
         });

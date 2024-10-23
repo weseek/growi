@@ -486,8 +486,8 @@
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
     "progress_label": "Génération des réponses",
     "failed_to_create_or_retrieve_thread": "Échec de la création ou de la récupération du fil de discussion",
-    "rate_limit_exceeded": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page de facturation d'OpenAI.",
-    "rate_limit_exceeded_for_growi_cloud": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page d'administration de GROWI.cloud pour les utilisateurs hébergés ou à partir de la page de facturation de l'OpenAI pour les utilisateurs propriétaires.",
+    "budget_exceeded": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page de facturation d'OpenAI.",
+    "budget_exceeded_for_growi_cloud": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page d'administration de GROWI.cloud pour les utilisateurs hébergés ou à partir de la page de facturation de l'OpenAI pour les utilisateurs propriétaires.",
     "error_message": "Erreur",
     "show_error_detail": "Détails de l'exposition"
   },
