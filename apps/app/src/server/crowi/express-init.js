@@ -134,12 +134,4 @@ module.exports = function(crowi, app) {
   app.use(registerSafeRedirect);
   app.use(injectCurrentuserToLocalvars);
   app.use(autoReconnectToS2sMsgServer);
-
-  // TODO: Remove this workaround implementation when i18n works correctly.
-  //       For now, req.t returns string given to req.t(string)
-  app.use((req, res, next) => {
-    req.t = str => (typeof str === 'string' ? str : '');
-
-    next();
-  });
 };
