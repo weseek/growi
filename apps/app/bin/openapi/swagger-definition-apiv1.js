@@ -1,17 +1,14 @@
-const pkg = require('../package.json');
-
-const apiVersion = process.env.API_VERSION || '3';
-const basePath = (apiVersion === '1' ? '/_api' : `/_api/v${apiVersion}`);
+const pkg = require('../../package.json');
 
 module.exports = {
   openapi: '3.0.1',
   info: {
-    title: `GROWI REST API v${apiVersion}`,
+    title: 'GROWI REST API v1',
     version: pkg.version,
   },
   servers: [
     {
-      url: `https://demo.growi.org${basePath}`,
+      url: 'https://demo.growi.org/_api',
     },
   ],
   security: [
