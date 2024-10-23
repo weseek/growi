@@ -184,36 +184,25 @@ class SecuritySetting extends React.Component {
     return;
   }
 
-  securitysettingDropdown(isDisplayed, setIsDisplayed, label) {
-    const { t } = this.props;
+  securitysettingDropdown() {
+    const { adminGeneralSecurityContainer } = this.props;
     return (
       <div className="dropdown">
         <button
-          className={`btn btn-outline-secondary dropdown-toggle text-end col-12
-                  col-md-auto `}
+          className="btn btn-outline-secondary dropdown-toggle text-end col-12 col-md-auto"
           type="button"
           id="dropdownMenuButton"
           data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span>{isDisplayed ? label.displayed : label.notDisplayed} </span>
         </button>
-
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => setIsDisplayed(true)}
+            onClick={adminGeneralSecurityContainer.setState}
           >
-            {label.displayed}
-          </button>
-          <button
-            className="dropdown-item"
-            type="button"
-            onClick={() => setIsDisplayed(false)}
-          >
-            {label.notDisplayed}
           </button>
         </div>
       </div>
