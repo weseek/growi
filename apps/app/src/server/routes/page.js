@@ -192,7 +192,7 @@ module.exports = function(crowi, app) {
    *
    *    /pages.updatePost:
    *      get:
-   *        tags: [Pages, CrowiCompatibles]
+   *        tags: [Pages]
    *        operationId: getUpdatePostPage
    *        summary: /pages.updatePost
    *        description: Get UpdatePost setting list

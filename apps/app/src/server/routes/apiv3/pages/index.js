@@ -29,12 +29,6 @@ const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 /**
  * @swagger
- *  tags:
- *    name: Pages
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:

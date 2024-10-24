@@ -34,12 +34,6 @@ const validator = {
 
 /**
  * @swagger
- *  tags:
- *    name: MarkDownSetting
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:

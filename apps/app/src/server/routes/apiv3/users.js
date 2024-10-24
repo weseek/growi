@@ -32,12 +32,6 @@ const validator = {};
 
 /**
  * @swagger
- *  tags:
- *    name: Users
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:
@@ -408,7 +402,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/invite:
    *      post:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: inviteUser
    *        summary: /users/invite
    *        description: Create new users and send Emails
@@ -476,7 +470,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/{id}/grant-admin:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: grantAdminUser
    *        summary: /users/{id}/grant-admin
    *        description: Grant user admin
@@ -523,7 +517,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/{id}/revoke-admin:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: revokeAdminUser
    *        summary: /users/{id}/revoke-admin
    *        description: Revoke user admin
@@ -570,7 +564,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/{id}/grant-read-only:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: ReadOnly
    *        summary: /users/{id}/grant-read-only
    *        description: Grant user read only access
@@ -622,7 +616,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/{id}/revoke-read-only:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: revokeReadOnly
    *        summary: /users/{id}/revoke-read-only
    *        description: Revoke user read only access
@@ -674,7 +668,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/{id}/activate:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: activateUser
    *        summary: /users/{id}/activate
    *        description: Activate user
@@ -728,7 +722,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/{id}/deactivate:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: deactivateUser
    *        summary: /users/{id}/deactivate
    *        description: Deactivate user
@@ -775,7 +769,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/{id}/remove:
    *      delete:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: removeUser
    *        summary: /users/{id}/remove
    *        description: Delete user
@@ -835,7 +829,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/external-accounts:
    *      get:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: listExternalAccountsUsers
    *        summary: /users/external-accounts
    *        description: Get external-account
@@ -868,7 +862,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/external-accounts/{id}/remove:
    *      delete:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: removeExternalAccountUser
    *        summary: /users/external-accounts/{id}/remove
    *        description: Delete ExternalAccount
@@ -911,7 +905,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/update.imageUrlCache:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: update.imageUrlCache
    *        summary: /users/update.imageUrlCache
    *        description: update imageUrlCache
@@ -963,7 +957,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/reset-password:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: resetPassword
    *        summary: /users/reset-password
    *        description: update imageUrlCache
@@ -1004,7 +998,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/reset-password-email:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: resetPasswordEmail
    *        summary: /users/reset-password-email
    *        description: send new password email
@@ -1051,7 +1045,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /users/send-invitation-email:
    *      put:
-   *        tags: [Users]
+   *        tags: [Users Management]
    *        operationId: sendInvitationEmail
    *        summary: /users/send-invitation-email
    *        description: send invitation email
