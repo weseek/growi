@@ -131,13 +131,6 @@ ENV NODE_ENV production
 ENV optDir /opt
 ENV appDir ${optDir}/growi
 
-# Add pnpm
-RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
-  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh - \
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
-ENV PNPM_HOME "/root/.local/share/pnpm"
-ENV PATH "$PNPM_HOME:$PATH"
-
 # Add gosu
 # see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
 RUN set -eux; \
@@ -146,6 +139,13 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*; \
 # verify that the binary works
 	gosu nobody true
+
+# Add pnpm for 'node' user
+RUN apt-get update && apt-get install -y sudo ca-certificates wget --no-install-recommends \
+  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sudo -u node sh - \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+ENV PNPM_HOME="/home/node/.local/share/pnpm"
+ENV PATH "$PNPM_HOME:$PATH"
 
 COPY --from=deps-resolver-prod --chown=node:node \
   ${optDir}/node_modules.tar.gz ${appDir}/
