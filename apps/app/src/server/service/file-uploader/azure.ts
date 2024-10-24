@@ -18,7 +18,7 @@ import {
   type BlockBlobParallelUploadOptions,
 } from '@azure/storage-blob';
 
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import { FilePathOnStoragePrefix, ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
@@ -64,8 +64,8 @@ async function getContainerClient(): Promise<ContainerClient> {
   return blobServiceClient.getContainerClient(containerName);
 }
 
-function getFilePathOnStorage(attachment) {
-  const dirName = (attachment.page != null) ? 'attachment' : 'user';
+function getFilePathOnStorage(attachment: IAttachmentDocument) {
+  const dirName = (attachment.page != null) ? FilePathOnStoragePrefix.attachment : FilePathOnStoragePrefix.user;
   return urljoin(dirName, attachment.fileName);
 }
 

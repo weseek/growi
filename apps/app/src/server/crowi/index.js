@@ -13,8 +13,12 @@ import pkg from '^/package.json';
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import OpenaiThreadDeletionCronService from '~/features/openai/server/services/thread-deletion-cron';
+import { PageBulkExportJobInProgressStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
+import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
+import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
-import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
+import questionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
@@ -23,9 +27,11 @@ import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
-import { instanciate as instanciateExternalAccountService } from '../service/external-account';
+import instanciateExportService from '../service/export';
+import instanciateExternalAccountService from '../service/external-account';
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
+import GrowiBridgeService from '../service/growi-bridge';
 import { initializeImportService } from '../service/import';
 import { InstallerService } from '../service/installer';
 import { normalizeData } from '../service/normalize-data';
@@ -92,7 +98,6 @@ class Crowi {
     this.fileUploadService = null;
     this.restQiitaAPIService = null;
     this.growiBridgeService = null;
-    this.exportService = null;
     this.pluginService = null;
     this.searchService = null;
     this.socketIoService = null;
@@ -102,7 +107,6 @@ class Crowi {
     this.activityService = null;
     this.commentService = null;
     this.questionnaireService = null;
-    this.questionnaireCronService = null;
     this.openaiThreadDeletionCronService = null;
 
     this.tokens = null;
@@ -161,6 +165,7 @@ Crowi.prototype.init = async function() {
     this.setupUserGroupService(),
     this.setupExport(),
     this.setupImport(),
+    this.setupPageBulkExportService(),
     this.setupGrowiPluginService(),
     this.setupPageService(),
     this.setupInAppNotificationService(),
@@ -181,6 +186,8 @@ Crowi.prototype.init = async function() {
   ]);
 
   await normalizeData();
+
+  this.resumeIncompletePageBulkExportJobs();
 };
 
 /**
@@ -312,8 +319,10 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupCron = function() {
-  this.questionnaireCronService = new QuestionnaireCronService(this);
-  this.questionnaireCronService.startCron();
+  questionnaireCronService.startCron();
+
+  instanciatePageBulkExportJobCronService(this);
+  pageBulkExportJobCronService.startCron();
 
   this.openaiThreadDeletionCronService = new OpenaiThreadDeletionCronService();
   this.openaiThreadDeletionCronService.startCron();
@@ -673,17 +682,17 @@ Crowi.prototype.setupUserGroupService = async function() {
 };
 
 Crowi.prototype.setUpGrowiBridge = async function() {
-  const GrowiBridgeService = require('../service/growi-bridge');
   if (this.growiBridgeService == null) {
     this.growiBridgeService = new GrowiBridgeService(this);
   }
 };
 
 Crowi.prototype.setupExport = async function() {
-  const ExportService = require('../service/export');
-  if (this.exportService == null) {
-    this.exportService = new ExportService(this);
-  }
+  instanciateExportService(this);
+};
+
+Crowi.prototype.setupPageBulkExportService = async function() {
+  instanciatePageBulkExportService(this);
 };
 
 Crowi.prototype.setupImport = async function() {
@@ -776,6 +785,13 @@ Crowi.prototype.setupExternalAccountService = function() {
 Crowi.prototype.setupExternalUserGroupSyncService = function() {
   this.ldapUserGroupSyncService = new LdapUserGroupSyncService(this.passportService, this.s2sMessagingService, this.socketIoService);
   this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
+};
+
+Crowi.prototype.resumeIncompletePageBulkExportJobs = async function() {
+  const jobs = await PageBulkExportJob.find({
+    $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
+  });
+  jobs.forEach(job => pageBulkExportService?.pageBulkExportJobManager?.addJob(job));
 };
 
 export default Crowi;
