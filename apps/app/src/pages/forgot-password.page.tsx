@@ -4,6 +4,7 @@ import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'ne
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
+import { RawLayout } from '~/components/Layout/RawLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useIsMailerSetup } from '~/stores-universal/context';
 
@@ -20,19 +21,21 @@ const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
   useIsMailerSetup(props.isMailerSetup);
 
   return (
-    <div className="main">
-      <div className="container-lg">
-        <div className="container">
-          <div className="row justify-content-md-center">
-            <div className="col-md-6 mt-5">
-              <div className="text-center">
-                <PasswordResetRequestForm />
+    <RawLayout>
+      <div className="main">
+        <div className="container-lg">
+          <div className="container">
+            <div className="row justify-content-md-center">
+              <div className="col-md-6 mt-5">
+                <div className="text-center">
+                  <PasswordResetRequestForm />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </RawLayout>
   );
 };
 
