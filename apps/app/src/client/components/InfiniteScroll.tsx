@@ -27,7 +27,7 @@ const useIntersection = <E extends HTMLElement>(): [boolean, Ref<E>] => {
     }
     return;
   }, [element]);
-  return [intersecting, el => el && setElement(el)];
+  return [intersecting, (el) => { if (el != null) setElement(el); }];
 };
 
 const LoadingIndicator = (): React.ReactElement => {

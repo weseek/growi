@@ -2,6 +2,7 @@
 **/coverage
 **/Dockerfile
 **/*.dockerignore
+**/.pnpm-store
 **/.next
 **/.turbo
 out
