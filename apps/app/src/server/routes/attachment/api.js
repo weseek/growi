@@ -274,7 +274,7 @@ export const routesFactory = (crowi) => {
    *
    *    /attachments.remove:
    *      post:
-   *        tags: [Attachments, CrowiCompatibles]
+   *        tags: [Attachments]
    *        operationId: removeAttachment
    *        summary: /attachments.remove
    *        description: Remove attachment
