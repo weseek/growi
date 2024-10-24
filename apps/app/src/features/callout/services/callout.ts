@@ -11,7 +11,7 @@ export const remarkPlugin: Plugin = () => {
         const data = node.data ?? (node.data = {});
         data.hName = 'callout';
         data.hProperties = {
-          name: node.name,
+          name: node.name.toLocaleLowerCase(),
         };
       }
     });
