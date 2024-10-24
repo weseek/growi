@@ -65,7 +65,7 @@ FROM deps-resolver AS deps-resolver-prod
 
 RUN pnpm install --no-frozen-lockfile --prod
 # make artifacts
-RUN tar -cf node_modules.tar \
+RUN tar -zcf node_modules.tar.gz \
   node_modules \
   apps/*/node_modules \
   packages/*/node_modules
@@ -100,7 +100,7 @@ RUN rm node_modules.tar
 RUN turbo run build
 
 # make artifacts
-RUN tar -cf packages.tar \
+RUN tar -zcf packages.tar.gz \
   package.json \
   apps/*/package.json \
   apps/*/dist \
@@ -121,25 +121,18 @@ ENV NODE_ENV production
 ENV optDir /opt
 ENV appDir ${optDir}/slackbot-proxy
 
-# Add pnpm
-RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
-  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh - \
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
-ENV PNPM_HOME "/root/.local/share/pnpm"
-ENV PATH "$PNPM_HOME:$PATH"
-
 # copy artifacts
 COPY --from=deps-resolver-prod --chown=node:node \
-  ${optDir}/node_modules.tar ${appDir}/
+  ${optDir}/node_modules.tar.gz ${appDir}/
 COPY --from=builder --chown=node:node \
-  ${optDir}/packages.tar ${appDir}/
+  ${optDir}/packages.tar.gz ${appDir}/
 
 # extract artifacts as 'node' user
 USER node
 WORKDIR ${appDir}
-RUN tar -xf node_modules.tar
-RUN tar -xf packages.tar
-RUN rm node_modules.tar packages.tar
+RUN tar -xf node_modules.tar.gz \
+  && tar -xf packages.tar.gz \
+  && rm node_modules.tar.gz packages.tar.gz
 
 WORKDIR ${appDir}/apps/slackbot-proxy
 
