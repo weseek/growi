@@ -9,28 +9,46 @@ ENV optDir /opt
 
 WORKDIR ${optDir}
 
-RUN yarn global add turbo
+# install pnpm
+RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
+  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
+ENV PNPM_HOME "/root/.local/share/pnpm"
+ENV PATH "$PNPM_HOME:$PATH"
+
+# install turbo
+RUN pnpm add turbo --global
+
+
+
+##
+## partialrepos
+##
+FROM base AS partialrepos
+
+ENV optDir /opt
+
+WORKDIR ${optDir}
+
 COPY . .
 RUN turbo prune @growi/slackbot-proxy --docker
+
 
 
 ##
 ## deps-resolver
 ##
-FROM node:20-slim AS deps-resolver
+FROM base AS deps-resolver
 
 ENV optDir /opt
 
 WORKDIR ${optDir}
 
 # copy files
-COPY --from=base ${optDir}/out/json/ .
-COPY --from=base ${optDir}/out/yarn.lock ./yarn.lock
+COPY --from=partialrepos ${optDir}/out/json/ .
+COPY --from=partialrepos ${optDir}/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
-# setup (with network-timeout = 1 hour)
-RUN yarn config set network-timeout 3600000
-RUN yarn global add node-gyp
-RUN yarn --frozen-lockfile
+RUN pnpm add node-gyp --global
+RUN pnpm install --no-frozen-lockfile
 
 # make artifacts
 RUN tar -cf node_modules.tar \
@@ -45,7 +63,7 @@ RUN tar -cf node_modules.tar \
 ##
 FROM deps-resolver AS deps-resolver-prod
 
-RUN yarn --production
+RUN pnpm install --no-frozen-lockfile --prod
 # make artifacts
 RUN tar -cf node_modules.tar \
   node_modules \
@@ -57,7 +75,7 @@ RUN tar -cf node_modules.tar \
 ##
 ## builder
 ##
-FROM node:20-slim AS builder
+FROM base AS builder
 
 ENV optDir /opt
 
@@ -66,8 +84,8 @@ WORKDIR ${optDir}
 RUN yarn global add turbo
 
 # copy files
-COPY --from=base ${optDir}/out/full/ .
-COPY --from=base ${optDir}/out/yarn.lock ./yarn.lock
+COPY --from=partialrepos ${optDir}/out/full/ .
+COPY --from=partialrepos ${optDir}/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY ["tsconfig.base.json", "./"]
 
 # copy dependent packages
@@ -102,16 +120,23 @@ ENV NODE_ENV production
 
 ENV optDir /opt
 ENV appDir ${optDir}/slackbot-proxy
-USER node
+
+# Add pnpm
+RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
+  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh - \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
+ENV PNPM_HOME "/root/.local/share/pnpm"
+ENV PATH "$PNPM_HOME:$PATH"
+
 # copy artifacts
 COPY --from=deps-resolver-prod --chown=node:node \
   ${optDir}/node_modules.tar ${appDir}/
 COPY --from=builder --chown=node:node \
   ${optDir}/packages.tar ${appDir}/
 
+# extract artifacts as 'node' user
+USER node
 WORKDIR ${appDir}
-
-# extract artifacts
 RUN tar -xf node_modules.tar
 RUN tar -xf packages.tar
 RUN rm node_modules.tar packages.tar
