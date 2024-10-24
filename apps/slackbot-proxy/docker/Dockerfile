@@ -1,74 +1,22 @@
-# syntax = docker/dockerfile:1.4
+# syntax = docker/dockerfile:1
 
 ##
 ## base
 ##
 FROM node:20-slim AS base
 
-ENV optDir /opt
+ENV optDir="/opt"
 
 WORKDIR ${optDir}
 
 # install pnpm
 RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
   && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
-ENV PNPM_HOME "/root/.local/share/pnpm"
-ENV PATH "$PNPM_HOME:$PATH"
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
 # install turbo
 RUN pnpm add turbo --global
-
-
-
-##
-## partialrepos
-##
-FROM base AS partialrepos
-
-ENV optDir /opt
-
-WORKDIR ${optDir}
-
-COPY . .
-RUN turbo prune @growi/slackbot-proxy --docker
-
-
-
-##
-## deps-resolver
-##
-FROM base AS deps-resolver
-
-ENV optDir /opt
-
-WORKDIR ${optDir}
-
-# copy files
-COPY --from=partialrepos ${optDir}/out/json/ .
-COPY --from=partialrepos ${optDir}/out/pnpm-lock.yaml ./pnpm-lock.yaml
-
-RUN pnpm add node-gyp --global
-RUN pnpm install --no-frozen-lockfile
-
-# make artifacts
-RUN tar -cf node_modules.tar \
-  node_modules \
-  apps/*/node_modules \
-  packages/*/node_modules
-
-
-
-##
-## deps-resolver-prod
-##
-FROM deps-resolver AS deps-resolver-prod
-
-RUN pnpm install --no-frozen-lockfile --prod
-# make artifacts
-RUN tar -zcf node_modules.tar.gz \
-  node_modules \
-  apps/*/node_modules \
-  packages/*/node_modules
 
 
 
@@ -77,36 +25,27 @@ RUN tar -zcf node_modules.tar.gz \
 ##
 FROM base AS builder
 
-ENV optDir /opt
+ENV optDir="/opt"
 
 WORKDIR ${optDir}
 
-RUN yarn global add turbo
+COPY . .
 
-# copy files
-COPY --from=partialrepos ${optDir}/out/full/ .
-COPY --from=partialrepos ${optDir}/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY ["tsconfig.base.json", "./"]
-
-# copy dependent packages
-COPY --from=deps-resolver \
-  ${optDir}/node_modules.tar ${optDir}/
-
-# extract node_modules.tar
-RUN tar -xf node_modules.tar
-RUN rm node_modules.tar
+RUN pnpm add node-gyp --global
+RUN pnpm install ---frozen-lockfile
 
 # build
-RUN turbo run build
+RUN turbo run build --filter @growi/slackbot-proxy
 
 # make artifacts
+RUN pnpm --filter @growi/slackbot-proxy --prod deploy pruned
+RUN rm -rf apps/slackbot-proxy/node_modules && mv pruned/node_modules apps/slackbot-proxy/node_modules
 RUN tar -zcf packages.tar.gz \
   package.json \
-  apps/*/package.json \
-  apps/*/dist \
-  apps/*/.env \
-  packages/*/package.json \
-  packages/*/dist
+  apps/slackbot-proxy/package.json \
+  apps/slackbot-proxy/dist \
+  apps/slackbot-proxy/.env \
+  apps/slackbot-proxy/node_modules
 
 
 
@@ -114,25 +53,21 @@ RUN tar -zcf packages.tar.gz \
 ## release
 ##
 FROM node:20-slim
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
+LABEL maintainer="Yuki Takei <yuki@weseek.co.jp>"
 
-ENV NODE_ENV production
+ENV NODE_ENV="production"
 
-ENV optDir /opt
-ENV appDir ${optDir}/slackbot-proxy
+ENV optDir="/opt"
+ENV appDir="${optDir}/slackbot-proxy"
 
 # copy artifacts
-COPY --from=deps-resolver-prod --chown=node:node \
-  ${optDir}/node_modules.tar.gz ${appDir}/
 COPY --from=builder --chown=node:node \
   ${optDir}/packages.tar.gz ${appDir}/
 
 # extract artifacts as 'node' user
 USER node
 WORKDIR ${appDir}
-RUN tar -xf node_modules.tar.gz \
-  && tar -xf packages.tar.gz \
-  && rm node_modules.tar.gz packages.tar.gz
+RUN tar -xf packages.tar.gz && rm packages.tar.gz
 
 WORKDIR ${appDir}/apps/slackbot-proxy
 
