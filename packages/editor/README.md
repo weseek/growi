@@ -4,7 +4,7 @@
 
 ```bash
 cd packages/editor
-yarn serve
+pnpm run serve
 ```
 
 ## Playground

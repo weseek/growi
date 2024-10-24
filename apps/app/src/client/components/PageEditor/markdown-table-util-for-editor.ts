@@ -1,4 +1,4 @@
-import type { EditorView } from '@codemirror/view';
+import type { EditorView } from '@growi/editor';
 import { MarkdownTable } from '@growi/editor';
 
 // https://regex101.com/r/7BN2fR/10

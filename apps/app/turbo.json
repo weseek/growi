@@ -64,9 +64,25 @@
       "outputLogs": "new-only"
     },
 
-    "version": {
+    "version:patch": {
       "cache": false,
-      "dependsOn": ["^version", "//#version"]
+      "dependsOn": ["^version:patch", "//#version:patch"]
+    },
+    "version:prerelease": {
+      "cache": false,
+      "dependsOn": ["^version:prerelease", "//#version:prerelease"]
+    },
+    "version:prepatch": {
+      "cache": false,
+      "dependsOn": ["^version:prepatch", "//#version:prepatch"]
+    },
+    "version:preminor": {
+      "cache": false,
+      "dependsOn": ["^version:preminor", "//#version:preminor"]
+    },
+    "version:premajor": {
+      "cache": false,
+      "dependsOn": ["^version:premajor", "//#version:premajor"]
     }
 
   }

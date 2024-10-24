@@ -1,5 +1,8 @@
-const debug = require('debug')('growi:util:slack');
-const urljoin = require('url-join');
+import urljoin from 'url-join';
+
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:util:slack');
 
 /**
  * slack
@@ -39,7 +42,7 @@ const prepareAttachmentTextForUpdate = function(page, siteUrl, previousRevision)
   let diffText = '';
 
   diff.diffLines(previousRevision.body, page.revision.body).forEach((line) => {
-    debug('diff line', line);
+    logger.debug('diff line', line);
     const value = line.value.replace(/\r\n|\r/g, '\n'); // eslint-disable-line no-unused-vars
     if (line.added) {
       diffText += `${line.value} ... :lower_left_fountain_pen:`;
@@ -56,7 +59,7 @@ const prepareAttachmentTextForUpdate = function(page, siteUrl, previousRevision)
     }
   });
 
-  debug('diff is', diffText);
+  logger.debug('diff is', diffText);
 
   return diffText;
 };

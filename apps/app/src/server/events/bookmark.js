@@ -1,6 +1,5 @@
-// var debug = require('debug')('crowi:events:page')
-const util = require('util');
 const events = require('events');
+const util = require('util');
 
 function BookmarkEvent(crowi) {
   this.crowi = crowi;

@@ -22,22 +22,22 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.base.ref }}
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
-        yarn global add turbo
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add turbo --global
+        pnpm install
 
     - name: Bump versions
       run: |
-        turbo run version --filter=@growi/app -- --patch
-        yarn upgrade --scope=@growi
+        turbo run version:patch --filter=@growi/app
+        pnpm upgrade --scope=@growi
         sh ./apps/app/bin/github-actions/update-readme.sh
 
     - name: Retrieve information from package.json
@@ -162,23 +162,23 @@ jobs:
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
-        yarn global add turbo
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add turbo --global
+        pnpm install
 
     - name: Bump versions for next RC
       run: |
-        turbo run version --filter=@growi/app -- --prepatch
-        turbo run version --filter=@growi/slackbot-proxy -- --prepatch
-        yarn upgrade --scope=@growi
+        turbo run version:prepatch --filter=@growi/app
+        turbo run version:prepatch --filter=@growi/slackbot-proxy
+        pnpm upgrade --scope=@growi
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@2.0.1

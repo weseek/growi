@@ -51,7 +51,7 @@ export default defineConfig({
   reporter: process.env.CI ? 'github' : 'list',
 
   webServer: {
-    command: 'yarn server',
+    command: 'pnpm run server',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     stdout: 'ignore',
