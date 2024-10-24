@@ -436,6 +436,9 @@ importers:
       mkdirp:
         specifier: ^1.0.3
         version: 1.0.4
+      mongodb:
+        specifier: 4.16.0
+        version: 4.16.0
       mongoose:
         specifier: ^6.11.3
         version: 6.13.0
@@ -833,9 +836,6 @@ importers:
       mdast-util-directive:
         specifier: ^3.0.0
         version: 3.0.0
-      mongodb:
-        specifier: 4.16.0
-        version: 4.16.0
       mongodb-memory-server-core:
         specifier: ^9.1.1
         version: 9.4.0(@aws-sdk/credential-providers@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
@@ -845,9 +845,6 @@ importers:
       null-loader:
         specifier: ^4.0.1
         version: 4.0.1(webpack@5.92.1(@swc/core@1.5.25(@swc/helpers@0.5.11)))
-      plantuml-encoder:
-        specifier: ^1.2.5
-        version: 1.4.0
       pretty-bytes:
         specifier: ^6.1.1
         version: 6.1.1
@@ -881,15 +878,9 @@ importers:
       remark-github-admonitions-to-directives:
         specifier: ^2.0.0
         version: 2.0.0
-      replacestream:
-        specifier: ^4.0.3
-        version: 4.0.3
       sass:
         specifier: ^1.53.0
         version: 1.77.6
-      simple-load-script:
-        specifier: ^1.0.2
-        version: 1.0.3
       simplebar-react:
         specifier: ^2.3.6
         version: 2.4.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -10636,9 +10627,6 @@ packages:
     resolution: {integrity: sha512-ZqtSMuVybkISo2OWvqvm7iHSWngvdaW3IpsT9/uP8v4gMi591LY6h35wdOfvQdWCKFWZWm2Y1Opp4kV7vQKT6A==}
     engines: {node: '>=0.10.0'}
 
-  replacestream@4.0.3:
-    resolution: {integrity: sha512-AC0FiLS352pBBiZhd4VXB1Ab/lh0lEgpP+GGvZqbQh8a5cmXVoTe5EX/YeTFArnp4SRGTHh1qCHu9lGs1qG8sA==}
-
   request-promise-core@1.1.4:
     resolution: {integrity: sha512-TTbAfBBRdWD7aNNOoVOBH4pN/KigV6LyapYNNlAPA8JwbovRti1E88m3sYAwsLi5ryhPKsE9APwnjFTgdUjTpw==}
     engines: {node: '>=0.10.0'}
@@ -10990,9 +10978,6 @@ packages:
   signal-exit@4.1.0:
     resolution: {integrity: sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==}
     engines: {node: '>=14'}
-
-  simple-load-script@1.0.3:
-    resolution: {integrity: sha512-uzkQFI6ox63k0CMK7AtEZ6NXe4HLMDxBsN5UCjbwY5DgAdREmBzmsxWQmiuvRPHHTsQ3ad00/aNYiNLYdphZLw==}
 
   simple-swizzle@0.2.2:
     resolution: {integrity: sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==}
@@ -24660,12 +24645,6 @@ snapshots:
     dependencies:
       is-finite: 1.1.0
 
-  replacestream@4.0.3:
-    dependencies:
-      escape-string-regexp: 1.0.5
-      object-assign: 4.1.1
-      readable-stream: 2.3.8
-
   request-promise-core@1.1.4(request@2.88.2):
     dependencies:
       lodash: 4.17.21
@@ -25092,8 +25071,6 @@ snapshots:
   signal-exit@3.0.7: {}
 
   signal-exit@4.1.0: {}
-
-  simple-load-script@1.0.3: {}
 
   simple-swizzle@0.2.2:
     dependencies:
