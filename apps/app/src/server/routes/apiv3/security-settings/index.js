@@ -108,12 +108,6 @@ const validator = {
   ],
 };
 
-/**
- * @swagger
- *  tags:
- *    name: SecuritySetting
- */
-
 
 /**
  * @swagger
@@ -335,7 +329,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/:
    *      get:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Get security paramators
    *        responses:
    *          200:
@@ -463,7 +457,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/authentication/enabled:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update authentication isEnabled
    *        requestBody:
    *          required: true
@@ -578,7 +572,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/authentication:
    *      get:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Get setup strategies for passport
    *        responses:
    *          200:
@@ -606,7 +600,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/general-setting:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update GeneralSetting
    *        requestBody:
    *          required: true
@@ -692,7 +686,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/share-link-setting:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update ShareLink Setting
    *        requestBody:
    *          required: true
@@ -735,7 +729,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/all-share-links:
    *      get:
-   *        tags: [ShareLinkSettings, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Get All ShareLinks at Share Link Setting
    *        responses:
    *          200:
@@ -778,7 +772,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/all-share-links:
    *      delete:
-   *        tags: [ShareLinkSettings, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Delete All ShareLinks at Share Link Setting
    *        responses:
    *          200:
@@ -803,7 +797,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/local-setting:
    *      put:
-   *        tags: [LocalSetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update LocalSetting
    *        requestBody:
    *          required: true
@@ -855,7 +849,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/ldap:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update LDAP setting
    *        requestBody:
    *          required: true
@@ -920,7 +914,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/saml:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update SAML setting
    *        requestBody:
    *          required: true
@@ -1013,7 +1007,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/oidc:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update OpenID Connect setting
    *        requestBody:
    *          required: true
@@ -1090,7 +1084,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/google-oauth:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update google OAuth
    *        requestBody:
    *          required: true
@@ -1138,7 +1132,7 @@ module.exports = (crowi) => {
    *
    *    /security-setting/github-oauth:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update github OAuth
    *        requestBody:
    *          required: true

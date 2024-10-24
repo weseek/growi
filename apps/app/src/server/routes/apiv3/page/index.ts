@@ -46,12 +46,6 @@ const { body, query, param } = require('express-validator');
 
 const router = express.Router();
 
-/**
- * @swagger
- *  tags:
- *    name: Page
- */
-
 
 /**
  * @swagger
@@ -671,9 +665,9 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /pages/export:
+  *    /page/export:
   *      get:
-  *        tags: [Export]
+  *        tags: [Page]
   *        description: return page's markdown
   *        responses:
   *          200:
