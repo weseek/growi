@@ -1,12 +1,7 @@
 import type { TiktokenModel } from 'js-tiktoken';
 import { encodingForModel } from 'js-tiktoken';
 import yaml from 'js-yaml';
-import remarkFrontmatter from 'remark-frontmatter'; // Frontmatter processing
-import remarkGfm from 'remark-gfm'; // GFM processing
-import remarkParse from 'remark-parse';
 import type { Options as StringifyOptions } from 'remark-stringify';
-import remarkStringify from 'remark-stringify';
-import { unified } from 'unified';
 
 export type MarkdownFragment = {
   label: string;
@@ -58,6 +53,12 @@ export async function splitMarkdownIntoFragments(markdownText: string, model: Ti
   }
 
   const encoder = encodingForModel(model);
+
+  const remarkParse = (await import('remark-parse')).default;
+  const remarkFrontmatter = (await import('remark-frontmatter')).default;
+  const remarkGfm = (await import('remark-gfm')).default;
+  const remarkStringify = (await import('remark-stringify')).default;
+  const unified = (await import('unified')).unified;
 
   const parser = unified()
     .use(remarkParse)
