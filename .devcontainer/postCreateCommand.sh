@@ -1,3 +1,5 @@
+sudo chown -R vscode:vscode /workspace;
+
 # Instal additional packages
 sudo apt update
 sudo apt-get install -y --no-install-recommends \
