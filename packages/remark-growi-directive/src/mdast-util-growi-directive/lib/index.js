@@ -37,25 +37,24 @@ export function directiveFromMarkdown() {
   return {
     canContainEols: [DirectiveType.Text],
     enter: {
-      directiveLeaf: enterLeaf,
-      directiveLeafAttributes: enterAttributes,
+      directiveGrowiLeaf: enterLeaf,
+      directiveGrowiLeafAttributes: enterAttributes,
 
-      directiveText: enterText,
-      directiveTextAttributes: enterAttributes,
+      directiveGrowiText: enterText,
+      directiveGrowiTextAttributes: enterAttributes,
     },
     exit: {
-      directiveLeaf: exit,
-      directiveLeafAttributeName: exitAttributeName,
-      directiveLeafAttributeValue: exitAttributeValue,
-      directiveLeafAttributes: exitAttributes,
-      directiveLeafName: exitName,
+      directiveGrowiLeaf: exit,
+      directiveGrowiLeafAttributeName: exitAttributeName,
+      directiveGrowiLeafAttributeValue: exitAttributeValue,
+      directiveGrowiLeafAttributes: exitAttributes,
+      directiveGrowiLeafName: exitName,
 
-      directiveText: exit,
-      directiveTextAttributeName: exitAttributeName,
-      directiveTextAttributeValue: exitAttributeValue,
-      directiveTextAttributes: exitAttributes,
-      directiveTextName: exitName,
-
+      directiveGrowiText: exit,
+      directiveGrowiTextAttributeName: exitAttributeName,
+      directiveGrowiTextAttributeValue: exitAttributeValue,
+      directiveGrowiTextAttributes: exitAttributes,
+      directiveGrowiTextName: exitName,
     },
   };
 }
