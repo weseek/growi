@@ -22,61 +22,6 @@ RUN pnpm add turbo --global
 
 
 ##
-## partialrepos
-##
-FROM base AS partialrepos
-
-ENV optDir /opt
-
-WORKDIR ${optDir}
-
-COPY . .
-RUN turbo prune @growi/app --docker
-
-
-##
-## deps-resolver
-##
-FROM base AS deps-resolver
-
-ENV optDir /opt
-
-WORKDIR ${optDir}
-
-RUN set -eux; \
-	apt-get update; \
-	apt-get install -y python3 build-essential;
-
-# copy files
-COPY --from=partialrepos ${optDir}/out/json/ .
-COPY --from=partialrepos ${optDir}/out/pnpm-lock.yaml ./pnpm-lock.yaml
-
-RUN pnpm add node-gyp --global
-RUN pnpm install --no-frozen-lockfile
-
-# make artifacts
-RUN tar -cf node_modules.tar \
-  node_modules \
-  apps/*/node_modules \
-  packages/*/node_modules
-
-
-
-##
-## deps-resolver-prod
-##
-FROM deps-resolver AS deps-resolver-prod
-
-RUN pnpm install --no-frozen-lockfile --prod
-# make artifacts
-RUN tar -zcf node_modules.tar.gz \
-  node_modules \
-  apps/*/node_modules \
-  packages/*/node_modules
-
-
-
-##
 ## builder
 ##
 FROM base AS builder
@@ -85,24 +30,18 @@ ENV optDir /opt
 
 WORKDIR ${optDir}
 
-# copy files
-COPY --from=partialrepos ${optDir}/out/full/ .
-COPY --from=partialrepos ${optDir}/out/pnpm-lock.yaml ./pnpm-lock.yaml
-COPY ["tsconfig.base.json", "./"]
+COPY . .
 
-# copy dependent packages
-COPY --from=deps-resolver \
-  ${optDir}/node_modules.tar ${optDir}/
-
-# extract node_modules.tar
-RUN tar -xf node_modules.tar
-RUN rm node_modules.tar
+RUN pnpm add node-gyp --global
+RUN pnpm install ---frozen-lockfile
 
 # build
 RUN turbo run clean
-RUN turbo run build
+RUN turbo run build --filter @growi/app
 
 # make artifacts
+RUN pnpm --filter @growi/app --prod deploy pruned
+RUN rm -rf apps/app/node_modules && mv pruned/node_modules apps/app/node_modules
 RUN rm -rf apps/app/.next/cache
 RUN tar -zcf packages.tar.gz \
   package.json \
@@ -115,8 +54,7 @@ RUN tar -zcf packages.tar.gz \
   apps/app/.env.production* \
   apps/app/next.config.js \
   apps/app/package.json \
-  packages/*/package.json \
-  packages/*/dist
+  apps/app/node_modules
 
 
 
@@ -147,17 +85,13 @@ RUN apt-get update && apt-get install -y sudo ca-certificates wget --no-install-
 ENV PNPM_HOME="/home/node/.local/share/pnpm"
 ENV PATH "$PNPM_HOME:$PATH"
 
-COPY --from=deps-resolver-prod --chown=node:node \
-  ${optDir}/node_modules.tar.gz ${appDir}/
 COPY --from=builder --chown=node:node \
   ${optDir}/packages.tar.gz ${appDir}/
 
 # extract artifacts as 'node' user
 USER node
 WORKDIR ${appDir}
-RUN tar -zxf node_modules.tar.gz \
-  && tar -zxf packages.tar.gz \
-  && rm node_modules.tar.gz packages.tar.gz
+RUN tar -zxf packages.tar.gz && rm packages.tar.gz
 
 COPY --chown=node:node --chmod=700 apps/app/docker/docker-entrypoint.sh /
 
