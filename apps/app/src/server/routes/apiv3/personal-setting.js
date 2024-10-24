@@ -23,12 +23,6 @@ const router = express.Router();
 
 /**
  * @swagger
- *  tags:
- *    name: PersonalSetting
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:
@@ -136,7 +130,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting:
    *      get:
-   *        tags: [PersonalSetting]
+   *        tags: [GeneralSetting]
    *        operationId: getPersonalSetting
    *        summary: /personal-setting
    *        description: Get personal parameters
@@ -175,7 +169,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting/is-password-set:
    *      get:
-   *        tags: [PersonalSetting]
+   *        tags: [GeneralSetting]
    *        operationId: getIsPasswordSet
    *        summary: /personal-setting
    *        description: Get whether a password has been set
@@ -210,7 +204,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting:
    *      put:
-   *        tags: [PersonalSetting]
+   *        tags: [GeneralSetting]
    *        operationId: updatePersonalSetting
    *        summary: /personal-setting
    *        description: Update personal setting
@@ -267,7 +261,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting/image-type:
    *      put:
-   *        tags: [PersonalSetting]
+   *        tags: [GeneralSetting]
    *        operationId: putUserImageType
    *        summary: /personal-setting/image-type
    *        description: Update user image type
@@ -304,7 +298,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting/external-accounts:
    *      get:
-   *        tags: [PersonalSetting]
+   *        tags: [GeneralSetting]
    *        operationId: getExternalAccounts
    *        summary: /personal-setting/external-accounts
    *        description: Get external accounts that linked current user
@@ -338,7 +332,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting/password:
    *      put:
-   *        tags: [PersonalSetting]
+   *        tags: [GeneralSetting]
    *        operationId: putUserPassword
    *        summary: /personal-setting/password
    *        description: Update user password
@@ -386,7 +380,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting/api-token:
    *      put:
-   *        tags: [PersonalSetting]
+   *        tags: [GeneralSetting]
    *        operationId: putUserApiToken
    *        summary: /personal-setting/api-token
    *        description: Update user api token
@@ -424,7 +418,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting/associate-ldap:
    *      put:
-   *        tags: [PersonalSetting]
+   *        tags: [GeneralSetting]
    *        operationId: associateLdapAccount
    *        summary: /personal-setting/associate-ldap
    *        description: associate Ldap account
@@ -476,7 +470,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting/disassociate-ldap:
    *      put:
-   *        tags: [PersonalSetting]
+   *        tags: [GeneralSetting]
    *        operationId: disassociateLdapAccount
    *        summary: /personal-setting/disassociate-ldap
    *        description: disassociate Ldap account
@@ -609,7 +603,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting/in-app-notification-settings:
    *      put:
-   *        tags: [in-app-notification-settings]
+   *        tags: [InAppNotificationSettings]
    *        operationId: putInAppNotificationSettings
    *        summary: personal-setting/in-app-notification-settings
    *        description: Put InAppNotificationSettings
@@ -653,7 +647,7 @@ module.exports = (crowi) => {
    *
    *    /personal-setting/in-app-notification-settings:
    *      get:
-   *        tags: [in-app-notification-settings]
+   *        tags: [InAppNotificationSettings]
    *        operationId: getInAppNotificationSettings
    *        summary: personal-setting/in-app-notification-settings
    *        description: Get InAppNotificationSettings

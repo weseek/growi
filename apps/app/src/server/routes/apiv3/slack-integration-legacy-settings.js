@@ -24,12 +24,6 @@ const validator = {
 
 /**
  * @swagger
- *  tags:
- *    name: SlackIntegrationLegacySetting
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:

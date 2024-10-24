@@ -7,12 +7,6 @@ const mongoose = require('mongoose');
 
 const router = express.Router();
 
-/**
- * @swagger
- *  tags:
- *    name: Mongo
- */
-
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -22,7 +16,7 @@ module.exports = (crowi) => {
    *
    *  /mongo/collections:
    *    get:
-   *      tags: [Mongo]
+   *      tags: [MongoDB]
    *      operationId: getMongoCollections
    *      summary: /mongo/collections
    *      description: get mongodb collections names

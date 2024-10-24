@@ -5,6 +5,7 @@ import raw from 'rehype-raw';
 import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import breaks from 'remark-breaks';
+import remarkDirective from 'remark-directive';
 import emoji from 'remark-emoji';
 import remarkFrontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
@@ -25,6 +26,7 @@ import { tagNames as recommendedTagNames, attributes as recommendedAttributes } 
 import * as addClass from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
+import * as codeBlock from './remark-plugins/codeblock';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
@@ -43,15 +45,18 @@ let commonSanitizeOption: SanitizeOption;
 export const getCommonSanitizeOption = (config:RendererConfig): SanitizeOption => {
   if (commonSanitizeOption == null || config.sanitizeType !== currentInitializedSanitizeType) {
     // initialize
-    commonSanitizeOption = {
-      tagNames: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
-        ? recommendedTagNames
-        : config.customTagWhitelist ?? recommendedTagNames,
-      attributes: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
-        ? recommendedAttributes
-        : config.customAttrWhitelist ?? recommendedAttributes,
-      clobberPrefix: '', // remove clobber prefix
-    };
+    commonSanitizeOption = deepmerge(
+      {
+        tagNames: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
+          ? recommendedTagNames
+          : config.customTagWhitelist ?? recommendedTagNames,
+        attributes: config.sanitizeType === RehypeSanitizeType.RECOMMENDED
+          ? recommendedAttributes
+          : config.customAttrWhitelist ?? recommendedAttributes,
+        clobberPrefix: '', // remove clobber prefix
+      },
+      codeBlock.sanitizeOption,
+    );
 
     currentInitializedSanitizeType = config.sanitizeType;
   }
@@ -95,7 +100,9 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       emoji,
       pukiwikiLikeLinker,
       growiDirective,
+      remarkDirective,
       remarkFrontmatter,
+      codeBlock.remarkPlugin,
     ],
     remarkRehypeOptions: {
       clobberPrefix: '', // remove clobber prefix
@@ -121,6 +128,7 @@ export const generateSSRViewOptions = (
     config: RendererConfig,
     pagePath: string,
 ): RendererOptions => {
+
   const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins } = options;
@@ -137,10 +145,8 @@ export const generateSSRViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      getCommonSanitizeOption(config),
-    )]
+  const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, getCommonSanitizeOption(config)]
     : () => {};
 
   // add rehype plugins

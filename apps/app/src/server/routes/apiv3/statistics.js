@@ -17,11 +17,6 @@ const USER_STATUS_MASTER = {
 };
 
 
-/**
- * @swagger
- *  tags:
- *    name: Statistics
- */
 module.exports = (crowi) => {
 
   const models = crowi.models;

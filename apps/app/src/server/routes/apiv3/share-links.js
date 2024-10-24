@@ -20,12 +20,6 @@ const validator = {};
 
 const today = new Date();
 
-/**
- * @swagger
- *  tags:
- *    name: ShareLink
- */
-
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -212,7 +206,7 @@ module.exports = (crowi) => {
   *
   *    /share-links/all:
   *      delete:
-  *        tags: [ShareLinks]
+  *        tags: [ShareLink Management]
   *        description: delete all share links
   *        responses:
   *          200:

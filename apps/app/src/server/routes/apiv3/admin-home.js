@@ -6,12 +6,6 @@ const router = express.Router();
 
 /**
  * @swagger
- *  tags:
- *    name: adminHome
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:
@@ -47,7 +41,7 @@ module.exports = (crowi) => {
    *
    *    /admin-home/:
    *      get:
-   *        tags: [AdminHome]
+   *        tags: [Admin]
    *        operationId: getAdminHome
    *        summary: /admin-home
    *        description: Get adminHome parameters

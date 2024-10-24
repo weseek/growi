@@ -19,12 +19,6 @@ const router = express.Router();
 
 /**
  * @swagger
- *  tags:
- *    name: Import
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:

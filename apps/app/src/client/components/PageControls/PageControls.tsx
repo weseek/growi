@@ -16,6 +16,7 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import RagSearchButton from '~/features/openai/client/components/RagSearchButton';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/stores-universal/context';
 import {
   EditorMode, useEditorMode,
@@ -282,7 +283,10 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
       { isViewMode && isDeviceLargerThanMd && !isSearchPage && !isSearchPage && (
-        <SearchButton />
+        <>
+          <SearchButton />
+          <RagSearchButton />
+        </>
       )}
 
       {revisionId != null && !isViewMode && _isIPageInfoForOperation && (

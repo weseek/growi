@@ -1,6 +1,11 @@
-import { DirectiveType } from './mdast-util-growi-directive/consts.js';
 import { remarkGrowiDirectivePlugin } from './remark-growi-directive.js';
 
-export { DirectiveType as remarkGrowiDirectivePluginType };
+export {
+  DirectiveTypeObject as remarkGrowiDirectivePluginType,
+  LeafGrowiPluginDirective,
+  TextGrowiPluginDirective,
+  LeafGrowiPluginDirectiveData,
+  TextGrowiPluginDirectiveData,
+} from './mdast-util-growi-directive';
 
 export default remarkGrowiDirectivePlugin;

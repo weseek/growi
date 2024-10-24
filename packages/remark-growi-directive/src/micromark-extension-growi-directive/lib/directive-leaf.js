@@ -6,8 +6,7 @@
 
 import { factorySpace } from 'micromark-factory-space';
 import { markdownLineEnding } from 'micromark-util-character';
-import { codes } from 'micromark-util-symbol/codes.js';
-import { types } from 'micromark-util-symbol/types.js';
+import { codes, types } from 'micromark-util-symbol';
 import { ok as assert } from 'uvu/assert';
 
 import { factoryAttributes } from './factory-attributes.js';
@@ -63,9 +62,9 @@ function tokenizeDirectiveLeaf(effects, ok, nok) {
   /** @type {State} */
   function start(code) {
     assert(code === codes.dollarSign, 'expected `$`');
-    effects.enter('directiveLeaf');
+    effects.enter('directiveGrowiLeaf');
     effects.consume(code);
-    return factoryName.call(self, effects, afterName, nok, 'directiveLeafName');
+    return factoryName.call(self, effects, afterName, nok, 'directiveGrowiLeafName');
   }
 
   /** @type {State} */
@@ -93,7 +92,7 @@ function tokenizeDirectiveLeaf(effects, ok, nok) {
   /** @type {State} */
   function end(code) {
     if (code === codes.eof || markdownLineEnding(code)) {
-      effects.exit('directiveLeaf');
+      effects.exit('directiveGrowiLeaf');
       return ok(code);
     }
 
@@ -108,9 +107,9 @@ function tokenizeLabel(effects, ok, nok) {
     effects,
     ok,
     nok,
-    'directiveLeafLabel',
-    'directiveLeafLabelMarker',
-    'directiveLeafLabelString',
+    'directiveGrowiLeafLabel',
+    'directiveGrowiLeafLabelMarker',
+    'directiveGrowiLeafLabelString',
     true,
   );
 }
@@ -122,15 +121,15 @@ function tokenizeAttributes(effects, ok, nok) {
     effects,
     ok,
     nok,
-    'directiveLeafAttributes',
-    'directiveLeafAttributesMarker',
-    'directiveLeafAttribute',
-    'directiveLeafAttributeName',
-    'directiveLeafAttributeInitializerMarker',
-    'directiveLeafAttributeValueLiteral',
-    'directiveLeafAttributeValue',
-    'directiveLeafAttributeValueMarker',
-    'directiveLeafAttributeValueData',
+    'directiveGrowiLeafAttributes',
+    'directiveGrowiLeafAttributesMarker',
+    'directiveGrowiLeafAttribute',
+    'directiveGrowiLeafAttributeName',
+    'directiveGrowiLeafAttributeInitializerMarker',
+    'directiveGrowiLeafAttributeValueLiteral',
+    'directiveGrowiLeafAttributeValue',
+    'directiveGrowiLeafAttributeValueMarker',
+    'directiveGrowiLeafAttributeValueData',
     true,
   );
 }

@@ -1,9 +1,8 @@
 // See: https://github.com/martypdx/rehype-add-classes for the original implementation.
 // Re-implemeted in TypeScript.
+import type { Nodes as HastNode, Element, Properties } from 'hast';
 import { selectAll } from 'hast-util-select';
-import type { Node as HastNode, Element } from 'hast-util-select/lib/types';
-import { Properties } from 'hast-util-select/lib/types';
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
 
 export type SelectorName = string; // e.g. 'h1'
 export type ClassName = string; // e.g. 'header'

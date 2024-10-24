@@ -108,12 +108,6 @@ const validator = {
   ],
 };
 
-/**
- * @swagger
- *  tags:
- *    name: SecuritySetting
- */
-
 
 /**
  * @swagger
@@ -333,9 +327,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/:
+   *    /security-setting/:
    *      get:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Get security paramators
    *        responses:
    *          200:
@@ -364,6 +358,7 @@ module.exports = (crowi) => {
         isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),
         isForceDeleteUserHomepageOnUserDeletion:
         await configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
+        isRomUserAllowedToComment: await configManager.getConfig('crowi', 'security:isRomUserAllowedToComment'),
         wikiMode: await configManager.getConfig('crowi', 'security:wikiMode'),
         sessionMaxAge: await configManager.getConfig('crowi', 'security:sessionMaxAge'),
       },
@@ -460,9 +455,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/authentication/enabled:
+   *    /security-setting/authentication/enabled:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update authentication isEnabled
    *        requestBody:
    *          required: true
@@ -575,9 +570,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/authentication:
+   *    /security-setting/authentication:
    *      get:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Get setup strategies for passport
    *        responses:
    *          200:
@@ -603,9 +598,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/general-setting:
+   *    /security-setting/general-setting:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update GeneralSetting
    *        requestBody:
    *          required: true
@@ -637,6 +632,7 @@ module.exports = (crowi) => {
       'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': req.body.isUsersHomepageDeletionEnabled
         ? req.body.isForceDeleteUserHomepageOnUserDeletion
         : false,
+      'security:isRomUserAllowedToComment': req.body.isRomUserAllowedToComment,
     };
 
     // Validate delete config
@@ -670,6 +666,7 @@ module.exports = (crowi) => {
         isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),
         isForceDeleteUserHomepageOnUserDeletion:
         await configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
+        isRomUserAllowedToComment: await configManager.getConfig('crowi', 'security:isRomUserAllowedToComment'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_SECURITY_SETTINGS_UPDATE };
@@ -687,9 +684,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/share-link-setting:
+   *    /security-setting/share-link-setting:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update ShareLink Setting
    *        requestBody:
    *          required: true
@@ -730,9 +727,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/all-share-links:
+   *    /security-setting/all-share-links:
    *      get:
-   *        tags: [ShareLinkSettings, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Get All ShareLinks at Share Link Setting
    *        responses:
    *          200:
@@ -773,9 +770,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/all-share-links:
+   *    /security-setting/all-share-links:
    *      delete:
-   *        tags: [ShareLinkSettings, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Delete All ShareLinks at Share Link Setting
    *        responses:
    *          200:
@@ -798,9 +795,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/local-setting:
+   *    /security-setting/local-setting:
    *      put:
-   *        tags: [LocalSetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update LocalSetting
    *        requestBody:
    *          required: true
@@ -850,9 +847,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/ldap:
+   *    /security-setting/ldap:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update LDAP setting
    *        requestBody:
    *          required: true
@@ -915,9 +912,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/saml:
+   *    /security-setting/saml:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update SAML setting
    *        requestBody:
    *          required: true
@@ -1008,9 +1005,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/oidc:
+   *    /security-setting/oidc:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update OpenID Connect setting
    *        requestBody:
    *          required: true
@@ -1085,9 +1082,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/google-oauth:
+   *    /security-setting/google-oauth:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update google OAuth
    *        requestBody:
    *          required: true
@@ -1133,9 +1130,9 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/github-oauth:
+   *    /security-setting/github-oauth:
    *      put:
-   *        tags: [SecuritySetting, apiv3]
+   *        tags: [SecuritySetting]
    *        description: Update github OAuth
    *        requestBody:
    *          required: true
