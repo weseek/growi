@@ -333,7 +333,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/:
+   *    /security-setting/:
    *      get:
    *        tags: [SecuritySetting, apiv3]
    *        description: Get security paramators
@@ -461,7 +461,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/authentication/enabled:
+   *    /security-setting/authentication/enabled:
    *      put:
    *        tags: [SecuritySetting, apiv3]
    *        description: Update authentication isEnabled
@@ -576,7 +576,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/authentication:
+   *    /security-setting/authentication:
    *      get:
    *        tags: [SecuritySetting, apiv3]
    *        description: Get setup strategies for passport
@@ -604,7 +604,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/general-setting:
+   *    /security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting, apiv3]
    *        description: Update GeneralSetting
@@ -690,7 +690,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/share-link-setting:
+   *    /security-setting/share-link-setting:
    *      put:
    *        tags: [SecuritySetting, apiv3]
    *        description: Update ShareLink Setting
@@ -733,7 +733,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/all-share-links:
+   *    /security-setting/all-share-links:
    *      get:
    *        tags: [ShareLinkSettings, apiv3]
    *        description: Get All ShareLinks at Share Link Setting
@@ -776,7 +776,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/all-share-links:
+   *    /security-setting/all-share-links:
    *      delete:
    *        tags: [ShareLinkSettings, apiv3]
    *        description: Delete All ShareLinks at Share Link Setting
@@ -801,7 +801,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/local-setting:
+   *    /security-setting/local-setting:
    *      put:
    *        tags: [LocalSetting, apiv3]
    *        description: Update LocalSetting
@@ -853,7 +853,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/ldap:
+   *    /security-setting/ldap:
    *      put:
    *        tags: [SecuritySetting, apiv3]
    *        description: Update LDAP setting
@@ -918,7 +918,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/saml:
+   *    /security-setting/saml:
    *      put:
    *        tags: [SecuritySetting, apiv3]
    *        description: Update SAML setting
@@ -1011,7 +1011,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/oidc:
+   *    /security-setting/oidc:
    *      put:
    *        tags: [SecuritySetting, apiv3]
    *        description: Update OpenID Connect setting
@@ -1088,7 +1088,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/google-oauth:
+   *    /security-setting/google-oauth:
    *      put:
    *        tags: [SecuritySetting, apiv3]
    *        description: Update google OAuth
@@ -1136,7 +1136,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /_api/v3/security-setting/github-oauth:
+   *    /security-setting/github-oauth:
    *      put:
    *        tags: [SecuritySetting, apiv3]
    *        description: Update github OAuth
