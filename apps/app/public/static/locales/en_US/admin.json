@@ -15,7 +15,7 @@
     "scope_of_page_disclosure": "Scope of page disclosure",
     "set_point": "Set point",
     "Guest Users Access": "Guest users access",
-    "readonly_users_access": "ROM users' access",
+    "readonly_users_access": "Read only users' access",
     "always_hidden": "Always hidden",
     "always_displayed": "Always displayed",
     "displayed_or_hidden": "Hidden / Displayed",
@@ -87,9 +87,9 @@
       "deny": "Deny (Registered users only)",
       "readonly": "Accept (Guests can read only)"
     },
-    "rom_users_comment": {
-      "deny": "Deny (Prohibit ROM users from comment management)",
-      "accept": "Allow (ROM users can manage comments)"
+    "read_only_users_comment": {
+      "deny": "Deny (Prohibit reead only users from comment management)",
+      "accept": "Allow (Read only users can manage comments)"
     },
     "registration_mode": {
       "open": "Open (Anyone can register)",
