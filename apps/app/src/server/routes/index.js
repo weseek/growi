@@ -57,8 +57,6 @@ module.exports = function(crowi, app) {
 
   const [apiV3Router, apiV3AdminRouter, apiV3AuthRouter] = require('./apiv3')(crowi, app);
 
-  app.use('/api-docs', require('./apiv3/docs')(crowi, app));
-
   // Rate limiter
   app.use(rateLimiterFactory());
 
