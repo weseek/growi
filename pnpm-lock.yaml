@@ -926,6 +926,9 @@ importers:
       '@tsed/platform-express':
         specifier: '=6.43.0'
         version: 6.43.0(@types/multer@1.4.11)(body-parser@1.20.3)
+      '@tsed/schema':
+        specifier: '=6.43.0'
+        version: 6.43.0
       '@tsed/swagger':
         specifier: '=6.43.0'
         version: 6.43.0
@@ -994,9 +997,6 @@ importers:
         specifier: '=6.43.0'
         version: 6.43.0
       '@tsed/json-mapper':
-        specifier: '=6.43.0'
-        version: 6.43.0
-      '@tsed/schema':
         specifier: '=6.43.0'
         version: 6.43.0
       bootstrap:
