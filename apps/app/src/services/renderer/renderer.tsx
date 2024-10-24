@@ -5,6 +5,7 @@ import raw from 'rehype-raw';
 import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import breaks from 'remark-breaks';
+import remarkDirective from 'remark-directive';
 import emoji from 'remark-emoji';
 import remarkFrontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
@@ -99,6 +100,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       emoji,
       pukiwikiLikeLinker,
       growiDirective,
+      remarkDirective,
       remarkFrontmatter,
       codeBlock.remarkPlugin,
     ],
