@@ -17,12 +17,6 @@ const router = express.Router();
 
 const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549';
 
-/**
- * @swagger
- *  tags:
- *    name: Revisions
- */
-
 module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);

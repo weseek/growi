@@ -26,13 +26,6 @@ const {
 
 /**
  * @swagger
- *  tags:
- *    name: Attachment
- */
-
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:
