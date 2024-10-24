@@ -26,15 +26,16 @@ jobs:
         # retrieve local font files
         lfs: true
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache: 'pnpm'
 
     - name: Install turbo
       run: |
-        yarn global add turbo
+        pnpm add turbo --global
 
     - name: Prune repositories
       run: |
@@ -42,20 +43,10 @@ jobs:
         rm -rf apps packages
         mv out/* .
 
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-          !**/node_modules/.cache/turbo
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
-
     - name: Install dependencies
+      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm install --no-frozen-lockfile
 
     - name: Cache/Restore dist
       uses: actions/cache@v4
@@ -79,7 +70,7 @@ jobs:
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -zcf production.tar.gz \
+        tar -zcf production.tar.gz --exclude ./apps/app/.next/cache \
           package.json \
           apps/app/.next \
           apps/app/config \
@@ -137,15 +128,16 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache: 'pnpm'
 
     - name: Install turbo
       run: |
-        yarn global add turbo
+        pnpm add turbo --global
 
     - name: Prune repositories
       run: |
@@ -153,19 +145,10 @@ jobs:
         rm -rf apps packages
         mv out/* .
 
-    - name: Restore node_modules
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          **/node_modules
-        # shared key with build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
-
     - name: Install dependencies
+      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        yarn --production
+        pnpm install --no-frozen-lockfile --prod
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
@@ -176,11 +159,11 @@ jobs:
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
-    - name: yarn server:ci
+    - name: pnpm run server:ci
       working-directory: ./apps/app
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
-        yarn server:ci
+        pnpm run server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -228,30 +211,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Restore node_modules
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          **/node_modules
-        # saved key by build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm install
 
     - name: Install Playwright browsers
       run: |
-        yarn playwright install --with-deps ${{ matrix.browser }}
+        pnpm playwright install --with-deps ${{ matrix.browser }}
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
@@ -271,7 +244,7 @@ jobs:
       if: ${{ matrix.browser == 'chromium' }}
       working-directory: ./apps/app
       run: |
-        yarn playwright test --project=chromium/installer
+        pnpm playwright test --project=chromium/installer
       env:
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
@@ -285,7 +258,7 @@ jobs:
     - name: Playwright Run
       working-directory: ./apps/app
       run: |
-        yarn playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
+        pnpm playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
       env:
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright
@@ -299,7 +272,7 @@ jobs:
     - name: Playwright Run (--project=${browser}/guest-mode)
       working-directory: ./apps/app
       run: |
-        yarn playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
+        pnpm playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
       env:
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
