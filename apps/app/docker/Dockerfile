@@ -51,7 +51,6 @@ RUN set -eux; \
 COPY --from=partialrepos ${optDir}/out/json/ .
 COPY --from=partialrepos ${optDir}/out/pnpm-lock.yaml ./pnpm-lock.yaml
 
-# setup (with network-timeout = 1 hour)
 RUN pnpm add node-gyp --global
 RUN pnpm install --no-frozen-lockfile
 
