@@ -69,7 +69,7 @@ FROM deps-resolver AS deps-resolver-prod
 
 RUN pnpm install --no-frozen-lockfile --prod
 # make artifacts
-RUN tar -cf node_modules.tar \
+RUN tar -zcf node_modules.tar.gz \
   node_modules \
   apps/*/node_modules \
   packages/*/node_modules
@@ -104,7 +104,7 @@ RUN turbo run build
 
 # make artifacts
 RUN rm -rf apps/app/.next/cache
-RUN tar -cf packages.tar \
+RUN tar -zcf packages.tar.gz \
   package.json \
   apps/app/.next \
   apps/app/config \
@@ -148,16 +148,16 @@ RUN set -eux; \
 	gosu nobody true
 
 COPY --from=deps-resolver-prod --chown=node:node \
-  ${optDir}/node_modules.tar ${appDir}/
+  ${optDir}/node_modules.tar.gz ${appDir}/
 COPY --from=builder --chown=node:node \
-  ${optDir}/packages.tar ${appDir}/
+  ${optDir}/packages.tar.gz ${appDir}/
 
 # extract artifacts as 'node' user
 USER node
 WORKDIR ${appDir}
-RUN tar -xf node_modules.tar
-RUN tar -xf packages.tar
-RUN rm node_modules.tar packages.tar
+RUN tar -zxf node_modules.tar.gz \
+  && tar -zxf packages.tar.gz \
+  && rm node_modules.tar.gz packages.tar.gz
 
 COPY --chown=node:node --chmod=700 apps/app/docker/docker-entrypoint.sh /
 
