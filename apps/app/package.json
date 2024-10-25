@@ -238,7 +238,6 @@
     "@growi/core-styles": "workspace:^",
     "@growi/custom-icons": "workspace:^",
     "@growi/editor": "workspace:^",
-    "@growi/markdown-splitter": "workspace:^",
     "@growi/ui": "workspace:^",
     "@handsontable/react": "=2.1.0",
     "@next/bundle-analyzer": "^14.1.3",
