@@ -5,8 +5,6 @@ services:
       - ..:/workspace/growi:delegated
       - pnpm-store:/workspace/growi/.pnpm-store
       - node_modules:/workspace/growi/node_modules
-      - node_modules_app:/workspace/growi/apps/app/node_modules
-      - node_modules_slackbot-proxy:/workspace/growi/apps/slackbot-proxy/node_modules
       - buildcache_app:/workspace/growi/apps/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
     tty: true
@@ -45,6 +43,4 @@ services:
 volumes:
   pnpm-store:
   node_modules:
-  node_modules_app:
-  node_modules_slackbot-proxy:
   buildcache_app:
