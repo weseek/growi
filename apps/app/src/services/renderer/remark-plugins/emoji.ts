@@ -1,4 +1,4 @@
-import emojiData from '@emoji-mart/data/sets/14/native.json';
+import emojiData from '@emoji-mart/data/sets/15/native.json';
 import type { Root } from 'mdast';
 import { findAndReplace } from 'mdast-util-find-and-replace';
 import type { Plugin } from 'unified';
