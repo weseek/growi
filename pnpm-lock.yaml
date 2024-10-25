@@ -394,6 +394,9 @@ importers:
       is-iso-date:
         specifier: ^0.0.1
         version: 0.0.1
+      js-tiktoken:
+        specifier: ^1.0.15
+        version: 1.0.15
       katex:
         specifier: ^0.16.11
         version: 0.16.11
@@ -698,9 +701,6 @@ importers:
       '@growi/editor':
         specifier: workspace:^
         version: link:../../packages/editor
-      '@growi/markdown-splitter':
-        specifier: workspace:^
-        version: link:../../packages/markdown-splitter
       '@growi/ui':
         specifier: workspace:^
         version: link:../../packages/ui
@@ -1185,52 +1185,6 @@ importers:
       yjs:
         specifier: ^13.6.19
         version: 13.6.19
-
-  packages/markdown-splitter:
-    dependencies:
-      js-tiktoken:
-        specifier: ^1.0.15
-        version: 1.0.15
-      js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      remark-frontmatter:
-        specifier: ^5.0.0
-        version: 5.0.0
-      remark-gfm:
-        specifier: ^4.0.0
-        version: 4.0.0
-      remark-parse:
-        specifier: ^11.0.0
-        version: 11.0.0
-      remark-stringify:
-        specifier: ^11.0.0
-        version: 11.0.0
-      unified:
-        specifier: ^11.0.0
-        version: 11.0.5
-    devDependencies:
-      '@types/js-yaml':
-        specifier: ^4.0.9
-        version: 4.0.9
-      eslint-plugin-regex:
-        specifier: ^1.8.0
-        version: 1.10.0(eslint@8.41.0)
-      hast-util-sanitize:
-        specifier: ^4.1.0
-        version: 4.1.0
-      pako:
-        specifier: ^2.1.0
-        version: 2.1.0
-      throttle-debounce:
-        specifier: ^5.0.0
-        version: 5.0.2
 
   packages/pluginkit:
     dependencies:
@@ -4044,9 +3998,6 @@ packages:
 
   '@types/jest@29.5.12':
     resolution: {integrity: sha512-eDC8bTvT/QhYdxJAulQikueigY5AsdBRH2yDKW3yveW7svY3+DzN84/2NUgkw10RTiJbWqZrTtoGVdYlvFJdLw==}
-
-  '@types/js-yaml@4.0.9':
-    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
 
   '@types/json-schema@7.0.11':
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
@@ -7262,9 +7213,6 @@ packages:
 
   hast-util-raw@9.0.4:
     resolution: {integrity: sha512-LHE65TD2YiNsHD3YuXcKPHXPLuYh/gjp12mOfU8jxSrm1f/yJpsb0F/KKljS6U9LJoP0Ux+tCe8iJ2AsPzTdgA==}
-
-  hast-util-sanitize@4.1.0:
-    resolution: {integrity: sha512-Hd9tU0ltknMGRDv+d6Ro/4XKzBqQnP/EZrpiTbpFYfXv/uOhWeKc+2uajcbEvAEH98VZd7eII2PiXm13RihnLw==}
 
   hast-util-sanitize@5.0.1:
     resolution: {integrity: sha512-IGrgWLuip4O2nq5CugXy4GI2V8kx4sFVy5Hd4vF7AR2gxS0N9s7nEAVUyeMtZKZvzrxVsHt73XdTsno1tClIkQ==}
@@ -16160,8 +16108,6 @@ snapshots:
       expect: 29.7.0
       pretty-format: 29.7.0
 
-  '@types/js-yaml@4.0.9': {}
-
   '@types/json-schema@7.0.11': {}
 
   '@types/json-schema@7.0.6': {}
@@ -19927,10 +19873,6 @@ snapshots:
       vfile: 6.0.3
       web-namespaces: 2.0.1
       zwitch: 2.0.2
-
-  hast-util-sanitize@4.1.0:
-    dependencies:
-      '@types/hast': 2.3.4
 
   hast-util-sanitize@5.0.1:
     dependencies:
