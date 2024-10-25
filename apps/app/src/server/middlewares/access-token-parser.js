@@ -1,4 +1,5 @@
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 
@@ -14,11 +15,11 @@ module.exports = (crowi) => {
       return next();
     }
 
-    const User = crowi.model('User');
+    const User = mongoose.model('User');
 
     logger.debug('accessToken is', accessToken);
 
-    const user = await User.findUserByApiToken(accessToken);
+    const user = await User.findUserByApiToken(accessToken).lean();
 
     if (user == null) {
       logger.debug('The access token is invalid');

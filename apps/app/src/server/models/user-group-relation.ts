@@ -1,17 +1,20 @@
 import {
-  getIdForRef, isPopulated, type IUserGroupRelation,
+  getIdForRef, isPopulated,
 } from '@growi/core';
+import type { IUserGroupRelation } from '@growi/core/dist/interfaces';
 import type { Model, Document } from 'mongoose';
 import mongoose, { Schema } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
+import uniqueValidator from 'mongoose-unique-validator';
+
+import loggerFactory from '~/utils/logger';
 
 import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import type { UserGroupDocument } from './user-group';
 
-const debug = require('debug')('growi:models:userGroupRelation');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+const logger = loggerFactory('growi:models:userGroupRelation');
 
 
 export interface UserGroupRelationDocument extends IUserGroupRelation, Document {}
@@ -87,7 +90,7 @@ schema.statics.findAllRelation = function() {
  * @memberof UserGroupRelation
  */
 schema.statics.findAllRelationForUserGroup = function(userGroup) {
-  debug('findAllRelationForUserGroup is called', userGroup);
+  logger.debug('findAllRelationForUserGroup is called', userGroup);
   return this
     .find({ relatedGroup: userGroup })
     .populate('relatedUser')
@@ -130,7 +133,7 @@ schema.statics.findAllRelationForUserGroups = function(userGroups) {
 schema.statics.findAllGroupsForUser = async function(user): Promise<UserGroupDocument[]> {
   const userGroupRelations = await this.find({ relatedUser: user._id }).populate('relatedGroup');
   const userGroups = userGroupRelations.map((relation) => {
-    return isPopulated(relation.relatedGroup) ? relation.relatedGroup as UserGroupDocument : null;
+    return isPopulated(relation.relatedGroup) ? relation.relatedGroup as unknown as UserGroupDocument : null;
   });
   return userGroups.filter((group): group is NonNullable<UserGroupDocument> => group != null);
 };
@@ -203,7 +206,7 @@ schema.statics.findUserByNotRelatedGroup = function(userGroup, queryOptions) {
         $or: searthField,
       };
 
-      debug('findUserByNotRelatedGroup ', query);
+      logger.debug('findUserByNotRelatedGroup ', query);
       return User.find(query).exec();
     });
 };
