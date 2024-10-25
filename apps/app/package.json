@@ -128,6 +128,7 @@
     "i18next-resources-to-backend": "^1.2.1",
     "is-absolute-url": "^4.0.1",
     "is-iso-date": "^0.0.1",
+    "katex": "^0.16.11",
     "js-tiktoken": "^1.0.15",
     "ldapjs": "^3.0.2",
     "lucene-query-parser": "^1.2.0",
