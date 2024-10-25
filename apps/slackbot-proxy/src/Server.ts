@@ -3,16 +3,19 @@ import '@tsed/swagger';
 import '@tsed/typeorm'; // !! DO NOT MODIFY !! -- https://github.com/tsedio/tsed/issues/1332#issuecomment-837840612
 
 import { createTerminus } from '@godaddy/terminus';
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { HttpServer, PlatformApplication } from '@tsed/common';
 import { Configuration, Inject, InjectorService } from '@tsed/di';
+/* eslint-enable @typescript-eslint/consistent-type-imports */
 import bodyParser from 'body-parser';
 import compress from 'compression';
 import cookieParser from 'cookie-parser';
-import { Express } from 'express';
+import type { Express } from 'express';
 import expressBunyanLogger from 'express-bunyan-logger';
 import helmet from 'helmet';
 import methodOverride from 'method-override';
-import { ConnectionOptions, getConnectionManager } from 'typeorm';
+import type { ConnectionOptions } from 'typeorm';
+import { getConnectionManager } from 'typeorm';
 
 import swaggerSettingsForDev from '~/config/swagger/config.dev';
 import swaggerSettingsForProd from '~/config/swagger/config.prod';
