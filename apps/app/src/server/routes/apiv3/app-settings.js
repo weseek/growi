@@ -13,7 +13,6 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
 const { pathUtils } = require('@growi/core/dist/utils');
-const debug = require('debug')('growi:routes:admin');
 const express = require('express');
 
 const router = express.Router();
@@ -457,7 +456,7 @@ module.exports = (crowi) => {
     }
 
     const smtpClient = mailService.createSMTPClient(option);
-    debug('mailer setup for validate SMTP setting', smtpClient);
+    logger.debug('mailer setup for validate SMTP setting', smtpClient);
 
     const mailOptions = {
       from: fromAddress,
@@ -562,7 +561,7 @@ module.exports = (crowi) => {
     catch (err) {
       const msg = req.t('validation.failed_to_send_a_test_email');
       logger.error('Error', err);
-      debug('Error validate mail setting: ', err);
+      logger.debug('Error validate mail setting: ', err);
       return res.apiv3Err(new ErrorV3(msg, 'send-email-with-smtp-failed'));
     }
   });

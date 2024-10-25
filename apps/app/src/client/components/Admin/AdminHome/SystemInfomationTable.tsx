@@ -13,10 +13,10 @@ const SystemInformationTable = (props: Props) => {
   const { adminHomeContainer } = props;
 
   const {
-    growiVersion, nodeVersion, npmVersion, yarnVersion,
+    growiVersion, nodeVersion, npmVersion, pnpmVersion,
   } = adminHomeContainer.state;
 
-  if (growiVersion == null || nodeVersion == null || npmVersion == null || yarnVersion == null) {
+  if (growiVersion == null || nodeVersion == null || npmVersion == null || pnpmVersion == null) {
     return <></>;
   }
 
@@ -36,8 +36,8 @@ const SystemInformationTable = (props: Props) => {
           <td>{ npmVersion }</td>
         </tr>
         <tr>
-          <th>yarn</th>
-          <td>{ yarnVersion }</td>
+          <th>pnpm</th>
+          <td>{ pnpmVersion }</td>
         </tr>
       </tbody>
     </table>
