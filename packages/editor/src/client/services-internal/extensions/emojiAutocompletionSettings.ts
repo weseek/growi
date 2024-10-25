@@ -1,6 +1,6 @@
 import { type CompletionContext, type Completion, autocompletion } from '@codemirror/autocomplete';
 import { syntaxTree } from '@codemirror/language';
-import emojiData from '@emoji-mart/data';
+import emojiData from '@emoji-mart/data/sets/14/native.json';
 
 
 const getEmojiDataArray = (): string[] => {

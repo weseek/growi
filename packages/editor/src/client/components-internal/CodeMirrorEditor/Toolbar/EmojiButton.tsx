@@ -3,7 +3,7 @@ import {
   type CSSProperties,
 } from 'react';
 
-import emojiData from '@emoji-mart/data';
+import emojiData from '@emoji-mart/data/sets/14/native.json';
 import Picker from '@emoji-mart/react';
 import { Modal } from 'reactstrap';
 
