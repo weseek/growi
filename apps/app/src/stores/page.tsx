@@ -139,7 +139,14 @@ export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToSho
   return useSWRMutation(
     key,
     () => apiv3Get<{ page: IPagePopulatedToShowRevision }>('/page', { pageId: currentPageId, shareLinkId, revisionId })
-      .then(result => result.data.page)
+      .then((result) => {
+        const newData = result.data.page;
+
+        // for the issue https://redmine.weseek.co.jp/issues/156150
+        mutate('currentPage', newData, false);
+
+        return newData;
+      })
       .catch(getPageApiErrorHandler),
     {
       populateCache: true,
