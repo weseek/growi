@@ -60,11 +60,11 @@ export async function splitMarkdownIntoFragments(markdownText: string, model: Ti
 
   const encoder = encodingForModel(model);
 
-  const remarkParse = (await dynamicImport<typeof RemarkParse>('remark-parse', import.meta.url)).default;
-  const remarkFrontmatter = (await dynamicImport<typeof RemarkFrontmatter>('remark-frontmatter', import.meta.url)).default;
-  const remarkGfm = (await dynamicImport<typeof RemarkGfm>('remark-gfm', import.meta.url)).default;
-  const remarkStringify = (await dynamicImport<typeof RemarkStringify>('remark-stringify', import.meta.url)).default;
-  const unified = (await dynamicImport<typeof Unified>('unified', import.meta.url)).unified;
+  const remarkParse = (await dynamicImport<typeof RemarkParse>('remark-parse', __dirname)).default;
+  const remarkFrontmatter = (await dynamicImport<typeof RemarkFrontmatter>('remark-frontmatter', __dirname)).default;
+  const remarkGfm = (await dynamicImport<typeof RemarkGfm>('remark-gfm', __dirname)).default;
+  const remarkStringify = (await dynamicImport<typeof RemarkStringify>('remark-stringify', __dirname)).default;
+  const unified = (await dynamicImport<typeof Unified>('unified', __dirname)).unified;
 
   const parser = unified()
     .use(remarkParse)
