@@ -60,25 +60,11 @@ export async function splitMarkdownIntoFragments(markdownText: string, model: Ti
 
   const encoder = encodingForModel(model);
 
-  // eslint-disable-next-line max-len
-  // ignore TS1343: The 'import.meta' meta-property is only allowed when the '--module' option is 'es2020', 'es2022', 'esnext', 'system', 'node16', or 'nodenext'.
-  // ------- Start -------
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const remarkParse = (await dynamicImport<typeof RemarkParse>('remark-parse', __dirname)).default;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const remarkFrontmatter = (await dynamicImport<typeof RemarkFrontmatter>('remark-frontmatter', __dirname)).default;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const remarkGfm = (await dynamicImport<typeof RemarkGfm>('remark-gfm', __dirname)).default;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const remarkStringify = (await dynamicImport<typeof RemarkStringify>('remark-stringify', __dirname)).default;
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  const unified = (await dynamicImport<typeof Unified>('unified', __dirname)).unified;
-  // ------- End -------
+  const remarkParse = (await dynamicImport<typeof RemarkParse>('remark-parse', import.meta.url)).default;
+  const remarkFrontmatter = (await dynamicImport<typeof RemarkFrontmatter>('remark-frontmatter', import.meta.url)).default;
+  const remarkGfm = (await dynamicImport<typeof RemarkGfm>('remark-gfm', import.meta.url)).default;
+  const remarkStringify = (await dynamicImport<typeof RemarkStringify>('remark-stringify', import.meta.url)).default;
+  const unified = (await dynamicImport<typeof Unified>('unified', import.meta.url)).unified;
 
   const parser = unified()
     .use(remarkParse)
