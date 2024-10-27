@@ -140,9 +140,14 @@ class OpenaiService implements IOpenaiService {
   private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
     const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
     for await (const [index, chunk] of chunks.entries()) {
-      const file = await toFile(Readable.from(chunk), `${pageId}-chunk-${index}.md`);
-      const uploadedFile = await this.client.uploadFile(file);
-      prepareVectorStoreFileRelations(pageId, uploadedFile.id, vectorStoreFileRelationsMap);
+      try {
+        const file = await toFile(Readable.from(chunk), `${pageId}-chunk-${index}.md`);
+        const uploadedFile = await this.client.uploadFile(file);
+        prepareVectorStoreFileRelations(pageId, uploadedFile.id, vectorStoreFileRelationsMap);
+      }
+      catch (err) {
+        logger.error(err);
+      }
     }
   }
 
