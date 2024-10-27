@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { CliCore } from '@tsed/cli-core';
 import { GenerateSwaggerCmd } from '@tsed/cli-generate-swagger';
 
