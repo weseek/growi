@@ -52,6 +52,7 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
   }],
   isAttachedToVectorStore: {
     type: Boolean,
+    default: false, // File is not attached to the Vector Store at the time it is uploaded
     required: true,
   },
 });
@@ -62,10 +63,7 @@ schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRe
       return {
         updateOne: {
           filter: { pageId: data.pageId },
-          update: {
-            $addToSet: { fileIds: { $each: data.fileIds } },
-            $set: { isAttachedToVectorStore: false }, // File is not attached to the Vector Store at the time it is uploaded
-          },
+          update: { $addToSet: { fileIds: { $each: data.fileIds } } },
           upsert: true,
         },
       };
