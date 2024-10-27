@@ -186,10 +186,10 @@ class OpenaiService implements IOpenaiService {
       // Create vector store file
       const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
       const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStore.vectorStoreId, uploadedFileIds);
-
-      // Execute when the uploaded file is attached to VectorStore
-      await VectorStoreFileRelationModel.markAsAttachedToVectorStore(pageIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
+
+      // Set isAttachedToVectorStore: true when the uploaded file is attached to VectorStore
+      await VectorStoreFileRelationModel.markAsAttachedToVectorStore(pageIds);
     }
     catch (err) {
       logger.error(err);
