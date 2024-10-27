@@ -211,6 +211,9 @@ importers:
       '@browser-bunyan/console-formatted-stream':
         specifier: ^1.8.0
         version: 1.8.0
+      '@cspell/dynamic-import':
+        specifier: ^8.15.4
+        version: 8.15.4
       '@elastic/elasticsearch7':
         specifier: npm:@elastic/elasticsearch@^7.17.0
         version: '@elastic/elasticsearch@7.17.13'
@@ -394,6 +397,12 @@ importers:
       is-iso-date:
         specifier: ^0.0.1
         version: 0.0.1
+      js-tiktoken:
+        specifier: ^1.0.15
+        version: 1.0.15
+      js-yaml:
+        specifier: ^4.1.0
+        version: 4.1.0
       katex:
         specifier: ^0.16.11
         version: 0.16.11
@@ -616,6 +625,9 @@ importers:
       remark-rehype:
         specifier: ^11.1.1
         version: 11.1.1
+      remark-stringify:
+        specifier: ^11.0.0
+        version: 11.0.0
       remark-toc:
         specifier: ^9.0.0
         version: 9.0.0
@@ -698,9 +710,6 @@ importers:
       '@growi/editor':
         specifier: workspace:^
         version: link:../../packages/editor
-      '@growi/markdown-splitter':
-        specifier: workspace:^
-        version: link:../../packages/markdown-splitter
       '@growi/ui':
         specifier: workspace:^
         version: link:../../packages/ui
@@ -1185,52 +1194,6 @@ importers:
       yjs:
         specifier: ^13.6.19
         version: 13.6.19
-
-  packages/markdown-splitter:
-    dependencies:
-      js-tiktoken:
-        specifier: ^1.0.15
-        version: 1.0.15
-      js-yaml:
-        specifier: ^4.1.0
-        version: 4.1.0
-      react:
-        specifier: ^18.2.0
-        version: 18.2.0
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.2.0(react@18.2.0)
-      remark-frontmatter:
-        specifier: ^5.0.0
-        version: 5.0.0
-      remark-gfm:
-        specifier: ^4.0.0
-        version: 4.0.0
-      remark-parse:
-        specifier: ^11.0.0
-        version: 11.0.0
-      remark-stringify:
-        specifier: ^11.0.0
-        version: 11.0.0
-      unified:
-        specifier: ^11.0.0
-        version: 11.0.5
-    devDependencies:
-      '@types/js-yaml':
-        specifier: ^4.0.9
-        version: 4.0.9
-      eslint-plugin-regex:
-        specifier: ^1.8.0
-        version: 1.10.0(eslint@8.41.0)
-      hast-util-sanitize:
-        specifier: ^4.1.0
-        version: 4.1.0
-      pako:
-        specifier: ^2.1.0
-        version: 2.1.0
-      throttle-debounce:
-        specifier: ^5.0.0
-        version: 5.0.2
 
   packages/pluginkit:
     dependencies:
@@ -2466,6 +2429,10 @@ packages:
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
+
+  '@cspell/dynamic-import@8.15.4':
+    resolution: {integrity: sha512-tr0F6EYN6qtniNvt1Uib+PgYQHeo4dQHXE2Optap+hYTOoQ2VoQ+SwBVjZ+Q2bmSAB0fmOyf0AvgsUtnWIpavw==}
+    engines: {node: '>=18.0'}
 
   '@cspotcode/source-map-support@0.8.1':
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -4044,9 +4011,6 @@ packages:
 
   '@types/jest@29.5.12':
     resolution: {integrity: sha512-eDC8bTvT/QhYdxJAulQikueigY5AsdBRH2yDKW3yveW7svY3+DzN84/2NUgkw10RTiJbWqZrTtoGVdYlvFJdLw==}
-
-  '@types/js-yaml@4.0.9':
-    resolution: {integrity: sha512-k4MGaQl5TGo/iipqb2UDG2UwjXziSWkh0uysQelTlJpX1qGlpUZYm8PnO4DxG1qBomtJUdYJ6qR6xdIah10JLg==}
 
   '@types/json-schema@7.0.11':
     resolution: {integrity: sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==}
@@ -7263,9 +7227,6 @@ packages:
   hast-util-raw@9.0.4:
     resolution: {integrity: sha512-LHE65TD2YiNsHD3YuXcKPHXPLuYh/gjp12mOfU8jxSrm1f/yJpsb0F/KKljS6U9LJoP0Ux+tCe8iJ2AsPzTdgA==}
 
-  hast-util-sanitize@4.1.0:
-    resolution: {integrity: sha512-Hd9tU0ltknMGRDv+d6Ro/4XKzBqQnP/EZrpiTbpFYfXv/uOhWeKc+2uajcbEvAEH98VZd7eII2PiXm13RihnLw==}
-
   hast-util-sanitize@5.0.1:
     resolution: {integrity: sha512-IGrgWLuip4O2nq5CugXy4GI2V8kx4sFVy5Hd4vF7AR2gxS0N9s7nEAVUyeMtZKZvzrxVsHt73XdTsno1tClIkQ==}
 
@@ -7480,6 +7441,9 @@ packages:
     resolution: {integrity: sha512-ASB07uLtnDs1o6EHjKpX34BKYDSqnFerfTOJL2HvMqF70LnxpjkzDB8J44oT9pu4AMPkQwf8jl6szgvNd2tRIg==}
     engines: {node: '>=8'}
     hasBin: true
+
+  import-meta-resolve@4.1.0:
+    resolution: {integrity: sha512-I6fiaX09Xivtk+THaMfAwnA3MVA5Big1WHF1Dfx9hFuvNIWpXnorlkzhcQf6ehrqQiiZECRt1poOAkPmer3ruw==}
 
   imurmurhash@0.1.4:
     resolution: {integrity: sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA==}
@@ -14045,6 +14009,10 @@ snapshots:
   '@colors/colors@1.5.0':
     optional: true
 
+  '@cspell/dynamic-import@8.15.4':
+    dependencies:
+      import-meta-resolve: 4.1.0
+
   '@cspotcode/source-map-support@0.8.1':
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
@@ -16159,8 +16127,6 @@ snapshots:
     dependencies:
       expect: 29.7.0
       pretty-format: 29.7.0
-
-  '@types/js-yaml@4.0.9': {}
 
   '@types/json-schema@7.0.11': {}
 
@@ -19928,10 +19894,6 @@ snapshots:
       web-namespaces: 2.0.1
       zwitch: 2.0.2
 
-  hast-util-sanitize@4.1.0:
-    dependencies:
-      '@types/hast': 2.3.4
-
   hast-util-sanitize@5.0.1:
     dependencies:
       '@types/hast': 3.0.4
@@ -20223,6 +20185,8 @@ snapshots:
     dependencies:
       pkg-dir: 4.2.0
       resolve-cwd: 3.0.0
+
+  import-meta-resolve@4.1.0: {}
 
   imurmurhash@0.1.4: {}
 
