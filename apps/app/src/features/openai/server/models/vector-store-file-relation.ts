@@ -7,12 +7,14 @@ import { getOrCreateModel } from '~/server/util/mongoose-utils';
 export interface VectorStoreFileRelation {
   pageId: mongoose.Types.ObjectId;
   fileIds: string[];
+  isAttachedToVectorStore: boolean;
 }
 
 interface VectorStoreFileRelationDocument extends VectorStoreFileRelation, Document {}
 
 interface VectorStoreFileRelationModel extends Model<VectorStoreFileRelation> {
   upsertVectorStoreFileRelations(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void>;
+  markAsAttachedToVectorStore(pageIds: Types.ObjectId[]): Promise<void>;
 }
 
 export const prepareVectorStoreFileRelations = (
@@ -30,6 +32,7 @@ export const prepareVectorStoreFileRelations = (
     relationsMap.set(pageIdStr, {
       pageId,
       fileIds: [fileId],
+      isAttachedToVectorStore: false,
     });
   }
 
@@ -47,6 +50,10 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
     type: String,
     required: true,
   }],
+  isAttachedToVectorStore: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
@@ -55,11 +62,22 @@ schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRe
       return {
         updateOne: {
           filter: { pageId: data.pageId },
-          update: { $addToSet: { fileIds: { $each: data.fileIds } } },
+          update: {
+            $addToSet: { fileIds: { $each: data.fileIds } },
+            $set: { isAttachedToVectorStore: false }, // File is not attached to the Vector Store at the time it is uploaded
+          },
           upsert: true,
         },
       };
     }),
+  );
+};
+
+// Used when attached to VectorStore
+schema.statics.markAsAttachedToVectorStore = async function(pageIds: Types.ObjectId[]): Promise<void> {
+  await this.updateMany(
+    { pageId: { $in: pageIds } },
+    { $set: { isAttachedToVectorStore: true } },
   );
 };
 
