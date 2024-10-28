@@ -55,7 +55,7 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm install
+        pnpm install --frozen-lockfile
 
     - name: Lint
       run: |
@@ -120,7 +120,7 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm install
+        pnpm install --frozen-lockfile
 
     - name: turbo run dev:ci
       working-directory: ./apps/slackbot-proxy
