@@ -280,9 +280,13 @@ class OpenaiService implements IOpenaiService {
       return;
     }
 
-    const obsoleteVectorStoreFiles = VectorStoreFileRelationModel.find(
+    const obsoleteVectorStoreFiles = await VectorStoreFileRelationModel.find(
       { vectorStoreRelationId: { $in: deletedVectorStores.map(vectorStore => vectorStore._id) } },
     ).limit(limit);
+
+    if (obsoleteVectorStoreFiles == null) {
+      return;
+    }
 
     for await (const vectorStoreFile of obsoleteVectorStoreFiles) {
       try {
