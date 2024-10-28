@@ -7,6 +7,7 @@ import express from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
 
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
 import { configManager } from '~/server/service/config-manager';
 import type { IDataGROWIInfo } from '~/server/service/g2g-transfer';
@@ -83,7 +84,6 @@ module.exports = (crowi: Crowi): Router => {
 
   const isInstalled = crowi.configManager?.getConfig('crowi', 'app:installed');
 
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
 
