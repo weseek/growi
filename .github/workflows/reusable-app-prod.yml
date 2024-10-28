@@ -70,7 +70,7 @@ jobs:
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -zcf production.tar.gz \
+        tar -zcf production.tar.gz --exclude ./apps/app/.next/cache \
           package.json \
           apps/app/.next \
           apps/app/config \

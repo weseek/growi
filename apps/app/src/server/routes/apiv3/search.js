@@ -17,11 +17,6 @@ const router = express.Router();
 
 const noCache = require('nocache');
 
-/**
- * @swagger
- *  tags:
- *    name: Search
- */
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -34,7 +29,7 @@ module.exports = (crowi) => {
    *
    *  /search/indices:
    *    get:
-   *      tags: [Search]
+   *      tags: [FullTextSearch Management]
    *      summary: /search/indices
    *      description: Get current status of indices
    *      responses:
@@ -68,7 +63,7 @@ module.exports = (crowi) => {
    *
    *  /search/connection:
    *    get:
-   *      tags: [Search]
+   *      tags: [FullTextSearch Management]
    *      summary: /search/connection
    *      description: Reconnect to Elasticsearch
    *      responses:
@@ -103,7 +98,7 @@ module.exports = (crowi) => {
    *
    *  /search/indices:
    *    put:
-   *      tags: [Search]
+   *      tags: [FullTextSearch Management]
    *      summary: /search/indices
    *      description: Operate indices
    *      requestBody:

@@ -4,15 +4,17 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
+  Collapse,
   Modal, ModalBody, ModalFooter, ModalHeader,
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
+import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import { useRagSearchModal } from '../../../client/stores/rag-search';
-import { MessageErrorCode } from '../../../interfaces/message-error';
+import { MessageErrorCode, StreamErrorCode } from '../../../interfaces/message-error';
 
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -47,6 +49,10 @@ const AiChatModalSubstance = (): JSX.Element => {
   const [threadId, setThreadId] = useState<string | undefined>();
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
+
+  const { data: growiCloudUri } = useGrowiCloudUri();
 
   const isGenerating = generatingAnswerMessage != null;
 
@@ -92,6 +98,7 @@ const AiChatModalSubstance = (): JSX.Element => {
 
     // reset form
     form.reset();
+    setErrorMessage(undefined);
 
     // add an empty assistant message
     const newAnswerMessage = { id: (logLength + 1).toString(), content: '' };
@@ -141,14 +148,25 @@ const AiChatModalSubstance = (): JSX.Element => {
 
         const chunk = decoder.decode(value);
 
-        // Extract text values from the chunk
-        const textValues = chunk
-          .split('\n\n')
-          .filter(line => line.trim().startsWith('data:'))
-          .map((line) => {
+        const textValues: string[] = [];
+        const lines = chunk.split('\n\n');
+        lines.forEach((line) => {
+          const trimedLine = line.trim();
+          if (trimedLine.startsWith('data:')) {
             const data = JSON.parse(line.replace('data: ', ''));
-            return data.content[0].text.value;
-          });
+            textValues.push(data.content[0].text.value);
+          }
+          else if (trimedLine.startsWith('error:')) {
+            const error = JSON.parse(line.replace('error: ', ''));
+            logger.error(error.errorMessage);
+            form.setError('input', { type: 'manual', message: error.message });
+
+            if (error.code === StreamErrorCode.BUDGET_EXCEEDED) {
+              setErrorMessage(growiCloudUri != null ? 'modal_aichat.budget_exceeded_for_growi_cloud' : 'modal_aichat.budget_exceeded');
+            }
+          }
+        });
+
 
         // append text values to the assistant message
         setGeneratingAnswerMessage((prevMessage) => {
@@ -168,7 +186,7 @@ const AiChatModalSubstance = (): JSX.Element => {
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [form, isGenerating, messageLogs, t, threadId]);
+  }, [form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -224,7 +242,34 @@ const AiChatModalSubstance = (): JSX.Element => {
         </form>
 
         {form.formState.errors.input != null && (
-          <span className="text-danger small">{form.formState.errors.input?.message}</span>
+          <div className="mt-4 bg-danger bg-opacity-10 rounded-3 p-2 w-100">
+            <div>
+              <span className="material-symbols-outlined text-danger me-2">error</span>
+              <span className="text-danger">{ errorMessage != null ? t(errorMessage) : t('modal_aichat.error_message') }</span>
+            </div>
+
+            <button
+              type="button"
+              className="btn btn-link text-secondary p-0"
+              aria-expanded={isErrorDetailCollapsed}
+              onClick={() => setIsErrorDetailCollapsed(!isErrorDetailCollapsed)}
+            >
+              <span className={`material-symbols-outlined mt-2 me-1 ${isErrorDetailCollapsed ? 'rotate-90' : ''}`}>
+                chevron_right
+              </span>
+              <span className="small">{t('modal_aichat.show_error_detail')}</span>
+            </button>
+
+            <Collapse isOpen={isErrorDetailCollapsed}>
+              <div className="ms-2">
+                <div className="">
+                  <div className="text-secondary small">
+                    {form.formState.errors.input?.message}
+                  </div>
+                </div>
+              </div>
+            </Collapse>
+          </div>
         )}
       </ModalFooter>
     </>

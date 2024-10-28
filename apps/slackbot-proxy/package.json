@@ -20,8 +20,12 @@
     "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
     "lint:typecheck": "tspc",
     "lint": "run-p lint:*",
-    "version": "yarn version --no-git-tag-version --non-interactive --preid=slackbot-proxy",
-    "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config"
+    "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config",
+    "version:patch": "pnpm version patch",
+    "version:prerelease": "pnpm version prerelease --preid=slackbot-proxy",
+    "version:prepatch": "pnpm version prepatch --preid=slackbot-proxy",
+    "version:preminor": "pnpm version preminor --preid=slackbot-proxy",
+    "version:premajor": "pnpm version premajor --preid=slackbot-proxy"
   },
   "// comments for dependencies": {
     "@tsed/*": "v6.133.1 causes 'TypeError: Cannot read properties of undefined (reading 'prototype')' with `@Middleware()`",
@@ -36,6 +40,7 @@
     "@tsed/common": "=6.43.0",
     "@tsed/di": "=6.43.0",
     "@tsed/platform-express": "=6.43.0",
+    "@tsed/schema": "=6.43.0",
     "@tsed/swagger": "=6.43.0",
     "@tsed/typeorm": "=6.43.0",
     "axios": "^0.24.0",
@@ -65,7 +70,6 @@
     "@tsed/core": "=6.43.0",
     "@tsed/exceptions": "=6.43.0",
     "@tsed/json-mapper": "=6.43.0",
-    "@tsed/schema": "=6.43.0",
     "bootstrap": "=5.3.2",
     "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",

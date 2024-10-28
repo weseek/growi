@@ -27,13 +27,6 @@ const {
 
 /**
  * @swagger
- *  tags:
- *    name: Attachment
- */
-
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:
@@ -231,7 +224,7 @@ module.exports = (crowi) => {
    *
    *    /attachment:
    *      post:
-   *        tags: [Attachment, CrowiCompatibles]
+   *        tags: [Attachment]
    *        operationId: addAttachment
    *        summary: /attachment
    *        description: Add attachment to the page

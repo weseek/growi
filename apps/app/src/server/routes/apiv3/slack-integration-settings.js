@@ -28,12 +28,6 @@ const router = express.Router();
 
 /**
  * @swagger
- *  tags:
- *    name: SlackIntegrationSettings
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:
@@ -166,9 +160,9 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/:
    *      get:
-   *        tags: [SlackBotSettingParams]
+   *        tags: [SlackIntegrationSettings]
    *        operationId: getSlackBotSettingParams
-   *        summary: get /slack-integration
+   *        summary: /slack-integration
    *        description: Get current settings and connection statuses.
    *        responses:
    *          200:
@@ -295,7 +289,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/bot-type/:
    *      put:
-   *        tags: [botType]
+   *        tags: [SlackIntegrationSettings]
    *        operationId: putBotType
    *        summary: /slack-integration/bot-type
    *        description: Put botType setting.
@@ -334,7 +328,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration/bot-type/:
    *      delete:
-   *        tags: [botType]
+   *        tags: [SlackIntegrationSettings]
    *        operationId: deleteBotType
    *        summary: /slack-integration/bot-type
    *        description: Delete botType setting.
@@ -365,7 +359,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/without-proxy/update-settings/:
    *      put:
-   *        tags: [UpdateWithoutProxySettings]
+   *        tags: [SlackIntegrationSettings (without proxy)]
    *        operationId: putWithoutProxySettings
    *        summary: update customBotWithoutProxy settings
    *        description: Update customBotWithoutProxy setting.
@@ -405,7 +399,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/without-proxy/update-permissions/:
    *      put:
-   *        tags: [UpdateWithoutProxyPermissions]
+   *        tags: [SlackIntegrationSettings (without proxy)]
    *        operationId: putWithoutProxyPermissions
    *        summary: update customBotWithoutProxy permissions
    *        description: Update customBotWithoutProxy permissions.
@@ -448,7 +442,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/slack-app-integrations:
    *      post:
-   *        tags: [SlackIntegration]
+   *        tags: [SlackIntegrationSettings (with proxy)]
    *        operationId: putSlackAppIntegrations
    *        summary: /slack-integration
    *        description: Generate SlackAppIntegrations
@@ -498,7 +492,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/slack-app-integrations/:id:
    *      delete:
-   *        tags: [SlackIntegration]
+   *        tags: [SlackIntegrationSettings (with proxy)]
    *        operationId: deleteAccessTokens
    *        summary: delete accessTokens
    *        description: Delete accessTokens
@@ -556,7 +550,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/slack-app-integrations/:id/makeprimary:
    *      put:
-   *        tags: [SlackIntegration]
+   *        tags: [SlackIntegrationSettings (with proxy)]
    *        operationId: makePrimary
    *        summary: /slack-integration
    *        description: Make SlackAppTokens primary
@@ -603,7 +597,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/slack-app-integrations/:id/regenerate-tokens:
    *      put:
-   *        tags: [SlackIntegration]
+   *        tags: [SlackIntegrationSettings (with proxy)]
    *        operationId: putRegenerateTokens
    *        summary: /slack-integration
    *        description: Regenerate SlackAppTokens
@@ -636,7 +630,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/slack-app-integrations/:id/permissions:
    *      put:
-   *        tags: [SlackIntegration]
+   *        tags: [SlackIntegrationSettings (with proxy)]
    *        operationId: putSupportedCommands
    *        summary: /slack-integration-settings/:id/permissions
    *        description: update supported commands
@@ -695,7 +689,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/slack-app-integrations/:id/relation-test:
    *      post:
-   *        tags: [botType]
+   *        tags: [SlackIntegrationSettings (with proxy)]
    *        operationId: postRelationTest
    *        summary: Test relation
    *        description: Delete botType setting.
@@ -766,7 +760,7 @@ module.exports = (crowi) => {
    *
    *    /slack-integration-settings/without-proxy/test:
    *      post:
-   *        tags: [botType]
+   *        tags: [SlackIntegrationSettings (without proxy)]
    *        operationId: postTest
    *        summary: test the connection
    *        description: Test the connection with slack work space.

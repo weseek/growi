@@ -81,9 +81,9 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 
 - Node.js v18.x or v20.x
 - npm 6.x
-- yarn
+- pnpm 9.x
 - [Turborepo](https://turbo.build/repo)
-- MongoDB 4.4 or above
+- MongoDB 6.0 or above
 
 ### Optional Dependencies
 
