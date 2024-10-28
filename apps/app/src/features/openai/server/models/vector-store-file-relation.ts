@@ -71,7 +71,7 @@ schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRe
         updateOne: {
           filter: { pageId: data.pageId },
           update: {
-            $set: { vectorStoreId: data.vectorStoreRelationId },
+            $set: { vectorStoreRelationId: data.vectorStoreRelationId },
             $addToSet: { fileIds: { $each: data.fileIds } },
           },
           upsert: true,
