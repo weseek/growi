@@ -38,6 +38,7 @@ export interface IOpenaiService {
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>;
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void>;
+  deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>;
   rebuildVectorStoreAll(): Promise<void>;
   rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
 }
@@ -258,6 +259,20 @@ class OpenaiService implements IOpenaiService {
 
     vectorStoreFileRelation.fileIds = undeletedFileIds;
     await vectorStoreFileRelation.save();
+  }
+
+  async deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void> {
+    const deletedVectorStores = await VectorStoreModel.find({ isDeleted: true });
+
+    if (deletedVectorStores == null) {
+      return;
+    }
+
+    const obsoleteVectorStoreFiles = VectorStoreFileRelationModel.find(
+      { vectorStoreRelationId: { $in: deletedVectorStores.map(vectorStore => vectorStore._id) } },
+    ).limit(limit);
+
+
   }
 
   async rebuildVectorStoreAll() {
