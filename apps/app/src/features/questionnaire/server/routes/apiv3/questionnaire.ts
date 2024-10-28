@@ -1,15 +1,17 @@
 import type { IUserHasId } from '@growi/core';
-import { Router, Request } from 'express';
+import type { Request } from 'express';
+import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import Crowi from '~/server/crowi';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
-import { IAnswer } from '../../../interfaces/answer';
-import { IProactiveQuestionnaireAnswer } from '../../../interfaces/proactive-questionnaire-answer';
-import { IQuestionnaireAnswer } from '../../../interfaces/questionnaire-answer';
+import type { IAnswer } from '../../../interfaces/answer';
+import type { IProactiveQuestionnaireAnswer } from '../../../interfaces/proactive-questionnaire-answer';
+import type { IQuestionnaireAnswer } from '../../../interfaces/questionnaire-answer';
 import { StatusType } from '../../../interfaces/questionnaire-answer-status';
 import ProactiveQuestionnaireAnswer from '../../models/proactive-questionnaire-answer';
 import QuestionnaireAnswer from '../../models/questionnaire-answer';
@@ -25,7 +27,6 @@ interface AuthorizedRequest extends Request {
 }
 
 module.exports = (crowi: Crowi): Router => {
-  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
   const loginRequired = require('~/server/middlewares/login-required')(crowi, true);
 
   const validators = {

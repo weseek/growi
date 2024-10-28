@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-// eslint-disable-next-line import/no-named-as-default
 import { Config } from '~/server/models/config';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
@@ -21,7 +20,7 @@ module.exports = {
 
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     // find 'app:siteUrl'
     const siteUrlConfig = await Config.findOne({
@@ -77,7 +76,7 @@ module.exports = {
 
   async down(db) {
     logger.info('Rollback migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({
