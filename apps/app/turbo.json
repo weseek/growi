@@ -3,7 +3,7 @@
   "extends": ["//"],
   "tasks": {
 
-    "styles-prebuilt": {
+    "pre:styles": {
       "dependsOn": ["@growi/ui#build"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
@@ -13,8 +13,12 @@
       ],
       "outputLogs": "new-only"
     },
+    "pre:lfs": {
+      "outputs": ["resource/fonts/**"],
+      "outputLogs": "new-only"
+    },
     "build": {
-      "dependsOn": ["^build", "styles-prebuilt"],
+      "dependsOn": ["^build", "pre:styles", "pre:lfs"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "next.config.js",
@@ -33,7 +37,7 @@
       "inputs": ["src/migrations/*.js"],
       "outputLogs": "new-only"
     },
-    "dev:styles-prebuilt": {
+    "dev:pre:styles": {
       "dependsOn": ["@growi/ui#dev"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
@@ -45,18 +49,18 @@
       "outputLogs": "new-only"
     },
     "dev": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles", "pre:lfs"],
       "cache": false,
       "persistent": true
     },
 
     "launch-dev:ci": {
-      "dependsOn": ["^dev", "dev:styles-prebuilt"],
+      "dependsOn": ["^dev", "dev:pre:styles"],
       "cache": false
     },
 
     "lint": {
-      "dependsOn": ["^dev", "dev:styles-prebuilt"]
+      "dependsOn": ["^dev", "dev:pre:styles"]
     },
 
     "test": {

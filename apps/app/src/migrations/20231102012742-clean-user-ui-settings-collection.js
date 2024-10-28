@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 module.exports = {
   async up() {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     await UserUISettings.updateMany(
       {},

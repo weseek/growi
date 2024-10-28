@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:migrate:initialize-private-legacy-pages-name
 
 module.exports = {
   async up(db, next) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     try {
       await NamedQuery.updateOne(
@@ -29,7 +29,7 @@ module.exports = {
   },
 
   async down(db, next) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     try {
       await NamedQuery.findOneAndDelete({

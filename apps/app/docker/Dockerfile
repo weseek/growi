@@ -40,8 +40,8 @@ RUN turbo run clean
 RUN turbo run build --filter @growi/app
 
 # make artifacts
-RUN pnpm --filter @growi/app --prod deploy pruned
-RUN rm -rf apps/app/node_modules && mv pruned/node_modules apps/app/node_modules
+RUN pnpm deploy out --prod --filter @growi/app
+RUN rm -rf apps/app/node_modules && mv out/node_modules apps/app/node_modules
 RUN rm -rf apps/app/.next/cache
 RUN tar -zcf packages.tar.gz \
   package.json \

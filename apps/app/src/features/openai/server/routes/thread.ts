@@ -5,6 +5,7 @@ import { body } from 'express-validator';
 import { filterXSS } from 'xss';
 
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
@@ -20,7 +21,6 @@ type CreateThreadReq = Request<undefined, ApiV3Response, { threadId?: string }> 
 type CreateThreadFactory = (crowi: Crowi) => RequestHandler[];
 
 export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
-  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
