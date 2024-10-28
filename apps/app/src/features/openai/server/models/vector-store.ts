@@ -11,7 +11,7 @@ export type VectorStoreScopeType = typeof VectorStoreScopeType[keyof typeof Vect
 const VectorStoreScopeTypes = Object.values(VectorStoreScopeType);
 interface VectorStore {
   vectorStoreId: string
-  scorpeType: VectorStoreScopeType
+  scopeType: VectorStoreScopeType
   isDeleted: boolean
 }
 
@@ -25,7 +25,7 @@ const schema = new Schema<VectorStoreDocument, VectorStoreModel>({
     required: true,
     unique: true,
   },
-  scorpeType: {
+  scopeType: {
     enum: VectorStoreScopeTypes,
     type: String,
     required: true,

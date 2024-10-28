@@ -107,7 +107,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
-    const vectorStoreDocument = await VectorStoreModel.findOne({ scorpeType: VectorStoreScopeType.PUBLIC, isDeleted: false });
+    const vectorStoreDocument = await VectorStoreModel.findOne({ scopeType: VectorStoreScopeType.PUBLIC, isDeleted: false });
 
     if (vectorStoreDocument != null && isVectorStoreForPublicScopeExist) {
       return vectorStoreDocument;
@@ -134,7 +134,7 @@ class OpenaiService implements IOpenaiService {
     const newVectorStore = await this.client.createVectorStore(VectorStoreScopeType.PUBLIC);
     const newVectorStoreDocument = await VectorStoreModel.create({
       vectorStoreId: newVectorStore.id,
-      scorpeType: VectorStoreScopeType.PUBLIC,
+      scopeType: VectorStoreScopeType.PUBLIC,
     });
 
     isVectorStoreForPublicScopeExist = true;
@@ -143,7 +143,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   private async deleteVectorStore(vectorStoreScopeType: VectorStoreScopeType): Promise<void> {
-    const vectorStoreDocument = await VectorStoreModel.findOne({ scorpeType: vectorStoreScopeType, isDeleted: false });
+    const vectorStoreDocument = await VectorStoreModel.findOne({ scopeType: vectorStoreScopeType, isDeleted: false });
     if (vectorStoreDocument == null) {
       return;
     }
