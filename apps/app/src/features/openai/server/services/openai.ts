@@ -155,7 +155,7 @@ class OpenaiService implements IOpenaiService {
         await vectorStoreDocument.save();
       };
 
-      oepnaiApiErrorHandler(err, { notFoundError: vectorStoreNotFoundErrorHandler });
+      await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreNotFoundErrorHandler });
       throw new Error(err);
     }
   }
