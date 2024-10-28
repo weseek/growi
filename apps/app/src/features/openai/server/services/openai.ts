@@ -186,6 +186,8 @@ class OpenaiService implements IOpenaiService {
       return;
     }
 
+    const pageIds = pages.map(page => page._id);
+
     try {
       // Save vector store file relation
       await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
@@ -194,12 +196,14 @@ class OpenaiService implements IOpenaiService {
       const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
       const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStore.vectorStoreId, uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
+
+      // Set isAttachedToVectorStore: true when the uploaded file is attached to VectorStore
+      await VectorStoreFileRelationModel.markAsAttachedToVectorStore(pageIds);
     }
     catch (err) {
       logger.error(err);
 
       // Delete all uploaded files if createVectorStoreFileBatch fails
-      const pageIds = pages.map(page => page._id);
       for await (const pageId of pageIds) {
         await this.deleteVectorStoreFile(pageId);
       }
