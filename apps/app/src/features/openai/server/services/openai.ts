@@ -21,6 +21,7 @@ import loggerFactory from '~/utils/logger';
 import { OpenaiServiceTypes } from '../../interfaces/ai';
 
 import { getClient } from './client-delegator';
+import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { oepnaiApiErrorHandler } from './openai-api-error-handler';
 
 const BATCH_SIZE = 100;
@@ -28,6 +29,8 @@ const BATCH_SIZE = 100;
 const logger = loggerFactory('growi:service:openai');
 
 let isVectorStoreForPublicScopeExist = false;
+
+type VectorStoreFileRelationsMap = Map<string, VectorStoreFileRelation>
 
 export interface IOpenaiService {
   getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
@@ -134,26 +137,32 @@ class OpenaiService implements IOpenaiService {
     return newVectorStoreDocument;
   }
 
-  private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
-    const file = await toFile(Readable.from(body), `${pageId}.md`);
-    const uploadedFile = await this.client.uploadFile(file);
-    return uploadedFile;
+  private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
+    const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
+    for await (const [index, chunk] of chunks.entries()) {
+      try {
+        const file = await toFile(Readable.from(chunk), `${pageId}-chunk-${index}.md`);
+        const uploadedFile = await this.client.uploadFile(file);
+        prepareVectorStoreFileRelations(pageId, uploadedFile.id, vectorStoreFileRelationsMap);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    }
   }
 
   async createVectorStoreFile(pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
-    const vectorStoreFileRelationsMap: Map<string, VectorStoreFileRelation> = new Map();
+    const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
-          const uploadedFile = await this.uploadFile(page._id, page.revision.body);
-          prepareVectorStoreFileRelations(page._id, uploadedFile.id, vectorStoreFileRelationsMap);
+          await this.uploadFileByChunks(page._id, page.revision.body, vectorStoreFileRelationsMap);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
-          const uploadedFile = await this.uploadFile(page._id, pagePopulatedToShowRevision.revision.body);
-          prepareVectorStoreFileRelations(page._id, uploadedFile.id, vectorStoreFileRelationsMap);
+          await this.uploadFileByChunks(page._id, pagePopulatedToShowRevision.revision.body, vectorStoreFileRelationsMap);
         }
       }
     };
@@ -177,6 +186,8 @@ class OpenaiService implements IOpenaiService {
       return;
     }
 
+    const pageIds = pages.map(page => page._id);
+
     try {
       // Save vector store file relation
       await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
@@ -185,12 +196,14 @@ class OpenaiService implements IOpenaiService {
       const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
       const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStore.vectorStoreId, uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
+
+      // Set isAttachedToVectorStore: true when the uploaded file is attached to VectorStore
+      await VectorStoreFileRelationModel.markAsAttachedToVectorStore(pageIds);
     }
     catch (err) {
       logger.error(err);
 
       // Delete all uploaded files if createVectorStoreFileBatch fails
-      const pageIds = pages.map(page => page._id);
       for await (const pageId of pageIds) {
         await this.deleteVectorStoreFile(pageId);
       }
