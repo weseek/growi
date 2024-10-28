@@ -106,7 +106,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
-    const vectorStoreDocument = await VectorStoreModel.findOne({ scorpeType: VectorStoreScopeType.PUBLIC });
+    const vectorStoreDocument = await VectorStoreModel.findOne({ scorpeType: VectorStoreScopeType.PUBLIC, isDeleted: false });
 
     if (vectorStoreDocument != null && isVectorStoreForPublicScopeExist) {
       return vectorStoreDocument;
@@ -137,13 +137,15 @@ class OpenaiService implements IOpenaiService {
     return newVectorStoreDocument;
   }
 
-  private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
+  private async uploadFileByChunks(
+      vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap,
+  ) {
     const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
     for await (const [index, chunk] of chunks.entries()) {
       try {
         const file = await toFile(Readable.from(chunk), `${pageId}-chunk-${index}.md`);
         const uploadedFile = await this.client.uploadFile(file);
-        prepareVectorStoreFileRelations(pageId, uploadedFile.id, vectorStoreFileRelationsMap);
+        prepareVectorStoreFileRelations(vectorStoreRelationId, pageId, uploadedFile.id, vectorStoreFileRelationsMap);
       }
       catch (err) {
         logger.error(err);
@@ -152,17 +154,18 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createVectorStoreFile(pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
+    const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
-          await this.uploadFileByChunks(page._id, page.revision.body, vectorStoreFileRelationsMap);
+          await this.uploadFileByChunks(vectorStore._id, page._id, page.revision.body, vectorStoreFileRelationsMap);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
-          await this.uploadFileByChunks(page._id, pagePopulatedToShowRevision.revision.body, vectorStoreFileRelationsMap);
+          await this.uploadFileByChunks(vectorStore._id, page._id, pagePopulatedToShowRevision.revision.body, vectorStoreFileRelationsMap);
         }
       }
     };
@@ -193,7 +196,6 @@ class OpenaiService implements IOpenaiService {
       await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
 
       // Create vector store file
-      const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
       const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStore.vectorStoreId, uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
 
