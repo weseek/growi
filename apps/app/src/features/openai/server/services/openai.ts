@@ -215,7 +215,8 @@ class OpenaiService implements IOpenaiService {
 
   async deleteVectorStoreFile(pageId: Types.ObjectId): Promise<void> {
     // Delete vector store file and delete vector store file relation
-    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ pageId });
+    const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
+    const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ vectorStoreRelationId: vectorStore._id, pageId });
     if (vectorStoreFileRelation == null) {
       return;
     }
