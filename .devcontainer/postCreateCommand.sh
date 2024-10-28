@@ -15,5 +15,4 @@ eval "$(cat /home/vscode/.bashrc)"
 pnpm install turbo --global
 
 # Install dependencies
-git-lfs pull
 turbo run bootstrap
