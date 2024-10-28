@@ -218,6 +218,7 @@
     "swr": "^2.2.2",
     "throttle-debounce": "^5.0.0",
     "ts-deepmerge": "^6.2.0",
+    "tslib": "^2.8.0",
     "uglifycss": "^0.0.29",
     "uid-safe": "^2.1.5",
     "unified": "^11.0.0",
