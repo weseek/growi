@@ -189,16 +189,9 @@ jobs:
       run: |
         pnpm add turbo --global
 
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/slackbot-proxy
-        rm -rf apps packages
-        mv out/* .
-
     - name: Install dependencies
-      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        pnpm install --no-frozen-lockfile
+        pnpm install --frozen-lockfile
 
     - name: Restore dist
       uses: actions/cache/restore@v4
@@ -215,10 +208,10 @@ jobs:
       run: |
         turbo run build
 
-    - name: Install dependencies for production
-      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
+    - name: Assembling all dependencies
       run: |
-        pnpm install --no-frozen-lockfile --prod
+        pnpm --filter @growi/slackbot-proxy --prod deploy pruned
+        rm -rf apps/slackbot-proxy/node_modules && mv pruned/node_modules apps/slackbot-proxy/node_modules
 
     - name: pnpm run start:prod:ci
       working-directory: ./apps/slackbot-proxy
