@@ -51,7 +51,6 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
     type: Schema.Types.ObjectId,
     ref: 'Page',
     required: true,
-    unique: true,
   },
   fileIds: [{
     type: String,
@@ -69,9 +68,8 @@ schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRe
     vectorStoreFileRelations.map((data) => {
       return {
         updateOne: {
-          filter: { pageId: data.pageId },
+          filter: { pageId: data.pageId, vectorStoreRelationId: data.vectorStoreRelationId },
           update: {
-            $set: { vectorStoreRelationId: data.vectorStoreRelationId },
             $addToSet: { fileIds: { $each: data.fileIds } },
           },
           upsert: true,
