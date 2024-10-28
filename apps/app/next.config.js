@@ -159,7 +159,11 @@ module.exports = async(phase, { defaultConfig }) => {
   }
 
   const withBundleAnalyzer = require('@next/bundle-analyzer')({
-    enabled: phase === PHASE_PRODUCTION_BUILD && process.env.ANALYZE === 'true',
+    enabled: phase === PHASE_PRODUCTION_BUILD
+      && (
+        process.env.ANALYZE === 'true'
+          || process.env.ANALYZE === '1'
+      ),
   });
 
   return withBundleAnalyzer(withSuperjson()(nextConfig));
