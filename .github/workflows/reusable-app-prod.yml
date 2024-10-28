@@ -231,9 +231,15 @@ jobs:
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Extract procution files artifact
+    - name: Download production dependencies artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: Production Dependencies (node${{ inputs.node-version }})
+
+    - name: Extract procution files and dependencies
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
+        tar -xf ${{ needs.build-prod.outputs.PROD_DEPS }}
 
     - name: Copy dotenv file for ci
       working-directory: ./apps/app
