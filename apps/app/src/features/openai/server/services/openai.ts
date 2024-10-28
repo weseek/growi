@@ -137,6 +137,22 @@ class OpenaiService implements IOpenaiService {
     return newVectorStoreDocument;
   }
 
+  private async deleteVectorStore(vectorStoreScopeType: VectorStoreScopeType): Promise<void> {
+    const vectorStoreDocument = await VectorStoreModel.findOne({ scorpeType: vectorStoreScopeType, isDeleted: false });
+    if (vectorStoreDocument == null) {
+      return;
+    }
+
+    try {
+      this.client.deleteVectorStore(vectorStoreDocument.vectorStoreId);
+      vectorStoreDocument.isDeleted = true;
+      vectorStoreDocument.save();
+    }
+    catch (err) {
+      throw new Error(err);
+    }
+  }
+
   private async uploadFileByChunks(
       vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap,
   ) {
@@ -245,7 +261,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async rebuildVectorStoreAll() {
-    // TODO: https://redmine.weseek.co.jp/issues/154364
+    await this.deleteVectorStore(VectorStoreScopeType.PUBLIC);
 
     // Create all public pages VectorStoreFile
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
