@@ -41,4 +41,6 @@ yarn-error.log*
 
 # turborepo
 .turbo
+
+# pnpm deploy target dir
 out
