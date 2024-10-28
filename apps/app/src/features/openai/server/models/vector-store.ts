@@ -12,6 +12,7 @@ const VectorStoreScopeTypes = Object.values(VectorStoreScopeType);
 interface VectorStore {
   vectorStoreId: string
   scorpeType: VectorStoreScopeType
+  isDeleted: boolean
 }
 
 export interface VectorStoreDocument extends VectorStore, Document {}
@@ -27,6 +28,11 @@ const schema = new Schema<VectorStoreDocument, VectorStoreModel>({
   scorpeType: {
     enum: VectorStoreScopeTypes,
     type: String,
+    required: true,
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
     required: true,
   },
 });
