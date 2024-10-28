@@ -122,7 +122,11 @@ class OpenaiService implements IOpenaiService {
         return vectorStoreDocument;
       }
       catch (err) {
-        await oepnaiApiErrorHandler(err, { notFoundError: async() => { await vectorStoreDocument.remove() } });
+        const vectorStoreNotFoundErrorHandler = async() => {
+          vectorStoreDocument.isDeleted = true;
+          await vectorStoreDocument.save();
+        };
+        await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreNotFoundErrorHandler });
         throw new Error(err);
       }
     }
@@ -154,7 +158,6 @@ class OpenaiService implements IOpenaiService {
         vectorStoreDocument.isDeleted = true;
         await vectorStoreDocument.save();
       };
-
       await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreNotFoundErrorHandler });
       throw new Error(err);
     }
