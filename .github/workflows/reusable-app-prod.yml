@@ -135,6 +135,8 @@ jobs:
           discovery.type: single-node
 
     steps:
+    - uses: actions/checkout@v4
+
     - uses: pnpm/action-setup@v4
 
     - uses: actions/setup-node@v4
