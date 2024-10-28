@@ -5,7 +5,7 @@ import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
 import type OpenAI from 'openai';
-import { NotFoundError, toFile } from 'openai';
+import { toFile } from 'openai';
 
 import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
 import VectorStoreModel, { VectorStoreScopeType, type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
@@ -258,6 +258,7 @@ class OpenaiService implements IOpenaiService {
         }
       }
       catch (err) {
+        await oepnaiApiErrorHandler(err, { notFoundError: async() => { deletedFileIds.push(fileId) } });
         logger.error(err);
       }
     }
