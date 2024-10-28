@@ -160,6 +160,9 @@ jobs:
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
         tar -xf ${{ needs.build-prod.outputs.PROD_DEPS }}
 
+    # for debug
+    - uses: mxschmitt/action-tmate@v3
+
     - name: pnpm run server:ci
       working-directory: ./apps/app
       run: |
