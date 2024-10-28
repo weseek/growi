@@ -19,7 +19,6 @@ jobs:
 
     outputs:
       PROD_FILES: ${{ steps.archive-prod-files.outputs.file }}
-      PROD_DEPS: ${{ steps.archive-prod-deps.outputs.file }}
 
     steps:
     - uses: actions/checkout@v4
@@ -80,27 +79,15 @@ jobs:
           apps/app/resource \
           apps/app/tmp \
           apps/app/.env.production* \
+          apps/app/node_modules \
           apps/app/package.json
         echo "file=production.tar.gz" >> $GITHUB_OUTPUT
-
-    - name: Archive production dependencies
-      id: archive-prod-deps
-      run: |
-        tar -zcf production-deps.tar.gz \
-          apps/app/node_modules
-        echo "file=production-deps.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
       uses: actions/upload-artifact@v4
       with:
         name: Production Files (node${{ inputs.node-version }})
         path: ${{ steps.archive-prod-files.outputs.file }}
-
-    - name: Upload production dependencies as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Production Dependencies (node${{ inputs.node-version }})
-        path: ${{ steps.archive-prod-deps.outputs.file }}
 
     - name: Upload report as artifact
       uses: actions/upload-artifact@v4
@@ -151,15 +138,9 @@ jobs:
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Download production dependencies artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: Production Dependencies (node${{ inputs.node-version }})
-
-    - name: Extract procution files and dependencies
+    - name: Extract procution files
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
-        tar -xf ${{ needs.build-prod.outputs.PROD_DEPS }}
 
     - name: pnpm run server:ci
       working-directory: ./apps/app
@@ -231,15 +212,9 @@ jobs:
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Download production dependencies artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: Production Dependencies (node${{ inputs.node-version }})
-
-    - name: Extract procution files and dependencies
+    - name: Extract procution files
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
-        tar -xf ${{ needs.build-prod.outputs.PROD_DEPS }}
 
     - name: Copy dotenv file for ci
       working-directory: ./apps/app
