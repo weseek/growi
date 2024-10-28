@@ -63,7 +63,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pnpm install
+        pnpm install --frozen-lockfile
 
     - name: Download screenshots taken by cypress
       uses: actions/download-artifact@v4

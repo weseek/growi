@@ -38,8 +38,8 @@ RUN pnpm install ---frozen-lockfile
 RUN turbo run build --filter @growi/slackbot-proxy
 
 # make artifacts
-RUN pnpm --filter @growi/slackbot-proxy --prod deploy pruned
-RUN rm -rf apps/slackbot-proxy/node_modules && mv pruned/node_modules apps/slackbot-proxy/node_modules
+RUN pnpm deploy out --prod --filter @growi/slackbot-proxy
+RUN rm -rf apps/slackbot-proxy/node_modules && mv out/node_modules apps/slackbot-proxy/node_modules
 RUN tar -zcf packages.tar.gz \
   package.json \
   apps/slackbot-proxy/package.json \

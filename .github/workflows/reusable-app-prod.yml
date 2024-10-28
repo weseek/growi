@@ -19,6 +19,7 @@ jobs:
 
     outputs:
       PROD_FILES: ${{ steps.archive-prod-files.outputs.file }}
+      PROD_DEPS: ${{ steps.archive-prod-deps.outputs.file }}
 
     steps:
     - uses: actions/checkout@v4
@@ -37,16 +38,9 @@ jobs:
       run: |
         pnpm add turbo --global
 
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/app
-        rm -rf apps packages
-        mv out/* .
-
     - name: Install dependencies
-      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        pnpm install --no-frozen-lockfile
+        pnpm install --frozen-lockfile
 
     - name: Cache/Restore dist
       uses: actions/cache@v4
@@ -67,6 +61,12 @@ jobs:
       env:
         ANALYZE: 1
 
+    - name: Assembling all dependencies
+      run: |
+        rm -rf out
+        pnpm deploy out --prod --filter @growi/app
+        rm -rf apps/app/node_modules && mv out/node_modules apps/app/node_modules
+
     - name: Archive production files
       id: archive-prod-files
       run: |
@@ -79,16 +79,27 @@ jobs:
           apps/app/resource \
           apps/app/tmp \
           apps/app/.env.production* \
-          apps/app/package.json \
-          packages/*/dist \
-          packages/*/package.json
+          apps/app/package.json
         echo "file=production.tar.gz" >> $GITHUB_OUTPUT
+
+    - name: Archive production dependencies
+      id: archive-prod-deps
+      run: |
+        tar -zcf production-deps.tar.gz \
+          apps/app/node_modules
+        echo "file=production-deps.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
       uses: actions/upload-artifact@v4
       with:
         name: Production Files (node${{ inputs.node-version }})
         path: ${{ steps.archive-prod-files.outputs.file }}
+
+    - name: Upload production dependencies as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Production Dependencies (node${{ inputs.node-version }})
+        path: ${{ steps.archive-prod-deps.outputs.file }}
 
     - name: Upload report as artifact
       uses: actions/upload-artifact@v4
@@ -134,29 +145,20 @@ jobs:
         node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
 
-    - name: Install turbo
-      run: |
-        pnpm add turbo --global
-
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Install dependencies
-      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
-      run: |
-        pnpm install --no-frozen-lockfile --prod
-
     - name: Download production files artifact
       uses: actions/download-artifact@v4
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Extract procution files artifact
+    - name: Download production dependencies artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: Production Dependencies (node${{ inputs.node-version }})
+
+    - name: Extract procution files and dependencies
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
+        tar -xf ${{ needs.build-prod.outputs.PROD_DEPS }}
 
     - name: pnpm run server:ci
       working-directory: ./apps/app
@@ -219,7 +221,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pnpm install
+        pnpm install --frozen-lockfile
 
     - name: Install Playwright browsers
       run: |
