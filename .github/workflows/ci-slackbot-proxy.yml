@@ -210,6 +210,7 @@ jobs:
 
     - name: Assembling all dependencies
       run: |
+        rm -rf pruned
         pnpm --filter @growi/slackbot-proxy --prod deploy pruned
         rm -rf apps/slackbot-proxy/node_modules && mv pruned/node_modules apps/slackbot-proxy/node_modules
 
