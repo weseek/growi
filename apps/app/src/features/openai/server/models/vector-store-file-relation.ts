@@ -63,6 +63,9 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
   },
 });
 
+// define unique compound index
+schema.index({ vectorStoreRelationId: 1, pageId: 1 }, { unique: true });
+
 schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
   await this.bulkWrite(
     vectorStoreFileRelations.map((data) => {
