@@ -496,7 +496,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     ns:      'crowi',
     key:     'aws:s3ObjectCannedACL',
     type:    ValueType.STRING,
-    default: 'public-read',
+    default: null,
   },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
