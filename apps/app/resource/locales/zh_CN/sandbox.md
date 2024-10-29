@@ -208,12 +208,12 @@ https://www.google.co.jp
 
 ```javascript:mersenne-twister.js
 function MersenneTwister(seed) {
-if (arguments.length == 0) {
-seed = new Date().getTime();
-}
+  if (arguments.length == 0) {
+    seed = new Date().getTime();
+  }
 
-this._mt = new Array(624);
-this.setSeed(seed);
+  this._mt = new Array(624);
+  this.setSeed(seed);
 }
 ```
 
