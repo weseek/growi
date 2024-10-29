@@ -819,19 +819,19 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.NUMBER,
     default: 36000, // msec
   },
-  VECTOR_STORE_FILE_DELETION_CRON_EXPRESSION: {
+  OPENAI_VECTOR_STORE_FILE_DELETION_CRON_EXPRESSION: {
     ns: 'crowi',
     key: 'openai:vectorStoreFileDeletionCronExpression',
     type: ValueType.STRING,
     default: '0 * * * *', // every hour
   },
-  VECTOR_STORE_FILE_DELETION_BARCH_SIZE: {
+  OPENAI_VECTOR_STORE_FILE_DELETION_BARCH_SIZE: {
     ns: 'crowi',
     key: 'openai:vectorStoreFileDeletionBarchSize',
     type: ValueType.NUMBER,
     default: 100,
   },
-  VECTOR_STORE_FILE_DELETION_API_CALL_INTERVAL: {
+  OPENAI_VECTOR_STORE_FILE_DELETION_API_CALL_INTERVAL: {
     ns: 'crowi',
     key: 'openai:vectorStoreFileDeletionApiCallInterval',
     type: ValueType.NUMBER,
