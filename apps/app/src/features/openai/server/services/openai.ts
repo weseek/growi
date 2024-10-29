@@ -239,6 +239,28 @@ class OpenaiService implements IOpenaiService {
 
   }
 
+  private async deleteDeletedVectorStoresWithoutVectorStoreFileRelations(): Promise<void> {
+    const result: VectorStoreDocument[] = await VectorStoreModel.aggregate([
+      { $match: { isDeleted: true } },
+      {
+        $lookup: {
+          from: 'vectorstorefilerelations',
+          localField: '_id',
+          foreignField: 'vectorStoreRelationId',
+          as: 'relatedRelations',
+        },
+      },
+      { $match: { relatedRelations: { $size: 0 } } },
+    ]);
+
+    if (result.length === 0) {
+      return;
+    }
+
+    const idToDelete = result.map(vectorStore => vectorStore._id);
+    await VectorStoreModel.deleteMany({ _id: { $in: idToDelete } });
+  }
+
   async deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, apiCallInterval?: number): Promise<void> {
     // Delete vector store file and delete vector store file relation
     const vectorStoreFileRelation = await VectorStoreFileRelationModel.findOne({ vectorStoreRelationId, pageId });
@@ -275,6 +297,9 @@ class OpenaiService implements IOpenaiService {
   }
 
   async deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void> {
+    // Deletes all VectorStore documents that are marked as deleted (isDeleted: true)
+    await this.deleteDeletedVectorStoresWithoutVectorStoreFileRelations();
+
     const deletedVectorStores = await VectorStoreModel.find({ isDeleted: true });
 
     if (deletedVectorStores == null) {
