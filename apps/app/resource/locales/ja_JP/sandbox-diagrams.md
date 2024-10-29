@@ -2,7 +2,7 @@
 - GROWI では各種機能を活用することで様々な図形の表現が可能です
   - 各種機能の特色を活かして図形の表現をしましょう
 
-# :pencil: Diagrams.net（旧 Draw.io）
+# :pencil2: Diagrams.net（旧 Draw.io）
 - 図形の挿入時に全般的にご利用いただきやすい図形の挿入方法となります
   - サービスの詳細は [こちら](https://www.drawio.com/) をご確認ください
 - Edit 画面下部のツールバーより専用の編集画面を用いて図形を編集することが可能です
@@ -28,7 +28,7 @@ pLzXsqNMti76NH0Pwggu8d4Jzx3eCO/R05/M+XevvTtWnIgTcapK0wCCNGN8ZmSq/oVxwy2t6dwYU1H2
 ```
 
 
-# :pencil: Mermaid
+# :pencil2: Mermaid
 - Mermaidとは、Markdownテキストでグラフを作成できるダイアグラムツールです
   - サービスの詳細は [こちら](https://mermaid.js.org/) をご確認ください
 
@@ -79,7 +79,7 @@ mindmap
 ```
 
 
-# :pencil: PlantUML
+# :pencil2: PlantUML
 - PlantUML はオープンソースの UML 描画ツールです
   - サービスの詳細は [こちら](https://plantuml.com/) をご確認ください
 

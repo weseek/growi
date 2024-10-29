@@ -32,7 +32,7 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm install
+        pnpm install --frozen-lockfile
 
     - name: Bump versions
       run: |
@@ -172,7 +172,7 @@ jobs:
     - name: Install dependencies
       run: |
         pnpm add turbo --global
-        pnpm install
+        pnpm install --frozen-lockfile
 
     - name: Bump versions for next RC
       run: |
