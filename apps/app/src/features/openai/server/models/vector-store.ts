@@ -15,7 +15,9 @@ interface VectorStore {
   isDeleted: boolean
 }
 
-export interface VectorStoreDocument extends VectorStore, Document {}
+export interface VectorStoreDocument extends VectorStore, Document {
+  markAsDeleted(): Promise<void>
+}
 
 type VectorStoreModel = Model<VectorStore>
 
@@ -36,5 +38,10 @@ const schema = new Schema<VectorStoreDocument, VectorStoreModel>({
     required: true,
   },
 });
+
+schema.methods.markAsDeleted = async function(): Promise<void> {
+  this.isDeleted = true;
+  await this.save();
+};
 
 export default getOrCreateModel<VectorStoreDocument, VectorStoreModel>('VectorStore', schema);

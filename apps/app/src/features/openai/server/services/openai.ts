@@ -107,7 +107,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
-    const vectorStoreDocument = await VectorStoreModel.findOne({ scopeType: VectorStoreScopeType.PUBLIC, isDeleted: false });
+    const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: VectorStoreScopeType.PUBLIC, isDeleted: false });
 
     if (vectorStoreDocument != null && isVectorStoreForPublicScopeExist) {
       return vectorStoreDocument;
@@ -122,11 +122,7 @@ class OpenaiService implements IOpenaiService {
         return vectorStoreDocument;
       }
       catch (err) {
-        const vectorStoreNotFoundErrorHandler = async() => {
-          vectorStoreDocument.isDeleted = true;
-          await vectorStoreDocument.save();
-        };
-        await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreNotFoundErrorHandler });
+        await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
         throw new Error(err);
       }
     }
@@ -135,7 +131,7 @@ class OpenaiService implements IOpenaiService {
     const newVectorStoreDocument = await VectorStoreModel.create({
       vectorStoreId: newVectorStore.id,
       scopeType: VectorStoreScopeType.PUBLIC,
-    });
+    }) as VectorStoreDocument;
 
     isVectorStoreForPublicScopeExist = true;
 
@@ -143,22 +139,17 @@ class OpenaiService implements IOpenaiService {
   }
 
   private async deleteVectorStore(vectorStoreScopeType: VectorStoreScopeType): Promise<void> {
-    const vectorStoreDocument = await VectorStoreModel.findOne({ scopeType: vectorStoreScopeType, isDeleted: false });
+    const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: vectorStoreScopeType, isDeleted: false });
     if (vectorStoreDocument == null) {
       return;
     }
 
     try {
       await this.client.deleteVectorStore(vectorStoreDocument.vectorStoreId);
-      vectorStoreDocument.isDeleted = true;
-      await vectorStoreDocument.save();
+      await vectorStoreDocument.markAsDeleted();
     }
     catch (err) {
-      const vectorStoreNotFoundErrorHandler = async() => {
-        vectorStoreDocument.isDeleted = true;
-        await vectorStoreDocument.save();
-      };
-      await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreNotFoundErrorHandler });
+      await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
       throw new Error(err);
     }
   }
