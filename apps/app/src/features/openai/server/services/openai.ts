@@ -237,7 +237,7 @@ class OpenaiService implements IOpenaiService {
       return;
     }
 
-    const currentVectorStoreIds: Types.ObjectId[] = await VectorStoreFileRelationModel.aggregate([
+    const currentVectorStoreRelationIds: Types.ObjectId[] = await VectorStoreFileRelationModel.aggregate([
       {
         $group: {
           _id: '$vectorStoreRelationId',
@@ -248,11 +248,11 @@ class OpenaiService implements IOpenaiService {
       { $project: { _id: 1 } },
     ]);
 
-    if (currentVectorStoreIds.length === 0) {
+    if (currentVectorStoreRelationIds.length === 0) {
       return;
     }
 
-    await VectorStoreModel.deleteMany({ _id: { $nin: currentVectorStoreIds }, isDeleted: true });
+    await VectorStoreModel.deleteMany({ _id: { $nin: currentVectorStoreRelationIds }, isDeleted: true });
   }
 
   async deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, apiCallInterval?: number): Promise<void> {
@@ -295,23 +295,23 @@ class OpenaiService implements IOpenaiService {
     await this.deleteObsolatedVectorStoreRelations();
 
     // Retrieves all VectorStore documents that are marked as deleted
-    const deletedVectorStores = await VectorStoreModel.find({ isDeleted: true });
-    if (deletedVectorStores.length === 0) {
+    const deletedVectorStoreRelations = await VectorStoreModel.find({ isDeleted: true });
+    if (deletedVectorStoreRelations.length === 0) {
       return;
     }
 
     // Retrieves VectorStoreFileRelation documents associated with deleted VectorStore documents
-    const obsoleteVectorStoreFiles = await VectorStoreFileRelationModel.find(
-      { vectorStoreRelationId: { $in: deletedVectorStores.map(vectorStore => vectorStore._id) } },
+    const obsoleteVectorStoreFileRelations = await VectorStoreFileRelationModel.find(
+      { vectorStoreRelationId: { $in: deletedVectorStoreRelations.map(deletedVectorStoreRelation => deletedVectorStoreRelation._id) } },
     ).limit(limit);
-    if (obsoleteVectorStoreFiles.length === 0) {
+    if (obsoleteVectorStoreFileRelations.length === 0) {
       return;
     }
 
     // Delete obsolete VectorStoreFile
-    for await (const vectorStoreFile of obsoleteVectorStoreFiles) {
+    for await (const vectorStoreFileRelation of obsoleteVectorStoreFileRelations) {
       try {
-        await this.deleteVectorStoreFile(vectorStoreFile.vectorStoreRelationId, vectorStoreFile.pageId, apiCallInterval);
+        await this.deleteVectorStoreFile(vectorStoreFileRelation.vectorStoreRelationId, vectorStoreFileRelation.pageId, apiCallInterval);
       }
       catch (err) {
         logger.error(err);
