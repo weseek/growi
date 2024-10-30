@@ -1,5 +1,4 @@
-import assert from 'assert';
-
+import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler, Response } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
@@ -8,10 +7,14 @@ import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
 import { getOrCreateChatAssistant } from '~/features/openai/server/services/assistant';
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import { openaiClient } from '../services';
+import { getStreamErrorCode } from '../services/getStreamErrorCode';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -28,7 +31,6 @@ type Req = Request<undefined, Response, ReqBody>
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
 export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) => {
-  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
@@ -37,16 +39,18 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       .withMessage('userMessage must be string')
       .notEmpty()
       .withMessage('userMessage must be set'),
-    body('threadId').isString().withMessage('threadId must be string'),
+    body('threadId').optional().isString().withMessage('threadId must be string'),
   ];
 
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: Response) => {
+    async(req: Req, res: ApiV3Response) => {
 
       const threadId = req.body.threadId;
 
-      assert(threadId != null);
+      if (threadId == null) {
+        return res.apiv3Err(new ErrorV3('threadId is not set', MessageErrorCode.THREAD_ID_IS_NOT_SET), 400);
+      }
 
       let stream: AssistantStream;
 
@@ -64,7 +68,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       catch (err) {
         logger.error(err);
 
-        // TODO: improve error handling by https://redmine.weseek.co.jp/issues/155304
+        // TODO: improve error handling by https://redmine.weseek.co.jp/issues/155004
         return res.status(500).send(err.message);
       }
 
@@ -77,6 +81,20 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         res.write(`data: ${JSON.stringify(delta)}\n\n`);
       };
 
+      const sendError = (message: string, code?: StreamErrorCode) => {
+        res.write(`error: ${JSON.stringify({ code, message })}\n\n`);
+      };
+
+      stream.on('event', (delta) => {
+        if (delta.event === 'thread.run.failed') {
+          const errorMessage = delta.data.last_error?.message;
+          if (errorMessage == null) {
+            return;
+          }
+          logger.error(errorMessage);
+          sendError(errorMessage, getStreamErrorCode(errorMessage));
+        }
+      });
       stream.on('messageDelta', messageDeltaHandler);
       stream.once('messageDone', () => {
         stream.off('messageDelta', messageDeltaHandler);

@@ -86,9 +86,9 @@
       "deny": "Refuser (Utilisateurs inscrits seulement)",
       "readonly": "Autoriser (Lecture seule)"
     },
-    "rom_users_comment": {
-      "deny": "Refuser (Interdire la gestion des commentaires aux utilisateurs ROM)",
-      "accept": "Autoriser (Les utilisateurs ROM peuvent gérer les commentaires)"
+    "read_only_users_comment": {
+      "deny": "Refuser (Interdire la gestion des commentaires aux utilisateurs lecture seule)",
+      "accept": "Autoriser (Les utilisateurs lecture seule peuvent gérer les commentaires)"
     },
     "registration_mode": {
       "open": "Ouvert (Tout le monde peut s'inscrire)",

@@ -21,7 +21,7 @@ async function dropIndexIfExists(db, collectionName, indexName) {
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     await dropIndexIfExists(db, 'pagetagrelations', 'page_1_user_1');
 

@@ -490,7 +490,13 @@
     "title_beta_label": "(Beta)",
     "placeholder": "Ask me anything.",
     "caution_against_hallucination": "Please verify the information and check the sources.",
-    "progress_label": "Generating answers"
+    "progress_label": "Generating answers",
+    "failed_to_create_or_retrieve_thread": "Failed to create or retrieve thread",
+    "budget_exceeded": "You have reached your usage limit for OpenAI's API. To use the Knowledge Assistant again, please add credits from the OpenAI billing page.",
+    "budget_exceeded_for_growi_cloud": "You have reached your OpenAI API usage limit. To use the Knowledge Assistant again, please add credits from the GROWI.cloud admin page for Hosted users or from the OpenAI billing page for Owned users.",
+    "error_message": "An error has occurred",
+    "show_error_detail": "Show error details"
+
   },
   "link_edit": {
     "edit_link": "Edit Link",

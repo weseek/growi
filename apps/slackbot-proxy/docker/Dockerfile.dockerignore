@@ -3,6 +3,7 @@
 **/coverage
 **/Dockerfile
 **/*.dockerignore
+**/.pnpm-store
 **/.turbo
 out
 apps/app

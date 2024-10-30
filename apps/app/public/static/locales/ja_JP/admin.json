@@ -95,9 +95,9 @@
       "deny": "拒否 (アカウントを持つユーザーのみ利用可能)",
       "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"
     },
-    "rom_users_comment": {
-      "deny": "拒否 (ROMユーザーのコメント操作を禁止)",
-      "accept": "許可 (ROMユーザーもコメント操作可能)"
+    "read_only_users_comment": {
+      "deny": "拒否 (閲覧のみユーザーのコメント操作を禁止)",
+      "accept": "許可 (閲覧のみユーザーもコメント操作可能)"
     },
     "registration_mode": {
       "open": "公開 (だれでも登録可能)",

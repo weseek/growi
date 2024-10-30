@@ -86,9 +86,9 @@
       "deny": "Deny (Registered users only)",
       "readonly": "Accept (Guests can read only)"
     },
-    "rom_users_comment": {
-      "deny": "Deny (Prohibit ROM users from comment management)",
-      "accept": "Allow (ROM users can manage comments)"
+    "read_only_users_comment": {
+      "deny": "Deny (Prohibit reead only users from comment management)",
+      "accept": "Allow (Read only users can manage comments)"
     },
     "registration_mode": {
       "open": "Open (Anyone can register)",

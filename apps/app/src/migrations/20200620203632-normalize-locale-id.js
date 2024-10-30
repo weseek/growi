@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:migrate:normalize-locale-id');
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const User = userModelFactory();
 

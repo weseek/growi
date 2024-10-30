@@ -26,7 +26,7 @@
     "not_displayed": "不显示",
     "displayed": "始终显示",
     "Guest Users Access": "来宾用户访问",
-    "readonly_users_access": "ROM用户的访问",
+    "readonly_users_access": "只浏览用户的访问",
 		"Fixed by env var": "这是由env var<code>%s=%s</code>修复的。",
 		"register_limitation": "注册限制",
 		"register_limitation_desc": "限制新用户注册",
@@ -95,9 +95,9 @@
 			"deny": "拒绝（仅限注册用户）",
 			"readonly": "接受（来宾可以只读）"
 		},
-    "rom_users_comment": {
-      "deny": "拒绝 (禁止ROM用户操作评论)",
-      "accept": "允许 (ROM用户可以管理评论)"
+    "read_only_users_comment": {
+      "deny": "拒绝 (禁止只浏览用户操作评论)",
+      "accept": "允许 (只浏览用户可以管理评论)"
     },
 		"registration_mode": {
 			"open": "打开（任何人都可以注册）",

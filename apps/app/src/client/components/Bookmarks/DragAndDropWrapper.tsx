@@ -1,8 +1,8 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { useDrag, useDrop } from 'react-dnd';
 
-import { DragItemDataType } from '~/interfaces/bookmark-info';
+import type { DragItemDataType } from '~/interfaces/bookmark-info';
 
 type DragAndDropWrapperProps = {
   item?: Partial<DragItemDataType>
@@ -53,20 +53,21 @@ export const DragAndDropWrapper = (props: DragAndDropWrapperProps): JSX.Element 
     }),
   }));
 
-
-  const getRef = (c: HTMLDivElement | null) => {
+  const getCallback = (c: HTMLDivElement | null) => {
     if (useDragMode && useDropMode) {
-      return [dragRef(c), dropRef(c)];
-    } if (useDragMode) {
-      return dragRef(c);
-    } if (useDropMode) {
-      return dropRef(c);
+      dragRef(c);
+      dropRef(c);
     }
-    return null;
+    else if (useDragMode) {
+      dragRef(c);
+    }
+    else if (useDropMode) {
+      dropRef(c);
+    }
   };
 
   return (
-    <div ref={c => getRef(c)} className={`grw-drag-drop-container ${isOver ? 'grw-accept-drop-item' : ''}`}>
+    <div ref={getCallback} className={`grw-drag-drop-container ${isOver ? 'grw-accept-drop-item' : ''}`}>
       {children}
     </div>
   );

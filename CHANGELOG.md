@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.21...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.22...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.22](https://github.com/weseek/growi/compare/v7.0.21...v7.0.22) - 2024-10-21
+
+### 🐛 Bug Fixes
+
+* fix: Edit button appear for the side of header (#9270) @yuki-takei
+* fix: Collaborative editing occurs unstable behavior (#9267) @yuki-takei
 
 ## [v7.0.21](https://github.com/weseek/growi/compare/v7.0.20...v7.0.21) - 2024-10-15
 
