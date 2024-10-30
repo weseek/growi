@@ -22,10 +22,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
-    - name: Install Git LFS
-      run: |
-        git lfs install
+      with:
+        # retrieve local font files
+        lfs: true
 
     - uses: pnpm/action-setup@v4
 
