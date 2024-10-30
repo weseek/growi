@@ -27,7 +27,7 @@ see: [weseek/growi](https://github.com/weseek/growi)
 Requirements
 -------------
 
-* MongoDB (>= 4.4)
+* MongoDB (>= 6.0)
 
 ### Optional Dependencies
 
