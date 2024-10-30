@@ -449,7 +449,7 @@ class SecuritySetting extends React.Component {
             </div>
 
             <div className="col-auto mt-4">
-              <securitysettingDropdown />
+              <this.securitysettingDropdown />
             </div>
 
             <div className="container text-center">
@@ -459,7 +459,7 @@ class SecuritySetting extends React.Component {
                 </div>
 
                 <div className="col-auto mt-4">
-                  <securitysettingDropdown />
+                  <this.securitysettingDropdown />
                 </div>
               </div>
             </div>
