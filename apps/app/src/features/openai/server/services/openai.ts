@@ -21,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 import { OpenaiServiceTypes } from '../../interfaces/ai';
 
 import { getClient } from './client-delegator';
-import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
+// import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { oepnaiApiErrorHandler } from './openai-api-error-handler';
 
 const BATCH_SIZE = 100;
@@ -137,6 +137,7 @@ class OpenaiService implements IOpenaiService {
     return newVectorStoreDocument;
   }
 
+  // TODO: 156643
   // private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
   //   const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
   //   for await (const [index, chunk] of chunks.entries()) {
