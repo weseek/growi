@@ -137,18 +137,24 @@ class OpenaiService implements IOpenaiService {
     return newVectorStoreDocument;
   }
 
-  private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
-    const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
-    for await (const [index, chunk] of chunks.entries()) {
-      try {
-        const file = await toFile(Readable.from(chunk), `${pageId}-chunk-${index}.md`);
-        const uploadedFile = await this.client.uploadFile(file);
-        prepareVectorStoreFileRelations(pageId, uploadedFile.id, vectorStoreFileRelationsMap);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    }
+  // private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
+  //   const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
+  //   for await (const [index, chunk] of chunks.entries()) {
+  //     try {
+  //       const file = await toFile(Readable.from(chunk), `${pageId}-chunk-${index}.md`);
+  //       const uploadedFile = await this.client.uploadFile(file);
+  //       prepareVectorStoreFileRelations(pageId, uploadedFile.id, vectorStoreFileRelationsMap);
+  //     }
+  //     catch (err) {
+  //       logger.error(err);
+  //     }
+  //   }
+  // }
+
+  private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
+    const file = await toFile(Readable.from(body), `${pageId}.md`);
+    const uploadedFile = await this.client.uploadFile(file);
+    return uploadedFile;
   }
 
   async createVectorStoreFile(pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
@@ -156,13 +162,15 @@ class OpenaiService implements IOpenaiService {
     const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
-          await this.uploadFileByChunks(page._id, page.revision.body, vectorStoreFileRelationsMap);
+          const uploadedFile = await this.uploadFile(page._id, page.revision.body);
+          prepareVectorStoreFileRelations(page._id, uploadedFile.id, vectorStoreFileRelationsMap);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
-          await this.uploadFileByChunks(page._id, pagePopulatedToShowRevision.revision.body, vectorStoreFileRelationsMap);
+          const uploadedFile = await this.uploadFile(page._id, pagePopulatedToShowRevision.revision.body);
+          prepareVectorStoreFileRelations(page._id, uploadedFile.id, vectorStoreFileRelationsMap);
         }
       }
     };
