@@ -21,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 import { OpenaiServiceTypes } from '../../interfaces/ai';
 
 import { getClient } from './client-delegator';
-import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
+// import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { oepnaiApiErrorHandler } from './openai-api-error-handler';
 
 const BATCH_SIZE = 100;
