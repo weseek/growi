@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 
 import { PageGrant, isPopulated } from '@growi/core';
+import { connectToSlackApiServer } from '@growi/slack/dist/utils/check-communicable';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
 import type OpenAI from 'openai';
@@ -231,24 +232,27 @@ class OpenaiService implements IOpenaiService {
   }
 
   private async deleteObsolatedVectorStoreRelations(): Promise<void> {
-    const result: VectorStoreDocument[] = await VectorStoreModel.aggregate([
-      { $match: { isDeleted: true } },
-      {
-        $lookup: {
-          from: 'vectorstorefilerelations',
-          localField: '_id',
-          foreignField: 'vectorStoreRelationId',
-          as: 'relatedRelations',
-        },
-      },
-      { $match: { relatedRelations: { $size: 0 } } },
-    ]);
-
-    if (result.length === 0) {
+    const deletedVectorStoreRelations = await VectorStoreModel.find({ isDeleted: true });
+    if (deletedVectorStoreRelations.length === 0) {
       return;
     }
 
-    await VectorStoreModel.deleteMany({ _id: { $in: result.map(vectorStore => vectorStore._id) } });
+    const currentVectorStoreIds: Types.ObjectId[] = await VectorStoreFileRelationModel.aggregate([
+      {
+        $group: {
+          _id: '$vectorStoreRelationId',
+          relationCount: { $sum: 1 },
+        },
+      },
+      { $match: { relationCount: { $gt: 0 } } },
+      { $project: { _id: 1 } },
+    ]);
+
+    if (currentVectorStoreIds.length === 0) {
+      return;
+    }
+
+    await VectorStoreModel.deleteMany({ _id: { $nin: currentVectorStoreIds }, isDeleted: true });
   }
 
   async deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, apiCallInterval?: number): Promise<void> {
