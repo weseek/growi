@@ -200,12 +200,22 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
+          <span>
+            {adminGeneralSecurityContainer.state.isShowRestrictedByOwner
+              ? t('security_settings.displayed')
+              : t('security_settings.not_displayed')}
+          </span>
+          <span>
+            {adminGeneralSecurityContainer.state.isShowRestrictedByGroup
+              ? t('security_settings.displayed')
+              : t('security_settings.not_displayed')}
+          </span>
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false })}
+            onClick={() => adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: true })}
           >
             {t('security_settings.displayed')}
           </button>
@@ -439,7 +449,7 @@ class SecuritySetting extends React.Component {
             </div>
 
             <div className="col-auto mt-4">
-              <this.securitysettingDropdown />
+              <securitysettingDropdown />
             </div>
 
             <div className="container text-center">
@@ -449,7 +459,7 @@ class SecuritySetting extends React.Component {
                 </div>
 
                 <div className="col-auto mt-4">
-                  <this.securitysettingDropdown />
+                  <securitysettingDropdown />
                 </div>
               </div>
             </div>
