@@ -199,8 +199,18 @@ class SecuritySetting extends React.Component {
   }
 
 
-  securitysettingDropdown(currentState) {
+  securitysettingDropdown() {
     const { t } = this.props;
+
+    const displaySettings = {
+      isShowRestrictedByOwner: null,
+      isShowRestrictedByGroup: null,
+    };
+
+    const toggleDisplay = (type, value) => {
+      displaySettings[type] = value;
+    };
+
     return (
       <div className="dropdown">
         <button
@@ -211,13 +221,36 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
+          {t(getDisplaySettings(displaySettings))}
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => t(getDisplaySettings)}
+            onClick={() => toggleDisplay('isShowRestrictedByOwner', true)}
           >
+            {t('security_settings.displayed')}
+          </button>
+          <button
+            className="dropdown-item"
+            type="button"
+            onClick={() => toggleDisplay('isShowRestrictedByOwner', false)}
+          >
+            {t('security_settings.not_displayed')}
+          </button>
+          <button
+            className="dropdown-item"
+            type="button"
+            onClick={() => toggleDisplay('isShowRestrictedByGroup', true)}
+          >
+            {t('security_settings.group_displayed')}
+          </button>
+          <button
+            className="dropdown-item"
+            type="button"
+            onClick={() => toggleDisplay('isShowRestrictedByGroup', false)}
+          >
+            {t('security_settings.group_not_displayed')}
           </button>
         </div>
       </div>
