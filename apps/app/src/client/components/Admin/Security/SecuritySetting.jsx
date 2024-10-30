@@ -54,18 +54,6 @@ const getDeleteConfigValueForT = (DeleteConfigValue) => {
   }
 };
 
-const getDisplaySettings = (displaySettings) => {
-  if (displaySettings.isShowRestrictedByOwner === true) {
-    return 'security_settings.displayed';
-  } if (displaySettings.isShowRestrictedByOwner === false) {
-    return 'security_settings.not_displayed';
-  } if (displaySettings.isShowRestrictedByGroup === true) {
-    return 'security_settings.displayed';
-  } if (displaySettings.isShowRestrictedByGroup === false) {
-    return 'security_settings.not_displayed';
-  }
-};
-
 
 /**
  * Return true if "deletionType" is DeletionType.RecursiveDeletion or DeletionType.RecursiveCompleteDeletion.
@@ -200,16 +188,7 @@ class SecuritySetting extends React.Component {
 
 
   securitysettingDropdown() {
-    const { t } = this.props;
-
-    const displaySettings = {
-      isShowRestrictedByOwner: null,
-      isShowRestrictedByGroup: null,
-    };
-
-    const toggleDisplay = (type, value) => {
-      displaySettings[type] = value;
-    };
+    const { t, adminGeneralSecurityContainer } = this.props;
 
     return (
       <div className="dropdown">
@@ -221,36 +200,35 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          {t(getDisplaySettings(displaySettings))}
         </button>
         <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => toggleDisplay('isShowRestrictedByOwner', true)}
+            onClick={() => adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false })}
           >
             {t('security_settings.displayed')}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => toggleDisplay('isShowRestrictedByOwner', false)}
+            onClick={() => adminGeneralSecurityContainer.setState({ isShowRestrictedByOwner: false })}
           >
             {t('security_settings.not_displayed')}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => toggleDisplay('isShowRestrictedByGroup', true)}
+            onClick={() => adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: true })}
           >
-            {t('security_settings.group_displayed')}
+            {t('security_settings.displayed')}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => toggleDisplay('isShowRestrictedByGroup', false)}
+            onClick={() => adminGeneralSecurityContainer.setState({ isShowRestrictedByGroup: false })}
           >
-            {t('security_settings.group_not_displayed')}
+            {t('security_settings.not_displayed')}
           </button>
         </div>
       </div>
