@@ -55,7 +55,7 @@
     },
 
     "launch-dev:ci": {
-      "dependsOn": ["^dev", "dev:pre:styles"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles", "pre:lfs"],
       "cache": false
     },
 
