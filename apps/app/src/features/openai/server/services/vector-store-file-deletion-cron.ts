@@ -41,6 +41,7 @@ class VectorStoreFileDeletionCronService {
   }
 
   private async executeJob(): Promise<void> {
+    await this.openaiService.deleteObsolatedVectorStoreRelations();
     await this.openaiService.deleteObsoleteVectorStoreFile(this.vectorStoreFileDeletionBarchSize, this.vectorStoreFileDeletionApiCallInterval);
   }
 

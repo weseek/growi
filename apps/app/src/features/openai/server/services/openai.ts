@@ -2,7 +2,6 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 
 import { PageGrant, isPopulated } from '@growi/core';
-import { connectToSlackApiServer } from '@growi/slack/dist/utils/check-communicable';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
 import type OpenAI from 'openai';
@@ -36,10 +35,11 @@ type VectorStoreFileRelationsMap = Map<string, VectorStoreFileRelation>
 export interface IOpenaiService {
   getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
   getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
-  deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>;
+  deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
+  deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
   createVectorStoreFile(pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
-  deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>;
+  deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   rebuildVectorStoreAll(): Promise<void>;
   rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
 }
@@ -231,7 +231,8 @@ class OpenaiService implements IOpenaiService {
 
   }
 
-  private async deleteObsolatedVectorStoreRelations(): Promise<void> {
+  // Deletes all VectorStore documents that are marked as deleted (isDeleted: true) and have no associated VectorStoreFileRelation documents
+  async deleteObsolatedVectorStoreRelations(): Promise<void> {
     const deletedVectorStoreRelations = await VectorStoreModel.find({ isDeleted: true });
     if (deletedVectorStoreRelations.length === 0) {
       return;
@@ -291,9 +292,6 @@ class OpenaiService implements IOpenaiService {
   }
 
   async deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void> {
-    // Deletes all VectorStore documents that are marked as deleted (isDeleted: true) and have no associated VectorStoreFileRelation documents
-    await this.deleteObsolatedVectorStoreRelations();
-
     // Retrieves all VectorStore documents that are marked as deleted
     const deletedVectorStoreRelations = await VectorStoreModel.find({ isDeleted: true });
     if (deletedVectorStoreRelations.length === 0) {
