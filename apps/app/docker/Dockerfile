@@ -1,4 +1,4 @@
-# syntax = docker/dockerfile:1.4
+# syntax = docker/dockerfile:1
 
 
 ##
@@ -6,7 +6,7 @@
 ##
 FROM node:20-slim AS base
 
-ENV optDir /opt
+ENV optDir=/opt
 
 WORKDIR ${optDir}
 
@@ -33,7 +33,7 @@ RUN pnpm add turbo --global
 ##
 FROM base AS builder
 
-ENV optDir /opt
+ENV optDir=/opt
 
 WORKDIR ${optDir}
 
@@ -69,12 +69,12 @@ RUN tar -zcf packages.tar.gz \
 ## release
 ##
 FROM node:20-slim
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
+LABEL maintainer="Yuki Takei <yuki@weseek.co.jp>"
 
-ENV NODE_ENV production
+ENV NODE_ENV="production"
 
-ENV optDir /opt
-ENV appDir ${optDir}/growi
+ENV optDir=/opt
+ENV appDir=${optDir}/growi
 
 # Add gosu
 # see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
@@ -90,7 +90,7 @@ RUN apt-get update && apt-get install -y sudo ca-certificates wget --no-install-
   && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sudo -u node sh - \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 ENV PNPM_HOME="/home/node/.local/share/pnpm"
-ENV PATH "$PNPM_HOME:$PATH"
+ENV PATH="$PNPM_HOME:$PATH"
 
 COPY --from=builder --chown=node:node \
   ${optDir}/packages.tar.gz ${appDir}/
