@@ -6,76 +6,47 @@
 
 ## [v7.1.0](https://github.com/weseek/growi/compare/v7.0.23...v7.1.0) - 2024-10-31
 
+### BREAKING CHANGES
+
+* imprv: Update default value for S3\_OBJECT\_ACL (#9332) @yuki-takei
+
 ### 💎 Features
 
 * feat: GROWI OpenAI Integration (#9246) @yuki-takei
 
-### BREAKING CHANGES
-
-* feat: Generate vector store inside GROWI (#9217) @miya
-  
-* feat: Separate markdown into headings and paragraphs (#9173) @nHigashiWeseek
-  
-* imprv: Update default value for S3_OBJECT_ACL (#9332) @yuki-takei
-  
-
 ### 🚀 Improvement
 
-* support: Evaluate whether env vars are secret or not by the `isSecret` property (#9226) @yuki-takei
-* imprv: Update default value for S3_OBJECT_ACL (#9332) @yuki-takei
-* imprv: Update Recent Changes when a page is created, updated, or deleted (#9092) @nHigashiWeseek
-* imprv: Sandbox (#9330) @yuki-takei
 * imprv: Add GitHub Markdown alerts  (#9127) @reiji-h
-* support: JSDoc for OpenAPI document (#9311) @yuki-takei
-* imprv: Documentation URL for g2gtransfer (#9183) @moekumasaka
-* imprv: The color of the dropdown list when it is activated (#9102) @WNomunomu
-* imprv: PageTitleHeader max-width (#9166) @yuki-takei
-* imprv: Documentation URL for g2gtransfer (#9157) @yuki-takei
-* imprv: Corrected wording on admin page (/admin/data-transfer) (#9106) @miya
 * imprv: Upgrade unified and remark-growi-directive (#9048) @reiji-h
 * imprv: ROM users can manage comments (#9101) @WNomunomu
+* imprv: Update default value for S3\_OBJECT\_ACL (#9332) @yuki-takei
+* imprv: Sandbox (#9330) @yuki-takei
+* support: JSDoc for OpenAPI document (#9311) @yuki-takei
+
 
 ### 🐛 Bug Fixes
 
-* fix: Add validators to lsx API (#9182) @WNomunomu
 * fix: Couldn't show old revision (#9296) @yuki-takei
-* fix: Set an unknown label when the user is not found (#9232) @yuki-takei
 * fix: Replace the word ROM (#9295) @satof3
-* fix: Display revisions only if they are not corrupted (#9099) @WNomunomu
 * fix: forgot-password API (#9257) @reiji-h
-* fix: Make it impossible to overwrite grants on descendant pages when 'anyone with the link' is selected. (#9125) @WNomunomu
 * fix: Edit button appear for the side of header (#9270) @yuki-takei
-* fix: Forgot password API - reject requests with invalid email format (#9179) @abichan99911111
 * fix: Ensure text-only paste for mixed content from various sources (#9096) @reiji-h
 * fix: Notification count badge (#9124) @shironegi39
-* fix: Make PageAccessoriesModal responsive (#9171) @moekumasaka
-* fix: PageControls unexpectedly move in response to opening and closing the sidebar (#9094) @WNomunomu
-* fix: Make CustomNavTab responsive (#9123) @moekumasaka
+* fix(ogp): Set an unknown label when the user is not found (#9232) @yuki-takei
 
 ### 🧰 Maintenance
 
-* support: Merge dev/7.1.x into master (#9247) @yuki-takei
+* support: Migrate to pnpm from yarn v1 (#9249) @yuki-takei
 * support: Omit MongoDB 4.x compatible code (#9334) @yuki-takei
-* support: Hide env vars for OpenAI (#9228) @yuki-takei
 * support: Pull LFS files with turbo (#9325) @yuki-takei
-* support: Evaluate whether env vars are secret or not by the `isSecret` property (#9226) @yuki-takei
 * support: Use `pnpm deploy` instead of `turbo prune` (#9323) @yuki-takei
+* support: Maintenance API docs generation (#9302) @yuki-takei
 * support: Improve typings for PageService (#9220) @yuki-takei
 * support: Typescriptize accessTokenParser (#9320) @yuki-takei
-* support: Upgrade codemirror and yjs packages (#9218) @yuki-takei
 * support: Migrate to pnpm from yarn v1 (#9249) @yuki-takei
-* support: Upgrade codemirror and yjs packages (#9215) @yuki-takei
 * support: JSDoc for OpenAPI document (#9311) @yuki-takei
-* ci(deps): bump rollup from 4.22.0 to 4.22.4 (#9160) @dependabot
 * support: Maintenance API docs generation (#9302) @yuki-takei
-* ci(deps): bump google-github-actions/setup-gcloud from 1 to 2 (#9153) @dependabot
 * support: Omit docs route (#9299) @yuki-takei
-* ci(deps): bump softprops/action-gh-release from 1 to 2 (#9152) @dependabot
-* support: Improve vitest environment (#9144) @yuki-takei
-* ci(deps): bump next from 14.1.3 to 14.2.13 (#9154) @dependabot
-* support: Upgrade @testing-library/react (#9141) @yuki-takei
-* support: Update logo image in README.md for the official docker image (#9139) @satof3
-* ci(deps-dev): bump vite from 5.2.9 to 5.2.14 (#9134) @dependabot
 
 ## [v7.0.23](https://github.com/weseek/growi/compare/v7.0.22...v7.0.23) - 2024-10-24
 
