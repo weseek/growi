@@ -14,16 +14,34 @@ const router = express.Router();
  *        properties:
  *          growiVersion:
  *            type: string
- *            description: version of growi
+ *            description: npm version or '-'
+ *            example: 7.1.0-RC.0
  *          nodeVersion:
  *            type: string
- *            description: version of node
+ *            description: npm version or '-'
+ *            example: 20.2.0
  *          npmVersion:
  *            type: string
- *            description: version of npm
+ *            description: npm version or '-'
+ *            example: 9.6.6
  *          pnpmVersion:
  *            type: string
- *            description: version of pnpm
+ *            description: npm version or '-'
+ *            example: 9.12.3
+ *          envVars:
+ *            type: object
+ *            description: npm version or '-'
+ *            additionalProperties:
+ *              type: string
+ *            example: '{"FILE_UPLOAD":"mongodb","APP_SITE_URL":"http://localhost:3000","ELASTICSEARCH_URI":"http://elasticsearch:9200/growi","ELASTICSEARCH_REQUEST_TIMEOUT":15000,"ELASTICSEARCH_REJECT_UNAUTHORIZED":true,"OGP_URI":"http://ogp:8088","QUESTIONNAIRE_SERVER_ORIGIN":"http://host.docker.internal:3003"}'
+ *          isV5Compatible:
+ *            type: boolean
+ *            description: This value is true if this GROWI is compatible v5.
+ *            example: true
+ *          isMaintenanceMode:
+ *            type: boolean
+ *            description: This value is true if this site is maintenance mode.
+ *            example: false
  *      InstalledPluginsParams:
  *        type: object
  *        properties:
@@ -53,8 +71,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    adminHomeParams:
-   *                      type: object
-   *                      description: adminHome params
+   *                      $ref: "#/components/schemas/SystemInformationParams"
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const adminHomeParams = {
