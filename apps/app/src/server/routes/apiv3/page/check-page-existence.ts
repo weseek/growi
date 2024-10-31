@@ -7,10 +7,11 @@ import { query } from 'express-validator';
 import mongoose from 'mongoose';
 
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { PageModel } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
-import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 
@@ -30,7 +31,6 @@ type CreatePageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 export const checkPageExistenceHandlersFactory: CreatePageHandlersFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
 
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
 
   // define validators for req.body

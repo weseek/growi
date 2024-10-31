@@ -4,7 +4,9 @@ import {
 } from '@tsed/common';
 import readPkgUp from 'read-pkg-up';
 
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { InstallerService } from '~/services/InstallerService';
+/* eslint-enable @typescript-eslint/consistent-type-imports */
 
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 

@@ -5,8 +5,7 @@
  * @typedef {import('micromark-util-types').State} State
  */
 
-import { codes } from 'micromark-util-symbol/codes.js';
-import { types } from 'micromark-util-symbol/types.js';
+import { codes, types } from 'micromark-util-symbol';
 import { ok as assert } from 'uvu/assert';
 
 import { factoryAttributes } from './factory-attributes.js';
@@ -42,11 +41,11 @@ function tokenizeDirectiveText(effects, ok, nok) {
   function start(code) {
     assert(code === codes.dollarSign, 'expected `$`');
     assert(previous.call(self, self.previous), 'expected correct previous');
-    effects.enter('directiveText');
-    effects.enter('directiveTextMarker');
+    effects.enter('directiveGrowiText');
+    effects.enter('directiveGrowiTextMarker');
     effects.consume(code);
-    effects.exit('directiveTextMarker');
-    return factoryName.call(self, effects, afterName, nok, 'directiveTextName');
+    effects.exit('directiveGrowiTextMarker');
+    return factoryName.call(self, effects, afterName, nok, 'directiveGrowiTextName');
   }
 
   /** @type {State} */
@@ -68,7 +67,7 @@ function tokenizeDirectiveText(effects, ok, nok) {
 
   /** @type {State} */
   function afterAttributes(code) {
-    effects.exit('directiveText');
+    effects.exit('directiveGrowiText');
     return ok(code);
   }
 }
@@ -80,9 +79,9 @@ function tokenizeLabel(effects, ok, nok) {
     effects,
     ok,
     nok,
-    'directiveTextLabel',
-    'directiveTextLabelMarker',
-    'directiveTextLabelString',
+    'directiveGrowiTextLabel',
+    'directiveGrowiTextLabelMarker',
+    'directiveGrowiTextLabelString',
   );
 }
 
@@ -93,14 +92,14 @@ function tokenizeAttributes(effects, ok, nok) {
     effects,
     ok,
     nok,
-    'directiveTextAttributes',
-    'directiveTextAttributesMarker',
-    'directiveTextAttribute',
-    'directiveTextAttributeName',
-    'directiveTextAttributeInitializerMarker',
-    'directiveTextAttributeValueLiteral',
-    'directiveTextAttributeValue',
-    'directiveTextAttributeValueMarker',
-    'directiveTextAttributeValueData',
+    'directiveGrowiTextAttributes',
+    'directiveGrowiTextAttributesMarker',
+    'directiveGrowiTextAttribute',
+    'directiveGrowiTextAttributeName',
+    'directiveGrowiTextAttributeInitializerMarker',
+    'directiveGrowiTextAttributeValueLiteral',
+    'directiveGrowiTextAttributeValue',
+    'directiveGrowiTextAttributeValueMarker',
+    'directiveGrowiTextAttributeValueData',
   );
 }
