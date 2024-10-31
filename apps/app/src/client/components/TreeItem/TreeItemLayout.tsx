@@ -74,20 +74,12 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   }, [hasChildren]);
 
   /*
-   * Make sure itemNode.children and currentChildren are synced
-   */
-  useEffect(() => {
-    if (children.length > currentChildren.length) {
-      setCurrentChildren(children);
-    }
-  }, [children, currentChildren.length, targetPathOrId]);
-
-  /*
    * When swr fetch succeeded
    */
   useEffect(() => {
     if (isOpen && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
+      console.log('This is new data!!!!: ', newChildren);
       setCurrentChildren(newChildren);
     }
   }, [data, isOpen, targetPathOrId]);
