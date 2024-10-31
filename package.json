@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "7.1.0-RC.0",
+  "version": "7.1.2-RC.0",
   "description": "Team collaboration software using markdown",
   "license": "MIT",
   "private": "true",
@@ -38,8 +38,7 @@
     "version:preminor": "pnpm version preminor --preid=RC --no-git-tag-version",
     "version:premajor": "pnpm version premajor --preid=RC --no-git-tag-version"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "// comments for defDependencies": {
     "vite-plugin-dts": "v4.2.1 causes the unexpected error 'Cannot find package 'vue-tsc''"
   },
