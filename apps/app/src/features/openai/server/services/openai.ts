@@ -137,7 +137,7 @@ class OpenaiService implements IOpenaiService {
     return newVectorStoreDocument;
   }
 
-  // TODO: 156643
+  // TODO: https://redmine.weseek.co.jp/issues/156643
   // private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
   //   const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
   //   for await (const [index, chunk] of chunks.entries()) {
