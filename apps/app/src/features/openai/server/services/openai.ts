@@ -21,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 import { OpenaiServiceTypes } from '../../interfaces/ai';
 
 import { getClient } from './client-delegator';
-import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
+// import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { oepnaiApiErrorHandler } from './openai-api-error-handler';
 
 const BATCH_SIZE = 100;
@@ -139,6 +139,27 @@ class OpenaiService implements IOpenaiService {
     return newVectorStoreDocument;
   }
 
+  // TODO: https://redmine.weseek.co.jp/issues/156643
+  // private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
+  //   const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
+  //   for await (const [index, chunk] of chunks.entries()) {
+  //     try {
+  //       const file = await toFile(Readable.from(chunk), `${pageId}-chunk-${index}.md`);
+  //       const uploadedFile = await this.client.uploadFile(file);
+  //       prepareVectorStoreFileRelations(pageId, uploadedFile.id, vectorStoreFileRelationsMap);
+  //     }
+  //     catch (err) {
+  //       logger.error(err);
+  //     }
+  //   }
+  // }
+
+  private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
+    const file = await toFile(Readable.from(body), `${pageId}.md`);
+    const uploadedFile = await this.client.uploadFile(file);
+    return uploadedFile;
+  }
+
   private async deleteVectorStore(vectorStoreScopeType: VectorStoreScopeType): Promise<void> {
     const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: vectorStoreScopeType, isDeleted: false });
     if (vectorStoreDocument == null) {
@@ -155,35 +176,21 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  private async uploadFileByChunks(
-      vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap,
-  ) {
-    const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
-    for await (const [index, chunk] of chunks.entries()) {
-      try {
-        const file = await toFile(Readable.from(chunk), `${pageId}-chunk-${index}.md`);
-        const uploadedFile = await this.client.uploadFile(file);
-        prepareVectorStoreFileRelations(vectorStoreRelationId, pageId, uploadedFile.id, vectorStoreFileRelationsMap);
-      }
-      catch (err) {
-        logger.error(err);
-      }
-    }
-  }
-
   async createVectorStoreFile(pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
     const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: PageDocument) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
-          await this.uploadFileByChunks(vectorStore._id, page._id, page.revision.body, vectorStoreFileRelationsMap);
+          const uploadedFile = await this.uploadFile(page._id, page.revision.body);
+          prepareVectorStoreFileRelations(vectorStore._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
-          await this.uploadFileByChunks(vectorStore._id, page._id, pagePopulatedToShowRevision.revision.body, vectorStoreFileRelationsMap);
+          const uploadedFile = await this.uploadFile(page._id, pagePopulatedToShowRevision.revision.body);
+          prepareVectorStoreFileRelations(vectorStore._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
         }
       }
     };
