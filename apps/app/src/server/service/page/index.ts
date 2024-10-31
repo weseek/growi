@@ -1902,8 +1902,11 @@ class PageService implements IPageService {
     ]);
 
     const openaiService = getOpenaiService();
-    const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService?.deleteVectorStoreFile(pageId));
-    await Promise.allSettled(deleteVectorStoreFilePromises);
+    if (openaiService != null) {
+      const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
+      const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService.deleteVectorStoreFile(vectorStore._id, pageId));
+      await Promise.allSettled(deleteVectorStoreFilePromises);
+    }
   }
 
   // delete multiple pages
