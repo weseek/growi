@@ -11,6 +11,7 @@ type Attributes = typeof defaultSchema.attributes;
 export const tagNames: Array<string> = [
   ...defaultSchema.tagNames ?? [],
   '-', 'bdi',
+  'button',
   'col', 'colgroup',
   'data',
   'iframe',
