@@ -161,6 +161,8 @@ jobs:
   run-playwright:
     needs: [build-prod]
 
+    if: ${{ !inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/') }}
+
     runs-on: ubuntu-latest
     container:
       # Match the Playwright version
