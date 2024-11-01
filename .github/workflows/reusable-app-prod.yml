@@ -23,10 +23,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Git LFS
-      run: |
-        git lfs install
-
     - uses: pnpm/action-setup@v4
 
     - uses: actions/setup-node@v4
