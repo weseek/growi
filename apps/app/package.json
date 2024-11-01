@@ -42,7 +42,7 @@
     "reg:run": "reg-suit run",
     "previtest:run:integ": "vitest run -c test-with-vite/download-mongo-binary/vitest.config.ts test-with-vite/download-mongo-binary",
     "//// misc": "",
-    "console": "cross-env NODE_ENV=development pnpm run ts-node --experimental-repl-await src/server/console.js",
+    "repl": "cross-env NODE_ENV=development npm run ts-node src/server/repl.ts",
     "swagger2openapi:apiv3": "sh bin/swagger-jsdoc/generate-spec-apiv3.sh",
     "swagger2openapi:apiv1": "sh bin/swagger-jsdoc/generate-spec-apiv1.sh",
     "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config",
