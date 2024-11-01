@@ -13,11 +13,6 @@ WORKDIR ${optDir}
 # install tools
 RUN apt-get update && apt-get install -y ca-certificates wget curl --no-install-recommends
 
-# install git and git-lfs
-RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
-  && apt-get update && apt-get install -y git git-lfs --no-install-recommends \
-  && git lfs install
-
 # install pnpm
 RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
 ENV PNPM_HOME="/root/.local/share/pnpm"
