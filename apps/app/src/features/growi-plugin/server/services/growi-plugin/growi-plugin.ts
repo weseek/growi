@@ -209,8 +209,10 @@ export class GrowiPluginService implements IGrowiPluginService {
 
   private async unzip(zipFilePath: fs.PathLike, destPath: fs.PathLike): Promise<void> {
     try {
-      const stream = fs.createReadStream(zipFilePath);
-      const unzipFileStream = stream.pipe(unzipStream.Extract({ path: destPath.toString() }));
+      const readZipStream = fs.createReadStream(zipFilePath);
+      const writeUnZipStream = unzipStream.Extract({ path: destPath.toString() });
+
+      const unzipFileStream = readZipStream.on('error', () => { writeUnZipStream.end() }).pipe(writeUnZipStream).on('error', () => { readZipStream.destroy() });
 
       await streamToPromise(unzipFileStream);
     }
