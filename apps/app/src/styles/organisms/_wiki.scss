@@ -139,8 +139,8 @@
     position: relative; // for absolute positioned .code-highlighted-title
   }
 
-  ul,
-  ol {
+  ul:not(.nav),
+  ol:not(.nav) {
     padding-left: 30px;
     margin: 20px 0;
 
@@ -268,8 +268,8 @@
       font-size: 0.9em * $ratio;
     }
 
-    ul,
-    ol {
+    ul:not(.nav),
+    ol:not(.nav) {
       padding-left: 15px;
       margin: 10px 0;
 
