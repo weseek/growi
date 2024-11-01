@@ -826,6 +826,24 @@ As this system is a Retrieval Augmented Generation (RAG), focus on answering que
     type: ValueType.NUMBER,
     default: 36000, // msec
   },
+  OPENAI_VECTOR_STORE_FILE_DELETION_CRON_EXPRESSION: {
+    ns: 'crowi',
+    key: 'openai:vectorStoreFileDeletionCronExpression',
+    type: ValueType.STRING,
+    default: '0 * * * *', // every hour
+  },
+  OPENAI_VECTOR_STORE_FILE_DELETION_BARCH_SIZE: {
+    ns: 'crowi',
+    key: 'openai:vectorStoreFileDeletionBarchSize',
+    type: ValueType.NUMBER,
+    default: 100,
+  },
+  OPENAI_VECTOR_STORE_FILE_DELETION_API_CALL_INTERVAL: {
+    ns: 'crowi',
+    key: 'openai:vectorStoreFileDeletionApiCallInterval',
+    type: ValueType.NUMBER,
+    default: 36000, // msec
+  },
 };
 
 

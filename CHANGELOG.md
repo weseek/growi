@@ -1,8 +1,63 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.22...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.0](https://github.com/weseek/growi/compare/v7.0.23...v7.1.0) - 2024-10-31
+
+### BREAKING CHANGES
+
+* imprv: Update default value for S3\_OBJECT\_ACL (#9332) @yuki-takei
+
+### 💎 Features
+
+* feat: GROWI OpenAI Integration (#9246) @yuki-takei
+
+### 🚀 Improvement
+
+* imprv: Add GitHub Markdown alerts  (#9127) @reiji-h
+* imprv: Upgrade unified and remark-growi-directive (#9048) @reiji-h
+* imprv: ROM users can manage comments (#9101) @WNomunomu
+* imprv: Update default value for S3\_OBJECT\_ACL (#9332) @yuki-takei
+* imprv: Sandbox (#9330) @yuki-takei
+* support: JSDoc for OpenAPI document (#9311) @yuki-takei
+
+
+### 🐛 Bug Fixes
+
+* fix: Couldn't show old revision (#9296) @yuki-takei
+* fix: Replace the word ROM (#9295) @satof3
+* fix: forgot-password API (#9257) @reiji-h
+* fix: Edit button appear for the side of header (#9270) @yuki-takei
+* fix: Ensure text-only paste for mixed content from various sources (#9096) @reiji-h
+* fix: Notification count badge (#9124) @shironegi39
+* fix(ogp): Set an unknown label when the user is not found (#9232) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Migrate to pnpm from yarn v1 (#9249) @yuki-takei
+* support: Omit MongoDB 4.x compatible code (#9334) @yuki-takei
+* support: Pull LFS files with turbo (#9325) @yuki-takei
+* support: Use `pnpm deploy` instead of `turbo prune` (#9323) @yuki-takei
+* support: Maintenance API docs generation (#9302) @yuki-takei
+* support: Improve typings for PageService (#9220) @yuki-takei
+* support: Typescriptize accessTokenParser (#9320) @yuki-takei
+* support: Migrate to pnpm from yarn v1 (#9249) @yuki-takei
+* support: JSDoc for OpenAPI document (#9311) @yuki-takei
+* support: Maintenance API docs generation (#9302) @yuki-takei
+* support: Omit docs route (#9299) @yuki-takei
+
+## [v7.0.23](https://github.com/weseek/growi/compare/v7.0.22...v7.0.23) - 2024-10-24
+
+### 🐛 Bug Fixes
+
+* fix: Couln't show old revision (#9296) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Maintenance API docs generation (#9302) @yuki-takei
+* support: Omit docs route (#9299) @yuki-takei
 
 ## [v7.0.22](https://github.com/weseek/growi/compare/v7.0.21...v7.0.22) - 2024-10-21
 

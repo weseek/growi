@@ -70,23 +70,23 @@
 
     "version:patch": {
       "cache": false,
-      "dependsOn": ["^version:patch", "//#version:patch"]
+      "dependsOn": ["//#version:patch"]
     },
     "version:prerelease": {
       "cache": false,
-      "dependsOn": ["^version:prerelease", "//#version:prerelease"]
+      "dependsOn": ["//#version:prerelease"]
     },
     "version:prepatch": {
       "cache": false,
-      "dependsOn": ["^version:prepatch", "//#version:prepatch"]
+      "dependsOn": ["//#version:prepatch"]
     },
     "version:preminor": {
       "cache": false,
-      "dependsOn": ["^version:preminor", "//#version:preminor"]
+      "dependsOn": ["//#version:preminor"]
     },
     "version:premajor": {
       "cache": false,
-      "dependsOn": ["^version:premajor", "//#version:premajor"]
+      "dependsOn": ["//#version:premajor"]
     }
 
   }
