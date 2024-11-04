@@ -43,13 +43,7 @@ services:
       - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
   pdf-converter:
-    user: node
-    build:
-      context: .
-      dockerfile: ./pdf-converter/Dockerfile
-    restart: unless-stopped
-    ports:
-      - 3010
+    image: mcr.microsoft.com/devcontainers/base:ubuntu
     volumes:
       - ..:/workspace/growi:delegated
       - node_modules:/workspace/growi/node_modules
