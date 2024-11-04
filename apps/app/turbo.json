@@ -13,12 +13,8 @@
       ],
       "outputLogs": "new-only"
     },
-    "pre:lfs": {
-      "outputs": ["resource/fonts/**"],
-      "outputLogs": "new-only"
-    },
     "build": {
-      "dependsOn": ["^build", "pre:styles", "pre:lfs"],
+      "dependsOn": ["^build", "pre:styles"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "next.config.js",
@@ -49,13 +45,13 @@
       "outputLogs": "new-only"
     },
     "dev": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles", "pre:lfs"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles"],
       "cache": false,
       "persistent": true
     },
 
     "launch-dev:ci": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles", "pre:lfs"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles"],
       "cache": false
     },
 
