@@ -8,7 +8,6 @@ services:
       - buildcache_app:/workspace/growi/apps/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
       - page_bulk_export_tmp:/tmp/page-bulk-export
-
     tty: true
 
   mongo:
@@ -46,6 +45,7 @@ services:
     image: mcr.microsoft.com/devcontainers/base:ubuntu
     volumes:
       - ..:/workspace/growi:delegated
+      - pnpm-store:/workspace/growi/.pnpm-store
       - node_modules:/workspace/growi/node_modules
       - page_bulk_export_tmp:/tmp/page-bulk-export
     tty: true
