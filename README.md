@@ -81,9 +81,9 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 
 - Node.js v18.x or v20.x
 - npm 6.x
-- yarn
+- pnpm 9.x
 - [Turborepo](https://turbo.build/repo)
-- MongoDB 4.4 or above
+- MongoDB 6.0 or above
 
 ### Optional Dependencies
 
@@ -95,11 +95,11 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 
 ## Command details
 
-| command           | desc                                                    |
-| ------------------| ------------------------------------------------------- |
-| `yarn app:build`  | Build GROWI app client                                  |
-| `yarn app:server` | Launch GROWI app server                                 |
-| `yarn start`      | Invoke `yarn app:build` and `yarn app:server`           |
+| command               | desc                                                    |
+| --------------------- | ------------------------------------------------------- |
+| `npm run app:build`   | Build GROWI app client                                  |
+| `npm run app:server`  | Launch GROWI app server                                 |
+| `npm run start`       | Invoke `npm run app:build` and `npm run app:server`     |
 
 For more info, see [GROWI Docs: List of npm Scripts](https://docs.growi.org/en/dev/startup-v5/start-development.html#list-of-npm-scripts).
 

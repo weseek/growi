@@ -13,6 +13,17 @@ Object.entries<object>(oneDark).forEach(([key, value]) => {
 });
 
 
+type InlineCodeBlockProps = {
+  children: ReactNode,
+  className?: string,
+}
+
+const InlineCodeBlockSubstance = (props: InlineCodeBlockProps): JSX.Element => {
+  const { children, className, ...rest } = props;
+  return <code className={`code-inline ${className ?? ''}`} {...rest}>{children}</code>;
+};
+
+
 function extractChildrenToIgnoreReactNode(children: ReactNode): ReactNode {
 
   if (children == null) {
@@ -70,15 +81,15 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
 type CodeBlockProps = {
   children: ReactNode,
   className?: string,
-  inline?: string, // "" or undefined
+  inline?: true,
 }
 
 export const CodeBlock = (props: CodeBlockProps): JSX.Element => {
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
   const { className, children, inline } = props;
-  if (inline != null) {
-    return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
+  if (inline) {
+    return <InlineCodeBlockSubstance className={`code-inline ${className ?? ''}`}>{children}</InlineCodeBlockSubstance>;
   }
 
   const match = /language-(\w+)(:?.+)?/.exec(className || '');

@@ -35,7 +35,6 @@ const logger = loggerFactory('growi:routes:search');
  *
  */
 module.exports = function(crowi, app) {
-  // var debug = require('debug')('growi:routes:search')
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
 
@@ -47,7 +46,7 @@ module.exports = function(crowi, app) {
    *
    *   /search:
    *     get:
-   *       tags: [Search, CrowiCompatibles]
+   *       tags: [Search]
    *       operationId: searchPages
    *       summary: /search
    *       description: Search pages

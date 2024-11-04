@@ -1,3 +1,5 @@
+import { notDeepEqual } from 'assert';
+
 import { tagNames, attributes } from './recommended-whitelist';
 
 describe('recommended-whitelist', () => {
@@ -42,6 +44,33 @@ describe('recommended-whitelist', () => {
 
     expect(Object.keys(attributes)).includes('video');
     expect(attributes.iframe).includes('src');
+  });
+
+  test('.attributes.a should allow class and className by excluding partial className specification', () => {
+    expect(attributes).not.toBeNull();
+
+    assert(attributes != null);
+
+    expect(Object.keys(attributes)).includes('a');
+    expect(attributes.a).not.toContainEqual(['className', 'data-footnote-backref']);
+  });
+
+  test('.attributes.ul should allow class and className by excluding partial className specification', () => {
+    expect(attributes).not.toBeNull();
+
+    assert(attributes != null);
+
+    expect(Object.keys(attributes)).includes('a');
+    expect(attributes.a).not.toContainEqual(['className', 'data-footnote-backref']);
+  });
+
+  test('.attributes.li should allow class and className by excluding partial className specification', () => {
+    expect(attributes).not.toBeNull();
+
+    assert(attributes != null);
+
+    expect(Object.keys(attributes)).includes('a');
+    expect(attributes.a).not.toContainEqual(['className', 'data-footnote-backref']);
   });
 
 });

@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:migrate:update-theme-color-for-dark');
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     await Promise.all([
       await Config.findOneAndUpdate({ key: 'customize:theme', value: JSON.stringify('default-dark') }, { value: JSON.stringify('default') }), // update default-dark

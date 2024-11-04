@@ -29,5 +29,5 @@ services:
 
 networks:
   default:
-    external:
-      name: growi_devcontainer_default
+    name: growi_devcontainer_default
+    external: true

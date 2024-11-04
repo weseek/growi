@@ -67,7 +67,7 @@ const isValidObjectCannedACL = (acl: string | null): acl is ObjectCannedACL => {
   return ObjectCannedACLs.includes(acl as ObjectCannedACL);
 };
 /**
- * @see: https://dev.growi.org/5d091f611fe336003eec5bfdz
+ * @see: https://dev.growi.org/5d091f611fe336003eec5bfd
  * @returns ObjectCannedACL
  */
 const getS3PutObjectCannedAcl = (): ObjectCannedACL | undefined => {
