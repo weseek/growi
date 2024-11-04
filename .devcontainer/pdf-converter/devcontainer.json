@@ -14,7 +14,7 @@
   // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "/bin/bash ./.devcontainer/app/postCreateCommand.sh",
+  "postCreateCommand": "/bin/bash ./.devcontainer/pdf-converter/postCreateCommand.sh",
 
   // Configure tool-specific properties.
   "customizations": {
