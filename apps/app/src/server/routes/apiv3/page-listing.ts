@@ -9,6 +9,7 @@ import { query, oneOf } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import loggerFactory from '~/utils/logger';
@@ -60,7 +61,6 @@ const validator = {
  * Routes
  */
 const routerFactory = (crowi: Crowi): Router => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const router = express.Router();

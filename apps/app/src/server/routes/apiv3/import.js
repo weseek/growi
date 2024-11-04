@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { getImportService } from '~/server/service/import';
 import { generateOverwriteParams } from '~/server/service/import/overwrite-params';
 import loggerFactory from '~/utils/logger';
@@ -16,12 +17,6 @@ const multer = require('multer');
 
 
 const router = express.Router();
-
-/**
- * @swagger
- *  tags:
- *    name: Import
- */
 
 /**
  * @swagger
@@ -64,7 +59,6 @@ export default function route(crowi) {
   const { growiBridgeService, socketIoService } = crowi;
   const importService = getImportService(crowi);
 
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);

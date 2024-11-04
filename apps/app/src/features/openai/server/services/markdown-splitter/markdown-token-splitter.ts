@@ -105,7 +105,7 @@ export async function splitMarkdownIntoChunks(
 
   // Split markdown text into chunks
   const markdownFragments = await splitMarkdownIntoFragments(markdownText, model);
-  const chunks = [] as string[];
+  const chunks: string[] = [];
 
   // Group the chunks based on token count
   const fragmentGroupes = groupMarkdownFragments(markdownFragments, maxToken);
@@ -162,7 +162,7 @@ export async function splitMarkdownIntoChunks(
             const charCountForSplit = Math.floor((remainingTokenCount / fragmenTokenCount) * fragmentCharCount);
 
             // Split content based on character count
-            const splitContents = [];
+            const splitContents: string[] = [];
             for (let i = 0; i < fragment.text.length; i += charCountForSplit) {
               splitContents.push(fragment.text.slice(i, i + charCountForSplit));
             }

@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:migrate:add-attachment-type-to-existing-atta
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     // Add attachmentType for wiki page
     // Filter pages where "attachmentType" doesn't exist and "page" is not null
