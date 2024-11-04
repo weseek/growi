@@ -19,7 +19,7 @@ module.exports = {
 
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const User = userModelFactory();
 
@@ -49,7 +49,7 @@ module.exports = {
 
   async down(db) {
     logger.info('Rollback migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({

@@ -15,12 +15,6 @@ const router = express.Router();
 
 /**
  * @swagger
- *  tags:
- *    name: Healthcheck
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:

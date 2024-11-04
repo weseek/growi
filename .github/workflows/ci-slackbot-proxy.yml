@@ -12,7 +12,7 @@ on:
       - .eslint*
       - tsconfig.base.json
       - turbo.json
-      - yarn.lock
+      - pnpm-lock.yaml
       - package.json
       - apps/slackbot-proxy/**
       - '!apps/slackbot-proxy/docker/**'
@@ -35,21 +35,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
-        restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+        cache: 'pnpm'
 
     - name: Restore dist
       uses: actions/cache/restore@v4
@@ -63,9 +54,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn global add turbo
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add turbo --global
+        pnpm install --frozen-lockfile
 
     - name: Lint
       run: |
@@ -110,21 +100,12 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/slackbot-proxy/package.json') }}
-        restore-keys: |
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-          node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+        cache: 'pnpm'
 
     - name: Restore dist
       uses: actions/cache/restore@v4
@@ -138,11 +119,10 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yarn global add turbo
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add turbo --global
+        pnpm install --frozen-lockfile
 
-    - name: yarn dev:ci
+    - name: turbo run dev:ci
       working-directory: ./apps/slackbot-proxy
       run: |
         cp config/ci/.env.local.for-ci .env.development.local
@@ -198,36 +178,20 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache: 'pnpm'
 
     - name: Install turbo
       run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/slackbot-proxy
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-slackbot-prxy-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-slackbot-proxy-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+        pnpm add turbo --global
 
     - name: Install dependencies
       run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm install --frozen-lockfile
 
     - name: Restore dist
       uses: actions/cache/restore@v4
@@ -244,15 +208,17 @@ jobs:
       run: |
         turbo run build
 
-    - name: Install dependencies for production
+    - name: Assembling all dependencies
       run: |
-        yarn --production
+        rm -rf out
+        pnpm deploy out --prod --filter @growi/slackbot-proxy
+        rm -rf apps/slackbot-proxy/node_modules && mv out/node_modules apps/slackbot-proxy/node_modules
 
-    - name: yarn start:prod:ci
+    - name: pnpm run start:prod:ci
       working-directory: ./apps/slackbot-proxy
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
-        yarn start:prod:ci
+        pnpm run start:prod:ci
       env:
         SERVER_URI: http://localhost:8080
         TYPEORM_CONNECTION: mysql

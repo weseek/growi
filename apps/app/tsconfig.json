@@ -12,7 +12,6 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      "debug": ["./src/server/utils/logger/alias-for-debug"]
     },
 
     /* TODO: remove below flags for strict checking */

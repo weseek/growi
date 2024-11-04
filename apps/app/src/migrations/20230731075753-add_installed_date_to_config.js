@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
 module.exports = {
   async up() {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
     const User = userModelFactory();
 
     const appInstalled = await Config.findOne({ key: 'app:installed' });
@@ -36,7 +36,7 @@ module.exports = {
 
   async down() {
     logger.info('Rollback migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const appInstalled = await Config.findOne({ key: 'app:installed' });
     if (appInstalled != null) {

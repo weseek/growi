@@ -23,12 +23,6 @@ const router = express.Router();
 
 /**
  * @swagger
- *  tags:
- *    name: CustomizeSetting
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:

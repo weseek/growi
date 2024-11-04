@@ -1,44 +1,45 @@
-// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.117.1/containers/javascript-node-12-mongo
-// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
   "name": "GROWI-Dev",
-  "dockerComposeFile": "../docker-compose.yml",
+  "dockerComposeFile": "../compose.yml",
   "service": "app",
   "workspaceFolder": "/workspace/growi",
 
-  // Set *default* container specific settings.json values on container create.
-  "settings": {
-    "terminal.integrated.defaultProfile.linux": "bash"
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20.18.0"
+    }
   },
 
-  // Add the IDs of extensions you want installed when the container is created.
-  "extensions": [
-    "dbaeumer.vscode-eslint",
-    "mhutchie.git-graph",
-    "eamodio.gitlens",
-    "github.vscode-pull-request-github",
-    "cschleiden.vscode-github-actions",
-    "cweijan.vscode-database-client2",
-    "mongodb.mongodb-vscode",
-    "msjsdiag.debugger-for-chrome",
-    "firefox-devtools.vscode-firefox-debug",
-    "editorconfig.editorconfig",
-    "shinnn.stylelint",
-    "stylelint.vscode-stylelint",
-    "vitest.explorer",
-    "ms-playwright.playwright"
-  ],
-
-  // Uncomment the next line if you want start specific services in your Docker Compose config.
-  // "runServices": [],
-
-  // Uncomment the line below if you want to keep your containers running after VS Code shuts down.
-  // "shutdownAction": "none",
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "git-lfs pull & turbo run bootstrap",
+  "postCreateCommand": "/bin/bash ./.devcontainer/app/postCreateCommand.sh",
 
-  // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-  "remoteUser": "node"
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "mhutchie.git-graph",
+        "eamodio.gitlens",
+        "github.vscode-pull-request-github",
+        "cschleiden.vscode-github-actions",
+        "cweijan.vscode-database-client2",
+        "mongodb.mongodb-vscode",
+        "msjsdiag.debugger-for-chrome",
+        "firefox-devtools.vscode-firefox-debug",
+        "editorconfig.editorconfig",
+        "shinnn.stylelint",
+        "stylelint.vscode-stylelint",
+        "vitest.explorer",
+        "ms-playwright.playwright"
+      ],
+    }
+  },
+
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
 }
