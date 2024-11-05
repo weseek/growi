@@ -111,6 +111,29 @@ ___
 ```
 
 
+# 脚注
+
+您可以使用此括号语法为您的内容添加脚注：
+
+Here is a simple footnote[^1].
+
+A footnote can also have multiple lines[^2].
+
+[^1]: My reference.
+[^2]: To add line breaks within a footnote, prefix new lines with 2 spaces.
+  This is a second line.
+
+```markdown
+Here is a simple footnote[^1].
+
+A footnote can also have multiple lines[^2].
+
+[^1]: My reference.
+[^2]: To add line breaks within a footnote, prefix new lines with 2 spaces.
+  This is a second line.
+```
+
+
 # 表情符号
 
 您可以通过在冒号 `:` 后输入表情符号名称来添加表情符号。

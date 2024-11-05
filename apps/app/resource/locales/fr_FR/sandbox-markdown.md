@@ -113,6 +113,29 @@ ___
 ```
 
 
+# Footnotes
+
+You can add footnotes to your content by using this bracket syntax:
+
+Here is a simple footnote[^1].
+
+A footnote can also have multiple lines[^2].
+
+[^1]: My reference.
+[^2]: To add line breaks within a footnote, prefix new lines with 2 spaces.
+  This is a second line.
+
+```markdown
+Here is a simple footnote[^1].
+
+A footnote can also have multiple lines[^2].
+
+[^1]: My reference.
+[^2]: To add line breaks within a footnote, prefix new lines with 2 spaces.
+  This is a second line.
+```
+
+
 # emoji
 
 Vous pouvez ajouter des emojis à votre texte en tapant le nom de l'emoji après un deux-points `:`.
