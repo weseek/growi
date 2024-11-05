@@ -14,11 +14,11 @@ const router = express.Router();
  *        properties:
  *          growiVersion:
  *            type: string
- *            description: npm version or '-'
+ *            description: GROWI version or '-'
  *            example: 7.1.0-RC.0
  *          nodeVersion:
  *            type: string
- *            description: npm version or '-'
+ *            description: node version or '-'
  *            example: 20.2.0
  *          npmVersion:
  *            type: string
@@ -26,11 +26,11 @@ const router = express.Router();
  *            example: 9.6.6
  *          pnpmVersion:
  *            type: string
- *            description: npm version or '-'
+ *            description: pnpm version or '-'
  *            example: 9.12.3
  *          envVars:
  *            type: object
- *            description: npm version or '-'
+ *            description: environment variables
  *            additionalProperties:
  *              type: string
  *            example: '{"FILE_UPLOAD":"mongodb","APP_SITE_URL":"http://localhost:3000","ELASTICSEARCH_URI":"http://elasticsearch:9200/growi","ELASTICSEARCH_REQUEST_TIMEOUT":15000,"ELASTICSEARCH_REJECT_UNAUTHORIZED":true,"OGP_URI":"http://ogp:8088","QUESTIONNAIRE_SERVER_ORIGIN":"http://host.docker.internal:3003"}'
