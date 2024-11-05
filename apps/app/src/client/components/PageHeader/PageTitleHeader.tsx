@@ -129,6 +129,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
             ${isRenameInputShown ? 'invisible' : ''} text-truncate
             ${isMovable ? 'border border-2 rounded-2' : ''} ${borderColorClass}
           `}
+          style={{ maxWidth: inputMaxWidth }}
           onClick={onClickPageTitle}
         >
           {pageTitle}

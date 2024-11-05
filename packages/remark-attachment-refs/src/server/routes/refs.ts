@@ -69,7 +69,7 @@ const loginRequiredFallback = (req, res) => {
 export const routesFactory = (crowi): any => {
 
   const loginRequired = crowi.require('../middlewares/login-required')(crowi, true, loginRequiredFallback);
-  const accessTokenParser = crowi.require('../middlewares/access-token-parser')(crowi);
+  const accessTokenParser = crowi.accessTokenParser;
 
   const router = Router();
 

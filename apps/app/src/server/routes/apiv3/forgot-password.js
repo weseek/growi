@@ -43,6 +43,14 @@ module.exports = (crowi) => {
           return (value === req.body.newPassword);
         }),
     ],
+    email: [
+      body('email')
+        .isEmail()
+        .escape()
+        .withMessage('message.Email format is invalid')
+        .notEmpty()
+        .withMessage('message.Email field is required'),
+    ],
   };
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
@@ -61,7 +69,7 @@ module.exports = (crowi) => {
     });
   }
 
-  router.post('/', checkPassportStrategyMiddleware, addActivity, async(req, res) => {
+  router.post('/', checkPassportStrategyMiddleware, validator.email, apiV3FormValidator, addActivity, async(req, res) => {
     const { email } = req.body;
     const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
@@ -71,7 +79,8 @@ module.exports = (crowi) => {
 
       // when the user is not found or active
       if (user == null || user.status !== 2) {
-        await sendPasswordResetEmail('notActiveUser', locale, email, appUrl);
+        // Do not send emails to non GROWI user
+        // For security reason, do not use error messages like "Email does not exist"
         return res.apiv3();
       }
 

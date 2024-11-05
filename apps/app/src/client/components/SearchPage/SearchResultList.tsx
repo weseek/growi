@@ -5,14 +5,14 @@ import React, {
 
 import {
   type IPageInfoForListing, type IPageWithMeta, isIPageInfoForListing,
-} from '@growi/core';
+} from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 
 import type { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
-import { mutatePageTree, useSWRxPageInfoForList } from '~/stores/page-listing';
+import { mutatePageTree, useSWRxPageInfoForList, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
@@ -94,6 +94,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     toastSuccess(t('duplicated_pages', { fromPath }));
 
     mutatePageTree();
+    mutateRecentlyUpdated();
     mutateSearching();
   }, [t]);
 
@@ -101,6 +102,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     toastSuccess(t('renamed_pages', { path }));
 
     mutatePageTree();
+    mutateRecentlyUpdated();
     mutateSearching();
   }, [t]);
 
@@ -118,6 +120,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
       toastSuccess(t('deleted_pages', { path }));
     }
     mutatePageTree();
+    mutateRecentlyUpdated();
     mutateSearching();
   }, [t]);
 
@@ -127,8 +130,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
         return (
           <PageListItemL
             key={page.data._id}
-            // eslint-disable-next-line no-return-assign
-            ref={c => itemsRef.current[i] = c}
+            ref={(c) => { itemsRef.current[i] = c }}
             page={page}
             isEnableActions={!isGuestUser}
             isReadOnlyUser={!!isReadOnlyUser}

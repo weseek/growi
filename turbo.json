@@ -40,6 +40,7 @@
         "src/**/*.js", "src/**/*.jsx",
         "src/**/*.ts", "src/**/*.tsx",
         "src/**/*.css", "src/**/*.scss",
+        "package.json",
         "tsconfig*.json",
         "vite*.ts"
       ],
@@ -67,6 +68,7 @@
         "src/**/*.js", "src/**/*.jsx",
         "src/**/*.ts", "src/**/*.tsx",
         "src/**/*.css", "src/**/*.scss",
+        "package.json",
         "tsconfig*.json",
         "vite*.ts"
       ],
@@ -109,10 +111,19 @@
       "outputLogs": "new-only"
     },
 
-    "version": {
+    "//#version:patch": {
       "cache": false
     },
-    "//#version": {
+    "//#version:prerelease": {
+      "cache": false
+    },
+    "//#version:prepatch": {
+      "cache": false
+    },
+    "//#version:preminor": {
+      "cache": false
+    },
+    "//#version:premajor": {
       "cache": false
     }
 

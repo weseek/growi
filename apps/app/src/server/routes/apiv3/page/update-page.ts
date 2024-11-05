@@ -8,12 +8,15 @@ import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-pa
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { getOpenaiService } from '~/features/openai/server/services/openai';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
@@ -44,7 +47,6 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
   const Revision = mongoose.model<IRevisionHasId>('Revision');
 
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
   // define validators for req.body
@@ -68,7 +70,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   ];
 
 
-  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument, previousRevision: IRevisionHasId | null) {
+  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: HydratedDocument<PageDocument>, previousRevision: IRevisionHasId | null) {
     // Reflect the updates in ydoc
     const origin = req.body.origin;
     if (origin === Origin.View || origin === undefined) {
@@ -113,6 +115,15 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       catch (err) {
         logger.error('Create user notification failed', err);
       }
+    }
+
+    // Rebuild vector store file
+    try {
+      const openaiService = getOpenaiService();
+      await openaiService?.rebuildVectorStore(updatedPage);
+    }
+    catch (err) {
+      logger.error('Rebuild vector store failed', err);
     }
   }
 
@@ -168,7 +179,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
-      let updatedPage: PageDocument;
+      let updatedPage: HydratedDocument<PageDocument>;
       let previousRevision: IRevisionHasId | null;
       try {
         const {
