@@ -11,17 +11,17 @@ module.exports = {
       url: 'https://demo.growi.org/_api/v3',
     },
   ],
-  security: [
-    {
-      api_key: [],
-    },
-  ],
   components: {
     securitySchemes: {
       api_key: {
         type: 'apiKey',
         name: 'access_token',
         in: 'query',
+      },
+      cookieAuth: {
+        type: 'session',
+        in: 'cookie',
+        name: 'connect.sid',
       },
     },
   },
