@@ -814,6 +814,12 @@ As this system is a Retrieval Augmented Generation (RAG), focus on answering que
     type: ValueType.STRING,
     default: '0 * * * *', // every hour
   },
+  OPENAI_THREAD_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST: {
+    ns: 'crowi',
+    key: 'app:openaiThreadDeletionCronMaxMinutesUntilRequest',
+    type: ValueType.NUMBER,
+    default: 60,
+  },
   OPENAI_THREAD_DELETION_BARCH_SIZE: {
     ns: 'crowi',
     key: 'openai:threadDeletionBarchSize',
@@ -831,6 +837,12 @@ As this system is a Retrieval Augmented Generation (RAG), focus on answering que
     key: 'openai:vectorStoreFileDeletionCronExpression',
     type: ValueType.STRING,
     default: '0 * * * *', // every hour
+  },
+  OPENAI_VECTOR_STORE_FILE_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST: {
+    ns: 'crowi',
+    key: 'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest',
+    type: ValueType.NUMBER,
+    default: 60,
   },
   OPENAI_VECTOR_STORE_FILE_DELETION_BARCH_SIZE: {
     ns: 'crowi',

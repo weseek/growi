@@ -16,6 +16,8 @@ class VectorStoreFileDeletionCronService {
 
   vectorStoreFileDeletionCronExpression: string;
 
+  vectorStoreFileDeletionCronMaxMinutesUntilRequest: number;
+
   vectorStoreFileDeletionBarchSize: number;
 
   vectorStoreFileDeletionApiCallInterval: number;
@@ -35,6 +37,7 @@ class VectorStoreFileDeletionCronService {
 
     this.openaiService = openaiService;
     this.vectorStoreFileDeletionCronExpression = configManager.getConfig('crowi', 'openai:vectorStoreFileDeletionCronExpression');
+    this.vectorStoreFileDeletionCronMaxMinutesUntilRequest = configManager.getConfig('crowi', 'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest');
     this.vectorStoreFileDeletionBarchSize = configManager.getConfig('crowi', 'openai:vectorStoreFileDeletionBarchSize');
     this.vectorStoreFileDeletionApiCallInterval = configManager.getConfig('crowi', 'openai:vectorStoreFileDeletionApiCallInterval');
 
@@ -51,8 +54,8 @@ class VectorStoreFileDeletionCronService {
   private generateCronJob() {
     return nodeCron.schedule(this.vectorStoreFileDeletionCronExpression, async() => {
       try {
-        // Sleep for a random number of minutes between 0 and 60 to distribute request load
-        const randomMilliseconds = getRandomIntInRange(0, 60) * 60 * 1000;
+        // Random fractional sleep to distribute request timing among GROWI apps
+        const randomMilliseconds = getRandomIntInRange(0, this.vectorStoreFileDeletionCronMaxMinutesUntilRequest) * 60 * 1000;
         this.sleep(randomMilliseconds);
 
         await this.executeJob();
