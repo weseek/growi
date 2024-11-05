@@ -1,6 +1,40 @@
-# 什么是沙盒？
-- 在此页面上，您将找到帮助您掌握 GROWI 的技巧
-- 使用此页面层次结构下的参考资料随意丰富页面内容
+# 欢迎来到 GROWI 沙盒！
+
+> [!NOTE]
+> **什么是沙盒？**
+>
+> 这是一个您可以自由编辑的练习页面。它是尝试新事物的绝佳场所！
+
+## :beginner: 初学者指南
+
+使用 GROWI，您可以使用名为“Markdown”的符号轻松创建具有视觉吸引力的页面。
+
+通过使用 Markdown，您可以做这样的事情！
+
+- 用**粗体**或*斜体*强调文本
+- 创建项目符号或编号列表
+- [插入链接](#-link)
+- 创建表格
+- 添加代码块
+
+还可以使用各种其他装饰。
+
+## 让我们尝试一下！
+
+1. 随意编辑此页面
+1. 无需担心犯错
+1. 您随时可以撤销更改
+1. 您还可以从其他人的编辑中学习
+
+> [!IMPORTANT]
+> **对于管理员**
+>
+> 沙盒是学习的重要场所：
+> - 作为新成员习惯 GROWI 的第一步
+> - 作为 Markdown 的练习场
+> - 作为团队内部的沟通工具
+> - 即使此页面变得杂乱无章，这也是积极学习的标志。定期清理是好的，但建议保持其作为自由实验空间的性质。
+
 
 # :closed_book: 标题和段落
 - 通过插入标题和段落，您可以使页面上的文本更易于阅读
@@ -44,63 +78,23 @@ Lorem ipsum dolor sat amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur。 Excepteur sint occaecat cupidatat non proident，sunt in culpa qui officia deserunt mollit anim id est laborum。
 
-## 水平线
-- 用三个或更多连续的星号 `*` 或下划线 `_` 插入水平线
 
-#### 示例
-下面是一条水平线
-***
-下面是一条水平线
-___
-
-```markdown
-下面是一条水平线
-***
-下面是一条水平线
-___
-```
-
-# :green_book: 文本样式
+# :blue_book: 文本样式
 - 可以应用各种样式来丰富句子的文本表达
     - 也可以通过选择编辑屏幕底部的工具栏图标轻松应用这些样式
 
-## 斜体
-- 用星号 `*` 或下划线 `_` 括住文本。
+| Style | 语法 | 键盘快捷键 | 示例 | 输出 |
+|-------|------|------------|------|------|
+| 加粗 | `** **` 或 `__ __` | (TBD) | `**这是粗体文本**` | **这是粗体文本** |
+| 斜体 | `* *` 或 `_ _` | (TBD) | `_这是斜体文本_` | *这是斜体文本* |
+| 删除线 | `~~ ~~` | 无 | `~~这是错误文本~~` | ~~这是错误文本~~ |
+| 粗体和嵌入的斜体 | `** **` 和 `_ _` | (TBD) | `**This text is _extremely_ important**` | **This text is _extremely_ important** |
+| 全部粗体和斜体 | `*** ***` | 无 | ***所有这些文本都很重要*** | ***所有这些文本都很重要*** |
+| 下标 | `<sub> </sub>` | 无 | This is a <sub>subscript</sub> text | 这是<sub>下标</sub>文本 |
+| 上标 | `<sup> </sup>` | 无 | This is a <sup>superscript</sup> text | 这是<sup>上标</sup>文本 |
 
-#### 示例
-- 本句用 *Italic* 表示强调
-- 本句用 _Italic_ 表示强调
 
-```markdown
-- 本句用 *Italic* 表示强调
-- 本句用 _Italic_ 表示强调
-```
-
-## 粗体
-- 用两个星号 `*` 或两个下划线 `_` 括住文本
-
-#### 示例
-- 本句用 **Bold** 表示强调
-- 本句用 __Bold__ 表示强调
-
-```markdown
-- 本句用 **Bold** 表示强调
-- 本句用 __Bold__ 表示强调
-```
-
-## 斜体 & 粗体
-- 用三个星号 `*` 或三个下划线 `_` 括住文本
-
-#### 示例
-- 本句用 ***Italic & 粗体*** 表示强调
-- 本句用 ___Italic & 粗体___ 表示强调
-
-```markdown
--本句使用 ***斜体和粗体*** 表示强调
-- 本句使用 ___斜体和粗体___ 表示强调
-```
-
-# :orange_book: 插入列表
+# :green_book: 插入列表
 ## 项目符号列表
 - 通过在行首使用连字符 `-`、加号 `+` 或星号 `*` 插入项目符号列表
 
@@ -127,17 +121,9 @@ ___
 1. 此句子出现在项目符号列表中
     - 此句子出现在项目符号列表中
 
-## 任务列表
-- 通过写入 `[] ` 插入未选中的复选框列表
-    - 通过写入 `[x]` 选中复选框
 
-#### 示例
-- [ ] 任务 1
-    - [x] 任务 1-1
-    - [ ] 任务 1-2
-- [x] 任务 2
 
-# :blue_book: 链接
+# :ledger: 链接
 
 ## 自动链接
 只需输入 URL，链接就会自动生成。
@@ -176,131 +162,12 @@ https://www.google.co.jp
 - [[如何写公式？>./Math]]
 ```
 
-# :notebook: 其他
-## 区块引用
-- 在段落开头放置 `>` 即可使用带引号的表达式
-    - 可以使用一系列 `>` 字符来表示多个引号
-- 列表和其他元素可以在区块引用中一起使用
 
-#### 示例
-> - 引号
-> - 引号
->> 多个引号需要插入更多 `>`
+# :notebook: 更多应用
+- [了解更多关于 Markdown](/Sandbox/Markdown)
 
-```markdown
-> - 引号
-> - 引号
->> 多个引号需要插入更多 `>`
-```
+- [进一步装饰你的页面 (Bootstrap5)](/Sandbox/Bootstrap5)
 
-## 代码
-- 可以通过在三个 `` ` `` 中添加代码来表示代码
+- [如何表示图表 (Diagrams)](/Sandbox/Diagrams)
 
-####示例
-
-```markdown
-在此处添加代码
-
-换行符和段落可以按原样反映在代码中
-```
-
-#### 示例（源代码）
-
-```javascript:mersenne-twister.js
-function MersenneTwister(seed) {
-  if (arguments.length == 0) {
-    seed = new Date().getTime();
-  }
-
-  this._mt = new Array(624);
-  this.setSeed(seed);
-}
-```
-
-## 内联代码
-- 将单词括在 `` ` `` 中以制作内联代码
-
-#### 示例
-以下是 `内联代码`
-
-## 表格
-
-### 通用语法
-
-#### 示例
-
-| Left align | Right align | Center align |
-|:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
-
-```markdown
-| Left align | Right align | Center align |
-|:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
-```
-
-### CSV / TSV
-
-#### 示例
-
-``` tsv
-内容单元格 内容单元格
-内容单元格 内容单元格
-```
-
-~~~
-``` csv
-内容单元格,内容单元格
-内容单元格,内容单元格
-```
-~~~
-
-~~~
-``` tsv
-内容单元格 内容单元格
-内容单元格 内容单元格
-```
-~~~
-
-### CSV / TSV (带标题)
-
-#### 示例
-
-``` tsv-h
-第一个标题 第二个标题
-内容单元格 内容单元格
-内容单元格 内容单元格
-```
-
-~~~
-``` csv-h
-第一个标题,第二个标题
-内容单元格,内容单元格
-内容单元格,内容单元格
-```
-~~~
-
-~~~
-``` tsv-h
-第一个标题 第二个标题
-内容单元格 内容单元格
-内容单元格 内容单元格
-```
-~~~
-
-# :ledger: 更多应用
-- [Bootstrap](/Sandbox/Bootstrap)
-
-- [Diagrams](/Sandbox/Diagrams)
-
-- [Math](/Sandbox/Math)
+- [如何表示数学公式 (Math)](/Sandbox/Math)
