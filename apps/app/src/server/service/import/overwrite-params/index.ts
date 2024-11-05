@@ -1,4 +1,4 @@
-import type GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option';
+import type { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
 import { isImportOptionForPages } from '~/models/admin/import-option-for-pages';
 
 import type { OverwriteParams } from '../import-settings';

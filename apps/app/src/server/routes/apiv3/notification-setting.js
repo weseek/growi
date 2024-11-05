@@ -43,12 +43,6 @@ const validator = {
 
 /**
  * @swagger
- *  tags:
- *    name: NotificationSetting
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:

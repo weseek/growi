@@ -7,6 +7,7 @@ import {
   type IPage,
   GroupType, type HasObjectId,
 } from '@growi/core';
+import type { IPagePopulatedToShowRevision } from '@growi/core/dist/interfaces';
 import { getIdForRef, isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -50,8 +51,8 @@ export interface PageDocument extends IPage, Document<Types.ObjectId> {
   [x:string]: any // for obsolete methods
   getLatestRevisionBodyLength(): Promise<number | null | undefined>
   calculateAndUpdateLatestRevisionBodyLength(this: PageDocument): Promise<void>
+  populateDataToShowRevision(shouldExcludeBody?: boolean): Promise<IPagePopulatedToShowRevision>
 }
-
 
 type TargetAndAncestorsResult = {
   targetAndAncestors: PageDocument[]
@@ -81,6 +82,7 @@ export type CreateMethod = (path: string, body: string, user, options: IOptionsF
 
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
+  createEmptyPage(path: string, parent, descendantCount?: number): Promise<HydratedDocument<PageDocument>>
   findByIdAndViewer(pageId: ObjectIdLike, user, userGroups?, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
   findByIdsAndViewer(
     pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
@@ -569,14 +571,13 @@ export class PageQueryBuilder {
 }
 
 schema.statics.createEmptyPage = async function(
-    path: string, parent: any, descendantCount = 0, // TODO: improve type including IPage at https://redmine.weseek.co.jp/issues/86506
-): Promise<PageDocument & { _id: any }> {
+    path: string, parent: any, descendantCount = 0,
+): Promise<HydratedDocument<PageDocument>> {
   if (parent == null) {
     throw Error('parent must not be null');
   }
 
-  const Page = this;
-  const page = new Page();
+  const page = new this();
   page.path = path;
   page.isEmpty = true;
   page.parent = parent;

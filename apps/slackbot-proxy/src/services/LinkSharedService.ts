@@ -3,7 +3,9 @@ import type { WebClient } from '@slack/web-api';
 import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 
-import type { RelationRepository } from '~/repositories/relation';
+// needed to import class (not type) for injection
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
+import { RelationRepository } from '~/repositories/relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:LinkSharedService');

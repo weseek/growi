@@ -8,7 +8,7 @@ export const login = async(page: Page): Promise<void> => {
   // Perform authentication steps. Replace these actions with your own.
   await page.goto('/admin');
 
-  const loginForm = await page.$('form#login-form');
+  const loginForm = await page.getByRole('form');
 
   if (loginForm != null) {
     await page.getByLabel('Username or E-mail').fill('admin');

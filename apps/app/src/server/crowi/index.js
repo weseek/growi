@@ -12,6 +12,8 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
+import OpenaiThreadDeletionCronService from '~/features/openai/server/services/thread-deletion-cron';
+import OpenaiVectorStoreFileDeletionCronService from '~/features/openai/server/services/vector-store-file-deletion-cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
@@ -19,6 +21,7 @@ import { projectRoot } from '~/utils/project-dir-utils';
 
 import { instanciate as instanciateAnnouncementService } from '../../features/announcement/server/service/announcement';
 import UserEvent from '../events/user';
+import { accessTokenParser } from '../middlewares/access-token-parser';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
@@ -51,6 +54,12 @@ const sep = path.sep;
 
 class Crowi {
 
+  /**
+   * For retrieving other packages
+   * @type {(req: import('express').Request, res: import('express').Response, next: import('express').NextFunction) => Promise<void>}
+   */
+  accessTokenParser;
+
   /** @type {AppService} */
   appService;
 
@@ -79,6 +88,8 @@ class Crowi {
 
     this.express = null;
 
+    this.accessTokenParser = accessTokenParser;
+
     this.config = {};
     this.configManager = null;
     this.s2sMessagingService = null;
@@ -104,6 +115,8 @@ class Crowi {
     this.questionnaireService = null;
     this.questionnaireCronService = null;
     this.announcementService = null;
+    this.openaiThreadDeletionCronService = null;
+    this.openaiVectorStoreFileDeletionCronService = null;
 
     this.tokens = null;
 
@@ -315,6 +328,12 @@ Crowi.prototype.setupSocketIoService = async function() {
 Crowi.prototype.setupCron = function() {
   this.questionnaireCronService = new QuestionnaireCronService(this);
   this.questionnaireCronService.startCron();
+
+  this.openaiThreadDeletionCronService = new OpenaiThreadDeletionCronService();
+  this.openaiThreadDeletionCronService.startCron();
+
+  this.openaiThreadDeletionCronService = new OpenaiVectorStoreFileDeletionCronService();
+  this.openaiThreadDeletionCronService.startCron();
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {

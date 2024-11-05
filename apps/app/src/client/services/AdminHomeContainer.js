@@ -31,7 +31,7 @@ export default class AdminHomeContainer extends Container {
       growiVersion: null,
       nodeVersion: null,
       npmVersion: null,
-      yarnVersion: null,
+      pnpmVersion: null,
       copyState: this.copyStateValues.DEFAULT,
       installedPlugins: null,
       isV5Compatible: null,
@@ -64,7 +64,7 @@ export default class AdminHomeContainer extends Container {
         growiVersion: adminHomeParams.growiVersion,
         nodeVersion: adminHomeParams.nodeVersion,
         npmVersion: adminHomeParams.npmVersion,
-        yarnVersion: adminHomeParams.yarnVersion,
+        pnpmVersion: adminHomeParams.pnpmVersion,
         envVars: adminHomeParams.envVars,
         isV5Compatible: adminHomeParams.isV5Compatible,
         isMaintenanceMode: adminHomeParams.isMaintenanceMode,
@@ -103,7 +103,7 @@ export default class AdminHomeContainer extends Container {
 |GROWI     |${this.state.growiVersion}|
 |node.js   |${this.state.nodeVersion}|
 |npm       |${this.state.npmVersion}|
-|yarn      |${this.state.yarnVersion}|
+|pnpm      |${this.state.pnpmVersion}|
 |Using Docker|yes/no|
 |Using [growi-docker-compose][growi-docker-compose]|yes/no|
 

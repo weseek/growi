@@ -1,5 +1,11 @@
 # @growi/core-styles
 
+## 1.1.0
+
+### Minor Changes
+
+- [#9204](https://github.com/weseek/growi/pull/9204) [`3af5dac`](https://github.com/weseek/growi/commit/3af5dac35ecadfb70c15d4511575d649f332696e) Thanks [@yuki-takei](https://github.com/yuki-takei)! - add $growi-ai-purple color
+
 ## 1.0.0
 
 ### Major Changes

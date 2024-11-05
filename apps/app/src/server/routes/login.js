@@ -6,7 +6,6 @@ import loggerFactory from '~/utils/logger';
 // because this file is a deprecated legacy of Crowi
 
 module.exports = function(crowi, app) {
-  const debug = require('debug')('growi:routes:login');
   const logger = loggerFactory('growi:routes:login');
   const path = require('path');
   const User = crowi.model('User');
@@ -163,7 +162,7 @@ module.exports = function(crowi, app) {
         }
       }
       if (errors.length > 0) {
-        debug('isError user register error', errOn);
+        logger.debug('isError user register error', errOn);
         return res.apiv3Err(errors, 400);
       }
 

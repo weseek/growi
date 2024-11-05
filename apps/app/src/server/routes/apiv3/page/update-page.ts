@@ -4,15 +4,19 @@ import type {
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { getOpenaiService } from '~/features/openai/server/services/openai';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
@@ -26,6 +30,7 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page:update-page');
 
@@ -42,7 +47,6 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
   const Revision = mongoose.model<IRevisionHasId>('Revision');
 
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
   // define validators for req.body
@@ -66,7 +70,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   ];
 
 
-  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument, previousRevision: IRevisionHasId | null) {
+  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: HydratedDocument<PageDocument>, previousRevision: IRevisionHasId | null) {
     // Reflect the updates in ydoc
     const origin = req.body.origin;
     if (origin === Origin.View || origin === undefined) {
@@ -112,6 +116,15 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         logger.error('Create user notification failed', err);
       }
     }
+
+    // Rebuild vector store file
+    try {
+      const openaiService = getOpenaiService();
+      await openaiService?.rebuildVectorStore(updatedPage);
+    }
+    catch (err) {
+      logger.error('Rebuild vector store failed', err);
+    }
   }
 
   const addActivity = generateAddActivityMiddleware(crowi);
@@ -121,7 +134,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     validator, apiV3FormValidator,
     async(req: UpdatePageRequest, res: ApiV3Response) => {
       const {
-        pageId, revisionId, body, origin,
+        pageId, revisionId, body, origin, grant,
       } = req.body;
 
       const sanitizeRevisionId = revisionId == null ? undefined : generalXssFilter.process(revisionId);
@@ -137,6 +150,12 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       // check page existence (for type safety)
       if (currentPage == null) {
         return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
+      }
+
+      const isGrantImmutable = isTopPage(currentPage.path) || isUsersProtectedPages(currentPage.path);
+
+      if (grant != null && grant !== currentPage.grant && isGrantImmutable) {
+        return res.apiv3Err(new ErrorV3('The grant settings for the specified page cannot be modified.', PageUpdateErrorCode.FORBIDDEN), 403);
       }
 
       if (currentPage != null) {
@@ -160,11 +179,11 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
-      let updatedPage: PageDocument;
+      let updatedPage: HydratedDocument<PageDocument>;
       let previousRevision: IRevisionHasId | null;
       try {
         const {
-          grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
+          userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
         } = req.body;
         const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin, wip };
         if (grant != null) {
