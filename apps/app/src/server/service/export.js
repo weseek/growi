@@ -375,7 +375,10 @@ class ExportService {
     const output = fs.createWriteStream(zipFile);
 
     // pipe archive data to the file
-    archive.pipe(output);
+    archive
+      .on('error', () => { output.end() })
+      .pipe(output)
+      .on('error', () => { archive.destroy() });
 
     // finalize the archive (ie we are done appending files but streams have to finish yet)
     // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
