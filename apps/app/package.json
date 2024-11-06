@@ -282,7 +282,7 @@
     "eslint-plugin-regex": "^1.8.0",
     "fslightbox-react": "^1.7.6",
     "handsontable": "=6.2.2",
-    "happy-dom": "^15.7.4",
+    "happy-dom": "^15.10.1",
     "i18next-chained-backend": "^4.6.2",
     "i18next-hmr": "^3.0.4",
     "i18next-http-backend": "^2.5.0",
