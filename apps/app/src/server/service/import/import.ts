@@ -379,7 +379,11 @@ export class ImportService {
    */
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
-    const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
+    const parseStream = unzipStream.Parse();
+    const unzipStreamPipe = readStream
+      .on('error', () => { parseStream.end() })
+      .pipe(parseStream)
+      .on('error', () => { readStream.destroy() });
     const files: string[] = [];
 
     unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
@@ -400,7 +404,10 @@ export class ImportService {
       else {
         const jsonFile = path.join(this.baseDir, fileName);
         const writeStream = fs.createWriteStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
-        entry.pipe(writeStream);
+        entry
+          .on('error', () => { writeStream.end() })
+          .pipe(writeStream)
+          .on('error', () => { entry.destory() });
         files.push(jsonFile);
       }
     });
