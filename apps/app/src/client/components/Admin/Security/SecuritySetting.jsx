@@ -187,16 +187,16 @@ class SecuritySetting extends React.Component {
   }
 
 
-  securitysettingDropdown(settingType) {
+  securitysettingDropdown() {
     const { t, adminGeneralSecurityContainer } = this.props;
-    const isDisplayed = adminGeneralSecurityContainer.state[settingType];
-    const displayText = isDisplayed
-      ? t('security_settings.displayed')
-      : t('security_settings.not_displayed');
-
-    const toggleDisplay = (value) => {
-      adminGeneralSecurityContainer.setState({ [settingType]: value });
+    const getDisplayText = () => {
+      // eslint-disable-next-line no-undef
+      const isDisplayed = adminGeneralSecurityContainer.setState === isShowRestrictedByOwner
+                        // eslint-disable-next-line no-undef
+                        || adminGeneralSecurityContainer.setState === isShowRestrictedByGroup;
+      return isDisplayed ? t('security_settings.displayed') : t('security_settings.not_displayed');
     };
+    const displayText = (t('security_settings.displayed'));
 
     return (
       <div className="dropdown">
@@ -214,14 +214,14 @@ class SecuritySetting extends React.Component {
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => toggleDisplay(true)}
+            onClick={getDisplayText}
           >
             {t('security_settings.displayed')}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => toggleDisplay(false)}
+            onClick={getDisplayText}
           >
             {t('security_settings.not_displayed')}
           </button>
