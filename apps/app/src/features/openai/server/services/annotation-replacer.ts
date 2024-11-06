@@ -1,6 +1,6 @@
 // See: https://platform.openai.com/docs/assistants/tools/file-search#step-5-create-a-run-and-check-the-output
 
-import type { IPageHasId } from '@growi/core/dist/interfaces';
+import type { IPageHasId, Lang } from '@growi/core/dist/interfaces';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
 import VectorStoreFileRelationModel, { type VectorStoreFileRelation } from '~/features/openai/server/models/vector-store-file-relation';
@@ -9,7 +9,7 @@ import { getTranslation } from '~/server/service/i18next';
 
 type PopulatedVectorStoreFileRelation = Omit<VectorStoreFileRelation, 'pageId'> & { pageId: IPageHasId }
 
-export const annotationReplacer = async(delta: MessageDelta): Promise<void> => {
+export const annotationReplacer = async(delta: MessageDelta, lang: Lang): Promise<void> => {
   const content = delta.content?.[0];
 
   if (content?.type === 'text' && content?.text?.annotations != null) {
@@ -22,7 +22,7 @@ export const annotationReplacer = async(delta: MessageDelta): Promise<void> => {
           .populate('pageId', 'path') as PopulatedVectorStoreFileRelation;
 
         if (vectorStoreFileRelation != null) {
-          const { t } = await getTranslation();
+          const { t } = await getTranslation(lang);
           const appSiteUrl = configManager?.getConfig('crowi', 'app:siteUrl');
           content.text.value = content.text.value?.replace(
             annotation.text,

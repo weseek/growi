@@ -1,3 +1,4 @@
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler, Response } from 'express';
 import type { ValidationChain } from 'express-validator';
@@ -27,7 +28,9 @@ type ReqBody = {
   threadId?: string,
 }
 
-type Req = Request<undefined, Response, ReqBody>
+type Req = Request<undefined, Response, ReqBody> & {
+  user: IUserHasId,
+}
 
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
@@ -79,7 +82,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       });
 
       const messageDeltaHandler = async(delta: MessageDelta) => {
-        await annotationReplacer(delta);
+        await annotationReplacer(delta, req.user.lang);
         res.write(`data: ${JSON.stringify(delta)}\n\n`);
       };
 
