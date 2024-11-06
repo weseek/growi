@@ -197,9 +197,29 @@ class ExportService {
     const writeStream = fs.createWriteStream(jsonFileToWrite, { encoding: this.growiBridgeService.getEncoding() });
 
     readStream
+      .on('error', () => {
+        logStream.end();
+        transformStream.end();
+        writeStream.end();
+      })
       .pipe(logStream)
+      .on('error', () => {
+        readStream.destroy();
+        transformStream.end();
+        writeStream.end();
+      })
       .pipe(transformStream)
-      .pipe(writeStream);
+      .on('error', () => {
+        readStream.destroy();
+        logStream.destroy();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {
+        readStream.destroy();
+        logStream.destroy();
+        readStream.destroy();
+      });
 
     await streamToPromise(writeStream);
 

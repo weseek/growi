@@ -1006,6 +1006,8 @@ class PageService implements IPageService {
     const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
     const readStream = await factory.generateReadable();
 
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
+
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
@@ -1044,15 +1046,27 @@ class PageService implements IPageService {
     });
 
     readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
+      .on('error', () => {
+        batchStream.end();
+        writeStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        readStream.destroy();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {
+        readStream.destroy();
+        batchStream.destroy();
+      });
     await streamToPromise(writeStream);
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
@@ -1084,9 +1098,20 @@ class PageService implements IPageService {
     });
 
     readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
+      .on('error', () => {
+        batchStream.end();
+        writeStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        readStream.destroy();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {
+        readStream.destroy();
+        batchStream.destroy();
+      });
     await streamToPromise(writeStream);
   }
 
@@ -1469,6 +1494,7 @@ class PageService implements IPageService {
 
     const iterableFactory = new PageCursorsForDescendantsFactory(user, page, true);
     const readStream = await iterableFactory.generateReadable();
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
@@ -1502,8 +1528,20 @@ class PageService implements IPageService {
     });
 
     readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
+      .on('error', () => {
+        batchStream.end();
+        writeStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        readStream.destroy();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {
+        readStream.destroy();
+        batchStream.destroy();
+      });
 
     await streamToPromise(writeStream);
 
@@ -1512,6 +1550,7 @@ class PageService implements IPageService {
 
   private async duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedResources: boolean) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
@@ -1543,8 +1582,20 @@ class PageService implements IPageService {
     });
 
     readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
+      .on('error', () => {
+        batchStream.end();
+        writeStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        readStream.destory();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {
+        readStream.destory();
+        batchStream.destroy();
+      });
 
     await streamToPromise(writeStream);
 
@@ -1841,6 +1892,7 @@ class PageService implements IPageService {
       readStream = await factory.generateReadable();
     }
 
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
@@ -1874,8 +1926,20 @@ class PageService implements IPageService {
     });
 
     readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
+      .on('error', () => {
+        batchStream.end();
+        writeStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        readStream.destory();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {
+        readStream.destory();
+        batchStream.destroy();
+      });
 
     await streamToPromise(writeStream);
 
@@ -2105,6 +2169,8 @@ class PageService implements IPageService {
       readStream = await factory.generateReadable();
     }
 
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
+
     let count = 0;
     let nDeletedNonEmptyPages = 0; // used for updating descendantCount
 
@@ -2137,8 +2203,20 @@ class PageService implements IPageService {
     });
 
     readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
+      .on('error', () => {
+        batchStream.end();
+        writeStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        readStream.destory();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {
+        readStream.destory();
+        batchStream.destroy();
+      });
 
     await streamToPromise(writeStream);
 
@@ -2416,7 +2494,7 @@ class PageService implements IPageService {
     );
 
     const childPagesReadableStream = builder.query.cursor({ batchSize: BULK_REINDEX_SIZE });
-
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
     const childPagesWritable = new Writable({
       objectMode: true,
       write: async(batch, encoding, callback) => {
@@ -2426,8 +2504,20 @@ class PageService implements IPageService {
     });
 
     childPagesReadableStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(childPagesWritable);
+      .on('error', () => {
+        batchStream.end();
+        childPagesWritable.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        childPagesReadableStream.destroy();
+        childPagesWritable.end();
+      })
+      .pipe(childPagesWritable)
+      .on('error', () => {
+        childPagesReadableStream.destroy();
+        childPagesWritable.destroy();
+      });
     await streamToPromise(childPagesWritable);
   }
 
@@ -2465,6 +2555,7 @@ class PageService implements IPageService {
     }
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
@@ -2494,8 +2585,20 @@ class PageService implements IPageService {
     });
 
     readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
+      .on('error', () => {
+        batchStream.end();
+        writeStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        readStream.destroy();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {
+        readStream.destroy();
+        batchStream.destroy();
+      });
 
     await streamToPromise(writeStream);
 
@@ -2504,6 +2607,7 @@ class PageService implements IPageService {
 
   private async revertDeletedDescendantsWithStreamV4(targetPage, user, options = {}) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
@@ -2529,8 +2633,17 @@ class PageService implements IPageService {
     });
 
     readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
+      .on('error', () => {
+        batchStream.end();
+        writeStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        readStream.destory();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {});
 
     await streamToPromise(readStream);
 
@@ -3379,8 +3492,20 @@ class PageService implements IPageService {
     });
 
     pagesStream
+      .on('error', () => {
+        batchStream.end();
+        migratePagesStream.end();
+      })
       .pipe(batchStream)
-      .pipe(migratePagesStream);
+      .on('error', () => {
+        pagesStream.destroy();
+        migratePagesStream.end();
+      })
+      .pipe(migratePagesStream)
+      .on('error', () => {
+        pagesStream.destroy();
+        batchStream.destroy();
+      });
 
     await streamToPromise(migratePagesStream);
 
@@ -3483,6 +3608,7 @@ class PageService implements IPageService {
    */
   async recountAndUpdateDescendantCountOfPages(pageCursor: Cursor<any>, batchSize:number): Promise<void> {
     const Page = this.crowi.model('Page');
+    const batchStream = createBatchStream(batchSize);
     const recountWriteStream = new Writable({
       objectMode: true,
       async write(pageDocuments, encoding, callback) {
@@ -3497,8 +3623,20 @@ class PageService implements IPageService {
       },
     });
     pageCursor
-      .pipe(createBatchStream(batchSize))
-      .pipe(recountWriteStream);
+      .on('error', () => {
+        batchStream.end();
+        recountWriteStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        pageCursor.destroy();
+        recountWriteStream.end();
+      })
+      .pipe(recountWriteStream)
+      .on('error', () => {
+        pageCursor.destroy();
+        batchStream.destroy();
+      });
 
     await streamToPromise(recountWriteStream);
   }

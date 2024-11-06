@@ -87,8 +87,9 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
 
-    let count = 0;
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
+    let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
@@ -110,8 +111,20 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
     });
 
     readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
+      .on('error', () => {
+        batchStream.end();
+        writeStream.end();
+      })
+      .pipe(batchStream)
+      .on('error', () => {
+        readStream.destroy();
+        writeStream.end();
+      })
+      .pipe(writeStream)
+      .on('error', () => {
+        readStream.destroy();
+        batchStream.destroy();
+      });
 
     await streamToPromise(writeStream);
     // ────────┤ end │─────────

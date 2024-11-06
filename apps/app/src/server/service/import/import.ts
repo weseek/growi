@@ -268,10 +268,40 @@ export class ImportService {
       });
 
       readStream
+        .on('error', () => {
+          jsonStream.end();
+          convertStream.end();
+          batchStream.end();
+          writeStream.end();
+        })
         .pipe(jsonStream)
+        .on('error', () => {
+          readStream.destroy();
+          convertStream.end();
+          batchStream.end();
+          writeStream.end();
+        })
         .pipe(convertStream)
+        .on('error', () => {
+          readStream.destroy();
+          jsonStream.destroy();
+          batchStream.end();
+          writeStream.end();
+        })
         .pipe(batchStream)
-        .pipe(writeStream);
+        .on('error', () => {
+          readStream.destroy();
+          jsonStream.destroy();
+          convertStream.destroy();
+          writeStream.end();
+        })
+        .pipe(writeStream)
+        .on('error', () => {
+          readStream.destroy();
+          jsonStream.destroy();
+          convertStream.destroy();
+          batchStream.destroy();
+        });
 
       await streamToPromise(writeStream);
 

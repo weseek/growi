@@ -78,7 +78,9 @@ class GrowiBridgeService {
     let meta = {};
 
     const readStream = fs.createReadStream(zipFile);
-    const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
+    const parseStream = unzipStream.Parse();
+    const unzipStreamPipe = readStream.on('error', () => parseStream.end()).pipe(parseStream).on('error', () => readStream.destroy());
+
     let tapPromise;
 
     const unzipEntryStream = unzipStreamPipe.on('entry', (entry: Entry) => {

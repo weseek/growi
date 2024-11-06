@@ -1,4 +1,5 @@
 import path from 'path';
+import type { Readable } from 'stream';
 
 import type { IPage } from '@growi/core';
 import {
@@ -734,7 +735,7 @@ module.exports = (crowi) => {
       fileName = '_top';
     }
 
-    let stream;
+    let stream: Readable;
 
     try {
       stream = exportService.getReadStreamFromRevision(revision, format);
@@ -759,7 +760,7 @@ module.exports = (crowi) => {
     };
     await crowi.activityService.createActivity(parameters);
 
-    return stream.pipe(res);
+    return stream.pipe(res).on('error', () => { stream.destroy() });
   });
 
   /**
