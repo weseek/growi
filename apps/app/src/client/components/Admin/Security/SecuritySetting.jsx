@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { Collapse } from 'reactstrap';
 
+
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
@@ -52,6 +53,15 @@ const getDeleteConfigValueForT = (DeleteConfigValue) => {
     case PageDeleteConfigValue.AdminAndAuthor:
       return 'security_settings.admin_and_author';
   }
+};
+
+const getByOwener = () => {
+
+};
+
+const getByGroup = () => {
+
+
 };
 
 
@@ -189,11 +199,6 @@ class SecuritySetting extends React.Component {
 
   securitysettingDropdown() {
     const { t, adminGeneralSecurityContainer } = this.props;
-    const getDisplayText = () => {
-      const isDisplayed = adminGeneralSecurityContainer.setState.isShowRestrictedByOwener
-                        || adminGeneralSecurityContainer.setState.isShowRestrictedByGroup;
-      return isDisplayed ? t('security_settings.displayed') : t('security_settings.not_displayed');
-    };
     const displayText = (t('security_settings.displayed'));
 
     return (
@@ -212,14 +217,14 @@ class SecuritySetting extends React.Component {
           <button
             className="dropdown-item"
             type="button"
-            onClick={getDisplayText}
+            // onClick={adminGeneralSecurityContainer}
           >
             {t('security_settings.displayed')}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            onClick={getDisplayText}
+            // onClick={adminGeneralSecurityContainer}
           >
             {t('security_settings.not_displayed')}
           </button>
