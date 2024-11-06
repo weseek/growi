@@ -225,6 +225,7 @@ jobs:
       run: |
         pnpm playwright test --project=chromium/installer
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -239,6 +240,7 @@ jobs:
       run: |
         pnpm playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -253,9 +255,38 @@ jobs:
       run: |
         pnpm playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: blob-report-${{ matrix.shard }}
+        path: blob-report
+        retention-days: 30
+
+    - name: Download blob reports from all shards
+      if: always()
+      uses: actions/download-artifact@v4
+      with:
+        pattern: blob-report-*
+        path: all-blob-reports
+        merge-multiple: true
+
+    - name: Merge into HTML Report
+      if: always()
+      run: pnpm playwright merge-reports --reporter html ./all-blob-reports
+
+    - name: Upload HTML report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report
+        path: playwright-report
+        retention-days: 30
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
