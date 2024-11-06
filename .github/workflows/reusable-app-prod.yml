@@ -268,26 +268,6 @@ jobs:
         path: blob-report
         retention-days: 30
 
-    - name: Download blob reports from all shards
-      if: always()
-      uses: actions/download-artifact@v4
-      with:
-        pattern: blob-report-*
-        path: all-blob-reports
-        merge-multiple: true
-
-    - name: Merge into HTML Report
-      if: always()
-      run: pnpm playwright merge-reports --reporter html ./all-blob-reports
-
-    - name: Upload HTML report
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: html-report
-        path: playwright-report
-        retention-days: 30
-
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
@@ -297,3 +277,29 @@ jobs:
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  report-playwright:
+    needs: [run-playwright]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: pnpm/action-setup@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+
+    - name: Merge into HTML Report
+      run: pnpm playwright merge-reports --reporter html ./all-blob-reports
+
+    - name: Upload HTML report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report
+        path: playwright-report
+        retention-days: 30
