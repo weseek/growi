@@ -161,7 +161,7 @@
   "not_allowed_to_see_this_page": "Vous ne pouvez pas voir cette page",
   "Confirm": "Confirmer",
   "Successfully requested": "Demande envoyée.",
-  "source": "source",
+  "source": "Source",
   "input_validation": {
     "target": {
       "page_name": "Nom de la page",
