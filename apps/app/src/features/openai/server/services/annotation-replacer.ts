@@ -1,3 +1,5 @@
+// See: https://platform.openai.com/docs/assistants/tools/file-search#step-5-create-a-run-and-check-the-output
+
 import type { IPageHasId } from '@growi/core/dist/interfaces';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
