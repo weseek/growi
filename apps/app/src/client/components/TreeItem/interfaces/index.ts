@@ -34,4 +34,5 @@ export type TreeItemProps = TreeItemBaseProps & {
   showAlternativeContent?: boolean,
   customAlternativeComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   onClick?(page: IPageForItem): void,
+  onWheelClick?(page: IPageForItem): void,
 };
