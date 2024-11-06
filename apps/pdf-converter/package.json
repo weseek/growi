@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "dev:pdf-converter": "nodemon --watch \"src/**/*.ts\" --ignore \"node_modules/**/*\" --exec ts-node -r \"dotenv-flow/config\" src/index.ts",
+    "dev": "nodemon --watch \"src/**/*.ts\" --ignore \"node_modules/**/*\" --exec ts-node -r \"dotenv-flow/config\" src/index.ts",
     "lint": "pnpm eslint **/*.{js,ts}",
     "gen:client-code": "tsed run generate-swagger --output ./specs && orval",
     "build": "pnpm gen:client-code && tsc -p tsconfig.build.json"
