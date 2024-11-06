@@ -23,10 +23,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Git LFS
-      run: |
-        git lfs install
-
     - uses: pnpm/action-setup@v4
 
     - uses: actions/setup-node@v4
@@ -164,6 +160,8 @@ jobs:
 
   run-playwright:
     needs: [build-prod]
+
+    if: ${{ !inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/') }}
 
     runs-on: ubuntu-latest
     container:

@@ -26,7 +26,7 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
 
 const isCreatablePage = (href: string) => {
   try {
-    const url = new URL(href);
+    const url = new URL(href, 'http://example.com');
     const pathName = url.pathname;
     return pagePathUtils.isCreatablePage(pathName);
   }
