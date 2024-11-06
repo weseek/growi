@@ -190,10 +190,8 @@ class SecuritySetting extends React.Component {
   securitysettingDropdown() {
     const { t, adminGeneralSecurityContainer } = this.props;
     const getDisplayText = () => {
-      // eslint-disable-next-line no-undef
-      const isDisplayed = adminGeneralSecurityContainer.setState === isShowRestrictedByOwner
-                        // eslint-disable-next-line no-undef
-                        || adminGeneralSecurityContainer.setState === isShowRestrictedByGroup;
+      const isDisplayed = adminGeneralSecurityContainer.setState.isShowRestrictedByOwener
+                        || adminGeneralSecurityContainer.setState.isShowRestrictedByGroup;
       return isDisplayed ? t('security_settings.displayed') : t('security_settings.not_displayed');
     };
     const displayText = (t('security_settings.displayed'));
