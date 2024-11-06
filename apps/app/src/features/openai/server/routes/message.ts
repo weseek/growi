@@ -14,7 +14,7 @@ import loggerFactory from '~/utils/logger';
 
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import { openaiClient } from '../services';
-import { extructPageDataFromMessageEvent } from '../services/extract-page-data-from-message-event';
+import { annotationReplacer } from '../services/annotation-replacer';
 import { getStreamErrorCode } from '../services/getStreamErrorCode';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -78,14 +78,14 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         'Cache-Control': 'no-cache, no-transform',
       });
 
-      const messageDeltaHandler = (delta: MessageDelta) => {
+      const messageDeltaHandler = async(delta: MessageDelta) => {
+        await annotationReplacer(delta);
         res.write(`data: ${JSON.stringify(delta)}\n\n`);
       };
 
       const sendError = (message: string, code?: StreamErrorCode) => {
         res.write(`error: ${JSON.stringify({ code, message })}\n\n`);
       };
-
       stream.on('event', (delta) => {
         if (delta.event === 'thread.run.failed') {
           const errorMessage = delta.data.last_error?.message;
@@ -95,10 +95,6 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
           logger.error(errorMessage);
           sendError(errorMessage, getStreamErrorCode(errorMessage));
         }
-      });
-      stream.on('messageDone', async(event) => {
-        const pageData = await extructPageDataFromMessageEvent(event);
-        // res.write();
       });
       stream.on('messageDelta', messageDeltaHandler);
       stream.once('messageDone', () => {
