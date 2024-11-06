@@ -86,7 +86,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         res.write(`error: ${JSON.stringify({ code, message })}\n\n`);
       };
 
-      stream.on('event', async(delta) => {
+      stream.on('event', (delta) => {
         if (delta.event === 'thread.run.failed') {
           const errorMessage = delta.data.last_error?.message;
           if (errorMessage == null) {
