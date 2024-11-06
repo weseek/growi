@@ -343,8 +343,20 @@ class OpenaiService implements IOpenaiService {
     });
 
     pagesStream
+      .on('error', () => {
+        batchStrem.end();
+        createVectorStoreFileStream.end();
+      })
       .pipe(batchStrem)
-      .pipe(createVectorStoreFileStream);
+      .on('error', () => {
+        pagesStream.destroy();
+        createVectorStoreFileStream.end();
+      })
+      .pipe(createVectorStoreFileStream)
+      .on('error', () => {
+        pagesStream.destroy();
+        batchStrem.destroy();
+      });
   }
 
   async rebuildVectorStore(page: HydratedDocument<PageDocument>) {

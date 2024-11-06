@@ -163,7 +163,12 @@ module.exports = function(crowi) {
     // mkdir -p
     mkdir.sync(dirpath);
 
-    const stream = fileStream.pipe(fs.createWriteStream(filePath));
+    const writeStream = fs.createWriteStream(filePath);
+
+    const stream = fileStream
+      .on('error', () => { writeStream.end() })
+      .pipe(writeStream)
+      .on('error', () => { fileStream.destroy() });
     return streamToPromise(stream);
   };
 
@@ -177,7 +182,11 @@ module.exports = function(crowi) {
     const fileStream = new Readable();
     fileStream.push(data);
     fileStream.push(null); // EOF
-    const stream = fileStream.pipe(fs.createWriteStream(absFilePath));
+    const writeStream = fs.createWriteStream(absFilePath);
+    const stream = fileStream
+      .on('error', () => { writeStream.end() })
+      .pipe(writeStream)
+      .on('error', () => { fileStream.destroy() });
     return streamToPromise(stream);
   };
 
