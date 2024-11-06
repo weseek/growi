@@ -12,7 +12,9 @@
     "build": "yarn gen:client-code && tsc -p tsconfig.build.json"
   },
   "dependencies": {
+    "@godaddy/terminus": "^4.12.1",
     "@tsed/cli": "^5.4.3",
+    "@tsed/cli-core": "^5.4.3",
     "@tsed/cli-generate-swagger": "^5.4.3",
     "@tsed/common": "7.83.4",
     "@tsed/components-scan": "7.83.4",
@@ -23,9 +25,12 @@
     "@tsed/platform-express": "7.83.4",
     "@tsed/schema": "7.83.4",
     "@tsed/swagger": "7.83.4",
+    "@tsed/terminus": "7.83.4",
+    "axios": "^0.24.0",
     "express": "^4.19.2",
     "puppeteer": "^23.1.1",
-    "puppeteer-cluster": "^0.24.0"
+    "puppeteer-cluster": "^0.24.0",
+    "tslib": "^2.8.0"
   },
   "devDependencies": {
     "@types/connect": "^3.4.38",

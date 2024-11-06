@@ -2,6 +2,7 @@ import { PlatformApplication } from '@tsed/common';
 import { Configuration, Inject } from '@tsed/di';
 import express from 'express';
 import '@tsed/swagger';
+import '@tsed/terminus';
 
 import * as Controllers from './controllers';
 
@@ -26,6 +27,9 @@ const PORT = Number(process.env.PORT || 3010);
       specVersion: '3.0.1',
     },
   ],
+  terminus: {
+    signals: ['SIGINT', 'SIGTERM'],
+  },
 })
 class Server {
 

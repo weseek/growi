@@ -3,7 +3,7 @@ import path from 'path';
 import { Readable, Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
-import type { Logger } from '@tsed/common';
+import { Logger } from '@tsed/common';
 import { Inject, Service } from '@tsed/di';
 import { Cluster } from 'puppeteer-cluster';
 
@@ -109,7 +109,22 @@ class PdfConvertService {
     }
   }
 
+  /**
+   * Close puppeteer cluster
+   */
+  async closePuppeteerCluster(): Promise<void> {
+    if (this.puppeteerCluster == null) {
+      this.logger.info('No puppeteer cluster running for closure');
+      return;
+    }
+
+    this.logger.info('Closing puppeteer cluster...');
+    await this.puppeteerCluster.idle();
+    await this.puppeteerCluster.close();
+  }
+
   private isJobCompleted(jobId: string): boolean {
+    if (this.jobList[jobId] == null) return true;
     return this.jobList[jobId].status === JobStatus.PDF_EXPORT_DONE || this.jobList[jobId].status === JobStatus.FAILED;
   }
 
@@ -252,16 +267,6 @@ class PdfConvertService {
       });
       return pdfResult;
     });
-
-    // close cluster on app termination
-    const handleClose = async() => {
-      this.logger.info('Closing puppeteer cluster...');
-      await this.puppeteerCluster?.idle();
-      await this.puppeteerCluster?.close();
-      process.exit();
-    };
-    process.on('SIGINT', handleClose);
-    process.on('SIGTERM', handleClose);
   }
 
   /**
