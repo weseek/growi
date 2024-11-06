@@ -14,6 +14,7 @@ import loggerFactory from '~/utils/logger';
 
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import { openaiClient } from '../services';
+import { extructPageDataFromMessageEvent } from '../services/extract-page-data-from-message-event';
 import { getStreamErrorCode } from '../services/getStreamErrorCode';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -85,7 +86,12 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         res.write(`error: ${JSON.stringify({ code, message })}\n\n`);
       };
 
-      stream.on('event', (delta) => {
+      stream.on('messageDone', async(event) => {
+        const pageData = await extructPageDataFromMessageEvent(event);
+        // res.write();
+      });
+
+      stream.on('event', async(delta) => {
         if (delta.event === 'thread.run.failed') {
           const errorMessage = delta.data.last_error?.message;
           if (errorMessage == null) {
