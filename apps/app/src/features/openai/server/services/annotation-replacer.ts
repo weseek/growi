@@ -4,6 +4,7 @@ import type { IPageHasId } from '@growi/core/dist/interfaces';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
 import VectorStoreFileRelationModel, { type VectorStoreFileRelation } from '~/features/openai/server/models/vector-store-file-relation';
+import { getTranslation } from '~/server/service/i18next';
 
 type PopulatedVectorStoreFileRelation = Omit<VectorStoreFileRelation, 'pageId'> & { pageId: IPageHasId }
 
@@ -20,9 +21,10 @@ export const annotationReplacer = async(delta: MessageDelta): Promise<void> => {
           .populate('pageId', 'path') as PopulatedVectorStoreFileRelation;
 
         if (vectorStoreFileRelation != null) {
+          const { t } = await getTranslation();
           content.text.value = content.text.value?.replace(
             annotation.text,
-            ` [出典:[${vectorStoreFileRelation.pageId.path}](http://localhost:3000/${vectorStoreFileRelation.pageId._id})]`,
+            ` [${t('source')}:[${vectorStoreFileRelation.pageId.path}](http://localhost:3000/${vectorStoreFileRelation.pageId._id})]`,
           );
         }
       }

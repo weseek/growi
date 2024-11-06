@@ -168,6 +168,7 @@
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
   "copied_to_clipboard": "它已复制到剪贴板。",
+  "source": "消息来源",
   "input_validation": {
     "target": {
       "page_name": "页面名称",
