@@ -130,7 +130,7 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
   // TODO: apply decided color
   {
     name: PresetThemes.CHRISTMAS,
-    schemeType: DARK,
+    schemeType: LIGHT,
     lightBg: '#212836',
     darkBg: '#323D52',
     lightSidebar: '#2E3E27',
