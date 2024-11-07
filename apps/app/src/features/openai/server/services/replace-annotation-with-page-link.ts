@@ -14,13 +14,13 @@ export const replaceAnnotationWithPageLink = async(messageContentDelta: MessageC
 
         const vectorStoreFileRelation = await VectorStoreFileRelationModel
           .findOne({ fileIds: { $in: [annotation.file_citation?.file_id] } })
-          .populate<{pageId: Pick<IPageHasId, 'path' | '_id'>}>('pageId', 'path');
+          .populate<{page: Pick<IPageHasId, 'path' | '_id'>}>('page', 'path');
 
         if (vectorStoreFileRelation != null) {
           const { t } = await getTranslation(lang);
           messageContentDelta.text.value = messageContentDelta.text.value?.replace(
             annotation.text,
-            ` [${t('source')}: [${vectorStoreFileRelation.pageId.path}](/${vectorStoreFileRelation.pageId._id})]`,
+            ` [${t('source')}: [${vectorStoreFileRelation.page.path}](/${vectorStoreFileRelation.page._id})]`,
           );
         }
       }
