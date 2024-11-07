@@ -1,7 +1,6 @@
 import { Writable } from 'stream';
 
 import mongoose from 'mongoose';
-import { pages } from 'next/dist/build/templates/app-page';
 import streamToPromise from 'stream-to-promise';
 
 import getPageModel from '~/server/models/page';
@@ -58,8 +57,20 @@ module.exports = {
     });
 
     pagesStream
+      .on('error', () => {
+        batchStrem.end();
+        migratePagesStream.end();
+      })
       .pipe(batchStrem)
-      .pipe(migratePagesStream);
+      .on('error', () => {
+        pagesStream.destory();
+        migratePagesStream.end();
+      })
+      .pipe(migratePagesStream)
+      .on('error', () => {
+        pagesStream.destory();
+        batchStrem.destory();
+      });
 
     await streamToPromise(migratePagesStream);
 
@@ -109,8 +120,20 @@ module.exports = {
     });
 
     pagesStream
+      .on('error', () => {
+        batchStrem.end();
+        migratePagesStream.end();
+      })
       .pipe(batchStrem)
-      .pipe(migratePagesStream);
+      .on('error', () => {
+        pagesStream.destory();
+        migratePagesStream.end();
+      })
+      .pipe(migratePagesStream)
+      .on('error', () => {
+        pagesStream.destory();
+        batchStrem.destory();
+      });
 
     await streamToPromise(migratePagesStream);
 
