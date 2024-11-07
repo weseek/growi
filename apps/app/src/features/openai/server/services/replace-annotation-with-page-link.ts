@@ -3,10 +3,8 @@
 import type { IPageHasId, Lang } from '@growi/core/dist/interfaces';
 import type { MessageContentDelta } from 'openai/resources/beta/threads/messages.mjs';
 
-import VectorStoreFileRelationModel, { type VectorStoreFileRelation } from '~/features/openai/server/models/vector-store-file-relation';
+import VectorStoreFileRelationModel from '~/features/openai/server/models/vector-store-file-relation';
 import { getTranslation } from '~/server/service/i18next';
-
-type PopulatedVectorStoreFileRelation = Omit<VectorStoreFileRelation, 'pageId'> & { pageId: IPageHasId }
 
 export const replaceAnnotationWithPageLink = async(messageContentDelta: MessageContentDelta, lang?: Lang): Promise<void> => {
   if (messageContentDelta?.type === 'text' && messageContentDelta?.text?.annotations != null) {
@@ -16,7 +14,7 @@ export const replaceAnnotationWithPageLink = async(messageContentDelta: MessageC
 
         const vectorStoreFileRelation = await VectorStoreFileRelationModel
           .findOne({ fileIds: { $in: [annotation.file_citation?.file_id] } })
-          .populate('pageId', 'path') as PopulatedVectorStoreFileRelation;
+          .populate<{pageId: Pick<IPageHasId, 'path' | '_id'>}>('pageId', 'path');
 
         if (vectorStoreFileRelation != null) {
           const { t } = await getTranslation(lang);
