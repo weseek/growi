@@ -4,7 +4,6 @@ import type { IPageHasId, Lang } from '@growi/core/dist/interfaces';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
 import VectorStoreFileRelationModel, { type VectorStoreFileRelation } from '~/features/openai/server/models/vector-store-file-relation';
-import { configManager } from '~/server/service/config-manager';
 import { getTranslation } from '~/server/service/i18next';
 
 type PopulatedVectorStoreFileRelation = Omit<VectorStoreFileRelation, 'pageId'> & { pageId: IPageHasId }
@@ -23,10 +22,9 @@ export const replaceAnnotationWithPageLink = async(delta: MessageDelta, lang?: L
 
         if (vectorStoreFileRelation != null) {
           const { t } = await getTranslation(lang);
-          const appSiteUrl = configManager?.getConfig('crowi', 'app:siteUrl');
           content.text.value = content.text.value?.replace(
             annotation.text,
-            ` [${t('source')}: [${vectorStoreFileRelation.pageId.path}](${appSiteUrl}/${vectorStoreFileRelation.pageId._id})]`,
+            ` [${t('source')}: [${vectorStoreFileRelation.pageId.path}](/${vectorStoreFileRelation.pageId._id})]`,
           );
         }
       }
