@@ -15,8 +15,8 @@ import loggerFactory from '~/utils/logger';
 
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import { openaiClient } from '../services';
-import { annotationReplacer } from '../services/annotation-replacer';
 import { getStreamErrorCode } from '../services/getStreamErrorCode';
+import { replaceAnnotationWithPageLink } from '../services/replace-annotation-with-page-link';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -82,7 +82,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       });
 
       const messageDeltaHandler = async(delta: MessageDelta) => {
-        await annotationReplacer(delta, req.user.lang);
+        await replaceAnnotationWithPageLink(delta, req.user.lang);
         res.write(`data: ${JSON.stringify(delta)}\n\n`);
       };
 

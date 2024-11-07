@@ -9,7 +9,7 @@ import { getTranslation } from '~/server/service/i18next';
 
 type PopulatedVectorStoreFileRelation = Omit<VectorStoreFileRelation, 'pageId'> & { pageId: IPageHasId }
 
-export const annotationReplacer = async(delta: MessageDelta, lang: Lang): Promise<void> => {
+export const replaceAnnotationWithPageLink = async(delta: MessageDelta, lang: Lang): Promise<void> => {
   const content = delta.content?.[0];
 
   if (content?.type === 'text' && content?.text?.annotations != null) {
