@@ -82,7 +82,13 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       });
 
       const messageDeltaHandler = async(delta: MessageDelta) => {
-        await replaceAnnotationWithPageLink(delta, req.user.lang);
+        const content = delta.content?.[0];
+
+        // If annotation is found
+        if (content?.type === 'text' && content?.text?.annotations != null) {
+          await replaceAnnotationWithPageLink(content, req.user.lang);
+        }
+
         res.write(`data: ${JSON.stringify(delta)}\n\n`);
       };
 

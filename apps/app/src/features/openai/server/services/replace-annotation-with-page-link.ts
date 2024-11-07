@@ -1,18 +1,16 @@
 // See: https://platform.openai.com/docs/assistants/tools/file-search#step-5-create-a-run-and-check-the-output
 
 import type { IPageHasId, Lang } from '@growi/core/dist/interfaces';
-import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
+import type { MessageContentDelta } from 'openai/resources/beta/threads/messages.mjs';
 
 import VectorStoreFileRelationModel, { type VectorStoreFileRelation } from '~/features/openai/server/models/vector-store-file-relation';
 import { getTranslation } from '~/server/service/i18next';
 
 type PopulatedVectorStoreFileRelation = Omit<VectorStoreFileRelation, 'pageId'> & { pageId: IPageHasId }
 
-export const replaceAnnotationWithPageLink = async(delta: MessageDelta, lang?: Lang): Promise<void> => {
-  const content = delta.content?.[0];
-
-  if (content?.type === 'text' && content?.text?.annotations != null) {
-    const annotations = content?.text?.annotations;
+export const replaceAnnotationWithPageLink = async(messageContentDelta: MessageContentDelta, lang?: Lang): Promise<void> => {
+  if (messageContentDelta?.type === 'text' && messageContentDelta?.text?.annotations != null) {
+    const annotations = messageContentDelta?.text?.annotations;
     for await (const annotation of annotations) {
       if (annotation.type === 'file_citation' && annotation.text != null) {
 
@@ -22,7 +20,7 @@ export const replaceAnnotationWithPageLink = async(delta: MessageDelta, lang?: L
 
         if (vectorStoreFileRelation != null) {
           const { t } = await getTranslation(lang);
-          content.text.value = content.text.value?.replace(
+          messageContentDelta.text.value = messageContentDelta.text.value?.replace(
             annotation.text,
             ` [${t('source')}: [${vectorStoreFileRelation.pageId.path}](/${vectorStoreFileRelation.pageId._id})]`,
           );
