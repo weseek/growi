@@ -41,11 +41,12 @@ type Props = Omit<LinkProps, 'href'> & {
   id?: string,
   href?: string,
   className?: string,
+  onClickNextLink?: () => void,
 };
 
 export const NextLink = (props: Props): JSX.Element => {
   const {
-    id, href, children, className, ...rest
+    id, href, children, className, onClickNextLink, ...rest
   } = props;
 
   const { data: siteUrl } = useSiteUrl();
@@ -76,7 +77,7 @@ export const NextLink = (props: Props): JSX.Element => {
 
   return (
     <Link {...rest} href={href} prefetch={false} legacyBehavior>
-      <a href={href} className={className} {...dataAttributes}>{children}</a>
+      <a href={href} className={className} {...dataAttributes} onClick={onClickNextLink}>{children}</a>
     </Link>
   );
 };

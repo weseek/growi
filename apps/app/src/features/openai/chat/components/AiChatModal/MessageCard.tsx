@@ -1,9 +1,10 @@
 import { useCallback } from 'react';
 
-import Link from 'next/link';
 import type { LinkProps } from 'next/link';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
+
+import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 
 import { useRagSearchModal } from '../../../client/stores/rag-search';
 
@@ -33,13 +34,12 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
   }, [closeRagSearchModal]);
 
   return (
-    <Link {...props} onClick={onClick} prefetch={false} className="link-primary">
+    <NextLink href={props.href} onClickNextLink={onClick} className="link-primary">
       {props.children}
-    </Link>
+    </NextLink>
   );
 };
 const AssistantMessageCard = ({ children }: { children: string }): JSX.Element => {
-
   const { t } = useTranslation();
 
   return (
