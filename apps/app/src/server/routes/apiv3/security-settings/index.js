@@ -932,7 +932,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/SamlAuthSetting'
    */
   router.put('/saml', loginRequiredStrictly, adminRequired, addActivity, validator.samlAuth, apiV3FormValidator, async(req, res) => {
-    const { t } = await getTranslation();
+    const { t } = await getTranslation(req.user.lang);
 
     //  For the value of each mandatory items,
     //  check whether it from the environment variables is empty and form value to update it is empty
