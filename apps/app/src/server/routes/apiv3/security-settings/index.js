@@ -943,11 +943,11 @@ module.exports = (crowi) => {
       const formValue = req.body[key];
       if (configManager.getConfigFromEnvVars('crowi', configKey) === null && formValue == null) {
         const formItemName = t(`security_setting.form_item_name.${key}`);
-        invalidValues.push(t('form_validation.required', formItemName));
+        invalidValues.push(t('input_validation.message.required', formItemName));
       }
     }
     if (invalidValues.length !== 0) {
-      return res.apiv3Err(t('form_validation.error_message'), 400, invalidValues);
+      return res.apiv3Err(t('input_validation.message.error_message'), 400, invalidValues);
     }
 
     const rule = req.body.ABLCRule;
@@ -958,7 +958,7 @@ module.exports = (crowi) => {
         crowi.passportService.parseABLCRule(rule);
       }
       catch (err) {
-        return res.apiv3Err(t('form_validation.invalid_syntax', t('security_settings.form_item_name.ABLCRule')), 400);
+        return res.apiv3Err(t('input_validation.message.invalid_syntax', t('security_settings.form_item_name.ABLCRule')), 400);
       }
     }
 
