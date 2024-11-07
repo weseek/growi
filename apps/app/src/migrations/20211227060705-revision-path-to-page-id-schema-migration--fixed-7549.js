@@ -57,8 +57,20 @@ module.exports = {
     });
 
     pagesStream
+      .on('error', () => {
+        batchStrem.end();
+        migratePagesStream.end();
+      })
       .pipe(batchStrem)
-      .pipe(migratePagesStream);
+      .on('error', () => {
+        pagesStream.destroy();
+        migratePagesStream.end();
+      })
+      .pipe(migratePagesStream)
+      .on('error', () => {
+        pagesStream.destroy();
+        batchStrem.destroy();
+      });
 
     await streamToPromise(migratePagesStream);
 
@@ -108,8 +120,20 @@ module.exports = {
     });
 
     pagesStream
+      .on('error', () => {
+        batchStrem.end();
+        migratePagesStream.end();
+      })
       .pipe(batchStrem)
-      .pipe(migratePagesStream);
+      .on('error', () => {
+        pagesStream.destroy();
+        migratePagesStream.end();
+      })
+      .pipe(migratePagesStream)
+      .on('error', () => {
+        pagesStream.destroy();
+        batchStrem.destroy();
+      });
 
     await streamToPromise(migratePagesStream);
 
