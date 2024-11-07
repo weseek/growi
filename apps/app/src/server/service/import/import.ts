@@ -407,7 +407,7 @@ export class ImportService {
         entry
           .on('error', () => { writeStream.end() })
           .pipe(writeStream)
-          .on('error', () => { entry.destory() });
+          .on('error', () => { entry.destroy() });
         files.push(jsonFile);
       }
     });

@@ -1588,12 +1588,12 @@ class PageService implements IPageService {
       })
       .pipe(batchStream)
       .on('error', () => {
-        readStream.destory();
+        readStream.destroy();
         writeStream.end();
       })
       .pipe(writeStream)
       .on('error', () => {
-        readStream.destory();
+        readStream.destroy();
         batchStream.destroy();
       });
 
@@ -1932,12 +1932,12 @@ class PageService implements IPageService {
       })
       .pipe(batchStream)
       .on('error', () => {
-        readStream.destory();
+        readStream.destroy();
         writeStream.end();
       })
       .pipe(writeStream)
       .on('error', () => {
-        readStream.destory();
+        readStream.destroy();
         batchStream.destroy();
       });
 
@@ -2209,12 +2209,12 @@ class PageService implements IPageService {
       })
       .pipe(batchStream)
       .on('error', () => {
-        readStream.destory();
+        readStream.destroy();
         writeStream.end();
       })
       .pipe(writeStream)
       .on('error', () => {
-        readStream.destory();
+        readStream.destroy();
         batchStream.destroy();
       });
 
@@ -2639,7 +2639,7 @@ class PageService implements IPageService {
       })
       .pipe(batchStream)
       .on('error', () => {
-        readStream.destory();
+        readStream.destroy();
         writeStream.end();
       })
       .pipe(writeStream)

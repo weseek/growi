@@ -63,13 +63,13 @@ module.exports = {
       })
       .pipe(batchStrem)
       .on('error', () => {
-        pagesStream.destory();
+        pagesStream.destroy();
         migratePagesStream.end();
       })
       .pipe(migratePagesStream)
       .on('error', () => {
-        pagesStream.destory();
-        batchStrem.destory();
+        pagesStream.destroy();
+        batchStrem.destroy();
       });
 
     await streamToPromise(migratePagesStream);
@@ -126,13 +126,13 @@ module.exports = {
       })
       .pipe(batchStrem)
       .on('error', () => {
-        pagesStream.destory();
+        pagesStream.destroy();
         migratePagesStream.end();
       })
       .pipe(migratePagesStream)
       .on('error', () => {
-        pagesStream.destory();
-        batchStrem.destory();
+        pagesStream.destroy();
+        batchStrem.destroy();
       });
 
     await streamToPromise(migratePagesStream);
