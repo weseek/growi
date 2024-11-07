@@ -4,8 +4,8 @@ import { body } from 'express-validator';
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { getTranslation } from '~/server/service/i18next';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -569,7 +569,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to send test mail for smtp
    */
   router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
-    const { t } = await getTranslation();
+    const { t } = await getTranslation(req.user.lang);
 
     try {
       await sendTestEmail(req.user.email);
