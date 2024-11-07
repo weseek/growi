@@ -71,14 +71,12 @@ $gray-900: #362824;
   @import '@growi/core-styles/scss/bootstrap/theming/utils/color-palette';
 
   $primary: #aa1820;
-  // $primary: #047e2f;
   $highlight: #c2ae2b;
 
   @include generate-color-palette('primary', $primary, black, white, 25%, 20% );
   @include generate-color-palette('highlight', $highlight, black, white, 20%, 23%);
 
   $body-color: #20402c;
-  // $body-color: #1d3827;
   $body-bg: white;
   $body-secondary-color: rgba($body-color, .75);
   $body-secondary-bg: $gray-200;
@@ -100,24 +98,20 @@ $gray-900: #362824;
   --grw-marker-bg: var(--grw-marker-bg-blue);
 
 
-    .wiki {
-      --bs-border-color: #deadad;
-    }
+  .wiki {
+    --bs-border-color: var(--grw-primary-200);
+  }
 
-    .grw-site-name {
-      // --bs-link-color-rgb: rgb(185, 95, 59);
-      --bs-link-opacity: 1;
-      a {
-        color: #ac5858;
-      }
-    }
+  .grw-site-name {
+    --bs-link-opacity: 0.8;
+    --bs-link-color-rgb: var(--grw-primary-600-rgb);
+  }
 
-    // TODO: --bs の書き換えでできないか検証する
-    .grw-logo {
-      svg {
-        fill: #c68484;
-      }
+  .grw-logo {
+    svg {
+      fill: var(--grw-primary-300);
     }
+  }
 
   &, body {
     background-image: url('../images/christmas/christmas-light-bg.svg');
