@@ -17,7 +17,7 @@ const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => 
   return isSelected ? 'active' : '';
 };
 
-type Props = {
+export type PrimaryItemProps = {
   contents: SidebarContentsType,
   label: string,
   iconName: string,
@@ -27,7 +27,7 @@ type Props = {
   onClick?: () => void,
 }
 
-export const PrimaryItem = (props: Props): JSX.Element => {
+export const PrimaryItem = (props: PrimaryItemProps): JSX.Element => {
   const {
     contents, label, iconName, sidebarMode, badgeContents,
     onClick, onHover,
