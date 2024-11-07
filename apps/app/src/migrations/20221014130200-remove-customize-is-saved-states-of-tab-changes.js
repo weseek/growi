@@ -11,7 +11,7 @@ const mongoose = require('mongoose');
 module.exports = {
   async up() {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     await Config.findOneAndDelete({ key: 'customize:isSavedStatesOfTabChanges' }); // remove isSavedStatesOfTabChanges
 
@@ -20,7 +20,7 @@ module.exports = {
 
   async down() {
     logger.info('Rollback migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const insertConfig = new Config({
       ns: 'crowi',

@@ -7,12 +7,14 @@ import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
 import { getOrCreateChatAssistant } from '~/features/openai/server/services/assistant';
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { MessageErrorCode, StreamErrorCode } from '../../interfaces/message-error';
+import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import { openaiClient } from '../services';
+import { getStreamErrorCode } from '../services/getStreamErrorCode';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -29,7 +31,6 @@ type Req = Request<undefined, Response, ReqBody>
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
 export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) => {
-  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
@@ -80,16 +81,18 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         res.write(`data: ${JSON.stringify(delta)}\n\n`);
       };
 
-      const sendError = (code: StreamErrorCode, message: string) => {
+      const sendError = (message: string, code?: StreamErrorCode) => {
         res.write(`error: ${JSON.stringify({ code, message })}\n\n`);
       };
 
       stream.on('event', (delta) => {
         if (delta.event === 'thread.run.failed') {
-          if (delta.data.last_error?.code === StreamErrorCode.RATE_LIMIT_EXCEEDED) {
-            logger.error(delta.data.last_error.message);
-            sendError(StreamErrorCode.RATE_LIMIT_EXCEEDED, delta.data.last_error.message);
+          const errorMessage = delta.data.last_error?.message;
+          if (errorMessage == null) {
+            return;
           }
+          logger.error(errorMessage);
+          sendError(errorMessage, getStreamErrorCode(errorMessage));
         }
       });
       stream.on('messageDelta', messageDeltaHandler);

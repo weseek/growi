@@ -16,6 +16,7 @@ import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
@@ -46,7 +47,6 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
   const Revision = mongoose.model<IRevisionHasId>('Revision');
 
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
   // define validators for req.body

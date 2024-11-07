@@ -48,10 +48,15 @@ export default defineConfig({
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: process.env.CI ? 'github' : 'list',
+  reporter: process.env.CI
+    ? [
+      ['github'],
+      ['blob'],
+    ]
+    : 'list',
 
   webServer: {
-    command: 'yarn server',
+    command: 'pnpm run server',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     stdout: 'ignore',

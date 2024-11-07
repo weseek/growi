@@ -2,6 +2,7 @@ import nodeCron from 'node-cron';
 
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
+import { getRandomIntInRange } from '~/utils/rand';
 
 import { getOpenaiService, type IOpenaiService } from './openai';
 
@@ -15,9 +16,13 @@ class ThreadDeletionCronService {
 
   threadDeletionCronExpression: string;
 
+  threadDeletionCronMaxMinutesUntilRequest: number;
+
   threadDeletionBarchSize: number;
 
   threadDeletionApiCallInterval: number;
+
+  sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
 
   startCron(): void {
     const isAiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
@@ -32,6 +37,7 @@ class ThreadDeletionCronService {
 
     this.openaiService = openaiService;
     this.threadDeletionCronExpression = configManager.getConfig('crowi', 'openai:threadDeletionCronExpression');
+    this.threadDeletionCronMaxMinutesUntilRequest = configManager.getConfig('crowi', 'app:openaiThreadDeletionCronMaxMinutesUntilRequest');
     this.threadDeletionBarchSize = configManager.getConfig('crowi', 'openai:threadDeletionBarchSize');
     this.threadDeletionApiCallInterval = configManager.getConfig('crowi', 'openai:threadDeletionApiCallInterval');
 
@@ -48,6 +54,10 @@ class ThreadDeletionCronService {
   private generateCronJob() {
     return nodeCron.schedule(this.threadDeletionCronExpression, async() => {
       try {
+        // Random fractional sleep to distribute request timing among GROWI apps
+        const randomMilliseconds = getRandomIntInRange(0, this.threadDeletionCronMaxMinutesUntilRequest) * 60 * 1000;
+        this.sleep(randomMilliseconds);
+
         await this.executeJob();
       }
       catch (e) {

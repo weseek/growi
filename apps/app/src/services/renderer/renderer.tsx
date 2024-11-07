@@ -5,7 +5,7 @@ import raw from 'rehype-raw';
 import sanitize from 'rehype-sanitize';
 import slug from 'rehype-slug';
 import breaks from 'remark-breaks';
-import emoji from 'remark-emoji';
+import remarkDirective from 'remark-directive';
 import remarkFrontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
@@ -26,6 +26,7 @@ import * as addClass from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import * as codeBlock from './remark-plugins/codeblock';
+import * as emoji from './remark-plugins/emoji';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
 
@@ -96,9 +97,10 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
     remarkPlugins: [
       [toc, { maxDepth: 3, tight: true }],
       gfm,
-      emoji,
+      emoji.remarkPlugin,
       pukiwikiLikeLinker,
       growiDirective,
+      remarkDirective,
       remarkFrontmatter,
       codeBlock.remarkPlugin,
     ],

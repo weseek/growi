@@ -1,7 +1,6 @@
 import type { FC } from 'react';
 import React, { useState, useEffect, useCallback } from 'react';
 
-import pullAllBy from 'lodash/pullAllBy';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
@@ -28,7 +27,9 @@ const isCheckedRule = (ruleName: string, subscribeRules: SubscribeRule[]) => (
 
 const updateIsEnabled = (subscribeRules: SubscribeRule[], ruleName: string, isChecked: boolean) => {
   const target = [{ name: ruleName, isEnabled: isChecked }];
-  return pullAllBy(subscribeRules, target, 'name').concat(target);
+  return subscribeRules
+    .filter(rule => rule.name !== ruleName)
+    .concat(target);
 };
 
 
