@@ -94,17 +94,16 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     lightIcon: '#53687E',
     darkIcon: '#869BB1',
     createBtn: '#3491CB',
-  },  // TODO: apply decided color
-  {
+  }, {
     name: PresetThemes.CHRISTMAS,
     schemeType: BOTH,
-    lightBg: '#212836',
-    darkBg: '#323D52',
-    lightSidebar: '#2E3E27',
-    darkSidebar: '#455D3B',
-    lightIcon: '#DC7870',
-    darkIcon: '#E7A59F',
-    createBtn: '#B90606',
+    lightBg: '#FFFFFF',
+    darkBg: '#001B30',
+    lightSidebar: '#EEE8C4',
+    darkSidebar: '#0C3811',
+    lightIcon: '#801218',
+    darkIcon: '#f0752b',
+    createBtn: '#AA1820',
   },
   // light only
   {
@@ -131,7 +130,7 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     name: PresetThemes.ISLAND,
     schemeType: LIGHT,
     lightBg: '#FFFFFF',
-    darkBg: '#E8F7FA',
+    darkBg: '#001B30',
     lightSidebar: '#F3EEE0',
     darkSidebar: '#E8DDC0',
     lightIcon: '#51C2D3',
