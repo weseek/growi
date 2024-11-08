@@ -942,7 +942,7 @@ module.exports = (crowi) => {
       const key = configKey.replace('security:passport-saml:', '');
       const formValue = req.body[key];
       if (configManager.getConfigFromEnvVars('crowi', configKey) === null && formValue == null) {
-        const formItemName = t(`security_setting.form_item_name.${key}`);
+        const formItemName = t(`security_settings.form_item_name.${key}`);
         invalidValues.push(t('input_validation.message.required', { param: formItemName }));
       }
     }
