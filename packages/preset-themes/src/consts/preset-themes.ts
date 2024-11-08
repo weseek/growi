@@ -130,7 +130,7 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     name: PresetThemes.ISLAND,
     schemeType: LIGHT,
     lightBg: '#FFFFFF',
-    darkBg: '#001B30',
+    darkBg: '#E8F7FA',
     lightSidebar: '#F3EEE0',
     darkSidebar: '#E8DDC0',
     lightIcon: '#51C2D3',
