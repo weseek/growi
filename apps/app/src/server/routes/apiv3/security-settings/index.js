@@ -932,7 +932,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/SamlAuthSetting'
    */
   router.put('/saml', loginRequiredStrictly, adminRequired, addActivity, validator.samlAuth, apiV3FormValidator, async(req, res) => {
-    const { t } = await getTranslation(req.user.lang);
+    const { t } = await getTranslation({ lang: req.user.lang, ns: ['translation', 'admin'] });
 
     //  For the value of each mandatory items,
     //  check whether it from the environment variables is empty and form value to update it is empty
@@ -942,8 +942,8 @@ module.exports = (crowi) => {
       const key = configKey.replace('security:passport-saml:', '');
       const formValue = req.body[key];
       if (configManager.getConfigFromEnvVars('crowi', configKey) === null && formValue == null) {
-        const formItemName = t(`security_setting.form_item_name.${key}`);
-        invalidValues.push(t('input_validation.message.required', formItemName));
+        const formItemName = t(`security_settings.form_item_name.${key}`);
+        invalidValues.push(t('input_validation.message.required', { param: formItemName }));
       }
     }
     if (invalidValues.length !== 0) {
@@ -958,7 +958,7 @@ module.exports = (crowi) => {
         crowi.passportService.parseABLCRule(rule);
       }
       catch (err) {
-        return res.apiv3Err(t('input_validation.message.invalid_syntax', t('security_settings.form_item_name.ABLCRule')), 400);
+        return res.apiv3Err(t('input_validation.message.invalid_syntax', { syntax: t('security_settings.form_item_name.ABLCRule') }), 400);
       }
     }
 
