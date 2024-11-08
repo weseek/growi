@@ -34,7 +34,7 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
   }, [closeRagSearchModal]);
 
   return (
-    <NextLink href={props.href} onClickNextLink={onClick} className="link-primary">
+    <NextLink href={props.href} onClick={onClick} className="link-primary">
       {props.children}
     </NextLink>
   );
