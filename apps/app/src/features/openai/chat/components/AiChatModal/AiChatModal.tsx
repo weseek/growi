@@ -45,6 +45,7 @@ const AiChatModalSubstance = (): JSX.Element => {
   const form = useForm<FormData>({
     defaultValues: {
       input: '',
+      summaryMode: true,
     },
   });
 
