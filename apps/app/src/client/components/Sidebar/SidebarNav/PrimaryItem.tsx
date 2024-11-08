@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import type { SidebarContentsType } from '~/interfaces/ui';
 import { SidebarMode } from '~/interfaces/ui';
-import { useCollapsedContentsOpened, useCurrentSidebarContents } from '~/stores/ui';
-
+import { useCollapsedContentsOpened, useCurrentSidebarContents, useIsMobile } from '~/stores/ui';
 
 const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => {
   const { data: isCollapsedContentsOpened } = useCollapsedContentsOpened();
@@ -36,6 +36,8 @@ export const PrimaryItem = (props: PrimaryItemProps): JSX.Element => {
   const { data: currentContents, mutateAndSave: mutateContents } = useCurrentSidebarContents();
 
   const indicatorClass = useIndicator(sidebarMode, contents === currentContents);
+  const { data: isMobile } = useIsMobile();
+  const { t } = useTranslation();
 
   const selectThisItem = useCallback(() => {
     mutateContents(contents, false);
@@ -81,14 +83,18 @@ export const PrimaryItem = (props: PrimaryItemProps): JSX.Element => {
           <span className="material-symbols-outlined">{iconName}</span>
         </div>
       </button>
-      <UncontrolledTooltip
-        autohide
-        placement="right"
-        target={labelForTestId}
-        fade={false}
-      >
-        {label}
-      </UncontrolledTooltip>
+      {
+        isMobile === false ? (
+          <UncontrolledTooltip
+            autohide
+            placement="right"
+            target={labelForTestId}
+            fade={false}
+          >
+            {t(label)}
+          </UncontrolledTooltip>
+        ) : <></>
+      }
     </>
   );
 };
