@@ -1,83 +1,81 @@
-########################################################################
-# deps-resolver
-########################################################################
-FROM node:20-slim AS deps-resolver
+# syntax = docker/dockerfile:1
 
-WORKDIR /app
+##
+## base
+##
+FROM node:20-slim AS base
 
-COPY package.json yarn.lock ./
+ENV optDir="/opt"
 
-RUN yarn --frozen-lockfile
+WORKDIR ${optDir}
 
-RUN tar -cf node_modules.tar \
-  node_modules \
-  && rm -rf node_modules
+# install pnpm
+RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
+  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
-
-########################################################################
-# deps-resolver-prod
-########################################################################
-FROM deps-resolver AS deps-resolver-prod
-
-WORKDIR /app
-
-RUN yarn --production
-
-RUN tar -cf node_modules.tar \
-  node_modules \
-  && rm -rf node_modules
+# install turbo
+RUN pnpm add turbo --global
 
 
-########################################################################
-# builder
-########################################################################
-FROM node:20-slim AS builder
 
-WORKDIR /app
+##
+## builder
+##
+FROM base AS builder
 
-COPY package.json yarn.lock tsconfig.json tsconfig.build.json .eslintrc.js ./
-COPY src ./src
-COPY --from=deps-resolver /app/node_modules.tar ./
+ENV optDir="/opt"
 
-RUN tar -xf node_modules.tar \
-  && rm node_modules.tar \
-  && yarn build \
-  && tar -cf packages.tar \
-    package.json \
-    yarn.lock \
-    dist \
-  && rm -rf node_modules
+WORKDIR ${optDir}
+
+COPY . .
+
+RUN pnpm install ---frozen-lockfile
+
+# build
+RUN turbo run build --filter @growi/pdf-converter
+
+# make artifacts
+RUN pnpm deploy out --prod --filter @growi/pdf-converter
+RUN rm -rf apps/pdf-converter/node_modules && mv out/node_modules apps/pdf-converter/node_modules
+RUN tar -zcf packages.tar.gz \
+  package.json \
+  apps/pdf-converter/package.json \
+  apps/pdf-converter/dist \
+  apps/pdf-converter/.env \
+  apps/pdf-converter/node_modules
 
 
-########################################################################
-# production
-########################################################################
+
+##
+## release
+##
 FROM node:20-slim
+LABEL maintainer="Yuki Takei <yuki@weseek.co.jp>"
 
-ENV NODE_ENV=production
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
-ENV LANG=ja_JP.UTF-8
+ENV NODE_ENV="production"
+ENV PUPPETEER_EXECUTABLE_PATH="/usr/bin/chromium"
+ENV LANG="ja_JP.UTF-8"
 
-RUN apt-get update && apt-get install -y tini chromium locales fonts-ipafont fonts-ipaexfont fonts-ipafont-gothic fonts-ipafont-mincho && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* \
-    && echo "ja_JP UTF-8" > /etc/locale.gen && locale-gen
+ENV optDir="/opt"
+ENV appDir="${optDir}/pdf-converter"
+
+RUN apt-get update && apt-get install -y chromium locales fonts-ipafont fonts-ipaexfont fonts-ipafont-gothic fonts-ipafont-mincho \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*; \
+    echo "ja_JP UTF-8" > /etc/locale.gen && locale-gen;
+
+# copy artifacts
+COPY --from=builder --chown=node:node \
+  ${optDir}/packages.tar.gz ${appDir}/
 
 USER node
-WORKDIR /app
+WORKDIR ${appDir}
+RUN tar -xf packages.tar.gz && rm packages.tar.gz
 
-COPY --from=deps-resolver-prod --chown=node:node \
-  /app/node_modules.tar ./
-COPY --from=builder --chown=node:node \
-  /app/packages.tar ./
-
-RUN tar -xf node_modules.tar \
-  && tar -xf packages.tar \
-  && rm node_modules.tar packages.tar
-
-# change permission for shared volume
-RUN mkdir -p /tmp/page-bulk-export && chmod -R 777 /tmp/page-bulk-export
+WORKDIR ${appDir}/apps/pdf-converter
 
 EXPOSE 3010
 
-ENTRYPOINT ["/usr/bin/tini", "-e", "143", "--"]
 CMD ["node", "dist/index.js"]
