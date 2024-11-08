@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Collapse,
   Modal, ModalBody, ModalFooter, ModalHeader,
+  UncontrolledTooltip,
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -251,7 +252,23 @@ const AiChatModalSubstance = (): JSX.Element => {
               {...form.register('summaryMode')}
               disabled={form.formState.isSubmitting || isGenerating}
             />
-            <label className="form-check-label" htmlFor="swSummaryMode">Summary Mode</label>
+            <label className="form-check-label" htmlFor="swSummaryMode">
+              {t('modal_aichat.summary_mode_label')}
+            </label>
+
+            {/* Help */}
+            <a
+              id="tooltipForHelpOfSummaryMode"
+              role="button"
+              className="ms-1"
+            >
+              <span className="material-symbols-outlined fs-6" style={{ lineHeight: 'unset' }}>help</span>
+            </a>
+            <UncontrolledTooltip
+              target="tooltipForHelpOfSummaryMode"
+            >
+              {t('modal_aichat.summary_mode_help')}
+            </UncontrolledTooltip>
           </div>
         </form>
 

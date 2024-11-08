@@ -489,6 +489,8 @@
     "title": "Knowledge Assistant",
     "title_beta_label": "(Beta)",
     "placeholder": "Ask me anything.",
+    "summary_mode_label": "Summary mode",
+    "summary_mode_help": "Concise answer within 2-3 sentences",
     "caution_against_hallucination": "Please verify the information and check the sources.",
     "progress_label": "Generating answers",
     "failed_to_create_or_retrieve_thread": "Failed to create or retrieve thread",

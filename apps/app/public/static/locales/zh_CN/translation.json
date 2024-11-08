@@ -478,6 +478,8 @@
     "title": "知识助手",
     "title_beta_label": "(测试版)",
     "placeholder": "问我任何问题。",
+    "summary_mode_label": "摘要模式",
+    "summary_mode_help": "简洁回答在2-3句话内",
     "caution_against_hallucination": "请核实信息并检查来源。",
     "progress_label": "生成答案中",
     "failed_to_create_or_retrieve_thread": "创建或获取线程失败",
