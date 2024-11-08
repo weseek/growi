@@ -24,6 +24,7 @@ const logger = loggerFactory('growi:routes:apiv3:openai:message');
 type ReqBody = {
   userMessage: string,
   threadId?: string,
+  summaryMode?: boolean,
 }
 
 type Req = Request<undefined, Response, ReqBody>
@@ -61,7 +62,15 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
 
         stream = openaiClient.beta.threads.runs.stream(thread.id, {
           assistant_id: assistant.id,
-          additional_messages: [{ role: 'user', content: req.body.userMessage }],
+          additional_messages: [
+            {
+              role: 'assistant',
+              content: req.body.summaryMode
+                ? 'Turn on summary mode: I will try to answer concisely, aiming for 1-3 sentences.'
+                : 'I will turn off summary mode and answer.',
+            },
+            { role: 'user', content: req.body.userMessage },
+          ],
         });
 
       }
