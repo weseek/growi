@@ -1,5 +1,5 @@
 import type { ReadStream } from 'fs';
-import { Readable } from 'stream';
+import { pipeline, Readable } from 'stream';
 
 import type { Response } from 'express';
 
@@ -165,10 +165,7 @@ module.exports = function(crowi) {
 
     const writeStream = fs.createWriteStream(filePath);
 
-    const stream = fileStream
-      .on('error', () => { writeStream.end() })
-      .pipe(writeStream)
-      .on('error', () => { fileStream.destroy() });
+    const stream = pipeline(fileStream, writeStream);
     return streamToPromise(stream);
   };
 
@@ -183,10 +180,7 @@ module.exports = function(crowi) {
     fileStream.push(data);
     fileStream.push(null); // EOF
     const writeStream = fs.createWriteStream(absFilePath);
-    const stream = fileStream
-      .on('error', () => { writeStream.end() })
-      .pipe(writeStream)
-      .on('error', () => { fileStream.destroy() });
+    const stream = pipeline(fileStream, writeStream);
     return streamToPromise(stream);
   };
 

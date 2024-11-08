@@ -1,4 +1,4 @@
-import { Writable, Transform } from 'stream';
+import { Writable, Transform, pipeline } from 'stream';
 import { URL } from 'url';
 
 import { getIdStringForRef, type IPage } from '@growi/core';
@@ -553,32 +553,14 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     });
 
-    readStream
-      .on('error', () => {
-        batchStream.end();
-        appendTagNamesStream.end();
-        writeStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        readStream.destroy();
-        appendTagNamesStream.end();
-        writeStream.end();
-      })
-      .pipe(appendTagNamesStream)
-      .on('error', () => {
-        readStream.destroy();
-        batchStream.destroy();
-        writeStream.end();
-      })
-      // .pipe(appendEmbeddingStream)
-      // .pipe(appendFileUploadedStream)
-      .pipe(writeStream)
-      .on('error', () => {
-        readStream.destroy();
-        batchStream.destroy();
-        appendTagNamesStream.destroy();
-      });
+    pipeline(
+      readStream,
+      batchStream,
+      appendTagNamesStream,
+      // appendEmbeddingStream,
+      // appendFileUploadedStream,
+      writeStream,
+    );
 
     return streamToPromise(writeStream);
   }

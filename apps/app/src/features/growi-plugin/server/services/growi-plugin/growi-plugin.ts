@@ -1,5 +1,6 @@
 import fs, { readFileSync } from 'fs';
 import path from 'path';
+import { pipeline } from 'stream';
 
 import { GrowiPluginType } from '@growi/core';
 import type { GrowiThemeMetadata, ViteManifest } from '@growi/core';
@@ -212,7 +213,8 @@ export class GrowiPluginService implements IGrowiPluginService {
       const readZipStream = fs.createReadStream(zipFilePath);
       const writeUnZipStream = unzipStream.Extract({ path: destPath.toString() });
 
-      const unzipFileStream = readZipStream.on('error', () => { writeUnZipStream.end() }).pipe(writeUnZipStream).on('error', () => { readZipStream.destroy() });
+      const unzipFileStream = pipeline(readZipStream, writeUnZipStream);
+
 
       await streamToPromise(unzipFileStream);
     }

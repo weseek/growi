@@ -1,5 +1,5 @@
 import path from 'path';
-import type { Readable } from 'stream';
+import { pipeline, type Readable } from 'stream';
 
 import type { IPage } from '@growi/core';
 import {
@@ -760,7 +760,7 @@ module.exports = (crowi) => {
     };
     await crowi.activityService.createActivity(parameters);
 
-    return stream.pipe(res).on('error', () => { stream.destroy() });
+    return pipeline(stream, res);
   });
 
   /**

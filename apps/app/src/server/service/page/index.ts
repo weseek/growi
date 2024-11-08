@@ -1,6 +1,6 @@
 import type EventEmitter from 'events';
 import pathlib from 'path';
-import { Readable, Writable } from 'stream';
+import { pipeline, Readable, Writable } from 'stream';
 
 import {
   PageStatus, YDocStatus, getIdForRef,
@@ -1045,21 +1045,8 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .on('error', () => {
-        batchStream.end();
-        writeStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        readStream.destroy();
-        writeStream.end();
-      })
-      .pipe(writeStream)
-      .on('error', () => {
-        readStream.destroy();
-        batchStream.destroy();
-      });
+    pipeline(readStream, batchStream, writeStream);
+
     await streamToPromise(writeStream);
   }
 
@@ -1097,21 +1084,8 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .on('error', () => {
-        batchStream.end();
-        writeStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        readStream.destroy();
-        writeStream.end();
-      })
-      .pipe(writeStream)
-      .on('error', () => {
-        readStream.destroy();
-        batchStream.destroy();
-      });
+    pipeline(readStream, batchStream, writeStream);
+
     await streamToPromise(writeStream);
   }
 
@@ -1527,21 +1501,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .on('error', () => {
-        batchStream.end();
-        writeStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        readStream.destroy();
-        writeStream.end();
-      })
-      .pipe(writeStream)
-      .on('error', () => {
-        readStream.destroy();
-        batchStream.destroy();
-      });
+    pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -1581,21 +1541,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .on('error', () => {
-        batchStream.end();
-        writeStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        readStream.destroy();
-        writeStream.end();
-      })
-      .pipe(writeStream)
-      .on('error', () => {
-        readStream.destroy();
-        batchStream.destroy();
-      });
+    pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -1925,21 +1871,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .on('error', () => {
-        batchStream.end();
-        writeStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        readStream.destroy();
-        writeStream.end();
-      })
-      .pipe(writeStream)
-      .on('error', () => {
-        readStream.destroy();
-        batchStream.destroy();
-      });
+    pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -2202,21 +2134,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .on('error', () => {
-        batchStream.end();
-        writeStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        readStream.destroy();
-        writeStream.end();
-      })
-      .pipe(writeStream)
-      .on('error', () => {
-        readStream.destroy();
-        batchStream.destroy();
-      });
+    pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -2503,21 +2421,8 @@ class PageService implements IPageService {
       },
     });
 
-    childPagesReadableStream
-      .on('error', () => {
-        batchStream.end();
-        childPagesWritable.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        childPagesReadableStream.destroy();
-        childPagesWritable.end();
-      })
-      .pipe(childPagesWritable)
-      .on('error', () => {
-        childPagesReadableStream.destroy();
-        childPagesWritable.destroy();
-      });
+    pipeline(childPagesReadableStream, batchStream, childPagesWritable);
+
     await streamToPromise(childPagesWritable);
   }
 
@@ -2584,21 +2489,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .on('error', () => {
-        batchStream.end();
-        writeStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        readStream.destroy();
-        writeStream.end();
-      })
-      .pipe(writeStream)
-      .on('error', () => {
-        readStream.destroy();
-        batchStream.destroy();
-      });
+    pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -2632,18 +2523,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .on('error', () => {
-        batchStream.end();
-        writeStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        readStream.destroy();
-        writeStream.end();
-      })
-      .pipe(writeStream)
-      .on('error', () => {});
+    pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(readStream);
 
@@ -3491,21 +3371,7 @@ class PageService implements IPageService {
       },
     });
 
-    pagesStream
-      .on('error', () => {
-        batchStream.end();
-        migratePagesStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        pagesStream.destroy();
-        migratePagesStream.end();
-      })
-      .pipe(migratePagesStream)
-      .on('error', () => {
-        pagesStream.destroy();
-        batchStream.destroy();
-      });
+    pipeline(pagesStream, batchStream, migratePagesStream);
 
     await streamToPromise(migratePagesStream);
 
@@ -3622,21 +3488,8 @@ class PageService implements IPageService {
         callback();
       },
     });
-    pageCursor
-      .on('error', () => {
-        batchStream.end();
-        recountWriteStream.end();
-      })
-      .pipe(batchStream)
-      .on('error', () => {
-        pageCursor.destroy();
-        recountWriteStream.end();
-      })
-      .pipe(recountWriteStream)
-      .on('error', () => {
-        pageCursor.destroy();
-        batchStream.destroy();
-      });
+
+    pipeline(pageCursor, batchStream, recountWriteStream);
 
     await streamToPromise(recountWriteStream);
   }

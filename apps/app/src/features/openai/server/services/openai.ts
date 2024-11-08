@@ -1,5 +1,6 @@
 import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
@@ -342,21 +343,7 @@ class OpenaiService implements IOpenaiService {
       },
     });
 
-    pagesStream
-      .on('error', () => {
-        batchStrem.end();
-        createVectorStoreFileStream.end();
-      })
-      .pipe(batchStrem)
-      .on('error', () => {
-        pagesStream.destroy();
-        createVectorStoreFileStream.end();
-      })
-      .pipe(createVectorStoreFileStream)
-      .on('error', () => {
-        pagesStream.destroy();
-        batchStrem.destroy();
-      });
+    await pipeline(pagesStream, batchStrem, createVectorStoreFileStream);
   }
 
   async rebuildVectorStore(page: HydratedDocument<PageDocument>) {

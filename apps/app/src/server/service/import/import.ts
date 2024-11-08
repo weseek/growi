@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { EventEmitter } from 'stream';
-import { Writable, Transform } from 'stream';
+import { Writable, Transform, pipeline } from 'stream';
 
 import JSONStream from 'JSONStream';
 import gc from 'expose-gc/function';
@@ -267,41 +267,7 @@ export class ImportService {
         },
       });
 
-      readStream
-        .on('error', () => {
-          jsonStream.end();
-          convertStream.end();
-          batchStream.end();
-          writeStream.end();
-        })
-        .pipe(jsonStream)
-        .on('error', () => {
-          readStream.destroy();
-          convertStream.end();
-          batchStream.end();
-          writeStream.end();
-        })
-        .pipe(convertStream)
-        .on('error', () => {
-          readStream.destroy();
-          jsonStream.destroy();
-          batchStream.end();
-          writeStream.end();
-        })
-        .pipe(batchStream)
-        .on('error', () => {
-          readStream.destroy();
-          jsonStream.destroy();
-          convertStream.destroy();
-          writeStream.end();
-        })
-        .pipe(writeStream)
-        .on('error', () => {
-          readStream.destroy();
-          jsonStream.destroy();
-          convertStream.destroy();
-          batchStream.destroy();
-        });
+      pipeline(readStream, jsonStream, convertStream, batchStream, writeStream);
 
       await streamToPromise(writeStream);
 
@@ -380,10 +346,7 @@ export class ImportService {
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
     const parseStream = unzipStream.Parse();
-    const unzipStreamPipe = readStream
-      .on('error', () => { parseStream.end() })
-      .pipe(parseStream)
-      .on('error', () => { readStream.destroy() });
+    const unzipStreamPipe = pipeline(readStream, parseStream);
     const files: string[] = [];
 
     unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
@@ -404,10 +367,7 @@ export class ImportService {
       else {
         const jsonFile = path.join(this.baseDir, fileName);
         const writeStream = fs.createWriteStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
-        entry
-          .on('error', () => { writeStream.end() })
-          .pipe(writeStream)
-          .on('error', () => { entry.destroy() });
+        pipeline(entry, writeStream);
         files.push(jsonFile);
       }
     });

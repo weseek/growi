@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { pipeline } from 'stream';
 
 import streamToPromise from 'stream-to-promise';
 import unzipStream, { type Entry } from 'unzip-stream';
@@ -79,10 +80,7 @@ class GrowiBridgeService {
 
     const readStream = fs.createReadStream(zipFile);
     const parseStream = unzipStream.Parse();
-    const unzipStreamPipe = readStream
-      .on('error', () => parseStream.end())
-      .pipe(parseStream)
-      .on('error', () => readStream.destroy());
+    const unzipStreamPipe = pipeline(readStream, parseStream);
 
     let tapPromise;
 

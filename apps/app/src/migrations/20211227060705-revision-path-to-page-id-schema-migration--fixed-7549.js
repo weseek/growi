@@ -1,4 +1,4 @@
-import { Writable } from 'stream';
+import { pipeline, Writable } from 'stream';
 
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -56,21 +56,7 @@ module.exports = {
       },
     });
 
-    pagesStream
-      .on('error', () => {
-        batchStrem.end();
-        migratePagesStream.end();
-      })
-      .pipe(batchStrem)
-      .on('error', () => {
-        pagesStream.destroy();
-        migratePagesStream.end();
-      })
-      .pipe(migratePagesStream)
-      .on('error', () => {
-        pagesStream.destroy();
-        batchStrem.destroy();
-      });
+    pipeline(pagesStream, batchStrem, migratePagesStream);
 
     await streamToPromise(migratePagesStream);
 
@@ -119,21 +105,7 @@ module.exports = {
       },
     });
 
-    pagesStream
-      .on('error', () => {
-        batchStrem.end();
-        migratePagesStream.end();
-      })
-      .pipe(batchStrem)
-      .on('error', () => {
-        pagesStream.destroy();
-        migratePagesStream.end();
-      })
-      .pipe(migratePagesStream)
-      .on('error', () => {
-        pagesStream.destroy();
-        batchStrem.destroy();
-      });
+    pipeline(pagesStream, batchStrem, migratePagesStream);
 
     await streamToPromise(migratePagesStream);
 
