@@ -1,3 +1,4 @@
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler, Response } from 'express';
 import type { ValidationChain } from 'express-validator';
@@ -15,6 +16,7 @@ import loggerFactory from '~/utils/logger';
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import { openaiClient } from '../services';
 import { getStreamErrorCode } from '../services/getStreamErrorCode';
+import { replaceAnnotationWithPageLink } from '../services/replace-annotation-with-page-link';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -27,7 +29,9 @@ type ReqBody = {
   summaryMode?: boolean,
 }
 
-type Req = Request<undefined, Response, ReqBody>
+type Req = Request<undefined, Response, ReqBody> & {
+  user: IUserHasId,
+}
 
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
@@ -86,7 +90,14 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         'Cache-Control': 'no-cache, no-transform',
       });
 
-      const messageDeltaHandler = (delta: MessageDelta) => {
+      const messageDeltaHandler = async(delta: MessageDelta) => {
+        const content = delta.content?.[0];
+
+        // If annotation is found
+        if (content?.type === 'text' && content?.text?.annotations != null) {
+          await replaceAnnotationWithPageLink(content, req.user.lang);
+        }
+
         res.write(`data: ${JSON.stringify(delta)}\n\n`);
       };
 

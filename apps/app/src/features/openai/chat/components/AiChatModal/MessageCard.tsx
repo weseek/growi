@@ -1,5 +1,12 @@
+import { useCallback } from 'react';
+
+import type { LinkProps } from 'next/link';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
+
+import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
+
+import { useRagSearchModal } from '../../../client/stores/rag-search';
 
 import styles from './MessageCard.module.scss';
 
@@ -19,8 +26,20 @@ const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
 
 const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
 
-const AssistantMessageCard = ({ children }: { children: string }): JSX.Element => {
+const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): JSX.Element => {
+  const { close: closeRagSearchModal } = useRagSearchModal();
 
+  const onClick = useCallback(() => {
+    closeRagSearchModal();
+  }, [closeRagSearchModal]);
+
+  return (
+    <NextLink href={props.href} onClick={onClick} className="link-primary">
+      {props.children}
+    </NextLink>
+  );
+};
+const AssistantMessageCard = ({ children }: { children: string }): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -32,7 +51,7 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
         <div>
           { children.length > 0
             ? (
-              <ReactMarkdown>{children}</ReactMarkdown>
+              <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
             )
             : (
               <span className="text-thinking">

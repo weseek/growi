@@ -56,7 +56,7 @@ class VectorStoreFileDeletionCronService {
       try {
         // Random fractional sleep to distribute request timing among GROWI apps
         const randomMilliseconds = getRandomIntInRange(0, this.vectorStoreFileDeletionCronMaxMinutesUntilRequest) * 60 * 1000;
-        this.sleep(randomMilliseconds);
+        await this.sleep(randomMilliseconds);
 
         await this.executeJob();
       }
