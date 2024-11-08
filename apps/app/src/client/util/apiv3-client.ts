@@ -17,9 +17,13 @@ const apiv3ErrorHandler = (_err: any): any[] => {
   // extract api errors from general 400 err
   const err = _err.response ? _err.response.data.errors : _err;
   const errs = toArrayIfNot(err);
+  const errorInfo = _err.response ? _err.response.data.info : undefined;
 
   for (const err of errs) {
     logger.error(err.message);
+  }
+  if (errorInfo != null) {
+    logger.error('additional info:', errorInfo);
   }
 
   return errs;
