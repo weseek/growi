@@ -17,7 +17,7 @@ export const replaceAnnotationWithPageLink = async(messageContentDelta: MessageC
           .populate<{page: Pick<IPageHasId, 'path' | '_id'>}>('page', 'path');
 
         if (vectorStoreFileRelation != null) {
-          const { t } = await getTranslation(lang);
+          const { t } = await getTranslation({ lang });
           messageContentDelta.text.value = messageContentDelta.text.value?.replace(
             annotation.text,
             ` [${t('source')}: [${vectorStoreFileRelation.page.path}](/${vectorStoreFileRelation.page._id})]`,

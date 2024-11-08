@@ -569,7 +569,7 @@ module.exports = (crowi) => {
    *            description: Succeeded to send test mail for smtp
    */
   router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
-    const { t } = await getTranslation(req.user.lang);
+    const { t } = await getTranslation({ lang: req.user.lang });
 
     try {
       await sendTestEmail(req.user.email);
