@@ -1,7 +1,7 @@
 import { allOrigin } from '@growi/core';
 import type {
   IPage, IUser, IUserHasId,
-} from '@growi/core';
+} from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-utils';

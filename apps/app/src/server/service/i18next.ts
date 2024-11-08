@@ -14,7 +14,7 @@ import { configManager } from './config-manager';
 
 const relativePathToLocalesRoot = path.relative(__dirname, resolveFromRoot('public/static/locales'));
 
-const initI18next = async(lang: Lang = defaultLang) => {
+const initI18next = async(fallbackLng: Lang[] = [defaultLang]) => {
   const i18nInstance = createInstance();
   await i18nInstance
     .use(
@@ -26,7 +26,7 @@ const initI18next = async(lang: Lang = defaultLang) => {
     )
     .init({
       ...initOptions,
-      lng: lang,
+      fallbackLng,
     });
   return i18nInstance;
 };
@@ -38,10 +38,11 @@ type Translation = {
 
 export async function getTranslation(lang?: Lang): Promise<Translation> {
   const globalLang = configManager.getConfig('crowi', 'app:globalLang') as Lang;
-  const i18nextInstance = await initI18next(globalLang);
+  const fixedLang = lang ?? globalLang;
+  const i18nextInstance = await initI18next([fixedLang, defaultLang]);
 
   return {
-    t: i18nextInstance.getFixedT(lang ?? globalLang),
+    t: i18nextInstance.getFixedT(fixedLang),
     i18n: i18nextInstance,
   };
 }
