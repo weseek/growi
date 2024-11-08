@@ -1,6 +1,6 @@
-const { Lang, AllLang } = require('@growi/core');
+const { Lang, AllLang } = require('@growi/core/dist/interfaces');
 
-/** @type {Lang} */
+/** @type {import('@growi/core/dist/interfaces').Lang} */
 const defaultLang = Lang.en_US;
 
 /** @type {import('i18next').InitOptions} */
