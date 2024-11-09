@@ -7,6 +7,7 @@ sudo apt-get clean -y
 # Setup pnpm
 SHELL=bash pnpm setup
 eval "$(cat /home/node/.bashrc)"
+# Update pnpm
 pnpm add -g pnpm
 
 # Install turbo
