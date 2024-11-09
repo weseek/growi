@@ -42,7 +42,7 @@ services:
       - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
   pdf-converter:
-    image: mcr.microsoft.com/devcontainers/base:ubuntu
+    image: mcr.microsoft.com/vscode/devcontainers/javascript-node:0-20
     volumes:
       - ..:/workspace/growi:delegated
       - pnpm-store:/workspace/growi/.pnpm-store
