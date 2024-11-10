@@ -17,7 +17,10 @@
         "dbaeumer.vscode-eslint",
         "mhutchie.git-graph",
         "eamodio.gitlens"
-      ]
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
     }
   }
 

@@ -37,6 +37,9 @@
         "vitest.explorer",
         "ms-playwright.playwright"
       ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
     }
   },
 
