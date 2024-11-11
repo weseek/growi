@@ -208,7 +208,6 @@
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.1",
     "remark-stringify": "^11.0.0",
-    "remark-toc": "^9.0.0",
     "sanitize-filename": "^1.6.3",
     "socket.io": "^4.7.5",
     "stream-to-promise": "^3.0.0",
