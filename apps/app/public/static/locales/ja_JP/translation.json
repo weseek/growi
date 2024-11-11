@@ -162,6 +162,7 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
+  "source": "出典",
   "input_validation": {
     "target": {
       "page_name": "ページ名",
@@ -522,6 +523,8 @@
     "title": "ナレッジアシスタント",
     "title_beta_label": "(ベータ)",
     "placeholder": "ききたいことを入力してください",
+    "summary_mode_label": "要約モード",
+    "summary_mode_help": "2～3文以内の簡潔な回答",
     "caution_against_hallucination": "情報が正しいか出典を確認しましょう",
     "progress_label": "回答を生成しています",
     "failed_to_create_or_retrieve_thread": "スレッドの作成または取得に失敗しました",

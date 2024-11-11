@@ -161,6 +161,7 @@
   "not_allowed_to_see_this_page": "Vous ne pouvez pas voir cette page",
   "Confirm": "Confirmer",
   "Successfully requested": "Demande envoyée.",
+  "source": "Source",
   "input_validation": {
     "target": {
       "page_name": "Nom de la page",
@@ -483,6 +484,8 @@
     "title": "Assistant de Connaissance",
     "title_beta_label": "(Bêta)",
     "placeholder": "Demandez-moi n'importe quoi.",
+    "summary_mode_label": "Mode résumé",
+    "summary_mode_help": "Réponse concise en 2-3 phrases",
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
     "progress_label": "Génération des réponses",
     "failed_to_create_or_retrieve_thread": "Échec de la création ou de la récupération du fil de discussion",
