@@ -9,7 +9,6 @@ import remarkDirective from 'remark-directive';
 import remarkFrontmatter from 'remark-frontmatter';
 import gfm from 'remark-gfm';
 import math from 'remark-math';
-import toc from 'remark-toc';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable, PluginTuple } from 'unified';
 
@@ -95,7 +94,6 @@ export const verifySanitizePlugin = (options: RendererOptions, shouldBeTheLastIt
 export const generateCommonOptions = (pagePath: string|undefined): RendererOptions => {
   return {
     remarkPlugins: [
-      [toc, { maxDepth: 3, tight: true }],
       gfm,
       emoji.remarkPlugin,
       pukiwikiLikeLinker,
