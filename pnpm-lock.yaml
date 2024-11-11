@@ -624,9 +624,6 @@ importers:
       remark-stringify:
         specifier: ^11.0.0
         version: 11.0.0
-      remark-toc:
-        specifier: ^9.0.0
-        version: 9.0.0
       sanitize-filename:
         specifier: ^1.6.3
         version: 1.6.3
@@ -4148,9 +4145,6 @@ packages:
 
   '@types/throttle-debounce@5.0.2':
     resolution: {integrity: sha512-pDzSNulqooSKvSNcksnV72nk8p7gRqN8As71Sp28nov1IgmPKWbOEIwAWvBME5pPTtaXJAvG3O4oc76HlQ4kqQ==}
-
-  '@types/ungap__structured-clone@1.2.0':
-    resolution: {integrity: sha512-ZoaihZNLeZSxESbk9PUAPZOlSpcKx81I1+4emtULDVmBLkYutTcMlCj2K9VNlf9EWODxdO6gkAqEaLorXwZQVA==}
 
   '@types/unist@2.0.3':
     resolution: {integrity: sha512-FvUupuM3rlRsRtCN+fDudtmytGO6iHJuuRKS1Ss0pG5z8oX0diNEw94UEL7hgDbpN94rgaK5R7sWm6RrSkZuAQ==}
@@ -8514,9 +8508,6 @@ packages:
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
 
-  mdast-util-toc@7.1.0:
-    resolution: {integrity: sha512-2TVKotOQzqdY7THOdn2gGzS9d1Sdd66bvxUyw3aNpWfcPXCLYSJCCgfPy30sEtuzkDraJgqF35dzgmz6xlvH/w==}
-
   mdast-util-wiki-link@0.1.2:
     resolution: {integrity: sha512-DTcDyOxKDo3pB3fc0zQlD8myfQjYkW4hazUKI9PUyhtoj9JBeHC2eIdlVXmaT22bZkFAVU2d47B6y2jVKGoUQg==}
 
@@ -10208,9 +10199,6 @@ packages:
 
   remark-stringify@11.0.0:
     resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
-
-  remark-toc@9.0.0:
-    resolution: {integrity: sha512-KJ9txbo33GjDAV1baHFze7ij4G8c7SGYoY8Kzsm2gzFpbhL/bSoVpMMzGa3vrNDSWASNd/3ppAqL7cP2zD6JIA==}
 
   remark@15.0.1:
     resolution: {integrity: sha512-Eht5w30ruCXgFmxVUSlNWQ9iiimq07URKeFS3hNc8cUWy1llX4KDWfyEDZRycMc+znsN9Ux5/tJ/BFdgdOwA3A==}
@@ -16240,8 +16228,6 @@ snapshots:
 
   '@types/throttle-debounce@5.0.2': {}
 
-  '@types/ungap__structured-clone@1.2.0': {}
-
   '@types/unist@2.0.3': {}
 
   '@types/unist@3.0.3': {}
@@ -21548,16 +21534,6 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
 
-  mdast-util-toc@7.1.0:
-    dependencies:
-      '@types/mdast': 4.0.4
-      '@types/ungap__structured-clone': 1.2.0
-      '@ungap/structured-clone': 1.2.0
-      github-slugger: 2.0.0
-      mdast-util-to-string: 4.0.0
-      unist-util-is: 6.0.0
-      unist-util-visit: 5.0.0
-
   mdast-util-wiki-link@0.1.2:
     dependencies:
       '@babel/runtime': 7.25.4
@@ -23627,11 +23603,6 @@ snapshots:
       '@types/mdast': 4.0.4
       mdast-util-to-markdown: 2.1.0
       unified: 11.0.5
-
-  remark-toc@9.0.0:
-    dependencies:
-      '@types/mdast': 4.0.4
-      mdast-util-toc: 7.1.0
 
   remark@15.0.1:
     dependencies:
