@@ -33,6 +33,26 @@
 > Advises about risks or negative outcomes of certain actions.
 ```
 
+您还可以使用[directive 语法](https://talk.commonmark.org/t/generic-directives-plugins-syntax/444)。
+
+:::note
+Useful information that users should know, even when skimming content.
+:::
+
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
+:::
+
+```markdown
+:::note
+Useful information that users should know, even when skimming content.
+:::
+
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
+:::
+```
+
 
 # 引用
 - 在段落开头放置 `>` 即可使用带引号的表达式

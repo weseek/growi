@@ -33,6 +33,26 @@
 > Advises about risks or negative outcomes of certain actions.
 ```
 
+[directive](https://talk.commonmark.org/t/generic-directives-plugins-syntax/444) を使って記述することもできます。
+
+:::note
+Useful information that users should know, even when skimming content.
+:::
+
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
+:::
+
+```markdown
+:::note
+Useful information that users should know, even when skimming content.
+:::
+
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
+:::
+```
+
 
 # テキストの引用
 - 行頭に `>` を記述することで引用表現を記述できます
