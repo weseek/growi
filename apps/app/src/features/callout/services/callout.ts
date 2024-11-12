@@ -26,7 +26,7 @@ export const remarkPlugin: Plugin = () => {
         data.hName = 'callout';
         data.hProperties = {
           type,
-          label: label ?? type,
+          label,
         };
 
       }
