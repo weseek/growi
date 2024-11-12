@@ -11,6 +11,18 @@ on:
     secrets:
       SLACK_WEBHOOK_URL:
         required: true
+  workflow_dispatch:
+    inputs:
+      node-version:
+        required: true
+        type: string
+        default: 20.x
+      skip-e2e-test:
+        type: boolean
+        default: false
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
 
 jobs:
 
@@ -161,7 +173,9 @@ jobs:
   run-playwright:
     needs: [build-prod]
 
-    if: ${{ !inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/') }}
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (!inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/'))
 
     runs-on: ubuntu-latest
     container:
