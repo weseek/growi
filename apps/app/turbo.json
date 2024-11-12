@@ -13,12 +13,8 @@
       ],
       "outputLogs": "new-only"
     },
-    "pre:lfs": {
-      "outputs": ["resource/fonts/**"],
-      "outputLogs": "new-only"
-    },
     "build": {
-      "dependsOn": ["^build", "pre:styles", "pre:lfs"],
+      "dependsOn": ["^build", "pre:styles"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "next.config.js",
@@ -49,13 +45,13 @@
       "outputLogs": "new-only"
     },
     "dev": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles", "pre:lfs"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles"],
       "cache": false,
       "persistent": true
     },
 
     "launch-dev:ci": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles", "pre:lfs"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles"],
       "cache": false
     },
 
@@ -70,23 +66,23 @@
 
     "version:patch": {
       "cache": false,
-      "dependsOn": ["^version:patch", "//#version:patch"]
+      "dependsOn": ["//#version:patch"]
     },
     "version:prerelease": {
       "cache": false,
-      "dependsOn": ["^version:prerelease", "//#version:prerelease"]
+      "dependsOn": ["//#version:prerelease"]
     },
     "version:prepatch": {
       "cache": false,
-      "dependsOn": ["^version:prepatch", "//#version:prepatch"]
+      "dependsOn": ["//#version:prepatch"]
     },
     "version:preminor": {
       "cache": false,
-      "dependsOn": ["^version:preminor", "//#version:preminor"]
+      "dependsOn": ["//#version:preminor"]
     },
     "version:premajor": {
       "cache": false,
-      "dependsOn": ["^version:premajor", "//#version:premajor"]
+      "dependsOn": ["//#version:premajor"]
     }
 
   }

@@ -22,9 +22,10 @@ import type {
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
   const findAll = true;
+  const includeEmpty = true;
   return useSWR(
-    path != null ? ['/page', path, findAll] : null,
-    ([endpoint, path, findAll]) => apiv3Get(endpoint, { path, findAll }).then(result => result.data.pages),
+    path != null ? ['/page', path, findAll, includeEmpty] : null,
+    ([endpoint, path, findAll, includeEmpty]) => apiv3Get(endpoint, { path, findAll, includeEmpty }).then(result => result.data.pages),
   );
 };
 

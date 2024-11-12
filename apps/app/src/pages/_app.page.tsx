@@ -1,7 +1,7 @@
 import type { ReactElement, ReactNode } from 'react';
 import React, { useEffect } from 'react';
 
-import type { Locale } from '@growi/core';
+import type { Locale } from '@growi/core/dist/interfaces';
 import type { NextPage } from 'next';
 import { appWithTranslation } from 'next-i18next';
 import type { AppContext, AppProps } from 'next/app';

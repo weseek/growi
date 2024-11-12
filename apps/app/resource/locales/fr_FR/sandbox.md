@@ -1,6 +1,40 @@
-# Qu'est-ce que Sandbox ?
-- Sur cette page, vous trouverez des conseils qui vous aideront à maîtriser GROWI
-- N'hésitez pas à enrichir le contenu de vos pages avec les références sous cette hiérarchie de pages
+# Bienvenue dans le bac à sable GROWI !
+
+> [!NOTE]
+> **Qu'est-ce qu'un bac à sable ?**
+> 
+> Ceci est une page de pratique que vous pouvez éditer librement. C'est l'endroit idéal pour essayer de nouvelles choses !
+
+
+## :beginner: Pour les débutants
+
+Avec GROWI, vous pouvez facilement créer des pages visuellement attrayantes en utilisant une notation appelée "Markdown".  
+En utilisant Markdown, vous pouvez faire des choses comme ça !
+
+- Mettre en évidence du texte avec du **gras** ou de l'*italique*
+- Créer des listes à puces ou numérotées
+- [Insérer des liens](#-lien)
+- Créer des tableaux
+- Ajouter des blocs de code
+
+Diverses autres décorations sont également possibles.
+
+## Essayons-le !
+
+1. N'hésitez pas à éditer cette page
+1. Il n'y a pas besoin de craindre de faire des erreurs
+1. Vous pouvez toujours revenir en arrière sur les modifications
+1. Vous pouvez également apprendre des modifications des autres
+
+> [!IMPORTANT]
+> **Pour les administrateurs**
+> 
+> Le bac à sable est un lieu important pour l'apprentissage :
+> - Comme première étape pour que les nouveaux membres s'habituent à GROWI
+> - Comme terrain de pratique pour Markdown
+> - Comme outil de communication au sein de l'équipe
+>     - Même si cette page devient encombrée, c'est un signe d'apprentissage actif. Des nettoyages réguliers sont bons, mais il est recommandé de maintenir sa nature d'espace d'expérimentation libre.
+
 
 # :closed_book: Titres et paragraphes
 - En insérant des titres et des paragraphes, vous pouvez rendre le texte de la page plus facile à lire
@@ -44,65 +78,23 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-## Lignes horizontales
-- Insérer la ligne horizontale avec trois astérisques consécutifs ou plus `*` ou des traits de soulignement `_`
 
-#### Exemple
-Ci-dessous se trouve une ligne horizontale
-***
-
-Ci-dessous se trouve une ligne horizontale
-___
-
-```markdown
-Ci-dessous se trouve une ligne horizontale
-***
-
-Ci-dessous se trouve une ligne horizontale
-___
-```
-
-# :green_book: Style du texte
+# :blue_book: Style du texte
 - Différents styles peuvent être appliqués pour enrichir l'expression textuelle d'une phrase
     - Ces styles peuvent également être facilement appliqués en sélectionnant l'icône de la barre d'outils en bas de l'écran d'édition
 
-## Italique
-- Entourez le texte d'un astérisque `*` ou d'un trait de soulignement `_`.
+| Style                     | Syntax                 | Keyboard Shortcut | Example                                   | Output                                 |
+| ------------------------- | ---------------------- | ----------------- | ----------------------------------------- | -------------------------------------- |
+| Bold                      | `** **` or `__ __`     | (TBD)             | `**This is bold text**`                   | **This is bold text**                  |
+| Italic                    | `* *` or `_ _`         | (TBD)             | `_This text is italicized_`               | *This text is italicized*              |
+| Strikethrough             | `~~ ~~`                | (TBD)             | `~~This was mistaken text~~`             | ~~This was  mistaken text~~            |
+| Bold and nested italic | `** **` and `_ _`     | None              | `**This text is _extremely_ important**`  | **This text is _extremely_ important** |
+| All Bold and Italic   | `*** ***`              | None              | `***All this text is important***`       | ***All this text is important***      |
+| Subscript                 | `<sub> </sub>`         | None              | `This is a <sub>subscript</sub> text`       | This is a <sub>subscript</sub> text      |
+| Superscript               | `<sup> </sup>`         | None              | `This is a <sup>superscript</sup> text`     | This is a <sup>superscript</sup> text    |
 
-#### Exemples
-- Cette phrase indique l'emphase avec *Italique*
-- Cette phrase indique l'emphase avec _Italique_
 
-```markdown
-- Cette phrase indique l'emphase avec *Italique*
-- Cette phrase indique l'emphase avec _Italique_
-```
-
-## Gras
-- Entourez le texte de deux astérisques `*` ou de deux traits de soulignement `_`
-
-#### Exemple
-- Cette phrase indique l'emphase avec **Gras**
-- Cette phrase indique l'emphase avec __Gras__
-
-```markdown
-- Cette phrase indique l'emphase avec **Gras**
-- Cette phrase indique l'emphase avec __Gras__
-```
-
-## Italique et Gras
-- Entourez le texte de trois astérisques `*` ou de trois traits de soulignement `_`
-
-#### Exemple
-- Cette phrase indique l'emphase avec ***Italique et Gras***
-- Cette phrase indique l'emphase avec ___Italique et Gras___
-
-```markdown
-- Cette phrase indique l'emphase avec ***Italique et gras***
-- Cette phrase indique l'emphase avec ___Italique et gras___
-```
-
-# :orange_book: Insérer des listes
+# :green_book: Insérer des listes
 ## Liste à puces
 - Insérer une liste à puces en commençant une ligne par un trait d'union `-`, un plus `+` ou un astérisque `*`
 
@@ -129,17 +121,8 @@ ___
 1. Cette phrase est présente dans la liste à puces
     - Cette phrase est présente dans la liste à puces
 
-## Liste des tâches
-- Insérer une liste de cases à cocher non cochées en écrivant `[]`
-    - Cocher la case à cocher en écrivant `[x]`
 
-#### Exemple
-- [ ] Tâche 1
-    - [x] Tâche 1-1
-    - [ ] Tâche 1-2
-- [x] Tâche 2
-
-# :blue_book: Lien
+# :ledger: Lien
 
 ## Lien automatique
 Il suffit d'écrire l'URL et le lien sera généré automatiquement.
@@ -178,131 +161,12 @@ La syntaxe de lien flexible permet d'écrire facilement un lien par chemin de pa
 - [[Comment écrire des formules ?>./Math]]
 ```
 
-# :notebook: Autres
-## Citations
-- Utilisez des expressions entre guillemets en mettant `>` au début du paragraphe
-- Plusieurs citations peuvent être exprimées en utilisant une séquence de caractères `>`
-- Des listes et d'autres éléments peuvent être utilisés ensemble dans les citations
 
-#### Exemple
-> - Citation
-> - Citation
->> Plusieurs citations doivent insérer plus de `>`
+# :notebook: Autres applications
+- [En savoir plus sur Markdown](/Sandbox/Markdown)
 
-```markdown
-> - Citation
-> - Citation
->> Plusieurs citations doivent insérer plus de `>`
-```
+- [Décorez davantage votre page (Bootstrap5)](/Sandbox/Bootstrap5)
 
-## Code
-- Il est possible d'exprimer le code en l'ajoutant en trois `` ` ``
+- [Comment représenter des diagrammes (Diagrams)](/Sandbox/Diagrams)
 
-#### Exemple
-
-```markdown
-Ajoutez des codes ici
-
-Les sauts de ligne et les paragraphes peuvent être reflétés dans le code tel quel
-```
-
-#### Exemple (code source)
-
-```javascript:mersenne-twister.js
-function MersenneTwister(seed) {
-  if (arguments.length == 0) {
-    seed = new Date().getTime();
-  }
-
-  this._mt = new Array(624);
-  this.setSeed(seed);
-}
-```
-
-## Code en ligne
-- Entourez les mots de `` ` `` pour créer du code en ligne
-
-#### Exemple
-Voici le `code en ligne`
-
-## Tableau
-
-### Syntaxe générale
-
-#### Exemple
-
-| Left align | Right align | Center align |
-|:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
-
-```markdown
-| Left align | Right align | Center align |
-|:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
-```
-
-### CSV / TSV
-
-#### Exemple
-
-``` tsv
-Cellule de contenu Cellule de contenu
-Cellule de contenu Cellule de contenu
-```
-
-~~~
-``` csv
-Cellule de contenu,Cellule de contenu
-Cellule de contenu,Cellule de contenu
-```
-~~~
-
-~~~
-``` tsv
-Cellule de contenu Cellule de contenu
-Cellule de contenu Cellule de contenu
-```
-~~~
-
-### CSV / TSV (avec en-tête)
-
-#### Exemple
-
-``` tsv-h
-Premier en-tête Deuxième en-tête
-Cellule de contenu Cellule de contenu
-Cellule de contenu Cellule de contenu
-```
-
-~~~
-``` csv-h
-Premier en-tête Deuxième en-tête
-Cellule de contenu,Cellule de contenu
-Cellule de contenu,Cellule de contenu
-```
-~~~
-
-~~~
-``` tsv-h
-Premier en-tête Deuxième en-tête
-Cellule de contenu Cellule de contenu
-Cellule de contenu Contenu Cellule
-```
-~~~
-
-# :ledger: Autres applications
-- [Bootstrap](/Sandbox/Bootstrap)
-
-- [Diagrammes](/Sandbox/Diagrammes)
-
-- [Math](/Sandbox/Math)
+- [Comment représenter des formules mathématiques (Math)](/Sandbox/Math)

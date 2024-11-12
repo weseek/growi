@@ -30,7 +30,7 @@
   "Tags": "タグ",
   "Close": "閉じる",
   "Shortcuts": "ショートカット",
-  "CustomSidebar": "カスタムサイドバー",
+  "Custom Sidebar": "カスタムサイドバー",
   "eg": "例:",
   "add": "追加",
   "Undo": "元に戻す",
@@ -162,6 +162,7 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
+  "source": "出典",
   "input_validation": {
     "target": {
       "page_name": "ページ名",
@@ -170,8 +171,8 @@
     },
     "message": {
       "error_message": "いくつかの値が設定されていません",
-      "required": "%sに値を入力してください",
-      "invalid_syntax": "%sの構文が不正です",
+      "required": "'{{param}}' に値を入力してください",
+      "invalid_syntax": "{{syntax}} の構文が不正です",
       "title_required": "タイトルを入力してください",
       "field_required": "{{target}}に値を入力してください"
     }
@@ -522,6 +523,8 @@
     "title": "ナレッジアシスタント",
     "title_beta_label": "(ベータ)",
     "placeholder": "ききたいことを入力してください",
+    "summary_mode_label": "要約モード",
+    "summary_mode_help": "2～3文以内の簡潔な回答",
     "caution_against_hallucination": "情報が正しいか出典を確認しましょう",
     "progress_label": "回答を生成しています",
     "failed_to_create_or_retrieve_thread": "スレッドの作成または取得に失敗しました",

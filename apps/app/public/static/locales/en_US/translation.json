@@ -30,7 +30,7 @@
   "Tags": "Tags",
   "Close": "Close",
   "Shortcuts": "Shortcuts",
-  "CustomSidebar": "Custom Sidebar",
+  "Custom Sidebar": "Custom Sidebar",
   "eg": "e.g.",
   "add": "Add",
   "Undo": "Undo",
@@ -161,6 +161,7 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
+  "source": "Source",
   "input_validation": {
     "target": {
       "page_name": "Page name",
@@ -169,8 +170,8 @@
     },
     "message": {
       "error_message": "Some values ​​are incorrect",
-      "required": "%s is required",
-      "invalid_syntax": "The syntax of %s is invalid.",
+      "required": "'{{param}}' is required",
+      "invalid_syntax": "The syntax of {{syntax}} is invalid.",
       "title_required": "Title is required.",
       "field_required": "{{target}} is required"
     }
@@ -489,6 +490,8 @@
     "title": "Knowledge Assistant",
     "title_beta_label": "(Beta)",
     "placeholder": "Ask me anything.",
+    "summary_mode_label": "Summary mode",
+    "summary_mode_help": "Concise answer within 2-3 sentences",
     "caution_against_hallucination": "Please verify the information and check the sources.",
     "progress_label": "Generating answers",
     "failed_to_create_or_retrieve_thread": "Failed to create or retrieve thread",
