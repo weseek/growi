@@ -4,12 +4,6 @@
   "service": "pdf-converter",
   "workspaceFolder": "/workspace/growi",
 
-  "features": {
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "20.18.0"
-    }
-  },
-
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
@@ -23,7 +17,10 @@
         "dbaeumer.vscode-eslint",
         "mhutchie.git-graph",
         "eamodio.gitlens"
-      ]
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
     }
   }
 
