@@ -1,11 +1,11 @@
 import path from 'path';
 
-import type { Lang } from '@growi/core/dist/interfaces';
+import type { Lang } from '@growi/core';
 import type { InitOptions, TFunction, i18n } from 'i18next';
 import { createInstance } from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 
-import { defaultLang, initOptions } from '^/config/i18next.config';
+import * as i18nextConfig from '^/config/i18next.config';
 
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -25,7 +25,7 @@ const initI18next = async(overwriteOpts: InitOptions) => {
       ),
     )
     .init({
-      ...initOptions,
+      ...i18nextConfig.initOptions,
       ...overwriteOpts,
     });
   return i18nInstance;
@@ -44,10 +44,20 @@ type Opts = {
 export async function getTranslation(opts?: Opts): Promise<Translation> {
   const globalLang = configManager.getConfig('crowi', 'app:globalLang') as Lang;
   const fixedLang = opts?.lang ?? globalLang;
-  const i18nextInstance = await initI18next({
-    fallbackLng: [fixedLang, defaultLang],
-    ns: opts?.ns,
-  });
+
+  const initOptions: InitOptions = {
+    fallbackLng: [fixedLang, i18nextConfig.defaultLang],
+  };
+
+  // set ns if not null
+  // cz: 'ns: unefined' causes
+  //   TypeError: Cannot read properties of undefined (reading 'forEach')
+  //     at /workspace/growi/node_modules/.pnpm/i18next@23.16.5/node_modules/i18next/dist/cjs/i18next.js:1613:18"
+  if (opts?.ns != null) {
+    initOptions.ns = opts.ns;
+  }
+
+  const i18nextInstance = await initI18next(initOptions);
 
   return {
     t: i18nextInstance.getFixedT(fixedLang, opts?.ns),

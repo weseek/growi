@@ -10,7 +10,5 @@ const initOptions = {
   defaultNS: 'translation',
 };
 
-module.exports = {
-  defaultLang,
-  initOptions,
-};
+exports.defaultLang = defaultLang;
+exports.initOptions = initOptions;
