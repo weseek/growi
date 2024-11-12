@@ -80,6 +80,16 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
     router.push(link);
   }, [router]);
 
+  const itemSelectedByWheelClickHandler = useCallback((page: IPageForItem) => {
+    if (page.path == null || page._id == null) {
+      return;
+    }
+
+    const url = pathUtils.returnPathForURL(page.path, page._id);
+
+    window.open(url, '_blank');
+  }, []);
+
   const [, drag] = useDrag({
     type: 'PAGE_TREE',
     item: { page },
@@ -186,6 +196,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       onClick={itemSelectedHandler}
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}
+      onWheelClick={itemSelectedByWheelClickHandler}
       onRenamed={props.onRenamed}
       itemRef={itemRef}
       itemClass={PageTreeItem}

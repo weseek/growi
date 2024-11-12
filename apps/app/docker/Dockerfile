@@ -13,11 +13,6 @@ WORKDIR ${optDir}
 # install tools
 RUN apt-get update && apt-get install -y ca-certificates wget curl --no-install-recommends
 
-# install git and git-lfs
-RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
-  && apt-get update && apt-get install -y git git-lfs --no-install-recommends \
-  && git lfs install
-
 # install pnpm
 RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
 ENV PNPM_HOME="/root/.local/share/pnpm"
@@ -85,13 +80,6 @@ RUN set -eux; \
 # verify that the binary works
 	gosu nobody true
 
-# Add pnpm for 'node' user
-RUN apt-get update && apt-get install -y sudo ca-certificates wget --no-install-recommends \
-  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sudo -u node sh - \
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
-ENV PNPM_HOME="/home/node/.local/share/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-
 COPY --from=builder --chown=node:node \
   ${optDir}/packages.tar.gz ${appDir}/
 
@@ -109,4 +97,4 @@ VOLUME /data
 EXPOSE 3000
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["pnpm run migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
+CMD ["npm run migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
