@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Collapse,
   Modal, ModalBody, ModalFooter, ModalHeader,
+  UncontrolledTooltip,
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -34,6 +35,7 @@ type Message = {
 
 type FormData = {
   input: string;
+  summaryMode?: boolean;
 };
 
 const AiChatModalSubstance = (): JSX.Element => {
@@ -43,6 +45,7 @@ const AiChatModalSubstance = (): JSX.Element => {
   const form = useForm<FormData>({
     defaultValues: {
       input: '',
+      summaryMode: true,
     },
   });
 
@@ -97,7 +100,7 @@ const AiChatModalSubstance = (): JSX.Element => {
     setMessageLogs(msgs => [...msgs, newUserMessage]);
 
     // reset form
-    form.reset();
+    form.reset({ input: '', summaryMode: data.summaryMode });
     setErrorMessage(undefined);
 
     // add an empty assistant message
@@ -109,7 +112,7 @@ const AiChatModalSubstance = (): JSX.Element => {
       const response = await fetch('/_api/v3/openai/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userMessage: data.input, threadId }),
+        body: JSON.stringify({ userMessage: data.input, threadId, summaryMode: data.summaryMode }),
       });
 
       if (!response.ok) {
@@ -215,31 +218,61 @@ const AiChatModalSubstance = (): JSX.Element => {
       </ModalBody>
 
       <ModalFooter className="flex-column align-items-start pt-0 pb-3 pb-lg-4 px-3 px-lg-4">
-        <form onSubmit={form.handleSubmit(submit)} className="flex-fill hstack gap-2 align-items-end m-0">
-          <Controller
-            name="input"
-            control={form.control}
-            render={({ field }) => (
-              <ResizableTextarea
-                {...field}
-                required
-                className="form-control textarea-ask"
-                style={{ resize: 'none' }}
-                rows={1}
-                placeholder={!form.formState.isSubmitting ? t('modal_aichat.placeholder') : ''}
-                onKeyDown={keyDownHandler}
-                disabled={form.formState.isSubmitting}
-              />
-            )}
-          />
-          <button
-            type="submit"
-            className="btn btn-submit no-border"
-            disabled={form.formState.isSubmitting || isGenerating}
-          >
-            <span className="material-symbols-outlined">send</span>
-          </button>
+        <form onSubmit={form.handleSubmit(submit)} className="flex-fill vstack gap-3">
+          <div className="flex-fill hstack gap-2 align-items-end m-0">
+            <Controller
+              name="input"
+              control={form.control}
+              render={({ field }) => (
+                <ResizableTextarea
+                  {...field}
+                  required
+                  className="form-control textarea-ask"
+                  style={{ resize: 'none' }}
+                  rows={1}
+                  placeholder={!form.formState.isSubmitting ? t('modal_aichat.placeholder') : ''}
+                  onKeyDown={keyDownHandler}
+                  disabled={form.formState.isSubmitting}
+                />
+              )}
+            />
+            <button
+              type="submit"
+              className="btn btn-submit no-border"
+              disabled={form.formState.isSubmitting || isGenerating}
+            >
+              <span className="material-symbols-outlined">send</span>
+            </button>
+          </div>
+          <div className="form-check form-switch">
+            <input
+              id="swSummaryMode"
+              type="checkbox"
+              role="switch"
+              className="form-check-input"
+              {...form.register('summaryMode')}
+              disabled={form.formState.isSubmitting || isGenerating}
+            />
+            <label className="form-check-label" htmlFor="swSummaryMode">
+              {t('modal_aichat.summary_mode_label')}
+            </label>
+
+            {/* Help */}
+            <a
+              id="tooltipForHelpOfSummaryMode"
+              role="button"
+              className="ms-1"
+            >
+              <span className="material-symbols-outlined fs-6" style={{ lineHeight: 'unset' }}>help</span>
+            </a>
+            <UncontrolledTooltip
+              target="tooltipForHelpOfSummaryMode"
+            >
+              {t('modal_aichat.summary_mode_help')}
+            </UncontrolledTooltip>
+          </div>
         </form>
+
 
         {form.formState.errors.input != null && (
           <div className="mt-4 bg-danger bg-opacity-10 rounded-3 p-2 w-100">
