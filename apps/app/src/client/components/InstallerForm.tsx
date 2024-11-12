@@ -32,25 +32,12 @@ const InstallerForm = memo((props: Props): JSX.Element => {
 
   const tWithOpt = useTWithOpt();
 
-  const isSupportedLang = AllLang.includes(i18n.language as Lang);
+  const isSupportedLang = AllLang.includes(i18n.language);
 
-  const [isValidUserName, setValidUserName] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [currentLocale, setCurrentLocale] = useState(isSupportedLang ? i18n.language : Lang.en_US);
 
   const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
-
-  const checkUserName = useCallback(async(event) => {
-    const axios = require('axios').create({
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-      },
-      responseType: 'json',
-    });
-    const res = await axios.get('/_api/v3/check-username', { params: { username: event.target.value } });
-    setValidUserName(res.data.valid);
-  }, []);
 
   const onClickLanguageItem = useCallback((locale) => {
     i18n.changeLanguage(locale);
@@ -101,13 +88,8 @@ const InstallerForm = memo((props: Props): JSX.Element => {
     }
   }, [currentLocale, router, t]);
 
-  const hasErrorClass = isValidUserName ? '' : ' has-error';
-  const unavailableUserId = isValidUserName
-    ? ''
-    : <span><span className="material-symbols-outlined">block</span>{ t('installer.unavaliable_user_id') }</span>;
-
   return (
-    <div data-testid="installerForm" className={`${moduleClass} nologin-dialog py-3 px-4 rounded-4 rounded-top-0 mx-auto${hasErrorClass}`}>
+    <div data-testid="installerForm" className={`${moduleClass} nologin-dialog py-3 px-4 rounded-4 rounded-top-0 mx-auto`}>
       <div className="row mt-3">
         <div className="col-md-12">
           <p className="alert alert-success">
@@ -179,7 +161,7 @@ const InstallerForm = memo((props: Props): JSX.Element => {
             </div>
           </div>
 
-          <div className={`input-group mb-3${hasErrorClass}`}>
+          <div className="input-group mb-3">
             <label className="p-2 text-white opacity-75" aria-label={t('User ID')} htmlFor="tiUsername">
               <span className="material-symbols-outlined" aria-hidden>person</span>
             </label>
@@ -189,11 +171,9 @@ const InstallerForm = memo((props: Props): JSX.Element => {
               className="form-control rounded"
               placeholder={t('User ID')}
               name="registerForm[username]"
-              // onBlur={checkUserName} // need not to check username before installation -- 2020.07.24 Yuki Takei
               required
             />
           </div>
-          <p className="form-text">{ unavailableUserId }</p>
 
           <div className="input-group mb-3">
             <label className="p-2 text-white opacity-75" aria-label={t('Name')} htmlFor="tiName">
