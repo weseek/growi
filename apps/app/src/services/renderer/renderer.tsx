@@ -26,6 +26,7 @@ import * as addClass from './rehype-plugins/add-class';
 import { relativeLinks } from './rehype-plugins/relative-links';
 import { relativeLinksByPukiwikiLikeLinker } from './rehype-plugins/relative-links-by-pukiwiki-like-linker';
 import * as codeBlock from './remark-plugins/codeblock';
+import * as echoDirective from './remark-plugins/echo-directive';
 import * as emoji from './remark-plugins/emoji';
 import { pukiwikiLikeLinker } from './remark-plugins/pukiwiki-like-linker';
 import * as xsvToTable from './remark-plugins/xsv-to-table';
@@ -101,6 +102,7 @@ export const generateCommonOptions = (pagePath: string|undefined): RendererOptio
       pukiwikiLikeLinker,
       growiDirective,
       remarkDirective,
+      echoDirective.remarkPlugin,
       remarkFrontmatter,
       codeBlock.remarkPlugin,
     ],
