@@ -7,6 +7,7 @@ import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import ShareLink from '~/server/models/share-link';
 import { configManager } from '~/server/service/config-manager';
+import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
 import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
@@ -931,6 +932,7 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/SamlAuthSetting'
    */
   router.put('/saml', loginRequiredStrictly, adminRequired, addActivity, validator.samlAuth, apiV3FormValidator, async(req, res) => {
+    const { t } = await getTranslation(req.user.lang);
 
     //  For the value of each mandatory items,
     //  check whether it from the environment variables is empty and form value to update it is empty
@@ -940,12 +942,12 @@ module.exports = (crowi) => {
       const key = configKey.replace('security:passport-saml:', '');
       const formValue = req.body[key];
       if (configManager.getConfigFromEnvVars('crowi', configKey) === null && formValue == null) {
-        const formItemName = req.t(`security_setting.form_item_name.${key}`);
-        invalidValues.push(req.t('form_validation.required', formItemName));
+        const formItemName = t(`security_setting.form_item_name.${key}`);
+        invalidValues.push(t('input_validation.message.required', formItemName));
       }
     }
     if (invalidValues.length !== 0) {
-      return res.apiv3Err(req.t('form_validation.error_message'), 400, invalidValues);
+      return res.apiv3Err(t('input_validation.message.error_message'), 400, invalidValues);
     }
 
     const rule = req.body.ABLCRule;
@@ -956,7 +958,7 @@ module.exports = (crowi) => {
         crowi.passportService.parseABLCRule(rule);
       }
       catch (err) {
-        return res.apiv3Err(req.t('form_validation.invalid_syntax', req.t('security_settings.form_item_name.ABLCRule')), 400);
+        return res.apiv3Err(t('input_validation.message.invalid_syntax', t('security_settings.form_item_name.ABLCRule')), 400);
       }
     }
 

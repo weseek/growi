@@ -384,6 +384,9 @@ importers:
       hast-util-select:
         specifier: ^6.0.2
         version: 6.0.2
+      hastscript:
+        specifier: ^8.0.0
+        version: 8.0.0
       helmet:
         specifier: ^4.6.0
         version: 4.6.0
@@ -636,9 +639,6 @@ importers:
       remark-stringify:
         specifier: ^11.0.0
         version: 11.0.0
-      remark-toc:
-        specifier: ^9.0.0
-        version: 9.0.0
       sanitize-filename:
         specifier: ^1.6.3
         version: 1.6.3
@@ -9678,9 +9678,6 @@ packages:
 
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
-
-  mdast-util-toc@7.1.0:
-    resolution: {integrity: sha512-2TVKotOQzqdY7THOdn2gGzS9d1Sdd66bvxUyw3aNpWfcPXCLYSJCCgfPy30sEtuzkDraJgqF35dzgmz6xlvH/w==}
 
   mdast-util-wiki-link@0.1.2:
     resolution: {integrity: sha512-DTcDyOxKDo3pB3fc0zQlD8myfQjYkW4hazUKI9PUyhtoj9JBeHC2eIdlVXmaT22bZkFAVU2d47B6y2jVKGoUQg==}
@@ -24292,16 +24289,6 @@ snapshots:
   mdast-util-to-string@4.0.0:
     dependencies:
       '@types/mdast': 4.0.4
-
-  mdast-util-toc@7.1.0:
-    dependencies:
-      '@types/mdast': 4.0.4
-      '@types/ungap__structured-clone': 1.2.0
-      '@ungap/structured-clone': 1.2.0
-      github-slugger: 2.0.0
-      mdast-util-to-string: 4.0.0
-      unist-util-is: 6.0.0
-      unist-util-visit: 5.0.0
 
   mdast-util-wiki-link@0.1.2:
     dependencies:

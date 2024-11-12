@@ -11,6 +11,18 @@ on:
     secrets:
       SLACK_WEBHOOK_URL:
         required: true
+  workflow_dispatch:
+    inputs:
+      node-version:
+        required: true
+        type: string
+        default: 20.x
+      skip-e2e-test:
+        type: boolean
+        default: false
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
 
 jobs:
 
@@ -161,7 +173,9 @@ jobs:
   run-playwright:
     needs: [build-prod]
 
-    if: ${{ !inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/') }}
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (!inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/'))
 
     runs-on: ubuntu-latest
     container:
@@ -225,6 +239,7 @@ jobs:
       run: |
         pnpm playwright test --project=chromium/installer
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -239,6 +254,7 @@ jobs:
       run: |
         pnpm playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -253,9 +269,18 @@ jobs:
       run: |
         pnpm playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: blob-report-${{ matrix.shard }}
+        path: blob-report
+        retention-days: 30
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -266,3 +291,33 @@ jobs:
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  report-playwright:
+    needs: [run-playwright]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: pnpm/action-setup@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: |
+        pnpm install --frozen-lockfile
+
+    - name: Merge into HTML Report
+      run: pnpm playwright merge-reports --reporter html ./all-blob-reports
+
+    - name: Upload HTML report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report
+        path: playwright-report
+        retention-days: 30
