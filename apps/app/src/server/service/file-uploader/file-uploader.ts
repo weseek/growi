@@ -1,7 +1,7 @@
-import { randomUUID } from 'crypto';
 import type { ReadStream } from 'fs';
 
 import type { Response } from 'express';
+import { v4 as uuidv4 } from 'uuid';
 
 import type { ICheckLimitResult } from '~/interfaces/attachment';
 import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachment';
@@ -60,7 +60,7 @@ export abstract class AbstractFileUploader implements FileUploader {
    * @returns Whether write opration to the storage is permitted
    */
   async isWritable() {
-    const filePath = `${randomUUID()}.growi`;
+    const filePath = `${uuidv4()}.growi`;
     const data = 'This file was created during g2g transfer to check write permission. You can safely remove this file.';
 
     try {
