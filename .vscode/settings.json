@@ -19,5 +19,12 @@
 
   "githubPullRequests.ignoredPullRequestBranches": [
     "master"
-  ]
+  ],
+
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.autoImportFileExcludePatterns": ["node_modules/*"],
+  "typescript.validate.enable": true,
+  "typescript.surveys.enabled": false
+
 }
