@@ -296,6 +296,8 @@ jobs:
   report-playwright:
     needs: [run-playwright]
 
+    if: always() && needs.run-playwright.result != 'skipped'
+
     runs-on: ubuntu-latest
 
     steps:
