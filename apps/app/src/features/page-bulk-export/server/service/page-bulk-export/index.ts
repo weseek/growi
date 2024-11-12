@@ -284,7 +284,7 @@ class PageBulkExportService implements IPageBulkExportService {
 
     if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
       pipeline(pageSnapshotsReadable, pagesWritable, (err) => { if (err != null) logger.error(err); });
-      await this.waitPdfExportFinish(pageBulkExportJob);
+      await this.startAndWaitPdfExportFinish(pageBulkExportJob);
     }
     else {
       await pipelinePromise(pageSnapshotsReadable, pagesWritable);
@@ -324,7 +324,7 @@ class PageBulkExportService implements IPageBulkExportService {
         }
         catch (err) {
           callback(err);
-          // update status to notify failure and report to pdf converter in waitPdfExportFinish
+          // update status to notify failure and report to pdf converter in startAndWaitPdfExportFinish
           pageBulkExportJob.status = PageBulkExportJobStatus.failed;
           await pageBulkExportJob.save();
           return;
@@ -343,7 +343,12 @@ class PageBulkExportService implements IPageBulkExportService {
     return htmlString;
   }
 
-  private async waitPdfExportFinish(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+  /**
+   * Start pdf export by requesting pdf-converter and keep updating/checking the status until the export is done
+   * ref) https://dev.growi.org/66ee8495830566b31e02c953#growi
+   * @param pageBulkExportJob page bulk export job in execution
+   */
+  private async startAndWaitPdfExportFinish(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
     const jobCreatedAt = pageBulkExportJob.createdAt;
     if (jobCreatedAt == null) throw new Error('createdAt is not set');
 
@@ -355,6 +360,7 @@ class PageBulkExportService implements IPageBulkExportService {
     if (lastExportPagePath == null) throw new Error('lastExportPagePath is missing');
 
     return new Promise<void>((resolve, reject) => {
+      // Request sync job API until the pdf export is done. If pdf export status is updated in growi, send the status to pdf-converter.
       const interval = setInterval(async() => {
         if (new Date() > jobExpirationDate) {
           reject(new BulkExportJobExpiredError());
@@ -490,6 +496,8 @@ class PageBulkExportService implements IPageBulkExportService {
 
   /**
    * Get the output directory on the fs to temporarily store page files before compressing and uploading
+   * @param pageBulkExportJob page bulk export job in execution
+   * @param isHtmlPath whether the tmp output path is for html files
    */
   private getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath = false): string {
     if (isHtmlPath) {
