@@ -1,17 +1,18 @@
+import type { ContainerDirective } from 'mdast-util-directive';
 import remarkDirective from 'remark-directive';
 import remarkParse from 'remark-parse';
 import { unified } from 'unified';
 import { visit } from 'unist-util-visit';
 import { describe, it, expect } from 'vitest';
 
-import { remarkPlugin } from './callout';
+import * as callout from './callout';
 
 describe('remarkPlugin', () => {
   it('should transform containerDirective to callout', () => {
     const processor = unified()
       .use(remarkParse)
       .use(remarkDirective)
-      .use(remarkPlugin);
+      .use(callout.remarkPlugin);
 
     const markdown = `
 :::info
@@ -23,33 +24,57 @@ This is an info callout.
     processor.runSync(tree);
 
     let calloutNode;
-    visit(tree, 'callout', (node) => {
+    visit(tree, 'containerDirective', (node) => {
       calloutNode = node;
     });
 
     expect(calloutNode).toBeDefined();
+
+    assert(calloutNode?.data?.hName != null);
+    assert(calloutNode?.data?.hProperties != null);
+
+    expect(calloutNode.data.hName).toBe('callout');
     expect(calloutNode.data.hProperties.type).toBe('info');
     expect(calloutNode.data.hProperties.label).toBe('info');
+
+    assert('children' in calloutNode.children[0]);
+    assert('value' in calloutNode.children[0].children[0]);
+
+    expect(calloutNode.children[0].children[0].value).toBe('This is an info callout.');
   });
 
-  //   it('should extract and remove directive label', () => {
-  //     const processor = unified()
-  //       .use(remarkParse)
-  //       .use(remarkDirective)
-  //       .use(remarkPlugin);
+  it('should transform containerDirective to callout with custom label', () => {
+    const processor = unified()
+      .use(remarkParse)
+      .use(remarkDirective)
+      .use(callout.remarkPlugin);
 
-  //     const markdown = `
-  // :::info[custom label]
-  // This is an info callout.
-  // :::
-  //     `;
+    const markdown = `
+:::info[CUSTOM LABEL]
+This is an info callout.
+:::
+    `;
 
-  //     const tree = processor.parse(markdown);
-  //     processor.runSync(tree);
+    const tree = processor.parse(markdown);
+    processor.runSync(tree);
 
-//     const callout = tree.children.find(node => node.type === 'callout');
-//     expect(callout).toBeDefined();
-//     expect(callout.data.hProperties.label).toBe('Label');
-//     expect(callout.children.some(child => child.type === 'paragraph' && (child.children[0] as Text).value === 'Label')).toBe(false);
-//   });
+    let calloutNode: ContainerDirective | undefined;
+    visit(tree, 'containerDirective', (node) => {
+      calloutNode = node;
+    });
+
+    expect(calloutNode).toBeDefined();
+
+    assert(calloutNode?.data?.hName != null);
+    assert(calloutNode?.data?.hProperties != null);
+
+    expect(calloutNode.data.hName).toBe('callout');
+    expect(calloutNode.data.hProperties.type).toBe('info');
+    expect(calloutNode.data.hProperties.label).toBe('CUSTOM LABEL');
+
+    assert('children' in calloutNode.children[0]);
+    assert('value' in calloutNode.children[0].children[0]);
+
+    expect(calloutNode.children[0].children[0].value).toBe('This is an info callout.');
+  });
 });
