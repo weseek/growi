@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": "true",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tspc -p tsconfig.build.json",
     "clean": "shx rm -rf dist",
     "cp:public": "cp -RT ./src/public ./dist/public",
     "cp:views": "cp -RT ./src/views ./dist/views",
