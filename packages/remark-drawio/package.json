@@ -27,7 +27,7 @@
     "watch": "pnpm run dev -w --emptyOutDir=false",
     "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
-    "lint:typecheck": "tsc",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "run-p lint:*"
   },
   "devDependencies": {
