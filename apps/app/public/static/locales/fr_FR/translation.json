@@ -170,8 +170,8 @@
     },
     "message": {
       "error_message": "Des champs sont invalides",
-      "required": "%s est requis",
-      "invalid_syntax": "La syntaxe de %s est invalide.",
+      "required": "'{{param}}' est requis",
+      "invalid_syntax": "La syntaxe de {{syntax}} est invalide.",
       "title_required": "Titre requis.",
       "field_required": "{{target}} est requis"
     }

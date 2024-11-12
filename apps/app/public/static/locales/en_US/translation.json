@@ -170,8 +170,8 @@
     },
     "message": {
       "error_message": "Some values ​​are incorrect",
-      "required": "%s is required",
-      "invalid_syntax": "The syntax of %s is invalid.",
+      "required": "'{{param}}' is required",
+      "invalid_syntax": "The syntax of {{syntax}} is invalid.",
       "title_required": "Title is required.",
       "field_required": "{{target}} is required"
     }
