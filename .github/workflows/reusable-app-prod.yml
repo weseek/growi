@@ -294,6 +294,10 @@ jobs:
         node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
 
+    - name: Install dependencies
+      run: |
+        pnpm install --frozen-lockfile
+
     - name: Merge into HTML Report
       run: pnpm playwright merge-reports --reporter html ./all-blob-reports
 
