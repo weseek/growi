@@ -4,9 +4,9 @@ import { SidebarContentsType } from '~/interfaces/ui';
 import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import { useDefaultSocket } from '~/stores/socket-io';
 
-import { PrimaryItem, type Props } from '../SidebarNav/PrimaryItem';
+import { PrimaryItem, type PrimaryItemProps } from '../SidebarNav/PrimaryItem';
 
-type PrimaryItemForNotificationProps = Omit<Props, 'onClick' | 'label' | 'iconName' | 'contents' | 'badgeContents' >
+type PrimaryItemForNotificationProps = Omit<PrimaryItemProps, 'onClick' | 'label' | 'iconName' | 'contents' | 'badgeContents' >
 
 // TODO(after v7 release): https://redmine.weseek.co.jp/issues/138463
 export const PrimaryItemForNotification = memo((props: PrimaryItemForNotificationProps) => {
