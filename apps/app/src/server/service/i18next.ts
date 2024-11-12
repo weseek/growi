@@ -1,7 +1,7 @@
 import path from 'path';
 
-import type { Lang } from '@growi/core';
-import type { TFunction, i18n } from 'i18next';
+import type { Lang } from '@growi/core/dist/interfaces';
+import type { InitOptions, TFunction, i18n } from 'i18next';
 import { createInstance } from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 
@@ -14,7 +14,7 @@ import { configManager } from './config-manager';
 
 const relativePathToLocalesRoot = path.relative(__dirname, resolveFromRoot('public/static/locales'));
 
-const initI18next = async(fallbackLng: Lang[] = [defaultLang]) => {
+const initI18next = async(overwriteOpts: InitOptions) => {
   const i18nInstance = createInstance();
   await i18nInstance
     .use(
@@ -26,7 +26,7 @@ const initI18next = async(fallbackLng: Lang[] = [defaultLang]) => {
     )
     .init({
       ...initOptions,
-      fallbackLng,
+      ...overwriteOpts,
     });
   return i18nInstance;
 };
@@ -36,13 +36,21 @@ type Translation = {
   i18n: i18n
 }
 
-export async function getTranslation(lang?: Lang): Promise<Translation> {
+type Opts = {
+  lang?: Lang,
+  ns?: string | readonly string[],
+}
+
+export async function getTranslation(opts?: Opts): Promise<Translation> {
   const globalLang = configManager.getConfig('crowi', 'app:globalLang') as Lang;
-  const fixedLang = lang ?? globalLang;
-  const i18nextInstance = await initI18next([fixedLang, defaultLang]);
+  const fixedLang = opts?.lang ?? globalLang;
+  const i18nextInstance = await initI18next({
+    fallbackLng: [fixedLang, defaultLang],
+    ns: opts?.ns,
+  });
 
   return {
-    t: i18nextInstance.getFixedT(fixedLang),
+    t: i18nextInstance.getFixedT(fixedLang, opts?.ns),
     i18n: i18nextInstance,
   };
 }
