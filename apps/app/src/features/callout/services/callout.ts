@@ -1,4 +1,4 @@
-import type { Text } from 'mdast';
+import type { Paragraph, Text } from 'mdast';
 import type { ContainerDirective } from 'mdast-util-directive';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
@@ -13,7 +13,7 @@ export const remarkPlugin: Plugin = () => {
         const data = node.data ?? (node.data = {});
 
         // extract directive label
-        const paragraphs = (node.children ?? []).filter(child => child.type === 'paragraph') ?? [];
+        const paragraphs = (node.children ?? []).filter((child): child is Paragraph => child.type === 'paragraph');
         const paragraphForDirectiveLabel = paragraphs.find(p => p.data?.directiveLabel);
         const label = paragraphForDirectiveLabel != null
           ? (paragraphForDirectiveLabel.children[0] as Text).value
