@@ -35,25 +35,21 @@
 
 You can also use [directive syntax](https://talk.commonmark.org/t/generic-directives-plugins-syntax/444).
 
-```markdown
-:::note[foo]
+:::note
 Useful information that users should know, even when skimming content.
 :::
 
-:::tip
-Helpful advice for doing things better or more easily.
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
 :::
 
-:::important
-Key information users need to know to achieve their goal.
+```markdown
+:::note
+Useful information that users should know, even when skimming content.
 :::
 
-:::warning
-Urgent info that needs immediate user attention to avoid problems.
-:::
-
-:::caution
-Advises about risks or negative outcomes of certain actions.
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
 :::
 ```
 
