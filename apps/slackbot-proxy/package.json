@@ -4,7 +4,7 @@
   "license": "MIT",
   "private": "true",
   "scripts": {
-    "build": "tspc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json",
     "clean": "shx rm -rf dist",
     "cp:public": "cp -RT ./src/public ./dist/public",
     "cp:views": "cp -RT ./src/views ./dist/views",
@@ -18,7 +18,7 @@
     "predev": "pnpm run cp:bootstrap:dev",
     "lint:js": "eslint src/**/*.{js,ts}",
     "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
-    "lint:typecheck": "tspc",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "run-p lint:*",
     "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config",
     "version:patch": "pnpm version patch",
