@@ -126,6 +126,7 @@
     "graceful-fs": "^4.1.11",
     "hast-util-sanitize": "^5.0.1",
     "hast-util-select": "^6.0.2",
+    "hastscript": "^8.0.0",
     "helmet": "^4.6.0",
     "http-errors": "^2.0.0",
     "i18next": "^23.10.1",
