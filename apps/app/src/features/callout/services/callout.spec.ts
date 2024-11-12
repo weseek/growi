@@ -35,7 +35,7 @@ This is an info callout.
 
     expect(calloutNode.data.hName).toBe('callout');
     expect(calloutNode.data.hProperties.type).toBe('info');
-    expect(calloutNode.data.hProperties.label).toBe('info');
+    expect(calloutNode.data.hProperties.label).not.toBeDefined();
 
     assert('children' in calloutNode.children[0]);
     assert('value' in calloutNode.children[0].children[0]);
@@ -107,7 +107,7 @@ This is an info callout.
 
     expect(calloutNode.data.hName).toBe('callout');
     expect(calloutNode.data.hProperties.type).toBe('info');
-    expect(calloutNode.data.hProperties.label).toBe('info');
+    expect(calloutNode.data.hProperties.label).not.toBeDefined();
 
     assert('children' in calloutNode.children[0]);
     assert('value' in calloutNode.children[0].children[0]);
