@@ -15,7 +15,7 @@ export const remarkPlugin: Plugin = () => {
         // extract directive label
         const paragraphs = (node.children ?? []).filter((child): child is Paragraph => child.type === 'paragraph');
         const paragraphForDirectiveLabel = paragraphs.find(p => p.data?.directiveLabel);
-        const label = paragraphForDirectiveLabel != null
+        const label = paragraphForDirectiveLabel != null && paragraphForDirectiveLabel.children.length > 0
           ? (paragraphForDirectiveLabel.children[0] as Text).value
           : undefined;
         // remove directive label from children
