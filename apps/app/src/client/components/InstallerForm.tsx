@@ -32,7 +32,7 @@ const InstallerForm = memo((props: Props): JSX.Element => {
 
   const tWithOpt = useTWithOpt();
 
-  const isSupportedLang = AllLang.includes(i18n.language);
+  const isSupportedLang = AllLang.includes(i18n.language as Lang);
 
   const [isLoading, setIsLoading] = useState(false);
   const [currentLocale, setCurrentLocale] = useState(isSupportedLang ? i18n.language : Lang.en_US);
