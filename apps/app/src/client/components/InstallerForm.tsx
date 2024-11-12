@@ -102,13 +102,15 @@ const InstallerForm = memo((props: Props): JSX.Element => {
 
         {
           registerErrors != null && registerErrors.length > 0 && (
-            <p className="alert alert-danger text-center">
-              {registerErrors.map(err => (
-                <span>
-                  {tWithOpt(err.message, err.args)}<br />
-                </span>
-              ))}
-            </p>
+            <div className="col-12">
+              <div className="alert alert-danger text-center">
+                {registerErrors.map(err => (
+                  <span>
+                    {tWithOpt(err.message, err.args)}<br />
+                  </span>
+                ))}
+              </div>
+            </div>
           )
         }
 
