@@ -14,7 +14,7 @@
     "watch": "pnpm run dev -w --emptyOutDir=false",
     "serve": "vite",
     "lint:js": "eslint **/*.{js,ts}",
-    "lint:typecheck": "tsc",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {
