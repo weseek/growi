@@ -1,4 +1,4 @@
-# :pencil: diagrams.net(Draw.io)
+# :pencil2: diagrams.net(Draw.io)
 
 See [diagrams.net](https://diagrams.net)
 
@@ -23,7 +23,7 @@ See [diagrams.net](https://diagrams.net)
 
 
 
-# :pencil: PlantUML
+# :pencil2: PlantUML
 
 See [PlantUML](http://plantuml.com/).
 
@@ -151,7 +151,7 @@ State3 --> [*] : Aborted
 
 
 
-# :pencil: Mermaid
+# :pencil2: Mermaid
 
 ## Pie graph
 

@@ -3,6 +3,7 @@ import express from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 
 import type { IInAppNotification } from '../../../interfaces/in-app-notification';
@@ -14,7 +15,6 @@ const router = express.Router();
 
 
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 

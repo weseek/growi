@@ -9,6 +9,7 @@ import { body, query } from 'express-validator';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { preNotifyService } from '~/server/service/pre-notify';
@@ -26,12 +27,6 @@ const router = express.Router();
 
 const LIMIT_FOR_LIST = 10;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
-
-/**
- * @swagger
- *  tags:
- *    name: Pages
- */
 
 /**
  * @swagger
@@ -64,7 +59,6 @@ const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
  */
 
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
   const adminRequired = require('../../../middlewares/admin-required')(crowi);

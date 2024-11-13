@@ -14,6 +14,7 @@ import sanitize from 'sanitize-filename';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IPageGrantData } from '~/interfaces/page';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
@@ -45,12 +46,6 @@ const express = require('express');
 const { body, query, param } = require('express-validator');
 
 const router = express.Router();
-
-/**
- * @swagger
- *  tags:
- *    name: Page
- */
 
 
 /**
@@ -113,7 +108,6 @@ const router = express.Router();
  *            example: 5e07345972560e001761fa63
  */
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
   const certifySharedPage = require('../../../middlewares/certify-shared-page')(crowi);
@@ -131,6 +125,7 @@ module.exports = (crowi) => {
       query('path').optional().isString(),
       query('findAll').optional().isBoolean(),
       query('shareLinkId').optional().isMongoId(),
+      query('includeEmpty').optional().isBoolean(),
     ],
     likes: [
       body('pageId').isString(),
@@ -215,7 +210,7 @@ module.exports = (crowi) => {
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { user, isSharedPage } = req;
     const {
-      pageId, path, findAll, revisionId, shareLinkId,
+      pageId, path, findAll, revisionId, shareLinkId, includeEmpty,
     } = req.query;
 
     const isValid = (shareLinkId != null && pageId != null && path == null) || (shareLinkId == null && (pageId != null || path != null));
@@ -237,10 +232,10 @@ module.exports = (crowi) => {
         page = await Page.findByIdAndViewer(pageId, user);
       }
       else if (!findAll) {
-        page = await Page.findByPathAndViewer(path, user, null, true);
+        page = await Page.findByPathAndViewer(path, user, null, true, false);
       }
       else {
-        pages = await Page.findByPathAndViewer(path, user, null, false);
+        pages = await Page.findByPathAndViewer(path, user, null, false, includeEmpty);
       }
     }
     catch (err) {
@@ -671,9 +666,9 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /pages/export:
+  *    /page/export:
   *      get:
-  *        tags: [Export]
+  *        tags: [Page]
   *        description: return page's markdown
   *        responses:
   *          200:

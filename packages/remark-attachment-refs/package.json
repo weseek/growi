@@ -35,18 +35,18 @@
     "dev:server": "vite build -c vite.server.config.ts --mode dev",
     "dev:client": "vite build -c vite.client.config.ts --mode dev",
     "watch": "run-p watch:*",
-    "watch:client": "yarn dev:client -w --emptyOutDir=false",
-    "watch:server": "yarn dev:server -w --emptyOutDir=false",
-    "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
+    "watch:client": "pnpm run dev:client -w --emptyOutDir=false",
+    "watch:server": "pnpm run dev:server -w --emptyOutDir=false",
+    "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint \"src/**/*.scss\" \"src/**/*.css\"",
-    "lint:typecheck": "tsc",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "run-p lint:*",
     "test": ""
   },
   "dependencies": {
-    "@growi/core": "link:../core",
-    "@growi/remark-growi-directive": "link:../remark-growi-directive",
-    "@growi/ui": "link:../ui",
+    "@growi/core": "workspace:^",
+    "@growi/remark-growi-directive": "workspace:^",
+    "@growi/ui": "workspace:^",
     "axios": "^0.24.0",
     "bunyan": "^1.8.15",
     "hast-util-select": "^6.0.2",
@@ -57,6 +57,7 @@
     "xss": "^1.0.15"
   },
   "devDependencies": {
+    "@types/hast": "^3.0.4",
     "csstype": "^3.0.2",
     "eslint-plugin-regex": "^1.8.0",
     "hast-util-sanitize": "^5.0.1",

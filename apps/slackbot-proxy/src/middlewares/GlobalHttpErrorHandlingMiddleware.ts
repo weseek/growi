@@ -1,12 +1,16 @@
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import {
-  Err, Middleware, Next, PlatformContext, PlatformResponse,
+  PlatformContext, PlatformResponse,
+  Err, Middleware, Next,
 } from '@tsed/common';
-import { HttpError, isHttpError } from 'http-errors';
+/* eslint-enable @typescript-eslint/consistent-type-imports */
+import type { HttpError } from 'http-errors';
+import { isHttpError } from 'http-errors';
 
 @Middleware()
 export class GlobalHttpErrorHandlingMiddleware {
 
-  use(@Err() err: unknown, @Next() next: Next, ctx: PlatformContext): PlatformResponse<any>|void {
+  use(@Err() err: unknown, @Next() next: Next, ctx: PlatformContext): PlatformResponse|void {
 
     // handle if the err is a HttpError instance
     if (isHttpError(err)) {

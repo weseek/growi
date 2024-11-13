@@ -1,12 +1,13 @@
+import { dynamicImport } from '@cspell/dynamic-import';
 import type { TiktokenModel } from 'js-tiktoken';
 import { encodingForModel } from 'js-tiktoken';
 import yaml from 'js-yaml';
-import remarkFrontmatter from 'remark-frontmatter'; // Frontmatter processing
-import remarkGfm from 'remark-gfm'; // GFM processing
-import remarkParse from 'remark-parse';
-import type { Options as StringifyOptions } from 'remark-stringify';
-import remarkStringify from 'remark-stringify';
-import { unified } from 'unified';
+import type * as RemarkFrontmatter from 'remark-frontmatter';
+import type * as RemarkGfm from 'remark-gfm';
+import type * as RemarkParse from 'remark-parse';
+import type * as RemarkStringify from 'remark-stringify';
+import type * as Unified from 'unified';
+
 
 export type MarkdownFragment = {
   label: string;
@@ -59,12 +60,18 @@ export async function splitMarkdownIntoFragments(markdownText: string, model: Ti
 
   const encoder = encodingForModel(model);
 
+  const remarkParse = (await dynamicImport<typeof RemarkParse>('remark-parse', __dirname)).default;
+  const remarkFrontmatter = (await dynamicImport<typeof RemarkFrontmatter>('remark-frontmatter', __dirname)).default;
+  const remarkGfm = (await dynamicImport<typeof RemarkGfm>('remark-gfm', __dirname)).default;
+  const remarkStringify = (await dynamicImport<typeof RemarkStringify>('remark-stringify', __dirname)).default;
+  const unified = (await dynamicImport<typeof Unified>('unified', __dirname)).unified;
+
   const parser = unified()
     .use(remarkParse)
     .use(remarkFrontmatter, ['yaml'])
     .use(remarkGfm); // Enable GFM extensions
 
-  const stringifyOptions: StringifyOptions = {
+  const stringifyOptions: RemarkStringify.Options = {
     bullet: '-', // Set list bullet to hyphen
     rule: '-', // Use hyphen for horizontal rules
   };

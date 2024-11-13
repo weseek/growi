@@ -1,3 +1,4 @@
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler, Response } from 'express';
 import type { ValidationChain } from 'express-validator';
@@ -7,6 +8,7 @@ import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
 import { getOrCreateChatAssistant } from '~/features/openai/server/services/assistant';
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
@@ -14,6 +16,7 @@ import loggerFactory from '~/utils/logger';
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import { openaiClient } from '../services';
 import { getStreamErrorCode } from '../services/getStreamErrorCode';
+import { replaceAnnotationWithPageLink } from '../services/replace-annotation-with-page-link';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -23,14 +26,16 @@ const logger = loggerFactory('growi:routes:apiv3:openai:message');
 type ReqBody = {
   userMessage: string,
   threadId?: string,
+  summaryMode?: boolean,
 }
 
-type Req = Request<undefined, Response, ReqBody>
+type Req = Request<undefined, Response, ReqBody> & {
+  user: IUserHasId,
+}
 
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
 export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) => {
-  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
@@ -61,7 +66,15 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
 
         stream = openaiClient.beta.threads.runs.stream(thread.id, {
           assistant_id: assistant.id,
-          additional_messages: [{ role: 'user', content: req.body.userMessage }],
+          additional_messages: [
+            {
+              role: 'assistant',
+              content: req.body.summaryMode
+                ? 'Turn on summary mode: I will try to answer concisely, aiming for 1-3 sentences.'
+                : 'I will turn off summary mode and answer.',
+            },
+            { role: 'user', content: req.body.userMessage },
+          ],
         });
 
       }
@@ -77,7 +90,14 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         'Cache-Control': 'no-cache, no-transform',
       });
 
-      const messageDeltaHandler = (delta: MessageDelta) => {
+      const messageDeltaHandler = async(delta: MessageDelta) => {
+        const content = delta.content?.[0];
+
+        // If annotation is found
+        if (content?.type === 'text' && content?.text?.annotations != null) {
+          await replaceAnnotationWithPageLink(content, req.user.lang);
+        }
+
         res.write(`data: ${JSON.stringify(delta)}\n\n`);
       };
 

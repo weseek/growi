@@ -9,7 +9,6 @@ import { CodeMirrorEditorComment } from '@growi/editor/dist/client/components/Co
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { UserPicture } from '@growi/ui/dist/components';
-import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import {
@@ -209,7 +208,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     });
   }, [codeMirrorEditor, pageId]);
 
-  const cmProps = useMemo<ReactCodeMirrorProps>(() => ({
+  const cmProps = useMemo(() => ({
     onChange: async(value: string) => {
       const dirtyNum = await evaluateEditorDirtyMap(editorKey, value);
       mutateIsEnabledUnsavedWarning(dirtyNum > 0);
