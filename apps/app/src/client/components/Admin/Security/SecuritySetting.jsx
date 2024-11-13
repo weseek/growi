@@ -187,7 +187,7 @@ class SecuritySetting extends React.Component {
   }
 
 
-  SecuritySettingsDropdown = () => {
+  securitySettingsDropdown = () => {
     const { t } = this.props;
     // eslint-disable-next-line no-undef
     const [settings, setSettings] = useState({
@@ -209,12 +209,12 @@ class SecuritySetting extends React.Component {
       }));
     };
 
-    // const getDisplayText = () => {
-    //   if (settings.isShowRestrictedByOwner) {
-    //     return t('security_settings.displayed');
-    //   }
-    //   return t('security_settings.not_displayed');
-    // };
+    const getDisplayText = () => {
+      if (settings.isShowRestrictedByOwner) {
+        return t('security_settings.displayed');
+      }
+      return t('security_settings.not_displayed');
+    };
 
     return (
       <div className="dropdown">
@@ -226,7 +226,7 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          {/* <span>{getDisplayText()}</span> */}
+          <span>{getDisplayText()}</span>
         </button>
         <div
           className="dropdown-menu"
