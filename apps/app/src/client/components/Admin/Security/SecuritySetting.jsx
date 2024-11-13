@@ -55,16 +55,6 @@ const getDeleteConfigValueForT = (DeleteConfigValue) => {
   }
 };
 
-const getByOwener = () => {
-
-};
-
-const getByGroup = () => {
-
-
-};
-
-
 /**
  * Return true if "deletionType" is DeletionType.RecursiveDeletion or DeletionType.RecursiveCompleteDeletion.
  * @param deletionType Deletion type
@@ -197,9 +187,34 @@ class SecuritySetting extends React.Component {
   }
 
 
-  securitysettingDropdown() {
-    const { t, adminGeneralSecurityContainer } = this.props;
-    const displayText = (t('security_settings.displayed'));
+  SecuritySettingsDropdown = () => {
+    const { t } = this.props;
+    // eslint-disable-next-line no-undef
+    const [settings, setSettings] = useState({
+      isShowRestrictedByOwner: false,
+      isShowRestrictedByGroup: false,
+    });
+
+    const handleOwnerClick = () => {
+      setSettings(prev => ({
+        ...prev,
+        isShowRestrictedByOwner: !prev.isShowRestrictedByOwner,
+      }));
+    };
+
+    const handleGroupClick = () => {
+      setSettings(prev => ({
+        ...prev,
+        isShowRestrictedByGroup: !prev.isShowRestrictedByGroup,
+      }));
+    };
+
+    // const getDisplayText = () => {
+    //   if (settings.isShowRestrictedByOwner) {
+    //     return t('security_settings.displayed');
+    //   }
+    //   return t('security_settings.not_displayed');
+    // };
 
     return (
       <div className="dropdown">
@@ -211,27 +226,30 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span>{displayText}</span>
+          {/* <span>{getDisplayText()}</span> */}
         </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <div
+          className="dropdown-menu"
+          aria-labelledby="dropdownMenuButton"
+        >
           <button
             className="dropdown-item"
             type="button"
-            // onClick={adminGeneralSecurityContainer}
+            onClick={handleOwnerClick}
           >
             {t('security_settings.displayed')}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            // onClick={adminGeneralSecurityContainer}
+            onClick={handleGroupClick}
           >
             {t('security_settings.not_displayed')}
           </button>
         </div>
       </div>
     );
-  }
+  };
 
 
   renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled) {
