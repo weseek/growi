@@ -24,6 +24,7 @@
     "scope_of_page_disclosure": "ページの公開範囲",
     "set_point": "設定値",
     "Guest Users Access":"ゲストユーザーのアクセス",
+    "readonly_users_access": "閲覧のみユーザーのアクセス",
     "always_hidden": "非表示 (固定)",
     "always_displayed": "表示 (固定)",
     "displayed_or_hidden": "非表示 / 表示",
@@ -46,6 +47,7 @@
     "page_delete_rights": "ページの削除権限",
     "page_delete": "ゴミ箱に入れる",
     "page_delete_completely": "完全に削除する",
+    "comment_manage_rights": "コメントの操作権限",
     "other_options": "その他のオプション",
     "deletion_explanation": "ページをゴミ箱に入れることができるユーザーを制限します。",
     "complete_deletion_explanation": "ページを完全削除することができるユーザーを制限します。",
@@ -93,6 +95,10 @@
     "guest_mode": {
       "deny": "拒否 (アカウントを持つユーザーのみ利用可能)",
       "readonly": "許可 (ゲストユーザーも閲覧のみ可能)"
+    },
+    "read_only_users_comment": {
+      "deny": "拒否 (閲覧のみユーザーのコメント操作を禁止)",
+      "accept": "許可 (閲覧のみユーザーもコメント操作可能)"
     },
     "registration_mode": {
       "open": "公開 (だれでも登録可能)",
@@ -1142,5 +1148,16 @@
   },
   "forbidden_page": {
     "do_not_have_admin_permission": "管理者権限のないユーザーでは管理画面にはアクセスできません"
+  },
+  "ai_integration": {
+    "ai_integration": "AI 連携",
+    "disable_mode_explanation": "現在、AI 連携は無効になっています。有効にする場合は環境変数 <code>AI_ENABLED</code> を true に設定してください。",
+    "ai_search_management": "AI 検索管理",
+    "rebuild_vector_store": "Vector Store のリビルド",
+    "rebuild_vector_store_label": "リビルド",
+    "rebuild_vector_store_explanation1": "既存の Vector Store を削除し、公開ページの Vector Store を再作成します。",
+    "rebuild_vector_store_explanation2": "この作業には数分かかる可能性があります。",
+    "rebuild_vector_store_requested": "Vector Store のリビルドを受け付けました",
+    "rebuild_vector_store_failed": "Vector Store のリビルドに失敗しました"
   }
 }

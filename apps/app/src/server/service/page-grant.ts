@@ -1,7 +1,7 @@
 import type { IPage } from '@growi/core';
 import {
   type IGrantedGroup,
-  PageGrant, GroupType, getIdForRef, isPopulated,
+  PageGrant, GroupType, getIdForRef,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils, pageUtils,
@@ -105,7 +105,8 @@ export interface IPageGrantService {
   getPopulatedGrantedGroups: (grantedGroups: IGrantedGroup[]) => Promise<PopulatedGrantedGroup[]>,
   getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
   getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
-  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean,
+  getNonUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
+  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[], allowAnyoneWithTheLink?: boolean) => boolean,
   getPageGroupGrantData: (page: PageDocument, user) => Promise<GroupGrantData>,
   calcApplicableGrantData: (page, user) => Promise<IRecordApplicableGrant>
 }
@@ -770,18 +771,27 @@ class PageGrantService implements IPageGrantService {
   getUserRelatedGrantedGroupsSyncronously(userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument): IGrantedGroup[] {
     const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
     return page.grantedGroups?.filter((group) => {
-      if (isPopulated(group.item)) {
-        return userRelatedGroupIds.includes(group.item._id.toString());
-      }
-      return userRelatedGroupIds.includes(group.item);
+      return userRelatedGroupIds.includes(getIdForRef(group.item).toString());
+    }) || [];
+  }
+
+  /*
+   * get all groups of Page that user is not related to
+   */
+  async getNonUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
+    const userRelatedGroups = (await this.getUserRelatedGroups(user));
+    const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
+    return page.grantedGroups?.filter((group) => {
+      return !userRelatedGroupIds.includes(getIdForRef(group.item).toString());
     }) || [];
   }
 
   /**
    * Check if user is granted access to page
    */
-  isUserGrantedPageAccess(page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]): boolean {
+  isUserGrantedPageAccess(page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[], allowAnyoneWithTheLink = false): boolean {
     if (page.grant === PageGrant.GRANT_PUBLIC) return true;
+    if (page.grant === PageGrant.GRANT_RESTRICTED && allowAnyoneWithTheLink) return true;
     if (page.grant === PageGrant.GRANT_OWNER) return page.grantedUsers?.includes(user._id.toString()) ?? false;
     if (page.grant === PageGrant.GRANT_USER_GROUP) return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page).length > 0;
     return false;

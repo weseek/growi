@@ -1,14 +1,12 @@
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
-import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
 
-import { GlobalNotificationSettingEvent } from '../models';
+import { GlobalNotificationSettingEvent } from '../models/GlobalNotificationSetting';
 import { PathAlreadyExistsError } from '../models/errors';
 import PageTagRelation from '../models/page-tag-relation';
 import UpdatePost from '../models/update-post';
-import { configManager } from '../service/config-manager';
 
 /**
  * @swagger
@@ -21,71 +19,6 @@ import { configManager } from '../service/config-manager';
  *
  *  components:
  *    schemas:
- *      Page:
- *        description: Page
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: page ID
- *            example: 5e07345972560e001761fa63
- *          __v:
- *            type: number
- *            description: DB record version
- *            example: 0
- *          commentCount:
- *            type: number
- *            description: count of comments
- *            example: 3
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- *          creator:
- *            $ref: '#/components/schemas/User'
- *          extended:
- *            type: object
- *            description: extend data
- *            example: {}
- *          grant:
- *            type: number
- *            description: grant
- *            example: 1
- *          grantedUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
- *          lastUpdateUser:
- *            $ref: '#/components/schemas/User'
- *          liker:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: []
- *          path:
- *            type: string
- *            description: page path
- *            example: /
- *          revision:
- *            $ref: '#/components/schemas/Revision'
- *          status:
- *            type: string
- *            description: status
- *            enum:
- *              - 'wip'
- *              - 'published'
- *              - 'deleted'
- *              - 'deprecated'
- *            example: published
- *          updatedAt:
- *            type: string
- *            description: date updated at
- *            example: 2010-01-01T00:00:00.000Z
  *
  *      UpdatePost:
  *        description: UpdatePost
@@ -146,18 +79,7 @@ module.exports = function(crowi, app) {
 
   const ApiResponse = require('../util/apiResponse');
 
-  const { xssService } = crowi;
   const globalNotificationService = crowi.getGlobalNotificationService();
-
-  const Xss = require('~/services/xss/index');
-  const initializedConfig = {
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-    tagWhitelist: xssService.getTagWhitelist(),
-    attrWhitelist: xssService.getAttrWhitelist(),
-  };
-  const xssOption = new XssOption(initializedConfig);
-  const xss = new Xss(xssOption);
-
 
   const actions = {};
 

@@ -1,8 +1,9 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "7.0.5-RC.0",
-  "description": "GROWI plugin to list pages",
+  "version": "1.0.0",
+  "description": "Remark plugin to list pages",
   "license": "MIT",
+  "private": "true",
   "keywords": [
     "growi",
     "growi-plugin"
@@ -23,11 +24,10 @@
     "watch:client": "yarn dev:client -w --emptyOutDir=false",
     "watch:server": "yarn dev:server -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
-    "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
+    "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
-    "test": "vitest run --coverage",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "test": "vitest run --coverage"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM"
@@ -37,17 +37,19 @@
     "@growi/remark-growi-directive": "link:../remark-growi-directive",
     "@growi/ui": "link:../ui",
     "escape-string-regexp": "^4.0.0",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
+    "express-validator": "^6.14.0",
     "http-errors": "^2.0.0",
     "mongoose": "^6.11.3",
-    "swr": "^2.2.2"
+    "swr": "^2.2.2",
+    "xss": "^1.0.15"
   },
   "devDependencies": {
     "eslint-plugin-regex": "^1.8.0",
-    "hast-util-sanitize": "^4.1.0",
-    "hast-util-select": "^5.0.5",
-    "unified": "^10.1.2",
-    "unist-util-visit": "^4.0.0"
+    "hast-util-sanitize": "^5.0.1",
+    "hast-util-select": "^6.0.2",
+    "unified": "^11.0.0",
+    "unist-util-visit": "^5.0.0"
   },
   "peerDependencies": {
     "next": "^14",

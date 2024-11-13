@@ -1,7 +1,9 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+/* stylelint-disable color-function-notation */
 
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
+
 // @use './theme/hsl-functions' as hsl;
 
 .growi:not(.login-page) {
@@ -14,31 +16,31 @@
   }
 }
 
-//== Light Mode
-//
+// == Light Mode
 :root[data-bs-theme='light'] {
-  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+  --primary: hsl(var(--primary-hs) var(--primary-l)) !important;
   --primary-hs: 53,56%;
   --primary-l: 61%;
-  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+  --secondary: hsl(var(--secondary-hs) var(--secondary-l)) !important;
   --secondary-hs: 208,7%;
   --secondary-l: 46%;
 
   // Background colors
-  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+  --bgcolor-global: hsl(var(--bgcolor-global-hs) var(--bgcolor-global-l));
   --bgcolor-global-hs: 0,0%;
   --bgcolor-global-l: 100%;
   --bgcolor-card: #{bs.$gray-100};
-  --bgcolor-inline-code: #{bs.$gray-100}; //optional
+  --bgcolor-inline-code: #{bs.$gray-100}; // optional
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
-  //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
+
+  // --bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
   // Font colors
-  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+  --color-global: hsl(var(--color-global-hs) var(--color-global-l));
   --color-global-hs: 214,60%;
   --color-global-l: 17%;
   --color-reversal: #{bs.$gray-100};
-  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+  --color-link: hsl(var(--color-link-hs) var(--color-link-l));
   --color-link-hs: 117,51%;
   --color-link-l: 35%;
   --color-link-hover: #{hsl.lighten(var(--color-link), 15%)};
@@ -56,12 +58,13 @@
   // List Group colors
   // --color-list: var(--color-global);
   --bgcolor-list: transparent;
+
   // --color-list-hover: var(--color-reversal);
   --color-list-active: var(--bgcolor-global);
   --bgcolor-list-active: var(--bgcolor-navbar);
 
   // Navbar
-  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs) var(--bgcolor-navbar-l));
   --bgcolor-navbar-h: 356;
   --bgcolor-navbar-s: 100%;
   --bgcolor-navbar-l: 35%;
@@ -75,13 +78,13 @@
 
   // Logo colors
   --bgcolor-logo: var(--bgcolor-navbar);
-  --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h),calc(var(--bgcolor-navbar-s) - 50%),calc(var(--bgcolor-navbar-l) + 50%));
+  --fillcolor-logo-mark: hsl(var(--bgcolor-navbar-h) calc(var(--bgcolor-navbar-s) - 50%) calc(var(--bgcolor-navbar-l) + 50%));
 
   // Sidebar
   --bgcolor-sidebar: var(--color-link);
   --bgcolor-sidebar-hs: var(--color-link-hs);
   --bgcolor-sidebar-l: var(--color-link-l);
-  --bgcolor-sidebar-nav-item-active: rgba(black, 0.37); // optional
+  --bgcolor-sidebar-nav-item-active: rgb(black 0.37); // optional
   --text-shadow-sidebar-nav-item-active: 0px 0px 10px var(--primary); // optional
 
   // Sidebar resize button
@@ -96,7 +99,7 @@
   --color-sidebar-context: var(--color-link);
   --color-sidebar-context-hs: var(--color-link-hs);
   --color-sidebar-context-l: var(--color-link-l);
-  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs) var(--bgcolor-sidebar-context-l));
   --bgcolor-sidebar-context-hs: 135,57%;
   --bgcolor-sidebar-context-l: 97%;
 
@@ -104,12 +107,12 @@
   --bgcolor-sidebar-list-group: #fafbff; // optional
 
   // Subnavigation
-  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs) var(--bgcolor-subnav-l));
   --bgcolor-subnav-hs: var(--bgcolor-global-hs);
   --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
 
   // Icon colors
-  --color-editor-icons: var(--color-global);  --color-editor-icons: var(--color-global);
+  --color-editor-icons: var(--color-global);
 
   // Border colors
   --border-color-theme: #{bs.$gray-300}; // former: `$navbar-border: $gray-300;`
@@ -148,11 +151,12 @@
     .input-group {
       .input-group-text {
         color: bs.$gray-700;
-        background-color: rgba(darken(white, 20%), 0.6);
+        /* stylelint-disable-next-line scss/no-global-function-names */
+        background-color: rgb(darken(white, 20%) 0.6);
       }
       .form-control {
         color: bs.$gray-700;
-        background-color: rgba(white, 0.6);
+        background-color: rgb(white 0.6);
       }
     }
 

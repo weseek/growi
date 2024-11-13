@@ -1,0 +1,19 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+
+// Light mode color
+@include bs.color-mode(light) {
+  --grw-marker-bg-yellow: #FFFA90;
+  --grw-marker-bg-red: #FFAADD;
+  --grw-marker-bg-blue: #9AE0FF;
+  --grw-marker-bg-cyan: #88FFF0;
+  --grw-marker-bg-green: #B8FF9A;
+}
+
+// dark mode color
+@include bs.color-mode(dark) {
+  --grw-marker-bg-yellow: #888000;
+  --grw-marker-bg-red: #900066;
+  --grw-marker-bg-blue: #0A6A9A;
+  --grw-marker-bg-cyan: #008888;
+  --grw-marker-bg-green: #007000;
+}

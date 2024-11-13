@@ -1,46 +1,57 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "extends": ["//"],
-  "pipeline": {
+  "tasks": {
 
     "styles-prebuilt": {
       "dependsOn": ["@growi/ui#build"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
+        "vite.styles-prebuilt.config.ts",
         "src/styles/**/*.scss",
         "../../packages/core/scss/**"
       ],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "build": {
       "dependsOn": ["^build", "styles-prebuilt"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "outputMode": "new-only"
+      "inputs": [
+        "next.config.js",
+        "config/**",
+        "public/**",
+        "resource/**",
+        "src/**",
+        "tsconfig*.json"
+      ],
+      "outputLogs": "new-only"
     },
 
     "dev:migrate": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["tmp/cache/migration-status.out"],
       "inputs": ["src/migrations/*.js"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "dev:styles-prebuilt": {
       "dependsOn": ["@growi/ui#dev"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
+        "vite.styles-prebuilt.config.ts",
         "src/styles/**/*.scss",
         "!src/styles/prebuilt/**",
         "../../packages/core/scss/**"
       ],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "dev": {
       "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
       "cache": false,
       "persistent": true
     },
-    "dev:ci": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
+
+    "launch-dev:ci": {
+      "dependsOn": ["^dev", "dev:styles-prebuilt"],
       "cache": false
     },
 
@@ -50,7 +61,7 @@
 
     "test": {
       "dependsOn": ["^dev"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
 
     "version": {

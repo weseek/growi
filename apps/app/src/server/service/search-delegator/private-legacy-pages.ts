@@ -1,15 +1,16 @@
 import type { IPage } from '@growi/core';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import mongoose from 'mongoose';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { ISearchResult } from '~/interfaces/search';
-import { PageModel, PageDocument, PageQueryBuilder } from '~/server/models/page';
+import type { ISearchResult } from '~/interfaces/search';
+import type { PageModel, PageDocument, PageQueryBuilder } from '~/server/models/page';
+import { serializePageSecurely } from '~/server/models/serializers';
 
-import {
+import type {
   QueryTerms, MongoTermsKey,
   SearchableData, SearchDelegator, UnavailableTermsKey, MongoQueryTerms,
 } from '../../interfaces/search';
-import { serializeUserSecurely } from '../../models/serializers/user-serializer';
 
 
 const AVAILABLE_KEYS = ['match', 'not_match', 'prefix', 'not_prefix'];
@@ -47,21 +48,15 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
 
     const total = await countQueryBuilder.query.count();
 
-    const _pages: PageDocument[] = await findQueryBuilder
+    const pages: PageDocument[] = await findQueryBuilder
       .addConditionToPagenate(offset, limit)
       .query
       .populate('creator')
       .populate('lastUpdateUser')
       .exec();
 
-    const pages = _pages.map((page) => {
-      page.creator = serializeUserSecurely(page.creator);
-      page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
-      return page;
-    });
-
     return {
-      data: pages,
+      data: pages.map(page => serializePageSecurely(page)),
       meta: {
         total,
         hitsCount: pages.length,

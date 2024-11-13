@@ -1,8 +1,7 @@
-// eslint-disable-next-line import/no-named-as-default
-import ConfigModel from '~/server/models/config';
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { Config } from '~/server/models/config';
+import userModelFactory from '~/server/models/user';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
-
 
 const logger = loggerFactory('growi:migrate:add-installed-date-to-config');
 
@@ -12,8 +11,7 @@ module.exports = {
   async up() {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
-    const Config = getModelSafely('Config') || ConfigModel;
-    const User = getModelSafely('User') || require('~/server/models/user')();
+    const User = userModelFactory();
 
     const appInstalled = await Config.findOne({ key: 'app:installed' });
     if (appInstalled != null && appInstalled.createdAt == null) {
@@ -39,7 +37,6 @@ module.exports = {
   async down() {
     logger.info('Rollback migration');
     mongoose.connect(getMongoUri(), mongoOptions);
-    const Config = getModelSafely('Config') || ConfigModel;
 
     const appInstalled = await Config.findOne({ key: 'app:installed' });
     if (appInstalled != null) {

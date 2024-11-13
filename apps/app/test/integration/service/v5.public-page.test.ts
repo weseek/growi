@@ -5,6 +5,7 @@ import { PageActionType, PageActionStage } from '../../../src/interfaces/page-op
 import type { IPageTagRelation } from '../../../src/interfaces/page-tag-relation';
 import PageTagRelation from '../../../src/server/models/page-tag-relation';
 import Tag from '../../../src/server/models/tag';
+import { generalXssFilter } from '../../../src/services/general-xss-filter';
 import { getInstance } from '../setup-crowi';
 
 describe('PageService page operations with only public pages', () => {
@@ -21,7 +22,7 @@ describe('PageService page operations with only public pages', () => {
   let ShareLink;
   let PageRedirect;
   let PageOperation;
-  let xssSpy;
+  let generalXssFilterProcessSpy;
 
   let rootPage;
 
@@ -62,7 +63,7 @@ describe('PageService page operations with only public pages', () => {
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
     dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
 
-    xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
+    generalXssFilterProcessSpy = jest.spyOn(generalXssFilter, 'process');
 
     rootPage = await Page.findOne({ path: '/' });
     if (rootPage == null) {
@@ -1254,7 +1255,7 @@ describe('PageService page operations with only public pages', () => {
       });
       const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename1' });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
       expect(childPageBeforeRename).toBeNull();
@@ -1275,7 +1276,7 @@ describe('PageService page operations with only public pages', () => {
       });
       const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename2' });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(parentPage.isEmpty).toBe(true);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
@@ -1296,7 +1297,7 @@ describe('PageService page operations with only public pages', () => {
         endpoint: '/_api/v3/pages/rename',
       });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
       expect(renamedPage.lastUpdateUser).toStrictEqual(dummyUser2._id);
@@ -1317,7 +1318,7 @@ describe('PageService page operations with only public pages', () => {
       });
       const pageRedirect = await PageRedirect.findOne({ fromPath: oldPath, toPath: renamedPage.path });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
       expect(pageRedirect).toBeTruthy();
@@ -1342,7 +1343,7 @@ describe('PageService page operations with only public pages', () => {
       const childPageBeforeRename = await Page.findOne({ path: '/v5_ChildForRename5' });
       const grandchildBeforeRename = await Page.findOne({ path: grandchild.path });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
       expect(childPageBeforeRename).toBeNull();
@@ -1369,7 +1370,7 @@ describe('PageService page operations with only public pages', () => {
       const grandchildAfterRename = await Page.findOne({ parent: renamedPage._id });
       const grandchildBeforeRename = await Page.findOne({ path: '/v5_ChildForRename7/v5_GrandchildForRename7' });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.isEmpty).toBe(true);
       expect(renamedPage.parent).toStrictEqual(parentPage._id);
@@ -1409,7 +1410,7 @@ describe('PageService page operations with only public pages', () => {
         endpoint: '/_api/v3/pages/rename',
       });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(renamedPage.path).toBe(newPath);
       expect(renamedPage.isEmpty).toBe(false);
       expect(renamedPage._id).toStrictEqual(page._id);
@@ -1715,7 +1716,7 @@ describe('PageService page operations with only public pages', () => {
       const baseRevision = await Revision.findOne({ pageId: page._id });
 
       // new path
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedPage._id).not.toStrictEqual(page._id);
       expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
@@ -1751,7 +1752,7 @@ describe('PageService page operations with only public pages', () => {
       const baseRevision = await Revision.findOne({ pageId: page._id });
 
       // new path
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedPage._id).not.toStrictEqual(page._id);
       expect(duplicatedPage.revision).toStrictEqual(duplicatedRevision._id);
@@ -1789,7 +1790,7 @@ describe('PageService page operations with only public pages', () => {
       expect(revisionBodyForDupChild1).toBeTruthy();
       expect(revisionBodyForDupChild2).toBeTruthy();
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedChildPage1.path).toBe('/duplicatedv5PageForDuplicate3/v5_Child_1_ForDuplicate3');
       expect(duplicatedChildPage2.path).toBe('/duplicatedv5PageForDuplicate3/v5_Child_2_ForDuplicate3');
@@ -1809,7 +1810,7 @@ describe('PageService page operations with only public pages', () => {
       const duplicatedChild = await Page.findOne({ parent: duplicatedPage._id });
       const duplicatedGrandchild = await Page.findOne({ parent: duplicatedChild._id });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage).toBeTruthy();
       expect(duplicatedGrandchild).toBeTruthy();
       expect(duplicatedPage.path).toBe(newPagePath);
@@ -1837,7 +1838,7 @@ describe('PageService page operations with only public pages', () => {
       const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, false);
       const duplicatedTagRelations = await PageTagRelation.find({ relatedPage: duplicatedPage._id });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedTagRelations.length).toBeGreaterThanOrEqual(2);
     });
@@ -1852,7 +1853,7 @@ describe('PageService page operations with only public pages', () => {
       const duplicatedPage = await duplicate(basePage, newPagePath, dummyUser1, false);
       const duplicatedComments = await Comment.find({ page: duplicatedPage._id });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(basePageComments.length).not.toBe(duplicatedComments.length);
     });
@@ -1876,7 +1877,7 @@ describe('PageService page operations with only public pages', () => {
       expect(duplicatedGrandchild).toBeTruthy();
       expect(duplicatedChild.revision).toBeTruthy();
       expect(duplicatedGrandchild.revision).toBeTruthy();
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage.path).toBe(newPagePath);
       expect(duplicatedPage.isEmpty).toBe(true);
       expect(duplicatedChild.revision.body).toBe(basePageChild.revision.body);
@@ -2103,7 +2104,7 @@ describe('PageService page operations with only public pages', () => {
       const deletedRevisions = await Revision.find({ pageId: { $in: [parentPage._id, grandchildPage._id] } });
       const tags = await Tag.find({ _id: { $in: [tag1?._id, tag2?._id] } });
       const deletedPageTagRelations = await PageTagRelation.find({ _id: { $in: [pageTagRelation1?._id, pageTagRelation2?._id] } });
-      const deletedBookmarks = await Bookmark.find({ _id: bookmark._id });
+      const remainingBookmarks = await Bookmark.find({ _id: bookmark._id });
       const deletedComments = await Comment.find({ _id: comment._id });
       const deletedPageRedirects = await PageRedirect.find({ _id: { $in: [pageRedirect1._id, pageRedirect2._id] } });
       const deletedShareLinks = await ShareLink.find({ _id: { $in: [shareLink1._id, shareLink2._id] } });
@@ -2117,7 +2118,7 @@ describe('PageService page operations with only public pages', () => {
       // PageTagRelation should be null
       expect(deletedPageTagRelations.length).toBe(0);
       // bookmark should be null
-      expect(deletedBookmarks.length).toBe(0);
+      expect(remainingBookmarks.length).toBe(1);
       // comment should be null
       expect(deletedComments.length).toBe(0);
       // pageRedirect should be null

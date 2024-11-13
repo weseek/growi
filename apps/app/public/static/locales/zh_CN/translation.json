@@ -61,6 +61,7 @@
   "Presentation Mode": "演示文稿",
   "Not available for guest": "不提供给客人",
   "Not available in this version": "此版本中不提供",
+  "Not available when \"anyone with the link\" is selected": "如果选择“任何人”，则无法覆盖范围",
   "No users have liked this yet": "还没有用户喜欢这个",
   "No users have bookmarked yet": "还没有用户加入书签",
   "Create Archive Page": "创建归档页",
@@ -311,7 +312,9 @@
       "restricted": "访问此页受到限制",
       "stale": "自上次更新以来，已超过{{count}年。",
       "stale_plural": "自上次更新以来已过去{{count}年以上。",
-      "no_deadline": "This page has no expiration date"
+      "no_deadline": "此页面没有到期日期",
+      "not_indexed1": "此页面可能不会被全文搜索引擎索引。",
+      "not_indexed2": "页面正文超过了{{threshold}}指定的阈值。"
 		}
 	},
 	"page_edit": {
@@ -319,6 +322,12 @@
     "theme": "主题",
     "keymap": "键表",
     "indent": "缩进",
+    "paste": {
+      "title": "粘贴行为",
+      "both": "两者",
+      "text": "仅文本",
+      "file": "仅文件"
+    },
     "editor_config": "编辑器配置",
 		"Show active line": "显示活动行",
 		"auto_format_table": "自动格式化表格",
@@ -337,7 +346,8 @@
     "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
     "no_user_found": "未找到用户名",
     "reply": "Reply",
-    "delete_comment": "Delete comment?"
+    "delete_comment": "Delete comment?",
+    "comment_management_is_not_allowed": "不允许操作评论。"
   },
   "page_api_error": {
     "notfound_or_forbidden": "未找到或禁止原始页。",
@@ -415,6 +425,12 @@
     }
   },
   "duplicated_pages": "{{fromPath}} 已重复",
+  "modal_granted_groups_inheritance_select": {
+    "select_granted_groups": "Select groups that can access page",
+    "inherit_all_granted_groups_from_parent": "Inherit all groups that can access page from parent",
+    "only_inherit_related_groups": "Only inherit groups that you belong to from parent",
+    "create_page": "Create Page"
+  },
   "modal_putback": {
     "label": {
       "Put Back Page": "Put back page",
@@ -457,6 +473,18 @@
     "requested_revision": "发送的页面正文",
     "latest_revision": "最新页面正文",
     "selected_editable_revision": "选定的可编辑页面正文"
+  },
+  "modal_aichat": {
+    "title": "知识助手",
+    "title_beta_label": "(测试版)",
+    "placeholder": "问我任何问题。",
+    "caution_against_hallucination": "请核实信息并检查来源。",
+    "progress_label": "生成答案中",
+    "failed_to_create_or_retrieve_thread": "创建或获取线程失败",
+    "budget_exceeded": "您已达到 OpenAI API 的使用上限。要再次使用知识助手，请从 OpenAI 账单页面添加点数。",
+    "budget_exceeded_for_growi_cloud": "您已达到 OpenAI API 使用上限。如需再次使用知识助手，请从GROWI.cloud管理页面为托管用户添加点数，或从OpenAI计费页面为自有用户添加点数。",
+    "error_message": "错误",
+    "show_error_detail": "显示详情"
   },
   "link_edit": {
     "edit_link": "Edit Link",
@@ -564,6 +592,8 @@
     "delete_completely": "完全删除",
     "include_certain_path": "包含 {{pathToInclude}} 路径 ",
     "delete_all_selected_page": "删除所有",
+    "select_all": "选择所有",
+    "delete_selected_pages": "删除选定页面",
     "currently_not_implemented": "这是当前未实现的功能",
     "search_again": "再次搜索",
     "number_of_list_to_display": "显示器的数量",
@@ -666,10 +696,9 @@
     "Email format is invalid": "电子邮件的格式是无效的",
     "Email field is required": "电子邮件字段是必需的",
     "Password has invalid character": "密码有无效字符",
-    "Password minimum character should be more than 8 characters": "密码最小字符应超过8个字符",
+    "Password minimum character should be more than n characters": "密码最小字符应超过{{number}}个字符",
     "Password field is required": "密码字段是必需的",
     "Username or E-mail has invalid characters": "用户名或电子邮件有无效的字符",
-    "Password minimum character should be more than 6 characters": "密码最小字符应超过6个字符",
     "user_not_found": "未找到用户",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>发生了重复用户名异常</strong></p><p class='mb-0'> 你的 {{ failedProviderForDuplicatedUsernameException }} 认证成功了，但不能创建新的用户。参见问题<a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },
@@ -702,36 +731,6 @@
     "incorrect_token_or_expired_url": "令牌不正确或 URL 已过期。 请通过以下链接重新发送密码重置请求",
     "password_and_confirm_password_does_not_match": "密码和确认密码不匹配",
     "please_enable_mailer_alert": "密码重置功能被禁用，因为电子邮件设置尚未完成。请要求管理员完成电子邮件的设置。"
-  },
-  "emoji": {
-    "title": "选择一个表情符号",
-    "search": "搜索",
-    "clear": "重置",
-    "notfound": "找不到表情符号",
-    "skintext": "选择您的默认肤色",
-    "categories": {
-      "search": "搜索结果",
-      "recent": "经常使用",
-      "smileys": "笑脸和情感",
-      "people": "人和身体",
-      "nature": "动物与自然",
-      "foods": "食物和饮料",
-      "activity": "活动",
-      "places": "旅行和地方",
-      "objects": "对象",
-      "symbols": "符号",
-      "flags": "旗帜",
-      "custom": "定制"
-    },
-    "categorieslabel": "表情符号类别",
-    "skintones": {
-      "1": "默认肤色",
-      "2": "浅肤色",
-      "3": "中浅肤色",
-      "4": "中等肤色",
-      "5": "中深肤色",
-      "6": "深色肤色"
-    }
   },
   "maintenance_mode": {
     "maintenance_mode": "维护模式",
@@ -789,6 +788,7 @@
     "receive_notifications": "接收通知",
     "stop_notification": "停止通知",
     "footprints": "脚印",
+    "login_required": "需要登录",
     "operation": {
       "attention": {
         "rename": "重命名子孙页的路径没有成功，请从三点式阅读器上打开菜单，选择 '路径恢复'。"
@@ -873,5 +873,13 @@
   },
   "create_page": {
     "untitled": "Untitled"
+  },
+  "sync-latest-revision-body": {
+    "menuitem": "同步编辑器文本与最新修订正文",
+    "confirm": "删除输入编辑器的草稿数据，同步最新文本。 您真的想运行它吗？",
+    "alert": "最新文本可能尚未同步。 请重新加载并再次检查。",
+    "success-toaster": "同步最新文本",
+    "skipped-toaster": "由于编辑器未激活，因此跳过同步。 请打开编辑器并重试。",
+    "error-toaster": "同步最新文本失败"
   }
 }

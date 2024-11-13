@@ -1,3 +1,4 @@
+import type { ReadStream } from 'fs';
 import { Readable } from 'stream';
 import util from 'util';
 
@@ -5,7 +6,7 @@ import mongoose from 'mongoose';
 import { createModel } from 'mongoose-gridfs';
 
 import type { RespondOptions } from '~/server/interfaces/attachment';
-import type { IAttachmentDocument } from '~/server/models';
+import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -14,6 +15,17 @@ import { AbstractFileUploader, type TemporaryUrl, type SaveFileParam } from './f
 import { ContentHeaders } from './utils';
 
 const logger = loggerFactory('growi:service:fileUploaderGridfs');
+
+
+const COLLECTION_NAME = 'attachmentFiles';
+const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
+
+// instantiate mongoose-gridfs
+const AttachmentFile = createModel({
+  modelName: COLLECTION_NAME,
+  bucketName: COLLECTION_NAME,
+  connection: mongoose.connection,
+});
 
 
 // TODO: rewrite this module to be a type-safe implementation
@@ -50,6 +62,24 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
+  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+    logger.debug(`File uploading: fileName=${attachment.fileName}`);
+
+    const contentHeaders = new ContentHeaders(attachment);
+
+    return AttachmentFile.promisifiedWrite(
+      {
+        // put type and the file name for reference information when uploading
+        filename: attachment.fileName,
+        contentType: contentHeaders.contentType?.value.toString(),
+      },
+      readStream,
+    );
+  }
+
+  /**
+   * @inheritdoc
+   */
   override respond(): void {
     throw new Error('GridfsFileUploader does not support ResponseMode.DELEGATE.');
   }
@@ -73,15 +103,6 @@ class GridfsFileUploader extends AbstractFileUploader {
 
 module.exports = function(crowi) {
   const lib = new GridfsFileUploader(crowi);
-  const COLLECTION_NAME = 'attachmentFiles';
-  const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
-
-  // instantiate mongoose-gridfs
-  const AttachmentFile = createModel({
-    modelName: COLLECTION_NAME,
-    bucketName: COLLECTION_NAME,
-    connection: mongoose.connection,
-  });
 
   // get Collection instance of chunk
   const chunkCollection = mongoose.connection.collection(CHUNK_COLLECTION_NAME);
@@ -148,21 +169,6 @@ module.exports = function(crowi) {
     const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
     const totalLimit = lib.getFileUploadTotalLimit();
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
-  };
-
-  (lib as any).uploadAttachment = async function(fileStream, attachment) {
-    logger.debug(`File uploading: fileName=${attachment.fileName}`);
-
-    const contentHeaders = new ContentHeaders(attachment);
-
-    return AttachmentFile.promisifiedWrite(
-      {
-        // put type and the file name for reference information when uploading
-        filename: attachment.fileName,
-        contentType: contentHeaders.contentType?.value.toString(),
-      },
-      fileStream,
-    );
   };
 
   lib.saveFile = async function({ filePath, contentType, data }) {

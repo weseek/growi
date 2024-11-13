@@ -1,10 +1,11 @@
 import { randomUUID } from 'crypto';
+import type { ReadStream } from 'fs';
 
 import type { Response } from 'express';
 
 import type { ICheckLimitResult } from '~/interfaces/attachment';
 import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachment';
-import { Attachment, type IAttachmentDocument } from '~/server/models';
+import { Attachment, type IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -36,6 +37,7 @@ export interface FileUploader {
   getTotalFileSize(): Promise<number>,
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<ICheckLimitResult>,
   determineResponseMode(): ResponseMode,
+  uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>,
   respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
   generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
@@ -150,6 +152,8 @@ export abstract class AbstractFileUploader implements FileUploader {
   determineResponseMode(): ResponseMode {
     return ResponseMode.RELAY;
   }
+
+ abstract uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>;
 
   /**
    * Respond to the HTTP request.

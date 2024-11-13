@@ -43,8 +43,8 @@ GROWI は法人・個人向けの wiki | ナレッジベースツールです。
     - [GROWI に新しいメンバーを追加・招待する](https://docs.growi.org/ja/admin-guide/management-cookbook/user-management.html#%E6%96%B0%E8%A6%8F%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%81%AE%E4%BB%AE%E7%99%BA%E8%A1%8C)
 
 ### :arrow_right: GROWI の見た目はこのままで満足ですか？
-- :heavy_check_mark: GROWI の見た目をカスタイマイズしましょう！
-    - [GROWI のテーマをカスタイマイズする](/admin/customize)
+- :heavy_check_mark: GROWI の見た目をカスタマイズしましょう！
+    - [GROWI のテーマをカスタマイズする](/admin/customize)
 
 ### :arrow_right: GROWI のセキュリティ設定は完了していますか？
 - :heavy_check_mark: GROWI のセキュリティ設定を更新しましょう！

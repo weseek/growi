@@ -3,9 +3,9 @@ import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity } from '@growi/core';
+import { isIPageInfo } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
+  IDataWithMeta, IPageInfo, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
   isClient, pagePathUtils, pathUtils,
@@ -20,16 +20,18 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useEditorModeClassName } from '~/client/services/layout';
-import { PageView } from '~/components/Page/PageView';
+import { BasicLayout } from '~/components/Layout/BasicLayout';
+import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
+import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
 import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,
@@ -41,7 +43,11 @@ import {
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
-} from '~/stores/context';
+  useElasticsearchMaxBodyLengthToIndex,
+  useIsLocalAccountRegistrationEnabled,
+  useIsRomUserAllowedToComment,
+  useIsAiEnabled,
+} from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
   useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId,
@@ -52,10 +58,6 @@ import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
-
-import { BasicLayout } from '../components/Layout/BasicLayout';
-import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
-import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
@@ -70,17 +72,28 @@ declare global {
 }
 
 
+const GrowiContextualSubNavigationSubstance = dynamic(() => import('~/client/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
+
 const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
-const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
-const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
-const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
-const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
-const TemplateModal = dynamic(() => import('../components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
-const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
-const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
+
+const DisplaySwitcher = dynamic(() => import('~/client/components/Page/DisplaySwitcher').then(mod => mod.DisplaySwitcher), { ssr: false });
+const PageStatusAlert = dynamic(() => import('~/client/components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
+
+const UnsavedAlertDialog = dynamic(() => import('~/client/components/UnsavedAlertDialog'), { ssr: false });
+const DescendantsPageListModal = dynamic(
+  () => import('~/client/components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal),
+  { ssr: false },
+);
+const DrawioModal = dynamic(() => import('~/client/components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
+const HandsontableModal = dynamic(() => import('~/client/components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
+const TemplateModal = dynamic(() => import('~/client/components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
+const LinkEditModal = dynamic(() => import('~/client/components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
+const TagEditModal = dynamic(() => import('~/client/components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
+const ConflictDiffModal = dynamic(() => import('~/client/components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
 const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
-const TagEditModal = dynamic(() => import('../components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
-const ConflictDiffModal = dynamic(() => import('../components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
+
+const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
+
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -89,7 +102,7 @@ const {
 } = pagePathUtils;
 const { removeHeadingSlash } = pathUtils;
 
-type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfoForEntity>;
+type IPageToShowRevisionWithMeta = IDataWithMeta<IPagePopulatedToShowRevision & PageDocument, IPageInfo>;
 type IPageToShowRevisionWithMetaSerialized = IDataWithMeta<string, string>;
 
 superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMetaSerialized>(
@@ -97,8 +110,7 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
     isApplicable: (v): v is IPageToShowRevisionWithMeta => {
       return v?.data != null
         && v?.data.toObject != null
-        && v?.meta != null
-        && isIPageInfoForEntity(v.meta);
+        && isIPageInfo(v.meta);
     },
     serialize: (v) => {
       return {
@@ -146,10 +158,15 @@ type Props = CommonProps & {
   templateTagData?: string[],
   templateBodyData?: string,
 
+  isLocalAccountRegistrationEnabled: boolean,
+
   isSearchServiceConfigured: boolean,
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
+  elasticsearchMaxBodyLengthToIndex: number,
   isEnabledMarp: boolean,
+
+  isRomUserAllowedToComment: boolean,
 
   sidebarConfig: ISidebarConfig,
 
@@ -177,6 +194,8 @@ type Props = CommonProps & {
   yjsData: CurrentPageYjsData,
 
   rendererConfig: RendererConfig,
+
+  aiEnabled: boolean,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -207,6 +226,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsEnabledAttachTitleHeader(props.isEnabledAttachTitleHeader);
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
   useIsSearchServiceReachable(props.isSearchServiceReachable);
+  useElasticsearchMaxBodyLengthToIndex(props.elasticsearchMaxBodyLengthToIndex);
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useIsSlackConfigured(props.isSlackConfigured);
@@ -226,9 +246,14 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
 
+  useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
+
+  useIsAiEnabled(props.aiEnabled);
+
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
+  const revisionId = pageWithMeta?.data.revision?._id;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPathname(props.currentPathname);
@@ -261,18 +286,27 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       return;
     }
 
-    if (currentPageId != null && !props.isNotFound) {
+    if (currentPageId != null && revisionId != null && !props.isNotFound) {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
         mutateEditingMarkdown(pageData?.revision?.body);
-        mutateCurrentPageYjsDataFromApi();
       };
 
       // If skipSSR is true, use the API to retrieve page data.
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [currentPageId, mutateCurrentPage, mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
+  }, [
+    revisionId, currentPageId, mutateCurrentPage,
+    mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR,
+  ]);
+
+  // Load current yjs data
+  useEffect(() => {
+    if (currentPageId != null && revisionId != null && !props.isNotFound) {
+      mutateCurrentPageYjsDataFromApi();
+    }
+  }, [currentPageId, mutateCurrentPageYjsDataFromApi, props.isNotFound, revisionId]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -292,8 +326,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   useEffect(() => {
-    mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
-  }, [mutateRemoteRevisionId, pageWithMeta?.data.revision?._id]);
+    mutateRemoteRevisionId(revisionId);
+  }, [mutateRemoteRevisionId, revisionId]);
 
   useEffect(() => {
     mutateCurrentPageId(pageId ?? null);
@@ -334,15 +368,15 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
         <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
 
-        <DisplaySwitcher
-          pageView={(
-            <PageView
-              pagePath={pagePath}
-              initialPage={pageWithMeta?.data}
-              rendererConfig={props.rendererConfig}
-            />
-          )}
+        <PageView
+          className="d-edit-none"
+          pagePath={pagePath}
+          initialPage={pageWithMeta?.data}
+          rendererConfig={props.rendererConfig}
         />
+
+        <EditablePageEffects />
+        <DisplaySwitcher />
 
         <PageStatusAlert />
       </div>
@@ -371,7 +405,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
   return (
     <>
       <GrowiPluginsActivator />
-      <DrawioViewerScript />
+      <DrawioViewerScript drawioUri={page.props.rendererConfig.drawioUri} />
 
       <Layout {...page.props}>
         {page}
@@ -500,7 +534,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     }
 
     if (!props.skipSSR) {
-      props.yjsData = await crowi.pageService.getYjsData(page._id);
+      props.yjsData = await crowi.pageService.getYjsData(page._id.toString());
     }
   }
 }
@@ -526,9 +560,14 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     searchService, configManager, aclService,
   } = crowi;
 
+  props.aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
+
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.elasticsearchMaxBodyLengthToIndex = configManager.getConfig('crowi', 'app:elasticsearchMaxBodyLengthToIndex');
+
+  props.isRomUserAllowedToComment = configManager.getConfig('crowi', 'security:isRomUserAllowedToComment');
 
   props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;
@@ -543,6 +582,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
+
+  props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
+  && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
@@ -566,9 +608,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    attrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    tagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    sanitizeType: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+    customAttrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    customTagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 

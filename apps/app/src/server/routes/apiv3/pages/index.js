@@ -1,6 +1,7 @@
 
 import { PageGrant } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath, addHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import express from 'express';
@@ -8,7 +9,7 @@ import { body, query } from 'express-validator';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import { GlobalNotificationSettingEvent } from '~/server/models';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
@@ -17,7 +18,6 @@ import { generateAddActivityMiddleware } from '../../../middlewares/add-activity
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import { serializePageSecurely } from '../../../models/serializers/page-serializer';
-import { serializeUserSecurely } from '../../../models/serializers/user-serializer';
 import { isV5ConversionError } from '../../../models/vo/v5-conversion-error';
 
 
@@ -61,87 +61,6 @@ const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
  *            type: number
  *            description: Count of tagged pages
  *            example: 3
- */
-
-/**
- * @swagger
- *
- *  components:
- *    schemas:
- *      Page:
- *        description: Page
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: page ID
- *            example: 5e07345972560e001761fa63
- *          __v:
- *            type: number
- *            description: DB record version
- *            example: 0
- *          commentCount:
- *            type: number
- *            description: count of comments
- *            example: 3
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- *          creator:
- *            $ref: '#/components/schemas/User'
- *          extended:
- *            type: object
- *            description: extend data
- *            example: {}
- *          grant:
- *            type: number
- *            description: grant
- *            example: 1
- *          grantedUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
- *          lastUpdateUser:
- *            $ref: '#/components/schemas/User'
- *          liker:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: []
- *          path:
- *            type: string
- *            description: page path
- *            example: /Sandbox/Math
- *          revision:
- *            type: string
- *            description: revision ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
- *          seenUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
- *          status:
- *            type: string
- *            description: status
- *            enum:
- *              - 'wip'
- *              - 'published'
- *              - 'deleted'
- *              - 'deprecated'
- *            example: published
- *          updatedAt:
- *            type: string
- *            description: date updated at
- *            example: 2010-01-01T00:00:00.000Z
  */
 
 module.exports = (crowi) => {
@@ -226,6 +145,12 @@ module.exports = (crowi) => {
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
 
+    const hideRestrictedByOwner = await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
+    const hideRestrictedByGroup = await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
+
+    /**
+    * @type {import('~/server/models/page').FindRecentUpdatedPagesOption}
+    */
     const queryOptions = {
       offset,
       limit,
@@ -234,7 +159,10 @@ module.exports = (crowi) => {
       isRegExpEscapedFromPath: true,
       sort: 'updatedAt',
       desc: -1,
+      hideRestrictedByOwner,
+      hideRestrictedByGroup,
     };
+
     try {
       const result = await Page.findRecentUpdatedPages('/', req.user, queryOptions);
       if (result.pages.length > limit) {

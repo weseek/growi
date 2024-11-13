@@ -13,7 +13,6 @@ const debug = require('debug')('growi:models:userGroupRelation');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const ObjectId = Schema.Types.ObjectId;
 
 export interface UserGroupRelationDocument extends IUserGroupRelation, Document {}
 
@@ -32,15 +31,15 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
 
   findAllGroupsForUser: (user) => Promise<UserGroupDocument[]>
 
-  findAllUserGroupIdsRelatedToUser: (user) => Promise<string[]>
+  findAllUserGroupIdsRelatedToUser: (user) => Promise<ObjectIdLike[]>
 }
 
 /*
  * define schema
  */
 const schema = new Schema<UserGroupRelationDocument, UserGroupRelationModel>({
-  relatedGroup: { type: ObjectId, ref: 'UserGroup', required: true },
-  relatedUser: { type: ObjectId, ref: 'User', required: true },
+  relatedGroup: { type: Schema.Types.ObjectId, ref: 'UserGroup', required: true },
+  relatedUser: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 }, {
   timestamps: { createdAt: true, updatedAt: false },
 });
@@ -129,7 +128,7 @@ schema.statics.findAllRelationForUserGroups = function(userGroups) {
  * @memberof UserGroupRelation
  */
 schema.statics.findAllGroupsForUser = async function(user): Promise<UserGroupDocument[]> {
-  const userGroupRelations = await this.find({ relatedUser: user.id }).populate('relatedGroup');
+  const userGroupRelations = await this.find({ relatedUser: user._id }).populate('relatedGroup');
   const userGroups = userGroupRelations.map((relation) => {
     return isPopulated(relation.relatedGroup) ? relation.relatedGroup as UserGroupDocument : null;
   });
@@ -143,7 +142,7 @@ schema.statics.findAllGroupsForUser = async function(user): Promise<UserGroupDoc
  * @param {User} user
  * @returns {Promise<ObjectId[]>}
  */
-schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<string[]> {
+schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<ObjectIdLike[]> {
   const relations = await this.find({ relatedUser: user._id })
     .select('relatedGroup')
     .exec();
@@ -162,7 +161,7 @@ schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<
 schema.statics.countByGroupIdsAndUser = async function(userGroupIds: ObjectIdLike[], userData): Promise<number> {
   const query = {
     relatedGroup: { $in: userGroupIds },
-    relatedUser: userData.id,
+    relatedUser: userData._id,
   };
 
   return this.count(query);

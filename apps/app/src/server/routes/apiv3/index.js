@@ -1,4 +1,5 @@
 import growiPlugin from '~/features/growi-plugin/server/routes/apiv3/admin';
+import openai from '~/features/openai/server/routes';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -22,6 +23,7 @@ const routerForAuth = express.Router();
 
 module.exports = (crowi, app) => {
   const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
+  const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -62,9 +64,9 @@ module.exports = (crowi, app) => {
   routerForAuth.use('/logout', require('./logout')(crowi));
 
   routerForAuth.post('/register',
-    applicationInstalled, registerFormValidator.registerRules(), registerFormValidator.registerValidation, addActivity, login.register);
+    applicationInstalled, registerFormValidator.registerRules(minPasswordLength), registerFormValidator.registerValidation, addActivity, login.register);
 
-  routerForAuth.post('/user-activation/register', applicationInstalled, userActivation.registerRules(),
+  routerForAuth.post('/user-activation/register', applicationInstalled, userActivation.registerRules(minPasswordLength),
     userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   // installer
@@ -117,6 +119,8 @@ module.exports = (crowi, app) => {
   router.use('/bookmark-folder', require('./bookmark-folder')(crowi));
   router.use('/questionnaire', require('~/features/questionnaire/server/routes/apiv3/questionnaire')(crowi));
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
+
+  router.use('/openai', openai(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };

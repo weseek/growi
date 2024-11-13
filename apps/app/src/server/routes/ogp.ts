@@ -1,18 +1,24 @@
 import * as fs from 'fs';
 import path from 'path';
 
+import { getIdStringForRef, type IUser } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
-import {
+import type {
   Request, Response, NextFunction,
 } from 'express';
-import { param, validationResult, ValidationError } from 'express-validator';
+import type { ValidationError } from 'express-validator';
+import { param, validationResult } from 'express-validator';
+import type { HydratedDocument } from 'mongoose';
+import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
-import { Attachment } from '../models';
+import { Attachment } from '../models/attachment';
+import type { PageDocument, PageModel } from '../models/page';
+import { configManager } from '../service/config-manager';
 import { convertStreamToBuffer } from '../util/stream';
 
 const logger = loggerFactory('growi:routes:ogp');
@@ -55,21 +61,27 @@ module.exports = function(crowi) {
 
   const renderOgp = async(req: Request, res: Response) => {
 
-    const { configManager } = crowi;
+    const User = mongoose.model<IUser>('User');
     const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
-    const page = req.body.page;
+    const page: PageDocument = req.body.page; // asserted by ogpValidator
 
-    let user;
-    let pageTitle: string;
-    let bufferedUserImage: Buffer;
+    const title = (new DevidedPagePath(page.path)).latter;
+
+    let user: IUser | null = null;
+    let userName = '(unknown)';
+    let userImage: Buffer = bufferedDefaultUserImageCache;
 
     try {
-      const User = crowi.model('User');
-      user = await User.findById(page.creator._id.toString());
+      if (page.creator != null) {
+        user = await User.findById(getIdStringForRef(page.creator));
 
-      bufferedUserImage = user.imageUrlCached === DEFAULT_USER_IMAGE_URL ? bufferedDefaultUserImageCache : (await getBufferedUserImage(user.imageUrlCached));
-      // todo: consider page title
-      pageTitle = (new DevidedPagePath(page.path)).latter;
+        if (user != null) {
+          userName = user.username;
+          userImage = user.imageUrlCached !== DEFAULT_USER_IMAGE_URL
+            ? bufferedDefaultUserImageCache
+            : await getBufferedUserImage(user.imageUrlCached);
+        }
+      }
     }
     catch (err) {
       logger.error(err);
@@ -81,9 +93,9 @@ module.exports = function(crowi) {
       result = await axios.post(
         ogpUri, {
           data: {
-            title: pageTitle,
-            userName: user.username,
-            userImage: bufferedUserImage,
+            title,
+            userName,
+            userImage,
           },
         }, {
           responseType: 'stream',
@@ -117,9 +129,10 @@ module.exports = function(crowi) {
 
     if (errors.isEmpty()) {
 
+      const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+
       try {
-        const Page = crowi.model('Page');
-        const page = await Page.findByIdAndViewer(req.params.pageId);
+        const page = await Page.findByIdAndViewer(req.params.pageId, null);
 
         if (page == null || page.status !== Page.STATUS_PUBLISHED || (page.grant !== Page.GRANT_PUBLIC && page.grant !== Page.GRANT_RESTRICTED)) {
           return res.status(400).send('the page does not exist');

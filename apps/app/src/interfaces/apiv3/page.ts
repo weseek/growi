@@ -42,4 +42,5 @@ export type IApiv3PageUpdateResponse = {
 
 export const PageUpdateErrorCode = {
   CONFLICT: 'conflict',
+  FORBIDDEN: 'forbidden',
 } as const;
