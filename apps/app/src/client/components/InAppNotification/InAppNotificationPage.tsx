@@ -79,7 +79,7 @@ export const InAppNotificationPage: FC = () => {
       )}
         { notificationData != null && notificationData.docs.length === 0
           // no items
-          ? t('in_app_notification.mark_all_as_read')
+          ? t('in_app_notification.no_unread_messages')
           // render list-group
           : (
             <InAppNotificationList inAppNotificationData={notificationData} />
