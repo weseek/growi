@@ -147,7 +147,7 @@ Crowi.prototype.init = async function() {
   this.setupCron();
 
   // start OpenTelemetry
-  startInstrumentation();
+  startInstrumentation(this.version);
 
   // setup messaging services
   await this.setupS2sMessagingService();
