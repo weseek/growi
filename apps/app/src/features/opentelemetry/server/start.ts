@@ -5,7 +5,7 @@ import { Resource } from '@opentelemetry/resources';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import type { NodeSDKConfiguration } from '@opentelemetry/sdk-node';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_INSTANCE_ID, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
+import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION, SEMRESATTRS_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions';
 
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
@@ -18,12 +18,12 @@ const logger = loggerFactory('growi:opentelemetry');
 
 let sdkInstance: NodeSDK;
 
-function generateNodeSDKConfiguration(name: string, version: string): Partial<NodeSDKConfiguration> {
+function generateNodeSDKConfiguration(instanceId: string, version: string): Partial<NodeSDKConfiguration> {
   return {
     resource: new Resource({
-      [SEMRESATTRS_SERVICE_NAME]: name,
-      [SEMRESATTRS_SERVICE_INSTANCE_ID]: configManager.getConfig('crowi', 'otel:serviceInstanceId'),
-      [SEMRESATTRS_SERVICE_VERSION]: version,
+      [ATTR_SERVICE_NAME]: 'growi',
+      [ATTR_SERVICE_VERSION]: version,
+      [SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
     }),
     traceExporter: new OTLPTraceExporter(),
     metricReader: new PeriodicExportingMetricReader({
@@ -65,7 +65,8 @@ export const startInstrumentation = (version: string): void => {
     return;
   }
 
-  sdkInstance = new NodeSDK(generateNodeSDKConfiguration('next-app', version));
+  const serviceInstanceId = configManager.getConfig('crowi', 'otel:serviceInstanceId');
+  sdkInstance = new NodeSDK(generateNodeSDKConfiguration(serviceInstanceId, version));
   sdkInstance.start();
 };
 
