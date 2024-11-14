@@ -49,25 +49,55 @@ function generateNodeSDKConfiguration(instanceId: string, version: string): Part
  */
 function overwriteSdkDisabled(): void {
   const instrumentationEnabled = configManager.getConfig('crowi', 'otel:enabled');
-  if (instrumentationEnabled === false) {
+
+  if (instrumentationEnabled && (
+    process.env.OTEL_SDK_DISABLED === true
+    || process.env.OTEL_SDK_DISABLED === 'true'
+    || process.env.OTEL_SDK_DISABLED === 1
+    || process.env.OTEL_SDK_DISABLED === '1'
+  )) {
+    logger.warn("OTEL_SDK_DISABLED will be set 'false' since GROWI's 'otel:enabled' config is true.");
+    process.env.OTEL_SDK_DISABLED = 'false';
+    return;
+  }
+
+  if (!instrumentationEnabled && (
+    process.env.OTEL_SDK_DISABLED == null
+    || process.env.OTEL_SDK_DISABLED === false
+    || process.env.OTEL_SDK_DISABLED === 'false'
+    || process.env.OTEL_SDK_DISABLED === 0
+    || process.env.OTEL_SDK_DISABLED === '0'
+  )) {
     logger.warn("OTEL_SDK_DISABLED will be set 'true' since GROWI's 'otel:enabled' config is false.");
     process.env.OTEL_SDK_DISABLED = 'true';
+    return;
   }
+
 }
 
 export const startInstrumentation = (version: string): void => {
-  initLogger();
-
-  overwriteSdkDisabled();
-
   if (sdkInstance != null) {
     logger.warn('OpenTelemetry instrumentation already started');
     return;
   }
 
-  const serviceInstanceId = configManager.getConfig('crowi', 'otel:serviceInstanceId');
-  sdkInstance = new NodeSDK(generateNodeSDKConfiguration(serviceInstanceId, version));
-  sdkInstance.start();
+  overwriteSdkDisabled();
+
+  const instrumentationEnabled = configManager.getConfig('crowi', 'otel:enabled');
+  if (instrumentationEnabled) {
+    initLogger();
+
+    logger.info(`GROWI now collects anonymous telemetry.
+
+This data is used to help improve GROWI, but you can opt-out at any time.
+
+For more information, see https://docs.growi.org/en/admin-guide/telemetry.html.
+`);
+
+    const serviceInstanceId = configManager.getConfig('crowi', 'otel:serviceInstanceId');
+    sdkInstance = new NodeSDK(generateNodeSDKConfiguration(serviceInstanceId, version));
+    sdkInstance.start();
+  }
 };
 
 // public async shutdownInstrumentation(): Promise<void> {
