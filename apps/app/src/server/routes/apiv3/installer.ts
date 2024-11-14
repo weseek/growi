@@ -3,6 +3,7 @@ import type { Request, Router } from 'express';
 import express from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
@@ -26,8 +27,10 @@ module.exports = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
+  const minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
+
   // eslint-disable-next-line max-len
-  router.post('/', registerRules(), registerValidation, addActivity, async(req: FormRequest, res: ApiV3Response) => {
+  router.post('/', registerRules(minPasswordLength), registerValidation, addActivity, async(req: FormRequest, res: ApiV3Response) => {
     const appService = crowi.appService;
     if (appService == null) {
       return res.apiv3Err(new ErrorV3('GROWI cannot be installed due to an internal error', 'app_service_not_setup'), 500);

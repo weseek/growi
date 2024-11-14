@@ -1,9 +1,10 @@
+import type { ReadStream } from 'fs';
 import { Readable } from 'stream';
 
 import type { Response } from 'express';
 
 import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
-import type { IAttachmentDocument } from '~/server/models';
+import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -69,6 +70,13 @@ class LocalFileUploader extends AbstractFileUploader {
     return configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect')
       ? ResponseMode.DELEGATE
       : ResponseMode.RELAY;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+    throw new Error('Method not implemented.');
   }
 
   /**
@@ -146,7 +154,7 @@ module.exports = function(crowi) {
     return fs.unlinkSync(filePath);
   };
 
-  (lib as any).uploadAttachment = async function(fileStream, attachment) {
+  lib.uploadAttachment = async function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     const filePath = getFilePathOnStorage(attachment);

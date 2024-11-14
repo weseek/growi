@@ -5,12 +5,11 @@ import {
 
 import { PageGrant, type Nullable } from '@growi/core';
 import { type SWRResponseWithUtils, useSWRStatic, withUtils } from '@growi/core/dist/swr';
-import { pagePathUtils, isClient, isServer } from '@growi/core/dist/utils';
+import { pagePathUtils, isClient } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import { useRouter } from 'next/router';
 import type { HtmlElementNode } from 'rehype-toc';
-import type SimpleBar from 'simplebar-react';
 import type { MutatorOptions } from 'swr';
 import {
   useSWRConfig, type SWRResponse, type Key,
@@ -22,30 +21,20 @@ import type { IPageSelectedGrant } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
+  useIsEditable, useIsReadOnlyUser,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
+} from '~/stores-universal/context';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import {
   useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
 } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import {
-  useIsEditable, useIsReadOnlyUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
-} from './context';
 import { useStaticSWR } from './use-static-swr';
 
 const { isTrashTopPage, isUsersTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
-
-
-/** **********************************************************
- *                          Unions
- *********************************************************** */
-
-export const EditorMode = {
-  View: 'view',
-  Editor: 'editor',
-} as const;
-export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
 
 
 /** **********************************************************
@@ -67,104 +56,39 @@ export const useSidebarScrollerRef = (initialData?: RefObject<HTMLDivElement>): 
   return useSWRStatic<RefObject<HTMLDivElement>, Error>('sidebarScrollerRef', initialData);
 };
 
+//
 export const useIsMobile = (): SWRResponse<boolean, Error> => {
   const key = isClient() ? 'isMobile' : null;
 
-  let configuration;
+  let configuration = {
+    fallbackData: false,
+  };
+
   if (isClient()) {
-    const userAgent = window.navigator.userAgent.toLowerCase();
+
+    // Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection
+    let hasTouchScreen = false;
+    hasTouchScreen = ('maxTouchPoints' in navigator) ? navigator?.maxTouchPoints > 0 : false;
+
+    if (!hasTouchScreen) {
+      const mQ = matchMedia?.('(pointer:coarse)');
+      if (mQ?.media === '(pointer:coarse)') {
+        hasTouchScreen = !!mQ.matches;
+      }
+      else {
+      // Only as a last resort, fall back to user agent sniffing
+        const UA = navigator.userAgent;
+        hasTouchScreen = /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA)
+      || /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+      }
+    }
+
     configuration = {
-      fallbackData: /iphone|ipad|android/.test(userAgent),
+      fallbackData: hasTouchScreen,
     };
   }
 
-  return useStaticSWR<boolean, Error>(key, undefined, configuration);
-};
-
-const getClassNamesByEditorMode = (editorMode: EditorMode | undefined): string[] => {
-  const classNames: string[] = [];
-  switch (editorMode) {
-    case EditorMode.Editor:
-      classNames.push('editing', 'builtin-editor');
-      break;
-  }
-
-  return classNames;
-};
-
-export const EditorModeHash = {
-  View: '',
-  Edit: '#edit',
-} as const;
-export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
-
-const updateHashByEditorMode = (newEditorMode: EditorMode) => {
-  const { pathname, search } = window.location;
-
-  switch (newEditorMode) {
-    case EditorMode.View:
-      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.View}`);
-      break;
-    case EditorMode.Editor:
-      window.history.replaceState(null, '', `${pathname}${search}${EditorModeHash.Edit}`);
-      break;
-  }
-};
-
-export const determineEditorModeByHash = (): EditorMode => {
-  if (isServer()) {
-    return EditorMode.View;
-  }
-
-  const { hash } = window.location;
-
-  switch (hash) {
-    case EditorModeHash.Edit:
-      return EditorMode.Editor;
-    default:
-      return EditorMode.View;
-  }
-};
-
-type EditorModeUtils = {
-  getClassNamesByEditorMode: () => string[],
-}
-
-export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
-  const { data: _isEditable } = useIsEditable();
-  const { data: isNotFound } = useIsNotFound();
-
-  const editorModeByHash = determineEditorModeByHash();
-
-  const isLoading = _isEditable === undefined;
-  const isEditable = !isLoading && _isEditable;
-  const preventModeEditor = !isEditable || isNotFound === undefined || isNotFound === true;
-  const initialData = preventModeEditor ? EditorMode.View : editorModeByHash;
-
-  const swrResponse = useSWRImmutable(
-    isLoading ? null : ['editorMode', isEditable, preventModeEditor],
-    null,
-    { fallbackData: initialData },
-  );
-
-  // construct overriding mutate method
-  const mutateOriginal = swrResponse.mutate;
-  const mutate = useCallback((editorMode: EditorMode, shouldRevalidate?: boolean) => {
-    if (preventModeEditor) {
-      return Promise.resolve(EditorMode.View); // fixed if not editable
-    }
-    updateHashByEditorMode(editorMode);
-    return mutateOriginal(editorMode, shouldRevalidate);
-  }, [preventModeEditor, mutateOriginal]);
-
-  const getClassNames = useCallback(() => {
-    return getClassNamesByEditorMode(swrResponse.data);
-  }, [swrResponse.data]);
-
-  return Object.assign(swrResponse, {
-    mutate,
-    getClassNamesByEditorMode: getClassNames,
-  });
+  return useSWRStatic<boolean, Error>(key, undefined, configuration);
 };
 
 export const useIsDeviceLargerThanMd = (): SWRResponse<boolean, Error> => {
@@ -434,11 +358,25 @@ export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Er
  *********************************************************** */
 
 export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser } = useCurrentUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
-  const { data: isTrashPage } = useIsTrashPage();
+  const key = 'isAbleToShowTrashPageManagementButtons';
 
-  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isTrashPage && currentUser != null && !isReadOnlyUser);
+  const { data: _currentUser } = useCurrentUser();
+  const isCurrentUserExist = _currentUser != null;
+
+  const { data: _currentPageId } = useCurrentPageId();
+  const { data: _isNotFound } = useIsNotFound();
+  const { data: _isTrashPage } = useIsTrashPage();
+  const { data: _isReadOnlyUser } = useIsReadOnlyUser();
+  const isPageExist = _currentPageId != null && _isNotFound === false;
+  const isTrashPage = isPageExist && _isTrashPage === true;
+  const isReadOnlyUser = isPageExist && _isReadOnlyUser === true;
+
+  const includesUndefined = [_currentUser, _currentPageId, _isNotFound, _isReadOnlyUser, _isTrashPage].some(v => v === undefined);
+
+  return useSWRImmutable(
+    includesUndefined ? null : [key, isTrashPage, isCurrentUserExist, isReadOnlyUser],
+    ([, isTrashPage, isCurrentUserExist, isReadOnlyUser]) => isTrashPage && isCurrentUserExist && !isReadOnlyUser,
+  );
 };
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
@@ -509,4 +447,17 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
     includesUndefined ? null : [key, pageId, pagePath, isNotFound],
     () => isPageExist && !isUsersTopPagePath,
   );
+};
+
+export const useIsUntitledPage = (): SWRResponse<boolean> => {
+  const key = 'isUntitledPage';
+
+  const { data: pageId } = useCurrentPageId();
+
+  return useSWRStatic(
+    pageId == null ? null : [key, pageId],
+    undefined,
+    { fallbackData: false },
+  );
+
 };

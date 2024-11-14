@@ -3,19 +3,21 @@ import * as os from 'node:os';
 
 import type { IUserHasId } from '@growi/core';
 
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 // eslint-disable-next-line import/no-named-as-default
-import Config from '~/server/models/config';
+import { Config } from '~/server/models/config';
 import { aclService } from '~/server/service/acl';
 import loggerFactory from '~/utils/logger';
 
+import type { IGrowiInfo } from '../../interfaces/growi-info';
 import {
-  GrowiWikiType, GrowiExternalAuthProviderType, IGrowiInfo, GrowiServiceType, GrowiAttachmentType, GrowiDeploymentType,
+  GrowiWikiType, GrowiExternalAuthProviderType, GrowiServiceType, GrowiAttachmentType, GrowiDeploymentType,
 } from '../../interfaces/growi-info';
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
 import { type IUserInfo, UserType } from '../../interfaces/user-info';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
-import QuestionnaireOrder, { QuestionnaireOrderDocument } from '../models/questionnaire-order';
+import type { QuestionnaireOrderDocument } from '../models/questionnaire-order';
+import QuestionnaireOrder from '../models/questionnaire-order';
 import { isShowableCondition } from '../util/condition';
 
 

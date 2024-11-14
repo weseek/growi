@@ -5,7 +5,7 @@
     ".env.*",
     "tsconfig.json"
   ],
-  "pipeline": {
+  "tasks": {
 
     "bootstrap": {
       "dependsOn": ["//#bootstrap"],
@@ -19,30 +19,20 @@
       "cache": false
     },
 
-    "@growi/pluginkit#build": {
-      "dependsOn": ["@growi/core#build"],
-      "outputs": ["dist/**"],
-      "outputMode": "new-only"
-    },
     "@growi/remark-attachment-refs#build": {
       "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "@growi/remark-lsx#build": {
       "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "@growi/ui#build": {
       "dependsOn": ["@growi/core#build"],
       "outputs": ["dist/**"],
-      "outputMode": "new-only"
-    },
-    "@growi/slackbot-proxy#build": {
-      "dependsOn": ["@growi/slack#build"],
-      "outputs": ["dist/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "build": {
       "outputs": ["dist/**"],
@@ -50,40 +40,27 @@
         "src/**/*.js", "src/**/*.jsx",
         "src/**/*.ts", "src/**/*.tsx",
         "src/**/*.css", "src/**/*.scss",
+        "package.json",
         "tsconfig*.json",
         "vite*.ts"
       ],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
 
-    "@growi/pluginkit#dev": {
-      "dependsOn": ["@growi/core#dev"],
-      "outputs": ["dist/**"],
-      "outputMode": "new-only"
-    },
     "@growi/remark-attachment-refs#dev": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
       "outputs": ["dist/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "@growi/remark-lsx#dev": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
       "outputs": ["dist/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "@growi/ui#dev": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["dist/**"],
-      "outputMode": "new-only"
-    },
-    "@growi/slackbot-proxy#dev": {
-      "dependsOn": ["@growi/slack#dev"],
-      "cache": false,
-      "persistent": true
-    },
-    "@growi/slackbot-proxy#dev:ci": {
-      "dependsOn": ["@growi/slack#dev"],
-      "cache": false
+      "outputLogs": "new-only"
     },
     "dev": {
       "outputs": ["dist/**"],
@@ -91,10 +68,11 @@
         "src/**/*.js", "src/**/*.jsx",
         "src/**/*.ts", "src/**/*.tsx",
         "src/**/*.css", "src/**/*.scss",
+        "package.json",
         "tsconfig*.json",
         "vite*.ts"
       ],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
 
     "watch": {
@@ -109,9 +87,6 @@
       "persistent": true
     },
 
-    "@growi/pluginkit#lint": {
-      "dependsOn": ["@growi/core#dev"]
-    },
     "@growi/remark-attachment-refs#lint": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
     },
@@ -121,36 +96,34 @@
     "@growi/ui#lint": {
       "dependsOn": ["@growi/core#dev"]
     },
-    "@growi/slackbot-proxy#lint": {
-      "dependsOn": ["@growi/slack#dev"]
-    },
     "lint": {
     },
 
-    "@growi/slackbot-proxy#test": {
-      "dependsOn": ["@growi/slack#dev"],
-      "outputMode": "new-only"
-    },
-    "@growi/pluginkit#test": {
-      "dependsOn": ["@growi/core#dev"],
-      "outputMode": "new-only"
-    },
     "@growi/preset-templates#test": {
       "dependsOn": ["@growi/pluginkit#dev"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "@growi/remark-lsx#test": {
       "dependsOn": ["@growi/core#dev"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "test": {
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
 
-    "version": {
+    "//#version:patch": {
       "cache": false
     },
-    "//#version": {
+    "//#version:prerelease": {
+      "cache": false
+    },
+    "//#version:prepatch": {
+      "cache": false
+    },
+    "//#version:preminor": {
+      "cache": false
+    },
+    "//#version:premajor": {
       "cache": false
     }
 

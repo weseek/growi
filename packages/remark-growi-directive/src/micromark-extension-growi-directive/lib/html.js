@@ -23,7 +23,7 @@
 import { parseEntities } from 'parse-entities';
 import { ok as assert } from 'uvu/assert';
 
-import { DirectiveType } from '../../mdast-util-growi-directive/consts.js';
+import { DirectiveType } from '../../mdast-util-growi-directive/lib/index.js';
 
 const own = {}.hasOwnProperty;
 
@@ -35,32 +35,32 @@ export function directiveHtml(options = {}) {
   return {
     enter: {
 
-      directiveLeaf() {
+      directiveGrowiLeaf() {
         return enter.call(this, DirectiveType.Leaf);
       },
-      directiveLeafAttributes: enterAttributes,
-      directiveLeafLabel: enterLabel,
+      directiveGrowiLeafAttributes: enterAttributes,
+      directiveGrowiLeafLabel: enterLabel,
 
-      directiveText() {
+      directiveGrowiText() {
         return enter.call(this, DirectiveType.Text);
       },
-      directiveTextAttributes: enterAttributes,
-      directiveTextLabel: enterLabel,
+      directiveGrowiTextAttributes: enterAttributes,
+      directiveGrowiTextLabel: enterLabel,
     },
     exit: {
-      directiveLeaf: exit,
-      directiveLeafAttributeName: exitAttributeName,
-      directiveLeafAttributeValue: exitAttributeValue,
-      directiveLeafAttributes: exitAttributes,
-      directiveLeafLabel: exitLabel,
-      directiveLeafName: exitName,
+      directiveGrowiLeaf: exit,
+      directiveGrowiLeafAttributeName: exitAttributeName,
+      directiveGrowiLeafAttributeValue: exitAttributeValue,
+      directiveGrowiLeafAttributes: exitAttributes,
+      directiveGrowiLeafLabel: exitLabel,
+      directiveGrowiLeafName: exitName,
 
-      directiveText: exit,
-      directiveTextAttributeName: exitAttributeName,
-      directiveTextAttributeValue: exitAttributeValue,
-      directiveTextAttributes: exitAttributes,
-      directiveTextLabel: exitLabel,
-      directiveTextName: exitName,
+      directiveGrowiText: exit,
+      directiveGrowiTextAttributeName: exitAttributeName,
+      directiveGrowiTextAttributeValue: exitAttributeValue,
+      directiveGrowiTextAttributes: exitAttributes,
+      directiveGrowiTextLabel: exitLabel,
+      directiveGrowiTextName: exitName,
     },
   };
 

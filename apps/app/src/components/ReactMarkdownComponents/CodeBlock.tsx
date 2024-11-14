@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-import type { CodeComponent, CodeProps } from 'react-markdown/lib/ast-to-react';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
@@ -12,6 +11,17 @@ Object.entries<object>(oneDark).forEach(([key, value]) => {
     delete oneDark[key].fontFamily;
   }
 });
+
+
+type InlineCodeBlockProps = {
+  children: ReactNode,
+  className?: string,
+}
+
+const InlineCodeBlockSubstance = (props: InlineCodeBlockProps): JSX.Element => {
+  const { children, className, ...rest } = props;
+  return <code className={`code-inline ${className ?? ''}`} {...rest}>{children}</code>;
+};
 
 
 function extractChildrenToIgnoreReactNode(children: ReactNode): ReactNode {
@@ -45,7 +55,8 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   // see: https://github.com/weseek/growi/pull/7484
   //
   // Note: You can also remove this code if the user requests to see the code highlighted in Prism as-is.
-  const isSimpleString = Array.isArray(children) && children.length === 1 && typeof children[0] === 'string';
+
+  const isSimpleString = typeof children === 'string' || (Array.isArray(children) && children.length === 1 && typeof children[0] === 'string');
   if (!isSimpleString) {
     return (
       <div style={oneDark['pre[class*="language-"]']}>
@@ -67,13 +78,19 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   );
 }
 
-export const CodeBlock: CodeComponent = ({ inline, className, children }: CodeProps) => {
+type CodeBlockProps = {
+  children: ReactNode,
+  className?: string,
+  inline?: true,
+}
 
-  if (inline) {
-    return <code className={`code-inline ${className ?? ''}`}>{children}</code>;
-  }
+export const CodeBlock = (props: CodeBlockProps): JSX.Element => {
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
+  const { className, children, inline } = props;
+  if (inline) {
+    return <InlineCodeBlockSubstance className={`code-inline ${className ?? ''}`}>{children}</InlineCodeBlockSubstance>;
+  }
 
   const match = /language-(\w+)(:?.+)?/.exec(className || '');
   const lang = match && match[1] ? match[1] : '';

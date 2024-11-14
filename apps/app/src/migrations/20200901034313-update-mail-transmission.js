@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 // eslint-disable-next-line import/no-named-as-default
-import Config from '~/server/models/config';
+import { Config } from '~/server/models/config';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:migrate:update-mail-transmission');
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const sesAccessKeyId = await Config.findOne({
       ns: 'crowi',
@@ -43,7 +43,7 @@ module.exports = {
 
   async down(db, client) {
     logger.info('Rollback migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     // remote 'mail:transmissionMethod'
     await Config.findOneAndDelete({

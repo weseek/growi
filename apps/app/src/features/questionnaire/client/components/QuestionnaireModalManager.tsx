@@ -1,10 +1,10 @@
 import { useCallback } from 'react';
 
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
 
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
-import { IQuestionnaireOrderHasId } from '../../interfaces/questionnaire-order';
+import type { IQuestionnaireOrderHasId } from '../../interfaces/questionnaire-order';
 import { GuestQuestionnaireAnswerStatusService } from '../services/guest-questionnaire-answer-status';
 import { useSWRxQuestionnaireOrders } from '../stores/questionnaire';
 

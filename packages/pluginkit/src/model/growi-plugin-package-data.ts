@@ -1,4 +1,4 @@
-import { GrowiPluginType } from '@growi/core';
+import type { GrowiPluginType } from '@growi/core';
 
 export type GrowiPluginDirective = {
   [key: string]: any,

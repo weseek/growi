@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 // eslint-disable-next-line import/no-named-as-default
-import Config from '~/server/models/config';
+import { Config } from '~/server/models/config';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:migrate:abolish-crowi-classic-auth');
 module.exports = {
   async up(db, next) {
     logger.info('Start migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     // enable passport and delete configs for crowi classic auth
     await Promise.all([

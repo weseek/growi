@@ -1,13 +1,16 @@
 /* eslint-disable no-return-await */
 
-const debug = require('debug')('growi:models:bookmark');
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
+import uniqueValidator from 'mongoose-unique-validator';
+
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:models:bookmark');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-module.exports = function(crowi) {
+const factory = (crowi) => {
   const bookmarkEvent = crowi.event('bookmark');
 
   let bookmarkSchema = null;
@@ -74,7 +77,7 @@ module.exports = function(crowi) {
         // duplicate key (dummy response of new object)
         return newBookmark;
       }
-      debug('Bookmark.save failed', err);
+      logger.debug('Bookmark.save failed', err);
       throw err;
     }
   };
@@ -93,7 +96,7 @@ module.exports = function(crowi) {
       return data;
     }
     catch (err) {
-      debug('Bookmark.remove failed (removeBookmarkByPage)', err);
+      logger.debug('Bookmark.remove failed (removeBookmarkByPage)', err);
       throw err;
     }
   };
@@ -107,10 +110,12 @@ module.exports = function(crowi) {
       return data;
     }
     catch (err) {
-      debug('Bookmark.findOneAndRemove failed', err);
+      logger.debug('Bookmark.findOneAndRemove failed', err);
       throw err;
     }
   };
 
   return mongoose.model('Bookmark', bookmarkSchema);
 };
+
+export default factory;

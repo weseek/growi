@@ -2,30 +2,40 @@ import path from 'path';
 
 import type { IPage } from '@growi/core';
 import {
-  AllSubscriptionStatusType, SubscriptionStatusType,
+  AllSubscriptionStatusType, PageGrant, SubscriptionStatusType,
+  getIdForRef,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IPageGrantData } from '~/interfaces/page';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
-import { GlobalNotificationSettingEvent } from '~/server/models';
-import type { PageModel } from '~/server/models/page';
+import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
+import type { PageDocument, PageModel } from '~/server/models/page';
+import { Revision } from '~/server/models/revision';
+import ShareLink from '~/server/models/share-link';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
+import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import loggerFactory from '~/utils/logger';
+
+import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
 import { getYjsDataHandlerFactory } from './get-yjs-data';
 import { publishPageHandlersFactory } from './publish-page';
+import { syncLatestRevisionBodyToYjsDraftHandlerFactory } from './sync-latest-revision-body-to-yjs-draft';
 import { unpublishPageHandlersFactory } from './unpublish-page';
 import { updatePageHandlersFactory } from './update-page';
 
@@ -37,91 +47,12 @@ const { body, query, param } = require('express-validator');
 
 const router = express.Router();
 
-/**
- * @swagger
- *  tags:
- *    name: Page
- */
 
 /**
  * @swagger
  *
- *  components:
- *    schemas:
- *      Page:
- *        description: Page
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: page ID
- *            example: 5e07345972560e001761fa63
- *          __v:
- *            type: number
- *            description: DB record version
- *            example: 0
- *          commentCount:
- *            type: number
- *            description: count of comments
- *            example: 3
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- *          creator:
- *            $ref: '#/components/schemas/User'
- *          extended:
- *            type: object
- *            description: extend data
- *            example: {}
- *          grant:
- *            type: number
- *            description: grant
- *            example: 1
- *          grantedUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
- *          lastUpdateUser:
- *            $ref: '#/components/schemas/User'
- *          liker:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: []
- *          path:
- *            type: string
- *            description: page path
- *            example: /
- *          revision:
- *            type: string
- *            description: page revision
- *          seenUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
- *          status:
- *            type: string
- *            description: status
- *            enum:
- *              - 'wip'
- *              - 'published'
- *              - 'deleted'
- *              - 'deprecated'
- *            example: published
- *          updatedAt:
- *            type: string
- *            description: date updated at
- *            example: 2010-01-01T00:00:00.000Z
- *
+ * components:
+ *   schemas:
  *      LikeParams:
  *        description: LikeParams
  *        type: object
@@ -177,14 +108,13 @@ const router = express.Router();
  *            example: 5e07345972560e001761fa63
  */
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
   const certifySharedPage = require('../../../middlewares/certify-shared-page')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page } = crowi.models;
+  const Page = mongoose.model<IPage, PageModel>('Page');
   const { pageService, exportService } = crowi;
 
   const activityEvent = crowi.event('activity');
@@ -194,6 +124,8 @@ module.exports = (crowi) => {
       query('pageId').optional().isString(),
       query('path').optional().isString(),
       query('findAll').optional().isBoolean(),
+      query('shareLinkId').optional().isMongoId(),
+      query('includeEmpty').optional().isBoolean(),
     ],
     likes: [
       body('pageId').isString(),
@@ -202,8 +134,11 @@ module.exports = (crowi) => {
     info: [
       query('pageId').isMongoId().withMessage('pageId is required'),
     ],
-    isGrantNormalized: [
+    getGrantData: [
       query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    nonUserRelatedGroupsGranted: [
+      query('path').isString(),
     ],
     applicableGrant: [
       query('pageId').isMongoId().withMessage('pageId is required'),
@@ -273,26 +208,34 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
-    const { user } = req;
+    const { user, isSharedPage } = req;
     const {
-      pageId, path, findAll, revisionId,
+      pageId, path, findAll, revisionId, shareLinkId, includeEmpty,
     } = req.query;
 
-    if (pageId == null && path == null) {
-      return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
+    const isValid = (shareLinkId != null && pageId != null && path == null) || (shareLinkId == null && (pageId != null || path != null));
+    if (!isValid) {
+      return res.apiv3Err(new Error('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.'), 400);
     }
 
     let page;
     let pages;
     try {
-      if (pageId != null) { // prioritized
+      if (isSharedPage) {
+        const shareLink = await ShareLink.findOne({ _id: shareLinkId });
+        if (shareLink == null) {
+          throw new Error('ShareLink is not found');
+        }
+        page = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
+      }
+      else if (pageId != null) { // prioritized
         page = await Page.findByIdAndViewer(pageId, user);
       }
       else if (!findAll) {
-        page = await Page.findByPathAndViewer(path, user, null, true);
+        page = await Page.findByPathAndViewer(path, user, null, true, false);
       }
       else {
-        pages = await Page.findByPathAndViewer(path, user, null, false);
+        pages = await Page.findByPathAndViewer(path, user, null, false, includeEmpty);
       }
     }
     catch (err) {
@@ -567,7 +510,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/grant-data', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
+  router.get('/grant-data', loginRequiredStrictly, validator.getGrantData, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
     const Page = mongoose.model<IPage, PageModel>('Page');
@@ -585,7 +528,8 @@ module.exports = (crowi) => {
     } = page;
     let isGrantNormalized = false;
     try {
-      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroups, false, false);
+      const grantedUsersId = grantedUsers.map(ref => getIdForRef(ref));
+      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsersId, grantedGroups, false, false);
     }
     catch (err) {
       logger.error('Error occurred while processing isGrantNormalized.', err);
@@ -608,7 +552,7 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
-    const parentPage = await Page.findByIdAndViewer(page.parent, req.user, null, false);
+    const parentPage = await Page.findByIdAndViewer(getIdForRef(page.parent), req.user, null, false);
 
     // user isn't allowed to see parent's grant
     if (parentPage == null) {
@@ -634,6 +578,40 @@ module.exports = (crowi) => {
 
     return res.apiv3({ isGrantNormalized, grantData });
   });
+
+  // Check if non user related groups are granted page access.
+  // If specified page does not exist, check the closest ancestor.
+  router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator,
+    async(req, res: ApiV3Response) => {
+      const { user } = req;
+      const path = normalizePath(req.query.path);
+      const pageGrantService = crowi.pageGrantService as IPageGrantService;
+      try {
+        const page = await Page.findByPath(path, true) ?? await Page.findNonEmptyClosestAncestor(path);
+        if (page == null) {
+          // 'page' should always be non empty, since every page stems back to root page.
+          // If it is empty, there is a problem with the server logic.
+          return res.apiv3Err(new ErrorV3('No page on the page tree could be retrived.', 'page_could_not_be_retrieved'), 500);
+        }
+
+        const userRelatedGroups = await pageGrantService.getUserRelatedGroups(user);
+        const isUserGrantedPageAccess = await pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups, true);
+        if (!isUserGrantedPageAccess) {
+          return res.apiv3Err(new ErrorV3('Cannot access page or ancestor.', 'cannot_access_page'), 403);
+        }
+
+        if (page.grant !== PageGrant.GRANT_USER_GROUP) {
+          return res.apiv3({ isNonUserRelatedGroupsGranted: false });
+        }
+
+        const nonUserRelatedGrantedGroups = await pageGrantService.getNonUserRelatedGrantedGroups(page, user);
+        return res.apiv3({ isNonUserRelatedGroupsGranted: nonUserRelatedGrantedGroups.length > 0 });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
@@ -688,23 +666,26 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /pages/export:
+  *    /page/export:
   *      get:
-  *        tags: [Export]
+  *        tags: [Page]
   *        description: return page's markdown
   *        responses:
   *          200:
   *            description: Return page's markdown
   */
   router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
-    const { pageId } = req.params;
+    const pageId: string = req.params.pageId;
     const { format, revisionId = null } = req.query;
     let revision;
     let pagePath;
 
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+
+    let page: HydratedDocument<PageDocument> | null;
+
     try {
-      const Page = crowi.model('Page');
-      const page = await Page.findByIdAndViewer(pageId, req.user);
+      page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
         const isPageExist = await Page.count({ _id: pageId }) > 0;
@@ -714,10 +695,23 @@ module.exports = (crowi) => {
         }
         return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
       }
+    }
+    catch (err) {
+      logger.error('Failed to get page data', err);
+      return res.apiv3Err(err, 500);
+    }
 
-      const revisionIdForFind = revisionId || page.revision;
+    // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+    try {
+      await normalizeLatestRevisionIfBroken(pageId);
+    }
+    catch (err) {
+      logger.error('Error occurred in normalizing the latest revision');
+    }
 
-      const Revision = crowi.model('Revision');
+    try {
+      const revisionIdForFind = revisionId ?? page.revision;
+
       revision = await Revision.findById(revisionIdForFind);
       pagePath = page.path;
 
@@ -727,7 +721,7 @@ module.exports = (crowi) => {
       }
     }
     catch (err) {
-      logger.error('Failed to get page data', err);
+      logger.error('Failed to get revision data', err);
       return res.apiv3Err(err, 500);
     }
 
@@ -910,6 +904,8 @@ module.exports = (crowi) => {
   router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
 
   router.get('/:pageId/yjs-data', getYjsDataHandlerFactory(crowi));
+
+  router.put('/:pageId/sync-latest-revision-body-to-yjs-draft', syncLatestRevisionBodyToYjsDraftHandlerFactory(crowi));
 
   return router;
 };

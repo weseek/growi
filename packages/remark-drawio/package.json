@@ -1,8 +1,9 @@
 {
   "name": "@growi/remark-drawio",
-  "version": "7.0.5-RC.0",
-  "description": "remark plugin to draw diagrams with draw.io (diagrams.net)",
+  "version": "1.0.0",
+  "description": "Remark plugin to draw diagrams with draw.io (diagrams.net)",
   "license": "MIT",
+  "private": "true",
   "keywords": [
     "unified",
     "remark",
@@ -23,21 +24,23 @@
     "build": "vite build",
     "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
-    "watch": "yarn dev -w --emptyOutDir=false",
-    "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
-    "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
-    "lint:typecheck": "tsc",
-    "lint": "run-p lint:*",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "watch": "pnpm run dev -w --emptyOutDir=false",
+    "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
+    "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
+    "lint:typecheck": "vue-tsc --noEmit",
+    "lint": "run-p lint:*"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@types/hast": "^3.0.4",
+    "@types/mdast": "^4.0.4",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
     "eslint-plugin-regex": "^1.8.0",
-    "hast-util-sanitize": "^4.1.0",
+    "hast-util-sanitize": "^5.0.1",
     "pako": "^2.1.0",
     "throttle-debounce": "^5.0.0",
-    "unified": "^10.1.2",
-    "unist-util-visit": "^4.0.0"
+    "unified": "^11.0.0",
+    "unist-util-visit": "^5.0.0"
   },
   "peerDependencies": {
     "react": "^18.2.0",

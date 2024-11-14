@@ -1,10 +1,15 @@
 /* eslint-disable no-use-before-define */
+import { omitInsecureAttributes } from '@growi/core/dist/models/serializers';
 import { pagePathUtils } from '@growi/core/dist/utils';
 
 import { i18n } from '^/config/next-i18next.config';
 
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
+
+import { aclService } from '../service/acl';
+import { configManager } from '../service/config-manager';
+import { getModelSafely } from '../util/mongoose-utils';
 
 import { Attachment } from './attachment';
 
@@ -15,13 +20,15 @@ const mongoose = require('mongoose');
 const mongoosePaginate = require('mongoose-paginate-v2');
 const uniqueValidator = require('mongoose-unique-validator');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
-
-const { omitInsecureAttributes } = require('./serializers/user-serializer');
-
 const logger = loggerFactory('growi:models:user');
 
-module.exports = function(crowi) {
+const factory = (crowi) => {
+
+  const userModelExists = getModelSafely('User');
+  if (userModelExists != null) {
+    return userModelExists;
+  }
+
   const STATUS_REGISTERED = 1;
   const STATUS_ACTIVE = 2;
   const STATUS_SUSPENDED = 3;
@@ -44,7 +51,7 @@ module.exports = function(crowi) {
   const userSchema = new mongoose.Schema({
     userId: String,
     image: String,
-    imageAttachment: { type: ObjectId, ref: 'Attachment' },
+    imageAttachment: { type: mongoose.Schema.Types.ObjectId, ref: 'Attachment' },
     imageUrlCached: String,
     isGravatarEnabled: { type: Boolean, default: false },
     isEmailPublished: { type: Boolean, default: true },
@@ -93,8 +100,6 @@ module.exports = function(crowi) {
 
   function decideUserStatusOnRegistration() {
     validateCrowi();
-
-    const { configManager, aclService } = crowi;
 
     const isInstalled = configManager.getConfig('crowi', 'app:installed');
     if (!isInstalled) {
@@ -273,7 +278,7 @@ module.exports = function(crowi) {
     this.name = name;
     this.username = username;
     this.status = STATUS_ACTIVE;
-    this.isEmailPublished = crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
+    this.isEmailPublished = configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
 
     this.save((err, userData) => {
       userEvent.emit('activated', userData);
@@ -366,7 +371,7 @@ module.exports = function(crowi) {
   userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
-    const whitelist = crowi.configManager.getConfig('crowi', 'security:registrationWhitelist');
+    const whitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
       return whitelist.some((allowedEmail) => {
@@ -444,7 +449,7 @@ module.exports = function(crowi) {
     if (apiToken == null) {
       return Promise.resolve(null);
     }
-    return this.findOne({ apiToken });
+    return this.findOne({ apiToken }).lean();
   };
 
   userSchema.statics.findUserByGoogleId = function(googleId, callback) {
@@ -475,8 +480,6 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.isUserCountExceedsUpperLimit = async function() {
-    const { configManager } = crowi;
-
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
 
     const activeUsers = await this.countActiveUsers();
@@ -560,8 +563,6 @@ module.exports = function(crowi) {
   };
 
   userSchema.statics.createUserByEmail = async function(email) {
-    const configManager = crowi.configManager;
-
     const User = this;
     const newUser = new User();
 
@@ -648,8 +649,6 @@ module.exports = function(crowi) {
     if (password != null) {
       newUser.setPassword(password);
     }
-
-    const configManager = crowi.configManager;
 
     // Default email show/hide is up to the administrator
     newUser.isEmailPublished = configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
@@ -786,3 +785,5 @@ module.exports = function(crowi) {
 
   return mongoose.model('User', userSchema);
 };
+
+export default factory;

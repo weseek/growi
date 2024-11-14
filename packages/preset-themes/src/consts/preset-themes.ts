@@ -1,4 +1,5 @@
-import { GrowiThemeMetadata, GrowiThemeSchemeType } from '../interfaces/growi-theme-metadata';
+import type { GrowiThemeMetadata } from '@growi/core';
+import { GrowiThemeSchemeType } from '@growi/core';
 
 const { BOTH, LIGHT, DARK } = GrowiThemeSchemeType;
 
@@ -6,7 +7,7 @@ export const PresetThemes = {
   DEFAULT: 'default',
   ANTARCTIC: 'antarctic',
   BLACKBOARD: 'blackboard',
-  // CHRISTMAS: 'christmas',
+  CHRISTMAS: 'christmas',
   FIRE_RED: 'fire-red',
   FUTURE: 'future',
   HALLOWEEN: 'halloween',
@@ -93,6 +94,16 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     lightIcon: '#53687E',
     darkIcon: '#869BB1',
     createBtn: '#3491CB',
+  }, {
+    name: PresetThemes.CHRISTMAS,
+    schemeType: BOTH,
+    lightBg: '#FFFFFF',
+    darkBg: '#001B30',
+    lightSidebar: '#EEE8C4',
+    darkSidebar: '#0C3811',
+    lightIcon: '#801218',
+    darkIcon: '#f0752b',
+    createBtn: '#AA1820',
   },
   // light only
   {
@@ -125,19 +136,7 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     lightIcon: '#51C2D3',
     darkIcon: '#204D54',
     createBtn: '#51C2D3',
-  },
-  //  {
-  //   name: PresetThemes.CHRISTMAS,
-  //   schemeType: LIGHT,
-  //   lightBg: '#212836',
-  //   darkBg: '#323D52',
-  //   lightSidebar: '#2E3E27',
-  //   darkSidebar: '#455D3B',
-  //   lightIcon: '#DC7870',
-  //   darkIcon: '#E7A59F',
-  //   createBtn: '#B90606',
-  // },
-  {
+  }, {
     name: PresetThemes.ANTARCTIC,
     schemeType: LIGHT,
     lightBg: '#FAFEFF',
@@ -147,8 +146,7 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     lightIcon: '#2631AF',
     darkIcon: '#131857',
     createBtn: '#303DDB',
-  },
-  {
+  }, {
     name: PresetThemes.SPRING,
     schemeType: LIGHT,
     lightBg: '#FFFFFF',

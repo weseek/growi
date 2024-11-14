@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 
-import { pagePathUtils } from '@growi/core/dist/utils';
 import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -10,20 +9,18 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-
-import InstallerForm from '../components/InstallerForm';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import {
-  useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
-} from '../stores/context';
+  useCsrfToken, useAppTitle, useSiteUrl, useConfidential, useGrowiCloudUri,
+} from '~/stores-universal/context';
 
 import type { CommonProps } from './utils/commons';
 import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './utils/commons';
 
 
-const DataTransferForm = dynamic(() => import('../components/DataTransferForm'), { ssr: false });
-const CustomNavAndContents = dynamic(() => import('../components/CustomNavigation/CustomNavAndContents'), { ssr: false });
-
-const { isTrashPage: _isTrashPage } = pagePathUtils;
+const InstallerForm = dynamic(() => import('~/client/components/InstallerForm'), { ssr: false });
+const DataTransferForm = dynamic(() => import('~/client/components/DataTransferForm'), { ssr: false });
+const CustomNavAndContents = dynamic(() => import('~/client/components/CustomNavigation/CustomNavAndContents'), { ssr: false });
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired, true);
@@ -31,7 +28,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 type Props = CommonProps & {
-
+  minPasswordLength: number,
   pageWithMetaStr: string,
 };
 
@@ -43,7 +40,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
     return {
       user_infomation: {
         Icon: () => <span className="material-symbols-outlined me-2">person</span>,
-        Content: InstallerForm,
+        Content: () => <InstallerForm minPasswordLength={props.minPasswordLength} />,
         i18n: t('installer.tab'),
       },
       external_accounts: {
@@ -53,13 +50,14 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
         i18n: tCommons('g2g_data_transfer.tab'),
       },
     };
-  }, [t, tCommons]);
+  }, [props.minPasswordLength, t, tCommons]);
 
   // commons
   useAppTitle(props.appTitle);
   useSiteUrl(props.siteUrl);
   useConfidential(props.confidential);
   useCsrfToken(props.csrfToken);
+  useGrowiCloudUri(props.growiCloudUri);
 
   const title = generateCustomTitle(props, t('installer.title'));
   const classNames: string[] = [];
@@ -76,6 +74,14 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   );
 };
 
+async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const { configManager } = crowi;
+
+  props.minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
 
@@ -88,6 +94,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = result.props as Props;
 
   await injectNextI18NextConfigurations(context, props, ['translation']);
+  injectServerConfigurations(context, props);
 
   return {
     props,

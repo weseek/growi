@@ -1,10 +1,14 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import express from 'express';
 import multer from 'multer';
 import autoReap from 'multer-autoreap';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
-import { Attachment } from '~/server/models';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { Attachment } from '~/server/models/attachment';
+import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -14,22 +18,11 @@ import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
 
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
-const express = require('express');
 
 const router = express.Router();
 const {
   query, param, body,
 } = require('express-validator');
-
-const { serializePageSecurely } = require('../../models/serializers/page-serializer');
-const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-
-/**
- * @swagger
- *  tags:
- *    name: Attachment
- */
 
 
 /**
@@ -90,7 +83,6 @@ const { serializeUserSecurely } = require('../../models/serializers/user-seriali
  */
 
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const Page = crowi.model('Page');
@@ -232,7 +224,7 @@ module.exports = (crowi) => {
    *
    *    /attachment:
    *      post:
-   *        tags: [Attachment, CrowiCompatibles]
+   *        tags: [Attachment]
    *        operationId: addAttachment
    *        summary: /attachment
    *        description: Add attachment to the page

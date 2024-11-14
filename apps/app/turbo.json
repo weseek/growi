@@ -1,61 +1,88 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "extends": ["//"],
-  "pipeline": {
+  "tasks": {
 
-    "styles-prebuilt": {
+    "pre:styles": {
       "dependsOn": ["@growi/ui#build"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
+        "vite.styles-prebuilt.config.ts",
         "src/styles/**/*.scss",
         "../../packages/core/scss/**"
       ],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "build": {
-      "dependsOn": ["^build", "styles-prebuilt"],
+      "dependsOn": ["^build", "pre:styles"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "outputMode": "new-only"
+      "inputs": [
+        "next.config.js",
+        "config/**",
+        "public/**",
+        "resource/**",
+        "src/**",
+        "tsconfig*.json"
+      ],
+      "outputLogs": "new-only"
     },
 
     "dev:migrate": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["tmp/cache/migration-status.out"],
       "inputs": ["src/migrations/*.js"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
-    "dev:styles-prebuilt": {
+    "dev:pre:styles": {
       "dependsOn": ["@growi/ui#dev"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
+        "vite.styles-prebuilt.config.ts",
         "src/styles/**/*.scss",
         "!src/styles/prebuilt/**",
         "../../packages/core/scss/**"
       ],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "dev": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles"],
       "cache": false,
       "persistent": true
     },
-    "dev:ci": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
+
+    "launch-dev:ci": {
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles"],
       "cache": false
     },
 
     "lint": {
-      "dependsOn": ["^dev", "dev:styles-prebuilt"]
+      "dependsOn": ["^dev", "dev:pre:styles"]
     },
 
     "test": {
       "dependsOn": ["^dev"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
 
-    "version": {
+    "version:patch": {
       "cache": false,
-      "dependsOn": ["^version", "//#version"]
+      "dependsOn": ["//#version:patch"]
+    },
+    "version:prerelease": {
+      "cache": false,
+      "dependsOn": ["//#version:prerelease"]
+    },
+    "version:prepatch": {
+      "cache": false,
+      "dependsOn": ["//#version:prepatch"]
+    },
+    "version:preminor": {
+      "cache": false,
+      "dependsOn": ["//#version:preminor"]
+    },
+    "version:premajor": {
+      "cache": false,
+      "dependsOn": ["//#version:premajor"]
     }
 
   }

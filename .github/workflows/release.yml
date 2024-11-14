@@ -22,26 +22,25 @@ jobs:
       with:
         ref: ${{ github.event.pull_request.base.ref }}
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
-        yarn global add turbo
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add turbo --global
+        pnpm install --frozen-lockfile
 
     - name: Bump versions
       run: |
-        turbo run version --filter=@growi/app -- --patch
-        yarn upgrade --scope=@growi
+        turbo run version:patch --filter=@growi/app
         sh ./apps/app/bin/github-actions/update-readme.sh
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.2.0
+      uses: myrotvorets/info-from-package-json-action@2.0.1
       id: package-json
 
     - name: Update Changelog
@@ -58,13 +57,13 @@ jobs:
         RELEASED_VERSION: ${{ steps.package-json.outputs.packageVersion }}
 
     - name: Commit, Tag and Push
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         branch: ${{ github.event.pull_request.base.ref }}
         commit_message: Release v${{ steps.package-json.outputs.packageVersion }}
         tagging_message: v${{ steps.package-json.outputs.packageVersion }}
 
-    - uses: softprops/action-gh-release@v1
+    - uses: softprops/action-gh-release@v2
       with:
         body: ${{ github.event.pull_request.body }}
         tag_name: v${{ steps.package-json.outputs.packageVersion }}
@@ -87,7 +86,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.2.0
+      uses: myrotvorets/info-from-package-json-action@2.0.1
       id: package-json
 
     - name: Docker meta for docker.io
@@ -103,7 +102,7 @@ jobs:
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
 
 
-  build-image:
+  build-app-image:
     needs: create-github-release
 
     uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@master
@@ -115,8 +114,8 @@ jobs:
       AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
 
 
-  publish-image:
-    needs: [determine-tags, build-image]
+  publish-app-image:
+    needs: [determine-tags, build-app-image]
 
     uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
     with:
@@ -129,7 +128,7 @@ jobs:
 
 
   post-publish:
-    needs: [create-github-release, publish-image]
+    needs: [create-github-release, publish-app-image]
     runs-on: ubuntu-latest
 
     steps:
@@ -154,7 +153,7 @@ jobs:
 
 
   create-pr-for-next-rc:
-    needs: [create-github-release, publish-image]
+    needs: [create-github-release, publish-app-image]
     runs-on: ubuntu-latest
 
     steps:
@@ -162,26 +161,25 @@ jobs:
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
-        yarn global add turbo
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm add turbo --global
+        pnpm install --frozen-lockfile
 
     - name: Bump versions for next RC
       run: |
-        turbo run version --filter=@growi/app -- --prepatch
-        turbo run version --filter=@growi/slackbot-proxy -- --prepatch
-        yarn upgrade --scope=@growi
+        turbo run version:prepatch --filter=@growi/app
+        turbo run version:prepatch --filter=@growi/slackbot-proxy
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.2.0
+      uses: myrotvorets/info-from-package-json-action@2.0.1
       id: package-json
 
     - name: Commit

@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-// eslint-disable-next-line import/no-named-as-default
-import Config from '~/server/models/config';
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { Config } from '~/server/models/config';
+import userModelFactory from '~/server/models/user';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:normalize-locale-id');
@@ -10,9 +10,9 @@ const logger = loggerFactory('growi:migrate:normalize-locale-id');
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
-    const User = getModelSafely('User') || require('~/server/models/user')();
+    const User = userModelFactory();
 
     await Promise.all([
       // update en-US -> en_US

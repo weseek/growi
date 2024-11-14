@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@1.2.0
+      uses: myrotvorets/info-from-package-json-action@2.0.1
       id: package-json
 
     - name: Docker meta for docker.io
@@ -65,16 +65,3 @@ jobs:
       tag-temporary: latest-rc
     secrets:
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-
-  publish-image-rc-ghcr:
-    needs: [determine-tags, build-image-rc]
-
-    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
-    with:
-      tags: ${{ needs.determine-tags.outputs.TAGS_GHCR }}
-      registry: ghcr.io
-      image-name: weseek/growi
-      tag-temporary: latest-rc
-    secrets:
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
-

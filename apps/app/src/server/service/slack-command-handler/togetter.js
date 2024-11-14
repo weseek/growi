@@ -2,15 +2,15 @@ import {
   inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider,
 } from '@growi/slack/dist/utils/block-kit-builder';
 import { respond, deleteOriginal } from '@growi/slack/dist/utils/response-url';
+import { format, formatDate } from 'date-fns/format';
+import { parse } from 'date-fns/parse';
 
+import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:service:SlackBotService:togetter');
 
-const { parse, format } = require('date-fns');
-
-const { SlackCommandHandlerError } = require('../../models/vo/slack-command-handler-error');
 
 module.exports = (crowi) => {
   const CreatePageService = require('./create-page-service');
@@ -163,7 +163,7 @@ module.exports = (crowi) => {
         // include header
         else {
           const ts = (parseInt(message.ts) - grwTzoffset) * 1000;
-          const time = format(new Date(ts), 'h:mm a');
+          const time = formatDate(new Date(ts), 'h:mm a');
           cleanedContents.push(`${message.user}  ${time}\n${message.text}\n`);
           lastMessage = message;
         }

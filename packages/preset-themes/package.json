@@ -1,8 +1,9 @@
 {
   "name": "@growi/preset-themes",
+  "version": "1.0.0",
   "description": "GROWI preset themes",
-  "version": "7.0.5-RC.0",
   "license": "MIT",
+  "private": "true",
   "main": "dist/libs/preset-themes.umd.js",
   "module": "dist/libs/preset-themes.mjs",
   "types": "dist/libs/index.d.ts",
@@ -15,24 +16,26 @@
     "build:themes": "vite -c vite.themes.config.ts build",
     "clean": "shx rm -rf dist",
     "dev": "run-p dev:*",
-    "dev:libs": "yarn build:libs --mode dev",
-    "dev:themes": "yarn build:themes --mode dev",
+    "dev:libs": "pnpm run build:libs --mode dev",
+    "dev:themes": "pnpm run build:themes --mode dev",
     "watch": "run-p watch:*",
-    "watch:libs": "yarn dev:libs -w --emptyOutDir=false",
-    "watch:themes": "yarn dev:themes -w --emptyOutDir=false",
-    "lint:eslint": "yarn eslint \"**/*.{js,jsx,ts,tsx}\"",
-    "lint:styles": "stylelint src/**/*.scss",
-    "lint:typecheck": "tsc",
+    "watch:libs": "pnpm run dev:libs -w --emptyOutDir=false",
+    "watch:themes": "pnpm run dev:themes -w --emptyOutDir=false",
+    "lint:eslint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
+    "lint:styles": "stylelint \"src/**/*.scss\"",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "run-p lint:*",
-    "preview": "vite preview",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "preview": "vite preview"
   },
   "dependencies": {},
   "devDependencies": {
-    "bootstrap": "^5.3.1",
+    "@growi/core": "workspace:^",
+    "@growi/core-styles": "workspace:^",
+    "bootstrap": "=5.3.2",
     "sass": "^1.55.0"
   },
   "peerDependencies": {
+    "@popperjs/core": "^2.11.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

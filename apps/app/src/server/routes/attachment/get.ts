@@ -1,5 +1,5 @@
 import {
-  getIdForRef, type IPage, type IUser,
+  getIdStringForRef, type IPage, type IUser,
 } from '@growi/core';
 import express from 'express';
 import type {
@@ -17,7 +17,7 @@ import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
-import { Attachment, type IAttachmentDocument } from '../../models';
+import { Attachment, type IAttachmentDocument } from '../../models/attachment';
 import ApiResponse from '../../util/apiResponse';
 
 
@@ -59,7 +59,7 @@ export const retrieveAttachmentFromIdParam = async(
   // check viewer has permission
   if (user != null && attachment.page != null) {
     const Page = mongoose.model<IPage, PageModel>('Page');
-    const isAccessible = await Page.isAccessiblePageByViewer(getIdForRef(attachment.page), user);
+    const isAccessible = await Page.isAccessiblePageByViewer(getIdStringForRef(attachment.page), user);
     if (!isAccessible) {
       res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'. This attachment might belong to other pages.`));
       return;

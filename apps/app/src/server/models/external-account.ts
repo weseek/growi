@@ -1,18 +1,19 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
-import type { IExternalAccount, IExternalAccountHasId, IUserHasId } from '@growi/core';
-import { Schema, Model, Document } from 'mongoose';
+import type { IUser } from '@growi/core/dist/interfaces';
+import { type IExternalAccount, type IExternalAccountHasId, type IUserHasId } from '@growi/core/dist/interfaces';
+import type { Model, Document, HydratedDocument } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
+import uniqueValidator from 'mongoose-unique-validator';
 
 import { NullUsernameToBeRegisteredError } from '~/server/models/errors';
+import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-const debug = require('debug')('growi:models:external-account');
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+const logger = loggerFactory('growi:models:external-account');
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
 
 export interface ExternalAccountDocument extends IExternalAccount, Document {}
 
@@ -23,7 +24,7 @@ export interface ExternalAccountModel extends Model<ExternalAccountDocument> {
 const schema = new Schema<ExternalAccountDocument, ExternalAccountModel>({
   providerType: { type: String, required: true },
   accountId: { type: String, required: true },
-  user: { type: ObjectId, ref: 'User', required: true },
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
 }, {
   timestamps: { createdAt: true, updatedAt: false },
 });
@@ -75,7 +76,7 @@ schema.statics.findOrRegister = function(
     .then((account) => {
     // ExternalAccount is found
       if (account != null) {
-        debug(`ExternalAccount '${accountId}' is found `, account);
+        logger.debug(`ExternalAccount '${accountId}' is found `, account);
         return account;
       }
 
@@ -83,9 +84,9 @@ schema.statics.findOrRegister = function(
         throw new NullUsernameToBeRegisteredError('username_should_not_be_null');
       }
 
-      const User = mongoose.model('User');
+      const User = mongoose.model<HydratedDocument<IUser>, Model<IUser> & { createUser, STATUS_ACTIVE }>('User');
 
-      let promise = User.findOne({ username: usernameToBeRegistered });
+      let promise = User.findOne({ username: usernameToBeRegistered }).exec();
       if (isSameUsernameTreatedAsIdenticalUser && isSameEmailTreatedAsIdenticalUser) {
         promise = promise
           .then((user) => {
@@ -94,7 +95,7 @@ schema.statics.findOrRegister = function(
           });
       }
       else if (isSameEmailTreatedAsIdenticalUser) {
-        promise = User.findOne({ email: mailToBeRegistered });
+        promise = User.findOne({ email: mailToBeRegistered }).exec();
       }
 
       return promise
@@ -109,7 +110,7 @@ schema.statics.findOrRegister = function(
           }
 
           // create a new User with STATUS_ACTIVE
-          debug(`ExternalAccount '${accountId}' is not found, it is going to be registered.`);
+          logger.debug(`ExternalAccount '${accountId}' is not found, it is going to be registered.`);
           return User.createUser(nameToBeRegistered, usernameToBeRegistered, mailToBeRegistered, undefined, undefined, User.STATUS_ACTIVE);
         })
         .then((newUser) => {

@@ -1,70 +1,28 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import express from 'express';
+import { connection } from 'mongoose';
 
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { Revision } from '~/server/models/revision';
+import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:pages');
 
-const express = require('express');
 const { query, param } = require('express-validator');
-
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 const router = express.Router();
 
-/**
- * @swagger
- *  tags:
- *    name: Revisions
- */
+const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549';
 
-/**
- * @swagger
- *
- *  components:
- *    schemas:
- *      Revision:
- *        description: Revision
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: revision ID
- *            example: 5e0734e472560e001761fa68
- *          __v:
- *            type: number
- *            description: DB record version
- *            example: 0
- *          author:
- *            $ref: '#/components/schemas/User/properties/_id'
- *          body:
- *            type: string
- *            description: content body
- *            example: |
- *              # test
- *
- *              test
- *          format:
- *            type: string
- *            description: format
- *            example: markdown
- *          path:
- *            type: string
- *            description: path
- *            example: /user/alice/test
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- */
 module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const {
-    Revision,
     Page,
     User,
   } = crowi.models;
@@ -110,6 +68,23 @@ module.exports = (crowi) => {
    *            description: Return revisions belong to page
    *
    */
+  let cachedAppliedAt = null;
+
+  const getAppliedAtOfTheMigrationFile = async() => {
+
+    if (cachedAppliedAt != null) {
+      return cachedAppliedAt;
+    }
+
+    const migrationCollection = connection.collection('migrations');
+    const migration = await migrationCollection.findOne({ fileName: { $regex: `^${MIGRATION_FILE_NAME}` } });
+    const appliedAt = migration.appliedAt;
+
+    cachedAppliedAt = appliedAt;
+
+    return appliedAt;
+  };
+
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
     const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
@@ -121,8 +96,19 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
     }
 
+    // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
+    try {
+      await normalizeLatestRevisionIfBroken(pageId);
+    }
+    catch (err) {
+      logger.error('Error occurred in normalizing the latest revision');
+    }
+
     try {
       const page = await Page.findOne({ _id: pageId });
+
+      const appliedAt = await getAppliedAtOfTheMigrationFile();
+
       const queryOpts = {
         offset,
         sort: { createdAt: -1 },
@@ -135,8 +121,14 @@ module.exports = (crowi) => {
         queryOpts.pagination = true;
       }
 
+      const queryCondition = {
+        pageId: page._id,
+        createdAt: { $gt: appliedAt },
+      };
+
+      // https://redmine.weseek.co.jp/issues/151652
       const paginateResult = await Revision.paginate(
-        { pageId: page._id },
+        queryCondition,
         queryOpts,
       );
 

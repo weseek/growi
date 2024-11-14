@@ -1,32 +1,30 @@
-import { isClient } from '@growi/core/dist/utils';
-import {
+import { useEffect, useMemo } from 'react';
+
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Container, Provider } from 'unstated';
+import type { Container } from 'unstated';
+import { Provider } from 'unstated';
 
-import AdminHomeContainer from '~/client/services/AdminHomeContainer';
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
 import {
   useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-const AdminHome = dynamic(() => import('~/components/Admin/AdminHome/AdminHome'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const AdminHome = dynamic(() => import('~/client/components/Admin/AdminHome/AdminHome'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 type Props = CommonProps & {
-  nodeVersion: string,
-  npmVersion: string,
-  yarnVersion: string,
-  installedPlugins: any,
   growiCloudUri: string,
   growiAppIdForGrowiCloud: number,
 };
@@ -41,13 +39,15 @@ const AdminHomepage: NextPage<Props> = (props) => {
 
   const title = generateCustomTitle(props, t('wiki_management_homepage'));
 
-  const injectableContainers: Container<any>[] = [];
+  const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
-  if (isClient()) {
-    const adminHomeContainer = new AdminHomeContainer();
-
-    injectableContainers.push(adminHomeContainer);
-  }
+  useEffect(() => {
+    (async() => {
+      const AdminHomeContainer = (await import('~/client/services/AdminHomeContainer')).default;
+      const adminHomeContainer = new AdminHomeContainer();
+      injectableContainers.push(adminHomeContainer);
+    })();
+  }, [injectableContainers]);
 
   if (props.isAccessDeniedForNonAdminUser) {
     return <ForbiddenPage />;
@@ -60,12 +60,7 @@ const AdminHomepage: NextPage<Props> = (props) => {
         <Head>
           <title>{title}</title>
         </Head>
-        <AdminHome
-          nodeVersion={props.nodeVersion}
-          npmVersion={props.npmVersion}
-          yarnVersion={props.yarnVersion}
-          installedPlugins={props.installedPlugins}
-        />
+        <AdminHome />
       </AdminLayout>
     </Provider>
   );
@@ -76,9 +71,6 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
 
-  props.nodeVersion = crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : null;
-  props.npmVersion = crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : null;
-  props.yarnVersion = crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : null;
   props.growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
   props.growiAppIdForGrowiCloud = await crowi.configManager.getConfig('crowi', 'app:growiAppIdForCloud');
 };

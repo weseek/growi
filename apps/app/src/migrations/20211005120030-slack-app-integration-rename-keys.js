@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
 
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import slackAppIntegrationFactory from '~/server/models/slack-app-integration';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
-
 
 const logger = loggerFactory('growi:migrate:slack-app-integration-rename-keys');
 
 module.exports = {
   async up(db) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
-    const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
+    const SlackAppIntegration = slackAppIntegrationFactory();
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 
@@ -45,9 +45,9 @@ module.exports = {
   },
 
   async down(db, next) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
-    const SlackAppIntegration = getModelSafely('SlackAppIntegration') || require('~/server/models/slack-app-integration')();
+    const SlackAppIntegration = slackAppIntegrationFactory();
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 

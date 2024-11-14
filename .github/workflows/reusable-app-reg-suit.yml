@@ -54,36 +54,16 @@ jobs:
         ref: ${{ inputs.checkout-ref }}
         fetch-depth: 0
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Install turbo
-      run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune --scope=@growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-7.x-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-7.x-${{ runner.OS }}-node${{ inputs.node-version }}-
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm install --frozen-lockfile
 
     - name: Download screenshots taken by cypress
       uses: actions/download-artifact@v4
@@ -95,7 +75,7 @@ jobs:
     - name: Run reg-suit
       working-directory: ./apps/app
       run: |
-        yarn reg:run
+        pnpm run reg:run
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master

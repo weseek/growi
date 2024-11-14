@@ -1,7 +1,9 @@
 {
   "name": "@growi/slack",
-  "version": "7.0.5-RC.0",
+  "version": "1.0.0",
+  "description": "Slack integration libraries for GROWI",
   "license": "MIT",
+  "private": "true",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -40,12 +42,11 @@
     "build": "vite build",
     "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
-    "watch": "yarn dev -w --emptyOutDir=false",
-    "lint:js": "yarn eslint **/*.{js,ts}",
-    "lint:typecheck": "tsc",
+    "watch": "pnpm run dev -w --emptyOutDir=false",
+    "lint:js": "eslint **/*.{js,ts}",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "npm-run-all -p lint:*",
-    "test": "vitest run --coverage",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "test": "vitest run --coverage"
   },
   "dependencies": {
     "@slack/oauth": "^2.0.1",
@@ -65,8 +66,9 @@
     "url-join": "^4.0.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.11",
-    "eslint-plugin-regex": "^1.8.0",
-    "tsc-alias": "^1.2.9"
+    "@slack/types": "^2.14.0",
+    "@types/express": "^4",
+    "@types/qs": "^6.9.16",
+    "eslint-plugin-regex": "^1.8.0"
   }
 }

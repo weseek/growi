@@ -48,7 +48,7 @@ module.exports = {
         'newlines-between': 'always',
       },
     ],
-    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/consistent-type-imports': 'warn',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     indent: [
       'error',

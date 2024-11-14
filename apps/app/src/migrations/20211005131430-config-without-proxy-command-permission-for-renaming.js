@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 // eslint-disable-next-line import/no-named-as-default
-import Config from '~/server/models/config';
+import { Config } from '~/server/models/config';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -10,7 +10,7 @@ const logger = loggerFactory('growi:migrate:slack-app-integration-rename-keys');
 
 module.exports = {
   async up(db) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isExist = (await Config.count({ key: 'slackbot:withoutProxy:commandPermission' })) > 0;
     if (!isExist) return;
@@ -53,7 +53,7 @@ module.exports = {
   },
 
   async down(db, next) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isExist = (await Config.count({ key: 'slackbot:withoutProxy:commandPermission' })) > 0;
     if (!isExist) return next();

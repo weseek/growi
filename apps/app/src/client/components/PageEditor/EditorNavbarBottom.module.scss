@@ -1,0 +1,29 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '~/styles/variables' as var;
+@use '~/styles/mixins';
+
+@include mixins.at-editing() {
+  .grw-editor-navbar-bottom :global {
+    .grw-grant-selector {
+      max-width: 250px;
+      .material-symbols-outlined  {
+        padding-bottom: 2px;
+        font-size: 19px;
+      }
+    }
+    .btn-submit {
+      width: 100px;
+    }
+
+    .btn-expand {
+      // rotate icon
+      i {
+        display: inline-block;
+        transition: transform 200ms;
+      }
+      &.expand i {
+        transform: rotate(-180deg);
+      }
+    }
+  }
+}

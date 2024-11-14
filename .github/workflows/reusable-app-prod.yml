@@ -6,11 +6,18 @@ on:
       node-version:
         required: true
         type: string
-      skip-cypress:
+      skip-e2e-test:
         type: boolean
-      cypress-report-artifact-name-prefix:
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+  workflow_dispatch:
+    inputs:
+      node-version:
+        required: true
         type: string
-      cypress-config-video:
+        default: 20.x
+      skip-e2e-test:
         type: boolean
         default: false
     secrets:
@@ -27,65 +34,51 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        # retrieve local font files
-        lfs: true
+
+    - uses: pnpm/action-setup@v4
 
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache: 'pnpm'
 
     - name: Install turbo
       run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune --scope=@growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-app-7.x-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-7.x-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+        pnpm add turbo --global
 
     - name: Install dependencies
       run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm install --frozen-lockfile
 
-    - name: Restore dist
+    - name: Cache/Restore dist
       uses: actions/cache@v4
       with:
         path: |
-          node_modules/.cache/turbo
           **/.turbo
           **/dist
+          **/node_modules/.cache/turbo
           ${{ github.workspace }}/apps/app/.next
-        key: dist-app-7.x-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ github.sha }}
+        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.sha }}
         restore-keys: |
-          dist-app-7.x-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
-          dist-app-7.x-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Build
       working-directory: ./apps/app
       run: |
-        turbo run build
+        turbo run build --env-mode=loose
       env:
-        ANALYZE_BUNDLE_SIZE: 1
+        ANALYZE: 1
+
+    - name: Assembling all dependencies
+      run: |
+        rm -rf out
+        pnpm deploy out --prod --filter @growi/app
+        rm -rf apps/app/node_modules && mv out/node_modules apps/app/node_modules
 
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -zcf production.tar.gz \
+        tar -zcf production.tar.gz --exclude ./apps/app/.next/cache \
           package.json \
           apps/app/.next \
           apps/app/config \
@@ -94,9 +87,8 @@ jobs:
           apps/app/resource \
           apps/app/tmp \
           apps/app/.env.production* \
-          apps/app/package.json \
-          packages/*/dist \
-          packages/*/package.json
+          apps/app/node_modules \
+          apps/app/package.json
         echo "file=production.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
@@ -110,8 +102,7 @@ jobs:
       with:
         name: Bundle Analyzing Report (node${{ inputs.node-version }})
         path: |
-          apps/app/.next/analyze/client.html
-          apps/app/.next/analyze/server.html
+          apps/app/.next/analyze
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -143,50 +134,27 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Install turbo
-      run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune --scope=@growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-app-7.x-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-7.x-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
-
-    - name: Install dependencies
-      run: |
-        yarn --production
+        cache: 'pnpm'
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Extract procution files artifact
+    - name: Extract procution files
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
-    - name: yarn server:ci
+    - name: pnpm run server:ci
       working-directory: ./apps/app
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
-        yarn server:ci
+        pnpm run server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -202,19 +170,24 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-
-  run-cypress:
+  run-playwright:
     needs: [build-prod]
 
-    if: ${{ !inputs.skip-cypress }}
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (!inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/'))
 
     runs-on: ubuntu-latest
+    container:
+      # Match the Playwright version
+      # https://github.com/microsoft/playwright/issues/20010
+      image: mcr.microsoft.com/playwright:v1.46.0-jammy
 
     strategy:
       fail-fast: false
       matrix:
-        # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: ['10', '20', '21', '22', '23', '30', '40', '50', '60']
+        browser: [chromium, firefox, webkit]
+        shard: [1/2, 2/2]
 
     services:
       mongodb:
@@ -231,111 +204,122 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install fonts
-      run: sudo apt install fonts-noto
+    - uses: pnpm/action-setup@v4
 
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Install turbo
-      run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune --scope=@growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-app-7.x-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-7.x-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
-
-    - name: Cache/Restore Cypress files
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/Cypress
-        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
-        yarn cypress install
+        pnpm install --frozen-lockfile
+
+    - name: Install Playwright browsers
+      run: |
+        pnpm playwright install --with-deps ${{ matrix.browser }}
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Extract procution files artifact
+    - name: Extract procution files
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
-
-    - name: Determine spec expression
-      id: determine-spec-exp
-      run: |
-        SPEC=`node bin/github-actions/generate-cypress-spec-arg.mjs --prefix="test/cypress/e2e/" --suffix="-*/*.cy.{ts,tsx}" "${{ matrix.spec-group }}"`
-        echo "value=$SPEC" >> $GITHUB_OUTPUT
 
     - name: Copy dotenv file for ci
       working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-ci >> .env.production.local
 
+    - name: Playwright Run (--project=chromium/installer)
+      if: ${{ matrix.browser == 'chromium' }}
+      working-directory: ./apps/app
+      run: |
+        pnpm playwright test --project=chromium/installer
+      env:
+        DEBUG: pw:api
+        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+        MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
     - name: Copy dotenv file for automatic installation
-      if: ${{ matrix.spec-group != '10' }}
       working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-auto-install >> .env.production.local
 
+    - name: Playwright Run
+      working-directory: ./apps/app
+      run: |
+        pnpm playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
+      env:
+        DEBUG: pw:api
+        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+        MONGO_URI: mongodb://mongodb:27017/growi-playwright
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
     - name: Copy dotenv file for automatic installation with allowing guest mode
-      if: ${{ matrix.spec-group == '21' }}
       working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
 
-    - name: Cypress Run
-      uses: cypress-io/github-action@v6
-      with:
-        browser: chromium
-        working-directory: ./apps/app
-        spec: '${{ steps.determine-spec-exp.outputs.value }}'
-        install: false
-        start: yarn server
-        wait-on: 'http://localhost:3000'
-        config: video=${{ inputs.cypress-config-video }}
+    - name: Playwright Run (--project=${browser}/guest-mode)
+      working-directory: ./apps/app
+      run: |
+        pnpm playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
       env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-vrt
+        DEBUG: pw:api
+        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+        MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
-    - name: Upload results
+    - name: Upload test results
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.cypress-report-artifact-name-prefix }}${{ matrix.spec-group }}
-        path: |
-          apps/app/test/cypress/screenshots
-          apps/app/test/cypress/videos
+        name: blob-report-${{ matrix.shard }}
+        path: blob-report
+        retention-days: 30
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
       if: failure()
       with:
         type: ${{ job.status }}
-        job_name: '*Node CI for growi - run-cypress (${{ inputs.node-version }})*'
+        job_name: '*Node CI for growi - run-playwright*'
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  report-playwright:
+    needs: [run-playwright]
+
+    if: always() && needs.run-playwright.result != 'skipped'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: pnpm/action-setup@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: |
+        pnpm install --frozen-lockfile
+
+    - name: Merge into HTML Report
+      run: pnpm playwright merge-reports --reporter html ./all-blob-reports
+
+    - name: Upload HTML report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report
+        path: playwright-report
+        retention-days: 30

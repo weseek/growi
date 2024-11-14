@@ -2,8 +2,6 @@
   "$schema": "http://json.schemastore.org/tsconfig",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "CommonJS",
-
     "jsx": "preserve",
     "resolveJsonModule": true,
     "types": [
@@ -14,7 +12,6 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-      "debug": ["./src/server/utils/logger/alias-for-debug"]
     },
 
     /* TODO: remove below flags for strict checking */
@@ -22,7 +19,15 @@
     "strictNullChecks": true,
     "strictBindCallApply": true,
     "noImplicitAny": false,
-    "noImplicitOverride": true
+    "noImplicitOverride": true,
+
+    // Note: To transform paths for both the output .js and .d.ts files, you need both of the below entries
+    "plugins": [
+      // Transform paths in output .js files
+      { "transform": "typescript-transform-paths" },
+      // Transform paths in output .d.ts files (Include this line if you output declarations files)
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ]
   },
   "include": [
     "next-env.d.ts",
@@ -31,6 +36,10 @@
   ],
   "ts-node": {
     "transpileOnly": true,
-    "swc": true
+    "swc": true,
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "Node"
+    }
   }
 }

@@ -1,14 +1,12 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { getImportService } from '~/server/service/import';
+import { generateOverwriteParams } from '~/server/service/import/overwrite-params';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
-
-import overwriteParamsAttachmentFilesChunks from './overwrite-params/attachmentFiles.chunks';
-import overwriteParamsPages from './overwrite-params/pages';
-import overwriteParamsRevisions from './overwrite-params/revisions';
-
 
 const logger = loggerFactory('growi:routes:apiv3:import'); // eslint-disable-line no-unused-vars
 
@@ -18,15 +16,21 @@ const express = require('express');
 const multer = require('multer');
 
 
-const GrowiArchiveImportOption = require('~/models/admin/growi-archive-import-option');
-
-
 const router = express.Router();
 
 /**
  * @swagger
- *  tags:
- *    name: Import
+ *
+ *  components:
+ *    schemas:
+ *      GrowiArchiveImportOption:
+ *        description: GrowiArchiveImportOption
+ *        type: object
+ *        properties:
+ *          mode:
+ *            description: Import mode
+ *            type: string
+ *            enum: [insert, upsert, flushAndInsert]
  */
 
 /**
@@ -51,28 +55,10 @@ const router = express.Router();
  *            description: whether the current importing job exists or not
  */
 
-/**
- * generate overwrite params with overwrite-params/* modules
- * @param {string} collectionName
- * @param {string} operatorUserId Operator user id
- * @param {GrowiArchiveImportOption} options GrowiArchiveImportOption instance
- */
-export const generateOverwriteParams = (collectionName, operatorUserId, options) => {
-  switch (collectionName) {
-    case 'pages':
-      return overwriteParamsPages(operatorUserId, options);
-    case 'revisions':
-      return overwriteParamsRevisions(operatorUserId, options);
-    case 'attachmentFiles.chunks':
-      return overwriteParamsAttachmentFilesChunks(operatorUserId, options);
-    default:
-      return {};
-  }
-};
-
 export default function route(crowi) {
-  const { growiBridgeService, importService, socketIoService } = crowi;
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
+  const { growiBridgeService, socketIoService } = crowi;
+  const importService = getImportService(crowi);
+
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
@@ -199,29 +185,27 @@ export default function route(crowi) {
    *                  type: array
    *                  items:
    *                    type: string
-   *                optionsMap:
+   *                options:
    *                  description: |
-   *                    the map object of importing option that have collection name as the key
+   *                    the array of importing option that have collection name as the key
    *                  additionalProperties:
-   *                    type: object
-   *                    properties:
-   *                      mode:
-   *                        description: Import mode
-   *                        type: string
-   *                        enum: [insert, upsert, flushAndInsert]
+   *                    type: array
+   *                    items:
+   *                      $ref: '#/components/schemas/GrowiArchiveImportOption'
    *      responses:
    *        200:
    *          description: Import process has requested
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
-    const { fileName, collections, optionsMap } = req.body;
+    const { fileName, collections, options } = req.body;
 
     // pages collection can only be imported by upsert if isV5Compatible is true
     const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     const isImportPagesCollection = collections.includes('pages');
     if (isV5Compatible && isImportPagesCollection) {
-      const option = new GrowiArchiveImportOption(null, optionsMap.pages);
+      /** @type {ImportOptionForPages} */
+      const option = options.find(opt => opt.collectionName === 'pages');
       if (option.mode !== 'upsert') {
         return res.apiv3Err(new ErrorV3('Upsert is only available for importing pages collection.', 'only_upsert_available'));
       }
@@ -278,14 +262,16 @@ export default function route(crowi) {
     const importSettingsMap = {};
     fileStatsToImport.forEach(({ fileName, collectionName }) => {
       // instanciate GrowiArchiveImportOption
-      const options = new GrowiArchiveImportOption(null, optionsMap[collectionName]);
+      /** @type {import('~/models/admin/growi-archive-import-option').GrowiArchiveImportOption} */
+      const option = options.find(opt => opt.collectionName === collectionName);
 
       // generate options
-      const importSettings = importService.generateImportSettings(options.mode);
-      importSettings.jsonFileName = fileName;
-
-      // generate overwrite params
-      importSettings.overwriteParams = generateOverwriteParams(collectionName, req.user._id, options);
+      /** @type {import('~/server/service/import').ImportSettings} */
+      const importSettings = {
+        mode: option.mode,
+        jsonFileName: fileName,
+        overwriteParams: generateOverwriteParams(collectionName, req.user._id, option),
+      };
 
       importSettingsMap[collectionName] = importSettings;
     });

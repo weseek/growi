@@ -9,7 +9,7 @@ import multer from 'multer';
 import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
-import { Attachment } from '~/server/models';
+import { Attachment } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -20,12 +20,6 @@ const logger = loggerFactory('growi:routes:apiv3:customize-setting');
 
 const router = express.Router();
 
-
-/**
- * @swagger
- *  tags:
- *    name: CustomizeSetting
- */
 
 /**
  * @swagger
@@ -272,7 +266,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.get('/theme', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/theme', loginRequiredStrictly, async(req, res) => {
 
     try {
       const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');

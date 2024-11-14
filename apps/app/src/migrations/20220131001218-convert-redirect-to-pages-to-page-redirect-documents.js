@@ -13,7 +13,7 @@ const BATCH_SIZE = 100;
 
 module.exports = {
   async up(db, client) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
     const pageCollection = await db.collection('pages');
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;
 
@@ -49,7 +49,7 @@ module.exports = {
   },
 
   async down(db, client) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
     const pageCollection = await db.collection('pages');
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;
 

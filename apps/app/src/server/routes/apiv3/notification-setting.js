@@ -1,7 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { GlobalNotificationSettingType } from '~/server/models';
+import { GlobalNotificationSettingType } from '~/server/models/GlobalNotificationSetting';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
@@ -40,12 +40,6 @@ const validator = {
     body('isNotificationForGroupPageEnabled').if(value => value != null).isBoolean(),
   ],
 };
-
-/**
- * @swagger
- *  tags:
- *    name: NotificationSetting
- */
 
 /**
  * @swagger

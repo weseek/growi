@@ -18,13 +18,14 @@ import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../crowi';
-import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
+
 
 import { generateSnapshot } from './in-app-notification/in-app-notification-utils';
 import { preNotifyService, type PreNotify } from './pre-notify';
+import { RoomPrefix, getRoomNameWithId } from './socket-io/helper';
 
 
-const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
+const { STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
 const logger = loggerFactory('growi:service:inAppNotification');
 
@@ -92,7 +93,7 @@ export default class InAppNotificationService {
         targetModel,
         target,
         action,
-        status: STATUS_UNREAD,
+        status: STATUS_UNOPENED,
         createdAt: now,
         snapshot,
         $addToSet: { activities: activityId },
@@ -146,14 +147,6 @@ export default class InAppNotificationService {
     }
   };
 
-  read = async function(user: Types.ObjectId): Promise<void> {
-    const query = { user, status: STATUS_UNREAD };
-    const parameters = { status: STATUS_UNOPENED };
-    await InAppNotification.updateMany(query, parameters);
-
-    return;
-  };
-
   open = async function(user: IUser & HasObjectId, id: Types.ObjectId): Promise<void> {
     const query = { _id: id, user: user._id };
     const parameters = { status: STATUS_OPENED };
@@ -172,7 +165,7 @@ export default class InAppNotificationService {
   };
 
   getUnreadCountByUser = async function(user: Types.ObjectId): Promise<number| undefined> {
-    const query = { user, status: STATUS_UNREAD };
+    const query = { user, status: STATUS_UNOPENED };
 
     try {
       const count = await InAppNotification.countDocuments(query);

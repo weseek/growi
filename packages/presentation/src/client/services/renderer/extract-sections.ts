@@ -5,7 +5,7 @@ import { findAfter } from 'unist-util-find-after';
 import { visit } from 'unist-util-visit';
 
 
-function wrapWithSection(parentNode: Parent, startElem: Node, endElem: Node | null, isDarkMode?: boolean): void {
+function wrapWithSection(parentNode: Parent, startElem: Node, endElem?: Node | null, isDarkMode?: boolean): void {
   const siblings = parentNode.children;
 
   const startIndex = siblings.indexOf(startElem);
@@ -83,5 +83,5 @@ export const remarkPlugin: Plugin<[ExtractSectionsPluginParams]> = (options) => 
 
 
 export const sanitizeOption: SanitizeOption = {
-  // tagNames: ['slides', 'slide'],
+  tagNames: ['section'],
 };

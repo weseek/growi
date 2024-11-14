@@ -1,8 +1,9 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "7.0.5-RC.0",
-  "description": "GROWI plugin to list pages",
+  "version": "1.0.0",
+  "description": "Remark plugin to list pages",
   "license": "MIT",
+  "private": "true",
   "keywords": [
     "growi",
     "growi-plugin"
@@ -20,34 +21,39 @@
     "dev:client": "vite build -c vite.client.config.ts --mode dev",
     "dev:server": "vite build -c vite.server.config.ts --mode dev",
     "watch": "run-p watch:*",
-    "watch:client": "yarn dev:client -w --emptyOutDir=false",
-    "watch:server": "yarn dev:server -w --emptyOutDir=false",
-    "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
-    "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
-    "lint:typecheck": "tsc",
+    "watch:client": "pnpm run dev:client -w --emptyOutDir=false",
+    "watch:server": "pnpm run dev:server -w --emptyOutDir=false",
+    "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
+    "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "run-p lint:*",
-    "test": "vitest run --coverage",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "test": "vitest run --coverage"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM"
   },
   "dependencies": {
-    "@growi/core": "link:../core",
-    "@growi/remark-growi-directive": "link:../remark-growi-directive",
-    "@growi/ui": "link:../ui",
+    "@growi/core": "workspace:^",
+    "@growi/remark-growi-directive": "workspace:^",
+    "@growi/ui": "workspace:^",
     "escape-string-regexp": "^4.0.0",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
+    "express-validator": "^6.14.0",
     "http-errors": "^2.0.0",
     "mongoose": "^6.11.3",
-    "swr": "^2.2.2"
+    "swr": "^2.2.2",
+    "xss": "^1.0.15"
   },
   "devDependencies": {
+    "@types/express": "^4",
+    "@types/hast": "^3.0.4",
+    "axios": "^0.24.0",
+    "is-absolute-url": "^4.0.1",
     "eslint-plugin-regex": "^1.8.0",
-    "hast-util-sanitize": "^4.1.0",
-    "hast-util-select": "^5.0.5",
-    "unified": "^10.1.2",
-    "unist-util-visit": "^4.0.0"
+    "hast-util-sanitize": "^5.0.1",
+    "hast-util-select": "^6.0.2",
+    "unified": "^11.0.0",
+    "unist-util-visit": "^5.0.0"
   },
   "peerDependencies": {
     "next": "^14",

@@ -1,11 +1,9 @@
-import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
-import { Attachment, serializePageSecurely, serializeRevisionSecurely } from '../../models';
-
+import { Attachment } from '../../models/attachment';
 /* eslint-disable no-use-before-define */
 
 
@@ -255,9 +253,10 @@ export const routesFactory = (crowi) => {
 
     let attachment;
     try {
-      req.user.deleteImage();
+      const user = await User.findById(req.user._id);
+      await user.deleteImage();
       attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.PROFILE_IMAGE);
-      await req.user.updateImage(attachment);
+      await user.updateImage(attachment);
     }
     catch (err) {
       logger.error(err);
@@ -276,7 +275,7 @@ export const routesFactory = (crowi) => {
    *
    *    /attachments.remove:
    *      post:
-   *        tags: [Attachments, CrowiCompatibles]
+   *        tags: [Attachments]
    *        operationId: removeAttachment
    *        summary: /attachments.remove
    *        description: Remove attachment

@@ -1,24 +1,17 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import express from 'express';
 
+import { serializeUserGroupRelationSecurely } from '~/server/models/serializers';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
 
-const express = require('express');
 const { query } = require('express-validator');
-
-const { serializeUserGroupRelationSecurely } = require('../../models/serializers/user-group-relation-serializer');
 
 const router = express.Router();
 
 const validator = {};
-
-/**
- * @swagger
- *  tags:
- *    name: UserGroupRelation
- */
 
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -34,7 +27,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-group-relations:
    *      get:
-   *        tags: [UserGroupRelation]
+   *        tags: [UserGroupRelations]
    *        operationId: listUserGroupRelations
    *        summary: /user-group-relations
    *        description: Gets the user group relations

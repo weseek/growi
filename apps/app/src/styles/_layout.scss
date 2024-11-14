@@ -1,5 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use './variables' as var;
 
 body {
@@ -66,6 +65,18 @@ body {
       --bs-gutter-x: 3rem;
     }
   }
+
+  // set to double value to allow space for .revision-head-link
+  @include bs.media-breakpoint-up(xl) {
+    &,
+    .container,
+    .container-fluid,
+    .container-xxl,
+    .container-xl,
+    .container-lg {
+      padding-left: calc(var(--bs-gutter-x) * 1);
+    }
+  }
 }
 
 // printable style
@@ -74,7 +85,7 @@ body {
     padding: 30px;
   }
 
-  a:after {
+  a::after {
     display: none !important;
   }
 

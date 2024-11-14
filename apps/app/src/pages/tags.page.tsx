@@ -9,20 +9,20 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IDataTagCount } from '~/interfaces/tag';
-import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
-import { useSWRxTagsList } from '~/stores/tag';
-
-import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault, useGrowiCloudUri, useCurrentPathname,
-} from '../stores/context';
+} from '~/stores-universal/context';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxTagsList } from '~/stores/tag';
+
 
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
@@ -43,8 +43,8 @@ type Props = CommonProps & {
   sidebarConfig: ISidebarConfig,
 };
 
-const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
-const TagCloudBox = dynamic(() => import('~/components/TagCloudBox'), { ssr: false });
+const TagList = dynamic(() => import('~/client/components/TagList'), { ssr: false });
+const TagCloudBox = dynamic(() => import('~/client/components/TagCloudBox'), { ssr: false });
 
 const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   const [activePage, setActivePage] = useState<number>(1);

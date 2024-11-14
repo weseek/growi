@@ -11,6 +11,8 @@ import loggerFactory from '~/utils/logger';
 import UserGroup from './user-group';
 import UserGroupRelation from './user-group-relation';
 
+const logger = loggerFactory('growi:models:page');
+
 
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
@@ -19,14 +21,11 @@ import UserGroupRelation from './user-group-relation';
 
 const nodePath = require('path');
 
-const debug = require('debug')('growi:models:page');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');
 
 const { isTopPage, isTrashPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
-
-const logger = loggerFactory('growi:models:page');
 
 const GRANT_PUBLIC = 1;
 const GRANT_RESTRICTED = 2;
@@ -216,7 +215,7 @@ export const getPageSchema = (crowi) => {
 
   pageSchema.methods.seen = async function(userData) {
     if (this.isSeenUser(userData)) {
-      debug('seenUsers not updated');
+      logger.debug('seenUsers not updated');
       return this;
     }
 
@@ -227,7 +226,7 @@ export const getPageSchema = (crowi) => {
     const added = this.seenUsers.addToSet(userData._id);
     const saved = await this.save();
 
-    debug('seenUsers updated!', added);
+    logger.debug('seenUsers updated!', added);
     pageEvent.emit('addSeenUsers', saved);
 
     return saved;
@@ -290,7 +289,7 @@ export const getPageSchema = (crowi) => {
       .then((count) => {
         self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
           if (err) {
-            debug('Update commentCount Error', err);
+            logger.debug('Update commentCount Error', err);
             throw err;
           }
 
@@ -666,15 +665,6 @@ export const getPageSchema = (crowi) => {
     }
 
     await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroups: [transferToUserGroup] });
-  };
-
-  pageSchema.methods.getNotificationTargetUsers = async function() {
-    const Revision = mongoose.model('Revision');
-
-    const [commentCreators, revisionAuthors] = await Promise.all([Comment.findCreatorsByPage(this), Revision.findAuthorsByPage(this)]);
-
-    const targetUsers = new Set([this.creator].concat(commentCreators, revisionAuthors));
-    return Array.from(targetUsers);
   };
 
   pageSchema.statics.getHistories = function() {

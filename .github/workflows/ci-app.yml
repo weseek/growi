@@ -5,12 +5,14 @@ on:
     branches-ignore:
       - release/**
       - rc/**
+      - changeset-release/**
     paths:
+      - .github/mergify.yml
       - .github/workflows/ci-app.yml
       - .eslint*
       - tsconfig.base.json
       - turbo.json
-      - yarn.lock
+      - pnpm-lock.yaml
       - package.json
       - apps/app/**
       - '!apps/app/docker/**'
@@ -32,37 +34,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
 
-      - name: Cache/Restore node_modules
+      - name: Cache/Restore dist
         uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
-          restore-keys: |
-            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-
-
-      - name: Restore dist
-        uses: actions/cache/restore@v4
         with:
           path: |
             **/.turbo
             **/dist
-          key: dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+            **/node_modules/.cache/turbo
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.sha }}
           restore-keys: |
-            dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
-          yarn global add node-gyp
-          yarn --frozen-lockfile
+          pnpm add turbo --global
+          pnpm install --frozen-lockfile
 
       - name: Lint
         run: |
@@ -77,14 +70,6 @@ jobs:
           channel: '#ci'
           isCompactMode: true
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Cache dist
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            **/.turbo
-            **/dist
-          key: dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 
   ci-app-test:
@@ -103,42 +88,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
 
-      - name: Cache/Restore node_modules
-        id: cache-dependencies
+      - name: Cache/Restore dist
         uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
-          restore-keys: |
-            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-
-
-      - name: Restore dist
-        uses: actions/cache/restore@v4
         with:
           path: |
             **/.turbo
             **/dist
-          key: dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+            **/node_modules/.cache/turbo
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.sha }}
           restore-keys: |
-            dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
-          yarn global add node-gyp
-          yarn --frozen-lockfile
+          pnpm add turbo --global
+          pnpm install --frozen-lockfile
 
       - name: Test
         run: |
-          turbo run test --filter=!@growi/slackbot-proxy
+          turbo run test --filter=!@growi/slackbot-proxy --env-mode=loose
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
@@ -160,14 +135,6 @@ jobs:
           isCompactMode: true
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - name: Cache dist
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            **/.turbo
-            **/dist
-          key: dist-app-7.x-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
-
 
   ci-app-launch-dev:
     runs-on: ubuntu-latest
@@ -185,45 +152,34 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
+          cache: 'pnpm'
 
-      - name: Cache/Restore node_modules
-        id: cache-dependencies
+      - name: Cache/Restore dist
         uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-          key: node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
-          restore-keys: |
-            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-
-
-      - name: Restore dist
-        uses: actions/cache/restore@v4
         with:
           path: |
             **/.turbo
             **/dist
-            ${{ github.workspace }}/apps/app/.next
-          key: dist-app-7.x-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+            **/node_modules/.cache/turbo
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.sha }}
           restore-keys: |
-            dist-app-7.x-dev-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
-          yarn global add node-gyp
-          yarn --frozen-lockfile
+          pnpm add turbo --global
+          pnpm install --frozen-lockfile
 
-      - name: turbo run dev:ci
+      - name: turbo run launch-dev:ci
         working-directory: ./apps/app
         run: |
           cp config/ci/.env.local.for-ci .env.development.local
-          turbo run dev:ci
+          turbo run launch-dev:ci --env-mode=loose
         env:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_dev
 
@@ -236,12 +192,3 @@ jobs:
           channel: '#ci'
           isCompactMode: true
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Cache dist
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            **/.turbo
-            **/dist
-            ${{ github.workspace }}/apps/app/.next
-          key: dist-app-7.x-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}

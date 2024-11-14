@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-// eslint-disable-next-line import/no-named-as-default
-import Config from '~/server/models/config';
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { Config } from '~/server/models/config';
+import userModelFactory from '~/server/models/user';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:add-config-app-installed');
@@ -19,9 +19,9 @@ module.exports = {
 
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
-    const User = getModelSafely('User') || require('~/server/models/user')();
+    const User = userModelFactory();
 
     // find 'app:siteUrl'
     const appInstalled = await Config.findOne({
@@ -49,7 +49,7 @@ module.exports = {
 
   async down(db) {
     logger.info('Rollback migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({

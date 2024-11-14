@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 // eslint-disable-next-line import/no-named-as-default
-import Config from '~/server/models/config';
+import { Config } from '~/server/models/config';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -17,7 +17,7 @@ const keyMap = {
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     for await (const [oldKey, newKey] of Object.entries(keyMap)) {
       const isExist = (await Config.count({ key: newKey })) > 0;
@@ -37,7 +37,7 @@ module.exports = {
 
   async down(db) {
     logger.info('Rollback migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     for await (const [oldKey, newKey] of Object.entries(keyMap)) {
       const isExist = (await Config.count({ key: oldKey })) > 0;

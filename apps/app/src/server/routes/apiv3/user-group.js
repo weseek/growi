@@ -1,12 +1,18 @@
 import { GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-
+import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import express from 'express';
+import {
+  body, param, query, sanitizeQuery,
+} from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { toPagingLimit, toPagingOffset } from '~/server/util/express-validator/sanitizer';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -15,22 +21,8 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
-const express = require('express');
-
 const router = express.Router();
 
-const { body, param, query } = require('express-validator');
-const { sanitizeQuery } = require('express-validator');
-
-const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
-const { toPagingLimit, toPagingOffset } = require('../../util/express-validator/sanitizer');
-
-
-/**
- * @swagger
- *  tags:
- *    name: UserGroup
- */
 
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -96,7 +88,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups:
    *      get:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: getUserGroup
    *        summary: /user-groups
    *        description: Get usergroups
@@ -139,7 +131,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /ancestors:
    *      get:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: getAncestorUserGroups
    *        summary: /ancestors
    *        description: Get ancestor user groups.
@@ -202,7 +194,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups:
    *      post:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: createUserGroup
    *        summary: /user-groups
    *        description: Adds userGroup
@@ -230,8 +222,8 @@ module.exports = (crowi) => {
     const { name, description = '', parentId } = req.body;
 
     try {
-      const userGroupName = crowi.xss.process(name);
-      const userGroupDescription = crowi.xss.process(description);
+      const userGroupName = generalXssFilter.process(name);
+      const userGroupDescription = generalXssFilter.process(description);
       const userGroup = await UserGroup.createGroup(userGroupName, userGroupDescription, parentId);
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_CREATE };
@@ -252,7 +244,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /selectable-parent-groups:
    *      get:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: getSelectableParentGroups
    *        summary: /selectable-parent-groups
    *        description: Get selectable parent UserGroups
@@ -301,7 +293,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /selectable-child-groups:
    *      get:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: getSelectableChildGroups
    *        summary: /selectable-child-groups
    *        description: Get selectable child UserGroups
@@ -353,7 +345,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups/{id}:
    *      get:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: getUserGroupFromGroupId
    *        summary: /user-groups/{id}
    *        description: Get UserGroup from Group ID
@@ -395,7 +387,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups/{id}:
    *      delete:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: deleteUserGroup
    *        summary: /user-groups/{id}
    *        description: Deletes userGroup
@@ -459,7 +451,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups/{id}:
    *      put:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: updateUserGroups
    *        summary: /user-groups/{id}
    *        description: Update userGroup
@@ -509,7 +501,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups/{id}/users:
    *      get:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: getUsersUserGroups
    *        summary: /user-groups/{id}/users
    *        description: Get users related to the userGroup
@@ -560,7 +552,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups/{id}/unrelated-users:
    *      get:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: getUnrelatedUsersUserGroups
    *        summary: /user-groups/{id}/unrelated-users
    *        description: Get users unrelated to the userGroup
@@ -621,7 +613,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups/{id}/users:
    *      post:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: addUserUserGroups
    *        summary: /user-groups/{id}/users
    *        description: Add a user to the userGroup
@@ -688,7 +680,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups/{id}/users:
    *      delete:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: deleteUsersUserGroups
    *        summary: /user-groups/{id}/users
    *        description: remove a user from the userGroup
@@ -740,7 +732,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups/{id}/user-group-relations:
    *      get:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: getUserGroupRelationsUserGroups
    *        summary: /user-groups/{id}/user-group-relations
    *        description: Get the user group relations for the userGroup
@@ -787,7 +779,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-groups/{id}/pages:
    *      get:
-   *        tags: [UserGroup]
+   *        tags: [UserGroups]
    *        operationId: getPagesUserGroups
    *        summary: /user-groups/{id}/pages
    *        description: Get closed pages for the userGroup
