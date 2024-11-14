@@ -43,9 +43,8 @@ import { UserNotificationService } from '../service/user-notification';
 import { initializeYjsService } from '../service/yjs';
 import { getModelSafely, getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
-import { setupModelsDependentOnCrowi } from './setup-models';
-
 import { OpenTelemetry } from './opentelemetry';
+import { setupModelsDependentOnCrowi } from './setup-models';
 
 
 const logger = loggerFactory('growi:crowi');
