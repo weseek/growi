@@ -51,9 +51,7 @@ function overwriteSdkDisabled(): void {
   const instrumentationEnabled = configManager.getConfig('crowi', 'otel:enabled');
 
   if (instrumentationEnabled && (
-    process.env.OTEL_SDK_DISABLED === true
-    || process.env.OTEL_SDK_DISABLED === 'true'
-    || process.env.OTEL_SDK_DISABLED === 1
+    process.env.OTEL_SDK_DISABLED === 'true'
     || process.env.OTEL_SDK_DISABLED === '1'
   )) {
     logger.warn("OTEL_SDK_DISABLED will be set 'false' since GROWI's 'otel:enabled' config is true.");
@@ -63,9 +61,7 @@ function overwriteSdkDisabled(): void {
 
   if (!instrumentationEnabled && (
     process.env.OTEL_SDK_DISABLED == null
-    || process.env.OTEL_SDK_DISABLED === false
     || process.env.OTEL_SDK_DISABLED === 'false'
-    || process.env.OTEL_SDK_DISABLED === 0
     || process.env.OTEL_SDK_DISABLED === '0'
   )) {
     logger.warn("OTEL_SDK_DISABLED will be set 'true' since GROWI's 'otel:enabled' config is false.");
