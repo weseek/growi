@@ -14,6 +14,7 @@ import { KeycloakUserGroupSyncService } from '~/features/external-user-group/ser
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import OpenaiThreadDeletionCronService from '~/features/openai/server/services/thread-deletion-cron';
 import OpenaiVectorStoreFileDeletionCronService from '~/features/openai/server/services/vector-store-file-deletion-cron';
+import { startInstrumentation } from '~/features/opentelemetry/server';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
@@ -43,7 +44,6 @@ import { UserNotificationService } from '../service/user-notification';
 import { initializeYjsService } from '../service/yjs';
 import { getModelSafely, getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
-import { OpenTelemetry } from './opentelemetry';
 import { setupModelsDependentOnCrowi } from './setup-models';
 
 
@@ -145,6 +145,9 @@ Crowi.prototype.init = async function() {
   await this.setupConfigManager();
   await this.setupSessionConfig();
   this.setupCron();
+
+  // start OpenTelemetry
+  startInstrumentation();
 
   // setup messaging services
   await this.setupS2sMessagingService();
@@ -459,10 +462,6 @@ Crowi.prototype.start = async function() {
 
   await this.init();
   await this.buildServer();
-
-  // 具体的な設定値については、https://redmine.weseek.co.jp/issues/144351 で決定予定
-  const otel = new OpenTelemetry('next-app', this.version);
-  otel.startInstrumentation();
 
   // setup Next.js
   this.nextApp = next({ dev });
