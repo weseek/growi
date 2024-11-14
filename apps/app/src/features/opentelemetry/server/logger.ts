@@ -2,12 +2,12 @@ import { diag, type DiagLogger } from '@opentelemetry/api';
 
 import loggerFactory from '~/utils/logger';
 
-const loggerForDiag = loggerFactory('growi:opentelemetry:diag');
+const logger = loggerFactory('growi:opentelemetry:diag');
 
 
 class DiagLoggerBunyanAdapter implements DiagLogger {
 
-  private parseMessage(message: string, args: unknown[]): { logMessage: string, data: object } {
+  private parseMessage(message: string, args: unknown[]): [logMessage: string, data: object] {
     let logMessage = message;
     let data = {};
 
@@ -44,32 +44,27 @@ class DiagLoggerBunyanAdapter implements DiagLogger {
       data = { ...data, ...argsData };
     }
 
-    return { logMessage, data };
+    return [logMessage, data];
   }
 
   error(message: string, ...args): void {
-    const { logMessage, data } = this.parseMessage(message, args);
-    loggerForDiag.error(logMessage, data);
+    logger.error(...this.parseMessage(message, args));
   }
 
   warn(message: string, ...args): void {
-    const { logMessage, data } = this.parseMessage(message, args);
-    loggerForDiag.error(logMessage, data);
+    logger.warn(...this.parseMessage(message, args));
   }
 
   info(message: string, ...args): void {
-    const { logMessage, data } = this.parseMessage(message, args);
-    loggerForDiag.error(logMessage, data);
+    logger.info(...this.parseMessage(message, args));
   }
 
   debug(message: string, ...args): void {
-    const { logMessage, data } = this.parseMessage(message, args);
-    loggerForDiag.error(logMessage, data);
+    logger.debug(...this.parseMessage(message, args));
   }
 
   verbose(message: string, ...args): void {
-    const { logMessage, data } = this.parseMessage(message, args);
-    loggerForDiag.error(logMessage, data);
+    logger.trace(...this.parseMessage(message, args));
   }
 
 }
