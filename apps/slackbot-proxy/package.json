@@ -73,6 +73,7 @@
     "@tsed/core": "=6.43.0",
     "@tsed/exceptions": "=6.43.0",
     "@tsed/json-mapper": "=6.43.0",
+    "@types/bunyan": "^1.8.11",
     "bootstrap": "=5.3.2",
     "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",
