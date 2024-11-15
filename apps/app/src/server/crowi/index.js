@@ -321,7 +321,7 @@ Crowi.prototype.setupSocketIoService = async function() {
   this.socketIoService = new SocketIoService(this);
 };
 
-Crowi.prototype.setupCron = async function() {
+Crowi.prototype.setupCron = function() {
   this.questionnaireCronService = new QuestionnaireCronService(this);
   this.questionnaireCronService.startCron();
 
