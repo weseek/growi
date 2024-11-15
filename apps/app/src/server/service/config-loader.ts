@@ -823,9 +823,9 @@ Guideline as a RAG:
     ].join(''),
   },
   /* eslint-enable max-len */
-  OPENAI_ASSISTANT_NAME_SUFFIX: {
+  OPENAI_CHAT_ASSISTANT_MODEL: {
     ns: 'crowi',
-    key: 'openai:assistantNameSuffix',
+    key: 'openai:assistantModel:chat',
     type: ValueType.STRING,
     default: null,
   },
