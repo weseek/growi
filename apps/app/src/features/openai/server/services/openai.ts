@@ -19,10 +19,12 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
+import { sanitizeMarkdownForVectorStoreFile } from '../utils/sanitize-markdown-for-vector-store-file';
 
 import { getClient } from './client-delegator';
 // import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { oepnaiApiErrorHandler } from './openai-api-error-handler';
+
 
 const BATCH_SIZE = 100;
 
@@ -155,7 +157,8 @@ class OpenaiService implements IOpenaiService {
   // }
 
   private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
-    const file = await toFile(Readable.from(body), `${pageId}.md`);
+    const sanitizedMarkdown = sanitizeMarkdownForVectorStoreFile(body);
+    const file = await toFile(Readable.from(sanitizedMarkdown), `${pageId}.md`);
     const uploadedFile = await this.client.uploadFile(file);
     return uploadedFile;
   }
