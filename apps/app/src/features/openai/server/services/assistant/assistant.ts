@@ -15,6 +15,10 @@ const AssistantDefaultModelMap: Record<AssistantType, OpenAI.Chat.ChatModel> = {
   [AssistantType.CHAT]: 'gpt-4o-mini',
 };
 
+const getAssistantModelByType = (type: AssistantType): OpenAI.Chat.ChatModel => {
+  const configKey = `openai:assistantModel:${type.toLowerCase()}`;
+  return configManager.getConfig('crowi', configKey) ?? AssistantDefaultModelMap[type];
+};
 
 type AssistantType = typeof AssistantType[keyof typeof AssistantType];
 
@@ -43,7 +47,7 @@ const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.As
 const getOrCreateAssistant = async(type: AssistantType, nameSuffix?: string): Promise<OpenAI.Beta.Assistant> => {
   const appSiteUrl = configManager.getConfig('crowi', 'app:siteUrl');
   const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}${nameSuffix != null ? ` ${nameSuffix}` : ''}`;
-  const assistantModel = configManager.getConfig('crowi', `openai:assistantModel:${type}`) ?? AssistantDefaultModelMap[type];
+  const assistantModel = getAssistantModelByType(type);
 
   const assistant = await findAssistantByName(assistantName)
     ?? (
