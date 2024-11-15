@@ -11,6 +11,11 @@ module.exports = {
       url: 'https://demo.growi.org/_api/v3',
     },
   ],
+  security: [
+    {
+      api_key: [],
+    },
+  ],
   components: {
     securitySchemes: {
       api_key: {
