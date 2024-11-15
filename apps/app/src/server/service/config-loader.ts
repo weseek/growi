@@ -803,12 +803,6 @@ Guideline as a RAG:
     ].join(''),
   },
   /* eslint-enable max-len */
-  OPENAI_ASSISTANT_NAME_SUFFIX: {
-    ns: 'crowi',
-    key: 'openai:assistantNameSuffix',
-    type: ValueType.STRING,
-    default: null,
-  },
   OPENAI_CHAT_ASSISTANT_MODEL: {
     ns: 'crowi',
     key: 'openai:assistantModel:chat',

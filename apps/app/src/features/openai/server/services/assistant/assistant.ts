@@ -40,10 +40,9 @@ const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.As
   return findAssistant(storedAssistants);
 };
 
-const getOrCreateAssistant = async(type: AssistantType): Promise<OpenAI.Beta.Assistant> => {
+const getOrCreateAssistant = async(type: AssistantType, nameSuffix?: string): Promise<OpenAI.Beta.Assistant> => {
   const appSiteUrl = configManager.getConfig('crowi', 'app:siteUrl');
-  const assistantNameSuffix = configManager.getConfig('crowi', 'openai:assistantNameSuffix');
-  const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}${assistantNameSuffix != null ? ` ${assistantNameSuffix}` : ''}`;
+  const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}${nameSuffix != null ? ` ${nameSuffix}` : ''}`;
   const assistantModel = configManager.getConfig('crowi', `openai:assistantModel:${type}`) ?? AssistantDefaultModelMap[type];
 
   const assistant = await findAssistantByName(assistantName)
