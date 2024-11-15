@@ -1,4 +1,4 @@
-export const sanitizeMarkdownForVectorStoreFile = (markdown: string): string => {
+export const sanitizeMarkdown = (markdown: string): string => {
   let replacedMarkdown = markdown;
 
   // Sanitize drawio content
