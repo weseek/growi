@@ -809,6 +809,12 @@ Guideline as a RAG:
     type: ValueType.STRING,
     default: null,
   },
+  OPENAI_CHAT_ASSISTANT_MODEL: {
+    ns: 'crowi',
+    key: 'openai:assistantModel:chat',
+    type: ValueType.STRING,
+    default: undefined,
+  },
   OPENAI_THREAD_DELETION_CRON_EXPRESSION: {
     ns: 'crowi',
     key: 'openai:threadDeletionCronExpression',

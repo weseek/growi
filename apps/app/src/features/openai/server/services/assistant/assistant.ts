@@ -10,6 +10,12 @@ const AssistantType = {
   CHAT: 'Chat',
 } as const;
 
+const AssistantDefaultModelMap: Record<AssistantType, OpenAI.Chat.ChatModel> = {
+  [AssistantType.SEARCH]: 'gpt-4o-mini',
+  [AssistantType.CHAT]: 'gpt-4o-mini',
+};
+
+
 type AssistantType = typeof AssistantType[keyof typeof AssistantType];
 
 
@@ -38,18 +44,20 @@ const getOrCreateAssistant = async(type: AssistantType): Promise<OpenAI.Beta.Ass
   const appSiteUrl = configManager.getConfig('crowi', 'app:siteUrl');
   const assistantNameSuffix = configManager.getConfig('crowi', 'openai:assistantNameSuffix');
   const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}${assistantNameSuffix != null ? ` ${assistantNameSuffix}` : ''}`;
+  const assistantModel = configManager.getConfig('crowi', `openai:assistantModel:${type}`) ?? AssistantDefaultModelMap[type];
 
   const assistant = await findAssistantByName(assistantName)
     ?? (
       await openaiClient.beta.assistants.create({
         name: assistantName,
-        model: 'gpt-4o',
+        model: assistantModel,
       }));
 
   // update instructions
   const instructions = configManager.getConfig('crowi', 'openai:chatAssistantInstructions');
   openaiClient.beta.assistants.update(assistant.id, {
     instructions,
+    model: assistantModel,
     tools: [{ type: 'file_search' }],
   });
 
