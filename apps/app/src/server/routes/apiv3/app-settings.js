@@ -1011,12 +1011,6 @@ module.exports = (crowi) => {
    *          - api_key: []
    *        summary: AccessToken supported.
    *        description: Update V5SchemaMigration
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                type: object
-   *                properties:
    *        responses:
    *          200:
    *            description: Succeeded to get V5SchemaMigration
