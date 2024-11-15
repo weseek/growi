@@ -24,7 +24,7 @@ module.exports = {
         in: 'query',
       },
       cookieAuth: {
-        type: 'session',
+        type: 'apiKey',
         in: 'cookie',
         name: 'connect.sid',
       },
