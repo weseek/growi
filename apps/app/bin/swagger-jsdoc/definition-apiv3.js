@@ -23,6 +23,11 @@ module.exports = {
         name: 'access_token',
         in: 'query',
       },
+      cookieAuth: {
+        type: 'apiKey',
+        in: 'cookie',
+        name: 'connect.sid',
+      },
     },
   },
   'x-tagGroups': [
