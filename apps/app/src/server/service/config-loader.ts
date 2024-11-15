@@ -761,20 +761,20 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     ns: 'crowi',
     key: 'openai:serviceType',
     type: ValueType.STRING,
-    default: undefined,
+    default: null,
   },
   OPENAI_API_KEY: {
     ns: 'crowi',
     key: 'openai:apiKey',
     type: ValueType.STRING,
-    default: undefined,
+    default: null,
     isSecret: true,
   },
   OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS: {
     ns: 'crowi',
     key: 'openai:searchAssistantInstructions',
     type: ValueType.STRING,
-    default: undefined,
+    default: null,
   },
   /* eslint-disable max-len */
   OPENAI_CHAT_ASSISTANT_INSTRUCTIONS: {
@@ -807,7 +807,7 @@ Guideline as a RAG:
     ns: 'crowi',
     key: 'openai:assistantModel:chat',
     type: ValueType.STRING,
-    default: undefined,
+    default: null,
   },
   OPENAI_THREAD_DELETION_CRON_EXPRESSION: {
     ns: 'crowi',
