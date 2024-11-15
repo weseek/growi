@@ -751,17 +751,23 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
-  OPENTELEMETRY_INSTRUMENTATION_ENABLED: {
+  OPENTELEMETRY_ENABLED: {
     ns: 'crowi',
-    key: 'instrumentation:enabled',
+    key: 'otel:enabled',
     type: ValueType.BOOLEAN,
-    default: null,
+    default: true,
+  },
+  OPENTELEMETRY_IS_APP_SITE_URL_HASHED: {
+    ns: 'crowi',
+    key: 'otel:isAppSiteUrlHashed',
+    type: ValueType.BOOLEAN,
+    default: false,
   },
   // TODO: fix after the decision of the instrumentation data specification
   // https://redmine.weseek.co.jp/issues/144351
   OPENTELEMETRY_SERVICE_INSTANCE_ID: {
     ns: 'crowi',
-    key: 'instrumentation:serviceInstanceId',
+    key: 'otel:serviceInstanceId',
     type: ValueType.STRING,
     default: null,
   },
