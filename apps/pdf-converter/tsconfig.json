@@ -4,15 +4,16 @@
     "baseUrl": ".",
     "outDir": "dist",
     "declaration": true,
-    "target": "ES2020",
+    "target": "ESNext",
     "lib": ["ES2020", "dom"],
-    "module": "commonjs",
+    "module": "ESNext",
     "moduleResolution": "node",
     "rootDir": "src",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "strict": false
+    "strict": false,
+    "allowSyntheticDefaultImports": true
   },
   "include": ["./src/**/*", "./test/**/*"],
   "exclude": ["node_modules", "dist"]
