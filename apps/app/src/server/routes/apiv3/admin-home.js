@@ -33,16 +33,14 @@ const router = express.Router();
  *            description: environment variables
  *            additionalProperties:
  *              type: string
- *            example: >
- *              '{
- *                "FILE_UPLOAD":"mongodb",
- *                "APP_SITE_URL":"http://localhost:3000",
- *                "ELASTICSEARCH_URI":"http://elasticsearch:9200/growi",
- *                "ELASTICSEARCH_REQUEST_TIMEOUT":15000,
- *                "ELASTICSEARCH_REJECT_UNAUTHORIZED":true,
- *                "OGP_URI":"http://ogp:8088",
- *                "QUESTIONNAIRE_SERVER_ORIGIN":"http://host.docker.internal:3003"
- *              }'
+ *            example:
+ *              "FILE_UPLOAD": "mongodb"
+ *              "APP_SITE_URL": "http://localhost:3000"
+ *              "ELASTICSEARCH_URI": "http://elasticsearch:9200/growi"
+ *              "ELASTICSEARCH_REQUEST_TIMEOUT": 15000
+ *              "ELASTICSEARCH_REJECT_UNAUTHORIZED": true
+ *              "OGP_URI": "http://ogp:8088"
+ *              "QUESTIONNAIRE_SERVER_ORIGIN": "http://host.docker.internal:3003"
  *          isV5Compatible:
  *            type: boolean
  *            description: This value is true if this GROWI is compatible v5.
