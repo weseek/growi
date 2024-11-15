@@ -1,0 +1,9 @@
+{
+  "extensions": ["ts"],
+  "watch": ["src/**/*.ts"],
+  "ignore": ["node_modules/**/*"],
+  "delay": 100,
+  "execMap": {
+    "ts": "node --loader @swc-node/register/esm"
+  }
+}
