@@ -57,6 +57,7 @@ module.exports = {
       name: 'System Management API',
       tags: [
         'Home',
+        'AdminHome',
         'AppSettings',
         'SecuritySetting',
         'MarkDownSetting',
