@@ -13,7 +13,7 @@ type CALLOUT_TO = {
   [key in Callout]: string;
 }
 
-const CALLOUT_TO_TITLE: CALLOUT_TO = {
+const CALLOUT_TO_TYPE: CALLOUT_TO = {
   note: 'Note',
   tip: 'Tip',
   important: 'Important',
@@ -36,12 +36,15 @@ const CALLOUT_TO_ICON: CALLOUT_TO = {
 type CalloutViewerProps = {
   children: ReactNode,
   node: Element,
-  name: string
+  type: string,
+  label?: string,
 }
 
 export const CalloutViewer = React.memo((props: CalloutViewerProps): JSX.Element => {
 
-  const { node, name, children } = props;
+  const {
+    node, type, label, children,
+  } = props;
 
   if (node == null) {
     return <></>;
@@ -49,13 +52,13 @@ export const CalloutViewer = React.memo((props: CalloutViewerProps): JSX.Element
 
   return (
     <div className={`${moduleClass} callout-viewer`}>
-      <div className={`callout callout-${CALLOUT_TO_TITLE[name].toLowerCase()}`}>
+      <div className={`callout callout-${CALLOUT_TO_TYPE[type].toLowerCase()}`}>
         <div className="callout-indicator">
           <div className="callout-hint">
-            <span className="material-symbols-outlined">{CALLOUT_TO_ICON[name]}</span>
+            <span className="material-symbols-outlined">{CALLOUT_TO_ICON[type]}</span>
           </div>
           <div className="callout-title">
-            {CALLOUT_TO_TITLE[name]}
+            {label ?? CALLOUT_TO_TYPE[type]}
           </div>
         </div>
         <div className="callout-content">

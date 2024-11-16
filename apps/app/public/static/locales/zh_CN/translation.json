@@ -30,7 +30,7 @@
   "Tags": "标签",
   "Close": "Close",
   "Shortcuts": "快捷方式",
-  "CustomSidebar": "Custom Sidebar",
+  "Custom Sidebar": "Custom Sidebar",
   "eg": "e.g.",
   "add": "添加",
   "Undo": "撤销",
@@ -168,6 +168,7 @@
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
   "copied_to_clipboard": "它已复制到剪贴板。",
+  "source": "消息来源",
   "input_validation": {
     "target": {
       "page_name": "页面名称",
@@ -176,8 +177,8 @@
     },
     "message": {
       "error_message": "有些值不正确",
-      "required": "%s 是必需的",
-      "invalid_syntax": "%s的语法无效。",
+      "required": "'{{param}}' 是必需的",
+      "invalid_syntax": "{{syntax}} 的语法无效。",
       "title_required": "标题是必需的。",
       "field_required": "{{target}} 是必需的"
     }
@@ -478,6 +479,8 @@
     "title": "知识助手",
     "title_beta_label": "(测试版)",
     "placeholder": "问我任何问题。",
+    "summary_mode_label": "摘要模式",
+    "summary_mode_help": "简洁回答在2-3句话内",
     "caution_against_hallucination": "请核实信息并检查来源。",
     "progress_label": "生成答案中",
     "failed_to_create_or_retrieve_thread": "创建或获取线程失败",

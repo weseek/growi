@@ -23,7 +23,7 @@ const excludeRestrictedClassAttributes = (propertyDefinitions: PropertyDefinitio
 };
 
 // generate relaxed schema
-const relaxedSchemaAttributes = structuredClone(defaultSchema.attributes) ?? {};
+const relaxedSchemaAttributes: Record<string, PropertyDefinition[]> = structuredClone(defaultSchema.attributes) ?? {};
 relaxedSchemaAttributes.a = excludeRestrictedClassAttributes(relaxedSchemaAttributes.a);
 relaxedSchemaAttributes.ul = excludeRestrictedClassAttributes(relaxedSchemaAttributes.ul);
 relaxedSchemaAttributes.li = excludeRestrictedClassAttributes(relaxedSchemaAttributes.li);
