@@ -8,8 +8,10 @@ import type Crowi from '~/server/crowi';
 import type { ParamsForAnnouncement } from '../../interfaces/announcement';
 import { announcementService } from '../../server/service/announcement';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import loggerFactory from '~/utils/logger';
 
 
+const logger = loggerFactory('growi:routes:apiv3:announcement');
 const express = require('express');
 
 const router = express.Router();
@@ -79,6 +81,7 @@ module.exports = (crowi: Crowi): Router => {
       announcementService?.doAnnounce(activity, page, params);
     }
     catch (err) {
+      logger.error(err);
       return res.apiv3Err(err, 500);
     }
   });
