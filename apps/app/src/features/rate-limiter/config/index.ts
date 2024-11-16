@@ -58,8 +58,7 @@ export const defaultConfig: IApiRateLimitEndpointMap = {
   },
   '/_api/v3/openai/rebuild-vector-store': {
     method: 'POST',
-    maxRequests: 2,
-    usersPerIpProspection: 1,
+    maxRequests: 1,
   },
 };
 

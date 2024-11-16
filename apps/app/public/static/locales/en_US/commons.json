@@ -62,6 +62,7 @@
     "all": "All",
     "unopend": "Unread",
     "mark_all_as_read": "Mark all as read",
+    "no_unread_messages": "no_unread_messages",
     "only_unread": "Only unread"
   },
 

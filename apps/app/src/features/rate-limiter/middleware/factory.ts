@@ -2,7 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import type { Handler, Request } from 'express';
 import md5 from 'md5';
 import { connection } from 'mongoose';
-import { type IRateLimiterMongoOptions, RateLimiterMongo } from 'rate-limiter-flexible';
+import { type IRateLimiterMongoOptions, type RateLimiterRes, RateLimiterMongo } from 'rate-limiter-flexible';
 
 import loggerFactory from '~/utils/logger';
 
@@ -19,7 +19,7 @@ const logger = loggerFactory('growi:middleware:api-rate-limit');
 // API_RATE_LIMIT_010_FOO_METHODS=GET,POST
 // API_RATE_LIMIT_010_FOO_MAX_REQUESTS=10
 
-const POINTS_THRESHOLD = 100;
+export const POINTS_THRESHOLD = 100;
 
 const opts: IRateLimiterMongoOptions = {
   storeClient: connection,
@@ -37,9 +37,9 @@ const keysWithRegExp = Object.keys(configWithRegExp).map(key => new RegExp(`^${k
 const valuesWithRegExp = Object.values(configWithRegExp);
 
 
-const _consumePoints = async(
+export const _consumePoints = async(
     method: string, key: string | null, customizedConfig?: IApiRateLimitConfig, maxRequestsMultiplier?: number,
-) => {
+): Promise<RateLimiterRes | undefined> => {
   if (key == null) {
     return;
   }
@@ -56,10 +56,9 @@ const _consumePoints = async(
     maxRequests *= maxRequestsMultiplier;
   }
 
-  // because the maximum request is reduced by 1 if it is divisible by
-  // https://github.com/weseek/growi/pull/6225
-  const consumePoints = (POINTS_THRESHOLD + 0.0001) / maxRequests;
-  await rateLimiter.consume(key, consumePoints);
+  const consumePoints = POINTS_THRESHOLD / maxRequests;
+  const rateLimiterRes = await rateLimiter.consume(key, consumePoints);
+  return rateLimiterRes;
 };
 
 /**
@@ -69,7 +68,7 @@ const _consumePoints = async(
  * @param customizedConfig
  * @returns
  */
-const consumePointsByUser = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig) => {
+const consumePointsByUser = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig): Promise<RateLimiterRes | undefined> => {
   return _consumePoints(method, key, customizedConfig);
 };
 
@@ -80,7 +79,7 @@ const consumePointsByUser = async(method: string, key: string | null, customized
  * @param customizedConfig
  * @returns
  */
-const consumePointsByIp = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig) => {
+const consumePointsByIp = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig): Promise<RateLimiterRes | undefined> => {
   const maxRequestsMultiplier = customizedConfig?.usersPerIpProspection ?? DEFAULT_USERS_PER_IP_PROSPECTION;
   return _consumePoints(method, key, customizedConfig, maxRequestsMultiplier);
 };
