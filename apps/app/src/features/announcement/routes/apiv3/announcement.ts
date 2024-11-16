@@ -7,6 +7,7 @@ import type Crowi from '~/server/crowi';
 
 import type { ParamsForAnnouncement } from '../../interfaces/announcement';
 import { announcementService } from '../../server/service/announcement';
+import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 
 
 const express = require('express');
@@ -52,7 +53,7 @@ module.exports = (crowi: Crowi): Router => {
     ],
   };
 
-  router.post('/do-announcement', loginRequiredStrictly, validators.doAnnouncement, async(req: CrowiRequest) => {
+  router.post('/do-announcement', loginRequiredStrictly, validators.doAnnouncement, async(req: CrowiRequest, res: ApiV3Response) => {
 
     const params: ParamsForAnnouncement = req.body;
 
@@ -72,10 +73,14 @@ module.exports = (crowi: Crowi): Router => {
       },
     };
 
-    const activity = await crowi.activityService.createActivity(parametersForActivity);
+    try {
+      const activity = await crowi.activityService.createActivity(parametersForActivity);
 
-    announcementService?.doAnnounce(activity, page, params);
-
+      announcementService?.doAnnounce(activity, page, params);
+    }
+    catch (err) {
+      return res.apiv3Err(err, 500);
+    }
   });
 
   return router;
