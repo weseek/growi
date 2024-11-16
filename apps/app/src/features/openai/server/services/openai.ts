@@ -157,7 +157,7 @@ class OpenaiService implements IOpenaiService {
   // }
 
   private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
-    const sanitizedMarkdown = sanitizeMarkdown(body);
+    const sanitizedMarkdown = await sanitizeMarkdown(body);
     const file = await toFile(Readable.from(sanitizedMarkdown), `${pageId}.md`);
     const uploadedFile = await this.client.uploadFile(file);
     return uploadedFile;
