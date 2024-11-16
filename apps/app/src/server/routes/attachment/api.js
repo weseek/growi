@@ -253,9 +253,10 @@ export const routesFactory = (crowi) => {
 
     let attachment;
     try {
-      req.user.deleteImage();
+      const user = await User.findById(req.user._id);
+      await user.deleteImage();
       attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.PROFILE_IMAGE);
-      await req.user.updateImage(attachment);
+      await user.updateImage(attachment);
     }
     catch (err) {
       logger.error(err);
@@ -274,7 +275,7 @@ export const routesFactory = (crowi) => {
    *
    *    /attachments.remove:
    *      post:
-   *        tags: [Attachments, CrowiCompatibles]
+   *        tags: [Attachments]
    *        operationId: removeAttachment
    *        summary: /attachments.remove
    *        description: Remove attachment

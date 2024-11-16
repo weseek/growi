@@ -14,15 +14,14 @@
     "build": "vite build",
     "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
-    "watch": "yarn dev -w --emptyOutDir=false",
-    "lint:js": "yarn eslint **/*.{js,ts}",
-    "lint:typecheck": "tsc",
+    "watch": "pnpm run dev -w --emptyOutDir=false",
+    "lint:js": "eslint **/*.{js,ts}",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "npm-run-all -p lint:*",
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "@growi/core": "^1.0.0",
+    "@growi/core": "^1.3.0",
     "extensible-custom-error": "^0.0.7"
-  },
-  "devDependencies": {}
+  }
 }

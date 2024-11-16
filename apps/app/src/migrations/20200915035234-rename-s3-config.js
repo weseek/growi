@@ -34,7 +34,7 @@ const awsConfigs = [
 module.exports = {
   async up(db, client) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const request = awsConfigs.map((awsConfig) => {
       return {
@@ -53,7 +53,7 @@ module.exports = {
   async down(db, client) {
     logger.info('Rollback migration');
 
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const request = awsConfigs.map((awsConfig) => {
       return {

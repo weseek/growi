@@ -1,4 +1,4 @@
-import { EditorView } from '@codemirror/view';
+import type { EditorView } from '@growi/editor';
 
 const lineBeginPartOfDrawioRE = /^```(\s.*)drawio$/;
 const lineEndPartOfDrawioRE = /^```$/;

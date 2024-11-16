@@ -5,9 +5,7 @@
  */
 
 import { markdownLineEnding } from 'micromark-util-character';
-import { codes } from 'micromark-util-symbol/codes.js';
-import { constants } from 'micromark-util-symbol/constants.js';
-import { types } from 'micromark-util-symbol/types.js';
+import { codes, constants, types } from 'micromark-util-symbol';
 import { ok as assert } from 'uvu/assert';
 
 // This is a fork of:

@@ -17,7 +17,7 @@ const LIMIT = 300;
 module.exports = {
   // path => pageId
   async up(db, client) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
 
     const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, path: 1 }).cursor({ batch_size: LIMIT });
@@ -67,7 +67,7 @@ module.exports = {
 
   // pageId => path
   async down(db, client) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
 
     const pagesStream = await Page.find({ revision: { $ne: null } }, { _id: 1, path: 1 }).cursor({ batch_size: LIMIT });

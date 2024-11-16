@@ -1,4 +1,4 @@
-# :pencil: Math
+# :pencil2: Math
 
 See [KaTeX](https://katex.org/).
 

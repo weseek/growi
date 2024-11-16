@@ -6,12 +6,6 @@ const router = express.Router();
 
 /**
  * @swagger
- *  tags:
- *    name: adminHome
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:
@@ -20,16 +14,41 @@ const router = express.Router();
  *        properties:
  *          growiVersion:
  *            type: string
- *            description: version of growi
+ *            description: GROWI version or '-'
+ *            example: 7.1.0-RC.0
  *          nodeVersion:
  *            type: string
- *            description: version of node
+ *            description: node version or '-'
+ *            example: 20.2.0
  *          npmVersion:
  *            type: string
- *            description: version of npm
- *          yarnVersion:
+ *            description: npm version or '-'
+ *            example: 9.6.6
+ *          pnpmVersion:
  *            type: string
- *            description: version of yarn
+ *            description: pnpm version or '-'
+ *            example: 9.12.3
+ *          envVars:
+ *            type: object
+ *            description: environment variables
+ *            additionalProperties:
+ *              type: string
+ *            example:
+ *              "FILE_UPLOAD": "mongodb"
+ *              "APP_SITE_URL": "http://localhost:3000"
+ *              "ELASTICSEARCH_URI": "http://elasticsearch:9200/growi"
+ *              "ELASTICSEARCH_REQUEST_TIMEOUT": 15000
+ *              "ELASTICSEARCH_REJECT_UNAUTHORIZED": true
+ *              "OGP_URI": "http://ogp:8088"
+ *              "QUESTIONNAIRE_SERVER_ORIGIN": "http://host.docker.internal:3003"
+ *          isV5Compatible:
+ *            type: boolean
+ *            description: This value is true if this GROWI is compatible v5.
+ *            example: true
+ *          isMaintenanceMode:
+ *            type: boolean
+ *            description: This value is true if this site is maintenance mode.
+ *            example: false
  *      InstalledPluginsParams:
  *        type: object
  *        properties:
@@ -50,6 +69,8 @@ module.exports = (crowi) => {
    *        tags: [AdminHome]
    *        operationId: getAdminHome
    *        summary: /admin-home
+   *        security:
+   *          - cookieAuth: []
    *        description: Get adminHome parameters
    *        responses:
    *          200:
@@ -59,15 +80,14 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    adminHomeParams:
-   *                      type: object
-   *                      description: adminHome params
+   *                      $ref: "#/components/schemas/SystemInformationParams"
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const adminHomeParams = {
       growiVersion: crowi.version,
       nodeVersion: crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : '-',
       npmVersion: crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-',
-      yarnVersion: crowi.runtimeVersions.versions.yarn ? crowi.runtimeVersions.versions.yarn.version.version : '-',
+      pnpmVersion: crowi.runtimeVersions.versions.pnpm ? crowi.runtimeVersions.versions.pnpm.version.version : '-',
       envVars: await ConfigLoader.getEnvVarsForDisplay(true),
       isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
       isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),

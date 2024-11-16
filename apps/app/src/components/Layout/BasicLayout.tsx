@@ -34,7 +34,7 @@ const DeleteBookmarkFolderModal = dynamic(
   () => import('~/client/components/DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false },
 );
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
-
+const AiChatModal = dynamic(() => import('~/features/openai/chat/components/AiChatModal').then(mod => mod.AiChatModal), { ssr: false });
 
 type Props = {
   children?: ReactNode
@@ -67,6 +67,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <DeleteBookmarkFolderModal />
       <PutbackPageModal />
       <SearchModal />
+      <AiChatModal />
 
       <PagePresentationModal />
       <HotkeysManager />

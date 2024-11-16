@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import type { Parent, Root } from 'mdast';
 import type { Processor } from 'unified';
 
 type ParseResult = {
@@ -39,11 +40,11 @@ const generateFrontmatterProcessor = async(opts?: ProcessorOpts) => {
   const remarkStringify = (await import('remark-stringify')).default;
   const unified = (await import('unified')).unified;
 
-  return unified()
+  return (unified()
     .use(remarkParse)
     .use(remarkStringify)
     .use(remarkFrontmatter, ['yaml'])
-    .use(() => ((obj) => {
+    .use(() => ((obj: Parent) => {
       if (obj.children[0]?.type === 'yaml') {
         const result = parseSlideFrontmatter(obj.children[0]?.value);
         opts?.onParsed?.(result);
@@ -51,7 +52,7 @@ const generateFrontmatterProcessor = async(opts?: ProcessorOpts) => {
       else {
         opts?.onSkipped?.();
       }
-    }));
+    })));
 };
 
 export type UseSlide = {
@@ -65,7 +66,7 @@ export type UseSlide = {
  */
 export const useSlidesByFrontmatter = (markdown?: string, isEnabledMarp?: boolean): UseSlide | undefined => {
 
-  const [processor, setProcessor] = useState<Processor|undefined>();
+  const [processor, setProcessor] = useState<Processor<Root, undefined, undefined, Root, string>|undefined>();
   const [parseResult, setParseResult] = useState<UseSlide|undefined>();
 
   useEffect(() => {

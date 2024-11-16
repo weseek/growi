@@ -30,7 +30,7 @@
   "Tags": "标签",
   "Close": "Close",
   "Shortcuts": "快捷方式",
-  "CustomSidebar": "Custom Sidebar",
+  "Custom Sidebar": "Custom Sidebar",
   "eg": "e.g.",
   "add": "添加",
   "Undo": "撤销",
@@ -61,6 +61,7 @@
   "Presentation Mode": "演示文稿",
   "Not available for guest": "不提供给客人",
   "Not available in this version": "此版本中不提供",
+  "Not available when \"anyone with the link\" is selected": "如果选择“任何人”，则无法覆盖范围",
   "No users have liked this yet": "还没有用户喜欢这个",
   "No users have bookmarked yet": "还没有用户加入书签",
   "Create Archive Page": "创建归档页",
@@ -167,6 +168,7 @@
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
   "copied_to_clipboard": "它已复制到剪贴板。",
+  "source": "消息来源",
   "input_validation": {
     "target": {
       "page_name": "页面名称",
@@ -175,8 +177,8 @@
     },
     "message": {
       "error_message": "有些值不正确",
-      "required": "%s 是必需的",
-      "invalid_syntax": "%s的语法无效。",
+      "required": "'{{param}}' 是必需的",
+      "invalid_syntax": "{{syntax}} 的语法无效。",
       "title_required": "标题是必需的。",
       "field_required": "{{target}} 是必需的"
     }
@@ -321,6 +323,12 @@
     "theme": "主题",
     "keymap": "键表",
     "indent": "缩进",
+    "paste": {
+      "title": "粘贴行为",
+      "both": "两者",
+      "text": "仅文本",
+      "file": "仅文件"
+    },
     "editor_config": "编辑器配置",
 		"Show active line": "显示活动行",
 		"auto_format_table": "自动格式化表格",
@@ -339,7 +347,8 @@
     "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
     "no_user_found": "未找到用户名",
     "reply": "Reply",
-    "delete_comment": "Delete comment?"
+    "delete_comment": "Delete comment?",
+    "comment_management_is_not_allowed": "不允许操作评论。"
   },
   "page_api_error": {
     "notfound_or_forbidden": "未找到或禁止原始页。",
@@ -465,6 +474,20 @@
     "requested_revision": "发送的页面正文",
     "latest_revision": "最新页面正文",
     "selected_editable_revision": "选定的可编辑页面正文"
+  },
+  "modal_aichat": {
+    "title": "知识助手",
+    "title_beta_label": "(测试版)",
+    "placeholder": "问我任何问题。",
+    "summary_mode_label": "摘要模式",
+    "summary_mode_help": "简洁回答在2-3句话内",
+    "caution_against_hallucination": "请核实信息并检查来源。",
+    "progress_label": "生成答案中",
+    "failed_to_create_or_retrieve_thread": "创建或获取线程失败",
+    "budget_exceeded": "您已达到 OpenAI API 的使用上限。要再次使用知识助手，请从 OpenAI 账单页面添加点数。",
+    "budget_exceeded_for_growi_cloud": "您已达到 OpenAI API 使用上限。如需再次使用知识助手，请从GROWI.cloud管理页面为托管用户添加点数，或从OpenAI计费页面为自有用户添加点数。",
+    "error_message": "错误",
+    "show_error_detail": "显示详情"
   },
   "link_edit": {
     "edit_link": "Edit Link",
