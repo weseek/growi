@@ -2,7 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import type { Handler, Request } from 'express';
 import md5 from 'md5';
 import { connection } from 'mongoose';
-import { type IRateLimiterMongoOptions, RateLimiterMongo } from 'rate-limiter-flexible';
+import { type IRateLimiterMongoOptions, type RateLimiterRes, RateLimiterMongo } from 'rate-limiter-flexible';
 
 import loggerFactory from '~/utils/logger';
 
@@ -39,7 +39,7 @@ const valuesWithRegExp = Object.values(configWithRegExp);
 
 export const _consumePoints = async(
     method: string, key: string | null, customizedConfig?: IApiRateLimitConfig, maxRequestsMultiplier?: number,
-) => {
+): Promise<RateLimiterRes | undefined> => {
   if (key == null) {
     return;
   }
@@ -59,7 +59,8 @@ export const _consumePoints = async(
   // because the maximum request is reduced by 1 if it is divisible by
   // https://github.com/weseek/growi/pull/6225
   const consumePoints = (POINTS_THRESHOLD + 0.0001) / maxRequests;
-  await rateLimiter.consume(key, consumePoints);
+  const rateLimiterRes = await rateLimiter.consume(key, consumePoints);
+  return rateLimiterRes;
 };
 
 /**
@@ -69,7 +70,7 @@ export const _consumePoints = async(
  * @param customizedConfig
  * @returns
  */
-const consumePointsByUser = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig) => {
+const consumePointsByUser = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig): Promise<RateLimiterRes | undefined> => {
   return _consumePoints(method, key, customizedConfig);
 };
 
@@ -80,7 +81,7 @@ const consumePointsByUser = async(method: string, key: string | null, customized
  * @param customizedConfig
  * @returns
  */
-const consumePointsByIp = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig) => {
+const consumePointsByIp = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig): Promise<RateLimiterRes | undefined> => {
   const maxRequestsMultiplier = customizedConfig?.usersPerIpProspection ?? DEFAULT_USERS_PER_IP_PROSPECTION;
   return _consumePoints(method, key, customizedConfig, maxRequestsMultiplier);
 };
