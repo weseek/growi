@@ -56,9 +56,7 @@ export const _consumePoints = async(
     maxRequests *= maxRequestsMultiplier;
   }
 
-  // because the maximum request is reduced by 1 if it is divisible by
-  // https://github.com/weseek/growi/pull/6225
-  const consumePoints = (POINTS_THRESHOLD + 0.0001) / maxRequests;
+  const consumePoints = POINTS_THRESHOLD / maxRequests;
   const rateLimiterRes = await rateLimiter.consume(key, consumePoints);
   return rateLimiterRes;
 };
