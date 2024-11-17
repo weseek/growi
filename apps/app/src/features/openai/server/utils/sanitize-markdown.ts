@@ -5,11 +5,46 @@ import type * as RemarkStringify from 'remark-stringify';
 import type * as Unified from 'unified';
 import type * as UnistUtilVisit from 'unist-util-visit';
 
+interface ModuleCache {
+  remarkParse?: typeof RemarkParse.default;
+  remarkStringify?: typeof RemarkStringify.default;
+  unified?: typeof Unified.unified;
+  visit?: typeof UnistUtilVisit.visit;
+}
+
+let moduleCache: ModuleCache = {};
+
+const initializeModules = async(): Promise<void> => {
+  if (moduleCache.remarkParse != null && moduleCache.remarkStringify != null && moduleCache.unified != null && moduleCache.visit != null) {
+    return;
+  }
+
+  const [{ default: remarkParse }, { default: remarkStringify }, { unified }, { visit }] = await Promise.all([
+    dynamicImport<typeof RemarkParse>('remark-parse', __dirname),
+    dynamicImport<typeof RemarkStringify>('remark-stringify', __dirname),
+    dynamicImport<typeof Unified>('unified', __dirname),
+    dynamicImport<typeof UnistUtilVisit>('unist-util-visit', __dirname),
+  ]);
+
+  moduleCache = {
+    remarkParse,
+    remarkStringify,
+    unified,
+    visit,
+  };
+};
+
 export const sanitizeMarkdown = async(markdown: string): Promise<string> => {
-  const remarkParse = (await dynamicImport<typeof RemarkParse>('remark-parse', __dirname)).default;
-  const remarkStringify = (await dynamicImport<typeof RemarkStringify>('remark-stringify', __dirname)).default;
-  const unified = (await dynamicImport<typeof Unified>('unified', __dirname)).unified;
-  const visit = (await dynamicImport<typeof UnistUtilVisit>('unist-util-visit', __dirname)).visit;
+  await initializeModules();
+
+  const {
+    remarkParse, remarkStringify, unified, visit,
+  } = moduleCache;
+
+
+  if (remarkParse == null || remarkStringify == null || unified == null || visit == null) {
+    throw new Error('Failed to initialize required modules');
+  }
 
   const sanitize = () => {
     return (tree: Root) => {
