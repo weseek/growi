@@ -15,7 +15,7 @@ export const sanitizeMarkdown = async(markdown: string): Promise<string> => {
     return (tree: Root) => {
       visit(tree, 'code', (node: Code) => {
         if (node.lang === 'drawio') {
-          node.value = '{{drawio content}}';
+          node.value = '<!-- drawio content replaced -->';
         }
       });
     };
