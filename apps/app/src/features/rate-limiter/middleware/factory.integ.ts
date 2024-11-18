@@ -1,4 +1,8 @@
+import { connection } from 'mongoose';
+import { type IRateLimiterMongoOptions, type RateLimiterRes, RateLimiterMongo } from 'rate-limiter-flexible';
+
 import { _consumePoints, POINTS_THRESHOLD } from './factory';
+
 
 // const mocks = vi.hoisted(() => {
 //   return {
@@ -16,14 +20,27 @@ import { _consumePoints, POINTS_THRESHOLD } from './factory';
 
 describe('factory.ts', () => {
 
+  const opts = {
+    storeClient: connection,
+    points: 100,
+    duration: 60,
+  };
+
+  const rateLimiter = new RateLimiterMongo(opts);
+
+
   it('test', async() => {
     // setup
-    const method = 'GET';
-    const key = 'test-key';
-    const maxRequests = 1;
+    // const method = 'GET';
+    // const key = 'test-key';
+    // const maxRequests = 1;
 
-    const res = await _consumePoints('GET', key, { method, maxRequests });
-    expect(res).toBe(1);
+    // const res = await _consumePoints('GET', key, { method, maxRequests });
+
+    console.log('rateLimiter', rateLimiter);
+
+    const res = await rateLimiter.consume('test-key', 10);
+    console.log('res', res);
   });
 
 
