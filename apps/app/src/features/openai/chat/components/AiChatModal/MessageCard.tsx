@@ -1,5 +1,12 @@
+import { useCallback } from 'react';
+
+import type { LinkProps } from 'next/link';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
+
+import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
+
+import { useRagSearchModal } from '../../../client/stores/rag-search';
 
 import styles from './MessageCard.module.scss';
 
@@ -19,8 +26,20 @@ const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
 
 const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
 
-const AssistantMessageCard = ({ children }: { children: string }): JSX.Element => {
+const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): JSX.Element => {
+  const { close: closeRagSearchModal } = useRagSearchModal();
 
+  const onClick = useCallback(() => {
+    closeRagSearchModal();
+  }, [closeRagSearchModal]);
+
+  return (
+    <NextLink href={props.href} onClick={onClick} className="link-primary">
+      {props.children}
+    </NextLink>
+  );
+};
+const AssistantMessageCard = ({ children }: { children: string }): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -29,17 +48,18 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
         <div className="me-2 me-lg-3">
           <span className="growi-custom-icons grw-ai-icon rounded-pill">growi_ai</span>
         </div>
-
-        { children.length > 0
-          ? (
-            <ReactMarkdown>{children}</ReactMarkdown>
-          )
-          : (
-            <span className="text-thinking">
-              {t('modal_aichat.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
-            </span>
-          )
-        }
+        <div>
+          { children.length > 0
+            ? (
+              <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
+            )
+            : (
+              <span className="text-thinking">
+                {t('modal_aichat.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
+              </span>
+            )
+          }
+        </div>
       </div>
     </div>
   );

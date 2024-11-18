@@ -4,8 +4,8 @@ import { body } from 'express-validator';
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
-import { getTranslation } from '~/server/service/i18next';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -19,6 +19,7 @@ const express = require('express');
 
 const router = express.Router();
 
+
 /**
  * @swagger
  *
@@ -28,21 +29,133 @@ const router = express.Router();
  *        description: AppSettingParams
  *        type: object
  *        properties:
- *          title:
- *            type: string
- *            description: site name show on page header and tilte of HTML
+ *          azureReferenceFileWithRelayMode:
+ *            type: boolean
+ *            example: false
+ *          azureUseOnlyEnvVars:
+ *            type: boolean
+ *            example: false
  *          confidential:
  *            type: string
  *            description: confidential show on page header
- *          globalLang:
+ *            example: 'GROWI'
+ *          envAzureClientId:
  *            type: string
- *            description: language set when create user
- *          isEmailPublishedForNewUser:
- *            type: boolean
- *            description: default email show/hide setting when create user
+ *            example: 'AZURE_CLIENT_ID'
+ *          envAzureClientSecret:
+ *            type: string
+ *            example: 'AZURE_CLIENT_SECRET'
+ *          envAzureStorageAccountName:
+ *           type: string
+ *           example: 'AZURE_STORAGE_ACCOUNT_NAME'
+ *          envAzureStorageContainerName:
+ *            type: string
+ *            example: 'AZURE_STORAGE_CONTAINER_NAME'
+ *          envFileUploadType:
+ *            type: string
+ *            example: 'mongodb'
+ *          envGcsApiKeyJsonPath:
+ *            type: string
+ *            example: 'GCS_API_KEY_JSON_PATH'
+ *          envGcsBucket:
+ *            type: string
+ *            example: 'GCS_BUCKET'
+ *          envGcsUploadNamespace:
+ *            type: string
+ *            example: 'GCS_UPLOAD_NAMESPACE'
+ *          envSiteUrl:
+ *            type: string
+ *            example: 'http://localhost:3000'
  *          fileUpload:
  *            type: boolean
- *            description: enable upload file except image file
+ *            example: true
+ *          fileUploadType:
+ *            type: string
+ *            example: 'local'
+ *          fromAddress:
+ *            type: string
+ *            example: info@growi.org
+ *          gcsApiKeyJsonPath:
+ *            type: string
+ *            example: 'GCS_API_KEY_JSON_PATH'
+ *          gcsBucket:
+ *            type: string
+ *            example: 'GCS_BUCKET'
+ *          gcsReferenceFileWithRelayMode:
+ *            type: boolean
+ *            example: false
+ *          gcsUploadNamespace:
+ *            type: string
+ *            example: 'GCS_UPLOAD_NAMESPACE'
+ *          gcsUseOnlyEnvVars:
+ *            type: boolean
+ *            example: false
+ *          globalLang:
+ *            type: string
+ *            example: 'ja_JP'
+ *          isAppSiteUrlHashed:
+ *            type: boolean
+ *            example: false
+ *          isEmailPublishedForNewUser:
+ *            type: boolean
+ *            example: true
+ *          isMaintenanceMode:
+ *            type: boolean
+ *            example: false
+ *          isQuestionnaireEnabled:
+ *            type: boolean
+ *            example: true
+ *          isV5Compatible:
+ *            type: boolean
+ *            example: true
+ *          s3AccessKeyId:
+ *            type: string
+ *          s3Bucket:
+ *            type: string
+ *          s3CustomEndpoint:
+ *            type: string
+ *          s3ReferenceFileWithRelayMode:
+ *            type: boolean
+ *          s3Region:
+ *            type: string
+ *          siteUrl:
+ *            type: string
+ *          siteUrlUseOnlyEnvVars:
+ *            type: boolean
+ *          smtpHost:
+ *            type: string
+ *          smtpPassword:
+ *            type: string
+ *          smtpPort:
+ *            type: string
+ *          smtpUser:
+ *            type: string
+ *          useOnlyEnvVarForFileUploadType:
+ *            type: boolean
+ *      AppSettingPutParams:
+ *        description: AppSettingPutParams
+ *        type: object
+ *        properties:
+ *          title:
+ *            type: string
+ *            description: title of the site
+ *            example: 'GROWI'
+ *          confidential:
+ *            type: string
+ *            description: confidential show on page header
+ *            example: 'GROWI'
+ *          globalLang:
+ *            type: string
+ *            description: global language
+ *            example: 'ja_JP'
+ *          isEmailPublishedForNewUser:
+ *            type: boolean
+ *            description: is email published for new user, or not
+ *            example: true
+ *          fileUpload:
+ *            type: boolean
+ *            description: is file upload enabled, or not
+ *            example: true
  *      SiteUrlSettingParams:
  *        description: SiteUrlSettingParams
  *        type: object
@@ -53,16 +166,6 @@ const router = express.Router();
  *          envSiteUrl:
  *            type: string
  *            description: environment variable 'APP_SITE_URL'
- *      MailSetting:
- *        description: MailSettingParams
- *        type: object
- *        properties:
- *          fromAddress:
- *            type: string
- *            description: e-mail address used as from address of mail which sent from GROWI app
- *          transmissionMethod:
- *            type: string
- *            description: transmission method
  *      SmtpSettingParams:
  *        description: SmtpSettingParams
  *        type: object
@@ -70,23 +173,89 @@ const router = express.Router();
  *          smtpHost:
  *            type: string
  *            description: host name of client's smtp server
+ *            example: 'smtp.example.com'
  *          smtpPort:
  *            type: string
  *            description: port of client's smtp server
+ *            example: '587'
  *          smtpUser:
  *            type: string
  *            description: user name of client's smtp server
+ *            example: 'USER'
  *          smtpPassword:
  *            type: string
  *            description: password of client's smtp server
+ *            example: 'PASSWORD'
+ *          fromAddress:
+ *            type: string
+ *            description: e-mail address
+ *            example: 'info@example.com'
+ *      SmtpSettingResponseParams:
+ *        description: SmtpSettingResponseParams
+ *        type: object
+ *        properties:
+ *          isMailerSetup:
+ *            type: boolean
+ *            description: is mailer setup, or not
+ *            example: true
+ *          smtpHost:
+ *            type: string
+ *            description: host name of client's smtp server
+ *            example: 'smtp.example.com'
+ *          smtpPort:
+ *            type: string
+ *            description: port of client's smtp server
+ *            example: '587'
+ *          smtpUser:
+ *            type: string
+ *            description: user name of client's smtp server
+ *            example: 'USER'
+ *          smtpPassword:
+ *            type: string
+ *            description: password of client's smtp server
+ *            example: 'PASSWORD'
+ *          fromAddress:
+ *            type: string
+ *            description: e-mail address
+ *            example: 'info@example.com'
  *      SesSettingParams:
  *        description: SesSettingParams
  *        type: object
  *        properties:
- *          accessKeyId:
+ *          from:
+ *            type: string
+ *            description: e-mail address used as from address of mail which sent from GROWI app
+ *            example: 'info@growi.org'
+ *          transmissionMethod:
+ *            type: string
+ *            description: transmission method
+ *            example: 'ses'
+ *          sesAccessKeyId:
  *            type: string
  *            description: accesskey id for authentification of AWS
- *          secretAccessKey:
+ *          sesSecretAccessKey:
+ *            type: string
+ *            description: secret key for authentification of AWS
+ *      SesSettingResponseParams:
+ *        description: SesSettingParams
+ *        type: object
+ *        properties:
+ *          isMailerSetup:
+ *            type: boolean
+ *            description: is mailer setup, or not
+ *            example: true
+ *          from:
+ *            type: string
+ *            description: e-mail address used as from address of mail which sent from GROWI app
+ *            example: 'info@growi.org'
+ *          transmissionMethod:
+ *            type: string
+ *            description: transmission method
+ *            example: 'ses'
+ *          sesAccessKeyId:
+ *            type: string
+ *            description: accesskey id for authentification of AWS
+ *          sesSecretAccessKey:
  *            type: string
  *            description: secret key for authentification of AWS
  *      FileUploadSettingParams:
@@ -126,22 +295,35 @@ const router = express.Router();
  *          gcsReferenceFileWithRelayMode:
  *            type: boolean
  *            description: is enable internal stream system for gcs file request
- *          envGcsApiKeyJsonPath:
+ *          azureTenantId:
  *            type: string
- *            description: Path of the JSON file that contains service account key to authenticate to GCP API
- *          envGcsBucket:
+ *            description: tenant id of azure
+ *          azureClientId:
  *            type: string
- *            description: Name of the GCS bucket
- *          envGcsUploadNamespace:
+ *            description: client id of azure
+ *          azureClientSecret:
  *            type: string
- *            description: Directory name to create in the bucket
- *      PluginSettingParams:
- *        description: PluginSettingParams
+ *            description: client secret of azure
+ *          azureStorageAccountName:
+ *            type: string
+ *            description: storage account name of azure
+ *          azureStorageContainerName:
+ *            type: string
+ *            description: storage container name of azure
+ *          azureReferenceFileWithRelayMode:
+ *            type: boolean
+ *            description: is enable internal stream system for azure file request
+ *      QuestionnaireSettingParams:
+ *        description: QuestionnaireSettingParams
  *        type: object
  *        properties:
- *          isEnabledPlugins:
- *            type: string
- *            description: enable use plugins
+ *          isQuestionnaireEnabled:
+ *            type: boolean
+ *            description: is questionnaire enabled, or not
+ *            example: true
+ *          isAppSiteUrlHashed:
+ *            type: boolean
+ *            description: is app site url hashed, or not
  */
 
 module.exports = (crowi) => {
@@ -231,6 +413,8 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [AppSettings]
    *        operationId: getAppSettings
+   *        security:
+   *          - api_key: []
    *        summary: /app-settings
    *        description: get app setting params
    *        responses:
@@ -242,7 +426,7 @@ module.exports = (crowi) => {
    *                  properties:
    *                    appSettingsParams:
    *                      type: object
-   *                      description: app settings params
+   *                      $ref: '#/components/schemas/AppSettingParams'
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
     const appSettingsParams = {
@@ -318,22 +502,28 @@ module.exports = (crowi) => {
    *    /app-settings/app-setting:
    *      put:
    *        tags: [AppSettings]
-   *        summary: /app-settings/app-setting
    *        operationId: updateAppSettings
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /app-settings/app-setting
    *        description: Update app setting
    *        requestBody:
    *          required: true
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/AppSettingParams'
+   *                $ref: '#/components/schemas/AppSettingPutParams'
    *        responses:
    *          200:
    *            description: Succeeded to update app setting
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/AppSettingParams'
+   *                  type: object
+   *                  properties:
+   *                    appSettingParams:
+   *                      type: object
+   *                      $ref: '#/components/schemas/AppSettingPutParams'
    */
   router.put('/app-setting', loginRequiredStrictly, adminRequired, addActivity, validator.appSetting, apiV3FormValidator, async(req, res) => {
     const requestAppSettingParams = {
@@ -374,6 +564,8 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [AppSettings]
    *        operationId: updateAppSettingSiteUrlSetting
+   *        security:
+   *          - cookieAuth: []
    *        summary: /app-settings/site-url-setting
    *        description: Update site url setting
    *        requestBody:
@@ -388,7 +580,15 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SiteUrlSettingParams'
+   *                  type: object
+   *                  properties:
+   *                    siteUrlSettingParams:
+   *                      type: object
+   *                      properties:
+   *                        siteUrl:
+   *                          type: string
+   *                          description: Site URL. e.g. https://example.com, https://example.com:3000
+   *                          example: 'http://localhost:3000'
    */
   router.put('/site-url-setting', loginRequiredStrictly, adminRequired, addActivity, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
 
@@ -516,6 +716,8 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [AppSettings]
    *        operationId: updateAppSettingSmtpSetting
+   *        security:
+   *          - cookieAuth: []
    *        summary: /app-settings/smtp-setting
    *        description: Update smtp setting
    *        requestBody:
@@ -530,7 +732,11 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SmtpSettingParams'
+   *                  type: object
+   *                  properties:
+   *                    mailSettingParams:
+   *                      type: object
+   *                      $ref: '#/components/schemas/SmtpSettingResponseParams'
    */
   router.put('/smtp-setting', loginRequiredStrictly, adminRequired, addActivity, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
     const requestMailSettingParams = {
@@ -562,14 +768,21 @@ module.exports = (crowi) => {
    *      post:
    *        tags: [AppSettings]
    *        operationId: postSmtpTest
+   *        security:
+   *          - cookieAuth: []
    *        summary: /app-settings/smtp-setting
    *        description: Send test mail for smtp
    *        responses:
    *          200:
    *            description: Succeeded to send test mail for smtp
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  description: Empty object
    */
   router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
-    const { t } = await getTranslation();
+    const { t } = await getTranslation({ lang: req.user.lang });
 
     try {
       await sendTestEmail(req.user.email);
@@ -592,6 +805,8 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [AppSettings]
    *        operationId: updateAppSettingSesSetting
+   *        security:
+   *          - cookieAuth: []
    *        summary: /app-settings/ses-setting
    *        description: Update ses setting
    *        requestBody:
@@ -606,7 +821,7 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SesSettingParams'
+   *                  $ref: '#/components/schemas/SesSettingResponseParams'
    */
   router.put('/ses-setting', loginRequiredStrictly, adminRequired, addActivity, validator.sesSetting, apiV3FormValidator, async(req, res) => {
     const { mailService } = crowi;
@@ -642,6 +857,8 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [AppSettings]
    *        operationId: updateAppSettingFileUploadSetting
+   *        security:
+   *          - cookieAuth: []
    *        summary: /app-settings/file-upload-setting
    *        description: Update fileUploadSetting
    *        requestBody:
@@ -656,7 +873,11 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/FileUploadSettingParams'
+   *                  type: object
+   *                  properties:
+   *                    responseParams:
+   *                      type: object
+   *                      $ref: '#/components/schemas/FileUploadSettingParams'
    */
   //  eslint-disable-next-line max-len
   router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
@@ -740,6 +961,35 @@ module.exports = (crowi) => {
 
   });
 
+  /**
+   * @swagger
+   *
+   *    /app-settings/questionnaire-settings:
+   *      put:
+   *        tags: [AppSettings]
+   *        operationId: updateAppSettingQuestionnaireSettings
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /app-settings/questionnaire-settings
+   *        description: Update QuestionnaireSetting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/QuestionnaireSettingParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update QuestionnaireSetting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    responseParams:
+   *                      type: object
+   *                      $ref: '#/components/schemas/QuestionnaireSettingParams'
+   */
   // eslint-disable-next-line max-len
   router.put('/questionnaire-settings', loginRequiredStrictly, adminRequired, addActivity, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
     const { isQuestionnaireEnabled, isAppSiteUrlHashed } = req.body;
@@ -769,6 +1019,30 @@ module.exports = (crowi) => {
 
   });
 
+  /**
+   * @swagger
+   *
+   *    /app-settings/v5-schema-migration:
+   *      post:
+   *        tags: [AppSettings]
+   *        operationId: updateAppSettingV5SchemaMigration
+   *        security:
+   *          - api_key: []
+   *        summary: AccessToken supported.
+   *        description: Update V5SchemaMigration
+   *        responses:
+   *          200:
+   *            description: Succeeded to get V5SchemaMigration
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    isV5Compatible:
+   *                      type: boolean
+   *                      description: is V5 compatible, or not
+   *                      example: true
+   */
   router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
     const isMaintenanceMode = crowi.appService.isMaintenanceMode();
     if (!isMaintenanceMode) {
@@ -790,6 +1064,39 @@ module.exports = (crowi) => {
     return res.apiv3({ isV5Compatible });
   });
 
+  /**
+   * @swagger
+   *
+   *    /app-settings/maintenance-mode:
+   *      post:
+   *        tags: [AppSettings]
+   *        operationId: updateAppSettingMaintenanceMode
+   *        security:
+   *          - api_key: []
+   *        summary: AccessToken supported.
+   *        description: Update MaintenanceMode
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  flag:
+   *                    type: boolean
+   *                    description: flag for maintenance mode
+   *        responses:
+   *          200:
+   *            description: Succeeded to update MaintenanceMode
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    flag:
+   *                      type: boolean
+   *                      description: true if maintenance mode is enabled
+   *                      example: true
+   */
   // eslint-disable-next-line max-len
   router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
     const { flag } = req.body;
