@@ -11,7 +11,7 @@ describe('Installing a GROWI template plugin', () => {
   it('install() should success', async() => {
     // when
     const result = await growiPluginService.install({
-      url: 'https://github.com/weseek/growi-plugin-templates-for-office',
+      url: 'https://github.com/growilabs/growi-plugin-templates-for-office',
     });
     const count = await GrowiPlugin.count({ 'meta.name': 'growi-plugin-templates-for-office' });
 
@@ -42,7 +42,7 @@ describe('Installing a GROWI template plugin', () => {
 
     // when
     const result = await growiPluginService.install({
-      url: 'https://github.com/weseek/growi-plugin-templates-for-office',
+      url: 'https://github.com/growilabs/growi-plugin-templates-for-office',
     });
     const count2 = await GrowiPlugin.count({ 'meta.name': 'growi-plugin-templates-for-office' });
 
@@ -59,7 +59,7 @@ describe('Installing a GROWI theme plugin', () => {
   it('install() should success', async() => {
     // when
     const result = await growiPluginService.install({
-      url: 'https://github.com/weseek/growi-plugin-theme-vivid-internet',
+      url: 'https://github.com/growilabs/growi-plugin-theme-vivid-internet',
     });
     const count = await GrowiPlugin.count({ 'meta.name': 'growi-plugin-theme-vivid-internet' });
 
