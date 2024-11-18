@@ -1,4 +1,5 @@
 import type { ReadStream } from 'fs';
+import type { Writable } from 'stream';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
@@ -163,7 +164,7 @@ module.exports = function(crowi) {
     // mkdir -p
     mkdir.sync(dirpath);
 
-    const writeStream = fs.createWriteStream(filePath);
+    const writeStream: Writable = fs.createWriteStream(filePath);
 
     return pipeline(fileStream, writeStream);
   };
@@ -178,7 +179,7 @@ module.exports = function(crowi) {
     const fileStream = new Readable();
     fileStream.push(data);
     fileStream.push(null); // EOF
-    const writeStream = fs.createWriteStream(absFilePath);
+    const writeStream: Writable = fs.createWriteStream(absFilePath);
     return pipeline(fileStream, writeStream);
   };
 

@@ -344,10 +344,10 @@ export class ImportService {
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
     const parseStream = unzipStream.Parse();
-    const unzipStreamPipe = pipelinePromise(readStream, parseStream);
+    const unzipStreamPipe = pipeline(readStream, parseStream);
     const files: string[] = [];
 
-    unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
+    const unzipEntryStream = unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
       const fileName = entry.path;
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing unzip file (path traversal attack)
@@ -370,7 +370,7 @@ export class ImportService {
       }
     });
 
-    await unzipStreamPipe;
+    await pipelinePromise([unzipEntryStream]);
 
     return files;
   }
