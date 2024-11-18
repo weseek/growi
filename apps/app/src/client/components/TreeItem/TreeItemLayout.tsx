@@ -79,7 +79,6 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   useEffect(() => {
     if (isOpen && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
-      console.log('This is new data!!!!: ', newChildren);
       setCurrentChildren(newChildren);
     }
   }, [data, isOpen, targetPathOrId]);
