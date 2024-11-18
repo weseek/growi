@@ -23,7 +23,7 @@ import streamToPromise from 'stream-to-promise';
 import { Comment } from '~/features/comment/server';
 import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import { getOpenaiService } from '~/features/openai/server/services/openai';
+import { isAiEnabled } from '~/features/openai/server/services';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import type { IOptionsForCreate, IOptionsForUpdate } from '~/interfaces/page';
@@ -1175,9 +1175,13 @@ class PageService implements IPageService {
         newPagePath, populatedPage?.revision?.body ?? '', user, options,
       );
 
-      // Do not await because communication with OpenAI takes time
-      const openaiService = getOpenaiService();
-      openaiService?.createVectorStoreFile([duplicatedTarget]);
+      if (isAiEnabled()) {
+        const { getOpenaiService } = await import('~/features/openai/server/services/openai');
+
+        // Do not await because communication with OpenAI takes time
+        const openaiService = getOpenaiService();
+        openaiService?.createVectorStoreFile([duplicatedTarget]);
+      }
     }
     this.pageEvent.emit('duplicate', page, user);
 
@@ -1412,9 +1416,13 @@ class PageService implements IPageService {
     const duplicatedPagesWithPopulatedToShowRevison = await Page
       .find({ _id: { $in: duplicatedPageIds }, grant: PageGrant.GRANT_PUBLIC }).populate('revision') as PageDocument[];
 
-    // Do not await because communication with OpenAI takes time
-    const openaiService = getOpenaiService();
-    openaiService?.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
+    if (isAiEnabled()) {
+      const { getOpenaiService } = await import('~/features/openai/server/services/openai');
+
+      // Do not await because communication with OpenAI takes time
+      const openaiService = getOpenaiService();
+      openaiService?.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
+    }
   }
 
   private async duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix) {
@@ -1901,11 +1909,15 @@ class PageService implements IPageService {
       // Leave bookmarks without deleting -- 2024.05.17 Yuki Takei
     ]);
 
-    const openaiService = getOpenaiService();
-    if (openaiService != null) {
-      const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
-      const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService.deleteVectorStoreFile(vectorStore._id, pageId));
-      await Promise.allSettled(deleteVectorStoreFilePromises);
+    if (isAiEnabled()) {
+      const { getOpenaiService } = await import('~/features/openai/server/services/openai');
+
+      const openaiService = getOpenaiService();
+      if (openaiService != null) {
+        const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
+        const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService.deleteVectorStoreFile(vectorStore._id, pageId));
+        await Promise.allSettled(deleteVectorStoreFilePromises);
+      }
     }
   }
 
