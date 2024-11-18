@@ -20,7 +20,7 @@ describe('Installing a GROWI template plugin', () => {
     expect(count).toBe(1);
     expect(fs.existsSync(path.join(
       PLUGIN_STORING_PATH,
-      'weseek',
+      'growilabs',
       'growi-plugin-templates-for-office',
     ))).toBeTruthy();
   });
@@ -33,7 +33,7 @@ describe('Installing a GROWI template plugin', () => {
     // setup
     const dummyFilePath = path.join(
       PLUGIN_STORING_PATH,
-      'weseek',
+      'growilabs',
       'growi-plugin-templates-for-office',
       'dummy.txt',
     );
@@ -68,7 +68,7 @@ describe('Installing a GROWI theme plugin', () => {
     expect(count).toBe(1);
     expect(fs.existsSync(path.join(
       PLUGIN_STORING_PATH,
-      'weseek',
+      'growilabs',
       'growi-plugin-theme-vivid-internet',
     ))).toBeTruthy();
   });
@@ -88,7 +88,7 @@ describe('Installing a GROWI theme plugin', () => {
     expect(results.themeMetadata).not.toBeNull();
     expect(results.themeHref).not.toBeNull();
     expect(results.themeHref
-      .startsWith('/static/plugins/weseek/growi-plugin-theme-vivid-internet/dist/assets/style-')).toBeTruthy();
+      .startsWith('/static/plugins/growilabs/growi-plugin-theme-vivid-internet/dist/assets/style-')).toBeTruthy();
   });
 
 });
