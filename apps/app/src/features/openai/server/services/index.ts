@@ -1,2 +1,1 @@
-export * from './embeddings';
-export * from './client';
+export * from './is-ai-enabled';
