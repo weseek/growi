@@ -1151,7 +1151,7 @@
   },
   "ai_integration": {
     "ai_integration": "AI 連携",
-    "disable_mode_explanation": "現在、AI 連携は無効になっています。有効にする場合は環境変数 <code>AI_ENABLED</code> を true に設定してください。",
+    "disable_mode_explanation": "現在、AI 連携は無効になっています。有効にする場合は環境変数 <code>AI_ENABLED</code>, <code>OPENAI_API_KEY</code>, <code>OPENAI_SERVICE_TYPE</code> を設定してください。<br><br>詳細は<a target='blank' rel='noopener noreferrer' href={{documentationUrl}}ja/guide/features/ai-knowledge-assistant.html>こちら</a>を参照してください。",
     "ai_search_management": "AI 検索管理",
     "rebuild_vector_store": "Vector Store のリビルド",
     "rebuild_vector_store_label": "リビルド",
