@@ -1,4 +1,5 @@
-import { Writable, Transform, pipeline } from 'stream';
+import { Writable, Transform } from 'stream';
+import { pipeline } from 'stream/promises';
 import { URL } from 'url';
 
 import { getIdStringForRef, type IPage } from '@growi/core';
@@ -553,7 +554,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     });
 
-    pipeline(
+    await pipeline(
       readStream,
       batchStream,
       appendTagNamesStream,

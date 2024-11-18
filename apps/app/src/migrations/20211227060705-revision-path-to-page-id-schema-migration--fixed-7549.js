@@ -1,4 +1,5 @@
-import { pipeline, Writable } from 'stream';
+import { Writable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -56,7 +57,7 @@ module.exports = {
       },
     });
 
-    pipeline(pagesStream, batchStrem, migratePagesStream);
+    await pipeline(pagesStream, batchStrem, migratePagesStream);
 
     await streamToPromise(migratePagesStream);
 
@@ -105,7 +106,7 @@ module.exports = {
       },
     });
 
-    pipeline(pagesStream, batchStrem, migratePagesStream);
+    await pipeline(pagesStream, batchStrem, migratePagesStream);
 
     await streamToPromise(migratePagesStream);
 

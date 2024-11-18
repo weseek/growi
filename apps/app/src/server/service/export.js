@@ -7,7 +7,8 @@ const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-
 
 const fs = require('fs');
 const path = require('path');
-const { Transform, pipeline } = require('stream');
+const { Transform } = require('stream');
+const { pipeline } = require('stream/promises');
 
 const archiver = require('archiver');
 const mongoose = require('mongoose');
@@ -196,7 +197,7 @@ class ExportService {
     const jsonFileToWrite = path.join(this.baseDir, `${collectionName}.json`);
     const writeStream = fs.createWriteStream(jsonFileToWrite, { encoding: this.growiBridgeService.getEncoding() });
 
-    pipeline(readStream, logStream, transformStream, writeStream);
+    await pipeline(readStream, logStream, transformStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -352,7 +353,7 @@ class ExportService {
     const output = fs.createWriteStream(zipFile);
 
     // pipe archive data to the file
-    pipeline(archive, output);
+    await pipeline(archive, output);
 
     // finalize the archive (ie we are done appending files but streams have to finish yet)
     // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand

@@ -1,4 +1,5 @@
-import { pipeline, Writable } from 'stream';
+import { Writable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import { getIdForRef } from '@growi/core';
 import type { IPage, Ref } from '@growi/core';
@@ -110,7 +111,7 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
       },
     });
 
-    pipeline(readStream, batchStream, writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
     // ────────┤ end │─────────

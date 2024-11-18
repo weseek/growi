@@ -1,6 +1,7 @@
 import type EventEmitter from 'events';
 import pathlib from 'path';
-import { pipeline, Readable, Writable } from 'stream';
+import { Readable, Writable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import {
   PageStatus, YDocStatus, getIdForRef,
@@ -1045,7 +1046,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(readStream, batchStream, writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
   }
@@ -1084,7 +1085,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(readStream, batchStream, writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
   }
@@ -1501,7 +1502,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(readStream, batchStream, writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -1541,7 +1542,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(readStream, batchStream, writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -1871,7 +1872,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(readStream, batchStream, writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -2134,7 +2135,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(readStream, batchStream, writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -2421,7 +2422,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(childPagesReadableStream, batchStream, childPagesWritable);
+    await pipeline(childPagesReadableStream, batchStream, childPagesWritable);
 
     await streamToPromise(childPagesWritable);
   }
@@ -2489,7 +2490,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(readStream, batchStream, writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(writeStream);
 
@@ -2523,7 +2524,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(readStream, batchStream, writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     await streamToPromise(readStream);
 
@@ -3371,7 +3372,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(pagesStream, batchStream, migratePagesStream);
+    await pipeline(pagesStream, batchStream, migratePagesStream);
 
     await streamToPromise(migratePagesStream);
 
@@ -3489,7 +3490,7 @@ class PageService implements IPageService {
       },
     });
 
-    pipeline(pageCursor, batchStream, recountWriteStream);
+    await pipeline(pageCursor, batchStream, recountWriteStream);
 
     await streamToPromise(recountWriteStream);
   }

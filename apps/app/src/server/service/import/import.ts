@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { EventEmitter } from 'stream';
 import { Writable, Transform, pipeline } from 'stream';
+import { pipeline as pipelinePromise } from 'stream/promises';
 
 import JSONStream from 'JSONStream';
 import gc from 'expose-gc/function';
@@ -267,7 +268,7 @@ export class ImportService {
         },
       });
 
-      pipeline(readStream, jsonStream, convertStream, batchStream, writeStream);
+      await pipelinePromise(readStream, jsonStream, convertStream, batchStream, writeStream);
 
       await streamToPromise(writeStream);
 
