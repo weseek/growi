@@ -12,7 +12,6 @@ const { pipeline } = require('stream/promises');
 
 const archiver = require('archiver');
 const mongoose = require('mongoose');
-const streamToPromise = require('stream-to-promise');
 
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 
@@ -108,7 +107,7 @@ class ExportService {
     writeStream.write(JSON.stringify(metaData));
     writeStream.close();
 
-    await streamToPromise(writeStream);
+    await pipeline(writeStream);
 
     return metaJson;
   }

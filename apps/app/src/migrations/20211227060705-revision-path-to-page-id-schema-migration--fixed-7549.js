@@ -2,7 +2,6 @@ import { Writable } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 
 import getPageModel from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
