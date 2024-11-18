@@ -107,7 +107,7 @@ class ExportService {
     writeStream.write(JSON.stringify(metaData));
     writeStream.close();
 
-    await pipeline(writeStream);
+    await pipeline([writeStream]);
 
     return metaJson;
   }
