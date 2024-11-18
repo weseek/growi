@@ -79,11 +79,11 @@ class GrowiBridgeService {
 
     const readStream = fs.createReadStream(zipFile);
     const parseStream = unzipStream.Parse();
-    const unzipStreamPipe = pipeline(readStream, parseStream);
+    const unzipEntryStream = pipeline(readStream, parseStream);
 
     let tapPromise;
 
-    const unzipEntryStream = unzipStreamPipe.on('entry', (entry: Entry) => {
+    unzipEntryStream.on('entry', (entry: Entry) => {
       const fileName = entry.path;
       const size = entry.size; // might be undefined in some archives
       if (fileName === this.getMetaFileName()) {
