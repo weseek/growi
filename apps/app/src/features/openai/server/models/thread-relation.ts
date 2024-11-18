@@ -1,3 +1,4 @@
+import { addDays } from 'date-fns';
 import type mongoose from 'mongoose';
 import { type Model, type Document, Schema } from 'mongoose';
 
@@ -6,9 +7,7 @@ import { getOrCreateModel } from '~/server/util/mongoose-utils';
 const DAYS_UNTIL_EXPIRATION = 3;
 
 const generateExpirationDate = (): Date => {
-  const currentDate = new Date();
-  const expirationDate = new Date(currentDate.setDate(currentDate.getDate() + DAYS_UNTIL_EXPIRATION));
-  return expirationDate;
+  return addDays(new Date(), DAYS_UNTIL_EXPIRATION);
 };
 
 interface ThreadRelation {
