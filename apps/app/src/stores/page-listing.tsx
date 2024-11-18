@@ -197,7 +197,7 @@ export const useSWRxPageAncestorsChildren = (
     assert(keyMatcherForPageTree(key));
   }
 
-  return useSWR(
+  return useSWRImmutable(
     key,
     ([, endpoint, path]) => apiv3Get(endpoint, { path }).then((response) => {
       return {
