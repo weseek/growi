@@ -72,7 +72,7 @@ export const InAppNotificationDropdown = (): JSX.Element => {
         <DropdownMenu end>
           { inAppNotificationData != null && inAppNotificationData.docs.length === 0
           // no items
-            ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>
+            ? <DropdownItem disabled>{t('in_app_notification.no_unread_messages')}</DropdownItem>
           // render DropdownItem
             : <InAppNotificationList inAppNotificationData={inAppNotificationData} />
           }

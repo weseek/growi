@@ -23,6 +23,11 @@ module.exports = {
         name: 'access_token',
         in: 'query',
       },
+      cookieAuth: {
+        type: 'apiKey',
+        in: 'cookie',
+        name: 'connect.sid',
+      },
     },
   },
   'x-tagGroups': [
@@ -57,6 +62,7 @@ module.exports = {
       name: 'System Management API',
       tags: [
         'Home',
+        'AdminHome',
         'AppSettings',
         'SecuritySetting',
         'MarkDownSetting',
