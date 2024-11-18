@@ -50,13 +50,7 @@ class AnnouncementService {
       }),
     };
 
-    const operation = [{
-      insertOne: {
-        document: announcement,
-      },
-    }];
-
-    await Announcement.bulkWrite(operation);
+    await Announcement.create(announcement);
     logger.info('Announcement bulkWrite has run');
 
     return;
