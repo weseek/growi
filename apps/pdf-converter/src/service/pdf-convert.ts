@@ -229,7 +229,7 @@ class PdfConvertService {
   private async convertHtmlToPdf(htmlString: string): Promise<Buffer> {
     const executeConvert = async(retries: number) => {
       try {
-        return this.puppeteerCluster.execute(htmlString);
+        return this.puppeteerCluster?.execute(htmlString);
       }
       catch (err) {
         if (retries > 0) {

@@ -1,2 +1,2 @@
-export { default as PdfCtrl } from './pdf';
-export { default as TerminusCtrl } from './terminus';
+export { default as PdfCtrl } from './pdf.js';
+export { default as TerminusCtrl } from './terminus.js';

@@ -4,6 +4,6 @@
   "ignore": ["node_modules/**/*"],
   "delay": 100,
   "execMap": {
-    "ts": "node --loader @swc-node/register/esm"
+    "ts": "node --import @swc-node/register/esm-register"
   }
 }

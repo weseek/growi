@@ -14,24 +14,26 @@
   },
   "dependencies": {
     "@godaddy/terminus": "^4.12.1",
-    "@tsed/cli": "^5.4.3",
-    "@tsed/cli-core": "^5.4.3",
-    "@tsed/cli-generate-swagger": "^5.4.3",
-    "@tsed/common": "7.83.4",
-    "@tsed/components-scan": "7.83.4",
-    "@tsed/core": "7.83.4",
-    "@tsed/di": "7.83.4",
-    "@tsed/exceptions": "7.83.4",
-    "@tsed/json-mapper": "7.83.4",
-    "@tsed/platform-express": "7.83.4",
-    "@tsed/schema": "7.83.4",
-    "@tsed/swagger": "7.83.4",
-    "@tsed/terminus": "7.83.4",
+    "@tsed/cli": "^6.0.0-rc.2",
+    "@tsed/cli-core": "^6.0.0-rc.2",
+    "@tsed/cli-generate-swagger": "^6.0.0-rc.2",
+    "@tsed/common": "8.0.0-rc.5",
+    "@tsed/components-scan": "8.0.0-rc.5",
+    "@tsed/core": "8.0.0-rc.5",
+    "@tsed/di": "8.0.0-rc.5",
+    "@tsed/exceptions": "8.0.0-rc.5",
+    "@tsed/json-mapper": "8.0.0-rc.5",
+    "@tsed/platform-express": "8.0.0-rc.5",
+    "@tsed/schema": "8.0.0-rc.5",
+    "@tsed/swagger": "8.0.0-rc.5",
+    "@tsed/terminus": "8.0.0-rc.5",
     "axios": "^0.24.0",
     "express": "^4.19.2",
     "puppeteer": "^23.1.1",
     "puppeteer-cluster": "^0.24.0",
-    "tslib": "^2.8.0"
+    "tslib": "^2.8.0",
+
+    "@tsed/platform-http": "8.0.0-rc.5"
   },
   "devDependencies": {
     "@swc-node/register": "^1.10.9",
@@ -39,6 +41,10 @@
     "@types/express": "^4.17.21",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.5.4",
-    "orval": "^7.1.1"
+    "orval": "^7.1.1",
+
+    "@swc/cli": "^0.5.0",
+    "@swc/core": "^1.9.2",
+    "@swc/helpers": "^0.5.15"
   }
 }
