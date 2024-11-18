@@ -14,7 +14,7 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import loggerFactory from '~/utils/logger';
 
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
-import { openaiClient } from '../services';
+import { openaiClient } from '../services/client';
 import { getStreamErrorCode } from '../services/getStreamErrorCode';
 import { replaceAnnotationWithPageLink } from '../services/replace-annotation-with-page-link';
 
