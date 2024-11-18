@@ -1,10 +1,10 @@
 import { Writable, Transform } from 'stream';
+import { pipeline } from 'stream/promises';
 import { URL } from 'url';
 
 import { getIdStringForRef, type IPage } from '@growi/core';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import type { ISearchResult, ISearchResultData } from '~/interfaces/search';
@@ -553,14 +553,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     });
 
-    readStream
-      .pipe(batchStream)
-      .pipe(appendTagNamesStream)
-      // .pipe(appendEmbeddingStream)
-      // .pipe(appendFileUploadedStream)
-      .pipe(writeStream);
 
-    return streamToPromise(writeStream);
+    return pipeline(
+      readStream,
+      batchStream,
+      appendTagNamesStream,
+      // appendEmbeddingStream,
+      // appendFileUploadedStream,
+      writeStream,
+    );
   }
 
   deletePages(pages) {

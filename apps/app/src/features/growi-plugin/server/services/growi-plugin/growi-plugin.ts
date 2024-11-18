@@ -1,5 +1,6 @@
 import fs, { readFileSync } from 'fs';
 import path from 'path';
+import { pipeline } from 'stream/promises';
 
 import { GrowiPluginType } from '@growi/core';
 import type { GrowiThemeMetadata, ViteManifest } from '@growi/core';
@@ -8,7 +9,6 @@ import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import type mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
@@ -209,10 +209,8 @@ export class GrowiPluginService implements IGrowiPluginService {
 
   private async unzip(zipFilePath: fs.PathLike, destPath: fs.PathLike): Promise<void> {
     try {
-      const stream = fs.createReadStream(zipFilePath);
-      const unzipFileStream = stream.pipe(unzipStream.Extract({ path: destPath.toString() }));
-
-      await streamToPromise(unzipFileStream);
+      const readZipStream = fs.createReadStream(zipFilePath);
+      await pipeline(readZipStream, unzipStream.Extract({ path: destPath.toString() }));
     }
     catch (err) {
       logger.error(err);
