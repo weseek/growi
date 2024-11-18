@@ -1,6 +1,6 @@
 import fs, { readFileSync } from 'fs';
 import path from 'path';
-import { pipeline } from 'stream/promises';
+import { pipeline } from 'stream';
 
 import { GrowiPluginType } from '@growi/core';
 import type { GrowiThemeMetadata, ViteManifest } from '@growi/core';
@@ -211,7 +211,7 @@ export class GrowiPluginService implements IGrowiPluginService {
   private async unzip(zipFilePath: fs.PathLike, destPath: fs.PathLike): Promise<void> {
     try {
       const readZipStream = fs.createReadStream(zipFilePath);
-      const unzipFileStream = await pipeline(readZipStream, unzipStream.Extract({ path: destPath.toString() }));
+      const unzipFileStream = pipeline(readZipStream, unzipStream.Extract({ path: destPath.toString() }));
 
       await streamToPromise(unzipFileStream);
     }
