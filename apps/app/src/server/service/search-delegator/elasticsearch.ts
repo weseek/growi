@@ -5,7 +5,6 @@ import { URL } from 'url';
 import { getIdStringForRef, type IPage } from '@growi/core';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import type { ISearchResult, ISearchResultData } from '~/interfaces/search';
@@ -554,7 +553,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     });
 
-    await pipeline(
+
+    return pipeline(
       readStream,
       batchStream,
       appendTagNamesStream,
@@ -562,8 +562,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       // appendFileUploadedStream,
       writeStream,
     );
-
-    return streamToPromise(writeStream);
   }
 
   deletePages(pages) {

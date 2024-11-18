@@ -199,8 +199,6 @@ class ExportService {
 
     await pipeline(readStream, logStream, transformStream, writeStream);
 
-    await streamToPromise(writeStream);
-
     return writeStream.path;
   }
 
@@ -353,13 +351,12 @@ class ExportService {
     const output = fs.createWriteStream(zipFile);
 
     // pipe archive data to the file
-    await pipeline(archive, output);
+    const stream = pipeline(archive, output);
 
     // finalize the archive (ie we are done appending files but streams have to finish yet)
     // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
     archive.finalize();
-
-    await streamToPromise(archive);
+    await stream;
 
     logger.info(`zipped GROWI data into ${zipFile} (${archive.pointer()} bytes)`);
 

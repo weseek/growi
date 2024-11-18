@@ -11,7 +11,6 @@ import type {
 } from 'mongodb';
 import type { Document } from 'mongoose';
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
 
 import { ImportMode } from '~/models/admin/import-mode';
@@ -270,8 +269,6 @@ export class ImportService {
 
       await pipelinePromise(readStream, jsonStream, convertStream, batchStream, writeStream);
 
-      await streamToPromise(writeStream);
-
       // clean up tmp directory
       fs.unlinkSync(jsonFile);
     }
@@ -347,7 +344,7 @@ export class ImportService {
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
     const parseStream = unzipStream.Parse();
-    const unzipStreamPipe = pipeline(readStream, parseStream);
+    const unzipStreamPipe = pipelinePromise(readStream, parseStream);
     const files: string[] = [];
 
     unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
@@ -373,7 +370,7 @@ export class ImportService {
       }
     });
 
-    await streamToPromise(unzipStreamPipe);
+    await unzipStreamPipe;
 
     return files;
   }

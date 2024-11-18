@@ -19,7 +19,6 @@ import {
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Cursor, HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
 import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
@@ -1047,8 +1046,6 @@ class PageService implements IPageService {
     });
 
     await pipeline(readStream, batchStream, writeStream);
-
-    await streamToPromise(writeStream);
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
@@ -1086,8 +1083,6 @@ class PageService implements IPageService {
     });
 
     await pipeline(readStream, batchStream, writeStream);
-
-    await streamToPromise(writeStream);
   }
 
   /*
@@ -1512,8 +1507,6 @@ class PageService implements IPageService {
 
     await pipeline(readStream, batchStream, writeStream);
 
-    await streamToPromise(writeStream);
-
     return nNonEmptyDuplicatedPages;
   }
 
@@ -1551,8 +1544,6 @@ class PageService implements IPageService {
     });
 
     await pipeline(readStream, batchStream, writeStream);
-
-    await streamToPromise(writeStream);
 
     return count;
   }
@@ -1882,8 +1873,6 @@ class PageService implements IPageService {
 
     await pipeline(readStream, batchStream, writeStream);
 
-    await streamToPromise(writeStream);
-
     return nDeletedNonEmptyPages;
   }
 
@@ -2148,8 +2137,6 @@ class PageService implements IPageService {
     });
 
     await pipeline(readStream, batchStream, writeStream);
-
-    await streamToPromise(writeStream);
 
     return nDeletedNonEmptyPages;
   }
@@ -2436,7 +2423,6 @@ class PageService implements IPageService {
 
     await pipeline(childPagesReadableStream, batchStream, childPagesWritable);
 
-    await streamToPromise(childPagesWritable);
   }
 
   async updateChildPagesGrant(
@@ -2504,8 +2490,6 @@ class PageService implements IPageService {
 
     await pipeline(readStream, batchStream, writeStream);
 
-    await streamToPromise(writeStream);
-
     return count;
   }
 
@@ -2537,8 +2521,6 @@ class PageService implements IPageService {
     });
 
     await pipeline(readStream, batchStream, writeStream);
-
-    await streamToPromise(readStream);
 
     return count;
   }
@@ -3386,8 +3368,6 @@ class PageService implements IPageService {
 
     await pipeline(pagesStream, batchStream, migratePagesStream);
 
-    await streamToPromise(migratePagesStream);
-
     if (await Page.exists(matchFilter) && shouldContinue) {
       return this._normalizeParentRecursively(
         pathOrRegExps,
@@ -3503,8 +3483,6 @@ class PageService implements IPageService {
     });
 
     await pipeline(pageCursor, batchStream, recountWriteStream);
-
-    await streamToPromise(recountWriteStream);
   }
 
   // update descendantCount of all pages that are ancestors of a provided pageId by count

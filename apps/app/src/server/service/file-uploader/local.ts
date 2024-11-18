@@ -1,5 +1,6 @@
 import type { ReadStream } from 'fs';
-import { pipeline, Readable } from 'stream';
+import { Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import type { Response } from 'express';
 
@@ -24,7 +25,6 @@ const fsPromises = require('fs/promises');
 const path = require('path');
 
 const mkdir = require('mkdirp');
-const streamToPromise = require('stream-to-promise');
 const urljoin = require('url-join');
 
 
@@ -165,8 +165,7 @@ module.exports = function(crowi) {
 
     const writeStream = fs.createWriteStream(filePath);
 
-    const stream = pipeline(fileStream, writeStream);
-    return streamToPromise(stream);
+    return pipeline(fileStream, writeStream);
   };
 
   lib.saveFile = async function({ filePath, contentType, data }) {
@@ -180,8 +179,7 @@ module.exports = function(crowi) {
     fileStream.push(data);
     fileStream.push(null); // EOF
     const writeStream = fs.createWriteStream(absFilePath);
-    const stream = pipeline(fileStream, writeStream);
-    return streamToPromise(stream);
+    return pipeline(fileStream, writeStream);
   };
 
   /**

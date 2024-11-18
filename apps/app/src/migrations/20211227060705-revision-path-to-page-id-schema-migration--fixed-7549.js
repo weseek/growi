@@ -59,8 +59,6 @@ module.exports = {
 
     await pipeline(pagesStream, batchStrem, migratePagesStream);
 
-    await streamToPromise(migratePagesStream);
-
     logger.info('Migration has successfully applied');
   },
 
@@ -107,8 +105,6 @@ module.exports = {
     });
 
     await pipeline(pagesStream, batchStrem, migratePagesStream);
-
-    await streamToPromise(migratePagesStream);
 
     logger.info('Migration down has successfully applied');
   },

@@ -1,8 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { pipeline } from 'stream';
+import { pipeline } from 'stream/promises';
 
-import streamToPromise from 'stream-to-promise';
 import unzipStream, { type Entry } from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
@@ -103,7 +102,7 @@ class GrowiBridgeService {
     });
 
     try {
-      await streamToPromise(unzipEntryStream);
+      await unzipEntryStream;
       await tapPromise;
     }
     // if zip is broken

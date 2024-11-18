@@ -6,7 +6,6 @@ import type { IPage, Ref } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
@@ -112,8 +111,6 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
     });
 
     await pipeline(readStream, batchStream, writeStream);
-
-    await streamToPromise(writeStream);
     // ────────┤ end │─────────
   }
   catch (err) {
