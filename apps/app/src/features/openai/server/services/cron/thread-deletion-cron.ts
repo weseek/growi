@@ -4,11 +4,13 @@ import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
 
-import { getOpenaiService, type IOpenaiService } from './openai';
+import { isAiEnabled } from '../is-ai-enabled';
+import { getOpenaiService, type IOpenaiService } from '../openai';
+
 
 const logger = loggerFactory('growi:service:thread-deletion-cron');
 
-class ThreadDeletionCronService {
+export class ThreadDeletionCronService {
 
   cronJob: nodeCron.ScheduledTask;
 
@@ -25,8 +27,7 @@ class ThreadDeletionCronService {
   sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
 
   startCron(): void {
-    const isAiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
-    if (!isAiEnabled) {
+    if (!isAiEnabled()) {
       return;
     }
 
@@ -67,5 +68,3 @@ class ThreadDeletionCronService {
   }
 
 }
-
-export default ThreadDeletionCronService;

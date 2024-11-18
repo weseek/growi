@@ -839,7 +839,7 @@ Guideline as a RAG:
     ns: 'crowi',
     key: 'app:openaiThreadDeletionCronMaxMinutesUntilRequest',
     type: ValueType.NUMBER,
-    default: 60,
+    default: 30,
   },
   OPENAI_THREAD_DELETION_BARCH_SIZE: {
     ns: 'crowi',
@@ -863,7 +863,7 @@ Guideline as a RAG:
     ns: 'crowi',
     key: 'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest',
     type: ValueType.NUMBER,
-    default: 60,
+    default: 30,
   },
   OPENAI_VECTOR_STORE_FILE_DELETION_BARCH_SIZE: {
     ns: 'crowi',
