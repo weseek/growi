@@ -1,11 +1,11 @@
 import path from 'path';
 
 import type { Lang } from '@growi/core';
-import type { TFunction, i18n } from 'i18next';
+import type { InitOptions, TFunction, i18n } from 'i18next';
 import { createInstance } from 'i18next';
 import resourcesToBackend from 'i18next-resources-to-backend';
 
-import { defaultLang, initOptions } from '^/config/i18next.config';
+import * as i18nextConfig from '^/config/i18next.config';
 
 import { resolveFromRoot } from '~/utils/project-dir-utils';
 
@@ -14,7 +14,7 @@ import { configManager } from './config-manager';
 
 const relativePathToLocalesRoot = path.relative(__dirname, resolveFromRoot('public/static/locales'));
 
-const initI18next = async(fallbackLng: Lang[] = [defaultLang]) => {
+const initI18next = async(overwriteOpts: InitOptions) => {
   const i18nInstance = createInstance();
   await i18nInstance
     .use(
@@ -25,8 +25,8 @@ const initI18next = async(fallbackLng: Lang[] = [defaultLang]) => {
       ),
     )
     .init({
-      ...initOptions,
-      fallbackLng,
+      ...i18nextConfig.initOptions,
+      ...overwriteOpts,
     });
   return i18nInstance;
 };
@@ -36,13 +36,31 @@ type Translation = {
   i18n: i18n
 }
 
-export async function getTranslation(lang?: Lang): Promise<Translation> {
+type Opts = {
+  lang?: Lang,
+  ns?: string | readonly string[],
+}
+
+export async function getTranslation(opts?: Opts): Promise<Translation> {
   const globalLang = configManager.getConfig('crowi', 'app:globalLang') as Lang;
-  const fixedLang = lang ?? globalLang;
-  const i18nextInstance = await initI18next([fixedLang, defaultLang]);
+  const fixedLang = opts?.lang ?? globalLang;
+
+  const initOptions: InitOptions = {
+    fallbackLng: [fixedLang, i18nextConfig.defaultLang],
+  };
+
+  // set ns if not null
+  // cz: 'ns: unefined' causes
+  //   TypeError: Cannot read properties of undefined (reading 'forEach')
+  //     at /workspace/growi/node_modules/.pnpm/i18next@23.16.5/node_modules/i18next/dist/cjs/i18next.js:1613:18"
+  if (opts?.ns != null) {
+    initOptions.ns = opts.ns;
+  }
+
+  const i18nextInstance = await initI18next(initOptions);
 
   return {
-    t: i18nextInstance.getFixedT(fixedLang),
+    t: i18nextInstance.getFixedT(fixedLang, opts?.ns),
     i18n: i18nextInstance,
   };
 }

@@ -33,6 +33,26 @@
 > Advises about risks or negative outcomes of certain actions.
 ```
 
+You can also use [directive syntax](https://talk.commonmark.org/t/generic-directives-plugins-syntax/444).
+
+:::note
+Useful information that users should know, even when skimming content.
+:::
+
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
+:::
+
+```markdown
+:::note
+Useful information that users should know, even when skimming content.
+:::
+
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
+:::
+```
+
 
 # Quote text
 - Use quoted expressions by putting `>` at the beginning of the paragraph

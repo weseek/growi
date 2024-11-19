@@ -33,8 +33,14 @@ class SamlSecurityManagementContents extends React.Component {
 
     try {
       await adminSamlSecurityContainer.updateSamlSetting();
-      await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_settings.SAML.updated_saml'));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+    try {
+      await adminGeneralSecurityContainer.retrieveSetupStratedies();
     }
     catch (err) {
       toastError(err);

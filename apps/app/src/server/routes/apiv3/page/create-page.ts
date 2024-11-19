@@ -11,7 +11,7 @@ import { body } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
-import { getOpenaiService } from '~/features/openai/server/services/openai';
+import { isAiEnabled } from '~/features/openai/server/services';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
@@ -202,12 +202,15 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     }
 
     // Rebuild vector store file
-    try {
-      const openaiService = getOpenaiService();
-      await openaiService?.rebuildVectorStore(createdPage);
-    }
-    catch (err) {
-      logger.error('Rebuild vector store failed', err);
+    if (isAiEnabled()) {
+      const { getOpenaiService } = await import('~/features/openai/server/services/openai');
+      try {
+        const openaiService = getOpenaiService();
+        await openaiService?.rebuildVectorStore(createdPage);
+      }
+      catch (err) {
+        logger.error('Rebuild vector store failed', err);
+      }
     }
   }
 

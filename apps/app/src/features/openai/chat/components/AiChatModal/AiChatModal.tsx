@@ -59,29 +59,6 @@ const AiChatModalSubstance = (): JSX.Element => {
 
   const isGenerating = generatingAnswerMessage != null;
 
-  useEffect(() => {
-    // do nothing when the modal is closed or threadId is already set
-    if (threadId != null) {
-      return;
-    }
-
-    const createThread = async() => {
-      // create thread
-      try {
-        const res = await apiv3Post('/openai/thread');
-        const thread = res.data.thread;
-
-        setThreadId(thread.id);
-      }
-      catch (err) {
-        logger.error(err.toString());
-        toastError(t('modal_aichat.failed_to_create_or_retrieve_thread'));
-      }
-    };
-
-    createThread();
-  }, [t, threadId]);
-
   const submit = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
     if (isGenerating) {
@@ -107,12 +84,28 @@ const AiChatModalSubstance = (): JSX.Element => {
     const newAnswerMessage = { id: (logLength + 1).toString(), content: '' };
     setGeneratingAnswerMessage(newAnswerMessage);
 
+    // create thread
+    let currentThreadId = threadId;
+    if (threadId == null) {
+      try {
+        const res = await apiv3Post('/openai/thread');
+        const thread = res.data.thread;
+
+        setThreadId(thread.id);
+        currentThreadId = thread.id;
+      }
+      catch (err) {
+        logger.error(err.toString());
+        toastError(t('modal_aichat.failed_to_create_or_retrieve_thread'));
+      }
+    }
+
     // post message
     try {
       const response = await fetch('/_api/v3/openai/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userMessage: data.input, threadId, summaryMode: data.summaryMode }),
+        body: JSON.stringify({ userMessage: data.input, threadId: currentThreadId, summaryMode: data.summaryMode }),
       });
 
       if (!response.ok) {

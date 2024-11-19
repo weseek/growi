@@ -171,8 +171,8 @@
     },
     "message": {
       "error_message": "いくつかの値が設定されていません",
-      "required": "%sに値を入力してください",
-      "invalid_syntax": "%sの構文が不正です",
+      "required": "'{{param}}' に値を入力してください",
+      "invalid_syntax": "{{syntax}} の構文が不正です",
       "title_required": "タイトルを入力してください",
       "field_required": "{{target}}に値を入力してください"
     }
