@@ -1,8 +1,11 @@
+import { parseISO } from 'date-fns/parseISO';
+
 import loggerFactory from '~/utils/logger';
 
 import { Config } from '../../models/config';
 import S2sMessage from '../../models/vo/s2s-message';
 import type { S2sMessagingService } from '../s2s-messaging/base';
+import type { S2sMessageHandlable } from '../s2s-messaging/handlable';
 
 import {
   ConfigKeys,
@@ -22,7 +25,7 @@ const logger = loggerFactory('growi:service:ConfigManager');
 
 type ConfigUpdates<K extends ConfigKey> = Partial<{ [P in K]: ConfigValues[P] }>;
 
-export class ConfigManager {
+export class ConfigManager implements S2sMessageHandlable {
 
   private configLoader = new ConfigLoader();
 
@@ -206,20 +209,45 @@ export class ConfigManager {
     return merged;
   }
 
-  private async publishUpdateMessage(): Promise<void> {
-    if (!this.s2sMessagingService) return;
+  /**
+   * Set S2sMessagingServiceDelegator instance
+   * @param s2sMessagingService
+   */
+  setS2sMessagingService(s2sMessagingService: S2sMessagingService): void {
+    this.s2sMessagingService = s2sMessagingService;
+  }
+
+  async publishUpdateMessage(): Promise<void> {
+    const s2sMessage = new S2sMessage('configUpdated', { updatedAt: new Date() });
 
     try {
-      const message = new S2sMessage('configUpdated', { updatedAt: new Date() });
-      await this.s2sMessagingService.publish(message);
+      await this.s2sMessagingService?.publish(s2sMessage);
     }
     catch (e) {
-      logger.error('Failed to publish update message:', e);
+      logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
     }
   }
 
-  setS2sMessagingService(service: S2sMessagingService): void {
-    this.s2sMessagingService = service;
+  /**
+   * @inheritdoc
+   */
+  shouldHandleS2sMessage(s2sMessage: S2sMessage): boolean {
+    const { eventName } = s2sMessage;
+    if (eventName !== 'configUpdated') {
+      return false;
+    }
+
+    return this.lastLoadedAt == null // loaded for the first time
+      || !('updatedAt' in s2sMessage) // updatedAt is not included in the message
+      || (typeof s2sMessage.updatedAt === 'string' && this.lastLoadedAt < parseISO(s2sMessage.updatedAt));
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async handleS2sMessage(): Promise<void> {
+    logger.info('Reload configs by pubsub notification');
+    return this.loadConfigs();
   }
 
 }
