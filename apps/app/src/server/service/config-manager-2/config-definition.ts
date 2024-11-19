@@ -6,7 +6,24 @@ interface ConfigDefinition<T> {
   isSecret?: boolean;
 }
 
+/*
+ * Sort order for top level keys:
+ *   1. autoInstall:*
+ *   2. app:*
+ *   3. security:*
+ *   4. fileUpload:*, aws:*, gcs:*, azure:*, gridfs:*
+ *   N. (others)
+ */
 export const CONFIG_KEYS = [
+  // Auto Install Settings
+  'autoInstall:adminUsername',
+  'autoInstall:adminName',
+  'autoInstall:adminEmail',
+  'autoInstall:adminPassword',
+  'autoInstall:globalLang',
+  'autoInstall:allowGuestMode',
+  'autoInstall:serverDate',
+
   // App Settings
   'app:fileUploadType',
   'app:useOnlyEnvVarForFileUploadType',
@@ -18,25 +35,9 @@ export const CONFIG_KEYS = [
   'app:publishOpenAPI',
   'app:isV5Compatible',
   'app:isMaintenanceMode',
-  'autoInstall:adminUsername',
-  'autoInstall:adminName',
-  'autoInstall:adminEmail',
-  'autoInstall:adminPassword',
-  'autoInstall:globalLang',
-  'autoInstall:allowGuestMode',
-  'autoInstall:serverDate',
-  's2sMessagingPubsub:serverType',
-  's2sMessagingPubsub:nchan:publishPath',
-  's2sMessagingPubsub:nchan:subscribePath',
-  's2sMessagingPubsub:nchan:channelId',
-  's2cMessagingPubsub:connectionsLimit',
-  's2cMessagingPubsub:connectionsLimitForAdmin',
-  's2cMessagingPubsub:connectionsLimitForGuest',
   'app:maxFileSize',
   'app:fileUploadTotalLimit',
   'app:fileUploadDisabled',
-  'fileUpload:local:useInternalRedirect',
-  'fileUpload:local:internalRedirectPath',
   'app:elasticsearchVersion',
   'app:elasticsearchUri',
   'app:elasticsearchRequestTimeout',
@@ -44,7 +45,26 @@ export const CONFIG_KEYS = [
   'app:elasticsearchMaxBodyLengthToIndex',
   'app:elasticsearchReindexBulkSize',
   'app:elasticsearchReindexOnBoot',
-  'gridfs:totalLimit',
+  'app:growiCloudUri',
+  'app:growiAppIdForCloud',
+  'app:ogpUri',
+  'app:minPasswordLength',
+  'app:auditLogEnabled',
+  'app:activityExpirationSeconds',
+  'app:auditLogActionGroupSize',
+  'app:auditLogAdditionalActions',
+  'app:auditLogExcludeActions',
+  'app:questionnaireServerOrigin',
+  'app:questionnaireCronSchedule',
+  'app:questionnaireCronMaxHoursUntilRequest',
+  'app:serviceType',
+  'app:deploymentType',
+  'app:ssrMaxRevisionBodyLength',
+  'app:wipPageExpirationSeconds',
+  'app:openaiThreadDeletionCronMaxMinutesUntilRequest',
+  'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest',
+
+  // Security Settings
   'security:wikiMode',
   'security:sessionMaxAge',
   'security:userUpperLimit',
@@ -67,16 +87,33 @@ export const CONFIG_KEYS = [
   'security:passport-oidc:discoveryRetries',
   'security:passport-oidc:oidcClientClockTolerance',
   'security:passport-oidc:oidcIssuerTimeoutOption',
+
+  // File Upload Settings
+  'fileUpload:local:useInternalRedirect',
+  'fileUpload:local:internalRedirectPath',
+
+  // AWS Settings
   'aws:referenceFileWithRelayMode',
   'aws:lifetimeSecForTemporaryUrl',
   'aws:s3ObjectCannedACL',
+
+  // GCS Settings
   'gcs:lifetimeSecForTemporaryUrl',
   'gcs:referenceFileWithRelayMode',
+
+  // Azure Settings
   'azure:lifetimeSecForTemporaryUrl',
   'azure:referenceFileWithRelayMode',
-  'app:growiCloudUri',
-  'app:growiAppIdForCloud',
-  'customize:isEmailPublishedForNewUser',
+  'azure:tenantId',
+  'azure:clientId',
+  'azure:clientSecret',
+  'azure:storageAccountName',
+  'azure:storageContainerName',
+
+  // GridFS Settings
+  'gridfs:totalLimit',
+
+  // Slackbot Settings
   'slackbot:currentBotType',
   'slackbot:proxyUri',
   'slackbot:withoutProxy:signingSecret',
@@ -85,40 +122,42 @@ export const CONFIG_KEYS = [
   'slackbot:withoutProxy:eventActionsPermission',
   'slackbot:withProxy:saltForGtoP',
   'slackbot:withProxy:saltForPtoG',
-  'app:ogpUri',
-  'app:minPasswordLength',
-  'app:auditLogEnabled',
-  'app:activityExpirationSeconds',
-  'app:auditLogActionGroupSize',
-  'app:auditLogAdditionalActions',
-  'app:auditLogExcludeActions',
-  'app:questionnaireServerOrigin',
-  'app:questionnaireCronSchedule',
-  'app:questionnaireCronMaxHoursUntilRequest',
-  'questionnaire:isQuestionnaireEnabled',
-  'questionnaire:isAppSiteUrlHashed',
-  'app:serviceType',
-  'app:deploymentType',
-  'app:ssrMaxRevisionBodyLength',
-  'app:wipPageExpirationSeconds',
+
+  // OpenAI Settings
   'openai:chatAssistantInstructions',
   'openai:assistantModel:chat',
   'openai:threadDeletionCronExpression',
-  'app:openaiThreadDeletionCronMaxMinutesUntilRequest',
   'openai:threadDeletionBarchSize',
   'openai:threadDeletionApiCallInterval',
   'openai:vectorStoreFileDeletionCronExpression',
-  'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest',
   'openai:vectorStoreFileDeletionBarchSize',
   'openai:vectorStoreFileDeletionApiCallInterval',
-  'azure:tenantId',
-  'azure:clientId',
-  'azure:clientSecret',
-  'azure:storageAccountName',
-  'azure:storageContainerName',
-  'app:siteUrl:useOnlyEnvVars',
-  'gcs:useOnlyEnvVarsForSomeOptions',
-  'azure:useOnlyEnvVarsForSomeOptions',
+
+  // S2S Messaging Pubsub Settings
+  's2sMessagingPubsub:serverType',
+  's2sMessagingPubsub:nchan:publishPath',
+  's2sMessagingPubsub:nchan:subscribePath',
+  's2sMessagingPubsub:nchan:channelId',
+
+  // S2C Messaging Pubsub Settings
+  's2cMessagingPubsub:connectionsLimit',
+  's2cMessagingPubsub:connectionsLimitForAdmin',
+  's2cMessagingPubsub:connectionsLimitForGuest',
+
+  // Questionnaire Settings
+  'questionnaire:isQuestionnaireEnabled',
+  'questionnaire:isAppSiteUrlHashed',
+
+  // Customize Settings
+  'customize:isEmailPublishedForNewUser',
+
+  // Control Flags for Env Vars
+  'env:useSiteUrlEnvVars',
+  'env:useLocalStrategyEnvVars',
+  'env:useSamlEnvVars',
+  'env:useFileUploadEnvVars',
+  'env:useGcsEnvVars',
+  'env:useAzureEnvVars',
 ] as const;
 
 export type ConfigKey = (typeof CONFIG_KEYS)[number];
