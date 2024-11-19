@@ -73,22 +73,22 @@ describe('ConfigManager', () => {
 
       // act
       await configManager.updateConfigsInTheSameNamespace('testNamespace', {
-        key1: 'value111',
-        key2: 'value222',
+        key1: 'new value1',
+        key2: 'new value2',
       });
       const updatedConfig1 = await Config.findOne({ ns: 'testNamespace', key: 'key1' }).exec();
       const updatedConfig2 = await Config.findOne({ ns: 'testNamespace', key: 'key2' }).exec();
 
       // assert
-      expect(updatedConfig1?.value).toEqual(JSON.stringify('value111'));
-      expect(updatedConfig2?.value).toEqual(JSON.stringify('value222'));
+      expect(updatedConfig1?.value).toEqual(JSON.stringify('new value1'));
+      expect(updatedConfig2?.value).toEqual(JSON.stringify('new value2'));
     });
   });
 
   describe('removeConfigsInTheSameNamespace', () => {
     beforeEach(async() => {
-      await Config.create({ ns: 'testNamespace', key: 'key1', value: JSON.stringify('value1') });
-      await Config.create({ ns: 'testNamespace', key: 'key2', value: JSON.stringify('value2') });
+      await Config.create({ ns: 'testNamespace', key: 'key3', value: JSON.stringify('value3') });
+      await Config.create({ ns: 'testNamespace', key: 'key4', value: JSON.stringify('value4') });
     });
 
     test('removes configs in the same namespace', async() => {
@@ -96,13 +96,13 @@ describe('ConfigManager', () => {
       await configManager.loadConfigs();
 
       // act
-      await configManager.removeConfigsInTheSameNamespace('testNamespace', ['key1', 'key2']);
-      const removedConfig1 = await Config.findOne({ ns: 'testNamespace', key: 'key1' }).exec();
-      const removedConfig2 = await Config.findOne({ ns: 'testNamespace', key: 'key2' }).exec();
+      await configManager.removeConfigsInTheSameNamespace('testNamespace', ['key3', 'key4']);
+      const removedConfig3 = await Config.findOne({ ns: 'testNamespace', key: 'key3' }).exec();
+      const removedConfig4 = await Config.findOne({ ns: 'testNamespace', key: 'key4' }).exec();
 
       // assert
-      expect(removedConfig1).toBeNull();
-      expect(removedConfig2).toBeNull();
+      expect(removedConfig3).toBeNull();
+      expect(removedConfig4).toBeNull();
     });
   });
 
