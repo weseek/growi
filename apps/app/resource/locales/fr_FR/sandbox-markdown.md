@@ -33,6 +33,26 @@
 > Advises about risks or negative outcomes of certain actions.
 ```
 
+Vous pouvez également utiliser la [syntaxe de directive](https://talk.commonmark.org/t/generic-directives-plugins-syntax/444).
+
+:::note
+Useful information that users should know, even when skimming content.
+:::
+
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
+:::
+
+```markdown
+:::note
+Useful information that users should know, even when skimming content.
+:::
+
+:::tip[Custom Label]
+Useful information that users should know, even when skimming content.
+:::
+```
+
 
 # Autres
 ## Citations

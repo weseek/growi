@@ -1,7 +1,7 @@
 import { Writable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 
 import getPageModel from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
@@ -56,11 +56,7 @@ module.exports = {
       },
     });
 
-    pagesStream
-      .pipe(batchStrem)
-      .pipe(migratePagesStream);
-
-    await streamToPromise(migratePagesStream);
+    await pipeline(pagesStream, batchStrem, migratePagesStream);
 
     logger.info('Migration has successfully applied');
   },
@@ -107,11 +103,7 @@ module.exports = {
       },
     });
 
-    pagesStream
-      .pipe(batchStrem)
-      .pipe(migratePagesStream);
-
-    await streamToPromise(migratePagesStream);
+    await pipeline(pagesStream, batchStrem, migratePagesStream);
 
     logger.info('Migration down has successfully applied');
   },

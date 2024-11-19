@@ -177,8 +177,8 @@
     },
     "message": {
       "error_message": "有些值不正确",
-      "required": "%s 是必需的",
-      "invalid_syntax": "%s的语法无效。",
+      "required": "'{{param}}' 是必需的",
+      "invalid_syntax": "{{syntax}} 的语法无效。",
       "title_required": "标题是必需的。",
       "field_required": "{{target}} 是必需的"
     }

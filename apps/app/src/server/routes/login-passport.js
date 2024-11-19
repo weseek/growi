@@ -241,7 +241,7 @@ module.exports = function(crowi, app) {
    * @param {*} res
    */
   const testLdapCredentials = async(req, res) => {
-    const { t } = await getTranslation(req.user.lang);
+    const { t } = await getTranslation({ lang: req.user.lang });
 
     if (!passportService.isLdapStrategySetup) {
       logger.debug('LdapStrategy has not been set up');

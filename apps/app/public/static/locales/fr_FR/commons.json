@@ -61,7 +61,8 @@
     "no_notification": "Vous n'avez pas de notifications.",
     "all": "Toutes",
     "unopend": "Non-lues",
-    "mark_all_as_read": "Tout marquer comme lu"
+    "mark_all_as_read": "Tout marquer comme lu",
+    "no_unread_messages": "aucun message non lu"
   },
 
   "personal_dropdown": {
