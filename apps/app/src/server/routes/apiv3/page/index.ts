@@ -740,7 +740,10 @@ module.exports = (crowi) => {
     let stream: Readable;
 
     try {
-      stream = exportService?.getReadStreamFromRevision(revision, format);
+      if (exportService == null) {
+        throw new Error('exportService is not initialized');
+      }
+      stream = exportService.getReadStreamFromRevision(revision, format);
     }
     catch (err) {
       logger.error('Failed to create readStream', err);
