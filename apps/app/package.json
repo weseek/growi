@@ -220,7 +220,6 @@
     "remark-stringify": "^11.0.0",
     "sanitize-filename": "^1.6.3",
     "socket.io": "^4.7.5",
-    "stream-to-promise": "^3.0.0",
     "string-width": "=4.2.2",
     "superjson": "^1.9.1",
     "swagger-jsdoc": "^6.2.8",
