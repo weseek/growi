@@ -17,6 +17,19 @@ on:
       - apps/app/**
       - '!apps/app/docker/**'
       - packages/**
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/mergify.yml
+      - .github/workflows/ci-app.yml
+      - .eslint*
+      - tsconfig.base.json
+      - turbo.json
+      - pnpm-lock.yaml
+      - package.json
+      - apps/app/**
+      - '!apps/app/docker/**'
+      - packages/**
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

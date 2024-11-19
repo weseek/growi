@@ -10,6 +10,16 @@ const AssistantType = {
   CHAT: 'Chat',
 } as const;
 
+const AssistantDefaultModelMap: Record<AssistantType, OpenAI.Chat.ChatModel> = {
+  [AssistantType.SEARCH]: 'gpt-4o-mini',
+  [AssistantType.CHAT]: 'gpt-4o-mini',
+};
+
+const getAssistantModelByType = (type: AssistantType): OpenAI.Chat.ChatModel => {
+  const configKey = `openai:assistantModel:${type.toLowerCase()}`;
+  return configManager.getConfig('crowi', configKey) ?? AssistantDefaultModelMap[type];
+};
+
 type AssistantType = typeof AssistantType[keyof typeof AssistantType];
 
 
@@ -34,22 +44,23 @@ const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.As
   return findAssistant(storedAssistants);
 };
 
-const getOrCreateAssistant = async(type: AssistantType): Promise<OpenAI.Beta.Assistant> => {
+const getOrCreateAssistant = async(type: AssistantType, nameSuffix?: string): Promise<OpenAI.Beta.Assistant> => {
   const appSiteUrl = configManager.getConfig('crowi', 'app:siteUrl');
-  const assistantNameSuffix = configManager.getConfig('crowi', 'openai:assistantNameSuffix');
-  const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}${assistantNameSuffix != null ? ` ${assistantNameSuffix}` : ''}`;
+  const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}${nameSuffix != null ? ` ${nameSuffix}` : ''}`;
+  const assistantModel = getAssistantModelByType(type);
 
   const assistant = await findAssistantByName(assistantName)
     ?? (
       await openaiClient.beta.assistants.create({
         name: assistantName,
-        model: 'gpt-4o',
+        model: assistantModel,
       }));
 
   // update instructions
   const instructions = configManager.getConfig('crowi', 'openai:chatAssistantInstructions');
   openaiClient.beta.assistants.update(assistant.id, {
     instructions,
+    model: assistantModel,
     tools: [{ type: 'file_search' }],
   });
 

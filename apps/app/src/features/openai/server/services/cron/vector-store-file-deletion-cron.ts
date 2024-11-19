@@ -4,11 +4,12 @@ import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
 
-import { getOpenaiService, type IOpenaiService } from './openai';
+import { isAiEnabled } from '../is-ai-enabled';
+import { getOpenaiService, type IOpenaiService } from '../openai';
 
 const logger = loggerFactory('growi:service:vector-store-file-deletion-cron');
 
-class VectorStoreFileDeletionCronService {
+export class VectorStoreFileDeletionCronService {
 
   cronJob: nodeCron.ScheduledTask;
 
@@ -25,8 +26,7 @@ class VectorStoreFileDeletionCronService {
   sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
 
   startCron(): void {
-    const isAiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
-    if (!isAiEnabled) {
+    if (!isAiEnabled()) {
       return;
     }
 
@@ -67,5 +67,3 @@ class VectorStoreFileDeletionCronService {
   }
 
 }
-
-export default VectorStoreFileDeletionCronService;

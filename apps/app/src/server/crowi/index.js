@@ -12,12 +12,11 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
-import OpenaiThreadDeletionCronService from '~/features/openai/server/services/thread-deletion-cron';
-import OpenaiVectorStoreFileDeletionCronService from '~/features/openai/server/services/vector-store-file-deletion-cron';
 import { PageBulkExportJobInProgressStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
 import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
 import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
+import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import questionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
@@ -335,11 +334,7 @@ Crowi.prototype.setupCron = function() {
   instanciatePageBulkExportJobCronService(this);
   pageBulkExportJobCronService.startCron();
 
-  this.openaiThreadDeletionCronService = new OpenaiThreadDeletionCronService();
-  this.openaiThreadDeletionCronService.startCron();
-
-  this.openaiThreadDeletionCronService = new OpenaiVectorStoreFileDeletionCronService();
-  this.openaiThreadDeletionCronService.startCron();
+  startOpenaiCronIfEnabled();
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {
