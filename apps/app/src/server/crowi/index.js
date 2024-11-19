@@ -13,6 +13,7 @@ import pkg from '^/package.json';
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
+import { startInstrumentation } from '~/features/opentelemetry/server';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
@@ -143,6 +144,9 @@ Crowi.prototype.init = async function() {
   await this.setupConfigManager();
   await this.setupSessionConfig();
   this.setupCron();
+
+  // start OpenTelemetry
+  startInstrumentation(this.version);
 
   // setup messaging services
   await this.setupS2sMessagingService();
