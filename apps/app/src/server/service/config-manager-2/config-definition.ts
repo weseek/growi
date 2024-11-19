@@ -180,6 +180,37 @@ type ConfigDefinitions = {
 };
 
 export const CONFIG_DEFINITIONS: ConfigDefinitions = {
+  // Auto Install Settings
+  'autoInstall:adminUsername': {
+    envVarName: 'AUTO_INSTALL_ADMIN_USERNAME',
+    defaultValue: null,
+  },
+  'autoInstall:adminName': {
+    envVarName: 'AUTO_INSTALL_ADMIN_NAME',
+    defaultValue: null,
+  },
+  'autoInstall:adminEmail': {
+    envVarName: 'AUTO_INSTALL_ADMIN_EMAIL',
+    defaultValue: null,
+  },
+  'autoInstall:adminPassword': {
+    envVarName: 'AUTO_INSTALL_ADMIN_PASSWORD',
+    defaultValue: null,
+    isSecret: true,
+  },
+  'autoInstall:globalLang': {
+    envVarName: 'AUTO_INSTALL_GLOBAL_LANG',
+    defaultValue: null,
+  },
+  'autoInstall:allowGuestMode': {
+    envVarName: 'AUTO_INSTALL_ALLOW_GUEST_MODE',
+    defaultValue: false,
+  },
+  'autoInstall:serverDate': {
+    envVarName: 'AUTO_INSTALL_SERVER_DATE',
+    defaultValue: null,
+  },
+
   // App Settings
   'app:fileUploadType': {
     envVarName: 'FILE_UPLOAD',
@@ -221,63 +252,6 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
     envVarName: 'IS_MAINTENANCE_MODE',
     defaultValue: false,
   },
-  'autoInstall:adminUsername': {
-    envVarName: 'AUTO_INSTALL_ADMIN_USERNAME',
-    defaultValue: null,
-  },
-  'autoInstall:adminName': {
-    envVarName: 'AUTO_INSTALL_ADMIN_NAME',
-    defaultValue: null,
-  },
-  'autoInstall:adminEmail': {
-    envVarName: 'AUTO_INSTALL_ADMIN_EMAIL',
-    defaultValue: null,
-  },
-  'autoInstall:adminPassword': {
-    envVarName: 'AUTO_INSTALL_ADMIN_PASSWORD',
-    defaultValue: null,
-    isSecret: true,
-  },
-  'autoInstall:globalLang': {
-    envVarName: 'AUTO_INSTALL_GLOBAL_LANG',
-    defaultValue: null,
-  },
-  'autoInstall:allowGuestMode': {
-    envVarName: 'AUTO_INSTALL_ALLOW_GUEST_MODE',
-    defaultValue: false,
-  },
-  'autoInstall:serverDate': {
-    envVarName: 'AUTO_INSTALL_SERVER_DATE',
-    defaultValue: null,
-  },
-  's2sMessagingPubsub:serverType': {
-    envVarName: 'S2SMSG_PUBSUB_SERVER_TYPE',
-    defaultValue: null,
-  },
-  's2sMessagingPubsub:nchan:publishPath': {
-    envVarName: 'S2SMSG_PUBSUB_NCHAN_PUBLISH_PATH',
-    defaultValue: '/pubsub',
-  },
-  's2sMessagingPubsub:nchan:subscribePath': {
-    envVarName: 'S2SMSG_PUBSUB_NCHAN_SUBSCRIBE_PATH',
-    defaultValue: '/pubsub',
-  },
-  's2sMessagingPubsub:nchan:channelId': {
-    envVarName: 'S2SMSG_PUBSUB_NCHAN_CHANNEL_ID',
-    defaultValue: null,
-  },
-  's2cMessagingPubsub:connectionsLimit': {
-    envVarName: 'S2CMSG_PUBSUB_CONNECTIONS_LIMIT',
-    defaultValue: 5000,
-  },
-  's2cMessagingPubsub:connectionsLimitForAdmin': {
-    envVarName: 'S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_ADMIN',
-    defaultValue: 100,
-  },
-  's2cMessagingPubsub:connectionsLimitForGuest': {
-    envVarName: 'S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_GUEST',
-    defaultValue: 2000,
-  },
   'app:maxFileSize': {
     envVarName: 'MAX_FILE_SIZE',
     defaultValue: Infinity,
@@ -289,14 +263,6 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
   'app:fileUploadDisabled': {
     envVarName: 'FILE_UPLOAD_DISABLED',
     defaultValue: false,
-  },
-  'fileUpload:local:useInternalRedirect': {
-    envVarName: 'FILE_UPLOAD_LOCAL_USE_INTERNAL_REDIRECT',
-    defaultValue: false,
-  },
-  'fileUpload:local:internalRedirectPath': {
-    envVarName: 'FILE_UPLOAD_LOCAL_INTERNAL_REDIRECT_PATH',
-    defaultValue: '/growi-internal/',
   },
   'app:elasticsearchVersion': {
     envVarName: 'ELASTICSEARCH_VERSION',
@@ -326,10 +292,80 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
     envVarName: 'ELASTICSEARCH_REINDEX_ON_BOOT',
     defaultValue: false,
   },
-  'gridfs:totalLimit': {
-    envVarName: 'MONGO_GRIDFS_TOTAL_LIMIT',
+  'app:growiCloudUri': {
+    envVarName: 'GROWI_CLOUD_URI',
     defaultValue: null,
   },
+  'app:growiAppIdForCloud': {
+    envVarName: 'GROWI_APP_ID_FOR_GROWI_CLOUD',
+    defaultValue: null,
+  },
+  'app:ogpUri': {
+    envVarName: 'OGP_URI',
+    defaultValue: null,
+  },
+  'app:minPasswordLength': {
+    envVarName: 'MIN_PASSWORD_LENGTH',
+    defaultValue: 8,
+  },
+  'app:auditLogEnabled': {
+    envVarName: 'AUDIT_LOG_ENABLED',
+    defaultValue: false,
+  },
+  'app:activityExpirationSeconds': {
+    envVarName: 'ACTIVITY_EXPIRATION_SECONDS',
+    defaultValue: 2592000,
+  },
+  'app:auditLogActionGroupSize': {
+    envVarName: 'AUDIT_LOG_ACTION_GROUP_SIZE',
+    defaultValue: 'SMALL',
+  },
+  'app:auditLogAdditionalActions': {
+    envVarName: 'AUDIT_LOG_ADDITIONAL_ACTIONS',
+    defaultValue: null,
+  },
+  'app:auditLogExcludeActions': {
+    envVarName: 'AUDIT_LOG_EXCLUDE_ACTIONS',
+    defaultValue: null,
+  },
+  'app:questionnaireServerOrigin': {
+    envVarName: 'QUESTIONNAIRE_SERVER_ORIGIN',
+    defaultValue: 'https://q.growi.org',
+  },
+  'app:questionnaireCronSchedule': {
+    envVarName: 'QUESTIONNAIRE_CRON_SCHEDULE',
+    defaultValue: '0 22 * * *',
+  },
+  'app:questionnaireCronMaxHoursUntilRequest': {
+    envVarName: 'QUESTIONNAIRE_CRON_MAX_HOURS_UNTIL_REQUEST',
+    defaultValue: 4,
+  },
+  'app:serviceType': {
+    envVarName: 'SERVICE_TYPE',
+    defaultValue: GrowiServiceType.onPremise,
+  },
+  'app:deploymentType': {
+    envVarName: 'DEPLOYMENT_TYPE',
+    defaultValue: null,
+  },
+  'app:ssrMaxRevisionBodyLength': {
+    envVarName: 'SSR_MAX_REVISION_BODY_LENGTH',
+    defaultValue: 3000,
+  },
+  'app:wipPageExpirationSeconds': {
+    envVarName: 'WIP_PAGE_EXPIRATION_SECONDS',
+    defaultValue: 172800,
+  },
+  'app:openaiThreadDeletionCronMaxMinutesUntilRequest': {
+    envVarName: 'OPENAI_THREAD_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST',
+    defaultValue: 30,
+  },
+  'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest': {
+    envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST',
+    defaultValue: 30,
+  },
+
+  // Security Settings
   'security:wikiMode': {
     envVarName: 'FORCE_WIKI_MODE',
     defaultValue: undefined,
@@ -374,6 +410,10 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
     envVarName: 'LOCAL_STRATEGY_EMAIL_AUTHENTICATION_ENABLED',
     defaultValue: false,
   },
+  'security:passport-local:isEnabled': {
+    envVarName: 'SECURITY_PASSPORT_LOCAL_ENABLED',
+    defaultValue: true,
+  },
   'security:passport-saml:useOnlyEnvVarsForSomeOptions': {
     envVarName: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
     defaultValue: false,
@@ -406,6 +446,22 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
     envVarName: 'SAML_ABLC_RULE',
     defaultValue: null,
   },
+  'security:passport-saml:isEnabled': {
+    envVarName: 'SECURITY_PASSPORT_SAML_ENABLED',
+    defaultValue: false,
+  },
+  'security:passport-saml:entryPoint': {
+    envVarName: 'SECURITY_PASSPORT_SAML_ENTRY_POINT',
+    defaultValue: '',
+  },
+  'security:passport-saml:issuer': {
+    envVarName: 'SECURITY_PASSPORT_SAML_ISSUER',
+    defaultValue: '',
+  },
+  'security:passport-saml:cert': {
+    envVarName: 'SECURITY_PASSPORT_SAML_CERT',
+    defaultValue: '',
+  },
   'security:passport-oidc:timeoutMultiplier': {
     envVarName: 'OIDC_TIMEOUT_MULTIPLIER',
     defaultValue: 1.5,
@@ -422,6 +478,18 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
     envVarName: 'OIDC_ISSUER_TIMEOUT_OPTION',
     defaultValue: 5000,
   },
+
+  // File Upload Settings
+  'fileUpload:local:useInternalRedirect': {
+    envVarName: 'FILE_UPLOAD_LOCAL_USE_INTERNAL_REDIRECT',
+    defaultValue: false,
+  },
+  'fileUpload:local:internalRedirectPath': {
+    envVarName: 'FILE_UPLOAD_LOCAL_INTERNAL_REDIRECT_PATH',
+    defaultValue: '/growi-internal/',
+  },
+
+  // AWS Settings
   'aws:referenceFileWithRelayMode': {
     envVarName: 'S3_REFERENCE_FILE_WITH_RELAY_MODE',
     defaultValue: false,
@@ -434,6 +502,8 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
     envVarName: 'S3_OBJECT_ACL',
     defaultValue: null,
   },
+
+  // GCS Settings
   'gcs:lifetimeSecForTemporaryUrl': {
     envVarName: 'GCS_LIFETIME_SEC_FOR_TEMPORARY_URL',
     defaultValue: 120,
@@ -442,6 +512,20 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
     envVarName: 'GCS_REFERENCE_FILE_WITH_RELAY_MODE',
     defaultValue: false,
   },
+  'gcs:apiKeyJsonPath': {
+    envVarName: 'GCS_API_KEY_JSON_PATH',
+    defaultValue: '',
+  },
+  'gcs:bucket': {
+    envVarName: 'GCS_BUCKET',
+    defaultValue: '',
+  },
+  'gcs:uploadNamespace': {
+    envVarName: 'GCS_UPLOAD_NAMESPACE',
+    defaultValue: '',
+  },
+
+  // Azure Settings
   'azure:lifetimeSecForTemporaryUrl': {
     envVarName: 'AZURE_LIFETIME_SEC_FOR_TEMPORARY_URL',
     defaultValue: 120,
@@ -450,18 +534,35 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
     envVarName: 'AZURE_REFERENCE_FILE_WITH_RELAY_MODE',
     defaultValue: false,
   },
-  'app:growiCloudUri': {
-    envVarName: 'GROWI_CLOUD_URI',
+  'azure:tenantId': {
+    envVarName: 'AZURE_TENANT_ID',
+    defaultValue: '',
+  },
+  'azure:clientId': {
+    envVarName: 'AZURE_CLIENT_ID',
+    defaultValue: '',
+  },
+  'azure:clientSecret': {
+    envVarName: 'AZURE_CLIENT_SECRET',
+    defaultValue: '',
+    isSecret: true,
+  },
+  'azure:storageAccountName': {
+    envVarName: 'AZURE_STORAGE_ACCOUNT_NAME',
+    defaultValue: '',
+  },
+  'azure:storageContainerName': {
+    envVarName: 'AZURE_STORAGE_CONTAINER_NAME',
+    defaultValue: '',
+  },
+
+  // GridFS Settings
+  'gridfs:totalLimit': {
+    envVarName: 'MONGO_GRIDFS_TOTAL_LIMIT',
     defaultValue: null,
   },
-  'app:growiAppIdForCloud': {
-    envVarName: 'GROWI_APP_ID_FOR_GROWI_CLOUD',
-    defaultValue: null,
-  },
-  'customize:isEmailPublishedForNewUser': {
-    envVarName: 'DEFAULT_EMAIL_PUBLISHED',
-    defaultValue: true,
-  },
+
+  // Slackbot Settings
   'slackbot:currentBotType': {
     envVarName: 'SLACKBOT_TYPE',
     defaultValue: null,
@@ -498,70 +599,8 @@ export const CONFIG_DEFINITIONS: ConfigDefinitions = {
     defaultValue: 'ptog',
     isSecret: true,
   },
-  'app:ogpUri': {
-    envVarName: 'OGP_URI',
-    defaultValue: null,
-  },
-  'app:minPasswordLength': {
-    envVarName: 'MIN_PASSWORD_LENGTH',
-    defaultValue: 8,
-  },
-  'app:auditLogEnabled': {
-    envVarName: 'AUDIT_LOG_ENABLED',
-    defaultValue: false,
-  },
-  'app:activityExpirationSeconds': {
-    envVarName: 'ACTIVITY_EXPIRATION_SECONDS',
-    defaultValue: 2592000,
-  },
-  'app:auditLogActionGroupSize': {
-    envVarName: 'AUDIT_LOG_ACTION_GROUP_SIZE',
-    defaultValue: 'SMALL',
-  },
-  'app:auditLogAdditionalActions': {
-    envVarName: 'AUDIT_LOG_ADDITIONAL_ACTIONS',
-    defaultValue: null,
-  },
-  'app:auditLogExcludeActions': {
-    envVarName: 'AUDIT_LOG_EXCLUDE_ACTIONS',
-    defaultValue: null,
-  },
-  'app:questionnaireServerOrigin': {
-    envVarName: 'QUESTIONNAIRE_SERVER_ORIGIN',
-    defaultValue: 'https://q.growi.org',
-  },
-  'app:questionnaireCronSchedule': {
-    envVarName: 'QUESTIONNAIRE_CRON_SCHEDULE',
-    defaultValue: '0 22 * * *',
-  },
-  'app:questionnaireCronMaxHoursUntilRequest': {
-    envVarName: 'QUESTIONNAIRE_CRON_MAX_HOURS_UNTIL_REQUEST',
-    defaultValue: 4,
-  },
-  'questionnaire:isQuestionnaireEnabled': {
-    envVarName: 'QUESTIONNAIRE_IS_ENABLE_QUESTIONNAIRE',
-    defaultValue: true,
-  },
-  'questionnaire:isAppSiteUrlHashed': {
-    envVarName: 'QUESTIONNAIRE_IS_APP_SITE_URL_HASHED',
-    defaultValue: false,
-  },
-  'app:serviceType': {
-    envVarName: 'SERVICE_TYPE',
-    defaultValue: GrowiServiceType.onPremise,
-  },
-  'app:deploymentType': {
-    envVarName: 'DEPLOYMENT_TYPE',
-    defaultValue: null,
-  },
-  'app:ssrMaxRevisionBodyLength': {
-    envVarName: 'SSR_MAX_REVISION_BODY_LENGTH',
-    defaultValue: 3000,
-  },
-  'app:wipPageExpirationSeconds': {
-    envVarName: 'WIP_PAGE_EXPIRATION_SECONDS',
-    defaultValue: 172800,
-  },
+
+  // OpenAI Settings
   'openai:chatAssistantInstructions': {
     envVarName: 'OPENAI_CHAT_ASSISTANT_INSTRUCTIONS',
     defaultValue: `Response Length Limitation:
@@ -590,10 +629,6 @@ Guideline as a RAG:
     envVarName: 'OPENAI_THREAD_DELETION_CRON_EXPRESSION',
     defaultValue: '0 * * * *',
   },
-  'app:openaiThreadDeletionCronMaxMinutesUntilRequest': {
-    envVarName: 'OPENAI_THREAD_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST',
-    defaultValue: 30,
-  },
   'openai:threadDeletionBarchSize': {
     envVarName: 'OPENAI_THREAD_DELETION_BARCH_SIZE',
     defaultValue: 100,
@@ -606,10 +641,6 @@ Guideline as a RAG:
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_CRON_EXPRESSION',
     defaultValue: '0 * * * *',
   },
-  'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest': {
-    envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST',
-    defaultValue: 30,
-  },
   'openai:vectorStoreFileDeletionBarchSize': {
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_BARCH_SIZE',
     defaultValue: 100,
@@ -618,64 +649,18 @@ Guideline as a RAG:
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_API_CALL_INTERVAL',
     defaultValue: 36000,
   },
-
-  // Security Settings
-  'security:passport-local:isEnabled': {
-    envVarName: 'SECURITY_PASSPORT_LOCAL_ENABLED',
-    defaultValue: true,
+  'openai:serviceType': {
+    envVarName: 'OPENAI_SERVICE_TYPE',
+    defaultValue: null,
   },
-  'security:passport-saml:isEnabled': {
-    envVarName: 'SECURITY_PASSPORT_SAML_ENABLED',
-    defaultValue: false,
-  },
-  'security:passport-saml:entryPoint': {
-    envVarName: 'SECURITY_PASSPORT_SAML_ENTRY_POINT',
-    defaultValue: '',
-  },
-  'security:passport-saml:issuer': {
-    envVarName: 'SECURITY_PASSPORT_SAML_ISSUER',
-    defaultValue: '',
-  },
-  'security:passport-saml:cert': {
-    envVarName: 'SECURITY_PASSPORT_SAML_CERT',
-    defaultValue: '',
-  },
-
-  // GCS Settings
-  'gcs:apiKeyJsonPath': {
-    envVarName: 'GCS_API_KEY_JSON_PATH',
-    defaultValue: '',
-  },
-  'gcs:bucket': {
-    envVarName: 'GCS_BUCKET',
-    defaultValue: '',
-  },
-  'gcs:uploadNamespace': {
-    envVarName: 'GCS_UPLOAD_NAMESPACE',
-    defaultValue: '',
-  },
-
-  // Azure Settings
-  'azure:tenantId': {
-    envVarName: 'AZURE_TENANT_ID',
-    defaultValue: '',
-  },
-  'azure:clientId': {
-    envVarName: 'AZURE_CLIENT_ID',
-    defaultValue: '',
-  },
-  'azure:clientSecret': {
-    envVarName: 'AZURE_CLIENT_SECRET',
-    defaultValue: '',
+  'openai:apiKey': {
+    envVarName: 'OPENAI_API_KEY',
+    defaultValue: null,
     isSecret: true,
   },
-  'azure:storageAccountName': {
-    envVarName: 'AZURE_STORAGE_ACCOUNT_NAME',
-    defaultValue: '',
-  },
-  'azure:storageContainerName': {
-    envVarName: 'AZURE_STORAGE_CONTAINER_NAME',
-    defaultValue: '',
+  'openai:searchAssistantInstructions': {
+    envVarName: 'OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS',
+    defaultValue: null,
   },
 
   // OpenTelemetry Settings
@@ -692,19 +677,52 @@ Guideline as a RAG:
     defaultValue: null,
   },
 
-  // OpenAI Settings
-  'openai:serviceType': {
-    envVarName: 'OPENAI_SERVICE_TYPE',
+  // S2S Messaging Pubsub Settings
+  's2sMessagingPubsub:serverType': {
+    envVarName: 'S2SMSG_PUBSUB_SERVER_TYPE',
     defaultValue: null,
   },
-  'openai:apiKey': {
-    envVarName: 'OPENAI_API_KEY',
-    defaultValue: null,
-    isSecret: true,
+  's2sMessagingPubsub:nchan:publishPath': {
+    envVarName: 'S2SMSG_PUBSUB_NCHAN_PUBLISH_PATH',
+    defaultValue: '/pubsub',
   },
-  'openai:searchAssistantInstructions': {
-    envVarName: 'OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS',
+  's2sMessagingPubsub:nchan:subscribePath': {
+    envVarName: 'S2SMSG_PUBSUB_NCHAN_SUBSCRIBE_PATH',
+    defaultValue: '/pubsub',
+  },
+  's2sMessagingPubsub:nchan:channelId': {
+    envVarName: 'S2SMSG_PUBSUB_NCHAN_CHANNEL_ID',
     defaultValue: null,
+  },
+
+  // S2C Messaging Pubsub Settings
+  's2cMessagingPubsub:connectionsLimit': {
+    envVarName: 'S2CMSG_PUBSUB_CONNECTIONS_LIMIT',
+    defaultValue: 5000,
+  },
+  's2cMessagingPubsub:connectionsLimitForAdmin': {
+    envVarName: 'S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_ADMIN',
+    defaultValue: 100,
+  },
+  's2cMessagingPubsub:connectionsLimitForGuest': {
+    envVarName: 'S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_GUEST',
+    defaultValue: 2000,
+  },
+
+  // Questionnaire Settings
+  'questionnaire:isQuestionnaireEnabled': {
+    envVarName: 'QUESTIONNAIRE_IS_ENABLE_QUESTIONNAIRE',
+    defaultValue: true,
+  },
+  'questionnaire:isAppSiteUrlHashed': {
+    envVarName: 'QUESTIONNAIRE_IS_APP_SITE_URL_HASHED',
+    defaultValue: false,
+  },
+
+  // Customize Settings
+  'customize:isEmailPublishedForNewUser': {
+    envVarName: 'DEFAULT_EMAIL_PUBLISHED',
+    defaultValue: true,
   },
 
   // Control Flags for Env Vars
