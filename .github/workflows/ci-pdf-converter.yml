@@ -82,9 +82,9 @@ jobs:
         pnpm add turbo --global
         pnpm install --frozen-lockfile
 
-    - name: turbo run dev:ci
+    - name: turbo run dev:pdf-converter:ci
       working-directory: ./apps/pdf-converter
-      run: turbo run dev:ci
+      run: turbo run dev:pdf-converter:ci
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
