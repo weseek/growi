@@ -11,9 +11,10 @@ describe('factory.ts', async() => {
       // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
       try {
         await _consumePoints(method, key, { method, maxRequests });
-        throw new Error('Should throw an error');
+        throw new Error('Exception occurred');
       }
       catch (err) {
+        expect(err.message).not.toBe('Exception occurred');
         expect(err).toBeInstanceOf(TypeError);
         expect(err.message).toBe("Cannot read properties of null (reading 'points')");
       }
