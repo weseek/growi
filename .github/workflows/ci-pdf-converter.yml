@@ -98,7 +98,7 @@ jobs:
 
   ci-pdf-converter-launch-prod:
 
-    # if: startsWith(github.head_ref, 'mergify/merge-queue/')
+    if: startsWith(github.head_ref, 'mergify/merge-queue/')
 
     runs-on: ubuntu-latest
 
