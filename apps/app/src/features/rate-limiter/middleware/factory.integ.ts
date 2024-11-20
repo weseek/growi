@@ -1,40 +1,29 @@
 import { _consumePoints } from './factory';
 
 describe('factory.ts', async() => {
-
-  // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
-  try {
-    await _consumePoints('GET', 'test-key', { method: 'GET', maxRequests: 1 });
-  }
-  catch {
-    //
-  }
-
-  describe('_consumePoints()', () => {
-    it('test', async() => {
+  describe('_consumePoints()', async() => {
+    it('test1', async() => {
       // setup
       const method = 'GET';
-      const key = 'test-key';
-      const maxRequests = 100;
+      const key = 'test-key-1';
+      const maxRequests = 1;
 
+      // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
       try {
-        await _consumePoints('GET', key, { method, maxRequests });
+        await _consumePoints(method, key, { method, maxRequests });
+        throw new Error('Should throw an error');
       }
-      catch (error) {
-        //
+      catch (err) {
+        expect(err).toBeInstanceOf(TypeError);
+        expect(err.message).toBe("Cannot read properties of null (reading 'points')");
       }
 
-      try {
-        const res = await _consumePoints('GET2', key, { method, maxRequests });
-        console.log('res', res);
-        const res2 = await _consumePoints('GET2', key, { method, maxRequests });
-        console.log('res2', res2);
-        const res3 = await _consumePoints('GET2', key, { method, maxRequests });
-        console.log('res3', res3);
-      }
-      catch (error) {
-        console.log('エラー', error);
-      }
+      // when
+      const res = await _consumePoints(method, key, { method, maxRequests });
+
+      // then
+      expect(res?.remainingPoints).toBe(0);
+      expect(res?.consumedPoints).toBe(100);
     });
   });
 
