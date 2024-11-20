@@ -1,109 +1,41 @@
-import { connection } from 'mongoose';
-import { type IRateLimiterMongoOptions, type RateLimiterRes, RateLimiterMongo } from 'rate-limiter-flexible';
+import { _consumePoints } from './factory';
 
-import { _consumePoints, POINTS_THRESHOLD } from './factory';
+describe('factory.ts', async() => {
 
+  // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
+  try {
+    await _consumePoints('GET', 'test-key', { method: 'GET', maxRequests: 1 });
+  }
+  catch {
+    //
+  }
 
-// const mocks = vi.hoisted(() => {
-//   return {
-//     comsumeMock: vi.fn(),
-//   };
-// });
+  describe('_consumePoints()', () => {
+    it('test', async() => {
+      // setup
+      const method = 'GET';
+      const key = 'test-key';
+      const maxRequests = 100;
 
-// vi.mock('rate-limiter-flexible', () => ({
-//   RateLimiterMongo: vi.fn().mockImplementation(() => {
-//     return {
-//       consume: mocks.comsumeMock,
-//     };
-//   }),
-// }));
+      try {
+        await _consumePoints('GET', key, { method, maxRequests });
+      }
+      catch (error) {
+        //
+      }
 
-describe('factory.ts', () => {
-
-  const opts = {
-    storeClient: connection,
-    points: 100,
-    duration: 60,
-  };
-
-  const rateLimiter = new RateLimiterMongo(opts);
-
-
-  it('test', async() => {
-    // setup
-    // const method = 'GET';
-    // const key = 'test-key';
-    // const maxRequests = 1;
-
-    // const res = await _consumePoints('GET', key, { method, maxRequests });
-
-    console.log('rateLimiter', rateLimiter);
-
-    const res = await rateLimiter.consume('test-key', 10);
-    console.log('res', res);
+      try {
+        const res = await _consumePoints('GET2', key, { method, maxRequests });
+        console.log('res', res);
+        const res2 = await _consumePoints('GET2', key, { method, maxRequests });
+        console.log('res2', res2);
+        const res3 = await _consumePoints('GET2', key, { method, maxRequests });
+        console.log('res3', res3);
+      }
+      catch (error) {
+        console.log('エラー', error);
+      }
+    });
   });
 
-
-  // describe('_consumePoints()', () => {
-  //   it('Should consume points as 1 * THRESHOLD if maxRequest: 1 is specified', async() => {
-  //     // setup
-  //     const method = 'GET';
-  //     const key = 'test-key';
-  //     const maxRequests = 1;
-
-  //     // when
-  //     const pointsToConsume = POINTS_THRESHOLD / maxRequests;
-  //     await _consumePoints(method, key, { method, maxRequests });
-
-  //     // then
-  //     expect(mocks.comsumeMock).toHaveBeenCalledWith(key, pointsToConsume);
-  //     expect(maxRequests * pointsToConsume).toBe(POINTS_THRESHOLD);
-  //   });
-
-  //   it('Should consume points as 2 * THRESHOLD if maxRequest: 2 is specified', async() => {
-  //     // setup
-  //     const method = 'GET';
-  //     const key = 'test-key';
-  //     const maxRequests = 2;
-
-  //     // when
-  //     const pointsToConsume = POINTS_THRESHOLD / maxRequests;
-  //     await _consumePoints(method, key, { method, maxRequests });
-
-  //     // then
-  //     expect(mocks.comsumeMock).toHaveBeenCalledWith(key, pointsToConsume);
-  //     expect(maxRequests * pointsToConsume).toBe(POINTS_THRESHOLD);
-  //   });
-
-  //   it('Should consume points as 3 * THRESHOLD if maxRequest: 3 is specified', async() => {
-  //     // setup
-  //     const method = 'GET';
-  //     const key = 'test-key';
-  //     const maxRequests = 3;
-
-  //     // when
-  //     const pointsToConsume = POINTS_THRESHOLD / maxRequests;
-  //     await _consumePoints(method, key, { method, maxRequests });
-
-  //     // then
-  //     expect(mocks.comsumeMock).toHaveBeenCalledWith(key, pointsToConsume);
-  //     expect(maxRequests * pointsToConsume).toBe(POINTS_THRESHOLD);
-  //   });
-
-  //   it('Should consume points as 500 * THRESHOLD if maxRequest: 500 is specified', async() => {
-  //     // setup
-  //     const method = 'GET';
-  //     const key = 'test-key';
-  //     const maxRequests = 500;
-
-  //     // when
-  //     const pointsToConsume = POINTS_THRESHOLD / maxRequests;
-  //     await _consumePoints(method, key, { method, maxRequests });
-
-  //     // then
-  //     expect(mocks.comsumeMock).toHaveBeenCalledWith(key, pointsToConsume);
-  //     expect(maxRequests * pointsToConsume).toBe(POINTS_THRESHOLD);
-  //   });
-
-  // });
 });
