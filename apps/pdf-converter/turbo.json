@@ -8,6 +8,10 @@
     },
     "dev:pdf-converter:ci": {
       "cache": false
+    },
+    "build": {
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
     }
   }
 }
