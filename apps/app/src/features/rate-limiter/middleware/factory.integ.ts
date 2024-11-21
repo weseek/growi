@@ -1,21 +1,9 @@
 import { faker } from '@faker-js/faker';
 
-import { _consumePoints } from './factory';
-
-// Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
-const assertInitialConsumeFails = async(method: string, key: string, maxRequests: number): Promise<void> => {
-  try {
-    await _consumePoints(method, key, { method, maxRequests });
-    throw new Error('Exception occurred');
-  }
-  catch (err) {
-    expect(err.message).not.toBe('Exception occurred');
-    expect(err).toBeInstanceOf(TypeError);
-    expect(err.message).toBe("Cannot read properties of null (reading 'points')");
-  }
-};
-
 const testRateLimitErrorWhenExceedingMaxRequests = async(method: string, key: string, maxRequests: number): Promise<void> => {
+  // dynamic import is used because rateLimiterMongo needs to be initialized after connecting to DB
+  // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
+  const { _consumePoints } = await import('./factory');
   let count = 0;
   try {
     for (let i = 1; i <= maxRequests + 1; i++) {
@@ -50,7 +38,6 @@ describe('factory.ts', async() => {
       const key = 'test-key-1';
       const maxRequests = 1;
 
-      await assertInitialConsumeFails(method, key, maxRequests);
       await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
     });
 
@@ -60,7 +47,6 @@ describe('factory.ts', async() => {
       const key = 'test-key-2';
       const maxRequests = 500;
 
-      await assertInitialConsumeFails(method, key, maxRequests);
       await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
     });
 
@@ -70,7 +56,6 @@ describe('factory.ts', async() => {
       const key = 'test-key-3';
       const maxRequests = faker.number.int({ min: 1, max: 1000 });
 
-      await assertInitialConsumeFails(method, key, maxRequests);
       await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
     });
   });
