@@ -36,7 +36,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   const { page, children } = itemNode;
 
-  const [currentChildren, setCurrentChildren] = useState(children);
+  const [currentChildren, setCurrentChildren] = useState<ItemNode[]>(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
