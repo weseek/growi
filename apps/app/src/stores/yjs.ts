@@ -43,7 +43,7 @@ export const useSWRMUTxCurrentPageYjsData = (): SWRMutationResponse<CurrentPageY
 
   return useSWRMutation(
     key,
-    ([endpoint]) => apiv3Get<{ yjsData: CurrentPageYjsData }>(endpoint).then(result => result.data.yjsData),
+    endpoint => apiv3Get<{ yjsData: CurrentPageYjsData }>(endpoint).then(result => result.data.yjsData),
     { populateCache: true, revalidate: false },
   );
 };

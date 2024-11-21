@@ -48,6 +48,14 @@ const getTranspilePackages = () => {
     'emoticon',
     'direction', // for hast-util-select
     'bcp-47-match', // for hast-util-select
+    'parse-entities',
+    'character-reference-invalid',
+    'is-hexadecimal',
+    'is-alphabetical',
+    'is-alphanumerical',
+    'github-slugger',
+    'html-url-attributes',
+    'estree-util-is-identifier-name',
     ...listPrefixedPackages(['remark-', 'rehype-', 'hast-', 'mdast-', 'micromark-', 'unist-']),
   ];
 
@@ -151,7 +159,11 @@ module.exports = async(phase, { defaultConfig }) => {
   }
 
   const withBundleAnalyzer = require('@next/bundle-analyzer')({
-    enabled: phase === PHASE_PRODUCTION_BUILD && process.env.ANALYZE === 'true',
+    enabled: phase === PHASE_PRODUCTION_BUILD
+      && (
+        process.env.ANALYZE === 'true'
+          || process.env.ANALYZE === '1'
+      ),
   });
 
   return withBundleAnalyzer(withSuperjson()(nextConfig));

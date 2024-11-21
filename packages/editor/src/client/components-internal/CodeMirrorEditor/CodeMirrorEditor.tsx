@@ -9,11 +9,10 @@ import {
 } from '@codemirror/view';
 import { AcceptedUploadFileType } from '@growi/core';
 
-import type { GlobalCodeMirrorEditorKey } from '../../../consts';
+import { PasteMode, type GlobalCodeMirrorEditorKey } from '../../../consts';
 import type { CodeMirrorEditorProps } from '../../interfaces/CodeMirrorEditor';
 import {
-  useFileDropzone, FileDropzoneOverlay,
-  adjustPasteData, getStrFromBol, useShowTableIcon,
+  useFileDropzone, FileDropzoneOverlay, useShowTableIcon, getStrFromBol, adjustPasteData,
 } from '../../services-internal';
 import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
 import { useDefaultExtensions } from '../../stores/use-default-extensions';
@@ -73,34 +72,36 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
-
+  const pasteMode = editorSettings?.pasteMode;
   useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
       event.preventDefault();
 
       const editor = codeMirrorEditor?.view;
 
-      if (editor == null) {
+      if (editor == null || event.clipboardData == null) {
         return;
-      }
-
-      if (event.clipboardData == null) {
-        return;
-      }
-
-      if (onUpload != null && event.clipboardData.types.includes('Files')) {
-        onUpload(Array.from(event.clipboardData.files));
       }
 
       if (event.clipboardData.types.includes('text/plain')) {
+        if (codeMirrorEditor == null) return;
 
-        const textData = event.clipboardData.getData('text/plain');
+        if (pasteMode == null || pasteMode === PasteMode.both || pasteMode === PasteMode.text) {
+          const textData = event.clipboardData.getData('text/plain');
 
-        const strFromBol = getStrFromBol(editor);
+          const strFromBol = getStrFromBol(editor);
+          const adjusted = adjustPasteData(strFromBol, textData);
 
-        const adjusted = adjustPasteData(strFromBol, textData);
+          codeMirrorEditor.replaceText(adjusted);
+        }
+      }
 
-        codeMirrorEditor?.replaceText(adjusted);
+      if (event.clipboardData.types.includes('Files')) {
+        if (onUpload == null) return;
+
+        if (pasteMode == null || pasteMode === PasteMode.both || pasteMode === PasteMode.file) {
+          onUpload(Array.from(event.clipboardData.files));
+        }
       }
     };
 
@@ -111,7 +112,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
     return cleanupFunction;
 
-  }, [codeMirrorEditor, onUpload]);
+  }, [codeMirrorEditor, pasteMode, onUpload]);
 
   useEffect(() => {
 

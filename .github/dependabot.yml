@@ -30,5 +30,5 @@ updates:
       - dependency-name: handsontable
       - dependency-name: typeorm
       - dependency-name: mysql2
-
+      - dependency-name: "@codemirror/*"
 
