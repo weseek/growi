@@ -11,6 +11,18 @@ on:
     secrets:
       SLACK_WEBHOOK_URL:
         required: true
+  workflow_dispatch:
+    inputs:
+      node-version:
+        required: true
+        type: string
+        default: 20.x
+      skip-e2e-test:
+        type: boolean
+        default: false
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
 
 jobs:
 
@@ -22,9 +34,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        # retrieve local font files
-        lfs: true
 
     - uses: pnpm/action-setup@v4
 
@@ -37,16 +46,9 @@ jobs:
       run: |
         pnpm add turbo --global
 
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/app
-        rm -rf apps packages
-        mv out/* .
-
     - name: Install dependencies
-      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
       run: |
-        pnpm install --no-frozen-lockfile
+        pnpm install --frozen-lockfile
 
     - name: Cache/Restore dist
       uses: actions/cache@v4
@@ -67,6 +69,12 @@ jobs:
       env:
         ANALYZE: 1
 
+    - name: Assembling all dependencies
+      run: |
+        rm -rf out
+        pnpm deploy out --prod --filter @growi/app
+        rm -rf apps/app/node_modules && mv out/node_modules apps/app/node_modules
+
     - name: Archive production files
       id: archive-prod-files
       run: |
@@ -79,9 +87,8 @@ jobs:
           apps/app/resource \
           apps/app/tmp \
           apps/app/.env.production* \
-          apps/app/package.json \
-          packages/*/dist \
-          packages/*/package.json
+          apps/app/node_modules \
+          apps/app/package.json
         echo "file=production.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
@@ -134,27 +141,12 @@ jobs:
         node-version: ${{ inputs.node-version }}
         cache: 'pnpm'
 
-    - name: Install turbo
-      run: |
-        pnpm add turbo --global
-
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Install dependencies
-      # Run pnpm install with `--no-frozen-lockfile` option after `turbo prune` to avoid ERR_PNPM_LOCKFILE_MISSING_DEPENDENCY
-      run: |
-        pnpm install --no-frozen-lockfile --prod
-
     - name: Download production files artifact
       uses: actions/download-artifact@v4
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Extract procution files artifact
+    - name: Extract procution files
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
@@ -181,7 +173,9 @@ jobs:
   run-playwright:
     needs: [build-prod]
 
-    if: ${{ !inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/') }}
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (!inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/'))
 
     runs-on: ubuntu-latest
     container:
@@ -219,7 +213,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pnpm install
+        pnpm install --frozen-lockfile
 
     - name: Install Playwright browsers
       run: |
@@ -230,7 +224,7 @@ jobs:
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Extract procution files artifact
+    - name: Extract procution files
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
@@ -245,6 +239,7 @@ jobs:
       run: |
         pnpm playwright test --project=chromium/installer
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -259,6 +254,7 @@ jobs:
       run: |
         pnpm playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -273,9 +269,18 @@ jobs:
       run: |
         pnpm playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: blob-report-${{ matrix.shard }}
+        path: blob-report
+        retention-days: 30
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -286,3 +291,35 @@ jobs:
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  report-playwright:
+    needs: [run-playwright]
+
+    if: always() && needs.run-playwright.result != 'skipped'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: pnpm/action-setup@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: |
+        pnpm install --frozen-lockfile
+
+    - name: Merge into HTML Report
+      run: pnpm playwright merge-reports --reporter html ./all-blob-reports
+
+    - name: Upload HTML report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report
+        path: playwright-report
+        retention-days: 30

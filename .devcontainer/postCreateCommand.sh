@@ -3,7 +3,6 @@ sudo chown -R vscode:vscode /workspace;
 # Instal additional packages
 sudo apt update
 sudo apt-get install -y --no-install-recommends \
-  git-lfs \
   iputils-ping net-tools dnsutils
 sudo apt-get clean -y
 
@@ -15,5 +14,4 @@ eval "$(cat /home/vscode/.bashrc)"
 pnpm install turbo --global
 
 # Install dependencies
-git-lfs pull
 turbo run bootstrap

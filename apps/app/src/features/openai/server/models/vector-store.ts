@@ -11,10 +11,13 @@ export type VectorStoreScopeType = typeof VectorStoreScopeType[keyof typeof Vect
 const VectorStoreScopeTypes = Object.values(VectorStoreScopeType);
 interface VectorStore {
   vectorStoreId: string
-  scorpeType: VectorStoreScopeType
+  scopeType: VectorStoreScopeType
+  isDeleted: boolean
 }
 
-export interface VectorStoreDocument extends VectorStore, Document {}
+export interface VectorStoreDocument extends VectorStore, Document {
+  markAsDeleted(): Promise<void>
+}
 
 type VectorStoreModel = Model<VectorStore>
 
@@ -24,11 +27,21 @@ const schema = new Schema<VectorStoreDocument, VectorStoreModel>({
     required: true,
     unique: true,
   },
-  scorpeType: {
+  scopeType: {
     enum: VectorStoreScopeTypes,
     type: String,
     required: true,
   },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
 });
+
+schema.methods.markAsDeleted = async function(): Promise<void> {
+  this.isDeleted = true;
+  await this.save();
+};
 
 export default getOrCreateModel<VectorStoreDocument, VectorStoreModel>('VectorStore', schema);

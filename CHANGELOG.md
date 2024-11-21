@@ -1,8 +1,121 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.22...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.2](https://github.com/weseek/growi/compare/v7.1.1...v7.1.2) - 2024-11-18
+
+### 🚀 Improvement
+
+* imprv(ai): GROWI AI Knowledge Assistant instructions (#9407) @yuki-takei
+* imprv(ai): Knowedge Assistant model configuration by env var (#9410) @yuki-takei
+* imprv(ai): Shorten thread deletion expiredAt (#9419) @yuki-takei
+* imprv(ai): Remove unnecessary strings from markdown when creating VectorStoreFIie (#9411) @miya
+* imprv(ai): Create thead before the first post (#9414) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Fixed the message when all read (#9405) @Ryosei-Fukushima
+
+### 🧰 Maintenance
+
+* support: Import OpenAI features dynamically (#9413) @yuki-takei
+* support: Welcome back Hufflepuff badger (#9403) @satof3
+
+## [v7.1.1](https://github.com/weseek/growi/compare/v7.1.0...v7.1.1) - 2024-11-12
+
+### 💎 Features
+
+* feat(ai): Swtch summary mode (#9377) @yuki-takei
+* feat: Return sources when generating responses (Knowledge assistant) (#9362) @miya
+* feat: Set the maximum number of minutes until the request in an environment variable (#9347) @miya
+
+### 🚀 Improvement
+
+* imprv: GitHub Alert with directive syntax (#9392) @yuki-takei
+* imprv: Sidebar button displays tooltip (#9371) @reiji-h
+* imprv: Open the link of PageTreeItem in a new tab when the user middle click (#9365) @yuki-takei
+* support: Avoid using req.t() (#9149) @shironegi39
+* imprv: Tidy up /Sandbox (#9355) @yuki-takei
+* imprv: Reduce sanitizing (#9350) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Output TextDirective and LeafDirective HTML (#9388) @yuki-takei
+* fix: NextLink isCreatablePage always returns false (#9356) @yuki-takei
+* fix: Duplicate page names alert should not occur on a single page (#9348) @reiji-h
+* fix: i18n for security settings (#9379) @yuki-takei
+* fix: Output TextDirective and LeafDirective HTML (#9388) @yuki-takei
+* fix(i18n): i18n for server side (#9372) @yuki-takei
+* fix: Duplicate page names alert should not occur on a single page (#9348) @reiji-h
+* fix: NextLink isCreatablePage always returns false (#9356) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Welcome back new Christmas theme (#9374) @satof3
+* support: Type checking (#9393) @yuki-takei
+* support: Welcome back new Christmas theme (#9374) @satof3
+* support: Omit remark-toc (#9383) @yuki-takei
+* support: Stop managing font files with Git LFS (#9351) @yuki-takei
+* support: Avoid using req.t() (#9149) @shironegi39
+* support: Improve playwright report (#9363) @yuki-takei
+* support: Avoid using req.t() (#9149) @shironegi39
+* support: Stop managing font files with Git LFS (#9351) @yuki-takei
+
+## [v7.1.0](https://github.com/weseek/growi/compare/v7.0.23...v7.1.0) - 2024-10-31
+
+### BREAKING CHANGES
+
+* imprv: Update default value for S3_OBJECT_ACL (#9332) @yuki-takei
+
+### 💎 Features
+
+* feat: GROWI OpenAI Integration (#9246) @yuki-takei
+
+### 🚀 Improvement
+
+* imprv: Add GitHub Markdown alerts  (#9127) @reiji-h
+* imprv: Upgrade unified and remark-growi-directive (#9048) @reiji-h
+* imprv: ROM users can manage comments (#9101) @WNomunomu
+* imprv: Update default value for S3_OBJECT_ACL (#9332) @yuki-takei
+* imprv: Sandbox (#9330) @yuki-takei
+* support: JSDoc for OpenAPI document (#9311) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Couldn't show old revision (#9296) @yuki-takei
+* fix: Replace the word ROM (#9295) @satof3
+* fix: forgot-password API (#9257) @reiji-h
+* fix: Edit button appear for the side of header (#9270) @yuki-takei
+* fix: Ensure text-only paste for mixed content from various sources (#9096) @reiji-h
+* fix: Notification count badge (#9124) @shironegi39
+* fix(ogp): Set an unknown label when the user is not found (#9232) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Migrate to pnpm from yarn v1 (#9249) @yuki-takei
+* support: Omit MongoDB 4.x compatible code (#9334) @yuki-takei
+* support: Pull LFS files with turbo (#9325) @yuki-takei
+* support: Use `pnpm deploy` instead of `turbo prune` (#9323) @yuki-takei
+* support: Maintenance API docs generation (#9302) @yuki-takei
+* support: Improve typings for PageService (#9220) @yuki-takei
+* support: Typescriptize accessTokenParser (#9320) @yuki-takei
+* support: Migrate to pnpm from yarn v1 (#9249) @yuki-takei
+* support: JSDoc for OpenAPI document (#9311) @yuki-takei
+* support: Maintenance API docs generation (#9302) @yuki-takei
+* support: Omit docs route (#9299) @yuki-takei
+
+## [v7.0.23](https://github.com/weseek/growi/compare/v7.0.22...v7.0.23) - 2024-10-24
+
+### 🐛 Bug Fixes
+
+* fix: Couln't show old revision (#9296) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Maintenance API docs generation (#9302) @yuki-takei
+* support: Omit docs route (#9299) @yuki-takei
 
 ## [v7.0.22](https://github.com/weseek/growi/compare/v7.0.21...v7.0.22) - 2024-10-21
 

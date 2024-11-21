@@ -48,6 +48,10 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.vectorStores.retrieve(vectorStoreId);
   }
 
+  async deleteVectorStore(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.VectorStoreDeleted> {
+    return this.client.beta.vectorStores.del(vectorStoreId);
+  }
+
   async uploadFile(file: Uploadable): Promise<OpenAI.Files.FileObject> {
     return this.client.files.create({ file, purpose: 'assistants' });
   }

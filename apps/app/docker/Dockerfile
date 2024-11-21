@@ -1,4 +1,4 @@
-# syntax = docker/dockerfile:1.4
+# syntax = docker/dockerfile:1
 
 
 ##
@@ -6,15 +6,17 @@
 ##
 FROM node:20-slim AS base
 
-ENV optDir /opt
+ENV optDir=/opt
 
 WORKDIR ${optDir}
 
+# install tools
+RUN apt-get update && apt-get install -y ca-certificates wget curl --no-install-recommends
+
 # install pnpm
-RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
-  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
-ENV PNPM_HOME "/root/.local/share/pnpm"
-ENV PATH "$PNPM_HOME:$PATH"
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sh -
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
 # install turbo
 RUN pnpm add turbo --global
@@ -26,7 +28,7 @@ RUN pnpm add turbo --global
 ##
 FROM base AS builder
 
-ENV optDir /opt
+ENV optDir=/opt
 
 WORKDIR ${optDir}
 
@@ -40,8 +42,8 @@ RUN turbo run clean
 RUN turbo run build --filter @growi/app
 
 # make artifacts
-RUN pnpm --filter @growi/app --prod deploy pruned
-RUN rm -rf apps/app/node_modules && mv pruned/node_modules apps/app/node_modules
+RUN pnpm deploy out --prod --filter @growi/app
+RUN rm -rf apps/app/node_modules && mv out/node_modules apps/app/node_modules
 RUN rm -rf apps/app/.next/cache
 RUN tar -zcf packages.tar.gz \
   package.json \
@@ -62,12 +64,12 @@ RUN tar -zcf packages.tar.gz \
 ## release
 ##
 FROM node:20-slim
-LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
+LABEL maintainer="Yuki Takei <yuki@weseek.co.jp>"
 
-ENV NODE_ENV production
+ENV NODE_ENV="production"
 
-ENV optDir /opt
-ENV appDir ${optDir}/growi
+ENV optDir=/opt
+ENV appDir=${optDir}/growi
 
 # Add gosu
 # see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
@@ -77,13 +79,6 @@ RUN set -eux; \
 	rm -rf /var/lib/apt/lists/*; \
 # verify that the binary works
 	gosu nobody true
-
-# Add pnpm for 'node' user
-RUN apt-get update && apt-get install -y sudo ca-certificates wget --no-install-recommends \
-  && wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" sudo -u node sh - \
-  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
-ENV PNPM_HOME="/home/node/.local/share/pnpm"
-ENV PATH "$PNPM_HOME:$PATH"
 
 COPY --from=builder --chown=node:node \
   ${optDir}/packages.tar.gz ${appDir}/
@@ -102,4 +97,4 @@ VOLUME /data
 EXPOSE 3000
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["pnpm run migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"]
+CMD ["npm run migrate && node -r dotenv-flow/config --expose_gc dist/server/app.js"]

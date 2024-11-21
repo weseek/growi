@@ -3,7 +3,7 @@
   "extends": ["//"],
   "tasks": {
 
-    "styles-prebuilt": {
+    "pre:styles": {
       "dependsOn": ["@growi/ui#build"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
@@ -14,7 +14,7 @@
       "outputLogs": "new-only"
     },
     "build": {
-      "dependsOn": ["^build", "styles-prebuilt"],
+      "dependsOn": ["^build", "pre:styles"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
         "next.config.js",
@@ -33,7 +33,7 @@
       "inputs": ["src/migrations/*.js"],
       "outputLogs": "new-only"
     },
-    "dev:styles-prebuilt": {
+    "dev:pre:styles": {
       "dependsOn": ["@growi/ui#dev"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
@@ -45,18 +45,18 @@
       "outputLogs": "new-only"
     },
     "dev": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles"],
       "cache": false,
       "persistent": true
     },
 
     "launch-dev:ci": {
-      "dependsOn": ["^dev", "dev:styles-prebuilt"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles"],
       "cache": false
     },
 
     "lint": {
-      "dependsOn": ["^dev", "dev:styles-prebuilt"]
+      "dependsOn": ["^dev", "dev:pre:styles"]
     },
 
     "test": {
@@ -66,23 +66,23 @@
 
     "version:patch": {
       "cache": false,
-      "dependsOn": ["^version:patch", "//#version:patch"]
+      "dependsOn": ["//#version:patch"]
     },
     "version:prerelease": {
       "cache": false,
-      "dependsOn": ["^version:prerelease", "//#version:prerelease"]
+      "dependsOn": ["//#version:prerelease"]
     },
     "version:prepatch": {
       "cache": false,
-      "dependsOn": ["^version:prepatch", "//#version:prepatch"]
+      "dependsOn": ["//#version:prepatch"]
     },
     "version:preminor": {
       "cache": false,
-      "dependsOn": ["^version:preminor", "//#version:preminor"]
+      "dependsOn": ["//#version:preminor"]
     },
     "version:premajor": {
       "cache": false,
-      "dependsOn": ["^version:premajor", "//#version:premajor"]
+      "dependsOn": ["//#version:premajor"]
     }
 
   }

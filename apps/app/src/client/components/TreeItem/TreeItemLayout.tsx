@@ -28,7 +28,8 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     indentSize = 10,
     itemLevel: baseItemLevel = 1,
     itemNode, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
+    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, onWheelClick,
+    isEnableActions, isReadOnlyUser, isWipPageShown = true,
     itemRef, itemClass,
     showAlternativeContent,
   } = props;
@@ -50,6 +51,19 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     onClick?.(page);
 
   }, [onClick, page]);
+
+  const itemMouseupHandler = useCallback((e: MouseEvent) => {
+    // DO NOT handle the event when e.currentTarget and e.target is different
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+
+    if (e.button === 1) {
+      e.preventDefault();
+      onWheelClick?.(page);
+    }
+
+  }, [onWheelClick, page]);
 
 
   // descendantCount
@@ -132,6 +146,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
           border-0 py-0 ps-0 d-flex align-items-center rounded-1`}
         id={`grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
+        onMouseUp={itemMouseupHandler}
         aria-current={isSelected ? true : undefined}
       >
 
