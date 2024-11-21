@@ -6,6 +6,7 @@ import {
 
 import withLoadingProps from 'next-dynamic-loading-props';
 import dynamic from 'next/dynamic';
+import SimpleBar from 'simplebar-react';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { SidebarMode } from '~/interfaces/ui';
@@ -28,6 +29,7 @@ import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 
 import styles from './Sidebar.module.scss';
+import 'simplebar-react/dist/simplebar.min.css';
 
 
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
@@ -172,12 +174,24 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div
-        ref={sidebarScrollerRef}
-        className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${closedClass} ${openedClass}`}
+      {/* <SimpleBar
+        className={`sidebar-contents-container flex-grow-1 ${closedClass} ${openedClass}`}
         style={{ width: collapsibleContentsWidth }}
+        ref={simpleBarRef}
       >
         {children}
+      </SimpleBar> */}
+      <div
+        className={`sidebar-contents-container flex-grow-1 overflow-hidden ${closedClass} ${openedClass}`}
+        ref={sidebarScrollerRef}
+      >
+        <SimpleBar
+          className=""
+          style={{ width: collapsibleContentsWidth }}
+          autoHide={false}
+        >
+          {children}
+        </SimpleBar>
       </div>
     </div>
   );
