@@ -19,11 +19,8 @@ const logger = loggerFactory('growi:middleware:api-rate-limit');
 // API_RATE_LIMIT_010_FOO_METHODS=GET,POST
 // API_RATE_LIMIT_010_FOO_MAX_REQUESTS=10
 
-export const POINTS_THRESHOLD = 100;
-
 const opts: IRateLimiterMongoOptions = {
   storeClient: connection,
-  points: POINTS_THRESHOLD, // set default value
   duration: DEFAULT_DURATION_SEC, // set default value
 };
 const rateLimiter = new RateLimiterMongo(opts);
@@ -56,8 +53,8 @@ export const _consumePoints = async(
     maxRequests *= maxRequestsMultiplier;
   }
 
-  const consumePoints = POINTS_THRESHOLD / maxRequests;
-  const rateLimiterRes = await rateLimiter.consume(key, consumePoints);
+  rateLimiter.points = maxRequests;
+  const rateLimiterRes = await rateLimiter.consume(key, 1);
   return rateLimiterRes;
 };
 
