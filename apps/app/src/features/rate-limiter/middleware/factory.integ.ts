@@ -42,7 +42,7 @@ describe('factory.ts', async() => {
       await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
     });
 
-    it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: 1)', async() => {
+    it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: 500)', async() => {
       // setup
       const method = 'GET';
       const key = 'test-key-2';
