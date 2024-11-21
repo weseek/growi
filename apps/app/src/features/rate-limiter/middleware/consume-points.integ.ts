@@ -31,34 +31,32 @@ const testRateLimitErrorWhenExceedingMaxRequests = async(method: string, key: st
   }
 };
 
-describe('factory.ts', async() => {
-  describe('_consumePoints()', async() => {
-    it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: 1)', async() => {
-      // setup
-      const method = 'GET';
-      const key = 'test-key-1';
-      const maxRequests = 1;
 
-      await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
-    });
+describe('consume-points.ts', async() => {
+  it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: 1)', async() => {
+    // setup
+    const method = 'GET';
+    const key = 'test-key-1';
+    const maxRequests = 1;
 
-    it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: 500)', async() => {
-      // setup
-      const method = 'GET';
-      const key = 'test-key-2';
-      const maxRequests = 500;
-
-      await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
-    });
-
-    it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: {random integer between 1 and 1000})', async() => {
-      // setup
-      const method = 'GET';
-      const key = 'test-key-3';
-      const maxRequests = faker.number.int({ min: 1, max: 1000 });
-
-      await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
-    });
+    await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
   });
 
+  it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: 500)', async() => {
+    // setup
+    const method = 'GET';
+    const key = 'test-key-2';
+    const maxRequests = 500;
+
+    await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
+  });
+
+  it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: {random integer between 1 and 1000})', async() => {
+    // setup
+    const method = 'GET';
+    const key = 'test-key-3';
+    const maxRequests = faker.number.int({ min: 1, max: 1000 });
+
+    await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
+  });
 });
