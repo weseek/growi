@@ -1,15 +1,17 @@
 import { faker } from '@faker-js/faker';
 
+import { consumePoints } from './consume-points';
+
 const testRateLimitErrorWhenExceedingMaxRequests = async(method: string, key: string, maxRequests: number): Promise<void> => {
-  // dynamic import is used because rateLimiterMongo needs to be initialized after connecting to DB
-  // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
-  const { _consumePoints } = await import('./factory');
+  // // dynamic import is used because rateLimiterMongo needs to be initialized after connecting to DB
+  // // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
+  const { rateLimiter } = await import('./rate-limiter-mongo-client');
   let count = 0;
   try {
     for (let i = 1; i <= maxRequests + 1; i++) {
       count += 1;
       // eslint-disable-next-line no-await-in-loop
-      const res = await _consumePoints(method, key, { method, maxRequests });
+      const res = await consumePoints(rateLimiter, method, key, { method, maxRequests });
       if (count === maxRequests) {
         // Expect consumedPoints to be equal to maxRequest when maxRequest is reached
         expect(res?.consumedPoints).toBe(maxRequests);
@@ -24,7 +26,6 @@ const testRateLimitErrorWhenExceedingMaxRequests = async(method: string, key: st
   catch (err) {
     // Expect not to exceed maxRequest
     expect(err.message).not.toBe('Exception occurred');
-
     // Expect rate limit error at maxRequest + 1
     expect(count).toBe(maxRequests + 1);
   }

@@ -1,16 +1,15 @@
 import type { IUserHasId } from '@growi/core';
 import type { Handler, Request } from 'express';
 import md5 from 'md5';
-import { connection } from 'mongoose';
-import { type IRateLimiterMongoOptions, type RateLimiterRes, RateLimiterMongo } from 'rate-limiter-flexible';
+import { type RateLimiterRes } from 'rate-limiter-flexible';
 
 import loggerFactory from '~/utils/logger';
 
-import {
-  DEFAULT_DURATION_SEC, DEFAULT_MAX_REQUESTS, DEFAULT_USERS_PER_IP_PROSPECTION, type IApiRateLimitConfig,
-} from '../config';
+import { DEFAULT_USERS_PER_IP_PROSPECTION, type IApiRateLimitConfig } from '../config';
 import { generateApiRateLimitConfig } from '../utils/config-generator';
 
+import { consumePoints } from './consume-points';
+import { rateLimiter } from './rate-limiter-mongo-client';
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');
 
@@ -18,12 +17,6 @@ const logger = loggerFactory('growi:middleware:api-rate-limit');
 // API_RATE_LIMIT_010_FOO_ENDPOINT=/_api/v3/foo
 // API_RATE_LIMIT_010_FOO_METHODS=GET,POST
 // API_RATE_LIMIT_010_FOO_MAX_REQUESTS=10
-
-const opts: IRateLimiterMongoOptions = {
-  storeClient: connection,
-  duration: DEFAULT_DURATION_SEC, // set default value
-};
-const rateLimiter = new RateLimiterMongo(opts);
 
 // generate ApiRateLimitConfig for api rate limiter
 const apiRateLimitConfig = generateApiRateLimitConfig();
@@ -34,30 +27,6 @@ const keysWithRegExp = Object.keys(configWithRegExp).map(key => new RegExp(`^${k
 const valuesWithRegExp = Object.values(configWithRegExp);
 
 
-export const _consumePoints = async(
-    method: string, key: string | null, customizedConfig?: IApiRateLimitConfig, maxRequestsMultiplier?: number,
-): Promise<RateLimiterRes | undefined> => {
-  if (key == null) {
-    return;
-  }
-
-  let maxRequests = DEFAULT_MAX_REQUESTS;
-
-  // use customizedConfig
-  if (customizedConfig != null && (customizedConfig.method.includes(method) || customizedConfig.method === 'ALL')) {
-    maxRequests = customizedConfig.maxRequests;
-  }
-
-  // multiply
-  if (maxRequestsMultiplier != null) {
-    maxRequests *= maxRequestsMultiplier;
-  }
-
-  rateLimiter.points = maxRequests;
-  const rateLimiterRes = await rateLimiter.consume(key, 1);
-  return rateLimiterRes;
-};
-
 /**
  * consume per user per endpoint
  * @param method
@@ -66,7 +35,7 @@ export const _consumePoints = async(
  * @returns
  */
 const consumePointsByUser = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig): Promise<RateLimiterRes | undefined> => {
-  return _consumePoints(method, key, customizedConfig);
+  return consumePoints(rateLimiter, method, key, customizedConfig);
 };
 
 /**
@@ -78,7 +47,7 @@ const consumePointsByUser = async(method: string, key: string | null, customized
  */
 const consumePointsByIp = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig): Promise<RateLimiterRes | undefined> => {
   const maxRequestsMultiplier = customizedConfig?.usersPerIpProspection ?? DEFAULT_USERS_PER_IP_PROSPECTION;
-  return _consumePoints(method, key, customizedConfig, maxRequestsMultiplier);
+  return consumePoints(rateLimiter, method, key, customizedConfig, maxRequestsMultiplier);
 };
 
 
