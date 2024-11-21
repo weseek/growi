@@ -24,7 +24,7 @@ const testRateLimitErrorWhenExceedingMaxRequests = async(method: string, key: st
     }
   }
   catch (err) {
-    // Expect not to exceed maxRequest
+    // Expect rate limit error to be called
     expect(err.message).not.toBe('Exception occurred');
     // Expect rate limit error at maxRequest + 1
     expect(count).toBe(maxRequests + 1);
