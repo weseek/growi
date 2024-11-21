@@ -1,4 +1,5 @@
 import path from 'path';
+import { pipeline, type Readable } from 'stream';
 
 import type { IPage } from '@growi/core';
 import {
@@ -14,12 +15,14 @@ import sanitize from 'sanitize-filename';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IPageGrantData } from '~/interfaces/page';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
+import ShareLink from '~/server/models/share-link';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
@@ -45,91 +48,12 @@ const { body, query, param } = require('express-validator');
 
 const router = express.Router();
 
-/**
- * @swagger
- *  tags:
- *    name: Page
- */
 
 /**
  * @swagger
  *
- *  components:
- *    schemas:
- *      Page:
- *        description: Page
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: page ID
- *            example: 5e07345972560e001761fa63
- *          __v:
- *            type: number
- *            description: DB record version
- *            example: 0
- *          commentCount:
- *            type: number
- *            description: count of comments
- *            example: 3
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- *          creator:
- *            $ref: '#/components/schemas/User'
- *          extended:
- *            type: object
- *            description: extend data
- *            example: {}
- *          grant:
- *            type: number
- *            description: grant
- *            example: 1
- *          grantedUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
- *          lastUpdateUser:
- *            $ref: '#/components/schemas/User'
- *          liker:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: []
- *          path:
- *            type: string
- *            description: page path
- *            example: /
- *          revision:
- *            type: string
- *            description: page revision
- *          seenUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
- *          status:
- *            type: string
- *            description: status
- *            enum:
- *              - 'wip'
- *              - 'published'
- *              - 'deleted'
- *              - 'deprecated'
- *            example: published
- *          updatedAt:
- *            type: string
- *            description: date updated at
- *            example: 2010-01-01T00:00:00.000Z
- *
+ * components:
+ *   schemas:
  *      LikeParams:
  *        description: LikeParams
  *        type: object
@@ -185,7 +109,6 @@ const router = express.Router();
  *            example: 5e07345972560e001761fa63
  */
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
   const certifySharedPage = require('../../../middlewares/certify-shared-page')(crowi);
@@ -202,6 +125,8 @@ module.exports = (crowi) => {
       query('pageId').optional().isString(),
       query('path').optional().isString(),
       query('findAll').optional().isBoolean(),
+      query('shareLinkId').optional().isMongoId(),
+      query('includeEmpty').optional().isBoolean(),
     ],
     likes: [
       body('pageId').isString(),
@@ -284,26 +209,34 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/Page'
    */
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
-    const { user } = req;
+    const { user, isSharedPage } = req;
     const {
-      pageId, path, findAll, revisionId,
+      pageId, path, findAll, revisionId, shareLinkId, includeEmpty,
     } = req.query;
 
-    if (pageId == null && path == null) {
-      return res.apiv3Err(new ErrorV3('Either parameter of path or pageId is required.', 'invalid-request'));
+    const isValid = (shareLinkId != null && pageId != null && path == null) || (shareLinkId == null && (pageId != null || path != null));
+    if (!isValid) {
+      return res.apiv3Err(new Error('Either parameter of (pageId or path) or (pageId and shareLinkId) is required.'), 400);
     }
 
     let page;
     let pages;
     try {
-      if (pageId != null) { // prioritized
+      if (isSharedPage) {
+        const shareLink = await ShareLink.findOne({ _id: shareLinkId });
+        if (shareLink == null) {
+          throw new Error('ShareLink is not found');
+        }
+        page = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
+      }
+      else if (pageId != null) { // prioritized
         page = await Page.findByIdAndViewer(pageId, user);
       }
       else if (!findAll) {
-        page = await Page.findByPathAndViewer(path, user, null, true);
+        page = await Page.findByPathAndViewer(path, user, null, true, false);
       }
       else {
-        pages = await Page.findByPathAndViewer(path, user, null, false);
+        pages = await Page.findByPathAndViewer(path, user, null, false, includeEmpty);
       }
     }
     catch (err) {
@@ -734,9 +667,9 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /pages/export:
+  *    /page/export:
   *      get:
-  *        tags: [Export]
+  *        tags: [Page]
   *        description: return page's markdown
   *        responses:
   *          200:
@@ -803,7 +736,7 @@ module.exports = (crowi) => {
       fileName = '_top';
     }
 
-    let stream;
+    let stream: Readable;
 
     try {
       stream = exportService.getReadStreamFromRevision(revision, format);
@@ -828,7 +761,7 @@ module.exports = (crowi) => {
     };
     await crowi.activityService.createActivity(parameters);
 
-    return stream.pipe(res);
+    return pipeline(stream, res);
   });
 
   /**

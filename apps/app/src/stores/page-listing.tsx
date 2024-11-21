@@ -7,9 +7,10 @@ import type {
 import useSWR, {
   mutate, type SWRConfiguration, type SWRResponse, type Arguments,
 } from 'swr';
+import { cache } from 'swr/_internal';
 import useSWRImmutable from 'swr/immutable';
 import type { SWRInfiniteResponse } from 'swr/infinite';
-import useSWRInfinite from 'swr/infinite';
+import useSWRInfinite, { unstable_serialize } from 'swr/infinite'; // eslint-disable-line camelcase
 
 import type { IPagingResult } from '~/interfaces/paging-result';
 
@@ -21,9 +22,10 @@ import type {
 
 export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHasId[], Error> => {
   const findAll = true;
+  const includeEmpty = true;
   return useSWR(
-    path != null ? ['/page', path, findAll] : null,
-    ([endpoint, path, findAll]) => apiv3Get(endpoint, { path, findAll }).then(result => result.data.pages),
+    path != null ? ['/page', path, findAll, includeEmpty] : null,
+    ([endpoint, path, findAll, includeEmpty]) => apiv3Get(endpoint, { path, findAll, includeEmpty }).then(result => result.data.pages),
   );
 };
 
@@ -33,25 +35,45 @@ type RecentApiResult = {
   totalCount: number,
   offset: number,
 }
-export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolean, config?: SWRConfiguration) : SWRInfiniteResponse<RecentApiResult, Error> => {
+
+export const getRecentlyUpdatedKey = (
+    pageIndex: number,
+    previousPageData: RecentApiResult | null,
+    includeWipPage?: boolean,
+): [string, number | undefined, boolean | undefined] | null => {
+  if (previousPageData != null && previousPageData.pages.length === 0) return null;
+
+  if (pageIndex === 0 || previousPageData == null) {
+    return ['/pages/recent', undefined, includeWipPage];
+  }
+  const offset = previousPageData.offset + previousPageData.pages.length;
+  return ['/pages/recent', offset, includeWipPage];
+
+};
+
+export const useSWRINFxRecentlyUpdated = (
+    includeWipPage?: boolean,
+    config?: SWRConfiguration,
+): SWRInfiniteResponse<RecentApiResult, Error> => {
+  const PER_PAGE = 20;
   return useSWRInfinite(
-    (pageIndex, previousPageData) => {
-      if (previousPageData != null && previousPageData.pages.length === 0) return null;
-
-      if (pageIndex === 0 || previousPageData == null) {
-        return ['/pages/recent', undefined, limit, includeWipPage];
-      }
-
-      const offset = previousPageData.offset + limit;
-      return ['/pages/recent', offset, limit, includeWipPage];
-    },
-    ([endpoint, offset, limit, includeWipPage]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit, includeWipPage }).then(response => response.data),
+    (pageIndex, previousPageData) => getRecentlyUpdatedKey(pageIndex, previousPageData, includeWipPage),
+    ([endpoint, offset, includeWipPage]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit: PER_PAGE, includeWipPage }).then(response => response.data),
     {
       ...config,
       revalidateFirstPage: false,
-      revalidateAll: false,
+      revalidateAll: true,
     },
   );
+};
+
+export const mutateRecentlyUpdated = async(): Promise<undefined> => {
+  [true, false].forEach(includeWipPage => mutate(
+    unstable_serialize(
+      (pageIndex, previousPageData) => getRecentlyUpdatedKey(pageIndex, previousPageData, includeWipPage),
+    ),
+  ));
+  return;
 };
 
 export const mutatePageList = async(): Promise<void[]> => {

@@ -4,16 +4,15 @@ GROWI Official docker image
 
 [![Actions Status](https://github.com/weseek/growi/workflows/Release/badge.svg)](https://github.com/weseek/growi/actions) [![docker-pulls](https://img.shields.io/docker/pulls/weseek/growi.svg)](https://hub.docker.com/r/weseek/growi/) [![](https://images.microbadger.com/badges/image/weseek/growi.svg)](https://microbadger.com/images/weseek/growi)
 
-![GROWI-x-docker](https://user-images.githubusercontent.com/1638767/38307565-105956e2-384f-11e8-8534-b1128522d68d.png)
+![GROWI-x-docker](https://github.com/user-attachments/assets/1a82236d-5a85-4a2e-842a-971b4c1625e6)
 
 
 Supported tags and respective Dockerfile links
 ------------------------------------------------
 
-* [`7.0.17`, `7.0`, `7`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v7.0.17/apps/app/docker/Dockerfile)
+* [`7.1.0`, `7.1`, `7`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v7.1.0/apps/app/docker/Dockerfile)
+* [`7.0.23`, `7.0` (Dockerfile)](https://github.com/weseek/growi/blob/v7.0.23/apps/app/docker/Dockerfile)
 * [`6.3.2`, `6.3`, `6` (Dockerfile)](https://github.com/weseek/growi/blob/v6.3.2/apps/app/docker/Dockerfile)
-* [`6.2.4`, `6.2` (Dockerfile)](https://github.com/weseek/growi/blob/v6.2.4/apps/app/docker/Dockerfile)
-* [`6.1.15`, `6.1` (Dockerfile)](https://github.com/weseek/growi/blob/v6.1.15/apps/app/docker/Dockerfile)
 
 
 What is GROWI?
@@ -27,7 +26,7 @@ see: [weseek/growi](https://github.com/weseek/growi)
 Requirements
 -------------
 
-* MongoDB (>= 4.4)
+* MongoDB (>= 6.0)
 
 ### Optional Dependencies
 

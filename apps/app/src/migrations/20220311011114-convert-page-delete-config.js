@@ -12,7 +12,7 @@ const logger = loggerFactory('growi:migrate:convert-page-delete-config');
 
 module.exports = {
   async up(db, client) {
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isNewConfigExists = await Config.count({
       ns: 'crowi',

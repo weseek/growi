@@ -1,27 +1,29 @@
 import type EventEmitter from 'events';
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
+import { pipeline } from 'stream/promises';
 
+import {
+  PageStatus, YDocStatus, getIdForRef,
+  getIdStringForRef,
+} from '@growi/core';
+import { PageGrant } from '@growi/core/dist/interfaces';
 import type {
   Ref, HasObjectId, IUserHasId, IUser,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IGrantedGroup, IRevisionHasId,
   IDataWithMeta,
-} from '@growi/core';
-import {
-  PageGrant, PageStatus, YDocStatus, getIdForRef,
-  getIdStringForRef,
-} from '@growi/core';
+} from '@growi/core/dist/interfaces';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Cursor, HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
 import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+import { isAiEnabled } from '~/features/openai/server/services';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import type { IOptionsForCreate, IOptionsForUpdate } from '~/interfaces/page';
@@ -76,8 +78,6 @@ import { shouldUseV4Process } from './should-use-v4-process';
 export * from './page-service';
 
 
-const debug = require('debug')('growi:services:page');
-
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath,
@@ -97,14 +97,10 @@ class PageCursorsForDescendantsFactory {
 
   private initialCursor: Cursor<any> | never[]; // TODO: wait for mongoose update
 
-  private Page: PageModel;
-
   constructor(user: any, rootPage: any, shouldIncludeEmpty: boolean) {
     this.user = user;
     this.rootPage = rootPage;
     this.shouldIncludeEmpty = shouldIncludeEmpty;
-
-    this.Page = mongoose.model('Page') as unknown as PageModel;
   }
 
   // prepare initial cursor
@@ -151,9 +147,10 @@ class PageCursorsForDescendantsFactory {
       return [];
     }
 
-    const { PageQueryBuilder } = this.Page;
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+    const { PageQueryBuilder } = Page;
 
-    const builder = new PageQueryBuilder(this.Page.find(), this.shouldIncludeEmpty);
+    const builder = new PageQueryBuilder(Page.find(), this.shouldIncludeEmpty);
     builder.addConditionToFilteringByParentId(page._id);
 
     const cursor = builder.query.lean().cursor({ batchSize: BULK_REINDEX_SIZE }) as Cursor<any>;
@@ -1010,6 +1007,8 @@ class PageService implements IPageService {
     const factory = new PageCursorsForDescendantsFactory(user, targetPage, true);
     const readStream = await factory.generateReadable();
 
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
+
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
 
@@ -1047,16 +1046,13 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
-    await streamToPromise(writeStream);
+    await pipeline(readStream, batchStream, writeStream);
   }
 
   private async renameDescendantsWithStreamV4(targetPage, newPagePath, user, options = {}) {
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(targetPage.path)}`, 'i');
@@ -1087,11 +1083,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
-    await streamToPromise(writeStream);
+    await pipeline(readStream, batchStream, writeStream);
   }
 
   /*
@@ -1168,7 +1160,7 @@ class PageService implements IPageService {
       grant,
       grantUserGroupIds: grantedGroupIds,
     };
-    let duplicatedTarget;
+    let duplicatedTarget: HydratedDocument<PageDocument>;
     if (page.isEmpty) {
       const parent = await this.getParentAndFillAncestorsByUser(user, newPagePath);
       duplicatedTarget = await Page.createEmptyPage(newPagePath, parent);
@@ -1178,6 +1170,14 @@ class PageService implements IPageService {
       duplicatedTarget = await (this.create as CreateMethod)(
         newPagePath, populatedPage?.revision?.body ?? '', user, options,
       );
+
+      if (isAiEnabled()) {
+        const { getOpenaiService } = await import('~/features/openai/server/services/openai');
+
+        // Do not await because communication with OpenAI takes time
+        const openaiService = getOpenaiService();
+        openaiService?.createVectorStoreFile([duplicatedTarget]);
+      }
     }
     this.pageEvent.emit('duplicate', page, user);
 
@@ -1403,9 +1403,22 @@ class PageService implements IPageService {
       }
     });
 
-    await Page.insertMany(newPages, { ordered: false });
+    const duplicatedPages = await Page.insertMany(newPages, { ordered: false });
+    const duplicatedPageIds = duplicatedPages.map(duplicatedPage => duplicatedPage._id);
+
     await Revision.insertMany(newRevisions, { ordered: false });
     await this.duplicateTags(pageIdMapping);
+
+    const duplicatedPagesWithPopulatedToShowRevison = await Page
+      .find({ _id: { $in: duplicatedPageIds }, grant: PageGrant.GRANT_PUBLIC }).populate('revision') as PageDocument[];
+
+    if (isAiEnabled()) {
+      const { getOpenaiService } = await import('~/features/openai/server/services/openai');
+
+      // Do not await because communication with OpenAI takes time
+      const openaiService = getOpenaiService();
+      openaiService?.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
+    }
   }
 
   private async duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix) {
@@ -1460,6 +1473,7 @@ class PageService implements IPageService {
 
     const iterableFactory = new PageCursorsForDescendantsFactory(user, page, true);
     const readStream = await iterableFactory.generateReadable();
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
@@ -1492,17 +1506,14 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
-    await streamToPromise(writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     return nNonEmptyDuplicatedPages;
   }
 
   private async duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedResources: boolean) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const newPagePathPrefix = newPagePath;
     const pathRegExp = new RegExp(`^${escapeStringRegexp(page.path)}`, 'i');
@@ -1533,11 +1544,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
-    await streamToPromise(writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     return count;
   }
@@ -1832,6 +1839,7 @@ class PageService implements IPageService {
       readStream = await factory.generateReadable();
     }
 
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const deleteDescendants = this.deleteDescendants.bind(this);
     let count = 0;
@@ -1864,11 +1872,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
-    await streamToPromise(writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     return nDeletedNonEmptyPages;
   }
@@ -1891,6 +1895,17 @@ class PageService implements IPageService {
       Workflow.deleteMany({ pageId: { $in: pageIds } }),
       // Leave bookmarks without deleting -- 2024.05.17 Yuki Takei
     ]);
+
+    if (isAiEnabled()) {
+      const { getOpenaiService } = await import('~/features/openai/server/services/openai');
+
+      const openaiService = getOpenaiService();
+      if (openaiService != null) {
+        const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
+        const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService.deleteVectorStoreFile(vectorStore._id, pageId));
+        await Promise.allSettled(deleteVectorStoreFilePromises);
+      }
+    }
   }
 
   // delete multiple pages
@@ -1903,7 +1918,6 @@ class PageService implements IPageService {
     await this.deleteCompletelyOperation(ids, paths);
 
     this.pageEvent.emit('syncDescendantsDelete', pages, user); // update as renamed page
-
     return;
   }
 
@@ -2090,6 +2104,8 @@ class PageService implements IPageService {
       readStream = await factory.generateReadable();
     }
 
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
+
     let count = 0;
     let nDeletedNonEmptyPages = 0; // used for updating descendantCount
 
@@ -2121,11 +2137,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
-    await streamToPromise(writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     return nDeletedNonEmptyPages;
   }
@@ -2365,7 +2377,7 @@ class PageService implements IPageService {
 
     page.status = Page.STATUS_PUBLISHED;
     page.lastUpdateUser = user;
-    debug('Revert deleted the page', page, newPath);
+    logger.debug('Revert deleted the page', page, newPath);
     const updatedPage = await Page.findByIdAndUpdate(page._id, {
       $set: {
         path: newPath, status: Page.STATUS_PUBLISHED, lastUpdateUser: user._id, deleteUser: null, deletedAt: null,
@@ -2401,7 +2413,7 @@ class PageService implements IPageService {
     );
 
     const childPagesReadableStream = builder.query.cursor({ batchSize: BULK_REINDEX_SIZE });
-
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
     const childPagesWritable = new Writable({
       objectMode: true,
       write: async(batch, encoding, callback) => {
@@ -2410,10 +2422,8 @@ class PageService implements IPageService {
       },
     });
 
-    childPagesReadableStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(childPagesWritable);
-    await streamToPromise(childPagesWritable);
+    await pipeline(childPagesReadableStream, batchStream, childPagesWritable);
+
   }
 
   async updateChildPagesGrant(
@@ -2450,6 +2460,7 @@ class PageService implements IPageService {
     }
 
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
@@ -2478,17 +2489,14 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
-    await streamToPromise(writeStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     return count;
   }
 
   private async revertDeletedDescendantsWithStreamV4(targetPage, user, options = {}) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
     const revertDeletedDescendants = this.revertDeletedDescendants.bind(this);
     let count = 0;
@@ -2513,11 +2521,7 @@ class PageService implements IPageService {
       },
     });
 
-    readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
-    await streamToPromise(readStream);
+    await pipeline(readStream, batchStream, writeStream);
 
     return count;
   }
@@ -3363,11 +3367,7 @@ class PageService implements IPageService {
       },
     });
 
-    pagesStream
-      .pipe(batchStream)
-      .pipe(migratePagesStream);
-
-    await streamToPromise(migratePagesStream);
+    await pipeline(pagesStream, batchStream, migratePagesStream);
 
     if (await Page.exists(matchFilter) && shouldContinue) {
       return this._normalizeParentRecursively(
@@ -3468,6 +3468,7 @@ class PageService implements IPageService {
    */
   async recountAndUpdateDescendantCountOfPages(pageCursor: Cursor<any>, batchSize:number): Promise<void> {
     const Page = this.crowi.model('Page');
+    const batchStream = createBatchStream(batchSize);
     const recountWriteStream = new Writable({
       objectMode: true,
       async write(pageDocuments, encoding, callback) {
@@ -3481,11 +3482,8 @@ class PageService implements IPageService {
         callback();
       },
     });
-    pageCursor
-      .pipe(createBatchStream(batchSize))
-      .pipe(recountWriteStream);
 
-    await streamToPromise(recountWriteStream);
+    await pipeline(pageCursor, batchStream, recountWriteStream);
   }
 
   // update descendantCount of all pages that are ancestors of a provided pageId by count
@@ -3654,13 +3652,13 @@ class PageService implements IPageService {
 
   // --------- Create ---------
 
-  private async preparePageDocumentToCreate(path: string, shouldNew: boolean): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  private async preparePageDocumentToCreate(path: string, shouldNew: boolean): Promise<HydratedDocument<PageDocument>> {
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const emptyPage = await Page.findOne({ path, isEmpty: true });
 
     // Use empty page if exists, if not, create a new page
-    let page;
+    let page: HydratedDocument<PageDocument>;
     if (shouldNew) {
       page = new Page();
     }
@@ -3774,7 +3772,7 @@ class PageService implements IPageService {
    * Create a page
    * Set options.isSynchronously to true to await all process when you want to run this method multiple times at short intervals.
    */
-  async create(_path: string, body: string, user: HasObjectId, options: IOptionsForCreate = {}): Promise<PageDocument> {
+  async create(_path: string, body: string, user: HasObjectId, options: IOptionsForCreate = {}): Promise<HydratedDocument<PageDocument>> {
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
@@ -3785,7 +3783,7 @@ class PageService implements IPageService {
     const path: string = generalXssFilter.process(_path); // sanitize path
 
     // Retrieve closest ancestor document
-    const Page = mongoose.model<PageDocument, PageModel>('Page');
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
     const closestAncestor = await Page.findNonEmptyClosestAncestor(path);
 
     // Determine grantData
@@ -3903,7 +3901,7 @@ class PageService implements IPageService {
    * V4 compatible create method
    */
   private async createV4(path, body, user, options: any = {}) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const format = options.format || 'markdown';
     const grantUserGroupIds = options.grantUserGroupIds || null;
@@ -4079,7 +4077,7 @@ class PageService implements IPageService {
   }
 
   async updatePageSubOperation(page, user, exPage, options: IOptionsForUpdate, pageOpId: ObjectIdLike): Promise<void> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const currentPage = page;
 
@@ -4110,7 +4108,7 @@ class PageService implements IPageService {
     }
 
     // 3. Update scopes for descendants
-    if (options.overwriteScopesOfDescendants) {
+    if (options.overwriteScopesOfDescendants && shouldBeOnTree) {
       await this.applyScopesToDescendantsWithStream(currentPage, user);
     }
 
@@ -4144,13 +4142,13 @@ class PageService implements IPageService {
   }
 
   async updatePage(
-      pageData: PageDocument,
+      pageData: HydratedDocument<PageDocument>,
       body: string | null,
       previousBody: string | null,
       user: IUserHasId,
       options: IOptionsForUpdate = {},
-  ): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  ): Promise<HydratedDocument<PageDocument>> {
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
@@ -4292,8 +4290,9 @@ class PageService implements IPageService {
   }
 
 
-  async updatePageV4(pageData: PageDocument, body, previousBody, user, options: IOptionsForUpdate = {}): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+  async updatePageV4(
+      pageData: HydratedDocument<PageDocument>, body, previousBody, user, options: IOptionsForUpdate = {},
+  ): Promise<HydratedDocument<PageDocument>> {
 
     // use the previous data if absent
     const grant = options.grant || pageData.grant;

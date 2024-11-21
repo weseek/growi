@@ -45,6 +45,8 @@ import {
   useIsUploadAllFileAllowed, useIsUploadEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
+  useIsRomUserAllowedToComment,
+  useIsAiEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -164,6 +166,8 @@ type Props = CommonProps & {
   elasticsearchMaxBodyLengthToIndex: number,
   isEnabledMarp: boolean,
 
+  isRomUserAllowedToComment: boolean,
+
   sidebarConfig: ISidebarConfig,
 
   isSlackConfigured: boolean,
@@ -190,6 +194,8 @@ type Props = CommonProps & {
   yjsData: CurrentPageYjsData,
 
   rendererConfig: RendererConfig,
+
+  aiEnabled: boolean,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -242,9 +248,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
 
+  useIsAiEnabled(props.aiEnabled);
+
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
+  const revisionId = pageWithMeta?.data.revision?._id;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPathname(props.currentPathname);
@@ -277,18 +286,27 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       return;
     }
 
-    if (currentPageId != null && !props.isNotFound) {
+    if (currentPageId != null && revisionId != null && !props.isNotFound) {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
         mutateEditingMarkdown(pageData?.revision?.body);
-        mutateCurrentPageYjsDataFromApi();
       };
 
       // If skipSSR is true, use the API to retrieve page data.
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [currentPageId, mutateCurrentPage, mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
+  }, [
+    revisionId, currentPageId, mutateCurrentPage,
+    mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR,
+  ]);
+
+  // Load current yjs data
+  useEffect(() => {
+    if (currentPageId != null && revisionId != null && !props.isNotFound) {
+      mutateCurrentPageYjsDataFromApi();
+    }
+  }, [currentPageId, mutateCurrentPageYjsDataFromApi, props.isNotFound, revisionId]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -308,8 +326,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   useEffect(() => {
-    mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
-  }, [mutateRemoteRevisionId, pageWithMeta?.data.revision?._id]);
+    mutateRemoteRevisionId(revisionId);
+  }, [mutateRemoteRevisionId, revisionId]);
 
   useEffect(() => {
     mutateCurrentPageId(pageId ?? null);
@@ -542,10 +560,14 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     searchService, configManager, aclService,
   } = crowi;
 
+  props.aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
+
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
   props.elasticsearchMaxBodyLengthToIndex = configManager.getConfig('crowi', 'app:elasticsearchMaxBodyLengthToIndex');
+
+  props.isRomUserAllowedToComment = configManager.getConfig('crowi', 'security:isRomUserAllowedToComment');
 
   props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;

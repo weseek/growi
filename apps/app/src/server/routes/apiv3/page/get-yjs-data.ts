@@ -6,6 +6,7 @@ import { param } from 'express-validator';
 import mongoose from 'mongoose';
 
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import type { PageModel } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
@@ -25,7 +26,6 @@ interface Req extends Request<ReqParams, ApiV3Response> {
 }
 export const getYjsDataHandlerFactory: GetYjsDataHandlerFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
   // define validators for req.params

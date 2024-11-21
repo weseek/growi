@@ -36,6 +36,7 @@ const DeleteBookmarkFolderModal = dynamic(
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
 const WorkflowModal = dynamic(() => import('~/features/approval-workflow/client/components/WorkflowModal'), { ssr: false });
 
+const AiChatModal = dynamic(() => import('~/features/openai/chat/components/AiChatModal').then(mod => mod.AiChatModal), { ssr: false });
 
 type Props = {
   children?: ReactNode
@@ -69,6 +70,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <PutbackPageModal />
       <SearchModal />
       <WorkflowModal />
+      <AiChatModal />
 
       <PagePresentationModal />
       <HotkeysManager />

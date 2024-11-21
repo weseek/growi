@@ -11,7 +11,7 @@ module.exports = {
 
   async up(db, next) {
     logger.info('Start migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const User = userModelFactory();
 

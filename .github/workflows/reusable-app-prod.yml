@@ -8,9 +8,16 @@ on:
         type: string
       skip-e2e-test:
         type: boolean
-      cypress-report-artifact-name-prefix:
+    secrets:
+      SLACK_WEBHOOK_URL:
+        required: true
+  workflow_dispatch:
+    inputs:
+      node-version:
+        required: true
         type: string
-      cypress-config-video:
+        default: 20.x
+      skip-e2e-test:
         type: boolean
         default: false
     secrets:
@@ -27,40 +34,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      with:
-        # retrieve local font files
-        lfs: true
+
+    - uses: pnpm/action-setup@v4
 
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
+        cache: 'pnpm'
 
     - name: Install turbo
       run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Cache/Restore node_modules
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/node_modules
-          !**/node_modules/.cache/turbo
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+        pnpm add turbo --global
 
     - name: Install dependencies
       run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm install --frozen-lockfile
 
     - name: Cache/Restore dist
       uses: actions/cache@v4
@@ -81,10 +69,16 @@ jobs:
       env:
         ANALYZE: 1
 
+    - name: Assembling all dependencies
+      run: |
+        rm -rf out
+        pnpm deploy out --prod --filter @growi/app
+        rm -rf apps/app/node_modules && mv out/node_modules apps/app/node_modules
+
     - name: Archive production files
       id: archive-prod-files
       run: |
-        tar -zcf production.tar.gz \
+        tar -zcf production.tar.gz --exclude ./apps/app/.next/cache \
           package.json \
           apps/app/.next \
           apps/app/config \
@@ -93,9 +87,8 @@ jobs:
           apps/app/resource \
           apps/app/tmp \
           apps/app/.env.production* \
-          apps/app/package.json \
-          packages/*/dist \
-          packages/*/package.json
+          apps/app/node_modules \
+          apps/app/package.json
         echo "file=production.tar.gz" >> $GITHUB_OUTPUT
 
     - name: Upload production files as artifact
@@ -109,8 +102,7 @@ jobs:
       with:
         name: Bundle Analyzing Report (node${{ inputs.node-version }})
         path: |
-          apps/app/.next/analyze/client.html
-          apps/app/.next/analyze/server.html
+          apps/app/.next/analyze
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -142,50 +134,27 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Install turbo
-      run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Restore node_modules
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          **/node_modules
-        # shared key with build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
-
-    - name: Install dependencies
-      run: |
-        yarn --production
+        cache: 'pnpm'
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Extract procution files artifact
+    - name: Extract procution files
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
-    - name: yarn server:ci
+    - name: pnpm run server:ci
       working-directory: ./apps/app
       run: |
         cp config/ci/.env.local.for-ci .env.production.local
-        yarn server:ci
+        pnpm run server:ci
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -201,150 +170,12 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-
-  run-cypress:
-    needs: [build-prod]
-
-    if: ${{ !inputs.skip-e2e-test }}
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: []
-
-    services:
-      mongodb:
-        image: mongo:6.0
-        ports:
-        - 27017/tcp
-      elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
-        ports:
-        - 9200/tcp
-        env:
-          discovery.type: single-node
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Install fonts
-      run: sudo apt install fonts-noto
-
-    - uses: actions/setup-node@v4
-      with:
-        node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Install turbo
-      run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Restore node_modules
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          **/node_modules
-        # saved key by build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
-
-    - name: Cache/Restore Cypress files
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.cache/Cypress
-        key: deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          deps-for-cypress-${{ runner.OS }}-node${{ inputs.node-version }}-
-
-    - name: Install dependencies
-      run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
-        yarn cypress install
-
-    - name: Download production files artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: Production Files (node${{ inputs.node-version }})
-
-    - name: Extract procution files artifact
-      run: |
-        tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
-
-    - name: Determine spec expression
-      id: determine-spec-exp
-      run: |
-        SPEC=`node bin/github-actions/generate-cypress-spec-arg.mjs --prefix="test/cypress/e2e/" --suffix="-*/*.cy.{ts,tsx}" "${{ matrix.spec-group }}"`
-        echo "value=$SPEC" >> $GITHUB_OUTPUT
-
-    - name: Copy dotenv file for ci
-      working-directory: ./apps/app
-      run: |
-        cat config/ci/.env.local.for-ci >> .env.production.local
-
-    - name: Copy dotenv file for automatic installation
-      if: ${{ matrix.spec-group != '10' }}
-      working-directory: ./apps/app
-      run: |
-        cat config/ci/.env.local.for-auto-install >> .env.production.local
-
-    - name: Copy dotenv file for automatic installation with allowing guest mode
-      if: ${{ matrix.spec-group == '21' }}
-      working-directory: ./apps/app
-      run: |
-        cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
-
-    - name: Cypress Run
-      uses: cypress-io/github-action@v6
-      with:
-        browser: chromium
-        working-directory: ./apps/app
-        spec: '${{ steps.determine-spec-exp.outputs.value }}'
-        install: false
-        start: yarn server
-        wait-on: 'http://localhost:3000'
-        config: video=${{ inputs.cypress-config-video }}
-      env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-vrt
-        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
-
-    - name: Upload results
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{ inputs.cypress-report-artifact-name-prefix }}${{ matrix.spec-group }}
-        path: |
-          apps/app/test/cypress/screenshots
-          apps/app/test/cypress/videos
-
-    - name: Slack Notification
-      uses: weseek/ghaction-slack-notification@master
-      if: failure()
-      with:
-        type: ${{ job.status }}
-        job_name: '*Node CI for growi - run-cypress (${{ inputs.node-version }})*'
-        channel: '#ci'
-        isCompactMode: true
-        url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-
-
   run-playwright:
     needs: [build-prod]
 
-    if: ${{ !inputs.skip-e2e-test }}
+    if: |
+      github.event_name == 'workflow_dispatch' ||
+      (!inputs.skip-e2e-test && startsWith(github.head_ref, 'mergify/merge-queue/'))
 
     runs-on: ubuntu-latest
     container:
@@ -373,37 +204,27 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - uses: pnpm/action-setup@v4
+
     - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
-        cache: 'yarn'
-        cache-dependency-path: '**/yarn.lock'
-
-    - name: Restore node_modules
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          **/node_modules
-        # saved key by build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+        cache: 'pnpm'
 
     - name: Install dependencies
       run: |
-        yarn global add node-gyp
-        yarn --frozen-lockfile
+        pnpm install --frozen-lockfile
 
     - name: Install Playwright browsers
       run: |
-        yarn playwright install --with-deps ${{ matrix.browser }}
+        pnpm playwright install --with-deps ${{ matrix.browser }}
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
       with:
         name: Production Files (node${{ inputs.node-version }})
 
-    - name: Extract procution files artifact
+    - name: Extract procution files
       run: |
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
@@ -416,8 +237,9 @@ jobs:
       if: ${{ matrix.browser == 'chromium' }}
       working-directory: ./apps/app
       run: |
-        yarn playwright test --project=chromium/installer
+        pnpm playwright test --project=chromium/installer
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -430,8 +252,9 @@ jobs:
     - name: Playwright Run
       working-directory: ./apps/app
       run: |
-        yarn playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
+        pnpm playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
@@ -444,11 +267,20 @@ jobs:
     - name: Playwright Run (--project=${browser}/guest-mode)
       working-directory: ./apps/app
       run: |
-        yarn playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
+        pnpm playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
       env:
+        DEBUG: pw:api
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: blob-report-${{ matrix.shard }}
+        path: blob-report
+        retention-days: 30
 
     - name: Slack Notification
       uses: weseek/ghaction-slack-notification@master
@@ -459,3 +291,35 @@ jobs:
         channel: '#ci'
         isCompactMode: true
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+
+  report-playwright:
+    needs: [run-playwright]
+
+    if: always() && needs.run-playwright.result != 'skipped'
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: pnpm/action-setup@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: |
+        pnpm install --frozen-lockfile
+
+    - name: Merge into HTML Report
+      run: pnpm playwright merge-reports --reporter html ./all-blob-reports
+
+    - name: Upload HTML report
+      uses: actions/upload-artifact@v4
+      with:
+        name: html-report
+        path: playwright-report
+        retention-days: 30

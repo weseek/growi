@@ -4,6 +4,7 @@ import express from 'express';
 import { param, query, body } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
@@ -46,7 +47,6 @@ type RequestWithUser = Request & { user: IUserHasId }
  */
 
 module.exports = (crowi: Crowi): Router => {
-  const accessTokenParser = require('~/server/middlewares/access-token-parser')(crowi);
   const loginRequired = require('~/server/middlewares/login-required')(crowi, true);
 
   const validator = {

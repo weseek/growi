@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import type { EventEmitter } from 'stream';
-import { Writable, Transform } from 'stream';
+import { Writable, Transform, pipeline } from 'stream';
+import { pipeline as pipelinePromise } from 'stream/promises';
 
 import JSONStream from 'JSONStream';
 import gc from 'expose-gc/function';
@@ -10,9 +11,9 @@ import type {
 } from 'mongodb';
 import type { Document } from 'mongoose';
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
 
+import { ImportMode } from '~/models/admin/import-mode';
 import type Crowi from '~/server/crowi';
 import { setupIndependentModels } from '~/server/crowi/setup-models';
 import type CollectionProgress from '~/server/models/vo/collection-progress';
@@ -25,7 +26,6 @@ import { configManager } from '../config-manager';
 import type { ConvertMap } from './construct-convert-map';
 import { constructConvertMap } from './construct-convert-map';
 import { getModelFromCollectionName } from './get-model-from-collection-name';
-import { ImportMode } from './import-mode';
 import type { ImportSettings, OverwriteParams } from './import-settings';
 import { keepOriginal } from './overwrite-function';
 
@@ -267,13 +267,7 @@ export class ImportService {
         },
       });
 
-      readStream
-        .pipe(jsonStream)
-        .pipe(convertStream)
-        .pipe(batchStream)
-        .pipe(writeStream);
-
-      await streamToPromise(writeStream);
+      await pipelinePromise(readStream, jsonStream, convertStream, batchStream, writeStream);
 
       // clean up tmp directory
       fs.unlinkSync(jsonFile);
@@ -303,14 +297,12 @@ export class ImportService {
 
   /**
    * process bulk operation
-   * @param {object} bulk MongoDB Bulk instance
-   * @param {string} collectionName collection name
-   * @param {object} document
-   * @param {ImportSettings} importSettings
+   * @param bulk MongoDB Bulk instance
+   * @param collectionName collection name
    */
-  bulkOperate(bulk, collectionName, document, importSettings) {
+  bulkOperate(bulk, collectionName: string, document, importSettings: ImportSettings) {
     // insert
-    if (importSettings.mode !== 'upsert') {
+    if (importSettings.mode !== ImportMode.upsert) {
       return bulk.insert(document);
     }
 
@@ -351,10 +343,11 @@ export class ImportService {
    */
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
-    const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
+    const parseStream = unzipStream.Parse();
+    const unzipStreamPipe = pipeline(readStream, parseStream);
     const files: string[] = [];
 
-    unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
+    const unzipEntryStream = unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
       const fileName = entry.path;
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing unzip file (path traversal attack)
@@ -372,12 +365,12 @@ export class ImportService {
       else {
         const jsonFile = path.join(this.baseDir, fileName);
         const writeStream = fs.createWriteStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
-        entry.pipe(writeStream);
+        pipeline(entry, writeStream);
         files.push(jsonFile);
       }
     });
 
-    await streamToPromise(unzipStreamPipe);
+    await pipelinePromise([unzipEntryStream]);
 
     return files;
   }

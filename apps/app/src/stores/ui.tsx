@@ -56,18 +56,39 @@ export const useSidebarScrollerRef = (initialData?: RefObject<HTMLDivElement>): 
   return useSWRStatic<RefObject<HTMLDivElement>, Error>('sidebarScrollerRef', initialData);
 };
 
+//
 export const useIsMobile = (): SWRResponse<boolean, Error> => {
   const key = isClient() ? 'isMobile' : null;
 
-  let configuration;
+  let configuration = {
+    fallbackData: false,
+  };
+
   if (isClient()) {
-    const userAgent = window.navigator.userAgent.toLowerCase();
+
+    // Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection
+    let hasTouchScreen = false;
+    hasTouchScreen = ('maxTouchPoints' in navigator) ? navigator?.maxTouchPoints > 0 : false;
+
+    if (!hasTouchScreen) {
+      const mQ = matchMedia?.('(pointer:coarse)');
+      if (mQ?.media === '(pointer:coarse)') {
+        hasTouchScreen = !!mQ.matches;
+      }
+      else {
+      // Only as a last resort, fall back to user agent sniffing
+        const UA = navigator.userAgent;
+        hasTouchScreen = /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA)
+      || /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+      }
+    }
+
     configuration = {
-      fallbackData: /iphone|ipad|android/.test(userAgent),
+      fallbackData: hasTouchScreen,
     };
   }
 
-  return useStaticSWR<boolean, Error>(key, undefined, configuration);
+  return useSWRStatic<boolean, Error>(key, undefined, configuration);
 };
 
 export const useIsDeviceLargerThanMd = (): SWRResponse<boolean, Error> => {
@@ -337,11 +358,25 @@ export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Er
  *********************************************************** */
 
 export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean, Error> => {
-  const { data: currentUser } = useCurrentUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
-  const { data: isTrashPage } = useIsTrashPage();
+  const key = 'isAbleToShowTrashPageManagementButtons';
 
-  return useStaticSWR('isAbleToShowTrashPageManagementButtons', isTrashPage && currentUser != null && !isReadOnlyUser);
+  const { data: _currentUser } = useCurrentUser();
+  const isCurrentUserExist = _currentUser != null;
+
+  const { data: _currentPageId } = useCurrentPageId();
+  const { data: _isNotFound } = useIsNotFound();
+  const { data: _isTrashPage } = useIsTrashPage();
+  const { data: _isReadOnlyUser } = useIsReadOnlyUser();
+  const isPageExist = _currentPageId != null && _isNotFound === false;
+  const isTrashPage = isPageExist && _isTrashPage === true;
+  const isReadOnlyUser = isPageExist && _isReadOnlyUser === true;
+
+  const includesUndefined = [_currentUser, _currentPageId, _isNotFound, _isReadOnlyUser, _isTrashPage].some(v => v === undefined);
+
+  return useSWRImmutable(
+    includesUndefined ? null : [key, isTrashPage, isCurrentUserExist, isReadOnlyUser],
+    ([, isTrashPage, isCurrentUserExist, isReadOnlyUser]) => isTrashPage && isCurrentUserExist && !isReadOnlyUser,
+  );
 };
 
 export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => {
