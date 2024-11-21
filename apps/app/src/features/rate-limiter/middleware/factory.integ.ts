@@ -3,8 +3,8 @@ import { faker } from '@faker-js/faker';
 import { consumePoints } from './consume-points';
 
 const testRateLimitErrorWhenExceedingMaxRequests = async(method: string, key: string, maxRequests: number): Promise<void> => {
-  // // dynamic import is used because rateLimiterMongo needs to be initialized after connecting to DB
-  // // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
+  // dynamic import is used because rateLimiterMongo needs to be initialized after connecting to DB
+  // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
   const { rateLimiter } = await import('./rate-limiter-mongo-client');
   let count = 0;
   try {
