@@ -50,7 +50,11 @@ module.exports = function(crowi, app) {
       targetModel: SupportedTargetModel.MODEL_USER,
     });
 
+    /**
+     * @param {import('../service/pre-notify').PreNotifyProps} props
+     */
     const preNotify = async(props) => {
+      /** @type {(import('mongoose').HydratedDocument<import('@growi/core').IUser>)[]} */
       const adminUsers = await User.findAdmins();
 
       const { notificationTargetUsers } = props;
