@@ -1,8 +1,11 @@
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 
-import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
-import { useCollapsedContentsOpened, useCurrentSidebarContents } from '~/stores/ui';
+import { useTranslation } from 'next-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
 
+import type { SidebarContentsType } from '~/interfaces/ui';
+import { SidebarMode } from '~/interfaces/ui';
+import { useCollapsedContentsOpened, useCurrentSidebarContents, useIsMobile } from '~/stores/ui';
 
 const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => {
   const { data: isCollapsedContentsOpened } = useCollapsedContentsOpened();
@@ -14,7 +17,7 @@ const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => 
   return isSelected ? 'active' : '';
 };
 
-export type Props = {
+export type PrimaryItemProps = {
   contents: SidebarContentsType,
   label: string,
   iconName: string,
@@ -24,7 +27,7 @@ export type Props = {
   onClick?: () => void,
 }
 
-export const PrimaryItem: FC<Props> = (props: Props) => {
+export const PrimaryItem = (props: PrimaryItemProps): JSX.Element => {
   const {
     contents, label, iconName, sidebarMode, badgeContents,
     onClick, onHover,
@@ -33,6 +36,8 @@ export const PrimaryItem: FC<Props> = (props: Props) => {
   const { data: currentContents, mutateAndSave: mutateContents } = useCurrentSidebarContents();
 
   const indicatorClass = useIndicator(sidebarMode, contents === currentContents);
+  const { data: isMobile } = useIsMobile();
+  const { t } = useTranslation();
 
   const selectThisItem = useCallback(() => {
     mutateContents(contents, false);
@@ -62,19 +67,35 @@ export const PrimaryItem: FC<Props> = (props: Props) => {
   const labelForTestId = label.toLowerCase().replace(' ', '-');
 
   return (
-    <button
-      type="button"
-      data-testid={`grw-sidebar-nav-primary-${labelForTestId}`}
-      className={`btn btn-primary ${indicatorClass}`}
-      onClick={itemClickedHandler}
-      onMouseEnter={mouseEnteredHandler}
-    >
-      <div className="position-relative">
-        { badgeContents != null && (
-          <span className="position-absolute badge rounded-pill bg-primary">{badgeContents}</span>
-        )}
-        <span className="material-symbols-outlined">{iconName}</span>
-      </div>
-    </button>
+    <>
+      <button
+        type="button"
+        data-testid={`grw-sidebar-nav-primary-${labelForTestId}`}
+        className={`btn btn-primary ${indicatorClass}`}
+        onClick={itemClickedHandler}
+        onMouseEnter={mouseEnteredHandler}
+        id={labelForTestId}
+      >
+        <div className="position-relative">
+          { badgeContents != null && (
+            <span className="position-absolute badge rounded-pill bg-primary">{badgeContents}</span>
+          )}
+          <span className="material-symbols-outlined">{iconName}</span>
+        </div>
+      </button>
+      {
+        isMobile === false ? (
+          <UncontrolledTooltip
+            autohide
+            placement="right"
+            target={labelForTestId}
+            fade={false}
+          >
+            {t(label)}
+          </UncontrolledTooltip>
+        ) : <></>
+      }
+    </>
   );
 };
+PrimaryItem.displayName = 'PrimaryItem';

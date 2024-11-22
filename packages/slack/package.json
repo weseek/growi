@@ -42,9 +42,9 @@
     "build": "vite build",
     "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
-    "watch": "yarn dev -w --emptyOutDir=false",
-    "lint:js": "yarn eslint **/*.{js,ts}",
-    "lint:typecheck": "tsc",
+    "watch": "pnpm run dev -w --emptyOutDir=false",
+    "lint:js": "eslint **/*.{js,ts}",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "npm-run-all -p lint:*",
     "test": "vitest run --coverage"
   },
@@ -66,7 +66,9 @@
     "url-join": "^4.0.0"
   },
   "devDependencies": {
-    "@types/express": "^4.17.11",
+    "@slack/types": "^2.14.0",
+    "@types/express": "^4",
+    "@types/qs": "^6.9.16",
     "eslint-plugin-regex": "^1.8.0"
   }
 }

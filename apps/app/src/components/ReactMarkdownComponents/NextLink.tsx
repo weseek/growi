@@ -26,7 +26,7 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
 
 const isCreatablePage = (href: string) => {
   try {
-    const url = new URL(href);
+    const url = new URL(href, 'http://example.com');
     const pathName = url.pathname;
     return pagePathUtils.isCreatablePage(pathName);
   }
@@ -45,7 +45,7 @@ type Props = Omit<LinkProps, 'href'> & {
 
 export const NextLink = (props: Props): JSX.Element => {
   const {
-    id, href, children, className, ...rest
+    id, href, children, className, onClick, ...rest
   } = props;
 
   const { data: siteUrl } = useSiteUrl();
@@ -61,7 +61,7 @@ export const NextLink = (props: Props): JSX.Element => {
 
   if (isExternalLink(href, siteUrl)) {
     return (
-      <a id={id} href={href} className={className} target="_blank" rel="noopener noreferrer" {...dataAttributes}>
+      <a id={id} href={href} className={className} target="_blank" onClick={onClick} rel="noopener noreferrer" {...dataAttributes}>
         {children}&nbsp;<span className="growi-custom-icons">external_link</span>
       </a>
     );
@@ -70,13 +70,13 @@ export const NextLink = (props: Props): JSX.Element => {
   // when href is an anchor link or not-creatable path
   if (isAnchorLink(href) || !isCreatablePage(href)) {
     return (
-      <a id={id} href={href} className={className} {...dataAttributes}>{children}</a>
+      <a id={id} href={href} className={className} onClick={onClick} {...dataAttributes}>{children}</a>
     );
   }
 
   return (
     <Link {...rest} href={href} prefetch={false} legacyBehavior>
-      <a href={href} className={className} {...dataAttributes}>{children}</a>
+      <a href={href} className={className} {...dataAttributes} onClick={onClick}>{children}</a>
     </Link>
   );
 };

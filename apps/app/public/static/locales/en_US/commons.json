@@ -62,6 +62,7 @@
     "all": "All",
     "unopend": "Unread",
     "mark_all_as_read": "Mark all as read",
+    "no_unread_messages": "no_unread_messages",
     "only_unread": "Only unread"
   },
 
@@ -157,6 +158,6 @@
     "publish_transfer_key": "Publish transfer key",
     "transfer_key_limit": "Transfer keys are valid for 1 hour after issuance.",
     "once_transfer_key_used": "Once the transfer key is used for transfer, it cannot be used for any other transfer.",
-    "transfer_to_growi_cloud": "For more details, please click <a href='{{documentationUrl}}/ja/admin-guide/management-cookbook/g2g-transfer.html'>here.</a>"
+    "transfer_to_growi_cloud": "For more details, please click <a href='{{documentationUrl}}en/admin-guide/management-cookbook/g2g-transfer.html'>here.</a>"
   }
 }

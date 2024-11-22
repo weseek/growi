@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:migrate:make-root-page-public');
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const Page = getPageModel();
 

@@ -12,7 +12,7 @@ const logger = loggerFactory('growi:migrate:set-sparse-option-to-slack-member-id
 module.exports = {
   async up(db) {
     logger.info('Apply migration');
-    mongoose.connect(getMongoUri(), mongoOptions);
+    await mongoose.connect(getMongoUri(), mongoOptions);
 
     const User = userModelFactory();
     await User.syncIndexes();

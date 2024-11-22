@@ -1,4 +1,6 @@
-import type { Attributes } from 'hast-util-sanitize/lib';
+import type { defaultSchema } from 'hast-util-sanitize';
+
+type Attributes = typeof defaultSchema.attributes;
 
 export const RehypeSanitizeType = {
   RECOMMENDED: 'Recommended',

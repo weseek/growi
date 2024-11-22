@@ -6,6 +6,7 @@ import autoReap from 'multer-autoreap';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { Attachment } from '~/server/models/attachment';
 import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import loggerFactory from '~/utils/logger';
@@ -22,13 +23,6 @@ const router = express.Router();
 const {
   query, param, body,
 } = require('express-validator');
-
-
-/**
- * @swagger
- *  tags:
- *    name: Attachment
- */
 
 
 /**
@@ -89,7 +83,6 @@ const {
  */
 
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const Page = crowi.model('Page');
@@ -231,7 +224,7 @@ module.exports = (crowi) => {
    *
    *    /attachment:
    *      post:
-   *        tags: [Attachment, CrowiCompatibles]
+   *        tags: [Attachment]
    *        operationId: addAttachment
    *        summary: /attachment
    *        description: Add attachment to the page

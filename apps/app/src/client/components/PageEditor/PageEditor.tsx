@@ -6,13 +6,13 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import { type IPageHasId, Origin } from '@growi/core';
+import { Origin } from '@growi/core';
+import type { IPageHasId } from '@growi/core/dist/interfaces';
 import { pathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { useRect } from '@growi/ui/dist/utils';
-import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
@@ -42,7 +42,7 @@ import {
 import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
 } from '~/stores/page';
-import { mutatePageTree } from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
@@ -203,6 +203,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
+
+      mutateRecentlyUpdated();
       // sync current grant data after update
       mutateIsGrantNormalized();
 
@@ -278,7 +280,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [codeMirrorEditor, pageId]);
 
 
-  const cmProps = useMemo<ReactCodeMirrorProps>(() => ({
+  const cmProps = useMemo(() => ({
     onChange: (value: string) => {
       setMarkdownPreviewWithDebounce(value);
     },

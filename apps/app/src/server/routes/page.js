@@ -19,71 +19,6 @@ import UpdatePost from '../models/update-post';
  *
  *  components:
  *    schemas:
- *      Page:
- *        description: Page
- *        type: object
- *        properties:
- *          _id:
- *            type: string
- *            description: page ID
- *            example: 5e07345972560e001761fa63
- *          __v:
- *            type: number
- *            description: DB record version
- *            example: 0
- *          commentCount:
- *            type: number
- *            description: count of comments
- *            example: 3
- *          createdAt:
- *            type: string
- *            description: date created at
- *            example: 2010-01-01T00:00:00.000Z
- *          creator:
- *            $ref: '#/components/schemas/User'
- *          extended:
- *            type: object
- *            description: extend data
- *            example: {}
- *          grant:
- *            type: number
- *            description: grant
- *            example: 1
- *          grantedUsers:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: ["5ae5fccfc5577b0004dbd8ab"]
- *          lastUpdateUser:
- *            $ref: '#/components/schemas/User'
- *          liker:
- *            type: array
- *            description: granted users
- *            items:
- *              type: string
- *              description: user ID
- *            example: []
- *          path:
- *            type: string
- *            description: page path
- *            example: /
- *          revision:
- *            $ref: '#/components/schemas/Revision'
- *          status:
- *            type: string
- *            description: status
- *            enum:
- *              - 'wip'
- *              - 'published'
- *              - 'deleted'
- *              - 'deprecated'
- *            example: published
- *          updatedAt:
- *            type: string
- *            description: date updated at
- *            example: 2010-01-01T00:00:00.000Z
  *
  *      UpdatePost:
  *        description: UpdatePost
@@ -132,7 +67,6 @@ import UpdatePost from '../models/update-post';
  * @type { (crowi: import('../crowi').default, app) => any }
  */
 module.exports = function(crowi, app) {
-  const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
 
   const { pagePathUtils } = require('@growi/core/dist/utils');
@@ -257,7 +191,7 @@ module.exports = function(crowi, app) {
    *
    *    /pages.updatePost:
    *      get:
-   *        tags: [Pages, CrowiCompatibles]
+   *        tags: [Pages]
    *        operationId: getUpdatePostPage
    *        summary: /pages.updatePost
    *        description: Get UpdatePost setting list
@@ -302,12 +236,12 @@ module.exports = function(crowi, app) {
         data = data.map((e) => {
           return e.channel;
         });
-        debug('Found updatePost data', data);
+        logger.debug('Found updatePost data', data);
         const result = { updatePost: data };
         return res.json(ApiResponse.success(result));
       })
       .catch((err) => {
-        debug('Error occured while get setting', err);
+        logger.debug('Error occured while get setting', err);
         return res.json(ApiResponse.error({}));
       });
   };
@@ -355,7 +289,7 @@ module.exports = function(crowi, app) {
 
     const creatorId = await crowi.pageService.getCreatorIdForCanDelete(page);
 
-    debug('Delete page', page._id, page.path);
+    logger.debug('Delete page', page._id, page.path);
 
     try {
       if (isCompletely) {
@@ -408,7 +342,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Failed to delete page.', err.message));
     }
 
-    debug('Page deleted', page.path);
+    logger.debug('Page deleted', page.path);
     const result = {};
     result.path = page.path;
     result.isRecursively = isRecursively;
