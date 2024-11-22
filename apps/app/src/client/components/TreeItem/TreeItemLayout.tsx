@@ -36,11 +36,11 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   const { page, children } = itemNode;
 
+  const [currentChildren, setCurrentChildren] = useState<ItemNode[]>(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
 
-  const [currentChildren, setCurrentChildren] = useState<ItemNode[]>(children);
 
   const itemClickHandler = useCallback((e: MouseEvent) => {
     // DO NOT handle the event when e.currentTarget and e.target is different
