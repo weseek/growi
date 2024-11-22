@@ -297,6 +297,8 @@ class PageBulkExportService implements IPageBulkExportService {
   private getPageWritable(pageBulkExportJob: PageBulkExportJobDocument): Writable {
     const isHtmlPath = pageBulkExportJob.format === PageBulkExportFormat.pdf;
     const outputDir = this.getTmpOutputDir(pageBulkExportJob, isHtmlPath);
+    // define before the stream starts to avoid creating multiple instances
+    const remarkHtml = remark().use(html);
     return new Writable({
       objectMode: true,
       write: async(page: PageBulkExportPageSnapshotDocument, encoding, callback) => {
@@ -315,7 +317,7 @@ class PageBulkExportService implements IPageBulkExportService {
               await fs.promises.writeFile(fileOutputPath, markdownBody);
             }
             else {
-              const htmlString = await this.convertMdToHtml(markdownBody);
+              const htmlString = await this.convertMdToHtml(markdownBody, remarkHtml);
               await fs.promises.writeFile(fileOutputPath, htmlString);
             }
             pageBulkExportJob.lastExportedPagePath = page.path;
@@ -334,9 +336,8 @@ class PageBulkExportService implements IPageBulkExportService {
     });
   }
 
-  private async convertMdToHtml(md: string): Promise<string> {
-    const htmlString = (await remark()
-      .use(html)
+  private async convertMdToHtml(md: string, remarkHtml): Promise<string> {
+    const htmlString = (await remarkHtml
       .process(md))
       .toString();
 
