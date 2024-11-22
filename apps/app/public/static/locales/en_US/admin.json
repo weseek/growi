@@ -1141,7 +1141,7 @@
   },
   "ai_integration": {
     "ai_integration": "AI Integration",
-    "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, please set the environment variable <code>AI_ENABLED</code> to true.",
+    "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, configure the <code>AI_ENABLED</code> environment variable along with the required additional variables.<br><br>For details, please refer to the <a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>documentation</a>.",
     "ai_search_management": "AI search management",
     "rebuild_vector_store": "Rebuild Vector Store",
     "rebuild_vector_store_label": "Rebuild",
