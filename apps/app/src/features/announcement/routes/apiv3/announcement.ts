@@ -1,14 +1,19 @@
+import type { IPage } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import type { Router } from 'express';
 import { body } from 'express-validator';
+import mongoose from 'mongoose';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type Crowi from '~/server/crowi';
+import type { PageModel } from '~/server/models/page';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import loggerFactory from '~/utils/logger';
+
 
 import type { ParamsForAnnouncement } from '../../interfaces/announcement';
 import { announcementService } from '../../server/service/announcement';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
-import loggerFactory from '~/utils/logger';
 
 
 const logger = loggerFactory('growi:routes:apiv3:announcement');
@@ -18,7 +23,7 @@ const router = express.Router();
 
 module.exports = (crowi: Crowi): Router => {
 
-  const { Page } = crowi.models;
+  const Page = mongoose.model<IPage, PageModel>('Page');
 
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
@@ -61,7 +66,11 @@ module.exports = (crowi: Crowi): Router => {
 
     const pageId = params.pageId;
 
-    const page = await Page.findById(pageId);
+    const page = await Page.findByIdAndViewer(pageId, req.user);
+
+    if (page == null) {
+      return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
+    }
 
     const parametersForActivity = {
       ip: req.ip,
