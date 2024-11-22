@@ -176,9 +176,9 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
       <div
         className={`sidebar-contents-container flex-grow-1 overflow-hidden ${closedClass} ${openedClass}`}
-        ref={sidebarScrollerRef}
       >
         <SimpleBar
+          scrollableNodeProps={{ ref: sidebarScrollerRef }}
           className="simple-sidebar h-100"
           style={{ width: collapsibleContentsWidth }}
           autoHide={false}
