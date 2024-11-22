@@ -311,7 +311,7 @@
     "rehype-rewrite": "^4.0.2",
     "remark-github-admonitions-to-directives": "^2.0.0",
     "sass": "^1.53.0",
-    "simplebar-react": "^2.3.6",
+    "simplebar-react": "^3.2.6",
     "socket.io-client": "^4.7.5",
     "source-map-loader": "^4.0.1",
     "swagger2openapi": "^7.0.8"
