@@ -9,7 +9,7 @@ export interface IAnnouncement {
   comment?: string
   emoji?: string
   isReadReceiptTrackingEnabled: boolean
-  pageId: Ref<IPage>
+  pageId: string
   receivers:
   {
     receiver: Ref<IUser>,
