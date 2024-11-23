@@ -1,63 +1,73 @@
+import type { IConfigManager, ConfigSource, UpdateConfigOptions } from '@growi/core/dist/interfaces';
 import { parseISO } from 'date-fns/parseISO';
 
 import loggerFactory from '~/utils/logger';
 
-import { Config } from '../../models/config';
-import S2sMessage from '../../models/vo/s2s-message';
+import type S2sMessage from '../../models/vo/s2s-message';
 import type { S2sMessagingService } from '../s2s-messaging/base';
 import type { S2sMessageHandlable } from '../s2s-messaging/handlable';
 
-import {
-  ConfigKeys,
-  CONFIG_DEFINITIONS,
-  ENV_ONLY_GROUPS,
-} from './config-definition';
-import type {
-  ConfigKey,
-  ConfigValues,
-  MergedConfigData,
-  RawConfigData,
-} from './config-definition';
+import type { ConfigKey, ConfigValues } from './config-definition';
+import { ENV_ONLY_GROUPS } from './config-definition';
 import { ConfigLoader } from './config-loader';
+
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
+export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S2sMessageHandlable {
 
-type ConfigUpdates<K extends ConfigKey> = Partial<{ [P in K]: ConfigValues[P] }>;
-
-type UpdateConfigOptions = {
-  skipPubsub?: boolean;
-};
-
-export class ConfigManager implements S2sMessageHandlable {
-
-  private configLoader = new ConfigLoader();
+  private configLoader: ConfigLoader;
 
   private s2sMessagingService?: S2sMessagingService;
 
-  private rawConfig?: RawConfigData;
+  private envConfig?: Record<ConfigKey, ConfigValues[ConfigKey]>;
 
-  private mergedConfig?: MergedConfigData;
+  private dbConfig?: Record<ConfigKey, ConfigValues[ConfigKey] | null>;
 
   private lastLoadedAt?: Date;
 
-  private keyToGroupMap: Map<ConfigKey, ConfigKey> = new Map();
+  private keyToGroupMap: Map<ConfigKey, ConfigKey>;
 
   constructor() {
-    this.initKeyToGroupMap();
-    this.init();
+    this.configLoader = new ConfigLoader();
+    this.keyToGroupMap = this.initKeyToGroupMap();
   }
 
-  private initKeyToGroupMap() {
+  private initKeyToGroupMap(): Map<ConfigKey, ConfigKey> {
+    const map = new Map<ConfigKey, ConfigKey>();
     for (const group of ENV_ONLY_GROUPS) {
       for (const targetKey of group.targetKeys) {
-        this.keyToGroupMap.set(targetKey, group.controlKey);
+        map.set(targetKey, group.controlKey);
       }
     }
+    return map;
   }
 
-  private async init() {
-    await this.loadConfigs();
+  async loadConfigs(options?: { source?: ConfigSource }): Promise<void> {
+    if (options?.source === 'env') {
+      this.envConfig = await this.configLoader.loadFromEnv();
+    }
+    else if (options?.source === 'db') {
+      this.dbConfig = await this.configLoader.loadFromDB();
+    }
+    else {
+      this.envConfig = await this.configLoader.loadFromEnv();
+      this.dbConfig = await this.configLoader.loadFromDB();
+    }
+
+    this.lastLoadedAt = new Date();
+  }
+
+  getConfig<K extends ConfigKey>(key: K): ConfigValues[K] {
+    if (!this.envConfig || !this.dbConfig) {
+      throw new Error('Config is not loaded');
+    }
+
+    if (this.shouldUseEnvOnly(key)) {
+      return this.envConfig[key] as ConfigValues[K];
+    }
+
+    return (this.dbConfig[key] ?? this.envConfig[key]) as ConfigValues[K];
   }
 
   private shouldUseEnvOnly(key: ConfigKey): boolean {
@@ -65,94 +75,30 @@ export class ConfigManager implements S2sMessageHandlable {
     if (!controlKey) {
       return false;
     }
-    return this.getConfigValue(controlKey) === true;
+    return this.getConfig(controlKey) === true;
   }
 
-  async loadConfigs(): Promise<void> {
-    this.rawConfig = {
-      env: await this.configLoader.loadFromEnv(),
-      db: await this.configLoader.loadFromDB(),
-    };
+  async updateConfig<K extends ConfigKey>(key: K, value: ConfigValues[K], options?: UpdateConfigOptions): Promise<void> {
+    // Dynamic import to avoid loading database modules too early
+    const { Config } = await import('../../models/config');
 
-    this.mergedConfig = this.mergeConfigs(this.rawConfig);
-    this.lastLoadedAt = new Date();
-  }
-
-  /**
-   * Method to get configuration values with type inference
-   */
-  getConfig<K extends ConfigKey>(key: K): ConfigValues[K] {
-    if (!this.mergedConfig || !this.rawConfig) {
-      throw new Error('Config is not loaded');
-    }
-
-    // Since key is already constrained by K extends ConfigKey,
-    // additional type checks are unnecessary
-    if (this.shouldUseEnvOnly(key)) {
-      const metadata = CONFIG_DEFINITIONS[key];
-      return (this.rawConfig.env[key] ?? metadata.defaultValue) as ConfigValues[K];
-    }
-
-    return this.mergedConfig[key].value;
-  }
-
-  // Instead, prepare a validation method for public methods that are not type-safe
-  validateConfigKey(key: unknown): asserts key is ConfigKey {
-    if (!ConfigKeys.includes(key)) {
-      throw new Error(`Invalid config key: ${String(key)}`);
-    }
-  }
-
-  /**
-   * Method for receiving any string as a key
-   */
-  getConfigByKey(key: string): unknown {
-    this.validateConfigKey(key);
-    return this.getConfig(key);
-  }
-
-  /**
-   * Get raw config
-   */
-  getRawConfig(): RawConfigData | undefined {
-    return this.rawConfig;
-  }
-
-  /**
-   * Get merged config
-   */
-  getMergedConfig(): MergedConfigData | undefined {
-    return this.mergedConfig;
-  }
-
-  /**
-   * Type-safe configuration update
-   */
-  async updateConfig<K extends ConfigKey>(
-      key: K,
-      value: ConfigValues[K],
-      opts?: UpdateConfigOptions,
-  ): Promise<void> {
     await Config.updateOne(
       { key },
       { value: JSON.stringify(value) },
       { upsert: true },
     );
 
-    await this.loadConfigs();
+    await this.loadConfigs({ source: 'db' });
 
-    if (!opts?.skipPubsub) {
+    if (!options?.skipPubsub) {
       await this.publishUpdateMessage();
     }
   }
 
-  /**
-   * Bulk update of multiple type-safe configurations
-   */
-  async updateConfigs<K extends ConfigKey>(
-      updates: ConfigUpdates<K>,
-      opts?: UpdateConfigOptions,
-  ): Promise<void> {
+  async updateConfigs(updates: Partial<{ [K in ConfigKey]: ConfigValues[K] }>, options?: UpdateConfigOptions): Promise<void> {
+    // Dynamic import to avoid loading database modules too early
+    const { Config } = await import('../../models/config');
+
     const operations = Object.entries(updates).map(([key, value]) => ({
       updateOne: {
         filter: { key },
@@ -162,45 +108,17 @@ export class ConfigManager implements S2sMessageHandlable {
     }));
 
     await Config.bulkWrite(operations);
-    await this.loadConfigs();
+    await this.loadConfigs({ source: 'db' });
 
-    if (!opts?.skipPubsub) {
+    if (!options?.skipPubsub) {
       await this.publishUpdateMessage();
     }
   }
 
-  /**
-   * Update configuration that is not type-safe (accepts string keys)
-   */
-  async updateConfigByKey(
-      key: string,
-      value: unknown,
-  ): Promise<void> {
-    this.validateConfigKey(key);
-    await this.updateConfig(key, value as any);
-  }
+  async removeConfigs(keys: ConfigKey[], options?: UpdateConfigOptions): Promise<void> {
+    // Dynamic import to avoid loading database modules too early
+    const { Config } = await import('../../models/config');
 
-  /**
-   * Bulk update of multiple configurations that are not type-safe (accepts string keys)
-   */
-  async updateConfigsByKey(
-      updates: Record<string, unknown>,
-  ): Promise<void> {
-    // Validate all keys
-    for (const key of Object.keys(updates)) {
-      this.validateConfigKey(key);
-    }
-
-    await this.updateConfigs(updates as any);
-  }
-
-  /**
-   * Bulk update of multiple type-safe configurations
-   */
-  async removeConfigs<K extends ConfigKey>(
-      keys: K[],
-      opts?: UpdateConfigOptions,
-  ): Promise<void> {
     const operations = keys.map(key => ({
       deleteOne: {
         filter: { key },
@@ -208,38 +126,25 @@ export class ConfigManager implements S2sMessageHandlable {
     }));
 
     await Config.bulkWrite(operations);
-    await this.loadConfigs();
+    await this.loadConfigs({ source: 'db' });
 
-    if (!opts?.skipPubsub) {
+    if (!options?.skipPubsub) {
       await this.publishUpdateMessage();
     }
   }
 
-  /**
-   * Get value from merged configuration (for condition checks)
-   */
-  private getConfigValue<K extends ConfigKey>(key: K): ConfigValues[K] {
-    if (!this.mergedConfig) {
+  getRawConfigData(): {
+    env: Record<ConfigKey, ConfigValues[ConfigKey]>;
+    db: Record<ConfigKey, ConfigValues[ConfigKey] | null>;
+    } {
+    if (!this.envConfig || !this.dbConfig) {
       throw new Error('Config is not loaded');
     }
-    return this.mergedConfig[key].value;
-  }
 
-  private mergeConfigs(raw: RawConfigData): MergedConfigData {
-    const merged = {} as MergedConfigData;
-
-    for (const key of ConfigKeys.all) {
-      const metadata = CONFIG_DEFINITIONS[key];
-      const dbValue = raw.db[key];
-      const envValue = raw.env[key];
-
-      merged[key] = {
-        value: dbValue ?? envValue ?? metadata.defaultValue,
-        source: dbValue != null ? 'db' : 'env',
-      };
-    }
-
-    return merged;
+    return {
+      env: this.envConfig,
+      db: this.dbConfig,
+    };
   }
 
   /**
@@ -251,8 +156,9 @@ export class ConfigManager implements S2sMessageHandlable {
   }
 
   async publishUpdateMessage(): Promise<void> {
-    const s2sMessage = new S2sMessage('configUpdated', { updatedAt: new Date() });
+    const { default: S2sMessage } = await import('../../models/vo/s2s-message');
 
+    const s2sMessage = new S2sMessage('configUpdated', { updatedAt: new Date() });
     try {
       await this.s2sMessagingService?.publish(s2sMessage);
     }
@@ -269,7 +175,6 @@ export class ConfigManager implements S2sMessageHandlable {
     if (eventName !== 'configUpdated') {
       return false;
     }
-
     return this.lastLoadedAt == null // loaded for the first time
       || !('updatedAt' in s2sMessage) // updatedAt is not included in the message
       || (typeof s2sMessage.updatedAt === 'string' && this.lastLoadedAt < parseISO(s2sMessage.updatedAt));

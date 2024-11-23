@@ -1,4 +1,10 @@
-import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
+import type { ConfigDefinition, Lang } from '@growi/core/dist/interfaces';
+import { defineConfig } from '@growi/core/dist/interfaces';
+import type OpenAI from 'openai';
+
+import { ActionGroupSize } from '~/interfaces/activity';
+import { AttachmentMethodType } from '~/interfaces/attachment';
+import { GrowiServiceType } from '~/interfaces/system';
 
 /*
  * Sort order for top level keys:
@@ -20,7 +26,6 @@ export const CONFIG_KEYS = [
 
   // App Settings
   'app:fileUploadType',
-  'app:useOnlyEnvVarForFileUploadType',
   'app:plantumlUri',
   'app:drawioUri',
   'app:nchanUri',
@@ -66,10 +71,8 @@ export const CONFIG_KEYS = [
   'security:trustProxyBool',
   'security:trustProxyCsv',
   'security:trustProxyHops',
-  'security:passport-local:useOnlyEnvVarsForSomeOptions',
   'security:passport-local:isPasswordResetEnabled',
   'security:passport-local:isEmailAuthenticationEnabled',
-  'security:passport-saml:useOnlyEnvVarsForSomeOptions',
   'security:passport-saml:callbackUrl',
   'security:passport-saml:attrMapId',
   'security:passport-saml:attrMapUsername',
@@ -145,468 +148,432 @@ export const CONFIG_KEYS = [
   // Customize Settings
   'customize:isEmailPublishedForNewUser',
 
-  // Control Flags for Env Vars
-  'env:useSiteUrlEnvVars',
-  'env:useLocalStrategyEnvVars',
-  'env:useSamlEnvVars',
-  'env:useFileUploadEnvVars',
-  'env:useGcsEnvVars',
-  'env:useAzureEnvVars',
+  // Control Flags for using only env vars
+  'env:useOnlyEnvVars:app:siteUrl',
+  'env:useOnlyEnvVars:app:fileUploadType',
+  'env:useOnlyEnvVars:security:passport-local',
+  'env:useOnlyEnvVars:security:passport-saml',
+  'env:useOnlyEnvVars:gcs',
+  'env:useOnlyEnvVars:azure',
+
 ] as const;
 
 
 export type ConfigKey = (typeof CONFIG_KEYS)[number];
 
-interface ConfigDefinition<T> {
-  envVarName: string;
-  defaultValue: T;
-  isSecret?: boolean;
-}
 
-type ValidateKeyFn = (key: unknown) => asserts key is ConfigKey;
-
-/**
- * Safe accessor object for ConfigKey
- */
-export const ConfigKeys = {
-  all: CONFIG_KEYS,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  includes: (key: unknown): key is ConfigKey => CONFIG_KEYS.includes(key as any),
-  validateKey: ((key: unknown): asserts key is ConfigKey => {
-    if (!ConfigKeys.includes(key)) {
-      throw new Error(`Invalid config key: ${String(key)}`);
-    }
-  }) satisfies ValidateKeyFn,
-} as const;
-
-type ConfigDefinitions = {
-  [K in ConfigKey]: ConfigDefinition<unknown>;
-};
-
-export const CONFIG_DEFINITIONS: ConfigDefinitions = {
+export const CONFIG_DEFINITIONS = {
   // Auto Install Settings
-  'autoInstall:adminUsername': {
+  'autoInstall:adminUsername': defineConfig<string | undefined>({
     envVarName: 'AUTO_INSTALL_ADMIN_USERNAME',
-    defaultValue: null,
-  },
-  'autoInstall:adminName': {
+    defaultValue: undefined,
+  }),
+  'autoInstall:adminName': defineConfig<string | undefined>({
     envVarName: 'AUTO_INSTALL_ADMIN_NAME',
-    defaultValue: null,
-  },
-  'autoInstall:adminEmail': {
+    defaultValue: undefined,
+  }),
+  'autoInstall:adminEmail': defineConfig<string | undefined>({
     envVarName: 'AUTO_INSTALL_ADMIN_EMAIL',
-    defaultValue: null,
-  },
-  'autoInstall:adminPassword': {
+    defaultValue: undefined,
+  }),
+  'autoInstall:adminPassword': defineConfig<string | undefined>({
     envVarName: 'AUTO_INSTALL_ADMIN_PASSWORD',
-    defaultValue: null,
+    defaultValue: undefined,
     isSecret: true,
-  },
-  'autoInstall:globalLang': {
+  }),
+  'autoInstall:globalLang': defineConfig<Lang | undefined>({
     envVarName: 'AUTO_INSTALL_GLOBAL_LANG',
-    defaultValue: null,
-  },
-  'autoInstall:allowGuestMode': {
+    defaultValue: undefined,
+  }),
+  'autoInstall:allowGuestMode': defineConfig<boolean>({
     envVarName: 'AUTO_INSTALL_ALLOW_GUEST_MODE',
     defaultValue: false,
-  },
-  'autoInstall:serverDate': {
+  }),
+  'autoInstall:serverDate': defineConfig<string | undefined>({
     envVarName: 'AUTO_INSTALL_SERVER_DATE',
-    defaultValue: null,
-  },
+    defaultValue: undefined,
+  }),
 
   // App Settings
-  'app:fileUploadType': {
+  'app:fileUploadType': defineConfig<AttachmentMethodType>({
     envVarName: 'FILE_UPLOAD',
-    defaultValue: 'aws',
-  },
-  'app:useOnlyEnvVarForFileUploadType': {
-    envVarName: 'FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE',
-    defaultValue: false,
-  },
-  'app:plantumlUri': {
+    defaultValue: AttachmentMethodType.aws,
+  }),
+  'app:plantumlUri': defineConfig<string>({
     envVarName: 'PLANTUML_URI',
     defaultValue: 'https://www.plantuml.com/plantuml',
-  },
-  'app:drawioUri': {
+  }),
+  'app:drawioUri': defineConfig<string>({
     envVarName: 'DRAWIO_URI',
     defaultValue: 'https://embed.diagrams.net/',
-  },
-  'app:nchanUri': {
+  }),
+  'app:nchanUri': defineConfig<string | undefined>({
     envVarName: 'NCHAN_URI',
-    defaultValue: null,
-  },
-  'app:siteUrl': {
+    defaultValue: undefined,
+  }),
+  'app:siteUrl': defineConfig<string | undefined>({
     envVarName: 'APP_SITE_URL',
-    defaultValue: null,
-  },
-  'app:aiEnabled': {
+    defaultValue: undefined,
+  }),
+  'app:aiEnabled': defineConfig<boolean>({
     envVarName: 'AI_ENABLED',
     defaultValue: false,
-  },
-  'app:publishOpenAPI': {
+  }),
+  'app:publishOpenAPI': defineConfig<boolean>({
     envVarName: 'PUBLISH_OPEN_API',
     defaultValue: false,
-  },
-  'app:isV5Compatible': {
+  }),
+  'app:isV5Compatible': defineConfig<boolean | undefined>({
     envVarName: 'IS_V5_COMPATIBLE',
     defaultValue: undefined,
-  },
-  'app:isMaintenanceMode': {
+  }),
+  'app:isMaintenanceMode': defineConfig<boolean>({
     envVarName: 'IS_MAINTENANCE_MODE',
     defaultValue: false,
-  },
-  'app:maxFileSize': {
+  }),
+  'app:maxFileSize': defineConfig<number>({
     envVarName: 'MAX_FILE_SIZE',
     defaultValue: Infinity,
-  },
-  'app:fileUploadTotalLimit': {
+  }),
+  'app:fileUploadTotalLimit': defineConfig<number>({
     envVarName: 'FILE_UPLOAD_TOTAL_LIMIT',
     defaultValue: Infinity,
-  },
-  'app:fileUploadDisabled': {
+  }),
+  'app:fileUploadDisabled': defineConfig<boolean>({
     envVarName: 'FILE_UPLOAD_DISABLED',
     defaultValue: false,
-  },
-  'app:elasticsearchVersion': {
+  }),
+  'app:elasticsearchVersion': defineConfig<number>({
     envVarName: 'ELASTICSEARCH_VERSION',
     defaultValue: 8,
-  },
-  'app:elasticsearchUri': {
+  }),
+  'app:elasticsearchUri': defineConfig<string | undefined>({
     envVarName: 'ELASTICSEARCH_URI',
-    defaultValue: null,
-  },
-  'app:elasticsearchRequestTimeout': {
+    defaultValue: undefined,
+  }),
+  'app:elasticsearchRequestTimeout': defineConfig<number>({
     envVarName: 'ELASTICSEARCH_REQUEST_TIMEOUT',
     defaultValue: 8000,
-  },
-  'app:elasticsearchRejectUnauthorized': {
+  }),
+  'app:elasticsearchRejectUnauthorized': defineConfig<boolean>({
     envVarName: 'ELASTICSEARCH_REJECT_UNAUTHORIZED',
     defaultValue: false,
-  },
-  'app:elasticsearchMaxBodyLengthToIndex': {
+  }),
+  'app:elasticsearchMaxBodyLengthToIndex': defineConfig<number>({
     envVarName: 'ELASTICSEARCH_MAX_BODY_LENGTH_TO_INDEX',
     defaultValue: 100000,
-  },
-  'app:elasticsearchReindexBulkSize': {
+  }),
+  'app:elasticsearchReindexBulkSize': defineConfig<number>({
     envVarName: 'ELASTICSEARCH_REINDEX_BULK_SIZE',
     defaultValue: 100,
-  },
-  'app:elasticsearchReindexOnBoot': {
+  }),
+  'app:elasticsearchReindexOnBoot': defineConfig<boolean>({
     envVarName: 'ELASTICSEARCH_REINDEX_ON_BOOT',
     defaultValue: false,
-  },
-  'app:growiCloudUri': {
+  }),
+  'app:growiCloudUri': defineConfig<string | undefined>({
     envVarName: 'GROWI_CLOUD_URI',
-    defaultValue: null,
-  },
-  'app:growiAppIdForCloud': {
+    defaultValue: undefined,
+  }),
+  'app:growiAppIdForCloud': defineConfig<string | undefined>({
     envVarName: 'GROWI_APP_ID_FOR_GROWI_CLOUD',
-    defaultValue: null,
-  },
-  'app:ogpUri': {
+    defaultValue: undefined,
+  }),
+  'app:ogpUri': defineConfig<string | undefined>({
     envVarName: 'OGP_URI',
-    defaultValue: null,
-  },
-  'app:minPasswordLength': {
+    defaultValue: undefined,
+  }),
+  'app:minPasswordLength': defineConfig<number>({
     envVarName: 'MIN_PASSWORD_LENGTH',
     defaultValue: 8,
-  },
-  'app:auditLogEnabled': {
+  }),
+  'app:auditLogEnabled': defineConfig<boolean>({
     envVarName: 'AUDIT_LOG_ENABLED',
     defaultValue: false,
-  },
-  'app:activityExpirationSeconds': {
+  }),
+  'app:activityExpirationSeconds': defineConfig<number>({
     envVarName: 'ACTIVITY_EXPIRATION_SECONDS',
     defaultValue: 2592000,
-  },
-  'app:auditLogActionGroupSize': {
+  }),
+  'app:auditLogActionGroupSize': defineConfig<ActionGroupSize>({
     envVarName: 'AUDIT_LOG_ACTION_GROUP_SIZE',
-    defaultValue: 'SMALL',
-  },
-  'app:auditLogAdditionalActions': {
+    defaultValue: ActionGroupSize.Small,
+  }),
+  'app:auditLogAdditionalActions': defineConfig<string | undefined>({
     envVarName: 'AUDIT_LOG_ADDITIONAL_ACTIONS',
-    defaultValue: null,
-  },
-  'app:auditLogExcludeActions': {
+    defaultValue: undefined,
+  }),
+  'app:auditLogExcludeActions': defineConfig<string | undefined>({
     envVarName: 'AUDIT_LOG_EXCLUDE_ACTIONS',
-    defaultValue: null,
-  },
-  'app:questionnaireServerOrigin': {
+    defaultValue: undefined,
+  }),
+  'app:questionnaireServerOrigin': defineConfig<string>({
     envVarName: 'QUESTIONNAIRE_SERVER_ORIGIN',
     defaultValue: 'https://q.growi.org',
-  },
-  'app:questionnaireCronSchedule': {
+  }),
+  'app:questionnaireCronSchedule': defineConfig<string>({
     envVarName: 'QUESTIONNAIRE_CRON_SCHEDULE',
     defaultValue: '0 22 * * *',
-  },
-  'app:questionnaireCronMaxHoursUntilRequest': {
+  }),
+  'app:questionnaireCronMaxHoursUntilRequest': defineConfig<number>({
     envVarName: 'QUESTIONNAIRE_CRON_MAX_HOURS_UNTIL_REQUEST',
     defaultValue: 4,
-  },
-  'app:serviceType': {
+  }),
+  'app:serviceType': defineConfig<GrowiServiceType>({
     envVarName: 'SERVICE_TYPE',
     defaultValue: GrowiServiceType.onPremise,
-  },
-  'app:deploymentType': {
+  }),
+  'app:deploymentType': defineConfig<string | undefined>({
     envVarName: 'DEPLOYMENT_TYPE',
-    defaultValue: null,
-  },
-  'app:ssrMaxRevisionBodyLength': {
+    defaultValue: undefined,
+  }),
+  'app:ssrMaxRevisionBodyLength': defineConfig<number>({
     envVarName: 'SSR_MAX_REVISION_BODY_LENGTH',
     defaultValue: 3000,
-  },
-  'app:wipPageExpirationSeconds': {
+  }),
+  'app:wipPageExpirationSeconds': defineConfig<number>({
     envVarName: 'WIP_PAGE_EXPIRATION_SECONDS',
     defaultValue: 172800,
-  },
-  'app:openaiThreadDeletionCronMaxMinutesUntilRequest': {
+  }),
+  'app:openaiThreadDeletionCronMaxMinutesUntilRequest': defineConfig<number>({
     envVarName: 'OPENAI_THREAD_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST',
     defaultValue: 30,
-  },
-  'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest': {
+  }),
+  'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest': defineConfig<number>({
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST',
     defaultValue: 30,
-  },
+  }),
 
   // Security Settings
-  'security:wikiMode': {
+  'security:wikiMode': defineConfig<string | undefined>({
     envVarName: 'FORCE_WIKI_MODE',
     defaultValue: undefined,
-  },
-  'security:sessionMaxAge': {
+  }),
+  'security:sessionMaxAge': defineConfig<number | undefined>({
     envVarName: 'SESSION_MAX_AGE',
     defaultValue: undefined,
     isSecret: true,
-  },
-  'security:userUpperLimit': {
+  }),
+  'security:userUpperLimit': defineConfig<number>({
     envVarName: 'USER_UPPER_LIMIT',
     defaultValue: Infinity,
-  },
-  'security:disableLinkSharing': {
+  }),
+  'security:disableLinkSharing': defineConfig<boolean>({
     envVarName: 'DISABLE_LINK_SHARING',
     defaultValue: false,
-  },
-  'security:trustProxyBool': {
+  }),
+  'security:trustProxyBool': defineConfig<boolean | undefined>({
     envVarName: 'TRUST_PROXY_BOOL',
-    defaultValue: null,
+    defaultValue: undefined,
     isSecret: true,
-  },
-  'security:trustProxyCsv': {
+  }),
+  'security:trustProxyCsv': defineConfig<string | undefined>({
     envVarName: 'TRUST_PROXY_CSV',
-    defaultValue: null,
+    defaultValue: undefined,
     isSecret: true,
-  },
-  'security:trustProxyHops': {
+  }),
+  'security:trustProxyHops': defineConfig<number | undefined>({
     envVarName: 'TRUST_PROXY_HOPS',
-    defaultValue: null,
+    defaultValue: undefined,
     isSecret: true,
-  },
-  'security:passport-local:useOnlyEnvVarsForSomeOptions': {
-    envVarName: 'LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
-    defaultValue: false,
-  },
-  'security:passport-local:isPasswordResetEnabled': {
+  }),
+  'security:passport-local:isPasswordResetEnabled': defineConfig<boolean>({
     envVarName: 'LOCAL_STRATEGY_PASSWORD_RESET_ENABLED',
     defaultValue: true,
-  },
-  'security:passport-local:isEmailAuthenticationEnabled': {
+  }),
+  'security:passport-local:isEmailAuthenticationEnabled': defineConfig<boolean>({
     envVarName: 'LOCAL_STRATEGY_EMAIL_AUTHENTICATION_ENABLED',
     defaultValue: false,
-  },
-  'security:passport-local:isEnabled': {
+  }),
+  'security:passport-local:isEnabled': defineConfig<boolean>({
     envVarName: 'SECURITY_PASSPORT_LOCAL_ENABLED',
     defaultValue: true,
-  },
-  'security:passport-saml:useOnlyEnvVarsForSomeOptions': {
-    envVarName: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
-    defaultValue: false,
-  },
-  'security:passport-saml:callbackUrl': {
-    envVarName: 'SAML_CALLBACK_URI',
-    defaultValue: null,
-  },
-  'security:passport-saml:attrMapId': {
-    envVarName: 'SAML_ATTR_MAPPING_ID',
-    defaultValue: null,
-  },
-  'security:passport-saml:attrMapUsername': {
-    envVarName: 'SAML_ATTR_MAPPING_USERNAME',
-    defaultValue: null,
-  },
-  'security:passport-saml:attrMapMail': {
-    envVarName: 'SAML_ATTR_MAPPING_MAIL',
-    defaultValue: null,
-  },
-  'security:passport-saml:attrMapFirstName': {
-    envVarName: 'SAML_ATTR_MAPPING_FIRST_NAME',
-    defaultValue: null,
-  },
-  'security:passport-saml:attrMapLastName': {
-    envVarName: 'SAML_ATTR_MAPPING_LAST_NAME',
-    defaultValue: null,
-  },
-  'security:passport-saml:ABLCRule': {
-    envVarName: 'SAML_ABLC_RULE',
-    defaultValue: null,
-  },
-  'security:passport-saml:isEnabled': {
+  }),
+  'security:passport-saml:isEnabled': defineConfig<boolean>({
     envVarName: 'SECURITY_PASSPORT_SAML_ENABLED',
     defaultValue: false,
-  },
-  'security:passport-saml:entryPoint': {
+  }),
+  'security:passport-saml:callbackUrl': defineConfig<string | undefined>({
+    envVarName: 'SAML_CALLBACK_URI',
+    defaultValue: undefined,
+  }),
+  'security:passport-saml:attrMapId': defineConfig<string | undefined>({
+    envVarName: 'SAML_ATTR_MAPPING_ID',
+    defaultValue: undefined,
+  }),
+  'security:passport-saml:attrMapUsername': defineConfig<string | undefined>({
+    envVarName: 'SAML_ATTR_MAPPING_USERNAME',
+    defaultValue: undefined,
+  }),
+  'security:passport-saml:attrMapMail': defineConfig<string | undefined>({
+    envVarName: 'SAML_ATTR_MAPPING_MAIL',
+    defaultValue: undefined,
+  }),
+  'security:passport-saml:attrMapFirstName': defineConfig<string | undefined>({
+    envVarName: 'SAML_ATTR_MAPPING_FIRST_NAME',
+    defaultValue: undefined,
+  }),
+  'security:passport-saml:attrMapLastName': defineConfig<string | undefined>({
+    envVarName: 'SAML_ATTR_MAPPING_LAST_NAME',
+    defaultValue: undefined,
+  }),
+  'security:passport-saml:ABLCRule': defineConfig<string | undefined>({
+    envVarName: 'SAML_ABLC_RULE',
+    defaultValue: undefined,
+  }),
+  'security:passport-saml:entryPoint': defineConfig<string | undefined>({
     envVarName: 'SECURITY_PASSPORT_SAML_ENTRY_POINT',
-    defaultValue: '',
-  },
-  'security:passport-saml:issuer': {
+    defaultValue: undefined,
+  }),
+  'security:passport-saml:issuer': defineConfig<string | undefined>({
     envVarName: 'SECURITY_PASSPORT_SAML_ISSUER',
-    defaultValue: '',
-  },
-  'security:passport-saml:cert': {
+    defaultValue: undefined,
+  }),
+  'security:passport-saml:cert': defineConfig<string | undefined>({
     envVarName: 'SECURITY_PASSPORT_SAML_CERT',
-    defaultValue: '',
-  },
-  'security:passport-oidc:timeoutMultiplier': {
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:timeoutMultiplier': defineConfig<number>({
     envVarName: 'OIDC_TIMEOUT_MULTIPLIER',
     defaultValue: 1.5,
-  },
-  'security:passport-oidc:discoveryRetries': {
+  }),
+  'security:passport-oidc:discoveryRetries': defineConfig<number>({
     envVarName: 'OIDC_DISCOVERY_RETRIES',
     defaultValue: 3,
-  },
-  'security:passport-oidc:oidcClientClockTolerance': {
+  }),
+  'security:passport-oidc:oidcClientClockTolerance': defineConfig<number>({
     envVarName: 'OIDC_CLIENT_CLOCK_TOLERANCE',
     defaultValue: 60,
-  },
-  'security:passport-oidc:oidcIssuerTimeoutOption': {
+  }),
+  'security:passport-oidc:oidcIssuerTimeoutOption': defineConfig<number>({
     envVarName: 'OIDC_ISSUER_TIMEOUT_OPTION',
     defaultValue: 5000,
-  },
+  }),
 
   // File Upload Settings
-  'fileUpload:local:useInternalRedirect': {
+  'fileUpload:local:useInternalRedirect': defineConfig<boolean>({
     envVarName: 'FILE_UPLOAD_LOCAL_USE_INTERNAL_REDIRECT',
     defaultValue: false,
-  },
-  'fileUpload:local:internalRedirectPath': {
+  }),
+  'fileUpload:local:internalRedirectPath': defineConfig<string>({
     envVarName: 'FILE_UPLOAD_LOCAL_INTERNAL_REDIRECT_PATH',
     defaultValue: '/growi-internal/',
-  },
+  }),
 
   // AWS Settings
-  'aws:referenceFileWithRelayMode': {
+  'aws:referenceFileWithRelayMode': defineConfig<boolean>({
     envVarName: 'S3_REFERENCE_FILE_WITH_RELAY_MODE',
     defaultValue: false,
-  },
-  'aws:lifetimeSecForTemporaryUrl': {
+  }),
+  'aws:lifetimeSecForTemporaryUrl': defineConfig<number>({
     envVarName: 'S3_LIFETIME_SEC_FOR_TEMPORARY_URL',
     defaultValue: 120,
-  },
-  'aws:s3ObjectCannedACL': {
+  }),
+  'aws:s3ObjectCannedACL': defineConfig<string | undefined>({
     envVarName: 'S3_OBJECT_ACL',
-    defaultValue: null,
-  },
+    defaultValue: undefined,
+  }),
 
   // GCS Settings
-  'gcs:lifetimeSecForTemporaryUrl': {
+  'gcs:lifetimeSecForTemporaryUrl': defineConfig<number>({
     envVarName: 'GCS_LIFETIME_SEC_FOR_TEMPORARY_URL',
     defaultValue: 120,
-  },
-  'gcs:referenceFileWithRelayMode': {
+  }),
+  'gcs:referenceFileWithRelayMode': defineConfig<boolean>({
     envVarName: 'GCS_REFERENCE_FILE_WITH_RELAY_MODE',
     defaultValue: false,
-  },
-  'gcs:apiKeyJsonPath': {
+  }),
+  'gcs:apiKeyJsonPath': defineConfig<string | undefined>({
     envVarName: 'GCS_API_KEY_JSON_PATH',
-    defaultValue: '',
-  },
-  'gcs:bucket': {
+    defaultValue: undefined,
+  }),
+  'gcs:bucket': defineConfig<string | undefined>({
     envVarName: 'GCS_BUCKET',
-    defaultValue: '',
-  },
-  'gcs:uploadNamespace': {
+    defaultValue: undefined,
+  }),
+  'gcs:uploadNamespace': defineConfig<string>({
     envVarName: 'GCS_UPLOAD_NAMESPACE',
     defaultValue: '',
-  },
+  }),
 
   // Azure Settings
-  'azure:lifetimeSecForTemporaryUrl': {
+  'azure:lifetimeSecForTemporaryUrl': defineConfig<number>({
     envVarName: 'AZURE_LIFETIME_SEC_FOR_TEMPORARY_URL',
     defaultValue: 120,
-  },
-  'azure:referenceFileWithRelayMode': {
+  }),
+  'azure:referenceFileWithRelayMode': defineConfig<boolean>({
     envVarName: 'AZURE_REFERENCE_FILE_WITH_RELAY_MODE',
     defaultValue: false,
-  },
-  'azure:tenantId': {
+  }),
+  'azure:tenantId': defineConfig<string | undefined>({
     envVarName: 'AZURE_TENANT_ID',
-    defaultValue: '',
-  },
-  'azure:clientId': {
+    defaultValue: undefined,
+  }),
+  'azure:clientId': defineConfig<string | undefined>({
     envVarName: 'AZURE_CLIENT_ID',
-    defaultValue: '',
-  },
-  'azure:clientSecret': {
+    defaultValue: undefined,
+  }),
+  'azure:clientSecret': defineConfig<string | undefined>({
     envVarName: 'AZURE_CLIENT_SECRET',
-    defaultValue: '',
+    defaultValue: undefined,
     isSecret: true,
-  },
-  'azure:storageAccountName': {
+  }),
+  'azure:storageAccountName': defineConfig<string | undefined>({
     envVarName: 'AZURE_STORAGE_ACCOUNT_NAME',
-    defaultValue: '',
-  },
-  'azure:storageContainerName': {
+    defaultValue: undefined,
+  }),
+  'azure:storageContainerName': defineConfig<string | undefined>({
     envVarName: 'AZURE_STORAGE_CONTAINER_NAME',
-    defaultValue: '',
-  },
+    defaultValue: undefined,
+  }),
 
   // GridFS Settings
-  'gridfs:totalLimit': {
+  'gridfs:totalLimit': defineConfig<number | undefined>({
     envVarName: 'MONGO_GRIDFS_TOTAL_LIMIT',
-    defaultValue: null,
-  },
+    defaultValue: undefined,
+  }),
 
   // Slackbot Settings
-  'slackbot:currentBotType': {
+  'slackbot:currentBotType': defineConfig<string | undefined>({
     envVarName: 'SLACKBOT_TYPE',
-    defaultValue: null,
-  },
-  'slackbot:proxyUri': {
+    defaultValue: undefined,
+  }),
+  'slackbot:proxyUri': defineConfig<string | undefined>({
     envVarName: 'SLACKBOT_INTEGRATION_PROXY_URI',
-    defaultValue: null,
-  },
-  'slackbot:withoutProxy:signingSecret': {
+    defaultValue: undefined,
+  }),
+  'slackbot:withoutProxy:signingSecret': defineConfig<string | undefined>({
     envVarName: 'SLACKBOT_WITHOUT_PROXY_SIGNING_SECRET',
-    defaultValue: null,
+    defaultValue: undefined,
     isSecret: true,
-  },
-  'slackbot:withoutProxy:botToken': {
+  }),
+  'slackbot:withoutProxy:botToken': defineConfig<string | undefined>({
     envVarName: 'SLACKBOT_WITHOUT_PROXY_BOT_TOKEN',
-    defaultValue: null,
+    defaultValue: undefined,
     isSecret: true,
-  },
-  'slackbot:withoutProxy:commandPermission': {
+  }),
+  'slackbot:withoutProxy:commandPermission': defineConfig<string | undefined>({
     envVarName: 'SLACKBOT_WITHOUT_PROXY_COMMAND_PERMISSION',
-    defaultValue: null,
-  },
-  'slackbot:withoutProxy:eventActionsPermission': {
+    defaultValue: undefined,
+  }),
+  'slackbot:withoutProxy:eventActionsPermission': defineConfig<string | undefined>({
     envVarName: 'SLACKBOT_WITHOUT_PROXY_EVENT_ACTIONS_PERMISSION',
-    defaultValue: null,
-  },
-  'slackbot:withProxy:saltForGtoP': {
+    defaultValue: undefined,
+  }),
+  'slackbot:withProxy:saltForGtoP': defineConfig<string>({
     envVarName: 'SLACKBOT_WITH_PROXY_SALT_FOR_GTOP',
     defaultValue: 'gtop',
     isSecret: true,
-  },
-  'slackbot:withProxy:saltForPtoG': {
+  }),
+  'slackbot:withProxy:saltForPtoG': defineConfig<string>({
     envVarName: 'SLACKBOT_WITH_PROXY_SALT_FOR_PTOG',
     defaultValue: 'ptog',
     isSecret: true,
-  },
+  }),
 
   // OpenAI Settings
   /* eslint-disable max-len */
-  'openai:chatAssistantInstructions': {
+  'openai:chatAssistantInstructions': defineConfig<string>({
     envVarName: 'OPENAI_CHAT_ASSISTANT_INSTRUCTIONS',
     defaultValue: `Response Length Limitation:
     Provide information succinctly without repeating previous statements unless necessary for clarity.
@@ -625,137 +592,141 @@ Multilingual Support:
 
 Guideline as a RAG:
     As this system is a Retrieval Augmented Generation (RAG) with GROWI knowledge base, focus on answering questions related to the effective use of GROWI and the content within the GROWI that are provided as vector store. If a user asks about information that can be found through a general search engine, politely encourage them to search for it themselves. Decline requests for content generation such as "write a novel" or "generate ideas," and explain that you are designed to assist with specific queries related to the RAG's content.`,
-  },
+  }),
   /* eslint-enable max-len */
-  'openai:assistantModel:chat': {
+  'openai:assistantModel:chat': defineConfig<OpenAI.Chat.ChatModel>({
     envVarName: 'OPENAI_CHAT_ASSISTANT_MODEL',
-    defaultValue: null,
-  },
-  'openai:threadDeletionCronExpression': {
+    defaultValue: 'gpt-4o-mini',
+  }),
+  'openai:threadDeletionCronExpression': defineConfig<string>({
     envVarName: 'OPENAI_THREAD_DELETION_CRON_EXPRESSION',
     defaultValue: '0 * * * *',
-  },
-  'openai:threadDeletionBarchSize': {
+  }),
+  'openai:threadDeletionBarchSize': defineConfig<number>({
     envVarName: 'OPENAI_THREAD_DELETION_BARCH_SIZE',
     defaultValue: 100,
-  },
-  'openai:threadDeletionApiCallInterval': {
+  }),
+  'openai:threadDeletionApiCallInterval': defineConfig<number>({
     envVarName: 'OPENAI_THREAD_DELETION_API_CALL_INTERVAL',
     defaultValue: 36000,
-  },
-  'openai:vectorStoreFileDeletionCronExpression': {
+  }),
+  'openai:vectorStoreFileDeletionCronExpression': defineConfig<string>({
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_CRON_EXPRESSION',
     defaultValue: '0 * * * *',
-  },
-  'openai:vectorStoreFileDeletionBarchSize': {
+  }),
+  'openai:vectorStoreFileDeletionBarchSize': defineConfig<number>({
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_BARCH_SIZE',
     defaultValue: 100,
-  },
-  'openai:vectorStoreFileDeletionApiCallInterval': {
+  }),
+  'openai:vectorStoreFileDeletionApiCallInterval': defineConfig<number>({
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_API_CALL_INTERVAL',
     defaultValue: 36000,
-  },
-  'openai:serviceType': {
+  }),
+  'openai:serviceType': defineConfig<'openai' | 'azure'>({
     envVarName: 'OPENAI_SERVICE_TYPE',
-    defaultValue: null,
-  },
-  'openai:apiKey': {
+    defaultValue: 'openai',
+  }),
+  'openai:apiKey': defineConfig<string | null>({
     envVarName: 'OPENAI_API_KEY',
     defaultValue: null,
     isSecret: true,
-  },
-  'openai:searchAssistantInstructions': {
+  }),
+  'openai:searchAssistantInstructions': defineConfig<string>({
     envVarName: 'OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS',
-    defaultValue: null,
-  },
+    defaultValue: '',
+  }),
 
   // OpenTelemetry Settings
-  'otel:enabled': {
+  'otel:enabled': defineConfig<boolean>({
     envVarName: 'OPENTELEMETRY_ENABLED',
     defaultValue: true,
-  },
-  'otel:isAppSiteUrlHashed': {
+  }),
+  'otel:isAppSiteUrlHashed': defineConfig<boolean>({
     envVarName: 'OPENTELEMETRY_IS_APP_SITE_URL_HASHED',
     defaultValue: false,
-  },
-  'otel:serviceInstanceId': {
+  }),
+  'otel:serviceInstanceId': defineConfig<string | undefined>({
     envVarName: 'OPENTELEMETRY_SERVICE_INSTANCE_ID',
-    defaultValue: null,
-  },
+    defaultValue: undefined,
+  }),
 
   // S2S Messaging Pubsub Settings
-  's2sMessagingPubsub:serverType': {
+  's2sMessagingPubsub:serverType': defineConfig<string | undefined>({
     envVarName: 'S2SMSG_PUBSUB_SERVER_TYPE',
-    defaultValue: null,
-  },
-  's2sMessagingPubsub:nchan:publishPath': {
+    defaultValue: undefined,
+  }),
+  's2sMessagingPubsub:nchan:publishPath': defineConfig<string>({
     envVarName: 'S2SMSG_PUBSUB_NCHAN_PUBLISH_PATH',
     defaultValue: '/pubsub',
-  },
-  's2sMessagingPubsub:nchan:subscribePath': {
+  }),
+  's2sMessagingPubsub:nchan:subscribePath': defineConfig<string>({
     envVarName: 'S2SMSG_PUBSUB_NCHAN_SUBSCRIBE_PATH',
     defaultValue: '/pubsub',
-  },
-  's2sMessagingPubsub:nchan:channelId': {
+  }),
+  's2sMessagingPubsub:nchan:channelId': defineConfig<string | undefined>({
     envVarName: 'S2SMSG_PUBSUB_NCHAN_CHANNEL_ID',
-    defaultValue: null,
-  },
+    defaultValue: undefined,
+  }),
 
   // S2C Messaging Pubsub Settings
-  's2cMessagingPubsub:connectionsLimit': {
+  's2cMessagingPubsub:connectionsLimit': defineConfig<number>({
     envVarName: 'S2CMSG_PUBSUB_CONNECTIONS_LIMIT',
     defaultValue: 5000,
-  },
-  's2cMessagingPubsub:connectionsLimitForAdmin': {
+  }),
+  's2cMessagingPubsub:connectionsLimitForAdmin': defineConfig<number>({
     envVarName: 'S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_ADMIN',
     defaultValue: 100,
-  },
-  's2cMessagingPubsub:connectionsLimitForGuest': {
+  }),
+  's2cMessagingPubsub:connectionsLimitForGuest': defineConfig<number>({
     envVarName: 'S2CMSG_PUBSUB_CONNECTIONS_LIMIT_FOR_GUEST',
     defaultValue: 2000,
-  },
+  }),
 
   // Questionnaire Settings
-  'questionnaire:isQuestionnaireEnabled': {
+  'questionnaire:isQuestionnaireEnabled': defineConfig<boolean>({
     envVarName: 'QUESTIONNAIRE_IS_ENABLE_QUESTIONNAIRE',
     defaultValue: true,
-  },
-  'questionnaire:isAppSiteUrlHashed': {
+  }),
+  'questionnaire:isAppSiteUrlHashed': defineConfig<boolean>({
     envVarName: 'QUESTIONNAIRE_IS_APP_SITE_URL_HASHED',
     defaultValue: false,
-  },
+  }),
 
   // Customize Settings
-  'customize:isEmailPublishedForNewUser': {
+  'customize:isEmailPublishedForNewUser': defineConfig<boolean>({
     envVarName: 'DEFAULT_EMAIL_PUBLISHED',
     defaultValue: true,
-  },
+  }),
 
   // Control Flags for Env Vars
-  'env:useSiteUrlEnvVars': {
+  'env:useOnlyEnvVars:app:siteUrl': defineConfig<boolean>({
     envVarName: 'APP_SITE_URL_USES_ONLY_ENV_VARS',
     defaultValue: false,
-  },
-  'env:useLocalStrategyEnvVars': {
-    envVarName: 'SECURITY_PASSPORT_LOCAL_USES_ONLY_ENV_VARS',
+  }),
+  'env:useOnlyEnvVars:app:fileUploadType': defineConfig<boolean>({
+    envVarName: 'FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE',
     defaultValue: false,
-  },
-  'env:useSamlEnvVars': {
-    envVarName: 'SECURITY_PASSPORT_SAML_USES_ONLY_ENV_VARS',
+  }),
+  'env:useOnlyEnvVars:security:passport-local': defineConfig<boolean>({
+    envVarName: 'LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
     defaultValue: false,
-  },
-  'env:useFileUploadEnvVars': {
-    envVarName: 'FILE_UPLOAD_USES_ONLY_ENV_VARS',
+  }),
+  'env:useOnlyEnvVars:security:passport-saml': defineConfig<boolean>({
+    envVarName: 'SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
     defaultValue: false,
-  },
-  'env:useGcsEnvVars': {
-    envVarName: 'GCS_USES_ONLY_ENV_VARS',
+  }),
+  'env:useOnlyEnvVars:gcs': defineConfig<boolean>({
+    envVarName: 'GCS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
     defaultValue: false,
-  },
-  'env:useAzureEnvVars': {
-    envVarName: 'AZURE_USES_ONLY_ENV_VARS',
+  }),
+  'env:useOnlyEnvVars:azure': defineConfig<boolean>({
+    envVarName: 'AZURE_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
     defaultValue: false,
-  },
+  }),
+} as const;
+
+export type ConfigValues = {
+  [K in ConfigKey]: (typeof CONFIG_DEFINITIONS)[K] extends ConfigDefinition<infer T> ? T : never;
 };
 
 // Define groups of settings that use only environment variables
@@ -766,15 +737,19 @@ export interface EnvOnlyGroup {
 
 export const ENV_ONLY_GROUPS: EnvOnlyGroup[] = [
   {
-    controlKey: 'env:useSiteUrlEnvVars',
+    controlKey: 'env:useOnlyEnvVars:app:siteUrl',
     targetKeys: ['app:siteUrl'],
   },
   {
-    controlKey: 'env:useLocalStrategyEnvVars',
+    controlKey: 'env:useOnlyEnvVars:app:fileUploadType',
+    targetKeys: ['app:fileUploadType'],
+  },
+  {
+    controlKey: 'env:useOnlyEnvVars:security:passport-local',
     targetKeys: ['security:passport-local:isEnabled'],
   },
   {
-    controlKey: 'env:useSamlEnvVars',
+    controlKey: 'env:useOnlyEnvVars:security:passport-saml',
     targetKeys: [
       'security:passport-saml:isEnabled',
       'security:passport-saml:entryPoint',
@@ -783,11 +758,7 @@ export const ENV_ONLY_GROUPS: EnvOnlyGroup[] = [
     ],
   },
   {
-    controlKey: 'env:useFileUploadEnvVars',
-    targetKeys: ['app:fileUploadType'],
-  },
-  {
-    controlKey: 'env:useGcsEnvVars',
+    controlKey: 'env:useOnlyEnvVars:gcs',
     targetKeys: [
       'gcs:apiKeyJsonPath',
       'gcs:bucket',
@@ -795,7 +766,7 @@ export const ENV_ONLY_GROUPS: EnvOnlyGroup[] = [
     ],
   },
   {
-    controlKey: 'env:useAzureEnvVars',
+    controlKey: 'env:useOnlyEnvVars:azure',
     targetKeys: [
       'azure:tenantId',
       'azure:clientId',
@@ -805,32 +776,3 @@ export const ENV_ONLY_GROUPS: EnvOnlyGroup[] = [
     ],
   },
 ];
-
-export type ConfigSource = 'env' | 'db';
-
-export type ConfigValues = {
-  [K in ConfigKey]: (typeof CONFIG_DEFINITIONS)[K] extends ConfigDefinition<infer T> ? T : never;
-};
-
-export interface RawConfigData {
-  env: Partial<ConfigValues>;
-  db: Partial<ConfigValues>;
-}
-
-export type MergedConfigData = {
-  [K in ConfigKey]: {
-    value: ConfigValues[K];
-    source: ConfigSource;
-  }
-};
-
-// Runtime consistency check
-const validateConfigDefinitions = (): void => {
-  for (const key of CONFIG_KEYS) {
-    if (!(key in CONFIG_DEFINITIONS)) {
-      throw new Error(`Missing config definition for key: ${key}`);
-    }
-  }
-};
-
-validateConfigDefinitions();
