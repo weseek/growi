@@ -1,9 +1,11 @@
 import { mock } from 'vitest-mock-extended';
 
-import { Config } from '../models/config';
+import { GrowiDeploymentType, GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
+
+import { Config } from '../../models/config';
+import type { S2sMessagingService } from '../s2s-messaging/base';
 
 import { configManager } from './config-manager';
-import type { S2sMessagingService } from './s2s-messaging/base';
 
 describe('ConfigManager', () => {
 
@@ -20,7 +22,7 @@ describe('ConfigManager', () => {
       process.env.APP_SITE_URL = 'http://localhost:3000';
 
       // remove config from DB
-      await Config.deleteOne({ ns: 'crowi', key: 'app:siteUrl' }).exec();
+      await Config.deleteOne({ key: 'app:siteUrl' }).exec();
     });
 
     test('returns the env value"', async() => {
@@ -28,7 +30,7 @@ describe('ConfigManager', () => {
       await configManager.loadConfigs();
 
       // act
-      const value = configManager.getConfig('crowi', 'app:siteUrl');
+      const value = configManager.getConfig('app:siteUrl');
 
       // assert
       expect(value).toEqual('http://localhost:3000');
@@ -36,11 +38,11 @@ describe('ConfigManager', () => {
 
     test('returns the db value"', async() => {
       // arrange
-      await Config.create({ ns: 'crowi', key: 'app:siteUrl', value: JSON.stringify('https://example.com') });
+      await Config.create({ key: 'app:siteUrl', value: JSON.stringify('https://example.com') });
       await configManager.loadConfigs();
 
       // act
-      const value = configManager.getConfig('crowi', 'app:siteUrl');
+      const value = configManager.getConfig('app:siteUrl');
 
       // assert
       expect(value).toEqual('https://example.com');
@@ -49,11 +51,11 @@ describe('ConfigManager', () => {
     test('returns the env value when USES_ONLY_ENV_OPTION is set', async() => {
       // arrange
       process.env.APP_SITE_URL_USES_ONLY_ENV_VARS = 'true';
-      await Config.create({ ns: 'crowi', key: 'app:siteUrl', value: JSON.stringify('https://example.com') });
+      await Config.create({ key: 'app:siteUrl', value: JSON.stringify('https://example.com') });
       await configManager.loadConfigs();
 
       // act
-      const value = configManager.getConfig('crowi', 'app:siteUrl');
+      const value = configManager.getConfig('app:siteUrl');
 
       // assert
       expect(value).toEqual('http://localhost:3000');
@@ -61,44 +63,53 @@ describe('ConfigManager', () => {
 
   });
 
-  describe('updateConfigsInTheSameNamespace', () => {
+  describe('updateConfigs', () => {
     beforeEach(async() => {
-      await Config.deleteMany({ ns: 'testNamespace' }).exec();
-      await Config.create({ ns: 'testNamespace', key: 'key1', value: JSON.stringify('value1') });
+      await Config.deleteMany({ key: /app.*/ }).exec();
+      await Config.create({ key: 'app:siteUrl', value: JSON.stringify('value1') });
     });
 
     test('updates configs in the same namespace', async() => {
       // arrange
       await configManager.loadConfigs();
+      const config1 = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      const config2 = await Config.findOne({ key: 'app:fileUploadType' }).exec();
+      expect(config1?.value).toEqual(JSON.stringify('value1'));
+      expect(config2).toBeNull();
 
       // act
-      await configManager.updateConfigsInTheSameNamespace('testNamespace', {
-        key1: 'new value1',
-        key2: 'new value2',
+      await configManager.updateConfigs({
+        'app:siteUrl': 'new value1',
+        'app:fileUploadType': 'aws',
       });
-      const updatedConfig1 = await Config.findOne({ ns: 'testNamespace', key: 'key1' }).exec();
-      const updatedConfig2 = await Config.findOne({ ns: 'testNamespace', key: 'key2' }).exec();
+      const updatedConfig1 = await Config.findOne({ key: 'app:siteUrl' }).exec();
+      const updatedConfig2 = await Config.findOne({ key: 'app:fileUploadType' }).exec();
 
       // assert
       expect(updatedConfig1?.value).toEqual(JSON.stringify('new value1'));
-      expect(updatedConfig2?.value).toEqual(JSON.stringify('new value2'));
+      expect(updatedConfig2?.value).toEqual(JSON.stringify('aws'));
     });
   });
 
-  describe('removeConfigsInTheSameNamespace', () => {
+  describe('removeConfigs', () => {
     beforeEach(async() => {
-      await Config.create({ ns: 'testNamespace', key: 'key3', value: JSON.stringify('value3') });
-      await Config.create({ ns: 'testNamespace', key: 'key4', value: JSON.stringify('value4') });
+      await Config.deleteMany({ key: /app.*/ }).exec();
+      await Config.create({ key: 'app:serviceType', value: JSON.stringify(GrowiServiceType.onPremise) });
+      await Config.create({ key: 'app:deploymentType', value: JSON.stringify(GrowiDeploymentType.growiDockerCompose) });
     });
 
     test('removes configs in the same namespace', async() => {
       // arrange
       await configManager.loadConfigs();
+      const config3 = await Config.findOne({ key: 'app:serviceType' }).exec();
+      const config4 = await Config.findOne({ key: 'app:deploymentType' }).exec();
+      expect(config3?.value).toEqual(JSON.stringify(GrowiServiceType.onPremise));
+      expect(config4?.value).toEqual(JSON.stringify(GrowiDeploymentType.growiDockerCompose));
 
       // act
-      await configManager.removeConfigsInTheSameNamespace('testNamespace', ['key3', 'key4']);
-      const removedConfig3 = await Config.findOne({ ns: 'testNamespace', key: 'key3' }).exec();
-      const removedConfig4 = await Config.findOne({ ns: 'testNamespace', key: 'key4' }).exec();
+      await configManager.removeConfigs(['app:serviceType', 'app:deploymentType']);
+      const removedConfig3 = await Config.findOne({ key: 'app:serviceType' }).exec();
+      const removedConfig4 = await Config.findOne({ key: 'app:deploymentType' }).exec();
 
       // assert
       expect(removedConfig3).toBeNull();
