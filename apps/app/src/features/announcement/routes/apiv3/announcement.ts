@@ -13,7 +13,6 @@ import loggerFactory from '~/utils/logger';
 
 
 import type { ParamsForAnnouncement } from '../../interfaces/announcement';
-import { announcementService } from '../../server/service/announcement';
 
 
 const logger = loggerFactory('growi:routes:apiv3:announcement');
@@ -62,6 +61,8 @@ module.exports = (crowi: Crowi): Router => {
 
   router.post('/do-announcement', loginRequiredStrictly, validators.doAnnouncement, async(req: CrowiRequest, res: ApiV3Response) => {
 
+    const { announcementService } = await import('../../server/service/announcement');
+
     const params: ParamsForAnnouncement = req.body;
 
     const pageId = params.pageId;
@@ -69,7 +70,11 @@ module.exports = (crowi: Crowi): Router => {
     const page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
-      return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
+      const isAnnouncedPageExist = !!(await Page.findById(pageId));
+      if (isAnnouncedPageExist) {
+        return res.apiv3Err(new ErrorV3(`Page('${pageId}') is not forbidden`), 403);
+      }
+      return res.apiv3Err(new ErrorV3(`Page('${pageId}') is not found`), 404);
     }
 
     const parametersForActivity = {
