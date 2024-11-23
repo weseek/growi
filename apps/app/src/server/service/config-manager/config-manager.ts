@@ -25,6 +25,10 @@ const logger = loggerFactory('growi:service:ConfigManager');
 
 type ConfigUpdates<K extends ConfigKey> = Partial<{ [P in K]: ConfigValues[P] }>;
 
+type UpdateConfigOptions = {
+  skipPubsub?: boolean;
+};
+
 export class ConfigManager implements S2sMessageHandlable {
 
   private configLoader = new ConfigLoader();
@@ -127,6 +131,7 @@ export class ConfigManager implements S2sMessageHandlable {
   async updateConfig<K extends ConfigKey>(
       key: K,
       value: ConfigValues[K],
+      opts?: UpdateConfigOptions,
   ): Promise<void> {
     await Config.updateOne(
       { key },
@@ -135,7 +140,10 @@ export class ConfigManager implements S2sMessageHandlable {
     );
 
     await this.loadConfigs();
-    await this.publishUpdateMessage();
+
+    if (!opts?.skipPubsub) {
+      await this.publishUpdateMessage();
+    }
   }
 
   /**
@@ -143,6 +151,7 @@ export class ConfigManager implements S2sMessageHandlable {
    */
   async updateConfigs<K extends ConfigKey>(
       updates: ConfigUpdates<K>,
+      opts?: UpdateConfigOptions,
   ): Promise<void> {
     const operations = Object.entries(updates).map(([key, value]) => ({
       updateOne: {
@@ -154,7 +163,10 @@ export class ConfigManager implements S2sMessageHandlable {
 
     await Config.bulkWrite(operations);
     await this.loadConfigs();
-    await this.publishUpdateMessage();
+
+    if (!opts?.skipPubsub) {
+      await this.publishUpdateMessage();
+    }
   }
 
   /**
@@ -180,6 +192,27 @@ export class ConfigManager implements S2sMessageHandlable {
     }
 
     await this.updateConfigs(updates as any);
+  }
+
+  /**
+   * Bulk update of multiple type-safe configurations
+   */
+  async removeConfigs<K extends ConfigKey>(
+      keys: K[],
+      opts?: UpdateConfigOptions,
+  ): Promise<void> {
+    const operations = keys.map(key => ({
+      deleteOne: {
+        filter: { key },
+      },
+    }));
+
+    await Config.bulkWrite(operations);
+    await this.loadConfigs();
+
+    if (!opts?.skipPubsub) {
+      await this.publishUpdateMessage();
+    }
   }
 
   /**
