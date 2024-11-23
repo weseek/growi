@@ -75,7 +75,12 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
     if (!controlKey) {
       return false;
     }
-    return this.getConfig(controlKey) === true;
+
+    // Control keys should be read directly from envConfig to avoid recursion
+    if (!this.envConfig) {
+      throw new Error('Config is not loaded');
+    }
+    return this.envConfig[controlKey] === true;
   }
 
   async updateConfig<K extends ConfigKey>(key: K, value: ConfigValues[K], options?: UpdateConfigOptions): Promise<void> {
