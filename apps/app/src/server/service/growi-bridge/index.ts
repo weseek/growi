@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
+import { pipeline } from 'stream';
+import { pipeline as pipelinePromise } from 'stream/promises';
 
-import streamToPromise from 'stream-to-promise';
 import unzipStream, { type Entry } from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
@@ -78,10 +79,12 @@ class GrowiBridgeService {
     let meta = {};
 
     const readStream = fs.createReadStream(zipFile);
-    const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
+    const parseStream = unzipStream.Parse();
+    const unzipEntryStream = pipeline(readStream, parseStream);
+
     let tapPromise;
 
-    const unzipEntryStream = unzipStreamPipe.on('entry', (entry: Entry) => {
+    unzipEntryStream.on('entry', (entry: Entry) => {
       const fileName = entry.path;
       const size = entry.size; // might be undefined in some archives
       if (fileName === this.getMetaFileName()) {
@@ -100,7 +103,7 @@ class GrowiBridgeService {
     });
 
     try {
-      await streamToPromise(unzipEntryStream);
+      await pipelinePromise([unzipEntryStream]);
       await tapPromise;
     }
     // if zip is broken

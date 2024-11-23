@@ -1,8 +1,27 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.1...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.2](https://github.com/weseek/growi/compare/v7.1.1...v7.1.2) - 2024-11-18
+
+### 🚀 Improvement
+
+* imprv(ai): GROWI AI Knowledge Assistant instructions (#9407) @yuki-takei
+* imprv(ai): Knowedge Assistant model configuration by env var (#9410) @yuki-takei
+* imprv(ai): Shorten thread deletion expiredAt (#9419) @yuki-takei
+* imprv(ai): Remove unnecessary strings from markdown when creating VectorStoreFIie (#9411) @miya
+* imprv(ai): Create thead before the first post (#9414) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Fixed the message when all read (#9405) @Ryosei-Fukushima
+
+### 🧰 Maintenance
+
+* support: Import OpenAI features dynamically (#9413) @yuki-takei
+* support: Welcome back Hufflepuff badger (#9403) @satof3
 
 ## [v7.1.1](https://github.com/weseek/growi/compare/v7.1.0...v7.1.1) - 2024-11-12
 
