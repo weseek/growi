@@ -22,4 +22,5 @@ export type IAnnouncementHasId = IAnnouncement & HasObjectId;
 
 export interface ParamsForAnnouncement extends Omit<IAnnouncement, 'receivers'> {
   receivers: Ref<IUser>[]
+  pageId: string
 }
