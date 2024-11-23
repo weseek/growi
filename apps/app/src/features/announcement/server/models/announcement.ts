@@ -32,7 +32,7 @@ const AnnouncementSchema = new Schema<AnnouncementDocument>({
     default: false,
   },
   pageId: {
-    type: String,
+    type: Schema.Types.ObjectId,
     required: true,
   },
   receivers: [
