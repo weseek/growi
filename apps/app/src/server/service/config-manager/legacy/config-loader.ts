@@ -6,7 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
-} from '../models/config';
+} from '../../../models/config';
 
 
 const logger = loggerFactory('growi:service:ConfigLoader');

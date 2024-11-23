@@ -2,13 +2,13 @@ import { parseISO } from 'date-fns/parseISO';
 
 import loggerFactory from '~/utils/logger';
 
-import { Config } from '../models/config';
-import S2sMessage from '../models/vo/s2s-message';
+import { Config } from '../../../models/config';
+import S2sMessage from '../../../models/vo/s2s-message';
+import type { S2sMessagingService } from '../../s2s-messaging/base';
+import type { S2sMessageHandlable } from '../../s2s-messaging/handlable';
 
 import type { ConfigObject } from './config-loader';
 import ConfigLoader from './config-loader';
-import type { S2sMessagingService } from './s2s-messaging/base';
-import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
