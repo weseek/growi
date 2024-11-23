@@ -9,7 +9,6 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 
 export interface IConfig {
   _id: Types.ObjectId;
-  ns: string;
   key: string;
   value: string;
   createdAt: Date;
@@ -22,15 +21,12 @@ interface ModelMethods { any }
 
 
 const schema = new Schema<IConfig>({
-  ns: { type: String, required: true },
-  key: { type: String, required: true },
+  key: { type: String, required: true, unique: true },
   value: { type: String, required: true },
 }, {
   timestamps: true,
 });
 
-// define unique compound index
-schema.index({ ns: 1, key: 1 }, { unique: true });
 schema.plugin(uniqueValidator);
 
 /**

@@ -21,7 +21,6 @@ describe('QuestionnaireService', () => {
     });
 
     await mongoose.model('Config').create({
-      ns: 'crowi',
       key: 'app:installed',
       value: true,
       createdAt: '2000-01-01',
