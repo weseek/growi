@@ -3,8 +3,11 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { useGrowiDocumentationUrl } from '~/stores-universal/context';
+
 export const AiIntegrationDisableMode: FC = () => {
   const { t } = useTranslation('admin');
+  const { data: documentationUrl } = useGrowiDocumentationUrl();
 
   return (
     <div className="ccontainer-lg">
@@ -17,7 +20,7 @@ export const AiIntegrationDisableMode: FC = () => {
               <h1 className="text-center">{t('ai_integration.ai_integration')}</h1>
               <h3
                 // eslint-disable-next-line react/no-danger
-                dangerouslySetInnerHTML={{ __html: t('ai_integration.disable_mode_explanation') }}
+                dangerouslySetInnerHTML={{ __html: t('ai_integration.disable_mode_explanation', { documentationUrl }) }}
               />
             </div>
           </div>

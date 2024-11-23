@@ -25,6 +25,7 @@
   "typescript.enablePromptUseWorkspaceTsdk": true,
   "typescript.preferences.autoImportFileExcludePatterns": ["node_modules/*"],
   "typescript.validate.enable": true,
-  "typescript.surveys.enabled": false
+  "typescript.surveys.enabled": false,
 
+  "vitest.filesWatcherInclude": "**/*"
 }

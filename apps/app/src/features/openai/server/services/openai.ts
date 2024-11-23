@@ -1,5 +1,6 @@
 import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
@@ -19,10 +20,12 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
+import { sanitizeMarkdown } from '../utils/sanitize-markdown';
 
 import { getClient } from './client-delegator';
 // import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { oepnaiApiErrorHandler } from './openai-api-error-handler';
+
 
 const BATCH_SIZE = 100;
 
@@ -155,7 +158,8 @@ class OpenaiService implements IOpenaiService {
   // }
 
   private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
-    const file = await toFile(Readable.from(body), `${pageId}.md`);
+    const sanitizedMarkdown = await sanitizeMarkdown(body);
+    const file = await toFile(Readable.from(sanitizedMarkdown), `${pageId}.md`);
     const uploadedFile = await this.client.uploadFile(file);
     return uploadedFile;
   }
@@ -342,9 +346,7 @@ class OpenaiService implements IOpenaiService {
       },
     });
 
-    pagesStream
-      .pipe(batchStrem)
-      .pipe(createVectorStoreFileStream);
+    await pipeline(pagesStream, batchStrem, createVectorStoreFileStream);
   }
 
   async rebuildVectorStore(page: HydratedDocument<PageDocument>) {
