@@ -763,11 +763,17 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.NUMBER,
     default: 86400, // 1 day
   },
-  BULK_EXPORT_JOB_CRON_SCHEDULE: {
+  BULK_EXPORT_JOB_CLEAN_UP_CRON_SCHEDULE: {
     ns: 'crowi',
-    key: 'app:pageBulkExportJobCronSchedule',
+    key: 'app:pageBulkExportJobCleanUpCronSchedule',
     type: ValueType.STRING,
     default: '*/10 * * * *', // every 10 minutes
+  },
+  BULK_EXPORT_PDF_CONVERT_CRON_SCHEDULE: {
+    ns: 'crowi',
+    key: 'app:pageBulkExportPdfConvertCronSchedule',
+    type: ValueType.STRING,
+    default: '* * * * *', // every 1 minute
   },
   BULK_EXPORT_PARALLEL_EXEC_LIMIT: {
     ns: 'crowi',

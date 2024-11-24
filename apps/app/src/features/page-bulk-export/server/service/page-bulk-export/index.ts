@@ -3,14 +3,6 @@ import fs from 'fs';
 import path from 'path';
 import { Writable, pipeline } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
-
-
-import type { IUser } from '@growi/core';
-import {
-  getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
-} from '@growi/core';
-import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
-import { pdfCtrlSyncJobStatus, PdfCtrlSyncJobStatus202Status, PdfCtrlSyncJobStatusBodyStatus } from '@growi/pdf-converter/dist/client-library';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import gc from 'expose-gc/function';
@@ -18,6 +10,12 @@ import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 import remark from 'remark';
 import html from 'remark-html';
+
+import type { IUser } from '@growi/core';
+import {
+  getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
+} from '@growi/core';
+import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -27,7 +25,6 @@ import type { IAttachmentDocument } from '~/server/models/attachment';
 import { Attachment } from '~/server/models/attachment';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
-import { configManager } from '~/server/service/config-manager';
 import type { FileUploader } from '~/server/service/file-uploader';
 import type { IMultipartUploader } from '~/server/service/file-uploader/multipart-uploader';
 import { preNotifyService } from '~/server/service/pre-notify';
@@ -39,20 +36,21 @@ import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-jo
 import PageBulkExportJob from '../../models/page-bulk-export-job';
 import type { PageBulkExportPageSnapshotDocument } from '../../models/page-bulk-export-page-snapshot';
 import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
-
 import { BulkExportJobExpiredError, BulkExportJobRestartedError, DuplicateBulkExportJobError } from './errors';
-import { PageBulkExportJobManager } from './page-bulk-export-job-manager';
+import { IPageBulkExportJobManager, PageBulkExportJobManager } from './page-bulk-export-job-manager';
+import { waitPdfExportToFs } from '../page-bulk-export-pdf-convert-cron';
 
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
-export type ActivityParameters ={
+export type ActivityParameters = {
   ip?: string;
   endpoint: string;
 }
 
 export interface IPageBulkExportService {
   executePageBulkExportJob: (pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters) => Promise<void>
+  pageBulkExportJobManager: IPageBulkExportJobManager;
 }
 
 class PageBulkExportService implements IPageBulkExportService {
@@ -68,7 +66,7 @@ class PageBulkExportService implements IPageBulkExportService {
 
   compressExtension = 'tar.gz';
 
-  pageBulkExportJobManager: PageBulkExportJobManager;
+  pageBulkExportJobManager: IPageBulkExportJobManager;
 
   // temporal path of local fs to output page files before upload
   // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
@@ -157,7 +155,7 @@ class PageBulkExportService implements IPageBulkExportService {
         await pageBulkExportJob.save();
       }
       if (pageBulkExportJob.status === PageBulkExportJobStatus.exporting) {
-        await this.exportPagesToFS(pageBulkExportJob);
+        await this.exportPagesToFs(pageBulkExportJob);
         pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
         await pageBulkExportJob.save();
       }
@@ -185,7 +183,7 @@ class PageBulkExportService implements IPageBulkExportService {
   }
 
   /**
-   * Notify the user of the export result, and cleanup the resources used in the export process
+   * Notify the user of the export result, and clean up the resources used in the export process
    * @param action whether the export was successful
    * @param pageBulkExportJob the page bulk export job
    * @param activityParameters parameters to record user activity
@@ -268,7 +266,7 @@ class PageBulkExportService implements IPageBulkExportService {
    * Export pages to the file system before compressing and uploading to the cloud storage.
    * The export will resume from the last exported page if the process was interrupted.
    */
-  private async exportPagesToFS(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+  private async exportPagesToFs(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
     const findQuery = pageBulkExportJob.lastExportedPagePath != null ? {
       pageBulkExportJob,
       path: { $gt: pageBulkExportJob.lastExportedPagePath },
@@ -284,7 +282,7 @@ class PageBulkExportService implements IPageBulkExportService {
 
     if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
       pipeline(pageSnapshotsReadable, pagesWritable, (err) => { if (err != null) logger.error(err); });
-      await this.startAndWaitPdfExportFinish(pageBulkExportJob);
+      await waitPdfExportToFs(pageBulkExportJob);
     }
     else {
       await pipelinePromise(pageSnapshotsReadable, pagesWritable);
@@ -342,63 +340,6 @@ class PageBulkExportService implements IPageBulkExportService {
       .toString();
 
     return htmlString;
-  }
-
-  /**
-   * Start pdf export by requesting pdf-converter and keep updating/checking the status until the export is done
-   * ref) https://dev.growi.org/66ee8495830566b31e02c953#growi
-   * @param pageBulkExportJob page bulk export job in execution
-   */
-  private async startAndWaitPdfExportFinish(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
-    const jobCreatedAt = pageBulkExportJob.createdAt;
-    if (jobCreatedAt == null) throw new Error('createdAt is not set');
-
-    const exportJobExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportJobExpirationSeconds');
-    const jobExpirationDate = new Date(jobCreatedAt.getTime() + exportJobExpirationSeconds * 1000);
-    let status: PdfCtrlSyncJobStatusBodyStatus = PdfCtrlSyncJobStatusBodyStatus.HTML_EXPORT_IN_PROGRESS;
-
-    const lastExportPagePath = (await PageBulkExportPageSnapshot.findOne({ pageBulkExportJob }).sort({ path: -1 }))?.path;
-    if (lastExportPagePath == null) throw new Error('lastExportPagePath is missing');
-
-    return new Promise<void>((resolve, reject) => {
-      // Request sync job API until the pdf export is done. If pdf export status is updated in growi, send the status to pdf-converter.
-      const interval = setInterval(async() => {
-        if (new Date() > jobExpirationDate) {
-          reject(new BulkExportJobExpiredError());
-        }
-        try {
-          const latestPageBulkExportJob = await PageBulkExportJob.findById(pageBulkExportJob._id);
-          if (latestPageBulkExportJob == null) throw new Error('pageBulkExportJob is missing');
-          if (latestPageBulkExportJob.lastExportedPagePath === lastExportPagePath) {
-            status = PdfCtrlSyncJobStatusBodyStatus.HTML_EXPORT_DONE;
-          }
-
-          if (latestPageBulkExportJob.status === PageBulkExportJobStatus.failed) {
-            status = PdfCtrlSyncJobStatusBodyStatus.FAILED;
-          }
-
-          const res = await pdfCtrlSyncJobStatus({
-            jobId: pageBulkExportJob._id.toString(), expirationDate: jobExpirationDate.toISOString(), status,
-          }, { baseURL: configManager.getConfig('crowi', 'app:pageBulkExportPdfConverterUrl') });
-
-          if (res.data.status === PdfCtrlSyncJobStatus202Status.PDF_EXPORT_DONE) {
-            clearInterval(interval);
-            resolve();
-          }
-          else if (res.data.status === PdfCtrlSyncJobStatus202Status.FAILED) {
-            clearInterval(interval);
-            reject(new Error('PDF export failed'));
-          }
-        }
-        catch (err) {
-          // continue the loop if the host is not ready
-          if (!['ENOTFOUND', 'ECONNREFUSED'].includes(err.code)) {
-            clearInterval(interval);
-            reject(err);
-          }
-        }
-      }, 60 * 1000 * 1);
-    });
   }
 
   /**

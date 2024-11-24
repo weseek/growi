@@ -11,13 +11,24 @@ import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors
 
 import type { ActivityParameters, IPageBulkExportService } from '.';
 
+export interface IPageBulkExportJobManager {
+  jobsInProgress: {
+    [key: string]: { stream: Readable | undefined };
+  };
+  canExecuteNextJob(): boolean;
+  getJobInProgress(jobId: ObjectIdLike): { stream: Readable | undefined } | undefined;
+  addJob(job: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters): void;
+  updateJobStream(jobId: ObjectIdLike, stream: Readable): void;
+  removeJobInProgressAndQueueNextJob(jobId: ObjectIdLike, isJobRestarted?: boolean): void;
+}
+
 /**
  * Manage PageBulkExportJob execution.
  * - Keep track of jobs being executed and enable destroying the stream if the job is terminated
  * - Limit the number of jobs being executed in parallel
  * - Queue jobs to be executed in order
  */
-export class PageBulkExportJobManager {
+export class PageBulkExportJobManager implements IPageBulkExportJobManager {
 
   pageBulkExportService: IPageBulkExportService;
 
