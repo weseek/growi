@@ -59,7 +59,7 @@ export class ConfigLoader implements IConfigLoader<ConfigKey, ConfigValues> {
       case 'number':
         return parseInt(value, 10);
       case 'boolean':
-        return value.toLowerCase() === 'true';
+        return toBoolean(value);
       case 'string':
         return value;
       case 'object':
