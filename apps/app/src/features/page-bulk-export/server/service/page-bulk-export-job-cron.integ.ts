@@ -5,7 +5,7 @@ import { configManager } from '~/server/service/config-manager';
 import { PageBulkExportFormat, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
-import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from './page-bulk-export-job-cron';
+import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from './page-bulk-export-job-clean-up-cron';
 
 // TODO: use actual user model after ~/server/models/user.js becomes importable in vitest
 // ref: https://github.com/vitest-dev/vitest/issues/846

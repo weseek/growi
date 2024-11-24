@@ -15,10 +15,11 @@ import { LdapUserGroupSyncService } from '~/features/external-user-group/server/
 import { PageBulkExportJobInProgressStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
 import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
-import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
+import instanciatePageBulkExportJobCleanUpCronService, { pageBulkExportJobCleanUpCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-job-clean-up-cron';
 import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import questionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
+import { pageBulkExportPdfConvertCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-pdf-convert-cron';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
@@ -331,8 +332,10 @@ Crowi.prototype.setupSocketIoService = async function() {
 Crowi.prototype.setupCron = function() {
   questionnaireCronService.startCron();
 
-  instanciatePageBulkExportJobCronService(this);
-  pageBulkExportJobCronService.startCron();
+  instanciatePageBulkExportJobCleanUpCronService(this);
+  pageBulkExportJobCleanUpCronService.startCron();
+
+  pageBulkExportPdfConvertCronService.startCron();
 
   startOpenaiCronIfEnabled();
 };

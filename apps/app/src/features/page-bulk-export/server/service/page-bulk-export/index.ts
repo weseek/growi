@@ -1,19 +1,21 @@
 import { createHash } from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { Writable } from 'stream';
+import { Writable, pipeline } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
+import type { Archiver } from 'archiver';
+import archiver from 'archiver';
+import gc from 'expose-gc/function';
+import type { HydratedDocument } from 'mongoose';
+import mongoose from 'mongoose';
+import remark from 'remark';
+import html from 'remark-html';
 
 import type { IUser } from '@growi/core';
 import {
   getIdForRef, getIdStringForRef, type IPage, isPopulated, SubscriptionStatusType,
 } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
-import type { Archiver } from 'archiver';
-import archiver from 'archiver';
-import gc from 'expose-gc/function';
-import type { HydratedDocument } from 'mongoose';
-import mongoose from 'mongoose';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -34,20 +36,21 @@ import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-jo
 import PageBulkExportJob from '../../models/page-bulk-export-job';
 import type { PageBulkExportPageSnapshotDocument } from '../../models/page-bulk-export-page-snapshot';
 import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
-
 import { BulkExportJobExpiredError, BulkExportJobRestartedError, DuplicateBulkExportJobError } from './errors';
-import { PageBulkExportJobManager } from './page-bulk-export-job-manager';
+import { IPageBulkExportJobManager, PageBulkExportJobManager } from './page-bulk-export-job-manager';
+import { waitPdfExportToFs } from '../page-bulk-export-pdf-convert-cron';
 
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
-export type ActivityParameters ={
+export type ActivityParameters = {
   ip?: string;
   endpoint: string;
 }
 
 export interface IPageBulkExportService {
   executePageBulkExportJob: (pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument>, activityParameters?: ActivityParameters) => Promise<void>
+  pageBulkExportJobManager: IPageBulkExportJobManager;
 }
 
 class PageBulkExportService implements IPageBulkExportService {
@@ -63,7 +66,7 @@ class PageBulkExportService implements IPageBulkExportService {
 
   compressExtension = 'tar.gz';
 
-  pageBulkExportJobManager: PageBulkExportJobManager;
+  pageBulkExportJobManager: IPageBulkExportJobManager;
 
   // temporal path of local fs to output page files before upload
   // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
@@ -81,14 +84,15 @@ class PageBulkExportService implements IPageBulkExportService {
   /**
    * Create a new page bulk export job and execute it
    */
-  async createAndExecuteOrRestartBulkExportJob(basePagePath: string, currentUser, activityParameters: ActivityParameters, restartJob = false): Promise<void> {
+  async createAndExecuteOrRestartBulkExportJob(
+      basePagePath: string, format: PageBulkExportFormat, currentUser, activityParameters: ActivityParameters, restartJob = false,
+  ): Promise<void> {
     const basePage = await this.pageModel.findByPathAndViewer(basePagePath, currentUser, null, true);
 
     if (basePage == null) {
       throw new Error('Base page not found or not accessible');
     }
 
-    const format = PageBulkExportFormat.md;
     const duplicatePageBulkExportJobInProgress: HydratedDocument<PageBulkExportJobDocument> | null = await PageBulkExportJob.findOne({
       user: currentUser,
       page: basePage,
@@ -151,7 +155,7 @@ class PageBulkExportService implements IPageBulkExportService {
         await pageBulkExportJob.save();
       }
       if (pageBulkExportJob.status === PageBulkExportJobStatus.exporting) {
-        await this.exportPagesToFS(pageBulkExportJob);
+        await this.exportPagesToFs(pageBulkExportJob);
         pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
         await pageBulkExportJob.save();
       }
@@ -179,7 +183,7 @@ class PageBulkExportService implements IPageBulkExportService {
   }
 
   /**
-   * Notify the user of the export result, and cleanup the resources used in the export process
+   * Notify the user of the export result, and clean up the resources used in the export process
    * @param action whether the export was successful
    * @param pageBulkExportJob the page bulk export job
    * @param activityParameters parameters to record user activity
@@ -262,7 +266,7 @@ class PageBulkExportService implements IPageBulkExportService {
    * Export pages to the file system before compressing and uploading to the cloud storage.
    * The export will resume from the last exported page if the process was interrupted.
    */
-  private async exportPagesToFS(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+  private async exportPagesToFs(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
     const findQuery = pageBulkExportJob.lastExportedPagePath != null ? {
       pageBulkExportJob,
       path: { $gt: pageBulkExportJob.lastExportedPagePath },
@@ -276,14 +280,23 @@ class PageBulkExportService implements IPageBulkExportService {
 
     this.pageBulkExportJobManager.updateJobStream(pageBulkExportJob._id, pageSnapshotsReadable);
 
-    return pipelinePromise(pageSnapshotsReadable, pagesWritable);
+    if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
+      pipeline(pageSnapshotsReadable, pagesWritable, (err) => { if (err != null) logger.error(err); });
+      await waitPdfExportToFs(pageBulkExportJob);
+    }
+    else {
+      await pipelinePromise(pageSnapshotsReadable, pagesWritable);
+    }
   }
 
   /**
    * Get a Writable that writes the page body temporarily to fs
    */
   private getPageWritable(pageBulkExportJob: PageBulkExportJobDocument): Writable {
-    const outputDir = this.getTmpOutputDir(pageBulkExportJob);
+    const isHtmlPath = pageBulkExportJob.format === PageBulkExportFormat.pdf;
+    const outputDir = this.getTmpOutputDir(pageBulkExportJob, isHtmlPath);
+    // define before the stream starts to avoid creating multiple instances
+    const remarkHtml = remark().use(html);
     return new Writable({
       objectMode: true,
       write: async(page: PageBulkExportPageSnapshotDocument, encoding, callback) => {
@@ -292,23 +305,41 @@ class PageBulkExportService implements IPageBulkExportService {
 
           if (revision != null && isPopulated(revision)) {
             const markdownBody = revision.body;
-            const pathNormalized = `${normalizePath(page.path)}.${PageBulkExportFormat.md}`;
+            const format = pageBulkExportJob.format === PageBulkExportFormat.pdf ? 'html' : pageBulkExportJob.format;
+            const pathNormalized = `${normalizePath(page.path)}.${format}`;
             const fileOutputPath = path.join(outputDir, pathNormalized);
             const fileOutputParentPath = getParentPath(fileOutputPath);
-
             await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
-            await fs.promises.writeFile(fileOutputPath, markdownBody);
+
+            if (pageBulkExportJob.format === PageBulkExportFormat.md) {
+              await fs.promises.writeFile(fileOutputPath, markdownBody);
+            }
+            else {
+              const htmlString = await this.convertMdToHtml(markdownBody, remarkHtml);
+              await fs.promises.writeFile(fileOutputPath, htmlString);
+            }
             pageBulkExportJob.lastExportedPagePath = page.path;
             await pageBulkExportJob.save();
           }
         }
         catch (err) {
           callback(err);
+          // update status to notify failure and report to pdf converter in startAndWaitPdfExportFinish
+          pageBulkExportJob.status = PageBulkExportJobStatus.failed;
+          await pageBulkExportJob.save();
           return;
         }
         callback();
       },
     });
+  }
+
+  private async convertMdToHtml(md: string, remarkHtml): Promise<string> {
+    const htmlString = (await remarkHtml
+      .process(md))
+      .toString();
+
+    return htmlString;
   }
 
   /**
@@ -377,6 +408,8 @@ class PageBulkExportService implements IPageBulkExportService {
         }
         catch (err) {
           await multipartUploader.abortUpload();
+          pageBulkExportJob.status = PageBulkExportJobStatus.failed;
+          await pageBulkExportJob.save();
           callback(err);
           return;
         }
@@ -405,9 +438,14 @@ class PageBulkExportService implements IPageBulkExportService {
 
   /**
    * Get the output directory on the fs to temporarily store page files before compressing and uploading
+   * @param pageBulkExportJob page bulk export job in execution
+   * @param isHtmlPath whether the tmp output path is for html files
    */
-  private getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string {
-    return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
+  private getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath = false): string {
+    if (isHtmlPath) {
+      return path.join(this.tmpOutputRootDir, 'html', pageBulkExportJob._id.toString());
+    }
+    return path.join(this.tmpOutputRootDir, pageBulkExportJob._id.toString());
   }
 
   async notifyExportResult(
@@ -441,6 +479,12 @@ class PageBulkExportService implements IPageBulkExportService {
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
     ];
+
+    if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
+      promises.push(
+        fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob, true), { recursive: true, force: true }),
+      );
+    }
 
     const fileUploadService: FileUploader = this.crowi.fileUploadService;
     if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
