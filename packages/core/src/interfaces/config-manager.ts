@@ -84,6 +84,6 @@ export interface IConfigManager<K extends string, V extends Record<K, any>> {
   /**
    * Get environment variables managed with ConfigDefinitions
    */
-  getManagedEnvVars(includeSecret: boolean): Record<string, string>;
+  getManagedEnvVars(showSecretValues: boolean): Record<string, string>;
 
 }

@@ -54,10 +54,6 @@ export class ConfigLoader implements IConfigLoader<ConfigKey, ConfigValues> {
     return dbConfig;
   }
 
-  getManagedEnvVars(includeSecret: boolean): Record<string, string> {
-    return configUtils.getManagedEnvVars(Object.values(CONFIG_DEFINITIONS), includeSecret);
-  }
-
   private parseEnvValue(value: string, type: string): unknown {
     switch (type) {
       case 'number':

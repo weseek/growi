@@ -82,4 +82,33 @@ describe('ConfigManager test', () => {
     });
   });
 
+  describe('getManagedEnvVars()', () => {
+
+    beforeAll(() => {
+      process.env.AUTO_INSTALL_ADMIN_USERNAME = 'admin';
+      process.env.AUTO_INSTALL_ADMIN_PASSWORD = 'password';
+
+      configManager.loadConfigs({ source: 'env' });
+    });
+
+    test('include secret', () => {
+      // act
+      const result = configManager.getManagedEnvVars(true);
+
+      // assert
+      expect(result.AUTO_INSTALL_ADMIN_USERNAME).toEqual('admin');
+      expect(result.AUTO_INSTALL_ADMIN_PASSWORD).toEqual('password');
+    });
+
+    test('exclude secret', () => {
+      // act
+      const result = configManager.getManagedEnvVars();
+
+      // assert
+      expect(result.AUTO_INSTALL_ADMIN_USERNAME).toEqual('admin');
+      expect(result.AUTO_INSTALL_ADMIN_PASSWORD).toEqual('***');
+    });
+
+  });
+
 });

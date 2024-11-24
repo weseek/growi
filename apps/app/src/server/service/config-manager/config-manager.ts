@@ -161,8 +161,26 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
     };
   }
 
-  getManagedEnvVars(includeSecret = false): Record<string, string> {
-    return this.configLoader.getManagedEnvVars(includeSecret);
+  getManagedEnvVars(showSecretValues = false): Record<string, string> {
+    if (!this.envConfig) {
+      throw new Error('Config is not loaded');
+    }
+
+    const envVars = {} as Record<string, string>;
+
+    for (const { definition, value } of Object.values(this.envConfig)) {
+      if (definition.envVarName == null) {
+        continue;
+      }
+
+      const shouldBeMasked = definition.isSecret && !showSecretValues;
+
+      envVars[definition.envVarName] = shouldBeMasked
+        ? '***'
+        : String(value);
+    }
+
+    return envVars;
   }
 
   /**
