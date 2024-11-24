@@ -626,9 +626,9 @@ Guideline as a RAG:
     envVarName: 'OPENAI_SERVICE_TYPE',
     defaultValue: 'openai',
   }),
-  'openai:apiKey': defineConfig<string | null>({
+  'openai:apiKey': defineConfig<string | undefined>({
     envVarName: 'OPENAI_API_KEY',
-    defaultValue: null,
+    defaultValue: undefined,
     isSecret: true,
   }),
   'openai:searchAssistantInstructions': defineConfig<string>({
