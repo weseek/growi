@@ -31,6 +31,7 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
+import { configManager } from '~/server/service/config-manager';
 import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
 import {
   useCurrentUser,
@@ -448,7 +449,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
-  const { pageService, configManager } = crowi;
+  const { pageService } = crowi;
 
   let currentPathname = props.currentPathname;
 
@@ -557,7 +558,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    searchService, configManager, aclService,
+    searchService, aclService,
   } = crowi;
 
   props.aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
