@@ -58,7 +58,14 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
     this.lastLoadedAt = new Date();
   }
 
-  getConfig<K extends ConfigKey>(key: K): ConfigValues[K] {
+  // for backward compatibility
+  getConfig<K extends ConfigKey>(ns: string, key: K): ConfigValues[K];
+
+  getConfig<K extends ConfigKey>(key: K): ConfigValues[K];
+
+  getConfig<K extends ConfigKey>(...args: [key: K] | [ns: string, key: K]): ConfigValues[K] {
+    const key = (args.length === 2) ? args[1] : args[0];
+
     if (!this.envConfig || !this.dbConfig) {
       throw new Error('Config is not loaded');
     }
