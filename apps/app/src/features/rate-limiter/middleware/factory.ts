@@ -9,7 +9,6 @@ import { DEFAULT_USERS_PER_IP_PROSPECTION, type IApiRateLimitConfig } from '../c
 import { generateApiRateLimitConfig } from '../utils/config-generator';
 
 import { consumePoints } from './consume-points';
-import { rateLimiter } from './rate-limiter-mongo-client';
 
 const logger = loggerFactory('growi:middleware:api-rate-limit');
 
@@ -34,8 +33,10 @@ const valuesWithRegExp = Object.values(configWithRegExp);
  * @param customizedConfig
  * @returns
  */
-const consumePointsByUser = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig): Promise<RateLimiterRes | undefined> => {
-  return consumePoints(rateLimiter, method, key, customizedConfig);
+const consumePointsByUser = async(
+    method: string, endpoint: string, key: string | null, customizedConfig?: IApiRateLimitConfig,
+): Promise<RateLimiterRes | undefined> => {
+  return consumePoints(method, endpoint, key, customizedConfig);
 };
 
 /**
@@ -45,9 +46,11 @@ const consumePointsByUser = async(method: string, key: string | null, customized
  * @param customizedConfig
  * @returns
  */
-const consumePointsByIp = async(method: string, key: string | null, customizedConfig?: IApiRateLimitConfig): Promise<RateLimiterRes | undefined> => {
+const consumePointsByIp = async(
+    method: string, endpoint: string, key: string | null, customizedConfig?: IApiRateLimitConfig,
+): Promise<RateLimiterRes | undefined> => {
   const maxRequestsMultiplier = customizedConfig?.usersPerIpProspection ?? DEFAULT_USERS_PER_IP_PROSPECTION;
-  return consumePoints(rateLimiter, method, key, customizedConfig, maxRequestsMultiplier);
+  return consumePoints(method, endpoint, key, customizedConfig, maxRequestsMultiplier);
 };
 
 
@@ -80,7 +83,7 @@ export const middlewareFactory = (): Handler => {
     // check for the current user
     if (req.user != null) {
       try {
-        await consumePointsByUser(req.method, keyForUser, customizedConfig);
+        await consumePointsByUser(req.method, endpoint, keyForUser, customizedConfig);
       }
       catch {
         logger.error(`${req.user._id}: too many request at ${endpoint}`);
@@ -90,7 +93,7 @@ export const middlewareFactory = (): Handler => {
 
     // check for ip
     try {
-      await consumePointsByIp(req.method, keyForIp, customizedConfig);
+      await consumePointsByIp(req.method, endpoint, keyForIp, customizedConfig);
     }
     catch {
       logger.error(`${req.ip}: too many request at ${endpoint}`);

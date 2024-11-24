@@ -1,9 +1,11 @@
-import { type RateLimiterMongo, type RateLimiterRes } from 'rate-limiter-flexible';
+import { type RateLimiterRes } from 'rate-limiter-flexible';
 
 import { DEFAULT_MAX_REQUESTS, type IApiRateLimitConfig } from '../config';
 
+import { rateLimiterFactory } from './rate-limiter-factory';
+
 export const consumePoints = async(
-    rateLimiter: RateLimiterMongo, method: string, key: string | null, customizedConfig?: IApiRateLimitConfig, maxRequestsMultiplier?: number,
+    method: string, endpoint: string, key: string | null, customizedConfig?: IApiRateLimitConfig, maxRequestsMultiplier?: number,
 ): Promise<RateLimiterRes | undefined> => {
   if (key == null) {
     return;
@@ -21,7 +23,9 @@ export const consumePoints = async(
     maxRequests *= maxRequestsMultiplier;
   }
 
-  rateLimiter.points = maxRequests;
-  const rateLimiterRes = await rateLimiter.consume(key, 1);
+  const rateLimiter = rateLimiterFactory.getOrCreateRateLimiter(endpoint, maxRequests);
+
+  const pointsToConsume = 1;
+  const rateLimiterRes = await rateLimiter.consume(key, pointsToConsume);
   return rateLimiterRes;
 };
