@@ -14,11 +14,9 @@ class RateLimiterFactory {
   getOrCreateRateLimiter(endpoint: string, maxRequests: number): RateLimiterMongo {
     const key = this.generateKey(endpoint);
 
-    if (this.rateLimiters.has(key)) {
-      const instance = this.rateLimiters.get(key);
-      if (instance != null) {
-        return instance;
-      }
+    const cachedRateLimiter = this.rateLimiters.get(key);
+    if (cachedRateLimiter != null) {
+      return cachedRateLimiter;
     }
 
     const opts: IRateLimiterMongoOptions = {
