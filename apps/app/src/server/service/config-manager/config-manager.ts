@@ -1,4 +1,6 @@
-import type { IConfigManager, ConfigSource, UpdateConfigOptions } from '@growi/core/dist/interfaces';
+import type {
+  IConfigManager, ConfigSource, UpdateConfigOptions, RawConfigData,
+} from '@growi/core/dist/interfaces';
 import { parseISO } from 'date-fns/parseISO';
 
 import loggerFactory from '~/utils/logger';
@@ -20,9 +22,9 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
 
   private s2sMessagingService?: S2sMessagingService;
 
-  private envConfig?: Record<ConfigKey, ConfigValues[ConfigKey]>;
+  private envConfig?: RawConfigData<ConfigKey, ConfigValues>;
 
-  private dbConfig?: Record<ConfigKey, ConfigValues[ConfigKey] | null>;
+  private dbConfig?: RawConfigData<ConfigKey, ConfigValues>;
 
   private lastLoadedAt?: Date;
 
@@ -71,10 +73,10 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
     }
 
     if (this.shouldUseEnvOnly(key)) {
-      return this.envConfig[key] as ConfigValues[K];
+      return this.envConfig[key].value as ConfigValues[K];
     }
 
-    return (this.dbConfig[key] ?? this.envConfig[key]) as ConfigValues[K];
+    return (this.dbConfig[key] ?? this.envConfig[key]).value as ConfigValues[K];
   }
 
   private shouldUseEnvOnly(key: ConfigKey): boolean {
@@ -87,7 +89,7 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
     if (!this.envConfig) {
       throw new Error('Config is not loaded');
     }
-    return this.envConfig[controlKey] === true;
+    return this.envConfig[controlKey].value === true;
   }
 
   async updateConfig<K extends ConfigKey>(key: K, value: ConfigValues[K], options?: UpdateConfigOptions): Promise<void> {
@@ -146,8 +148,8 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
   }
 
   getRawConfigData(): {
-    env: Record<ConfigKey, ConfigValues[ConfigKey]>;
-    db: Record<ConfigKey, ConfigValues[ConfigKey] | null>;
+    env: RawConfigData<ConfigKey, ConfigValues>;
+    db: RawConfigData<ConfigKey, ConfigValues>;
     } {
     if (!this.envConfig || !this.dbConfig) {
       throw new Error('Config is not loaded');

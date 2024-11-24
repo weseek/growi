@@ -1,5 +1,4 @@
-import type { IConfigLoader } from '@growi/core/dist/interfaces';
-import * as configUtils from '@growi/core/dist/utils/config-utils';
+import type { IConfigLoader, RawConfigData } from '@growi/core/dist/interfaces';
 import { toBoolean } from '@growi/core/dist/utils/env-utils';
 
 import loggerFactory from '~/utils/logger';
@@ -11,36 +10,32 @@ const logger = loggerFactory('growi:service:ConfigLoader');
 
 export class ConfigLoader implements IConfigLoader<ConfigKey, ConfigValues> {
 
-  async loadFromEnv(): Promise<Record<ConfigKey, ConfigValues[ConfigKey]>> {
-    const envConfig = {} as Record<ConfigKey, ConfigValues[ConfigKey]>;
+  async loadFromEnv(): Promise<RawConfigData<ConfigKey, ConfigValues>> {
+    const envConfig = {} as RawConfigData<ConfigKey, ConfigValues>;
 
     for (const [key, metadata] of Object.entries(CONFIG_DEFINITIONS)) {
-      const configKey = key as ConfigKey;
+      let configValue = metadata.defaultValue;
 
       if (metadata.envVarName != null) {
-        const envValue = process.env[metadata.envVarName];
-        if (envValue !== undefined) {
-          envConfig[configKey] = this.parseEnvValue(
-            envValue,
-            typeof metadata.defaultValue,
-          ) as ConfigValues[ConfigKey];
-          continue;
+        const envVarValue = process.env[metadata.envVarName];
+        if (envVarValue != null) {
+          configValue = this.parseEnvValue(envVarValue, typeof metadata.defaultValue) as ConfigValues[ConfigKey];
         }
       }
-      envConfig[configKey] = metadata.defaultValue;
+
+      envConfig[key as ConfigKey] = {
+        definition: metadata,
+        value: configValue,
+      };
     }
 
     logger.debug('loadFromEnv', envConfig);
+
     return envConfig;
   }
 
-  async loadFromDB(): Promise<Record<ConfigKey, ConfigValues[ConfigKey] | null>> {
-    const dbConfig = {} as Record<ConfigKey, ConfigValues[ConfigKey] | null>;
-
-    // Initialize with null values
-    for (const key of Object.keys(CONFIG_DEFINITIONS)) {
-      dbConfig[key as ConfigKey] = null;
-    }
+  async loadFromDB(): Promise<RawConfigData<ConfigKey, ConfigValues>> {
+    const dbConfig = {} as RawConfigData<ConfigKey, ConfigValues>;
 
     // Dynamic import to avoid loading database modules too early
     const { Config } = await import('../../models/config');
@@ -48,7 +43,10 @@ export class ConfigLoader implements IConfigLoader<ConfigKey, ConfigValues> {
 
     for (const doc of docs) {
       if (doc.key in CONFIG_DEFINITIONS) {
-        dbConfig[doc.key as ConfigKey] = doc.value ? JSON.parse(doc.value) : null;
+        dbConfig[doc.key as ConfigKey] = {
+          definition: CONFIG_DEFINITIONS[doc.key as ConfigKey],
+          value: doc.value ? JSON.parse(doc.value) : null,
+        };
       }
     }
 

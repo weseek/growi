@@ -26,13 +26,19 @@ export interface IConfigLoader<K extends string, V extends Record<K, any>> {
   /**
    * Load configurations from environment variables
    */
-  loadFromEnv(): Promise<Record<K, V[K]>>;
+  loadFromEnv(): Promise<RawConfigData<K, V>>;
 
   /**
    * Load configurations from database
    */
-  loadFromDB(): Promise<Record<K, V[K] | null>>;
+  loadFromDB(): Promise<RawConfigData<K, V>>;
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type RawConfigData<K extends string, V extends Record<K, any>> = Record<K, {
+  definition: ConfigDefinition<V[K]>;
+  value: V[K];
+}>;
 
 export type UpdateConfigOptions = { skipPubsub?: boolean };
 
@@ -71,8 +77,8 @@ export interface IConfigManager<K extends string, V extends Record<K, any>> {
    * Get raw configuration data for UI display
    */
   getRawConfigData(): {
-    env: Record<K, V[K]>;
-    db: Record<K, V[K] | null>;
+    env: RawConfigData<K, V[K]>;
+    db: RawConfigData<K, V[K]>;
   };
 
   /**
