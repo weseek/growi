@@ -159,6 +159,10 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
     };
   }
 
+  getManagedEnvVars(includeSecret = false): Record<string, string> {
+    return this.configLoader.getManagedEnvVars(includeSecret);
+  }
+
   /**
    * Set S2sMessagingServiceDelegator instance
    * @param s2sMessagingService

@@ -1,4 +1,6 @@
 import type { IConfigLoader } from '@growi/core/dist/interfaces';
+import * as configUtils from '@growi/core/dist/utils/config-utils';
+import { toBoolean } from '@growi/core/dist/utils/env-utils';
 
 import loggerFactory from '~/utils/logger';
 
@@ -52,6 +54,10 @@ export class ConfigLoader implements IConfigLoader<ConfigKey, ConfigValues> {
 
     logger.debug('loadFromDB', dbConfig);
     return dbConfig;
+  }
+
+  getManagedEnvVars(includeSecret: boolean): Record<string, string> {
+    return configUtils.getManagedEnvVars(Object.values(CONFIG_DEFINITIONS), includeSecret);
   }
 
   private parseEnvValue(value: string, type: string): unknown {

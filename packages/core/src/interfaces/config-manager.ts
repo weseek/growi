@@ -74,4 +74,10 @@ export interface IConfigManager<K extends string, V extends Record<K, any>> {
     env: Record<K, V[K]>;
     db: Record<K, V[K] | null>;
   };
+
+  /**
+   * Get environment variables managed with ConfigDefinitions
+   */
+  getManagedEnvVars(includeSecret: boolean): Record<string, string>;
+
 }

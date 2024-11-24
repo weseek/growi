@@ -1,4 +1,4 @@
-import ConfigLoader from '../../service/config-loader';
+import { configManager } from '~/server/service/config-manager';
 
 const express = require('express');
 
@@ -88,9 +88,9 @@ module.exports = (crowi) => {
       nodeVersion: crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : '-',
       npmVersion: crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-',
       pnpmVersion: crowi.runtimeVersions.versions.pnpm ? crowi.runtimeVersions.versions.pnpm.version.version : '-',
-      envVars: await ConfigLoader.getEnvVarsForDisplay(true),
-      isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
-      isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
+      envVars: configManager.getManagedEnvVars(),
+      isV5Compatible: configManager.getConfig('crowi', 'app:isV5Compatible'),
+      isMaintenanceMode: configManager.getConfig('crowi', 'app:isMaintenanceMode'),
     };
 
     return res.apiv3({ adminHomeParams });
