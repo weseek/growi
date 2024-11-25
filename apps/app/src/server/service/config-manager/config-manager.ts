@@ -60,7 +60,10 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
     this.lastLoadedAt = new Date();
   }
 
-  // for backward compatibility
+  /**
+   * @deprecated
+   * Use `getConfig(key)` instead
+   */
   getConfig<K extends ConfigKey>(ns: string, key: K): ConfigValues[K];
 
   getConfig<K extends ConfigKey>(key: K): ConfigValues[K];
