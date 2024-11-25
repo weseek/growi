@@ -184,8 +184,10 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     sanitizeType: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    customAttrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
     customTagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    customAttrWhitelist: configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes') != null
+      ? JSON.parse(configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'))
+      : undefined,
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
