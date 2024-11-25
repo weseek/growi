@@ -16,7 +16,9 @@ import { ConfigLoader } from './config-loader';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
-export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S2sMessageHandlable {
+export type IConfigManagerForApp = IConfigManager<ConfigKey, ConfigValues>
+
+export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable {
 
   private configLoader: ConfigLoader;
 

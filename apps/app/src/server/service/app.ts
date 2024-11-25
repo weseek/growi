@@ -4,8 +4,9 @@ import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
 
-import { S2sMessagingService } from './s2s-messaging/base';
-import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import { configManager } from './config-manager';
+import type { S2sMessagingService } from './s2s-messaging/base';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:AppService');
 /**
@@ -15,13 +16,10 @@ export default class AppService implements S2sMessageHandlable {
 
   crowi!: any;
 
-  configManager: any;
-
   s2sMessagingService: S2sMessagingService;
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
   }
 
@@ -34,7 +32,7 @@ export default class AppService implements S2sMessageHandlable {
       return false;
     }
 
-    const isInstalled = this.crowi.configManager.getConfig('crowi', 'app:installed');
+    const isInstalled = configManager.getConfig('crowi', 'app:installed');
 
     return !isInstalled;
   }
@@ -74,7 +72,7 @@ export default class AppService implements S2sMessageHandlable {
   }
 
   getAppTitle() {
-    return this.configManager.getConfig('crowi', 'app:title') || 'GROWI';
+    return configManager.getConfig('crowi', 'app:title') || 'GROWI';
   }
 
   /**
@@ -88,7 +86,7 @@ export default class AppService implements S2sMessageHandlable {
    */
   /* eslint-disable no-else-return */
   getSiteUrl() {
-    const siteUrl = this.configManager.getConfig('crowi', 'app:siteUrl');
+    const siteUrl = configManager.getConfig('crowi', 'app:siteUrl');
     if (siteUrl != null) {
       return pathUtils.removeTrailingSlash(siteUrl);
     }
@@ -99,19 +97,19 @@ export default class AppService implements S2sMessageHandlable {
   /* eslint-enable no-else-return */
 
   getTzoffset() {
-    return -(this.configManager.getConfig('crowi', 'app:timezone') || 9) * 60;
+    return -(configManager.getConfig('crowi', 'app:timezone') || 9) * 60;
   }
 
   getAppConfidential() {
-    return this.configManager.getConfig('crowi', 'app:confidential');
+    return configManager.getConfig('crowi', 'app:confidential');
   }
 
   async isDBInitialized(forceReload) {
     if (forceReload) {
       // load configs
-      await this.configManager.loadConfigs();
+      await configManager.loadConfigs();
     }
-    return this.configManager.getConfigFromDB('crowi', 'app:installed');
+    return configManager.getRawConfigData().db['app:installed'];
   }
 
   async setupAfterInstall(): Promise<void> {
@@ -120,15 +118,15 @@ export default class AppService implements S2sMessageHandlable {
   }
 
   isMaintenanceMode(): boolean {
-    return this.configManager.getConfig('crowi', 'app:isMaintenanceMode');
+    return configManager.getConfig('crowi', 'app:isMaintenanceMode');
   }
 
   async startMaintenanceMode(): Promise<void> {
-    await this.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isMaintenanceMode': true });
+    await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isMaintenanceMode': true });
   }
 
   async endMaintenanceMode(): Promise<void> {
-    await this.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isMaintenanceMode': false });
+    await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isMaintenanceMode': false });
   }
 
 }
