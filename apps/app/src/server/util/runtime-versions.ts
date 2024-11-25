@@ -1,9 +1,9 @@
 import checkNodeVersion from 'check-node-version';
 
 type RuntimeVersions = {
-  node: string;
-  npm: string;
-  pnpm: string;
+  node: string | undefined;
+  npm: string | undefined;
+  pnpm: string | undefined;
 };
 
 
@@ -30,16 +30,16 @@ function isSatisfiedVersionInfo(info: VersionInfo): info is SatisfiedVersionInfo
   return 'version' in info;
 }
 
-const getVersion = (versionInfo: VersionInfo): string => {
+const getVersion = (versionInfo: VersionInfo): string | undefined => {
   if (isNotfoundVersionInfo(versionInfo)) {
-    return '-';
+    return undefined;
   }
 
   if (isSatisfiedVersionInfo(versionInfo)) {
     return versionInfo.version.version;
   }
 
-  return '-';
+  return undefined;
 };
 
 
