@@ -173,16 +173,23 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
 
     const envVars = {} as Record<string, string>;
 
-    for (const { definition, value } of Object.values(this.envConfig)) {
+    for (const { definition } of Object.values(this.envConfig)) {
+      // continue when the envVarName is not defined
       if (definition?.envVarName == null) {
         continue;
       }
 
-      const shouldBeMasked = definition.isSecret && !showSecretValues;
+      const { envVarName, isSecret } = definition;
+      const value = process.env[envVarName];
 
-      envVars[definition.envVarName] = shouldBeMasked
-        ? '***'
-        : String(value);
+      // continue when the value is not defined
+      if (value === undefined) {
+        continue;
+      }
+
+      const shouldBeMasked = isSecret && !showSecretValues;
+
+      envVars[envVarName] = shouldBeMasked ? '***' : value;
     }
 
     return envVars;
