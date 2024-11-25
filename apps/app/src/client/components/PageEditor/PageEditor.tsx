@@ -164,14 +164,16 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(codeMirrorEditor?.getDoc() ?? '');
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
+  })), []);
 
-    if (!isYjsEnabled && currentPage != null && currentPage.revision?.body != null && value !== currentPage.revision.body) {
-      mutateUnsavedWarning(true);
-      return;
+  useEffect(() => {
+    if (isYjsEnabled) {
+      mutateUnsavedWarning(false);
     }
-
-    mutateUnsavedWarning(false);
-  })), [currentPage, isYjsEnabled, mutateUnsavedWarning]);
+    else if (isYjsEnabled === false) {
+      mutateUnsavedWarning(true);
+    }
+  }, [isYjsEnabled, mutateUnsavedWarning]);
 
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
