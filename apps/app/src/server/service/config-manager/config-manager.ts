@@ -79,7 +79,7 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
       return this.envConfig[key].value as ConfigValues[K];
     }
 
-    return (this.dbConfig[key] ?? this.envConfig[key]).value as ConfigValues[K];
+    return (this.dbConfig[key] ?? this.envConfig[key])?.value as ConfigValues[K];
   }
 
   private shouldUseEnvOnly(key: ConfigKey): boolean {
@@ -172,7 +172,7 @@ export class ConfigManager implements IConfigManager<ConfigKey, ConfigValues>, S
     const envVars = {} as Record<string, string>;
 
     for (const { definition, value } of Object.values(this.envConfig)) {
-      if (definition.envVarName == null) {
+      if (definition?.envVarName == null) {
         continue;
       }
 

@@ -42,12 +42,10 @@ export class ConfigLoader implements IConfigLoader<ConfigKey, ConfigValues> {
     const docs = await Config.find().exec();
 
     for (const doc of docs) {
-      if (doc.key in CONFIG_DEFINITIONS) {
-        dbConfig[doc.key as ConfigKey] = {
-          definition: CONFIG_DEFINITIONS[doc.key as ConfigKey],
-          value: doc.value ? JSON.parse(doc.value) : null,
-        };
-      }
+      dbConfig[doc.key as ConfigKey] = {
+        definition: (doc.key in CONFIG_DEFINITIONS) ? CONFIG_DEFINITIONS[doc.key as ConfigKey] : undefined,
+        value: doc.value ? JSON.parse(doc.value) : null,
+      };
     }
 
     logger.debug('loadFromDB', dbConfig);

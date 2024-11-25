@@ -36,8 +36,8 @@ export interface IConfigLoader<K extends string, V extends Record<K, any>> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type RawConfigData<K extends string, V extends Record<K, any>> = Record<K, {
-  definition: ConfigDefinition<V[K]>;
   value: V[K];
+  definition?: ConfigDefinition<V[K]>;
 }>;
 
 export type UpdateConfigOptions = { skipPubsub?: boolean };
