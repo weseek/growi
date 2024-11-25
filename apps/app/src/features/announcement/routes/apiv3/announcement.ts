@@ -70,9 +70,9 @@ module.exports = (crowi: Crowi): Router => {
     const page = await Page.findByIdAndViewer(pageId, req.user);
 
     if (page == null) {
-      const isAnnouncedPageExist = !!(await Page.findById(pageId));
+      const isAnnouncedPageExist = await Page.count({ _id: pageId }) > 0;
       if (isAnnouncedPageExist) {
-        return res.apiv3Err(new ErrorV3(`Page('${pageId}') is not forbidden`), 403);
+        return res.apiv3Err(new ErrorV3(`Page('${pageId}') is forbidden`), 403);
       }
       return res.apiv3Err(new ErrorV3(`Page('${pageId}') is not found`), 404);
     }
