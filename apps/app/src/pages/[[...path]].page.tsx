@@ -610,9 +610,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     sanitizeType: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    customAttrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    customTagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+    customAttrWhitelist: JSON.parse(configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    customTagWhitelist: configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
   props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
