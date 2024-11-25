@@ -34,9 +34,9 @@ const valuesWithRegExp = Object.values(configWithRegExp);
  * @returns
  */
 const consumePointsByUser = async(
-    method: string, endpoint: string, key: string | null, customizedConfig?: IApiRateLimitConfig,
+    method: string, key: string | null, customizedConfig?: IApiRateLimitConfig,
 ): Promise<RateLimiterRes | undefined> => {
-  return consumePoints(method, endpoint, key, customizedConfig);
+  return consumePoints(method, key, customizedConfig);
 };
 
 /**
@@ -47,10 +47,10 @@ const consumePointsByUser = async(
  * @returns
  */
 const consumePointsByIp = async(
-    method: string, endpoint: string, key: string | null, customizedConfig?: IApiRateLimitConfig,
+    method: string, key: string | null, customizedConfig?: IApiRateLimitConfig,
 ): Promise<RateLimiterRes | undefined> => {
   const maxRequestsMultiplier = customizedConfig?.usersPerIpProspection ?? DEFAULT_USERS_PER_IP_PROSPECTION;
-  return consumePoints(method, endpoint, key, customizedConfig, maxRequestsMultiplier);
+  return consumePoints(method, key, customizedConfig, maxRequestsMultiplier);
 };
 
 
@@ -83,7 +83,7 @@ export const middlewareFactory = (): Handler => {
     // check for the current user
     if (req.user != null) {
       try {
-        await consumePointsByUser(req.method, endpoint, keyForUser, customizedConfig);
+        await consumePointsByUser(req.method, keyForUser, customizedConfig);
       }
       catch {
         logger.error(`${req.user._id}: too many request at ${endpoint}`);
@@ -93,7 +93,7 @@ export const middlewareFactory = (): Handler => {
 
     // check for ip
     try {
-      await consumePointsByIp(req.method, endpoint, keyForIp, customizedConfig);
+      await consumePointsByIp(req.method, keyForIp, customizedConfig);
     }
     catch {
       logger.error(`${req.ip}: too many request at ${endpoint}`);

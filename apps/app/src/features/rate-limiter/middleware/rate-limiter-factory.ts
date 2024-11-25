@@ -7,13 +7,7 @@ class RateLimiterFactory {
 
   private rateLimiters: Map<string, RateLimiterMongo> = new Map();
 
-  private generateKey(endpoint: string): string {
-    return `rate_limiter_${endpoint}`;
-  }
-
-  getOrCreateRateLimiter(endpoint: string, maxRequests: number): RateLimiterMongo {
-    const key = this.generateKey(endpoint);
-
+  getOrCreateRateLimiter(key: string, maxRequests: number): RateLimiterMongo {
     const cachedRateLimiter = this.rateLimiters.get(key);
     if (cachedRateLimiter != null) {
       return cachedRateLimiter;

@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
 
-const testRateLimitErrorWhenExceedingMaxRequests = async(method: string, endpoint: string, key: string, maxRequests: number): Promise<void> => {
+const testRateLimitErrorWhenExceedingMaxRequests = async(method: string, key: string, maxRequests: number): Promise<void> => {
   // dynamic import is used because rateLimiterMongo needs to be initialized after connecting to DB
   // Issue: https://github.com/animir/node-rate-limiter-flexible/issues/216
   const { consumePoints } = await import('./consume-points');
@@ -9,7 +9,7 @@ const testRateLimitErrorWhenExceedingMaxRequests = async(method: string, endpoin
     for (let i = 1; i <= maxRequests + 1; i++) {
       count += 1;
       // eslint-disable-next-line no-await-in-loop
-      const res = await consumePoints(method, endpoint, key, { method, maxRequests });
+      const res = await consumePoints(method, key, { method, maxRequests });
       if (count === maxRequests) {
         // Expect consumedPoints to be equal to maxRequest when maxRequest is reached
         expect(res?.consumedPoints).toBe(maxRequests);
@@ -34,30 +34,27 @@ describe('consume-points.ts', async() => {
   it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: 1)', async() => {
     // setup
     const method = 'GET';
-    const endpoint = '/_api/v3/test-1';
     const key = 'test-key-1';
     const maxRequests = 1;
 
-    await testRateLimitErrorWhenExceedingMaxRequests(method, endpoint, key, maxRequests);
+    await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
   });
 
   it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: 500)', async() => {
     // setup
     const method = 'GET';
-    const endpoint = '/_api/v3/test-2';
     const key = 'test-key-2';
     const maxRequests = 500;
 
-    await testRateLimitErrorWhenExceedingMaxRequests(method, endpoint, key, maxRequests);
+    await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
   });
 
   it('Should trigger a rate limit error when maxRequest is exceeded (maxRequest: {random integer between 1 and 1000})', async() => {
     // setup
     const method = 'GET';
-    const endpoint = '/_api/v3/test-3';
     const key = 'test-key-3';
     const maxRequests = faker.number.int({ min: 1, max: 1000 });
 
-    await testRateLimitErrorWhenExceedingMaxRequests(method, endpoint, key, maxRequests);
+    await testRateLimitErrorWhenExceedingMaxRequests(method, key, maxRequests);
   });
 });
