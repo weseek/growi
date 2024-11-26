@@ -120,6 +120,16 @@ export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
   return useSWRStatic<boolean, Error>('isEnabledUnsavedWarning');
 };
 
+export const useIsEnabledUnsavedWarningForced = (): SWRResponse<boolean, Error> => {
+  return useSWRStatic<boolean, Error>('isEnabledUnsavedWarningForced');
+};
+
+type UnsavedWarningUtils = {
+  shouldWarnBeforeUnloadOrRouteChaange: () => boolean
+}
+export const useUnsavedWarningUtils = (status?: UnsavedWarningUtils): SWRResponse<UnsavedWarningUtils, Error> => {
+  return useSWRStatic<UnsavedWarningUtils, Error>('unsavedWarningUtils', status);
+};
 
 export const useReservedNextCaretLine = (initialData?: number): SWRResponse<number> => {
 

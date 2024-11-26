@@ -3,15 +3,17 @@ import React, { useCallback, useEffect, memo } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
-import { useIsEnabledUnsavedWarning } from '~/stores/editor';
+import { useIsEnabledUnsavedWarning, useUnsavedWarningUtils } from '~/stores/editor';
 
 const UnsavedAlertDialog = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
+  const { data: unsavedWarningUtils } = useUnsavedWarningUtils();
   const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   const alertUnsavedWarningByBrowser = useCallback((e) => {
-    if (isEnabledUnsavedWarning) {
+    const shouldWarnBeforeUnloadOrRouteChaange = unsavedWarningUtils?.shouldWarnBeforeUnloadOrRouteChaange();
+    if (shouldWarnBeforeUnloadOrRouteChaange ?? isEnabledUnsavedWarning) {
       e.preventDefault();
       // returnValue should be set to show alert dialog
       // default alert message cannot be changed.
@@ -19,10 +21,11 @@ const UnsavedAlertDialog = (): JSX.Element => {
       e.returnValue = '';
       return;
     }
-  }, [isEnabledUnsavedWarning]);
+  }, [isEnabledUnsavedWarning, unsavedWarningUtils]);
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
-    if (isEnabledUnsavedWarning) {
+    const shouldWarnBeforeUnloadOrRouteChaange = unsavedWarningUtils?.shouldWarnBeforeUnloadOrRouteChaange();
+    if (shouldWarnBeforeUnloadOrRouteChaange ?? isEnabledUnsavedWarning) {
       // see: https://zenn.dev/qaynam/articles/c4794537a163d2
       // eslint-disable-next-line no-alert
       const answer = window.confirm(t('page_edit.changes_not_saved'));
@@ -31,7 +34,7 @@ const UnsavedAlertDialog = (): JSX.Element => {
         throw 'Abort route';
       }
     }
-  }, [isEnabledUnsavedWarning, t]);
+  }, [isEnabledUnsavedWarning, t, unsavedWarningUtils]);
 
   const onRouterChangeComplete = useCallback(() => {
     mutateIsEnabledUnsavedWarning(false);
