@@ -1,5 +1,6 @@
 import path from 'path';
-import { pipeline, type Readable } from 'stream';
+import { type Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import type { IPage } from '@growi/core';
 import {
@@ -761,7 +762,7 @@ module.exports = (crowi) => {
     };
     await crowi.activityService.createActivity(parameters);
 
-    return pipeline(stream, res);
+    await pipeline(stream, res);
   });
 
   /**
