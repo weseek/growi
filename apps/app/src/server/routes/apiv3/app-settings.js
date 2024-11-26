@@ -473,11 +473,11 @@ module.exports = (crowi) => {
       envGcsUploadNamespace: configManager.getConfig('gcs:uploadNamespace', ConfigSource.env),
 
       azureUseOnlyEnvVars: configManager.getConfig('crowi', 'azure:useOnlyEnvVarsForSomeOptions'),
-      azureTenantId: configManager.getConfigFromDB('crowi', 'azure:tenantId'),
-      azureClientId: configManager.getConfigFromDB('crowi', 'azure:clientId'),
-      azureClientSecret: configManager.getConfigFromDB('crowi', 'azure:clientSecret'),
-      azureStorageAccountName: configManager.getConfigFromDB('crowi', 'azure:storageAccountName'),
-      azureStorageContainerName: configManager.getConfigFromDB('crowi', 'azure:storageContainerName'),
+      azureTenantId: configManager.getConfig('azure:tenantId', ConfigSource.db),
+      azureClientId: configManager.getConfig('azure:clientId', ConfigSource.db),
+      azureClientSecret: configManager.getConfig('azure:clientSecret', ConfigSource.db),
+      azureStorageAccountName: configManager.getConfig('azure:storageAccountName', ConfigSource.db),
+      azureStorageContainerName: configManager.getConfig('azure:storageContainerName', ConfigSource.db),
       azureReferenceFileWithRelayMode: configManager.getConfig('crowi', 'azure:referenceFileWithRelayMode'),
 
       envAzureTenantId: configManager.getConfig('azure:tenantId', ConfigSource.env),
