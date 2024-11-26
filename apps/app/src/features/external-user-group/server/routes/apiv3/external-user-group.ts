@@ -269,7 +269,7 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+      await configManager.updateConfigs(params, { skipPubsub: true });
       return res.apiv3({}, 204);
     }
     catch (err) {
@@ -301,7 +301,7 @@ module.exports = (crowi: Crowi): Router => {
       };
 
       try {
-        await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+        await configManager.updateConfigs(params, { skipPubsub: true });
         return res.apiv3({}, 204);
       }
       catch (err) {

@@ -39,7 +39,7 @@ describe('delete-completely-user-home-by-system test', () => {
 
     // setup config
     await configManager.loadConfigs();
-    await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
+    await configManager.updateConfig('app:isV5Compatible', true);
     const isV5Compatible = configManager.getConfig('crowi', 'app:isV5Compatible');
     expect(isV5Compatible).toBeTruthy();
 

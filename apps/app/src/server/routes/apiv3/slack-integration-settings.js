@@ -100,7 +100,7 @@ module.exports = (crowi) => {
   async function updateSlackBotSettings(params) {
     const { configManager } = crowi;
     // update config without publishing S2sMessage
-    return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+    return configManager.updateConfigs(params, { skipPubsub: true });
   }
 
   async function resetAllBotSettings(initializedType) {

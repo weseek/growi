@@ -15,7 +15,7 @@ describe('QuestionnaireService', () => {
     process.env.SAML_ENABLED = 'true';
     crowi = await getInstance();
 
-    crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+    crowi.configManager.updateConfigs({
       'security:passport-saml:isEnabled': true,
       'security:passport-github:isEnabled': true,
     });

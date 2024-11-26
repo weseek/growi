@@ -655,14 +655,14 @@ export class G2GTransferReceiverService implements Receiver {
 
       // restore file upload config from cache
       await configManager.removeConfigsInTheSameNamespace('crowi', UPLOAD_CONFIG_KEYS);
-      await configManager.updateConfigsInTheSameNamespace('crowi', fileUploadConfigs);
+      await configManager.updateConfigs(fileUploadConfigs);
     }
     else {
       // import mongo collections(overwrites file uplaod configs)
       await importService.import(collections, importSettingsMap);
 
       // update file upload config
-      await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);
+      await configManager.updateConfigs(sourceGROWIUploadConfigs);
     }
 
     await this.crowi.setUpFileUpload(true);
@@ -681,7 +681,7 @@ export class G2GTransferReceiverService implements Receiver {
     const { appService } = this.crowi;
 
     await configManager.removeConfigsInTheSameNamespace('crowi', Object.keys(fileUploadConfigs));
-    await configManager.updateConfigsInTheSameNamespace('crowi', fileUploadConfigs);
+    await configManager.updateConfigs(fileUploadConfigs);
     await this.crowi.setUpFileUpload(true);
     await appService.setupAfterInstall();
   }

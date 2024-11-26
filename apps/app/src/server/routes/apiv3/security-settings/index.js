@@ -320,7 +320,7 @@ module.exports = (crowi) => {
     const { passportService } = crowi;
 
     // update config without publishing S2sMessage
-    await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+    await configManager.updateConfigs(params, { skipPubsub: true });
 
     await passportService.setupStrategyById(authId);
     passportService.publishUpdatedMessage(authId);
@@ -653,7 +653,7 @@ module.exports = (crowi) => {
       delete updateData['security:restrictGuestMode'];
     }
     try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', updateData);
+      await configManager.updateConfigs(updateData);
       const securitySettingParams = {
         sessionMaxAge: await configManager.getConfig('crowi', 'security:sessionMaxAge'),
         restrictGuestMode: await configManager.getConfig('crowi', 'security:restrictGuestMode'),
@@ -709,7 +709,7 @@ module.exports = (crowi) => {
       'security:disableLinkSharing': req.body.disableLinkSharing,
     };
     try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', updateData);
+      await configManager.updateConfigs(updateData);
       const securitySettingParams = {
         disableLinkSharing: configManager.getConfig('crowi', 'security:disableLinkSharing'),
       };

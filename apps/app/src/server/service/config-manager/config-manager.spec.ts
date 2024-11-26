@@ -58,7 +58,7 @@ describe('ConfigManager test', () => {
       configManager.publishUpdateMessage = vi.fn();
 
       // act
-      await configManager.updateConfigs({ 'app:siteUrl': '' });
+      await configManager.updateConfig('app:siteUrl', '');
 
       // assert
       expect(Config.bulkWrite).toHaveBeenCalledTimes(1);

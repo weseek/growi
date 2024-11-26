@@ -3,6 +3,7 @@ import express from 'express';
 import { body } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -106,7 +107,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('notification', requestParams);
+      await configManager.updateConfigs(requestParams);
       const responseParams = {
         webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
         isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
