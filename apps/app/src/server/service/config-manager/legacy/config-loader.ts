@@ -958,30 +958,4 @@ export default class ConfigLoader {
     return config;
   }
 
-  /**
-   * get config from the environment variables for display admin page
-   *
-   * **use this only admin homepage.**
-   */
-  static getEnvVarsForDisplay(avoidSecurity = false): any {
-    const config = {};
-    for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_INFO)) {
-      const configInfo = ENV_VAR_NAME_TO_CONFIG_INFO[ENV_VAR_NAME];
-      if (process.env[ENV_VAR_NAME] === undefined) {
-        continue;
-      }
-
-      // skip to show secret values
-      if (avoidSecurity && configInfo.isSecret) {
-        continue;
-      }
-
-      const parser = parserDictionary[configInfo.type];
-      config[ENV_VAR_NAME] = parser.parse(process.env[ENV_VAR_NAME] as string);
-    }
-
-    logger.debug('ConfigLoader#getEnvVarsForDisplay', config);
-    return config;
-  }
-
 }
