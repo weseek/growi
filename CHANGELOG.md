@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.4](https://github.com/weseek/growi/compare/v7.1.3...v7.1.4) - 2024-11-26
+
+### 🐛 Bug Fixes
+
+* fix: Failed to export the page markdown (#9444) @miya
 
 ## [v7.1.3](https://github.com/weseek/growi/compare/v7.1.2...v7.1.3) - 2024-11-26
 
