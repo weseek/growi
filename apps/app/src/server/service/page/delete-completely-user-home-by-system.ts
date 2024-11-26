@@ -1,11 +1,11 @@
 import { Writable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import { getIdForRef } from '@growi/core';
 import type { IPage, Ref } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
@@ -87,8 +87,9 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
       .lean()
       .cursor({ batchSize: BULK_REINDEX_SIZE });
 
-    let count = 0;
+    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
+    let count = 0;
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
@@ -109,11 +110,7 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
       },
     });
 
-    readStream
-      .pipe(createBatchStream(BULK_REINDEX_SIZE))
-      .pipe(writeStream);
-
-    await streamToPromise(writeStream);
+    await pipeline(readStream, batchStream, writeStream);
     // ────────┤ end │─────────
   }
   catch (err) {
