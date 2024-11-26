@@ -761,7 +761,14 @@ module.exports = (crowi) => {
     };
     await crowi.activityService.createActivity(parameters);
 
-    return pipeline(stream, res);
+    // The last stream in the pipeline must be a function
+    // https://stackoverflow.com/questions/75118262/gulp-generates-typeerror-the-streams-property-must-be-of-type-function
+    return pipeline(stream, res, (err) => {
+      if (err) {
+        logger.error('Failed to export page', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
   });
 
   /**
