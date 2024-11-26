@@ -75,7 +75,6 @@ class Crowi {
 
   constructor() {
     this.version = pkg.version;
-    this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
     this.publicDir = path.join(projectRoot, 'public') + sep;
     this.resourceDir = path.join(projectRoot, 'resource') + sep;
@@ -157,7 +156,6 @@ Crowi.prototype.init = async function() {
   ]);
 
   await Promise.all([
-    this.scanRuntimeVersions(),
     this.setupPassport(),
     this.setupSearcher(),
     this.setupMailer(),
@@ -330,21 +328,6 @@ Crowi.prototype.setupCron = function() {
 
 Crowi.prototype.setupQuestionnaireService = function() {
   this.questionnaireService = new QuestionnaireService(this);
-};
-
-Crowi.prototype.scanRuntimeVersions = async function() {
-  const self = this;
-
-  const check = require('check-node-version');
-  return new Promise((resolve, reject) => {
-    check((err, result) => {
-      if (err) {
-        reject(err);
-      }
-      self.runtimeVersions = result;
-      resolve();
-    });
-  });
 };
 
 Crowi.prototype.getSlack = function() {
