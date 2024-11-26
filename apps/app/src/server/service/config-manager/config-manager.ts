@@ -75,8 +75,8 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
 
   getConfig<K extends ConfigKey>(...args: [key: K, source: ConfigSource | undefined] | [ns: string, key: K]): ConfigValues[K] {
     const source = (args[1] === undefined || args[1] === ConfigSource.env || args[1] === ConfigSource.db) ? args[1] : undefined;
-    const key = (args[0] in CONFIG_KEYS ? args[0] : args[1]) as K;
-    const ns = ((args[1] === undefined || args[1] === ConfigSource.env || args[1] === ConfigSource.db) ? undefined : args[0]);
+    const key = (args[0].match(/crowi|markdown|notification/) ? args[1] : args[0]) as K;
+    const ns = args[0].match(/crowi|markdown|notification/) ? args[0] : undefined;
 
     if (!this.envConfig || !this.dbConfig) {
       throw new Error('Config is not loaded');
