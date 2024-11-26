@@ -1,3 +1,4 @@
+import { ConfigSource } from '@growi/core/dist/interfaces';
 import { pathUtils } from '@growi/core/dist/utils';
 
 import loggerFactory from '~/utils/logger';
@@ -109,7 +110,7 @@ export default class AppService implements S2sMessageHandlable {
       // load configs
       await configManager.loadConfigs();
     }
-    return configManager.getRawConfigData().db['app:installed'];
+    return configManager.getConfig('app:installed', ConfigSource.db);
   }
 
   async setupAfterInstall(): Promise<void> {
