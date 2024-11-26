@@ -120,10 +120,6 @@ export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
   return useSWRStatic<boolean, Error>('isEnabledUnsavedWarning');
 };
 
-export const useIsEnabledUnsavedWarningForced = (): SWRResponse<boolean, Error> => {
-  return useSWRStatic<boolean, Error>('isEnabledUnsavedWarningForced');
-};
-
 type UnsavedWarningUtils = {
   shouldWarnBeforeUnloadOrRouteChaange: () => boolean
 }
