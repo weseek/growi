@@ -1,12 +1,9 @@
-import {
-  Types, Document, Schema, Model,
-} from 'mongoose';
+import type { Types, Document, Model } from 'mongoose';
+import { Schema } from 'mongoose';
 
-import { IAnnouncement } from '../../../../interfaces/announcement';
 import { getOrCreateModel } from '../../../../server/util/mongoose-utils';
+import type { IAnnouncement } from '../../interfaces/announcement';
 import { AnnouncementStatuses } from '../events/announcement-utils';
-
-type AnnouncementStatuses = typeof AnnouncementStatuses;
 
 export interface AnnouncementDocument extends IAnnouncement, Document {
   _id: Types.ObjectId

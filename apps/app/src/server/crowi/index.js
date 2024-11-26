@@ -18,13 +18,14 @@ import QuestionnaireCronService from '~/features/questionnaire/server/service/qu
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
+import { instanciate as instanciateAnnouncementService } from '../../features/announcement/server/service/announcement';
 import UserEvent from '../events/user';
 import { accessTokenParser } from '../middlewares/access-token-parser';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
-import { instanciate as instanciateExternalAccountService } from '../service/external-account';
+import { instanciate, instanciate as instanciateExternalAccountService } from '../service/external-account';
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { initializeImportService } from '../service/import';
@@ -112,6 +113,7 @@ class Crowi {
     this.commentService = null;
     this.questionnaireService = null;
     this.questionnaireCronService = null;
+    this.announcementService = null;
     this.openaiThreadDeletionCronService = null;
     this.openaiVectorStoreFileDeletionCronService = null;
 
@@ -179,6 +181,7 @@ Crowi.prototype.init = async function() {
     this.setupSyncPageStatusService(),
     this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
+    this.setupAnnouncementService(),
   ]);
 
   await Promise.all([
@@ -774,6 +777,10 @@ Crowi.prototype.setupG2GTransferService = async function() {
   if (this.g2gTransferReceiverService == null) {
     this.g2gTransferReceiverService = new G2GTransferReceiverService(this);
   }
+};
+
+Crowi.prototype.setupAnnouncementService = async function() {
+  instanciateAnnouncementService(this);
 };
 
 // execute after setupPassport
