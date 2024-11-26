@@ -1,8 +1,11 @@
 /**
  * Available configuration sources
  */
-export const CONFIG_SOURCES = ['env', 'db'] as const;
-export type ConfigSource = typeof CONFIG_SOURCES[number];
+export const ConfigSource = {
+  env: 'env',
+  db: 'db',
+} as const;
+export type ConfigSource = typeof ConfigSource[keyof typeof ConfigSource];
 
 /**
  * Metadata for a configuration value
@@ -56,7 +59,13 @@ export interface IConfigManager<K extends string, V extends Record<K, any>> {
   /**
    * Get a configuration value
    */
-  getConfig<T extends K>(key: T): V[T];
+  getConfig<T extends K>(key: T, source?: ConfigSource): V[T];
+
+  /**
+   * @deprecated
+   * Get a configuration value
+   */
+  getConfig<T extends K>(ns: string, key: T): V[T];
 
   /**
    * Update a configuration value
@@ -72,14 +81,6 @@ export interface IConfigManager<K extends string, V extends Record<K, any>> {
    * Remove multiple configuration values
    */
   removeConfigs(keys: K[], options?: UpdateConfigOptions): Promise<void>;
-
-  /**
-   * Get raw configuration data for UI display
-   */
-  getRawConfigData(): {
-    env: RawConfigData<K, V[K]>;
-    db: RawConfigData<K, V[K]>;
-  };
 
   /**
    * Get environment variables managed with ConfigDefinitions

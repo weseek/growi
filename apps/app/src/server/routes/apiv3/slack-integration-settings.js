@@ -1,3 +1,4 @@
+import { ConfigSource } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import {
   SlackbotType, REQUEST_TIMEOUT_FOR_GTOP,
@@ -176,8 +177,8 @@ module.exports = (crowi) => {
     // retrieve settings
     const settings = {};
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
-      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:signingSecret');
-      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:botToken');
+      settings.slackSigningSecretEnvVars = configManager.getConfig('slackbot:withoutProxy:signingSecret', ConfigSource.env);
+      settings.slackBotTokenEnvVars = configManager.getConfig('slackbot:withoutProxy:botToken', ConfigSource.env);
       settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
       settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
       settings.commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');

@@ -9,6 +9,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 
 export interface IConfig {
   _id: Types.ObjectId;
+  ns: string;
   key: string;
   value: string;
   createdAt: Date;
@@ -21,6 +22,7 @@ interface ModelMethods { any }
 
 
 const schema = new Schema<IConfig>({
+  ns: { type: String },
   key: { type: String, required: true, unique: true },
   value: { type: String, required: true },
 }, {

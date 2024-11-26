@@ -1,6 +1,5 @@
-import type {
-  IConfigManager, ConfigSource, UpdateConfigOptions, RawConfigData,
-} from '@growi/core/dist/interfaces';
+import type { IConfigManager, UpdateConfigOptions, RawConfigData } from '@growi/core/dist/interfaces';
+import { ConfigSource } from '@growi/core/dist/interfaces';
 import { parseISO } from 'date-fns/parseISO';
 
 import loggerFactory from '~/utils/logger';
@@ -10,8 +9,9 @@ import type { S2sMessagingService } from '../s2s-messaging/base';
 import type { S2sMessageHandlable } from '../s2s-messaging/handlable';
 
 import type { ConfigKey, ConfigValues } from './config-definition';
-import { ENV_ONLY_GROUPS } from './config-definition';
+import { CONFIG_KEYS, ENV_ONLY_GROUPS } from './config-definition';
 import { ConfigLoader } from './config-loader';
+import { configManager as configManagerLegacy } from './legacy/config-manager';
 
 
 const logger = loggerFactory('growi:service:ConfigManager');
@@ -57,6 +57,9 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     else {
       this.envConfig = await this.configLoader.loadFromEnv();
       this.dbConfig = await this.configLoader.loadFromDB();
+
+      // Load legacy configs
+      await configManagerLegacy.loadConfigs();
     }
 
     this.lastLoadedAt = new Date();
@@ -68,20 +71,35 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
    */
   getConfig<K extends ConfigKey>(ns: string, key: K): ConfigValues[K];
 
-  getConfig<K extends ConfigKey>(key: K): ConfigValues[K];
+  getConfig<K extends ConfigKey>(key: K, source?: ConfigSource): ConfigValues[K];
 
-  getConfig<K extends ConfigKey>(...args: [key: K] | [ns: string, key: K]): ConfigValues[K] {
-    const key = (args.length === 2) ? args[1] : args[0];
+  getConfig<K extends ConfigKey>(...args: [key: K, source: ConfigSource | undefined] | [ns: string, key: K]): ConfigValues[K] {
+    const source = (args[1] === undefined || args[1] === ConfigSource.env || args[1] === ConfigSource.db) ? args[1] : undefined;
+    const key = (args[0] in CONFIG_KEYS ? args[0] : args[1]) as K;
+    const ns = ((args[1] === undefined || args[1] === ConfigSource.env || args[1] === ConfigSource.db) ? undefined : args[0]);
 
     if (!this.envConfig || !this.dbConfig) {
       throw new Error('Config is not loaded');
     }
 
-    if (this.shouldUseEnvOnly(key)) {
-      return this.envConfig[key].value as ConfigValues[K];
+    const value = (() => {
+      if (source === ConfigSource.env) {
+        return this.envConfig[key]?.value;
+      }
+      if (source === ConfigSource.db) {
+        return this.dbConfig[key]?.value;
+      }
+      return this.shouldUseEnvOnly(key)
+        ? this.envConfig[key]?.value
+        : (this.dbConfig[key] ?? this.envConfig[key])?.value;
+    })() as ConfigValues[K];
+
+    const valueByLegacy = configManagerLegacy.getConfig(ns, key);
+    if (value !== valueByLegacy) {
+      logger.warn(`The value of the config key '${key}' is different between the new and legacy config managers: `, { value, valueByLegacy });
     }
 
-    return (this.dbConfig[key] ?? this.envConfig[key])?.value as ConfigValues[K];
+    return value;
   }
 
   private shouldUseEnvOnly(key: ConfigKey): boolean {
@@ -150,20 +168,6 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     if (!options?.skipPubsub) {
       await this.publishUpdateMessage();
     }
-  }
-
-  getRawConfigData(): {
-    env: RawConfigData<ConfigKey, ConfigValues>;
-    db: RawConfigData<ConfigKey, ConfigValues>;
-    } {
-    if (!this.envConfig || !this.dbConfig) {
-      throw new Error('Config is not loaded');
-    }
-
-    return {
-      env: this.envConfig,
-      db: this.dbConfig,
-    };
   }
 
   getManagedEnvVars(showSecretValues = false): Record<string, string> {
