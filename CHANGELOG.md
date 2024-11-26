@@ -1,8 +1,25 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.3](https://github.com/weseek/growi/compare/v7.1.2...v7.1.3) - 2024-11-26
+
+### 💎 Features
+
+* feat(ai): Set a rate limit for vector store rebuild (#9404) @miya
+
+### 🚀 Improvement
+
+* imprv: Fonts preload settings (#9432) @yuki-takei
+* imprv: Use stream.pipeline (#9361) @reiji-h
+
+### 🐛 Bug Fixes
+
+* fix: Retrieving runtime versions (#9438) @yuki-takei
+* fix: Notification for new user creation (#9434) @yuki-takei
+* fix:  Deleted pages appear in the page tree (#9337) @reiji-h
 
 ## [v7.1.2](https://github.com/weseek/growi/compare/v7.1.1...v7.1.2) - 2024-11-18
 
