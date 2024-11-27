@@ -178,7 +178,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, currentPage?.revision?.body, isYjsEnabled]);
 
-  useUnsavedWarningUtils({ shouldWarnBeforeUnloadOrRouteChaange: unloadOrRouteChaangeHandler });
+  useUnsavedWarningUtils({ shouldWarnBeforeUnloadOrRouteChange: unloadOrRouteChaangeHandler });
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 

@@ -12,8 +12,8 @@ const UnsavedAlertDialog = (): JSX.Element => {
   const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   const alertUnsavedWarningByBrowser = useCallback((e) => {
-    const shouldWarnBeforeUnloadOrRouteChaange = unsavedWarningUtils?.shouldWarnBeforeUnloadOrRouteChaange();
-    if (shouldWarnBeforeUnloadOrRouteChaange ?? isEnabledUnsavedWarning) {
+    const shouldWarnBeforeUnloadOrRouteChange = unsavedWarningUtils?.shouldWarnBeforeUnloadOrRouteChange();
+    if (shouldWarnBeforeUnloadOrRouteChange ?? isEnabledUnsavedWarning) {
       e.preventDefault();
       // returnValue should be set to show alert dialog
       // default alert message cannot be changed.
@@ -24,8 +24,8 @@ const UnsavedAlertDialog = (): JSX.Element => {
   }, [isEnabledUnsavedWarning, unsavedWarningUtils]);
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
-    const shouldWarnBeforeUnloadOrRouteChaange = unsavedWarningUtils?.shouldWarnBeforeUnloadOrRouteChaange();
-    if (shouldWarnBeforeUnloadOrRouteChaange ?? isEnabledUnsavedWarning) {
+    const shouldWarnBeforeUnloadOrRouteChange = unsavedWarningUtils?.shouldWarnBeforeUnloadOrRouteChange();
+    if (shouldWarnBeforeUnloadOrRouteChange ?? isEnabledUnsavedWarning) {
       // see: https://zenn.dev/qaynam/articles/c4794537a163d2
       // eslint-disable-next-line no-alert
       const answer = window.confirm(t('page_edit.changes_not_saved'));
