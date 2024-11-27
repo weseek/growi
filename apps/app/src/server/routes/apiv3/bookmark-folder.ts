@@ -16,6 +16,85 @@ const express = require('express');
 
 const router = express.Router();
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      BookmarkFolder:
+ *        description: Bookmark Folder
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: Bookmark Folder ID
+ *          __v:
+ *            type: number
+ *            description: Version of the bookmark folder
+ *          name:
+ *            type: string
+ *            description: Name of the bookmark folder
+ *          owner:
+ *            type: string
+ *            description: Owner user ID of the bookmark folder
+ *          bookmarks:
+ *            type: array
+ *            items:
+ *              type: object
+ *              properties:
+ *                _id:
+ *                  type: string
+ *                  description: Bookmark ID
+ *                user:
+ *                  type: string
+ *                  description: User ID of the bookmarker
+ *                createdAt:
+ *                  type: string
+ *                  description: Date and time when the bookmark was created
+ *                __v:
+ *                  type: number
+ *                  description: Version of the bookmark
+ *                page:
+ *                  description: Pages that are bookmarked in the folder
+ *                  allOf:
+ *                    - $ref: '#/components/schemas/Page'
+ *                    - type: object
+ *                      properties:
+ *                        id:
+ *                          type: string
+ *                          description: Page ID
+ *                          example: "671b5cd38d45e62b52217ff8"
+ *                        parent:
+ *                          type: string
+ *                          description: Parent page ID
+ *                          example: 669a5aa48d45e62b521d00da
+ *                        descendantCount:
+ *                          type: number
+ *                          description: Number of descendants
+ *                          example: 0
+ *                        isEmpty:
+ *                          type: boolean
+ *                          description: Whether the page is empty
+ *                          example: false
+ *                        grantedGroups:
+ *                          type: array
+ *                          description: List of granted groups
+ *                          items:
+ *                            type: string
+ *                        creator:
+ *                          type: string
+ *                          description: Creator user ID
+ *                          example: "669a5aa48d45e62b521d00e4"
+ *                        latestRevisionBodyLength:
+ *                          type: number
+ *                          description: Length of the latest revision body
+ *                          example: 241
+ *          childFolder:
+ *            type: array
+ *            items:
+ *              type: object
+ *              $ref: '#/components/schemas/BookmarkFolder'
+ */
 const validator = {
   bookmarkFolder: [
     body('name').isString().withMessage('name must be a string'),
@@ -42,7 +121,40 @@ const validator = {
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
 
-  // Create new bookmark folder
+  /**
+   * @swagger
+   *
+   *    /bookmark-folder:
+   *      post:
+   *        tags: [BookmarkFolders]
+   *        operationId: createBookmarkFolder
+   *        security:
+   *          - api_key: []
+   *        summary: Create bookmark folder
+   *        description: Create a new bookmark folder
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  name:
+   *                    type: string
+   *                    description: Name of the bookmark folder
+   *                    nullable: false
+   *                  parent:
+   *                    type: string
+   *                    description: Parent folder ID
+   *        responses:
+   *          200:
+   *            description: Resources are available
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    bookmarkFolder:
+   *                      type: object
+   *                      $ref: '#/components/schemas/BookmarkFolder'
+   */
   router.post('/', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, apiV3FormValidator, async(req, res) => {
     const owner = req.user?._id;
     const { name, parent } = req.body;
@@ -64,7 +176,37 @@ module.exports = (crowi) => {
     }
   });
 
-  // List bookmark folders and child
+  /**
+   * @swagger
+   *
+   *    /bookmark-folder/list/{userId}:
+   *      get:
+   *        tags: [BookmarkFolders]
+   *        operationId: listBookmarkFolders
+   *        security:
+   *          - api_key: []
+   *        summary: List bookmark folders of a user
+   *        description: List bookmark folders of a user
+   *        parameters:
+   *         - name: userId
+   *           in: path
+   *           required: true
+   *           description: User ID
+   *           schema:
+   *             type: string
+   *        responses:
+   *          200:
+   *            description: Resources are available
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    bookmarkFolderItems:
+   *                      type: array
+   *                      items:
+   *                        type: object
+   *                        $ref: '#/components/schemas/BookmarkFolder'
+   */
   router.get('/list/:userId', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const { userId } = req.params;
 
@@ -123,7 +265,36 @@ module.exports = (crowi) => {
     }
   });
 
-  // Delete bookmark folder and children
+  /**
+   * @swagger
+   *
+   *    /bookmark-folder/{id}:
+   *      delete:
+   *        tags: [BookmarkFolders]
+   *        operationId: deleteBookmarkFolder
+   *        security:
+   *          - api_key: []
+   *        summary: Delete bookmark folder
+   *        description: Delete a bookmark folder and its children
+   *        parameters:
+   *         - name: id
+   *           in: path
+   *           required: true
+   *           description: Bookmark Folder ID
+   *           schema:
+   *             type: string
+   *        responses:
+   *          200:
+   *            description: Deleted successfully
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    deletedCount:
+   *                      type: number
+   *                      description: Number of deleted folders
+   *                      example: 1
+   */
   router.delete('/:id', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const { id } = req.params;
     try {
@@ -137,6 +308,49 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /bookmark-folder:
+   *      put:
+   *        tags: [BookmarkFolders]
+   *        operationId: updateBookmarkFolder
+   *        security:
+   *          - api_key: []
+   *        summary: Update bookmark folder
+   *        description: Update a bookmark folder
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  bookmarkFolderId:
+   *                    type: string
+   *                    description: Bookmark Folder ID
+   *                  name:
+   *                    type: string
+   *                    description: Name of the bookmark folder
+   *                    nullable: false
+   *                  parent:
+   *                    type: string
+   *                    description: Parent folder ID
+   *                  childFolder:
+   *                    type: array
+   *                    description: Child folders
+   *                    items:
+   *                      type: object
+   *                      $ref: '#/components/schemas/BookmarkFolder'
+   *        responses:
+   *          200:
+   *            description: Resources are available
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    bookmarkFolder:
+   *                      type: object
+   *                      $ref: '#/components/schemas/BookmarkFolder'
+   */
   router.put('/', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, async(req, res) => {
     const {
       bookmarkFolderId, name, parent, childFolder,
@@ -151,6 +365,41 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /bookmark-folder:
+   *      post:
+   *        tags: [BookmarkFolders]
+   *        operationId: addBookmarkToFolder
+   *        security:
+   *          - api_key: []
+   *        summary: Update bookmark folder
+   *        description: Update a bookmark folder
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    type: string
+   *                    description: Page ID
+   *                    nullable: false
+   *                  folderId:
+   *                    type: string
+   *                    description: Folder ID
+   *                    nullable: true
+   *        responses:
+   *          200:
+   *            description: Resources are available
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    bookmarkFolder:
+   *                      type: object
+   *                      $ref: '#/components/schemas/BookmarkFolder'
+   */
   router.post('/add-boookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator, async(req, res) => {
     const userId = req.user?._id;
     const { pageId, folderId } = req.body;
@@ -166,6 +415,40 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /bookmark-folder/update-bookmark:
+   *      put:
+   *        tags: [BookmarkFolders]
+   *        operationId: updateBookmarkInFolder
+   *        security:
+   *          - api_key: []
+   *        summary: Update bookmark in folder
+   *        description: Update a bookmark in a folder
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  pageId:
+   *                    type: string
+   *                    description: Page ID
+   *                    nullable: false
+   *                  status:
+   *                    type: string
+   *                    description: Bookmark status
+   *        responses:
+   *          200:
+   *            description: Resources are available
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    bookmarkFolder:
+   *                      type: object
+   *                      $ref: '#/components/schemas/BookmarkFolder'
+   */
   router.put('/update-bookmark', accessTokenParser, loginRequiredStrictly, validator.bookmark, async(req, res) => {
     const { pageId, status } = req.body;
     const userId = req.user?._id;
