@@ -368,7 +368,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /bookmark-folder:
+   *    /bookmark-folder/add-boookmark-to-folder:
    *      post:
    *        tags: [BookmarkFolders]
    *        operationId: addBookmarkToFolder
