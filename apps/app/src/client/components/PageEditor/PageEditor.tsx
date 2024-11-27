@@ -113,6 +113,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
   const isYjsEnabled = useIsYjsEnabled();
+  const { register } = useUnsavedWarningUtils();
 
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
@@ -178,7 +179,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, currentPage?.revision?.body, isYjsEnabled]);
 
-  useUnsavedWarningUtils({ shouldWarnBeforeUnloadOrRouteChange: unloadOrRouteChaangeHandler });
+  register('editor', unloadOrRouteChaangeHandler);
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 

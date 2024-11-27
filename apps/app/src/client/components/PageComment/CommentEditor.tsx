@@ -24,7 +24,7 @@ import {
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useEditorSettings,
+  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useEditorSettings, useUnsavedWarningUtils,
 } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import { useCommentEditorDirtyMap } from '~/stores/ui';
@@ -87,12 +87,25 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
+    data: editorDirtyMap,
     evaluate: evaluateEditorDirtyMap,
     clean: cleanEditorDirtyMap,
   } = useCommentEditorDirtyMap();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
   const { resolvedTheme } = useNextThemes();
+  const { register } = useUnsavedWarningUtils();
+
   mutateResolvedTheme({ themeData: resolvedTheme });
+
+  const unloadOrRouteChaangeHandler = useCallback(() => {
+    if (editorDirtyMap == null || editorDirtyMap.size === 0) {
+      return false;
+    }
+
+    return true;
+  }, [editorDirtyMap]);
+
+  register('comment', unloadOrRouteChaangeHandler);
 
   const editorKey = useMemo(() => {
     if (replyTo != null) {

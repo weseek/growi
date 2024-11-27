@@ -120,11 +120,64 @@ export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
   return useSWRStatic<boolean, Error>('isEnabledUnsavedWarning');
 };
 
-type UnsavedWarningUtils = {
-  shouldWarnBeforeUnloadOrRouteChange: () => boolean
+
+type WarningSource = 'editor' | 'comment';
+type WarningCondition = () => boolean;
+
+interface WarningConditions {
+  editor?: () => void;
+  comment?: () => void;
 }
-export const useUnsavedWarningUtils = (status?: UnsavedWarningUtils): SWRResponse<UnsavedWarningUtils, Error> => {
-  return useSWRStatic<UnsavedWarningUtils, Error>('unsavedWarningUtils', status);
+interface UnsavedWarningState {
+  conditions: WarningConditions;
+}
+
+interface UnsavedWarningUtils {
+  shouldWarnBeforeUnloadOrRouteChange: () => boolean;
+  register: (source: WarningSource, condition: WarningCondition) => void;
+  // unregister: (source: WarningSource) => void;
+  // getRegisteredCount: () => number;
+}
+
+export const useUnsavedWarningUtils = (): SWRResponse<UnsavedWarningState, Error> & UnsavedWarningUtils => {
+  const initialData: UnsavedWarningState = {
+    conditions: {
+      editor: undefined,
+      comment: undefined,
+    },
+  };
+
+  const swrResponse = useSWRStatic<UnsavedWarningState, Error>('unsavedWarningUtils', undefined, { fallbackData: initialData });
+
+  const register = useCallback((sorce: WarningSource, condition: WarningCondition) => {
+    const conditions = swrResponse.data?.conditions || {};
+    conditions[sorce] = condition;
+
+    swrResponse.mutate({ conditions });
+  }, [swrResponse]);
+
+  return {
+    ...swrResponse,
+    shouldWarnBeforeUnloadOrRouteChange: () => {
+      const conditions = swrResponse.data?.conditions || {};
+      return Object.values(conditions).some(condition => condition?.());
+    },
+
+    register,
+    // register: (source: WarningSource, condition: WarningCondition) => {
+    //   const currentConditions = { ...swrResponse.data?.conditions };
+    //   currentConditions[source] = condition;
+    //   swrResponse.mutate({ conditions: currentConditions });
+    // },
+    // unregister: (source: WarningSource) => {
+    //   const currentConditions = { ...swrResponse.data?.conditions };
+    //   delete currentConditions[source];
+    //   swrResponse.mutate({ conditions: currentConditions });
+    // },
+    // getRegisteredCount: () => {
+    //   return Object.keys(swrResponse.data?.conditions || {}).length;
+    // },
+  };
 };
 
 export const useReservedNextCaretLine = (initialData?: number): SWRResponse<number> => {
