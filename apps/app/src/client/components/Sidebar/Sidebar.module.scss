@@ -44,7 +44,7 @@
         min-height: 50vh;
         max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
         border-radius: 0 4px 4px 0 ;
-        .simple-sidebar {
+        .simple-scrollbar {
           max-height: inherit;
         }
       }
@@ -84,6 +84,12 @@
     .sidebar-contents-container {
       background-color: color-mix(in srgb, var(--grw-highlight-100), var(--bs-body-bg));
     }
+
+    // overwrite simplebar-react css
+    .simplebar-scrollbar::before {
+      background-color:var(--bs-gray-500);
+    }
+
   }
 
   // frosted glass effect in collapsed mode
@@ -107,6 +113,12 @@
     .sidebar-contents-container {
       background-color: color-mix(in srgb, var(--grw-highlight-800), var(--bs-body-bg));
     }
+
+    // overwrite simplebar-react css
+    .simplebar-scrollbar::before {
+      background-color:var(--bs-gray-500);
+    }
+
   }
 
   // frosted glass effect in collapsed mode
