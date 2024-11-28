@@ -28,8 +28,8 @@ import type { ResizableAreaProps } from './ResizableArea/props';
 import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 
-import styles from './Sidebar.module.scss';
 import 'simplebar-react/dist/simplebar.min.css';
+import styles from './Sidebar.module.scss';
 
 
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
@@ -179,9 +179,9 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
       >
         <SimpleBar
           scrollableNodeProps={{ ref: sidebarScrollerRef }}
-          className="simple-sidebar h-100"
+          className="simple-scrollbar h-100"
           style={{ width: collapsibleContentsWidth }}
-          autoHide={false}
+          autoHide
         >
           {children}
         </SimpleBar>
