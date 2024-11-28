@@ -2,26 +2,29 @@ import {
   useState, useEffect, useCallback,
 } from 'react';
 
+import { useSWRStatic } from '@growi/core/dist/swr';
 import { useRouter } from 'next/router';
+import type { SWRResponse } from 'swr';
 
 import { useYjsMaxBodyLength } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-export const useIsYjsEnabled = (): boolean | undefined => {
+export const useIsYjsEnabled = (): SWRResponse<boolean, Error> => {
   const { data: yjsMaxBodyLength } = useYjsMaxBodyLength();
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: editorMode } = useEditorMode();
 
-  const [isYjsEnabled, setIsYjsEnabled] = useState<boolean | undefined>(undefined);
   const [shouldRecalculate, setShouldRecalculate] = useState<boolean>(false);
+
+  const swrResponse = useSWRStatic<boolean, Error>('isYjsEnabled', undefined);
 
   const router = useRouter();
 
   const onRouterChangeComplete = useCallback(() => {
-    setIsYjsEnabled(undefined);
     setShouldRecalculate(false);
-  }, []);
+    swrResponse.mutate(undefined);
+  }, [swrResponse]);
 
   useEffect(() => {
     router.events.on('routeChangeComplete', onRouterChangeComplete);
@@ -36,16 +39,16 @@ export const useIsYjsEnabled = (): boolean | undefined => {
     }
     else {
       setShouldRecalculate(false);
-      setIsYjsEnabled(undefined);
+      swrResponse.mutate(undefined);
     }
   }, [editorMode]);
 
   useEffect(() => {
     if (shouldRecalculate && currentPage?.revision?.body != null && yjsMaxBodyLength != null) {
       setShouldRecalculate(false);
-      setIsYjsEnabled(currentPage.revision.body.length <= yjsMaxBodyLength);
+      swrResponse.mutate(currentPage.revision.body.length <= yjsMaxBodyLength);
     }
   }, [currentPage?.revision?.body, shouldRecalculate, yjsMaxBodyLength]);
 
-  return isYjsEnabled;
+  return swrResponse;
 };

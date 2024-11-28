@@ -111,7 +111,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
-  const isYjsEnabled = useIsYjsEnabled();
+  const { data: isYjsEnabled } = useIsYjsEnabled();
 
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 

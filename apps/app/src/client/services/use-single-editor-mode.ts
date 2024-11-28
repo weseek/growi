@@ -16,7 +16,7 @@ export const useSingleEditorMode = (): void => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: yjsMaxBodyLength } = useYjsMaxBodyLength();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
-  const isYjsEnabled = useIsYjsEnabled();
+  const { data: isYjsEnabled } = useIsYjsEnabled();
 
   const [shouldRecalculate, setShouldRecalculate] = useState(false);
 

@@ -12,7 +12,7 @@ const moduleClass = styles['editor-navbar'] ?? '';
 
 export const EditorNavbar = (): JSX.Element => {
   const { data: editingUsers } = useEditingUsers();
-  const isYjsEnabled = useIsYjsEnabled();
+  const { data: isYjsEnabled } = useIsYjsEnabled();
 
   const editorCondition = useMemo(() => {
     if (isYjsEnabled) {
