@@ -135,8 +135,6 @@ const PageDeleteModal: FC = () => {
         const pageIdToRevisionIdMap = {};
         deleteModalData.pages.forEach((p) => { pageIdToRevisionIdMap[p.data._id] = p.data.revision as string });
 
-        console.log('pageIdToRevisionIdMap', pageIdToRevisionIdMap);
-
         const { data } = await apiv3Post<IDeleteManyPageApiv3Result>('/pages/delete', {
           pageIdToRevisionIdMap,
           isRecursively,
