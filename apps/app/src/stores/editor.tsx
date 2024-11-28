@@ -116,11 +116,6 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
   };
 };
 
-export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
-  return useSWRStatic<boolean, Error>('isEnabledUnsavedWarning');
-};
-
-
 type WarningCondition = () => boolean;
 
 interface UnsavedWarningState {

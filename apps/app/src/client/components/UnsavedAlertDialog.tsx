@@ -3,17 +3,15 @@ import React, { useCallback, useEffect, memo } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
-import { useIsEnabledUnsavedWarning, useUnsavedWarningUtils } from '~/stores/editor';
+import { useUnsavedWarningUtils } from '~/stores/editor';
 
 const UnsavedAlertDialog = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
-  const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
 
   const { shouldWarnBeforeUnloadOrRouteChange } = useUnsavedWarningUtils();
 
   const alertUnsavedWarningByBrowser = useCallback((e) => {
-    // const shouldWarnBeforeUnloadOrRouteChange = unsavedWarningUtils?.shouldWarnBeforeUnloadOrRouteChange();
     if (shouldWarnBeforeUnloadOrRouteChange()) {
       e.preventDefault();
       // returnValue should be set to show alert dialog
@@ -25,7 +23,6 @@ const UnsavedAlertDialog = (): JSX.Element => {
   }, [shouldWarnBeforeUnloadOrRouteChange]);
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
-    // const shouldWarnBeforeUnloadOrRouteChange = unsavedWarningUtils?.shouldWarnBeforeUnloadOrRouteChange();
     if (shouldWarnBeforeUnloadOrRouteChange()) {
       // see: https://zenn.dev/qaynam/articles/c4794537a163d2
       // eslint-disable-next-line no-alert
@@ -36,10 +33,6 @@ const UnsavedAlertDialog = (): JSX.Element => {
       }
     }
   }, [shouldWarnBeforeUnloadOrRouteChange, t]);
-
-  const onRouterChangeComplete = useCallback(() => {
-    mutateIsEnabledUnsavedWarning(false);
-  }, [mutateIsEnabledUnsavedWarning]);
 
   /*
   * Route changes by Browser
@@ -63,15 +56,6 @@ const UnsavedAlertDialog = (): JSX.Element => {
       router.events.off('routeChangeStart', alertUnsavedWarningByNextRouter);
     };
   }, [alertUnsavedWarningByNextRouter, router.events]);
-
-
-  useEffect(() => {
-    router.events.on('routeChangeComplete', onRouterChangeComplete);
-    return () => {
-      router.events.off('routeChangeComplete', onRouterChangeComplete);
-    };
-  }, [onRouterChangeComplete, router.events]);
-
 
   return <></>;
 };
