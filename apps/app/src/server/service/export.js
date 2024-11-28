@@ -8,7 +8,7 @@ const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-
 const fs = require('fs');
 const path = require('path');
 const { Transform } = require('stream');
-const { pipeline } = require('stream/promises');
+const { pipeline, finished } = require('stream/promises');
 
 const archiver = require('archiver');
 const mongoose = require('mongoose');
@@ -107,7 +107,7 @@ class ExportService {
     writeStream.write(JSON.stringify(metaData));
     writeStream.close();
 
-    await pipeline([writeStream]);
+    await finished(writeStream);
 
     return metaJson;
   }
