@@ -36,7 +36,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   const { page, children } = itemNode;
 
-  const [currentChildren, setCurrentChildren] = useState(children);
+  const [currentChildren, setCurrentChildren] = useState<ItemNode[]>(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -86,15 +86,6 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
   }, [hasChildren]);
-
-  /*
-   * Make sure itemNode.children and currentChildren are synced
-   */
-  useEffect(() => {
-    if (children.length > currentChildren.length) {
-      setCurrentChildren(children);
-    }
-  }, [children, currentChildren.length, targetPathOrId]);
 
   /*
    * When swr fetch succeeded
