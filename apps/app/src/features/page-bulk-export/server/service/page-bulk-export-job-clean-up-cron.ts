@@ -10,12 +10,12 @@ import PageBulkExportJob from '../models/page-bulk-export-job';
 
 import { pageBulkExportService } from './page-bulk-export';
 
-const logger = loggerFactory('growi:service:cron');
+const logger = loggerFactory('growi:service:page-bulk-export-job-clean-up-cron');
 
 /**
  * Manages cronjob which deletes unnecessary bulk export jobs
  */
-class PageBulkExportJobCronService extends CronService {
+class PageBulkExportJobCleanUpCronService extends CronService {
 
   crowi: any;
 
@@ -25,7 +25,7 @@ class PageBulkExportJobCronService extends CronService {
   }
 
   override getCronSchedule(): string {
-    return configManager.getConfig('crowi', 'app:pageBulkExportJobCronSchedule');
+    return configManager.getConfig('crowi', 'app:pageBulkExportJobCleanUpCronSchedule');
   }
 
   override async executeJob(): Promise<void> {
@@ -63,7 +63,7 @@ class PageBulkExportJobCronService extends CronService {
       completedAt: { $lt: thresholdDate },
     });
 
-    const cleanup = async(job: PageBulkExportJobDocument) => {
+    const cleanUp = async(job: PageBulkExportJobDocument) => {
       await pageBulkExportService?.cleanUpExportJobResources(job);
 
       const hasSameAttachmentAndDownloadNotExpired = await PageBulkExportJob.findOne({
@@ -77,7 +77,7 @@ class PageBulkExportJobCronService extends CronService {
       }
     };
 
-    await this.cleanUpAndDeleteBulkExportJobs(downloadExpiredExportJobs, cleanup);
+    await this.cleanUpAndDeleteBulkExportJobs(downloadExpiredExportJobs, cleanUp);
   }
 
   /**
@@ -93,15 +93,15 @@ class PageBulkExportJobCronService extends CronService {
 
   async cleanUpAndDeleteBulkExportJobs(
       pageBulkExportJobs: HydratedDocument<PageBulkExportJobDocument>[],
-      cleanup: (job: PageBulkExportJobDocument) => Promise<void>,
+      cleanUp: (job: PageBulkExportJobDocument) => Promise<void>,
   ): Promise<void> {
-    const results = await Promise.allSettled(pageBulkExportJobs.map(job => cleanup(job)));
+    const results = await Promise.allSettled(pageBulkExportJobs.map(job => cleanUp(job)));
     results.forEach((result) => {
       if (result.status === 'rejected') logger.error(result.reason);
     });
 
     // Only batch delete jobs which have been successfully cleaned up
-    // Cleanup failed jobs will be retried in the next cron execution
+    // Clean up failed jobs will be retried in the next cron execution
     const cleanedUpJobs = pageBulkExportJobs.filter((_, index) => results[index].status === 'fulfilled');
     if (cleanedUpJobs.length > 0) {
       const cleanedUpJobIds = cleanedUpJobs.map(job => job._id);
@@ -112,7 +112,7 @@ class PageBulkExportJobCronService extends CronService {
 }
 
 // eslint-disable-next-line import/no-mutable-exports
-export let pageBulkExportJobCronService: PageBulkExportJobCronService | undefined; // singleton instance
+export let pageBulkExportJobCleanUpCronService: PageBulkExportJobCleanUpCronService | undefined; // singleton instance
 export default function instanciate(crowi): void {
-  pageBulkExportJobCronService = new PageBulkExportJobCronService(crowi);
+  pageBulkExportJobCleanUpCronService = new PageBulkExportJobCleanUpCronService(crowi);
 }
