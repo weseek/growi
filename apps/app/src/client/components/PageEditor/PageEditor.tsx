@@ -166,7 +166,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     setMarkdownToPreview(value);
   })), []);
 
-  const unloadOrRouteChaangeHandler = useCallback(() => {
+  const unloadOrRouteChangeHandler = useCallback(() => {
     const currentPageRevisionBody = currentPage?.revision?.body;
     const editingMarkdown = codeMirrorEditor?.getDoc();
 
@@ -179,7 +179,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, currentPage?.revision?.body, isYjsEnabled]);
 
-  addChangeDetector('editor', unloadOrRouteChaangeHandler);
+  addChangeDetector('editor', unloadOrRouteChangeHandler);
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 

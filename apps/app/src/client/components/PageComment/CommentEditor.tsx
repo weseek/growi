@@ -96,7 +96,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   mutateResolvedTheme({ themeData: resolvedTheme });
 
-  const unloadOrRouteChaangeHandler = useCallback(() => {
+  const unloadOrRouteChangeHandler = useCallback(() => {
     if (editorDirtyMap == null || editorDirtyMap.size === 0) {
       return false;
     }
@@ -104,7 +104,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     return true;
   }, [editorDirtyMap]);
 
-  addChangeDetector('comment', unloadOrRouteChaangeHandler);
+  addChangeDetector('comment', unloadOrRouteChangeHandler);
 
   const editorKey = useMemo(() => {
     if (replyTo != null) {
