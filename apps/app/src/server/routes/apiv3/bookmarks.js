@@ -43,7 +43,7 @@ const router = express.Router();
  *            $ref: '#/components/schemas/Page'
  *          user:
  *            $ref: '#/components/schemas/User/properties/_id'
- *      UserRootBookmarks:
+ *      Bookmarks:
  *        description: User Root Bookmarks
  *        type: object
  *        properties:
@@ -186,7 +186,7 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/UserRootBookmarks'
+   *                  $ref: '#/components/schemas/Bookmarks'
    */
   validator.userBookmarkList = [
     param('userId').isMongoId().withMessage('userId is required'),
