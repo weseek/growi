@@ -77,17 +77,21 @@
 }
 
 
+.grw-sidebar :global {
+
+  // overwrite simplebar-react css
+  .simplebar-scrollbar::before {
+    background-color:var(--bs-gray-500);
+  }
+
+}
+
 @include bs.color-mode(light) {
   .grw-sidebar :global {
     --bs-border-color: var(--grw-highlight-200);
 
     .sidebar-contents-container {
       background-color: color-mix(in srgb, var(--grw-highlight-100), var(--bs-body-bg));
-    }
-
-    // overwrite simplebar-react css
-    .simplebar-scrollbar::before {
-      background-color:var(--bs-gray-500);
     }
 
   }
@@ -112,11 +116,6 @@
 
     .sidebar-contents-container {
       background-color: color-mix(in srgb, var(--grw-highlight-800), var(--bs-body-bg));
-    }
-
-    // overwrite simplebar-react css
-    .simplebar-scrollbar::before {
-      background-color:var(--bs-gray-500);
     }
 
   }
