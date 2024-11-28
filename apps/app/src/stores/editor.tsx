@@ -121,62 +121,39 @@ export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
 };
 
 
-type WarningSource = 'editor' | 'comment';
 type WarningCondition = () => boolean;
 
-interface WarningConditions {
-  editor?: () => void;
-  comment?: () => void;
-}
 interface UnsavedWarningState {
-  conditions: WarningConditions;
+  conditions: Map<string, WarningCondition>;
 }
 
 interface UnsavedWarningUtils {
   shouldWarnBeforeUnloadOrRouteChange: () => boolean;
-  register: (source: WarningSource, condition: WarningCondition) => void;
-  // unregister: (source: WarningSource) => void;
-  // getRegisteredCount: () => number;
+  register: (key: string, condition: WarningCondition) => void;
 }
 
 export const useUnsavedWarningUtils = (): SWRResponse<UnsavedWarningState, Error> & UnsavedWarningUtils => {
-  const initialData: UnsavedWarningState = {
-    conditions: {
-      editor: undefined,
-      comment: undefined,
-    },
-  };
+  const swrResponse = useSWRStatic<UnsavedWarningState, Error>('unsavedWarningUtils', undefined);
 
-  const swrResponse = useSWRStatic<UnsavedWarningState, Error>('unsavedWarningUtils', undefined, { fallbackData: initialData });
-
-  const register = useCallback((sorce: WarningSource, condition: WarningCondition) => {
-    const conditions = swrResponse.data?.conditions || {};
-    conditions[sorce] = condition;
-
+  const register = useCallback((key: string, condition: WarningCondition) => {
+    const conditions: UnsavedWarningState['conditions'] = swrResponse.data?.conditions || new Map();
+    conditions.set(key, condition);
     swrResponse.mutate({ conditions });
   }, [swrResponse]);
 
+  const shouldWarnBeforeUnloadOrRouteChange = useCallback(() => {
+    const conditions = swrResponse.data?.conditions;
+    if (conditions == null || conditions.size === 0) {
+      return false;
+    }
+
+    return Array.from(conditions.values()).some(condition => condition());
+  }, [swrResponse.data?.conditions]);
+
   return {
     ...swrResponse,
-    shouldWarnBeforeUnloadOrRouteChange: () => {
-      const conditions = swrResponse.data?.conditions || {};
-      return Object.values(conditions).some(condition => condition?.());
-    },
-
+    shouldWarnBeforeUnloadOrRouteChange,
     register,
-    // register: (source: WarningSource, condition: WarningCondition) => {
-    //   const currentConditions = { ...swrResponse.data?.conditions };
-    //   currentConditions[source] = condition;
-    //   swrResponse.mutate({ conditions: currentConditions });
-    // },
-    // unregister: (source: WarningSource) => {
-    //   const currentConditions = { ...swrResponse.data?.conditions };
-    //   delete currentConditions[source];
-    //   swrResponse.mutate({ conditions: currentConditions });
-    // },
-    // getRegisteredCount: () => {
-    //   return Object.keys(swrResponse.data?.conditions || {}).length;
-    // },
   };
 };
 
