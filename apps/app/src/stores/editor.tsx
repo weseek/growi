@@ -116,39 +116,36 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
   };
 };
 
-type WarningCondition = () => boolean;
 
-interface UnsavedWarningState {
-  conditions: Map<string, WarningCondition>;
+type UnsavedChangeDetector = Map<string, () => boolean>;
+
+interface UnsavedChangesUtils {
+  hasUnsavedChanges: () => boolean;
+  addChangeDetector: (key: string, detector: () => boolean) => void;
 }
 
-interface UnsavedWarningUtils {
-  shouldWarnBeforeUnloadOrRouteChange: () => boolean;
-  register: (key: string, condition: WarningCondition) => void;
-}
+export const useUnsavedChanges = (): SWRResponse<UnsavedChangeDetector, Error> & UnsavedChangesUtils => {
+  const swrResponse = useSWRStatic<UnsavedChangeDetector, Error>('unsavedChanges', undefined);
 
-export const useUnsavedWarningUtils = (): SWRResponse<UnsavedWarningState, Error> & UnsavedWarningUtils => {
-  const swrResponse = useSWRStatic<UnsavedWarningState, Error>('unsavedWarningUtils', undefined);
-
-  const register = useCallback((key: string, condition: WarningCondition) => {
-    const conditions: UnsavedWarningState['conditions'] = swrResponse.data?.conditions || new Map();
-    conditions.set(key, condition);
-    swrResponse.mutate({ conditions });
+  const addChangeDetector = useCallback((key: string, detector: () => boolean) => {
+    const detectors: UnsavedChangeDetector = swrResponse.data || new Map();
+    detectors.set(key, detector);
+    swrResponse.mutate(detectors);
   }, [swrResponse]);
 
-  const shouldWarnBeforeUnloadOrRouteChange = useCallback(() => {
-    const conditions = swrResponse.data?.conditions;
-    if (conditions == null || conditions.size === 0) {
+  const hasUnsavedChanges = useCallback(() => {
+    const detectors = swrResponse.data;
+    if (detectors == null || detectors.size === 0) {
       return false;
     }
 
-    return Array.from(conditions.values()).some(condition => condition());
-  }, [swrResponse.data?.conditions]);
+    return Array.from(detectors.values()).some(detector => detector());
+  }, [swrResponse.data]);
 
   return {
     ...swrResponse,
-    shouldWarnBeforeUnloadOrRouteChange,
-    register,
+    hasUnsavedChanges,
+    addChangeDetector,
   };
 };
 

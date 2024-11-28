@@ -3,16 +3,16 @@ import React, { useCallback, useEffect, memo } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
-import { useUnsavedWarningUtils } from '~/stores/editor';
+import { useUnsavedChanges } from '~/stores/editor';
 
 const UnsavedAlertDialog = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { shouldWarnBeforeUnloadOrRouteChange } = useUnsavedWarningUtils();
+  const { hasUnsavedChanges } = useUnsavedChanges();
 
   const alertUnsavedWarningByBrowser = useCallback((e) => {
-    if (shouldWarnBeforeUnloadOrRouteChange()) {
+    if (hasUnsavedChanges()) {
       e.preventDefault();
       // returnValue should be set to show alert dialog
       // default alert message cannot be changed.
@@ -20,10 +20,10 @@ const UnsavedAlertDialog = (): JSX.Element => {
       e.returnValue = '';
       return;
     }
-  }, [shouldWarnBeforeUnloadOrRouteChange]);
+  }, [hasUnsavedChanges]);
 
   const alertUnsavedWarningByNextRouter = useCallback(() => {
-    if (shouldWarnBeforeUnloadOrRouteChange()) {
+    if (hasUnsavedChanges()) {
       // see: https://zenn.dev/qaynam/articles/c4794537a163d2
       // eslint-disable-next-line no-alert
       const answer = window.confirm(t('page_edit.changes_not_saved'));
@@ -32,7 +32,7 @@ const UnsavedAlertDialog = (): JSX.Element => {
         throw 'Abort route';
       }
     }
-  }, [shouldWarnBeforeUnloadOrRouteChange, t]);
+  }, [hasUnsavedChanges, t]);
 
   /*
   * Route changes by Browser
