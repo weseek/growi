@@ -112,7 +112,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
-  const { data: isYjsEnabled } = useIsYjsEnabled();
+  const { data: isYjsEnabled, mutate: mutateIsYjsEnabled } = useIsYjsEnabled();
   const { addChangeDetector } = useUnsavedChanges();
 
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
@@ -134,6 +134,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const currentRevisionId = currentPage?.revision?._id;
   const currentRevisionOrigin = currentPage?.revision?.origin;
   const isRevisionIdRequiredForPageUpdate = currentRevisionOrigin === undefined || currentRevisionOrigin === Origin.EditorSingle || isYjsEnabled === false;
+
+  const yjsConnectionErrorHandler = useCallback(() => {
+    mutateIsYjsEnabled(false);
+  }, [mutateIsYjsEnabled]);
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -397,6 +401,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             pageId={pageId ?? undefined}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
+            onYjsConnectionError={yjsConnectionErrorHandler}
             isYjsEnabled={isYjsEnabled}
             cmProps={cmProps}
           />

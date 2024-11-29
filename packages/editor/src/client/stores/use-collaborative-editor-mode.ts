@@ -22,6 +22,7 @@ export const useCollaborativeEditorMode = (
     user?: IUserHasId,
     pageId?: string,
     onEditorsUpdated?: (userList: IUserHasId[]) => void,
+    onYjsConnectionError?: () => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
@@ -96,6 +97,10 @@ export const useCollaborativeEditorMode = (
       }
     });
 
+    socketIOProvider.on('connection-error', () => {
+      onYjsConnectionError?.();
+    });
+
     // update args type see: SocketIOProvider.Awareness.awarenessUpdate
     socketIOProvider.awareness.on('update', (update: { added: unknown[]; removed: unknown[]; }) => {
       const { added, removed } = update;
@@ -106,7 +111,7 @@ export const useCollaborativeEditorMode = (
     });
 
     setProvider(socketIOProvider);
-  }, [onEditorsUpdated, pageId, provider, socket, user, ydoc]);
+  }, [onYjsConnectionError, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
 
   // Setup Ydoc Extensions
   useEffect(() => {

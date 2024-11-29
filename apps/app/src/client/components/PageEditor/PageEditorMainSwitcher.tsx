@@ -16,17 +16,18 @@ type PageEditorSwitcherProps = CodeMirrorEditorProps & {
   user?: IUserHasId
   pageId?: string
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
+  onYjsConnectionError?: () => void
 };
 
 export const PageEditorMainSwitcher = React.memo((props: PageEditorSwitcherProps): JSX.Element => {
   const {
-    isYjsEnabled, cmProps, user, pageId, onEditorsUpdated, ...otherProps
+    isYjsEnabled, cmProps, user, pageId, onEditorsUpdated, onYjsConnectionError, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   useSingleEditorMode();
-  useCollaborativeEditorMode(isYjsEnabled ?? false, user, pageId, onEditorsUpdated, codeMirrorEditor);
+  useCollaborativeEditorMode(isYjsEnabled ?? false, user, pageId, onEditorsUpdated, onYjsConnectionError, codeMirrorEditor);
 
   const cmPropsOverride = useMemo<ReactCodeMirrorProps>(() => deepmerge(
     cmProps ?? {},
