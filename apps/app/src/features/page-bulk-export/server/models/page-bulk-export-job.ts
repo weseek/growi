@@ -21,6 +21,9 @@ const pageBulkExportJobSchema = new Schema<PageBulkExportJobDocument>({
   status: {
     type: String, enum: Object.values(PageBulkExportJobStatus), required: true, default: PageBulkExportJobStatus.initializing,
   },
+  statusOnPreviousCronExec: {
+    type: String, enum: Object.values(PageBulkExportJobStatus),
+  },
   revisionListHash: { type: String },
 }, { timestamps: true });
 
