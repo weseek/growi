@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { type Nullable } from '@growi/core';
 import { withUtils, type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
 import type { EditorSettings } from '@growi/editor';
-import useSWR, { type SWRResponse } from 'swr';
+import useSWR, { type SWRResponse, type MutatorCallback } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
@@ -128,9 +128,13 @@ export const useUnsavedChanges = (): SWRResponse<UnsavedChangeDetector, Error> &
   const swrResponse = useSWRStatic<UnsavedChangeDetector, Error>('unsavedChanges', undefined);
 
   const addChangeDetector = useCallback((key: string, detector: () => boolean) => {
-    const detectors: UnsavedChangeDetector = swrResponse.data || new Map();
-    detectors.set(key, detector);
-    swrResponse.mutate(detectors);
+    const mutatorCallback: MutatorCallback<UnsavedChangeDetector> = (currentData) => {
+      const detectors: UnsavedChangeDetector = currentData || new Map();
+      detectors.set(key, detector);
+      return detectors;
+    };
+
+    swrResponse.mutate(mutatorCallback);
   }, [swrResponse]);
 
   const hasUnsavedChanges = useCallback(() => {
