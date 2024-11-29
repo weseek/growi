@@ -736,7 +736,7 @@ module.exports = (crowi) => {
    *          - cookieAuth: []
    *        operationId: updateCustomizeTitleCustomizeSetting
    *        summary: /customize-setting/customizeTitle
-   *        description: Update customizeTitle
+   *        description: Update title
    *        requestBody:
    *          required: true
    *          content:
@@ -788,7 +788,7 @@ module.exports = (crowi) => {
    *          - cookieAuth: []
    *        operationId: updateCustomizeNoscriptCustomizeSetting
    *        summary: /customize-setting/customize-noscript
-   *        description: Update customizeNoscript
+   *        description: Update noscript
    *        requestBody:
    *          required: true
    *          content:
@@ -836,7 +836,7 @@ module.exports = (crowi) => {
    *          - cookieAuth: []
    *        operationId: updateCustomizeCssCustomizeSetting
    *        summary: /customize-setting/customize-css
-   *        description: Update customizeCss
+   *        description: Update customize css
    *        requestBody:
    *          required: true
    *          content:
@@ -887,7 +887,7 @@ module.exports = (crowi) => {
    *          - cookieAuth: []
    *        operationId: updateCustomizeScriptCustomizeSetting
    *        summary: /customize-setting/customize-script
-   *        description: Update customizeScript
+   *        description: Update customize script
    *        requestBody:
    *          required: true
    *          content:
@@ -935,7 +935,7 @@ module.exports = (crowi) => {
    *          - cookieAuth: []
    *        operationId: updateCustomizeLogoCustomizeSetting
    *        summary: /customize-setting/customize-logo
-   *        description: Update customizeLogo
+   *        description: Update customize logo
    *        requestBody:
    *          required: true
    *          content:
@@ -995,7 +995,6 @@ module.exports = (crowi) => {
    *               type: object
    *               properties:
    *                 file:
-   *                   type: string
    *                   format: binary
    *        responses:
    *          200:
