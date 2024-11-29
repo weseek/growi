@@ -37,6 +37,7 @@ import {
   useCurrentIndentSize,
   useEditingMarkdown,
   useWaitingSaveProcessing,
+  useUnsavedChanges,
 } from '~/stores/editor';
 import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
@@ -112,6 +113,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
   const isYjsEnabled = useIsYjsEnabled();
+  const { addChangeDetector } = useUnsavedChanges();
 
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
@@ -164,6 +166,20 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     setMarkdownToPreview(value);
   })), []);
 
+  const unloadOrRouteChangeHandler = useCallback(() => {
+    const currentPageRevisionBody = currentPage?.revision?.body;
+    const editingMarkdown = codeMirrorEditor?.getDoc();
+
+    if (isYjsEnabled === false && currentPageRevisionBody != null && editingMarkdown != null && currentPageRevisionBody !== editingMarkdown) {
+      return true;
+    }
+
+    return false;
+
+
+  }, [codeMirrorEditor, currentPage?.revision?.body, isYjsEnabled]);
+
+  addChangeDetector('editor', unloadOrRouteChangeHandler);
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 
