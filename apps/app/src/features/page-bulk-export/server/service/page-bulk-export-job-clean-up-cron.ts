@@ -8,7 +8,7 @@ import { PageBulkExportEnabledFileUploadTypes, PageBulkExportJobInProgressStatus
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
-import { pageBulkExportService } from './page-bulk-export';
+import { pageBulkExportJobCronService } from './page-bulk-export-job-cron';
 
 const logger = loggerFactory('growi:service:page-bulk-export-job-clean-up-cron');
 
@@ -47,8 +47,8 @@ class PageBulkExportJobCleanUpCronService extends CronService {
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
     });
 
-    if (pageBulkExportService != null) {
-      await this.cleanUpAndDeleteBulkExportJobs(expiredExportJobs, pageBulkExportService.cleanUpExportJobResources.bind(pageBulkExportService));
+    if (pageBulkExportJobCronService != null) {
+      await this.cleanUpAndDeleteBulkExportJobs(expiredExportJobs, pageBulkExportJobCronService.cleanUpExportJobResources.bind(pageBulkExportJobCronService));
     }
   }
 
@@ -64,7 +64,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
     });
 
     const cleanUp = async(job: PageBulkExportJobDocument) => {
-      await pageBulkExportService?.cleanUpExportJobResources(job);
+      await pageBulkExportJobCronService?.cleanUpExportJobResources(job);
 
       const hasSameAttachmentAndDownloadNotExpired = await PageBulkExportJob.findOne({
         attachment: job.attachment,
@@ -86,8 +86,8 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   async deleteFailedExportJobs() {
     const failedExportJobs = await PageBulkExportJob.find({ status: PageBulkExportJobStatus.failed });
 
-    if (pageBulkExportService != null) {
-      await this.cleanUpAndDeleteBulkExportJobs(failedExportJobs, pageBulkExportService.cleanUpExportJobResources.bind(pageBulkExportService));
+    if (pageBulkExportJobCronService != null) {
+      await this.cleanUpAndDeleteBulkExportJobs(failedExportJobs, pageBulkExportJobCronService.cleanUpExportJobResources.bind(pageBulkExportJobCronService));
     }
   }
 

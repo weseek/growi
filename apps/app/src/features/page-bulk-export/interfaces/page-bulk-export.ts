@@ -38,6 +38,7 @@ export interface IPageBulkExportJob {
   status: PageBulkExportJobStatus,
   statusOnPreviousCronExec?: PageBulkExportJobStatus, // status on previous cron execution
   revisionListHash?: string, // Hash created from the list of revision IDs. Used to detect existing duplicate uploads.
+  restartFlag: boolean, // flag to restart the job
   createdAt?: Date,
   updatedAt?: Date
 }

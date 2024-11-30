@@ -14,7 +14,7 @@ import { IPageBulkExportJobCronService } from "..";
  * Export pages to the file system before compressing and uploading to the cloud storage.
  * The export will resume from the last exported page if the process was interrupted.
  */
-export async function exportPagesToFsAsync(this: IPageBulkExportJobCronService, pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+export function exportPagesToFsAsync(this: IPageBulkExportJobCronService, pageBulkExportJob: PageBulkExportJobDocument): void {
   const findQuery = pageBulkExportJob.lastExportedPagePath != null ? {
     pageBulkExportJob,
     path: { $gt: pageBulkExportJob.lastExportedPagePath },

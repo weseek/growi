@@ -12,8 +12,6 @@ import PageBulkExportPageSnapshot from '../../../models/page-bulk-export-page-sn
 import PageBulkExportJob from '../../../models/page-bulk-export-job';
 import { IPageBulkExportJobCronService } from "..";
 
-const Page = mongoose.model<IPage, PageModel>('Page')
-
 /**
  * Start a pipeline that creates a snapshot for each page that is to be exported in the pageBulkExportJob.
  * 'revisionListHash' is calulated and saved to the pageBulkExportJob at the end of the pipeline.
@@ -22,7 +20,7 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
   // if the process of creating snapshots was interrupted, delete the snapshots and create from the start
   await PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob });
 
-  const basePage = await Page.findById(getIdForRef(pageBulkExportJob.page));
+  const basePage = await this.pageModel.findById(getIdForRef(pageBulkExportJob.page));
   if (basePage == null) {
     throw new Error('Base page not found');
   }
@@ -30,8 +28,8 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
   const revisionListHash = createHash('sha256');
 
   // create a Readable for pages to be exported
-  const { PageQueryBuilder } = Page;
-  const builder = await new PageQueryBuilder(Page.find())
+  const { PageQueryBuilder } = this.pageModel;
+  const builder = await new PageQueryBuilder(this.pageModel.find())
     .addConditionToListWithDescendants(basePage.path)
     .addViewerCondition(user);
   const pagesReadable = builder
@@ -68,7 +66,6 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
       callback();
     }
   });
-
   pipeline(pagesReadable, pageSnapshotsWritable, (err) => {
     this.handlePipelineError(err, pageBulkExportJob);
   });

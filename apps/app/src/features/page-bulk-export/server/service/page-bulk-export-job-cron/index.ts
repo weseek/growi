@@ -25,6 +25,7 @@ const logger = loggerFactory('growi:service:page-bulk-export-job-cron');
 
 export interface IPageBulkExportJobCronService {
   crowi: any;
+  pageModel: PageModel;
   pageBatchSize: number;
   maxPartSize: number;
   compressExtension: string;
@@ -71,33 +72,41 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
   override async executeJob(): Promise<void> {
     const pageBulkExportJobsInProgress = await PageBulkExportJob.find({
-      status: PageBulkExportJobInProgressStatus,
+      $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
     }).sort({ createdAt: 1 }).limit(this.parallelExecLimit);
 
-    pageBulkExportJobsInProgress.forEach(async(pageBulkExportJob) => {
-      await this.executeBulkExportJob(pageBulkExportJob);
+    pageBulkExportJobsInProgress.forEach((pageBulkExportJob) => {
+      this.proceedBulkExportJob(pageBulkExportJob);
     });
   }
 
-  async executeBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument) {
+  async proceedBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument) {
+    if (pageBulkExportJob.restartFlag) {
+      await this.cleanUpExportJobResources(pageBulkExportJob, true);
+      pageBulkExportJob.restartFlag = false;
+      pageBulkExportJob.status = PageBulkExportJobStatus.initializing;
+      pageBulkExportJob.statusOnPreviousCronExec = undefined;
+      await pageBulkExportJob.save();
+    }
+
     if (pageBulkExportJob.status === pageBulkExportJob.statusOnPreviousCronExec) {
       return;
     }
     try {
       const user = await this.userModel.findById(getIdForRef(pageBulkExportJob.user));
 
-      // update statusOnPreviousCronExec before starting processes that update status
+      // update statusOnPreviousCronExec before starting processes that updates status
       pageBulkExportJob.statusOnPreviousCronExec = pageBulkExportJob.status;
       await pageBulkExportJob.save();
 
       if (pageBulkExportJob.status === PageBulkExportJobStatus.initializing) {
-        createPageSnapshotsAsync.bind(this)(user, pageBulkExportJob);
+        await createPageSnapshotsAsync.bind(this)(user, pageBulkExportJob);
       }
       else if (pageBulkExportJob.status === PageBulkExportJobStatus.exporting) {
         exportPagesToFsAsync.bind(this)(pageBulkExportJob);
       }
       else if (pageBulkExportJob.status === PageBulkExportJobStatus.uploading) {
-        compressAndUploadAsync.bind(this)(user, pageBulkExportJob);
+        await compressAndUploadAsync.bind(this)(user, pageBulkExportJob);
       }
     } catch (err) {
       logger.error(err);
