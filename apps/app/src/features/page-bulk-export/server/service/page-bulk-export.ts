@@ -1,9 +1,9 @@
-import type { HydratedDocument } from 'mongoose';
-import mongoose from 'mongoose';
-
 import {
   type IPage, SubscriptionStatusType,
 } from '@growi/core';
+import type { HydratedDocument } from 'mongoose';
+import mongoose from 'mongoose';
+
 
 import { SupportedTargetModel } from '~/interfaces/activity';
 import type { PageModel } from '~/server/models/page';

@@ -1,27 +1,33 @@
-import mongoose from 'mongoose';
 import fs from 'fs';
-import { Readable } from 'stream';
+import type { Readable } from 'stream';
 
-import { IPage, IUser, isPopulated, getIdForRef } from '@growi/core';
+import type { IPage, IUser } from '@growi/core';
+import { isPopulated, getIdForRef } from '@growi/core';
+import mongoose from 'mongoose';
 
+
+import type { SupportedActionType } from '~/interfaces/activity';
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { ActivityDocument } from '~/server/models/activity';
+import type { PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
-import loggerFactory from '~/utils/logger';
-import { ActivityDocument } from '~/server/models/activity';
+import type { FileUploader } from '~/server/service/file-uploader';
 import { preNotifyService } from '~/server/service/pre-notify';
-import { FileUploader } from '~/server/service/file-uploader';
-import { SupportedAction, SupportedActionType, SupportedTargetModel } from '~/interfaces/activity';
+import loggerFactory from '~/utils/logger';
 
 import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
 import PageBulkExportJob from '../../models/page-bulk-export-job';
 import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
-import { PageModel } from '~/server/models/page';
+
+
 import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors';
+import { compressAndUploadAsync } from './steps/compress-and-upload-async';
 import { createPageSnapshotsAsync } from './steps/create-page-snapshots-async';
 import { exportPagesToFsAsync } from './steps/export-pages-to-fs-async';
-import { compressAndUploadAsync } from './steps/compress-and-upload-async';
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+
 
 const logger = loggerFactory('growi:service:page-bulk-export-job-cron');
 
@@ -37,7 +43,7 @@ export interface IPageBulkExportJobCronService {
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string;
 }
 
-class PageBulkExportJobCronService extends CronService implements IPageBulkExportJobCronService{
+class PageBulkExportJobCronService extends CronService implements IPageBulkExportJobCronService {
 
   crowi: any;
 
@@ -56,7 +62,7 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
   pageModel: PageModel;
 
-  userModel: mongoose.Model<IUser, {}, {}, {}, any>;
+  userModel: mongoose.Model<IUser>;
 
   private streamInExecutionMemo: {
     [key: string]: Readable;
@@ -138,7 +144,8 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
       else if (pageBulkExportJob.status === PageBulkExportJobStatus.uploading) {
         await compressAndUploadAsync.bind(this)(user, pageBulkExportJob);
       }
-    } catch (err) {
+    }
+    catch (err) {
       logger.error(err);
       await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED, pageBulkExportJob);
     }
@@ -195,7 +202,8 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
     if (streamInExecution != null) {
       if (restarted) {
         streamInExecution.destroy(new BulkExportJobRestartedError());
-      } else {
+      }
+      else {
         streamInExecution.destroy(new BulkExportJobExpiredError());
       }
     }

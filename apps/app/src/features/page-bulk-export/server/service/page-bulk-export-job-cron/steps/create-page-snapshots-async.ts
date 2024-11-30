@@ -3,13 +3,29 @@ import { Writable, pipeline } from 'stream';
 
 import { getIdForRef, getIdStringForRef } from '@growi/core';
 
-import { PageDocument } from "~/server/models/page";
-import { PageBulkExportJobStatus } from "~/features/page-bulk-export/interfaces/page-bulk-export";
+import { PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import type { PageDocument } from '~/server/models/page';
 
-import { PageBulkExportJobDocument } from "../../../models/page-bulk-export-job";
-import PageBulkExportPageSnapshot from '../../../models/page-bulk-export-page-snapshot';
+import type { IPageBulkExportJobCronService } from '..';
+import type { PageBulkExportJobDocument } from '../../../models/page-bulk-export-job';
 import PageBulkExportJob from '../../../models/page-bulk-export-job';
-import { IPageBulkExportJobCronService } from "..";
+import PageBulkExportPageSnapshot from '../../../models/page-bulk-export-page-snapshot';
+
+async function reuseDuplicateExportIfExists(pageBulkExportJob: PageBulkExportJobDocument) {
+  const duplicateExportJob = await PageBulkExportJob.findOne({
+    user: pageBulkExportJob.user,
+    page: pageBulkExportJob.page,
+    format: pageBulkExportJob.format,
+    status: PageBulkExportJobStatus.completed,
+    revisionListHash: pageBulkExportJob.revisionListHash,
+  });
+  if (duplicateExportJob != null) {
+    // if an upload with the exact same contents exists, re-use the same attachment of that upload
+    pageBulkExportJob.attachment = duplicateExportJob.attachment;
+    pageBulkExportJob.status = PageBulkExportJobStatus.completed;
+    await pageBulkExportJob.save();
+  }
+}
 
 /**
  * Start a pipeline that creates a snapshot for each page that is to be exported in the pageBulkExportJob.
@@ -63,7 +79,7 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
 
       await reuseDuplicateExportIfExists(pageBulkExportJob);
       callback();
-    }
+    },
   });
 
   this.setStreamInExecution(pageBulkExportJob._id, pagesReadable);
@@ -71,20 +87,4 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
   pipeline(pagesReadable, pageSnapshotsWritable, (err) => {
     this.handlePipelineError(err, pageBulkExportJob);
   });
-}
-
-async function reuseDuplicateExportIfExists(pageBulkExportJob: PageBulkExportJobDocument) {
-  const duplicateExportJob = await PageBulkExportJob.findOne({
-    user: pageBulkExportJob.user,
-    page: pageBulkExportJob.page,
-    format: pageBulkExportJob.format,
-    status: PageBulkExportJobStatus.completed,
-    revisionListHash: pageBulkExportJob.revisionListHash,
-  });
-  if (duplicateExportJob != null) {
-    // if an upload with the exact same contents exists, re-use the same attachment of that upload
-    pageBulkExportJob.attachment = duplicateExportJob.attachment;
-    pageBulkExportJob.status = PageBulkExportJobStatus.completed;
-    await pageBulkExportJob.save();
-  }
 }
