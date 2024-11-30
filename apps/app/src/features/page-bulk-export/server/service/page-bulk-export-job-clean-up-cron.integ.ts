@@ -18,9 +18,9 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
-vi.mock('./page-bulk-export', () => {
+vi.mock('./page-bulk-export-job-cron', () => {
   return {
-    pageBulkExportService: {
+    pageBulkExportJobCronService: {
       cleanUpExportJobResources: vi.fn(() => Promise.resolve()),
     },
   };
