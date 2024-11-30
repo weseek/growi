@@ -10,13 +10,22 @@ import type { PageModel } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
-import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
-import PageBulkExportJob from '../../models/page-bulk-export-job';
-import { DuplicateBulkExportJobError } from './errors';
-
+import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
+import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
+import PageBulkExportJob from '../models/page-bulk-export-job';
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
+
+export class DuplicateBulkExportJobError extends Error {
+
+  duplicateJob: HydratedDocument<PageBulkExportJobDocument>;
+
+  constructor(duplicateJob: HydratedDocument<PageBulkExportJobDocument>) {
+    super('Duplicate bulk export job is in progress');
+    this.duplicateJob = duplicateJob;
+  }
+
+}
 
 export interface IPageBulkExportService {
   createOrResetBulkExportJob: (basePagePath: string, currentUser, restartJob?: boolean) => Promise<void>;

@@ -26,6 +26,8 @@ export function exportPagesToFsAsync(this: IPageBulkExportJobCronService, pageBu
 
   const pagesWritable = getPageWritable.bind(this)(pageBulkExportJob);
 
+  this.setStreamInExecution(pageBulkExportJob._id, pageSnapshotsReadable);
+
   pipeline(pageSnapshotsReadable, pagesWritable, (err) => {
     this.handlePipelineError(err, pageBulkExportJob);
   });

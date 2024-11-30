@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import fs from 'fs';
+import { Readable } from 'stream';
 
 import { IPage, IUser, isPopulated, getIdForRef } from '@growi/core';
 
@@ -20,6 +21,7 @@ import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors
 import { createPageSnapshotsAsync } from './steps/create-page-snapshots-async';
 import { exportPagesToFsAsync } from './steps/export-pages-to-fs-async';
 import { compressAndUploadAsync } from './steps/compress-and-upload-async';
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 const logger = loggerFactory('growi:service:page-bulk-export-job-cron');
 
@@ -29,6 +31,7 @@ export interface IPageBulkExportJobCronService {
   pageBatchSize: number;
   maxPartSize: number;
   compressExtension: string;
+  setStreamInExecution(jobId: ObjectIdLike, stream: Readable): void;
   handlePipelineError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument): void;
   notifyExportResultAndCleanUp(action: SupportedActionType, pageBulkExportJob: PageBulkExportJobDocument): Promise<void>;
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string;
@@ -55,6 +58,10 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
   userModel: mongoose.Model<IUser, {}, {}, {}, any>;
 
+  private streamInExecutionMemo: {
+    [key: string]: Readable;
+  } = {};
+
   private parallelExecLimit: number;
 
   constructor(crowi) {
@@ -78,6 +85,29 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
     pageBulkExportJobsInProgress.forEach((pageBulkExportJob) => {
       this.proceedBulkExportJob(pageBulkExportJob);
     });
+  }
+
+  /**
+   * Get the output directory on the fs to temporarily store page files before compressing and uploading
+   */
+  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string {
+    return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
+  }
+
+  /**
+   * Get the stream in execution of a job.
+   * A getter method that includes "undefined" in the return type
+   */
+  getStreamInExecution(jobId: ObjectIdLike): Readable | undefined {
+    return this.streamInExecutionMemo[jobId.toString()];
+  }
+
+  setStreamInExecution(jobId: ObjectIdLike, stream: Readable) {
+    this.streamInExecutionMemo[jobId.toString()] = stream;
+  }
+
+  removeStreamInExecution(jobId: ObjectIdLike) {
+    delete this.streamInExecutionMemo[jobId.toString()];
   }
 
   async proceedBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument) {
@@ -132,13 +162,6 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
   }
 
   /**
-   * Get the output directory on the fs to temporarily store page files before compressing and uploading
-   */
-  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string {
-    return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
-  }
-
-  /**
    * Notify the user of the export result, and cleanup the resources used in the export process
    * @param action whether the export was successful
    * @param pageBulkExportJob the page bulk export job
@@ -168,6 +191,16 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
    * - abort multipart upload
    */
   async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument, restarted = false) {
+    const streamInExecution = this.getStreamInExecution(pageBulkExportJob._id);
+    if (streamInExecution != null) {
+      if (restarted) {
+        streamInExecution.destroy(new BulkExportJobRestartedError());
+      } else {
+        streamInExecution.destroy(new BulkExportJobExpiredError());
+      }
+    }
+    this.removeStreamInExecution(pageBulkExportJob._id);
+
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
