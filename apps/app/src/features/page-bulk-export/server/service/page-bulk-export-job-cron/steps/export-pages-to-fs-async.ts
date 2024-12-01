@@ -42,8 +42,14 @@ function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExportJob:
       callback();
     },
     final: async(callback) => {
-      pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
-      await pageBulkExportJob.save();
+      try {
+        pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
+        await pageBulkExportJob.save();
+      }
+      catch (err) {
+        callback(err);
+        return;
+      }
       callback();
     },
   });

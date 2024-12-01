@@ -769,6 +769,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.STRING,
     default: '*/10 * * * * *', // every 10 seconds
   },
+  CHECK_PAGE_BULK_EXPORT_JOB_IN_PROGRESS_CRON_SCHEDULE: {
+    ns: 'crowi',
+    key: 'app:checkPageBulkExportJobInProgressCronSchedule',
+    type: ValueType.STRING,
+    default: '*/3 * * * *', // every 3 minutes
+  },
   BULK_EXPORT_JOB_CLEAN_UP_CRON_SCHEDULE: {
     ns: 'crowi',
     key: 'app:pageBulkExportJobCleanUpCronSchedule',

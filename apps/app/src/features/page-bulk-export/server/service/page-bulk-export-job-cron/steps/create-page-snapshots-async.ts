@@ -4,6 +4,7 @@ import { Writable, pipeline } from 'stream';
 import { getIdForRef, getIdStringForRef } from '@growi/core';
 
 import { PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import { SupportedAction } from '~/interfaces/activity';
 import type { PageDocument } from '~/server/models/page';
 
 import type { IPageBulkExportJobCronService } from '..';
@@ -11,7 +12,7 @@ import type { PageBulkExportJobDocument } from '../../../models/page-bulk-export
 import PageBulkExportJob from '../../../models/page-bulk-export-job';
 import PageBulkExportPageSnapshot from '../../../models/page-bulk-export-page-snapshot';
 
-async function reuseDuplicateExportIfExists(pageBulkExportJob: PageBulkExportJobDocument) {
+async function reuseDuplicateExportIfExists(this: IPageBulkExportJobCronService, pageBulkExportJob: PageBulkExportJobDocument) {
   const duplicateExportJob = await PageBulkExportJob.findOne({
     user: pageBulkExportJob.user,
     page: pageBulkExportJob.page,
@@ -24,6 +25,8 @@ async function reuseDuplicateExportIfExists(pageBulkExportJob: PageBulkExportJob
     pageBulkExportJob.attachment = duplicateExportJob.attachment;
     pageBulkExportJob.status = PageBulkExportJobStatus.completed;
     await pageBulkExportJob.save();
+
+    await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED, pageBulkExportJob);
   }
 }
 
@@ -73,11 +76,17 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
       callback();
     },
     final: async(callback) => {
-      pageBulkExportJob.revisionListHash = revisionListHash.digest('hex');
-      pageBulkExportJob.status = PageBulkExportJobStatus.exporting;
-      await pageBulkExportJob.save();
+      try {
+        pageBulkExportJob.revisionListHash = revisionListHash.digest('hex');
+        pageBulkExportJob.status = PageBulkExportJobStatus.exporting;
+        await pageBulkExportJob.save();
 
-      await reuseDuplicateExportIfExists(pageBulkExportJob);
+        await reuseDuplicateExportIfExists.bind(this)(pageBulkExportJob);
+      }
+      catch (err) {
+        callback(err);
+        return;
+      }
       callback();
     },
   });

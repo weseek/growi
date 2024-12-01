@@ -97,6 +97,10 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
     pageBulkExportJobsInProgress.forEach((pageBulkExportJob) => {
       this.proceedBulkExportJob(pageBulkExportJob);
     });
+
+    if (pageBulkExportJobsInProgress.length === 0) {
+      this.stopCron();
+    }
   }
 
   /**
