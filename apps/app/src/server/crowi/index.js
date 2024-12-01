@@ -12,8 +12,11 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
-import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
 import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
+import instanciatePageBulkExportJobCleanUpCronService, {
+  pageBulkExportJobCleanUpCronService,
+} from '~/features/page-bulk-export/server/service/page-bulk-export-job-clean-up-cron';
+import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from '~/features/page-bulk-export/server/service/page-bulk-export-job-cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import questionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
@@ -322,6 +325,9 @@ Crowi.prototype.setupSocketIoService = async function() {
 
 Crowi.prototype.setupCron = function() {
   questionnaireCronService.startCron();
+
+  instanciatePageBulkExportJobCleanUpCronService(this);
+  pageBulkExportJobCleanUpCronService.startCron();
 
   instanciatePageBulkExportJobCronService(this);
   pageBulkExportJobCronService.startCron();
