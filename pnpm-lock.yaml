@@ -1635,9 +1635,6 @@ importers:
       '@types/qs':
         specifier: ^6.9.16
         version: 6.9.17
-      eslint-plugin-regex:
-        specifier: ^1.8.0
-        version: 1.10.0(eslint@8.41.0)
 
   packages/ui:
     dependencies:
