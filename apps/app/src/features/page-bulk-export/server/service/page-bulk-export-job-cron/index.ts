@@ -43,6 +43,10 @@ export interface IPageBulkExportJobCronService {
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string;
 }
 
+/**
+ * Manages cronjob which proceeds PageBulkExportJobs in progress.
+ * If PageBulkExportJob finishes the current step, the next step will be started on the next cron execution.
+ */
 class PageBulkExportJobCronService extends CronService implements IPageBulkExportJobCronService {
 
   crowi: any;
