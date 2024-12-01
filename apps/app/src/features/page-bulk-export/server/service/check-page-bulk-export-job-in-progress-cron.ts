@@ -9,6 +9,10 @@ import { pageBulkExportJobCronService } from './page-bulk-export-job-cron';
 
 const logger = loggerFactory('growi:service:check-page-bulk-export-job-in-progress-cron');
 
+/**
+ * Manages cronjob which checks if PageBulkExportJob in progress exists.
+ * If it does, and PageBulkExportJobCronService is not running, start PageBulkExportJobCronService
+ */
 class CheckPageBulkExportJobInProgressCronService extends CronService {
 
   override getCronSchedule(): string {
