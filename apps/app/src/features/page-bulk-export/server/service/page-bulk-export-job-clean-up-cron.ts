@@ -8,14 +8,14 @@ import { PageBulkExportEnabledFileUploadTypes, PageBulkExportJobInProgressStatus
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
-import { pageBulkExportService } from './page-bulk-export';
+import { pageBulkExportJobCronService } from './page-bulk-export-job-cron';
 
-const logger = loggerFactory('growi:service:cron');
+const logger = loggerFactory('growi:service:page-bulk-export-job-clean-up-cron');
 
 /**
  * Manages cronjob which deletes unnecessary bulk export jobs
  */
-class PageBulkExportJobCronService extends CronService {
+class PageBulkExportJobCleanUpCronService extends CronService {
 
   crowi: any;
 
@@ -25,7 +25,7 @@ class PageBulkExportJobCronService extends CronService {
   }
 
   override getCronSchedule(): string {
-    return configManager.getConfig('crowi', 'app:pageBulkExportJobCronSchedule');
+    return configManager.getConfig('crowi', 'app:pageBulkExportJobCleanUpCronSchedule');
   }
 
   override async executeJob(): Promise<void> {
@@ -47,8 +47,8 @@ class PageBulkExportJobCronService extends CronService {
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
     });
 
-    if (pageBulkExportService != null) {
-      await this.cleanUpAndDeleteBulkExportJobs(expiredExportJobs, pageBulkExportService.cleanUpExportJobResources.bind(pageBulkExportService));
+    if (pageBulkExportJobCronService != null) {
+      await this.cleanUpAndDeleteBulkExportJobs(expiredExportJobs, pageBulkExportJobCronService.cleanUpExportJobResources.bind(pageBulkExportJobCronService));
     }
   }
 
@@ -63,8 +63,8 @@ class PageBulkExportJobCronService extends CronService {
       completedAt: { $lt: thresholdDate },
     });
 
-    const cleanup = async(job: PageBulkExportJobDocument) => {
-      await pageBulkExportService?.cleanUpExportJobResources(job);
+    const cleanUp = async(job: PageBulkExportJobDocument) => {
+      await pageBulkExportJobCronService?.cleanUpExportJobResources(job);
 
       const hasSameAttachmentAndDownloadNotExpired = await PageBulkExportJob.findOne({
         attachment: job.attachment,
@@ -77,7 +77,7 @@ class PageBulkExportJobCronService extends CronService {
       }
     };
 
-    await this.cleanUpAndDeleteBulkExportJobs(downloadExpiredExportJobs, cleanup);
+    await this.cleanUpAndDeleteBulkExportJobs(downloadExpiredExportJobs, cleanUp);
   }
 
   /**
@@ -86,22 +86,22 @@ class PageBulkExportJobCronService extends CronService {
   async deleteFailedExportJobs() {
     const failedExportJobs = await PageBulkExportJob.find({ status: PageBulkExportJobStatus.failed });
 
-    if (pageBulkExportService != null) {
-      await this.cleanUpAndDeleteBulkExportJobs(failedExportJobs, pageBulkExportService.cleanUpExportJobResources.bind(pageBulkExportService));
+    if (pageBulkExportJobCronService != null) {
+      await this.cleanUpAndDeleteBulkExportJobs(failedExportJobs, pageBulkExportJobCronService.cleanUpExportJobResources.bind(pageBulkExportJobCronService));
     }
   }
 
   async cleanUpAndDeleteBulkExportJobs(
       pageBulkExportJobs: HydratedDocument<PageBulkExportJobDocument>[],
-      cleanup: (job: PageBulkExportJobDocument) => Promise<void>,
+      cleanUp: (job: PageBulkExportJobDocument) => Promise<void>,
   ): Promise<void> {
-    const results = await Promise.allSettled(pageBulkExportJobs.map(job => cleanup(job)));
+    const results = await Promise.allSettled(pageBulkExportJobs.map(job => cleanUp(job)));
     results.forEach((result) => {
       if (result.status === 'rejected') logger.error(result.reason);
     });
 
     // Only batch delete jobs which have been successfully cleaned up
-    // Cleanup failed jobs will be retried in the next cron execution
+    // Clean up failed jobs will be retried in the next cron execution
     const cleanedUpJobs = pageBulkExportJobs.filter((_, index) => results[index].status === 'fulfilled');
     if (cleanedUpJobs.length > 0) {
       const cleanedUpJobIds = cleanedUpJobs.map(job => job._id);
@@ -112,7 +112,7 @@ class PageBulkExportJobCronService extends CronService {
 }
 
 // eslint-disable-next-line import/no-mutable-exports
-export let pageBulkExportJobCronService: PageBulkExportJobCronService | undefined; // singleton instance
+export let pageBulkExportJobCleanUpCronService: PageBulkExportJobCleanUpCronService | undefined; // singleton instance
 export default function instanciate(crowi): void {
-  pageBulkExportJobCronService = new PageBulkExportJobCronService(crowi);
+  pageBulkExportJobCleanUpCronService = new PageBulkExportJobCleanUpCronService(crowi);
 }
