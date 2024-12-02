@@ -80,7 +80,7 @@ export const convertMarkdownToHtml = async(page: HydratedDocument<PageDocument> 
     throw new Error('Failed to initialize required modules');
   }
 
-  const sanitize = () => {
+  const sanitizeMarkdown = () => {
     return (tree: Root) => {
       visit(tree, 'code', (node: Code) => {
         if (node.lang === 'drawio') {
@@ -95,7 +95,7 @@ export const convertMarkdownToHtml = async(page: HydratedDocument<PageDocument> 
 
   const processor = unified()
     .use(remarkParse)
-    .use(sanitize)
+    .use(sanitizeMarkdown)
     .use(remarkRehype)
     .use(rehypeMeta, {
       title: page.path,
