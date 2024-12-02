@@ -21,7 +21,7 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
-import { convertMarkdownToHtml } from '../utils/sanitize-markdown';
+import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 
 import { getClient } from './client-delegator';
 // import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
