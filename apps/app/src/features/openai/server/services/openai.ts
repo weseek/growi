@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
+import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
@@ -20,7 +21,7 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
-import { sanitizeMarkdown } from '../utils/sanitize-markdown';
+import { convertMarkdownToHtml } from '../utils/sanitize-markdown';
 
 import { getClient } from './client-delegator';
 // import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
@@ -157,9 +158,10 @@ class OpenaiService implements IOpenaiService {
   //   }
   // }
 
-  private async uploadFile(pageId: Types.ObjectId, body: string): Promise<OpenAI.Files.FileObject> {
-    const sanitizedMarkdown = await sanitizeMarkdown(body);
-    const file = await toFile(Readable.from(sanitizedMarkdown), `${pageId}.md`);
+  private async uploadFile(page: HydratedDocument<PageDocument> | IPagePopulatedToShowRevision): Promise<OpenAI.Files.FileObject> {
+    const convertedHtml = await convertMarkdownToHtml(page);
+    console.log('convertedHtml', convertedHtml);
+    const file = await toFile(Readable.from(convertedHtml), `${page._id}.html`);
     const uploadedFile = await this.client.uploadFile(file);
     return uploadedFile;
   }
@@ -183,17 +185,17 @@ class OpenaiService implements IOpenaiService {
   async createVectorStoreFile(pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
     const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
-    const processUploadFile = async(page: PageDocument) => {
+    const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
-          const uploadedFile = await this.uploadFile(page._id, page.revision.body);
+          const uploadedFile = await this.uploadFile(page);
           prepareVectorStoreFileRelations(vectorStore._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
-          const uploadedFile = await this.uploadFile(page._id, pagePopulatedToShowRevision.revision.body);
+          const uploadedFile = await this.uploadFile(pagePopulatedToShowRevision);
           prepareVectorStoreFileRelations(vectorStore._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
         }
       }
