@@ -12,11 +12,10 @@ import type * as UnistUtilVisit from 'unist-util-visit';
 
 import type { PageDocument } from '~/server/models/page';
 
-
 interface ModuleCache {
-  remarkParse?: typeof RemarkParse.default;
   unified?: typeof Unified.unified;
   visit?: typeof UnistUtilVisit.visit;
+  remarkParse?: typeof RemarkParse.default;
   remarkRehype?: typeof RemarkRehype.default;
   rehypeMeta?: typeof RehypeMeta.default;
   rehypeStringify?: typeof RehypeStringify.default;
@@ -25,9 +24,9 @@ interface ModuleCache {
 let moduleCache: ModuleCache = {};
 
 const initializeModules = async(): Promise<void> => {
-  if (moduleCache.remarkParse != null
-    && moduleCache.unified != null
+  if (moduleCache.unified != null
     && moduleCache.visit != null
+    && moduleCache.remarkParse != null
     && moduleCache.remarkRehype != null
     && moduleCache.rehypeMeta != null
     && moduleCache.rehypeStringify != null
@@ -36,24 +35,25 @@ const initializeModules = async(): Promise<void> => {
   }
 
   const [
+    { unified },
+    { visit },
     { default: remarkParse },
-    { unified }, { visit },
     { default: remarkRehype },
     { default: rehypeMeta },
     { default: rehypeStringify },
   ] = await Promise.all([
-    dynamicImport<typeof RemarkParse>('remark-parse', __dirname),
     dynamicImport<typeof Unified>('unified', __dirname),
     dynamicImport<typeof UnistUtilVisit>('unist-util-visit', __dirname),
+    dynamicImport<typeof RemarkParse>('remark-parse', __dirname),
     dynamicImport<typeof RemarkRehype>('remark-rehype', __dirname),
     dynamicImport<typeof RehypeMeta>('rehype-meta', __dirname),
     dynamicImport<typeof RehypeStringify>('rehype-stringify', __dirname),
   ]);
 
   moduleCache = {
-    remarkParse,
     unified,
     visit,
+    remarkParse,
     remarkRehype,
     rehypeMeta,
     rehypeStringify,
@@ -64,19 +64,10 @@ export const convertMarkdownToHtml = async(page: HydratedDocument<PageDocument> 
   await initializeModules();
 
   const {
-    remarkParse,
-    unified, visit,
-    remarkRehype,
-    rehypeMeta,
-    rehypeStringify,
+    unified, visit, remarkParse, remarkRehype, rehypeMeta, rehypeStringify,
   } = moduleCache;
 
-  if (remarkParse == null
-    || unified == null
-    || visit == null
-    || remarkRehype == null
-    || rehypeMeta == null
-    || rehypeStringify == null) {
+  if (unified == null || visit == null || remarkParse == null || remarkRehype == null || rehypeMeta == null || rehypeStringify == null) {
     throw new Error('Failed to initialize required modules');
   }
 
@@ -90,8 +81,9 @@ export const convertMarkdownToHtml = async(page: HydratedDocument<PageDocument> 
     };
   };
 
-
-  const revisionBody = page.revision != null && isPopulated(page.revision) ? page.revision.body : undefined;
+  const revisionBody = page.revision != null && isPopulated(page.revision)
+    ? page.revision.body
+    : undefined;
 
   const processor = unified()
     .use(remarkParse)
