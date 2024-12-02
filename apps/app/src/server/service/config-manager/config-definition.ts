@@ -4,6 +4,7 @@ import type OpenAI from 'openai';
 
 import { ActionGroupSize } from '~/interfaces/activity';
 import { AttachmentMethodType } from '~/interfaces/attachment';
+import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
 import { GrowiServiceType } from '~/interfaces/system';
 
 /*
@@ -12,6 +13,8 @@ import { GrowiServiceType } from '~/interfaces/system';
  *   2. app:*
  *   3. security:*
  *   4. fileUpload:*, aws:*, gcs:*, azure:*, gridfs:*
+ *   5. customize:*
+ *   3. markdown:*
  *   N. (others)
  */
 export const CONFIG_KEYS = [
@@ -25,6 +28,10 @@ export const CONFIG_KEYS = [
   'autoInstall:serverDate',
 
   // App Settings
+  'app:installed',
+  'app:confidential',
+  'app:globalLang',
+  'app:fileUpload',
   'app:fileUploadType',
   'app:plantumlUri',
   'app:drawioUri',
@@ -71,8 +78,13 @@ export const CONFIG_KEYS = [
   'security:trustProxyBool',
   'security:trustProxyCsv',
   'security:trustProxyHops',
+  'security:passport-local:isEnabled',
   'security:passport-local:isPasswordResetEnabled',
   'security:passport-local:isEmailAuthenticationEnabled',
+  'security:passport-saml:isEnabled',
+  'security:passport-saml:entryPoint',
+  'security:passport-saml:issuer',
+  'security:passport-saml:cert',
   'security:passport-saml:callbackUrl',
   'security:passport-saml:attrMapId',
   'security:passport-saml:attrMapUsername',
@@ -84,6 +96,42 @@ export const CONFIG_KEYS = [
   'security:passport-oidc:discoveryRetries',
   'security:passport-oidc:oidcClientClockTolerance',
   'security:passport-oidc:oidcIssuerTimeoutOption',
+  'security:restrictGuestMode',
+  'security:registrationMode',
+  'security:registrationWhitelist',
+  'security:list-policy:hideRestrictedByOwner',
+  'security:list-policy:hideRestrictedByGroup',
+  'security:pageDeletionAuthority',
+  'security:pageCompleteDeletionAuthority',
+  'security:pageRecursiveDeletionAuthority',
+  'security:pageRecursiveCompleteDeletionAuthority',
+  'security:isAllGroupMembershipRequiredForPageCompleteDeletion',
+  'security:user-homepage-deletion:isEnabled',
+  'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion',
+  'security:isRomUserAllowedToComment',
+  'security:passport-ldap:isEnabled',
+  'security:passport-ldap:serverUrl',
+  'security:passport-ldap:isUserBind',
+  'security:passport-ldap:bindDN',
+  'security:passport-ldap:bindDNPassword',
+  'security:passport-ldap:searchFilter',
+  'security:passport-ldap:attrMapUsername',
+  'security:passport-ldap:attrMapName',
+  'security:passport-ldap:attrMapMail',
+  'security:passport-ldap:groupSearchBase',
+  'security:passport-ldap:groupSearchFilter',
+  'security:passport-ldap:groupDnProperty',
+  'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser',
+  'security:passport-saml:isSameEmailTreatedAsIdenticalUser',
+  'security:passport-google:isEnabled',
+  'security:passport-google:clientId',
+  'security:passport-google:clientSecret',
+  'security:passport-google:isSameUsernameTreatedAsIdenticalUser',
+  'security:passport-github:isEnabled',
+  'security:passport-github:clientId',
+  'security:passport-github:clientSecret',
+  'security:passport-github:isSameUsernameTreatedAsIdenticalUser',
+  'security:passport-oidc:isEnabled',
 
   // File Upload Settings
   'fileUpload:local:useInternalRedirect',
@@ -93,8 +141,16 @@ export const CONFIG_KEYS = [
   'aws:referenceFileWithRelayMode',
   'aws:lifetimeSecForTemporaryUrl',
   'aws:s3ObjectCannedACL',
+  'aws:s3Bucket',
+  'aws:s3Region',
+  'aws:s3AccessKeyId',
+  'aws:s3SecretAccessKey',
+  'aws:s3CustomEndpoint',
 
   // GCS Settings
+  'gcs:apiKeyJsonPath',
+  'gcs:bucket',
+  'gcs:uploadNamespace',
   'gcs:lifetimeSecForTemporaryUrl',
   'gcs:referenceFileWithRelayMode',
 
@@ -109,6 +165,47 @@ export const CONFIG_KEYS = [
 
   // GridFS Settings
   'gridfs:totalLimit',
+
+  // Customize Settings
+  'customize:isEmailPublishedForNewUser',
+  'customize:css',
+  'customize:script',
+  'customize:noscript',
+  'customize:title',
+  'customize:highlightJsStyle',
+  'customize:highlightJsStyleBorder',
+  'customize:theme',
+  'customize:theme:forcedColorScheme',
+  'customize:isContainerFluid',
+  'customize:isEnabledTimeline',
+  'customize:isEnabledAttachTitleHeader',
+  'customize:showPageLimitationS',
+  'customize:showPageLimitationM',
+  'customize:showPageLimitationL',
+  'customize:showPageLimitationXL',
+  'customize:isEnabledStaleNotification',
+  'customize:isAllReplyShown',
+  'customize:isSearchScopeChildrenAsDefault',
+  'customize:isEnabledMarp',
+  'customize:isSidebarCollapsedMode',
+  'customize:isSidebarClosedAtDockMode',
+
+  // Markdown Settings
+  'markdown:xss:tagWhitelist',
+  'markdown:xss:attrWhitelist',
+  'markdown:rehypeSanitize:isEnabledPrevention',
+  'markdown:rehypeSanitize:option',
+  'markdown:rehypeSanitize:tagNames',
+  'markdown:rehypeSanitize:attributes',
+  'markdown:isEnabledLinebreaks',
+  'markdown:isEnabledLinebreaksInComments',
+  'markdown:adminPreferredIndentSize',
+  'markdown:isIndentSizeForced',
+
+  // Slack Settings
+  'slack:isIncomingWebhookPrioritized',
+  'slack:incomingWebhookUrl',
+  'slack:token',
 
   // Slackbot Settings
   'slackbot:currentBotType',
@@ -145,8 +242,22 @@ export const CONFIG_KEYS = [
   'questionnaire:isQuestionnaireEnabled',
   'questionnaire:isAppSiteUrlHashed',
 
-  // Customize Settings
-  'customize:isEmailPublishedForNewUser',
+  // Notification Settings
+  'notification:owner-page:isEnabled',
+  'notification:group-page:isEnabled',
+
+  // Importer Settings
+  'importer:esa:team_name',
+  'importer:esa:access_token',
+  'importer:qiita:team_name',
+  'importer:qiita:access_token',
+
+  // External User Group Settings
+  'external-user-group:ldap:groupMembershipAttributeType',
+  'external-user-group:ldap:autoGenerateUserOnGroupSync',
+  'external-user-group:ldap:preserveDeletedGroups',
+  'external-user-group:keycloak:autoGenerateUserOnGroupSync',
+  'external-user-group:keycloak:preserveDeletedGroups',
 
   // Control Flags for using only env vars
   'env:useOnlyEnvVars:app:siteUrl',
@@ -195,6 +306,18 @@ export const CONFIG_DEFINITIONS = {
   }),
 
   // App Settings
+  'app:installed': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'app:confidential': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'app:globalLang': defineConfig<string>({
+    defaultValue: 'en_US',
+  }),
+  'app:fileUpload': defineConfig<boolean>({
+    defaultValue: false,
+  }),
   'app:fileUploadType': defineConfig<AttachmentMethodType>({
     envVarName: 'FILE_UPLOAD',
     defaultValue: AttachmentMethodType.aws,
@@ -377,6 +500,10 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: undefined,
     isSecret: true,
   }),
+  'security:passport-local:isEnabled': defineConfig<boolean>({
+    envVarName: 'LOCAL_STRATEGY_ENABLED',
+    defaultValue: true,
+  }),
   'security:passport-local:isPasswordResetEnabled': defineConfig<boolean>({
     envVarName: 'LOCAL_STRATEGY_PASSWORD_RESET_ENABLED',
     defaultValue: true,
@@ -385,12 +512,8 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'LOCAL_STRATEGY_EMAIL_AUTHENTICATION_ENABLED',
     defaultValue: false,
   }),
-  'security:passport-local:isEnabled': defineConfig<boolean>({
-    envVarName: 'SECURITY_PASSPORT_LOCAL_ENABLED',
-    defaultValue: true,
-  }),
   'security:passport-saml:isEnabled': defineConfig<boolean>({
-    envVarName: 'SECURITY_PASSPORT_SAML_ENABLED',
+    envVarName: 'SAML_ENABLED',
     defaultValue: false,
   }),
   'security:passport-saml:callbackUrl': defineConfig<string | undefined>({
@@ -449,6 +572,114 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'OIDC_ISSUER_TIMEOUT_OPTION',
     defaultValue: 5000,
   }),
+  'security:restrictGuestMode': defineConfig<string>({
+    defaultValue: 'Deny',
+  }),
+  'security:registrationMode': defineConfig<string>({
+    defaultValue: 'Open',
+  }),
+  'security:registrationWhitelist': defineConfig<string[]>({
+    defaultValue: [],
+  }),
+  'security:list-policy:hideRestrictedByOwner': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:list-policy:hideRestrictedByGroup': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:pageDeletionAuthority': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:pageCompleteDeletionAuthority': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:pageRecursiveDeletionAuthority': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:pageRecursiveCompleteDeletionAuthority': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:isAllGroupMembershipRequiredForPageCompleteDeletion': defineConfig<boolean>({
+    defaultValue: true,
+  }),
+  'security:user-homepage-deletion:isEnabled': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:isRomUserAllowedToComment': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-ldap:isEnabled': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-ldap:serverUrl': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:isUserBind': defineConfig<boolean | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:bindDN': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:bindDNPassword': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:searchFilter': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:attrMapUsername': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:attrMapName': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:attrMapMail': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:groupSearchBase': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:groupSearchFilter': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:groupDnProperty': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-saml:isSameEmailTreatedAsIdenticalUser': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-google:isEnabled': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-google:clientId': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-google:clientSecret': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-google:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-github:isEnabled': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-github:clientId': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-github:clientSecret': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-github:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-oidc:isEnabled': defineConfig<boolean>({
+    defaultValue: false,
+  }),
 
   // File Upload Settings
   'fileUpload:local:useInternalRedirect': defineConfig<boolean>({
@@ -473,16 +704,23 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'S3_OBJECT_ACL',
     defaultValue: undefined,
   }),
+  'aws:s3Bucket': defineConfig<string>({
+    defaultValue: 'growi',
+  }),
+  'aws:s3Region': defineConfig<string>({
+    defaultValue: 'ap-northeast-1',
+  }),
+  'aws:s3AccessKeyId': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'aws:s3SecretAccessKey': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'aws:s3CustomEndpoint': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
 
   // GCS Settings
-  'gcs:lifetimeSecForTemporaryUrl': defineConfig<number>({
-    envVarName: 'GCS_LIFETIME_SEC_FOR_TEMPORARY_URL',
-    defaultValue: 120,
-  }),
-  'gcs:referenceFileWithRelayMode': defineConfig<boolean>({
-    envVarName: 'GCS_REFERENCE_FILE_WITH_RELAY_MODE',
-    defaultValue: false,
-  }),
   'gcs:apiKeyJsonPath': defineConfig<string | undefined>({
     envVarName: 'GCS_API_KEY_JSON_PATH',
     defaultValue: undefined,
@@ -494,6 +732,14 @@ export const CONFIG_DEFINITIONS = {
   'gcs:uploadNamespace': defineConfig<string>({
     envVarName: 'GCS_UPLOAD_NAMESPACE',
     defaultValue: '',
+  }),
+  'gcs:lifetimeSecForTemporaryUrl': defineConfig<number>({
+    envVarName: 'GCS_LIFETIME_SEC_FOR_TEMPORARY_URL',
+    defaultValue: 120,
+  }),
+  'gcs:referenceFileWithRelayMode': defineConfig<boolean>({
+    envVarName: 'GCS_REFERENCE_FILE_WITH_RELAY_MODE',
+    defaultValue: false,
   }),
 
   // Azure Settings
@@ -530,6 +776,119 @@ export const CONFIG_DEFINITIONS = {
   // GridFS Settings
   'gridfs:totalLimit': defineConfig<number | undefined>({
     envVarName: 'MONGO_GRIDFS_TOTAL_LIMIT',
+    defaultValue: undefined,
+  }),
+
+
+  // Customize Settings
+  'customize:isEmailPublishedForNewUser': defineConfig<boolean>({
+    envVarName: 'DEFAULT_EMAIL_PUBLISHED',
+    defaultValue: true,
+  }),
+  'customize:css': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'customize:script': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'customize:noscript': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'customize:title': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'customize:highlightJsStyle': defineConfig<string>({
+    defaultValue: 'github',
+  }),
+  'customize:highlightJsStyleBorder': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:theme': defineConfig<string>({
+    defaultValue: 'default',
+  }),
+  'customize:theme:forcedColorScheme': defineConfig<string | null>({
+    defaultValue: null,
+  }),
+  'customize:isContainerFluid': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:isEnabledTimeline': defineConfig<boolean>({
+    defaultValue: true,
+  }),
+  'customize:isEnabledAttachTitleHeader': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:showPageLimitationS': defineConfig<number>({
+    defaultValue: 20,
+  }),
+  'customize:showPageLimitationM': defineConfig<number>({
+    defaultValue: 10,
+  }),
+  'customize:showPageLimitationL': defineConfig<number>({
+    defaultValue: 50,
+  }),
+  'customize:showPageLimitationXL': defineConfig<number>({
+    defaultValue: 20,
+  }),
+  'customize:isEnabledStaleNotification': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:isAllReplyShown': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:isSearchScopeChildrenAsDefault': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:isEnabledMarp': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:isSidebarCollapsedMode': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:isSidebarClosedAtDockMode': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+
+  // Markdown Settings
+  'markdown:xss:tagWhitelist': defineConfig<string[]>({
+    defaultValue: [],
+  }),
+  'markdown:xss:attrWhitelist': defineConfig<string[]>({
+    defaultValue: [],
+  }),
+  'markdown:rehypeSanitize:isEnabledPrevention': defineConfig<boolean>({
+    defaultValue: true,
+  }),
+  'markdown:rehypeSanitize:option': defineConfig<string>({
+    defaultValue: RehypeSanitizeType.RECOMMENDED,
+  }),
+  'markdown:rehypeSanitize:tagNames': defineConfig<string[]>({
+    defaultValue: [],
+  }),
+  'markdown:rehypeSanitize:attributes': defineConfig<string>({
+    defaultValue: '{}',
+  }),
+  'markdown:isEnabledLinebreaks': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'markdown:isEnabledLinebreaksInComments': defineConfig<boolean>({
+    defaultValue: true,
+  }),
+  'markdown:adminPreferredIndentSize': defineConfig<number>({
+    defaultValue: 4,
+  }),
+  'markdown:isIndentSizeForced': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+
+  // Slack Settings
+  'slack:isIncomingWebhookPrioritized': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'slack:incomingWebhookUrl': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'slack:token': defineConfig<string | undefined>({
     defaultValue: undefined,
   }),
 
@@ -692,10 +1051,43 @@ Guideline as a RAG:
     defaultValue: false,
   }),
 
-  // Customize Settings
-  'customize:isEmailPublishedForNewUser': defineConfig<boolean>({
-    envVarName: 'DEFAULT_EMAIL_PUBLISHED',
-    defaultValue: true,
+  // Notification Settings
+  'notification:owner-page:isEnabled': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'notification:group-page:isEnabled': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+
+  // Importer Settings
+  'importer:esa:team_name': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'importer:esa:access_token': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'importer:qiita:team_name': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'importer:qiita:access_token': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+
+  // External User Group Settings
+  'external-user-group:ldap:groupMembershipAttributeType': defineConfig<string>({
+    defaultValue: 'DN',
+  }),
+  'external-user-group:ldap:autoGenerateUserOnGroupSync': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'external-user-group:ldap:preserveDeletedGroups': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'external-user-group:keycloak:autoGenerateUserOnGroupSync': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'external-user-group:keycloak:preserveDeletedGroups': defineConfig<boolean>({
+    defaultValue: false,
   }),
 
   // Control Flags for Env Vars
