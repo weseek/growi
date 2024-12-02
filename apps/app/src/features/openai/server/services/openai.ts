@@ -160,7 +160,6 @@ class OpenaiService implements IOpenaiService {
 
   private async uploadFile(page: HydratedDocument<PageDocument> | IPagePopulatedToShowRevision): Promise<OpenAI.Files.FileObject> {
     const convertedHtml = await convertMarkdownToHtml(page);
-    console.log('convertedHtml', convertedHtml);
     const file = await toFile(Readable.from(convertedHtml), `${page._id}.html`);
     const uploadedFile = await this.client.uploadFile(file);
     return uploadedFile;
