@@ -3,7 +3,7 @@ import type {
   IAttachment, IPage, IRevision, IUser, Ref,
 } from '@growi/core';
 
-import { FileUploadTypeForEnvVar } from '~/interfaces/file-uploader';
+import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 
 export const PageBulkExportFormat = {
   md: 'md',
@@ -52,4 +52,4 @@ export interface IPageBulkExportPageSnapshot {
   revision: Ref<IRevision>, // page revision when export was stared
 }
 
-export const PageBulkExportEnabledFileUploadTypes = [FileUploadTypeForEnvVar.aws, FileUploadTypeForEnvVar.gcs, FileUploadTypeForEnvVar.gcp] as const;
+export const PageBulkExportEnabledServiceTypes = [GrowiServiceType.onPremise, GrowiServiceType.others] as const;
