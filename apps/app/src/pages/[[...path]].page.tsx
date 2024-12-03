@@ -23,7 +23,7 @@ import superjson from 'superjson';
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { PageView } from '~/components/PageView/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
-import { PageBulkExportEnabledFileUploadTypes, PageBulkExportEnabledServiceTypes } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import { PageBulkExportEnabledServiceTypes } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { RegistrationMode } from '~/interfaces/registration-mode';
