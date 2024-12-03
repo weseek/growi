@@ -1,16 +1,16 @@
 import fs from 'fs';
 import type { Readable } from 'stream';
 
-import type { IPage, IUser } from '@growi/core';
+import type { IUser } from '@growi/core';
 import { isPopulated, getIdForRef } from '@growi/core';
 import mongoose from 'mongoose';
 
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import type Crowi from '~/server/crowi';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import type { ActivityDocument } from '~/server/models/activity';
-import type { PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import type { FileUploader } from '~/server/service/file-uploader';
@@ -32,8 +32,7 @@ import { exportPagesToFsAsync } from './steps/export-pages-to-fs-async';
 const logger = loggerFactory('growi:service:page-bulk-export-job-cron');
 
 export interface IPageBulkExportJobCronService {
-  crowi: any;
-  pageModel: PageModel;
+  crowi: Crowi;
   pageBatchSize: number;
   maxPartSize: number;
   compressExtension: string;
@@ -49,7 +48,7 @@ export interface IPageBulkExportJobCronService {
  */
 class PageBulkExportJobCronService extends CronService implements IPageBulkExportJobCronService {
 
-  crowi: any;
+  crowi: Crowi;
 
   activityEvent: any;
 
@@ -64,10 +63,6 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
   // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
   tmpOutputRootDir = '/tmp/page-bulk-export';
 
-  pageModel: PageModel;
-
-  userModel: mongoose.Model<IUser>;
-
   // Keep track of the stream executed for PageBulkExportJob to destroy it on job failure.
   // The key is the id of a PageBulkExportJob.
   private streamInExecutionMemo: {
@@ -76,12 +71,10 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
   private parallelExecLimit: number;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     super();
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
-    this.pageModel = mongoose.model<IPage, PageModel>('Page');
-    this.userModel = mongoose.model<IUser>('User');
     this.parallelExecLimit = configManager.getConfig('crowi', 'app:pageBulkExportParallelExecLimit');
   }
 
@@ -149,8 +142,9 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
     if (pageBulkExportJob.status === pageBulkExportJob.statusOnPreviousCronExec) {
       return;
     }
+    const User = mongoose.model<IUser>('User');
     try {
-      const user = await this.userModel.findById(getIdForRef(pageBulkExportJob.user));
+      const user = await User.findById(getIdForRef(pageBulkExportJob.user));
 
       // update statusOnPreviousCronExec before starting processes that updates status
       pageBulkExportJob.statusOnPreviousCronExec = pageBulkExportJob.status;
@@ -272,6 +266,6 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
 // eslint-disable-next-line import/no-mutable-exports
 export let pageBulkExportJobCronService: PageBulkExportJobCronService | undefined; // singleton instance
-export default function instanciate(crowi): void {
+export default function instanciate(crowi: Crowi): void {
   pageBulkExportJobCronService = new PageBulkExportJobCronService(crowi);
 }
