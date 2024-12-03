@@ -5,7 +5,7 @@ import { configManager } from '~/server/service/config-manager';
 import { PageBulkExportFormat, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
-import instanciatePageBulkExportJobCronService, { pageBulkExportJobCronService } from './page-bulk-export-job-cron';
+import instanciatePageBulkExportJobCleanUpCronService, { pageBulkExportJobCleanUpCronService } from './page-bulk-export-job-clean-up-cron';
 
 // TODO: use actual user model after ~/server/models/user.js becomes importable in vitest
 // ref: https://github.com/vitest-dev/vitest/issues/846
@@ -18,25 +18,25 @@ const userSchema = new mongoose.Schema({
 });
 const User = mongoose.model('User', userSchema);
 
-vi.mock('./page-bulk-export', () => {
+vi.mock('./page-bulk-export-job-cron', () => {
   return {
-    pageBulkExportService: {
+    pageBulkExportJobCronService: {
       cleanUpExportJobResources: vi.fn(() => Promise.resolve()),
     },
   };
 });
 
-describe('PageBulkExportJobCronService', () => {
+describe('PageBulkExportJobCleanUpCronService', () => {
   const crowi = { event: () => {} };
   let user;
 
   beforeAll(async() => {
     user = await User.create({
-      name: 'Example for PageBulkExportJobCronService Test',
-      username: 'page bulk export job cron test user',
-      email: 'bulkExportCronTestUser@example.com',
+      name: 'Example for PageBulkExportJobCleanUpCronService Test',
+      username: 'page bulk export job cleanup cron test user',
+      email: 'bulkExportCleanUpCronTestUser@example.com',
     });
-    instanciatePageBulkExportJobCronService(crowi);
+    instanciatePageBulkExportJobCleanUpCronService(crowi);
   });
 
   beforeEach(async() => {
@@ -87,7 +87,7 @@ describe('PageBulkExportJobCronService', () => {
       expect(await PageBulkExportJob.find()).toHaveLength(4);
 
       // act
-      await pageBulkExportJobCronService?.deleteExpiredExportJobs();
+      await pageBulkExportJobCleanUpCronService?.deleteExpiredExportJobs();
       const jobs = await PageBulkExportJob.find();
 
       // assert
@@ -135,7 +135,7 @@ describe('PageBulkExportJobCronService', () => {
       expect(await PageBulkExportJob.find()).toHaveLength(4);
 
       // act
-      await pageBulkExportJobCronService?.deleteDownloadExpiredExportJobs();
+      await pageBulkExportJobCleanUpCronService?.deleteDownloadExpiredExportJobs();
       const jobs = await PageBulkExportJob.find();
 
       // assert
@@ -167,7 +167,7 @@ describe('PageBulkExportJobCronService', () => {
       expect(await PageBulkExportJob.find()).toHaveLength(3);
 
       // act
-      await pageBulkExportJobCronService?.deleteFailedExportJobs();
+      await pageBulkExportJobCleanUpCronService?.deleteFailedExportJobs();
       const jobs = await PageBulkExportJob.find();
 
       // assert
