@@ -1,16 +1,16 @@
 import fs from 'fs';
 import type { Readable } from 'stream';
 
-import type { IPage, IUser } from '@growi/core';
+import type { IUser } from '@growi/core';
 import { isPopulated, getIdForRef } from '@growi/core';
 import mongoose from 'mongoose';
 
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import type Crowi from '~/server/crowi';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import type { ActivityDocument } from '~/server/models/activity';
-import type { PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import { preNotifyService } from '~/server/service/pre-notify';
@@ -31,8 +31,7 @@ import { exportPagesToFsAsync } from './steps/export-pages-to-fs-async';
 const logger = loggerFactory('growi:service:page-bulk-export-job-cron');
 
 export interface IPageBulkExportJobCronService {
-  crowi: any;
-  pageModel: PageModel;
+  crowi: Crowi;
   pageBatchSize: number;
   maxPartSize: number;
   compressExtension: string;
@@ -42,9 +41,13 @@ export interface IPageBulkExportJobCronService {
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string;
 }
 
+/**
+ * Manages cronjob which proceeds PageBulkExportJobs in progress.
+ * If PageBulkExportJob finishes the current step, the next step will be started on the next cron execution.
+ */
 class PageBulkExportJobCronService extends CronService implements IPageBulkExportJobCronService {
 
-  crowi: any;
+  crowi: Crowi;
 
   activityEvent: any;
 
@@ -59,22 +62,18 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
   // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
   tmpOutputRootDir = '/tmp/page-bulk-export';
 
-  pageModel: PageModel;
-
-  userModel: mongoose.Model<IUser>;
-
+  // Keep track of the stream executed for PageBulkExportJob to destroy it on job failure.
+  // The key is the id of a PageBulkExportJob.
   private streamInExecutionMemo: {
     [key: string]: Readable;
   } = {};
 
   private parallelExecLimit: number;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     super();
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
-    this.pageModel = mongoose.model<IPage, PageModel>('Page');
-    this.userModel = mongoose.model<IUser>('User');
     this.parallelExecLimit = configManager.getConfig('crowi', 'app:pageBulkExportParallelExecLimit');
   }
 
@@ -90,6 +89,10 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
     pageBulkExportJobsInProgress.forEach((pageBulkExportJob) => {
       this.proceedBulkExportJob(pageBulkExportJob);
     });
+
+    if (pageBulkExportJobsInProgress.length === 0) {
+      this.stopCron();
+    }
   }
 
   /**
@@ -100,21 +103,31 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
   }
 
   /**
-   * Get the stream in execution of a job.
+   * Get the stream in execution for a job.
    * A getter method that includes "undefined" in the return type
    */
   getStreamInExecution(jobId: ObjectIdLike): Readable | undefined {
     return this.streamInExecutionMemo[jobId.toString()];
   }
 
+  /**
+   * Set the stream in execution for a job
+   */
   setStreamInExecution(jobId: ObjectIdLike, stream: Readable) {
     this.streamInExecutionMemo[jobId.toString()] = stream;
   }
 
+  /**
+   * Remove the stream in execution for a job
+   */
   removeStreamInExecution(jobId: ObjectIdLike) {
     delete this.streamInExecutionMemo[jobId.toString()];
   }
 
+  /**
+   * Proceed the page bulk export job if the next step is executable
+   * @param pageBulkExportJob PageBulkExportJob in progress
+   */
   async proceedBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument) {
     if (pageBulkExportJob.restartFlag) {
       await this.cleanUpExportJobResources(pageBulkExportJob, true);
@@ -124,11 +137,13 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
       await pageBulkExportJob.save();
     }
 
+    // return if job is still the same status as the previous cron exec
     if (pageBulkExportJob.status === pageBulkExportJob.statusOnPreviousCronExec) {
       return;
     }
+    const User = mongoose.model<IUser>('User');
     try {
-      const user = await this.userModel.findById(getIdForRef(pageBulkExportJob.user));
+      const user = await User.findById(getIdForRef(pageBulkExportJob.user));
 
       // update statusOnPreviousCronExec before starting processes that updates status
       pageBulkExportJob.statusOnPreviousCronExec = pageBulkExportJob.status;
@@ -150,6 +165,11 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
     }
   }
 
+  /**
+   * Handle errors that occurred during page bulk export
+   * @param err error
+   * @param pageBulkExportJob PageBulkExportJob executed in the pipeline
+   */
   async handleError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument) {
     if (err == null) return;
 
@@ -239,6 +259,6 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
 // eslint-disable-next-line import/no-mutable-exports
 export let pageBulkExportJobCronService: PageBulkExportJobCronService | undefined; // singleton instance
-export default function instanciate(crowi): void {
+export default function instanciate(crowi: Crowi): void {
   pageBulkExportJobCronService = new PageBulkExportJobCronService(crowi);
 }
