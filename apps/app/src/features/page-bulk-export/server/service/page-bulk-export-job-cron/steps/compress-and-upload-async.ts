@@ -1,17 +1,12 @@
-import { Writable, pipeline } from 'stream';
-
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
-import gc from 'expose-gc/function';
 
 import { PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { SupportedAction } from '~/interfaces/activity';
-import { AttachmentType, FilePathOnStoragePrefix } from '~/server/interfaces/attachment';
+import { AttachmentType } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import { Attachment } from '~/server/models/attachment';
 import type { FileUploader } from '~/server/service/file-uploader';
-import type { IMultipartUploader } from '~/server/service/file-uploader/multipart-uploader';
-import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
 import type { IPageBulkExportJobCronService } from '..';
@@ -33,85 +28,42 @@ function setUpPageArchiver(): Archiver {
   return pageArchiver;
 }
 
-function getMultipartUploadWritable(
-    this: IPageBulkExportJobCronService,
-    multipartUploader: IMultipartUploader,
-    pageBulkExportJob: PageBulkExportJobDocument,
-    attachment: IAttachmentDocument,
-): Writable {
-  let partNumber = 1;
+async function postProcess(
+    this: IPageBulkExportJobCronService, pageBulkExportJob: PageBulkExportJobDocument, attachment: IAttachmentDocument, fileSize: number,
+): Promise<void> {
+  attachment.fileSize = fileSize;
+  await attachment.save();
 
-  return new Writable({
-    write: async(part: Buffer, encoding, callback) => {
-      try {
-        await multipartUploader.uploadPart(part, partNumber);
-        partNumber += 1;
-        // First aid to prevent unexplained memory leaks
-        logger.info('global.gc() invoked.');
-        gc();
-      }
-      catch (err) {
-        await multipartUploader.abortUpload();
-        callback(err);
-        return;
-      }
-      callback();
-    },
-    final: async(callback) => {
-      try {
-        await multipartUploader.completeUpload();
+  pageBulkExportJob.completedAt = new Date();
+  pageBulkExportJob.attachment = attachment._id;
+  pageBulkExportJob.status = PageBulkExportJobStatus.completed;
+  await pageBulkExportJob.save();
 
-        const fileSize = await multipartUploader.getUploadedFileSize();
-        attachment.fileSize = fileSize;
-        await attachment.save();
-
-        pageBulkExportJob.completedAt = new Date();
-        pageBulkExportJob.attachment = attachment._id;
-        pageBulkExportJob.status = PageBulkExportJobStatus.completed;
-        await pageBulkExportJob.save();
-
-        await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED, pageBulkExportJob);
-      }
-      catch (err) {
-        callback(err);
-        return;
-      }
-      callback();
-    },
-  });
+  await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED, pageBulkExportJob);
 }
-
 
 /**
  * Execute a pipeline that reads the page files from the temporal fs directory, compresses them, and uploads to the cloud storage
  */
 export async function compressAndUploadAsync(this: IPageBulkExportJobCronService, user, pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
   const pageArchiver = setUpPageArchiver();
-  const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.maxPartSize);
 
   if (pageBulkExportJob.revisionListHash == null) throw new Error('revisionListHash is not set');
   const originalName = `${pageBulkExportJob.revisionListHash}.${this.compressExtension}`;
   const attachment = Attachment.createWithoutSave(null, user, originalName, this.compressExtension, 0, AttachmentType.PAGE_BULK_EXPORT);
-  const uploadKey = `${FilePathOnStoragePrefix.pageBulkExport}/${attachment.fileName}`;
 
   const fileUploadService: FileUploader = this.crowi.fileUploadService;
-  // if the process of uploading was interrupted, delete and start from the start
-  if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
-    await fileUploadService.abortPreviousMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId);
-  }
 
-  // init multipart upload
-  const multipartUploader: IMultipartUploader = fileUploadService.createMultipartUploader(uploadKey, this.maxPartSize);
-  await multipartUploader.initUpload();
-  pageBulkExportJob.uploadKey = uploadKey;
-  pageBulkExportJob.uploadId = multipartUploader.uploadId;
-  await pageBulkExportJob.save();
-
-  const multipartUploadWritable = getMultipartUploadWritable.bind(this)(multipartUploader, pageBulkExportJob, attachment);
-
-  pipeline(pageArchiver, bufferToPartSizeTransform, multipartUploadWritable, (err) => {
-    this.handlePipelineError(err, pageBulkExportJob);
-  });
   pageArchiver.directory(this.getTmpOutputDir(pageBulkExportJob), false);
   pageArchiver.finalize();
+  this.setStreamInExecution(pageBulkExportJob._id, pageArchiver);
+
+  try {
+    await fileUploadService.uploadAttachment(pageArchiver, attachment);
+  }
+  catch (e) {
+    logger.error(e);
+    this.handleError(e, pageBulkExportJob);
+  }
+  await postProcess.bind(this)(pageBulkExportJob, attachment, pageArchiver.pointer());
 }
