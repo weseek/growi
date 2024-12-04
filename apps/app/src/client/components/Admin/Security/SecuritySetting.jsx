@@ -90,7 +90,7 @@ class SecuritySetting extends React.Component {
     // render
     this.renderPageDeletePermission = this.renderPageDeletePermission.bind(this);
     this.renderPageDeletePermissionDropdown = this.renderPageDeletePermissionDropdown.bind(this);
-    this.securitysettingDropdown = this.securitysettingDropdown.bind(this);
+    this.securitySettingDropdown = this.securitySettingDropdown.bind(this);
   }
 
   async putSecuritySetting() {
@@ -187,9 +187,8 @@ class SecuritySetting extends React.Component {
   }
 
 
-  securitySettingsDropdown = () => {
+  securitySettingsDropdown = (useState) => {
     const { t } = this.props;
-    // eslint-disable-next-line no-undef
     const [settings, setSettings] = useState({
       isShowRestrictedByOwner: false,
       isShowRestrictedByGroup: false,
@@ -455,7 +454,7 @@ class SecuritySetting extends React.Component {
             </div>
 
             <div className="col-auto mt-4">
-              <this.securitysettingDropdown />
+              <this.securitySettingDropdown />
             </div>
 
             <div className="container text-center">
@@ -465,7 +464,7 @@ class SecuritySetting extends React.Component {
                 </div>
 
                 <div className="col-auto mt-4">
-                  <this.securitysettingDropdown />
+                  <this.securitySettingDropdown />
                 </div>
               </div>
             </div>
