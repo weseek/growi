@@ -12,7 +12,9 @@ import { Provider } from 'unstated';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { CommonProps } from '~/pages/utils/commons';
 import { generateCustomTitle } from '~/pages/utils/commons';
-import { useCustomizeTitle, useCurrentUser, useIsCustomizedLogoUploaded } from '~/stores-universal/context';
+import {
+  useCustomizeTitle, useCurrentUser, useIsCustomizedLogoUploaded, useCsrfToken,
+} from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -32,6 +34,7 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
   useCustomizeTitle(props.customizeTitle);
   useCurrentUser(props.currentUser ?? null);
   useIsCustomizedLogoUploaded(props.isCustomizedLogoUploaded);
+  useCsrfToken(props.csrfToken);
 
   const componentTitle = t('customize_settings.customize_settings');
   const pageTitle = generateCustomTitle(props, componentTitle);

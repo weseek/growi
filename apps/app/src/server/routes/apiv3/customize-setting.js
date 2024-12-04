@@ -2,6 +2,7 @@
 
 import { GrowiPluginType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
+import csrf from 'csurf';
 import express from 'express';
 import { body } from 'express-validator';
 import multer from 'multer';
@@ -19,6 +20,8 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:customize-setting');
 
 const router = express.Router();
+
+const csrfProtection = csrf({ cookie: false });
 
 
 /**
@@ -702,7 +705,7 @@ module.exports = (crowi) => {
   });
 
   router.post('/upload-brand-logo', uploads.single('file'), loginRequiredStrictly,
-    adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
+    adminRequired, csrfProtection, validator.logo, apiV3FormValidator, async(req, res) => {
 
       if (req.file == null) {
         return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));
