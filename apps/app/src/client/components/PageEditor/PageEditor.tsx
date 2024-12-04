@@ -27,7 +27,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType,
+  useAcceptedUploadFileType, useCsrfToken,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
@@ -115,6 +115,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: rendererOptions } = usePreviewOptions();
 
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+
+  const { data: csrfToken } = useCsrfToken();
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
@@ -249,7 +251,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       throw new Error('pageId is invalid');
     }
 
-    uploadAttachments(pageId, files, {
+    uploadAttachments(pageId, files, csrfToken, {
       onUploaded: (attachment) => {
         const fileName = attachment.originalName;
 
@@ -264,7 +266,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         toastError(error);
       },
     });
-  }, [codeMirrorEditor, pageId]);
+  }, [codeMirrorEditor, csrfToken, pageId]);
 
 
   const cmProps = useMemo(() => ({

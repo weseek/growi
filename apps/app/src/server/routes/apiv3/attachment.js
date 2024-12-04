@@ -1,5 +1,6 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
+import csrf from 'csurf';
 import express from 'express';
 import multer from 'multer';
 import autoReap from 'multer-autoreap';
@@ -15,6 +16,9 @@ import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
+
+
+const csrfProtection = csrf({ cookie: false });
 
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
@@ -338,7 +342,7 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.post('/', uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
+  router.post('/', uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, csrfProtection,
     validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
     async(req, res) => {
 

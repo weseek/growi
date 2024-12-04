@@ -19,7 +19,7 @@ import {
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
 import {
-  useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
+  useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType, useCsrfToken,
 } from '~/stores-universal/context';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { useSWRxPageComment } from '~/stores/comment';
@@ -92,6 +92,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   } = useCommentEditorDirtyMap();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
   const { resolvedTheme } = useNextThemes();
+  const { data: csrfToken } = useCsrfToken();
   mutateResolvedTheme({ themeData: resolvedTheme });
 
   const editorKey = useMemo(() => {
@@ -191,7 +192,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   // the upload event handler
   const uploadHandler = useCallback((files: File[]) => {
-    uploadAttachments(pageId, files, {
+    uploadAttachments(pageId, files, csrfToken, {
       onUploaded: (attachment) => {
         const fileName = attachment.originalName;
 
@@ -206,7 +207,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
         toastError(error);
       },
     });
-  }, [codeMirrorEditor, pageId]);
+  }, [codeMirrorEditor, csrfToken, pageId]);
 
   const cmProps = useMemo(() => ({
     onChange: async(value: string) => {

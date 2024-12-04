@@ -13,7 +13,7 @@ type UploadOpts = {
   onError?: (error: Error, file: File) => void,
 }
 
-export const uploadAttachments = async(pageId: string, files: File[], opts?: UploadOpts): Promise<void> => {
+export const uploadAttachments = async(pageId: string, files: File[], csrfToken?: string, opts?: UploadOpts): Promise<void> => {
   files.forEach(async(file) => {
     try {
       const params: IApiv3GetAttachmentLimitParams = { fileSize: file.size };
@@ -26,6 +26,7 @@ export const uploadAttachments = async(pageId: string, files: File[], opts?: Upl
       const formData = new FormData();
       formData.append('file', file);
       formData.append('page_id', pageId);
+      formData.append('_csrf', csrfToken ?? '');
 
       const { data: resAdd } = await apiv3PostForm<IApiv3PostAttachmentResponse>('/attachment', formData);
 
