@@ -197,7 +197,7 @@ class PassportService implements S2sMessageHandlable {
     const func = this.getSetupFunction(authId);
 
     try {
-      this[func.setup]();
+      await this[func.setup]();
     }
     catch (err) {
       logger.debug(err);
