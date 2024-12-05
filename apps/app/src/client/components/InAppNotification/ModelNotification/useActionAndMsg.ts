@@ -70,6 +70,15 @@ export const useActionMsgAndIconForModelNotification = (notification: IInAppNoti
       actionMsg = 'requested registration approval';
       actionIcon = 'add_comment';
       break;
+    case SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED:
+      actionMsg = 'export completed for';
+      actionIcon = 'download';
+      break;
+    case SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED:
+    case SupportedAction.ACTION_PAGE_BULK_EXPORT_JOB_EXPIRED:
+      actionMsg = 'export failed for';
+      actionIcon = 'error';
+      break;
     default:
       actionMsg = '';
       actionIcon = '';

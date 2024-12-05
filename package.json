@@ -72,6 +72,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-rulesdir": "^0.2.2",
     "eslint-plugin-vitest": "^0.2.3",
+    "eslint-plugin-regex": "^1.8.0",
     "glob": "^8.1.0",
     "mock-require": "^3.0.3",
     "nodemon": "^3.1.3",
