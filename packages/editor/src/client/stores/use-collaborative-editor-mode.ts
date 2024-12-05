@@ -21,7 +21,6 @@ export const useCollaborativeEditorMode = (
     isEnabled: boolean,
     user?: IUserHasId,
     pageId?: string,
-    initialValue?: string,
     onEditorsUpdated?: (userList: IUserHasId[]) => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
@@ -107,7 +106,7 @@ export const useCollaborativeEditorMode = (
     });
 
     setProvider(socketIOProvider);
-  }, [initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
+  }, [onEditorsUpdated, pageId, provider, socket, user, ydoc]);
 
   // Setup Ydoc Extensions
   useEffect(() => {

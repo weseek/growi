@@ -162,6 +162,7 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
+  "single-editor-mode-alert": "このページの本文は {{yjsMaxBodyLength}} 文字を超えているため、同時多人数編集は無効化されます。有効にするにはページ本文の文字数が閾値以下になるようにして保存し、再度エディターを開いてください。",
   "source": "出典",
   "input_validation": {
     "target": {

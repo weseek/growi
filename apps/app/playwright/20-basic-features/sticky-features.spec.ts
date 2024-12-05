@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+import { openEditor } from '../utils';
+
 test.describe('Sticky features', () => {
   test.beforeEach(async({ page }) => {
     await page.goto('/');
@@ -31,7 +33,7 @@ test.describe('Sticky features', () => {
     await expect(page.locator('.sticky-outer-wrapper').first()).toHaveClass(/active/);
 
     // Click editor button
-    await page.getByTestId('editor-button').click();
+    await openEditor(page);
     await expect(page.locator('.layout-root')).toHaveClass(/editing/);
   });
 
