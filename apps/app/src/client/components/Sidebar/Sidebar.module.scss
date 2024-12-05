@@ -44,6 +44,9 @@
         min-height: 50vh;
         max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
         border-radius: 0 4px 4px 0 ;
+        .simple-scrollbar {
+          max-height: inherit;
+        }
       }
     }
   }
@@ -73,6 +76,15 @@
   }
 }
 
+
+.grw-sidebar :global {
+
+  // overwrite simplebar-react css
+  .simplebar-scrollbar::before {
+    background-color:var(--bs-gray-500);
+  }
+
+}
 
 @include bs.color-mode(light) {
   .grw-sidebar :global {
