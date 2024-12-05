@@ -1,6 +1,6 @@
 import escapeStringRegexp from 'escape-string-regexp';
 
-import { IUser } from '~/interfaces';
+import type { IUser } from '~/interfaces';
 
 import { isValidObjectId } from '../objectid-utils';
 import { addTrailingSlash } from '../path-utils';
@@ -117,6 +117,7 @@ const restrictedPatternsToCreate: Array<RegExp> = [
   /^\/(_search|_private-legacy-pages)(\/.*|$)/,
   /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share|attachment)(\/.*|$)/,
   /^\/user(?:\/[^/]+)?$/, // https://regex101.com/r/9Eh2S1/1
+  /^.{2000000,}$/, // avoid very long path. see: https://regex101.com/r/s9cCdf/1
 ];
 export const isCreatablePage = (path: string): boolean => {
   return !restrictedPatternsToCreate.some(pattern => path.match(pattern));
