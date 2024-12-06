@@ -93,6 +93,8 @@ module.exports = (crowi: Crowi): Router => {
       const activity = await crowi.activityService.createActivity(parametersForActivity);
 
       announcementService?.doAnnounce(activity, page, params);
+
+      return res.apiv3();
     }
     catch (err) {
       logger.error(err);
