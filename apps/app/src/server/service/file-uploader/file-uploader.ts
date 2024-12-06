@@ -1,4 +1,4 @@
-import type { ReadStream } from 'fs';
+import type { Readable } from 'stream';
 
 import type { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
@@ -39,7 +39,7 @@ export interface FileUploader {
   getTotalFileSize(): Promise<number>,
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<ICheckLimitResult>,
   determineResponseMode(): ResponseMode,
-  uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>,
+  uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void>,
   respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
   generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
@@ -164,7 +164,7 @@ export abstract class AbstractFileUploader implements FileUploader {
     throw new Error('Multipart upload not available for file upload type');
   }
 
-  abstract uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>;
+  abstract uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void>;
 
   /**
    * Abort an existing multipart upload without creating a MultipartUploader instance

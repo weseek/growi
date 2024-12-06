@@ -85,8 +85,6 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  const [isBulkExportTooltipOpen, setIsBulkExportTooltipOpen] = useState(false);
-
   const syncLatestRevisionBodyHandler = useCallback(async() => {
     // eslint-disable-next-line no-alert
     const answer = window.confirm(t('sync-latest-revision-body.confirm'));
@@ -144,25 +142,18 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
       </DropdownItem>
 
       {/* Bulk export */}
-      <span id="bulkExportDropdownItem">
-        <DropdownItem
-          disabled={!isPageBulkExportEnabled}
-          onClick={openPageBulkExportSelectModal}
-          className="grw-page-control-dropdown-item"
-        >
-          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
-          {t('page_export.bulk_export')}
-        </DropdownItem>
-      </span>
-      <Tooltip
-        placement="left"
-        isOpen={!isPageBulkExportEnabled && isBulkExportTooltipOpen}
-        // Tooltip cannot be activated when target is disabled so set the target to wrapper span
-        target="bulkExportDropdownItem"
-        toggle={() => setIsBulkExportTooltipOpen(!isBulkExportTooltipOpen)}
-      >
-        {t('page_export.bulk_export_only_available_for')}
-      </Tooltip>
+      {isPageBulkExportEnabled && (
+        <span id="bulkExportDropdownItem">
+          <DropdownItem
+            disabled={!isPageBulkExportEnabled}
+            onClick={openPageBulkExportSelectModal}
+            className="grw-page-control-dropdown-item"
+          >
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
+            {t('page_export.bulk_export')}
+          </DropdownItem>
+        </span>
+      )}
 
       <DropdownItem divider />
 

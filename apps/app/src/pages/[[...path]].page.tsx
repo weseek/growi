@@ -585,7 +585,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
-  props.isPageBulkExportEnabled = PageBulkExportEnabledFileUploadTypes.includes(configManager.getConfig('crowi', 'app:fileUploadType'));
+  // TODO: allow enabling/disabling bulk export in https://redmine.weseek.co.jp/issues/158221
+  props.isPageBulkExportEnabled = true;
 
   props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
   && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;

@@ -76,7 +76,7 @@ class LocalFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     throw new Error('Method not implemented.');
   }
 

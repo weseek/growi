@@ -1,4 +1,4 @@
-import type { ReadStream } from 'fs';
+import type { Readable } from 'stream';
 
 import type { TokenCredential } from '@azure/identity';
 import { ClientSecretCredential } from '@azure/identity';
@@ -102,7 +102,7 @@ class AzureFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     if (!this.getIsUploadable()) {
       throw new Error('Azure is not configured.');
     }
@@ -113,7 +113,7 @@ class AzureFileUploader extends AbstractFileUploader {
     const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
     const contentHeaders = new ContentHeaders(attachment);
 
-    await blockBlobClient.uploadStream(readStream, undefined, undefined, {
+    await blockBlobClient.uploadStream(readable, undefined, undefined, {
       blobHTTPHeaders: {
         // put type and the file name for reference information when uploading
         blobContentType: contentHeaders.contentType?.value.toString(),

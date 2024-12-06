@@ -698,7 +698,6 @@
     "bulk_export_started": "ただいま準備中です...",
     "bulk_export_download_expired": "ダウンロード期限が切れました",
     "bulk_export_job_expired": "エクスポート時間が長すぎるため、処理が中断されました",
-    "bulk_export_only_available_for": "AWS と GCP のみ対応しています",
     "export_in_progress": "エクスポート進行中",
     "export_in_progress_explanation": "既に同じ形式でのエクスポートが進行中です。最新のページ内容でエクスポートを最初からやり直しますか？",
     "export_cancel_warning": "進行中の以下のエクスポートはキャンセルされます",
