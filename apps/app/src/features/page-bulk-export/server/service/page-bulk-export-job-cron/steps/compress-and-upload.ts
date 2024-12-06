@@ -39,6 +39,7 @@ async function postProcess(
   pageBulkExportJob.status = PageBulkExportJobStatus.completed;
   await pageBulkExportJob.save();
 
+  this.removeStreamInExecution(pageBulkExportJob._id);
   await this.notifyExportResultAndCleanUp(SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED, pageBulkExportJob);
 }
 

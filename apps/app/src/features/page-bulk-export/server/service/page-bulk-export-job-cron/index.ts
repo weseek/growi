@@ -36,6 +36,7 @@ export interface IPageBulkExportJobCronService {
   maxPartSize: number;
   compressExtension: string;
   setStreamInExecution(jobId: ObjectIdLike, stream: Readable): void;
+  removeStreamInExecution(jobId: ObjectIdLike): void;
   handleError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument): void;
   notifyExportResultAndCleanUp(action: SupportedActionType, pageBulkExportJob: PageBulkExportJobDocument): Promise<void>;
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string;
@@ -224,8 +225,8 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
       else {
         streamInExecution.destroy(new BulkExportJobExpiredError());
       }
+      this.removeStreamInExecution(pageBulkExportJob._id);
     }
-    this.removeStreamInExecution(pageBulkExportJob._id);
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
