@@ -83,11 +83,14 @@ module.exports = (crowi) => {
    *                      $ref: "#/components/schemas/SystemInformationParams"
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+    const { getRuntimeVersions } = await import('~/server/util/runtime-versions');
+    const runtimeVersions = await getRuntimeVersions();
+
     const adminHomeParams = {
       growiVersion: crowi.version,
-      nodeVersion: crowi.runtimeVersions.versions.node ? crowi.runtimeVersions.versions.node.version.version : '-',
-      npmVersion: crowi.runtimeVersions.versions.npm ? crowi.runtimeVersions.versions.npm.version.version : '-',
-      pnpmVersion: crowi.runtimeVersions.versions.pnpm ? crowi.runtimeVersions.versions.pnpm.version.version : '-',
+      nodeVersion: runtimeVersions.node ?? '-',
+      npmVersion: runtimeVersions.npm ?? '-',
+      pnpmVersion: runtimeVersions.pnpm ?? '-',
       envVars: await ConfigLoader.getEnvVarsForDisplay(true),
       isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
       isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
