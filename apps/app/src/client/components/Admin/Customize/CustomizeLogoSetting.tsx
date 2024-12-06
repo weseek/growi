@@ -7,7 +7,7 @@ import {
   apiv3Delete, apiv3PostForm, apiv3Put,
 } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { useIsDefaultLogo, useIsCustomizedLogoUploaded, useCsrfToken } from '~/stores-universal/context';
+import { useIsDefaultLogo, useIsCustomizedLogoUploaded } from '~/stores-universal/context';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
@@ -18,7 +18,6 @@ const CUSTOMIZED_LOGO = '/attachment/brand-logo';
 const CustomizeLogoSetting = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const { data: csrfToken } = useCsrfToken();
   const { data: isDefaultLogo } = useIsDefaultLogo();
   const { data: isCustomizedLogoUploaded, mutate: mutateIsCustomizedLogoUploaded } = useIsCustomizedLogoUploaded();
 
@@ -64,7 +63,6 @@ const CustomizeLogoSetting = (): JSX.Element => {
     try {
       const formData = new FormData();
       formData.append('file', croppedImage);
-      formData.append('_csrf', csrfToken ?? '');
       await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
       mutateIsCustomizedLogoUploaded(true);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo'), ns: 'commons' }));
@@ -74,7 +72,7 @@ const CustomizeLogoSetting = (): JSX.Element => {
       setRetrieveError(err);
       throw new Error('Failed to upload brand logo');
     }
-  }, [csrfToken, mutateIsCustomizedLogoUploaded, t]);
+  }, [mutateIsCustomizedLogoUploaded, t]);
 
   return (
     <React.Fragment>

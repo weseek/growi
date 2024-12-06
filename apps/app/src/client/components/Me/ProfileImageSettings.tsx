@@ -8,7 +8,7 @@ import ImageCropModal from '~/client/components/Common/ImageCropModal';
 import { apiPost, apiPostForm } from '~/client/util/apiv1-client';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useCurrentUser, useCsrfToken } from '~/stores-universal/context';
+import { useCurrentUser } from '~/stores-universal/context';
 import { generateGravatarSrc, GRAVATAR_DEFAULT } from '~/utils/gravatar';
 
 
@@ -19,7 +19,6 @@ const ProfileImageSettings = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
-  const { data: csrfToken } = useCsrfToken();
 
   const [isGravatarEnabled, setGravatarEnabled] = useState(currentUser?.isGravatarEnabled);
   const [uploadedPictureSrc, setUploadedPictureSrc] = useState(() => {
@@ -47,7 +46,6 @@ const ProfileImageSettings = (): JSX.Element => {
   const processImageCompletedHandler = useCallback(async(croppedImage) => {
     try {
       const formData = new FormData();
-      formData.append('_csrf', csrfToken ?? '');
       formData.append('file', croppedImage);
       const response = await apiPostForm('/attachments.uploadProfileImage', formData);
 
