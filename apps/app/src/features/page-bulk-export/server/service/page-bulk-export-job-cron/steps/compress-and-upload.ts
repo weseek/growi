@@ -45,7 +45,7 @@ async function postProcess(
 /**
  * Execute a pipeline that reads the page files from the temporal fs directory, compresses them, and uploads to the cloud storage
  */
-export async function compressAndUploadAsync(this: IPageBulkExportJobCronService, user, pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+export async function compressAndUpload(this: IPageBulkExportJobCronService, user, pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
   const pageArchiver = setUpPageArchiver();
 
   if (pageBulkExportJob.revisionListHash == null) throw new Error('revisionListHash is not set');

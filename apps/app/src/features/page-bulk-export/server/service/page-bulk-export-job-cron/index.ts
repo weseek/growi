@@ -23,7 +23,7 @@ import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snaps
 
 
 import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors';
-import { compressAndUploadAsync } from './steps/compress-and-upload-async';
+import { compressAndUpload } from './steps/compress-and-upload';
 import { createPageSnapshotsAsync } from './steps/create-page-snapshots-async';
 import { exportPagesToFsAsync } from './steps/export-pages-to-fs-async';
 
@@ -156,7 +156,7 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
         exportPagesToFsAsync.bind(this)(pageBulkExportJob);
       }
       else if (pageBulkExportJob.status === PageBulkExportJobStatus.uploading) {
-        await compressAndUploadAsync.bind(this)(user, pageBulkExportJob);
+        compressAndUpload.bind(this)(user, pageBulkExportJob);
       }
     }
     catch (err) {
