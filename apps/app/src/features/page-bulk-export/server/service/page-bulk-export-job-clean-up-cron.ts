@@ -30,8 +30,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   }
 
   override async executeJob(): Promise<void> {
-    const isPageBulkExportEnabled = configManager.getConfig('crowi', 'app:isPageBulkExportEnabled');
-    if (!isPageBulkExportEnabled) return;
+    // Execute cleanup even if isPageBulkExportEnabled is false, to cleanup jobs which were created before bulk export was disabled
 
     await this.deleteExpiredExportJobs();
     await this.deleteDownloadExpiredExportJobs();
