@@ -1,0 +1,17 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "tasks": {
+    "dev:pdf-converter": {
+      "cache": false,
+      "persistent": true
+    },
+    "dev:pdf-converter:ci": {
+      "cache": false
+    },
+    "build": {
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
+    }
+  }
+}
