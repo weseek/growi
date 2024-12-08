@@ -1,5 +1,6 @@
 import type { HydratedDocument } from 'mongoose';
 
+import type Crowi from '~/server/crowi';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import loggerFactory from '~/utils/logger';
@@ -17,9 +18,9 @@ const logger = loggerFactory('growi:service:page-bulk-export-job-clean-up-cron')
  */
 class PageBulkExportJobCleanUpCronService extends CronService {
 
-  crowi: any;
+  crowi: Crowi;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     super();
     this.crowi = crowi;
   }
@@ -29,6 +30,9 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   }
 
   override async executeJob(): Promise<void> {
+    const isPageBulkExportEnabled = configManager.getConfig('crowi', 'app:isPageBulkExportEnabled');
+    if (!isPageBulkExportEnabled) return;
+
     await this.deleteExpiredExportJobs();
     await this.deleteDownloadExpiredExportJobs();
     await this.deleteFailedExportJobs();
@@ -110,6 +114,6 @@ class PageBulkExportJobCleanUpCronService extends CronService {
 
 // eslint-disable-next-line import/no-mutable-exports
 export let pageBulkExportJobCleanUpCronService: PageBulkExportJobCleanUpCronService | undefined; // singleton instance
-export default function instanciate(crowi): void {
+export default function instanciate(crowi: Crowi): void {
   pageBulkExportJobCleanUpCronService = new PageBulkExportJobCleanUpCronService(crowi);
 }

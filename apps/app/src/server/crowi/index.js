@@ -332,14 +332,12 @@ Crowi.prototype.setupSocketIoService = async function() {
 
 Crowi.prototype.setupCron = function() {
   questionnaireCronService.startCron();
-  const isPageBulkExportEnabled = this.configManager.getConfig('crowi', 'app:isPageBulkExportEnabled');
-  if (isPageBulkExportEnabled) {
-    instanciatePageBulkExportJobCronService(this);
-    checkPageBulkExportJobInProgressCronService.startCron();
 
-    instanciatePageBulkExportJobCleanUpCronService(this);
-    pageBulkExportJobCleanUpCronService.startCron();
-  }
+  instanciatePageBulkExportJobCronService(this);
+  checkPageBulkExportJobInProgressCronService.startCron();
+
+  instanciatePageBulkExportJobCleanUpCronService(this);
+  pageBulkExportJobCleanUpCronService.startCron();
 
   startOpenaiCronIfEnabled();
 };
