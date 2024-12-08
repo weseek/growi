@@ -11,7 +11,7 @@ const logger = loggerFactory('growi:service:cron');
 abstract class CronService {
 
   // The current cronjob to manage
-  cronJob: ScheduledTask;
+  cronJob: ScheduledTask | undefined;
 
   /**
    * Create and start a new cronjob
@@ -26,7 +26,12 @@ abstract class CronService {
    * Stop the current cronjob
    */
   stopCron(): void {
-    this.cronJob.stop();
+    this.cronJob?.stop();
+    this.cronJob = undefined;
+  }
+
+  isJobRunning(): boolean {
+    return this.cronJob != null;
   }
 
   /**
