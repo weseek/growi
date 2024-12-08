@@ -781,12 +781,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.STRING,
     default: '*/10 * * * *', // every 10 minutes
   },
-  BULK_EXPORT_PDF_CONVERT_CRON_SCHEDULE: {
-    ns: 'crowi',
-    key: 'app:pageBulkExportPdfConvertCronSchedule',
-    type: ValueType.STRING,
-    default: '* * * * *', // every 1 minute
-  },
   BULK_EXPORT_PARALLEL_EXEC_LIMIT: {
     ns: 'crowi',
     key: 'app:pageBulkExportParallelExecLimit',

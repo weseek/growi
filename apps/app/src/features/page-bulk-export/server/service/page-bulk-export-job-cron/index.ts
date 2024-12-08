@@ -17,13 +17,14 @@ import type { FileUploader } from '~/server/service/file-uploader';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
+import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
 import PageBulkExportJob from '../../models/page-bulk-export-job';
 import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
 
 
 import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors';
+import { requestPdfConverter } from './request-pdf-converter';
 import { compressAndUploadAsync } from './steps/compress-and-upload-async';
 import { createPageSnapshotsAsync } from './steps/create-page-snapshots-async';
 import { exportPagesToFsAsync } from './steps/export-pages-to-fs-async';
@@ -130,20 +131,25 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
    * @param pageBulkExportJob PageBulkExportJob in progress
    */
   async proceedBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument) {
-    if (pageBulkExportJob.restartFlag) {
-      await this.cleanUpExportJobResources(pageBulkExportJob, true);
-      pageBulkExportJob.restartFlag = false;
-      pageBulkExportJob.status = PageBulkExportJobStatus.initializing;
-      pageBulkExportJob.statusOnPreviousCronExec = undefined;
-      await pageBulkExportJob.save();
-    }
-
-    // return if job is still the same status as the previous cron exec
-    if (pageBulkExportJob.status === pageBulkExportJob.statusOnPreviousCronExec) {
-      return;
-    }
-    const User = mongoose.model<IUser>('User');
     try {
+      if (pageBulkExportJob.restartFlag) {
+        await this.cleanUpExportJobResources(pageBulkExportJob, true);
+        pageBulkExportJob.restartFlag = false;
+        pageBulkExportJob.status = PageBulkExportJobStatus.initializing;
+        pageBulkExportJob.statusOnPreviousCronExec = undefined;
+        await pageBulkExportJob.save();
+      }
+
+      if (pageBulkExportJob.status === PageBulkExportJobStatus.exporting && pageBulkExportJob.format === PageBulkExportFormat.pdf) {
+        await requestPdfConverter(pageBulkExportJob);
+      }
+
+      // return if job is still the same status as the previous cron exec
+      if (pageBulkExportJob.status === pageBulkExportJob.statusOnPreviousCronExec) {
+        return;
+      }
+
+      const User = mongoose.model<IUser>('User');
       const user = await User.findById(getIdForRef(pageBulkExportJob.user));
 
       // update statusOnPreviousCronExec before starting processes that updates status

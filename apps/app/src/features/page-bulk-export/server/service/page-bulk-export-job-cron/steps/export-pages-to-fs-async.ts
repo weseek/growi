@@ -43,8 +43,12 @@ function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExportJob:
     },
     final: async(callback) => {
       try {
-        pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
-        await pageBulkExportJob.save();
+        // If the format is md, the export process ends here.
+        // If the format is pdf, pdf conversion in pdf-converter has to finish.
+        if (pageBulkExportJob.format === PageBulkExportFormat.md) {
+          pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
+          await pageBulkExportJob.save();
+        }
       }
       catch (err) {
         callback(err);
