@@ -4,11 +4,13 @@ import type { DefineStyle } from './types';
 
 const sourceHanCodeJPSubsetMain = localFont({
   src: '../../../resource/fonts/SourceHanCodeJP-Regular-subset-main.woff2',
-  display: 'optional',
+  display: 'swap',
+  preload: false,
 });
 const sourceHanCodeJPSubsetJis2 = localFont({
   src: '../../../resource/fonts/SourceHanCodeJP-Regular-subset-jis2.woff2',
-  display: 'optional',
+  display: 'swap',
+  preload: false,
 });
 
 export const useSourceHanCodeJP: DefineStyle = () => (

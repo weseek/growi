@@ -36,6 +36,7 @@ module.exports = {
       tags: [
         'Attachment',
         'Bookmarks',
+        'BookmarkFolders',
         'Page',
         'Pages',
         'Revisions',
