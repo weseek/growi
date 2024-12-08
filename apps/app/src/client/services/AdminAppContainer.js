@@ -23,6 +23,7 @@ export default class AdminAppContainer extends Container {
       globalLang: '',
       isEmailPublishedForNewUser: true,
       fileUpload: '',
+      isPageBulkExportEnabled: false,
 
       isV5Compatible: null,
       siteUrl: '',
@@ -100,6 +101,7 @@ export default class AdminAppContainer extends Container {
       globalLang: appSettingsParams.globalLang,
       isEmailPublishedForNewUser: appSettingsParams.isEmailPublishedForNewUser,
       fileUpload: appSettingsParams.fileUpload,
+      isPageBulkExportEnabled: appSettingsParams.isPageBulkExportEnabled,
       isV5Compatible: appSettingsParams.isV5Compatible,
       siteUrl: appSettingsParams.siteUrl,
       siteUrlUseOnlyEnvVars: appSettingsParams.siteUrlUseOnlyEnvVars,
@@ -193,6 +195,13 @@ export default class AdminAppContainer extends Container {
    */
   changeFileUpload(fileUpload) {
     this.setState({ fileUpload });
+  }
+
+  /**
+   * Change isPageBulkExportEnabled
+   */
+  changeIsPageBulkExportEnabled(isPageBulkExportEnabled) {
+    this.setState({ isPageBulkExportEnabled });
   }
 
   /**
@@ -397,6 +406,7 @@ export default class AdminAppContainer extends Container {
       globalLang: this.state.globalLang,
       isEmailPublishedForNewUser: this.state.isEmailPublishedForNewUser,
       fileUpload: this.state.fileUpload,
+      isPageBulkExportEnabled: this.state.isPageBulkExportEnabled,
     });
     const { appSettingParams } = response.data;
     return appSettingParams;

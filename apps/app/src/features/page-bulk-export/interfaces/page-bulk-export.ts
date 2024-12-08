@@ -3,8 +3,6 @@ import type {
   IAttachment, IPage, IRevision, IUser, Ref,
 } from '@growi/core';
 
-import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
-
 export const PageBulkExportFormat = {
   md: 'md',
   pdf: 'pdf',
@@ -51,5 +49,3 @@ export interface IPageBulkExportPageSnapshot {
   path: string, // page path when export was stared
   revision: Ref<IRevision>, // page revision when export was stared
 }
-
-export const PageBulkExportEnabledServiceTypes = [GrowiServiceType.onPremise, GrowiServiceType.others] as const;

@@ -787,6 +787,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.NUMBER,
     default: 5,
   },
+  BULK_EXPORT_ENABLED: {
+    ns: 'crowi',
+    key: 'app:isPageBulkExportEnabled',
+    type: ValueType.BOOLEAN,
+    default: false,
+  },
   AI_ENABLED: {
     ns: 'crowi',
     key: 'app:aiEnabled',

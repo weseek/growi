@@ -145,7 +145,6 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
       {isPageBulkExportEnabled && (
         <span id="bulkExportDropdownItem">
           <DropdownItem
-            disabled={!isPageBulkExportEnabled}
             onClick={openPageBulkExportSelectModal}
             className="grw-page-control-dropdown-item"
           >
