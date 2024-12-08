@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import type { Readable } from 'stream';
 
 import type { IUser } from '@growi/core';
@@ -40,7 +41,7 @@ export interface IPageBulkExportJobCronService {
   setStreamInExecution(jobId: ObjectIdLike, stream: Readable): void;
   handlePipelineError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument): void;
   notifyExportResultAndCleanUp(action: SupportedActionType, pageBulkExportJob: PageBulkExportJobDocument): Promise<void>;
-  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string;
+  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath: boolean): string;
 }
 
 /**
@@ -99,9 +100,14 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
   /**
    * Get the output directory on the fs to temporarily store page files before compressing and uploading
+   * @param pageBulkExportJob page bulk export job in execution
+   * @param isHtmlPath whether the tmp output path is for html files
    */
-  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string {
-    return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
+  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath = false): string {
+    if (isHtmlPath) {
+      return path.join(this.tmpOutputRootDir, 'html', pageBulkExportJob._id.toString());
+    }
+    return path.join(this.tmpOutputRootDir, pageBulkExportJob._id.toString());
   }
 
   /**
