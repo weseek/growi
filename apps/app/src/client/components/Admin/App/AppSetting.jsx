@@ -170,6 +170,34 @@ const AppSetting = (props) => {
         </div>
       </div>
 
+      <div className="row mb-2">
+        <label className="text-start text-md-end col-md-3 col-form-label"></label>
+        <div className="col-md-6">
+          <div className="form-check form-check-info">
+            <input
+              type="checkbox"
+              id="cbIsPageBulkExportEnabled"
+              className="form-check-input"
+              name="isPageBulkExportEnabled"
+              checked={adminAppContainer.state.isPageBulkExportEnabled}
+              onChange={(e) => {
+                adminAppContainer.changeIsPageBulkExportEnabled(e.target.checked);
+              }}
+            />
+            <label
+              className="form-label form-check-label"
+              htmlFor="cbIsPageBulkExportEnabled"
+            >
+              {t('admin:app_setting.enable_page_bulk_export')}
+            </label>
+          </div>
+
+          <p className="form-text text-muted">
+            {t('admin:app_setting.page_bulk_export_explanation')}
+          </p>
+        </div>
+      </div>
+
       <AdminUpdateButtonRow onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
     </React.Fragment>
   );

@@ -435,6 +435,7 @@ module.exports = (crowi) => {
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
       isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
+      isPageBulkExportEnabled: crowi.configManager.getConfig('crowi', 'app:isPageBulkExportEnabled'),
       isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
       siteUrlUseOnlyEnvVars: crowi.configManager.getConfig('crowi', 'app:siteUrl:useOnlyEnvVars'),
@@ -531,6 +532,7 @@ module.exports = (crowi) => {
       'app:globalLang': req.body.globalLang,
       'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
       'app:fileUpload': req.body.fileUpload,
+      'app:isPageBulkExportEnabled': req.body.isPageBulkExportEnabled,
     };
 
     try {
@@ -541,6 +543,7 @@ module.exports = (crowi) => {
         globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
         isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
+        isPageBulkExportEnabled: crowi.configManager.getConfig('crowi', 'app:isPageBulkExportEnabled'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };

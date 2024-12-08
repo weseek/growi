@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+import type Crowi from '~/server/crowi';
 import { configManager } from '~/server/service/config-manager';
 
 import { PageBulkExportFormat, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
@@ -27,7 +28,7 @@ vi.mock('./page-bulk-export-job-cron', () => {
 });
 
 describe('PageBulkExportJobCleanUpCronService', () => {
-  const crowi = { event: () => {} };
+  const crowi = {} as Crowi;
   let user;
 
   beforeAll(async() => {
