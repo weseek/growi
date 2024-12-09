@@ -1,4 +1,3 @@
-import type { ReadStream } from 'fs';
 import type { Writable } from 'stream';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';

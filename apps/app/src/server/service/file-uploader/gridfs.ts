@@ -1,4 +1,3 @@
-import type { ReadStream } from 'fs';
 import { Readable } from 'stream';
 import util from 'util';
 
