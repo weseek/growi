@@ -1,4 +1,5 @@
-import type { ReadStream } from 'fs';
+import type { Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import { Storage } from '@google-cloud/storage';
 import axios from 'axios';
@@ -109,7 +110,7 @@ class GcsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     if (!this.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
@@ -121,11 +122,12 @@ class GcsFileUploader extends AbstractFileUploader {
     const filePath = getFilePathOnStorage(attachment);
     const contentHeaders = new ContentHeaders(attachment);
 
-    await myBucket.upload(readStream.path.toString(), {
-      destination: filePath,
+    const file = myBucket.file(filePath);
+
+    await pipeline(readable, file.createWriteStream({
       // put type and the file name for reference information when uploading
       contentType: contentHeaders.contentType?.value.toString(),
-    });
+    }));
   }
 
   /**

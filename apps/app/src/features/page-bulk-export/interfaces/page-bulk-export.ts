@@ -30,8 +30,6 @@ export interface IPageBulkExportJob {
   user: Ref<IUser>, // user that started export job
   page: Ref<IPage>, // the root page of page tree to export
   lastExportedPagePath?: string, // the path of page that was exported to the fs last
-  uploadId?: string, // upload ID of multipart upload of S3/GCS
-  uploadKey?: string, // upload key of multipart upload of S3/GCS
   format: PageBulkExportFormat,
   completedAt?: Date, // the date at which job was completed
   attachment?: Ref<IAttachment>,

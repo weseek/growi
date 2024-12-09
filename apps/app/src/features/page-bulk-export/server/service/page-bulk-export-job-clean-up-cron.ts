@@ -29,7 +29,8 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   }
 
   override async executeJob(): Promise<void> {
-    const isPageBulkExportEnabled = PageBulkExportEnabledFileUploadTypes.includes(configManager.getConfig('crowi', 'app:fileUploadType'));
+    // TODO: allow enabling/disabling bulk export in https://redmine.weseek.co.jp/issues/158221
+    const isPageBulkExportEnabled = true;
     if (!isPageBulkExportEnabled) return;
 
     await this.deleteExpiredExportJobs();
