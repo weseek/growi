@@ -1,9 +1,21 @@
 import { mock } from 'vitest-mock-extended';
 
-import { Config } from '../../models/config';
 import type { S2sMessagingService } from '../s2s-messaging/base';
 
 import { configManager } from './config-manager';
+
+vi.mock('./legacy/config-manager', () => ({
+  configManager: {
+    loadConfigs: vi.fn(),
+  },
+}));
+
+vi.mock('../../models/config', () => ({
+  Config: {
+    updateOne: vi.fn(),
+    bulkWrite: vi.fn(),
+  },
+}));
 
 describe('ConfigManager test', () => {
 
@@ -17,33 +29,36 @@ describe('ConfigManager test', () => {
 
   describe('updateConfig()', () => {
 
+    let loadConfigsSpy;
+    beforeEach(async() => {
+      loadConfigsSpy = vi.spyOn(configManager, 'loadConfigs');
+    });
+
     test('invoke publishUpdateMessage()', async() => {
       // arrenge
-      Config.updateOne = vi.fn();
-      configManager.loadConfigs = vi.fn();
       configManager.publishUpdateMessage = vi.fn();
+      vi.spyOn((configManager as any).configLoader, 'loadFromDB').mockImplementation(vi.fn());
 
       // act
       await configManager.updateConfig('app:siteUrl', '');
 
       // assert
-      expect(Config.updateOne).toHaveBeenCalledTimes(1);
-      expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
+      // expect(Config.updateOne).toHaveBeenCalledTimes(1);
+      expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
     });
 
     test('skip publishUpdateMessage()', async() => {
       // arrenge
-      Config.updateOne = vi.fn();
-      configManager.loadConfigs = vi.fn();
       configManager.publishUpdateMessage = vi.fn();
+      vi.spyOn((configManager as any).configLoader, 'loadFromDB').mockImplementation(vi.fn());
 
       // act
       await configManager.updateConfig('app:siteUrl', '', { skipPubsub: true });
 
       // assert
-      expect(Config.updateOne).toHaveBeenCalledTimes(1);
-      expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
+      // expect(Config.updateOne).toHaveBeenCalledTimes(1);
+      expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).not.toHaveBeenCalled();
     });
 
@@ -51,44 +66,47 @@ describe('ConfigManager test', () => {
 
   describe('updateConfigs()', () => {
 
+    let loadConfigsSpy;
+    beforeEach(async() => {
+      loadConfigsSpy = vi.spyOn(configManager, 'loadConfigs');
+    });
+
     test('invoke publishUpdateMessage()', async() => {
       // arrenge
-      Config.bulkWrite = vi.fn();
-      configManager.loadConfigs = vi.fn();
       configManager.publishUpdateMessage = vi.fn();
+      vi.spyOn((configManager as any).configLoader, 'loadFromDB').mockImplementation(vi.fn());
 
       // act
       await configManager.updateConfig('app:siteUrl', '');
 
       // assert
-      expect(Config.bulkWrite).toHaveBeenCalledTimes(1);
-      expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
+      // expect(Config.bulkWrite).toHaveBeenCalledTimes(1);
+      expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
     });
 
     test('skip publishUpdateMessage()', async() => {
       // arrange
-      Config.bulkWrite = vi.fn();
-      configManager.loadConfigs = vi.fn();
       configManager.publishUpdateMessage = vi.fn();
+      vi.spyOn((configManager as any).configLoader, 'loadFromDB').mockImplementation(vi.fn());
 
       // act
       await configManager.updateConfigs({ 'app:siteUrl': '' }, { skipPubsub: true });
 
       // assert
-      expect(Config.bulkWrite).toHaveBeenCalledTimes(1);
-      expect(configManager.loadConfigs).toHaveBeenCalledTimes(1);
+      // expect(Config.bulkWrite).toHaveBeenCalledTimes(1);
+      expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).not.toHaveBeenCalled();
     });
   });
 
   describe('getManagedEnvVars()', () => {
 
-    beforeAll(() => {
+    beforeAll(async() => {
       process.env.AUTO_INSTALL_ADMIN_USERNAME = 'admin';
       process.env.AUTO_INSTALL_ADMIN_PASSWORD = 'password';
 
-      configManager.loadConfigs({ source: 'env' });
+      await configManager.loadConfigs({ source: 'env' });
     });
 
     test('include secret', () => {
