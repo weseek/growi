@@ -299,8 +299,8 @@ class PageService implements IPageService {
     if (username == null) {
       throw new Error('Cannot found username by path');
     }
-    const ownerExists = await User.exists({ username });
-    return ownerExists === null;
+    const ownerExists = await User.exists({ username }).exec();
+    return ownerExists == null;
   }
 
   private canDeleteLogic(

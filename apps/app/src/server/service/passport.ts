@@ -799,7 +799,7 @@ class PassportService implements S2sMessageHandlable {
   getSamlMissingMandatoryConfigKeys() {
     const missingRequireds: string[] = [];
     for (const key of this.mandatoryConfigKeysForSaml) {
-      if (this.crowi.configManager.getConfig('crowi', key) === null) {
+      if (this.crowi.configManager.getConfig('crowi', key) == null) {
         missingRequireds.push(key);
       }
     }

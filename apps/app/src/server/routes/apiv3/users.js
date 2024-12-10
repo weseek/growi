@@ -1127,10 +1127,10 @@ module.exports = (crowi) => {
    *              $ref: '#/components/responses/500'
    */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
-    const userIds = req.query.userIds || null;
+    const userIds = req.query.userIds ?? null;
 
     let userFetcher;
-    if (userIds !== null && userIds.split(',').length > 0) {
+    if (userIds != null && userIds.split(',').length > 0) {
       userFetcher = User.findUsersByIds(userIds.split(','));
     }
     else {
