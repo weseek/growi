@@ -387,7 +387,7 @@
     "file_delivery_method_relay":"Internal System Relay",
     "file_delivery_method_redirect_info":"Redirect: It redirects to a signed URL without GROWI server, it gives excellent performance.",
     "file_delivery_method_relay_info":"Internal System Relay: The GROWI server delivers to clients, it provides complete security.",
-    "fixed_by_env_var": "This is fixed by the env var <code>FILE_UPLOAD={{fileUploadType}}</code>.",
+    "fixed_by_env_var": "This is fixed by the env var <code>{{envKey}}={{envVar}}</code>.",
     "gcs_label": "GCP(GCS)",
     "aws_label": "AWS(S3)",
     "local_label": "Local",

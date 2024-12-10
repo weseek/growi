@@ -387,7 +387,7 @@
     "file_delivery_method_relay":"Relai interne du système",
     "file_delivery_method_redirect_info":"Rediriger: Redirige vers une URL signé, performance excellente.",
     "file_delivery_method_relay_info":"Relai interne du système: Le serveur GROWI sert les fichiers directement au client, sécurité complète.",
-    "fixed_by_env_var": "Défini par une variable d'environnement <code>FILE_UPLOAD={{fileUploadType}}</code>.",
+    "fixed_by_env_var": "Défini par une variable d'environnement <code>{{envKey}}={{envVar}}</code>.",
     "gcs_label": "GCP(GCS)",
     "aws_label": "AWS(S3)",
     "local_label": "Local",
