@@ -10,12 +10,21 @@ vi.mock('./legacy/config-manager', () => ({
   },
 }));
 
-vi.mock('../../models/config', () => ({
-  Config: {
+const mocks = vi.hoisted(() => ({
+  ConfigMock: {
     updateOne: vi.fn(),
     bulkWrite: vi.fn(),
   },
 }));
+vi.mock('../../models/config', () => ({
+  Config: mocks.ConfigMock,
+}));
+
+
+type ConfigManagerToGetLoader = {
+  configLoader: { loadFromDB: () => void };
+}
+
 
 describe('ConfigManager test', () => {
 
@@ -37,13 +46,13 @@ describe('ConfigManager test', () => {
     test('invoke publishUpdateMessage()', async() => {
       // arrenge
       configManager.publishUpdateMessage = vi.fn();
-      vi.spyOn((configManager as any).configLoader, 'loadFromDB').mockImplementation(vi.fn());
+      vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
 
       // act
       await configManager.updateConfig('app:siteUrl', '');
 
       // assert
-      // expect(Config.updateOne).toHaveBeenCalledTimes(1);
+      expect(mocks.ConfigMock.updateOne).toHaveBeenCalledTimes(1);
       expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
     });
@@ -51,13 +60,13 @@ describe('ConfigManager test', () => {
     test('skip publishUpdateMessage()', async() => {
       // arrenge
       configManager.publishUpdateMessage = vi.fn();
-      vi.spyOn((configManager as any).configLoader, 'loadFromDB').mockImplementation(vi.fn());
+      vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
 
       // act
       await configManager.updateConfig('app:siteUrl', '', { skipPubsub: true });
 
       // assert
-      // expect(Config.updateOne).toHaveBeenCalledTimes(1);
+      expect(mocks.ConfigMock.updateOne).toHaveBeenCalledTimes(1);
       expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).not.toHaveBeenCalled();
     });
@@ -74,7 +83,7 @@ describe('ConfigManager test', () => {
     test('invoke publishUpdateMessage()', async() => {
       // arrenge
       configManager.publishUpdateMessage = vi.fn();
-      vi.spyOn((configManager as any).configLoader, 'loadFromDB').mockImplementation(vi.fn());
+      vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
 
       // act
       await configManager.updateConfig('app:siteUrl', '');
@@ -88,7 +97,7 @@ describe('ConfigManager test', () => {
     test('skip publishUpdateMessage()', async() => {
       // arrange
       configManager.publishUpdateMessage = vi.fn();
-      vi.spyOn((configManager as any).configLoader, 'loadFromDB').mockImplementation(vi.fn());
+      vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
 
       // act
       await configManager.updateConfigs({ 'app:siteUrl': '' }, { skipPubsub: true });
