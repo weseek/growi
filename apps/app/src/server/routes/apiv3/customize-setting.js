@@ -36,7 +36,7 @@ const router = express.Router();
  *        description: CustomizeTheme
  *        type: object
  *        properties:
- *          themeType:
+ *          theme:
  *            type: string
  *      CustomizeFunction:
  *        description: CustomizeFunction
@@ -58,6 +58,14 @@ const router = express.Router();
  *            type: boolean
  *      CustomizeHighlight:
  *        description: CustomizeHighlight
+ *        type: object
+ *        properties:
+ *          highlightJsStyle:
+ *            type: string
+ *          highlightJsStyleBorder:
+ *            type: boolean
+ *      CustomizeHighlightResponse:
+ *        description: CustomizeHighlight Response
  *        type: object
  *        properties:
  *          styleName:
@@ -88,6 +96,99 @@ const router = express.Router();
  *        properties:
  *          customizeScript:
  *            type: string
+ *      CustomizeSetting:
+ *        description: Customize Setting
+ *        type: object
+ *        properties:
+ *          isEnabledTimeline:
+ *            type: boolean
+ *          isEnabledAttachTitleHeader:
+ *            type: boolean
+ *          pageLimitationS:
+ *            type: number
+ *          pageLimitationM:
+ *            type: number
+ *          pageLimitationL:
+ *            type: number
+ *          pageLimitationXL:
+ *            type: number
+ *          isEnabledStaleNotification:
+ *            type: boolean
+ *          isAllReplyShown:
+ *            type: boolean
+ *          isSearchScopeChildrenAsDefault:
+ *            type: boolean
+ *          isEnabledMarp:
+ *            type: boolean
+ *          styleName:
+ *            type: string
+ *          styleBorder:
+ *            type: string
+ *          customizeTitle:
+ *            type: string
+ *          customizeScript:
+ *            type: string
+ *          customizeCss:
+ *            type: string
+ *          customizeNoscript:
+ *            type: string
+ *      ThemesMetadata:
+ *        type: object
+ *        properties:
+ *          name:
+ *            type: string
+ *            description: The name of the plugin theme.
+ *          manifestKey:
+ *            type: string
+ *            description: Path to the theme manifest file.
+ *          schemeType:
+ *            type: string
+ *            description: The color scheme type (e.g., light or dark).
+ *          lightBg:
+ *            type: string
+ *            description: Light mode background color (hex).
+ *          darkBg:
+ *            type: string
+ *            description: Dark mode background color (hex).
+ *          lightSidebar:
+ *            type: string
+ *            description: Light mode sidebar color (hex).
+ *          darkSidebar:
+ *            type: string
+ *            description: Dark mode sidebar color (hex).
+ *          lightIcon:
+ *            type: string
+ *            description: Light mode icon color (hex).
+ *          darkIcon:
+ *            type: string
+ *            description: Dark mode icon color (hex).
+ *          createBtn:
+ *            type: string
+ *            description: Color of the create button (hex).
+ *      CustomizeSidebar:
+ *        description: Customize Sidebar
+ *        type: object
+ *        properties:
+ *          isSidebarCollapsedMode:
+ *            type: boolean
+ *            description: The flag whether sidebar is collapsed mode or not.
+ *          isSidebarClosedAtDockMode:
+ *            type: boolean
+ *            description: The flag whether sidebar is closed at dock mode or not.
+ *      CustomizePresentation:
+ *        description: Customize Presentation
+ *        type: object
+ *        properties:
+ *          isEnabledMarp:
+ *            type: boolean
+ *            description: The flag whether Marp is enabled or not.
+ *      CustomizeLogo:
+ *        description: Customize Logo
+ *        type: object
+ *        properties:
+ *          isDefaultLogo:
+ *            type: boolean
+ *            description: The flag whether the logo is default or not.
  */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -153,6 +254,8 @@ module.exports = (crowi) => {
    *    /customize-setting:
    *      get:
    *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getCustomizeSetting
    *        summary: /customize-setting
    *        description: Get customize parameters
@@ -166,6 +269,7 @@ module.exports = (crowi) => {
    *                    customizeParams:
    *                      type: object
    *                      description: customize params
+   *                      $ref: '#/components/schemas/CustomizeSetting'
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const customizeParams = {
@@ -196,6 +300,8 @@ module.exports = (crowi) => {
    *    /customize-setting/layout:
    *      get:
    *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getLayoutCustomizeSetting
    *        summary: /customize-setting/layout
    *        description: Get layout
@@ -208,7 +314,6 @@ module.exports = (crowi) => {
    *                  $ref: '#/components/schemas/CustomizeLayout'
    */
   router.get('/layout', loginRequiredStrictly, adminRequired, async(req, res) => {
-
     try {
       const isContainerFluid = await crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
       return res.apiv3({ isContainerFluid });
@@ -241,7 +346,12 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeLayout'
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      type: object
+   *                      description: customized params
+   *                      $ref: '#/components/schemas/CustomizeLayout'
    */
   router.put('/layout', loginRequiredStrictly, adminRequired, addActivity, validator.layout, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -266,6 +376,34 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /customize-setting/theme:
+   *      get:
+   *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
+   *        operationId: getThemeCustomizeSetting
+   *        summary: /customize-setting/theme
+   *        description: Get theme
+   *        responses:
+   *          200:
+   *            description: Succeeded to get layout
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    currentTheme:
+   *                      type: string
+   *                      description: The current theme name.
+   *                    pluginThemesMetadatas:
+   *                      type: array
+   *                      description: Metadata for available plugin themes.
+   *                      items:
+   *                        $ref: '#/components/schemas/ThemesMetadata'
+   */
   router.get('/theme', loginRequiredStrictly, async(req, res) => {
 
     try {
@@ -293,6 +431,8 @@ module.exports = (crowi) => {
    *    /customize-setting/theme:
    *      put:
    *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: updateThemeCustomizeSetting
    *        summary: /customize-setting/theme
    *        description: Update theme
@@ -308,7 +448,10 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeTheme'
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeTheme'
    */
   router.put('/theme', loginRequiredStrictly, adminRequired, addActivity, validator.theme, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -332,7 +475,25 @@ module.exports = (crowi) => {
     }
   });
 
-  // sidebar
+  /**
+   * @swagger
+   *
+   *    /customize-setting/sidebar:
+   *      get:
+   *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
+   *        operationId: getCustomeSettingSidebar
+   *        summary: /customize-setting/sidebar
+   *        description: Get sidebar
+   *        responses:
+   *          200:
+   *            description: Succeeded to get sidebar
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  $ref: '#/components/schemas/CustomizeSidebar'
+   */
   router.get('/sidebar', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     try {
@@ -347,6 +508,34 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /customize-setting/sidebar:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
+   *        operationId: updateCustomizeSettingSidebar
+   *        summary: /customize-setting/sidebar
+   *        description: Update sidebar
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/CustomizeSidebar'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update sidebar
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeSidebar'
+   */
   router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
     const requestParams = {
       'customize:isSidebarCollapsedMode': req.body.isSidebarCollapsedMode,
@@ -377,6 +566,8 @@ module.exports = (crowi) => {
    *    /customize-setting/function:
    *      put:
    *        tags: [CustomizeSetting]
+   *        security:
+   *         - cookieAuth: []
    *        operationId: updateFunctionCustomizeSetting
    *        summary: /customize-setting/function
    *        description: Update function
@@ -392,7 +583,10 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeFunction'
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeFunction'
    */
   router.put('/function', loginRequiredStrictly, adminRequired, addActivity, validator.function, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -432,6 +626,34 @@ module.exports = (crowi) => {
   });
 
 
+  /**
+   * @swagger
+   *
+   *    /customize-setting/presentation:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        security:
+   *         - cookieAuth: []
+   *        operationId: updatePresentationCustomizeSetting
+   *        summary: /customize-setting/presentation
+   *        description: Update presentation
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/CustomizePresentation'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update presentation
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizePresentation'
+   */
   router.put('/presentation', loginRequiredStrictly, adminRequired, addActivity, validator.CustomizePresentation, apiV3FormValidator, async(req, res) => {
     const requestParams = {
       'customize:isEnabledMarp': req.body.isEnabledMarp,
@@ -459,6 +681,8 @@ module.exports = (crowi) => {
    *    /customize-setting/highlight:
    *      put:
    *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: updateHighlightCustomizeSetting
    *        summary: /customize-setting/highlight
    *        description: Update highlight
@@ -474,7 +698,10 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeHighlight'
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeHighlightResponse'
    */
   router.put('/highlight', loginRequiredStrictly, adminRequired, addActivity, validator.highlight, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -505,9 +732,11 @@ module.exports = (crowi) => {
    *    /customize-setting/customizeTitle:
    *      put:
    *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: updateCustomizeTitleCustomizeSetting
    *        summary: /customize-setting/customizeTitle
-   *        description: Update customizeTitle
+   *        description: Update title
    *        requestBody:
    *          required: true
    *          content:
@@ -520,7 +749,10 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeTitle'
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeTitle'
    */
   router.put('/customize-title', loginRequiredStrictly, adminRequired, addActivity, validator.customizeTitle, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -552,9 +784,11 @@ module.exports = (crowi) => {
    *    /customize-setting/customize-noscript:
    *      put:
    *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: updateCustomizeNoscriptCustomizeSetting
    *        summary: /customize-setting/customize-noscript
-   *        description: Update customizeNoscript
+   *        description: Update noscript
    *        requestBody:
    *          required: true
    *          content:
@@ -567,7 +801,10 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeNoscript'
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeNoscript'
    */
   router.put('/customize-noscript', loginRequiredStrictly, adminRequired, addActivity, validator.customizeNoscript, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -592,12 +829,14 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/customizeCss:
+   *    /customize-setting/customize-css:
    *      put:
    *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: updateCustomizeCssCustomizeSetting
-   *        summary: /customize-setting/customizeCss
-   *        description: Update customizeCss
+   *        summary: /customize-setting/customize-css
+   *        description: Update customize css
    *        requestBody:
    *          required: true
    *          content:
@@ -610,7 +849,10 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeCss'
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeCss'
    */
   router.put('/customize-css', loginRequiredStrictly, adminRequired, addActivity, validator.customizeCss, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -638,12 +880,14 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /customize-setting/customizeScript:
+   *    /customize-setting/customize-script:
    *      put:
    *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: updateCustomizeScriptCustomizeSetting
-   *        summary: /customize-setting/customizeScript
-   *        description: Update customizeScript
+   *        summary: /customize-setting/customize-script
+   *        description: Update customize script
    *        requestBody:
    *          required: true
    *          content:
@@ -656,7 +900,10 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/CustomizeScript'
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeScript'
    */
   router.put('/customize-script', loginRequiredStrictly, adminRequired, addActivity, validator.customizeScript, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -678,6 +925,34 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /customize-setting/customize-logo:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
+   *        operationId: updateCustomizeLogoCustomizeSetting
+   *        summary: /customize-setting/customize-logo
+   *        description: Update customize logo
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/CustomizeLogo'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update customize logo
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    customizedParams:
+   *                      $ref: '#/components/schemas/CustomizeLogo'
+   */
   router.put('/customize-logo', loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
     const {
@@ -701,6 +976,45 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /customize-setting/upload-brand-logo:
+   *      put:
+   *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
+   *        operationId: uploadBrandLogoCustomizeSetting
+   *        summary: /customize-setting/upload-brand-logo
+   *        description: Upload brand logo
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            multipart/form-data:
+   *              schema:
+   *               type: object
+   *               properties:
+   *                 file:
+   *                   format: binary
+   *        responses:
+   *          200:
+   *            description: Succeeded to upload brand logo
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    attachment:
+   *                      allOf:
+   *                        - $ref: '#/components/schemas/Attachment'
+   *                        - type: object
+   *                          properties:
+   *                            creator:
+   *                              type: string
+   *                            page: {}
+   *                            temporaryUrlExpiredAt: {}
+   *                            temporaryUrlCached: {}
+   */
   router.post('/upload-brand-logo', uploads.single('file'), loginRequiredStrictly,
     adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
 
@@ -738,6 +1052,25 @@ module.exports = (crowi) => {
       return res.apiv3({ attachment });
     });
 
+  /**
+   * @swagger
+   *
+   *    /customize-setting/delete-brand-logo:
+   *      delete:
+   *        tags: [CustomizeSetting]
+   *        security:
+   *          - cookieAuth: []
+   *        operationId: deleteBrandLogoCustomizeSetting
+   *        summary: /customize-setting/delete-brand-logo
+   *        description: Delete brand logo
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete brand logo
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  additionalProperties: false
+   */
   router.delete('/delete-brand-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
