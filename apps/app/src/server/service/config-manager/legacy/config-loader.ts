@@ -894,11 +894,13 @@ export default class ConfigLoader {
     const configFromDB: any = await this.loadFromDB();
     const configFromEnvVars: any = this.loadFromEnvVars();
 
-    // merge defaults per ns
+    // deperecate 'ns' and unified to 'crowi' -- 2024.12.10 Yuki Takei
     const mergedConfigFromDB = {
-      crowi: Object.assign(defaultCrowiConfigs, configFromDB.crowi),
-      markdown: Object.assign(defaultMarkdownConfigs, configFromDB.markdown),
-      notification: Object.assign(defaultNotificationConfigs, configFromDB.notification),
+      crowi: Object.assign(
+        Object.assign(defaultCrowiConfigs, configFromDB.crowi),
+        Object.assign(defaultMarkdownConfigs, configFromDB.markdown),
+        Object.assign(defaultNotificationConfigs, configFromDB.notification),
+      ),
     };
 
     // In getConfig API, only null is used as a value to indicate that a config is not set.
@@ -921,14 +923,13 @@ export default class ConfigLoader {
   }
 
   async loadFromDB(): Promise<any> {
-    const config = {};
+    const config = {
+      crowi: {},
+    };
     const docs = await Config.find().exec();
 
     for (const doc of docs) {
-      if (!config[doc.ns]) {
-        config[doc.ns] = {};
-      }
-      config[doc.ns][doc.key] = doc.value ? JSON.parse(doc.value) : null;
+      config.crowi[doc.key] = doc.value ? JSON.parse(doc.value) : null;
     }
 
     logger.debug('ConfigLoader#loadFromDB', config);
@@ -937,19 +938,17 @@ export default class ConfigLoader {
   }
 
   loadFromEnvVars(): any {
-    const config = {};
+    const config = {
+      crowi: {},
+    };
     for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_INFO)) {
       const configInfo = ENV_VAR_NAME_TO_CONFIG_INFO[ENV_VAR_NAME];
-      if (config[configInfo.ns] === undefined) {
-        config[configInfo.ns] = {};
-      }
-
       if (process.env[ENV_VAR_NAME] === undefined) {
-        config[configInfo.ns][configInfo.key] = configInfo.default;
+        config.crowi[configInfo.key] = configInfo.default;
       }
       else {
         const parser = parserDictionary[configInfo.type];
-        config[configInfo.ns][configInfo.key] = parser.parse(process.env[ENV_VAR_NAME] as string);
+        config.crowi[configInfo.key] = parser.parse(process.env[ENV_VAR_NAME] as string);
       }
     }
 
