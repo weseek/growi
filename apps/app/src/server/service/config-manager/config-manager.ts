@@ -104,7 +104,11 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
       return configManagerLegacy.getConfig(ns, key);
     })();
 
-    if (value !== valueByLegacy) {
+    const isDifferent = Array.isArray(value)
+      ? value.length !== valueByLegacy.length || value.some((v, i) => v !== valueByLegacy[i])
+      : value !== valueByLegacy;
+
+    if (isDifferent) {
       if (!(value === undefined && valueByLegacy === null)) {
         logger.warn(
           `The value of the config key '${key}' ${source != null ? `(source: ${source})` : ''} is different between the new and legacy config managers:`,
