@@ -23,6 +23,8 @@ export default class AdminAppContainer extends Container {
       globalLang: '',
       isEmailPublishedForNewUser: true,
       fileUpload: '',
+      isBulkExportPagesEnabled: false,
+      isFixedIsBulkExportPagesEnabled: false,
 
       isV5Compatible: null,
       siteUrl: '',
@@ -100,6 +102,7 @@ export default class AdminAppContainer extends Container {
       globalLang: appSettingsParams.globalLang,
       isEmailPublishedForNewUser: appSettingsParams.isEmailPublishedForNewUser,
       fileUpload: appSettingsParams.fileUpload,
+      isBulkExportPagesEnabled: appSettingsParams.isBulkExportPagesEnabled,
       isV5Compatible: appSettingsParams.isV5Compatible,
       siteUrl: appSettingsParams.siteUrl,
       siteUrlUseOnlyEnvVars: appSettingsParams.siteUrlUseOnlyEnvVars,
@@ -158,6 +161,11 @@ export default class AdminAppContainer extends Container {
       this.setState({ isFixedFileUploadByEnvVar: true });
     }
 
+    if (appSettingsParams.useOnlyEnvVarsForIsBulkExportPagesEnabled) {
+      this.setState({ isBulkExportPagesEnabled: appSettingsParams.envIsBulkExportPagesEnabled });
+      this.setState({ isFixedIsBulkExportPagesEnabled: true });
+    }
+
   }
 
   /**
@@ -193,6 +201,13 @@ export default class AdminAppContainer extends Container {
    */
   changeFileUpload(fileUpload) {
     this.setState({ fileUpload });
+  }
+
+  /**
+   * Change isBulkExportPagesEnabled
+   */
+  changeIsPageBulkExportEnabled(isBulkExportPagesEnabled) {
+    this.setState({ isBulkExportPagesEnabled });
   }
 
   /**
@@ -397,6 +412,7 @@ export default class AdminAppContainer extends Container {
       globalLang: this.state.globalLang,
       isEmailPublishedForNewUser: this.state.isEmailPublishedForNewUser,
       fileUpload: this.state.fileUpload,
+      isBulkExportPagesEnabled: this.state.isBulkExportPagesEnabled,
     });
     const { appSettingParams } = response.data;
     return appSettingParams;

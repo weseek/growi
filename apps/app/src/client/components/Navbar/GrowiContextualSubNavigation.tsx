@@ -25,7 +25,7 @@ import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from 
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsPageBulkExportEnabled, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsBulkExportPagesEnabled, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import {
@@ -77,15 +77,13 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isPageBulkExportEnabled } = useIsPageBulkExportEnabled();
+  const { data: isBulkExportPagesEnabled } = useIsBulkExportPagesEnabled();
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
   const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModal();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
-
-  const [isBulkExportTooltipOpen, setIsBulkExportTooltipOpen] = useState(false);
 
   const syncLatestRevisionBodyHandler = useCallback(async() => {
     // eslint-disable-next-line no-alert
@@ -144,25 +142,17 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
       </DropdownItem>
 
       {/* Bulk export */}
-      <span id="bulkExportDropdownItem">
-        <DropdownItem
-          disabled={!isPageBulkExportEnabled}
-          onClick={openPageBulkExportSelectModal}
-          className="grw-page-control-dropdown-item"
-        >
-          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
-          {t('page_export.bulk_export')}
-        </DropdownItem>
-      </span>
-      <Tooltip
-        placement="left"
-        isOpen={!isPageBulkExportEnabled && isBulkExportTooltipOpen}
-        // Tooltip cannot be activated when target is disabled so set the target to wrapper span
-        target="bulkExportDropdownItem"
-        toggle={() => setIsBulkExportTooltipOpen(!isBulkExportTooltipOpen)}
-      >
-        {t('page_export.bulk_export_only_available_for')}
-      </Tooltip>
+      {isBulkExportPagesEnabled && (
+        <span id="bulkExportDropdownItem">
+          <DropdownItem
+            onClick={openPageBulkExportSelectModal}
+            className="grw-page-control-dropdown-item"
+          >
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
+            {t('page_export.bulk_export')}
+          </DropdownItem>
+        </span>
+      )}
 
       <DropdownItem divider />
 

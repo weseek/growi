@@ -166,8 +166,8 @@ export const useIsUploadAllFileAllowed = (initialData?: boolean): SWRResponse<bo
   return useContextSWR('isUploadAllFileAllowed', initialData);
 };
 
-export const useIsPageBulkExportEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR('isPageBulkExportEnabled', initialData);
+export const useIsBulkExportPagesEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isBulkExportPagesEnabled', initialData);
 };
 
 export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {

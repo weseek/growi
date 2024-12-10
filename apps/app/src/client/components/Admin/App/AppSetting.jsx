@@ -170,6 +170,54 @@ const AppSetting = (props) => {
         </div>
       </div>
 
+      <div className="row mb-2">
+        <label className="text-start text-md-end col-md-3 col-form-label"></label>
+        <div className="col-md-6">
+          <div className="form-check form-check-info">
+            <input
+              type="checkbox"
+              id="cbIsPageBulkExportEnabled"
+              className="form-check-input"
+              name="isBulkExportPagesEnabled"
+              checked={adminAppContainer.state.isBulkExportPagesEnabled}
+              disabled={adminAppContainer.state.isFixedIsBulkExportPagesEnabled}
+              onChange={(e) => {
+                adminAppContainer.changeIsPageBulkExportEnabled(e.target.checked);
+              }}
+            />
+            <label
+              className="form-label form-check-label"
+              htmlFor="cbIsPageBulkExportEnabled"
+            >
+              {t('admin:app_setting.enable_page_bulk_export')}
+            </label>
+          </div>
+
+          <p className="form-text text-muted">
+            {t('admin:app_setting.page_bulk_export_explanation')}
+          </p>
+
+          <p className="alert alert-warning mt-2">
+            {t('admin:app_setting.page_bulk_export_warning')}
+          </p>
+
+          {adminAppContainer.state.isFixedIsBulkExportPagesEnabled && (
+            <p className="alert alert-warning mt-2 text-start">
+              <span className="material-symbols-outlined">help</span>
+              <b>FIXED</b><br />
+              {/* eslint-disable-next-line react/no-danger */}
+              <b dangerouslySetInnerHTML={{
+                __html: t('admin:app_setting.fixed_by_env_var', {
+                  envKey: 'BULK_EXPORT_PAGES_ENABLED',
+                  envVar: adminAppContainer.state.isBulkExportPagesEnabled,
+                }),
+              }}
+              />
+            </p>
+          )}
+        </div>
+      </div>
+
       <AdminUpdateButtonRow onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
     </React.Fragment>
   );

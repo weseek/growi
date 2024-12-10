@@ -20,6 +20,9 @@ class CheckPageBulkExportJobInProgressCronService extends CronService {
   }
 
   override async executeJob(): Promise<void> {
+    const isBulkExportPagesEnabled = configManager.getConfig('crowi', 'app:isBulkExportPagesEnabled');
+    if (!isBulkExportPagesEnabled) return;
+
     const pageBulkExportJobInProgress = await PageBulkExportJob.findOne({
       $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
     });
