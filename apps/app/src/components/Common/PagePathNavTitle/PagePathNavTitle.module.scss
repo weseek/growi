@@ -1,6 +1,6 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .grw-page-path-nav-title :global {
-  min-width: 300px;
   min-height: 75px;
+  padding-right: 70px;
 }
