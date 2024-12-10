@@ -72,6 +72,42 @@ const validator = {};
  *            type: string
  *            description: date created at
  *            example: 2010-01-01T00:00:00.000Z
+ *          imageUrlCached:
+ *            type: string
+ *            description: cached image URL
+ *            example: /images/user/5ae5fccfc5577b0004dbd8ab/profile.jpg
+ *          isEmailPublished:
+ *            type: boolean
+ *            description: whether the email is published
+ *            example: false
+ *          isGravatarEnabled:
+ *            type: boolean
+ *            description: whether the gravatar is enabled
+ *            example: false
+ *          isInvitationEmailSended:
+ *            type: boolean
+ *            description: whether the invitation email is sent
+ *            example: false
+ *          isQuestionnaireEnabled:
+ *            type: boolean
+ *            description: whether the questionnaire is enabled
+ *            example: false
+ *          lastLoginAt:
+ *            type: string
+ *            description: datetime last login at
+ *            example: 2010-01-01T00:00:00.000Z
+ *          readOnly:
+ *            type: boolean
+ *            description: whether the user is read only
+ *            example: false
+ *          updatedAt:
+ *            type: string
+ *            description: datetime updated at
+ *            example: 2010-01-01T00:00:00.000Z
+ *          __v:
+ *            type: integer
+ *            description: DB record version
+ *            example: 0
  */
 
 module.exports = (crowi) => {
