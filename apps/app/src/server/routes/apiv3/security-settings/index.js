@@ -368,7 +368,7 @@ module.exports = (crowi) => {
         disableLinkSharing: await configManager.getConfig('crowi', 'security:disableLinkSharing'),
       },
       localSetting: {
-        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions'),
+        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('crowi', 'env:useOnlyEnvVars:security:passport-local'),
         registrationMode: await configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhitelist: await configManager.getConfig('crowi', 'security:registrationWhitelist'),
         isPasswordResetEnabled: await configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled'),
@@ -398,7 +398,7 @@ module.exports = (crowi) => {
       },
       samlAuth: {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
-        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('security:passport-saml:useOnlyEnvVarsForSomeOptions', ConfigSource.env),
+        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('env:useOnlyEnvVars:security:passport-saml', ConfigSource.env),
         samlEntryPoint: await configManager.getConfig('security:passport-saml:entryPoint', ConfigSource.db),
         samlEnvVarEntryPoint: await configManager.getConfig('security:passport-saml:entryPoint', ConfigSource.env),
         samlIssuer: await configManager.getConfig('security:passport-saml:issuer', ConfigSource.db),

@@ -439,7 +439,7 @@ module.exports = (crowi) => {
       fileUpload: configManager.getConfig('crowi', 'app:fileUpload'),
       isV5Compatible: configManager.getConfig('crowi', 'app:isV5Compatible'),
       siteUrl: configManager.getConfig('crowi', 'app:siteUrl'),
-      siteUrlUseOnlyEnvVars: configManager.getConfig('crowi', 'app:siteUrl:useOnlyEnvVars'),
+      siteUrlUseOnlyEnvVars: configManager.getConfig('crowi', 'env:useOnlyEnvVars:app:siteUrl'),
       envSiteUrl: configManager.getConfig('app:siteUrl', ConfigSource.env),
       isMailerSetup: crowi.mailService.isMailerSetup,
       fromAddress: configManager.getConfig('crowi', 'mail:from'),
@@ -454,7 +454,7 @@ module.exports = (crowi) => {
 
       fileUploadType: configManager.getConfig('crowi', 'app:fileUploadType'),
       envFileUploadType: configManager.getConfig('app:fileUploadType', ConfigSource.env),
-      useOnlyEnvVarForFileUploadType: configManager.getConfig('crowi', 'app:useOnlyEnvVarForFileUploadType'),
+      useOnlyEnvVarForFileUploadType: configManager.getConfig('crowi', 'env:useOnlyEnvVars:app:fileUploadType'),
 
       s3Region: configManager.getConfig('crowi', 'aws:s3Region'),
       s3CustomEndpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
@@ -462,7 +462,7 @@ module.exports = (crowi) => {
       s3AccessKeyId: configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
       s3ReferenceFileWithRelayMode: configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode'),
 
-      gcsUseOnlyEnvVars: configManager.getConfig('crowi', 'gcs:useOnlyEnvVarsForSomeOptions'),
+      gcsUseOnlyEnvVars: configManager.getConfig('crowi', 'env:useOnlyEnvVars:gcs'),
       gcsApiKeyJsonPath: configManager.getConfig('crowi', 'gcs:apiKeyJsonPath'),
       gcsBucket: configManager.getConfig('crowi', 'gcs:bucket'),
       gcsUploadNamespace: configManager.getConfig('crowi', 'gcs:uploadNamespace'),
@@ -472,7 +472,7 @@ module.exports = (crowi) => {
       envGcsBucket: configManager.getConfig('gcs:bucket', ConfigSource.env),
       envGcsUploadNamespace: configManager.getConfig('gcs:uploadNamespace', ConfigSource.env),
 
-      azureUseOnlyEnvVars: configManager.getConfig('crowi', 'azure:useOnlyEnvVarsForSomeOptions'),
+      azureUseOnlyEnvVars: configManager.getConfig('crowi', 'env:useOnlyEnvVars:azure'),
       azureTenantId: configManager.getConfig('azure:tenantId', ConfigSource.db),
       azureClientId: configManager.getConfig('azure:clientId', ConfigSource.db),
       azureClientSecret: configManager.getConfig('azure:clientSecret', ConfigSource.db),
@@ -594,7 +594,7 @@ module.exports = (crowi) => {
    */
   router.put('/site-url-setting', loginRequiredStrictly, adminRequired, addActivity, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
 
-    const useOnlyEnvVars = configManager.getConfig('crowi', 'app:siteUrl:useOnlyEnvVars');
+    const useOnlyEnvVars = configManager.getConfig('crowi', 'env:useOnlyEnvVars:app:siteUrl');
 
     if (useOnlyEnvVars) {
       const msg = 'Updating the Site URL is prohibited on this system.';

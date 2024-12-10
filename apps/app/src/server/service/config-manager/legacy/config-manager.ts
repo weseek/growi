@@ -241,32 +241,32 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
       // siteUrl
       (
         KEYS_FOR_APP_SITE_URL_USES_ONLY_ENV_OPTION.includes(key)
-        && this.defaultSearch('crowi', 'app:siteUrl:useOnlyEnvVars')
+        && this.defaultSearch('crowi', 'env:useOnlyEnvVars:app:siteUrl')
       )
       // local strategy
       || (
         KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION.includes(key)
-        && this.defaultSearch('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions')
+        && this.defaultSearch('crowi', 'env:useOnlyEnvVars:security:passport-local')
       )
       // saml strategy
       || (
         KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)
-        && this.defaultSearch('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')
+        && this.defaultSearch('crowi', 'env:useOnlyEnvVars:security:passport-saml')
       )
       // file upload option
       || (
         KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION.includes(key)
-        && this.searchOnlyFromEnvVarConfigs('crowi', 'app:useOnlyEnvVarForFileUploadType')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'env:useOnlyEnvVars:app:fileUploadType')
       )
       // gcs option
       || (
         KEYS_FOR_GCS_USE_ONLY_ENV_OPTION.includes(key)
-        && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:useOnlyEnvVarsForSomeOptions')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'env:useOnlyEnvVars:gcs')
       )
       // azure option
       || (
         KEYS_FOR_AZURE_USE_ONLY_ENV_OPTION.includes(key)
-        && this.searchOnlyFromEnvVarConfigs('crowi', 'azure:useOnlyEnvVarsForSomeOptions')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'env:useOnlyEnvVars:azure')
       )
     ));
   }

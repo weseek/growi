@@ -58,7 +58,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE: {
     ns:      'crowi',
-    key:     'app:useOnlyEnvVarForFileUploadType',
+    key:     'env:useOnlyEnvVars:app:fileUploadType',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -124,7 +124,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   APP_SITE_URL_USES_ONLY_ENV_VARS: {
     ns:      'crowi',
-    key:     'app:siteUrl:useOnlyEnvVars',
+    key:     'env:useOnlyEnvVars:app:siteUrl',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -366,7 +366,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'security:passport-local:useOnlyEnvVarsForSomeOptions',
+    key:     'env:useOnlyEnvVars:security:passport-local',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -384,7 +384,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',
+    key:     'env:useOnlyEnvVars:security:passport-saml',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -530,7 +530,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   GCS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'gcs:useOnlyEnvVarsForSomeOptions',
+    key:     'env:useOnlyEnvVars:gcs',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -581,7 +581,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   AZURE_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'azure:useOnlyEnvVarsForSomeOptions',
+    key:     'env:useOnlyEnvVars:azure',
     type:    ValueType.BOOLEAN,
     default: false,
   },

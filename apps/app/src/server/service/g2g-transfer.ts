@@ -40,18 +40,18 @@ export const X_GROWI_TRANSFER_KEY_HEADER_NAME = 'x-growi-transfer-key';
  */
 const UPLOAD_CONFIG_KEYS = [
   'app:fileUploadType',
-  'app:useOnlyEnvVarForFileUploadType',
+  'env:useOnlyEnvVars:app:fileUploadType',
   'aws:referenceFileWithRelayMode',
   'aws:lifetimeSecForTemporaryUrl',
   'gcs:apiKeyJsonPath',
   'gcs:bucket',
   'gcs:uploadNamespace',
   'gcs:referenceFileWithRelayMode',
-  'gcs:useOnlyEnvVarsForSomeOptions',
+  'env:useOnlyEnvVars:gcs',
   'azure:storageAccountName',
   'azure:storageContainerName',
   'azure:referenceFileWithRelayMode',
-  'azure:useOnlyEnvVarsForSomeOptions',
+  'env:useOnlyEnvVars:azure',
 ] satisfies ConfigKey[];
 
 /**
