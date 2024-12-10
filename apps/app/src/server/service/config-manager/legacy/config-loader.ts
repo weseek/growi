@@ -514,7 +514,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     ns:      'crowi',
     key:     'gcs:uploadNamespace',
     type:    ValueType.STRING,
-    default: null,
+    default: '',
   },
   GCS_LIFETIME_SEC_FOR_TEMPORARY_URL: {
     ns:      'crowi',

@@ -36,11 +36,10 @@ function getGcsInstance() {
 
 function getFilePathOnStorage(attachment) {
   const namespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
-  // const namespace = null;
   const dirName = (attachment.page != null)
     ? 'attachment'
     : 'user';
-  const filePath = urljoin(namespace || '', dirName, attachment.fileName);
+  const filePath = urljoin(namespace, dirName, attachment.fileName);
 
   return filePath;
 }
