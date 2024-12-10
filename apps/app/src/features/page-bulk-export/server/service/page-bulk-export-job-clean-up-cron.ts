@@ -30,7 +30,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   }
 
   override async executeJob(): Promise<void> {
-    // Execute cleanup even if isPageBulkExportEnabled is false, to cleanup jobs which were created before bulk export was disabled
+    // Execute cleanup even if isBulkExportPagesEnabled is false, to cleanup jobs which were created before bulk export was disabled
 
     await this.deleteExpiredExportJobs();
     await this.deleteDownloadExpiredExportJobs();

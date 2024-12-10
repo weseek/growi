@@ -787,9 +787,15 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.NUMBER,
     default: 5,
   },
-  BULK_EXPORT_ENABLED: {
+  BULK_EXPORT_PAGES_ENABLED: {
     ns: 'crowi',
-    key: 'app:isPageBulkExportEnabled',
+    key: 'app:isBulkExportPagesEnabled',
+    type: ValueType.BOOLEAN,
+    default: true,
+  },
+  BULK_EXPORT_PAGES_ENABLED_USES_ONLY_ENV_VARS: {
+    ns: 'crowi',
+    key: 'env:useOnlyEnvVars:app:isBulkExportPagesEnabled',
     type: ValueType.BOOLEAN,
     default: false,
   },

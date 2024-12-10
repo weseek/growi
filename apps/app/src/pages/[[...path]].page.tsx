@@ -42,7 +42,7 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
-  useIsUploadAllFileAllowed, useIsUploadEnabled, useIsPageBulkExportEnabled,
+  useIsUploadAllFileAllowed, useIsUploadEnabled, useIsBulkExportPagesEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
   useIsRomUserAllowedToComment,
@@ -181,7 +181,7 @@ type Props = CommonProps & {
   isContainerFluid: boolean,
   isUploadEnabled: boolean,
   isUploadAllFileAllowed: boolean,
-  isPageBulkExportEnabled: boolean,
+  isBulkExportPagesEnabled: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
@@ -246,7 +246,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
-  useIsPageBulkExportEnabled(props.isPageBulkExportEnabled);
+  useIsBulkExportPagesEnabled(props.isBulkExportPagesEnabled);
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
 
@@ -584,7 +584,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
-  props.isPageBulkExportEnabled = configManager.getConfig('crowi', 'app:isPageBulkExportEnabled');
+  props.isBulkExportPagesEnabled = configManager.getConfig('crowi', 'app:isBulkExportPagesEnabled');
 
   props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
   && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;

@@ -178,8 +178,9 @@ const AppSetting = (props) => {
               type="checkbox"
               id="cbIsPageBulkExportEnabled"
               className="form-check-input"
-              name="isPageBulkExportEnabled"
-              checked={adminAppContainer.state.isPageBulkExportEnabled}
+              name="isBulkExportPagesEnabled"
+              checked={adminAppContainer.state.isBulkExportPagesEnabled}
+              disabled={adminAppContainer.state.isFixedIsBulkExportPagesEnabled}
               onChange={(e) => {
                 adminAppContainer.changeIsPageBulkExportEnabled(e.target.checked);
               }}
@@ -195,6 +196,21 @@ const AppSetting = (props) => {
           <p className="form-text text-muted">
             {t('admin:app_setting.page_bulk_export_explanation')}
           </p>
+
+          {adminAppContainer.state.isFixedIsBulkExportPagesEnabled && (
+            <p className="alert alert-warning mt-2 text-start">
+              <span className="material-symbols-outlined">help</span>
+              <b>FIXED</b><br />
+              {/* eslint-disable-next-line react/no-danger */}
+              <b dangerouslySetInnerHTML={{
+                __html: t('admin:app_setting.fixed_by_env_var', {
+                  envKey: 'BULK_EXPORT_PAGES_ENABLED',
+                  envVar: adminAppContainer.state.isBulkExportPagesEnabled,
+                }),
+              }}
+              />
+            </p>
+          )}
         </div>
       </div>
 
