@@ -15,7 +15,6 @@ module.exports = {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isNewConfigExists = await Config.count({
-      ns: 'crowi',
       key: 'security:pageDeletionAuthority',
     }) > 0;
 
@@ -26,7 +25,6 @@ module.exports = {
     }
 
     const oldConfig = await Config.findOne({
-      ns: 'crowi',
       key: 'security:pageCompleteDeletionAuthority',
     });
 
@@ -37,17 +35,14 @@ module.exports = {
       await Config.insertMany(
         [
           {
-            ns: 'crowi',
             key: 'security:pageDeletionAuthority',
             value: oldValue,
           },
           {
-            ns: 'crowi',
             key: 'security:pageRecursiveDeletionAuthority',
             value: `"${PageRecursiveDeleteConfigValue.Inherit}"`,
           },
           {
-            ns: 'crowi',
             key: 'security:pageRecursiveCompleteDeletionAuthority',
             value: `"${PageRecursiveDeleteCompConfigValue.Inherit}"`,
           },

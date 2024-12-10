@@ -2,6 +2,7 @@ import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { GlobalNotificationSettingType } from '~/server/models/GlobalNotificationSetting';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
@@ -424,7 +425,7 @@ module.exports = (crowi) => {
     requestParams = removeNullPropertyFromObject(requestParams);
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('notification', requestParams);
+      await configManager.updateConfigs(requestParams);
       const responseParams = {
         isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
         isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),

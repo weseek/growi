@@ -1,7 +1,7 @@
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
-import ConfigLoader from './config-loader';
+import { configManager } from './config-manager';
 
 const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-line no-unused-vars
 
@@ -101,7 +101,7 @@ class ExportService {
       url: this.appService.getSiteUrl(),
       passwordSeed,
       exportedAt: new Date(),
-      envVars: await ConfigLoader.getEnvVarsForDisplay(),
+      envVars: configManager.getManagedEnvVars(),
     };
 
     writeStream.write(JSON.stringify(metaData));

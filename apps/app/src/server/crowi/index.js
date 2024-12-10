@@ -59,6 +59,9 @@ class Crowi {
    */
   accessTokenParser;
 
+  /** @type {import('../service/config-manager').IConfigManagerForApp} */
+  configManager;
+
   /** @type {AppService} */
   appService;
 

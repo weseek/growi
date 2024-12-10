@@ -1,37 +1,14 @@
-import * as os from 'node:os';
+import type * as os from 'node:os';
 
 import { IExternalAuthProviderType } from '@growi/core';
 
-export const GrowiServiceType = {
-  cloud: 'cloud',
-  privateCloud: 'private-cloud',
-  onPremise: 'on-premise',
-  others: 'others',
-} as const;
-export const GrowiWikiType = { open: 'open', closed: 'closed' } as const;
-export const GrowiAttachmentType = {
-  aws: 'aws',
-  gcs: 'gcs',
-  gcp: 'gcp',
-  azure: 'azure',
-  gridfs: 'gridfs',
-  mongo: 'mongo',
-  mongodb: 'mongodb',
-  local: 'local',
-  none: 'none',
-} as const;
-export const GrowiDeploymentType = {
-  officialHelmChart: 'official-helm-chart',
-  growiDockerCompose: 'growi-docker-compose',
-  node: 'node',
-  others: 'others',
-} as const;
-export const GrowiExternalAuthProviderType = IExternalAuthProviderType;
+import type { AttachmentMethodType } from '~/interfaces/attachment';
+import type { GrowiDeploymentType, GrowiServiceType } from '~/interfaces/system';
 
-export type GrowiServiceType = typeof GrowiServiceType[keyof typeof GrowiServiceType]
+export const GrowiWikiType = { open: 'open', closed: 'closed' } as const;
 type GrowiWikiType = typeof GrowiWikiType[keyof typeof GrowiWikiType]
-export type GrowiAttachmentType = typeof GrowiAttachmentType[keyof typeof GrowiAttachmentType]
-export type GrowiDeploymentType = typeof GrowiDeploymentType[keyof typeof GrowiDeploymentType]
+
+export const GrowiExternalAuthProviderType = IExternalAuthProviderType;
 export type GrowiExternalAuthProviderType = typeof GrowiExternalAuthProviderType[keyof typeof GrowiExternalAuthProviderType]
 
 interface IGrowiOSInfo {
@@ -51,7 +28,7 @@ export interface IGrowiInfo {
   currentUsersCount: number
   currentActiveUsersCount: number
   wikiType: GrowiWikiType
-  attachmentType: GrowiAttachmentType
+  attachmentType: AttachmentMethodType
   activeExternalAccountTypes?: GrowiExternalAuthProviderType[]
   osInfo?: IGrowiOSInfo
   deploymentType?: GrowiDeploymentType

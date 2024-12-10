@@ -21,7 +21,6 @@
     "dev:pre:styles": "pnpm run pre:styles --mode dev",
     "dev:migrate-mongo": "cross-env NODE_ENV=development pnpm run ts-node node_modules/migrate-mongo/bin/migrate-mongo",
     "dev:migrate": "pnpm run dev:migrate:status > tmp/cache/migration-status.out && pnpm run dev:migrate:up",
-    "dev:migrate:create": "pnpm run dev:migrate-mongo create -f config/migrate-mongo-config.js",
     "dev:migrate:status": "pnpm run dev:migrate-mongo status -f config/migrate-mongo-config.js",
     "dev:migrate:up": "pnpm run dev:migrate-mongo up -f config/migrate-mongo-config.js",
     "dev:migrate:down": "pnpm run dev:migrate-mongo down -f config/migrate-mongo-config.js",

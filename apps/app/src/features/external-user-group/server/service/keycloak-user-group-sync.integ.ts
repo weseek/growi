@@ -146,7 +146,7 @@ describe('KeycloakUserGroupSyncService.generateExternalUserGroupTrees', () => {
   };
 
   beforeAll(async() => {
-    await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
+    await configManager.updateConfigs(configParams, { skipPubsub: true });
     keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(null, null);
     keycloakUserGroupSyncService.init('oidc');
   });

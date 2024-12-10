@@ -1,3 +1,4 @@
+import { ConfigSource } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import xss from 'xss';
 
@@ -319,7 +320,7 @@ module.exports = (crowi) => {
     const { passportService } = crowi;
 
     // update config without publishing S2sMessage
-    await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+    await configManager.updateConfigs(params, { skipPubsub: true });
 
     await passportService.setupStrategyById(authId);
     passportService.publishUpdatedMessage(authId);
@@ -367,7 +368,7 @@ module.exports = (crowi) => {
         disableLinkSharing: await configManager.getConfig('crowi', 'security:disableLinkSharing'),
       },
       localSetting: {
-        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions'),
+        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('crowi', 'env:useOnlyEnvVars:security:passport-local'),
         registrationMode: await configManager.getConfig('crowi', 'security:registrationMode'),
         registrationWhitelist: await configManager.getConfig('crowi', 'security:registrationWhitelist'),
         isPasswordResetEnabled: await configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled'),
@@ -397,27 +398,27 @@ module.exports = (crowi) => {
       },
       samlAuth: {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
-        useOnlyEnvVarsForSomeOptions: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions'),
-        samlEntryPoint: await configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
-        samlEnvVarEntryPoint: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint'),
-        samlIssuer: await configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
-        samlEnvVarIssuer: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:issuer'),
-        samlCert: await configManager.getConfigFromDB('crowi', 'security:passport-saml:cert'),
-        samlEnvVarCert: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:cert'),
-        samlAttrMapId: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapId'),
-        samlEnvVarAttrMapId: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapId'),
-        samlAttrMapUsername: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername'),
-        samlEnvVarAttrMapUsername: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapUsername'),
-        samlAttrMapMail: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapMail'),
-        samlEnvVarAttrMapMail: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapMail'),
-        samlAttrMapFirstName: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName'),
-        samlEnvVarAttrMapFirstName: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapFirstName'),
-        samlAttrMapLastName: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName'),
-        samlEnvVarAttrMapLastName: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName'),
+        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('env:useOnlyEnvVars:security:passport-saml', ConfigSource.env),
+        samlEntryPoint: await configManager.getConfig('security:passport-saml:entryPoint', ConfigSource.db),
+        samlEnvVarEntryPoint: await configManager.getConfig('security:passport-saml:entryPoint', ConfigSource.env),
+        samlIssuer: await configManager.getConfig('security:passport-saml:issuer', ConfigSource.db),
+        samlEnvVarIssuer: await configManager.getConfig('security:passport-saml:issuer', ConfigSource.env),
+        samlCert: await configManager.getConfig('security:passport-saml:cert', ConfigSource.db),
+        samlEnvVarCert: await configManager.getConfig('security:passport-saml:cert', ConfigSource.env),
+        samlAttrMapId: await configManager.getConfig('security:passport-saml:attrMapId', ConfigSource.db),
+        samlEnvVarAttrMapId: await configManager.getConfig('security:passport-saml:attrMapId', ConfigSource.env),
+        samlAttrMapUsername: await configManager.getConfig('security:passport-saml:attrMapUsername', ConfigSource.db),
+        samlEnvVarAttrMapUsername: await configManager.getConfig('security:passport-saml:attrMapUsername', ConfigSource.env),
+        samlAttrMapMail: await configManager.getConfig('security:passport-saml:attrMapMail', ConfigSource.db),
+        samlEnvVarAttrMapMail: await configManager.getConfig('security:passport-saml:attrMapMail', ConfigSource.env),
+        samlAttrMapFirstName: await configManager.getConfig('security:passport-saml:attrMapFirstName', ConfigSource.db),
+        samlEnvVarAttrMapFirstName: await configManager.getConfig('security:passport-saml:attrMapFirstName', ConfigSource.env),
+        samlAttrMapLastName: await configManager.getConfig('security:passport-saml:attrMapLastName', ConfigSource.db),
+        samlEnvVarAttrMapLastName: await configManager.getConfig('security:passport-saml:attrMapLastName', ConfigSource.env),
         isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
-        samlABLCRule: await configManager.getConfigFromDB('crowi', 'security:passport-saml:ABLCRule'),
-        samlEnvVarABLCRule: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:ABLCRule'),
+        samlABLCRule: await configManager.getConfig('security:passport-saml:ABLCRule', ConfigSource.db),
+        samlEnvVarABLCRule: await configManager.getConfig('security:passport-saml:ABLCRule', ConfigSource.env),
       },
       oidcAuth: {
         oidcProviderName: await configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
@@ -652,7 +653,7 @@ module.exports = (crowi) => {
       delete updateData['security:restrictGuestMode'];
     }
     try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', updateData);
+      await configManager.updateConfigs(updateData);
       const securitySettingParams = {
         sessionMaxAge: await configManager.getConfig('crowi', 'security:sessionMaxAge'),
         restrictGuestMode: await configManager.getConfig('crowi', 'security:restrictGuestMode'),
@@ -708,7 +709,7 @@ module.exports = (crowi) => {
       'security:disableLinkSharing': req.body.disableLinkSharing,
     };
     try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', updateData);
+      await configManager.updateConfigs(updateData);
       const securitySettingParams = {
         disableLinkSharing: configManager.getConfig('crowi', 'security:disableLinkSharing'),
       };
@@ -941,7 +942,7 @@ module.exports = (crowi) => {
     for (const configKey of crowi.passportService.mandatoryConfigKeysForSaml) {
       const key = configKey.replace('security:passport-saml:', '');
       const formValue = req.body[key];
-      if (configManager.getConfigFromEnvVars('crowi', configKey) === null && formValue == null) {
+      if (configManager.getConfig(configKey, ConfigSource.env) == null && formValue == null) {
         const formItemName = t(`security_settings.form_item_name.${key}`);
         invalidValues.push(t('input_validation.message.required', { param: formItemName }));
       }
@@ -981,14 +982,14 @@ module.exports = (crowi) => {
 
       const securitySettingParams = {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
-        samlEntryPoint: await configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
-        samlIssuer: await configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
-        samlCert: await configManager.getConfigFromDB('crowi', 'security:passport-saml:cert'),
-        samlAttrMapId: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapId'),
-        samlAttrMapUsername: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername'),
-        samlAttrMapMail: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapMail'),
-        samlAttrMapFirstName: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName'),
-        samlAttrMapLastName: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName'),
+        samlEntryPoint: await configManager.getConfig('security:passport-saml:entryPoint', ConfigSource.db),
+        samlIssuer: await configManager.getConfig('security:passport-saml:issuer', ConfigSource.db),
+        samlCert: await configManager.getConfig('security:passport-saml:cert', ConfigSource.db),
+        samlAttrMapId: await configManager.getConfig('security:passport-saml:attrMapId', ConfigSource.db),
+        samlAttrMapUsername: await configManager.getConfig('security:passport-saml:attrMapUsername', ConfigSource.db),
+        samlAttrMapMail: await configManager.getConfig('security:passport-saml:attrMapMail', ConfigSource.db),
+        samlAttrMapFirstName: await configManager.getConfig('security:passport-saml:attrMapFirstName', ConfigSource.db),
+        samlAttrMapLastName: await configManager.getConfig('security:passport-saml:attrMapLastName', ConfigSource.db),
         isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
         isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
         samlABLCRule: await configManager.getConfig('crowi', 'security:passport-saml:ABLCRule'),

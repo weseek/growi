@@ -1,7 +1,8 @@
 import { Schema } from 'mongoose';
 
-import { ICondition } from '../../../interfaces/condition';
-import { GrowiServiceType } from '../../../interfaces/growi-info';
+import { GrowiServiceType } from '~/interfaces/system';
+
+import type { ICondition } from '../../../interfaces/condition';
 import { UserType } from '../../../interfaces/user-info';
 
 const conditionSchema = new Schema<ICondition>({

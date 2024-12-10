@@ -557,7 +557,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    searchService, configManager, aclService,
+    configManager, searchService, aclService,
   } = crowi;
 
   props.aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
@@ -609,9 +609,11 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
     sanitizeType: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    customAttrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    customTagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+    customTagWhitelist: configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    customAttrWhitelist: configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes') != null
+      ? JSON.parse(configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'))
+      : undefined,
+    highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 
   props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');

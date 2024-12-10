@@ -249,7 +249,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigs(requestParams);
       const customizedParams = {
         isContainerFluid: await crowi.configManager.getConfig('crowi', 'customize:isContainerFluid'),
       };
@@ -316,7 +316,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigs(requestParams);
       const customizedParams = {
         theme: await crowi.configManager.getConfig('crowi', 'customize:theme'),
       };
@@ -354,7 +354,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigs(requestParams);
       const customizedParams = {
         isSidebarCollapsedMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
         isSidebarClosedAtDockMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
@@ -408,7 +408,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigs(requestParams);
       const customizedParams = {
         isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
         isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
@@ -438,7 +438,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigs(requestParams);
       const customizedParams = {
         isEnabledMarp: await crowi.configManager.getConfig('crowi', 'customize:isEnabledMarp'),
       };
@@ -483,7 +483,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigs(requestParams);
       const customizedParams = {
         styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
         styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
@@ -528,7 +528,7 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+      await crowi.configManager.updateConfigs(requestParams, { skipPubsub: true });
       crowi.customizeService.publishUpdatedMessage();
 
       const customizedParams = {
@@ -574,7 +574,7 @@ module.exports = (crowi) => {
       'customize:noscript': req.body.customizeNoscript,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigs(requestParams);
       const customizedParams = {
         customizeNoscript: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
       };
@@ -617,7 +617,7 @@ module.exports = (crowi) => {
       'customize:css': req.body.customizeCss,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+      await crowi.configManager.updateConfigs(requestParams, { skipPubsub: true });
       crowi.customizeService.publishUpdatedMessage();
 
       const customizedParams = {
@@ -663,7 +663,7 @@ module.exports = (crowi) => {
       'customize:script': req.body.customizeScript,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigs(requestParams);
       const customizedParams = {
         customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
       };
@@ -688,7 +688,7 @@ module.exports = (crowi) => {
       'customize:isDefaultLogo': isDefaultLogo,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await crowi.configManager.updateConfigs(requestParams);
       const customizedParams = {
         isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
       };
