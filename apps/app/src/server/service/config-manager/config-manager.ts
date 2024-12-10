@@ -57,10 +57,10 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     else {
       this.envConfig = await this.configLoader.loadFromEnv();
       this.dbConfig = await this.configLoader.loadFromDB();
-
-      // Load legacy configs
-      await configManagerLegacy.loadConfigs();
     }
+
+    // Load legacy configs
+    await configManagerLegacy.loadConfigs();
 
     this.lastLoadedAt = new Date();
   }
