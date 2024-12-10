@@ -45,7 +45,7 @@ describe('ConfigManager', () => {
       const value = configManager.getConfig('app:siteUrl');
 
       // assert
-      expect(value).toEqual('https://example.com');
+      expect(value).toStrictEqual('https://example.com');
     });
 
     test('returns the env value when USES_ONLY_ENV_OPTION is set', async() => {
@@ -61,6 +61,50 @@ describe('ConfigManager', () => {
       expect(value).toEqual('http://localhost:3000');
     });
 
+  });
+
+  describe("getConfig('security:passport-saml:isEnabled')", () => {
+
+    beforeEach(async() => {
+      // remove config from DB
+      await Config.deleteOne({ key: 'security:passport-saml:isEnabled' }).exec();
+    });
+
+    test('returns the default value"', async() => {
+      // arrange
+      await configManager.loadConfigs();
+
+      // act
+      const value = configManager.getConfig('security:passport-saml:isEnabled');
+
+      // assert
+      expect(value).toStrictEqual(false);
+    });
+
+    test('returns the env value"', async() => {
+      // arrange
+      process.env.SAML_ENABLED = 'true';
+      await configManager.loadConfigs();
+
+      // act
+      const value = configManager.getConfig('security:passport-saml:isEnabled');
+
+      // assert
+      expect(value).toStrictEqual(true);
+    });
+
+    test('returns the preferred db value"', async() => {
+      // arrange
+      process.env.SAML_ENABLED = 'true';
+      await Config.create({ key: 'security:passport-saml:isEnabled', value: false });
+      await configManager.loadConfigs();
+
+      // act
+      const value = configManager.getConfig('security:passport-saml:isEnabled');
+
+      // assert
+      expect(value).toStrictEqual(false);
+    });
   });
 
   describe('updateConfigs', () => {
