@@ -94,10 +94,22 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
         : (this.dbConfig[key] ?? this.envConfig[key])?.value;
     })() as ConfigValues[K];
 
-    const valueByLegacy = configManagerLegacy.getConfig(ns, key);
+    const valueByLegacy = (() => {
+      if (source === ConfigSource.env) {
+        return configManagerLegacy.getConfigFromEnvVars(ns, key);
+      }
+      if (source === ConfigSource.db) {
+        return configManagerLegacy.getConfigFromDB(ns, key);
+      }
+      return configManagerLegacy.getConfig(ns, key);
+    })();
+
     if (value !== valueByLegacy) {
       if (!(value === undefined && valueByLegacy === null)) {
-        logger.warn(`The value of the config key '${key}' is different between the new and legacy config managers: `, { value, valueByLegacy });
+        logger.warn(
+          `The value of the config key '${key}' ${source != null ? `(source: ${source})` : ''} is different between the new and legacy config managers:`,
+          { value, valueByLegacy },
+        );
       }
     }
 
