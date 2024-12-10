@@ -75,7 +75,12 @@ class UploadForm extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="mx-auto mt-3">
+            <div className="mt-4 text-center">
+              { this.props.onDiscard && (
+                <button type="button" className="btn btn-outline-secondary mx-1" onClick={this.props.onDiscard}>
+                  {t('admin:importer_management.growi_settings.discard')}
+                </button>
+              ) }
               <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
                 {t('admin:importer_management.growi_settings.upload')}
               </button>
@@ -91,6 +96,7 @@ class UploadForm extends React.Component {
 UploadForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   onUpload: PropTypes.func.isRequired,
+  onDiscard: PropTypes.func,
   isTheSameVersion: PropTypes.bool,
   onVersionMismatch: PropTypes.func,
 };

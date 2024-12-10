@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import type { EventEmitter } from 'stream';
 import { Writable, Transform, pipeline } from 'stream';
-import { pipeline as pipelinePromise } from 'stream/promises';
+import { finished, pipeline as pipelinePromise } from 'stream/promises';
 
 import JSONStream from 'JSONStream';
 import gc from 'expose-gc/function';
@@ -344,10 +344,10 @@ export class ImportService {
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
     const parseStream = unzipStream.Parse();
-    const unzipStreamPipe = pipeline(readStream, parseStream);
+    const unzipEntryStream = pipeline(readStream, parseStream, () => {});
     const files: string[] = [];
 
-    const unzipEntryStream = unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
+    unzipEntryStream.on('entry', (/** @type {Entry} */ entry) => {
       const fileName = entry.path;
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing unzip file (path traversal attack)
@@ -365,12 +365,12 @@ export class ImportService {
       else {
         const jsonFile = path.join(this.baseDir, fileName);
         const writeStream = fs.createWriteStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
-        pipeline(entry, writeStream);
+        pipeline(entry, writeStream, () => {});
         files.push(jsonFile);
       }
     });
 
-    await pipelinePromise([unzipEntryStream]);
+    await finished(unzipEntryStream);
 
     return files;
   }

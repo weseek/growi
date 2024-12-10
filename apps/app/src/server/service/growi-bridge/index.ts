@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { pipeline } from 'stream';
-import { pipeline as pipelinePromise } from 'stream/promises';
+import { finished } from 'stream/promises';
 
 import unzipStream, { type Entry } from 'unzip-stream';
 
@@ -80,7 +80,7 @@ class GrowiBridgeService {
 
     const readStream = fs.createReadStream(zipFile);
     const parseStream = unzipStream.Parse();
-    const unzipEntryStream = pipeline(readStream, parseStream);
+    const unzipEntryStream = pipeline(readStream, parseStream, () => {});
 
     let tapPromise;
 
@@ -103,7 +103,7 @@ class GrowiBridgeService {
     });
 
     try {
-      await pipelinePromise([unzipEntryStream]);
+      await finished(unzipEntryStream);
       await tapPromise;
     }
     // if zip is broken
