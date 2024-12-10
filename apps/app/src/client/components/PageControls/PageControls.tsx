@@ -16,6 +16,7 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import { type WideViewMenuItemProps, WideViewMenuItem, CommunicationMenuItems } from '~/components/SubNavButtons';
 import RagSearchButton from '~/features/openai/client/components/RagSearchButton';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/stores-universal/context';
 import {
@@ -34,6 +35,7 @@ import {
   MenuItemType,
   PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
+
 
 import { BookmarkButtons } from './BookmarkButtons';
 import LikeButtons from './LikeButtons';
@@ -69,36 +71,6 @@ const Tags = (props: TagsProps): JSX.Element => {
   );
 };
 
-type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClick: () => void,
-  expandContentWidth?: boolean,
-}
-
-const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
-  const { t } = useTranslation();
-
-  const {
-    onClick, expandContentWidth,
-  } = props;
-
-  return (
-    <DropdownItem className="grw-page-control-dropdown-item dropdown-item" onClick={onClick} toggle={false}>
-      <div className="form-check form-switch ms-1">
-        <input
-          className="form-check-input pe-none"
-          type="checkbox"
-          checked={expandContentWidth}
-          onChange={() => {}}
-        />
-        <label className="form-check-label pe-none">
-          { t('wide_view') }
-        </label>
-      </div>
-    </DropdownItem>
-  );
-};
-
-
 type CommonProps = {
   pageId: string,
   shareLinkId?: string | null,
@@ -114,6 +86,7 @@ type CommonProps = {
   onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
   onClickSwitchContentWidth?: (pageId: string, value: boolean) => void,
+  onClickWorkflowMenuItem?: (pageId: string) => void,
 }
 
 type PageControlsSubstanceProps = CommonProps & {
@@ -126,7 +99,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     disableSeenUserInfoPopover, hideSubControls, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth, onClickWorkflowMenuItem,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -249,6 +222,14 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     }
   }, [expandContentWidth, isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
+  const workflowMenuItemClickHandler = useCallback(async(pageId: string) => {
+    if (onClickWorkflowMenuItem == null) {
+      return;
+    }
+
+    onClickWorkflowMenuItem(pageId);
+  }, [onClickWorkflowMenuItem]);
+
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
@@ -258,10 +239,16 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     }
 
     const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
-      return <WideViewMenuItem {...props} onClick={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
+      return (
+        <>
+          <WideViewMenuItem {...props} onClick={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />
+          <DropdownItem divider />
+          <CommunicationMenuItems pageId={pageId} onClickWokflowMenuItem={workflowMenuItemClickHandler} />
+        </>
+      );
     };
     return wideviewMenuItemRenderer;
-  }, [pageInfo, expandContentWidth, onClickSwitchContentWidth, switchContentWidthClickHandler]);
+  }, [pageInfo, onClickSwitchContentWidth, switchContentWidthClickHandler, expandContentWidth, pageId, workflowMenuItemClickHandler]);
 
   if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;
