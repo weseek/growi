@@ -94,19 +94,33 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
         : (this.dbConfig[key] ?? this.envConfig[key])?.value;
     })() as ConfigValues[K];
 
+    this.checkDifference(key, value);
+
+    return value;
+  }
+
+  private checkDifference<K extends ConfigKey>(key: K, value: ConfigValues[K], source?: ConfigSource): void {
     const valueByLegacy = (() => {
       if (source === ConfigSource.env) {
-        return configManagerLegacy.getConfigFromEnvVars(ns, key);
+        return configManagerLegacy.getConfigFromEnvVars('crowi', key);
       }
       if (source === ConfigSource.db) {
-        return configManagerLegacy.getConfigFromDB(ns, key);
+        return configManagerLegacy.getConfigFromDB('crowi', key);
       }
-      return configManagerLegacy.getConfig(ns, key);
+      return configManagerLegacy.getConfig('crowi', key);
     })();
 
-    const isDifferent = Array.isArray(value)
-      ? value.length !== valueByLegacy.length || value.some((v, i) => v !== valueByLegacy[i])
-      : value !== valueByLegacy;
+    const isDifferent = (() => {
+      if (Array.isArray(value)) {
+        return value.length !== valueByLegacy.length || value.some((v, i) => v !== valueByLegacy[i]);
+      }
+
+      if (typeof value === 'object') {
+        return JSON.stringify(value) !== JSON.stringify(valueByLegacy);
+      }
+
+      return value !== valueByLegacy;
+    })();
 
     if (isDifferent) {
       if (!(value === undefined && valueByLegacy === null)) {
@@ -116,8 +130,6 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
         );
       }
     }
-
-    return value;
   }
 
   private shouldUseEnvOnly(key: ConfigKey): boolean {
