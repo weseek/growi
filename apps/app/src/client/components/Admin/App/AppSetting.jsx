@@ -197,6 +197,10 @@ const AppSetting = (props) => {
             {t('admin:app_setting.page_bulk_export_explanation')}
           </p>
 
+          <p className="alert alert-warning mt-2">
+            {t('admin:app_setting.page_bulk_export_warning')}
+          </p>
+
           {adminAppContainer.state.isFixedIsBulkExportPagesEnabled && (
             <p className="alert alert-warning mt-2 text-start">
               <span className="material-symbols-outlined">help</span>

@@ -373,6 +373,7 @@
     "attach_enable": "如果启用此选项，则可以附加图像文件以外的文件。",
     "enable_page_bulk_export": "允许批量导出页面及其子页面",
     "page_bulk_export_explanation": "如果允许，可以从各个页面的菜单中批量导出。",
+    "page_bulk_export_warning": "导出结果的下载期限为24小时，下载期限过后将被删除。在此期间，连续运行多个大导出可能会填满文件系统。",
     "update": "更新",
     "mail_settings": "邮件设置",
     "mailer_is_not_set_up": "邮件设置尚未完成。",
