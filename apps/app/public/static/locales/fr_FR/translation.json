@@ -161,6 +161,7 @@
   "not_allowed_to_see_this_page": "Vous ne pouvez pas voir cette page",
   "Confirm": "Confirmer",
   "Successfully requested": "Demande envoyée.",
+  "single-editor-mode-alert": "L'éditeur collaboratif est désactivé car le contenu de cette page dépasse les caractères {{yjsMaxBodyLength}}. Pour l'activer, réduisez le contenu en deçà du seuil, enregistrez la page et ouvrez à nouveau l'éditeur.",
   "source": "Source",
   "input_validation": {
     "target": {

@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { type Nullable } from '@growi/core';
 import { withUtils, type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
 import type { EditorSettings } from '@growi/editor';
-import useSWR, { type SWRResponse } from 'swr';
+import useSWR, { type SWRResponse, type MutatorCallback } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
@@ -116,10 +116,42 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
   };
 };
 
-export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
-  return useSWRStatic<boolean, Error>('isEnabledUnsavedWarning');
-};
 
+type UnsavedChangeDetector = Map<string, () => boolean>;
+
+interface UnsavedChangesUtils {
+  hasUnsavedChanges: () => boolean;
+  addChangeDetector: (key: string, detector: () => boolean) => void;
+}
+
+export const useUnsavedChanges = (): SWRResponse<UnsavedChangeDetector, Error> & UnsavedChangesUtils => {
+  const swrResponse = useSWRStatic<UnsavedChangeDetector, Error>('unsavedChanges', undefined);
+
+  const addChangeDetector = useCallback((key: string, detector: () => boolean) => {
+    const mutatorCallback: MutatorCallback<UnsavedChangeDetector> = (currentData) => {
+      const detectors: UnsavedChangeDetector = currentData || new Map();
+      detectors.set(key, detector);
+      return detectors;
+    };
+
+    swrResponse.mutate(mutatorCallback);
+  }, [swrResponse]);
+
+  const hasUnsavedChanges = useCallback(() => {
+    const detectors = swrResponse.data;
+    if (detectors == null || detectors.size === 0) {
+      return false;
+    }
+
+    return Array.from(detectors.values()).some(detector => detector());
+  }, [swrResponse.data]);
+
+  return {
+    ...swrResponse,
+    hasUnsavedChanges,
+    addChangeDetector,
+  };
+};
 
 export const useReservedNextCaretLine = (initialData?: number): SWRResponse<number> => {
 

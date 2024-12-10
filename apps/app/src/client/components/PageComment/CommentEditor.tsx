@@ -24,7 +24,7 @@ import {
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
-  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useEditorSettings,
+  useSWRxSlackChannels, useIsSlackEnabled, useEditorSettings, useUnsavedChanges,
 } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import { useCommentEditorDirtyMap } from '~/stores/ui';
@@ -85,14 +85,26 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
   const { data: editorSettings } = useEditorSettings();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
+    data: editorDirtyMap,
     evaluate: evaluateEditorDirtyMap,
     clean: cleanEditorDirtyMap,
   } = useCommentEditorDirtyMap();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
   const { resolvedTheme } = useNextThemes();
+  const { addChangeDetector } = useUnsavedChanges();
+
   mutateResolvedTheme({ themeData: resolvedTheme });
+
+  const unloadOrRouteChangeHandler = useCallback(() => {
+    if (editorDirtyMap == null || editorDirtyMap.size === 0) {
+      return false;
+    }
+
+    return true;
+  }, [editorDirtyMap]);
+
+  addChangeDetector('comment', unloadOrRouteChangeHandler);
 
   const editorKey = useMemo(() => {
     if (replyTo != null) {
@@ -136,15 +148,14 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, []);
 
   const initializeEditor = useCallback(async() => {
-    const dirtyNum = await cleanEditorDirtyMap(editorKey);
-    mutateIsEnabledUnsavedWarning(dirtyNum > 0);
+    await cleanEditorDirtyMap(editorKey);
 
     setShowPreview(false);
     setError(undefined);
 
     initializeSlackEnabled();
 
-  }, [editorKey, cleanEditorDirtyMap, mutateIsEnabledUnsavedWarning, initializeSlackEnabled]);
+  }, [editorKey, cleanEditorDirtyMap, initializeSlackEnabled]);
 
   const cancelButtonClickedHandler = useCallback(() => {
     initializeEditor();
@@ -210,10 +221,9 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const cmProps = useMemo(() => ({
     onChange: async(value: string) => {
-      const dirtyNum = await evaluateEditorDirtyMap(editorKey, value);
-      mutateIsEnabledUnsavedWarning(dirtyNum > 0);
+      await evaluateEditorDirtyMap(editorKey, value);
     },
-  }), [editorKey, evaluateEditorDirtyMap, mutateIsEnabledUnsavedWarning]);
+  }), [editorKey, evaluateEditorDirtyMap]);
 
 
   // initialize CodeMirrorEditor
