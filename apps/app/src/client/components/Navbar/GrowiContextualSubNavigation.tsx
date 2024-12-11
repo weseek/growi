@@ -25,7 +25,7 @@ import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from 
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsPageBulkExportEnabled, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsBulkExportPagesEnabled, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import {
@@ -77,7 +77,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isPageBulkExportEnabled } = useIsPageBulkExportEnabled();
+  const { data: isBulkExportPagesEnabled } = useIsBulkExportPagesEnabled();
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
@@ -142,10 +142,9 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
       </DropdownItem>
 
       {/* Bulk export */}
-      {isPageBulkExportEnabled && (
+      {isBulkExportPagesEnabled && (
         <span id="bulkExportDropdownItem">
           <DropdownItem
-            disabled={!isPageBulkExportEnabled}
             onClick={openPageBulkExportSelectModal}
             className="grw-page-control-dropdown-item"
           >

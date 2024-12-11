@@ -1,10 +1,11 @@
 import type { HydratedDocument } from 'mongoose';
 
+import type Crowi from '~/server/crowi';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportEnabledFileUploadTypes, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
+import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
@@ -17,9 +18,9 @@ const logger = loggerFactory('growi:service:page-bulk-export-job-clean-up-cron')
  */
 class PageBulkExportJobCleanUpCronService extends CronService {
 
-  crowi: any;
+  crowi: Crowi;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     super();
     this.crowi = crowi;
   }
@@ -29,9 +30,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   }
 
   override async executeJob(): Promise<void> {
-    // TODO: allow enabling/disabling bulk export in https://redmine.weseek.co.jp/issues/158221
-    const isPageBulkExportEnabled = true;
-    if (!isPageBulkExportEnabled) return;
+    // Execute cleanup even if isBulkExportPagesEnabled is false, to cleanup jobs which were created before bulk export was disabled
 
     await this.deleteExpiredExportJobs();
     await this.deleteDownloadExpiredExportJobs();
@@ -114,6 +113,6 @@ class PageBulkExportJobCleanUpCronService extends CronService {
 
 // eslint-disable-next-line import/no-mutable-exports
 export let pageBulkExportJobCleanUpCronService: PageBulkExportJobCleanUpCronService | undefined; // singleton instance
-export default function instanciate(crowi): void {
+export default function instanciate(crowi: Crowi): void {
   pageBulkExportJobCleanUpCronService = new PageBulkExportJobCleanUpCronService(crowi);
 }
