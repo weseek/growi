@@ -258,6 +258,12 @@ export const CONFIG_KEYS = [
   'external-user-group:ldap:preserveDeletedGroups',
   'external-user-group:keycloak:autoGenerateUserOnGroupSync',
   'external-user-group:keycloak:preserveDeletedGroups',
+  'external-user-group:keycloak:host',
+  'external-user-group:keycloak:groupRealm',
+  'external-user-group:keycloak:groupSyncClientRealm',
+  'external-user-group:keycloak:groupDescriptionAttribute',
+  'external-user-group:keycloak:groupSyncClientID',
+  'external-user-group:keycloak:groupSyncClientSecret',
 
   // Control Flags for using only env vars
   'env:useOnlyEnvVars:app:siteUrl',
@@ -1088,6 +1094,24 @@ Guideline as a RAG:
   }),
   'external-user-group:keycloak:preserveDeletedGroups': defineConfig<boolean>({
     defaultValue: false,
+  }),
+  'external-user-group:keycloak:host': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'external-user-group:keycloak:groupRealm': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'external-user-group:keycloak:groupSyncClientRealm': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'external-user-group:keycloak:groupDescriptionAttribute': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'external-user-group:keycloak:groupSyncClientID': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'external-user-group:keycloak:groupSyncClientSecret': defineConfig<string | undefined>({
+    defaultValue: undefined,
   }),
 
   // Control Flags for Env Vars
