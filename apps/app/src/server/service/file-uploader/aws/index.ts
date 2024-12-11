@@ -1,4 +1,4 @@
-import type { ReadStream } from 'fs';
+import type { Readable } from 'stream';
 
 import type { GetObjectCommandInput, HeadObjectCommandInput } from '@aws-sdk/client-s3';
 import {
@@ -157,7 +157,7 @@ class AwsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     if (!this.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -172,7 +172,7 @@ class AwsFileUploader extends AbstractFileUploader {
     await s3.send(new PutObjectCommand({
       Bucket: getS3Bucket(),
       Key: filePath,
-      Body: readStream,
+      Body: readable,
       ACL: getS3PutObjectCannedAcl(),
       // put type and the file name for reference information when uploading
       ContentType: contentHeaders.contentType?.value.toString(),
