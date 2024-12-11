@@ -13,10 +13,7 @@ import pkg from '^/package.json';
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
-import { PageBulkExportJobInProgressStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
-import PageBulkExportJob from '~/features/page-bulk-export/server/models/page-bulk-export-job';
 import { checkPageBulkExportJobInProgressCronService } from '~/features/page-bulk-export/server/service/check-page-bulk-export-job-in-progress-cron';
-import instanciatePageBulkExportService, { pageBulkExportService } from '~/features/page-bulk-export/server/service/page-bulk-export';
 import instanciatePageBulkExportJobCleanUpCronService, {
   pageBulkExportJobCleanUpCronService,
 } from '~/features/page-bulk-export/server/service/page-bulk-export-job-clean-up-cron';
@@ -177,7 +174,6 @@ Crowi.prototype.init = async function() {
     this.setupUserGroupService(),
     this.setupExport(),
     this.setupImport(),
-    this.setupPageBulkExportService(),
     this.setupGrowiPluginService(),
     this.setupPageService(),
     this.setupInAppNotificationService(),
@@ -198,8 +194,6 @@ Crowi.prototype.init = async function() {
   ]);
 
   await normalizeData();
-
-  this.resumeIncompletePageBulkExportJobs();
 };
 
 /**
@@ -690,10 +684,6 @@ Crowi.prototype.setupExport = async function() {
   instanciateExportService(this);
 };
 
-Crowi.prototype.setupPageBulkExportService = async function() {
-  instanciatePageBulkExportService(this);
-};
-
 Crowi.prototype.setupImport = async function() {
   initializeImportService(this);
 };
@@ -784,13 +774,6 @@ Crowi.prototype.setupExternalAccountService = function() {
 Crowi.prototype.setupExternalUserGroupSyncService = function() {
   this.ldapUserGroupSyncService = new LdapUserGroupSyncService(this.passportService, this.s2sMessagingService, this.socketIoService);
   this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
-};
-
-Crowi.prototype.resumeIncompletePageBulkExportJobs = async function() {
-  const jobs = await PageBulkExportJob.find({
-    $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
-  });
-  jobs.forEach(job => pageBulkExportService?.pageBulkExportJobManager?.addJob(job));
 };
 
 export default Crowi;
