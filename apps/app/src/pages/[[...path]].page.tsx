@@ -247,6 +247,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadEnabled(props.isUploadEnabled);
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
+  useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
 
   useIsAiEnabled(props.aiEnabled);
 
