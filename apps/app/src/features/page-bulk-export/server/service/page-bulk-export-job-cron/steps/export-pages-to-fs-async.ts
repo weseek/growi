@@ -74,6 +74,6 @@ export function exportPagesToFsAsync(this: IPageBulkExportJobCronService, pageBu
   this.setStreamInExecution(pageBulkExportJob._id, pageSnapshotsReadable);
 
   pipeline(pageSnapshotsReadable, pagesWritable, (err) => {
-    this.handlePipelineError(err, pageBulkExportJob);
+    this.handleError(err, pageBulkExportJob);
   });
 }

@@ -98,6 +98,6 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
   this.setStreamInExecution(pageBulkExportJob._id, pagesReadable);
 
   pipeline(pagesReadable, pageSnapshotsWritable, (err) => {
-    this.handlePipelineError(err, pageBulkExportJob);
+    this.handleError(err, pageBulkExportJob);
   });
 }
