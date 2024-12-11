@@ -14,7 +14,6 @@ import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import type { ActivityDocument } from '~/server/models/activity';
 import { configManager } from '~/server/service/config-manager';
 import CronService from '~/server/service/cron';
-import type { FileUploader } from '~/server/service/file-uploader';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
@@ -26,7 +25,7 @@ import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snaps
 
 import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors';
 import { requestPdfConverter } from './request-pdf-converter';
-import { compressAndUploadAsync } from './steps/compress-and-upload-async';
+import { compressAndUpload } from './steps/compress-and-upload';
 import { createPageSnapshotsAsync } from './steps/create-page-snapshots-async';
 import { exportPagesToFsAsync } from './steps/export-pages-to-fs-async';
 
@@ -39,7 +38,8 @@ export interface IPageBulkExportJobCronService {
   maxPartSize: number;
   compressExtension: string;
   setStreamInExecution(jobId: ObjectIdLike, stream: Readable): void;
-  handlePipelineError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument): void;
+  removeStreamInExecution(jobId: ObjectIdLike): void;
+  handleError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument): void;
   notifyExportResultAndCleanUp(action: SupportedActionType, pageBulkExportJob: PageBulkExportJobDocument): Promise<void>;
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath: boolean): string;
 }
@@ -169,7 +169,7 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
         exportPagesToFsAsync.bind(this)(pageBulkExportJob);
       }
       else if (pageBulkExportJob.status === PageBulkExportJobStatus.uploading) {
-        await compressAndUploadAsync.bind(this)(user, pageBulkExportJob);
+        compressAndUpload.bind(this)(user, pageBulkExportJob);
       }
     }
     catch (err) {
@@ -179,11 +179,11 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
   }
 
   /**
-   * Handle errors that occurred inside a stream pipeline
+   * Handle errors that occurred during page bulk export
    * @param err error
    * @param pageBulkExportJob PageBulkExportJob executed in the pipeline
    */
-  async handlePipelineError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument) {
+  async handleError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument) {
     if (err == null) return;
 
     if (err instanceof BulkExportJobExpiredError) {
@@ -227,7 +227,6 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
    * Do the following in parallel:
    * - delete page snapshots
    * - remove the temporal output directory
-   * - abort multipart upload
    */
   async cleanUpExportJobResources(pageBulkExportJob: PageBulkExportJobDocument, restarted = false) {
     const streamInExecution = this.getStreamInExecution(pageBulkExportJob._id);
@@ -238,18 +237,13 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
       else {
         streamInExecution.destroy(new BulkExportJobExpiredError());
       }
+      this.removeStreamInExecution(pageBulkExportJob._id);
     }
-    this.removeStreamInExecution(pageBulkExportJob._id);
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
     ];
-
-    const fileUploadService: FileUploader = this.crowi.fileUploadService;
-    if (pageBulkExportJob.uploadKey != null && pageBulkExportJob.uploadId != null) {
-      promises.push(fileUploadService.abortPreviousMultipartUpload(pageBulkExportJob.uploadKey, pageBulkExportJob.uploadId));
-    }
 
     const results = await Promise.allSettled(promises);
     results.forEach((result) => {
