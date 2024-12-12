@@ -86,27 +86,25 @@ const PageBulkExportSettings = (): JSX.Element => {
           </div>
 
           <div className="mb-4">
-            <div className="container">
-              <div className="row">
-                <label
-                  className="text-start text-md-end col-md-3 col-form-label"
-                >
-                  {t('app_setting.page_bulk_export_storage_period')}
-                </label>
+            <div className="row">
+              <label
+                className="text-start text-md-end col-md-3 col-form-label"
+              >
+                {t('app_setting.page_bulk_export_storage_period')}
+              </label>
 
-                <div className="col-md-2">
-                  <select
-                    className="form-select"
-                    value={(bulkExportDownloadExpirationSeconds ?? 0) / (24 * 60 * 60)}
-                    onChange={(e) => { changeBulkExportDownloadExpirationSeconds(Number(e.target.value)) }}
-                  >
-                    {Array.from({ length: 7 }, (_, i) => i + 1).map(number => (
-                      <option key={`be-download-expiration-option-${number}`} value={number}>
-                        {number}{t('admin:days')}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              <div className="col-md-2">
+                <select
+                  className="form-select"
+                  value={(bulkExportDownloadExpirationSeconds ?? 0) / (24 * 60 * 60)}
+                  onChange={(e) => { changeBulkExportDownloadExpirationSeconds(Number(e.target.value)) }}
+                >
+                  {Array.from({ length: 7 }, (_, i) => i + 1).map(number => (
+                    <option key={`be-download-expiration-option-${number}`} value={number}>
+                      {number}{t('admin:days')}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
