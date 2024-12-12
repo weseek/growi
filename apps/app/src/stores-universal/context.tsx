@@ -147,6 +147,7 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
 };
 
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
+  console.log(initialData, 'undifined or null');
   return useContextSWR('growiRendererConfig', initialData);
 };
 

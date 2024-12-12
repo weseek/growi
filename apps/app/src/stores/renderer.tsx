@@ -171,6 +171,11 @@ export const useCustomSidebarOptions = (config?: SWRConfiguration): SWRResponse<
 export const usePresentationViewOptions = (): SWRResponse<RendererOptions, Error> => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: rendererConfig } = useRendererConfig();
+  console.log(rendererConfig, 'rendererconfig');
+  if (!rendererConfig) {
+    console.log('RendererConfig is missing.');
+  }
+
 
   const isAllDataValid = currentPagePath != null && rendererConfig != null;
 
