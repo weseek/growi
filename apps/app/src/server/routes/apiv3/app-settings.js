@@ -540,8 +540,6 @@ module.exports = (crowi) => {
       'app:globalLang': req.body.globalLang,
       'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
       'app:fileUpload': req.body.fileUpload,
-      'app:isBulkExportPagesEnabled': req.body.isBulkExportPagesEnabled,
-      'app:bulkExportDownloadExpirationSeconds': req.body.bulkExportDownloadExpirationSeconds,
     };
 
     try {
@@ -552,8 +550,6 @@ module.exports = (crowi) => {
         globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
         isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
-        isBulkExportPagesEnabled: crowi.configManager.getConfig('crowi', 'app:isBulkExportPagesEnabled'),
-        bulkExportDownloadExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:bulkExportDownloadExpirationSeconds'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };

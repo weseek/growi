@@ -1067,7 +1067,8 @@
     "ADMIN_USER_GROUP_ADD_USER": "Ajouter l'utilisateur au groupe",
     "ADMIN_SEARCH_CONNECTION": "Essai de reconnexion Elasticsearch",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Nomarliser l'index Elasticsearch",
-    "ADMIN_SEARCH_INDICES_REBUILD": "Reconstruire l'index Elasticsearch"
+    "ADMIN_SEARCH_INDICES_REBUILD": "Reconstruire l'index Elasticsearch",
+    "ADMIN_PAGE_BULK_EXPORT_SETTINGS_UPDATE": "Mettre à jour les paramètres d'exportation groupée de la page"
   },
   "g2g": {
     "transfer_success": "Transfert de GROWI vers GROWI complété!",
