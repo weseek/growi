@@ -25,6 +25,7 @@ export default class AdminAppContainer extends Container {
       fileUpload: '',
       isBulkExportPagesEnabled: false,
       isFixedIsBulkExportPagesEnabled: false,
+      bulkExportDownloadExpirationSeconds: 86400,
 
       isV5Compatible: null,
       siteUrl: '',
@@ -103,6 +104,7 @@ export default class AdminAppContainer extends Container {
       isEmailPublishedForNewUser: appSettingsParams.isEmailPublishedForNewUser,
       fileUpload: appSettingsParams.fileUpload,
       isBulkExportPagesEnabled: appSettingsParams.isBulkExportPagesEnabled,
+      bulkExportDownloadExpirationSeconds: appSettingsParams.bulkExportDownloadExpirationSeconds,
       isV5Compatible: appSettingsParams.isV5Compatible,
       siteUrl: appSettingsParams.siteUrl,
       siteUrlUseOnlyEnvVars: appSettingsParams.siteUrlUseOnlyEnvVars,
@@ -201,13 +203,6 @@ export default class AdminAppContainer extends Container {
    */
   changeFileUpload(fileUpload) {
     this.setState({ fileUpload });
-  }
-
-  /**
-   * Change isBulkExportPagesEnabled
-   */
-  changeIsPageBulkExportEnabled(isBulkExportPagesEnabled) {
-    this.setState({ isBulkExportPagesEnabled });
   }
 
   /**

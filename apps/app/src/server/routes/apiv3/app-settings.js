@@ -401,6 +401,10 @@ module.exports = (crowi) => {
       body('isQuestionnaireEnabled').isBoolean(),
       body('isAppSiteUrlHashed').isBoolean(),
     ],
+    pageBulkExportSettings: [
+      body('isBulkExportPagesEnabled').isBoolean(),
+      body('bulkExportDownloadExpirationSeconds').isInt(),
+    ],
     maintenanceMode: [
       body('flag').isBoolean(),
     ],
@@ -435,8 +439,6 @@ module.exports = (crowi) => {
       globalLang: crowi.configManager.getConfig('crowi', 'app:globalLang'),
       isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
       fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
-      isBulkExportPagesEnabled: crowi.configManager.getConfig('crowi', 'app:isBulkExportPagesEnabled'),
-      envIsBulkExportPagesEnabled: crowi.configManager.getConfigFromEnvVars('crowi', 'app:isBulkExportPagesEnabled'),
       useOnlyEnvVarsForIsBulkExportPagesEnabled: crowi.configManager.getConfig('crowi', 'env:useOnlyEnvVars:app:isBulkExportPagesEnabled'),
       isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
       siteUrl: crowi.configManager.getConfig('crowi', 'app:siteUrl'),
@@ -493,6 +495,10 @@ module.exports = (crowi) => {
       isAppSiteUrlHashed: crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed'),
 
       isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
+
+      isBulkExportPagesEnabled: crowi.configManager.getConfig('crowi', 'app:isBulkExportPagesEnabled'),
+      envIsBulkExportPagesEnabled: crowi.configManager.getConfigFromEnvVars('crowi', 'app:isBulkExportPagesEnabled'),
+      bulkExportDownloadExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:bulkExportDownloadExpirationSeconds'),
     };
     return res.apiv3({ appSettingsParams });
 
@@ -535,6 +541,7 @@ module.exports = (crowi) => {
       'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
       'app:fileUpload': req.body.fileUpload,
       'app:isBulkExportPagesEnabled': req.body.isBulkExportPagesEnabled,
+      'app:bulkExportDownloadExpirationSeconds': req.body.bulkExportDownloadExpirationSeconds,
     };
 
     try {
@@ -546,6 +553,7 @@ module.exports = (crowi) => {
         isEmailPublishedForNewUser: crowi.configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser'),
         fileUpload: crowi.configManager.getConfig('crowi', 'app:fileUpload'),
         isBulkExportPagesEnabled: crowi.configManager.getConfig('crowi', 'app:isBulkExportPagesEnabled'),
+        bulkExportDownloadExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:bulkExportDownloadExpirationSeconds'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };
@@ -1022,6 +1030,33 @@ module.exports = (crowi) => {
     }
 
   });
+
+  router.put('/page-bulk-export-settings', loginRequiredStrictly, adminRequired, addActivity, validator.pageBulkExportSettings, apiV3FormValidator,
+    async(req, res) => {
+      const requestParams = {
+        'app:isBulkExportPagesEnabled': req.body.isBulkExportPagesEnabled,
+        'app:bulkExportDownloadExpirationSeconds': req.body.bulkExportDownloadExpirationSeconds,
+      };
+
+      try {
+        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+        const responseParams = {
+          isBulkExportPagesEnabled: crowi.configManager.getConfig('crowi', 'app:isBulkExportPagesEnabled'),
+          bulkExportDownloadExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:bulkExportDownloadExpirationSeconds'),
+        };
+
+        const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+
+        return res.apiv3({ responseParams });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating page bulk export settings';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-page-bulk-export-settings-failed'));
+      }
+
+    });
 
   /**
    * @swagger
