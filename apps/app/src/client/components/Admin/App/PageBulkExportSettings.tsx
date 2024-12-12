@@ -41,7 +41,7 @@ const PageBulkExportSettings = (): JSX.Element => {
   useEffect(() => {
     setIsBulkExportPagesEnabled(data?.isBulkExportPagesEnabled);
     setBulkExportDownloadExpirationSeconds(data?.bulkExportDownloadExpirationSeconds);
-  }, [data, data?.isBulkExportPagesEnabled, data?.bulkExportDownloadExpirationSeconds]);
+  }, [data]);
 
   const isLoading = data === undefined && error === undefined;
 
@@ -81,10 +81,6 @@ const PageBulkExportSettings = (): JSX.Element => {
                 <label className="form-label form-check-label" htmlFor="cbIsPageBulkExportEnabled">
                   {t('app_setting.enable_page_bulk_export')}
                 </label>
-
-                <p className="form-text text-muted">
-                  {t('app_setting.page_bulk_export_execute_explanation')}
-                </p>
               </div>
             </div>
           </div>
@@ -95,7 +91,7 @@ const PageBulkExportSettings = (): JSX.Element => {
                 <label
                   className="text-start text-md-end col-md-3 col-form-label"
                 >
-                  {t('app_setting.page_bulk_export_expire_time')}
+                  {t('app_setting.page_bulk_export_storage_period')}
                 </label>
 
                 <div className="col-md-2">
