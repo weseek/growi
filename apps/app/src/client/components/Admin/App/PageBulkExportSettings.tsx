@@ -39,7 +39,12 @@ const PageBulkExportSettings = (): JSX.Element => {
   }, [isBulkExportPagesEnabled, bulkExportDownloadExpirationSeconds, mutate, t]);
 
   useEffect(() => {
-    setIsBulkExportPagesEnabled(data?.isBulkExportPagesEnabled);
+    if (data?.useOnlyEnvVarForFileUploadType) {
+      setIsBulkExportPagesEnabled(data?.envIsBulkExportPagesEnabled);
+    }
+    else {
+      setIsBulkExportPagesEnabled(data?.isBulkExportPagesEnabled);
+    }
     setBulkExportDownloadExpirationSeconds(data?.bulkExportDownloadExpirationSeconds);
   }, [data]);
 
@@ -75,13 +80,25 @@ const PageBulkExportSettings = (): JSX.Element => {
                   className="form-check-input"
                   id="cbIsPageBulkExportEnabled"
                   checked={isBulkExportPagesEnabled}
-                  disabled={data?.isFixedIsBulkExportPagesEnabled}
+                  disabled={data?.useOnlyEnvVarsForIsBulkExportPagesEnabled}
                   onChange={e => setIsBulkExportPagesEnabled(e.target.checked)}
                 />
                 <label className="form-label form-check-label" htmlFor="cbIsPageBulkExportEnabled">
                   {t('app_setting.enable_page_bulk_export')}
                 </label>
               </div>
+              {data?.useOnlyEnvVarsForIsBulkExportPagesEnabled && (
+                <p className="form-text text-muted">
+                  {/* eslint-disable-next-line react/no-danger */}
+                  <b dangerouslySetInnerHTML={{
+                    __html: t('admin:app_setting.fixed_by_env_var', {
+                      envKey: 'BULK_EXPORT_PAGES_ENABLED',
+                      envVar: isBulkExportPagesEnabled,
+                    }),
+                  }}
+                  />
+                </p>
+              )}
             </div>
           </div>
 
@@ -107,21 +124,6 @@ const PageBulkExportSettings = (): JSX.Element => {
                 </select>
               </div>
             </div>
-
-            {data?.isFixedIsBulkExportPagesEnabled && (
-              <p className="alert alert-warning mt-2 text-start">
-                <span className="material-symbols-outlined">help</span>
-                <b>FIXED</b><br />
-                {/* eslint-disable-next-line react/no-danger */}
-                <b dangerouslySetInnerHTML={{
-                  __html: t('admin:app_setting.fixed_by_env_var', {
-                    envKey: 'BULK_EXPORT_PAGES_ENABLED',
-                    envVar: isBulkExportPagesEnabled,
-                  }),
-                }}
-                />
-              </p>
-            )}
           </div>
 
           <AdminUpdateButtonRow onClick={onSubmitHandler} />

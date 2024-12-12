@@ -63,5 +63,5 @@ export type IResAppSettings = {
   isBulkExportPagesEnabled: boolean,
   envIsBulkExportPagesEnabled: boolean,
   bulkExportDownloadExpirationSeconds: number,
-  isFixedIsBulkExportPagesEnabled: boolean,
+  useOnlyEnvVarsForIsBulkExportPagesEnabled: boolean,
 }
