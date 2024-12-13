@@ -2,7 +2,8 @@ import type EventEmitter from 'events';
 
 import type {
   HasObjectId,
-  IPageInfo, IPageInfoForEntity, IUser,
+  IDataWithMeta,
+  IPageInfo, IPageInfoAll, IPageInfoForEntity, IUser,
 } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
 
@@ -22,6 +23,9 @@ export interface IPageService {
   deleteCompletelyOperation: (pageIds: ObjectIdLike[], pagePaths: string[]) => Promise<void>,
   getEventEmitter: () => EventEmitter,
   deleteMultipleCompletely: (pages: ObjectIdLike[], user: IUser | undefined) => Promise<void>,
+  findPageAndMetaDataByViewer(
+      pageId: string | null, path: string, user?: HydratedDocument<IUser>, includeEmpty?: boolean, isSharedPage?: boolean,
+  ): Promise<IDataWithMeta<HydratedDocument<PageDocument>, IPageInfoAll>|null>
   findAncestorsChildrenByPathAndViewer(path: string, user, userGroups?): Promise<Record<string, PageDocument[]>>,
   findChildrenByParentPathOrIdAndViewer(
     parentPathOrId: string, user, userGroups?, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,

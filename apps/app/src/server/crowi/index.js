@@ -62,20 +62,32 @@ class Crowi {
   /** @type {import('../service/config-manager').IConfigManagerForApp} */
   configManager;
 
+  /** @type {import('../service/acl').AclService} */
+  aclService;
+
   /** @type {AppService} */
   appService;
-
-  /** @type {import('../service/page').IPageService} */
-  pageService;
-
-  /** @type UserNotificationService */
-  userNotificationService;
 
   /** @type {FileUploader} */
   fileUploadService;
 
+  /** @type {import('../service/page').IPageService} */
+  pageService;
+
+  /** @type {PassportService} */
+  passportService;
+
+  /** @type {SearchService} */
+  searchService;
+
+  /** @type {SlackIntegrationService} */
+  slackIntegrationService;
+
   /** @type {SocketIoService} */
   socketIoService;
+
+  /** @type UserNotificationService */
+  userNotificationService;
 
   constructor() {
     this.version = pkg.version;

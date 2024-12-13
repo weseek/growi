@@ -881,7 +881,7 @@ export const CONFIG_DEFINITIONS = {
   'markdown:rehypeSanitize:isEnabledPrevention': defineConfig<boolean>({
     defaultValue: true,
   }),
-  'markdown:rehypeSanitize:option': defineConfig<string>({
+  'markdown:rehypeSanitize:option': defineConfig<RehypeSanitizeType>({
     defaultValue: RehypeSanitizeType.RECOMMENDED,
   }),
   'markdown:rehypeSanitize:tagNames': defineConfig<string[]>({

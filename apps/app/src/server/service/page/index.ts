@@ -404,7 +404,7 @@ class PageService implements IPageService {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async findPageAndMetaDataByViewer(
-      pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
+      pageId: string | null, path: string, user?: HydratedDocument<IUser>, includeEmpty = false, isSharedPage = false,
   ): Promise<IDataWithMeta<HydratedDocument<PageDocument>, IPageInfoAll>|null> {
 
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');

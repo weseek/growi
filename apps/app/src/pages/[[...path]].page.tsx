@@ -175,7 +175,6 @@ type Props = CommonProps & {
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
   drawioUri: string | null,
-  noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   isContainerFluid: boolean,
@@ -233,7 +232,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
-  // useNoCdn(props.noCdn);
   useDefaultIndentSize(props.adminPreferredIndentSize);
   useIsIndentSizeForced(props.isIndentSizeForced);
   useDisableLinkSharing(props.disableLinkSharing);
@@ -475,7 +473,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     }
   }
 
-  const pageWithMeta: IPageToShowRevisionWithMeta | null = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
+  const pageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
   const page = pageWithMeta?.data as unknown as PageDocument;
 
   // add user to seen users
@@ -484,15 +482,16 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   }
 
   // populate & check if the revision is latest
+  let populated;
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     props.isLatestRevision = page.isLatestRevision();
     const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
     props.skipSSR = await skipSSR(page, ssrMaxRevisionBodyLength);
-    await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
+    populated = await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
-  props.pageWithMeta = pageWithMeta;
+  props.pageWithMeta = populated;
 }
 
 async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -557,7 +556,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const {
-    configManager, searchService, aclService,
+    configManager, searchService, aclService, fileUploadService,
+    slackIntegrationService, passportService,
   } = crowi;
 
   props.aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
@@ -569,21 +569,20 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.isRomUserAllowedToComment = configManager.getConfig('crowi', 'security:isRomUserAllowedToComment');
 
-  props.isSlackConfigured = crowi.slackIntegrationService.isSlackConfigured;
+  props.isSlackConfigured = slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-  props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
-  props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
-  props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
+  props.isUploadAllFileAllowed = fileUploadService.getFileUploadEnabled();
+  props.isUploadEnabled = fileUploadService.getIsUploadable();
 
-  props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
+  props.isLocalAccountRegistrationEnabled = passportService.isLocalStrategySetup
   && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
