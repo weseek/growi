@@ -33,7 +33,7 @@ module.exports = (crowi) => {
    * middleware to limit link sharing
    */
   const linkSharingRequired = (req, res, next) => {
-    const isLinkSharingDisabled = crowi.configManager.getConfig('crowi', 'security:disableLinkSharing');
+    const isLinkSharingDisabled = crowi.configManager.getConfig('security:disableLinkSharing');
     logger.debug(`isLinkSharingDisabled: ${isLinkSharingDisabled}`);
 
     if (isLinkSharingDisabled) {

@@ -74,7 +74,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   }
 
   const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
-  const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
+  const isDefaultLogo = crowi.configManager.getConfig('customize:isDefaultLogo') || !isCustomizedLogoUploaded;
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 
   // retrieve UserUISett ings
@@ -87,18 +87,18 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     namespacesRequired: ['translation'],
     currentPathname,
     appTitle: appService.getAppTitle(),
-    siteUrl: configManager.getConfig('crowi', 'app:siteUrl'), // DON'T USE appService.getSiteUrl()
+    siteUrl: configManager.getConfig('app:siteUrl'), // DON'T USE appService.getSiteUrl()
     confidential: appService.getAppConfidential() || '',
     customTitleTemplate: customizeService.customTitleTemplate,
     csrfToken: req.csrfToken(),
-    isContainerFluid: configManager.getConfig('crowi', 'customize:isContainerFluid') ?? false,
+    isContainerFluid: configManager.getConfig('customize:isContainerFluid') ?? false,
     growiVersion: crowi.version,
     isMaintenanceMode,
     redirectDestination,
     currentUser,
     isDefaultLogo,
     forcedColorScheme,
-    growiCloudUri: configManager.getConfig('crowi', 'app:growiCloudUri'),
+    growiCloudUri: configManager.getConfig('app:growiCloudUri'),
     userUISettings: userUISettings?.toObject?.() ?? userUISettings,
   };
 
@@ -122,7 +122,7 @@ export const getLangAtServerSide = (req: CrowiRequest): Lang => {
   const { configManager } = req.crowi;
 
   return user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
-    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US) ?? Lang.en_US;
+    : (user.lang ?? configManager.getConfig('app:globalLang') ?? Lang.en_US) ?? Lang.en_US;
 };
 
 // use this function to get locale for html lang attribute

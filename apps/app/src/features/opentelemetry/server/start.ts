@@ -14,7 +14,7 @@ let sdkInstance: NodeSDK;
  * Since otel library sees it.
  */
 function overwriteSdkDisabled(): void {
-  const instrumentationEnabled = configManager.getConfig('crowi', 'otel:enabled');
+  const instrumentationEnabled = configManager.getConfig('otel:enabled');
 
   if (instrumentationEnabled && (
     process.env.OTEL_SDK_DISABLED === 'true'
@@ -44,7 +44,7 @@ export const startInstrumentation = async(version: string): Promise<void> => {
 
   overwriteSdkDisabled();
 
-  const instrumentationEnabled = configManager.getConfig('crowi', 'otel:enabled');
+  const instrumentationEnabled = configManager.getConfig('otel:enabled');
   if (instrumentationEnabled) {
 
     logger.info(`GROWI now collects anonymous telemetry.
@@ -65,7 +65,7 @@ For more information, see https://docs.growi.org/en/admin-guide/telemetry.html.
     const { NodeSDK } = await import('@opentelemetry/sdk-node');
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
-    const serviceInstanceId = configManager.getConfig('crowi', 'otel:serviceInstanceId')
+    const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
       ?? 'generated-appSiteUrlHashed'; // TODO: generated appSiteUrlHashed
 
     sdkInstance = new NodeSDK(generateNodeSDKConfiguration(serviceInstanceId, version));

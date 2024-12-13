@@ -92,8 +92,8 @@ module.exports = (crowi) => {
       npmVersion: runtimeVersions.npm ?? '-',
       pnpmVersion: runtimeVersions.pnpm ?? '-',
       envVars: configManager.getManagedEnvVars(),
-      isV5Compatible: configManager.getConfig('crowi', 'app:isV5Compatible'),
-      isMaintenanceMode: configManager.getConfig('crowi', 'app:isMaintenanceMode'),
+      isV5Compatible: configManager.getConfig('app:isV5Compatible'),
+      isMaintenanceMode: configManager.getConfig('app:isMaintenanceMode'),
     };
 
     return res.apiv3({ adminHomeParams });

@@ -30,7 +30,7 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  const minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
+  const minPasswordLength = configManager.getConfig('app:minPasswordLength');
 
   const validator = {
     password: [
@@ -71,7 +71,7 @@ module.exports = (crowi) => {
 
   router.post('/', checkPassportStrategyMiddleware, validator.email, apiV3FormValidator, addActivity, async(req, res) => {
     const { email } = req.body;
-    const locale = configManager.getConfig('crowi', 'app:globalLang');
+    const locale = configManager.getConfig('app:globalLang');
     const appUrl = appService.getSiteUrl();
 
     try {
@@ -107,7 +107,7 @@ module.exports = (crowi) => {
   router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, addActivity, async(req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
-    const grobalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const grobalLang = configManager.getConfig('app:globalLang');
     const i18n = grobalLang || req.language;
     const { newPassword } = req.body;
 

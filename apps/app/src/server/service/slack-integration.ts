@@ -98,20 +98,20 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   }
 
   get isSlackbotConfigured(): boolean {
-    const hasSlackbotType = !!this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const hasSlackbotType = !!this.configManager.getConfig('slackbot:currentBotType');
     return hasSlackbotType;
   }
 
   get isSlackLegacyConfigured(): boolean {
     // for legacy util
-    const hasSlackToken = !!this.configManager.getConfig('notification', 'slack:token');
-    const hasSlackIwhUrl = !!this.configManager.getConfig('notification', 'slack:incomingWebhookUrl');
+    const hasSlackToken = !!this.configManager.getConfig('slack:token');
+    const hasSlackIwhUrl = !!this.configManager.getConfig('slack:incomingWebhookUrl');
 
     return hasSlackToken || hasSlackIwhUrl;
   }
 
   private isCheckTypeValid(): boolean {
-    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = this.configManager.getConfig('slackbot:currentBotType');
     if (currentBotType == null) {
       throw new Error('The config \'SLACKBOT_TYPE\'(ns: \'crowi\', key: \'slackbot:currentBotType\') must be set.');
     }
@@ -120,7 +120,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   }
 
   get proxyUriForCurrentType(): string | undefined {
-    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = this.configManager.getConfig('slackbot:currentBotType');
 
     // TODO assert currentBotType is not null and CUSTOM_WITHOUT_PROXY
 
@@ -131,7 +131,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
         proxyUri = OFFICIAL_SLACKBOT_PROXY_URI;
         break;
       default:
-        proxyUri = this.configManager.getConfig('crowi', 'slackbot:proxyUri');
+        proxyUri = this.configManager.getConfig('slackbot:proxyUri');
         break;
     }
 
@@ -144,7 +144,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   async generateClientForCustomBotWithoutProxy(): Promise<WebClient> {
     this.isCheckTypeValid();
 
-    const token = this.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
+    const token = this.configManager.getConfig('slackbot:withoutProxy:botToken');
 
     if (token == null) {
       throw new Error('The config \'SLACK_BOT_TOKEN\'(ns: \'crowi\', key: \'slackbot:withoutProxy:botToken\') must be set.');
@@ -178,7 +178,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
   async generateClientForPrimaryWorkspace(): Promise<WebClient> {
     this.isCheckTypeValid();
 
-    const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = this.configManager.getConfig('slackbot:currentBotType');
 
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       return this.generateClientForCustomBotWithoutProxy();

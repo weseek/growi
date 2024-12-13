@@ -22,7 +22,7 @@ const isValidChatModel = (model: string): model is OpenAI.Chat.ChatModel => {
 const getAssistantModelByType = (type: AssistantType): OpenAI.Chat.ChatModel => {
   const configValue = type === AssistantType.SEARCH
     ? undefined // TODO: add the value for 'openai:assistantModel:search' to config-definition.ts
-    : configManager.getConfig('crowi', 'openai:assistantModel:chat');
+    : configManager.getConfig('openai:assistantModel:chat');
 
   if (typeof configValue === 'string' && isValidChatModel(configValue)) {
     return configValue;
@@ -56,7 +56,7 @@ const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.As
 };
 
 const getOrCreateAssistant = async(type: AssistantType, nameSuffix?: string): Promise<OpenAI.Beta.Assistant> => {
-  const appSiteUrl = configManager.getConfig('crowi', 'app:siteUrl');
+  const appSiteUrl = configManager.getConfig('app:siteUrl');
   const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}${nameSuffix != null ? ` ${nameSuffix}` : ''}`;
   const assistantModel = getAssistantModelByType(type);
 
@@ -68,7 +68,7 @@ const getOrCreateAssistant = async(type: AssistantType, nameSuffix?: string): Pr
       }));
 
   // update instructions
-  const instructions = configManager.getConfig('crowi', 'openai:chatAssistantInstructions');
+  const instructions = configManager.getConfig('openai:chatAssistantInstructions');
   openaiClient.beta.assistants.update(assistant.id, {
     instructions,
     model: assistantModel,
@@ -86,7 +86,7 @@ const getOrCreateAssistant = async(type: AssistantType, nameSuffix?: string): Pr
 
 //   searchAssistant = await getOrCreateAssistant(AssistantType.SEARCH);
 //   openaiClient.beta.assistants.update(searchAssistant.id, {
-//     instructions: configManager.getConfig('crowi', 'openai:searchAssistantInstructions'),
+//     instructions: configManager.getConfig('openai:searchAssistantInstructions'),
 //     tools: [{ type: 'file_search' }],
 //   });
 

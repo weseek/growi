@@ -35,10 +35,10 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
   }
 
   init(authProviderType: 'oidc' | 'saml'): void {
-    const kcHost = configManager.getConfig('crowi', 'external-user-group:keycloak:host');
-    const kcGroupRealm = configManager.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
-    const kcGroupSyncClientRealm = configManager.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm');
-    const kcGroupDescriptionAttribute = configManager.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute');
+    const kcHost = configManager.getConfig('external-user-group:keycloak:host');
+    const kcGroupRealm = configManager.getConfig('external-user-group:keycloak:groupRealm');
+    const kcGroupSyncClientRealm = configManager.getConfig('external-user-group:keycloak:groupSyncClientRealm');
+    const kcGroupDescriptionAttribute = configManager.getConfig('external-user-group:keycloak:groupDescriptionAttribute');
 
     this.kcAdminClient = new KeycloakAdminClient({ baseUrl: kcHost, realmName: kcGroupSyncClientRealm });
     this.realm = kcGroupRealm;
@@ -71,8 +71,8 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
    * Authenticate to group sync client using client credentials grant type
    */
   private async auth(): Promise<void> {
-    const kcGroupSyncClientID = configManager.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientID');
-    const kcGroupSyncClientSecret = configManager.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientSecret');
+    const kcGroupSyncClientID = configManager.getConfig('external-user-group:keycloak:groupSyncClientID');
+    const kcGroupSyncClientSecret = configManager.getConfig('external-user-group:keycloak:groupSyncClientSecret');
 
     await this.kcAdminClient.auth({
       grantType: 'client_credentials',

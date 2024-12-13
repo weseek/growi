@@ -83,12 +83,12 @@ export const completeRegistrationAction = (crowi) => {
     }
 
     // error when registration is not allowed
-    if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
+    if (configManager.getConfig('security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
       return res.apiv3Err(new ErrorV3('Registration closed', 'registration-failed'), 403);
     }
 
     // error when email authentication is disabled
-    if (configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled') !== true) {
+    if (configManager.getConfig('security:passport-local:isEmailAuthenticationEnabled') !== true) {
       return res.apiv3Err(new ErrorV3('Email authentication configuration is disabled', 'registration-failed'), 403);
     }
 
@@ -138,13 +138,13 @@ export const completeRegistrationAction = (crowi) => {
 
         userRegistrationOrder.revokeOneTimeToken();
 
-        if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
+        if (configManager.getConfig('security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_RESTRICTED) {
           const isMailerSetup = mailService.isMailerSetup ?? false;
 
           if (isMailerSetup) {
             const admins = await User.findAdmins();
             const appTitle = appService.getAppTitle();
-            const locale = configManager.getConfig('crowi', 'app:globalLang');
+            const locale = configManager.getConfig('app:globalLang');
             const template = path.join(crowi.localeDir, `${locale}/admin/userWaitingActivation.ejs`);
             const url = appService.getSiteUrl();
 
@@ -218,7 +218,7 @@ async function makeRegistrationEmailToken(email, crowi) {
     throw Error('mailService is not setup');
   }
 
-  const locale = configManager.getConfig('crowi', 'app:globalLang');
+  const locale = configManager.getConfig('app:globalLang');
   const appUrl = appService.getSiteUrl();
 
   const userRegistrationOrder = await UserRegistrationOrder.createUserRegistrationOrder(email);
@@ -248,7 +248,7 @@ export const registerAction = (crowi) => {
     const registerForm = req.body.registerForm || {};
     const email = registerForm.email;
     const isRegisterableEmail = await User.isRegisterableEmail(email);
-    const registrationMode = configManager.getConfig('crowi', 'security:registrationMode') as RegistrationMode;
+    const registrationMode = configManager.getConfig('security:registrationMode');
     const isEmailValid = await User.isEmailValid(email);
 
     if (registrationMode === RegistrationMode.CLOSED) {

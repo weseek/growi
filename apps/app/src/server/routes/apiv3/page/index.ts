@@ -884,7 +884,7 @@ module.exports = (crowi) => {
       const { pageId } = req.params;
       const { expandContentWidth } = req.body;
 
-      const isContainerFluidBySystem = configManager.getConfig('crowi', 'customize:isContainerFluid');
+      const isContainerFluidBySystem = configManager.getConfig('customize:isContainerFluid');
 
       try {
         const updateQuery = expandContentWidth === isContainerFluidBySystem

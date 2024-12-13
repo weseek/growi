@@ -319,7 +319,7 @@ module.exports = (crowi: Crowi): Router => {
       );
     }
 
-    const isLdapEnabled = await configManager.getConfig('crowi', 'security:passport-ldap:isEnabled');
+    const isLdapEnabled = await configManager.getConfig('security:passport-ldap:isEnabled');
     if (!isLdapEnabled) {
       return res.apiv3Err(
         new ErrorV3('Authentication using ldap is not set', 'external_user_group.ldap.auth_not_set'), 422,
@@ -359,13 +359,13 @@ module.exports = (crowi: Crowi): Router => {
       // see: https://regex101.com/r/3ihDmf/1
       const regex = new RegExp(`^${kcHost}/.*/${kcGroupRealm}(/|$).*`);
 
-      const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
-      const oidcIssuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
+      const isOidcEnabled = configManager.getConfig('security:passport-oidc:isEnabled');
+      const oidcIssuerHost = configManager.getConfig('security:passport-oidc:issuerHost');
 
       if (isOidcEnabled && oidcIssuerHost != null && regex.test(oidcIssuerHost)) return 'oidc';
 
-      const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
-      const samlEntryPoint = configManager.getConfig('crowi', 'security:passport-saml:entryPoint');
+      const isSamlEnabled = configManager.getConfig('security:passport-saml:isEnabled');
+      const samlEntryPoint = configManager.getConfig('security:passport-saml:entryPoint');
 
       if (isSamlEnabled && samlEntryPoint != null && regex.test(samlEntryPoint)) return 'saml';
 

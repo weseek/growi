@@ -117,7 +117,7 @@ module.exports = (crowi) => {
     }
 
     // without proxy
-    commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
+    commandPermission = configManager.getConfig('slackbot:withoutProxy:commandPermission');
 
     const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
     if (isPermitted) {
@@ -164,7 +164,7 @@ module.exports = (crowi) => {
     }
 
     // without proxy
-    commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
+    commandPermission = configManager.getConfig('slackbot:withoutProxy:commandPermission');
 
     const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
     if (isPermitted) {
@@ -184,7 +184,7 @@ module.exports = (crowi) => {
   }
 
   const addSigningSecretToReq = (req, res, next) => {
-    req.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
+    req.slackSigningSecret = configManager.getConfig('slackbot:withoutProxy:signingSecret');
     return next();
   };
 
@@ -399,7 +399,7 @@ module.exports = (crowi) => {
     try {
       const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
       // convert permission object to map
-      const permission = new Map(Object.entries(crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:eventActionsPermission')));
+      const permission = new Map(Object.entries(crowi.configManager.getConfig('slackbot:withoutProxy:eventActionsPermission')));
 
       await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent, permission);
 

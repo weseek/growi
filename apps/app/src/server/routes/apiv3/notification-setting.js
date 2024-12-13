@@ -122,11 +122,11 @@ module.exports = (crowi) => {
       // status of slack intagration
       isSlackbotConfigured: crowi.slackIntegrationService.isSlackbotConfigured,
       isSlackLegacyConfigured: crowi.slackIntegrationService.isSlackLegacyConfigured,
-      currentBotType: await crowi.configManager.getConfig('crowi', 'slackbot:currentBotType'),
+      currentBotType: await crowi.configManager.getConfig('slackbot:currentBotType'),
 
       userNotifications: await UpdatePost.findAll(),
-      isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
-      isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
+      isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification:owner-page:isEnabled'),
+      isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification:group-page:isEnabled'),
       globalNotifications: await GlobalNotificationSetting.findAll(),
     };
     return res.apiv3({ notificationParams });
@@ -427,8 +427,8 @@ module.exports = (crowi) => {
     try {
       await configManager.updateConfigs(requestParams);
       const responseParams = {
-        isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification', 'notification:owner-page:isEnabled'),
-        isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification', 'notification:group-page:isEnabled'),
+        isNotificationForOwnerPageEnabled: await crowi.configManager.getConfig('notification:owner-page:isEnabled'),
+        isNotificationForGroupPageEnabled: await crowi.configManager.getConfig('notification:group-page:isEnabled'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_NOTIFICATION_GRANT_SETTINGS_UPDATE };

@@ -75,7 +75,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     this.name = SearchDelegatorName.DEFAULT;
     this.socketIoService = socketIoService;
 
-    const elasticsearchVersion: number = configManager.getConfig('crowi', 'app:elasticsearchVersion');
+    const elasticsearchVersion: number = configManager.getConfig('app:elasticsearchVersion');
 
     if (elasticsearchVersion !== 7 && elasticsearchVersion !== 8) {
       throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
@@ -83,7 +83,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     this.isElasticsearchV7 = elasticsearchVersion === 7;
 
-    this.isElasticsearchReindexOnBoot = configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
+    this.isElasticsearchReindexOnBoot = configManager.getConfig('app:elasticsearchReindexOnBoot');
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
     // Ref: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#_standard_operators
@@ -115,12 +115,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   initClient() {
     const { host, auth, indexName } = this.getConnectionInfo();
 
-    const rejectUnauthorized = configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized');
+    const rejectUnauthorized = configManager.getConfig('app:elasticsearchRejectUnauthorized');
 
     const options = {
       node: host,
       auth,
-      requestTimeout: configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
+      requestTimeout: configManager.getConfig('app:elasticsearchRequestTimeout'),
     };
 
     this.client = new ElasticsearchClient(this.isElasticsearchV7, options, rejectUnauthorized);
@@ -140,7 +140,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     let host = this.esUri;
     let auth;
 
-    const elasticsearchUri = configManager.getConfig('crowi', 'app:elasticsearchUri');
+    const elasticsearchUri = configManager.getConfig('app:elasticsearchUri');
 
     if (elasticsearchUri != null) {
       const url = new URL(elasticsearchUri);
@@ -453,13 +453,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const countQuery = new PageQueryBuilder(queryFactory()).query;
     const totalCount = await countQuery.count();
 
-    const maxBodyLengthToIndex = configManager.getConfig('crowi', 'app:elasticsearchMaxBodyLengthToIndex');
+    const maxBodyLengthToIndex = configManager.getConfig('app:elasticsearchMaxBodyLengthToIndex');
 
     const readStream = Page.aggregate<AggregatedPage>(
       aggregatePipelineToIndex(maxBodyLengthToIndex, matchQuery),
     ).cursor();
 
-    const bulkSize: number = configManager.getConfig('crowi', 'app:elasticsearchReindexBulkSize');
+    const bulkSize: number = configManager.getConfig('app:elasticsearchReindexBulkSize');
     const batchStream = createBatchStream(bulkSize);
 
     const appendTagNamesStream = new Transform({
@@ -774,8 +774,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async filterPagesByViewer(query, user, userGroups) {
-    const showPagesRestrictedByOwner = !configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const showPagesRestrictedByGroup = !configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
+    const showPagesRestrictedByOwner = !configManager.getConfig('security:list-policy:hideRestrictedByOwner');
+    const showPagesRestrictedByGroup = !configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 

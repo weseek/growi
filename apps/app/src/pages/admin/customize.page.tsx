@@ -67,7 +67,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
 
-  props.customizeTitle = crowi.configManager.getConfig('crowi', 'customize:title');
+  props.customizeTitle = crowi.configManager.getConfig('customize:title');
   props.isCustomizedLogoUploaded = await crowi.attachmentService.isBrandLogoExist();
 };
 

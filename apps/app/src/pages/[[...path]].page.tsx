@@ -486,7 +486,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     props.isLatestRevision = page.isLatestRevision();
-    const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+    const ssrMaxRevisionBodyLength = configManager.getConfig('app:ssrMaxRevisionBodyLength');
     props.skipSSR = await skipSSR(page, ssrMaxRevisionBodyLength);
     populated = await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
@@ -560,62 +560,62 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     slackIntegrationService, passportService,
   } = crowi;
 
-  props.aiEnabled = configManager.getConfig('crowi', 'app:aiEnabled');
+  props.aiEnabled = configManager.getConfig('app:aiEnabled');
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
-  props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
-  props.elasticsearchMaxBodyLengthToIndex = configManager.getConfig('crowi', 'app:elasticsearchMaxBodyLengthToIndex');
+  props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');
+  props.elasticsearchMaxBodyLengthToIndex = configManager.getConfig('app:elasticsearchMaxBodyLengthToIndex');
 
-  props.isRomUserAllowedToComment = configManager.getConfig('crowi', 'security:isRomUserAllowedToComment');
+  props.isRomUserAllowedToComment = configManager.getConfig('security:isRomUserAllowedToComment');
 
   props.isSlackConfigured = slackIntegrationService.isSlackConfigured;
   // props.isMailerSetup = mailService.isMailerSetup;
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
-  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-  // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
-  props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');
-  props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
-  props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
-  props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
+  props.drawioUri = configManager.getConfig('app:drawioUri');
+  // props.highlightJsStyle = configManager.getConfig('customize:highlightJsStyle');
+  props.isAllReplyShown = configManager.getConfig('customize:isAllReplyShown');
+  props.isContainerFluid = configManager.getConfig('customize:isContainerFluid');
+  props.isEnabledStaleNotification = configManager.getConfig('customize:isEnabledStaleNotification');
+  props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');
   props.isUploadAllFileAllowed = fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = fileUploadService.getIsUploadable();
 
   props.isLocalAccountRegistrationEnabled = passportService.isLocalStrategySetup
-  && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
+  && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;
 
-  props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
-  props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
+  props.adminPreferredIndentSize = configManager.getConfig('markdown:adminPreferredIndentSize');
+  props.isIndentSizeForced = configManager.getConfig('markdown:isIndentSizeForced');
 
-  props.isEnabledAttachTitleHeader = configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+  props.isEnabledAttachTitleHeader = configManager.getConfig('customize:isEnabledAttachTitleHeader');
 
   props.sidebarConfig = {
-    isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+    isSidebarCollapsedMode: configManager.getConfig('customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('customize:isSidebarClosedAtDockMode'),
   };
 
   props.rendererConfig = {
-    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
-    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+    isEnabledLinebreaks: configManager.getConfig('markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('customize:isEnabledMarp'),
+    adminPreferredIndentSize: configManager.getConfig('markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown:isIndentSizeForced'),
 
-    drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
-    plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
+    drawioUri: configManager.getConfig('app:drawioUri'),
+    plantumlUri: configManager.getConfig('app:plantumlUri'),
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    sanitizeType: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    customTagWhitelist: configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-    customAttrWhitelist: configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes') != null
-      ? JSON.parse(configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'))
+    isEnabledXssPrevention: configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
+    sanitizeType: configManager.getConfig('markdown:rehypeSanitize:option'),
+    customTagWhitelist: configManager.getConfig('markdown:rehypeSanitize:tagNames'),
+    customAttrWhitelist: configManager.getConfig('markdown:rehypeSanitize:attributes') != null
+      ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
       : undefined,
-    highlightJsStyleBorder: configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+    highlightJsStyleBorder: configManager.getConfig('customize:highlightJsStyleBorder'),
   };
 
-  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('app:ssrMaxRevisionBodyLength');
 }
 
 /**

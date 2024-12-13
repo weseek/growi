@@ -59,16 +59,16 @@ class QuestionnaireService {
     const wikiType = isGuestAllowedToRead ? GrowiWikiType.open : GrowiWikiType.closed;
 
     const activeExternalAccountTypes: GrowiExternalAuthProviderType[] = Object.values(GrowiExternalAuthProviderType).filter((type) => {
-      return this.crowi.configManager.getConfig('crowi', `security:passport-${type}:isEnabled`);
+      return this.crowi.configManager.getConfig(`security:passport-${type}:isEnabled`);
     });
 
-    const typeStr = this.crowi.configManager.getConfig('crowi', 'app:serviceType');
+    const typeStr = this.crowi.configManager.getConfig('app:serviceType');
     const type = Object.values(GrowiServiceType).includes(typeStr) ? typeStr : null;
 
-    const attachmentTypeStr = this.crowi.configManager.getConfig('crowi', 'app:fileUploadType');
+    const attachmentTypeStr = this.crowi.configManager.getConfig('app:fileUploadType');
     const attachmentType = Object.values(AttachmentMethodType).includes(attachmentTypeStr) ? attachmentTypeStr : null;
 
-    const deploymentTypeStr = this.crowi.configManager.getConfig('crowi', 'app:deploymentType');
+    const deploymentTypeStr = this.crowi.configManager.getConfig('app:deploymentType');
     const deploymentType = Object.values(GrowiDeploymentType).includes(deploymentTypeStr) ? deploymentTypeStr : null;
 
     return {
@@ -79,7 +79,7 @@ class QuestionnaireService {
         arch: os.arch(),
         totalmem: os.totalmem(),
       },
-      appSiteUrl: this.crowi.configManager.getConfig('crowi', 'questionnaire:isAppSiteUrlHashed') ? null : appSiteUrl,
+      appSiteUrl: this.crowi.configManager.getConfig('questionnaire:isAppSiteUrlHashed') ? null : appSiteUrl,
       appSiteUrlHashed,
       installedAt,
       installedAtByOldestUser,

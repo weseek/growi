@@ -163,8 +163,8 @@ class LdapService {
   }
 
   getGroupSearchBase(): string {
-    return configManager.getConfig('crowi', 'external-user-group:ldap:groupSearchBase')
-      ?? configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase')
+    return configManager.getConfig('external-user-group:ldap:groupSearchBase')
+      ?? configManager.getConfig('security:passport-ldap:groupSearchBase')
       ?? '';
   }
 

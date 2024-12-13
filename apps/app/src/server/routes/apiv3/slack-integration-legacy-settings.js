@@ -70,9 +70,9 @@ module.exports = (crowi) => {
 
     const slackIntegrationParams = {
       isSlackbotConfigured: crowi.slackIntegrationService.isSlackbotConfigured,
-      webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
-      isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
-      slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
+      webhookUrl: await crowi.configManager.getConfig('slack:incomingWebhookUrl'),
+      isIncomingWebhookPrioritized: await crowi.configManager.getConfig('slack:isIncomingWebhookPrioritized'),
+      slackToken: await crowi.configManager.getConfig('slack:token'),
     };
     return res.apiv3({ slackIntegrationParams });
   });
@@ -109,9 +109,9 @@ module.exports = (crowi) => {
     try {
       await configManager.updateConfigs(requestParams);
       const responseParams = {
-        webhookUrl: await crowi.configManager.getConfig('notification', 'slack:incomingWebhookUrl'),
-        isIncomingWebhookPrioritized: await crowi.configManager.getConfig('notification', 'slack:isIncomingWebhookPrioritized'),
-        slackToken: await crowi.configManager.getConfig('notification', 'slack:token'),
+        webhookUrl: await crowi.configManager.getConfig('slack:incomingWebhookUrl'),
+        isIncomingWebhookPrioritized: await crowi.configManager.getConfig('slack:isIncomingWebhookPrioritized'),
+        slackToken: await crowi.configManager.getConfig('slack:token'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_SLACK_CONFIGURATION_SETTING_UPDATE };

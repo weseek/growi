@@ -87,7 +87,7 @@ module.exports = (crowi) => {
 
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
-    const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
     const { isSharedPage } = req;
     const offset = req.query.offset || 0;
 

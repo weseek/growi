@@ -285,7 +285,7 @@ export class G2GTransferPusherService implements Pusher {
       };
     }
 
-    if (configManager.getConfig('crowi', 'app:fileUploadType') === 'none') {
+    if (configManager.getConfig('app:fileUploadType') === 'none') {
       return {
         canTransfer: false,
         // TODO: i18n for reason
@@ -438,7 +438,7 @@ export class G2GTransferPusherService implements Pusher {
     const targetConfigKeys = UPLOAD_CONFIG_KEYS;
 
     const uploadConfigs = Object.fromEntries(targetConfigKeys.map((key) => {
-      return [key, configManager.getConfig('crowi', key)];
+      return [key, configManager.getConfig(key)];
     }));
 
     let zipFileStream: ReadStream;
@@ -551,13 +551,13 @@ export class G2GTransferReceiverService implements Receiver {
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
     const { version, fileUploadService } = this.crowi;
-    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
-    const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
+    const userUpperLimit = configManager.getConfig('security:userUpperLimit');
+    const fileUploadDisabled = configManager.getConfig('app:fileUploadDisabled');
     const fileUploadTotalLimit = fileUploadService.getFileUploadTotalLimit();
     const isWritable = await fileUploadService.isWritable();
 
     const attachmentInfo: IDataGROWIInfo['attachmentInfo'] = {
-      type: configManager.getConfig('crowi', 'app:fileUploadType'),
+      type: configManager.getConfig('app:fileUploadType'),
       writable: isWritable,
       bucket: undefined,
       customEndpoint: undefined, // for S3
@@ -569,16 +569,16 @@ export class G2GTransferReceiverService implements Receiver {
     // put storage location info to check storage identification
     switch (attachmentInfo.type) {
       case 'aws':
-        attachmentInfo.bucket = configManager.getConfig('crowi', 'aws:s3Bucket');
-        attachmentInfo.customEndpoint = configManager.getConfig('crowi', 'aws:s3CustomEndpoint');
+        attachmentInfo.bucket = configManager.getConfig('aws:s3Bucket');
+        attachmentInfo.customEndpoint = configManager.getConfig('aws:s3CustomEndpoint');
         break;
       case 'gcs':
-        attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
-        attachmentInfo.uploadNamespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
+        attachmentInfo.bucket = configManager.getConfig('gcs:bucket');
+        attachmentInfo.uploadNamespace = configManager.getConfig('gcs:uploadNamespace');
         break;
       case 'azure':
-        attachmentInfo.accountName = configManager.getConfig('crowi', 'azure:storageAccountName');
-        attachmentInfo.containerName = configManager.getConfig('crowi', 'azure:storageContainerName');
+        attachmentInfo.accountName = configManager.getConfig('azure:storageAccountName');
+        attachmentInfo.containerName = configManager.getConfig('azure:storageContainerName');
         break;
       default:
     }
@@ -650,7 +650,7 @@ export class G2GTransferReceiverService implements Receiver {
     const { appService } = this.crowi;
     const importService = getImportService();
     /** whether to keep current file upload configs */
-    const shouldKeepUploadConfigs = configManager.getConfig('crowi', 'app:fileUploadType') !== 'none';
+    const shouldKeepUploadConfigs = configManager.getConfig('app:fileUploadType') !== 'none';
 
     if (shouldKeepUploadConfigs) {
       /** cache file upload configs */

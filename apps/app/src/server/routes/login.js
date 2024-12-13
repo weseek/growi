@@ -20,7 +20,7 @@ module.exports = function(crowi, app) {
     // send mails to all admin users (derived from crowi) -- 2020.06.18 Yuki Takei
     const admins = await User.findAdmins();
     const appTitle = appService.getAppTitle();
-    const locale = configManager.getConfig('crowi', 'app:globalLang');
+    const locale = configManager.getConfig('app:globalLang');
 
     const promises = admins.map((admin) => {
       return mailService.send({
@@ -134,7 +134,7 @@ module.exports = function(crowi, app) {
     }
 
     // config で closed ならさよなら
-    if (configManager.getConfig('crowi', 'security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
+    if (configManager.getConfig('security:registrationMode') === aclService.labels.SECURITY_REGISTRATION_MODE_CLOSED) {
       return res.apiv3Err('message.registration_closed', 403);
     }
 
@@ -169,7 +169,7 @@ module.exports = function(crowi, app) {
         return res.apiv3Err(errors, 400);
       }
 
-      const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
+      const registrationMode = configManager.getConfig('security:registrationMode');
 
       User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
         if (err) {

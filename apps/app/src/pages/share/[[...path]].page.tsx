@@ -159,39 +159,39 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const { crowi } = req;
   const { configManager, searchService } = crowi;
 
-  props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
+  props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
-  props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');
 
-  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+  props.drawioUri = configManager.getConfig('app:drawioUri');
 
   props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
-    && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
+    && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.rendererConfig = {
     isSharedPage: true,
-    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
-    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+    isEnabledLinebreaks: configManager.getConfig('markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('customize:isEnabledMarp'),
+    adminPreferredIndentSize: configManager.getConfig('markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown:isIndentSizeForced'),
 
-    drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
-    plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
+    drawioUri: configManager.getConfig('app:drawioUri'),
+    plantumlUri: configManager.getConfig('app:plantumlUri'),
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    sanitizeType: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    customTagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-    customAttrWhitelist: configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes') != null
-      ? JSON.parse(configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'))
+    isEnabledXssPrevention: configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
+    sanitizeType: configManager.getConfig('markdown:rehypeSanitize:option'),
+    customTagWhitelist: crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
+    customAttrWhitelist: configManager.getConfig('markdown:rehypeSanitize:attributes') != null
+      ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
       : undefined,
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+    highlightJsStyleBorder: crowi.configManager.getConfig('customize:highlightJsStyleBorder'),
   };
 
-  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('app:ssrMaxRevisionBodyLength');
 }
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
@@ -237,7 +237,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
       const Page = crowi.model('Page');
       const relatedPage = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
       // determine whether skip SSR
-      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('app:ssrMaxRevisionBodyLength');
       props.skipSSR = await skipSSR(relatedPage, ssrMaxRevisionBodyLength);
       // populate
       props.shareLinkRelatedPage = await relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR

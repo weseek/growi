@@ -33,7 +33,7 @@ export default class AppService implements S2sMessageHandlable {
       return false;
     }
 
-    const isInstalled = configManager.getConfig('crowi', 'app:installed');
+    const isInstalled = configManager.getConfig('app:installed');
 
     return !isInstalled;
   }
@@ -73,7 +73,7 @@ export default class AppService implements S2sMessageHandlable {
   }
 
   getAppTitle() {
-    return configManager.getConfig('crowi', 'app:title') ?? 'GROWI';
+    return configManager.getConfig('app:title') ?? 'GROWI';
   }
 
   /**
@@ -87,7 +87,7 @@ export default class AppService implements S2sMessageHandlable {
    */
   /* eslint-disable no-else-return */
   getSiteUrl() {
-    const siteUrl = configManager.getConfig('crowi', 'app:siteUrl');
+    const siteUrl = configManager.getConfig('app:siteUrl');
     if (siteUrl != null) {
       return pathUtils.removeTrailingSlash(siteUrl);
     }
@@ -98,11 +98,11 @@ export default class AppService implements S2sMessageHandlable {
   /* eslint-enable no-else-return */
 
   getTzoffset() {
-    return -(configManager.getConfig('crowi', 'app:timezone') || 9) * 60;
+    return -(configManager.getConfig('app:timezone') || 9) * 60;
   }
 
   getAppConfidential() {
-    return configManager.getConfig('crowi', 'app:confidential');
+    return configManager.getConfig('app:confidential');
   }
 
   async isDBInitialized(forceReload) {
@@ -119,7 +119,7 @@ export default class AppService implements S2sMessageHandlable {
   }
 
   isMaintenanceMode(): boolean {
-    return configManager.getConfig('crowi', 'app:isMaintenanceMode');
+    return configManager.getConfig('app:isMaintenanceMode');
   }
 
   async startMaintenanceMode(): Promise<void> {

@@ -49,10 +49,10 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
   }
 
   override async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
-    const groupChildGroupAttribute = configManager.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute');
-    const groupMembershipAttribute = configManager.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute');
-    const groupNameAttribute = configManager.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute');
-    const groupDescriptionAttribute = configManager.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute');
+    const groupChildGroupAttribute = configManager.getConfig('external-user-group:ldap:groupChildGroupAttribute');
+    const groupMembershipAttribute = configManager.getConfig('external-user-group:ldap:groupMembershipAttribute');
+    const groupNameAttribute = configManager.getConfig('external-user-group:ldap:groupNameAttribute');
+    const groupDescriptionAttribute = configManager.getConfig('external-user-group:ldap:groupDescriptionAttribute');
     const groupBase = ldapService.getGroupSearchBase();
 
     const groupEntries = await ldapService.searchGroupDir();

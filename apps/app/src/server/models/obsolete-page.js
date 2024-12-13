@@ -513,8 +513,8 @@ export const getPageSchema = (crowi) => {
     validateCrowi();
 
     // determine User condition
-    const hidePagesRestrictedByOwner = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
+    const hidePagesRestrictedByOwner = crowi.configManager.getConfig('security:list-policy:hideRestrictedByOwner');
+    const hidePagesRestrictedByGroup = crowi.configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     // determine UserGroup condition
     const userGroups = user != null ? [

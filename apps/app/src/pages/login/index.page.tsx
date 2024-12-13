@@ -95,11 +95,11 @@ function injectEnabledStrategies(context: GetServerSidePropsContext, props: Prop
   } = crowi;
 
   props.enabledExternalAuthType = [
-    configManager.getConfig('crowi', 'security:passport-google:isEnabled') === true ? IExternalAuthProviderType.google : undefined,
-    configManager.getConfig('crowi', 'security:passport-github:isEnabled') === true ? IExternalAuthProviderType.github : undefined,
-    // configManager.getConfig('crowi', 'security:passport-facebook:isEnabled') ?? IExternalAuthProviderType.facebook : undefined,
-    configManager.getConfig('crowi', 'security:passport-saml:isEnabled') === true ? IExternalAuthProviderType.saml : undefined,
-    configManager.getConfig('crowi', 'security:passport-oidc:isEnabled') === true ? IExternalAuthProviderType.oidc : undefined,
+    configManager.getConfig('security:passport-google:isEnabled') === true ? IExternalAuthProviderType.google : undefined,
+    configManager.getConfig('security:passport-github:isEnabled') === true ? IExternalAuthProviderType.github : undefined,
+    // configManager.getConfig('security:passport-facebook:isEnabled') ?? IExternalAuthProviderType.facebook : undefined,
+    configManager.getConfig('security:passport-saml:isEnabled') === true ? IExternalAuthProviderType.saml : undefined,
+    configManager.getConfig('security:passport-oidc:isEnabled') === true ? IExternalAuthProviderType.oidc : undefined,
 
   ]
     .filter((authType): authType is Exclude<typeof authType, undefined> => authType != null);
@@ -114,15 +114,15 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     passportService,
   } = crowi;
 
-  props.isPasswordResetEnabled = configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
+  props.isPasswordResetEnabled = configManager.getConfig('security:passport-local:isPasswordResetEnabled');
   props.isMailerSetup = mailService.isMailerSetup;
   props.isLocalStrategySetup = passportService.isLocalStrategySetup;
   props.isLdapStrategySetup = passportService.isLdapStrategySetup;
-  props.isLdapSetupFailed = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled') && !props.isLdapStrategySetup;
-  props.registrationWhitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
-  props.isEmailAuthenticationEnabled = configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
-  props.registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
-  props.minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
+  props.isLdapSetupFailed = configManager.getConfig('security:passport-ldap:isEnabled') && !props.isLdapStrategySetup;
+  props.registrationWhitelist = configManager.getConfig('security:registrationWhitelist');
+  props.isEmailAuthenticationEnabled = configManager.getConfig('security:passport-local:isEmailAuthenticationEnabled');
+  props.registrationMode = configManager.getConfig('security:registrationMode');
+  props.minPasswordLength = configManager.getConfig('app:minPasswordLength');
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
