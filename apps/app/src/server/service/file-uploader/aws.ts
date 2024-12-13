@@ -59,7 +59,7 @@ const ObjectCannedACLs = [
   ObjectCannedACL.public_read,
   ObjectCannedACL.public_read_write,
 ];
-const isValidObjectCannedACL = (acl: string | null): acl is ObjectCannedACL => {
+const isValidObjectCannedACL = (acl: string | undefined): acl is ObjectCannedACL => {
   return ObjectCannedACLs.includes(acl as ObjectCannedACL);
 };
 /**
@@ -79,11 +79,16 @@ const getS3Bucket = (): string | undefined => {
 };
 
 const S3Factory = (): S3Client => {
+  const accessKeyId = configManager.getConfig('crowi', 'aws:s3AccessKeyId');
+  const secretAccessKey = configManager.getConfig('crowi', 'aws:s3SecretAccessKey');
+
   return new S3Client({
-    credentials: {
-      accessKeyId: configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
-      secretAccessKey: configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
-    },
+    credentials: accessKeyId != null && secretAccessKey != null
+      ? {
+        accessKeyId,
+        secretAccessKey,
+      }
+      : undefined,
     region: configManager.getConfig('crowi', 'aws:s3Region'),
     endpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
     forcePathStyle: configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null, // s3ForcePathStyle renamed to forcePathStyle in v3
