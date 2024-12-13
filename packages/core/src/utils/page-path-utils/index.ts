@@ -117,9 +117,10 @@ const restrictedPatternsToCreate: Array<RegExp> = [
   /^\/(_search|_private-legacy-pages)(\/.*|$)/,
   /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share|attachment)(\/.*|$)/,
   /^\/user(?:\/[^/]+)?$/, // https://regex101.com/r/9Eh2S1/1
+  /^(\/.+){500,}$/, // avoid deep layer path. see: https://regex101.com/r/s9cCdf/1
 ];
 export const isCreatablePage = (path: string): boolean => {
-  return !restrictedPatternsToCreate.some(pattern => path.match(pattern)) && path.length <= 2_000_000;
+  return !restrictedPatternsToCreate.some(pattern => path.match(pattern));
 };
 
 /**
