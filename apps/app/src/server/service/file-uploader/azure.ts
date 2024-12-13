@@ -45,9 +45,16 @@ type AzureConfig = {
 
 
 function getAzureConfig(): AzureConfig {
+  const accountName = configManager.getConfig('crowi', 'azure:storageAccountName');
+  const containerName = configManager.getConfig('crowi', 'azure:storageContainerName');
+
+  if (accountName == null || containerName == null) {
+    throw new Error('Azure Blob Storage is not configured.');
+  }
+
   return {
-    accountName: configManager.getConfig('crowi', 'azure:storageAccountName'),
-    containerName: configManager.getConfig('crowi', 'azure:storageContainerName'),
+    accountName,
+    containerName,
   };
 }
 
@@ -55,6 +62,11 @@ function getCredential(): TokenCredential {
   const tenantId = configManager.getConfig('crowi', 'azure:tenantId');
   const clientId = configManager.getConfig('crowi', 'azure:clientId');
   const clientSecret = configManager.getConfig('crowi', 'azure:clientSecret');
+
+  if (tenantId == null || clientId == null || clientSecret == null) {
+    throw new Error(`Azure Blob Storage missing required configuration: tenantId=${tenantId}, clientId=${clientId}, clientSecret=${clientSecret}`);
+  }
+
   return new ClientSecretCredential(tenantId, clientId, clientSecret);
 }
 
@@ -75,7 +87,14 @@ class AzureFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override isValidUploadSettings(): boolean {
-    throw new Error('Method not implemented.');
+    try {
+      getAzureConfig();
+      return true;
+    }
+    catch (e) {
+      logger.error(e);
+      return false;
+    }
   }
 
   /**

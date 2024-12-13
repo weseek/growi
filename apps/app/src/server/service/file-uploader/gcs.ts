@@ -18,8 +18,12 @@ import { ContentHeaders } from './utils';
 const logger = loggerFactory('growi:service:fileUploaderGcs');
 
 
-function getGcsBucket() {
-  return configManager.getConfig('crowi', 'gcs:bucket');
+function getGcsBucket(): string {
+  const gcsBucket = configManager.getConfig('crowi', 'gcs:bucket');
+  if (gcsBucket == null) {
+    throw new Error('GCS bucket is not configured.');
+  }
+  return gcsBucket;
 }
 
 let storage: Storage;
@@ -62,7 +66,14 @@ class GcsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override isValidUploadSettings(): boolean {
-    throw new Error('Method not implemented.');
+    try {
+      getGcsBucket();
+      return true;
+    }
+    catch (err) {
+      logger.error(err);
+      return false;
+    }
   }
 
   /**
