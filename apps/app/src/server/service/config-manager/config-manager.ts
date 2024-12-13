@@ -9,7 +9,7 @@ import type { S2sMessagingService } from '../s2s-messaging/base';
 import type { S2sMessageHandlable } from '../s2s-messaging/handlable';
 
 import type { ConfigKey, ConfigValues } from './config-definition';
-import { CONFIG_KEYS, ENV_ONLY_GROUPS } from './config-definition';
+import { ENV_ONLY_GROUPS } from './config-definition';
 import { ConfigLoader } from './config-loader';
 import { configManager as configManagerLegacy } from './legacy/config-manager';
 
@@ -65,19 +65,7 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     this.lastLoadedAt = new Date();
   }
 
-  /**
-   * @deprecated
-   * Use `getConfig(key)` instead
-   */
-  getConfig<K extends ConfigKey>(ns: string, key: K): ConfigValues[K];
-
-  getConfig<K extends ConfigKey>(key: K, source?: ConfigSource): ConfigValues[K];
-
-  getConfig<K extends ConfigKey>(...args: [key: K, source: ConfigSource | undefined] | [ns: string, key: K]): ConfigValues[K] {
-    const source = (args[1] === undefined || args[1] === ConfigSource.env || args[1] === ConfigSource.db) ? args[1] : undefined;
-    const key = (args[0].match(/crowi|markdown|notification/) ? args[1] : args[0]) as K;
-    const ns = args[0].match(/crowi|markdown|notification/) ? args[0] : undefined;
-
+  getConfig<K extends ConfigKey>(key: K, source?: ConfigSource): ConfigValues[K] {
     if (!this.envConfig || !this.dbConfig) {
       throw new Error('Config is not loaded');
     }

@@ -62,12 +62,6 @@ export interface IConfigManager<K extends string, V extends Record<K, any>> {
   getConfig<T extends K>(key: T, source?: ConfigSource): V[T];
 
   /**
-   * @deprecated
-   * Get a configuration value
-   */
-  getConfig<T extends K>(ns: string, key: T): V[T];
-
-  /**
    * Update a configuration value
    */
   updateConfig<T extends K>(key: T, value: V[T], options?: UpdateConfigOptions): Promise<void>;
