@@ -114,7 +114,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     passportService,
   } = crowi;
 
-  props.isPasswordResetEnabled = crowi.configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
+  props.isPasswordResetEnabled = configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled');
   props.isMailerSetup = mailService.isMailerSetup;
   props.isLocalStrategySetup = passportService.isLocalStrategySetup;
   props.isLdapStrategySetup = passportService.isLdapStrategySetup;

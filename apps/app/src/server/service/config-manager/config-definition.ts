@@ -5,6 +5,7 @@ import type OpenAI from 'openai';
 import { ActionGroupSize } from '~/interfaces/activity';
 import { AttachmentMethodType } from '~/interfaces/attachment';
 import type { IPageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation } from '~/interfaces/page-delete-config';
+import type { RegistrationMode } from '~/interfaces/registration-mode';
 import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
 import { GrowiServiceType } from '~/interfaces/system';
 
@@ -425,7 +426,7 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'GROWI_CLOUD_URI',
     defaultValue: undefined,
   }),
-  'app:growiAppIdForCloud': defineConfig<string | undefined>({
+  'app:growiAppIdForCloud': defineConfig<number | undefined>({
     envVarName: 'GROWI_APP_ID_FOR_GROWI_CLOUD',
     defaultValue: undefined,
   }),
@@ -602,7 +603,7 @@ export const CONFIG_DEFINITIONS = {
   'security:restrictGuestMode': defineConfig<string>({
     defaultValue: 'Deny',
   }),
-  'security:registrationMode': defineConfig<string>({
+  'security:registrationMode': defineConfig<RegistrationMode>({
     defaultValue: 'Open',
   }),
   'security:registrationWhitelist': defineConfig<string[]>({

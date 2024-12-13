@@ -2,10 +2,11 @@ import {
   SlackbotType, type GrowiCommand, type GrowiBotEvent,
 } from '@growi/slack';
 import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
-import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
+import type { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
 import type { RespondUtil } from '@growi/slack/dist/utils/respond-util-factory';
 import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
-import { type ChatPostMessageArguments, WebClient } from '@slack/web-api';
+import type { WebClient } from '@slack/web-api';
+import { type ChatPostMessageArguments } from '@slack/web-api';
 import type { IncomingWebhookSendArguments } from '@slack/webhook';
 import mongoose from 'mongoose';
 
@@ -118,12 +119,12 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     return true;
   }
 
-  get proxyUriForCurrentType(): string {
+  get proxyUriForCurrentType(): string | undefined {
     const currentBotType = this.configManager.getConfig('crowi', 'slackbot:currentBotType');
 
     // TODO assert currentBotType is not null and CUSTOM_WITHOUT_PROXY
 
-    let proxyUri: string;
+    let proxyUri: string | undefined;
 
     switch (currentBotType) {
       case SlackbotType.OFFICIAL:

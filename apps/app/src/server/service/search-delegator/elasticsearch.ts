@@ -69,7 +69,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   indexName: string;
 
-  esUri: string;
+  esUri: string | undefined;
 
   constructor(socketIoService) {
     this.name = SearchDelegatorName.DEFAULT;
@@ -142,14 +142,16 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const elasticsearchUri = configManager.getConfig('crowi', 'app:elasticsearchUri');
 
-    const url = new URL(elasticsearchUri);
-    if (url.pathname !== '/') {
-      host = `${url.protocol}//${url.host}`;
-      indexName = url.pathname.substring(1); // omit heading slash
+    if (elasticsearchUri != null) {
+      const url = new URL(elasticsearchUri);
+      if (url.pathname !== '/') {
+        host = `${url.protocol}//${url.host}`;
+        indexName = url.pathname.substring(1); // omit heading slash
 
-      if (url.username != null && url.password != null) {
-        const { username, password } = url;
-        auth = { username, password };
+        if (url.username != null && url.password != null) {
+          const { username, password } = url;
+          auth = { username, password };
+        }
       }
     }
 

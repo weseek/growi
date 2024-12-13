@@ -9,6 +9,7 @@ import { parseSlashCommand } from '@growi/slack/dist/utils/slash-command-parser'
 import createError from 'http-errors';
 
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 
@@ -23,9 +24,10 @@ const SlackAppIntegration = mongoose.model('SlackAppIntegration');
 const { handleError } = require('../../service/slack-command-handler/error-handler');
 const { checkPermission } = require('../../util/slack-integration');
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
 
-  const { configManager, slackIntegrationService } = crowi;
+  const { slackIntegrationService } = crowi;
 
   // Check if the access token is correct
   async function verifyAccessTokenFromProxy(req, res, next) {
@@ -210,7 +212,7 @@ module.exports = (crowi) => {
   };
 
   function getRespondUtil(responseUrl) {
-    const proxyUri = crowi.slackIntegrationService.proxyUriForCurrentType; // can be null
+    const proxyUri = slackIntegrationService.proxyUriForCurrentType ?? null; // can be null
 
     const appSiteUrl = crowi.appService.getSiteUrl();
     if (appSiteUrl == null || appSiteUrl === '') {
@@ -280,7 +282,7 @@ module.exports = (crowi) => {
     }
 
     try {
-      await crowi.slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
+      await slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
     }
     catch (err) {
       return handleError(err, responseUrl);
@@ -352,10 +354,10 @@ module.exports = (crowi) => {
       const respondUtil = getRespondUtil(responseUrl);
       switch (type) {
         case 'block_actions':
-          await crowi.slackIntegrationService.handleBlockActionsRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
+          await slackIntegrationService.handleBlockActionsRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
           break;
         case 'view_submission':
-          await crowi.slackIntegrationService.handleViewSubmissionRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
+          await slackIntegrationService.handleViewSubmissionRequest(client, interactionPayload, interactionPayloadAccessor, respondUtil);
           break;
         default:
           break;
@@ -431,7 +433,7 @@ module.exports = (crowi) => {
       const client = await slackIntegrationService.generateClientBySlackAppIntegration(slackAppIntegration);
       const { permissionsForSlackEventActions } = slackAppIntegration;
 
-      await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent, permissionsForSlackEventActions, data);
+      await slackIntegrationService.handleEventsRequest(client, growiBotEvent, permissionsForSlackEventActions, data);
 
       return res.apiv3({});
     }
