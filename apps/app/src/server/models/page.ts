@@ -9,7 +9,7 @@ import {
 } from '@growi/core';
 import type { IPagePopulatedToShowRevision } from '@growi/core/dist/interfaces';
 import { getIdForRef, isPopulated } from '@growi/core/dist/interfaces';
-import { isTopPage, hasSlash } from '@growi/core/dist/utils/page-path-utils';
+import { isTopPage, hasSlash, isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type {
