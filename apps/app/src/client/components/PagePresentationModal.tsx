@@ -67,8 +67,7 @@ const PagePresentationModal = (): JSX.Element => {
   if (!isOpen) {
     return <></>;
   }
-  console.log(isEnabledMarp, 'Marp');
-  console.log(rendererOptions, 'renderOption');
+
   return (
     <Modal
       isOpen={isOpen}

@@ -1,8 +1,6 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .grw-page-path-nav-sticky :global {
-  // width: 100%;
-
   .sticky-inner-wrapper {
     z-index: bs.$zindex-sticky;
   }
