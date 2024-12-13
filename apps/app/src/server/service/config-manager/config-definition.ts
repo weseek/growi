@@ -29,6 +29,8 @@ export const CONFIG_KEYS = [
 
   // App Settings
   'app:installed',
+  'app:isV5Compatible',
+  'app:isMaintenanceMode',
   'app:confidential',
   'app:globalLang',
   'app:fileUpload',
@@ -39,8 +41,6 @@ export const CONFIG_KEYS = [
   'app:siteUrl',
   'app:aiEnabled',
   'app:publishOpenAPI',
-  'app:isV5Compatible',
-  'app:isMaintenanceMode',
   'app:maxFileSize',
   'app:fileUploadTotalLimit',
   'app:fileUploadDisabled',
@@ -328,6 +328,12 @@ export const CONFIG_DEFINITIONS = {
   'app:installed': defineConfig<boolean>({
     defaultValue: false,
   }),
+  'app:isV5Compatible': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'app:isMaintenanceMode': defineConfig<boolean>({
+    defaultValue: false,
+  }),
   'app:confidential': defineConfig<string | undefined>({
     defaultValue: undefined,
   }),
@@ -363,14 +369,6 @@ export const CONFIG_DEFINITIONS = {
   }),
   'app:publishOpenAPI': defineConfig<boolean>({
     envVarName: 'PUBLISH_OPEN_API',
-    defaultValue: false,
-  }),
-  'app:isV5Compatible': defineConfig<boolean | undefined>({
-    envVarName: 'IS_V5_COMPATIBLE',
-    defaultValue: undefined,
-  }),
-  'app:isMaintenanceMode': defineConfig<boolean>({
-    envVarName: 'IS_MAINTENANCE_MODE',
     defaultValue: false,
   }),
   'app:maxFileSize': defineConfig<number>({
