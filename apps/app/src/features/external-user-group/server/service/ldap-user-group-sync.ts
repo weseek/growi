@@ -1,12 +1,14 @@
 import { configManager } from '~/server/service/config-manager';
-import { ldapService, SearchResultEntry } from '~/server/service/ldap';
-import PassportService from '~/server/service/passport';
-import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
+import type { SearchResultEntry } from '~/server/service/ldap';
+import { ldapService } from '~/server/service/ldap';
+import type PassportService from '~/server/service/passport';
+import type { S2sMessagingService } from '~/server/service/s2s-messaging/base';
 import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
+import type { ExternalUserGroupTreeNode, ExternalUserInfo } from '../../interfaces/external-user-group';
 import {
-  ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, LdapGroupMembershipAttributeType,
+  ExternalGroupProviderType, LdapGroupMembershipAttributeType,
 } from '../../interfaces/external-user-group';
 
 import ExternalUserGroupSyncService from './external-user-group-sync';
@@ -47,11 +49,11 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
   }
 
   override async generateExternalUserGroupTrees(): Promise<ExternalUserGroupTreeNode[]> {
-    const groupChildGroupAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute');
-    const groupMembershipAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute');
-    const groupNameAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute');
-    const groupDescriptionAttribute: string = configManager.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute');
-    const groupBase: string = ldapService.getGroupSearchBase();
+    const groupChildGroupAttribute = configManager.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute');
+    const groupMembershipAttribute = configManager.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute');
+    const groupNameAttribute = configManager.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute');
+    const groupDescriptionAttribute = configManager.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute');
+    const groupBase = ldapService.getGroupSearchBase();
 
     const groupEntries = await ldapService.searchGroupDir();
 
