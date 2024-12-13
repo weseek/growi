@@ -83,6 +83,10 @@ export type IDataGROWIInfo = {
     customEndpoint?: string;
     /** GCS namespace */
     uploadNamespace?: string;
+    /** Azure account name */
+    accountName?: string;
+    /** Azure container name */
+    containerName?: string;
   };
 }
 
@@ -552,7 +556,7 @@ export class G2GTransferReceiverService implements Receiver {
     const fileUploadTotalLimit = fileUploadService.getFileUploadTotalLimit();
     const isWritable = await fileUploadService.isWritable();
 
-    const attachmentInfo = {
+    const attachmentInfo: IDataGROWIInfo['attachmentInfo'] = {
       type: configManager.getConfig('crowi', 'app:fileUploadType'),
       writable: isWritable,
       bucket: undefined,
@@ -682,7 +686,7 @@ export class G2GTransferReceiverService implements Receiver {
   public async updateFileUploadConfigs(fileUploadConfigs: FileUploadConfigs): Promise<void> {
     const { appService } = this.crowi;
 
-    await configManager.removeConfigs(Object.keys(fileUploadConfigs));
+    await configManager.removeConfigs(Object.keys(fileUploadConfigs) as ConfigKey[]);
     await configManager.updateConfigs(fileUploadConfigs);
     await this.crowi.setUpFileUpload(true);
     await appService.setupAfterInstall();
