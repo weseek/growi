@@ -1,4 +1,3 @@
-// import type { ReactNode } from 'react';
 import React, { useState } from 'react';
 
 import dynamic from 'next/dynamic';
@@ -41,16 +40,21 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
 
   const copyDropdownId = `copydropdown-${pageId}`;
 
-  const [, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const [hideTimeout, setHideTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const handleMouseEnter = () => {
-    if (hideTimeout) clearTimeout(hideTimeout); // 非表示タイマーをリセット
-    setIsHovered(true); // ボタンを表示
+    if (hideTimeout) {
+      clearTimeout(hideTimeout);
+      setHideTimeout(null);
+    }
+    setIsHovered(true);
   };
 
   const handleMouseLeave = () => {
-    const timeout = setTimeout(() => setIsHovered(false), 3000); // 3秒後にボタンを非表示
+    const timeout = setTimeout(() => {
+      setIsHovered(false);
+    }, 1000);
     setHideTimeout(timeout);
   };
 
@@ -70,7 +74,7 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
               <span className="badge text-bg-secondary ms-1 me-1">WIP</span>
             )}
             <span
-              className=" grw-page-path-nav-copydropdown"
+              className={`grw-page-path-nav-copydropdown ${isHovered ? 'visible' : ''}`}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
