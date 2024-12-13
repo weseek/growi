@@ -65,7 +65,8 @@ For more information, see https://docs.growi.org/en/admin-guide/telemetry.html.
     const { NodeSDK } = await import('@opentelemetry/sdk-node');
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
-    const serviceInstanceId = configManager.getConfig('crowi', 'otel:serviceInstanceId');
+    const serviceInstanceId = configManager.getConfig('crowi', 'otel:serviceInstanceId')
+      ?? 'generated-appSiteUrlHashed'; // TODO: generated appSiteUrlHashed
 
     sdkInstance = new NodeSDK(generateNodeSDKConfiguration(serviceInstanceId, version));
     sdkInstance.start();
