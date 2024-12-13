@@ -15,9 +15,20 @@ const AssistantDefaultModelMap: Record<AssistantType, OpenAI.Chat.ChatModel> = {
   [AssistantType.CHAT]: 'gpt-4o-mini',
 };
 
+const isValidChatModel = (model: string): model is OpenAI.Chat.ChatModel => {
+  return model.startsWith('gpt-');
+};
+
 const getAssistantModelByType = (type: AssistantType): OpenAI.Chat.ChatModel => {
-  const configKey = `openai:assistantModel:${type.toLowerCase()}`;
-  return configManager.getConfig('crowi', configKey) ?? AssistantDefaultModelMap[type];
+  const configValue = type === AssistantType.SEARCH
+    ? undefined // TODO: add the value for 'openai:assistantModel:search' to config-definition.ts
+    : configManager.getConfig('crowi', 'openai:assistantModel:chat');
+
+  if (typeof configValue === 'string' && isValidChatModel(configValue)) {
+    return configValue;
+  }
+
+  return AssistantDefaultModelMap[type];
 };
 
 type AssistantType = typeof AssistantType[keyof typeof AssistantType];
