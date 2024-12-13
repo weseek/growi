@@ -456,7 +456,7 @@ class PageService implements IPageService {
     const isBookmarked: boolean = (await Bookmark.findByPageIdAndUserId(pageId, user._id)) != null;
     const isLiked: boolean = page.isLiked(user);
 
-    const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
+    const subscription = await Subscription.findByUserIdAndTargetId(user._id, page._id);
 
     const creatorId = await this.getCreatorIdForCanDelete(page);
 
