@@ -362,12 +362,12 @@ module.exports = (crowi: Crowi): Router => {
       const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
       const oidcIssuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
 
-      if (isOidcEnabled && regex.test(oidcIssuerHost)) return 'oidc';
+      if (isOidcEnabled && oidcIssuerHost != null && regex.test(oidcIssuerHost)) return 'oidc';
 
       const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
       const samlEntryPoint = configManager.getConfig('crowi', 'security:passport-saml:entryPoint');
 
-      if (isSamlEnabled && regex.test(samlEntryPoint)) return 'saml';
+      if (isSamlEnabled && samlEntryPoint != null && regex.test(samlEntryPoint)) return 'saml';
 
       return null;
     };

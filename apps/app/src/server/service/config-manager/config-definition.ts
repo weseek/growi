@@ -132,6 +132,7 @@ export const CONFIG_KEYS = [
   'security:passport-github:clientSecret',
   'security:passport-github:isSameUsernameTreatedAsIdenticalUser',
   'security:passport-oidc:isEnabled',
+  'security:passport-oidc:issuerHost',
 
   // File Upload Settings
   'fileUpload:local:useInternalRedirect',
@@ -690,6 +691,9 @@ export const CONFIG_DEFINITIONS = {
   }),
   'security:passport-oidc:isEnabled': defineConfig<boolean>({
     defaultValue: false,
+  }),
+  'security:passport-oidc:issuerHost': defineConfig<string | undefined>({
+    defaultValue: undefined,
   }),
 
   // File Upload Settings
