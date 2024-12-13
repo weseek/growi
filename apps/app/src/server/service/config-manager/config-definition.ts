@@ -219,6 +219,8 @@ export const CONFIG_KEYS = [
   'slackbot:withProxy:saltForPtoG',
 
   // OpenAI Settings
+  'openai:serviceType',
+  'openai:apiKey',
   'openai:chatAssistantInstructions',
   'openai:assistantModel:chat',
   'openai:threadDeletionCronExpression',
@@ -227,6 +229,11 @@ export const CONFIG_KEYS = [
   'openai:vectorStoreFileDeletionCronExpression',
   'openai:vectorStoreFileDeletionBarchSize',
   'openai:vectorStoreFileDeletionApiCallInterval',
+
+  // OpenTelemetry Settings
+  'otel:enabled',
+  'otel:isAppSiteUrlHashed',
+  'otel:serviceInstanceId',
 
   // S2S Messaging Pubsub Settings
   's2sMessagingPubsub:serverType',
@@ -946,6 +953,15 @@ export const CONFIG_DEFINITIONS = {
   }),
 
   // OpenAI Settings
+  'openai:serviceType': defineConfig<'openai' | 'azure-openai'>({
+    envVarName: 'OPENAI_SERVICE_TYPE',
+    defaultValue: 'openai',
+  }),
+  'openai:apiKey': defineConfig<string | undefined>({
+    envVarName: 'OPENAI_API_KEY',
+    defaultValue: undefined,
+    isSecret: true,
+  }),
   /* eslint-disable max-len */
   'openai:chatAssistantInstructions': defineConfig<string>({
     envVarName: 'OPENAI_CHAT_ASSISTANT_INSTRUCTIONS',
@@ -995,15 +1011,6 @@ Guideline as a RAG:
   'openai:vectorStoreFileDeletionApiCallInterval': defineConfig<number>({
     envVarName: 'OPENAI_VECTOR_STORE_FILE_DELETION_API_CALL_INTERVAL',
     defaultValue: 36000,
-  }),
-  'openai:serviceType': defineConfig<'openai' | 'azure'>({
-    envVarName: 'OPENAI_SERVICE_TYPE',
-    defaultValue: 'openai',
-  }),
-  'openai:apiKey': defineConfig<string | undefined>({
-    envVarName: 'OPENAI_API_KEY',
-    defaultValue: undefined,
-    isSecret: true,
   }),
   'openai:searchAssistantInstructions': defineConfig<string>({
     envVarName: 'OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS',
