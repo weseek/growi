@@ -254,16 +254,21 @@ export const CONFIG_KEYS = [
 
   // External User Group Settings
   'external-user-group:ldap:groupMembershipAttributeType',
+  'external-user-group:ldap:groupSearchBase',
+  'external-user-group:ldap:groupMembershipAttribute',
+  'external-user-group:ldap:groupChildGroupAttribute',
   'external-user-group:ldap:autoGenerateUserOnGroupSync',
   'external-user-group:ldap:preserveDeletedGroups',
-  'external-user-group:keycloak:autoGenerateUserOnGroupSync',
-  'external-user-group:keycloak:preserveDeletedGroups',
+  'external-user-group:ldap:groupNameAttribute',
+  'external-user-group:ldap:groupDescriptionAttribute',
   'external-user-group:keycloak:host',
   'external-user-group:keycloak:groupRealm',
   'external-user-group:keycloak:groupSyncClientRealm',
-  'external-user-group:keycloak:groupDescriptionAttribute',
   'external-user-group:keycloak:groupSyncClientID',
   'external-user-group:keycloak:groupSyncClientSecret',
+  'external-user-group:keycloak:autoGenerateUserOnGroupSync',
+  'external-user-group:keycloak:preserveDeletedGroups',
+  'external-user-group:keycloak:groupDescriptionAttribute',
 
   // Control Flags for using only env vars
   'env:useOnlyEnvVars:app:siteUrl',
@@ -1083,17 +1088,26 @@ Guideline as a RAG:
   'external-user-group:ldap:groupMembershipAttributeType': defineConfig<string>({
     defaultValue: 'DN',
   }),
+  'external-user-group:ldap:groupSearchBase': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'external-user-group:ldap:groupMembershipAttribute': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'external-user-group:ldap:groupChildGroupAttribute': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
   'external-user-group:ldap:autoGenerateUserOnGroupSync': defineConfig<boolean>({
     defaultValue: false,
   }),
   'external-user-group:ldap:preserveDeletedGroups': defineConfig<boolean>({
     defaultValue: false,
   }),
-  'external-user-group:keycloak:autoGenerateUserOnGroupSync': defineConfig<boolean>({
-    defaultValue: false,
+  'external-user-group:ldap:groupNameAttribute': defineConfig<string | undefined>({
+    defaultValue: undefined,
   }),
-  'external-user-group:keycloak:preserveDeletedGroups': defineConfig<boolean>({
-    defaultValue: false,
+  'external-user-group:ldap:groupDescriptionAttribute': defineConfig<string | undefined>({
+    defaultValue: undefined,
   }),
   'external-user-group:keycloak:host': defineConfig<string | undefined>({
     defaultValue: undefined,
@@ -1104,13 +1118,20 @@ Guideline as a RAG:
   'external-user-group:keycloak:groupSyncClientRealm': defineConfig<string | undefined>({
     defaultValue: undefined,
   }),
-  'external-user-group:keycloak:groupDescriptionAttribute': defineConfig<string | undefined>({
-    defaultValue: undefined,
-  }),
   'external-user-group:keycloak:groupSyncClientID': defineConfig<string | undefined>({
     defaultValue: undefined,
   }),
   'external-user-group:keycloak:groupSyncClientSecret': defineConfig<string | undefined>({
+    defaultValue: undefined,
+    isSecret: true,
+  }),
+  'external-user-group:keycloak:autoGenerateUserOnGroupSync': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'external-user-group:keycloak:preserveDeletedGroups': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'external-user-group:keycloak:groupDescriptionAttribute': defineConfig<string | undefined>({
     defaultValue: undefined,
   }),
 
