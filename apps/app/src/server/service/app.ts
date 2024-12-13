@@ -73,7 +73,7 @@ export default class AppService implements S2sMessageHandlable {
   }
 
   getAppTitle() {
-    return configManager.getConfig('crowi', 'app:title') || 'GROWI';
+    return configManager.getConfig('crowi', 'app:title') ?? 'GROWI';
   }
 
   /**

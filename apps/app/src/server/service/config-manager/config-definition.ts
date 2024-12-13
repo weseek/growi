@@ -4,6 +4,7 @@ import type OpenAI from 'openai';
 
 import { ActionGroupSize } from '~/interfaces/activity';
 import { AttachmentMethodType } from '~/interfaces/attachment';
+import type { IPageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation } from '~/interfaces/page-delete-config';
 import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
 import { GrowiServiceType } from '~/interfaces/system';
 
@@ -32,6 +33,8 @@ export const CONFIG_KEYS = [
   'app:isV5Compatible',
   'app:isMaintenanceMode',
   'app:confidential',
+  'app:title',
+  'app:timezone',
   'app:globalLang',
   'app:fileUpload',
   'app:fileUploadType',
@@ -173,6 +176,7 @@ export const CONFIG_KEYS = [
   'customize:script',
   'customize:noscript',
   'customize:title',
+  'customize:isDefaultLogo',
   'customize:highlightJsStyle',
   'customize:highlightJsStyleBorder',
   'customize:theme',
@@ -335,6 +339,12 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: false,
   }),
   'app:confidential': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'app:title': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'app:timezone': defineConfig<number | undefined>({
     defaultValue: undefined,
   }),
   'app:globalLang': defineConfig<string>({
@@ -604,16 +614,16 @@ export const CONFIG_DEFINITIONS = {
   'security:list-policy:hideRestrictedByGroup': defineConfig<boolean>({
     defaultValue: false,
   }),
-  'security:pageDeletionAuthority': defineConfig<string | undefined>({
+  'security:pageDeletionAuthority': defineConfig<IPageDeleteConfigValueToProcessValidation | undefined>({
     defaultValue: undefined,
   }),
-  'security:pageCompleteDeletionAuthority': defineConfig<string | undefined>({
+  'security:pageCompleteDeletionAuthority': defineConfig<IPageDeleteConfigValueToProcessValidation | undefined>({
     defaultValue: undefined,
   }),
-  'security:pageRecursiveDeletionAuthority': defineConfig<string | undefined>({
+  'security:pageRecursiveDeletionAuthority': defineConfig<IPageDeleteConfigValue | undefined>({
     defaultValue: undefined,
   }),
-  'security:pageRecursiveCompleteDeletionAuthority': defineConfig<string | undefined>({
+  'security:pageRecursiveCompleteDeletionAuthority': defineConfig<IPageDeleteConfigValue | undefined>({
     defaultValue: undefined,
   }),
   'security:isAllGroupMembershipRequiredForPageCompleteDeletion': defineConfig<boolean>({
@@ -816,6 +826,9 @@ export const CONFIG_DEFINITIONS = {
   }),
   'customize:title': defineConfig<string | undefined>({
     defaultValue: undefined,
+  }),
+  'customize:isDefaultLogo': defineConfig<boolean>({
+    defaultValue: true,
   }),
   'customize:highlightJsStyle': defineConfig<string>({
     defaultValue: 'github',

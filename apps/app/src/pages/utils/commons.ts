@@ -22,7 +22,7 @@ export type CommonProps = {
   namespacesRequired: string[], // i18next
   currentPathname: string,
   appTitle: string,
-  siteUrl: string,
+  siteUrl: string | undefined,
   confidential: string,
   customTitleTemplate: string,
   csrfToken: string,
@@ -31,7 +31,7 @@ export type CommonProps = {
   isMaintenanceMode: boolean,
   redirectDestination: string | null,
   isDefaultLogo: boolean,
-  growiCloudUri: string,
+  growiCloudUri: string | undefined,
   isAccessDeniedForNonAdminUser?: boolean,
   currentUser?: IUserHasId,
   forcedColorScheme?: ColorScheme,
