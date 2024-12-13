@@ -12,6 +12,7 @@ import { Provider } from 'unstated';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { CommonProps } from '~/pages/utils/commons';
 import { generateCustomTitle } from '~/pages/utils/commons';
+import { configManager } from '~/server/service/config-manager';
 import { useCustomizeTitle, useCurrentUser, useIsCustomizedLogoUploaded } from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -22,7 +23,7 @@ const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenP
 
 
 type Props = CommonProps & {
-  customizeTitle: string,
+  customizeTitle?: string,
   isCustomizedLogoUploaded: boolean,
 };
 
