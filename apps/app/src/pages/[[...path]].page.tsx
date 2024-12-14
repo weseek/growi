@@ -249,6 +249,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsBulkExportPagesEnabled(props.isBulkExportPagesEnabled);
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
+  useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
 
   useIsAiEnabled(props.aiEnabled);
 
