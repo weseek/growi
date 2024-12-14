@@ -242,8 +242,16 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
+      // delete /tmp/page-bulk-export/{jobId} dir
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
     ];
+
+    if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
+      promises.push(
+        // delete /tmp/page-bulk-export/html/{jobId} dir
+        fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob, true), { recursive: true, force: true }),
+      );
+    }
 
     const results = await Promise.allSettled(promises);
     results.forEach((result) => {

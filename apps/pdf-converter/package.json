@@ -11,7 +11,7 @@
     "start:prod:ci": "pnpm start:prod --ci",
     "start:prod": "node dist/index.js",
     "lint": "pnpm eslint **/*.{js,ts}",
-    "gen:client-code": "tsed run generate-swagger --output ./specs && orval",
+    "gen:client-code": "SWAGGER_GENERATION=true tsed run generate-swagger --output ./specs && orval",
     "build": "pnpm gen:client-code && tsc -p tsconfig.build.json"
   },
   "dependencies": {
