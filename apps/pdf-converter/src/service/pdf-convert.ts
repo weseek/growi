@@ -141,7 +141,7 @@ class PdfConvertService implements OnInit {
   private async readHtmlAndConvertToPdfUntilFinish(jobId: string): Promise<void> {
     while (!this.isJobCompleted(jobId)) {
       // eslint-disable-next-line no-await-in-loop
-      await new Promise(resolve => setTimeout(resolve, 60 * 1000));
+      await new Promise(resolve => setTimeout(resolve, 10 * 1000));
 
       try {
         if (new Date() > this.jobList[jobId].expirationDate) {
