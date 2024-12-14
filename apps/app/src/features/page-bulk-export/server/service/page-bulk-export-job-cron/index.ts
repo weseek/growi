@@ -41,7 +41,7 @@ export interface IPageBulkExportJobCronService {
   removeStreamInExecution(jobId: ObjectIdLike): void;
   handleError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument): void;
   notifyExportResultAndCleanUp(action: SupportedActionType, pageBulkExportJob: PageBulkExportJobDocument): Promise<void>;
-  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath: boolean): string;
+  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath?: boolean): string;
 }
 
 /**

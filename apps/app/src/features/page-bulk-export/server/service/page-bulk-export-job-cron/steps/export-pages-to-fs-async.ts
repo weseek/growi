@@ -28,6 +28,7 @@ async function convertMdToHtml(md: string, remarkHtml): Promise<string> {
  */
 function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExportJob: PageBulkExportJobDocument): Writable {
   const isHtmlPath = pageBulkExportJob.format === PageBulkExportFormat.pdf;
+  const format = pageBulkExportJob.format === PageBulkExportFormat.pdf ? 'html' : pageBulkExportJob.format;
   const outputDir = this.getTmpOutputDir(pageBulkExportJob, isHtmlPath);
   // define before the stream starts to avoid creating multiple instances
   const remarkHtml = remark().use(html);
@@ -39,7 +40,7 @@ function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExportJob:
 
         if (revision != null && isPopulated(revision)) {
           const markdownBody = revision.body;
-          const pathNormalized = `${normalizePath(page.path)}.${PageBulkExportFormat.md}`;
+          const pathNormalized = `${normalizePath(page.path)}.${format}`;
           const fileOutputPath = path.join(outputDir, pathNormalized);
           const fileOutputParentPath = getParentPath(fileOutputPath);
 
