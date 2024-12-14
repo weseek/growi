@@ -231,9 +231,9 @@ importers:
       '@growi/core':
         specifier: workspace:^
         version: link:../../packages/core
-      '@growi/pdf-converter':
+      '@growi/pdf-converter-client':
         specifier: workspace:^
-        version: link:../pdf-converter
+        version: link:../../packages/pdf-converter-client
       '@growi/pluginkit':
         specifier: workspace:^
         version: link:../../packages/pluginkit
@@ -1311,6 +1311,12 @@ importers:
       yjs:
         specifier: ^13.6.19
         version: 13.6.19
+
+  packages/pdf-converter-client:
+    devDependencies:
+      orval:
+        specifier: '=7.2.0'
+        version: 7.2.0(encoding@0.1.13)(openapi-types@12.1.3)(typescript@5.4.2)
 
   packages/pluginkit:
     dependencies:
@@ -11569,9 +11575,6 @@ packages:
   remark-stringify@9.0.1:
     resolution: {integrity: sha512-mWmNg3ZtESvZS8fv5PTvaPckdL4iNlCHTt8/e/8oN08nArHRHjNZMKzA/YW3+p7/lYqIw4nx1XsjCBo/AxNChg==}
 
-  remark-toc@9.0.0:
-    resolution: {integrity: sha512-KJ9txbo33GjDAV1baHFze7ij4G8c7SGYoY8Kzsm2gzFpbhL/bSoVpMMzGa3vrNDSWASNd/3ppAqL7cP2zD6JIA==}
-
   remark@13.0.0:
     resolution: {integrity: sha512-HDz1+IKGtOyWN+QgBiAT0kn+2s6ovOxHyPAFGKVE81VSzJ+mq7RwHFledEvB5F1p4iJvOah/LOKdFuzvRnNLCA==}
 
@@ -21446,7 +21449,7 @@ snapshots:
       eslint: 8.41.0
       eslint-import-resolver-node: 0.3.6
       eslint-import-resolver-typescript: 2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0)
-      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-typescript@2.7.1)(eslint@8.41.0)
+      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0))(eslint@8.41.0)
       eslint-plugin-jsx-a11y: 6.5.1(eslint@8.41.0)
       eslint-plugin-react: 7.30.1(eslint@8.41.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.41.0)
@@ -21506,7 +21509,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.7.3(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.6)(eslint-import-resolver-typescript@2.7.1):
+  eslint-module-utils@2.7.3(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.6)(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0)):
     dependencies:
       debug: 3.2.7
       find-up: 2.1.0
@@ -21528,7 +21531,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.26.0(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-typescript@2.7.1)(eslint@8.41.0):
+  eslint-plugin-import@2.26.0(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0))(eslint@8.41.0):
     dependencies:
       array-includes: 3.1.5
       array.prototype.flat: 1.3.2
@@ -21536,7 +21539,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.41.0
       eslint-import-resolver-node: 0.3.6
-      eslint-module-utils: 2.7.3(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.6)(eslint-import-resolver-typescript@2.7.1)
+      eslint-module-utils: 2.7.3(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.6)(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0))
       has: 1.0.3
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -26698,11 +26701,6 @@ snapshots:
   remark-stringify@9.0.1:
     dependencies:
       mdast-util-to-markdown: 0.6.5
-
-  remark-toc@9.0.0:
-    dependencies:
-      '@types/mdast': 4.0.4
-      mdast-util-toc: 7.1.0
 
   remark@13.0.0:
     dependencies:

@@ -1,4 +1,4 @@
-import { PdfCtrlSyncJobStatus202Status, PdfCtrlSyncJobStatusBodyStatus, pdfCtrlSyncJobStatus } from '^/../pdf-converter/dist/client-library';
+import { PdfCtrlSyncJobStatus202Status, PdfCtrlSyncJobStatusBodyStatus, pdfCtrlSyncJobStatus } from '@growi/pdf-converter-client';
 
 import { configManager } from '~/server/service/config-manager';
 
