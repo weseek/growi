@@ -1,3 +1,5 @@
+import { PdfCtrlSyncJobStatus202Status, PdfCtrlSyncJobStatusBodyStatus, pdfCtrlSyncJobStatus } from '^/../pdf-converter/dist/client-library';
+
 import { configManager } from '~/server/service/config-manager';
 
 import { PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
@@ -6,8 +8,10 @@ import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snaps
 
 import { BulkExportJobExpiredError } from './errors';
 
-import { PdfCtrlSyncJobStatus202Status, PdfCtrlSyncJobStatusBodyStatus, pdfCtrlSyncJobStatus } from '^/../pdf-converter/dist/client-library';
-
+/**
+ * Request PDF converter and start pdf convert for the pageBulkExportJob,
+ * or sync pdf convert status if already started.
+ */
 export async function requestPdfConverter(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
   const jobCreatedAt = pageBulkExportJob.createdAt;
   if (jobCreatedAt == null) {
@@ -26,6 +30,7 @@ export async function requestPdfConverter(pageBulkExportJob: PageBulkExportJobDo
   if (new Date() > bulkExportJobExpirationDate) {
     throw new BulkExportJobExpiredError();
   }
+
   try {
     if (pageBulkExportJob.lastExportedPagePath === lastExportPagePath) {
       pdfConvertStatus = PdfCtrlSyncJobStatusBodyStatus.HTML_EXPORT_DONE;
