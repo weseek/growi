@@ -11,6 +11,9 @@
     "dev": "pnpm gen:client-code && tsc -p tsconfig.json",
     "build": "pnpm gen:client-code && tsc -p tsconfig.json"
   },
+  "dependencies": {
+    "axios": "^0.24.0"
+  },
   "devDependencies": {
     "orval": "=7.2.0"
   }
