@@ -2,6 +2,10 @@
   "$schema": "https://turbo.build/schema.json",
   "extends": ["//"],
   "tasks": {
+    "gen:swagger-spec": {
+      "outputs": ["specs/**"],
+      "outputLogs": "new-only"
+    },
     "dev:pdf-converter": {
       "cache": false,
       "persistent": true

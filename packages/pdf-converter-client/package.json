@@ -8,6 +8,7 @@
   "scripts": {
     "lint": "pnpm eslint **/*.{js,ts}",
     "gen:client-code": "orval",
+    "dev": "pnpm gen:client-code && tsc -p tsconfig.json",
     "build": "pnpm gen:client-code && tsc -p tsconfig.json"
   },
   "devDependencies": {

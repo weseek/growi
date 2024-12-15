@@ -1013,9 +1013,6 @@ importers:
       '@types/node':
         specifier: ^22.5.4
         version: 22.8.7
-      orval:
-        specifier: '=7.2.0'
-        version: 7.2.0(encoding@0.1.13)(openapi-types@12.1.3)(typescript@5.4.2)
 
   apps/slackbot-proxy:
     dependencies:

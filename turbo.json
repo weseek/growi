@@ -34,6 +34,11 @@
       "outputs": ["dist/**"],
       "outputLogs": "new-only"
     },
+    "@growi/pdf-converter-client#build": {
+      "dependsOn": ["@growi/pdf-converter#gen:swagger-spec"],
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
+    },
     "build": {
       "outputs": ["dist/**"],
       "inputs": [
@@ -59,6 +64,11 @@
     },
     "@growi/ui#dev": {
       "dependsOn": ["@growi/core#dev"],
+      "outputs": ["dist/**"],
+      "outputLogs": "new-only"
+    },
+    "@growi/pdf-converter-client#dev": {
+      "dependsOn": ["@growi/pdf-converter#gen:swagger-spec"],
       "outputs": ["dist/**"],
       "outputLogs": "new-only"
     },
