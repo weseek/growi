@@ -1310,6 +1310,10 @@ importers:
         version: 13.6.19
 
   packages/pdf-converter-client:
+    dependencies:
+      axios:
+        specifier: ^0.24.0
+        version: 0.24.0
     devDependencies:
       orval:
         specifier: '=7.2.0'
