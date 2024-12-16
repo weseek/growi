@@ -17,6 +17,7 @@ import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
 
+import { configManager } from './config-manager';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:PassportService');
@@ -315,7 +316,7 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   getLdapAttrNameMappedToUsername() {
-    return this.crowi.configManager.getConfig('security:passport-ldap:attrMapUsername') || 'uid';
+    return configManager.getConfig('security:passport-ldap:attrMapUsername') || 'uid';
   }
 
   /**
@@ -325,7 +326,7 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   getLdapAttrNameMappedToName() {
-    return this.crowi.configManager.getConfig('security:passport-ldap:attrMapName') || '';
+    return configManager.getConfig('security:passport-ldap:attrMapName') || '';
   }
 
   /**
@@ -335,7 +336,7 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   getLdapAttrNameMappedToMail() {
-    return this.crowi.configManager.getConfig('security:passport-ldap:attrMapMail') || 'mail';
+    return configManager.getConfig('security:passport-ldap:attrMapMail') || 'mail';
   }
 
   /**
@@ -554,7 +555,7 @@ class PassportService implements S2sMessageHandlable {
 
     // setup client
     // extend oidc request timeouts
-    const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('security:passport-oidc:oidcIssuerTimeoutOption');
+    const OIDC_ISSUER_TIMEOUT_OPTION = await configManager.getConfig('security:passport-oidc:oidcIssuerTimeoutOption');
     // OIDCIssuer.defaultHttpOptions = { timeout: OIDC_ISSUER_TIMEOUT_OPTION };
 
     custom.setHttpOptionsDefaults({
@@ -620,7 +621,7 @@ class PassportService implements S2sMessageHandlable {
       });
       // prevent error AssertionError [ERR_ASSERTION]: id_token issued in the future
       // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
-      const OIDC_CLIENT_CLOCK_TOLERANCE = await this.crowi.configManager.getConfig('security:passport-oidc:oidcClientClockTolerance');
+      const OIDC_CLIENT_CLOCK_TOLERANCE = await configManager.getConfig('security:passport-oidc:oidcClientClockTolerance');
       client[custom.clock_tolerance] = OIDC_CLIENT_CLOCK_TOLERANCE;
       passport.use('oidc', new OidcStrategy(
         {
@@ -713,9 +714,9 @@ class PassportService implements S2sMessageHandlable {
    * @returns instance of OIDCIssuer
    */
   async getOIDCIssuerInstance(issuerHost: string): Promise<void | OIDCIssuer> {
-    const OIDC_TIMEOUT_MULTIPLIER = await this.crowi.configManager.getConfig('security:passport-oidc:timeoutMultiplier');
-    const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfig('security:passport-oidc:discoveryRetries');
-    const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('security:passport-oidc:oidcIssuerTimeoutOption');
+    const OIDC_TIMEOUT_MULTIPLIER = await configManager.getConfig('security:passport-oidc:timeoutMultiplier');
+    const OIDC_DISCOVERY_RETRIES = await configManager.getConfig('security:passport-oidc:discoveryRetries');
+    const OIDC_ISSUER_TIMEOUT_OPTION = await configManager.getConfig('security:passport-oidc:oidcIssuerTimeoutOption');
     const oidcIssuerHostReady = await this.isOidcHostReachable(issuerHost);
     if (!oidcIssuerHostReady) {
       logger.error('OidcStrategy: setup failed');
@@ -799,7 +800,7 @@ class PassportService implements S2sMessageHandlable {
   getSamlMissingMandatoryConfigKeys() {
     const missingRequireds: string[] = [];
     for (const key of this.mandatoryConfigKeysForSaml) {
-      if (this.crowi.configManager.getConfig(key) == null) {
+      if (configManager.getConfig(key) == null) {
         missingRequireds.push(key);
       }
     }
@@ -822,7 +823,7 @@ class PassportService implements S2sMessageHandlable {
    * Verify that a SAML response meets the attribute-base login control rule
    */
   verifySAMLResponseByABLCRule(response) {
-    const rule = this.crowi.configManager.getConfig('security:passport-saml:ABLCRule');
+    const rule = configManager.getConfig('security:passport-saml:ABLCRule');
     if (rule == null) {
       logger.debug('There is no ABLCRule.');
       return true;
@@ -972,14 +973,12 @@ class PassportService implements S2sMessageHandlable {
     this.isSerializerSetup = true;
   }
 
-  isSameUsernameTreatedAsIdenticalUser(providerType) {
-    const key = `security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`;
-    return this.crowi.configManager.getConfig(key);
+  isSameUsernameTreatedAsIdenticalUser(providerType: 'ldap' | 'google' | 'github' | 'saml' | 'oidc'): boolean {
+    return configManager.getConfig(`security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`);
   }
 
-  isSameEmailTreatedAsIdenticalUser(providerType) {
-    const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
-    return this.crowi.configManager.getConfig(key);
+  isSameEmailTreatedAsIdenticalUser(providerType: 'google' | 'github' | 'saml' | 'oidc'): boolean {
+    return configManager.getConfig(`security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`);
   }
 
   literalUnescape(string: string) {

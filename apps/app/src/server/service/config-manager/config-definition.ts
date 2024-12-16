@@ -126,17 +126,22 @@ export const CONFIG_KEYS = [
   'security:passport-ldap:groupSearchFilter',
   'security:passport-ldap:groupDnProperty',
   'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser',
+  'security:passport-saml:isSameUsernameTreatedAsIdenticalUser',
   'security:passport-saml:isSameEmailTreatedAsIdenticalUser',
   'security:passport-google:isEnabled',
   'security:passport-google:clientId',
   'security:passport-google:clientSecret',
   'security:passport-google:isSameUsernameTreatedAsIdenticalUser',
+  'security:passport-google:isSameEmailTreatedAsIdenticalUser',
   'security:passport-github:isEnabled',
   'security:passport-github:clientId',
   'security:passport-github:clientSecret',
   'security:passport-github:isSameUsernameTreatedAsIdenticalUser',
+  'security:passport-github:isSameEmailTreatedAsIdenticalUser',
   'security:passport-oidc:isEnabled',
   'security:passport-oidc:issuerHost',
+  'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser',
+  'security:passport-oidc:isSameEmailTreatedAsIdenticalUser',
 
   // File Upload Settings
   'fileUpload:local:useInternalRedirect',
@@ -681,6 +686,9 @@ export const CONFIG_DEFINITIONS = {
   'security:passport-saml:isSameEmailTreatedAsIdenticalUser': defineConfig<boolean>({
     defaultValue: false,
   }),
+  'security:passport-saml:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({
+    defaultValue: false,
+  }),
   'security:passport-google:isEnabled': defineConfig<boolean>({
     defaultValue: false,
   }),
@@ -691,6 +699,9 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: undefined,
   }),
   'security:passport-google:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-google:isSameEmailTreatedAsIdenticalUser': defineConfig<boolean>({
     defaultValue: false,
   }),
   'security:passport-github:isEnabled': defineConfig<boolean>({
@@ -705,11 +716,20 @@ export const CONFIG_DEFINITIONS = {
   'security:passport-github:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({
     defaultValue: false,
   }),
+  'security:passport-github:isSameEmailTreatedAsIdenticalUser': defineConfig<boolean>({
+    defaultValue: false,
+  }),
   'security:passport-oidc:isEnabled': defineConfig<boolean>({
     defaultValue: false,
   }),
   'security:passport-oidc:issuerHost': defineConfig<string | undefined>({
     defaultValue: undefined,
+  }),
+  'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'security:passport-oidc:isSameEmailTreatedAsIdenticalUser': defineConfig<boolean>({
+    defaultValue: false,
   }),
 
   // File Upload Settings
