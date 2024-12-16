@@ -156,7 +156,7 @@ describe('AclService test', () => {
 
       const wikiMode = configManager.getConfig('security:wikiMode');
       expect(wikiMode).toBe('private');
-      expect(getConfigSpy).not.toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
+      expect(getConfigSpy).not.toHaveBeenCalledWith('security:restrictGuestMode');
       expect(result).toBe(false);
     });
 
@@ -170,7 +170,7 @@ describe('AclService test', () => {
 
       const wikiMode = configManager.getConfig('security:wikiMode');
       expect(wikiMode).toBe('public');
-      expect(getConfigSpy).not.toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
+      expect(getConfigSpy).not.toHaveBeenCalledWith('security:restrictGuestMode');
       expect(result).toBe(true);
     });
 
@@ -203,8 +203,8 @@ describe('AclService test', () => {
         const result = aclService.isGuestAllowedToRead();
 
         expect(getConfigSpy).toHaveBeenCalledTimes(2);
-        expect(getConfigSpy).toHaveBeenCalledWith('crowi', 'security:wikiMode');
-        expect(getConfigSpy).toHaveBeenCalledWith('crowi', 'security:restrictGuestMode');
+        expect(getConfigSpy).toHaveBeenCalledWith('security:wikiMode');
+        expect(getConfigSpy).toHaveBeenCalledWith('security:restrictGuestMode');
         expect(result).toBe(expected);
       });
     });
