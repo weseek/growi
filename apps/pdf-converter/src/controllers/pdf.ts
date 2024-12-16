@@ -37,8 +37,9 @@ class PdfCtrl {
     const expirationDate = new Date(expirationDateStr);
     try {
       await this.pdfConvertService.registerOrUpdateJob(jobId, expirationDate, growiJobStatus);
+      const status = this.pdfConvertService.getJobStatus(jobId); // get status before cleanup
       this.pdfConvertService.cleanUpJobList();
-      return { status: this.pdfConvertService.getJobStatus(jobId) };
+      return { status };
     }
     catch (err) {
       this.logger.error('Failed to register or update job', err);

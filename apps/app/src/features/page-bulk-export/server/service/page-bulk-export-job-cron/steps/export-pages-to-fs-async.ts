@@ -4,6 +4,9 @@ import { Writable, pipeline } from 'stream';
 
 import { isPopulated } from '@growi/core';
 import { getParentPath, normalizePath } from '@growi/core/dist/utils/path-utils';
+import remark from 'remark';
+import html from 'remark-html';
+
 
 import { PageBulkExportFormat, PageBulkExportJobStatus } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 
@@ -12,11 +15,23 @@ import type { PageBulkExportJobDocument } from '../../../models/page-bulk-export
 import type { PageBulkExportPageSnapshotDocument } from '../../../models/page-bulk-export-page-snapshot';
 import PageBulkExportPageSnapshot from '../../../models/page-bulk-export-page-snapshot';
 
+async function convertMdToHtml(md: string, remarkHtml): Promise<string> {
+  const htmlString = (await remarkHtml
+    .process(md))
+    .toString();
+
+  return htmlString;
+}
+
 /**
  * Get a Writable that writes the page body temporarily to fs
  */
 function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExportJob: PageBulkExportJobDocument): Writable {
-  const outputDir = this.getTmpOutputDir(pageBulkExportJob);
+  const isHtmlPath = pageBulkExportJob.format === PageBulkExportFormat.pdf;
+  const format = pageBulkExportJob.format === PageBulkExportFormat.pdf ? 'html' : pageBulkExportJob.format;
+  const outputDir = this.getTmpOutputDir(pageBulkExportJob, isHtmlPath);
+  // define before the stream starts to avoid creating multiple instances
+  const remarkHtml = remark().use(html);
   return new Writable({
     objectMode: true,
     write: async(page: PageBulkExportPageSnapshotDocument, encoding, callback) => {
@@ -25,12 +40,18 @@ function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExportJob:
 
         if (revision != null && isPopulated(revision)) {
           const markdownBody = revision.body;
-          const pathNormalized = `${normalizePath(page.path)}.${PageBulkExportFormat.md}`;
+          const pathNormalized = `${normalizePath(page.path)}.${format}`;
           const fileOutputPath = path.join(outputDir, pathNormalized);
           const fileOutputParentPath = getParentPath(fileOutputPath);
 
           await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
-          await fs.promises.writeFile(fileOutputPath, markdownBody);
+          if (pageBulkExportJob.format === PageBulkExportFormat.md) {
+            await fs.promises.writeFile(fileOutputPath, markdownBody);
+          }
+          else {
+            const htmlString = await convertMdToHtml(markdownBody, remarkHtml);
+            await fs.promises.writeFile(fileOutputPath, htmlString);
+          }
           pageBulkExportJob.lastExportedPagePath = page.path;
           await pageBulkExportJob.save();
         }
@@ -43,8 +64,12 @@ function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExportJob:
     },
     final: async(callback) => {
       try {
-        pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
-        await pageBulkExportJob.save();
+        // If the format is md, the export process ends here.
+        // If the format is pdf, pdf conversion in pdf-converter has to finish.
+        if (pageBulkExportJob.format === PageBulkExportFormat.md) {
+          pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
+          await pageBulkExportJob.save();
+        }
       }
       catch (err) {
         callback(err);

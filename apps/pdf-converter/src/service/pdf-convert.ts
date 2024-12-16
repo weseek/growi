@@ -3,7 +3,7 @@ import path from 'path';
 import { Readable, Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
-import { Logger } from '@tsed/common';
+import { Logger, OnInit } from '@tsed/common';
 import { Inject, Service } from '@tsed/di';
 import { Cluster } from 'puppeteer-cluster';
 
@@ -33,7 +33,7 @@ interface JobInfo {
 }
 
 @Service()
-class PdfConvertService {
+class PdfConvertService implements OnInit {
 
   private puppeteerCluster: Cluster | undefined;
 
@@ -52,6 +52,12 @@ class PdfConvertService {
   @Inject()
     logger: Logger;
 
+  async $onInit(): Promise<void> {
+    if (process.env.SWAGGER_GENERATION === 'true') return;
+
+    await this.initPuppeteerCluster();
+  }
+
   /**
    * Register or update job inside jobList with given jobId, expirationDate, and status.
    * If job is new, start reading html files and convert them to pdf.
@@ -60,8 +66,6 @@ class PdfConvertService {
    * @param status status of job
    */
   async registerOrUpdateJob(jobId: string, expirationDate: Date, status: JobStatusSharedWithGrowi): Promise<void> {
-    if (this.puppeteerCluster == null) await this.initPuppeteerCluster();
-
     const isJobNew = !(jobId in this.jobList);
 
     if (isJobNew) {
@@ -137,7 +141,7 @@ class PdfConvertService {
   private async readHtmlAndConvertToPdfUntilFinish(jobId: string): Promise<void> {
     while (!this.isJobCompleted(jobId)) {
       // eslint-disable-next-line no-await-in-loop
-      await new Promise(resolve => setTimeout(resolve, 60 * 1000));
+      await new Promise(resolve => setTimeout(resolve, 10 * 1000));
 
       try {
         if (new Date() > this.jobList[jobId].expirationDate) {

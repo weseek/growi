@@ -1,4 +1,5 @@
 import fs from 'fs';
+import path from 'path';
 import type { Readable } from 'stream';
 
 import type { IUser } from '@growi/core';
@@ -16,13 +17,14 @@ import CronService from '~/server/service/cron';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
+import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../../models/page-bulk-export-job';
 import PageBulkExportJob from '../../models/page-bulk-export-job';
 import PageBulkExportPageSnapshot from '../../models/page-bulk-export-page-snapshot';
 
 
 import { BulkExportJobExpiredError, BulkExportJobRestartedError } from './errors';
+import { requestPdfConverter } from './request-pdf-converter';
 import { compressAndUpload } from './steps/compress-and-upload';
 import { createPageSnapshotsAsync } from './steps/create-page-snapshots-async';
 import { exportPagesToFsAsync } from './steps/export-pages-to-fs-async';
@@ -39,7 +41,7 @@ export interface IPageBulkExportJobCronService {
   removeStreamInExecution(jobId: ObjectIdLike): void;
   handleError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument): void;
   notifyExportResultAndCleanUp(action: SupportedActionType, pageBulkExportJob: PageBulkExportJobDocument): Promise<void>;
-  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string;
+  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath?: boolean): string;
 }
 
 /**
@@ -98,9 +100,14 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
   /**
    * Get the output directory on the fs to temporarily store page files before compressing and uploading
+   * @param pageBulkExportJob page bulk export job in execution
+   * @param isHtmlPath whether the tmp output path is for html files
    */
-  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string {
-    return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
+  getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument, isHtmlPath = false): string {
+    if (isHtmlPath) {
+      return path.join(this.tmpOutputRootDir, 'html', pageBulkExportJob._id.toString());
+    }
+    return path.join(this.tmpOutputRootDir, pageBulkExportJob._id.toString());
   }
 
   /**
@@ -130,20 +137,25 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
    * @param pageBulkExportJob PageBulkExportJob in progress
    */
   async proceedBulkExportJob(pageBulkExportJob: PageBulkExportJobDocument) {
-    if (pageBulkExportJob.restartFlag) {
-      await this.cleanUpExportJobResources(pageBulkExportJob, true);
-      pageBulkExportJob.restartFlag = false;
-      pageBulkExportJob.status = PageBulkExportJobStatus.initializing;
-      pageBulkExportJob.statusOnPreviousCronExec = undefined;
-      await pageBulkExportJob.save();
-    }
-
-    // return if job is still the same status as the previous cron exec
-    if (pageBulkExportJob.status === pageBulkExportJob.statusOnPreviousCronExec) {
-      return;
-    }
-    const User = mongoose.model<IUser>('User');
     try {
+      if (pageBulkExportJob.restartFlag) {
+        await this.cleanUpExportJobResources(pageBulkExportJob, true);
+        pageBulkExportJob.restartFlag = false;
+        pageBulkExportJob.status = PageBulkExportJobStatus.initializing;
+        pageBulkExportJob.statusOnPreviousCronExec = undefined;
+        await pageBulkExportJob.save();
+      }
+
+      if (pageBulkExportJob.status === PageBulkExportJobStatus.exporting && pageBulkExportJob.format === PageBulkExportFormat.pdf) {
+        await requestPdfConverter(pageBulkExportJob);
+      }
+
+      // return if job is still the same status as the previous cron exec
+      if (pageBulkExportJob.status === pageBulkExportJob.statusOnPreviousCronExec) {
+        return;
+      }
+
+      const User = mongoose.model<IUser>('User');
       const user = await User.findById(getIdForRef(pageBulkExportJob.user));
 
       // update statusOnPreviousCronExec before starting processes that updates status
@@ -230,8 +242,16 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
+      // delete /tmp/page-bulk-export/{jobId} dir
       fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
     ];
+
+    if (pageBulkExportJob.format === PageBulkExportFormat.pdf) {
+      promises.push(
+        // delete /tmp/page-bulk-export/html/{jobId} dir
+        fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob, true), { recursive: true, force: true }),
+      );
+    }
 
     const results = await Promise.allSettled(promises);
     results.forEach((result) => {
