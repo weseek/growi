@@ -33,7 +33,7 @@ class LdapService {
    * @param {string} userBindPassword Necessary when bind type is user bind
    */
   initClient(userBindUsername?: string, userBindPassword?: string): void {
-    const serverUrl = configManager?.getConfig('crowi', 'security:passport-ldap:serverUrl');
+    const serverUrl = configManager.getConfig('security:passport-ldap:serverUrl');
 
     // parse serverUrl
     // see: https://regex101.com/r/0tuYBB/1
@@ -62,7 +62,7 @@ class LdapService {
     const client = this.client;
     if (client == null) throw new Error('LDAP client is not initialized');
 
-    const isLdapEnabled = configManager?.getConfig('crowi', 'security:passport-ldap:isEnabled');
+    const isLdapEnabled = configManager.getConfig('security:passport-ldap:isEnabled');
     if (!isLdapEnabled) {
       const notEnabledMessage = 'LDAP is not enabled';
       logger.error(notEnabledMessage);
@@ -70,9 +70,9 @@ class LdapService {
     }
 
     // get configurations
-    const isUserBind = configManager?.getConfig('crowi', 'security:passport-ldap:isUserBind');
-    const bindDN = configManager?.getConfig('crowi', 'security:passport-ldap:bindDN') ?? '';
-    const bindCredentials = configManager?.getConfig('crowi', 'security:passport-ldap:bindDNPassword') ?? '';
+    const isUserBind = configManager.getConfig('security:passport-ldap:isUserBind');
+    const bindDN = configManager.getConfig('security:passport-ldap:bindDN') ?? '';
+    const bindCredentials = configManager.getConfig('security:passport-ldap:bindDNPassword') ?? '';
 
     // user bind
     const fixedBindDN = (isUserBind)

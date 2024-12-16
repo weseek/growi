@@ -3,15 +3,15 @@ import type { IUserHasId } from '@growi/core';
 import { SocketEventName } from '~/interfaces/websocket';
 import ExternalAccount from '~/server/models/external-account';
 import S2sMessage from '~/server/models/vo/s2s-message';
-import { S2sMessagingService } from '~/server/service/s2s-messaging/base';
-import { S2sMessageHandlable } from '~/server/service/s2s-messaging/handlable';
+import type { S2sMessagingService } from '~/server/service/s2s-messaging/base';
+import type { S2sMessageHandlable } from '~/server/service/s2s-messaging/handlable';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { configManager } from '../../../../server/service/config-manager';
 import { externalAccountService } from '../../../../server/service/external-account';
-import {
+import type {
   ExternalGroupProviderType, ExternalUserGroupTreeNode, ExternalUserInfo, IExternalUserGroupHasId,
 } from '../../interfaces/external-user-group';
 import ExternalUserGroup from '../models/external-user-group';
@@ -93,7 +93,7 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
     if (this.authProviderType == null) throw new Error('auth provider type is not set');
     if (this.syncStatus.isExecutingSync) throw new Error('External user group sync is already being executed');
 
-    const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
+    const preserveDeletedLdapGroups = configManager.getConfig(`external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     const existingExternalUserGroupIds: string[] = [];
 
     const socket = this.socketIoService?.getAdminSocket();
@@ -183,7 +183,7 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
     const authProviderType = this.authProviderType;
     if (authProviderType == null) throw new Error('auth provider type is not set');
 
-    const autoGenerateUserOnGroupSync = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:autoGenerateUserOnGroupSync`);
+    const autoGenerateUserOnGroupSync = configManager.getConfig(`external-user-group:${this.groupProviderType}:autoGenerateUserOnGroupSync`);
 
     const getExternalAccount = async() => {
       if (autoGenerateUserOnGroupSync && externalAccountService != null) {

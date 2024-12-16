@@ -242,9 +242,7 @@ class PageService implements IPageService {
       page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[],
   ): boolean {
     const pageCompleteDeletionAuthority = configManager.getConfig('security:pageCompleteDeletionAuthority');
-    const isAllGroupMembershipRequiredForPageCompleteDeletion = configManager.getConfig(
-      'crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion',
-    );
+    const isAllGroupMembershipRequiredForPageCompleteDeletion = configManager.getConfig('security:isAllGroupMembershipRequiredForPageCompleteDeletion');
 
     const isAdmin = operator?.admin ?? false;
     const isAuthor = operator?._id == null ? false : operator._id.equals(creatorId);

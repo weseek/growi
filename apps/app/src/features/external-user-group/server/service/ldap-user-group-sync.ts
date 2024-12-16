@@ -119,7 +119,7 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
   }
 
   private async getUserInfo(userId: string): Promise<ExternalUserInfo | null> {
-    const groupMembershipAttributeType = configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttributeType');
+    const groupMembershipAttributeType = configManager.getConfig('external-user-group:ldap:groupMembershipAttributeType');
     const attrMapUsername = this.passportService.getLdapAttrNameMappedToUsername();
     const attrMapName = this.passportService.getLdapAttrNameMappedToName();
     const attrMapMail = this.passportService.getLdapAttrNameMappedToMail();
