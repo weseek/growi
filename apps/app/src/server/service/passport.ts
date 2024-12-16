@@ -1,5 +1,6 @@
 import type { IncomingMessage } from 'http';
 
+import type { IExternalAuthProviderType } from '@growi/core';
 import axiosRetry from 'axios-retry';
 import luceneQueryParser from 'lucene-query-parser';
 import { Strategy as OidcStrategy, Issuer as OIDCIssuer, custom } from 'openid-client';
@@ -18,6 +19,7 @@ import loggerFactory from '~/utils/logger';
 import S2sMessage from '../models/vo/s2s-message';
 
 import { configManager } from './config-manager';
+import type { ConfigKey } from './config-manager/config-definition';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:PassportService');
@@ -86,7 +88,7 @@ class PassportService implements S2sMessageHandlable {
     'security:passport-saml:attrMapId',
     'security:passport-saml:attrMapUsername',
     'security:passport-saml:attrMapMail',
-  ];
+  ] satisfies ConfigKey[];
 
   setupFunction = {
     local: {
@@ -973,11 +975,11 @@ class PassportService implements S2sMessageHandlable {
     this.isSerializerSetup = true;
   }
 
-  isSameUsernameTreatedAsIdenticalUser(providerType: 'ldap' | 'google' | 'github' | 'saml' | 'oidc'): boolean {
+  isSameUsernameTreatedAsIdenticalUser(providerType: IExternalAuthProviderType): boolean {
     return configManager.getConfig(`security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`);
   }
 
-  isSameEmailTreatedAsIdenticalUser(providerType: 'google' | 'github' | 'saml' | 'oidc'): boolean {
+  isSameEmailTreatedAsIdenticalUser(providerType: Exclude<IExternalAuthProviderType, 'ldap'>): boolean {
     return configManager.getConfig(`security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`);
   }
 

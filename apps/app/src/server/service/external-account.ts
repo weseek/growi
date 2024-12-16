@@ -1,3 +1,4 @@
+import type { IExternalAuthProviderType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
@@ -22,7 +23,7 @@ class ExternalAccountService {
 
   async getOrCreateUser(
       userInfo: {id: string, username: string, name?: string, email?: string},
-      providerId: 'ldap' | 'google' | 'github' | 'saml' | 'oidc',
+      providerId: IExternalAuthProviderType,
   ): Promise<ExternalAccountDocument | undefined> {
     // get option
     const isSameUsernameTreatedAsIdenticalUser = this.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);

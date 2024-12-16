@@ -1,4 +1,4 @@
-import type { IUserHasId } from '@growi/core';
+import type { IExternalAuthProviderType, IUserHasId } from '@growi/core';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import ExternalAccount from '~/server/models/external-account';
@@ -37,7 +37,7 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
 
   groupProviderType: ExternalGroupProviderType; // name of external service that contains user group info (e.g: ldap, keycloak)
 
-  authProviderType: string | null; // auth provider type (e.g: ldap, oidc). Has to be set before syncExternalUserGroups execution.
+  authProviderType: IExternalAuthProviderType | null; // auth provider type (e.g: ldap, oidc). Has to be set before syncExternalUserGroups execution.
 
   socketIoService: any;
 
