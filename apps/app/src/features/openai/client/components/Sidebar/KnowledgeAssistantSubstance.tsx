@@ -9,6 +9,7 @@ export const KnowledgeAssistantContent = (): JSX.Element => {
     <div>
       <button type="button" className="btn btn-primary" onClick={open}>
         アシスタントを追加する
+        {/* TODO i18n */}
       </button>
     </div>
   );

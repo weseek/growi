@@ -29,8 +29,7 @@ export const KnowledgeAssistantManegementModal = (): JSX.Element => {
 
       <ModalHeader tag="h4" toggle={closeKnowledgeAssistantModal} className="pe-4">
         <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">knowledge_assistant</span>
-        <span className="fw-bold">新規アシスタントの追加</span>
-        <span className="fs-5 text-body-secondary ms-3">{t('modal_aichat.title_beta_label')}</span>
+        <span className="fw-bold">新規アシスタントの追加</span> {/* TODO i18n */}
       </ModalHeader>
 
       { isOpened && (
