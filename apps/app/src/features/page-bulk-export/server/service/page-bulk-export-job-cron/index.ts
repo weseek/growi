@@ -166,7 +166,7 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
         await createPageSnapshotsAsync.bind(this)(user, pageBulkExportJob);
       }
       else if (pageBulkExportJob.status === PageBulkExportJobStatus.exporting) {
-        exportPagesToFsAsync.bind(this)(pageBulkExportJob);
+        await exportPagesToFsAsync.bind(this)(pageBulkExportJob);
       }
       else if (pageBulkExportJob.status === PageBulkExportJobStatus.uploading) {
         compressAndUpload.bind(this)(user, pageBulkExportJob);
