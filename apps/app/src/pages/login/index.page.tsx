@@ -97,7 +97,6 @@ function injectEnabledStrategies(context: GetServerSidePropsContext, props: Prop
   props.enabledExternalAuthType = [
     configManager.getConfig('security:passport-google:isEnabled') === true ? IExternalAuthProviderType.google : undefined,
     configManager.getConfig('security:passport-github:isEnabled') === true ? IExternalAuthProviderType.github : undefined,
-    // configManager.getConfig('security:passport-facebook:isEnabled') ?? IExternalAuthProviderType.facebook : undefined,
     configManager.getConfig('security:passport-saml:isEnabled') === true ? IExternalAuthProviderType.saml : undefined,
     configManager.getConfig('security:passport-oidc:isEnabled') === true ? IExternalAuthProviderType.oidc : undefined,
 

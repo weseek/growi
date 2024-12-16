@@ -193,9 +193,6 @@
 				"register_5": "Copy and paste your ClientID and Client Secret above",
 				"updated_google": "Succeeded to update Google OAuth setting"
 			},
-			"Facebook": {
-				"name": "Facebook OAuth"
-			},
 			"GitHub": {
 				"enable_github": "Enable GitHub OAuth",
 				"name": "GitHub OAuth",

@@ -8,7 +8,6 @@ export const IExternalAuthProviderType = {
   oidc: 'oidc',
   google: 'google',
   github: 'github',
-  facebook: 'facebook',
 } as const;
 
 export type IExternalAuthProviderType = typeof IExternalAuthProviderType[keyof typeof IExternalAuthProviderType]
