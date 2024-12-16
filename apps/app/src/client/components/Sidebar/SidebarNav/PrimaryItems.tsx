@@ -35,6 +35,14 @@ export const PrimaryItems = memo((props: Props) => {
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmarks" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onHover={onItemHover} />
       <PrimaryItemForNotification sidebarMode={sidebarMode} onHover={onItemHover} />
+      <PrimaryItem
+        sidebarMode={sidebarMode}
+        contents={SidebarContentsType.KNOWNLEDGE_ASSISTANT}
+        label="Knowledge Assistant"
+        iconName="knowledge_assistant"
+        isCustomIcon
+        onHover={onItemHover}
+      />
     </div>
   );
 });
