@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useKnowledgeAssistantModal } from '../../stores/knowledge-assistant';
+import { useKnowledgeAssistantModal } from '../../../stores/knowledge-assistant';
 
 export const KnowledgeAssistantContent = (): JSX.Element => {
   const { open } = useKnowledgeAssistantModal();

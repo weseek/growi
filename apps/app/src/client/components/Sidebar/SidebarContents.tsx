@@ -1,6 +1,6 @@
 import React, { memo, useMemo } from 'react';
 
-import { KnowledgeAssistant } from '~/features/openai/client/components/Sidebar/KnowledgeAssistant';
+import { KnowledgeAssistant } from '~/features/openai/client/components/KnowledgeAssistant/Sidebar/KnowledgeAssistant';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
