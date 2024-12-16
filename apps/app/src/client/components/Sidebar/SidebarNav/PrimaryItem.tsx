@@ -82,7 +82,7 @@ export const PrimaryItem = (props: PrimaryItemProps): JSX.Element => {
             <span className="position-absolute badge rounded-pill bg-primary">{badgeContents}</span>
           )}
           { isCustomIcon
-            ? (<span className="growi-custom-icons fs-4 align-middle lh-1">{iconName}</span>)
+            ? (<span className="growi-custom-icons fs-4 align-middle">{iconName}</span>)
             : (<span className="material-symbols-outlined">{iconName}</span>)
           }
         </div>
