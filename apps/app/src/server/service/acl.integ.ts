@@ -1,3 +1,5 @@
+import type { MockInstance } from 'vitest';
+
 import { aclService } from './acl';
 import { configManager } from './config-manager';
 
@@ -139,7 +141,7 @@ describe('AclService test', () => {
 
 
   describe('isGuestAllowedToRead()', () => {
-    let getConfigSpy;
+    let getConfigSpy: MockInstance<typeof configManager.getConfig>;
 
     beforeEach(async() => {
       // prepare spy for ConfigManager.getConfig

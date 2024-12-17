@@ -1,3 +1,4 @@
+import type { MockInstance } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 
 import type Crowi from '~/server/crowi';
@@ -26,8 +27,8 @@ describe('PassportService test', () => {
 
     const passportService = new PassportService(crowiMock);
 
-    let getConfigSpy;
-    let extractAttributesFromSAMLResponseSpy;
+    let getConfigSpy: MockInstance<typeof configManager.getConfig>;
+    let extractAttributesFromSAMLResponseSpy: MockInstance<typeof passportService.extractAttributesFromSAMLResponse>;
 
     beforeEach(async() => {
       // prepare spy for ConfigManager.getConfig
