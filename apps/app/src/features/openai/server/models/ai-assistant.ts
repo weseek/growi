@@ -1,3 +1,4 @@
+import { type IGrantedGroup, GroupType } from '@growi/core';
 import type mongoose from 'mongoose';
 import { type Model, type Document, Schema } from 'mongoose';
 
@@ -38,6 +39,7 @@ interface AiAssistant {
   instruction?: string
   vectorStoreId: string // VectorStoreId of OpenAI Specify (https://platform.openai.com/docs/api-reference/vector-stores/object)
   types: AiAssistantType[]
+  grantedGroups: IGrantedGroup[];
   pages: mongoose.Types.ObjectId[]
   sharingScope: AiAssistantSharingScope
   learningScope: AiAssistantLearningScope
@@ -78,6 +80,29 @@ const schema = new Schema<AiAssistantDocument>(
       ref: 'Page',
       required: true,
     }],
+    grantedGroups: {
+      type: [{
+        type: {
+          type: String,
+          enum: Object.values(GroupType),
+          required: true,
+          default: 'UserGroup',
+        },
+        item: {
+          type: Schema.Types.ObjectId,
+          refPath: 'grantedGroups.type',
+          required: true,
+          index: true,
+        },
+      }],
+      validate: [function(arr: IGrantedGroup[]): boolean {
+        if (arr == null) return true;
+        const uniqueItemValues = new Set(arr.map(e => e.item));
+        return arr.length === uniqueItemValues.size;
+      }, 'grantedGroups contains non unique item'],
+      default: [],
+      required: true,
+    },
     sharingScope: {
       type: String,
       enum: Object.values(AiAssistantSharingScope),
