@@ -35,9 +35,9 @@ const DeleteBookmarkFolderModal = dynamic(
 );
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
 const AiChatModal = dynamic(() => import('~/features/openai/chat/components/AiChatModal').then(mod => mod.AiChatModal), { ssr: false });
-const KnowledgeAssistantManegementModal = dynamic(
-  () => import('~/features/openai/client/components/KnowledgeAssistant/KnowledgeAssistantManegementModal')
-    .then(mod => mod.KnowledgeAssistantManegementModal), { ssr: false },
+const AiAssistantManegementModal = dynamic(
+  () => import('~/features/openai/client/components/AiAssistant/AiAssistantManegementModal')
+    .then(mod => mod.AiAssistantManegementModal), { ssr: false },
 );
 
 type Props = {
@@ -72,7 +72,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <PutbackPageModal />
       <SearchModal />
       <AiChatModal />
-      <KnowledgeAssistantManegementModal />
+      <AiAssistantManegementModal />
 
       <PagePresentationModal />
       <HotkeysManager />
