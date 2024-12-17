@@ -39,6 +39,7 @@ interface AiAssistant {
   instruction?: string
   vectorStoreId: string // VectorStoreId of OpenAI Specify (https://platform.openai.com/docs/api-reference/vector-stores/object)
   types: AiAssistantType[]
+  creator: mongoose.Types.ObjectId
   grantedGroups: IGrantedGroup[];
   pages: mongoose.Types.ObjectId[]
   sharingScope: AiAssistantSharingScope
@@ -75,6 +76,11 @@ const schema = new Schema<AiAssistantDocument>(
       enum: Object.values(AiAssistantType),
       required: true,
     }],
+    creator: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
     pages: [{
       type: Schema.Types.ObjectId,
       ref: 'Page',
