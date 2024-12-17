@@ -41,7 +41,7 @@ interface AiAssistant {
   vectorStoreId: string // VectorStoreId of OpenAI Specify (https://platform.openai.com/docs/api-reference/vector-stores/object)
   types: AiAssistantType[]
   creator: Ref<IUser>
-  grantedGroups: IGrantedGroup[];
+  grantedGroups?: IGrantedGroup[];
   pages: Ref<IPage>[]
   sharingScope: AiAssistantSharingScope
   learningScope: AiAssistantLearningScope
@@ -108,7 +108,6 @@ const schema = new Schema<AiAssistantDocument>(
         return arr.length === uniqueItemValues.size;
       }, 'grantedGroups contains non unique item'],
       default: [],
-      required: true,
     },
     sharingScope: {
       type: String,
