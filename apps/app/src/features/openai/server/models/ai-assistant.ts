@@ -1,5 +1,6 @@
-import { type IGrantedGroup, GroupType } from '@growi/core';
-import type mongoose from 'mongoose';
+import {
+  type IGrantedGroup, GroupType, type IPage, type IUser, type Ref,
+} from '@growi/core';
 import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
@@ -39,9 +40,9 @@ interface AiAssistant {
   instruction?: string
   vectorStoreId: string // VectorStoreId of OpenAI Specify (https://platform.openai.com/docs/api-reference/vector-stores/object)
   types: AiAssistantType[]
-  creator: mongoose.Types.ObjectId
+  creator: Ref<IUser>
   grantedGroups: IGrantedGroup[];
-  pages: mongoose.Types.ObjectId[]
+  pages: Ref<IPage>[]
   sharingScope: AiAssistantSharingScope
   learningScope: AiAssistantLearningScope
   isDeleted: boolean
