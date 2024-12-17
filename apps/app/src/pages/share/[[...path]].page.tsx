@@ -18,7 +18,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
-import type { PageDocument } from '~/server/models/page';
+import type { PageDocument, PageModel } from '~/server/models/page';
 import ShareLink from '~/server/models/share-link';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
@@ -234,13 +234,16 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
       props.shareLink = shareLink.toObject();
 
       // retrieve Page
-      const Page = crowi.model('Page');
+      const Page = crowi.model('Page') as PageModel;
       const relatedPage = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
       // determine whether skip SSR
       const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('app:ssrMaxRevisionBodyLength');
-      props.skipSSR = await skipSSR(relatedPage, ssrMaxRevisionBodyLength);
-      // populate
-      props.shareLinkRelatedPage = await relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
+
+      if (relatedPage != null) {
+        props.skipSSR = await skipSSR(relatedPage, ssrMaxRevisionBodyLength);
+        // populate
+        props.shareLinkRelatedPage = await relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
+      }
     }
   }
   catch (err) {

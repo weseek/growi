@@ -45,7 +45,6 @@ import {
   useIsUploadAllFileAllowed, useIsUploadEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
-  useIsRomUserAllowedToComment,
   useIsAiEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
@@ -474,24 +473,28 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   }
 
   const pageWithMeta = await pageService.findPageAndMetaDataByViewer(pageId, currentPathname, user, true); // includeEmpty = true, isSharedPage = false
-  const page = pageWithMeta?.data as unknown as PageDocument;
+  const { data: page, meta } = pageWithMeta ?? {};
 
   // add user to seen users
   if (page != null && user != null) {
     await page.seen(user);
   }
 
+  props.pageWithMeta = null;
+
   // populate & check if the revision is latest
-  let populated;
   if (page != null) {
     page.initLatestRevisionField(revisionId);
     props.isLatestRevision = page.isLatestRevision();
     const ssrMaxRevisionBodyLength = configManager.getConfig('app:ssrMaxRevisionBodyLength');
     props.skipSSR = await skipSSR(page, ssrMaxRevisionBodyLength);
-    populated = await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
-  }
+    const populatedPage = await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
 
-  props.pageWithMeta = populated;
+    props.pageWithMeta = {
+      data: populatedPage,
+      meta,
+    };
+  }
 }
 
 async function injectRoutingInformation(context: GetServerSidePropsContext, props: Props): Promise<void> {
