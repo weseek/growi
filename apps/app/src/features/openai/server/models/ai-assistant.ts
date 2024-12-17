@@ -8,6 +8,8 @@ import { getOrCreateModel } from '~/server/util/mongoose-utils';
 */
 const AiAssistantType = {
   KNOWLEDGE: 'knowledge',
+  // EDITOR: 'editor',
+  // LEARNING: 'learning',
 } as const;
 
 const AiAssistantSharingScope = {
