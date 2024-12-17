@@ -54,7 +54,6 @@ const schema = new Schema<AiAssistantDocument>(
     name: {
       type: String,
       required: true,
-      trim: true,
     },
     description: {
       type: String,
