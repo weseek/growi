@@ -42,7 +42,7 @@ export const PrimaryItems = memo((props: Props) => {
           sidebarMode={sidebarMode}
           contents={SidebarContentsType.AI_ASSISTANT}
           label="AI Assistant"
-          iconName="knowledge_assistant"
+          iconName="ai_assistant"
           isCustomIcon
           onHover={onItemHover}
         />

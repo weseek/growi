@@ -107,7 +107,7 @@ export const AiAssistantManegementModal = (): JSX.Element => {
     <Modal size="lg" isOpen={isOpened} toggle={closeAiAssistantManegementModal} className={moduleClass} scrollable>
 
       <ModalHeader tag="h4" toggle={closeAiAssistantManegementModal} className="pe-4">
-        <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">knowledge_assistant</span>
+        <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">ai_assistant</span>
         <span className="fw-bold">新規アシスタントの追加</span> {/* TODO i18n */}
       </ModalHeader>
 
