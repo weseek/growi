@@ -40,9 +40,9 @@ export const PrimaryItems = memo((props: Props) => {
       {isAiEnabled && (
         <PrimaryItem
           sidebarMode={sidebarMode}
-          contents={SidebarContentsType.KNOWNLEDGE_ASSISTANT}
-          label="Knowledge Assistant"
-          iconName="knowledge_assistant"
+          contents={SidebarContentsType.AI_ASSISTANT}
+          label="AI Assistant"
+          iconName="ai_assistant"
           isCustomIcon
           onHover={onItemHover}
         />

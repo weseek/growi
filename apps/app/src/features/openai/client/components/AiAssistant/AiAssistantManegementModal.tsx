@@ -5,14 +5,14 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
 } from 'reactstrap';
 
-import { useKnowledgeAssistantModal } from '../../stores/knowledge-assistant';
+import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 
-import styles from './KnowledgeAssistantManegementModal.module.scss';
+import styles from './AiAssistantManegementModal.module.scss';
 
-const moduleClass = styles['grw-knowledge-assistant-manegement'] ?? '';
+const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 
 
-const KnowledgeAssistantManegementModalSubstance = (): JSX.Element => {
+const AiAssistantManegementModalSubstance = (): JSX.Element => {
   return (
     <div className="px-4">
       <ModalBody>
@@ -96,23 +96,23 @@ const KnowledgeAssistantManegementModalSubstance = (): JSX.Element => {
 };
 
 
-export const KnowledgeAssistantManegementModal = (): JSX.Element => {
+export const AiAssistantManegementModal = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: knowledgeAssistantModalData, close: closeKnowledgeAssistantModal } = useKnowledgeAssistantModal();
+  const { data: aiAssistantManegementModalData, close: closeAiAssistantManegementModal } = useAiAssistantManegementModal();
 
-  const isOpened = knowledgeAssistantModalData?.isOpened ?? false;
+  const isOpened = aiAssistantManegementModalData?.isOpened ?? false;
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeKnowledgeAssistantModal} className={moduleClass} scrollable>
+    <Modal size="lg" isOpen={isOpened} toggle={closeAiAssistantManegementModal} className={moduleClass} scrollable>
 
-      <ModalHeader tag="h4" toggle={closeKnowledgeAssistantModal} className="pe-4">
-        <span className="growi-custom-icons growi-knowledge-assistant-icon me-3 fs-4">knowledge_assistant</span>
+      <ModalHeader tag="h4" toggle={closeAiAssistantManegementModal} className="pe-4">
+        <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">ai_assistant</span>
         <span className="fw-bold">新規アシスタントの追加</span> {/* TODO i18n */}
       </ModalHeader>
 
       { isOpened && (
-        <KnowledgeAssistantManegementModalSubstance />
+        <AiAssistantManegementModalSubstance />
       ) }
 
     </Modal>
