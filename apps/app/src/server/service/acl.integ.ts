@@ -190,11 +190,11 @@ describe('AclService test', () => {
         await configManager.loadConfigs();
 
         // setup mock implementation
-        getConfigSpy.mockImplementation((ns, key) => {
-          if (ns === 'crowi' && key === 'security:restrictGuestMode') {
+        getConfigSpy.mockImplementation((key) => {
+          if (key === 'security:restrictGuestMode') {
             return restrictGuestMode;
           }
-          if (ns === 'crowi' && key === 'security:wikiMode') {
+          if (key === 'security:wikiMode') {
             return undefined;
           }
           throw new Error('Unexpected behavior.');
