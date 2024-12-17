@@ -4,7 +4,7 @@ import { type Model, type Document, Schema } from 'mongoose';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 /*
-*  AiAssistant Objects
+*  Objects
 */
 const AiAssistantType = {
   KNOWLEDGE: 'knowledge',
@@ -26,7 +26,7 @@ const AiAssistantLearningScope = {
 
 
 /*
-*  AiAssistant interfaces
+*  Interfaces
 */
 type AiAssistantType = typeof AiAssistantType[keyof typeof AiAssistantType];
 type AiAssistantSharingScope = typeof AiAssistantSharingScope[keyof typeof AiAssistantSharingScope];
@@ -49,8 +49,8 @@ type AiAssistantModel = Model<AiAssistantDocument>
 
 
 /*
-*  AiAssistant Schema
-*/
+ * Schema Definition
+ */
 const schema = new Schema<AiAssistantDocument>(
   {
     name: {
