@@ -44,7 +44,7 @@ export const PageSelectModal: FC = () => {
     const parentPagePath = page.path;
 
     if (parentPagePath == null) {
-      return <></>;
+      return;
     }
 
     setClickedParentPage(page);
