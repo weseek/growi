@@ -25,7 +25,7 @@ module.exports = (crowi) => {
 
   router.get('/', async(req, res) => {
     const now = new Date();
-    const growiCloudUri = await crowi.configManager.getConfig('crowi', 'app:growiCloudUri');
+    const growiCloudUri = await crowi.configManager.getConfig('app:growiCloudUri');
 
     if (growiCloudUri != null && (expiredAt == null || isAfter(now, expiredAt))) {
       const url = new URL('_api/staffCredit', growiCloudUri);

@@ -61,8 +61,12 @@ module.exports = function(crowi) {
 
   const renderOgp = async(req: Request, res: Response) => {
 
-    const User = mongoose.model<IUser>('User');
-    const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
+    const ogpUri = configManager.getConfig('app:ogpUri');
+
+    if (ogpUri == null) {
+      return res.status(501).send('OGP_URI for growi-unique-ogp has not been setup');
+    }
+
     const page: PageDocument = req.body.page; // asserted by ogpValidator
 
     const title = (new DevidedPagePath(page.path)).latter;
@@ -73,6 +77,7 @@ module.exports = function(crowi) {
 
     try {
       if (page.creator != null) {
+        const User = mongoose.model<IUser>('User');
         user = await User.findById(getIdStringForRef(page.creator));
 
         if (user != null) {
@@ -119,7 +124,7 @@ module.exports = function(crowi) {
   const ogpValidator = async(req:Request, res:Response, next:NextFunction) => {
     const { aclService, fileUploadService, configManager } = crowi;
 
-    const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
+    const ogpUri = configManager.getConfig('app:ogpUri');
 
     if (ogpUri == null) return res.status(400).send('OGP URI for GROWI has not been setup');
     if (!fileUploadService.getIsUploadable()) return res.status(501).send('This GROWI can not upload file');

@@ -45,16 +45,28 @@ type AzureConfig = {
 
 
 function getAzureConfig(): AzureConfig {
+  const accountName = configManager.getConfig('azure:storageAccountName');
+  const containerName = configManager.getConfig('azure:storageContainerName');
+
+  if (accountName == null || containerName == null) {
+    throw new Error('Azure Blob Storage is not configured.');
+  }
+
   return {
-    accountName: configManager.getConfig('crowi', 'azure:storageAccountName'),
-    containerName: configManager.getConfig('crowi', 'azure:storageContainerName'),
+    accountName,
+    containerName,
   };
 }
 
 function getCredential(): TokenCredential {
-  const tenantId = configManager.getConfig('crowi', 'azure:tenantId');
-  const clientId = configManager.getConfig('crowi', 'azure:clientId');
-  const clientSecret = configManager.getConfig('crowi', 'azure:clientSecret');
+  const tenantId = configManager.getConfig('azure:tenantId');
+  const clientId = configManager.getConfig('azure:clientId');
+  const clientSecret = configManager.getConfig('azure:clientSecret');
+
+  if (tenantId == null || clientId == null || clientSecret == null) {
+    throw new Error(`Azure Blob Storage missing required configuration: tenantId=${tenantId}, clientId=${clientId}, clientSecret=${clientSecret}`);
+  }
+
   return new ClientSecretCredential(tenantId, clientId, clientSecret);
 }
 
@@ -75,7 +87,14 @@ class AzureFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override isValidUploadSettings(): boolean {
-    throw new Error('Method not implemented.');
+    try {
+      getAzureConfig();
+      return true;
+    }
+    catch (e) {
+      logger.error(e);
+      return false;
+    }
   }
 
   /**
@@ -126,7 +145,7 @@ class AzureFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
-    return configManager.getConfig('crowi', 'azure:referenceFileWithRelayMode')
+    return configManager.getConfig('azure:referenceFileWithRelayMode')
       ? ResponseMode.RELAY
       : ResponseMode.REDIRECT;
   }
@@ -170,7 +189,7 @@ class AzureFileUploader extends AbstractFileUploader {
       throw new Error('Azure Blob is not configured.');
     }
 
-    const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'azure:lifetimeSecForTemporaryUrl');
+    const lifetimeSecForTemporaryUrl = configManager.getConfig('azure:lifetimeSecForTemporaryUrl');
 
     const url = await (async() => {
       const containerClient = await getContainerClient();
@@ -222,8 +241,8 @@ module.exports = (crowi) => {
   const lib = new AzureFileUploader(crowi);
 
   lib.isValidUploadSettings = function() {
-    return configManager.getConfig('crowi', 'azure:storageAccountName') != null
-      && configManager.getConfig('crowi', 'azure:storageContainerName') != null;
+    return configManager.getConfig('azure:storageAccountName') != null
+      && configManager.getConfig('azure:storageContainerName') != null;
   };
 
   (lib as any).deleteFile = async function(attachment) {
@@ -260,8 +279,8 @@ module.exports = (crowi) => {
   };
 
   (lib as any).checkLimit = async function(uploadFileSize) {
-    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
-    const gcsTotalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+    const maxFileSize = configManager.getConfig('app:maxFileSize');
+    const gcsTotalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
   };
 

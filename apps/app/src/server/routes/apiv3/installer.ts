@@ -27,7 +27,7 @@ module.exports = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-  const minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
+  const minPasswordLength = configManager.getConfig('app:minPasswordLength');
 
   // eslint-disable-next-line max-len
   router.post('/', registerRules(minPasswordLength), registerValidation, addActivity, async(req: FormRequest, res: ApiV3Response) => {

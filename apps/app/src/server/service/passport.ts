@@ -1,5 +1,6 @@
 import type { IncomingMessage } from 'http';
 
+import type { IExternalAuthProviderType } from '@growi/core';
 import axiosRetry from 'axios-retry';
 import luceneQueryParser from 'lucene-query-parser';
 import { Strategy as OidcStrategy, Issuer as OIDCIssuer, custom } from 'openid-client';
@@ -17,6 +18,8 @@ import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
 
+import { configManager } from './config-manager';
+import type { ConfigKey } from './config-manager/config-definition';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:PassportService');
@@ -85,7 +88,7 @@ class PassportService implements S2sMessageHandlable {
     'security:passport-saml:attrMapId',
     'security:passport-saml:attrMapUsername',
     'security:passport-saml:attrMapMail',
-  ];
+  ] satisfies ConfigKey[];
 
   setupFunction = {
     local: {
@@ -229,7 +232,7 @@ class PassportService implements S2sMessageHandlable {
 
     const { configManager } = this.crowi;
 
-    const isEnabled = configManager.getConfig('crowi', 'security:passport-local:isEnabled');
+    const isEnabled = configManager.getConfig('security:passport-local:isEnabled');
 
     // when disabled
     if (!isEnabled) {
@@ -285,7 +288,7 @@ class PassportService implements S2sMessageHandlable {
     const config = this.crowi.config;
     const { configManager } = this.crowi;
 
-    const isLdapEnabled = configManager.getConfig('crowi', 'security:passport-ldap:isEnabled');
+    const isLdapEnabled = configManager.getConfig('security:passport-ldap:isEnabled');
 
     // when disabled
     if (!isLdapEnabled) {
@@ -315,7 +318,7 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   getLdapAttrNameMappedToUsername() {
-    return this.crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername') || 'uid';
+    return configManager.getConfig('security:passport-ldap:attrMapUsername') || 'uid';
   }
 
   /**
@@ -325,7 +328,7 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   getLdapAttrNameMappedToName() {
-    return this.crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapName') || '';
+    return configManager.getConfig('security:passport-ldap:attrMapName') || '';
   }
 
   /**
@@ -335,7 +338,7 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   getLdapAttrNameMappedToMail() {
-    return this.crowi.configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail') || 'mail';
+    return configManager.getConfig('security:passport-ldap:attrMapMail') || 'mail';
   }
 
   /**
@@ -363,14 +366,14 @@ class PassportService implements S2sMessageHandlable {
     const { configManager } = this.crowi;
 
     // get configurations
-    const isUserBind        = configManager.getConfig('crowi', 'security:passport-ldap:isUserBind');
-    const serverUrl         = configManager.getConfig('crowi', 'security:passport-ldap:serverUrl');
-    const bindDN            = configManager.getConfig('crowi', 'security:passport-ldap:bindDN');
-    const bindCredentials   = configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword');
-    const searchFilter      = configManager.getConfig('crowi', 'security:passport-ldap:searchFilter') || '(uid={{username}})';
-    const groupSearchBase   = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase');
-    const groupSearchFilter = configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter');
-    const groupDnProperty   = configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty') || 'uid';
+    const isUserBind        = configManager.getConfig('security:passport-ldap:isUserBind');
+    const serverUrl         = configManager.getConfig('security:passport-ldap:serverUrl');
+    const bindDN            = configManager.getConfig('security:passport-ldap:bindDN');
+    const bindCredentials   = configManager.getConfig('security:passport-ldap:bindDNPassword');
+    const searchFilter      = configManager.getConfig('security:passport-ldap:searchFilter') || '(uid={{username}})';
+    const groupSearchBase   = configManager.getConfig('security:passport-ldap:groupSearchBase');
+    const groupSearchFilter = configManager.getConfig('security:passport-ldap:groupSearchFilter');
+    const groupDnProperty   = configManager.getConfig('security:passport-ldap:groupDnProperty') || 'uid';
     /* eslint-enable no-multi-spaces */
 
     // parse serverUrl
@@ -447,7 +450,7 @@ class PassportService implements S2sMessageHandlable {
     this.resetGoogleStrategy();
 
     const { configManager } = this.crowi;
-    const isGoogleEnabled = configManager.getConfig('crowi', 'security:passport-google:isEnabled');
+    const isGoogleEnabled = configManager.getConfig('security:passport-google:isEnabled');
 
     // when disabled
     if (!isGoogleEnabled) {
@@ -458,11 +461,11 @@ class PassportService implements S2sMessageHandlable {
     passport.use(
       new GoogleStrategy(
         {
-          clientID: configManager.getConfig('crowi', 'security:passport-google:clientId'),
-          clientSecret: configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
+          clientID: configManager.getConfig('security:passport-google:clientId'),
+          clientSecret: configManager.getConfig('security:passport-google:clientSecret'),
           callbackURL: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('crowi', 'security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+            : configManager.getConfig('security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -495,7 +498,7 @@ class PassportService implements S2sMessageHandlable {
     this.resetGitHubStrategy();
 
     const { configManager } = this.crowi;
-    const isGitHubEnabled = configManager.getConfig('crowi', 'security:passport-github:isEnabled');
+    const isGitHubEnabled = configManager.getConfig('security:passport-github:isEnabled');
 
     // when disabled
     if (!isGitHubEnabled) {
@@ -506,11 +509,11 @@ class PassportService implements S2sMessageHandlable {
     passport.use(
       new GitHubStrategy(
         {
-          clientID: configManager.getConfig('crowi', 'security:passport-github:clientId'),
-          clientSecret: configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
+          clientID: configManager.getConfig('security:passport-github:clientId'),
+          clientSecret: configManager.getConfig('security:passport-github:clientSecret'),
           callbackURL: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('crowi', 'security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+            : configManager.getConfig('security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -543,7 +546,7 @@ class PassportService implements S2sMessageHandlable {
     this.resetOidcStrategy();
 
     const { configManager } = this.crowi;
-    const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
+    const isOidcEnabled = configManager.getConfig('security:passport-oidc:isEnabled');
 
     // when disabled
     if (!isOidcEnabled) {
@@ -554,19 +557,19 @@ class PassportService implements S2sMessageHandlable {
 
     // setup client
     // extend oidc request timeouts
-    const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcIssuerTimeoutOption');
+    const OIDC_ISSUER_TIMEOUT_OPTION = await configManager.getConfig('security:passport-oidc:oidcIssuerTimeoutOption');
     // OIDCIssuer.defaultHttpOptions = { timeout: OIDC_ISSUER_TIMEOUT_OPTION };
 
     custom.setHttpOptionsDefaults({
       timeout: OIDC_ISSUER_TIMEOUT_OPTION,
     });
 
-    const issuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
-    const clientId = configManager.getConfig('crowi', 'security:passport-oidc:clientId');
-    const clientSecret = configManager.getConfig('crowi', 'security:passport-oidc:clientSecret');
-    const redirectUri = (configManager.getConfig('crowi', 'app:siteUrl') != null)
+    const issuerHost = configManager.getConfig('security:passport-oidc:issuerHost');
+    const clientId = configManager.getConfig('security:passport-oidc:clientId');
+    const clientSecret = configManager.getConfig('security:passport-oidc:clientSecret');
+    const redirectUri = (configManager.getConfig('app:siteUrl') != null)
       ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/oidc/callback')
-      : configManager.getConfig('crowi', 'security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
+      : configManager.getConfig('security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
 
     // Prevent request timeout error on app init
     const oidcIssuer = await this.getOIDCIssuerInstance(issuerHost);
@@ -575,35 +578,35 @@ class PassportService implements S2sMessageHandlable {
 
       logger.debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
 
-      const authorizationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint');
+      const authorizationEndpoint = configManager.getConfig('security:passport-oidc:authorizationEndpoint');
       if (authorizationEndpoint) {
         oidcIssuerMetadata.authorization_endpoint = authorizationEndpoint;
       }
-      const tokenEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:tokenEndpoint');
+      const tokenEndpoint = configManager.getConfig('security:passport-oidc:tokenEndpoint');
       if (tokenEndpoint) {
         oidcIssuerMetadata.token_endpoint = tokenEndpoint;
       }
-      const revocationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:revocationEndpoint');
+      const revocationEndpoint = configManager.getConfig('security:passport-oidc:revocationEndpoint');
       if (revocationEndpoint) {
         oidcIssuerMetadata.revocation_endpoint = revocationEndpoint;
       }
-      const introspectionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:introspectionEndpoint');
+      const introspectionEndpoint = configManager.getConfig('security:passport-oidc:introspectionEndpoint');
       if (introspectionEndpoint) {
         oidcIssuerMetadata.introspection_endpoint = introspectionEndpoint;
       }
-      const userInfoEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:userInfoEndpoint');
+      const userInfoEndpoint = configManager.getConfig('security:passport-oidc:userInfoEndpoint');
       if (userInfoEndpoint) {
         oidcIssuerMetadata.userinfo_endpoint = userInfoEndpoint;
       }
-      const endSessionEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:endSessionEndpoint');
+      const endSessionEndpoint = configManager.getConfig('security:passport-oidc:endSessionEndpoint');
       if (endSessionEndpoint) {
         oidcIssuerMetadata.end_session_endpoint = endSessionEndpoint;
       }
-      const registrationEndpoint = configManager.getConfig('crowi', 'security:passport-oidc:registrationEndpoint');
+      const registrationEndpoint = configManager.getConfig('security:passport-oidc:registrationEndpoint');
       if (registrationEndpoint) {
         oidcIssuerMetadata.registration_endpoint = registrationEndpoint;
       }
-      const jwksUri = configManager.getConfig('crowi', 'security:passport-oidc:jwksUri');
+      const jwksUri = configManager.getConfig('security:passport-oidc:jwksUri');
       if (jwksUri) {
         oidcIssuerMetadata.jwks_uri = jwksUri;
       }
@@ -620,7 +623,7 @@ class PassportService implements S2sMessageHandlable {
       });
       // prevent error AssertionError [ERR_ASSERTION]: id_token issued in the future
       // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
-      const OIDC_CLIENT_CLOCK_TOLERANCE = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcClientClockTolerance');
+      const OIDC_CLIENT_CLOCK_TOLERANCE = await configManager.getConfig('security:passport-oidc:oidcClientClockTolerance');
       client[custom.clock_tolerance] = OIDC_CLIENT_CLOCK_TOLERANCE;
       passport.use('oidc', new OidcStrategy(
         {
@@ -713,9 +716,9 @@ class PassportService implements S2sMessageHandlable {
    * @returns instance of OIDCIssuer
    */
   async getOIDCIssuerInstance(issuerHost: string): Promise<void | OIDCIssuer> {
-    const OIDC_TIMEOUT_MULTIPLIER = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:timeoutMultiplier');
-    const OIDC_DISCOVERY_RETRIES = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:discoveryRetries');
-    const OIDC_ISSUER_TIMEOUT_OPTION = await this.crowi.configManager.getConfig('crowi', 'security:passport-oidc:oidcIssuerTimeoutOption');
+    const OIDC_TIMEOUT_MULTIPLIER = await configManager.getConfig('security:passport-oidc:timeoutMultiplier');
+    const OIDC_DISCOVERY_RETRIES = await configManager.getConfig('security:passport-oidc:discoveryRetries');
+    const OIDC_ISSUER_TIMEOUT_OPTION = await configManager.getConfig('security:passport-oidc:oidcIssuerTimeoutOption');
     const oidcIssuerHostReady = await this.isOidcHostReachable(issuerHost);
     if (!oidcIssuerHostReady) {
       logger.error('OidcStrategy: setup failed');
@@ -749,7 +752,7 @@ class PassportService implements S2sMessageHandlable {
     this.resetSamlStrategy();
 
     const { configManager } = this.crowi;
-    const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
+    const isSamlEnabled = configManager.getConfig('security:passport-saml:isEnabled');
 
     // when disabled
     if (!isSamlEnabled) {
@@ -760,12 +763,12 @@ class PassportService implements S2sMessageHandlable {
     passport.use(
       new SamlStrategy(
         {
-          entryPoint: configManager.getConfig('crowi', 'security:passport-saml:entryPoint'),
+          entryPoint: configManager.getConfig('security:passport-saml:entryPoint'),
           callbackUrl: (this.crowi.appService.getSiteUrl() != null)
             ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('crowi', 'security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
-          issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),
-          cert: configManager.getConfig('crowi', 'security:passport-saml:cert'),
+            : configManager.getConfig('security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+          issuer: configManager.getConfig('security:passport-saml:issuer'),
+          cert: configManager.getConfig('security:passport-saml:cert'),
           disableRequestedAuthnContext: true,
         },
         (profile: Profile, done: VerifiedCallback) => {
@@ -799,7 +802,7 @@ class PassportService implements S2sMessageHandlable {
   getSamlMissingMandatoryConfigKeys() {
     const missingRequireds: string[] = [];
     for (const key of this.mandatoryConfigKeysForSaml) {
-      if (this.crowi.configManager.getConfig('crowi', key) === null) {
+      if (configManager.getConfig(key) == null) {
         missingRequireds.push(key);
       }
     }
@@ -822,7 +825,7 @@ class PassportService implements S2sMessageHandlable {
    * Verify that a SAML response meets the attribute-base login control rule
    */
   verifySAMLResponseByABLCRule(response) {
-    const rule = this.crowi.configManager.getConfig('crowi', 'security:passport-saml:ABLCRule');
+    const rule = configManager.getConfig('security:passport-saml:ABLCRule');
     if (rule == null) {
       logger.debug('There is no ABLCRule.');
       return true;
@@ -972,14 +975,12 @@ class PassportService implements S2sMessageHandlable {
     this.isSerializerSetup = true;
   }
 
-  isSameUsernameTreatedAsIdenticalUser(providerType) {
-    const key = `security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`;
-    return this.crowi.configManager.getConfig('crowi', key);
+  isSameUsernameTreatedAsIdenticalUser(providerType: IExternalAuthProviderType): boolean {
+    return configManager.getConfig(`security:passport-${providerType}:isSameUsernameTreatedAsIdenticalUser`);
   }
 
-  isSameEmailTreatedAsIdenticalUser(providerType) {
-    const key = `security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`;
-    return this.crowi.configManager.getConfig('crowi', key);
+  isSameEmailTreatedAsIdenticalUser(providerType: Exclude<IExternalAuthProviderType, 'ldap'>): boolean {
+    return configManager.getConfig(`security:passport-${providerType}:isSameEmailTreatedAsIdenticalUser`);
   }
 
   literalUnescape(string: string) {

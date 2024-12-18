@@ -38,8 +38,8 @@ class QuestionnaireCronService {
   sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
 
   startCron(): void {
-    const cronSchedule = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
-    const maxHoursUntilRequest = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
+    const cronSchedule = this.crowi.configManager.getConfig('app:questionnaireCronSchedule');
+    const maxHoursUntilRequest = this.crowi.configManager.getConfig('app:questionnaireCronMaxHoursUntilRequest');
 
     const maxSecondsUntilRequest = maxHoursUntilRequest * 60 * 60;
 
@@ -53,7 +53,7 @@ class QuestionnaireCronService {
   }
 
   async executeJob(): Promise<void> {
-    const questionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
+    const questionnaireServerOrigin = this.crowi.configManager.getConfig('app:questionnaireServerOrigin');
 
     const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
       const response = await axios.get(`${questionnaireServerOrigin}/questionnaire-order/index`);

@@ -1,7 +1,8 @@
 import type { HasObjectId } from '@growi/core';
 
-import { GrowiServiceType } from './growi-info';
-import { UserType } from './user-info';
+import type { GrowiServiceType } from '~/interfaces/system';
+
+import type { UserType } from './user-info';
 
 
 interface UserCondition {

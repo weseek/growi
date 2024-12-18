@@ -10,6 +10,7 @@ import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { Attachment } from '~/server/models/attachment';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -169,22 +170,22 @@ module.exports = (crowi) => {
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const customizeParams = {
-      isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
-      isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-      pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
-      pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
-      pageLimitationL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
-      pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
-      isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
-      isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
-      isSearchScopeChildrenAsDefault: await crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
-      isEnabledMarp: await crowi.configManager.getConfig('crowi', 'customize:isEnabledMarp'),
-      styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
-      styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
-      customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
-      customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
-      customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
-      customizeNoscript: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
+      isEnabledTimeline: await configManager.getConfig('customize:isEnabledTimeline'),
+      isEnabledAttachTitleHeader: await configManager.getConfig('customize:isEnabledAttachTitleHeader'),
+      pageLimitationS: await configManager.getConfig('customize:showPageLimitationS'),
+      pageLimitationM: await configManager.getConfig('customize:showPageLimitationM'),
+      pageLimitationL: await configManager.getConfig('customize:showPageLimitationL'),
+      pageLimitationXL: await configManager.getConfig('customize:showPageLimitationXL'),
+      isEnabledStaleNotification: await configManager.getConfig('customize:isEnabledStaleNotification'),
+      isAllReplyShown: await configManager.getConfig('customize:isAllReplyShown'),
+      isSearchScopeChildrenAsDefault: await configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
+      isEnabledMarp: await configManager.getConfig('customize:isEnabledMarp'),
+      styleName: await configManager.getConfig('customize:highlightJsStyle'),
+      styleBorder: await configManager.getConfig('customize:highlightJsStyleBorder'),
+      customizeTitle: await configManager.getConfig('customize:title'),
+      customizeScript: await configManager.getConfig('customize:script'),
+      customizeCss: await configManager.getConfig('customize:css'),
+      customizeNoscript: await configManager.getConfig('customize:noscript'),
     };
 
     return res.apiv3({ customizeParams });
@@ -210,7 +211,7 @@ module.exports = (crowi) => {
   router.get('/layout', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     try {
-      const isContainerFluid = await crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
+      const isContainerFluid = await configManager.getConfig('customize:isContainerFluid');
       return res.apiv3({ isContainerFluid });
     }
     catch (err) {
@@ -249,9 +250,9 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await configManager.updateConfigs(requestParams);
       const customizedParams = {
-        isContainerFluid: await crowi.configManager.getConfig('crowi', 'customize:isContainerFluid'),
+        isContainerFluid: await configManager.getConfig('customize:isContainerFluid'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_LAYOUT_UPDATE };
@@ -269,7 +270,7 @@ module.exports = (crowi) => {
   router.get('/theme', loginRequiredStrictly, async(req, res) => {
 
     try {
-      const currentTheme = await crowi.configManager.getConfig('crowi', 'customize:theme');
+      const currentTheme = await configManager.getConfig('customize:theme');
 
       // retrieve plugin manifests
       const themePlugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Theme);
@@ -316,9 +317,9 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await configManager.updateConfigs(requestParams);
       const customizedParams = {
-        theme: await crowi.configManager.getConfig('crowi', 'customize:theme'),
+        theme: await configManager.getConfig('customize:theme'),
       };
       customizeService.initGrowiTheme();
       const parameters = { action: SupportedAction.ACTION_ADMIN_THEME_UPDATE };
@@ -336,8 +337,8 @@ module.exports = (crowi) => {
   router.get('/sidebar', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     try {
-      const isSidebarCollapsedMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode');
-      const isSidebarClosedAtDockMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode');
+      const isSidebarCollapsedMode = await configManager.getConfig('customize:isSidebarCollapsedMode');
+      const isSidebarClosedAtDockMode = await configManager.getConfig('customize:isSidebarClosedAtDockMode');
       return res.apiv3({ isSidebarCollapsedMode, isSidebarClosedAtDockMode });
     }
     catch (err) {
@@ -354,10 +355,10 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await configManager.updateConfigs(requestParams);
       const customizedParams = {
-        isSidebarCollapsedMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
-        isSidebarClosedAtDockMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+        isSidebarCollapsedMode: await configManager.getConfig('customize:isSidebarCollapsedMode'),
+        isSidebarClosedAtDockMode: await configManager.getConfig('customize:isSidebarClosedAtDockMode'),
       };
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SIDEBAR_UPDATE });
@@ -408,17 +409,17 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await configManager.updateConfigs(requestParams);
       const customizedParams = {
-        isEnabledTimeline: await crowi.configManager.getConfig('crowi', 'customize:isEnabledTimeline'),
-        isEnabledAttachTitleHeader: await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader'),
-        pageLimitationS: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS'),
-        pageLimitationM: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationM'),
-        pageLimitationL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationL'),
-        pageLimitationXL: await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL'),
-        isEnabledStaleNotification: await crowi.configManager.getConfig('crowi', 'customize:isEnabledStaleNotification'),
-        isAllReplyShown: await crowi.configManager.getConfig('crowi', 'customize:isAllReplyShown'),
-        isSearchScopeChildrenAsDefault: await crowi.configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault'),
+        isEnabledTimeline: await configManager.getConfig('customize:isEnabledTimeline'),
+        isEnabledAttachTitleHeader: await configManager.getConfig('customize:isEnabledAttachTitleHeader'),
+        pageLimitationS: await configManager.getConfig('customize:showPageLimitationS'),
+        pageLimitationM: await configManager.getConfig('customize:showPageLimitationM'),
+        pageLimitationL: await configManager.getConfig('customize:showPageLimitationL'),
+        pageLimitationXL: await configManager.getConfig('customize:showPageLimitationXL'),
+        isEnabledStaleNotification: await configManager.getConfig('customize:isEnabledStaleNotification'),
+        isAllReplyShown: await configManager.getConfig('customize:isAllReplyShown'),
+        isSearchScopeChildrenAsDefault: await configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -438,9 +439,9 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await configManager.updateConfigs(requestParams);
       const customizedParams = {
-        isEnabledMarp: await crowi.configManager.getConfig('crowi', 'customize:isEnabledMarp'),
+        isEnabledMarp: await configManager.getConfig('customize:isEnabledMarp'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -483,10 +484,10 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await configManager.updateConfigs(requestParams);
       const customizedParams = {
-        styleName: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyle'),
-        styleBorder: await crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+        styleName: await configManager.getConfig('customize:highlightJsStyle'),
+        styleBorder: await configManager.getConfig('customize:highlightJsStyleBorder'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_CODE_HIGHLIGHT_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -528,11 +529,11 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+      await configManager.updateConfigs(requestParams, { skipPubsub: true });
       crowi.customizeService.publishUpdatedMessage();
 
       const customizedParams = {
-        customizeTitle: await crowi.configManager.getConfig('crowi', 'customize:title'),
+        customizeTitle: await configManager.getConfig('customize:title'),
       };
       customizeService.initCustomTitle();
       const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_TITLE_UPDATE };
@@ -574,9 +575,9 @@ module.exports = (crowi) => {
       'customize:noscript': req.body.customizeNoscript,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await configManager.updateConfigs(requestParams);
       const customizedParams = {
-        customizeNoscript: await crowi.configManager.getConfig('crowi', 'customize:noscript'),
+        customizeNoscript: await configManager.getConfig('customize:noscript'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_NOSCRIPT_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -617,11 +618,11 @@ module.exports = (crowi) => {
       'customize:css': req.body.customizeCss,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+      await configManager.updateConfigs(requestParams, { skipPubsub: true });
       crowi.customizeService.publishUpdatedMessage();
 
       const customizedParams = {
-        customizeCss: await crowi.configManager.getConfig('crowi', 'customize:css'),
+        customizeCss: await configManager.getConfig('customize:css'),
       };
       customizeService.initCustomCss();
       const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_CSS_UPDATE };
@@ -663,9 +664,9 @@ module.exports = (crowi) => {
       'customize:script': req.body.customizeScript,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await configManager.updateConfigs(requestParams);
       const customizedParams = {
-        customizeScript: await crowi.configManager.getConfig('crowi', 'customize:script'),
+        customizeScript: await configManager.getConfig('customize:script'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_SCRIPT_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -688,9 +689,9 @@ module.exports = (crowi) => {
       'customize:isDefaultLogo': isDefaultLogo,
     };
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
+      await configManager.updateConfigs(requestParams);
       const customizedParams = {
-        isDefaultLogo: await crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo'),
+        isDefaultLogo: await configManager.getConfig('customize:isDefaultLogo'),
       };
       return res.apiv3({ customizedParams });
     }

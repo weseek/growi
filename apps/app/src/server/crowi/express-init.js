@@ -39,9 +39,9 @@ module.exports = function(crowi, app) {
 
   const { configManager } = crowi;
 
-  const trustProxyBool = configManager.getConfig('crowi', 'security:trustProxyBool');
-  const trustProxyCsv = configManager.getConfig('crowi', 'security:trustProxyCsv');
-  const trustProxyHops = configManager.getConfig('crowi', 'security:trustProxyHops');
+  const trustProxyBool = configManager.getConfig('security:trustProxyBool');
+  const trustProxyCsv = configManager.getConfig('security:trustProxyCsv');
+  const trustProxyHops = configManager.getConfig('security:trustProxyHops');
 
   const trustProxy = trustProxyBool ?? trustProxyCsv ?? trustProxyHops;
 

@@ -1,8 +1,13 @@
 import { Schema } from 'mongoose';
 
+import { AttachmentMethodType } from '~/interfaces/attachment';
+import { GrowiDeploymentType, GrowiServiceType } from '~/interfaces/system';
+
+import type { IGrowiInfo } from '../../../interfaces/growi-info';
 import {
-  GrowiAttachmentType, GrowiDeploymentType, GrowiExternalAuthProviderType, GrowiServiceType, GrowiWikiType, IGrowiInfo,
+  GrowiExternalAuthProviderType, GrowiWikiType,
 } from '../../../interfaces/growi-info';
+
 
 export const growiInfoSchema = new Schema<IGrowiInfo>({
   version: { type: String, required: true },
@@ -14,7 +19,7 @@ export const growiInfoSchema = new Schema<IGrowiInfo>({
   currentUsersCount: { type: Number, required: true },
   currentActiveUsersCount: { type: Number, required: true },
   wikiType: { type: String, required: true, enum: Object.values(GrowiWikiType) },
-  attachmentType: { type: String, required: true, enum: Object.values(GrowiAttachmentType) },
+  attachmentType: { type: String, required: true, enum: Object.values(AttachmentMethodType) },
   activeExternalAccountTypes: [{ type: String, enum: Object.values(GrowiExternalAuthProviderType) }],
   osInfo: {
     type: { type: String },

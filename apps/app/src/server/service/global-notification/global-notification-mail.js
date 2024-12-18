@@ -51,7 +51,7 @@ class GlobalNotificationMailService {
    * @return  {{ subject: string, template: string, vars: object }}
    */
   generateOption(event, page, triggeredBy, { comment, oldPath }) {
-    const locale = configManager.getConfig('crowi', 'app:globalLang');
+    const locale = configManager.getConfig('app:globalLang');
     // validate for all events
     if (event == null || page == null || triggeredBy == null) {
       throw new Error(`invalid vars supplied to GlobalNotificationMailService.generateOption for event ${event}`);

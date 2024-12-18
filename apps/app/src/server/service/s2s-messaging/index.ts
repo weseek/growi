@@ -15,7 +15,7 @@ const envToModuleMappings = {
 //   provide: S2sMessagingService,
 //   deps: [ConfigManager],
 //   useFactory(configManager: ConfigManager) {
-//     const type = configManager.getConfig('crowi', 's2sMessagingPubsub:serverType');
+//     const type = configManager.getConfig('s2sMessagingPubsub:serverType');
 
 //     if (type == null) {
 //       logger.info('Config pub/sub server is not defined.');
@@ -43,7 +43,7 @@ class S2sMessagingServiceFactory {
   delegator!: S2sMessagingService;
 
   initializeDelegator(crowi) {
-    const type = crowi.configManager.getConfig('crowi', 's2sMessagingPubsub:serverType');
+    const type = crowi.configManager.getConfig('s2sMessagingPubsub:serverType');
 
     if (type == null) {
       logger.info('Config pub/sub server is not defined.');

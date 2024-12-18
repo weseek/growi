@@ -1,3 +1,4 @@
+import { ConfigSource } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import {
   SlackbotType, REQUEST_TIMEOUT_FOR_GTOP,
@@ -99,7 +100,7 @@ module.exports = (crowi) => {
   async function updateSlackBotSettings(params) {
     const { configManager } = crowi;
     // update config without publishing S2sMessage
-    return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+    return configManager.updateConfigs(params, { skipPubsub: true });
   }
 
   async function resetAllBotSettings(initializedType) {
@@ -171,17 +172,17 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const { configManager, slackIntegrationService } = crowi;
-    const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = configManager.getConfig('slackbot:currentBotType');
 
     // retrieve settings
     const settings = {};
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
-      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:signingSecret');
-      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:botToken');
-      settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
-      settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
-      settings.commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
-      settings.eventActionsPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:eventActionsPermission');
+      settings.slackSigningSecretEnvVars = configManager.getConfig('slackbot:withoutProxy:signingSecret', ConfigSource.env);
+      settings.slackBotTokenEnvVars = configManager.getConfig('slackbot:withoutProxy:botToken', ConfigSource.env);
+      settings.slackSigningSecret = configManager.getConfig('slackbot:withoutProxy:signingSecret');
+      settings.slackBotToken = configManager.getConfig('slackbot:withoutProxy:botToken');
+      settings.commandPermission = configManager.getConfig('slackbot:withoutProxy:commandPermission');
+      settings.eventActionsPermission = configManager.getConfig('slackbot:withoutProxy:eventActionsPermission');
     }
     else {
       settings.proxyServerUri = slackIntegrationService.proxyUriForCurrentType;
@@ -280,7 +281,7 @@ module.exports = (crowi) => {
     }
 
     // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
-    const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
+    const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('slackbot:currentBotType') };
     return res.apiv3({ slackBotTypeParam });
   };
 
@@ -368,7 +369,7 @@ module.exports = (crowi) => {
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
   router.put('/without-proxy/update-settings', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
-    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = crowi.configManager.getConfig('slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
       return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
@@ -409,7 +410,7 @@ module.exports = (crowi) => {
    */
   // eslint-disable-next-line max-len
   router.put('/without-proxy/update-permissions', loginRequiredStrictly, adminRequired, addActivity, validator.updatePermissionsWithoutProxy, async(req, res) => {
-    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = crowi.configManager.getConfig('slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
       return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
@@ -699,7 +700,7 @@ module.exports = (crowi) => {
    */
   // eslint-disable-next-line max-len
   router.post('/slack-app-integrations/:id/relation-test', loginRequiredStrictly, adminRequired, addActivity, validator.relationTest, apiV3FormValidator, async(req, res) => {
-    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = crowi.configManager.getConfig('slackbot:currentBotType');
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'not-proxy-type'), 400);
@@ -741,7 +742,7 @@ module.exports = (crowi) => {
     }
 
     const { channel } = req.body;
-    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    const appSiteURL = crowi.configManager.getConfig('app:siteUrl');
     try {
       await sendSuccessMessage(slackBotToken, channel, appSiteURL);
     }
@@ -776,20 +777,20 @@ module.exports = (crowi) => {
    *             description: Succeeded to connect to slack work space.
    */
   router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, addActivity, validator.slackChannel, apiV3FormValidator, async(req, res) => {
-    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = crowi.configManager.getConfig('slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Select Without Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
     }
 
-    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
+    const slackBotToken = crowi.configManager.getConfig('slackbot:withoutProxy:botToken');
     const status = await getConnectionStatus(slackBotToken);
     if (status.error != null) {
       return res.apiv3Err(new ErrorV3(`Error occured while getting connection. ${status.error}`, 'send-message-failed'));
     }
 
     const { channel } = req.body;
-    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    const appSiteURL = crowi.configManager.getConfig('app:siteUrl');
     try {
       await sendSuccessMessage(slackBotToken, channel, appSiteURL);
     }

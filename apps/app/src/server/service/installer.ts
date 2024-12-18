@@ -119,7 +119,7 @@ export class InstallerService {
       initialConfig['security:restrictGuestMode'] = 'Readonly';
     }
 
-    return configManager.updateConfigsInTheSameNamespace('crowi', initialConfig, true);
+    return configManager.updateConfigs(initialConfig, { skipPubsub: true });
   }
 
   async install(firstAdminUserToSave: Pick<IUser, 'name' | 'username' | 'email' | 'password'>, globalLang: Lang, options?: AutoInstallOptions): Promise<IUser> {

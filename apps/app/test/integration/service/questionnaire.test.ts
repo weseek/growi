@@ -15,13 +15,12 @@ describe('QuestionnaireService', () => {
     process.env.SAML_ENABLED = 'true';
     crowi = await getInstance();
 
-    crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
+    crowi.configManager.updateConfigs({
       'security:passport-saml:isEnabled': true,
       'security:passport-github:isEnabled': true,
     });
 
     await mongoose.model('Config').create({
-      ns: 'crowi',
       key: 'app:installed',
       value: true,
       createdAt: '2000-01-01',
