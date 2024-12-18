@@ -38,7 +38,10 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 
   const onClickOpenPageSelectModalButton = useCallback(() => {
     const onSelected = (page: IPageForItem) => {
-      setSelectedPages([...selectedPages, page]);
+      const selectedPageids = selectedPages.map(selectedPage => selectedPage._id);
+      if (page._id != null && !selectedPageids.includes(page._id)) {
+        setSelectedPages([...selectedPages, page]);
+      }
     };
 
     openPageSelectModal({ onSelected });
