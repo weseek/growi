@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { memo, useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
 } from 'reactstrap';
+
+import type { IPageForItem } from '~/interfaces/page';
+import { usePageSelectModal } from '~/stores/modal';
 
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 
@@ -12,7 +15,39 @@ import styles from './AiAssistantManegementModal.module.scss';
 const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 
 
+const SelectedPageList = memo(({ selectedPages }: { selectedPages: IPageForItem[] }): JSX.Element => {
+  if (selectedPages.length === 0) {
+    return <></>;
+  }
+
+  return (
+    <div className="mb-3">
+      {selectedPages.map(page => (
+        <p key={page._id} className="mb-1">
+          <code>{ page.path }</code>
+        </p>
+      ))}
+    </div>
+  );
+});
+
+
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
+  const { open: openPageSelectModal } = usePageSelectModal();
+  const [selectedPages, setSelectedPages] = useState<IPageForItem[]>([]);
+
+  const onClickOpenPageSelectModalButton = useCallback(() => {
+    const onSelected = (page: IPageForItem) => {
+      const selectedPageids = selectedPages.map(selectedPage => selectedPage._id);
+      if (page._id != null && !selectedPageids.includes(page._id)) {
+        setSelectedPages([...selectedPages, page]);
+      }
+    };
+
+    openPageSelectModal({ onSelected });
+  }, [openPageSelectModal, selectedPages]);
+
+
   return (
     <div className="px-4">
       <ModalBody>
@@ -62,10 +97,11 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               <Label className="mb-0">参照するページ</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
+            <SelectedPageList selectedPages={selectedPages} />
             <button
               type="button"
               className="btn btn-outline-primary d-flex align-items-center gap-1"
-              onClick={() => {}}
+              onClick={onClickOpenPageSelectModalButton}
             >
               <span>+</span>
               追加する
