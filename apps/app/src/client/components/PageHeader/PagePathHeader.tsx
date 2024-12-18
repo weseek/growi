@@ -20,7 +20,6 @@ import { usePageSelectModal } from '~/stores/modal';
 import { PagePathHierarchicalLink } from '../../../components/Common/PagePathHierarchicalLink';
 import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
-import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
 import styles from './PagePathHeader.module.scss';
 
@@ -48,8 +47,7 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isHover, setHover] = useState(false);
 
-  const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
-  const isOpened = PageSelectModalData?.isOpened ?? false;
+  const { open: openPageSelectModal } = usePageSelectModal();
 
   const [validationResult, setValidationResult] = useState<InputValidationResult>();
 
@@ -166,8 +164,6 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
           <span className="material-symbols-outlined fs-6">account_tree</span>
         </button>
       </div>
-
-      {isOpened && <PageSelectModal />}
     </div>
   );
 });

@@ -22,14 +22,11 @@ import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
-
-export const PageSelectModal: FC = () => {
+const PageSelectModalSubstance: FC = () => {
   const {
     data: PageSelectModalData,
     close: closeModal,
   } = usePageSelectModal();
-
-  const isOpened = PageSelectModalData?.isOpened ?? false;
 
   const [clickedParentPage, setClickedParentPage] = useState<IPageForItem | null>(null);
 
@@ -74,11 +71,7 @@ export const PageSelectModal: FC = () => {
   }
 
   return (
-    <Modal
-      isOpen={isOpened}
-      toggle={closeModal}
-      centered
-    >
+    <>
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
       <ModalBody className="p-0">
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
@@ -101,6 +94,21 @@ export const PageSelectModal: FC = () => {
         <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>
         <Button color="primary" onClick={onClickDone}>{t('Done')}</Button>
       </ModalFooter>
+    </>
+  );
+};
+
+export const PageSelectModal = (): JSX.Element => {
+  const { data: pageSelectModalData, close: closePageSelectModal } = usePageSelectModal();
+  const isOpen = pageSelectModalData?.isOpened ?? false;
+
+  if (!isOpen) {
+    return <></>;
+  }
+
+  return (
+    <Modal isOpen={isOpen} toggle={closePageSelectModal} centered>
+      <PageSelectModalSubstance />
     </Modal>
   );
 };

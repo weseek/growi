@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
 } from 'reactstrap';
 
-import { PageSelectModal } from '~/client/components/PageSelectModal/PageSelectModal';
 import { usePageSelectModal } from '~/stores/modal';
 
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
@@ -16,9 +15,11 @@ const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 
 
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
-  const { data: pageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
+  const { open: openPageSelectModal } = usePageSelectModal();
 
-  const isPageSelectModalOpened = pageSelectModalData?.isOpened ?? false;
+  const onClickOpenPageSelectModalButton = useCallback(() => {
+    openPageSelectModal();
+  }, [openPageSelectModal]);
 
   return (
     <div className="px-4">
@@ -72,7 +73,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
             <button
               type="button"
               className="btn btn-outline-primary d-flex align-items-center gap-1"
-              onClick={openPageSelectModal}
+              onClick={onClickOpenPageSelectModalButton}
             >
               <span>+</span>
               追加する
@@ -98,10 +99,6 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
         <button type="button" className="btn btn-outline-secondary" onClick={() => {}}>キャンセル</button>
         <button type="button" className="btn btn-primary" onClick={() => {}}>作成</button>
       </ModalFooter>
-
-      { isPageSelectModalOpened && (
-        <PageSelectModal />
-      )}
     </div>
   );
 };
