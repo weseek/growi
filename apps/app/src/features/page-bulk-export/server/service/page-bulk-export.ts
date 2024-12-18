@@ -33,10 +33,6 @@ export interface IPageBulkExportService {
 
 class PageBulkExportService implements IPageBulkExportService {
 
-  // temporal path of local fs to output page files before upload
-  // TODO: If necessary, change to a proper path in https://redmine.weseek.co.jp/issues/149512
-  tmpOutputRootDir = '/tmp/page-bulk-export';
-
   /**
    * Create a new page bulk export job or reset the existing one
    */
