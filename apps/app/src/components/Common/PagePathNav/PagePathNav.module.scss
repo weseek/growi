@@ -4,8 +4,7 @@
 
 .grw-page-path-nav-layout :global {
   .grw-page-path-nav-copydropdown {
-    visibility: hidden; /* 通常時は非表示（スペースは維持） */
-    // display: none;
+    visibility: hidden;
     @include bs.media-breakpoint-down(md) {
       display: block;
     }
@@ -16,9 +15,7 @@
   &:global {
     &:hover {
       .grw-page-path-nav-copydropdown {
-        visibility: visible; /* ホバー時に表示 */
-        // opacity: 1;
-        // display: block;
+        visibility: visible;
       }
     }
   }
