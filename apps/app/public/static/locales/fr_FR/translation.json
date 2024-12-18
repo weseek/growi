@@ -159,7 +159,7 @@
   "duplicated_path": "Chemin dupliqué",
   "Link sharing is disabled": "Le partage est désactivé",
   "successfully_saved_the_page": "Page sauvegardée",
-  "you_can_not_create_page_with_this_name": "Vous ne pouvez pas créer cette page",
+  "you_can_not_create_page_with_this_name_or_hierarchy": "Vous ne pouvez pas créer de page avec ce nom ou cette hiérarchie de pages",
   "not_allowed_to_see_this_page": "Vous ne pouvez pas voir cette page",
   "Confirm": "Confirmer",
   "Successfully requested": "Demande envoyée.",
