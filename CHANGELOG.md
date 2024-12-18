@@ -1,8 +1,21 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.5](https://github.com/weseek/growi/compare/v7.1.4...v7.1.5) - 2024-12-13
+
+### 🚀 Improvement
+
+* imprv: Slim down the sidebar scrollbar (#9430) @reiji-h
+
+### 🐛 Bug Fixes
+
+* fix: Usage for stream pipeline of callback version (#9455) @reiji-h
+* fix: TypeError occurs during export (#9481) @miya
+* fix: Put `/` before the page name (#9471) @Ryosei-Fukushima
+* fix: Cannot comment when comments from rom user are allowed (#9472) @miya
 
 ## [v7.1.4](https://github.com/weseek/growi/compare/v7.1.3...v7.1.4) - 2024-11-26
 
