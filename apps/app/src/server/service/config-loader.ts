@@ -751,6 +751,54 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  BULK_EXPORT_JOB_EXPIRATION_SECONDS: {
+    ns: 'crowi',
+    key: 'app:bulkExportJobExpirationSeconds',
+    type: ValueType.NUMBER,
+    default: 86400, // 1 day
+  },
+  BULK_EXPORT_DOWNLOAD_EXPIRATION_SECONDS: {
+    ns: 'crowi',
+    key: 'app:bulkExportDownloadExpirationSeconds',
+    type: ValueType.NUMBER,
+    default: 259200, // 3 days
+  },
+  BULK_EXPORT_JOB_CRON_SCHEDULE: {
+    ns: 'crowi',
+    key: 'app:pageBulkExportJobCronSchedule',
+    type: ValueType.STRING,
+    default: '*/10 * * * * *', // every 10 seconds
+  },
+  CHECK_PAGE_BULK_EXPORT_JOB_IN_PROGRESS_CRON_SCHEDULE: {
+    ns: 'crowi',
+    key: 'app:checkPageBulkExportJobInProgressCronSchedule',
+    type: ValueType.STRING,
+    default: '*/3 * * * *', // every 3 minutes
+  },
+  BULK_EXPORT_JOB_CLEAN_UP_CRON_SCHEDULE: {
+    ns: 'crowi',
+    key: 'app:pageBulkExportJobCleanUpCronSchedule',
+    type: ValueType.STRING,
+    default: '*/10 * * * *', // every 10 minutes
+  },
+  BULK_EXPORT_PARALLEL_EXEC_LIMIT: {
+    ns: 'crowi',
+    key: 'app:pageBulkExportParallelExecLimit',
+    type: ValueType.NUMBER,
+    default: 5,
+  },
+  BULK_EXPORT_PAGES_ENABLED: {
+    ns: 'crowi',
+    key: 'app:isBulkExportPagesEnabled',
+    type: ValueType.BOOLEAN,
+    default: true,
+  },
+  BULK_EXPORT_PAGES_ENABLED_USES_ONLY_ENV_VARS: {
+    ns: 'crowi',
+    key: 'env:useOnlyEnvVars:app:isBulkExportPagesEnabled',
+    type: ValueType.BOOLEAN,
+    default: false,
+  },
   AI_ENABLED: {
     ns: 'crowi',
     key: 'app:aiEnabled',
