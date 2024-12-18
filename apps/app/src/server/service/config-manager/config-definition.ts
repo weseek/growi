@@ -78,7 +78,6 @@ export const CONFIG_KEYS = [
   'security:wikiMode',
   'security:sessionMaxAge',
   'security:userUpperLimit',
-  'security:disableLinkSharing',
   'security:trustProxyBool',
   'security:trustProxyCsv',
   'security:trustProxyHops',
@@ -100,6 +99,7 @@ export const CONFIG_KEYS = [
   'security:passport-oidc:discoveryRetries',
   'security:passport-oidc:oidcClientClockTolerance',
   'security:passport-oidc:oidcIssuerTimeoutOption',
+  'security:disableLinkSharing',
   'security:restrictGuestMode',
   'security:registrationMode',
   'security:registrationWhitelist',
@@ -359,6 +359,9 @@ export const CONFIG_DEFINITIONS = {
   'app:fileUpload': defineConfig<boolean>({
     defaultValue: false,
   }),
+  'app:fileUploadDisabled': defineConfig<boolean>({
+    defaultValue: false,
+  }),
   'app:fileUploadType': defineConfig<AttachmentMethodType>({
     envVarName: 'FILE_UPLOAD',
     defaultValue: AttachmentMethodType.aws,
@@ -394,10 +397,6 @@ export const CONFIG_DEFINITIONS = {
   'app:fileUploadTotalLimit': defineConfig<number>({
     envVarName: 'FILE_UPLOAD_TOTAL_LIMIT',
     defaultValue: Infinity,
-  }),
-  'app:fileUploadDisabled': defineConfig<boolean>({
-    envVarName: 'FILE_UPLOAD_DISABLED',
-    defaultValue: false,
   }),
   'app:elasticsearchVersion': defineConfig<number>({
     envVarName: 'ELASTICSEARCH_VERSION',
@@ -514,10 +513,6 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'USER_UPPER_LIMIT',
     defaultValue: Infinity,
   }),
-  'security:disableLinkSharing': defineConfig<boolean>({
-    envVarName: 'DISABLE_LINK_SHARING',
-    defaultValue: false,
-  }),
   'security:trustProxyBool': defineConfig<boolean | undefined>({
     envVarName: 'TRUST_PROXY_BOOL',
     defaultValue: undefined,
@@ -604,6 +599,9 @@ export const CONFIG_DEFINITIONS = {
   'security:passport-oidc:oidcIssuerTimeoutOption': defineConfig<number>({
     envVarName: 'OIDC_ISSUER_TIMEOUT_OPTION',
     defaultValue: 5000,
+  }),
+  'security:disableLinkSharing': defineConfig<boolean>({
+    defaultValue: false,
   }),
   'security:restrictGuestMode': defineConfig<string>({
     defaultValue: 'Deny',
