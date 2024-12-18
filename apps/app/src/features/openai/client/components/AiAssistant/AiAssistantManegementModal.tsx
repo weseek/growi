@@ -5,6 +5,9 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
 } from 'reactstrap';
 
+import { PageSelectModal } from '~/client/components/PageSelectModal/PageSelectModal';
+import { usePageSelectModal } from '~/stores/modal';
+
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 
 import styles from './AiAssistantManegementModal.module.scss';
@@ -13,6 +16,10 @@ const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 
 
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
+  const { data: pageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
+
+  const isPageSelectModalOpened = pageSelectModalData?.isOpened ?? false;
+
   return (
     <div className="px-4">
       <ModalBody>
@@ -65,7 +72,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
             <button
               type="button"
               className="btn btn-outline-primary d-flex align-items-center gap-1"
-              onClick={() => {}}
+              onClick={openPageSelectModal}
             >
               <span>+</span>
               追加する
@@ -91,6 +98,10 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
         <button type="button" className="btn btn-outline-secondary" onClick={() => {}}>キャンセル</button>
         <button type="button" className="btn btn-primary" onClick={() => {}}>作成</button>
       </ModalFooter>
+
+      { isPageSelectModalOpened && (
+        <PageSelectModal />
+      )}
     </div>
   );
 };
