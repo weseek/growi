@@ -117,7 +117,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   get isElasticsearchEnabled() {
-    const uri = configManager.getConfig('crowi', 'app:elasticsearchUri');
+    const uri = configManager.getConfig('app:elasticsearchUri');
     return uri != null && uri.length > 0;
   }
 

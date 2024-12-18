@@ -68,7 +68,7 @@ class LocalFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
-    return configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect')
+    return configManager.getConfig('fileUpload:local:useInternalRedirect')
       ? ResponseMode.DELEGATE
       : ResponseMode.RELAY;
   }
@@ -211,8 +211,8 @@ module.exports = function(crowi) {
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
   (lib as any).checkLimit = async function(uploadFileSize) {
-    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
-    const totalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+    const maxFileSize = configManager.getConfig('app:maxFileSize');
+    const totalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
@@ -225,7 +225,7 @@ module.exports = function(crowi) {
     // Responce using internal redirect of nginx or Apache.
     const storagePath = getFilePathOnStorage(attachment);
     const relativePath = path.relative(crowi.publicDir, storagePath);
-    const internalPathRoot = configManager.getConfig('crowi', 'fileUpload:local:internalRedirectPath');
+    const internalPathRoot = configManager.getConfig('fileUpload:local:internalRedirectPath');
     const internalPath = urljoin(internalPathRoot, relativePath);
 
     const isDownload = opts?.download ?? false;
