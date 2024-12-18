@@ -694,7 +694,7 @@
     "bulk_export": "ページとその配下のページを全てエクスポート",
     "bulk_export_download_explanation": "エクスポート完了後に通知が届きます。通知をクリックし、ファイルをダウンロードしてください。",
     "bulk_export_exec_time_warning": "ページ数が多いと、エクスポートに時間がかかる場合があります",
-    "large_bulk_export_warning": "システムリソースの維持のため、ページ数が多いエクスポートを連続で実行することはご遠慮ください",
+    "large_bulk_export_warning": "システムリソースの維持のため、ページ数の多いエクスポートを連続して実行することはご遠慮ください",
     "markdown": "マークダウン",
     "choose_export_format": "エクスポート形式を選択してください",
     "bulk_export_started": "ただいま準備中です...",
