@@ -720,7 +720,7 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
 /*
 * PageSelectModal
 */
-export type IPageSelectModalOption = {
+type IPageSelectModalOption = {
   onSelected?: OnSelectedFunction,
 }
 
@@ -730,8 +730,8 @@ type PageSelectModalStatus = {
 }
 
 type PageSelectModalStatusUtils = {
-  open(): Promise<PageSelectModalStatus | undefined>
-  close(): Promise<PageSelectModalStatus | undefined>
+  open(opts?: IPageSelectModalOption): void
+  close(): void
 }
 
 export const usePageSelectModal = (

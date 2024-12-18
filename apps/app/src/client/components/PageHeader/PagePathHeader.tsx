@@ -3,6 +3,8 @@ import {
   useState, useCallback, memo,
 } from 'react';
 
+import nodePath from 'path';
+
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -11,6 +13,7 @@ import { debounce } from 'throttle-debounce';
 
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
+import type { IPageForItem } from '~/interfaces/page';
 import LinkedPagePath from '~/models/linked-page-path';
 import { usePageSelectModal } from '~/stores/modal';
 
@@ -61,6 +64,20 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
+  const onClickOpenPageSelectModalButton = useCallback(() => {
+    const onSelected = (page: IPageForItem): void => {
+      if (page == null || page.path == null) {
+        return;
+      }
+
+      const currentPageTitle = nodePath.basename(currentPage?.path ?? '') || '/';
+      const newPagePath = nodePath.resolve(page.path, currentPageTitle);
+
+      pagePathRenameHandler(newPagePath);
+    };
+
+    openPageSelectModal({ onSelected });
+  }, [currentPage?.path, openPageSelectModal, pagePathRenameHandler]);
 
   const rename = useCallback((inputText) => {
     const pathToRename = normalizePath(`${inputText}/${dPagePath.latter}`);
@@ -144,7 +161,7 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
         <button
           type="button"
           className="btn btn-outline-neutral-secondary d-flex align-items-center justify-content-center"
-          onClick={openPageSelectModal}
+          onClick={onClickOpenPageSelectModalButton}
         >
           <span className="material-symbols-outlined fs-6">account_tree</span>
         </button>
