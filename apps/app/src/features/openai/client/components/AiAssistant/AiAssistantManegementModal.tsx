@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -15,7 +15,7 @@ import styles from './AiAssistantManegementModal.module.scss';
 const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 
 
-const SelectedPageList = ({ selectedPages }: { selectedPages: IPageForItem[] }): JSX.Element => {
+const SelectedPageList = memo(({ selectedPages }: { selectedPages: IPageForItem[] }): JSX.Element => {
   if (selectedPages.length === 0) {
     return <></>;
   }
@@ -29,7 +29,7 @@ const SelectedPageList = ({ selectedPages }: { selectedPages: IPageForItem[] }):
       ))}
     </div>
   );
-};
+});
 
 
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
