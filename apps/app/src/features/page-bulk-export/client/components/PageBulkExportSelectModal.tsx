@@ -61,7 +61,7 @@ const PageBulkExportSelectModal = (): JSX.Element => {
           <ModalBody>
             <p className="card custom-card bg-warning-subtle pt-3 px-3">
               {t('page_export.bulk_export_download_explanation')}
-              <span className="mt-1"><span className="material-symbols-outlined me-1">warning</span>{t('Warning')}</span>
+              <span className="mt-3"><span className="material-symbols-outlined me-1">warning</span>{t('Warning')}</span>
               <ul className="mt-2">
                 <li>{t('page_export.bulk_export_exec_time_warning')}</li>
                 <li>{t('page_export.large_bulk_export_warning')}</li>
