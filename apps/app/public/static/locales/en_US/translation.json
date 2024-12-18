@@ -161,6 +161,7 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
+  "single-editor-mode-alert": "The collaborative editor is disabled because this page's content exceeds {{yjsMaxBodyLength}} characters. To enable it, reduce the content to within the threshold, save the page, and reopen the editor.",
   "source": "Source",
   "input_validation": {
     "target": {

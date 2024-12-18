@@ -751,6 +751,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  YJS_MAX_BODY_LENGTH: {
+    ns: 'crowi',
+    key: 'app:yjsMaxBodyLength',
+    type: ValueType.NUMBER,
+    default: 500000,
+  },
   AI_ENABLED: {
     ns: 'crowi',
     key: 'app:aiEnabled',

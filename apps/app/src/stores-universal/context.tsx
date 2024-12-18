@@ -202,6 +202,11 @@ export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean,
   return useContextSWR('isContainerFluid', initialData);
 };
 
+export const useYjsMaxBodyLength = (initialData?: number): SWRResponse<number, Error> => {
+  return useContextSWR('yjsMaxBodyLength', initialData);
+};
+
+
 export const useIsLocalAccountRegistrationEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR('isLocalAccountRegistrationEnabled', initialData);
 };
