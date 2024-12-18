@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import type { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
@@ -19,8 +19,8 @@ export type PagePathNavLayoutProps = {
 }
 
 type Props = PagePathNavLayoutProps & {
-  formerLink?: React.ReactNode,
-  latterLink?: React.ReactNode,
+  formerLink?: ReactNode,
+  latterLink?: ReactNode,
 }
 
 const CopyDropdown = dynamic(() => import('~/client/components/Common/CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
@@ -40,24 +40,6 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
 
   const copyDropdownId = `copydropdown-${pageId}`;
 
-  const [isHovered, setIsHovered] = useState(false);
-  const [hideTimeout, setHideTimeout] = useState<NodeJS.Timeout | null>(null);
-
-  const handleMouseEnter = () => {
-    if (hideTimeout) {
-      clearTimeout(hideTimeout);
-      setHideTimeout(null);
-    }
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    const timeout = setTimeout(() => {
-      setIsHovered(false);
-    }, 1000);
-    setHideTimeout(timeout);
-  };
-
   return (
     <div
       className={`${className} ${moduleClass}`}
@@ -73,11 +55,7 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
             { isWipPage && (
               <span className="badge text-bg-secondary ms-1 me-1">WIP</span>
             )}
-            <span
-              className={`grw-page-path-nav-copydropdown ${isHovered ? 'visible' : ''}`}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-            >
+            <span className=" grw-page-path-nav-copydropdown">
               <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
                 <span className="material-symbols-outlined">content_paste</span>
               </CopyDropdown>
