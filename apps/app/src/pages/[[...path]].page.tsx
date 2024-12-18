@@ -45,6 +45,7 @@ import {
   useIsUploadAllFileAllowed, useIsUploadEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
+  useIsRomUserAllowedToComment,
   useIsAiEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
