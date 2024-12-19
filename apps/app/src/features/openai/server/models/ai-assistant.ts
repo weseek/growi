@@ -45,7 +45,6 @@ interface AiAssistant {
   pages: Ref<IPage>[]
   sharingScope: AiAssistantSharingScope
   learningScope: AiAssistantLearningScope
-  isDeleted: boolean
 }
 
 interface AiAssistantDocument extends AiAssistant, Document {}
@@ -123,20 +122,10 @@ const schema = new Schema<AiAssistantDocument>(
       enum: Object.values(AiAssistantLearningScope),
       required: true,
     },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-      required: true,
-    },
   },
   {
     timestamps: true,
   },
 );
-
-schema.methods.markAsDeleted = async function(): Promise<void> {
-  this.isDeleted = true;
-  await this.save();
-};
 
 export default getOrCreateModel<AiAssistantDocument, AiAssistantModel>('AiAssistant', schema);
