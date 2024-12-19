@@ -1,9 +1,11 @@
 import {
-  type IGrantedGroup, GroupType, type IPage, type IUser, type Ref,
+  type IGrantedGroup, GroupType, type IUser, type Ref,
 } from '@growi/core';
 import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
+
+import type { VectorStore } from './vector-store';
 
 /*
 *  Objects
@@ -38,11 +40,10 @@ interface AiAssistant {
   name: string;
   description: string
   additionalInstruction: string
-  vectorStoreId: string // VectorStoreId of OpenAI Specify (https://platform.openai.com/docs/api-reference/vector-stores/object)
+  vectorStore: Ref<VectorStore>
   types: AiAssistantType[]
   owner: Ref<IUser>
   grantedGroups?: IGrantedGroup[];
-  pages: Ref<IPage>[]
   sharingScope: AiAssistantSharingScope
   learningScope: AiAssistantLearningScope
 }
@@ -71,8 +72,9 @@ const schema = new Schema<AiAssistantDocument>(
       required: true,
       default: '',
     },
-    vectorStoreId: {
-      type: String,
+    vectorStore: {
+      type: Schema.Types.ObjectId,
+      ref: 'VectorStore',
       required: true,
     },
     types: [{
@@ -85,11 +87,6 @@ const schema = new Schema<AiAssistantDocument>(
       ref: 'User',
       required: true,
     },
-    pages: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Page',
-      required: true,
-    }],
     grantedGroups: {
       type: [{
         type: {
