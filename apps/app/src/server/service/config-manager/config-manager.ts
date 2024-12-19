@@ -11,14 +11,15 @@ import type { S2sMessageHandlable } from '../s2s-messaging/handlable';
 import type { ConfigKey, ConfigValues } from './config-definition';
 import { ENV_ONLY_GROUPS } from './config-definition';
 import { ConfigLoader } from './config-loader';
-import { configManager as configManagerLegacy } from './legacy/config-manager';
-
+import type { ConfigManager as ConfigManagerLegacy } from './legacy/config-manager';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
 export type IConfigManagerForApp = IConfigManager<ConfigKey, ConfigValues>
 
 export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable {
+
+  private configManagerLegacy: ConfigManagerLegacy;
 
   private configLoader: ConfigLoader;
 
@@ -60,29 +61,42 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     }
 
     // Load legacy configs
-    await configManagerLegacy.loadConfigs();
+    if (options == null) {
+      this.configManagerLegacy = await import('./legacy/config-manager').then(m => m.configManager);
+      await this.configManagerLegacy.loadConfigs();
+    }
 
     this.lastLoadedAt = new Date();
   }
 
   getConfig<K extends ConfigKey>(key: K, source?: ConfigSource): ConfigValues[K] {
-    if (!this.envConfig || !this.dbConfig) {
-      throw new Error('Config is not loaded');
-    }
-
     const value = (() => {
       if (source === ConfigSource.env) {
+        if (!this.envConfig) {
+          throw new Error('Config is not loaded');
+        }
         return this.envConfig[key]?.value;
       }
       if (source === ConfigSource.db) {
+        if (!this.dbConfig) {
+          throw new Error('Config is not loaded');
+        }
         return this.dbConfig[key]?.value;
       }
+
+      if (!this.envConfig || !this.dbConfig) {
+        throw new Error('Config is not loaded');
+      }
+
       return this.shouldUseEnvOnly(key)
         ? this.envConfig[key]?.value
         : (this.dbConfig[key] ?? this.envConfig[key])?.value;
     })() as ConfigValues[K];
 
-    this.checkDifference(key, value);
+    // check difference between new and legacy config managers
+    if (this.configManagerLegacy != null) {
+      this.checkDifference(key, value);
+    }
 
     return value;
   }
@@ -90,12 +104,12 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
   private checkDifference<K extends ConfigKey>(key: K, value: ConfigValues[K], source?: ConfigSource): void {
     const valueByLegacy = (() => {
       if (source === ConfigSource.env) {
-        return configManagerLegacy.getConfigFromEnvVars('crowi', key);
+        return this.configManagerLegacy.getConfigFromEnvVars('crowi', key);
       }
       if (source === ConfigSource.db) {
-        return configManagerLegacy.getConfigFromDB('crowi', key);
+        return this.configManagerLegacy.getConfigFromDB('crowi', key);
       }
-      return configManagerLegacy.getConfig('crowi', key);
+      return this.configManagerLegacy.getConfig('crowi', key);
     })();
 
     const isDifferent = (() => {
