@@ -76,7 +76,7 @@ module.exports = (crowi) => {
    *
    *  /healthcheck:
    *    get:
-   *      tags: [Healthcheck]
+   *      tags: [SecuritySetting]
    *      security: []
    *      operationId: getHealthcheck
    *      summary: /healthcheck
@@ -97,9 +97,6 @@ module.exports = (crowi) => {
    *          description: Check services and responds 503 if either of these is unhealthy
    *          schema:
    *            type: boolean
-   *         - name: connectToMiddlewares
-   *           in: query
-   *           description: 'Deprecated. Use \'checkServices[]\' instead.'
    *      responses:
    *        200:
    *          description: Healthy
