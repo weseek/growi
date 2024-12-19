@@ -77,6 +77,7 @@ module.exports = (crowi) => {
    *  /healthcheck:
    *    get:
    *      tags: [Healthcheck]
+   *      security: []
    *      operationId: getHealthcheck
    *      summary: /healthcheck
    *      description: Check whether the server is healthy or not
@@ -96,6 +97,9 @@ module.exports = (crowi) => {
    *          description: Check services and responds 503 if either of these is unhealthy
    *          schema:
    *            type: boolean
+   *         - name: connectToMiddlewares
+   *           in: query
+   *           description: 'Deprecated. Use \'checkServices[]\' instead.'
    *      responses:
    *        200:
    *          description: Healthy
@@ -103,8 +107,9 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  info:
-   *                    $ref: '#/components/schemas/HealthcheckInfo'
+   *                  status:
+   *                    type: string
+   *                    description: Status
    *        503:
    *          description: Unhealthy
    *          content:
