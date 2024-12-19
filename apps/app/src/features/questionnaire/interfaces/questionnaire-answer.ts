@@ -1,11 +1,13 @@
-import { IAnswer } from './answer';
-import { IGrowiInfo } from './growi-info';
-import { IUserInfo } from './user-info';
+import type { IGrowiInfo } from '@growi/core/dist/interfaces';
+
+import type { IAnswer } from './answer';
+import type { IGrowiAppAdditionalInfo } from './growi-app-additional-info';
+import type { IUserInfo } from './user-info';
 
 export interface IQuestionnaireAnswer<ID = string> {
   answers: IAnswer[]
   answeredAt: Date
-  growiInfo: IGrowiInfo
+  growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>
   userInfo: IUserInfo
   questionnaireOrder: ID
 }

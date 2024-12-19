@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { IExternalAuthProviderType } from '@growi/core';
 import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -13,6 +12,7 @@ import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
+import { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
 import type { CommonProps } from '~/pages/utils/commons';
 import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from '~/pages/utils/commons';

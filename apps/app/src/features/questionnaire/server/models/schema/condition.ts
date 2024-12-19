@@ -1,6 +1,5 @@
+import { GrowiServiceType } from '@growi/core/dist/consts';
 import { Schema } from 'mongoose';
-
-import { GrowiServiceType } from '~/interfaces/system';
 
 import type { ICondition } from '../../../interfaces/condition';
 import { UserType } from '../../../interfaces/user-info';

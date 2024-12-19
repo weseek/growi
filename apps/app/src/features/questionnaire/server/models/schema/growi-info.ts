@@ -1,26 +1,31 @@
+import { GrowiDeploymentType, GrowiServiceType } from '@growi/core/dist/consts';
+import type { IGrowiInfo } from '@growi/core/dist/interfaces';
+import { GrowiWikiType } from '@growi/core/dist/interfaces';
 import { Schema } from 'mongoose';
 
+import type { IGrowiAppAdditionalInfo } from '~/features/questionnaire/interfaces/growi-app-additional-info';
 import { AttachmentMethodType } from '~/interfaces/attachment';
-import { GrowiDeploymentType, GrowiServiceType } from '~/interfaces/system';
+import { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 
-import type { IGrowiInfo } from '../../../interfaces/growi-info';
-import {
-  GrowiExternalAuthProviderType, GrowiWikiType,
-} from '../../../interfaces/growi-info';
+// legacy properties (extracted from additionalInfo for growi-questionnaire)
+// see: https://gitlab.weseek.co.jp/tech/growi/growi-questionnaire
+type IGrowiInfoLegacy = IGrowiInfo<IGrowiAppAdditionalInfo> & IGrowiAppAdditionalInfo;
 
+const growiAdditionalInfoSchema = new Schema<IGrowiAppAdditionalInfo>({
+  installedAt: { type: Date, required: true },
+  installedAtByOldestUser: { type: Date, required: true },
+  currentUsersCount: { type: Number, required: true },
+  currentActiveUsersCount: { type: Number, required: true },
+  attachmentType: { type: String, required: true, enum: Object.values(AttachmentMethodType) },
+  activeExternalAccountTypes: [{ type: String, enum: Object.values(IExternalAuthProviderType) }],
+});
 
-export const growiInfoSchema = new Schema<IGrowiInfo>({
+export const growiInfoSchema = new Schema<IGrowiInfoLegacy>({
   version: { type: String, required: true },
   appSiteUrl: { type: String },
   appSiteUrlHashed: { type: String, required: true },
-  installedAt: { type: Date, required: true },
-  installedAtByOldestUser: { type: Date, required: true },
   type: { type: String, required: true, enum: Object.values(GrowiServiceType) },
-  currentUsersCount: { type: Number, required: true },
-  currentActiveUsersCount: { type: Number, required: true },
   wikiType: { type: String, required: true, enum: Object.values(GrowiWikiType) },
-  attachmentType: { type: String, required: true, enum: Object.values(AttachmentMethodType) },
-  activeExternalAccountTypes: [{ type: String, enum: Object.values(GrowiExternalAuthProviderType) }],
   osInfo: {
     type: { type: String },
     platform: String,
@@ -28,4 +33,14 @@ export const growiInfoSchema = new Schema<IGrowiInfo>({
     totalmem: Number,
   },
   deploymentType: { type: String, enum: (<(string | null)[]>Object.values(GrowiDeploymentType)).concat([null]) },
+  additionalInfo: growiAdditionalInfoSchema,
+
+  // legacy properties (extracted from additionalInfo for growi-questionnaire)
+  // see: https://gitlab.weseek.co.jp/tech/growi/growi-questionnaire
+  installedAt: { type: Date, required: true },
+  installedAtByOldestUser: { type: Date, required: true },
+  currentUsersCount: { type: Number, required: true },
+  currentActiveUsersCount: { type: Number, required: true },
+  attachmentType: { type: String, required: true, enum: Object.values(AttachmentMethodType) },
+  activeExternalAccountTypes: [{ type: String, enum: Object.values(IExternalAuthProviderType) }],
 });

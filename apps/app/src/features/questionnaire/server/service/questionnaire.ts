@@ -2,25 +2,23 @@ import crypto from 'crypto';
 import * as os from 'node:os';
 
 import type { IUserHasId } from '@growi/core';
+import { IGrowiInfo } from '@growi/core/dist/interfaces';
+import { GrowiDeploymentType, GrowiServiceType } from '@growi/core/dist/consts';
 
 import { AttachmentMethodType } from '~/interfaces/attachment';
-import { GrowiDeploymentType, GrowiServiceType } from '~/interfaces/system';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 // eslint-disable-next-line import/no-named-as-default
 import { Config } from '~/server/models/config';
 import { aclService } from '~/server/service/acl';
 import loggerFactory from '~/utils/logger';
 
-import type { IGrowiInfo } from '../../interfaces/growi-info';
-import {
-  GrowiWikiType, GrowiExternalAuthProviderType,
-} from '../../interfaces/growi-info';
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
 import { type IUserInfo, UserType } from '../../interfaces/user-info';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
 import type { QuestionnaireOrderDocument } from '../models/questionnaire-order';
 import QuestionnaireOrder from '../models/questionnaire-order';
 import { isShowableCondition } from '../util/condition';
+import { IGrowiAppAdditionalInfo } from '../../interfaces/growi-app-additional-info';
 
 
 const logger = loggerFactory('growi:service:questionnaire');
@@ -34,7 +32,7 @@ class QuestionnaireService {
     this.crowi = crowi;
   }
 
-  async getGrowiInfo(): Promise<IGrowiInfo> {
+  async getGrowiInfo(): Promise<IGrowiInfo<IGrowiAppAdditionalInfo>> {
     const User = this.crowi.model('User');
 
     const appSiteUrl = this.crowi.appService.getSiteUrl();

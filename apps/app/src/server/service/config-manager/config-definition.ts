@@ -1,3 +1,4 @@
+import { GrowiServiceType } from '@growi/core/dist/consts';
 import type { ConfigDefinition, Lang } from '@growi/core/dist/interfaces';
 import { defineConfig } from '@growi/core/dist/interfaces';
 import type OpenAI from 'openai';
@@ -7,7 +8,6 @@ import { AttachmentMethodType } from '~/interfaces/attachment';
 import type { IPageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation } from '~/interfaces/page-delete-config';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
 import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
-import { GrowiServiceType } from '~/interfaces/system';
 
 /*
  * Sort order for top level keys:
