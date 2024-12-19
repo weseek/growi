@@ -163,6 +163,35 @@ module.exports = (crowi: Crowi): Router => {
   const receiveRouter = express.Router();
   const pushRouter = express.Router();
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/files:
+   *    get:
+   *      summary: /g2g-transfer/files
+   *      tags: [Export]
+   *      security:
+   *        - transferHeaderAuth: []
+   *      responses:
+   *        '200':
+   *          description: Successfully got the list of files
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  files:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        name:
+   *                          type: string
+   *                          description: The name of the file
+   *                        size:
+   *                          type: number
+   *                          description: The size of the file
+   */
   // eslint-disable-next-line max-len
   receiveRouter.get('/files', validateTransferKey, async(req: Request, res: ApiV3Response) => {
     const files = await crowi.fileUploadService.listFiles();
