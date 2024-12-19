@@ -90,9 +90,17 @@ const PageSelectModalSubstance: FC = () => {
           </SimpleBar>
         </Suspense>
       </ModalBody>
-      <ModalFooter>
-        <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>
-        <Button color="primary" onClick={onClickDone}>{t('Done')}</Button>
+      <ModalFooter className="border-top d-flex flex-column">
+        <div className="form-check form-check-info align-self-start ms-4">
+          <input type="checkbox" id="includeSubPages" className="form-check-input" name="fileUpload" />
+          <label className="form-label form-check-label" htmlFor="includeSubPages">
+            {t('Include Subordinated Page')}
+          </label>
+        </div>
+        <div className="d-flex gap-2 align-self-end">
+          <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>
+          <Button color="primary" onClick={onClickDone}>{t('Done')}</Button>
+        </div>
       </ModalFooter>
     </>
   );
