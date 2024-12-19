@@ -39,8 +39,6 @@ const PageSelectModalSubstance: FC = () => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: pageSelectModalData } = usePageSelectModal();
 
-  console.log('pageSelectModalData', pageSelectModalData);
-
   const isHierarchicalSelectionMode = pageSelectModalData?.opts?.isHierarchicalSelectionMode ?? false;
 
   const onClickTreeItem = useCallback((page: IPageForItem) => {
