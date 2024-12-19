@@ -10,7 +10,8 @@ import type { PageModel } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
-import { PageBulkExportFormat, PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
+import type { PageBulkExportFormat } from '../../interfaces/page-bulk-export';
+import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
@@ -40,7 +41,7 @@ class PageBulkExportService implements IPageBulkExportService {
   /**
    * Create a new page bulk export job or reset the existing one
    */
-  async createOrResetBulkExportJob(basePagePath: string, currentUser, restartJob = false): Promise<void> {
+  async createOrResetBulkExportJob(basePagePath: string, format: PageBulkExportFormat, currentUser, restartJob = false): Promise<void> {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const basePage = await Page.findByPathAndViewer(basePagePath, currentUser, null, true);
 
@@ -48,7 +49,6 @@ class PageBulkExportService implements IPageBulkExportService {
       throw new Error('Base page not found or not accessible');
     }
 
-    const format = PageBulkExportFormat.md;
     const duplicatePageBulkExportJobInProgress: HydratedDocument<PageBulkExportJobDocument> | null = await PageBulkExportJob.findOne({
       user: currentUser,
       page: basePage,
