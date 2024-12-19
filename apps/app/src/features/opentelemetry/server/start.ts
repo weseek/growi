@@ -1,4 +1,4 @@
-import { ConfigSource } from '@growi/core';
+import { ConfigSource } from '@growi/core/dist/interfaces';
 import type { NodeSDK } from '@opentelemetry/sdk-node';
 
 import { configManager } from '~/server/service/config-manager';
