@@ -45,7 +45,7 @@
       "outputLogs": "new-only"
     },
     "dev": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles", "@growi/pdf-converter#build"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:pre:styles"],
       "cache": false,
       "persistent": true
     },
@@ -56,7 +56,7 @@
     },
 
     "lint": {
-      "dependsOn": ["^dev", "dev:pre:styles", "@growi/pdf-converter#build"]
+      "dependsOn": ["^dev", "dev:pre:styles"]
     },
 
     "test": {
