@@ -29,6 +29,7 @@ const PageSelectModalSubstance: FC = () => {
   } = usePageSelectModal();
 
   const [clickedParentPage, setClickedParentPage] = useState<IPageForItem | null>(null);
+  const [isIncludeSubPage, setIsIncludeSubPage] = useState(true);
 
   const { t } = useTranslation();
 
@@ -36,6 +37,9 @@ const PageSelectModalSubstance: FC = () => {
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: currentPage } = useSWRxCurrentPage();
+  const { data: pageSelectModalData } = usePageSelectModal();
+
+  const isHierarchicalSelectionMode = pageSelectModalData?.opts?.isHierarchicalSelectionMode ?? false;
 
   const onClickTreeItem = useCallback((page: IPageForItem) => {
     const parentPagePath = page.path;
@@ -54,11 +58,11 @@ const PageSelectModalSubstance: FC = () => {
 
   const onClickDone = useCallback(() => {
     if (clickedParentPage != null) {
-      PageSelectModalData?.opts?.onSelected?.(clickedParentPage);
+      PageSelectModalData?.opts?.onSelected?.(clickedParentPage, isIncludeSubPage);
     }
 
     closeModal();
-  }, [PageSelectModalData?.opts, clickedParentPage, closeModal]);
+  }, [PageSelectModalData?.opts, clickedParentPage, closeModal, isIncludeSubPage]);
 
   const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
 
@@ -90,9 +94,29 @@ const PageSelectModalSubstance: FC = () => {
           </SimpleBar>
         </Suspense>
       </ModalBody>
-      <ModalFooter>
-        <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>
-        <Button color="primary" onClick={onClickDone}>{t('Done')}</Button>
+      <ModalFooter className="border-top d-flex flex-column">
+        { isHierarchicalSelectionMode && (
+          <div className="form-check form-check-info align-self-start ms-4">
+            <input
+              type="checkbox"
+              id="includeSubPages"
+              className="form-check-input"
+              name="fileUpload"
+              checked={isIncludeSubPage}
+              onChange={() => setIsIncludeSubPage(!isIncludeSubPage)}
+            />
+            <label
+              className="form-label form-check-label"
+              htmlFor="includeSubPages"
+            >
+              {t('Include Subordinated Page')}
+            </label>
+          </div>
+        )}
+        <div className="d-flex gap-2 align-self-end">
+          <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>
+          <Button color="primary" onClick={onClickDone}>{t('Done')}</Button>
+        </div>
       </ModalFooter>
     </>
   );

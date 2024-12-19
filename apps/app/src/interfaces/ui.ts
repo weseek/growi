@@ -38,4 +38,4 @@ export type OnRenamedFunction = (path: string) => void;
 export type OnDuplicatedFunction = (fromPath: string, toPath: string) => void;
 export type OnPutBackedFunction = (path: string) => void;
 export type onDeletedBookmarkFolderFunction = (bookmarkFolderId: string) => void;
-export type OnSelectedFunction = (page: IPageForItem) => void;
+export type OnSelectedFunction = (page: IPageForItem, isIncludeSubPage: boolean) => void;
