@@ -36,8 +36,8 @@ type AiAssistantLearningScope = typeof AiAssistantLearningScope[keyof typeof AiA
 
 interface AiAssistant {
   name: string;
-  description?: string
-  additionalInstruction?: string
+  description: string
+  additionalInstruction: string
   vectorStoreId: string // VectorStoreId of OpenAI Specify (https://platform.openai.com/docs/api-reference/vector-stores/object)
   types: AiAssistantType[]
   owner: Ref<IUser>
@@ -64,9 +64,13 @@ const schema = new Schema<AiAssistantDocument>(
     },
     description: {
       type: String,
+      required: true,
+      default: '',
     },
     additionalInstruction: {
       type: String,
+      required: true,
+      default: '',
     },
     vectorStoreId: {
       type: String,
