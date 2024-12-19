@@ -36,6 +36,39 @@ const validator = {
   ],
 };
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      GrowiInfo:
+ *        type: object
+ *        properties:
+ *           version:
+ *             type: string
+ *             description: The version of the GROWI
+ *           userUpperLimit:
+ *             type: number
+ *             description: The upper limit of the number of users
+ *           fileUploadDisabled:
+ *             type: boolean
+ *           fileUploadTotalLimit:
+ *             type: number
+ *             description: The total limit of the file upload size
+ *           attachmentInfo:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *               writable:
+ *                 type: boolean
+ *               bucket:
+ *                 type: string
+ *               customEndpoint:
+ *                 type: string
+ *               uploadNamespace:
+ *                 type: string
+*/
 /*
  * Routes
  */
@@ -136,7 +169,51 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ files });
   });
 
-  // Auto import
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer:
+   *    post:
+   *      summary: /g2g-transfer
+   *      tags: [Export]
+   *      security:
+   *        - transferHeaderAuth: []
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          multipart/form-data:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                file:
+   *                  format: binary
+   *                  description: The zip file of the data to be transferred
+   *                collections:
+   *                  type: array
+   *                  description: The list of MongoDB collections to be transferred
+   *                  items:
+   *                    type: string
+   *                optionsMap:
+   *                  type: object
+   *                  description: The map of options for each collection
+   *                operatorUserId:
+   *                  type: string
+   *                  description: The ID of the operator user
+   *                uploadConfigs:
+   *                  type: object
+   *                  description: The map of upload configurations
+   *      responses:
+   *        '200':
+   *          description: Successfully started to receive transfer data
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  message:
+   *                    type: string
+   *                    description: The message of the result
+   */
   // eslint-disable-next-line max-len
   receiveRouter.post('/', uploads.single('transferDataZipFile'), validateTransferKey, async(req: Request & { file: any; }, res: ApiV3Response) => {
     const { file } = req;
@@ -221,6 +298,40 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/attachment:
+   *    post:
+   *      summary: /g2g-transfer/attachment
+   *      tags: [Export]
+   *      security:
+   *        - transferHeaderAuth: []
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          multipart/form-data:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                file:
+   *                  format: binary
+   *                  description: The zip file of the data to be transferred
+   *                attachmentMetadata:
+   *                  type: object
+   *                  description: Metadata of the attachment
+   *      responses:
+   *        '200':
+   *          description:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  message:
+   *                    type: string
+   *                    description: The message of the result
+   */
   // This endpoint uses multer's MemoryStorage since the received data should be persisted directly on attachment storage.
   receiveRouter.post('/attachment', uploadsForAttachment.single('content'), validateTransferKey,
     async(req: Request & { file: any; }, res: ApiV3Response) => {
@@ -250,6 +361,26 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3({ message: 'Successfully imported attached file.' });
     });
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/growi-info:
+   *    get:
+   *      summary: /g2g-transfer/growi-info
+   *      tags: [Export]
+   *      security:
+   *        - transferHeaderAuth: []
+   *      responses:
+   *        '200':
+   *          description:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  growiInfo:
+   *                    $ref: '#/components/schemas/GrowiInfo'
+   */
   receiveRouter.get('/growi-info', validateTransferKey, async(req: Request, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;
     try {
@@ -268,6 +399,37 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ growiInfo });
   });
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/generate-key:
+   *    post:
+   *      summary: /g2g-transfer/generate-key
+   *      tags: [Export]
+   *      security:
+   *        - api_key: []
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                appSiteUrl:
+   *                  type: string
+   *                  description: The URL of the GROWI
+   *      responses:
+   *        '200':
+   *          description: Successfully generated transfer key
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  transferKey:
+   *                    type: string
+   *                    description: The transfer key
+   */
   // eslint-disable-next-line max-len
   receiveRouter.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
     const appSiteUrl = req.body.appSiteUrl ?? crowi.configManager?.getConfig('crowi', 'app:siteUrl');
@@ -294,6 +456,45 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ transferKey: transferKeyString });
   });
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/transfer:
+   *    post:
+   *      summary: /g2g-transfer/transfer
+   *      tags: [Export]
+   *      security:
+   *        - api_key: []
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                transferKey:
+   *                  type: string
+   *                  description: The transfer key
+   *                collections:
+   *                  type: array
+   *                  description: The list of MongoDB collections to be transferred
+   *                  items:
+   *                    type: string
+   *                optionsMap:
+   *                  type: object
+   *                  description: The map of options for each collection
+   *      responses:
+   *        '200':
+   *          description: Successfully requested auto transfer
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  message:
+   *                    type: string
+   *                    description: The message of the result
+   */
   // eslint-disable-next-line max-len
   pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { transferKey, collections, optionsMap } = req.body;
