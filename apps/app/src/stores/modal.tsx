@@ -721,6 +721,7 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
 * PageSelectModal
 */
 type IPageSelectModalOption = {
+  isHierarchicalSelectionMode?: boolean,
   onSelected?: OnSelectedFunction,
 }
 

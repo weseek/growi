@@ -15,36 +15,43 @@ import styles from './AiAssistantManegementModal.module.scss';
 const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 
 
-const SelectedPageList = memo(({ selectedPages }: { selectedPages: IPageForItem[] }): JSX.Element => {
+type SelectedPage = {
+  page: IPageForItem,
+  isIncludeSubPage: boolean,
+}
+
+const SelectedPageList = memo(({ selectedPages }: { selectedPages: SelectedPage[] }): JSX.Element => {
+  const { t } = useTranslation();
+
   if (selectedPages.length === 0) {
     return <></>;
   }
 
   return (
     <div className="mb-3">
-      {selectedPages.map(page => (
+      {selectedPages.map(({ page, isIncludeSubPage }) => (
         <p key={page._id} className="mb-1">
           <code>{ page.path }</code>
+          {isIncludeSubPage && <span className="badge rounded-pill text-bg-secondary ms-2">{t('Include Subordinated Page')}</span>}
         </p>
       ))}
     </div>
   );
 });
 
-
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
   const { open: openPageSelectModal } = usePageSelectModal();
-  const [selectedPages, setSelectedPages] = useState<IPageForItem[]>([]);
+  const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
 
   const onClickOpenPageSelectModalButton = useCallback(() => {
-    const onSelected = (page: IPageForItem) => {
-      const selectedPageids = selectedPages.map(selectedPage => selectedPage._id);
-      if (page._id != null && !selectedPageids.includes(page._id)) {
-        setSelectedPages([...selectedPages, page]);
+    const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
+      const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
+      if (page._id != null && !selectedPageIds.includes(page._id)) {
+        setSelectedPages([...selectedPages, { page, isIncludeSubPage }]);
       }
     };
 
-    openPageSelectModal({ onSelected });
+    openPageSelectModal({ onSelected, isHierarchicalSelectionMode: true });
   }, [openPageSelectModal, selectedPages]);
 
 
