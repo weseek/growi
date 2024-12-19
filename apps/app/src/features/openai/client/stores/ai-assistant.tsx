@@ -4,19 +4,20 @@ import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
 
-type KnowledgeAssistantMoldalStatus = {
+type AiAssistantManegementModalStatus = {
   isOpened: boolean,
 }
 
-type KnowledgeAssistantUtils = {
+type AiAssistantManegementModalUtils = {
   open(): void
   close(): void
 }
-export const useKnowledgeAssistantModal = (
-    status?: KnowledgeAssistantMoldalStatus,
-): SWRResponse<KnowledgeAssistantMoldalStatus, Error> & KnowledgeAssistantUtils => {
+
+export const useAiAssistantManegementModal = (
+    status?: AiAssistantManegementModalStatus,
+): SWRResponse<AiAssistantManegementModalStatus, Error> & AiAssistantManegementModalUtils => {
   const initialStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<KnowledgeAssistantMoldalStatus, Error>('KnowledgeAssistantModal', status, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<AiAssistantManegementModalStatus, Error>('AiAssistantManegementModal', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,

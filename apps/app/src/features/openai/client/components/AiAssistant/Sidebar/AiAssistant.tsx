@@ -5,9 +5,9 @@ import { useTranslation } from 'react-i18next';
 
 import ItemsTreeContentSkeleton from '~/client/components/ItemsTree/ItemsTreeContentSkeleton';
 
-const KnowledgeAssistantContent = dynamic(() => import('./KnowledgeAssistantSubstance').then(mod => mod.KnowledgeAssistantContent), { ssr: false });
+const AiAssistantContent = dynamic(() => import('./AiAssistantSubstance').then(mod => mod.AiAssistantContent), { ssr: false });
 
-export const KnowledgeAssistant = (): JSX.Element => {
+export const AiAssistant = (): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -18,7 +18,7 @@ export const KnowledgeAssistant = (): JSX.Element => {
         </h3>
       </div>
       <Suspense fallback={<ItemsTreeContentSkeleton />}>
-        <KnowledgeAssistantContent />
+        <AiAssistantContent />
       </Suspense>
     </div>
   );

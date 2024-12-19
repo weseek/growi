@@ -1,18 +1,53 @@
-import React from 'react';
+import React, { memo, useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
 } from 'reactstrap';
 
-import { useKnowledgeAssistantModal } from '../../stores/knowledge-assistant';
+import type { IPageForItem } from '~/interfaces/page';
+import { usePageSelectModal } from '~/stores/modal';
 
-import styles from './KnowledgeAssistantManegementModal.module.scss';
+import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 
-const moduleClass = styles['grw-knowledge-assistant-manegement'] ?? '';
+import styles from './AiAssistantManegementModal.module.scss';
+
+const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 
 
-const KnowledgeAssistantManegementModalSubstance = (): JSX.Element => {
+const SelectedPageList = memo(({ selectedPages }: { selectedPages: IPageForItem[] }): JSX.Element => {
+  if (selectedPages.length === 0) {
+    return <></>;
+  }
+
+  return (
+    <div className="mb-3">
+      {selectedPages.map(page => (
+        <p key={page._id} className="mb-1">
+          <code>{ page.path }</code>
+        </p>
+      ))}
+    </div>
+  );
+});
+
+
+const AiAssistantManegementModalSubstance = (): JSX.Element => {
+  const { open: openPageSelectModal } = usePageSelectModal();
+  const [selectedPages, setSelectedPages] = useState<IPageForItem[]>([]);
+
+  const onClickOpenPageSelectModalButton = useCallback(() => {
+    const onSelected = (page: IPageForItem) => {
+      const selectedPageids = selectedPages.map(selectedPage => selectedPage._id);
+      if (page._id != null && !selectedPageids.includes(page._id)) {
+        setSelectedPages([...selectedPages, page]);
+      }
+    };
+
+    openPageSelectModal({ onSelected });
+  }, [openPageSelectModal, selectedPages]);
+
+
   return (
     <div className="px-4">
       <ModalBody>
@@ -62,10 +97,11 @@ const KnowledgeAssistantManegementModalSubstance = (): JSX.Element => {
               <Label className="mb-0">参照するページ</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
+            <SelectedPageList selectedPages={selectedPages} />
             <button
               type="button"
               className="btn btn-outline-primary d-flex align-items-center gap-1"
-              onClick={() => {}}
+              onClick={onClickOpenPageSelectModalButton}
             >
               <span>+</span>
               追加する
@@ -96,23 +132,23 @@ const KnowledgeAssistantManegementModalSubstance = (): JSX.Element => {
 };
 
 
-export const KnowledgeAssistantManegementModal = (): JSX.Element => {
+export const AiAssistantManegementModal = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { data: knowledgeAssistantModalData, close: closeKnowledgeAssistantModal } = useKnowledgeAssistantModal();
+  const { data: aiAssistantManegementModalData, close: closeAiAssistantManegementModal } = useAiAssistantManegementModal();
 
-  const isOpened = knowledgeAssistantModalData?.isOpened ?? false;
+  const isOpened = aiAssistantManegementModalData?.isOpened ?? false;
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeKnowledgeAssistantModal} className={moduleClass} scrollable>
+    <Modal size="lg" isOpen={isOpened} toggle={closeAiAssistantManegementModal} className={moduleClass} scrollable>
 
-      <ModalHeader tag="h4" toggle={closeKnowledgeAssistantModal} className="pe-4">
-        <span className="growi-custom-icons growi-knowledge-assistant-icon me-3 fs-4">knowledge_assistant</span>
+      <ModalHeader tag="h4" toggle={closeAiAssistantManegementModal} className="pe-4">
+        <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">ai_assistant</span>
         <span className="fw-bold">新規アシスタントの追加</span> {/* TODO i18n */}
       </ModalHeader>
 
       { isOpened && (
-        <KnowledgeAssistantManegementModalSubstance />
+        <AiAssistantManegementModalSubstance />
       ) }
 
     </Modal>
