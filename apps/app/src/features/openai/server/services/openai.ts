@@ -36,6 +36,13 @@ let isVectorStoreForPublicScopeExist = false;
 
 type VectorStoreFileRelationsMap = Map<string, VectorStoreFileRelation>
 
+const isPagePopulatedToShowRevision = (page: HydratedDocument<PageDocument>): page is IPagePopulatedToShowRevision & PageDocument => {
+  if (page?.revision != null && !isPopulated(page.revision)) {
+    return false;
+  }
+
+  return true;
+};
 export interface IOpenaiService {
   getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
   getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
@@ -158,7 +165,7 @@ class OpenaiService implements IOpenaiService {
   //   }
   // }
 
-  private async uploadFile(page: HydratedDocument<PageDocument> | IPagePopulatedToShowRevision): Promise<OpenAI.Files.FileObject> {
+  private async uploadFile(page: IPagePopulatedToShowRevision): Promise<OpenAI.Files.FileObject> {
     const convertedHtml = await convertMarkdownToHtml(page);
     const file = await toFile(Readable.from(convertedHtml), `${page._id}.html`);
     const uploadedFile = await this.client.uploadFile(file);
@@ -186,7 +193,11 @@ class OpenaiService implements IOpenaiService {
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
-        if (isPopulated(page.revision) && page.revision.body.length > 0) {
+        if (isPagePopulatedToShowRevision(page)) {
+          if (page.revision.body.length > 0) {
+            return;
+          }
+
           const uploadedFile = await this.uploadFile(page);
           prepareVectorStoreFileRelations(vectorStore._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
           return;

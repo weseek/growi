@@ -1,16 +1,12 @@
 import { dynamicImport } from '@cspell/dynamic-import';
-import { isPopulated } from '@growi/core';
 import type { IPagePopulatedToShowRevision } from '@growi/core/dist/interfaces';
 import type { Root, Code } from 'mdast';
-import type { HydratedDocument } from 'mongoose';
 import type * as RehypeMeta from 'rehype-meta';
 import type * as RehypeStringify from 'rehype-stringify';
 import type * as RemarkParse from 'remark-parse';
 import type * as RemarkRehype from 'remark-rehype';
 import type * as Unified from 'unified';
 import type * as UnistUtilVisit from 'unist-util-visit';
-
-import type { PageDocument } from '~/server/models/page';
 
 interface ModuleCache {
   unified?: typeof Unified.unified;
@@ -60,7 +56,7 @@ const initializeModules = async(): Promise<void> => {
   };
 };
 
-export const convertMarkdownToHtml = async(page: HydratedDocument<PageDocument> | IPagePopulatedToShowRevision): Promise<string> => {
+export const convertMarkdownToHtml = async(page: IPagePopulatedToShowRevision): Promise<string> => {
   await initializeModules();
 
   const {
@@ -81,10 +77,6 @@ export const convertMarkdownToHtml = async(page: HydratedDocument<PageDocument> 
     };
   };
 
-  const revisionBody = page.revision != null && isPopulated(page.revision)
-    ? page.revision.body
-    : undefined;
-
   const processor = unified()
     .use(remarkParse)
     .use(sanitizeMarkdown)
@@ -94,5 +86,5 @@ export const convertMarkdownToHtml = async(page: HydratedDocument<PageDocument> 
     })
     .use(rehypeStringify);
 
-  return processor.processSync(revisionBody).toString();
+  return processor.processSync(page.revision?.body).toString();
 };
