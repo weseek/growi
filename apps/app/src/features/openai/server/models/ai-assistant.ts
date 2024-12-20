@@ -43,7 +43,8 @@ interface AiAssistant {
   vectorStore: Ref<VectorStore>
   types: AiAssistantType[]
   owner: Ref<IUser>
-  grantedGroups?: IGrantedGroup[];
+  grantedUsers?: IUser[]
+  grantedGroups?: IGrantedGroup[]
   sharingScope: AiAssistantSharingScope
   learningScope: AiAssistantLearningScope
 }
@@ -87,6 +88,13 @@ const schema = new Schema<AiAssistantDocument>(
       ref: 'User',
       required: true,
     },
+    grantedUsers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+    ],
     grantedGroups: {
       type: [{
         type: {
