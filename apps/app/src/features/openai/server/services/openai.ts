@@ -194,7 +194,7 @@ class OpenaiService implements IOpenaiService {
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPagePopulatedToShowRevision(page)) {
-          if (page.revision.body.length > 0) {
+          if (page.revision.body.length < 0) {
             return;
           }
 
