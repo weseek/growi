@@ -36,6 +36,7 @@ let isVectorStoreForPublicScopeExist = false;
 
 type VectorStoreFileRelationsMap = Map<string, VectorStoreFileRelation>
 
+// type guard
 const isPagePopulatedToShowRevision = (page: HydratedDocument<PageDocument>): page is IPagePopulatedToShowRevision & PageDocument => {
   if (page?.revision != null && !isPopulated(page.revision)) {
     return false;
