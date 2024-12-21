@@ -411,7 +411,6 @@ export default function route(crowi) {
 
     try {
       data = await growiBridgeService.parseZipFile(zipFile);
-      console.log(data);
     }
     catch (err) {
       // TODO: use ApiV3Error
