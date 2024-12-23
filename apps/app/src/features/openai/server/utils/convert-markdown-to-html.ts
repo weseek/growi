@@ -1,5 +1,4 @@
 import { dynamicImport } from '@cspell/dynamic-import';
-import type { IPagePopulatedToShowRevision } from '@growi/core/dist/interfaces';
 import type { Root, Code } from 'mdast';
 import type * as RehypeMeta from 'rehype-meta';
 import type * as RehypeStringify from 'rehype-stringify';
@@ -56,7 +55,12 @@ const initializeModules = async(): Promise<void> => {
   };
 };
 
-export const convertMarkdownToHtml = async(page: IPagePopulatedToShowRevision): Promise<string> => {
+type ConvertMarkdownToHtmlParams = {
+  pagePath: string;
+  revisionBody: string;
+};
+
+export const convertMarkdownToHtml = async({ pagePath, revisionBody }: ConvertMarkdownToHtmlParams): Promise<string> => {
   await initializeModules();
 
   const {
@@ -82,9 +86,9 @@ export const convertMarkdownToHtml = async(page: IPagePopulatedToShowRevision): 
     .use(sanitizeMarkdown)
     .use(remarkRehype)
     .use(rehypeMeta, {
-      title: page.path,
+      title: pagePath,
     })
     .use(rehypeStringify);
 
-  return processor.processSync(page.revision?.body).toString();
+  return processor.processSync(revisionBody).toString();
 };
