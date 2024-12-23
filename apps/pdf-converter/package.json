@@ -43,7 +43,6 @@
     "@types/multer": "^1.4.12",
     "@types/node": "^22.5.4",
     "@swc-node/register": "^1.10.9",
-    "@swc/cli": "^0.5.0",
     "@swc/core": "^1.9.2",
     "@swc/helpers": "^0.5.15"
   }
