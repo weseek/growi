@@ -3,13 +3,9 @@ import type { IGrowiInfo } from '@growi/core/dist/interfaces';
 import { GrowiWikiType } from '@growi/core/dist/interfaces';
 import { Schema } from 'mongoose';
 
-import type { IGrowiAppAdditionalInfo } from '~/features/questionnaire/interfaces/growi-app-additional-info';
+import type { IGrowiAppAdditionalInfo } from '~/features/questionnaire/interfaces/growi-app-info';
 import { AttachmentMethodType } from '~/interfaces/attachment';
 import { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
-
-// legacy properties (extracted from additionalInfo for growi-questionnaire)
-// see: https://gitlab.weseek.co.jp/tech/growi/growi-questionnaire
-export type IGrowiInfoLegacy = Omit<IGrowiInfo<IGrowiAppAdditionalInfo>, 'additionalInfo'> & IGrowiAppAdditionalInfo;
 
 const growiAdditionalInfoSchema = new Schema<IGrowiAppAdditionalInfo>({
   installedAt: { type: Date, required: true },

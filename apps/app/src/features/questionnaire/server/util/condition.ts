@@ -1,7 +1,7 @@
 import type { IGrowiInfo } from '@growi/core/dist/interfaces';
 
 import type { ICondition } from '../../interfaces/condition';
-import type { IGrowiAppAdditionalInfo } from '../../interfaces/growi-app-additional-info';
+import type { IGrowiAppAdditionalInfo } from '../../interfaces/growi-app-info';
 import type { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
 import type { IUserInfo } from '../../interfaces/user-info';
 import { UserType } from '../../interfaces/user-info';

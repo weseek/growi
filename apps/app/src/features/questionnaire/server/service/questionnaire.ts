@@ -16,7 +16,7 @@ import { aclService } from '~/server/service/acl';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
-import type { IGrowiAppAdditionalInfo } from '../../interfaces/growi-app-additional-info';
+import type { IGrowiAppAdditionalInfo } from '../../interfaces/growi-app-info';
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
 import { type IUserInfo, UserType } from '../../interfaces/user-info';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';

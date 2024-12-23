@@ -1,7 +1,7 @@
 import type { IGrowiInfo } from '@growi/core/dist/interfaces';
 
 import type { IAnswer } from './answer';
-import type { IGrowiAppAdditionalInfo } from './growi-app-additional-info';
+import type { IGrowiAppAdditionalInfo } from './growi-app-info';
 import type { IUserInfo } from './user-info';
 
 export interface IQuestionnaireAnswer<ID = string> {
