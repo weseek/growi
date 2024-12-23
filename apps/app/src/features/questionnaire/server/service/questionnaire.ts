@@ -3,13 +3,11 @@ import * as os from 'node:os';
 
 
 import type { IUserHasId } from '@growi/core';
-import { GrowiDeploymentType, GrowiServiceType } from '@growi/core/dist/consts';
 import type { IGrowiInfo, IUser } from '@growi/core/dist/interfaces';
 import { GrowiWikiType } from '@growi/core/dist/interfaces';
 import type { Model } from 'mongoose';
 import mongoose from 'mongoose';
 
-import { AttachmentMethodType } from '~/interfaces/attachment';
 import { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 import type Crowi from '~/server/crowi';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
@@ -72,15 +70,6 @@ class QuestionnaireService {
       return configManager.getConfig(`security:passport-${type}:isEnabled`);
     });
 
-    const typeStr = configManager.getConfig('app:serviceType');
-    const type = Object.values(GrowiServiceType).includes(typeStr) ? typeStr : null;
-
-    const attachmentTypeStr = configManager.getConfig('app:fileUploadType');
-    const attachmentType = Object.values(AttachmentMethodType).includes(attachmentTypeStr) ? attachmentTypeStr : null;
-
-    const deploymentTypeStr = configManager.getConfig('app:deploymentType');
-    const deploymentType = Object.values(GrowiDeploymentType).includes(deploymentTypeStr) ? deploymentTypeStr : null;
-
     return {
       version: this.crowi.version,
       osInfo: {
@@ -89,18 +78,18 @@ class QuestionnaireService {
         arch: os.arch(),
         totalmem: os.totalmem(),
       },
-      appSiteUrl: configManager.getConfig('questionnaire:isAppSiteUrlHashed') ? null : appSiteUrl,
+      appSiteUrl: configManager.getConfig('questionnaire:isAppSiteUrlHashed') ? undefined : appSiteUrl,
       appSiteUrlHashed,
-      type,
+      type: configManager.getConfig('app:serviceType'),
       wikiType,
-      attachmentType,
-      activeExternalAccountTypes,
-      deploymentType,
+      deploymentType: configManager.getConfig('app:deploymentType'),
       additionalInfo: {
         installedAt,
         installedAtByOldestUser,
         currentUsersCount,
         currentActiveUsersCount,
+        attachmentType: configManager.getConfig('app:fileUploadType'),
+        activeExternalAccountTypes,
       },
     };
   }
@@ -120,7 +109,9 @@ class QuestionnaireService {
     return { type: UserType.guest };
   }
 
-  async getQuestionnaireOrdersToShow(userInfo: IUserInfo, growiInfo: IGrowiInfo, userId: ObjectIdLike | null): Promise<QuestionnaireOrderDocument[]> {
+  async getQuestionnaireOrdersToShow(
+      userInfo: IUserInfo, growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>, userId: ObjectIdLike | null,
+  ): Promise<QuestionnaireOrderDocument[]> {
     const currentDate = new Date();
 
     let questionnaireOrders = await QuestionnaireOrder.find({

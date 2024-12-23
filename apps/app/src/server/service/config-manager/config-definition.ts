@@ -1,4 +1,4 @@
-import { GrowiServiceType } from '@growi/core/dist/consts';
+import { GrowiDeploymentType, GrowiServiceType } from '@growi/core/dist/consts';
 import type { ConfigDefinition, Lang } from '@growi/core/dist/interfaces';
 import { defineConfig } from '@growi/core/dist/interfaces';
 import type OpenAI from 'openai';
@@ -478,9 +478,9 @@ export const CONFIG_DEFINITIONS = {
     envVarName: 'SERVICE_TYPE',
     defaultValue: GrowiServiceType.onPremise,
   }),
-  'app:deploymentType': defineConfig<string | undefined>({
+  'app:deploymentType': defineConfig<GrowiDeploymentType>({
     envVarName: 'DEPLOYMENT_TYPE',
-    defaultValue: undefined,
+    defaultValue: GrowiDeploymentType.others,
   }),
   'app:ssrMaxRevisionBodyLength': defineConfig<number>({
     envVarName: 'SSR_MAX_REVISION_BODY_LENGTH',

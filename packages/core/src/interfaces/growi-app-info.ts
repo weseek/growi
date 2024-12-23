@@ -21,11 +21,11 @@ export interface IGrowiAdditionalInfo {
 
 export interface IGrowiInfo<A extends IGrowiAdditionalInfo> {
   version: string
-  appSiteUrl?: string
+  appSiteUrl: string | undefined
   appSiteUrlHashed: string
   type: GrowiServiceType
   wikiType: GrowiWikiType
+  deploymentType: GrowiDeploymentType
   osInfo?: IGrowiOSInfo
-  deploymentType?: GrowiDeploymentType
   additionalInfo?: A
 }
