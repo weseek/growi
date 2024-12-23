@@ -76,9 +76,11 @@ class QuestionnaireCronService {
 
     const resendQuestionnaireAnswers = async() => {
       const questionnaireAnswers = await QuestionnaireAnswer.find()
-        .select('-_id -answers._id  -growiInfo._id -userInfo._id');
+        .select('-_id -answers._id  -growiInfo._id -userInfo._id')
+        .lean();
       const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find()
-        .select('-_id -growiInfo._id -userInfo._id');
+        .select('-_id -growiInfo._id -userInfo._id')
+        .lean();
 
       axios.post(`${questionnaireServerOrigin}/questionnaire-answer/batch`, {
         // convert to legacy format

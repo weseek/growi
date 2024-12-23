@@ -21,7 +21,7 @@ export interface IGrowiAdditionalInfo {
 
 export interface IGrowiInfo<A extends IGrowiAdditionalInfo> {
   version: string
-  appSiteUrl: string | undefined
+  appSiteUrl?: string
   appSiteUrlHashed: string
   type: GrowiServiceType
   wikiType: GrowiWikiType
