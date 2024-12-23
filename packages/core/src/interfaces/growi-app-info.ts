@@ -14,7 +14,7 @@ interface IGrowiOSInfo {
 
 export interface IGrowiAdditionalInfo {
   installedAt: Date
-  installedAtByOldestUser: Date
+  installedAtByOldestUser: Date | null
   currentUsersCount: number
   currentActiveUsersCount: number
 }
