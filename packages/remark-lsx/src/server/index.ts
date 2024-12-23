@@ -14,8 +14,8 @@ const filterXSS = new FilterXSS();
 
 const lsxValidator = [
   query('pagePath').notEmpty().isString(),
-  query('offset').optional().isInt(),
-  query('limit').optional().isInt(),
+  query('offset').optional().isInt().toInt(),
+  query('limit').optional().isInt().toInt(),
   query('options')
     .optional()
     .customSanitizer((options) => {
