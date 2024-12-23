@@ -1,7 +1,7 @@
 import { $log } from '@tsed/common';
 import { PlatformExpress } from '@tsed/platform-express';
 
-import Server from './server';
+import Server from './server.js';
 
 function hasProcessFlag(flag: string): boolean {
   return process.argv.join('').indexOf(flag) > -1;
