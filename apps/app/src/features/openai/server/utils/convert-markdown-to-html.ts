@@ -55,12 +55,7 @@ const initializeModules = async(): Promise<void> => {
   };
 };
 
-type ConvertMarkdownToHtmlParams = {
-  pagePath: string;
-  revisionBody: string;
-};
-
-export const convertMarkdownToHtml = async({ pagePath, revisionBody }: ConvertMarkdownToHtmlParams): Promise<string> => {
+export const convertMarkdownToHtml = async({ pagePath, revisionBody }: { pagePath: string, revisionBody: string }): Promise<string> => {
   await initializeModules();
 
   const {
