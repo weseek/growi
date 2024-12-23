@@ -1,7 +1,7 @@
-import type { IExternalAuthProviderType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
+import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 import loggerFactory from '~/utils/logger';
 
 import { NullUsernameToBeRegisteredError } from '../models/errors';

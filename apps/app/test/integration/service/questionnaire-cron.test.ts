@@ -1,14 +1,16 @@
+import { GrowiDeploymentType, GrowiServiceType, GrowiWikiType } from '@growi/core';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
 
-import { IProactiveQuestionnaireAnswer } from '../../../src/features/questionnaire/interfaces/proactive-questionnaire-answer';
-import { IQuestionnaireAnswer } from '../../../src/features/questionnaire/interfaces/questionnaire-answer';
+import type { IProactiveQuestionnaireAnswer, IProactiveQuestionnaireAnswerLegacy } from '../../../src/features/questionnaire/interfaces/proactive-questionnaire-answer';
+import type { IQuestionnaireAnswer, IQuestionnaireAnswerLegacy } from '../../../src/features/questionnaire/interfaces/questionnaire-answer';
 import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
 import ProactiveQuestionnaireAnswer from '../../../src/features/questionnaire/server/models/proactive-questionnaire-answer';
 import QuestionnaireAnswer from '../../../src/features/questionnaire/server/models/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
 import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
+import { AttachmentMethodType } from '../../../src/interfaces/attachment';
 import { getInstance } from '../setup-crowi';
 
 const spyAxiosGet = jest.spyOn<typeof axios, 'get'>(
@@ -275,13 +277,42 @@ describe('QuestionnaireCronService', () => {
       growiInfo: {
         version: '1.0',
         appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        type: GrowiServiceType.cloud,
+        wikiType: GrowiWikiType.open,
+        deploymentType: GrowiDeploymentType.others,
+        additionalInfo: {
+          installedAt: new Date('2000-01-01'),
+          installedAtByOldestUser: new Date('2020-01-01'),
+          currentUsersCount: 100,
+          currentActiveUsersCount: 50,
+          attachmentType: AttachmentMethodType.aws,
+        },
+      },
+      userInfo: {
+        userIdHash: '542bcc3bc5bc61b840017a18',
+        type: 'general',
+        userCreatedAt: new Date(),
+      },
+      questionnaireOrder: '63a8354837e7aa378e16f0b1',
+    };
+
+    const validQuestionnaireAnswerLegacy: IQuestionnaireAnswerLegacy = {
+      answers: [{
+        question: '63c6da88143e531d95346188',
+        value: '1',
+      }],
+      answeredAt: new Date(),
+      growiInfo: {
+        version: '1.0',
+        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        type: GrowiServiceType.cloud,
+        wikiType: GrowiWikiType.open,
+        deploymentType: GrowiDeploymentType.others,
         installedAt: new Date('2000-01-01'),
         installedAtByOldestUser: new Date('2020-01-01'),
-        type: 'cloud',
         currentUsersCount: 100,
         currentActiveUsersCount: 50,
-        wikiType: 'open',
-        attachmentType: 'aws',
+        attachmentType: AttachmentMethodType.aws,
       },
       userInfo: {
         userIdHash: '542bcc3bc5bc61b840017a18',
@@ -295,6 +326,8 @@ describe('QuestionnaireCronService', () => {
       validQuestionnaireAnswer,
       validQuestionnaireAnswer,
       validQuestionnaireAnswer,
+      validQuestionnaireAnswerLegacy,
+      validQuestionnaireAnswerLegacy,
     ]);
 
     const validProactiveQuestionnaireAnswer: IProactiveQuestionnaireAnswer = {
@@ -303,13 +336,39 @@ describe('QuestionnaireCronService', () => {
       growiInfo: {
         version: '1.0',
         appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        type: GrowiServiceType.cloud,
+        wikiType: GrowiWikiType.open,
+        deploymentType: GrowiDeploymentType.others,
+        additionalInfo: {
+          installedAt: new Date('2000-01-01'),
+          installedAtByOldestUser: new Date('2020-01-01'),
+          currentUsersCount: 100,
+          currentActiveUsersCount: 50,
+          attachmentType: AttachmentMethodType.aws,
+        },
+      },
+      userInfo: {
+        userIdHash: '542bcc3bc5bc61b840017a18',
+        type: 'general',
+        userCreatedAt: new Date(),
+      },
+      answeredAt: new Date(),
+    };
+    const validProactiveQuestionnaireAnswerLegacy: IProactiveQuestionnaireAnswerLegacy = {
+      satisfaction: 1,
+      commentText: 'answer text',
+      growiInfo: {
+        version: '1.0',
+        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        type: GrowiServiceType.cloud,
+        wikiType: GrowiWikiType.open,
+        deploymentType: GrowiDeploymentType.others,
+        // legacy properties
         installedAt: new Date('2000-01-01'),
         installedAtByOldestUser: new Date('2020-01-01'),
-        type: 'cloud',
         currentUsersCount: 100,
         currentActiveUsersCount: 50,
-        wikiType: 'open',
-        attachmentType: 'aws',
+        attachmentType: AttachmentMethodType.aws,
       },
       userInfo: {
         userIdHash: '542bcc3bc5bc61b840017a18',
@@ -323,6 +382,8 @@ describe('QuestionnaireCronService', () => {
       validProactiveQuestionnaireAnswer,
       validProactiveQuestionnaireAnswer,
       validProactiveQuestionnaireAnswer,
+      validProactiveQuestionnaireAnswerLegacy,
+      validProactiveQuestionnaireAnswerLegacy,
     ]);
 
     crowi.setupCron();
