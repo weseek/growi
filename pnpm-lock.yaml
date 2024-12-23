@@ -1007,9 +1007,6 @@ importers:
       '@swc/core':
         specifier: ^1.9.2
         version: 1.10.1(@swc/helpers@0.5.15)
-      '@swc/helpers':
-        specifier: ^0.5.15
-        version: 0.5.15
       '@types/connect':
         specifier: ^3.4.38
         version: 3.4.38
@@ -18273,6 +18270,7 @@ snapshots:
   '@swc/helpers@0.5.15':
     dependencies:
       tslib: 2.8.0
+    optional: true
 
   '@swc/helpers@0.5.5':
     dependencies:
