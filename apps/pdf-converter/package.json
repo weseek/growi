@@ -12,7 +12,7 @@
     "start:prod:ci": "pnpm start:prod --ci",
     "start:prod": "node dist/index.js",
     "lint": "pnpm eslint **/*.{js,ts}",
-    "gen:swagger-spec": "SWAGGER_GENERATION=true tsed run generate-swagger --output ./specs",
+    "gen:swagger-spec": "SWAGGER_GENERATION=true node --import @swc-node/register/esm-register src/bin/index.ts generate-swagger --output ./specs",
     "build": "pnpm tsc -p tsconfig.build.json"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "@tsed/common": "=8.3.5",
     "@tsed/components-scan": "=8.3.5",
     "@tsed/core": "=8.3.5",
+    "@tsed/engines": "=8.3.5",
     "@tsed/di": "=8.3.5",
     "@tsed/exceptions": "=8.3.5",
     "@tsed/json-mapper": "=8.3.5",
