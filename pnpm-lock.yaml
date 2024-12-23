@@ -943,9 +943,6 @@ importers:
       '@godaddy/terminus':
         specifier: ^4.12.1
         version: 4.12.1
-      '@tsed/cli':
-        specifier: '=6.1.4'
-        version: 6.1.4(@swc/types@0.1.17)(@tsed/cli-core@6.1.4(@babel/core@7.24.6)(@tsed/core@8.3.5)(@tsed/di@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/hooks@8.3.5)(ejs@3.1.10)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@tsed/core@8.3.5)(@tsed/di@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5))(typescript@5.4.2)
       '@tsed/cli-core':
         specifier: '=6.1.4'
         version: 6.1.4(@babel/core@7.24.6)(@tsed/core@8.3.5)(@tsed/di@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/hooks@8.3.5)(ejs@3.1.10)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -4390,12 +4387,6 @@ packages:
     cpu: [arm64]
     os: [darwin]
 
-  '@swc/core-darwin-arm64@1.7.26':
-    resolution: {integrity: sha512-FF3CRYTg6a7ZVW4yT9mesxoVVZTrcSWtmZhxKCYJX9brH4CS/7PRPjAKNk6kzWgWuRoglP7hkjQcd6EpMcZEAw==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [darwin]
-
   '@swc/core-darwin-x64@1.10.1':
     resolution: {integrity: sha512-L4BNt1fdQ5ZZhAk5qoDfUnXRabDOXKnXBxMDJ+PWLSxOGBbWE6aJTnu4zbGjJvtot0KM46m2LPAPY8ttknqaZA==}
     engines: {node: '>=10'}
@@ -4410,12 +4401,6 @@ packages:
 
   '@swc/core-darwin-x64@1.5.25':
     resolution: {integrity: sha512-OhP4TROT6gQuozn+ah0Y4UidSdgDmxwtQq3lgCUIAxJYErJAQ82/Y0kve2UaNmkSGjOHU+/b4siHPrYTkXOk0Q==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [darwin]
-
-  '@swc/core-darwin-x64@1.7.26':
-    resolution: {integrity: sha512-az3cibZdsay2HNKmc4bjf62QVukuiMRh5sfM5kHR/JMTrLyS6vSw7Ihs3UTkZjUxkLTT8ro54LI6sV6sUQUbLQ==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [darwin]
@@ -4438,12 +4423,6 @@ packages:
     cpu: [arm]
     os: [linux]
 
-  '@swc/core-linux-arm-gnueabihf@1.7.26':
-    resolution: {integrity: sha512-VYPFVJDO5zT5U3RpCdHE5v1gz4mmR8BfHecUZTmD2v1JeFY6fv9KArJUpjrHEEsjK/ucXkQFmJ0jaiWXmpOV9Q==}
-    engines: {node: '>=10'}
-    cpu: [arm]
-    os: [linux]
-
   '@swc/core-linux-arm64-gnu@1.10.1':
     resolution: {integrity: sha512-tNQHO/UKdtnqjc7o04iRXng1wTUXPgVd8Y6LI4qIbHVoVPwksZydISjMcilKNLKIwOoUQAkxyJ16SlOAeADzhQ==}
     engines: {node: '>=10'}
@@ -4458,12 +4437,6 @@ packages:
 
   '@swc/core-linux-arm64-gnu@1.5.25':
     resolution: {integrity: sha512-stzpke+bRaNFM/HrZPRjX0aQZ86S/2DChVCwb8NAV1n5lu9mz1CS750y7WbbtX/KZjk92FsCeRy2qwkvjI0gWw==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [linux]
-
-  '@swc/core-linux-arm64-gnu@1.7.26':
-    resolution: {integrity: sha512-YKevOV7abpjcAzXrhsl+W48Z9mZvgoVs2eP5nY+uoMAdP2b3GxC0Df1Co0I90o2lkzO4jYBpTMcZlmUXLdXn+Q==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [linux]
@@ -4486,12 +4459,6 @@ packages:
     cpu: [arm64]
     os: [linux]
 
-  '@swc/core-linux-arm64-musl@1.7.26':
-    resolution: {integrity: sha512-3w8iZICMkQQON0uIcvz7+Q1MPOW6hJ4O5ETjA0LSP/tuKqx30hIniCGOgPDnv3UTMruLUnQbtBwVCZTBKR3Rkg==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [linux]
-
   '@swc/core-linux-x64-gnu@1.10.1':
     resolution: {integrity: sha512-yyYEwQcObV3AUsC79rSzN9z6kiWxKAVJ6Ntwq2N9YoZqSPYph+4/Am5fM1xEQYf/kb99csj0FgOelomJSobxQA==}
     engines: {node: '>=10'}
@@ -4506,12 +4473,6 @@ packages:
 
   '@swc/core-linux-x64-gnu@1.5.25':
     resolution: {integrity: sha512-LwbJEgNT3lXbvz4WFzVNXNvs8DvxpoXjMZk9K9Hig8tmZQJKHC2qZTGomcyK5EFzfj2HBuBXZnAEW8ZT9PcEaA==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [linux]
-
-  '@swc/core-linux-x64-gnu@1.7.26':
-    resolution: {integrity: sha512-c+pp9Zkk2lqb06bNGkR2Looxrs7FtGDMA4/aHjZcCqATgp348hOKH5WPvNLBl+yPrISuWjbKDVn3NgAvfvpH4w==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [linux]
@@ -4534,12 +4495,6 @@ packages:
     cpu: [x64]
     os: [linux]
 
-  '@swc/core-linux-x64-musl@1.7.26':
-    resolution: {integrity: sha512-PgtyfHBF6xG87dUSSdTJHwZ3/8vWZfNIXQV2GlwEpslrOkGqy+WaiiyE7Of7z9AvDILfBBBcJvJ/r8u980wAfQ==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [linux]
-
   '@swc/core-win32-arm64-msvc@1.10.1':
     resolution: {integrity: sha512-D3Qo1voA7AkbOzQ2UGuKNHfYGKL6eejN8VWOoQYtGHHQi1p5KK/Q7V1ku55oxXBsj79Ny5FRMqiRJpVGad7bjQ==}
     engines: {node: '>=10'}
@@ -4554,12 +4509,6 @@ packages:
 
   '@swc/core-win32-arm64-msvc@1.5.25':
     resolution: {integrity: sha512-DJDsLBsRBV3uQBShRK2x6fqzABp9RLNVxDUpTTvUjc7qywJ8vS/yn+POK/zCyVEqLagf1z/8D5CEQ+RAIJq1NA==}
-    engines: {node: '>=10'}
-    cpu: [arm64]
-    os: [win32]
-
-  '@swc/core-win32-arm64-msvc@1.7.26':
-    resolution: {integrity: sha512-9TNXPIJqFynlAOrRD6tUQjMq7KApSklK3R/tXgIxc7Qx+lWu8hlDQ/kVPLpU7PWvMMwC/3hKBW+p5f+Tms1hmA==}
     engines: {node: '>=10'}
     cpu: [arm64]
     os: [win32]
@@ -4582,12 +4531,6 @@ packages:
     cpu: [ia32]
     os: [win32]
 
-  '@swc/core-win32-ia32-msvc@1.7.26':
-    resolution: {integrity: sha512-9YngxNcG3177GYdsTum4V98Re+TlCeJEP4kEwEg9EagT5s3YejYdKwVAkAsJszzkXuyRDdnHUpYbTrPG6FiXrQ==}
-    engines: {node: '>=10'}
-    cpu: [ia32]
-    os: [win32]
-
   '@swc/core-win32-x64-msvc@1.10.1':
     resolution: {integrity: sha512-JWobfQDbTnoqaIwPKQ3DVSywihVXlQMbDuwik/dDWlj33A8oEHcjPOGs4OqcA3RHv24i+lfCQpM3Mn4FAMfacA==}
     engines: {node: '>=10'}
@@ -4602,12 +4545,6 @@ packages:
 
   '@swc/core-win32-x64-msvc@1.5.25':
     resolution: {integrity: sha512-o+MHUWrQI9iR6EusEV8eNU2Ezi3KtlhUR4gfptQN5MbVzlgjTvQbhiKpE1GYOxp+0BLBbKRwITKOcdhxfEJ2Uw==}
-    engines: {node: '>=10'}
-    cpu: [x64]
-    os: [win32]
-
-  '@swc/core-win32-x64-msvc@1.7.26':
-    resolution: {integrity: sha512-VR+hzg9XqucgLjXxA13MtV5O3C0bK0ywtLIBw/+a+O+Oc6mxFWHtdUeXDbIi5AiPbn0fjgVJMqYnyjGyyX8u0w==}
     engines: {node: '>=10'}
     cpu: [x64]
     os: [win32]
@@ -4632,15 +4569,6 @@ packages:
 
   '@swc/core@1.5.25':
     resolution: {integrity: sha512-qdGEIdLVoTjEQ7w72UyyQ0wLFY4XbHfZiidmPHKJQsvSXzdpHXxPdlTCea/mY4AhMqo/M+pvkJSXJAxZnFl7qw==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      '@swc/helpers': '*'
-    peerDependenciesMeta:
-      '@swc/helpers':
-        optional: true
-
-  '@swc/core@1.7.26':
-    resolution: {integrity: sha512-f5uYFf+TmMQyYIoxkn/evWhNGuUzC730dFwAKGwBVHHVoPyak1/GvJUm6i1SKl+2Hrj9oN0i3WSoWWZ4pgI8lw==}
     engines: {node: '>=10'}
     peerDependencies:
       '@swc/helpers': '*'
@@ -4749,19 +4677,6 @@ packages:
     peerDependencies:
       '@tsed/platform-http': '>=7.14.2'
       '@tsed/swagger': '>=7.14.2'
-
-  '@tsed/cli@6.1.4':
-    resolution: {integrity: sha512-JXpVfkWJ71U1npZcF1Ko1meM4UEZlsQyhMvdY+ZsB0R4DBkH3/EREb34TJLM+sv64ge3V4xajdMpqGQwvFgWjA==}
-    engines: {node: '>=14'}
-    hasBin: true
-    peerDependencies:
-      '@tsed/cli-core': workspace:*
-      '@tsed/core': '>=8.0.0'
-      '@tsed/di': '>=8.0.0'
-      '@tsed/hooks': '>=8.0.0'
-      '@tsed/logger': '>=7.0.1'
-      '@tsed/openspec': '>=8.0.0'
-      '@tsed/schema': '>=8.0.0'
 
   '@tsed/common@6.43.0':
     resolution: {integrity: sha512-/tSElT1SVH7xbw+h89PLzm0Lhm3RzmVb04al/391wQX5W9rCGPevgFB1HN5zVNQqKFfvKPoTrvzLEHjNZj1jRQ==}
@@ -8094,9 +8009,6 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
-
-  esm-module-alias@2.2.1:
-    resolution: {integrity: sha512-CmxoWJb4ShzOQEHc5MBIgp7BUYSiyZkvUzGtJxQlCUZhLXJ/teO7LSyZa9gzPpM5HOarj14GW4DxRuTuCliV1w==}
 
   esm@3.2.25:
     resolution: {integrity: sha512-U1suiZ2oDVWv4zPO56S0NcR5QriEahGtdN2OR6FiOG4WJvcjBVFB0qI4+eKoWFH483PKGuLuu6V8Z4T5g63UVA==}
@@ -18567,11 +18479,6 @@ snapshots:
       '@swc/core': 1.5.25(@swc/helpers@0.5.11)
       '@swc/types': 0.1.17
 
-  '@swc-node/core@1.13.3(@swc/core@1.7.26(@swc/helpers@0.5.15))(@swc/types@0.1.17)':
-    dependencies:
-      '@swc/core': 1.7.26(@swc/helpers@0.5.15)
-      '@swc/types': 0.1.17
-
   '@swc-node/jest@1.8.3(@swc/core@1.10.1(@swc/helpers@0.5.15))(@swc/types@0.1.17)(typescript@5.4.2)':
     dependencies:
       '@node-rs/xxhash': 1.7.3
@@ -18613,21 +18520,6 @@ snapshots:
       - '@swc/types'
       - supports-color
 
-  '@swc-node/register@1.10.9(@swc/core@1.7.26(@swc/helpers@0.5.15))(@swc/types@0.1.17)(typescript@5.4.2)':
-    dependencies:
-      '@swc-node/core': 1.13.3(@swc/core@1.7.26(@swc/helpers@0.5.15))(@swc/types@0.1.17)
-      '@swc-node/sourcemap-support': 0.5.1
-      '@swc/core': 1.7.26(@swc/helpers@0.5.15)
-      colorette: 2.0.20
-      debug: 4.3.7(supports-color@5.5.0)
-      oxc-resolver: 1.12.0
-      pirates: 4.0.6
-      tslib: 2.8.0
-      typescript: 5.4.2
-    transitivePeerDependencies:
-      - '@swc/types'
-      - supports-color
-
   '@swc-node/sourcemap-support@0.5.1':
     dependencies:
       source-map-support: 0.5.21
@@ -18657,9 +18549,6 @@ snapshots:
   '@swc/core-darwin-arm64@1.5.25':
     optional: true
 
-  '@swc/core-darwin-arm64@1.7.26':
-    optional: true
-
   '@swc/core-darwin-x64@1.10.1':
     optional: true
 
@@ -18667,9 +18556,6 @@ snapshots:
     optional: true
 
   '@swc/core-darwin-x64@1.5.25':
-    optional: true
-
-  '@swc/core-darwin-x64@1.7.26':
     optional: true
 
   '@swc/core-linux-arm-gnueabihf@1.10.1':
@@ -18681,9 +18567,6 @@ snapshots:
   '@swc/core-linux-arm-gnueabihf@1.5.25':
     optional: true
 
-  '@swc/core-linux-arm-gnueabihf@1.7.26':
-    optional: true
-
   '@swc/core-linux-arm64-gnu@1.10.1':
     optional: true
 
@@ -18691,9 +18574,6 @@ snapshots:
     optional: true
 
   '@swc/core-linux-arm64-gnu@1.5.25':
-    optional: true
-
-  '@swc/core-linux-arm64-gnu@1.7.26':
     optional: true
 
   '@swc/core-linux-arm64-musl@1.10.1':
@@ -18705,9 +18585,6 @@ snapshots:
   '@swc/core-linux-arm64-musl@1.5.25':
     optional: true
 
-  '@swc/core-linux-arm64-musl@1.7.26':
-    optional: true
-
   '@swc/core-linux-x64-gnu@1.10.1':
     optional: true
 
@@ -18715,9 +18592,6 @@ snapshots:
     optional: true
 
   '@swc/core-linux-x64-gnu@1.5.25':
-    optional: true
-
-  '@swc/core-linux-x64-gnu@1.7.26':
     optional: true
 
   '@swc/core-linux-x64-musl@1.10.1':
@@ -18729,9 +18603,6 @@ snapshots:
   '@swc/core-linux-x64-musl@1.5.25':
     optional: true
 
-  '@swc/core-linux-x64-musl@1.7.26':
-    optional: true
-
   '@swc/core-win32-arm64-msvc@1.10.1':
     optional: true
 
@@ -18739,9 +18610,6 @@ snapshots:
     optional: true
 
   '@swc/core-win32-arm64-msvc@1.5.25':
-    optional: true
-
-  '@swc/core-win32-arm64-msvc@1.7.26':
     optional: true
 
   '@swc/core-win32-ia32-msvc@1.10.1':
@@ -18753,9 +18621,6 @@ snapshots:
   '@swc/core-win32-ia32-msvc@1.5.25':
     optional: true
 
-  '@swc/core-win32-ia32-msvc@1.7.26':
-    optional: true
-
   '@swc/core-win32-x64-msvc@1.10.1':
     optional: true
 
@@ -18763,9 +18628,6 @@ snapshots:
     optional: true
 
   '@swc/core-win32-x64-msvc@1.5.25':
-    optional: true
-
-  '@swc/core-win32-x64-msvc@1.7.26':
     optional: true
 
   '@swc/core@1.10.1(@swc/helpers@0.5.15)':
@@ -18818,23 +18680,6 @@ snapshots:
       '@swc/core-win32-ia32-msvc': 1.5.25
       '@swc/core-win32-x64-msvc': 1.5.25
       '@swc/helpers': 0.5.11
-
-  '@swc/core@1.7.26(@swc/helpers@0.5.15)':
-    dependencies:
-      '@swc/counter': 0.1.3
-      '@swc/types': 0.1.12
-    optionalDependencies:
-      '@swc/core-darwin-arm64': 1.7.26
-      '@swc/core-darwin-x64': 1.7.26
-      '@swc/core-linux-arm-gnueabihf': 1.7.26
-      '@swc/core-linux-arm64-gnu': 1.7.26
-      '@swc/core-linux-arm64-musl': 1.7.26
-      '@swc/core-linux-x64-gnu': 1.7.26
-      '@swc/core-linux-x64-musl': 1.7.26
-      '@swc/core-win32-arm64-msvc': 1.7.26
-      '@swc/core-win32-ia32-msvc': 1.7.26
-      '@swc/core-win32-x64-msvc': 1.7.26
-      '@swc/helpers': 0.5.15
 
   '@swc/counter@0.1.3': {}
 
@@ -19033,30 +18878,6 @@ snapshots:
       '@tsed/swagger': 8.3.5(@tsed/platform-http@8.3.5(@tsed/engines@8.3.5)(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5))
       change-case: 5.4.4
       tslib: 2.7.0
-
-  '@tsed/cli@6.1.4(@swc/types@0.1.17)(@tsed/cli-core@6.1.4(@babel/core@7.24.6)(@tsed/core@8.3.5)(@tsed/di@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/hooks@8.3.5)(ejs@3.1.10)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@tsed/core@8.3.5)(@tsed/di@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5))(typescript@5.4.2)':
-    dependencies:
-      '@swc-node/register': 1.10.9(@swc/core@1.7.26(@swc/helpers@0.5.15))(@swc/types@0.1.17)(typescript@5.4.2)
-      '@swc/core': 1.7.26(@swc/helpers@0.5.15)
-      '@swc/helpers': 0.5.15
-      '@tsed/cli-core': 6.1.4(@babel/core@7.24.6)(@tsed/core@8.3.5)(@tsed/di@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/hooks@8.3.5)(ejs@3.1.10)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
-      '@tsed/core': 8.3.5
-      '@tsed/di': 8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5))
-      '@tsed/hooks': 8.3.5
-      '@tsed/logger': 7.0.1
-      '@tsed/openspec': 8.3.5
-      '@tsed/schema': 8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)
-      chalk: 5.3.0
-      change-case: 5.4.4
-      esm-module-alias: 2.2.1
-      globby: 14.0.2
-      read-pkg-up: 11.0.0
-      semver: 7.6.3
-      tslib: 2.8.0
-    transitivePeerDependencies:
-      - '@swc/types'
-      - supports-color
-      - typescript
 
   '@tsed/common@6.43.0(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
@@ -22647,7 +22468,7 @@ snapshots:
       eslint: 8.41.0
       eslint-import-resolver-node: 0.3.6
       eslint-import-resolver-typescript: 2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0)
-      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-typescript@2.7.1)(eslint@8.41.0)
+      eslint-plugin-import: 2.26.0(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0))(eslint@8.41.0)
       eslint-plugin-jsx-a11y: 6.5.1(eslint@8.41.0)
       eslint-plugin-react: 7.30.1(eslint@8.41.0)
       eslint-plugin-react-hooks: 4.6.0(eslint@8.41.0)
@@ -22707,7 +22528,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.7.3(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.6)(eslint-import-resolver-typescript@2.7.1):
+  eslint-module-utils@2.7.3(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.6)(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0)):
     dependencies:
       debug: 3.2.7
       find-up: 2.1.0
@@ -22729,7 +22550,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.26.0(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-typescript@2.7.1)(eslint@8.41.0):
+  eslint-plugin-import@2.26.0(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0))(eslint@8.41.0):
     dependencies:
       array-includes: 3.1.5
       array.prototype.flat: 1.3.2
@@ -22737,7 +22558,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.41.0
       eslint-import-resolver-node: 0.3.6
-      eslint-module-utils: 2.7.3(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.6)(eslint-import-resolver-typescript@2.7.1)
+      eslint-module-utils: 2.7.3(@typescript-eslint/parser@5.59.7(eslint@8.41.0)(typescript@5.0.4))(eslint-import-resolver-node@0.3.6)(eslint-import-resolver-typescript@2.7.1(eslint-plugin-import@2.26.0)(eslint@8.41.0))
       has: 1.0.3
       is-core-module: 2.15.1
       is-glob: 4.0.3
@@ -22935,8 +22756,6 @@ snapshots:
       text-table: 0.2.0
     transitivePeerDependencies:
       - supports-color
-
-  esm-module-alias@2.2.1: {}
 
   esm@3.2.25: {}
 

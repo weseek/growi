@@ -17,7 +17,6 @@
   },
   "dependencies": {
     "@godaddy/terminus": "^4.12.1",
-    "@tsed/cli": "=6.1.4",
     "@tsed/cli-core": "=6.1.4",
     "@tsed/cli-generate-swagger": "=6.1.4",
     "@tsed/common": "=8.3.5",
