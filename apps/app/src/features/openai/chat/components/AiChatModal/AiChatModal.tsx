@@ -1,5 +1,5 @@
 import type { KeyboardEvent } from 'react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -193,6 +193,24 @@ const AiChatModalSubstance = (): JSX.Element => {
   return (
     <>
       <ModalBody className="pb-0 pt-3 pt-lg-4 px-3 px-lg-4">
+
+        <div className="text-muted py-3">
+          ここに設定したアシスタントの説明が入ります。ここに設定したアシスタントの説明が入ります。
+        </div>
+
+
+        <div className="mb-8">
+          <p>
+            アシスタントへの指示
+          </p>
+          <div className="p-3 alert alert-primary">
+            <p className="mb-0 text-break">
+              あなたは生成AIの専門家および、リサーチャーです。ナレッジベースのWikiツールである GROWIのAI機能に関する情報を提示したり、使われている技術に関する説明をしたりします。
+            </p>
+          </div>
+        </div>
+
+
         <div className="vstack gap-4 pb-4">
           { messageLogs.map(message => (
             <MessageCard key={message.id} role={message.isUserMessage ? 'user' : 'assistant'}>{message.content}</MessageCard>
@@ -315,7 +333,7 @@ export const AiChatModal = (): JSX.Element => {
     <Modal size="lg" isOpen={isOpened} toggle={closeRagSearchModal} className={moduleClass} scrollable>
 
       <ModalHeader tag="h4" toggle={closeRagSearchModal} className="pe-4">
-        <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">knowledge_assistant</span>
+        <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
         <span className="fw-bold">{t('modal_aichat.title')}</span>
         <span className="fs-5 text-body-secondary ms-3">{t('modal_aichat.title_beta_label')}</span>
       </ModalHeader>
