@@ -32,6 +32,11 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
   }, [openPageSelectModal, selectedPages]);
 
 
+  const clickRmoveSelectedPageHandler = useCallback((pageId: string) => {
+    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
+  }, [selectedPages]);
+
+
   return (
     <div className="px-4">
       <ModalBody>
@@ -81,7 +86,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               <Label className="mb-0">参照するページ</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
-            <SelectedPageList selectedPages={selectedPages} />
+            <SelectedPageList selectedPages={selectedPages} onRemove={clickRmoveSelectedPageHandler} />
             <button
               type="button"
               className="btn btn-outline-primary d-flex align-items-center gap-1"
