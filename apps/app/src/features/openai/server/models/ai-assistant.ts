@@ -40,6 +40,7 @@ interface AiAssistant {
   name: string;
   description: string
   additionalInstruction: string
+  pagePaths: string[],
   vectorStore: Ref<VectorStore>
   types: AiAssistantType[]
   owner: Ref<IUser>
@@ -73,6 +74,10 @@ const schema = new Schema<AiAssistantDocument>(
       required: true,
       default: '',
     },
+    pagePaths: [{
+      type: String,
+      required: true,
+    }],
     vectorStore: {
       type: Schema.Types.ObjectId,
       ref: 'VectorStore',
