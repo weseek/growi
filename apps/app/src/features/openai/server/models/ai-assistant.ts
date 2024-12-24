@@ -119,7 +119,7 @@ const schema = new Schema<AiAssistantDocument>(
     },
     shareScope: {
       type: String,
-      enum: Object.values(AiAssistantOwnerAccessScope),
+      enum: Object.values(AiAssistantShareScope),
       required: true,
     },
     ownerAccessScope: {
