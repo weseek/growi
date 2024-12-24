@@ -7,7 +7,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev:pdf-converter:ci": "nodemon -r \"dotenv-flow/config\" src/index.ts --ci",
+    "dev:pdf-converter:ci": "node --import @swc-node/register/esm-register -r \"dotenv-flow/config\" src/index.ts --ci",
     "dev:pdf-converter": "nodemon -r \"dotenv-flow/config\" src/index.ts",
     "start:prod:ci": "pnpm start:prod --ci",
     "start:prod": "node dist/index.js",
