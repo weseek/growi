@@ -10,6 +10,7 @@
   "only_me": "Seulement moi",
   "only_inside_the_group": "Utilisateurs du groupe",
   "optional": "Optionnel",
+  "days": "jours",
   "security_settings": {
     "security_settings": "Paramètres de sécurité",
     "scope_of_page_disclosure": "Confidentialité de la page",
@@ -362,9 +363,11 @@
     "file_uploading": "Téléversement de fichiers",
     "enable_files_except_image": "Autorise le téléversement de fichiers de n'importe quel type. Lorsque désactivé, seul les fichiers de type image sont autorisés.",
     "attach_enable": "Autorise le téléversement de fichiers de n'importe quel type",
-    "enable_page_bulk_export": "Autoriser l'exportation groupée de pages et de leurs pages subordonnées",
-    "page_bulk_export_explanation": "Si autorisé, l'exportation groupée sera possible à partir du menu de la page.",
-    "page_bulk_export_warning": "La période de téléchargement des résultats exportés est de 24 heures, après quoi ils seront supprimés. Pendant cette période, l’exécution consécutive de plusieurs exportations volumineuses peut remplir le système de fichiers.",
+    "page_bulk_export_settings": "Paramètres d'exportation de pages par lots",
+    "enable_page_bulk_export": "Activer l'exportation groupée",
+    "page_bulk_export_explanation": "Active une fonctionnalité qui permet à tous les utilisateurs d'exporter simultanément toutes les pages sélectionnées dans le menu des pages et leurs pages subordonnées. Les données exportées seront automatiquement supprimées une fois la période de conservation écoulée.",
+    "page_bulk_export_warning": "La fonctionnalité d’exportation de pages en masse est disponible pour tous les utilisateurs. Afin de maintenir les ressources du système, nous demandons votre coopération pour utiliser le montant minimum nécessaire. Si vous êtes administrateur, veuillez en informer tous les utilisateurs.",
+    "page_bulk_export_storage_period": "Date limite de téléchargement",
     "update": "Sauvegarder",
     "mail_settings": "Configuration e-mail",
     "mailer_is_not_set_up": "Paramètres e-mail non configurés.",
@@ -1065,7 +1068,8 @@
     "ADMIN_USER_GROUP_ADD_USER": "Ajouter l'utilisateur au groupe",
     "ADMIN_SEARCH_CONNECTION": "Essai de reconnexion Elasticsearch",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Nomarliser l'index Elasticsearch",
-    "ADMIN_SEARCH_INDICES_REBUILD": "Reconstruire l'index Elasticsearch"
+    "ADMIN_SEARCH_INDICES_REBUILD": "Reconstruire l'index Elasticsearch",
+    "ADMIN_PAGE_BULK_EXPORT_SETTINGS_UPDATE": "Mettre à jour les paramètres d'exportation groupée de la page"
   },
   "g2g": {
     "transfer_success": "Transfert de GROWI vers GROWI complété!",
