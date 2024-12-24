@@ -4,7 +4,7 @@ import express from 'express';
 import '@tsed/swagger';
 import '@tsed/terminus';
 
-import * as Controllers from './controllers';
+import * as Controllers from './controllers/index.js';
 
 import '@tsed/platform-express';
 

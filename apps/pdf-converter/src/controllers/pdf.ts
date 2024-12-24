@@ -5,7 +5,7 @@ import {
   Post, Returns, Enum, Description,
 } from '@tsed/schema';
 
-import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert';
+import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../service/pdf-convert.js';
 
 @Controller('/pdf')
 class PdfCtrl {
