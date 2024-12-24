@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Collapse,
   Modal, ModalBody, ModalFooter, ModalHeader,
-  UncontrolledTooltip, Label,
+  UncontrolledTooltip, Label, Input,
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -194,6 +194,21 @@ const AiChatModalSubstance = (): JSX.Element => {
   return (
     <>
       <ModalBody className="pb-0 pt-3 pt-lg-4 px-3 px-lg-4">
+        <div className="d-flex align-items-center mb-4">
+          <Input type="select" className="border rounded">
+            <option>
+              GROWI AI の機能について
+            </option>
+          </Input>
+
+          <button type="button" className="btn btn-outline-secondary bg-transparent ms-2">
+            <span className="fs-5 material-symbols-outlined">edit</span>
+          </button>
+
+          <button type="button" className="btn btn-outline-secondary bg-transparent ms-2">
+            <span className="fs-5 material-symbols-outlined">add</span>
+          </button>
+        </div>
 
         <div className="text-muted mb-4">
           ここに設定したアシスタントの説明が入ります。ここに設定したアシスタントの説明が入ります。
@@ -210,19 +225,17 @@ const AiChatModalSubstance = (): JSX.Element => {
           </div>
         </div>
 
-        <div className="mb-4">
-          <div className="d-flex align-items-center mb-2">
-            <Label className="mb-0">参照するページ</Label>
-            <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
-          </div>
-          <SelectedPageList selectedPages={[
-            { page: { _id: '1', path: '/Project/GROWI/新機能/GROWI AI' }, isIncludeSubPage: true },
-            { page: { _id: '2', path: '/AI導入検討/調査' }, isIncludeSubPage: false },
-          ]}
-          />
+        <div className="d-flex align-items-center mb-2">
+          <Label className="mb-0">参照するページ</Label>
+          <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
         </div>
+        <SelectedPageList selectedPages={[
+          { page: { _id: '1', path: '/Project/GROWI/新機能/GROWI AI' }, isIncludeSubPage: true },
+          { page: { _id: '2', path: '/AI導入検討/調査' }, isIncludeSubPage: false },
+        ]}
+        />
 
-        <div className="vstack gap-4 pb-4">
+        <div className="vstack gap-4 pb-2">
           { messageLogs.map(message => (
             <MessageCard key={message.id} role={message.isUserMessage ? 'user' : 'assistant'}>{message.content}</MessageCard>
           )) }
