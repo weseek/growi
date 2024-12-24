@@ -761,7 +761,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     ns: 'crowi',
     key: 'app:bulkExportDownloadExpirationSeconds',
     type: ValueType.NUMBER,
-    default: 86400, // 1 day
+    default: 259200, // 3 days
   },
   BULK_EXPORT_JOB_CRON_SCHEDULE: {
     ns: 'crowi',

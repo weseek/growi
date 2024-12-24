@@ -54,17 +54,20 @@ const PageBulkExportSelectModal = (): JSX.Element => {
   return (
     <>
       {status != null && (
-        <Modal isOpen={status.isOpened} toggle={close}>
+        <Modal isOpen={status.isOpened} toggle={close} size="lg">
           <ModalHeader tag="h4" toggle={close}>
             {t('page_export.bulk_export')}
           </ModalHeader>
           <ModalBody>
-            {t('page_export.choose_export_format')}
-            <div className="my-1">
-              <small className="text-muted">
-                {t('page_export.bulk_export_notice')}
-              </small>
-            </div>
+            <p className="card custom-card bg-warning-subtle pt-3 px-3">
+              {t('page_export.bulk_export_download_explanation')}
+              <span className="mt-3"><span className="material-symbols-outlined me-1">warning</span>{t('Warning')}</span>
+              <ul className="mt-2">
+                <li>{t('page_export.bulk_export_exec_time_warning')}</li>
+                <li>{t('page_export.large_bulk_export_warning')}</li>
+              </ul>
+            </p>
+            {t('page_export.choose_export_format')}:
             <div className="d-flex justify-content-center mt-3">
               <button className="btn btn-primary" type="button" onClick={() => startBulkExport(PageBulkExportFormat.md)}>
                 {t('page_export.markdown')}
