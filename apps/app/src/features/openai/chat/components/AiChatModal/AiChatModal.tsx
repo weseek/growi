@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Collapse,
   Modal, ModalBody, ModalFooter, ModalHeader,
-  UncontrolledTooltip,
+  UncontrolledTooltip, Label,
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -14,6 +14,7 @@ import { toastError } from '~/client/util/toastr';
 import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
+import { SelectedPageList } from '../../../client/components/Common/SelectedPageList';
 import { useRagSearchModal } from '../../../client/stores/rag-search';
 import { MessageErrorCode, StreamErrorCode } from '../../../interfaces/message-error';
 
@@ -194,12 +195,11 @@ const AiChatModalSubstance = (): JSX.Element => {
     <>
       <ModalBody className="pb-0 pt-3 pt-lg-4 px-3 px-lg-4">
 
-        <div className="text-muted py-3">
+        <div className="text-muted mb-4">
           ここに設定したアシスタントの説明が入ります。ここに設定したアシスタントの説明が入ります。
         </div>
 
-
-        <div className="mb-8">
+        <div className="mb-4">
           <p>
             アシスタントへの指示
           </p>
@@ -210,6 +210,17 @@ const AiChatModalSubstance = (): JSX.Element => {
           </div>
         </div>
 
+        <div className="mb-4">
+          <div className="d-flex align-items-center mb-2">
+            <Label className="mb-0">参照するページ</Label>
+            <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
+          </div>
+          <SelectedPageList selectedPages={[
+            { page: { _id: '1', path: '/Project/GROWI/新機能/GROWI AI' }, isIncludeSubPage: true },
+            { page: { _id: '2', path: '/AI導入検討/調査' }, isIncludeSubPage: false },
+          ]}
+          />
+        </div>
 
         <div className="vstack gap-4 pb-4">
           { messageLogs.map(message => (
