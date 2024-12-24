@@ -1,11 +1,10 @@
-import type { ReadStream } from 'fs';
 import type { Writable } from 'stream';
 import { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import type { Response } from 'express';
 
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import { FilePathOnStoragePrefix, ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
@@ -76,7 +75,7 @@ class LocalFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
@@ -108,10 +107,10 @@ module.exports = function(crowi) {
 
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
-  function getFilePathOnStorage(attachment) {
+  function getFilePathOnStorage(attachment: IAttachmentDocument) {
     const dirName = (attachment.page != null)
-      ? 'attachment'
-      : 'user';
+      ? FilePathOnStoragePrefix.attachment
+      : FilePathOnStoragePrefix.user;
     const filePath = path.posix.join(basePath, dirName, attachment.fileName);
 
     return filePath;
