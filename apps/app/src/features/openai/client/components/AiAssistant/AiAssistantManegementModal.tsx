@@ -117,15 +117,37 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 
           <FormGroup>
             <div className="d-flex align-items-center mb-2">
-              <Label className="mb-0">アシスタントの役割</Label>
-              <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
+              <Label className="mb-0 me-2">アシスタントへの指示</Label>
+              <label className="form-label form-check-label">
+                <span className="badge text-bg-danger mt-2">
+                  必須
+                </span>
+              </label>
             </div>
             <Input
               type="textarea"
-              placeholder="アシスタントの役割をいれてください"
+              placeholder="アシスタントに実行して欲しい内容を具体的に記入してください"
               className="border rounded"
               rows={4}
             />
+          </FormGroup>
+
+          <FormGroup>
+            <div className="d-flex align-items-center mb-2">
+              <Label className="mb-0 me-2">アシスタントのメモ</Label>
+              <label className="form-label form-check-label">
+                <span className="badge text-bg-secondary mt-2">
+                  必須
+                </span>
+              </label>
+            </div>
+            <Input
+              type="textarea"
+              placeholder="内容や用途のメモを表示させることができます"
+              className="border rounded"
+              rows={4}
+            />
+            <p className="mt-1 text-muted">メモ内容はアシスタントには影響しません。</p>
           </FormGroup>
         </Form>
       </ModalBody>
