@@ -20,7 +20,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
   const { open: openPageSelectModal } = usePageSelectModal();
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
 
-  const onClickOpenPageSelectModalButton = useCallback(() => {
+  const clickOpenPageSelectModalHandler = useCallback(() => {
     const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
       const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
       if (page._id != null && !selectedPageIds.includes(page._id)) {
@@ -90,7 +90,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
             <button
               type="button"
               className="btn btn-outline-primary d-flex align-items-center gap-1"
-              onClick={onClickOpenPageSelectModalButton}
+              onClick={clickOpenPageSelectModalHandler}
             >
               <span>+</span>
               追加する
