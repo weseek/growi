@@ -16,7 +16,7 @@ const AiAssistantType = {
   // LEARNING: 'learning',
 } as const;
 
-const AiAssistantSharingScope = {
+const AiAssistantShareScope = {
   PUBLIC: 'public',
   ONLY_ME: 'onlyMe',
   USER_GROUP: 'userGroup',
@@ -33,7 +33,7 @@ const AiAssistantOwnerAccessScope = {
 *  Interfaces
 */
 type AiAssistantType = typeof AiAssistantType[keyof typeof AiAssistantType];
-type AiAssistantSharingScope = typeof AiAssistantSharingScope[keyof typeof AiAssistantSharingScope];
+type AiAssistantShareScope = typeof AiAssistantShareScope[keyof typeof AiAssistantShareScope];
 type AiAssistantOwnerAccessScope = typeof AiAssistantOwnerAccessScope[keyof typeof AiAssistantOwnerAccessScope];
 
 interface AiAssistant {
@@ -45,7 +45,7 @@ interface AiAssistant {
   owner: Ref<IUser>
   grantedUsers?: IUser[]
   grantedGroups?: IGrantedGroup[]
-  sharingScope: AiAssistantSharingScope
+  shareScope: AiAssistantShareScope
   ownerAccessScope: AiAssistantOwnerAccessScope
 }
 
@@ -117,9 +117,9 @@ const schema = new Schema<AiAssistantDocument>(
       }, 'grantedGroups contains non unique item'],
       default: [],
     },
-    sharingScope: {
+    shareScope: {
       type: String,
-      enum: Object.values(AiAssistantSharingScope),
+      enum: Object.values(AiAssistantOwnerAccessScope),
       required: true,
     },
     ownerAccessScope: {
