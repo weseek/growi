@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -8,42 +8,19 @@ import {
 import type { IPageForItem } from '~/interfaces/page';
 import { usePageSelectModal } from '~/stores/modal';
 
+import type { SelectedPage } from '../../../interfaces/selected-page';
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
+import { SelectedPageList } from '../Common/SelectedPageList';
 
 import styles from './AiAssistantManegementModal.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 
-
-type SelectedPage = {
-  page: IPageForItem,
-  isIncludeSubPage: boolean,
-}
-
-const SelectedPageList = memo(({ selectedPages }: { selectedPages: SelectedPage[] }): JSX.Element => {
-  const { t } = useTranslation();
-
-  if (selectedPages.length === 0) {
-    return <></>;
-  }
-
-  return (
-    <div className="mb-3">
-      {selectedPages.map(({ page, isIncludeSubPage }) => (
-        <p key={page._id} className="mb-1">
-          <code>{ page.path }</code>
-          {isIncludeSubPage && <span className="badge rounded-pill text-bg-secondary ms-2">{t('Include Subordinated Page')}</span>}
-        </p>
-      ))}
-    </div>
-  );
-});
-
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
   const { open: openPageSelectModal } = usePageSelectModal();
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
 
-  const onClickOpenPageSelectModalButton = useCallback(() => {
+  const clickOpenPageSelectModalHandler = useCallback(() => {
     const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
       const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
       if (page._id != null && !selectedPageIds.includes(page._id)) {
@@ -53,6 +30,11 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 
     openPageSelectModal({ onSelected, isHierarchicalSelectionMode: true });
   }, [openPageSelectModal, selectedPages]);
+
+
+  const clickRmoveSelectedPageHandler = useCallback((pageId: string) => {
+    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
+  }, [selectedPages]);
 
 
   return (
@@ -104,11 +86,11 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               <Label className="mb-0">参照するページ</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
-            <SelectedPageList selectedPages={selectedPages} />
+            <SelectedPageList selectedPages={selectedPages} onRemove={clickRmoveSelectedPageHandler} />
             <button
               type="button"
               className="btn btn-outline-primary d-flex align-items-center gap-1"
-              onClick={onClickOpenPageSelectModalButton}
+              onClick={clickOpenPageSelectModalHandler}
             >
               <span>+</span>
               追加する
