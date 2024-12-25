@@ -40,7 +40,7 @@ interface AiAssistant {
   name: string;
   description: string
   additionalInstruction: string
-  pagePaths: string[],
+  pagePathPatterns: string[],
   vectorStore: Ref<VectorStore>
   types: AiAssistantType[]
   owner: Ref<IUser>
@@ -74,7 +74,7 @@ const schema = new Schema<AiAssistantDocument>(
       required: true,
       default: '',
     },
-    pagePaths: [{
+    pagePathPatterns: [{
       type: String,
       required: true,
     }],
