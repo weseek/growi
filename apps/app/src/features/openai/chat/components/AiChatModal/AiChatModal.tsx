@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import {
   Collapse,
   Modal, ModalBody, ModalFooter, ModalHeader,
-  UncontrolledTooltip, Label, Input,
+  UncontrolledTooltip, Input,
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -194,7 +194,7 @@ const AiChatModalSubstance = (): JSX.Element => {
   return (
     <>
       <ModalBody className="pb-0 pt-3 pt-lg-4 px-3 px-lg-4">
-        <div className="d-flex align-items-center mb-4">
+        <div className="d-flex mb-4">
           <Input type="select" className="border rounded">
             <option>
               GROWI AI の機能について
@@ -215,9 +215,7 @@ const AiChatModalSubstance = (): JSX.Element => {
         </div>
 
         <div className="mb-4">
-          <p>
-            アシスタントへの指示
-          </p>
+          <p className="mb-2">アシスタントへの指示</p>
           <div className="p-3 alert alert-primary">
             <p className="mb-0 text-break">
               あなたは生成AIの専門家および、リサーチャーです。ナレッジベースのWikiツールである GROWIのAI機能に関する情報を提示したり、使われている技術に関する説明をしたりします。
@@ -226,7 +224,7 @@ const AiChatModalSubstance = (): JSX.Element => {
         </div>
 
         <div className="d-flex align-items-center mb-2">
-          <Label className="mb-0">参照するページ</Label>
+          <p className="mb-0">参照するページ</p>
           <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
         </div>
         <SelectedPageList selectedPages={[
