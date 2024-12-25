@@ -1,7 +1,7 @@
 import { Logger } from '@tsed/common';
 import { Inject, Injectable } from '@tsed/di';
 
-import PdfConvertService from '../service/pdf-convert';
+import PdfConvertService from '../service/pdf-convert.js';
 
 @Injectable()
 class TerminusCtrl {
