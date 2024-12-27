@@ -29,6 +29,48 @@ module.exports = (crowi: Crowi): Router => {
 
   const minPasswordLength = configManager.getConfig('app:minPasswordLength');
 
+  /**
+   * @swagger
+   *
+   *  /installer:
+   *    post:
+   *      tags: [Install]
+   *      security: []
+   *      operationId: Install
+   *      summary: /installer
+   *      description: Install GROWI
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                registerForm:
+   *                  type: object
+   *                  properties:
+   *                    name:
+   *                      type: string
+   *                    username:
+   *                      type: string
+   *                    email:
+   *                      type: string
+   *                    password:
+   *                      type: string
+   *                    app:globalLang:
+   *                      type: string
+   *                      default: en_US
+   *      responses:
+   *        200:
+   *          description: import settings params
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  message:
+   *                    type: string
+   *                    example: Installation completed (Logged in as an admin user)
+   */
   // eslint-disable-next-line max-len
   router.post('/', registerRules(minPasswordLength), registerValidation, addActivity, async(req: FormRequest, res: ApiV3Response) => {
     const appService = crowi.appService;

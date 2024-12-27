@@ -1,8 +1,25 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.6](https://github.com/weseek/growi/compare/v7.1.5...v7.1.6) - 2024-12-26
+
+### 💎 Features
+
+* feat(ai): Save file to VectorStore in HTML format   (#9462) @miya
+
+### 🐛 Bug Fixes
+
+* fix: remark-lsx pagination (#9513) @miya
+* fix: Spelling miss of external_link in i18n (#9456) @reiji-h
+* fix: Wider copy to clipboard area (#9450) @Ryosei-Fukushima
+* fix: Error when creating pages with deep hierarchy (#9487) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump next from 14.2.13 to 14.2.15 (#9501) @dependabot
 
 ## [v7.1.5](https://github.com/weseek/growi/compare/v7.1.4...v7.1.5) - 2024-12-13
 

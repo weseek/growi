@@ -81,6 +81,7 @@ module.exports = {
         'UserGroups',
         'Users Management',
         'FullTextSearch Management',
+        'Install',
       ],
     },
     {
