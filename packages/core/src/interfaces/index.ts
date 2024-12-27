@@ -4,6 +4,7 @@ export * from './color-scheme';
 export * from './config-manager';
 export * from './common';
 export * from './external-account';
+export * from './growi-app-info';
 export * from './growi-facade';
 export * from './growi-theme-metadata';
 export * from './has-object-id';

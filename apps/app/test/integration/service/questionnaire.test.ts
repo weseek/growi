@@ -3,10 +3,11 @@ import mongoose from 'mongoose';
 import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
 import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
 import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
+import type Crowi from '../../../src/server/crowi';
 import { getInstance } from '../setup-crowi';
 
 describe('QuestionnaireService', () => {
-  let crowi;
+  let crowi: Crowi;
   let user;
 
   beforeAll(async() => {
@@ -55,15 +56,19 @@ describe('QuestionnaireService', () => {
       delete growiInfo.osInfo;
 
       expect(growiInfo).toEqual({
-        activeExternalAccountTypes: ['saml', 'github'],
-        appSiteUrl: 'http://growi.test.jp',
-        installedAt: new Date('2000-01-01'),
-        installedAtByOldestUser: new Date('2000-01-01'),
-        attachmentType: 'aws',
-        deploymentType: 'growi-docker-compose',
-        type: 'on-premise',
         version: crowi.version,
+        appSiteUrl: 'http://growi.test.jp',
+        type: 'on-premise',
         wikiType: 'closed',
+        deploymentType: 'growi-docker-compose',
+        additionalInfo: {
+          installedAt: new Date('2000-01-01'),
+          installedAtByOldestUser: new Date('2000-01-01'),
+          currentUsersCount: 7,
+          currentActiveUsersCount: 1,
+          attachmentType: 'aws',
+          activeExternalAccountTypes: ['saml', 'github'],
+        },
       });
     });
 
@@ -75,7 +80,7 @@ describe('QuestionnaireService', () => {
 
       test('Should return app url string', async() => {
         const growiInfo = await crowi.questionnaireService.getGrowiInfo();
-        expect(growiInfo.appSiteUrl).toBe(null);
+        expect(growiInfo.appSiteUrl).toBeUndefined();
         expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
         expect(growiInfo.appSiteUrlHashed).toBeTruthy();
       });

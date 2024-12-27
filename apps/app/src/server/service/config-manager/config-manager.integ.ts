@@ -1,6 +1,6 @@
 import { mock } from 'vitest-mock-extended';
 
-import { GrowiDeploymentType, GrowiServiceType } from '~/interfaces/system';
+import { GrowiDeploymentType, GrowiServiceType } from '@growi/core/dist/consts';
 
 import { Config } from '../../models/config';
 import type { S2sMessagingService } from '../s2s-messaging/base';

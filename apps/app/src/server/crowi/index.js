@@ -76,6 +76,12 @@ class Crowi {
   /** @type {PassportService} */
   passportService;
 
+  /** @type {QuestionnaireService} */
+  questionnaireService;
+
+  /** @type {QuestionnaireCronService} */
+  questionnaireCronService;
+
   /** @type {SearchService} */
   searchService;
 

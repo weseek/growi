@@ -17,6 +17,7 @@ import { StatusType } from '../../../interfaces/questionnaire-answer-status';
 import ProactiveQuestionnaireAnswer from '../../models/proactive-questionnaire-answer';
 import QuestionnaireAnswer from '../../models/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../../models/questionnaire-answer-status';
+import { convertToLegacyFormat } from '../../util/convert-to-legacy-format';
 
 
 const logger = loggerFactory('growi:routes:apiv3:questionnaire');
@@ -81,7 +82,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
-      const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
+      const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
@@ -96,8 +97,10 @@ module.exports = (crowi: Crowi): Router => {
         answeredAt: new Date(),
       };
 
+      const proactiveQuestionnaireAnswerLegacy = convertToLegacyFormat(proactiveQuestionnaireAnswer);
+
       try {
-        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswer);
+        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswerLegacy);
       }
       catch (err) {
         if (err.request != null) {
@@ -139,8 +142,10 @@ module.exports = (crowi: Crowi): Router => {
         questionnaireOrder: req.body.questionnaireOrderId,
       };
 
+      const questionnaireAnswerLegacy = convertToLegacyFormat(questionnaireAnswer);
+
       try {
-        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
+        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswerLegacy);
       }
       catch (err) {
         if (err.request != null) {
