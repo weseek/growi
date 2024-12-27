@@ -1,18 +1,42 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
 } from 'reactstrap';
 
+import type { IPageForItem } from '~/interfaces/page';
+import { usePageSelectModal } from '~/stores/modal';
+
+import type { SelectedPage } from '../../../interfaces/selected-page';
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
+import { SelectedPageList } from '../Common/SelectedPageList';
 
 import styles from './AiAssistantManegementModal.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 
-
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
+  const { open: openPageSelectModal } = usePageSelectModal();
+  const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
+
+  const clickOpenPageSelectModalHandler = useCallback(() => {
+    const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
+      const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
+      if (page._id != null && !selectedPageIds.includes(page._id)) {
+        setSelectedPages([...selectedPages, { page, isIncludeSubPage }]);
+      }
+    };
+
+    openPageSelectModal({ onSelected, isHierarchicalSelectionMode: true });
+  }, [openPageSelectModal, selectedPages]);
+
+
+  const clickRmoveSelectedPageHandler = useCallback((pageId: string) => {
+    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
+  }, [selectedPages]);
+
+
   return (
     <div className="px-4">
       <ModalBody>
@@ -62,10 +86,11 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               <Label className="mb-0">参照するページ</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
+            <SelectedPageList selectedPages={selectedPages} onRemove={clickRmoveSelectedPageHandler} />
             <button
               type="button"
               className="btn btn-outline-primary d-flex align-items-center gap-1"
-              onClick={() => {}}
+              onClick={clickOpenPageSelectModalHandler}
             >
               <span>+</span>
               追加する
@@ -74,15 +99,37 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 
           <FormGroup>
             <div className="d-flex align-items-center mb-2">
-              <Label className="mb-0">アシスタントの役割</Label>
-              <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
+              <Label className="mb-0 me-2">アシスタントへの指示</Label>
+              <label className="form-label form-check-label">
+                <span className="badge text-bg-danger mt-2">
+                  必須
+                </span>
+              </label>
             </div>
             <Input
               type="textarea"
-              placeholder="アシスタントの役割をいれてください"
+              placeholder="アシスタントに実行して欲しい内容を具体的に記入してください"
               className="border rounded"
               rows={4}
             />
+          </FormGroup>
+
+          <FormGroup>
+            <div className="d-flex align-items-center mb-2">
+              <Label className="mb-0 me-2">アシスタントのメモ</Label>
+              <label className="form-label form-check-label">
+                <span className="badge text-bg-secondary mt-2">
+                  必須
+                </span>
+              </label>
+            </div>
+            <Input
+              type="textarea"
+              placeholder="内容や用途のメモを表示させることができます"
+              className="border rounded"
+              rows={4}
+            />
+            <p className="mt-1 text-muted">メモ内容はアシスタントには影響しません。</p>
           </FormGroup>
         </Form>
       </ModalBody>

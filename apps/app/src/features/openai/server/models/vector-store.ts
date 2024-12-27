@@ -9,7 +9,7 @@ export const VectorStoreScopeType = {
 export type VectorStoreScopeType = typeof VectorStoreScopeType[keyof typeof VectorStoreScopeType];
 
 const VectorStoreScopeTypes = Object.values(VectorStoreScopeType);
-interface VectorStore {
+export interface VectorStore {
   vectorStoreId: string
   scopeType: VectorStoreScopeType
   isDeleted: boolean

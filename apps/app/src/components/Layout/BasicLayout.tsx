@@ -39,6 +39,7 @@ const AiAssistantManegementModal = dynamic(
   () => import('~/features/openai/client/components/AiAssistant/AiAssistantManegementModal')
     .then(mod => mod.AiAssistantManegementModal), { ssr: false },
 );
+const PageSelectModal = dynamic(() => import('~/client/components/PageSelectModal/PageSelectModal').then(mod => mod.PageSelectModal), { ssr: false });
 
 type Props = {
   children?: ReactNode
@@ -70,6 +71,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <DeleteAttachmentModal />
       <DeleteBookmarkFolderModal />
       <PutbackPageModal />
+      <PageSelectModal />
       <SearchModal />
       <AiChatModal />
       <AiAssistantManegementModal />
