@@ -261,6 +261,13 @@ class PdfConvertService implements OnInit {
 
     await this.puppeteerCluster.task(async({ page, data: htmlString }) => {
       await page.setContent(htmlString, { waitUntil: 'domcontentloaded' });
+      await page.addStyleTag({
+        content: `
+          body {
+            font-family: 'Lato', 'IPAGothic', 'Noto Sans CJK';
+          }
+        `,
+      });
       await page.emulateMediaType('screen');
       const pdfResult = await page.pdf({
         margin: {

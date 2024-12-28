@@ -61,7 +61,7 @@ ENV LANG="ja_JP.UTF-8"
 ENV optDir="/opt"
 ENV appDir="${optDir}/pdf-converter"
 
-RUN apt-get update && apt-get install -y chromium locales fonts-ipafont fonts-ipaexfont fonts-ipafont-gothic fonts-ipafont-mincho \
+RUN apt-get update && apt-get install -y chromium fonts-lato fonts-ipafont-gothic fonts-noto-cjk \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*; \
     echo "ja_JP UTF-8" > /etc/locale.gen && locale-gen;
