@@ -70,7 +70,7 @@
   },
   "devDependencies": {
     "@popperjs/core": "^2.11.8",
-    "@tsed/core": "^6.43.0",
+    "@tsed/core": "=6.43.0",
     "@tsed/exceptions": "=6.43.0",
     "@tsed/json-mapper": "=6.43.0",
     "@tsed/logger": "=6.7.8",
