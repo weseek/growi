@@ -7,7 +7,9 @@
 
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "@tsed/core": ["./node_modules/@tsed/core"],
+      "@tsed/schema": ["./node_modules/@tsed/schema"],
     },
 
     /* TODO: remove below flags for strict checking */
