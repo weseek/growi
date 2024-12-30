@@ -8,6 +8,7 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"],
+      // force package to local node_modules since pnpm reads wrong hoisted tsed version used in pdf-converter (https://github.com/pnpm/pnpm/issues/7158)
       "@tsed/core": ["./node_modules/@tsed/core"],
       "@tsed/schema": ["./node_modules/@tsed/schema"],
       "@tsed/exceptions": ["./node_modules/@tsed/exceptions"],
