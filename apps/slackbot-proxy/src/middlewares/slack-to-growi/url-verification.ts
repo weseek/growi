@@ -1,12 +1,12 @@
 import {
-  MiddlewareMethods, Middleware, Req, Res, Next,
+  IMiddleware, Middleware, Req, Res, Next,
 } from '@tsed/common';
 
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 
 
 @Middleware()
-export class UrlVerificationMiddleware implements MiddlewareMethods {
+export class UrlVerificationMiddleware implements IMiddleware {
 
   async use(@Req() req: SlackOauthReq, @Res() res: Res, @Next() next: Next): Promise<void> {
 

@@ -10,6 +10,9 @@
       "~/*": ["./src/*"],
       "@tsed/core": ["./node_modules/@tsed/core"],
       "@tsed/schema": ["./node_modules/@tsed/schema"],
+      "@tsed/exceptions": ["./node_modules/@tsed/exceptions"],
+      "@tsed/common": ["./node_modules/@tsed/common"],
+      "@tsed/di": ["./node_modules/@tsed/di"],
     },
 
     /* TODO: remove below flags for strict checking */

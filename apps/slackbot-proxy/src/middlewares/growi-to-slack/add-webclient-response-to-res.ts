@@ -1,6 +1,6 @@
 import { ErrorCode } from '@slack/web-api';
 import {
-  MiddlewareMethods, Middleware, Next, Req, Res,
+  IMiddleware, Middleware, Next, Req, Res,
 } from '@tsed/common';
 
 
@@ -11,7 +11,7 @@ export type WebclientRes = Res & {
 
 
 @Middleware()
-export class AddWebclientResponseToRes implements MiddlewareMethods {
+export class AddWebclientResponseToRes implements IMiddleware {
 
   use(@Req() req: Req, @Res() res: WebclientRes, @Next() next: Next): void {
 

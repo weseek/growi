@@ -1,11 +1,11 @@
 import type { RequestFromSlack } from '@growi/slack';
 import {
-  type MiddlewareMethods, Middleware, Next, Req,
+  type IMiddleware, Middleware, Next, Req,
 } from '@tsed/common';
 
 
 @Middleware()
-export class ParseInteractionPayloadMiddleare implements MiddlewareMethods {
+export class ParseInteractionPayloadMiddleare implements IMiddleware {
 
   use(@Req() req: RequestFromSlack, @Next() next: Next): void {
 

@@ -1,6 +1,6 @@
 import { AuthorizeResult, InstallationQuery } from '@slack/oauth';
 import {
-  MiddlewareMethods, Inject, Middleware, Next, Req, Res,
+  IMiddleware, Inject, Middleware, Next, Req, Res,
 } from '@tsed/common';
 import Logger from 'bunyan';
 import createError from 'http-errors';
@@ -40,7 +40,7 @@ const getCommonMiddleware = (query:InstallationQuery<boolean>, installerService:
   };
 };
 @Middleware()
-export class AuthorizeCommandMiddleware implements MiddlewareMethods {
+export class AuthorizeCommandMiddleware implements IMiddleware {
 
   private logger: Logger;
 
@@ -69,7 +69,7 @@ export class AuthorizeCommandMiddleware implements MiddlewareMethods {
 }
 
 @Middleware()
-export class AuthorizeInteractionMiddleware implements MiddlewareMethods {
+export class AuthorizeInteractionMiddleware implements IMiddleware {
 
   private logger: Logger;
 
@@ -105,7 +105,7 @@ export class AuthorizeInteractionMiddleware implements MiddlewareMethods {
 
 }
 @Middleware()
-export class AuthorizeEventsMiddleware implements MiddlewareMethods {
+export class AuthorizeEventsMiddleware implements IMiddleware {
 
   private logger: Logger;
 

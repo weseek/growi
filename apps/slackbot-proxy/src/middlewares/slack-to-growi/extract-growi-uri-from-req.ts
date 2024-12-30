@@ -1,5 +1,5 @@
 import {
-  MiddlewareMethods, Inject, Middleware, Next, Req, Res,
+  IMiddleware, Inject, Middleware, Next, Req, Res,
 } from '@tsed/common';
 
 import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
@@ -8,7 +8,7 @@ import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/V
 
 
 @Middleware()
-export class ExtractGrowiUriFromReq implements MiddlewareMethods {
+export class ExtractGrowiUriFromReq implements IMiddleware {
 
   @Inject()
   viewInteractionPayloadDelegator: ViewInteractionPayloadDelegator;
