@@ -39,6 +39,7 @@
     "@slack/web-api": "^6.2.4",
     "@tsed/common": "=7.85.1",
     "@tsed/di": "=7.85.1",
+    "@tsed/logger": "=6.7.8",
     "@tsed/platform-express": "=7.85.1",
     "@tsed/schema": "=7.85.1",
     "@tsed/swagger": "=7.85.1",
