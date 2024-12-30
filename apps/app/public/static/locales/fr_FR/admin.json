@@ -200,9 +200,9 @@
         "id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
         "username_detail": "Spécifications des liaisons <code>username</code> lors de la création de nouveaux utilisateurs",
         "name_detail": "Spécifications des liaisons <code>name</code> lors de la création de nouveaux utilisateurs",
-        "mapping_detail": "Spécifications des liaisons pour %s lors de la création de nouveaux utilisateurs",
+        "mapping_detail": "Spécifications des liaisons pour {{target}} lors de la création de nouveaux utilisateurs",
         "register_1": "Contacter votre administrateur OIDC",
-        "register_2": "Configurer l'application OAuth avec l'un des URL de redirection autorisés avec <code>%s</code>",
+        "register_2": "Configurer l'application OAuth avec l'un des URL de redirection autorisés avec <code>{{url}}</code>",
         "register_3": "Copier l'ID client et Secret client ci-dessus",
         "updated_oidc": "Paramètres mis à jour",
         "Use discovered URL if empty": "Use discovered URL from \"Issuer Host\" if empty"
