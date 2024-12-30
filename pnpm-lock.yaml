@@ -1046,9 +1046,6 @@ importers:
       '@tsed/di':
         specifier: '=6.43.0'
         version: 6.43.0
-      '@tsed/logger':
-        specifier: '=6.7.8'
-        version: 6.7.8
       '@tsed/platform-express':
         specifier: '=6.43.0'
         version: 6.43.0(@types/multer@1.4.12)(body-parser@1.20.3)
@@ -4674,9 +4671,6 @@ packages:
 
   '@tsed/logger@5.17.0':
     resolution: {integrity: sha512-co8DdRgtQaisudEQFP2/7y/ji9bnB9QrJYfEr0SEqdHIBJdwuq8joo2vyfOY8ht/w5LOcqo2NVebtwULSsD9Pg==}
-
-  '@tsed/logger@6.7.8':
-    resolution: {integrity: sha512-4VB4+nt7Ljihp7IEv7RmosxsRyXZGhnesqlcNEyE8r1WZCVdXvUn2YmyF+4zMkaX1pR5Vaf80i4IDp7WSW9gwg==}
 
   '@tsed/logger@7.0.1':
     resolution: {integrity: sha512-jasFFSi1O2QCEHBX925Ao8N10mqNGeQEMzvyncGU4dxBmeXzjnmX/00og5uMy2eX++7xSVE5YmH1qczSXM3TPg==}
@@ -18760,13 +18754,6 @@ snapshots:
       tslib: 2.3.0
     transitivePeerDependencies:
       - supports-color
-
-  '@tsed/logger@6.7.8':
-    dependencies:
-      colors: 1.4.0
-      date-format: 4.0.14
-      semver: 7.6.3
-      tslib: 2.6.2
 
   '@tsed/logger@7.0.1':
     dependencies:
