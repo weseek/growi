@@ -2,9 +2,11 @@ import '@tsed/platform-express'; // !! DO NOT MODIFY !!
 import '@tsed/swagger';
 import '@tsed/typeorm'; // !! DO NOT MODIFY !! -- https://github.com/tsedio/tsed/issues/1332#issuecomment-837840612
 
+import Http from 'http';
+
 import { createTerminus } from '@godaddy/terminus';
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { HttpServer, PlatformApplication } from '@tsed/common';
+import { PlatformApplication } from '@tsed/common';
 import { Configuration, Inject, InjectorService } from '@tsed/di';
 /* eslint-enable @typescript-eslint/consistent-type-imports */
 import bodyParser from 'body-parser';
@@ -130,6 +132,9 @@ export class Server {
   @Inject()
   injector: InjectorService;
 
+  @Inject(Http.Server)
+  server: Http.Server;
+
   $beforeInit(): Promise<any> | void {
     const serverUri = process.env.SERVER_URI;
 
@@ -157,10 +162,8 @@ export class Server {
   }
 
   $beforeListen(): void {
-    const server = this.injector.get<HttpServer>(HttpServer);
-
     // init terminus
-    createTerminus(server, {
+    createTerminus(this.server, {
       onSignal: async() => {
         logger.info('server is starting cleanup');
         const connectionManager = getConnectionManager();
