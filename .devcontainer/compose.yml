@@ -8,6 +8,10 @@ services:
       - buildcache_app:/workspace/growi/apps/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
     tty: true
+    networks:
+    - default
+    # https://redmine.weseek.co.jp/issues/144306 で整備予定
+    # - opentelemetry-collector-dev-setup_default
 
   mongo:
     image: mongo:6.0
@@ -44,3 +48,9 @@ volumes:
   pnpm-store:
   node_modules:
   buildcache_app:
+
+networks:
+  default:
+  # https://redmine.weseek.co.jp/issues/144306 で整備予定
+  # opentelemetry-collector-dev-setup_default:
+  #   external: true

@@ -36,10 +36,10 @@ export class VectorStoreFileDeletionCronService {
     }
 
     this.openaiService = openaiService;
-    this.vectorStoreFileDeletionCronExpression = configManager.getConfig('crowi', 'openai:vectorStoreFileDeletionCronExpression');
-    this.vectorStoreFileDeletionCronMaxMinutesUntilRequest = configManager.getConfig('crowi', 'app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest');
-    this.vectorStoreFileDeletionBarchSize = configManager.getConfig('crowi', 'openai:vectorStoreFileDeletionBarchSize');
-    this.vectorStoreFileDeletionApiCallInterval = configManager.getConfig('crowi', 'openai:vectorStoreFileDeletionApiCallInterval');
+    this.vectorStoreFileDeletionCronExpression = configManager.getConfig('openai:vectorStoreFileDeletionCronExpression');
+    this.vectorStoreFileDeletionCronMaxMinutesUntilRequest = configManager.getConfig('app:openaiVectorStoreFileDeletionCronMaxMinutesUntilRequest');
+    this.vectorStoreFileDeletionBarchSize = configManager.getConfig('openai:vectorStoreFileDeletionBarchSize');
+    this.vectorStoreFileDeletionApiCallInterval = configManager.getConfig('openai:vectorStoreFileDeletionApiCallInterval');
 
     this.cronJob?.stop();
     this.cronJob = this.generateCronJob();

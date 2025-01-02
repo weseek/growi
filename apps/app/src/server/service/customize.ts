@@ -91,7 +91,7 @@ class CustomizeService implements S2sMessageHandlable {
    * initialize custom css strings
    */
   initCustomCss() {
-    const rawCss = this.configManager.getConfig('crowi', 'customize:css') || '';
+    const rawCss = this.configManager.getConfig('customize:css') || '';
 
     // uglify and store
     this.customCss = uglifycss.processString(rawCss);
@@ -104,15 +104,15 @@ class CustomizeService implements S2sMessageHandlable {
   }
 
   getCustomScript() {
-    return this.configManager.getConfig('crowi', 'customize:script');
+    return this.configManager.getConfig('customize:script');
   }
 
   getCustomNoscript() {
-    return this.configManager.getConfig('crowi', 'customize:noscript');
+    return this.configManager.getConfig('customize:noscript');
   }
 
   initCustomTitle() {
-    let configValue = this.configManager.getConfig('crowi', 'customize:title');
+    let configValue = this.configManager.getConfig('customize:title');
 
     if (configValue == null || configValue.trim().length === 0) {
       configValue = '{{pagename}} - {{sitename}}';
@@ -124,7 +124,7 @@ class CustomizeService implements S2sMessageHandlable {
   }
 
   async initGrowiTheme(): Promise<void> {
-    const theme = this.configManager.getConfig('crowi', 'customize:theme');
+    const theme = this.configManager.getConfig('customize:theme');
 
     this.theme = theme;
 

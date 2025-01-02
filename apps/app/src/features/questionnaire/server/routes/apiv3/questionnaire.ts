@@ -6,6 +6,7 @@ import { body, validationResult } from 'express-validator';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import { configManager } from '~/server/service/config-manager';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
@@ -74,13 +75,13 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.get('/is-enabled', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const isEnabled = crowi.configManager!.getConfig('crowi', 'questionnaire:isQuestionnaireEnabled');
+    const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
     return res.apiv3({ isEnabled });
   });
 
   router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
-      const questionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
+      const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
@@ -126,7 +127,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
-      const questionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
+      const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
 

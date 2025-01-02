@@ -216,14 +216,14 @@ module.exports = (crowi: Crowi): Router => {
 
   router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
     const settings = {
-      ldapGroupSearchBase: configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase'),
-      ldapGroupMembershipAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute'),
-      ldapGroupMembershipAttributeType: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttributeType'),
-      ldapGroupChildGroupAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute'),
-      autoGenerateUserOnLdapGroupSync: configManager?.getConfig('crowi', 'external-user-group:ldap:autoGenerateUserOnGroupSync'),
-      preserveDeletedLdapGroups: configManager?.getConfig('crowi', 'external-user-group:ldap:preserveDeletedGroups'),
-      ldapGroupNameAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute'),
-      ldapGroupDescriptionAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute'),
+      ldapGroupSearchBase: configManager.getConfig('external-user-group:ldap:groupSearchBase'),
+      ldapGroupMembershipAttribute: configManager.getConfig('external-user-group:ldap:groupMembershipAttribute'),
+      ldapGroupMembershipAttributeType: configManager.getConfig('external-user-group:ldap:groupMembershipAttributeType'),
+      ldapGroupChildGroupAttribute: configManager.getConfig('external-user-group:ldap:groupChildGroupAttribute'),
+      autoGenerateUserOnLdapGroupSync: configManager.getConfig('external-user-group:ldap:autoGenerateUserOnGroupSync'),
+      preserveDeletedLdapGroups: configManager.getConfig('external-user-group:ldap:preserveDeletedGroups'),
+      ldapGroupNameAttribute: configManager.getConfig('external-user-group:ldap:groupNameAttribute'),
+      ldapGroupDescriptionAttribute: configManager.getConfig('external-user-group:ldap:groupDescriptionAttribute'),
     };
 
     return res.apiv3(settings);
@@ -231,14 +231,14 @@ module.exports = (crowi: Crowi): Router => {
 
   router.get('/keycloak/sync-settings', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
     const settings = {
-      keycloakHost: configManager?.getConfig('crowi', 'external-user-group:keycloak:host'),
-      keycloakGroupRealm: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm'),
-      keycloakGroupSyncClientRealm: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm'),
-      keycloakGroupSyncClientID: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientID'),
-      keycloakGroupSyncClientSecret: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientSecret'),
-      autoGenerateUserOnKeycloakGroupSync: configManager?.getConfig('crowi', 'external-user-group:keycloak:autoGenerateUserOnGroupSync'),
-      preserveDeletedKeycloakGroups: configManager?.getConfig('crowi', 'external-user-group:keycloak:preserveDeletedGroups'),
-      keycloakGroupDescriptionAttribute: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute'),
+      keycloakHost: configManager.getConfig('external-user-group:keycloak:host'),
+      keycloakGroupRealm: configManager.getConfig('external-user-group:keycloak:groupRealm'),
+      keycloakGroupSyncClientRealm: configManager.getConfig('external-user-group:keycloak:groupSyncClientRealm'),
+      keycloakGroupSyncClientID: configManager.getConfig('external-user-group:keycloak:groupSyncClientID'),
+      keycloakGroupSyncClientSecret: configManager.getConfig('external-user-group:keycloak:groupSyncClientSecret'),
+      autoGenerateUserOnKeycloakGroupSync: configManager.getConfig('external-user-group:keycloak:autoGenerateUserOnGroupSync'),
+      preserveDeletedKeycloakGroups: configManager.getConfig('external-user-group:keycloak:preserveDeletedGroups'),
+      keycloakGroupDescriptionAttribute: configManager.getConfig('external-user-group:keycloak:groupDescriptionAttribute'),
     };
 
     return res.apiv3(settings);
@@ -269,7 +269,7 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+      await configManager.updateConfigs(params, { skipPubsub: true });
       return res.apiv3({}, 204);
     }
     catch (err) {
@@ -301,7 +301,7 @@ module.exports = (crowi: Crowi): Router => {
       };
 
       try {
-        await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+        await configManager.updateConfigs(params, { skipPubsub: true });
         return res.apiv3({}, 204);
       }
       catch (err) {
@@ -319,7 +319,7 @@ module.exports = (crowi: Crowi): Router => {
       );
     }
 
-    const isLdapEnabled = await configManager.getConfig('crowi', 'security:passport-ldap:isEnabled');
+    const isLdapEnabled = await configManager.getConfig('security:passport-ldap:isEnabled');
     if (!isLdapEnabled) {
       return res.apiv3Err(
         new ErrorV3('Authentication using ldap is not set', 'external_user_group.ldap.auth_not_set'), 422,
@@ -349,25 +349,25 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     const getAuthProviderType = () => {
-      let kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
+      let kcHost = configManager.getConfig('external-user-group:keycloak:host');
       if (kcHost?.endsWith('/')) {
         kcHost = kcHost.slice(0, -1);
       }
-      const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
+      const kcGroupRealm = configManager.getConfig('external-user-group:keycloak:groupRealm');
 
       // starts with kcHost, contains kcGroupRealm in path
       // see: https://regex101.com/r/3ihDmf/1
       const regex = new RegExp(`^${kcHost}/.*/${kcGroupRealm}(/|$).*`);
 
-      const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
-      const oidcIssuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
+      const isOidcEnabled = configManager.getConfig('security:passport-oidc:isEnabled');
+      const oidcIssuerHost = configManager.getConfig('security:passport-oidc:issuerHost');
 
-      if (isOidcEnabled && regex.test(oidcIssuerHost)) return 'oidc';
+      if (isOidcEnabled && oidcIssuerHost != null && regex.test(oidcIssuerHost)) return 'oidc';
 
-      const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
-      const samlEntryPoint = configManager.getConfig('crowi', 'security:passport-saml:entryPoint');
+      const isSamlEnabled = configManager.getConfig('security:passport-saml:isEnabled');
+      const samlEntryPoint = configManager.getConfig('security:passport-saml:entryPoint');
 
-      if (isSamlEnabled && regex.test(samlEntryPoint)) return 'saml';
+      if (isSamlEnabled && samlEntryPoint != null && regex.test(samlEntryPoint)) return 'saml';
 
       return null;
     };

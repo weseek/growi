@@ -22,8 +22,8 @@ module.exports = (crowi) => {
    * Initialize importer
    */
   importer.initializeEsaClient = () => {
-    const team = configManager.getConfig('crowi', 'importer:esa:team_name');
-    const accessToken = configManager.getConfig('crowi', 'importer:esa:access_token');
+    const team = configManager.getConfig('importer:esa:team_name');
+    const accessToken = configManager.getConfig('importer:esa:access_token');
     esaClient = new Esa(accessToken, team);
     logger.debug('initialize esa importer');
   };
@@ -171,7 +171,7 @@ module.exports = (crowi) => {
    */
   const getTeamNameFromEsa = () => {
     return new Promise((resolve, reject) => {
-      const team = configManager.getConfig('crowi', 'importer:esa:team_name');
+      const team = configManager.getConfig('importer:esa:team_name');
       esaClient.team(team).then((res) => {
         resolve(res);
       }).catch((err) => {

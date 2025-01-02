@@ -38,8 +38,8 @@ class SlackAppIntegration {
     let generateTokens;
 
     // get salt strings
-    const saltForGtoP = this.crowi.configManager.getConfig('crowi', 'slackbot:withProxy:saltForGtoP');
-    const saltForPtoG = this.crowi.configManager.getConfig('crowi', 'slackbot:withProxy:saltForPtoG');
+    const saltForGtoP = this.crowi.configManager.getConfig('slackbot:withProxy:saltForGtoP');
+    const saltForPtoG = this.crowi.configManager.getConfig('slackbot:withProxy:saltForPtoG');
 
     do {
       generateTokens = this.generateAccessTokens(saltForGtoP, saltForPtoG);
