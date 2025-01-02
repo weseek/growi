@@ -68,7 +68,6 @@
   "devDependencies": {
     "@slack/types": "^2.14.0",
     "@types/express": "^4",
-    "@types/qs": "^6.9.16",
-    "eslint-plugin-regex": "^1.8.0"
+    "@types/qs": "^6.9.16"
   }
 }

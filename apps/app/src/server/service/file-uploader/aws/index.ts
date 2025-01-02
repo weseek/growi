@@ -1,4 +1,4 @@
-import type { ReadStream } from 'fs';
+import type { Readable } from 'stream';
 
 import type { GetObjectCommandInput, HeadObjectCommandInput } from '@aws-sdk/client-s3';
 import {
@@ -10,20 +10,24 @@ import {
   DeleteObjectCommand,
   ListObjectsCommand,
   ObjectCannedACL,
+  AbortMultipartUploadCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
 
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import {
+  AttachmentType, FilePathOnStoragePrefix, ResponseMode, type RespondOptions,
+} from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
-import { configManager } from '../config-manager';
-
+import { configManager } from '../../config-manager';
 import {
   AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
-} from './file-uploader';
-import { ContentHeaders } from './utils';
+} from '../file-uploader';
+import { ContentHeaders } from '../utils';
+
+import { AwsMultipartUploader } from './multipart-uploader';
 
 
 const logger = loggerFactory('growi:service:fileUploaderAws');
@@ -90,19 +94,25 @@ const S3Factory = (): S3Client => {
   });
 };
 
-const getFilePathOnStorage = (attachment) => {
+const getFilePathOnStorage = (attachment: IAttachmentDocument) => {
   if (attachment.filePath != null) { // DEPRECATED: remains for backward compatibility for v3.3.x or below
     return attachment.filePath;
   }
 
-  const dirName = (attachment.page != null)
-    ? 'attachment'
-    : 'user';
+  let dirName: string;
+  if (attachment.attachmentType === AttachmentType.PAGE_BULK_EXPORT) {
+    dirName = FilePathOnStoragePrefix.pageBulkExport;
+  }
+  else if (attachment.page != null) {
+    dirName = FilePathOnStoragePrefix.attachment;
+  }
+  else {
+    dirName = FilePathOnStoragePrefix.user;
+  }
   const filePath = urljoin(dirName, attachment.fileName);
 
   return filePath;
 };
-
 
 // TODO: rewrite this module to be a type-safe implementation
 class AwsFileUploader extends AbstractFileUploader {
@@ -147,7 +157,7 @@ class AwsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     if (!this.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -162,7 +172,7 @@ class AwsFileUploader extends AbstractFileUploader {
     await s3.send(new PutObjectCommand({
       Bucket: getS3Bucket(),
       Key: filePath,
-      Body: readStream,
+      Body: readable,
       ACL: getS3PutObjectCannedAcl(),
       // put type and the file name for reference information when uploading
       ContentType: contentHeaders.contentType?.value.toString(),
@@ -248,6 +258,27 @@ class AwsFileUploader extends AbstractFileUploader {
       lifetimeSec: lifetimeSecForTemporaryUrl,
     };
 
+  }
+
+  override createMultipartUploader(uploadKey: string, maxPartSize: number) {
+    const s3 = S3Factory();
+    return new AwsMultipartUploader(s3, getS3Bucket(), uploadKey, maxPartSize);
+  }
+
+  override async abortPreviousMultipartUpload(uploadKey: string, uploadId: string) {
+    try {
+      await S3Factory().send(new AbortMultipartUploadCommand({
+        Bucket: getS3Bucket(),
+        Key: uploadKey,
+        UploadId: uploadId,
+      }));
+    }
+    catch (e) {
+      // allow duplicate abort requests to ensure abortion
+      if (e.response?.status !== 404) {
+        throw e;
+      }
+    }
   }
 
 }

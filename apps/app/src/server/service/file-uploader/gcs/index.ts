@@ -1,19 +1,24 @@
-import type { ReadStream } from 'fs';
+import type { Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import { Storage } from '@google-cloud/storage';
+import axios from 'axios';
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import {
+  AttachmentType, FilePathOnStoragePrefix, ResponseMode, type RespondOptions,
+} from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
-import { configManager } from '../config-manager';
-
+import { configManager } from '../../config-manager';
 import {
   AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
-} from './file-uploader';
-import { ContentHeaders } from './utils';
+} from '../file-uploader';
+import { ContentHeaders } from '../utils';
+
+import { GcsMultipartUploader } from './multipart-uploader';
 
 const logger = loggerFactory('growi:service:fileUploaderGcs');
 
@@ -34,12 +39,19 @@ function getGcsInstance() {
   return storage;
 }
 
-function getFilePathOnStorage(attachment) {
+function getFilePathOnStorage(attachment: IAttachmentDocument) {
   const namespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
   // const namespace = null;
-  const dirName = (attachment.page != null)
-    ? 'attachment'
-    : 'user';
+  let dirName: string;
+  if (attachment.attachmentType === AttachmentType.PAGE_BULK_EXPORT) {
+    dirName = FilePathOnStoragePrefix.pageBulkExport;
+  }
+  else if (attachment.page != null) {
+    dirName = FilePathOnStoragePrefix.attachment;
+  }
+  else {
+    dirName = FilePathOnStoragePrefix.user;
+  }
   const filePath = urljoin(namespace || '', dirName, attachment.fileName);
 
   return filePath;
@@ -54,7 +66,6 @@ async function isFileExists(file) {
   const res = await file.exists();
   return res[0];
 }
-
 
 // TODO: rewrite this module to be a type-safe implementation
 class GcsFileUploader extends AbstractFileUploader {
@@ -99,7 +110,7 @@ class GcsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     if (!this.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
@@ -111,11 +122,12 @@ class GcsFileUploader extends AbstractFileUploader {
     const filePath = getFilePathOnStorage(attachment);
     const contentHeaders = new ContentHeaders(attachment);
 
-    await myBucket.upload(readStream.path.toString(), {
-      destination: filePath,
+    const file = myBucket.file(filePath);
+
+    await pipeline(readable, file.createWriteStream({
       // put type and the file name for reference information when uploading
       contentType: contentHeaders.contentType?.value.toString(),
-    });
+    }));
   }
 
   /**
@@ -183,6 +195,26 @@ class GcsFileUploader extends AbstractFileUploader {
       lifetimeSec: lifetimeSecForTemporaryUrl,
     };
 
+  }
+
+  override createMultipartUploader(uploadKey: string, maxPartSize: number) {
+    const gcs = getGcsInstance();
+    const myBucket = gcs.bucket(getGcsBucket());
+    return new GcsMultipartUploader(myBucket, uploadKey, maxPartSize);
+  }
+
+  override async abortPreviousMultipartUpload(uploadKey: string, uploadId: string) {
+    try {
+      await axios.delete(uploadId);
+    }
+    catch (e) {
+      // allow 404: allow duplicate abort requests to ensure abortion
+      // allow 499: it is the success response code for canceling upload
+      // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads#cancel-upload
+      if (e.response?.status !== 404 && e.response?.status !== 499) {
+        throw e;
+      }
+    }
   }
 
 }

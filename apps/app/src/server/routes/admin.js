@@ -1,15 +1,13 @@
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { configManager } from '../service/config-manager';
+import { exportService } from '../service/export';
+
 const logger = loggerFactory('growi:routes:admin');
 
 /* eslint-disable no-use-before-define */
 module.exports = function(crowi, app) {
-  const {
-    configManager,
-    exportService,
-  } = crowi;
-
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
 
