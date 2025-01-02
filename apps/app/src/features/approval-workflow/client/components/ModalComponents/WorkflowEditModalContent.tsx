@@ -177,34 +177,43 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       </WorkflowModalHeader>
 
       <ModalBody>
-        <WorkflowForm
-          editingWorkflowName={editingWorkflowName}
-          workflowNameChangeHandler={workflowNameChangeHandler}
-          editingWorkflowDescription={editingWorkflowDescription}
-          workflowDescriptionChangeHandler={workflowDescriptionChangeHandler}
-        />
-        <EditableApproverGroupCards
-          editingApproverGroups={editingApproverGroups}
-          approvedApproverIds={allApprovedApproverIds}
-          excludedSearchUserIds={excludedSearchUserIds}
-          latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}
-          onUpdateApproverGroups={onUpdateApproverGroupsHandler}
-          onClickAddApproverGroupCard={addApproverGroupHandler}
-          onClickRemoveApproverGroupCard={onRemoveApproverGroupsHandler}
-        />
+        <div className="col-9 mx-auto">
+          <WorkflowForm
+            editingWorkflowName={editingWorkflowName}
+            workflowNameChangeHandler={workflowNameChangeHandler}
+            editingWorkflowDescription={editingWorkflowDescription}
+            workflowDescriptionChangeHandler={workflowDescriptionChangeHandler}
+          />
+          <div className="position-relative">
+            <EditableApproverGroupCards
+              editingApproverGroups={editingApproverGroups}
+              approvedApproverIds={allApprovedApproverIds}
+              excludedSearchUserIds={excludedSearchUserIds}
+              latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}
+              onUpdateApproverGroups={onUpdateApproverGroupsHandler}
+              onClickAddApproverGroupCard={addApproverGroupHandler}
+              onClickRemoveApproverGroupCard={onRemoveApproverGroupsHandler}
+            />
+            <div className="position-absolute top-0 start-0 bottom-0 end-0 m-auto bg-secondary z-0" style={{ width: '2px' }}></div>
+          </div>
+        </div>
       </ModalBody>
 
       <ModalFooter>
-        <button
-          type="button"
-          onClick={onClickWorkflowDetailPageBackButton}
-        >{t('approval_workflow.cancel')}
-        </button>
-        <button
-          type="button"
-          onClick={clickSaveWorkflowButtonClickHandler}
-        >{t('approval_workflow.completion')}
-        </button>
+        <div className="mx-auto">
+          <button
+            className="btn btn-secondary me-2"
+            type="button"
+            onClick={onClickWorkflowDetailPageBackButton}
+          >{t('approval_workflow.cancel')}
+          </button>
+          <button
+            className="btn btn-primary ms-2"
+            type="button"
+            onClick={clickSaveWorkflowButtonClickHandler}
+          >{t('approval_workflow.completion')}
+          </button>
+        </div>
       </ModalFooter>
     </>
   );
