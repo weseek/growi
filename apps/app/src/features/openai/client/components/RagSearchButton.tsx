@@ -27,7 +27,7 @@ const RagSearchButton = (): JSX.Element => {
         onClick={ragSearchButtonClickHandler}
         data-testid="open-search-modal-button"
       >
-        <span className="growi-custom-icons fs-4 align-middle lh-1">knowledge_assistant</span>
+        <span className="growi-custom-icons fs-4 align-middle lh-1">ai_assistant</span>
       </button>
     </NotAvailableForGuest>
   );
