@@ -17,6 +17,7 @@ import {
 import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
 import { useDefaultExtensions } from '../../stores/use-default-extensions';
 import { useEditorSettings } from '../../stores/use-editor-settings';
+import { useEditorShortcuts } from '../../stores/use-editor-shortcuts';
 
 import { Toolbar } from './Toolbar';
 
@@ -70,6 +71,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   useDefaultExtensions(codeMirrorEditor);
   useEditorSettings(codeMirrorEditor, editorSettings, onSave);
+  useEditorShortcuts(codeMirrorEditor);
 
   useShowTableIcon(codeMirrorEditor);
 
