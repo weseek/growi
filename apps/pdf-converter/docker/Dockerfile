@@ -63,8 +63,7 @@ ENV appDir="${optDir}/pdf-converter"
 
 RUN apt-get update && apt-get install -y chromium fonts-lato fonts-ipafont-gothic fonts-noto-cjk \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*; \
-    echo "ja_JP UTF-8" > /etc/locale.gen && locale-gen;
+    && rm -rf /var/lib/apt/lists/*;
 
 # copy artifacts
 COPY --from=builder --chown=node:node \
