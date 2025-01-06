@@ -1,12 +1,10 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect } from 'react';
 
-import type { SelectionRange, StateCommand } from '@codemirror/state';
+import type { SelectionRange, Extension } from '@codemirror/state';
 import { EditorSelection, type ChangeSpec } from '@codemirror/state';
-import { keymap, type Command } from '@codemirror/view';
+import { keymap, type Command, EditorView } from '@codemirror/view';
 
 import type { UseCodeMirrorEditor } from '../services';
-
-import type { EditorView } from 'src/interfaces';
 
 const addPrefixSymbol = (text: string, symbol: string): string => {
   return `${symbol}${text}`;
@@ -83,7 +81,10 @@ const makeTextHyperLink: Command = (view: EditorView) => {
   return true;
 };
 
-const makeTextCodeBlock: StateCommand = ({ state, dispatch }) => {
+const makeTextCodeBlock: Command = (view: EditorView) => {
+  const state = view.state;
+  const dispatch = view.dispatch;
+
   const selections = state.selection.ranges;
   const doc = state.doc;
   const changes: ChangeSpec[] = [];
@@ -134,9 +135,58 @@ const makeTextCodeBlock: StateCommand = ({ state, dispatch }) => {
   return true;
 };
 
-export const useEditorShortcuts = (
-    codeMirrorEditor?: UseCodeMirrorEditor,
-): void => {
+const addMultiCursor = (view: EditorView, direction: 'up' | 'down') => {
+
+  const selection = view.state.selection;
+  const doc = view.state.doc;
+  const ranges = selection.ranges;
+  const newRanges: SelectionRange[] = [];
+
+  ranges.forEach((range) => {
+
+    const head = range.head;
+    const line = doc.lineAt(head);
+    const targetLine = direction === 'up' ? line.number - 1 : line.number + 1;
+
+    if (targetLine < 1 || targetLine > doc.lines) return;
+
+    const targetLineText = doc.line(targetLine);
+
+    const col = Math.min(range.head - line.from, targetLineText.length);
+    const cursorPos = targetLineText.from + col;
+
+    newRanges.push(EditorSelection.cursor(cursorPos));
+
+  });
+
+  if (newRanges.length) {
+    const transaction = {
+      selection: EditorSelection.create([...ranges, ...newRanges]),
+    };
+
+    view.dispatch(transaction);
+  }
+
+  return true;
+};
+
+const handleMakeCodeBlockEvent: Extension = EditorView.domEventHandlers({
+  keydown: (event, view) => {
+    const isModKey = event.ctrlKey || event.metaKey;
+    if (event.key.toLowerCase() === 'c' && event.shiftKey && event.altKey && isModKey) {
+      event.preventDefault();
+      makeTextCodeBlock(view);
+      return true;
+    }
+    return false;
+  },
+});
+
+export const useEditorShortcuts = (codeMirrorEditor?: UseCodeMirrorEditor): void => {
+  useEffect(() => {
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(handleMakeCodeBlockEvent);
+    return cleanupFunction;
+  }, [codeMirrorEditor]);
 
   useEffect(() => {
 
@@ -145,52 +195,16 @@ export const useEditorShortcuts = (
       { key: 'mod-b', run: generateAddMarkdownSymbolCommand('**', wrapTextWithSymbol) },
       { key: 'mod-shift-x', run: generateAddMarkdownSymbolCommand('~~', wrapTextWithSymbol) },
       { key: 'mod-shift-c', run: generateAddMarkdownSymbolCommand('`', wrapTextWithSymbol) },
-      { key: 'mod-shift-u', run: makeTextHyperLink },
       { key: 'mod-shift-7', run: generateAddMarkdownSymbolCommand('1. ', addPrefixSymbol) },
       { key: 'mod-shift-8', run: generateAddMarkdownSymbolCommand('- ', addPrefixSymbol) },
       { key: 'mod-shift-9', run: generateAddMarkdownSymbolCommand('> ', addPrefixSymbol) },
-      { key: 'shift-mod-alt-c', run: makeTextCodeBlock },
+      { key: 'mod-shift-u', run: makeTextHyperLink },
     ]);
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
     return cleanupFunction;
 
   }, [codeMirrorEditor]);
-
-  const addMultiCursor = useCallback((view: EditorView, direction: 'up' | 'down') => {
-
-    const selection = view.state.selection;
-    const doc = view.state.doc;
-    const ranges = selection.ranges;
-    const newRanges: SelectionRange[] = [];
-
-    ranges.forEach((range) => {
-
-      const head = range.head;
-      const line = doc.lineAt(head);
-      const targetLine = direction === 'up' ? line.number - 1 : line.number + 1;
-
-      if (targetLine < 1 || targetLine > doc.lines) return;
-
-      const targetLineText = doc.line(targetLine);
-
-      const col = Math.min(range.head - line.from, targetLineText.length);
-      const cursorPos = targetLineText.from + col;
-
-      newRanges.push(EditorSelection.cursor(cursorPos));
-
-    });
-
-    if (newRanges.length) {
-      const transaction = {
-        selection: EditorSelection.create([...ranges, ...newRanges]),
-      };
-
-      view.dispatch(transaction);
-    }
-
-    return true;
-  }, []);
 
   useEffect(() => {
 
@@ -202,6 +216,6 @@ export const useEditorShortcuts = (
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
     return cleanupFunction;
 
-  }, [addMultiCursor, codeMirrorEditor]);
+  }, [codeMirrorEditor]);
 
 };
