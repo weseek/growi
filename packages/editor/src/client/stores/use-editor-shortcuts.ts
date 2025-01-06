@@ -170,21 +170,46 @@ const addMultiCursor = (view: EditorView, direction: 'up' | 'down') => {
   return true;
 };
 
-const handleMakeCodeBlockEvent: Extension = EditorView.domEventHandlers({
+const makeCodeBlockExtension: Extension = EditorView.domEventHandlers({
   keydown: (event, view) => {
+
     const isModKey = event.ctrlKey || event.metaKey;
+
     if (event.key.toLowerCase() === 'c' && event.shiftKey && event.altKey && isModKey) {
       event.preventDefault();
       makeTextCodeBlock(view);
       return true;
     }
+
     return false;
+  },
+});
+
+const altClickExtension = EditorView.domEventHandlers({
+  mousedown: (event, view) => {
+    if (event.altKey) {
+      event.preventDefault();
+
+      const pos = view.posAtCoords({ x: event.clientX, y: event.clientY });
+      if (pos === null) return;
+
+      const newSelection = EditorSelection.create([
+        ...view.state.selection.ranges,
+        EditorSelection.cursor(pos),
+      ]);
+      view.dispatch(view.state.update({ selection: newSelection }));
+    }
   },
 });
 
 export const useEditorShortcuts = (codeMirrorEditor?: UseCodeMirrorEditor): void => {
   useEffect(() => {
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(handleMakeCodeBlockEvent);
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.([altClickExtension]);
+    return cleanupFunction;
+  }, [codeMirrorEditor]);
+
+  useEffect(() => {
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.([makeCodeBlockExtension]);
     return cleanupFunction;
   }, [codeMirrorEditor]);
 
