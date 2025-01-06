@@ -1,7 +1,7 @@
 # Instal additional packages
 sudo apt update
 sudo apt-get install -y --no-install-recommends \
-  chromium locales fonts-ipafont fonts-ipaexfont fonts-ipafont-gothic fonts-ipafont-mincho
+  chromium fonts-lato fonts-ipafont-gothic fonts-noto-cjk
 sudo apt-get clean -y
 
 # Setup pnpm

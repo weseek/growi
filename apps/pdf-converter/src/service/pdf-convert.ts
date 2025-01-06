@@ -53,8 +53,6 @@ class PdfConvertService implements OnInit {
     logger: Logger;
 
   async $onInit(): Promise<void> {
-    if (process.env.SWAGGER_GENERATION === 'true') return;
-
     await this.initPuppeteerCluster();
   }
 
@@ -253,6 +251,9 @@ class PdfConvertService implements OnInit {
    * Initialize puppeteer cluster
    */
   private async initPuppeteerCluster(): Promise<void> {
+    // puppeteer is unnecessary for swagger schema generation
+    if (process.env.SWAGGER_GENERATION === 'true') return;
+
     this.puppeteerCluster = await Cluster.launch({
       concurrency: Cluster.CONCURRENCY_PAGE,
       maxConcurrency: this.maxConcurrency,
@@ -261,6 +262,13 @@ class PdfConvertService implements OnInit {
 
     await this.puppeteerCluster.task(async({ page, data: htmlString }) => {
       await page.setContent(htmlString, { waitUntil: 'domcontentloaded' });
+      await page.addStyleTag({
+        content: `
+          body {
+            font-family: 'Lato', 'IPAGothic', 'Noto Sans CJK';
+          }
+        `,
+      });
       await page.emulateMediaType('screen');
       const pdfResult = await page.pdf({
         margin: {
