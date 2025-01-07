@@ -3,7 +3,9 @@ import { GrowiDeploymentType, GrowiServiceType, GrowiWikiType } from '@growi/cor
 import axios from 'axios';
 import mongoose from 'mongoose';
 
-import type { IProactiveQuestionnaireAnswer, IProactiveQuestionnaireAnswerLegacy } from '../../../src/features/questionnaire/interfaces/proactive-questionnaire-answer';
+import type {
+  IProactiveQuestionnaireAnswer, IProactiveQuestionnaireAnswerLegacy,
+} from '../../../src/features/questionnaire/interfaces/proactive-questionnaire-answer';
 import type { IQuestionnaireAnswer, IQuestionnaireAnswerLegacy } from '../../../src/features/questionnaire/interfaces/questionnaire-answer';
 import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
 import ProactiveQuestionnaireAnswer from '../../../src/features/questionnaire/server/models/proactive-questionnaire-answer';
@@ -141,6 +143,7 @@ describe('QuestionnaireCronService', () => {
   beforeAll(async() => {
     crowi = await getInstance();
     const User = crowi.model('User');
+    User.deleteMany({}); // clear users
     await User.create({
       name: 'Example for Questionnaire Service Test',
       username: 'questionnaire cron test user',
