@@ -15,7 +15,6 @@ describe('GrowiInfoService', () => {
 
   let growiInfoService: GrowiInfoService;
   let User;
-  let user;
 
   beforeAll(async() => {
     process.env.APP_SITE_URL = 'http://growi.test.jp';
@@ -54,17 +53,46 @@ describe('GrowiInfoService', () => {
     User = userModelFactory(crowiMock);
 
     await User.deleteMany({}); // clear users
-
-    user = await User.create({
-      username: 'growiinfo test user',
-      createdAt: '2000-01-01',
-    });
   });
 
   describe('getGrowiInfo', () => {
+
     test('Should get correct GROWI info', async() => {
       const growiInfo = await growiInfoService.getGrowiInfo();
 
+      assert(growiInfo != null);
+
+      expect(growiInfo.appSiteUrlHashed).toBeTruthy();
+      expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
+      expect(growiInfo.osInfo?.type).toBeTruthy();
+      expect(growiInfo.osInfo?.platform).toBeTruthy();
+      expect(growiInfo.osInfo?.arch).toBeTruthy();
+      expect(growiInfo.osInfo?.totalmem).toBeTruthy();
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (growiInfo as any).appSiteUrlHashed;
+      delete growiInfo.osInfo;
+
+      expect(growiInfo).toEqual({
+        version: appVersion,
+        appSiteUrl: 'http://growi.test.jp',
+        type: 'on-premise',
+        wikiType: 'closed',
+        deploymentType: 'growi-docker-compose',
+      });
+    });
+
+    test('Should get correct GROWI info with additionalInfo', async() => {
+      // arrange
+      await User.create({
+        username: 'growiinfo test user',
+        createdAt: '2000-01-01',
+      });
+
+      // act
+      const growiInfo = await growiInfoService.getGrowiInfo(true);
+
+      // assert
       assert(growiInfo != null);
 
       expect(growiInfo.appSiteUrlHashed).toBeTruthy();

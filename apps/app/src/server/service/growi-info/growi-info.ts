@@ -24,39 +24,28 @@ export class GrowiInfoService {
     this.crowi = crowi;
   }
 
-  async getGrowiInfo(): Promise<IGrowiInfo<IGrowiAppAdditionalInfo>> {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const User = mongoose.model<IUser, Model<IUser>>('User');
+  /**
+   * Get GROWI information
+   */
+  getGrowiInfo(): Promise<IGrowiInfo<Record<string, never>>>;
+
+  /**
+   * Get GROWI information with additional information
+   * @param includeAdditionalInfo whether to include additional information
+   */
+  getGrowiInfo(includeAdditionalInfo: true): Promise<IGrowiInfo<IGrowiAppAdditionalInfo>>;
+
+  async getGrowiInfo(includeAdditionalInfo?: boolean): Promise<IGrowiInfo<Record<string, never>> | IGrowiInfo<IGrowiAppAdditionalInfo>> {
 
     const appSiteUrl = this.crowi.appService.getSiteUrl();
     const hasher = crypto.createHash('sha256');
     hasher.update(appSiteUrl);
     const appSiteUrlHashed = hasher.digest('hex');
 
-    // Get the oldest user who probably installed this GROWI.
-    const user = await User.findOne({ createdAt: { $ne: null } }).sort({ createdAt: 1 });
-
-    const installedAtByOldestUser = user ? user.createdAt : null;
-
-    const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
-    const oldestConfig = await Config.findOne().sort({ createdAt: 1 });
-
-    // oldestConfig must not be null because there is at least one config
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const installedAt = installedAtByOldestUser ?? appInstalledConfig?.createdAt ?? oldestConfig!.createdAt ?? null;
-
-    const currentUsersCount = await User.countDocuments();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const currentActiveUsersCount = await (User as any).countActiveUsers();
-
     const isGuestAllowedToRead = aclService.isGuestAllowedToRead();
     const wikiType = isGuestAllowedToRead ? GrowiWikiType.open : GrowiWikiType.closed;
 
-    const activeExternalAccountTypes: IExternalAuthProviderType[] = Object.values(IExternalAuthProviderType).filter((type) => {
-      return configManager.getConfig(`security:passport-${type}:isEnabled`);
-    });
-
-    return {
+    const baseInfo = {
       version: this.crowi.version,
       osInfo: {
         type: os.type(),
@@ -69,14 +58,43 @@ export class GrowiInfoService {
       type: configManager.getConfig('app:serviceType'),
       wikiType,
       deploymentType: configManager.getConfig('app:deploymentType'),
-      additionalInfo: {
-        installedAt,
-        installedAtByOldestUser,
-        currentUsersCount,
-        currentActiveUsersCount,
-        attachmentType: configManager.getConfig('app:fileUploadType'),
-        activeExternalAccountTypes,
-      },
+    };
+
+    if (!includeAdditionalInfo) {
+      return baseInfo;
+    }
+
+    return {
+      ...baseInfo,
+      additionalInfo: await this.getAdditionalInfo(),
+    };
+  }
+
+  private async getAdditionalInfo(): Promise<IGrowiAppAdditionalInfo> {
+    const User = mongoose.model<IUser, Model<IUser>>('User');
+
+    // Get the oldest user who probably installed this GROWI.
+    const user = await User.findOne({ createdAt: { $ne: null } }).sort({ createdAt: 1 });
+    const installedAtByOldestUser = user ? user.createdAt : null;
+
+    const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
+    const oldestConfig = await Config.findOne().sort({ createdAt: 1 });
+    const installedAt = installedAtByOldestUser ?? appInstalledConfig?.createdAt ?? oldestConfig!.createdAt ?? null;
+
+    const currentUsersCount = await User.countDocuments();
+    const currentActiveUsersCount = await (User as any).countActiveUsers();
+
+    const activeExternalAccountTypes: IExternalAuthProviderType[] = Object.values(IExternalAuthProviderType).filter((type) => {
+      return configManager.getConfig(`security:passport-${type}:isEnabled`);
+    });
+
+    return {
+      installedAt,
+      installedAtByOldestUser,
+      currentUsersCount,
+      currentActiveUsersCount,
+      attachmentType: configManager.getConfig('app:fileUploadType'),
+      activeExternalAccountTypes,
     };
   }
 

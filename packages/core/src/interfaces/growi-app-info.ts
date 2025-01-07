@@ -19,7 +19,7 @@ export interface IGrowiAdditionalInfo {
   currentActiveUsersCount: number
 }
 
-export interface IGrowiInfo<A extends IGrowiAdditionalInfo> {
+export interface IGrowiInfo<A extends object = IGrowiAdditionalInfo> {
   version: string
   appSiteUrl?: string
   appSiteUrlHashed: string
