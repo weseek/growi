@@ -30,6 +30,7 @@ describe('QuestionnaireService', () => {
     crowi.setupQuestionnaireService();
 
     const User = crowi.model('User');
+    User.deleteMany({}); // clear users
     user = await User.create({
       name: 'Example for Questionnaire Service Test',
       username: 'questionnaire test user',
@@ -105,9 +106,21 @@ describe('QuestionnaireService', () => {
   });
 
   describe('getQuestionnaireOrdersToShow', () => {
+    let doc1;
+    let doc2;
+    let doc3;
+    let doc4;
+    let doc5;
+    let doc6;
+    let doc7;
+    let doc8;
+    let doc9;
+    let doc10;
+    let doc11;
+    let doc12;
+
     beforeAll(async() => {
       const questionnaireToBeShown = {
-        _id: '63b8354837e7aa378e16f0b1',
         shortTitle: {
           ja_JP: 'GROWI に関するアンケート',
           en_US: 'Questions about GROWI',
@@ -136,48 +149,36 @@ describe('QuestionnaireService', () => {
       };
 
       // insert initial db data
-      await QuestionnaireOrder.insertMany([
-        questionnaireToBeShown,
-        // finished
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b2',
-          showFrom: '2020-12-11',
-          showUntil: '2021-12-12',
-        },
-        // for admin or guest
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b3',
-          condition: {
-            user: {
-              types: ['admin', 'guest'],
-            },
-            growi: {
-              types: ['on-premise'],
-              versionRegExps: [crowi.version],
-            },
+      doc1 = await QuestionnaireOrder.create(questionnaireToBeShown);
+      // insert finished data
+      doc2 = await QuestionnaireOrder.create({
+        ...questionnaireToBeShown,
+        showFrom: '2020-12-11',
+        showUntil: '2021-12-12',
+      });
+      // insert data for admin or guest
+      doc3 = await QuestionnaireOrder.create({
+        ...questionnaireToBeShown,
+        condition: {
+          user: {
+            types: ['admin', 'guest'],
+          },
+          growi: {
+            types: ['on-premise'],
+            versionRegExps: [crowi.version],
           },
         },
-        // answered
+      });
+      // insert answered data
+      doc4 = await QuestionnaireOrder.create(questionnaireToBeShown);
+      // insert skipped data
+      doc5 = await QuestionnaireOrder.create(questionnaireToBeShown);
+      // insert denied data
+      doc6 = await QuestionnaireOrder.create(questionnaireToBeShown);
+      // insert data for different growi type
+      doc7 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b4',
-        },
-        // skipped
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b5',
-        },
-        // denied
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b6',
-        },
-        // for different growi type
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b7',
           condition: {
             user: {
               types: ['general'],
@@ -188,10 +189,11 @@ describe('QuestionnaireService', () => {
             },
           },
         },
-        // for different growi version
+      );
+      // insert data for different growi version
+      doc8 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b8',
           condition: {
             user: {
               types: ['general'],
@@ -202,10 +204,11 @@ describe('QuestionnaireService', () => {
             },
           },
         },
-        // for users that used GROWI for less than or equal to a year
+      );
+      // insert data for users that used GROWI for less than or equal to a year
+      doc9 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b9',
           condition: {
             user: {
               types: ['general'],
@@ -219,10 +222,11 @@ describe('QuestionnaireService', () => {
             },
           },
         },
-        // for users that used GROWI for more than or equal to 1000 years
+      );
+      // insert data for users that used GROWI for more than or equal to 1000 years
+      doc10 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0c1',
           condition: {
             user: {
               types: ['general'],
@@ -236,10 +240,11 @@ describe('QuestionnaireService', () => {
             },
           },
         },
-        // for users that used GROWI for more than a month and less than 6 months
+      );
+      // insert data for users that used GROWI for more than a month and less than 6 months
+      doc11 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0c2',
           condition: {
             user: {
               types: ['general'],
@@ -254,22 +259,22 @@ describe('QuestionnaireService', () => {
             },
           },
         },
-      ]);
+      );
 
       await QuestionnaireAnswerStatus.insertMany([
         {
           user: user._id,
-          questionnaireOrderId: '63b8354837e7aa378e16f0b4',
+          questionnaireOrderId: doc4._id,
           status: StatusType.answered,
         },
         {
           user: user._id,
-          questionnaireOrderId: '63b8354837e7aa378e16f0b5',
+          questionnaireOrderId: doc5._id,
           status: StatusType.skipped,
         },
         {
           user: user._id,
-          questionnaireOrderId: '63b8354837e7aa378e16f0b6',
+          questionnaireOrderId: doc6._id,
           status: StatusType.skipped,
         },
       ]);
@@ -286,7 +291,7 @@ describe('QuestionnaireService', () => {
       });
       expect(questionnaireOrderObjects).toEqual([
         {
-          _id: '63b8354837e7aa378e16f0b1',
+          _id: doc1._id.toString(),
           __v: 0,
           shortTitle: {
             ja_JP: 'GROWI に関するアンケート',
