@@ -455,7 +455,7 @@ class OidcSecurityManagementContents extends React.Component {
           <div className=" card custom-card bg-body-tertiary">
             <ol id="collapseHelpForOidcOauth" className="collapse mb-0">
               <li>{t('security_settings.OAuth.OIDC.register_1')}</li>
-              <li>{t('security_settings.OAuth.OIDC.register_2')}</li>
+              <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.OIDC.register_2', { url: oidcCallbackUrl }) }} />
               <li>{t('security_settings.OAuth.OIDC.register_3')}</li>
             </ol>
           </div>
