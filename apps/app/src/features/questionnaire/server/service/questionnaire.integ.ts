@@ -1,10 +1,10 @@
 import mongoose from 'mongoose';
 
-import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
-import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
-import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
-import type Crowi from '../../../src/server/crowi';
-import { getInstance } from '../setup-crowi';
+import { getInstance } from '../../../../../test/integration/setup-crowi';
+import type Crowi from '../../../../server/crowi';
+import { StatusType } from '../../interfaces/questionnaire-answer-status';
+import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
+import QuestionnaireOrder from '../models/questionnaire-order';
 
 describe('QuestionnaireService', () => {
   let crowi: Crowi;
