@@ -1,6 +1,5 @@
 import type { IncomingMessage } from 'http';
 
-import type { IExternalAuthProviderType } from '@growi/core';
 import axiosRetry from 'axios-retry';
 import luceneQueryParser from 'lucene-query-parser';
 import { Strategy as OidcStrategy, Issuer as OIDCIssuer, custom } from 'openid-client';
@@ -14,6 +13,7 @@ import type { Profile, VerifiedCallback } from 'passport-saml';
 import { Strategy as SamlStrategy } from 'passport-saml';
 import urljoin from 'url-join';
 
+import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';

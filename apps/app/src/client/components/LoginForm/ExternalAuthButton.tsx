@@ -1,7 +1,8 @@
 import { useCallback } from 'react';
 
-import { IExternalAuthProviderType } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+
+import { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 
 const authIcon = {
   [IExternalAuthProviderType.google]: <span className="growi-custom-icons align-bottom">google</span>,

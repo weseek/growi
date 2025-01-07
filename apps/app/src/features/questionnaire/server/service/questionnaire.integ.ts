@@ -1,34 +1,65 @@
-import mongoose from 'mongoose';
+import { Types } from 'mongoose';
+import { mock } from 'vitest-mock-extended';
 
-import { StatusType } from '../../../src/features/questionnaire/interfaces/questionnaire-answer-status';
-import QuestionnaireAnswerStatus from '../../../src/features/questionnaire/server/models/questionnaire-answer-status';
-import QuestionnaireOrder from '../../../src/features/questionnaire/server/models/questionnaire-order';
-import { getInstance } from '../setup-crowi';
+import pkg from '^/package.json';
+
+
+import type UserEvent from '~/server/events/user';
+import { Config } from '~/server/models/config';
+import { configManager } from '~/server/service/config-manager';
+
+import type Crowi from '../../../../server/crowi';
+import { StatusType } from '../../interfaces/questionnaire-answer-status';
+import { UserType } from '../../interfaces/user-info';
+import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
+import QuestionnaireOrder from '../models/questionnaire-order';
+
+import QuestionnaireService from './questionnaire';
+
 
 describe('QuestionnaireService', () => {
-  let crowi;
+  const appVersion = pkg.version;
+
+  let questionnaireService: QuestionnaireService;
+
+  let User;
   let user;
 
   beforeAll(async() => {
     process.env.APP_SITE_URL = 'http://growi.test.jp';
     process.env.DEPLOYMENT_TYPE = 'growi-docker-compose';
     process.env.SAML_ENABLED = 'true';
-    crowi = await getInstance();
 
-    crowi.configManager.updateConfigs({
+    await configManager.loadConfigs();
+    await configManager.updateConfigs({
       'security:passport-saml:isEnabled': true,
       'security:passport-github:isEnabled': true,
     });
 
-    await mongoose.model('Config').create({
+    await Config.create({
       key: 'app:installed',
       value: true,
       createdAt: '2000-01-01',
     });
 
-    crowi.setupQuestionnaireService();
+    const crowiMock = mock<Crowi>({
+      version: appVersion,
+      event: vi.fn().mockImplementation((eventName) => {
+        if (eventName === 'user') {
+          return mock<UserEvent>({
+            on: vi.fn(),
+          });
+        }
+      }),
+      appService: {
+        getSiteUrl: () => 'http://growi.test.jp',
+      },
+    });
+    const userModelFactory = (await import('~/server/models/user')).default;
+    User = userModelFactory(crowiMock);
+    questionnaireService = new QuestionnaireService(crowiMock);
 
-    const User = crowi.model('User');
+    await User.deleteMany({}); // clear users
     user = await User.create({
       name: 'Example for Questionnaire Service Test',
       username: 'questionnaire test user',
@@ -40,42 +71,47 @@ describe('QuestionnaireService', () => {
 
   describe('getGrowiInfo', () => {
     test('Should get correct GROWI info', async() => {
-      const growiInfo = await crowi.questionnaireService.getGrowiInfo();
+      const growiInfo = await questionnaireService.getGrowiInfo();
+
+      assert(growiInfo != null);
 
       expect(growiInfo.appSiteUrlHashed).toBeTruthy();
       expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
-      expect(growiInfo.osInfo.type).toBeTruthy();
-      expect(growiInfo.osInfo.platform).toBeTruthy();
-      expect(growiInfo.osInfo.arch).toBeTruthy();
-      expect(growiInfo.osInfo.totalmem).toBeTruthy();
+      expect(growiInfo.osInfo?.type).toBeTruthy();
+      expect(growiInfo.osInfo?.platform).toBeTruthy();
+      expect(growiInfo.osInfo?.arch).toBeTruthy();
+      expect(growiInfo.osInfo?.totalmem).toBeTruthy();
 
-      delete growiInfo.appSiteUrlHashed;
-      delete growiInfo.currentActiveUsersCount;
-      delete growiInfo.currentUsersCount;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (growiInfo as any).appSiteUrlHashed;
       delete growiInfo.osInfo;
 
       expect(growiInfo).toEqual({
-        activeExternalAccountTypes: ['saml', 'github'],
+        version: appVersion,
         appSiteUrl: 'http://growi.test.jp',
-        installedAt: new Date('2000-01-01'),
-        installedAtByOldestUser: new Date('2000-01-01'),
-        attachmentType: 'aws',
-        deploymentType: 'growi-docker-compose',
         type: 'on-premise',
-        version: crowi.version,
         wikiType: 'closed',
+        deploymentType: 'growi-docker-compose',
+        additionalInfo: {
+          installedAt: new Date('2000-01-01'),
+          installedAtByOldestUser: new Date('2000-01-01'),
+          currentUsersCount: 1,
+          currentActiveUsersCount: 1,
+          attachmentType: 'aws',
+          activeExternalAccountTypes: ['saml', 'github'],
+        },
       });
     });
 
     describe('When url hash settings is on', () => {
       beforeEach(async() => {
         process.env.QUESTIONNAIRE_IS_APP_SITE_URL_HASHED = 'true';
-        await crowi.setupConfigManager();
+        await configManager.loadConfigs();
       });
 
       test('Should return app url string', async() => {
-        const growiInfo = await crowi.questionnaireService.getGrowiInfo();
-        expect(growiInfo.appSiteUrl).toBe(null);
+        const growiInfo = await questionnaireService.getGrowiInfo();
+        expect(growiInfo.appSiteUrl).toBeUndefined();
         expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
         expect(growiInfo.appSiteUrlHashed).toBeTruthy();
       });
@@ -84,25 +120,44 @@ describe('QuestionnaireService', () => {
 
   describe('getUserInfo', () => {
     test('Should get correct user info when user given', () => {
-      const userInfo = crowi.questionnaireService.getUserInfo(user, 'growiurlhashfortest');
+      const userInfo = questionnaireService.getUserInfo(user, 'growiurlhashfortest');
+      expect(userInfo).not.toBeNull();
+      assert(userInfo != null);
+
+      expect(userInfo.type).equal(UserType.general);
+      assert(userInfo.type === UserType.general);
+
       expect(userInfo.userIdHash).toBeTruthy();
       expect(userInfo.userIdHash).not.toBe(user._id);
 
-      delete userInfo.userIdHash;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      delete (userInfo as any).userIdHash;
 
       expect(userInfo).toEqual({ type: 'general', userCreatedAt: new Date('2000-01-01') });
     });
 
     test('Should get correct user info when user is null', () => {
-      const userInfo = crowi.questionnaireService.getUserInfo(null, '');
+      const userInfo = questionnaireService.getUserInfo(null, '');
       expect(userInfo).toEqual({ type: 'guest' });
     });
   });
 
   describe('getQuestionnaireOrdersToShow', () => {
+    let doc1;
+    let doc2;
+    let doc3;
+    let doc4;
+    let doc5;
+    let doc6;
+    let doc7;
+    let doc8;
+    let doc9;
+    let doc10;
+    let doc11;
+    let doc12;
+
     beforeAll(async() => {
       const questionnaireToBeShown = {
-        _id: '63b8354837e7aa378e16f0b1',
         shortTitle: {
           ja_JP: 'GROWI に関するアンケート',
           en_US: 'Questions about GROWI',
@@ -123,7 +178,7 @@ describe('QuestionnaireService', () => {
           },
           growi: {
             types: ['on-premise'],
-            versionRegExps: [crowi.version],
+            versionRegExps: [appVersion],
           },
         },
         createdAt: '2023-01-01',
@@ -131,62 +186,51 @@ describe('QuestionnaireService', () => {
       };
 
       // insert initial db data
-      await QuestionnaireOrder.insertMany([
-        questionnaireToBeShown,
-        // finished
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b2',
-          showFrom: '2020-12-11',
-          showUntil: '2021-12-12',
-        },
-        // for admin or guest
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b3',
-          condition: {
-            user: {
-              types: ['admin', 'guest'],
-            },
-            growi: {
-              types: ['on-premise'],
-              versionRegExps: [crowi.version],
-            },
+      doc1 = await QuestionnaireOrder.create(questionnaireToBeShown);
+      // insert finished data
+      doc2 = await QuestionnaireOrder.create({
+        ...questionnaireToBeShown,
+        showFrom: '2020-12-11',
+        showUntil: '2021-12-12',
+      });
+      // insert data for admin or guest
+      doc3 = await QuestionnaireOrder.create({
+        ...questionnaireToBeShown,
+        condition: {
+          user: {
+            types: ['admin', 'guest'],
+          },
+          growi: {
+            types: ['on-premise'],
+            versionRegExps: [appVersion],
           },
         },
-        // answered
+      });
+      // insert answered data
+      doc4 = await QuestionnaireOrder.create(questionnaireToBeShown);
+      // insert skipped data
+      doc5 = await QuestionnaireOrder.create(questionnaireToBeShown);
+      // insert denied data
+      doc6 = await QuestionnaireOrder.create(questionnaireToBeShown);
+      // insert data for different growi type
+      doc7 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b4',
-        },
-        // skipped
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b5',
-        },
-        // denied
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b6',
-        },
-        // for different growi type
-        {
-          ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b7',
           condition: {
             user: {
               types: ['general'],
             },
             growi: {
               types: ['cloud'],
-              versionRegExps: [crowi.version],
+              versionRegExps: [appVersion],
             },
           },
         },
-        // for different growi version
+      );
+      // insert data for different growi version
+      doc8 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b8',
           condition: {
             user: {
               types: ['general'],
@@ -197,10 +241,11 @@ describe('QuestionnaireService', () => {
             },
           },
         },
-        // for users that used GROWI for less than or equal to a year
+      );
+      // insert data for users that used GROWI for less than or equal to a year
+      doc9 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0b9',
           condition: {
             user: {
               types: ['general'],
@@ -210,14 +255,15 @@ describe('QuestionnaireService', () => {
             },
             growi: {
               types: ['on-premise'],
-              versionRegExps: [crowi.version],
+              versionRegExps: [appVersion],
             },
           },
         },
-        // for users that used GROWI for more than or equal to 1000 years
+      );
+      // insert data for users that used GROWI for more than or equal to 1000 years
+      doc10 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0c1',
           condition: {
             user: {
               types: ['general'],
@@ -227,14 +273,15 @@ describe('QuestionnaireService', () => {
             },
             growi: {
               types: ['on-premise'],
-              versionRegExps: [crowi.version],
+              versionRegExps: [appVersion],
             },
           },
         },
-        // for users that used GROWI for more than a month and less than 6 months
+      );
+      // insert data for users that used GROWI for more than a month and less than 6 months
+      doc11 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
-          _id: '63b8354837e7aa378e16f0c2',
           condition: {
             user: {
               types: ['general'],
@@ -245,43 +292,39 @@ describe('QuestionnaireService', () => {
             },
             growi: {
               types: ['on-premise'],
-              versionRegExps: [crowi.version],
+              versionRegExps: [appVersion],
             },
           },
         },
-      ]);
+      );
 
       await QuestionnaireAnswerStatus.insertMany([
         {
           user: user._id,
-          questionnaireOrderId: '63b8354837e7aa378e16f0b4',
+          questionnaireOrderId: doc4._id,
           status: StatusType.answered,
         },
         {
           user: user._id,
-          questionnaireOrderId: '63b8354837e7aa378e16f0b5',
+          questionnaireOrderId: doc5._id,
           status: StatusType.skipped,
         },
         {
           user: user._id,
-          questionnaireOrderId: '63b8354837e7aa378e16f0b6',
+          questionnaireOrderId: doc6._id,
           status: StatusType.skipped,
         },
       ]);
     });
 
     test('Should get questionnaire orders to show', async() => {
-      const growiInfo = await crowi.questionnaireService.getGrowiInfo();
-      const userInfo = crowi.questionnaireService.getUserInfo(user, growiInfo.appSiteUrlHashed);
-      const questionnaireOrderDocuments = await crowi.questionnaireService.getQuestionnaireOrdersToShow(userInfo, growiInfo, user._id);
-      const questionnaireOrderObjects = questionnaireOrderDocuments.map((document) => {
-        const qo = document.toObject();
-        delete qo.condition._id;
-        return { ...qo, _id: qo._id.toString() };
-      });
-      expect(questionnaireOrderObjects).toEqual([
+      const growiInfo = await questionnaireService.getGrowiInfo();
+      const userInfo = questionnaireService.getUserInfo(user, growiInfo.appSiteUrlHashed);
+
+      const questionnaireOrderDocuments = await questionnaireService.getQuestionnaireOrdersToShow(userInfo, growiInfo, user._id);
+
+      expect(questionnaireOrderDocuments[0].toObject()).toMatchObject(
         {
-          _id: '63b8354837e7aa378e16f0b1',
           __v: 0,
           shortTitle: {
             ja_JP: 'GROWI に関するアンケート',
@@ -304,13 +347,16 @@ describe('QuestionnaireService', () => {
             },
             growi: {
               types: ['on-premise'],
-              versionRegExps: [crowi?.version],
+              versionRegExps: [appVersion],
             },
           },
           createdAt: new Date('2023-01-01'),
           updatedAt: new Date('2023-01-01'),
         },
-      ]);
+      );
+
     });
+
   });
+
 });

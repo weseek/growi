@@ -1,20 +1,22 @@
 import crypto from 'crypto';
 import * as os from 'node:os';
 
-import type { IUserHasId } from '@growi/core';
 
-import { AttachmentMethodType } from '~/interfaces/attachment';
-import { GrowiDeploymentType, GrowiServiceType } from '~/interfaces/system';
+import type { IUserHasId } from '@growi/core';
+import type { IGrowiInfo, IUser } from '@growi/core/dist/interfaces';
+import { GrowiWikiType } from '@growi/core/dist/interfaces';
+import type { Model } from 'mongoose';
+import mongoose from 'mongoose';
+
+import { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
+import type Crowi from '~/server/crowi';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-// eslint-disable-next-line import/no-named-as-default
 import { Config } from '~/server/models/config';
 import { aclService } from '~/server/service/acl';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
-import type { IGrowiInfo } from '../../interfaces/growi-info';
-import {
-  GrowiWikiType, GrowiExternalAuthProviderType,
-} from '../../interfaces/growi-info';
+import type { IGrowiAppAdditionalInfo } from '../../interfaces/growi-app-info';
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
 import { type IUserInfo, UserType } from '../../interfaces/user-info';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
@@ -27,15 +29,16 @@ const logger = loggerFactory('growi:service:questionnaire');
 
 class QuestionnaireService {
 
-  crowi: any;
+  crowi: Crowi;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(crowi) {
     this.crowi = crowi;
   }
 
-  async getGrowiInfo(): Promise<IGrowiInfo> {
-    const User = this.crowi.model('User');
+  async getGrowiInfo(): Promise<IGrowiInfo<IGrowiAppAdditionalInfo>> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const User = mongoose.model<IUser, Model<IUser>>('User');
 
     const appSiteUrl = this.crowi.appService.getSiteUrl();
     const hasher = crypto.createHash('sha256');
@@ -50,26 +53,22 @@ class QuestionnaireService {
     const installedAtByOldestUser = user ? user.createdAt : null;
 
     const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
-    const installedAt = appInstalledConfig != null && appInstalledConfig.createdAt != null ? appInstalledConfig.createdAt : installedAtByOldestUser;
+    const oldestConfig = await Config.findOne().sort({ createdAt: 1 });
+
+    // oldestConfig must not be null because there is at least one config
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const installedAt = installedAtByOldestUser ?? appInstalledConfig?.createdAt ?? oldestConfig!.createdAt ?? null;
 
     const currentUsersCount = await User.countDocuments();
-    const currentActiveUsersCount = await User.countActiveUsers();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const currentActiveUsersCount = await (User as any).countActiveUsers();
 
     const isGuestAllowedToRead = aclService.isGuestAllowedToRead();
     const wikiType = isGuestAllowedToRead ? GrowiWikiType.open : GrowiWikiType.closed;
 
-    const activeExternalAccountTypes: GrowiExternalAuthProviderType[] = Object.values(GrowiExternalAuthProviderType).filter((type) => {
-      return this.crowi.configManager.getConfig(`security:passport-${type}:isEnabled`);
+    const activeExternalAccountTypes: IExternalAuthProviderType[] = Object.values(IExternalAuthProviderType).filter((type) => {
+      return configManager.getConfig(`security:passport-${type}:isEnabled`);
     });
-
-    const typeStr = this.crowi.configManager.getConfig('app:serviceType');
-    const type = Object.values(GrowiServiceType).includes(typeStr) ? typeStr : null;
-
-    const attachmentTypeStr = this.crowi.configManager.getConfig('app:fileUploadType');
-    const attachmentType = Object.values(AttachmentMethodType).includes(attachmentTypeStr) ? attachmentTypeStr : null;
-
-    const deploymentTypeStr = this.crowi.configManager.getConfig('app:deploymentType');
-    const deploymentType = Object.values(GrowiDeploymentType).includes(deploymentTypeStr) ? deploymentTypeStr : null;
 
     return {
       version: this.crowi.version,
@@ -79,17 +78,19 @@ class QuestionnaireService {
         arch: os.arch(),
         totalmem: os.totalmem(),
       },
-      appSiteUrl: this.crowi.configManager.getConfig('questionnaire:isAppSiteUrlHashed') ? null : appSiteUrl,
+      appSiteUrl: configManager.getConfig('questionnaire:isAppSiteUrlHashed') ? undefined : appSiteUrl,
       appSiteUrlHashed,
-      installedAt,
-      installedAtByOldestUser,
-      type,
-      currentUsersCount,
-      currentActiveUsersCount,
+      type: configManager.getConfig('app:serviceType'),
       wikiType,
-      attachmentType,
-      activeExternalAccountTypes,
-      deploymentType,
+      deploymentType: configManager.getConfig('app:deploymentType'),
+      additionalInfo: {
+        installedAt,
+        installedAtByOldestUser,
+        currentUsersCount,
+        currentActiveUsersCount,
+        attachmentType: configManager.getConfig('app:fileUploadType'),
+        activeExternalAccountTypes,
+      },
     };
   }
 
@@ -108,7 +109,9 @@ class QuestionnaireService {
     return { type: UserType.guest };
   }
 
-  async getQuestionnaireOrdersToShow(userInfo: IUserInfo, growiInfo: IGrowiInfo, userId: ObjectIdLike | null): Promise<QuestionnaireOrderDocument[]> {
+  async getQuestionnaireOrdersToShow(
+      userInfo: IUserInfo, growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>, userId: ObjectIdLike | null,
+  ): Promise<QuestionnaireOrderDocument[]> {
     const currentDate = new Date();
 
     let questionnaireOrders = await QuestionnaireOrder.find({
