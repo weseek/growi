@@ -1,7 +1,5 @@
 import type Logger from 'bunyan';
 
-import pkg from '^/package.json';
-
 import { startInstrumentation } from '~/features/opentelemetry/server';
 import loggerFactory from '~/utils/logger';
 import { hasProcessFlag } from '~/utils/process-utils';
@@ -23,7 +21,7 @@ process.on('unhandledRejection', (reason, p) => {
 async function main() {
   try {
     // start OpenTelemetry
-    await startInstrumentation(pkg.version);
+    await startInstrumentation();
 
     const Crowi = (await import('./crowi')).default;
     const growi = new Crowi();

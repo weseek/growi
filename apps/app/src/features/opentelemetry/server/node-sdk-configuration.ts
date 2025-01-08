@@ -6,13 +6,17 @@ import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import type { NodeSDKConfiguration } from '@opentelemetry/sdk-node';
 import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION, SEMRESATTRS_SERVICE_INSTANCE_ID } from '@opentelemetry/semantic-conventions';
 
+import { getGrowiVersion } from '~/utils/growi-version';
 
-export const generateNodeSDKConfiguration = (instanceId: string, version: string): Partial<NodeSDKConfiguration> => {
+
+export const generateNodeSDKConfiguration = (serviceInstanceId?: string): Partial<NodeSDKConfiguration> => {
+  const version = getGrowiVersion();
+
   return {
     resource: new Resource({
       [ATTR_SERVICE_NAME]: 'growi',
       [ATTR_SERVICE_VERSION]: version,
-      [SEMRESATTRS_SERVICE_INSTANCE_ID]: instanceId,
+      [SEMRESATTRS_SERVICE_INSTANCE_ID]: serviceInstanceId,
     }),
     traceExporter: new OTLPTraceExporter(),
     metricReader: new PeriodicExportingMetricReader({

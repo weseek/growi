@@ -12,6 +12,7 @@ import type Crowi from '~/server/crowi';
 import { Config } from '~/server/models/config';
 import { aclService } from '~/server/service/acl';
 import { configManager } from '~/server/service/config-manager';
+import { getGrowiVersion } from '~/utils/growi-version';
 
 import type { IGrowiAppAdditionalInfo } from '../../../features/questionnaire/interfaces/growi-app-info';
 
@@ -46,7 +47,7 @@ export class GrowiInfoService {
     const wikiType = isGuestAllowedToRead ? GrowiWikiType.open : GrowiWikiType.closed;
 
     const baseInfo = {
-      version: this.crowi.version,
+      version: getGrowiVersion(),
       osInfo: {
         type: os.type(),
         platform: os.platform(),
