@@ -62,7 +62,7 @@ module.exports = (crowi: Crowi): Router => {
   };
 
   router.get('/orders', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const growiInfo = await getGrowiInfoService().getGrowiInfo();
+    const growiInfo = await getGrowiInfoService().getGrowiInfo(true);
     const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
     try {
@@ -84,7 +84,7 @@ module.exports = (crowi: Crowi): Router => {
   router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
       const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
-      const growiInfo = await getGrowiInfoService().getGrowiInfo();
+      const growiInfo = await getGrowiInfoService().getGrowiInfo(true);
       const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
       const proactiveQuestionnaireAnswer: IProactiveQuestionnaireAnswer = {
@@ -132,7 +132,7 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
       const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
-      const growiInfo = await getGrowiInfoService().getGrowiInfo();
+      const growiInfo = await getGrowiInfoService().getGrowiInfo(true);
       const userInfo = crowi.questionnaireService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
 
       const questionnaireAnswer: IQuestionnaireAnswer = {
