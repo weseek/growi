@@ -530,7 +530,7 @@ module.exports = (crowi) => {
     } = page;
     let isGrantNormalized = false;
     try {
-      const grantedUsersId = grantedUsers.map(ref => getIdForRef(ref));
+      const grantedUsersId = grantedUsers?.map(ref => getIdForRef(ref));
       isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsersId, grantedGroups, false, false);
     }
     catch (err) {
