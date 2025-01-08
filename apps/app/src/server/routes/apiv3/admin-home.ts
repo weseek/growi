@@ -1,4 +1,5 @@
 import { configManager } from '~/server/service/config-manager';
+import { getGrowiVersion } from '~/utils/growi-version';
 
 const express = require('express');
 
@@ -87,7 +88,7 @@ module.exports = (crowi) => {
     const runtimeVersions = await getRuntimeVersions();
 
     const adminHomeParams = {
-      growiVersion: crowi.version,
+      growiVersion: getGrowiVersion(),
       nodeVersion: runtimeVersions.node ?? '-',
       npmVersion: runtimeVersions.npm ?? '-',
       pnpmVersion: runtimeVersions.pnpm ?? '-',

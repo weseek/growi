@@ -17,6 +17,7 @@ import TransferKeyModel from '~/server/models/transfer-key';
 import { getImportService, type ImportSettings } from '~/server/service/import';
 import { createBatchStream } from '~/server/util/batch-stream';
 import axios from '~/utils/axios';
+import { getGrowiVersion } from '~/utils/growi-version';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
@@ -256,7 +257,7 @@ export class G2GTransferPusherService implements Pusher {
   public async getTransferability(destGROWIInfo: IDataGROWIInfo): Promise<Transferability> {
     const { fileUploadService } = this.crowi;
 
-    const version = this.crowi.version;
+    const version = getGrowiVersion();
     if (version !== destGROWIInfo.version) {
       return {
         canTransfer: false,
@@ -550,7 +551,8 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
-    const { version, fileUploadService } = this.crowi;
+    const { fileUploadService } = this.crowi;
+    const version = getGrowiVersion();
     const userUpperLimit = configManager.getConfig('security:userUpperLimit');
     const fileUploadDisabled = configManager.getConfig('app:fileUploadDisabled');
     const fileUploadTotalLimit = fileUploadService.getFileUploadTotalLimit();

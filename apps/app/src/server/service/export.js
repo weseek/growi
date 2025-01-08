@@ -1,4 +1,5 @@
 import { toArrayIfNot } from '~/utils/array-utils';
+import { getGrowiVersion } from '~/utils/growi-version';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from './config-manager';
@@ -97,7 +98,7 @@ class ExportService {
     const passwordSeed = this.crowi.env.PASSWORD_SEED || null;
 
     const metaData = {
-      version: this.crowi.version,
+      version: getGrowiVersion(),
       url: this.appService.getSiteUrl(),
       passwordSeed,
       exportedAt: new Date(),

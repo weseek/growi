@@ -17,6 +17,7 @@ import { detectLocaleFromBrowserAcceptLanguage } from '~/server/util/locale-util
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferCollapsedMode,
 } from '~/stores/ui';
+import { getGrowiVersion } from '~/utils/growi-version';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
@@ -92,7 +93,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     customTitleTemplate: customizeService.customTitleTemplate,
     csrfToken: req.csrfToken(),
     isContainerFluid: configManager.getConfig('customize:isContainerFluid') ?? false,
-    growiVersion: crowi.version,
+    growiVersion: getGrowiVersion(),
     isMaintenanceMode,
     redirectDestination,
     currentUser,
