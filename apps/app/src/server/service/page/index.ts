@@ -2705,7 +2705,7 @@ class PageService implements IPageService {
         '',
         {
           grant: notEmptyParent?.grant,
-          grantUserIds: notEmptyParent?.grantedUsers.map(u => getIdForRef(u)),
+          grantUserIds: notEmptyParent?.grantedUsers?.map(u => getIdForRef(u)),
           grantUserGroupIds: notEmptyParent?.grantedGroups,
         },
       );
