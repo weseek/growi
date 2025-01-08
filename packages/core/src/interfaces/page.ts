@@ -28,7 +28,7 @@ export type IPage = {
   descendantCount: number,
   isEmpty: boolean,
   grant: PageGrant,
-  grantedUsers?: Ref<IUser>[],
+  grantedUsers: Ref<IUser>[],
   grantedGroups: IGrantedGroup[],
   lastUpdateUser?: Ref<IUser>,
   liker: Ref<IUser>[],
