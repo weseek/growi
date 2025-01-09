@@ -736,7 +736,8 @@
   "pagetree": {
     "cannot_rename_a_title_that_contains_slash": "Renommage impossible lorsque le titre contient '/'",
     "you_cannot_move_this_page_now": "Déplacement de la page impossible",
-    "something_went_wrong_with_moving_page": "Échec de déplacement de la page"
+    "something_went_wrong_with_moving_page": "Échec de déplacement de la page",
+    "error_retrieving_the_pagetree": "Une erreur s'est produite lors de la récupération de l'arbre des pages"
   },
   "duplicated_page_alert": {
     "same_page_name_exists": "Une page avec ce nom 「{{pageName}}」 existe déjà",

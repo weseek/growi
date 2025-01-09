@@ -134,8 +134,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
 
   if (error != null) {
-    // TODO: improve message
-    toastError('Error occurred while fetching pages to render PageTree');
+    toastError(t('pagetree.error_retrieving_the_pagetree'));
     return <></>;
   }
 
