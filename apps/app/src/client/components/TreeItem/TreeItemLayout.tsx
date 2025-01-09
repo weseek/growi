@@ -85,8 +85,8 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
   // didMount
   useEffect(() => {
     const isPathToTarget = page.path != null && targetPath.startsWith(page.path) && targetPath !== page.path; // Target Page does not need to be opened
-    if (hasChildren() || isPathToTarget) setIsOpen(true);
-  }, [hasChildren, targetPath, page.path]);
+    if (isPathToTarget) setIsOpen(true);
+  }, [targetPath, page.path]);
 
   /*
    * When swr fetch succeeded
