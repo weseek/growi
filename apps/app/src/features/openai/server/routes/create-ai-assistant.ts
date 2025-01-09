@@ -1,4 +1,5 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import type { IUserHasId } from '^/../../packages/core/dist';
 import type { Request, RequestHandler } from 'express';
 import { type ValidationChain, body } from 'express-validator';
 
@@ -8,13 +9,20 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
+import { type AiAssistant, AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
+import { aiAssistantService } from '../services/ai-assistant';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:create-assistant');
 
 type CreateAssistantFactory = (crowi: Crowi) => RequestHandler[];
+
+type ReqBody = Omit<AiAssistant, 'vectorStore' | 'owner'>
+
+type Req = Request<undefined, Response, ReqBody> & {
+  user: IUserHasId,
+}
 
 export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
@@ -84,9 +92,10 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
 
   return [
     accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
-    async(req: Request, res: ApiV3Response) => {
-
+    async(req: Req, res: ApiV3Response) => {
       try {
+        const aiAssistantData = { ...req.body, owner: req.user._id };
+        aiAssistantService.createAiAssistant(aiAssistantData);
         return res.apiv3({});
 
       }

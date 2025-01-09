@@ -1,29 +1,11 @@
-import {
-  type IGrantedGroup, GroupType, type IUser, type Ref,
-} from '@growi/core';
+import { type IGrantedGroup, GroupType } from '@growi/core';
 import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
+import { type AiAssistant, AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
 
-import type { VectorStore } from './vector-store';
-
-
-interface AiAssistant {
-  name: string;
-  description: string
-  additionalInstruction: string
-  pagePathPatterns: string[],
-  vectorStore: Ref<VectorStore>
-  owner: Ref<IUser>
-  grantedUsers?: IUser[]
-  grantedGroups?: IGrantedGroup[]
-  shareScope: AiAssistantShareScope
-  ownerAccessScope: AiAssistantOwnerAccessScope
-}
-
-interface AiAssistantDocument extends AiAssistant, Document {}
+export interface AiAssistantDocument extends AiAssistant, Document {}
 
 type AiAssistantModel = Model<AiAssistantDocument>
 
