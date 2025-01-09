@@ -16,7 +16,7 @@ const logger = loggerFactory('growi:routes:apiv3:openai:create-assistant');
 
 type CreateAssistantFactory = (crowi: Crowi) => RequestHandler[];
 
-export const createAssistantFactory: CreateAssistantFactory = (crowi) => {
+export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
 
