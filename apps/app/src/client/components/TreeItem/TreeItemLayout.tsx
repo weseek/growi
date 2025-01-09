@@ -22,7 +22,7 @@ type TreeItemLayoutProps = TreeItemProps & {
   indentSize?: number,
 }
 
-export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
+export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
   const {
     className, itemClassName,
     indentSize = 10,

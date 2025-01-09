@@ -4,7 +4,7 @@ import React, {
 
 import path from 'path';
 
-import type { Nullable, IPageHasId, IPageToDeleteWithMeta } from '@growi/core';
+import type { IPageHasId, IPageToDeleteWithMeta } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -93,7 +93,7 @@ type ItemsTreeProps = {
   isReadOnlyUser: boolean
   isWipPageShown?: boolean
   targetPath: string
-  targetPathOrId?: Nullable<string>
+  targetPathOrId?: string,
   targetAndAncestorsData?: TargetAndAncestors
   CustomTreeItem: React.FunctionComponent<TreeItemProps>
   onClickTreeItem?: (page: IPageForItem) => void;
@@ -225,6 +225,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
       <ul className={`${moduleClass} list-group`}>
         <CustomTreeItem
           key={initialItemNode.page.path}
+          targetPath={targetPath}
           targetPathOrId={targetPathOrId}
           itemNode={initialItemNode}
           isOpen
