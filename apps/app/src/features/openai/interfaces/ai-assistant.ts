@@ -1,4 +1,4 @@
-import type { IGrantedGroup, IUser, Ref } from '^/../../packages/core/dist';
+import type { IGrantedGroup, IUser, Ref } from '@growi/core';
 
 import type { VectorStore } from '../server/models/vector-store';
 
