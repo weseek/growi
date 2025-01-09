@@ -1,12 +1,14 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
-import type { ValidationChain } from 'express-validator';
+import { type ValidationChain, body } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
+
+import { AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -19,7 +21,65 @@ export const createAssistantFactory: CreateAssistantFactory = (crowi) => {
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
 
   const validator: ValidationChain[] = [
-    //
+    body('name')
+      .isString()
+      .withMessage('name must be a string')
+      .not()
+      .isEmpty()
+      .withMessage('name is required'),
+
+    body('description')
+      .optional()
+      .isString()
+      .withMessage('description must be a string'),
+
+    body('additionalInstruction')
+      .optional()
+      .isString()
+      .withMessage('additionalInstruction must be a string'),
+
+    body('pagePathPatterns')
+      .isArray()
+      .withMessage('pagePathPatterns must be an array of strings')
+      .not()
+      .isEmpty()
+      .withMessage('pagePathPatterns must not be empty'),
+
+    body('pagePathPatterns.*') // each item of pagePathPatterns
+      .isString()
+      .withMessage('pagePathPatterns must be an array of strings')
+      .notEmpty()
+      .withMessage('pagePathPatterns must not be empty'),
+
+    body('grantedUsers')
+      .optional()
+      .isArray()
+      .withMessage('grantedUsers must be an array'),
+
+    body('grantedUsers.*') // each item of grantedUsers
+      .isMongoId()
+      .withMessage('grantedUsers must be an array mongoId'),
+
+    body('grantedGroups')
+      .optional()
+      .isArray()
+      .withMessage('Granted groups must be an array'),
+
+    body('grantedGroups.*.type') // each item of grantedGroups
+      .isString()
+      .withMessage('GrantedGroups type is required'),
+
+    body('grantedGroups.*.item') // each item of grantedGroups
+      .isMongoId()
+      .withMessage('GrantedGroups item is required'),
+
+    body('shareScope')
+      .isIn(Object.values(AiAssistantShareScope))
+      .withMessage('Invalid shareScope value'),
+
+    body('ownerAccessScope')
+      .isIn(Object.values(AiAssistantOwnerAccessScope))
+      .withMessage('Invalid ownerAccessScope value'),
   ];
 
   return [
