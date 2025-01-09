@@ -8,7 +8,8 @@ import { configManager } from '~/server/service/config-manager';
 
 import type Crowi from '../../crowi';
 
-import { GrowiInfoService } from './growi-info';
+import type { GrowiInfoService } from './growi-info';
+import { serviceFactory } from './growi-info';
 
 describe('GrowiInfoService', () => {
   const appVersion = pkg.version;
@@ -47,7 +48,7 @@ describe('GrowiInfoService', () => {
       },
     });
 
-    growiInfoService = new GrowiInfoService(crowiMock);
+    growiInfoService = serviceFactory(crowiMock);
 
     const userModelFactory = (await import('~/server/models/user')).default;
     User = userModelFactory(crowiMock);
