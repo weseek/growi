@@ -34,9 +34,9 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
     showAlternativeContent,
   } = props;
 
-  const { page, children } = itemNode;
+  const { page } = itemNode;
 
-  const [currentChildren, setCurrentChildren] = useState<ItemNode[]>(children);
+  const [currentChildren, setCurrentChildren] = useState<ItemNode[]>([]);
   const [isOpen, setIsOpen] = useState(_isOpen);
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -75,8 +75,8 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
   const hasDescendants = descendantCount > 0 || isChildrenLoaded;
 
   const hasChildren = useCallback((): boolean => {
-    return page.path != null && targetPath.startsWith(page.path);
-  }, [page, targetPath]);
+    return currentChildren != null && currentChildren.length > 0;
+  }, [currentChildren]);
 
   const onClickLoadChildren = useCallback(() => {
     setIsOpen(!isOpen);
@@ -84,8 +84,9 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
 
   // didMount
   useEffect(() => {
-    if (hasChildren()) setIsOpen(true);
-  }, [hasChildren]);
+    const isPathToTarget = page.path != null && targetPath.startsWith(page.path) && targetPath !== page.path; // Target Page does not need to be opened
+    if (hasChildren() || isPathToTarget) setIsOpen(true);
+  }, [hasChildren, targetPath, page.path]);
 
   /*
    * When swr fetch succeeded
