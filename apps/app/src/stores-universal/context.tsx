@@ -10,8 +10,6 @@ import useSWRImmutable from 'swr/immutable';
 import type { SupportedActionType } from '~/interfaces/activity';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 
-import type { TargetAndAncestors } from '../interfaces/page-listing-results';
-
 import { useContextSWR } from './use-context-swr';
 
 declare global {
