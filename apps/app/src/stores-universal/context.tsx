@@ -78,10 +78,6 @@ export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<N
   return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
 
-export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResponse<TargetAndAncestors, Error> => {
-  return useContextSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData);
-};
-
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isAclEnabled', initialData);
 };
