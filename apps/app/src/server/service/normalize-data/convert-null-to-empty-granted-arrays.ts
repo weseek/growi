@@ -9,6 +9,8 @@ export const convertNullToEmptyGrantedArrays = async(): Promise<void> => {
   const requests = [
     {
       updateMany: {
+        // Matches documents where field is null or nonexistent
+        // https://www.mongodb.com/docs/manual/tutorial/query-for-null-fields/#equality-filter
         filter: { grantedUsers: null },
         update: {
           $set: { grantedUsers: [] },
