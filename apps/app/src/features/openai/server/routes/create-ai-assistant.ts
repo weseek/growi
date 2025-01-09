@@ -10,7 +10,7 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import loggerFactory from '~/utils/logger';
 
 import { type AiAssistant, AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
-import { aiAssistantService } from '../services/ai-assistant';
+import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -95,8 +95,10 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
     async(req: Req, res: ApiV3Response) => {
       try {
         const aiAssistantData = { ...req.body, owner: req.user._id };
-        aiAssistantService.createAiAssistant(aiAssistantData);
-        return res.apiv3({});
+        const openaiService = getOpenaiService();
+        const aiAssistant = await openaiService?.createAiAssistant(aiAssistantData);
+
+        return res.apiv3({ aiAssistant });
 
       }
       catch (err) {
