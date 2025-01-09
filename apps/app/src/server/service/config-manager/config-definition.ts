@@ -31,6 +31,7 @@ export const CONFIG_KEYS = [
 
   // App Settings
   'app:installed',
+  'app:serviceInstanceId',
   'app:isV5Compatible',
   'app:isMaintenanceMode',
   'app:confidential',
@@ -337,6 +338,9 @@ export const CONFIG_DEFINITIONS = {
   // App Settings
   'app:installed': defineConfig<boolean>({
     defaultValue: false,
+  }),
+  'app:serviceInstanceId': defineConfig<string | undefined>({
+    defaultValue: undefined,
   }),
   'app:isV5Compatible': defineConfig<boolean>({
     defaultValue: false,

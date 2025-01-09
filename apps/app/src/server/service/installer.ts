@@ -7,6 +7,7 @@ import { addSeconds } from 'date-fns/addSeconds';
 import ExtensibleCustomError from 'extensible-custom-error';
 import fs from 'graceful-fs';
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 import loggerFactory from '~/utils/logger';
 
@@ -116,6 +117,7 @@ export class InstallerService {
       'app:fileUpload': true,
       'app:isV5Compatible': true,
       'app:globalLang': globalLang,
+      'app:serviceInstanceId': uuidv4(),
     }, { skipPubsub: true });
 
     if (options?.allowGuestMode) {
