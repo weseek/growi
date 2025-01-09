@@ -5,7 +5,7 @@ import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { AiAssistantType, AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
+import { AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
 
 import type { VectorStore } from './vector-store';
 
@@ -16,7 +16,6 @@ interface AiAssistant {
   additionalInstruction: string
   pagePathPatterns: string[],
   vectorStore: Ref<VectorStore>
-  types: AiAssistantType[]
   owner: Ref<IUser>
   grantedUsers?: IUser[]
   grantedGroups?: IGrantedGroup[]
@@ -57,11 +56,6 @@ const schema = new Schema<AiAssistantDocument>(
       ref: 'VectorStore',
       required: true,
     },
-    types: [{
-      type: String,
-      enum: Object.values(AiAssistantType),
-      required: true,
-    }],
     owner: {
       type: Schema.Types.ObjectId,
       ref: 'User',
