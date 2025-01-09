@@ -1,5 +1,5 @@
+import { type IUserHasId, GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import type { IUserHasId } from '^/../../packages/core/dist';
 import type { Request, RequestHandler } from 'express';
 import { type ValidationChain, body } from 'express-validator';
 
@@ -34,17 +34,20 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       .withMessage('name must be a string')
       .not()
       .isEmpty()
-      .withMessage('name is required'),
+      .withMessage('name is required')
+      .escape(),
 
     body('description')
       .optional()
       .isString()
-      .withMessage('description must be a string'),
+      .withMessage('description must be a string')
+      .escape(),
 
     body('additionalInstruction')
       .optional()
       .isString()
-      .withMessage('additionalInstruction must be a string'),
+      .withMessage('additionalInstruction must be a string')
+      .escape(),
 
     body('pagePathPatterns')
       .isArray()
@@ -74,12 +77,12 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       .withMessage('Granted groups must be an array'),
 
     body('grantedGroups.*.type') // each item of grantedGroups
-      .isString()
-      .withMessage('GrantedGroups type is required'),
+      .isIn(Object.values(GroupType))
+      .withMessage('Invalid grantedGroups type value'),
 
     body('grantedGroups.*.item') // each item of grantedGroups
       .isMongoId()
-      .withMessage('GrantedGroups item is required'),
+      .withMessage('Invalid grantedGroups item value'),
 
     body('shareScope')
       .isIn(Object.values(AiAssistantShareScope))
