@@ -102,7 +102,6 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
         const aiAssistant = await openaiService?.createAiAssistant(aiAssistantData);
 
         return res.apiv3({ aiAssistant });
-
       }
       catch (err) {
         logger.error(err);

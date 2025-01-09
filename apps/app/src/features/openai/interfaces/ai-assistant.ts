@@ -17,7 +17,6 @@ export const AiAssistantOwnerAccessScope = {
   USER_GROUP: 'userGroup',
 } as const;
 
-
 /*
 *  Interfaces
 */
