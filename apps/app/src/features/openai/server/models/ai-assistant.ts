@@ -5,36 +5,10 @@ import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
+import { AiAssistantType, AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
+
 import type { VectorStore } from './vector-store';
 
-/*
-*  Objects
-*/
-const AiAssistantType = {
-  KNOWLEDGE: 'knowledge',
-  // EDITOR: 'editor',
-  // LEARNING: 'learning',
-} as const;
-
-const AiAssistantShareScope = {
-  PUBLIC: 'public',
-  ONLY_ME: 'onlyMe',
-  USER_GROUP: 'userGroup',
-} as const;
-
-const AiAssistantOwnerAccessScope = {
-  PUBLIC: 'public',
-  ONLY_ME: 'onlyMe',
-  USER_GROUP: 'userGroup',
-} as const;
-
-
-/*
-*  Interfaces
-*/
-type AiAssistantType = typeof AiAssistantType[keyof typeof AiAssistantType];
-type AiAssistantShareScope = typeof AiAssistantShareScope[keyof typeof AiAssistantShareScope];
-type AiAssistantOwnerAccessScope = typeof AiAssistantOwnerAccessScope[keyof typeof AiAssistantOwnerAccessScope];
 
 interface AiAssistant {
   name: string;
