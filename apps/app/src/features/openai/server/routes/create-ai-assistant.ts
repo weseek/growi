@@ -14,7 +14,7 @@ import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:create-assistant');
+const logger = loggerFactory('growi:routes:apiv3:openai:create-ai-assistant');
 
 type CreateAssistantFactory = (crowi: Crowi) => RequestHandler[];
 
