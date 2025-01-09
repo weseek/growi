@@ -27,7 +27,7 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
     className, itemClassName,
     indentSize = 10,
     itemLevel: baseItemLevel = 1,
-    itemNode, targetPathOrId, isOpen: _isOpen = false,
+    itemNode, targetPath, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, onWheelClick,
     isEnableActions, isReadOnlyUser, isWipPageShown = true,
     itemRef, itemClass,
@@ -75,8 +75,8 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
   const hasDescendants = descendantCount > 0 || isChildrenLoaded;
 
   const hasChildren = useCallback((): boolean => {
-    return currentChildren != null && currentChildren.length > 0;
-  }, [currentChildren]);
+    return page.path != null && targetPath.startsWith(page.path);
+  }, [page, targetPath]);
 
   const onClickLoadChildren = useCallback(() => {
     setIsOpen(!isOpen);
@@ -108,6 +108,7 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
     isReadOnlyUser,
     isOpen: false,
     isWipPageShown,
+    targetPath,
     targetPathOrId,
     onRenamed,
     onClickDuplicateMenuItem,
