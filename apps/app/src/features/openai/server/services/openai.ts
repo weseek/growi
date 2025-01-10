@@ -11,7 +11,7 @@ import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
 import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
-import VectorStoreModel, { VectorStoreScopeType, type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
+import VectorStoreModel, { type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
 import VectorStoreFileRelationModel, {
   type VectorStoreFileRelation,
   prepareVectorStoreFileRelations,
@@ -35,20 +35,20 @@ const BATCH_SIZE = 100;
 
 const logger = loggerFactory('growi:service:openai');
 
-let isVectorStoreForPublicScopeExist = false;
+// const isVectorStoreForPublicScopeExist = false;
 
 type VectorStoreFileRelationsMap = Map<string, VectorStoreFileRelation>
 
 export interface IOpenaiService {
   getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
-  getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
+  // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
-  createVectorStoreFile(vectorStore: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
+  createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
-  rebuildVectorStoreAll(): Promise<void>;
-  rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
+  // rebuildVectorStoreAll(): Promise<void>;
+  // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
 }
 class OpenaiService implements IOpenaiService {
@@ -115,44 +115,43 @@ class OpenaiService implements IOpenaiService {
     await ThreadRelationModel.deleteMany({ threadId: { $in: deletedThreadIds } });
   }
 
-  public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
-    const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: VectorStoreScopeType.PUBLIC, isDeleted: false });
+  // public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
+  //   const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: VectorStoreScopeType.PUBLIC, isDeleted: false });
 
-    if (vectorStoreDocument != null && isVectorStoreForPublicScopeExist) {
-      return vectorStoreDocument;
-    }
+  //   if (vectorStoreDocument != null && isVectorStoreForPublicScopeExist) {
+  //     return vectorStoreDocument;
+  //   }
 
-    if (vectorStoreDocument != null && !isVectorStoreForPublicScopeExist) {
-      try {
-        // Check if vector store entity exists
-        // If the vector store entity does not exist, the vector store document is deleted
-        await this.client.retrieveVectorStore(vectorStoreDocument.vectorStoreId);
-        isVectorStoreForPublicScopeExist = true;
-        return vectorStoreDocument;
-      }
-      catch (err) {
-        await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
-        throw new Error(err);
-      }
-    }
+  //   if (vectorStoreDocument != null && !isVectorStoreForPublicScopeExist) {
+  //     try {
+  //       // Check if vector store entity exists
+  //       // If the vector store entity does not exist, the vector store document is deleted
+  //       await this.client.retrieveVectorStore(vectorStoreDocument.vectorStoreId);
+  //       isVectorStoreForPublicScopeExist = true;
+  //       return vectorStoreDocument;
+  //     }
+  //     catch (err) {
+  //       await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
+  //       throw new Error(err);
+  //     }
+  //   }
 
-    const newVectorStore = await this.client.createVectorStore(VectorStoreScopeType.PUBLIC);
-    const newVectorStoreDocument = await VectorStoreModel.create({
-      vectorStoreId: newVectorStore.id,
-      scopeType: VectorStoreScopeType.PUBLIC,
-    }) as VectorStoreDocument;
+  //   const newVectorStore = await this.client.createVectorStore(VectorStoreScopeType.PUBLIC);
+  //   const newVectorStoreDocument = await VectorStoreModel.create({
+  //     vectorStoreId: newVectorStore.id,
+  //     scopeType: VectorStoreScopeType.PUBLIC,
+  //   }) as VectorStoreDocument;
 
-    isVectorStoreForPublicScopeExist = true;
+  //   isVectorStoreForPublicScopeExist = true;
 
-    return newVectorStoreDocument;
-  }
+  //   return newVectorStoreDocument;
+  // }
 
   private async createVectorStore(): Promise<VectorStoreDocument> {
     try {
-      const newVectorStore = await this.client.createVectorStore(VectorStoreScopeType.PUBLIC); // TODO: fix argument
+      const newVectorStore = await this.client.createVectorStore();
 
       const newVectorStoreDocument = await VectorStoreModel.create({
-        scopeType: VectorStoreScopeType.PUBLIC,
         vectorStoreId: newVectorStore.id,
       }) as VectorStoreDocument;
 
@@ -185,37 +184,37 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  private async deleteVectorStore(vectorStoreScopeType: VectorStoreScopeType): Promise<void> {
-    const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: vectorStoreScopeType, isDeleted: false });
-    if (vectorStoreDocument == null) {
-      return;
-    }
+  // private async deleteVectorStore(vectorStoreScopeType: VectorStoreScopeType): Promise<void> {
+  //   const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: vectorStoreScopeType, isDeleted: false });
+  //   if (vectorStoreDocument == null) {
+  //     return;
+  //   }
 
-    try {
-      await this.client.deleteVectorStore(vectorStoreDocument.vectorStoreId);
-      await vectorStoreDocument.markAsDeleted();
-    }
-    catch (err) {
-      await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
-      throw new Error(err);
-    }
-  }
+  //   try {
+  //     await this.client.deleteVectorStore(vectorStoreDocument.vectorStoreId);
+  //     await vectorStoreDocument.markAsDeleted();
+  //   }
+  //   catch (err) {
+  //     await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
+  //     throw new Error(err);
+  //   }
+  // }
 
-  async createVectorStoreFile(vectorStore: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
+  async createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
     // const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
         if (isPopulated(page.revision) && page.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(page._id, page.path, page.revision.body);
-          prepareVectorStoreFileRelations(vectorStore._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
+          prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
           return;
         }
 
         const pagePopulatedToShowRevision = await page.populateDataToShowRevision();
         if (pagePopulatedToShowRevision.revision != null && pagePopulatedToShowRevision.revision.body.length > 0) {
           const uploadedFile = await this.uploadFile(page._id, page.path, pagePopulatedToShowRevision.revision.body);
-          prepareVectorStoreFileRelations(vectorStore._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
+          prepareVectorStoreFileRelations(vectorStoreRelation._id, page._id, uploadedFile.id, vectorStoreFileRelationsMap);
         }
       }
     };
@@ -246,7 +245,7 @@ class OpenaiService implements IOpenaiService {
       await VectorStoreFileRelationModel.upsertVectorStoreFileRelations(vectorStoreFileRelations);
 
       // Create vector store file
-      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStore.vectorStoreId, uploadedFileIds);
+      const createVectorStoreFileBatchResponse = await this.client.createVectorStoreFileBatch(vectorStoreRelation.vectorStoreId, uploadedFileIds);
       logger.debug('Create vector store file', createVectorStoreFileBatchResponse);
 
       // Set isAttachedToVectorStore: true when the uploaded file is attached to VectorStore
@@ -257,7 +256,7 @@ class OpenaiService implements IOpenaiService {
 
       // Delete all uploaded files if createVectorStoreFileBatch fails
       for await (const pageId of pageIds) {
-        await this.deleteVectorStoreFile(vectorStore._id, pageId);
+        await this.deleteVectorStoreFile(vectorStoreRelation._id, pageId);
       }
     }
 
@@ -349,32 +348,32 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async rebuildVectorStoreAll() {
-    await this.deleteVectorStore(VectorStoreScopeType.PUBLIC);
+  // async rebuildVectorStoreAll() {
+  //   await this.deleteVectorStore(VectorStoreScopeType.PUBLIC);
 
-    // Create all public pages VectorStoreFile
-    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
-    const pagesStream = Page.find({ grant: PageGrant.GRANT_PUBLIC }).populate('revision').cursor({ batch_size: BATCH_SIZE });
-    const batchStrem = createBatchStream(BATCH_SIZE);
+  //   // Create all public pages VectorStoreFile
+  //   const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+  //   const pagesStream = Page.find({ grant: PageGrant.GRANT_PUBLIC }).populate('revision').cursor({ batch_size: BATCH_SIZE });
+  //   const batchStrem = createBatchStream(BATCH_SIZE);
 
-    const createVectorStoreFile = this.createVectorStoreFile.bind(this);
-    const createVectorStoreFileStream = new Transform({
-      objectMode: true,
-      async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
-        await createVectorStoreFile(chunk);
-        this.push(chunk);
-        callback();
-      },
-    });
+  //   const createVectorStoreFile = this.createVectorStoreFile.bind(this);
+  //   const createVectorStoreFileStream = new Transform({
+  //     objectMode: true,
+  //     async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
+  //       await createVectorStoreFile(chunk);
+  //       this.push(chunk);
+  //       callback();
+  //     },
+  //   });
 
-    await pipeline(pagesStream, batchStrem, createVectorStoreFileStream);
-  }
+  //   await pipeline(pagesStream, batchStrem, createVectorStoreFileStream);
+  // }
 
-  async rebuildVectorStore(page: HydratedDocument<PageDocument>) {
-    const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
-    await this.deleteVectorStoreFile(vectorStore._id, page._id);
-    await this.createVectorStoreFile([page]);
-  }
+  // async rebuildVectorStore(page: HydratedDocument<PageDocument>) {
+  //   const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
+  //   await this.deleteVectorStoreFile(vectorStore._id, page._id);
+  //   await this.createVectorStoreFile([page]);
+  // }
 
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
     // 1. Get pages stream based on path patterns
@@ -396,14 +395,13 @@ class OpenaiService implements IOpenaiService {
       .cursor({ batchSize: BATCH_SIZE });
     const batchStream = createBatchStream(BATCH_SIZE);
 
-    const vectorStore = await this.createVectorStore();
-
+    const vectorStoreRelation = await this.createVectorStore();
     const createVectorStoreFile = this.createVectorStoreFile.bind(this);
     const createVectorStoreFileStream = new Transform({
       objectMode: true,
       async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
         try {
-          await createVectorStoreFile(vectorStore, chunk);
+          await createVectorStoreFile(vectorStoreRelation, chunk);
           this.push(chunk);
           callback();
         }
@@ -418,7 +416,7 @@ class OpenaiService implements IOpenaiService {
 
     // 4. Create AI Assistant with vector store (TODO)
     const aiAssistant = await AiAssistantModel.create({
-      ...data, vectorStore,
+      ...data, vectorStore: vectorStoreRelation,
     });
 
     return aiAssistant;

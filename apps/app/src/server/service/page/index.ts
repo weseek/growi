@@ -1175,7 +1175,7 @@ class PageService implements IPageService {
 
         // Do not await because communication with OpenAI takes time
         const openaiService = getOpenaiService();
-        openaiService?.createVectorStoreFile([duplicatedTarget]);
+        // openaiService?.createVectorStoreFile([duplicatedTarget]);
       }
     }
     this.pageEvent.emit('duplicate', page, user);
@@ -1416,7 +1416,7 @@ class PageService implements IPageService {
 
       // Do not await because communication with OpenAI takes time
       const openaiService = getOpenaiService();
-      openaiService?.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
+      // openaiService?.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
     }
   }
 
@@ -1900,9 +1900,9 @@ class PageService implements IPageService {
 
       const openaiService = getOpenaiService();
       if (openaiService != null) {
-        const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
-        const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService.deleteVectorStoreFile(vectorStore._id, pageId));
-        await Promise.allSettled(deleteVectorStoreFilePromises);
+        // const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
+        // const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService.deleteVectorStoreFile(vectorStore._id, pageId));
+        // await Promise.allSettled(deleteVectorStoreFilePromises);
       }
     }
   }
