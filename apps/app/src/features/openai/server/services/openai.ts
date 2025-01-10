@@ -3,6 +3,8 @@ import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import { PageGrant, isPopulated } from '@growi/core';
+import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
+import escapeStringRegexp from 'escape-string-regexp';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
 import type OpenAI from 'openai';
@@ -42,7 +44,7 @@ export interface IOpenaiService {
   getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
-  createVectorStoreFile(pages: PageDocument[]): Promise<void>;
+  createVectorStoreFile(vectorStore: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   rebuildVectorStoreAll(): Promise<void>;
@@ -145,6 +147,22 @@ class OpenaiService implements IOpenaiService {
     return newVectorStoreDocument;
   }
 
+  private async createVectorStore(): Promise<VectorStoreDocument> {
+    try {
+      const newVectorStore = await this.client.createVectorStore(VectorStoreScopeType.PUBLIC); // TODO: fix argument
+
+      const newVectorStoreDocument = await VectorStoreModel.create({
+        scopeType: VectorStoreScopeType.PUBLIC,
+        vectorStoreId: newVectorStore.id,
+      }) as VectorStoreDocument;
+
+      return newVectorStoreDocument;
+    }
+    catch (err) {
+      throw new Error(err);
+    }
+  }
+
   // TODO: https://redmine.weseek.co.jp/issues/156643
   // private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
   //   const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
@@ -183,8 +201,8 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async createVectorStoreFile(pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
-    const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
+  async createVectorStoreFile(vectorStore: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
+    // const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
     const vectorStoreFileRelationsMap: VectorStoreFileRelationsMap = new Map();
     const processUploadFile = async(page: HydratedDocument<PageDocument>) => {
       if (page._id != null && page.grant === PageGrant.GRANT_PUBLIC && page.revision != null) {
@@ -359,17 +377,50 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
+    // 1. Get pages stream based on path patterns
+    const conditions: Array<{path: string | RegExp}> = data.pagePathPatterns.map((path) => {
+      if (path.endsWith('/*')) {
+        const basePathWithoutGlob = path.slice(0, -2); // remove '/*'
+        const pathWithTrailingSlash = addTrailingSlash(basePathWithoutGlob);
+        const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
 
+        return { path: new RegExp(`^${startsPattern}`) };
+      }
+      return { path: normalizePath(path) };
+    });
+
+    // 2. Create vector store file transform stream
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
-    const { PageQueryBuilder } = Page;
-    const builder = new PageQueryBuilder(Page.find(), false); // includeEmpty = false
+    const pagesStream = Page.find({ $or: conditions })
+      .populate('revision')
+      .cursor({ batchSize: BATCH_SIZE });
+    const batchStream = createBatchStream(BATCH_SIZE);
 
-    builder.addConditionToListByPathsArrayWithGlob(data.pagePathPatterns);
+    const vectorStore = await this.createVectorStore();
 
-    const pages = await builder.query.exec();
+    const createVectorStoreFile = this.createVectorStoreFile.bind(this);
+    const createVectorStoreFileStream = new Transform({
+      objectMode: true,
+      async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
+        try {
+          await createVectorStoreFile(vectorStore, chunk);
+          this.push(chunk);
+          callback();
+        }
+        catch (error) {
+          callback(error);
+        }
+      },
+    });
 
-    const dumyVectorStoreId = '676e0d9863442b736e7ecf09';
-    const aiAssistant = await AiAssistantModel.create({ ...data, vectorStore: dumyVectorStoreId });
+    // 3. Process stream pipeline
+    await pipeline(pagesStream, batchStream, createVectorStoreFileStream);
+
+    // 4. Create AI Assistant with vector store (TODO)
+    const aiAssistant = await AiAssistantModel.create({
+      ...data, vectorStore,
+    });
+
     return aiAssistant;
   }
 
