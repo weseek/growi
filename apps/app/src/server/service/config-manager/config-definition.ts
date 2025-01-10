@@ -339,8 +339,8 @@ export const CONFIG_DEFINITIONS = {
   'app:installed': defineConfig<boolean>({
     defaultValue: false,
   }),
-  'app:serviceInstanceId': defineConfig<string | undefined>({
-    defaultValue: undefined,
+  'app:serviceInstanceId': defineConfig<string>({
+    defaultValue: '',
   }),
   'app:isV5Compatible': defineConfig<boolean>({
     defaultValue: false,
