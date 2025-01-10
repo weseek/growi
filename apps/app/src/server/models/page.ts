@@ -568,6 +568,27 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionToListByPathsArrayWithGlob(paths: string[]): PageQueryBuilder {
+    const conditions: Array<{ path: string | RegExp;}> = paths.map((path) => {
+      if (path.endsWith('/*')) {
+        const basePathWithoutGlob = path.slice(0, -2); // remove '/*'
+        const pathWithTrailingSlash = addTrailingSlash(basePathWithoutGlob);
+        const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
+
+        return { path: new RegExp(`^${startsPattern}`) };
+      }
+
+      return { path: normalizePath(path) };
+    });
+
+    this.query = this.query
+      .and({
+        $or: conditions,
+      });
+
+    return this;
+  }
+
 }
 
 schema.statics.createEmptyPage = async function(

@@ -359,6 +359,15 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
+
+    const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+    const { PageQueryBuilder } = Page;
+    const builder = new PageQueryBuilder(Page.find(), false); // includeEmpty = false
+
+    builder.addConditionToListByPathsArrayWithGlob(data.pagePathPatterns);
+
+    const pages = await builder.query.exec();
+
     const dumyVectorStoreId = '676e0d9863442b736e7ecf09';
     const aiAssistant = await AiAssistantModel.create({ ...data, vectorStore: dumyVectorStoreId });
     return aiAssistant;
