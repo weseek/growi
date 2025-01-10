@@ -11,4 +11,8 @@ export type IGrowiAppAdditionalInfo = IGrowiAdditionalInfo & {
 
 // legacy properties (extracted from additionalInfo for growi-questionnaire)
 // see: https://gitlab.weseek.co.jp/tech/growi/growi-questionnaire
-export type IGrowiAppInfoLegacy = Omit<IGrowiInfo<IGrowiAppAdditionalInfo>, 'additionalInfo'> & IGrowiAppAdditionalInfo;
+export type IGrowiAppInfoLegacy = Omit<IGrowiInfo<IGrowiAppAdditionalInfo>, 'additionalInfo'>
+  & IGrowiAppAdditionalInfo
+  & {
+    appSiteUrlHashed: string,
+  };

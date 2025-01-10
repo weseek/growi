@@ -1,4 +1,5 @@
 import assert from 'assert';
+import crypto from 'crypto';
 
 import type { IGrowiAppInfoLegacy } from '../../interfaces/growi-app-info';
 
@@ -12,18 +13,27 @@ function isLegacy<T extends { growiInfo: any }>(data: T): data is IHasGrowiAppIn
   return !('additionalInfo' in data.growiInfo);
 }
 
+function getSiteUrlHashed(_siteUrl: string | undefined): string {
+  const siteUrl = _siteUrl ?? '[The site URL is not set. Please set it!]';
+  const hasher = crypto.createHash('sha256');
+  hasher.update(siteUrl);
+  return hasher.digest('hex');
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function convertToLegacyFormat<T extends { growiInfo: any }>(questionnaireAnswer: T): IHasGrowiAppInfoLegacy<T> {
+export function convertToLegacyFormat<T extends { growiInfo: any }>(questionnaireAnswer: T, isAppSiteUrlHashed = false): IHasGrowiAppInfoLegacy<T> {
   if (isLegacy(questionnaireAnswer)) {
     return questionnaireAnswer;
   }
 
-  const { additionalInfo, ...rest } = questionnaireAnswer.growiInfo;
+  const { additionalInfo, appSiteUrl, ...rest } = questionnaireAnswer.growiInfo;
   assert(additionalInfo != null);
 
   return {
     ...questionnaireAnswer,
     growiInfo: {
+      appSiteUrl: isAppSiteUrlHashed ? undefined : appSiteUrl,
+      appSiteUrlHashed: getSiteUrlHashed(appSiteUrl),
       ...rest,
       ...additionalInfo,
     },

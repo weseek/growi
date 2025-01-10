@@ -20,12 +20,12 @@ export interface IGrowiAdditionalInfo {
 }
 
 export interface IGrowiInfo<A extends object = IGrowiAdditionalInfo> {
-  version: string
+  serviceInstanceId: string
   appSiteUrl?: string
-  appSiteUrlHashed: string
+  osInfo: IGrowiOSInfo
+  version: string
   type: GrowiServiceType
   wikiType: GrowiWikiType
   deploymentType: GrowiDeploymentType
-  osInfo?: IGrowiOSInfo
   additionalInfo?: A
 }

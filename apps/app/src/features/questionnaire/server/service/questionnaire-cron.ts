@@ -1,5 +1,6 @@
 import axiosRetry from 'axios-retry';
 
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
 
@@ -54,7 +55,8 @@ class QuestionnaireCronService {
   }
 
   async executeJob(): Promise<void> {
-    const questionnaireServerOrigin = this.crowi.configManager.getConfig('app:questionnaireServerOrigin');
+    const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
+    const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
 
     const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
       const response = await axios.get(`${questionnaireServerOrigin}/questionnaire-order/index`);
@@ -84,14 +86,14 @@ class QuestionnaireCronService {
 
       axios.post(`${questionnaireServerOrigin}/questionnaire-answer/batch`, {
         // convert to legacy format
-        questionnaireAnswers: questionnaireAnswers.map(answer => convertToLegacyFormat(answer)),
+        questionnaireAnswers: questionnaireAnswers.map(answer => convertToLegacyFormat(answer, isAppSiteUrlHashed)),
       })
         .then(async() => {
           await QuestionnaireAnswer.deleteMany();
         });
       axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive/batch`, {
         // convert to legacy format
-        proactiveQuestionnaireAnswers: proactiveQuestionnaireAnswers.map(answer => convertToLegacyFormat(answer)),
+        proactiveQuestionnaireAnswers: proactiveQuestionnaireAnswers.map(answer => convertToLegacyFormat(answer, isAppSiteUrlHashed)),
       })
         .then(async() => {
           await ProactiveQuestionnaireAnswer.deleteMany();

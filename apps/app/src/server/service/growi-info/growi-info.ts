@@ -4,11 +4,11 @@ import * as os from 'node:os';
 import type { IGrowiInfo } from '@growi/core';
 import type { IUser } from '@growi/core/dist/interfaces';
 import { GrowiWikiType } from '@growi/core/dist/interfaces';
+import { pathUtils } from '@growi/core/dist/utils';
 import type { Model } from 'mongoose';
 import mongoose from 'mongoose';
 
 import { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
-import type Crowi from '~/server/crowi';
 import { Config } from '~/server/models/config';
 import { aclService } from '~/server/service/acl';
 import { configManager } from '~/server/service/config-manager';
@@ -19,10 +19,21 @@ import type { IGrowiAppAdditionalInfo } from '../../../features/questionnaire/in
 
 export class GrowiInfoService {
 
-  crowi: Crowi;
-
-  constructor(crowi: Crowi) {
-    this.crowi = crowi;
+  /**
+   * get the site url
+   *
+   * If the config for the site url is not set, this returns a message "[The site URL is not set. Please set it!]".
+   *
+   * With version 3.2.3 and below, there is no config for the site URL, so the system always uses auto-generated site URL.
+   * With version 3.2.4 to 3.3.4, the system uses the auto-generated site URL only if the config is not set.
+   * With version 3.3.5 and above, the system use only a value from the config.
+   */
+  private getSiteUrl(): string | undefined {
+    const siteUrl = configManager.getConfig('app:siteUrl');
+    if (siteUrl != null) {
+      return pathUtils.removeTrailingSlash(siteUrl);
+    }
+    return siteUrl;
   }
 
   /**
@@ -38,15 +49,13 @@ export class GrowiInfoService {
 
   async getGrowiInfo(includeAdditionalInfo?: boolean): Promise<IGrowiInfo<Record<string, never>> | IGrowiInfo<IGrowiAppAdditionalInfo>> {
 
-    const appSiteUrl = this.crowi.appService.getSiteUrl();
-    const hasher = crypto.createHash('sha256');
-    hasher.update(appSiteUrl);
-    const appSiteUrlHashed = hasher.digest('hex');
+    const appSiteUrl = this.getSiteUrl();
 
     const isGuestAllowedToRead = aclService.isGuestAllowedToRead();
     const wikiType = isGuestAllowedToRead ? GrowiWikiType.open : GrowiWikiType.closed;
 
     const baseInfo = {
+      serviceInstanceId: configManager.getConfig('app:serviceInstanceId'),
       version: getGrowiVersion(),
       osInfo: {
         type: os.type(),
@@ -54,12 +63,11 @@ export class GrowiInfoService {
         arch: os.arch(),
         totalmem: os.totalmem(),
       },
-      appSiteUrl: configManager.getConfig('questionnaire:isAppSiteUrlHashed') ? undefined : appSiteUrl,
-      appSiteUrlHashed,
+      appSiteUrl,
       type: configManager.getConfig('app:serviceType'),
       wikiType,
       deploymentType: configManager.getConfig('app:deploymentType'),
-    };
+    } satisfies IGrowiInfo<Record<string, never>>;
 
     if (!includeAdditionalInfo) {
       return baseInfo;
@@ -101,16 +109,4 @@ export class GrowiInfoService {
 
 }
 
-let _instance: GrowiInfoService;
-
-export const serviceFactory = (crowi: Crowi): GrowiInfoService => {
-  if (_instance == null) {
-    _instance = new GrowiInfoService(crowi);
-  }
-
-  return _instance;
-};
-
-export const getInstance = (): GrowiInfoService => {
-  return _instance;
-};
+export const growiInfoService = new GrowiInfoService();

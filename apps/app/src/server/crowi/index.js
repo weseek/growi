@@ -27,7 +27,6 @@ import { configManager as configManagerSingletonInstance } from '../service/conf
 import { instanciate as instanciateExternalAccountService } from '../service/external-account';
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
-import { serviceFactory as growiInfoServiceFactory } from '../service/growi-info';
 import { initializeImportService } from '../service/import';
 import { InstallerService } from '../service/installer';
 import { normalizeData } from '../service/normalize-data';
@@ -178,7 +177,6 @@ Crowi.prototype.init = async function() {
   ]);
 
   await Promise.all([
-    this.setupGrowiInfoService(),
     this.setupPassport(),
     this.setupSearcher(),
     this.setupMailer(),
@@ -644,13 +642,6 @@ Crowi.prototype.setUpApp = async function() {
       this.s2sMessagingService.addMessageHandler(this.appService);
     }
   }
-};
-
-/**
- * setup GrowiInfoService
- */
-Crowi.prototype.setupGrowiInfoService = async function() {
-  growiInfoServiceFactory(this);
 };
 
 /**

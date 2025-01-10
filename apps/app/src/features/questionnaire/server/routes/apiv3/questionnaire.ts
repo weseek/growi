@@ -84,6 +84,7 @@ module.exports = (crowi: Crowi): Router => {
   router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
       const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
+      const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
       const growiInfo = await getGrowiInfoService().getGrowiInfo(true);
       const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
@@ -98,7 +99,7 @@ module.exports = (crowi: Crowi): Router => {
         answeredAt: new Date(),
       };
 
-      const proactiveQuestionnaireAnswerLegacy = convertToLegacyFormat(proactiveQuestionnaireAnswer);
+      const proactiveQuestionnaireAnswerLegacy = convertToLegacyFormat(proactiveQuestionnaireAnswer, isAppSiteUrlHashed);
 
       try {
         await axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswerLegacy);
@@ -132,6 +133,7 @@ module.exports = (crowi: Crowi): Router => {
   router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
       const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
+      const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
       const growiInfo = await getGrowiInfoService().getGrowiInfo(true);
       const userInfo = crowi.questionnaireService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
 
@@ -143,7 +145,7 @@ module.exports = (crowi: Crowi): Router => {
         questionnaireOrder: req.body.questionnaireOrderId,
       };
 
-      const questionnaireAnswerLegacy = convertToLegacyFormat(questionnaireAnswer);
+      const questionnaireAnswerLegacy = convertToLegacyFormat(questionnaireAnswer, isAppSiteUrlHashed);
 
       try {
         await axios.post(`${questionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswerLegacy);
