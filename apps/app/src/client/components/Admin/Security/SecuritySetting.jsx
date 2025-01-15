@@ -187,33 +187,14 @@ class SecuritySetting extends React.Component {
   }
 
 
-  securitySettingsDropdown = (useState) => {
-    const { t } = this.props;
-    const [settings, setSettings] = useState({
-      isShowRestrictedByOwner: false,
-      isShowRestrictedByGroup: false,
-    });
-
-    const handleOwnerClick = () => {
-      setSettings(prev => ({
-        ...prev,
-        isShowRestrictedByOwner: !prev.isShowRestrictedByOwner,
-      }));
-    };
-
-    const handleGroupClick = () => {
-      setSettings(prev => ({
-        ...prev,
-        isShowRestrictedByGroup: !prev.isShowRestrictedByGroup,
-      }));
-    };
-
+  securitySettingDropdown = () => {
+    const { t, adminGeneralSecurityContainer } = this.props;
     const getDisplayText = () => {
-      if (settings.isShowRestrictedByOwner) {
-        return t('security_settings.displayed');
-      }
-      return t('security_settings.not_displayed');
+      const isDisplayed = adminGeneralSecurityContainer.setState.isShowRestrictedByOwener
+                        || adminGeneralSecurityContainer.setState.isShowRestrictedByGroup;
+      return isDisplayed ? t('security_settings.displayed') : t('security_settings.not_displayed');
     };
+    const displayText = (t('security_settings.displayed'));
 
     return (
       <div className="dropdown">
@@ -225,7 +206,7 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span>{getDisplayText()}</span>
+          {/* <span>{getDisplayText()}</span> */}
         </button>
         <div
           className="dropdown-menu"
@@ -234,14 +215,14 @@ class SecuritySetting extends React.Component {
           <button
             className="dropdown-item"
             type="button"
-            onClick={handleOwnerClick}
+            // onClick={handleOwnerClick}
           >
             {t('security_settings.displayed')}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            onClick={handleGroupClick}
+            // onClick={handleGroupClick}
           >
             {t('security_settings.not_displayed')}
           </button>
