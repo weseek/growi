@@ -16,6 +16,7 @@ import ExternalAccount from '~/server/models/external-account';
 import { serializePageSecurely } from '~/server/models/serializers';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
+import { growiInfoService } from '~/server/service/growi-info';
 import { deleteCompletelyUserHomeBySystem } from '~/server/service/page/delete-completely-user-home-by-system';
 import loggerFactory from '~/utils/logger';
 
@@ -74,6 +75,7 @@ const validator = {};
  *            example: 2010-01-01T00:00:00.000Z
  */
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -159,7 +161,7 @@ module.exports = (crowi) => {
           vars: {
             email: user.email,
             password: user.password,
-            url: crowi.appService.getSiteUrl(),
+            url: growiInfoService.getSiteUrl(),
             appTitle,
           },
         });
@@ -190,7 +192,7 @@ module.exports = (crowi) => {
       vars: {
         email: user.email,
         password: user.password,
-        url: crowi.appService.getSiteUrl(),
+        url: growiInfoService.getSiteUrl(),
         appTitle,
       },
     });

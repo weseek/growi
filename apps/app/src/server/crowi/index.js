@@ -69,6 +69,9 @@ class Crowi {
   /** @type {FileUploader} */
   fileUploadService;
 
+  /** @type {import('../service/growi-info').GrowiInfoService} */
+  growiInfoService;
+
   /** @type {import('../service/page').IPageService} */
   pageService;
 
@@ -176,6 +179,7 @@ Crowi.prototype.init = async function() {
   ]);
 
   await Promise.all([
+    this.setupGrowiInfoService(),
     this.setupPassport(),
     this.setupSearcher(),
     this.setupMailer(),
@@ -656,6 +660,11 @@ Crowi.prototype.setUpFileUploaderSwitchService = async function() {
   if (this.s2sMessagingService != null) {
     this.s2sMessagingService.addMessageHandler(this.fileUploaderSwitchService);
   }
+};
+
+Crowi.prototype.setupGrowiInfoService = async function() {
+  const { growiInfoService } = await import('../service/growi-info');
+  this.growiInfoService = growiInfoService;
 };
 
 /**

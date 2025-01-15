@@ -6,6 +6,7 @@ import loggerFactory from '~/utils/logger';
 import {
   prepareSlackMessageForGlobalNotification,
 } from '../../util/slack';
+import { growiInfoService } from '../growi-info';
 
 const logger = loggerFactory('growi:service:GlobalNotificationSlackService'); // eslint-disable-line no-unused-vars
 const urljoin = require('url-join');
@@ -65,7 +66,7 @@ class GlobalNotificationSlackService {
    * @return  {string} slack message body
    */
   generateMessageBody(event, id, path, triggeredBy, { comment, oldPath }) {
-    const siteUrl = this.crowi.appService.getSiteUrl();
+    const siteUrl = growiInfoService.getSiteUrl();
     const parmaLink = `<${urljoin(siteUrl, id)}|${path}>`;
     const pathLink = `<${urljoin(siteUrl, encodeSpaces(path))}|${path}>`;
     const username = `<${urljoin(siteUrl, 'user', triggeredBy.username)}|${triggeredBy.username}>`;

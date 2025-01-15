@@ -3,6 +3,7 @@ import { getGrowiVersion } from '~/utils/growi-version';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from './config-manager';
+import { growiInfoService } from './growi-info';
 
 const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-line no-unused-vars
 
@@ -99,7 +100,7 @@ class ExportService {
 
     const metaData = {
       version: getGrowiVersion(),
-      url: this.appService.getSiteUrl(),
+      url: growiInfoService.getSiteUrl(),
       passwordSeed,
       exportedAt: new Date(),
       envVars: configManager.getManagedEnvVars(),

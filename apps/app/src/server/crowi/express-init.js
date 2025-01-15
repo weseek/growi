@@ -10,6 +10,7 @@ import registerSafeRedirectFactory from '../middlewares/safe-redirect';
 
 const logger = loggerFactory('growi:crowi:express-init');
 
+/** @param {import('./index').default} crowi Crowi instance */
 module.exports = function(crowi, app) {
   const express = require('express');
   const compression = require('compression');
@@ -72,7 +73,7 @@ module.exports = function(crowi, app) {
     app.set('tzoffset', crowi.appService.getTzoffset());
 
     res.locals.req = req;
-    res.locals.baseUrl = crowi.appService.getSiteUrl();
+    res.locals.baseUrl = crowi.growiInfoService.getSiteUrl();
     res.locals.env = env;
     res.locals.now = now;
 
