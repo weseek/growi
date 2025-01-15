@@ -1,4 +1,3 @@
-import crypto from 'crypto';
 import * as os from 'node:os';
 
 import type { IGrowiInfo } from '@growi/core';

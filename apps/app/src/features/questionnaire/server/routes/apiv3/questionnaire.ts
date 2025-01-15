@@ -7,7 +7,7 @@ import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
-import { getInstance as getGrowiInfoService } from '~/server/service/growi-info';
+import { growiInfoService } from '~/server/service/growi-info';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
@@ -18,7 +18,7 @@ import { StatusType } from '../../../interfaces/questionnaire-answer-status';
 import ProactiveQuestionnaireAnswer from '../../models/proactive-questionnaire-answer';
 import QuestionnaireAnswer from '../../models/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../../models/questionnaire-answer-status';
-import { convertToLegacyFormat } from '../../util/convert-to-legacy-format';
+import { convertToLegacyFormat, getSiteUrlHashed } from '../../util/convert-to-legacy-format';
 
 
 const logger = loggerFactory('growi:routes:apiv3:questionnaire');
@@ -62,8 +62,8 @@ module.exports = (crowi: Crowi): Router => {
   };
 
   router.get('/orders', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const growiInfo = await getGrowiInfoService().getGrowiInfo(true);
-    const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
+    const growiInfo = await growiInfoService.getGrowiInfo(true);
+    const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
     try {
       const questionnaireOrders = await crowi.questionnaireService!.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
@@ -85,8 +85,8 @@ module.exports = (crowi: Crowi): Router => {
     const sendQuestionnaireAnswer = async() => {
       const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
       const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
-      const growiInfo = await getGrowiInfoService().getGrowiInfo(true);
-      const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
+      const growiInfo = await growiInfoService.getGrowiInfo(true);
+      const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
       const proactiveQuestionnaireAnswer: IProactiveQuestionnaireAnswer = {
         satisfaction: req.body.satisfaction,
@@ -134,8 +134,8 @@ module.exports = (crowi: Crowi): Router => {
     const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
       const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
       const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
-      const growiInfo = await getGrowiInfoService().getGrowiInfo(true);
-      const userInfo = crowi.questionnaireService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
+      const growiInfo = await growiInfoService.getGrowiInfo(true);
+      const userInfo = crowi.questionnaireService!.getUserInfo(user, getSiteUrlHashed(growiInfo.appSiteUrl));
 
       const questionnaireAnswer: IQuestionnaireAnswer = {
         growiInfo,

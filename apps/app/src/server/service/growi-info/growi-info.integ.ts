@@ -8,13 +8,11 @@ import { configManager } from '~/server/service/config-manager';
 
 import type Crowi from '../../crowi';
 
-import type { GrowiInfoService } from './growi-info';
-import { serviceFactory } from './growi-info';
+import { growiInfoService } from './growi-info';
 
 describe('GrowiInfoService', () => {
   const appVersion = pkg.version;
 
-  let growiInfoService: GrowiInfoService;
   let User;
 
   beforeAll(async() => {
@@ -43,12 +41,7 @@ describe('GrowiInfoService', () => {
           });
         }
       }),
-      appService: {
-        getSiteUrl: () => 'http://growi.test.jp',
-      },
     });
-
-    growiInfoService = serviceFactory(crowiMock);
 
     const userModelFactory = (await import('~/server/models/user')).default;
     User = userModelFactory(crowiMock);
@@ -63,20 +56,18 @@ describe('GrowiInfoService', () => {
 
       assert(growiInfo != null);
 
-      expect(growiInfo.appSiteUrlHashed).toBeTruthy();
-      expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
       expect(growiInfo.osInfo?.type).toBeTruthy();
       expect(growiInfo.osInfo?.platform).toBeTruthy();
       expect(growiInfo.osInfo?.arch).toBeTruthy();
       expect(growiInfo.osInfo?.totalmem).toBeTruthy();
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (growiInfo as any).appSiteUrlHashed;
-      delete growiInfo.osInfo;
+      delete (growiInfo as any).osInfo;
 
       expect(growiInfo).toEqual({
         version: appVersion,
         appSiteUrl: 'http://growi.test.jp',
+        serviceInstanceId: '',
         type: 'on-premise',
         wikiType: 'closed',
         deploymentType: 'growi-docker-compose',
@@ -96,20 +87,18 @@ describe('GrowiInfoService', () => {
       // assert
       assert(growiInfo != null);
 
-      expect(growiInfo.appSiteUrlHashed).toBeTruthy();
-      expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
       expect(growiInfo.osInfo?.type).toBeTruthy();
       expect(growiInfo.osInfo?.platform).toBeTruthy();
       expect(growiInfo.osInfo?.arch).toBeTruthy();
       expect(growiInfo.osInfo?.totalmem).toBeTruthy();
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (growiInfo as any).appSiteUrlHashed;
-      delete growiInfo.osInfo;
+      delete (growiInfo as any).osInfo;
 
       expect(growiInfo).toEqual({
         version: appVersion,
         appSiteUrl: 'http://growi.test.jp',
+        serviceInstanceId: '',
         type: 'on-premise',
         wikiType: 'closed',
         deploymentType: 'growi-docker-compose',
@@ -124,18 +113,5 @@ describe('GrowiInfoService', () => {
       });
     });
 
-    describe('When url hash settings is on', () => {
-      beforeEach(async() => {
-        process.env.QUESTIONNAIRE_IS_APP_SITE_URL_HASHED = 'true';
-        await configManager.loadConfigs();
-      });
-
-      test('Should return app url string', async() => {
-        const growiInfo = await growiInfoService.getGrowiInfo();
-        expect(growiInfo.appSiteUrl).toBeUndefined();
-        expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
-        expect(growiInfo.appSiteUrlHashed).toBeTruthy();
-      });
-    });
   });
 });

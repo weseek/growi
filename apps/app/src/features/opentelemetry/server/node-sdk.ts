@@ -82,13 +82,13 @@ export const initServiceInstanceId = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
   if (instrumentationEnabled) {
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
-    const { getInstance: getGrowiInfoService } = await import('~/server/service/growi-info');
+    const { growiInfoService } = await import('~/server/service/growi-info');
 
     // get GrowiInfo with additional info
-    const growiInfo = await getGrowiInfoService().getGrowiInfo();
+    const growiInfo = await growiInfoService.getGrowiInfo();
 
     const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
-      ?? growiInfo.appSiteUrlHashed;
+      ?? growiInfo.serviceInstanceId;
 
     const updatedResource = generateNodeSDKConfiguration(serviceInstanceId);
 
