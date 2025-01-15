@@ -13,8 +13,7 @@ function isLegacy<T extends { growiInfo: any }>(data: T): data is IHasGrowiAppIn
   return !('additionalInfo' in data.growiInfo);
 }
 
-export function getSiteUrlHashed(_siteUrl: string | undefined): string {
-  const siteUrl = _siteUrl ?? '[The site URL is not set. Please set it!]';
+export function getSiteUrlHashed(siteUrl: string): string {
   const hasher = crypto.createHash('sha256');
   hasher.update(siteUrl);
   return hasher.digest('hex');

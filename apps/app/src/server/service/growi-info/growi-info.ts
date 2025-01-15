@@ -27,12 +27,12 @@ export class GrowiInfoService {
    * With version 3.2.4 to 3.3.4, the system uses the auto-generated site URL only if the config is not set.
    * With version 3.3.5 and above, the system use only a value from the config.
    */
-  private getSiteUrl(): string | undefined {
+  getSiteUrl(): string {
     const siteUrl = configManager.getConfig('app:siteUrl');
     if (siteUrl != null) {
       return pathUtils.removeTrailingSlash(siteUrl);
     }
-    return siteUrl;
+    return siteUrl ?? '[The site URL is not set. Please set it!]';
   }
 
   /**
