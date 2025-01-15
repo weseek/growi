@@ -465,7 +465,7 @@ class PassportService implements S2sMessageHandlable {
           clientSecret: configManager.getConfig('security:passport-google:clientSecret'),
           callbackURL: configManager.getConfig('app:siteUrl') != null
             ? urljoin(growiInfoService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+            : configManager.getConfigLegacy<string>('security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -512,7 +512,7 @@ class PassportService implements S2sMessageHandlable {
           clientSecret: configManager.getConfig('security:passport-github:clientSecret'),
           callbackURL: configManager.getConfig('app:siteUrl') != null
             ? urljoin(growiInfoService.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+            : configManager.getConfigLegacy('security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -567,7 +567,7 @@ class PassportService implements S2sMessageHandlable {
     const clientSecret = configManager.getConfig('security:passport-oidc:clientSecret');
     const redirectUri = configManager.getConfig('app:siteUrl') != null
       ? urljoin(growiInfoService.getSiteUrl(), '/passport/oidc/callback')
-      : configManager.getConfig('security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
+      : configManager.getConfigLegacy<string>('security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
 
     // Prevent request timeout error on app init
     const oidcIssuer = await this.getOIDCIssuerInstance(issuerHost);
