@@ -111,26 +111,6 @@
       "outputLogs": "new-only"
     },
 
-    "version:patch": {
-      "dependsOn": ["//#version:patch"],
-      "cache": false
-    },
-    "version:prerelease": {
-      "dependsOn": ["//#version:prerelease"],
-      "cache": false
-    },
-    "version:prepatch": {
-      "dependsOn": ["//#version:prepatch"],
-      "cache": false
-    },
-    "version:preminor": {
-      "dependsOn": ["//#version:preminor"],
-      "cache": false
-    },
-    "version:premajor": {
-      "dependsOn": ["//#version:premajor"],
-      "cache": false
-    },
     "//#version:patch": {
       "cache": false
     },

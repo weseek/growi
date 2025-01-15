@@ -199,9 +199,9 @@
         "id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
         "username_detail": "Specification of mappings for <code>username</code> when creating new users",
         "name_detail": "Specification of mappings for <code>name</code> when creating new users",
-        "mapping_detail": "Specification of mappings for %s when creating new users",
+        "mapping_detail": "Specification of mappings for {{target}} when creating new users",
         "register_1": "Contact to OIDC IdP Administrator",
-        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
+        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>{{url}}</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above",
         "updated_oidc": "Succeeded to update OpenID Connect",
         "Use discovered URL if empty": "Use discovered URL from \"Issuer Host\" if empty"
@@ -1140,7 +1140,7 @@
   },
   "ai_integration": {
     "ai_integration": "AI Integration",
-    "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, please set the environment variable <code>AI_ENABLED</code> to true.",
+    "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, configure the <code>AI_ENABLED</code> environment variable along with the required additional variables.<br><br>For details, please refer to the <a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>documentation</a>.",
     "ai_search_management": "AI search management",
     "rebuild_vector_store": "Rebuild Vector Store",
     "rebuild_vector_store_label": "Rebuild",

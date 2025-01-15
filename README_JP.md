@@ -96,9 +96,9 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
 | コマンド              | 説明                                                            |
 | --------------------- | --------------------------------------------------------------- |
-| `pnpm run app:build`  | GROWI app クライアントをビルドします。                          |
-| `pnpm run app:server` | GROWI app サーバーを起動します。                                |
-| `pnpm run start`      | `pnpm run app:build` と `pnpm run app:server` を呼び出します。  |
+| `npm run app:build`   | GROWI app クライアントをビルドします。                          |
+| `npm run app:server`  | GROWI app サーバーを起動します。                                |
+| `npm run start`       | `npm run app:build` と `npm run app:server` を呼び出します。    |
 
 詳しくは [GROWI Docs: npm スクリプトリスト](https://docs.growi.org/ja/dev/startup-v5/start-development.html#npm-%E3%82%B9%E3%82%AF%E3%83%AA%E3%83%95%E3%82%9A%E3%83%88%E3%83%AA%E3%82%B9%E3%83%88)をご覧ください。
 

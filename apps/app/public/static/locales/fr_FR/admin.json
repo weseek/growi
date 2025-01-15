@@ -199,9 +199,9 @@
         "id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
         "username_detail": "Spécifications des liaisons <code>username</code> lors de la création de nouveaux utilisateurs",
         "name_detail": "Spécifications des liaisons <code>name</code> lors de la création de nouveaux utilisateurs",
-        "mapping_detail": "Spécifications des liaisons pour %s lors de la création de nouveaux utilisateurs",
+        "mapping_detail": "Spécifications des liaisons pour {{target}} lors de la création de nouveaux utilisateurs",
         "register_1": "Contacter votre administrateur OIDC",
-        "register_2": "Configurer l'application OAuth avec l'un des URL de redirection autorisés avec <code>%s</code>",
+        "register_2": "Configurer l'application OAuth avec l'un des URL de redirection autorisés avec <code>{{url}}</code>",
         "register_3": "Copier l'ID client et Secret client ci-dessus",
         "updated_oidc": "Paramètres mis à jour",
         "Use discovered URL if empty": "Use discovered URL from \"Issuer Host\" if empty"
@@ -1139,7 +1139,7 @@
   },
   "ai_integration": {
     "ai_integration": "Intégration de l'IA",
-    "disable_mode_explanation": "Actuellement, l'intégration de l'IA est désactivée. Pour l'activer, veuillez définir la variable d'environnement <code>AI_ENABLED</code> sur true",
+    "disable_mode_explanation": "Actuellement, l'intégration AI est désactivée. Pour l'activer, configurez la variable d'environnement <code>AI_ENABLED</code> ainsi que les autres variables nécessaires.<br><br>Pour plus de détails, veuillez consulter la <a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>documentation</a>.",
     "ai_search_management": "Gestion de la recherche par l'IA",
     "rebuild_vector_store": "Reconstruire le magasin Vector",
     "rebuild_vector_store_label": "Reconstruire",

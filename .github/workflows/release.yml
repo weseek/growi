@@ -37,7 +37,6 @@ jobs:
     - name: Bump versions
       run: |
         turbo run version:patch --filter=@growi/app
-        pnpm upgrade --scope=@growi
         sh ./apps/app/bin/github-actions/update-readme.sh
 
     - name: Retrieve information from package.json
@@ -178,7 +177,6 @@ jobs:
       run: |
         turbo run version:prepatch --filter=@growi/app
         turbo run version:prepatch --filter=@growi/slackbot-proxy
-        pnpm upgrade --scope=@growi
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@2.0.1

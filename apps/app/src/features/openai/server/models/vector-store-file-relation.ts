@@ -5,7 +5,8 @@ import { type Model, type Document, Schema } from 'mongoose';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 export interface VectorStoreFileRelation {
-  pageId: mongoose.Types.ObjectId;
+  vectorStoreRelationId: mongoose.Types.ObjectId;
+  page: mongoose.Types.ObjectId;
   fileIds: string[];
   isAttachedToVectorStore: boolean;
 }
@@ -18,9 +19,9 @@ interface VectorStoreFileRelationModel extends Model<VectorStoreFileRelation> {
 }
 
 export const prepareVectorStoreFileRelations = (
-    pageId: Types.ObjectId, fileId: string, relationsMap: Map<string, VectorStoreFileRelation>,
+    vectorStoreRelationId: Types.ObjectId, page: Types.ObjectId, fileId: string, relationsMap: Map<string, VectorStoreFileRelation>,
 ): Map<string, VectorStoreFileRelation> => {
-  const pageIdStr = pageId.toHexString();
+  const pageIdStr = page.toHexString();
   const existingData = relationsMap.get(pageIdStr);
 
   // If the data exists, add the fileId to the fileIds array
@@ -30,7 +31,8 @@ export const prepareVectorStoreFileRelations = (
   // If the data doesn't exist, create a new one and add it to the map
   else {
     relationsMap.set(pageIdStr, {
-      pageId,
+      vectorStoreRelationId,
+      page,
       fileIds: [fileId],
       isAttachedToVectorStore: false,
     });
@@ -40,11 +42,15 @@ export const prepareVectorStoreFileRelations = (
 };
 
 const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelationModel>({
-  pageId: {
+  vectorStoreRelationId: {
+    type: Schema.Types.ObjectId,
+    ref: 'VectorStore',
+    required: true,
+  },
+  page: {
     type: Schema.Types.ObjectId,
     ref: 'Page',
     required: true,
-    unique: true,
   },
   fileIds: [{
     type: String,
@@ -57,13 +63,18 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
   },
 });
 
+// define unique compound index
+schema.index({ vectorStoreRelationId: 1, page: 1 }, { unique: true });
+
 schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
   await this.bulkWrite(
     vectorStoreFileRelations.map((data) => {
       return {
         updateOne: {
-          filter: { pageId: data.pageId },
-          update: { $addToSet: { fileIds: { $each: data.fileIds } } },
+          filter: { page: data.page, vectorStoreRelationId: data.vectorStoreRelationId },
+          update: {
+            $addToSet: { fileIds: { $each: data.fileIds } },
+          },
           upsert: true,
         },
       };
@@ -74,7 +85,7 @@ schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRe
 // Used when attached to VectorStore
 schema.statics.markAsAttachedToVectorStore = async function(pageIds: Types.ObjectId[]): Promise<void> {
   await this.updateMany(
-    { pageId: { $in: pageIds } },
+    { page: { $in: pageIds } },
     { $set: { isAttachedToVectorStore: true } },
   );
 };

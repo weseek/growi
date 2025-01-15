@@ -34,7 +34,7 @@
     "watch": "pnpm run dev -w --emptyOutDir=false",
     "lint:js": "eslint **/*.{js,ts}",
     "lint:styles": "stylelint \"./scss/**/*\"",
-    "lint:typecheck": "tsc",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {

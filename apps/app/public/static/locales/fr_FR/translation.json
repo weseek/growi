@@ -30,7 +30,7 @@
   "Tags": "Étiquettes",
   "Close": "Fermer",
   "Shortcuts": "Raccourcis",
-  "CustomSidebar": "Navigation latérale",
+  "Custom Sidebar": "Navigation latérale",
   "eg": "e.g.",
   "add": "Ajouter",
   "Undo": "Annuler",
@@ -117,7 +117,7 @@
   "Create under": "Créer la page sous:",
   "V5 Page Migration": "Convertir vers la V5",
   "GROWI.5.0_new_schema": "Nouveau schéma GROWI.5.0",
-  "See_more_detail_on_new_schema": "Plus de détails sur <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'>{{title}}</a> <i class='icon-share-alt'></i> ",
+  "See_more_detail_on_new_schema": "Plus de détails sur <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'>{{title}}</a><span class='growi-custom-icons'>external_link</span> ",
   "external_account_management": "Gestion des comptes externes",
   "UserGroup": "Groupe utilisateur",
   "Basic Settings": "Paramètres de base",
@@ -157,10 +157,11 @@
   "duplicated_path": "Chemin dupliqué",
   "Link sharing is disabled": "Le partage est désactivé",
   "successfully_saved_the_page": "Page sauvegardée",
-  "you_can_not_create_page_with_this_name": "Vous ne pouvez pas créer cette page",
+  "you_can_not_create_page_with_this_name_or_hierarchy": "Vous ne pouvez pas créer de page avec ce nom ou cette hiérarchie de pages",
   "not_allowed_to_see_this_page": "Vous ne pouvez pas voir cette page",
   "Confirm": "Confirmer",
   "Successfully requested": "Demande envoyée.",
+  "source": "Source",
   "input_validation": {
     "target": {
       "page_name": "Nom de la page",
@@ -169,8 +170,8 @@
     },
     "message": {
       "error_message": "Des champs sont invalides",
-      "required": "%s est requis",
-      "invalid_syntax": "La syntaxe de %s est invalide.",
+      "required": "'{{param}}' est requis",
+      "invalid_syntax": "La syntaxe de {{syntax}} est invalide.",
       "title_required": "Titre requis.",
       "field_required": "{{target}} est requis"
     }
@@ -483,6 +484,8 @@
     "title": "Assistant de Connaissance",
     "title_beta_label": "(Bêta)",
     "placeholder": "Demandez-moi n'importe quoi.",
+    "summary_mode_label": "Mode résumé",
+    "summary_mode_help": "Réponse concise en 2-3 phrases",
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
     "progress_label": "Génération des réponses",
     "failed_to_create_or_retrieve_thread": "Échec de la création ou de la récupération du fil de discussion",
@@ -605,7 +608,7 @@
     "alert_desc1": "Sélectionner les pages à convertir vers le format V5 avec le bouton \"Opération de masse\".",
     "nopages_title": "GROWI V5 est maintenant utilisable!",
     "nopages_desc1": "Toutes les pages ont été converties au format V5.",
-    "detail_info": "Pour plus de détails, voir <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Convertir vers GROWI v5.0.x <span className='growi-custom-icons'>external_link</span></a>.",
+    "detail_info": "Pour plus de détails, voir <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Convertir vers GROWI v5.0.x <span class='growi-custom-icons'>external_link</span></a>.",
     "modal": {
       "title": "Convertir au format V5",
       "converting_pages": "Conversion des pages",

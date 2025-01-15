@@ -208,9 +208,9 @@
 				"id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
 				"username_detail": "Specification of mappings for <code>username</code> when creating new users",
 				"name_detail": "Specification of mappings for <code>name</code> when creating new users",
-				"mapping_detail": "Specification of mappings for %s when creating new users",
+				"mapping_detail": "Specification of mappings for {{target}} when creating new users",
 				"register_1": "Contact to OIDC IdP Administrator",
-				"register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
+				"register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>{{url}}</code>",
 				"register_3": "Copy and paste your ClientID and Client Secret above",
 				"updated_oidc": "Succeeded to update OpenID Connect",
         "Use discovered URL if empty": "Use discovered URL from \"Issuer Host\" if empty"
@@ -1149,7 +1149,7 @@
   },
   "ai_integration": {
     "ai_integration": "AI 集成",
-    "disable_mode_explanation": "目前，AI 集成已禁用。要启用它，请将环境变量 <code>AI_ENABLED</code> 设置为 true",
+    "disable_mode_explanation": "目前，AI 集成已被禁用。若要启用，请配置 <code>AI_ENABLED</code> 环境变量以及其他必要的变量。<br><br>详细信息请参考<a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>文档</a>。",
     "ai_search_management": "AI 搜索管理",
     "rebuild_vector_store": "重建矢量商店",
     "rebuild_vector_store_label": "重建",

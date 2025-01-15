@@ -1,4 +1,6 @@
 import path from 'path';
+import { type Readable } from 'stream';
+import { pipeline } from 'stream/promises';
 
 import type { IPage } from '@growi/core';
 import {
@@ -125,6 +127,7 @@ module.exports = (crowi) => {
       query('path').optional().isString(),
       query('findAll').optional().isBoolean(),
       query('shareLinkId').optional().isMongoId(),
+      query('includeEmpty').optional().isBoolean(),
     ],
     likes: [
       body('pageId').isString(),
@@ -209,7 +212,7 @@ module.exports = (crowi) => {
   router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { user, isSharedPage } = req;
     const {
-      pageId, path, findAll, revisionId, shareLinkId,
+      pageId, path, findAll, revisionId, shareLinkId, includeEmpty,
     } = req.query;
 
     const isValid = (shareLinkId != null && pageId != null && path == null) || (shareLinkId == null && (pageId != null || path != null));
@@ -231,10 +234,10 @@ module.exports = (crowi) => {
         page = await Page.findByIdAndViewer(pageId, user);
       }
       else if (!findAll) {
-        page = await Page.findByPathAndViewer(path, user, null, true);
+        page = await Page.findByPathAndViewer(path, user, null, true, false);
       }
       else {
-        pages = await Page.findByPathAndViewer(path, user, null, false);
+        pages = await Page.findByPathAndViewer(path, user, null, false, includeEmpty);
       }
     }
     catch (err) {
@@ -734,7 +737,7 @@ module.exports = (crowi) => {
       fileName = '_top';
     }
 
-    let stream;
+    let stream: Readable;
 
     try {
       stream = exportService.getReadStreamFromRevision(revision, format);
@@ -759,7 +762,7 @@ module.exports = (crowi) => {
     };
     await crowi.activityService.createActivity(parameters);
 
-    return stream.pipe(res);
+    await pipeline(stream, res);
   });
 
   /**

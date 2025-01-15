@@ -97,9 +97,9 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 
 | command               | desc                                                    |
 | --------------------- | ------------------------------------------------------- |
-| `pnpm run app:build`  | Build GROWI app client                                  |
-| `pnpm run app:server` | Launch GROWI app server                                 |
-| `pnpm run start`      | Invoke `pnpm run app:build` and `pnpm run app:server`   |
+| `npm run app:build`   | Build GROWI app client                                  |
+| `npm run app:server`  | Launch GROWI app server                                 |
+| `npm run start`       | Invoke `npm run app:build` and `npm run app:server`     |
 
 For more info, see [GROWI Docs: List of npm Scripts](https://docs.growi.org/en/dev/startup-v5/start-development.html#list-of-npm-scripts).
 

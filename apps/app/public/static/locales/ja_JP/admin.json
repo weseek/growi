@@ -210,7 +210,7 @@
         "name_detail": "新規ユーザー名(<code>name</code>)に関連付ける属性",
         "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
         "register_1": "OIDC IdP Administrator へ接続します。",
-        "register_2": "OIDCアプリの認証コールバックURLを<code>%s</code>として登録します。",
+        "register_2": "OIDCアプリの認証コールバックURLを<code>{{url}}</code>として登録します。",
         "register_3": "上記のClientIDとClient Secretをコピー＆ペーストしてください。",
         "updated_oidc": "OpenID Connect を更新しました",
         "Use discovered URL if empty": "データベース側の値が空の場合、\"Issuer Host\"から検出した値を利用します。"
@@ -1150,7 +1150,7 @@
   },
   "ai_integration": {
     "ai_integration": "AI 連携",
-    "disable_mode_explanation": "現在、AI 連携は無効になっています。有効にする場合は環境変数 <code>AI_ENABLED</code> を true に設定してください。",
+    "disable_mode_explanation": "現在、AI 連携は無効になっています。有効にする場合は環境変数 <code>AI_ENABLED</code> の他、必要な環境変数を設定してください。<br><br>詳細は<a target='blank' rel='noopener noreferrer' href={{documentationUrl}}ja/guide/features/ai-knowledge-assistant.html>ドキュメント</a>を参照してください。",
     "ai_search_management": "AI 検索管理",
     "rebuild_vector_store": "Vector Store のリビルド",
     "rebuild_vector_store_label": "リビルド",

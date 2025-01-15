@@ -1,7 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import type { EventEmitter } from 'stream';
-import { Writable, Transform } from 'stream';
+import { Writable, Transform, pipeline } from 'stream';
+import { finished, pipeline as pipelinePromise } from 'stream/promises';
 
 import JSONStream from 'JSONStream';
 import gc from 'expose-gc/function';
@@ -10,7 +11,6 @@ import type {
 } from 'mongodb';
 import type { Document } from 'mongoose';
 import mongoose from 'mongoose';
-import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
 
 import { ImportMode } from '~/models/admin/import-mode';
@@ -267,13 +267,7 @@ export class ImportService {
         },
       });
 
-      readStream
-        .pipe(jsonStream)
-        .pipe(convertStream)
-        .pipe(batchStream)
-        .pipe(writeStream);
-
-      await streamToPromise(writeStream);
+      await pipelinePromise(readStream, jsonStream, convertStream, batchStream, writeStream);
 
       // clean up tmp directory
       fs.unlinkSync(jsonFile);
@@ -349,10 +343,11 @@ export class ImportService {
    */
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
-    const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
+    const parseStream = unzipStream.Parse();
+    const unzipEntryStream = pipeline(readStream, parseStream, () => {});
     const files: string[] = [];
 
-    unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
+    unzipEntryStream.on('entry', (/** @type {Entry} */ entry) => {
       const fileName = entry.path;
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing unzip file (path traversal attack)
@@ -370,12 +365,12 @@ export class ImportService {
       else {
         const jsonFile = path.join(this.baseDir, fileName);
         const writeStream = fs.createWriteStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
-        entry.pipe(writeStream);
+        pipeline(entry, writeStream, () => {});
         files.push(jsonFile);
       }
     });
 
-    await streamToPromise(unzipStreamPipe);
+    await finished(unzipEntryStream);
 
     return files;
   }
