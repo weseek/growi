@@ -74,26 +74,16 @@ For more information, see https://docs.growi.org/en/admin-guide/telemetry.html.
 };
 
 export const initServiceInstanceId = async(): Promise<void> => {
-  if (sdkInstance != null) {
-    logger.warn('OpenTelemetry instrumentation already started');
-    return;
-  }
-
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
+
   if (instrumentationEnabled) {
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
-    const { growiInfoService } = await import('~/server/service/growi-info');
-
-    // get GrowiInfo with additional info
-    const growiInfo = await growiInfoService.getGrowiInfo();
 
     const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
-      ?? growiInfo.serviceInstanceId;
-
-    const updatedResource = generateNodeSDKConfiguration(serviceInstanceId);
+      ?? configManager.getConfig('app:serviceInstanceId');
 
     // overwrite resource
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updatedResource = generateNodeSDKConfiguration(serviceInstanceId).resource;
     (sdkInstance as any).resource = updatedResource;
   }
 };
