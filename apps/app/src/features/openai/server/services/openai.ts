@@ -148,9 +148,9 @@ class OpenaiService implements IOpenaiService {
   //   return newVectorStoreDocument;
   // }
 
-  private async createVectorStore(): Promise<VectorStoreDocument> {
+  private async createVectorStore(name: string): Promise<VectorStoreDocument> {
     try {
-      const newVectorStore = await this.client.createVectorStore();
+      const newVectorStore = await this.client.createVectorStore(name);
 
       const newVectorStoreDocument = await VectorStoreModel.create({
         vectorStoreId: newVectorStore.id,
@@ -399,7 +399,7 @@ class OpenaiService implements IOpenaiService {
       .cursor({ batchSize: BATCH_SIZE });
     const batchStream = createBatchStream(BATCH_SIZE);
 
-    const vectorStoreRelation = await this.createVectorStore();
+    const vectorStoreRelation = await this.createVectorStore(data.name);
     const createVectorStoreFile = this.createVectorStoreFile.bind(this);
     const createVectorStoreFileStream = new Transform({
       objectMode: true,

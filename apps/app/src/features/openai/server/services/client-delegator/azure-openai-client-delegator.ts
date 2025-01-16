@@ -38,8 +38,8 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.threads.del(threadId);
   }
 
-  async createVectorStore(): Promise<OpenAI.Beta.VectorStores.VectorStore> {
-    return this.client.beta.vectorStores.create({ name: 'growi-vector-store' });
+  async createVectorStore(name: string): Promise<OpenAI.Beta.VectorStores.VectorStore> {
+    return this.client.beta.vectorStores.create({ name: `growi-vector-store-for-${name}` });
   }
 
   async retrieveVectorStore(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.VectorStore> {
