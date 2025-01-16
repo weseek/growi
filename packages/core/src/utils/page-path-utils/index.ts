@@ -286,7 +286,7 @@ export const generateChildrenRegExp = (path: string): RegExp => {
 
   // https://regex101.com/r/mrDJrx/1
   // ex. /parent/any_child OR /any_level1
-  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
+  return new RegExp(`^${escapeStringRegexp(path)}(\\/[^/]+)\\/?$`);
 };
 
 /**
