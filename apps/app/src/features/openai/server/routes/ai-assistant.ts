@@ -1,5 +1,6 @@
 import { type IUserHasId, GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
+import { isGrobPatternPath, isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import type { Request, RequestHandler } from 'express';
 import { type ValidationChain, body } from 'express-validator';
 
@@ -60,7 +61,16 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       .isString()
       .withMessage('pagePathPatterns must be an array of strings')
       .notEmpty()
-      .withMessage('pagePathPatterns must not be empty'),
+      .withMessage('pagePathPatterns must not be empty')
+      .custom((value: string) => {
+
+        // check if the value is a grob pattern path
+        if (value.includes('*')) {
+          return isGrobPatternPath(value) && isCreatablePage(value.replace('*', ''));
+        }
+
+        return isCreatablePage(value);
+      }),
 
     body('grantedGroups')
       .optional()
