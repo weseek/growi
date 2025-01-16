@@ -9,7 +9,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { type AiAssistant, AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
+import { type AiAssistant, AiAssistantShareScope, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -62,15 +62,6 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       .notEmpty()
       .withMessage('pagePathPatterns must not be empty'),
 
-    body('grantedUsers')
-      .optional()
-      .isArray()
-      .withMessage('grantedUsers must be an array'),
-
-    body('grantedUsers.*') // each item of grantedUsers
-      .isMongoId()
-      .withMessage('grantedUsers must be an array mongoId'),
-
     body('grantedGroups')
       .optional()
       .isArray()
@@ -89,7 +80,7 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       .withMessage('Invalid shareScope value'),
 
     body('ownerAccessScope')
-      .isIn(Object.values(AiAssistantOwnerAccessScope))
+      .isIn(Object.values(AiAssistantAccessScope))
       .withMessage('Invalid ownerAccessScope value'),
   ];
 
