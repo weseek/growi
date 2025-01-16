@@ -43,13 +43,6 @@ const schema = new Schema<AiAssistantDocument>(
       ref: 'User',
       required: true,
     },
-    grantedUsers: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-      },
-    ],
     grantedGroups: {
       type: [{
         type: {

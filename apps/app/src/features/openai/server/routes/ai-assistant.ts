@@ -62,15 +62,6 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       .notEmpty()
       .withMessage('pagePathPatterns must not be empty'),
 
-    body('grantedUsers')
-      .optional()
-      .isArray()
-      .withMessage('grantedUsers must be an array'),
-
-    body('grantedUsers.*') // each item of grantedUsers
-      .isMongoId()
-      .withMessage('grantedUsers must be an array mongoId'),
-
     body('grantedGroups')
       .optional()
       .isArray()

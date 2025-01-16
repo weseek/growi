@@ -30,7 +30,6 @@ export interface AiAssistant {
   pagePathPatterns: string[],
   vectorStore: Ref<VectorStore>
   owner: Ref<IUser>
-  grantedUsers?: IUser[]
   grantedGroups?: IGrantedGroup[]
   shareScope: AiAssistantShareScope
   ownerAccessScope: AiAssistantOwnerAccessScope
