@@ -32,7 +32,7 @@ export const factory = (crowi: Crowi): express.Router => {
     });
 
     import('./ai-assistant').then(({ createAiAssistantFactory }) => {
-      router.post('ai-assistant', createAiAssistantFactory(crowi));
+      router.post('/ai-assistant', createAiAssistantFactory(crowi));
     });
   }
 
