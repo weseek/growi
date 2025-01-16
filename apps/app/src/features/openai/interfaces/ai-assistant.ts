@@ -21,7 +21,7 @@ export const AiAssistantAccessScope = {
 *  Interfaces
 */
 export type AiAssistantShareScope = typeof AiAssistantShareScope[keyof typeof AiAssistantShareScope];
-export type AiAssistantOwnerAccessScope = typeof AiAssistantAccessScope[keyof typeof AiAssistantAccessScope];
+export type AiAssistantAccessScope = typeof AiAssistantAccessScope[keyof typeof AiAssistantAccessScope];
 
 export interface AiAssistant {
   name: string;
@@ -32,5 +32,5 @@ export interface AiAssistant {
   owner: Ref<IUser>
   grantedGroups?: IGrantedGroup[]
   shareScope: AiAssistantShareScope
-  ownerAccessScope: AiAssistantOwnerAccessScope
+  accessScope: AiAssistantAccessScope
 }

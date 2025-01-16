@@ -79,9 +79,9 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       .isIn(Object.values(AiAssistantShareScope))
       .withMessage('Invalid shareScope value'),
 
-    body('ownerAccessScope')
+    body('accessScope')
       .isIn(Object.values(AiAssistantAccessScope))
-      .withMessage('Invalid ownerAccessScope value'),
+      .withMessage('Invalid accessScope value'),
   ];
 
   return [
