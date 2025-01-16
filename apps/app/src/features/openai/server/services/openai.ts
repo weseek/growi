@@ -2,7 +2,6 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { PageGrant, isPopulated } from '@growi/core';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
@@ -21,6 +20,8 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
+import { type AiAssistant } from '../../interfaces/ai-assistant';
+import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 
 import { getClient } from './client-delegator';
@@ -46,6 +47,7 @@ export interface IOpenaiService {
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   rebuildVectorStoreAll(): Promise<void>;
   rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
+  createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
 }
 class OpenaiService implements IOpenaiService {
 
@@ -354,6 +356,12 @@ class OpenaiService implements IOpenaiService {
     const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
     await this.deleteVectorStoreFile(vectorStore._id, page._id);
     await this.createVectorStoreFile([page]);
+  }
+
+  async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
+    const dumyVectorStoreId = '676e0d9863442b736e7ecf09';
+    const aiAssistant = await AiAssistantModel.create({ ...data, vectorStore: dumyVectorStoreId });
+    return aiAssistant;
   }
 
 }

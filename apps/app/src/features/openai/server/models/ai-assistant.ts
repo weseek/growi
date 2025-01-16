@@ -1,56 +1,11 @@
-import {
-  type IGrantedGroup, GroupType, type IUser, type Ref,
-} from '@growi/core';
+import { type IGrantedGroup, GroupType } from '@growi/core';
 import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import type { VectorStore } from './vector-store';
+import { type AiAssistant, AiAssistantShareScope, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
 
-/*
-*  Objects
-*/
-const AiAssistantType = {
-  KNOWLEDGE: 'knowledge',
-  // EDITOR: 'editor',
-  // LEARNING: 'learning',
-} as const;
-
-const AiAssistantShareScope = {
-  PUBLIC: 'public',
-  ONLY_ME: 'onlyMe',
-  USER_GROUP: 'userGroup',
-} as const;
-
-const AiAssistantOwnerAccessScope = {
-  PUBLIC: 'public',
-  ONLY_ME: 'onlyMe',
-  USER_GROUP: 'userGroup',
-} as const;
-
-
-/*
-*  Interfaces
-*/
-type AiAssistantType = typeof AiAssistantType[keyof typeof AiAssistantType];
-type AiAssistantShareScope = typeof AiAssistantShareScope[keyof typeof AiAssistantShareScope];
-type AiAssistantOwnerAccessScope = typeof AiAssistantOwnerAccessScope[keyof typeof AiAssistantOwnerAccessScope];
-
-interface AiAssistant {
-  name: string;
-  description: string
-  additionalInstruction: string
-  pagePathPatterns: string[],
-  vectorStore: Ref<VectorStore>
-  types: AiAssistantType[]
-  owner: Ref<IUser>
-  grantedUsers?: IUser[]
-  grantedGroups?: IGrantedGroup[]
-  shareScope: AiAssistantShareScope
-  ownerAccessScope: AiAssistantOwnerAccessScope
-}
-
-interface AiAssistantDocument extends AiAssistant, Document {}
+export interface AiAssistantDocument extends AiAssistant, Document {}
 
 type AiAssistantModel = Model<AiAssistantDocument>
 
@@ -83,23 +38,11 @@ const schema = new Schema<AiAssistantDocument>(
       ref: 'VectorStore',
       required: true,
     },
-    types: [{
-      type: String,
-      enum: Object.values(AiAssistantType),
-      required: true,
-    }],
     owner: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
     },
-    grantedUsers: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'User',
-        required: true,
-      },
-    ],
     grantedGroups: {
       type: [{
         type: {
@@ -129,7 +72,7 @@ const schema = new Schema<AiAssistantDocument>(
     },
     ownerAccessScope: {
       type: String,
-      enum: Object.values(AiAssistantOwnerAccessScope),
+      enum: Object.values(AiAssistantAccessScope),
       required: true,
     },
   },
