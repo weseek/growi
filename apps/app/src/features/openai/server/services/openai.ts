@@ -393,20 +393,14 @@ class OpenaiService implements IOpenaiService {
   //   await this.createVectorStoreFile([page]);
   // }
 
-  async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
-    // 1. Create conditions
-    const conditions = {
-      path: { $in: convertPathPatternsToRegExp(data.pagePathPatterns) },
-    };
-
-    // 2. Create vector store file transform stream
+  private async createVectorStoreFileWithStream(vectorStoreRelation: VectorStoreDocument, conditions: mongoose.FilterQuery<PageDocument>): Promise<void> {
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
+
     const pagesStream = Page.find({ ...conditions })
       .populate('revision')
       .cursor({ batchSize: BATCH_SIZE });
     const batchStream = createBatchStream(BATCH_SIZE);
 
-    const vectorStoreRelation = await this.createVectorStore(data.name);
     const createVectorStoreFile = this.createVectorStoreFile.bind(this);
     const createVectorStoreFileStream = new Transform({
       objectMode: true,
@@ -422,13 +416,21 @@ class OpenaiService implements IOpenaiService {
       },
     });
 
-    // 3. Process stream pipeline
     await pipeline(pagesStream, batchStream, createVectorStoreFileStream);
+  }
 
-    // 4. Create AI Assistant with vector store (TODO)
+  async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
+    const vectorStoreRelation = await this.createVectorStore(data.name);
     const aiAssistant = await AiAssistantModel.create({
       ...data, vectorStore: vectorStoreRelation,
     });
+
+    const conditions = {
+      path: { $in: convertPathPatternsToRegExp(data.pagePathPatterns) },
+    };
+
+    // VectorStore creation process does not await
+    this.createVectorStoreFileWithStream(vectorStoreRelation, conditions);
 
     return aiAssistant;
   }
