@@ -9,7 +9,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { type AiAssistant, AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
+import { type AiAssistant, AiAssistantShareScope, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -89,7 +89,7 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       .withMessage('Invalid shareScope value'),
 
     body('ownerAccessScope')
-      .isIn(Object.values(AiAssistantOwnerAccessScope))
+      .isIn(Object.values(AiAssistantAccessScope))
       .withMessage('Invalid ownerAccessScope value'),
   ];
 

@@ -3,7 +3,7 @@ import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { type AiAssistant, AiAssistantShareScope, AiAssistantOwnerAccessScope } from '../../interfaces/ai-assistant';
+import { type AiAssistant, AiAssistantShareScope, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
 
 export interface AiAssistantDocument extends AiAssistant, Document {}
 
@@ -79,7 +79,7 @@ const schema = new Schema<AiAssistantDocument>(
     },
     ownerAccessScope: {
       type: String,
-      enum: Object.values(AiAssistantOwnerAccessScope),
+      enum: Object.values(AiAssistantAccessScope),
       required: true,
     },
   },

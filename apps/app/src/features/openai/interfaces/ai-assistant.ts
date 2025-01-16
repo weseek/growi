@@ -6,22 +6,22 @@ import type { VectorStore } from '../server/models/vector-store';
 *  Objects
 */
 export const AiAssistantShareScope = {
-  PUBLIC: 'public',
-  ONLY_ME: 'onlyMe',
-  USER_GROUP: 'userGroup',
+  PUBLIC_ONLY: 'publicOnly',
+  OWNER: 'owner',
+  GROUPS: 'groups',
 } as const;
 
-export const AiAssistantOwnerAccessScope = {
-  PUBLIC: 'public',
-  ONLY_ME: 'onlyMe',
-  USER_GROUP: 'userGroup',
+export const AiAssistantAccessScope = {
+  PUBLIC_ONLY: 'publicOnly',
+  OWNER: 'owner',
+  GROUPS: 'groups',
 } as const;
 
 /*
 *  Interfaces
 */
 export type AiAssistantShareScope = typeof AiAssistantShareScope[keyof typeof AiAssistantShareScope];
-export type AiAssistantOwnerAccessScope = typeof AiAssistantOwnerAccessScope[keyof typeof AiAssistantOwnerAccessScope];
+export type AiAssistantOwnerAccessScope = typeof AiAssistantAccessScope[keyof typeof AiAssistantAccessScope];
 
 export interface AiAssistant {
   name: string;
