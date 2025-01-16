@@ -743,7 +743,8 @@
   "pagetree": {
     "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'",
     "you_cannot_move_this_page_now": "You cannot move this page now",
-    "something_went_wrong_with_moving_page": "Something went wrong with moving page"
+    "something_went_wrong_with_moving_page": "Something went wrong with moving page",
+    "error_retrieving_the_pagetree": "Error occurred while retrieving the PageTree"
   },
   "duplicated_page_alert": {
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",
