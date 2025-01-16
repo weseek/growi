@@ -115,6 +115,7 @@ class OpenaiService implements IOpenaiService {
     await ThreadRelationModel.deleteMany({ threadId: { $in: deletedThreadIds } });
   }
 
+  // TODO: https://redmine.weseek.co.jp/issues/160332
   // public async getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument> {
   //   const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: VectorStoreScopeType.PUBLIC, isDeleted: false });
 
@@ -162,6 +163,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
+  // TODO: https://redmine.weseek.co.jp/issues/160332
   // TODO: https://redmine.weseek.co.jp/issues/156643
   // private async uploadFileByChunks(pageId: Types.ObjectId, body: string, vectorStoreFileRelationsMap: VectorStoreFileRelationsMap) {
   //   const chunks = await splitMarkdownIntoChunks(body, 'gpt-4o');
@@ -184,6 +186,7 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
+  // TODO: https://redmine.weseek.co.jp/issues/160333
   // private async deleteVectorStore(vectorStoreScopeType: VectorStoreScopeType): Promise<void> {
   //   const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: vectorStoreScopeType, isDeleted: false });
   //   if (vectorStoreDocument == null) {
@@ -348,6 +351,7 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
+  // TODO: https://redmine.weseek.co.jp/issues/160332
   // async rebuildVectorStoreAll() {
   //   await this.deleteVectorStore(VectorStoreScopeType.PUBLIC);
 
