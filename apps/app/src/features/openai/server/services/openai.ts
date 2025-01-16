@@ -3,7 +3,7 @@ import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import { PageGrant, isPopulated } from '@growi/core';
-import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
+import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { HydratedDocument, Types } from 'mongoose';
 import mongoose from 'mongoose';
@@ -38,6 +38,20 @@ const logger = loggerFactory('growi:service:openai');
 // const isVectorStoreForPublicScopeExist = false;
 
 type VectorStoreFileRelationsMap = Map<string, VectorStoreFileRelation>
+
+
+const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string | RegExp> => {
+  return pagePathPatterns.map((pagePathPattern) => {
+    if (isGrobPatternPath(pagePathPattern)) {
+      const trimedPagePathPattern = pagePathPattern.replace('/*', '');
+      const escapedPagePathPattern = escapeStringRegexp(trimedPagePathPattern);
+      return new RegExp(`^${escapedPagePathPattern}`);
+    }
+
+    return pagePathPattern;
+  });
+};
+
 
 export interface IOpenaiService {
   getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
@@ -380,21 +394,14 @@ class OpenaiService implements IOpenaiService {
   // }
 
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
-    // 1. Get pages stream based on path patterns
-    const conditions: Array<{path: string | RegExp}> = data.pagePathPatterns.map((path) => {
-      if (path.endsWith('/*')) {
-        const basePathWithoutGlob = path.slice(0, -2); // remove '/*'
-        const pathWithTrailingSlash = addTrailingSlash(basePathWithoutGlob);
-        const startsPattern = escapeStringRegexp(pathWithTrailingSlash);
-
-        return { path: new RegExp(`^${startsPattern}`) };
-      }
-      return { path: normalizePath(path) };
-    });
+    // 1. Create conditions
+    const conditions = {
+      path: { $in: convertPathPatternsToRegExp(data.pagePathPatterns) },
+    };
 
     // 2. Create vector store file transform stream
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
-    const pagesStream = Page.find({ $or: conditions })
+    const pagesStream = Page.find({ ...conditions })
       .populate('revision')
       .cursor({ batchSize: BATCH_SIZE });
     const batchStream = createBatchStream(BATCH_SIZE);
