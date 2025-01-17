@@ -4391,7 +4391,7 @@ class PageService implements IPageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
-    const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
+    const regexps = ancestorPaths.map(path => generateChildrenRegExp(path)); // cannot use re2
 
     // get pages at once
     const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);
