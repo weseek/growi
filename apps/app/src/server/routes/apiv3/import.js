@@ -54,7 +54,7 @@ const router = express.Router();
  *            type: boolean
  *            description: whether the current importing job exists or not
  */
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 export default function route(crowi) {
   const { growiBridgeService, socketIoService } = crowi;
   const importService = getImportService(crowi);

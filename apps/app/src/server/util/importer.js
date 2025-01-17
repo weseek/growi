@@ -1,4 +1,5 @@
 import Esa from 'esa-node';
+
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:util:importer');
@@ -9,6 +10,7 @@ const logger = loggerFactory('growi:util:importer');
 
 /* eslint-disable no-use-before-define */
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const createGrowiPages = require('./createGrowiPagesFromImports')(crowi);
   const restQiitaAPIService = crowi.getRestQiitaAPIService();

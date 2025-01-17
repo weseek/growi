@@ -84,7 +84,7 @@ export const populateDataToShowRevision = (page, userPublicFields, shouldExclude
 };
 /* eslint-enable object-curly-newline, object-property-newline */
 
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 export const getPageSchema = (crowi) => {
   let pageEvent;
 
