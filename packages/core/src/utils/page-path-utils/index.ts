@@ -5,11 +5,10 @@ import type { IUser } from '~/interfaces';
 import { isValidObjectId } from '../objectid-utils';
 import { addTrailingSlash } from '../path-utils';
 
-import { generateChildrenRegExp as _generateChildrenRegExp } from './generate-children-regexp';
 import { isTopPage as _isTopPage } from './is-top-page';
 
 export const isTopPage = _isTopPage;
-export const generateChildrenRegExp = _generateChildrenRegExp;
+export * from './generate-children-regexp';
 
 /**
  * Whether path is the top page of users
