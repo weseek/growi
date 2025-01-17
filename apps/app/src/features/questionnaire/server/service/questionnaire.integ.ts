@@ -1,14 +1,14 @@
-import { Types } from 'mongoose';
+import type { IGrowiInfo } from '^/../../packages/core/dist';
 import { mock } from 'vitest-mock-extended';
 
 import pkg from '^/package.json';
 
 
 import type UserEvent from '~/server/events/user';
-import { Config } from '~/server/models/config';
 import { configManager } from '~/server/service/config-manager';
 
 import type Crowi from '../../../../server/crowi';
+import type { IGrowiAppAdditionalInfo } from '../../interfaces/growi-app-info';
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
 import { UserType } from '../../interfaces/user-info';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
@@ -26,21 +26,8 @@ describe('QuestionnaireService', () => {
   let user;
 
   beforeAll(async() => {
-    process.env.APP_SITE_URL = 'http://growi.test.jp';
-    process.env.DEPLOYMENT_TYPE = 'growi-docker-compose';
-    process.env.SAML_ENABLED = 'true';
 
     await configManager.loadConfigs();
-    await configManager.updateConfigs({
-      'security:passport-saml:isEnabled': true,
-      'security:passport-github:isEnabled': true,
-    });
-
-    await Config.create({
-      key: 'app:installed',
-      value: true,
-      createdAt: '2000-01-01',
-    });
 
     const crowiMock = mock<Crowi>({
       version: appVersion,
@@ -51,13 +38,12 @@ describe('QuestionnaireService', () => {
           });
         }
       }),
-      appService: {
-        getSiteUrl: () => 'http://growi.test.jp',
-      },
+      // appService: {
+      //   getSiteUrl: () => 'http://growi.test.jp',
+      // },
     });
     const userModelFactory = (await import('~/server/models/user')).default;
     User = userModelFactory(crowiMock);
-    questionnaireService = new QuestionnaireService(crowiMock);
 
     await User.deleteMany({}); // clear users
     user = await User.create({
@@ -67,55 +53,8 @@ describe('QuestionnaireService', () => {
       password: 'usertestpass',
       createdAt: '2000-01-01',
     });
-  });
 
-  describe('getGrowiInfo', () => {
-    test('Should get correct GROWI info', async() => {
-      const growiInfo = await questionnaireService.getGrowiInfo();
-
-      assert(growiInfo != null);
-
-      expect(growiInfo.appSiteUrlHashed).toBeTruthy();
-      expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
-      expect(growiInfo.osInfo?.type).toBeTruthy();
-      expect(growiInfo.osInfo?.platform).toBeTruthy();
-      expect(growiInfo.osInfo?.arch).toBeTruthy();
-      expect(growiInfo.osInfo?.totalmem).toBeTruthy();
-
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      delete (growiInfo as any).appSiteUrlHashed;
-      delete growiInfo.osInfo;
-
-      expect(growiInfo).toEqual({
-        version: appVersion,
-        appSiteUrl: 'http://growi.test.jp',
-        type: 'on-premise',
-        wikiType: 'closed',
-        deploymentType: 'growi-docker-compose',
-        additionalInfo: {
-          installedAt: new Date('2000-01-01'),
-          installedAtByOldestUser: new Date('2000-01-01'),
-          currentUsersCount: 1,
-          currentActiveUsersCount: 1,
-          attachmentType: 'aws',
-          activeExternalAccountTypes: ['saml', 'github'],
-        },
-      });
-    });
-
-    describe('When url hash settings is on', () => {
-      beforeEach(async() => {
-        process.env.QUESTIONNAIRE_IS_APP_SITE_URL_HASHED = 'true';
-        await configManager.loadConfigs();
-      });
-
-      test('Should return app url string', async() => {
-        const growiInfo = await questionnaireService.getGrowiInfo();
-        expect(growiInfo.appSiteUrl).toBeUndefined();
-        expect(growiInfo.appSiteUrlHashed).not.toBe('http://growi.test.jp');
-        expect(growiInfo.appSiteUrlHashed).toBeTruthy();
-      });
-    });
+    questionnaireService = new QuestionnaireService(crowiMock);
   });
 
   describe('getUserInfo', () => {
@@ -318,8 +257,11 @@ describe('QuestionnaireService', () => {
     });
 
     test('Should get questionnaire orders to show', async() => {
-      const growiInfo = await questionnaireService.getGrowiInfo();
-      const userInfo = questionnaireService.getUserInfo(user, growiInfo.appSiteUrlHashed);
+      const growiInfo = mock<IGrowiInfo<IGrowiAppAdditionalInfo>>({
+        type: 'on-premise',
+        version: appVersion,
+      });
+      const userInfo = questionnaireService.getUserInfo(user, 'appSiteUrlHashed');
 
       const questionnaireOrderDocuments = await questionnaireService.getQuestionnaireOrdersToShow(userInfo, growiInfo, user._id);
 

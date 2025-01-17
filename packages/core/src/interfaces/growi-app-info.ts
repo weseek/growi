@@ -19,13 +19,13 @@ export interface IGrowiAdditionalInfo {
   currentActiveUsersCount: number
 }
 
-export interface IGrowiInfo<A extends IGrowiAdditionalInfo> {
-  version: string
+export interface IGrowiInfo<A extends object = IGrowiAdditionalInfo> {
+  serviceInstanceId: string
   appSiteUrl?: string
-  appSiteUrlHashed: string
+  osInfo: IGrowiOSInfo
+  version: string
   type: GrowiServiceType
   wikiType: GrowiWikiType
   deploymentType: GrowiDeploymentType
-  osInfo?: IGrowiOSInfo
   additionalInfo?: A
 }

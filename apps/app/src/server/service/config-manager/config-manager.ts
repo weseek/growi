@@ -101,6 +101,15 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     return value;
   }
 
+  /**
+   * @deprecated
+   */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  getConfigLegacy<T = any>(key: string, source?: ConfigSource): T {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return this.getConfig(key as any, source) as T;
+  }
+
   private checkDifference<K extends ConfigKey>(key: K, value: ConfigValues[K], source?: ConfigSource): void {
     const valueByLegacy = (() => {
       if (source === ConfigSource.env) {

@@ -19,7 +19,7 @@ const growiAdditionalInfoSchema = new Schema<IGrowiAppAdditionalInfo>({
 export const growiInfoSchema = new Schema<IGrowiInfo<IGrowiAppAdditionalInfo> & IGrowiAppAdditionalInfo>({
   version: { type: String, required: true },
   appSiteUrl: { type: String },
-  appSiteUrlHashed: { type: String, required: true },
+  serviceInstanceId: { type: String, required: true },
   type: { type: String, required: true, enum: Object.values(GrowiServiceType) },
   wikiType: { type: String, required: true, enum: Object.values(GrowiWikiType) },
   osInfo: {

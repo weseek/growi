@@ -2,9 +2,12 @@ import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
+import { growiInfoService } from '../service/growi-info';
+
 // disable all of linting
 // because this file is a deprecated legacy of Crowi
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:login');
   const path = require('path');
@@ -30,7 +33,7 @@ module.exports = function(crowi, app) {
         vars: {
           adminUser: admin,
           createdUser: userData,
-          url: appService.getSiteUrl(),
+          url: growiInfoService.getSiteUrl(),
           appTitle,
         },
       });

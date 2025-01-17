@@ -8,13 +8,12 @@ import lsxRoutes from '@growi/remark-lsx/dist/server/index.cjs';
 import mongoose from 'mongoose';
 import next from 'next';
 
-import pkg from '^/package.json';
-
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
+import { getGrowiVersion } from '~/utils/growi-version';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
@@ -70,6 +69,9 @@ class Crowi {
   /** @type {FileUploader} */
   fileUploadService;
 
+  /** @type {import('../service/growi-info').GrowiInfoService} */
+  growiInfoService;
+
   /** @type {import('../service/page').IPageService} */
   pageService;
 
@@ -95,7 +97,7 @@ class Crowi {
   userNotificationService;
 
   constructor() {
-    this.version = pkg.version;
+    this.version = getGrowiVersion();
 
     this.publicDir = path.join(projectRoot, 'public') + sep;
     this.resourceDir = path.join(projectRoot, 'resource') + sep;
@@ -177,6 +179,7 @@ Crowi.prototype.init = async function() {
   ]);
 
   await Promise.all([
+    this.setupGrowiInfoService(),
     this.setupPassport(),
     this.setupSearcher(),
     this.setupMailer(),
@@ -657,6 +660,11 @@ Crowi.prototype.setUpFileUploaderSwitchService = async function() {
   if (this.s2sMessagingService != null) {
     this.s2sMessagingService.addMessageHandler(this.fileUploaderSwitchService);
   }
+};
+
+Crowi.prototype.setupGrowiInfoService = async function() {
+  const { growiInfoService } = await import('../service/growi-info');
+  this.growiInfoService = growiInfoService;
 };
 
 /**

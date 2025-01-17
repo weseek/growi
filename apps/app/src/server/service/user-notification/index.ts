@@ -7,6 +7,7 @@ import {
   prepareSlackMessageForPage,
   prepareSlackMessageForComment,
 } from '../../util/slack';
+import { growiInfoService } from '../growi-info';
 
 /**
  * service class of UserNotification
@@ -51,7 +52,7 @@ export class UserNotificationService {
     const slackChannels: (string|null)[] = toArrayFromCsv(slackChannelsStr);
 
     const appTitle = appService.getAppTitle();
-    const siteUrl = appService.getSiteUrl();
+    const siteUrl = growiInfoService.getSiteUrl();
 
     const promises = slackChannels.map(async(chan) => {
       let messageObj;

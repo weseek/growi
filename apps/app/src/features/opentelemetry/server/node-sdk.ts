@@ -4,7 +4,6 @@ import type { NodeSDK } from '@opentelemetry/sdk-node';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:opentelemetry:server');
 
 
@@ -37,7 +36,7 @@ function overwriteSdkDisabled(): void {
 
 }
 
-export const startInstrumentation = async(version: string): Promise<void> => {
+export const startInstrumentation = async(): Promise<void> => {
   if (sdkInstance != null) {
     logger.warn('OpenTelemetry instrumentation already started');
     return;
@@ -69,11 +68,23 @@ For more information, see https://docs.growi.org/en/admin-guide/telemetry.html.
     const { NodeSDK } = await import('@opentelemetry/sdk-node');
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
-    const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId', ConfigSource.env)
-      ?? 'generated-appSiteUrlHashed'; // TODO: generated appSiteUrlHashed
-
-    sdkInstance = new NodeSDK(generateNodeSDKConfiguration(serviceInstanceId, version));
+    sdkInstance = new NodeSDK(generateNodeSDKConfiguration());
     sdkInstance.start();
+  }
+};
+
+export const initServiceInstanceId = async(): Promise<void> => {
+  const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
+
+  if (instrumentationEnabled) {
+    const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
+
+    const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
+      ?? configManager.getConfig('app:serviceInstanceId');
+
+    // overwrite resource
+    const updatedResource = generateNodeSDKConfiguration(serviceInstanceId).resource;
+    (sdkInstance as any).resource = updatedResource;
   }
 };
 

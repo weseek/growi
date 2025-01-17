@@ -18,6 +18,7 @@ const router = express.Router();
 
 const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549';
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);

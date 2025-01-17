@@ -7,6 +7,7 @@ import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity
 import injectResetOrderByTokenMiddleware from '~/server/middlewares/inject-reset-order-by-token-middleware';
 import PasswordResetOrder from '~/server/models/password-reset-order';
 import { configManager } from '~/server/service/config-manager';
+import { growiInfoService } from '~/server/service/growi-info';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -119,7 +120,7 @@ module.exports = (crowi) => {
   router.post('/', checkPassportStrategyMiddleware, validator.email, apiV3FormValidator, addActivity, async(req, res) => {
     const { email } = req.body;
     const locale = configManager.getConfig('app:globalLang');
-    const appUrl = appService.getSiteUrl();
+    const appUrl = growiInfoService.getSiteUrl();
 
     try {
       const user = await User.findOne({ email });

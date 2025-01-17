@@ -57,7 +57,7 @@ const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
  *            description: Count of tagged pages
  *            example: 3
  */
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
