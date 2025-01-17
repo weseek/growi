@@ -8,6 +8,7 @@ import { addTrailingSlash } from '../path-utils';
 import { isTopPage as _isTopPage } from './is-top-page';
 
 export const isTopPage = _isTopPage;
+export * from './generate-children-regexp';
 
 /**
  * Whether path is the top page of users
@@ -274,19 +275,6 @@ export const canMoveByPath = (fromPath: string, toPath: string): boolean => {
  */
 export const hasSlash = (str: string): boolean => {
   return str.includes('/');
-};
-
-/**
- * Generate RegExp instance for one level lower path
- */
-export const generateChildrenRegExp = (path: string): RegExp => {
-  // https://regex101.com/r/laJGzj/1
-  // ex. /any_level1
-  if (isTopPage(path)) return new RegExp(/^\/[^/]+$/);
-
-  // https://regex101.com/r/mrDJrx/1
-  // ex. /parent/any_child OR /any_level1
-  return new RegExp(`^${path}(\\/[^/]+)\\/?$`);
 };
 
 /**
