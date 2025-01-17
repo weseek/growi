@@ -571,7 +571,7 @@ class PassportService implements S2sMessageHandlable {
 
     // Prevent request timeout error on app init
     const oidcIssuer = await this.getOIDCIssuerInstance(issuerHost);
-    if (oidcIssuer != null) {
+    if (clientId != null && oidcIssuer != null) {
       const oidcIssuerMetadata = oidcIssuer.metadata;
 
       logger.debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
@@ -713,15 +713,17 @@ class PassportService implements S2sMessageHandlable {
    * @param issuerHost string
    * @returns instance of OIDCIssuer
    */
-  async getOIDCIssuerInstance(issuerHost: string): Promise<void | OIDCIssuer> {
+  async getOIDCIssuerInstance(issuerHost: string | undefined): Promise<void | OIDCIssuer> {
     const OIDC_TIMEOUT_MULTIPLIER = configManager.getConfig('security:passport-oidc:timeoutMultiplier');
     const OIDC_DISCOVERY_RETRIES = configManager.getConfig('security:passport-oidc:discoveryRetries');
     const OIDC_ISSUER_TIMEOUT_OPTION = configManager.getConfig('security:passport-oidc:oidcIssuerTimeoutOption');
-    const oidcIssuerHostReady = this.isOidcHostReachable(issuerHost);
+    const oidcIssuerHostReady = issuerHost != null && this.isOidcHostReachable(issuerHost);
+
     if (!oidcIssuerHostReady) {
       logger.error('OidcStrategy: setup failed');
       return;
     }
+
     const metadataURL = this.getOIDCMetadataURL(issuerHost);
     const oidcIssuer = await pRetry(async() => {
       return OIDCIssuer.discover(metadataURL);
@@ -757,6 +759,13 @@ class PassportService implements S2sMessageHandlable {
     }
 
     logger.debug('SamlStrategy: setting up..');
+
+    const cert = configManager.getConfig('security:passport-saml:cert');
+    if (cert == null) {
+      logger.warn('SamlStrategy: cert is not set. setup is skipped.');
+      return;
+    }
+
     passport.use(
       new SamlStrategy(
         {
@@ -765,7 +774,7 @@ class PassportService implements S2sMessageHandlable {
             ? urljoin(growiInfoService.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
             : configManager.getConfig('security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           issuer: configManager.getConfig('security:passport-saml:issuer'),
-          cert: configManager.getConfig('security:passport-saml:cert'),
+          cert,
           disableRequestedAuthnContext: true,
         },
         (profile: Profile, done: VerifiedCallback) => {
