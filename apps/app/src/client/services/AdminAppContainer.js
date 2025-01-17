@@ -157,7 +157,6 @@ export default class AdminAppContainer extends Container {
       this.setState({ fileUploadType: appSettingsParams.envFileUploadType });
       this.setState({ isFixedFileUploadByEnvVar: true });
     }
-
   }
 
   /**

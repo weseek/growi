@@ -1,4 +1,3 @@
-import type { ReadStream } from 'fs';
 import { Readable } from 'stream';
 import util from 'util';
 
@@ -62,7 +61,7 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     const contentHeaders = new ContentHeaders(attachment);
@@ -73,7 +72,7 @@ class GridfsFileUploader extends AbstractFileUploader {
         filename: attachment.fileName,
         contentType: contentHeaders.contentType?.value.toString(),
       },
-      readStream,
+      readable,
     );
   }
 
