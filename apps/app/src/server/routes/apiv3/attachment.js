@@ -199,7 +199,7 @@ module.exports = (crowi) => {
    */
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
 
-    const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
     const pageNumber = req.query.pageNumber || 1;
     const offset = (pageNumber - 1) * limit;
 

@@ -1,6 +1,5 @@
 import type { IAttachment } from './attachment';
 import type { Ref } from './common';
-import type { IExternalAuthProviderType } from './external-account';
 import type { HasObjectId } from './has-object-id';
 import type { Lang } from './lang';
 
@@ -53,9 +52,9 @@ export type IUserHasId = IUser & HasObjectId;
 export type IUserGroupHasId = IUserGroup & HasObjectId;
 export type IUserGroupRelationHasId = IUserGroupRelation & HasObjectId;
 
-export type IAdminExternalAccount = {
+export type IAdminExternalAccount<P> = {
   _id: string,
-  providerType: IExternalAuthProviderType,
+  providerType: P,
   accountId: string,
   user: IUser,
   createdAt: Date,

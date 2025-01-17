@@ -6,6 +6,7 @@ import { body, validationResult } from 'express-validator';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import { configManager } from '~/server/service/config-manager';
 import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 
@@ -16,6 +17,7 @@ import { StatusType } from '../../../interfaces/questionnaire-answer-status';
 import ProactiveQuestionnaireAnswer from '../../models/proactive-questionnaire-answer';
 import QuestionnaireAnswer from '../../models/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../../models/questionnaire-answer-status';
+import { convertToLegacyFormat } from '../../util/convert-to-legacy-format';
 
 
 const logger = loggerFactory('growi:routes:apiv3:questionnaire');
@@ -74,13 +76,13 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.get('/is-enabled', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const isEnabled = crowi.configManager!.getConfig('crowi', 'questionnaire:isQuestionnaireEnabled');
+    const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
     return res.apiv3({ isEnabled });
   });
 
   router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
-      const questionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
+      const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(req.user ?? null, growiInfo.appSiteUrlHashed);
 
@@ -95,8 +97,10 @@ module.exports = (crowi: Crowi): Router => {
         answeredAt: new Date(),
       };
 
+      const proactiveQuestionnaireAnswerLegacy = convertToLegacyFormat(proactiveQuestionnaireAnswer);
+
       try {
-        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswer);
+        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswerLegacy);
       }
       catch (err) {
         if (err.request != null) {
@@ -126,7 +130,7 @@ module.exports = (crowi: Crowi): Router => {
 
   router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
-      const questionnaireServerOrigin = crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
+      const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
       const growiInfo = await crowi.questionnaireService!.getGrowiInfo();
       const userInfo = crowi.questionnaireService!.getUserInfo(user, growiInfo.appSiteUrlHashed);
 
@@ -138,8 +142,10 @@ module.exports = (crowi: Crowi): Router => {
         questionnaireOrder: req.body.questionnaireOrderId,
       };
 
+      const questionnaireAnswerLegacy = convertToLegacyFormat(questionnaireAnswer);
+
       try {
-        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswer);
+        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswerLegacy);
       }
       catch (err) {
         if (err.request != null) {

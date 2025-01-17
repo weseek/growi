@@ -21,7 +21,7 @@ const envToModuleMappings = {
 };
 
 export const getUploader = (crowi: Crowi): FileUploader => {
-  const method = envToModuleMappings[configManager.getConfig('crowi', 'app:fileUploadType')];
+  const method = envToModuleMappings[configManager.getConfig('app:fileUploadType')];
   const modulePath = `./${method}`;
   const uploader = require(modulePath)(crowi);
 

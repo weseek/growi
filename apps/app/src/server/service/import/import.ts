@@ -166,7 +166,7 @@ export class ImportService {
 
     await configManager.loadConfigs();
 
-    const currentIsV5Compatible = configManager.getConfig('crowi', 'app:isV5Compatible');
+    const currentIsV5Compatible = configManager.getConfig('app:isV5Compatible');
     const isImportPagesCollection = collections.includes('pages');
     const shouldNormalizePages = currentIsV5Compatible && isImportPagesCollection;
 

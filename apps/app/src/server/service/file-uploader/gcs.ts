@@ -18,14 +18,18 @@ import { ContentHeaders } from './utils';
 const logger = loggerFactory('growi:service:fileUploaderGcs');
 
 
-function getGcsBucket() {
-  return configManager.getConfig('crowi', 'gcs:bucket');
+function getGcsBucket(): string {
+  const gcsBucket = configManager.getConfig('gcs:bucket');
+  if (gcsBucket == null) {
+    throw new Error('GCS bucket is not configured.');
+  }
+  return gcsBucket;
 }
 
 let storage: Storage;
 function getGcsInstance() {
   if (storage == null) {
-    const keyFilename = configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
+    const keyFilename = configManager.getConfig('gcs:apiKeyJsonPath');
     // see https://googleapis.dev/nodejs/storage/latest/Storage.html
     storage = keyFilename != null
       ? new Storage({ keyFilename }) // Create a client with explicit credentials
@@ -35,12 +39,11 @@ function getGcsInstance() {
 }
 
 function getFilePathOnStorage(attachment) {
-  const namespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
-  // const namespace = null;
+  const namespace = configManager.getConfig('gcs:uploadNamespace');
   const dirName = (attachment.page != null)
     ? 'attachment'
     : 'user';
-  const filePath = urljoin(namespace || '', dirName, attachment.fileName);
+  const filePath = urljoin(namespace, dirName, attachment.fileName);
 
   return filePath;
 }
@@ -63,7 +66,14 @@ class GcsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override isValidUploadSettings(): boolean {
-    throw new Error('Method not implemented.');
+    try {
+      getGcsBucket();
+      return true;
+    }
+    catch (err) {
+      logger.error(err);
+      return false;
+    }
   }
 
   /**
@@ -91,7 +101,7 @@ class GcsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
-    return configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode')
+    return configManager.getConfig('gcs:referenceFileWithRelayMode')
       ? ResponseMode.RELAY
       : ResponseMode.REDIRECT;
   }
@@ -165,7 +175,7 @@ class GcsFileUploader extends AbstractFileUploader {
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
     const file = myBucket.file(filePath);
-    const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'gcs:lifetimeSecForTemporaryUrl');
+    const lifetimeSecForTemporaryUrl = configManager.getConfig('gcs:lifetimeSecForTemporaryUrl');
 
     // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
@@ -192,8 +202,8 @@ module.exports = function(crowi: Crowi) {
   const lib = new GcsFileUploader(crowi);
 
   lib.isValidUploadSettings = function() {
-    return configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null
-      && configManager.getConfig('crowi', 'gcs:bucket') != null;
+    return configManager.getConfig('gcs:apiKeyJsonPath') != null
+      && configManager.getConfig('gcs:bucket') != null;
   };
 
   (lib as any).deleteFile = function(attachment) {
@@ -239,8 +249,8 @@ module.exports = function(crowi: Crowi) {
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
   (lib as any).checkLimit = async function(uploadFileSize) {
-    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
-    const gcsTotalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+    const maxFileSize = configManager.getConfig('app:maxFileSize');
+    const gcsTotalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
   };
 
@@ -255,7 +265,7 @@ module.exports = function(crowi: Crowi) {
     const gcs = getGcsInstance();
     const bucket = gcs.bucket(getGcsBucket());
     const [files] = await bucket.getFiles({
-      prefix: configManager.getConfig('crowi', 'gcs:uploadNamespace'),
+      prefix: configManager.getConfig('gcs:uploadNamespace'),
     });
 
     return files.map(({ name, metadata: { size } }) => {

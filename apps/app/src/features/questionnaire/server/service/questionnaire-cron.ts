@@ -4,11 +4,12 @@ import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
 
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
-import { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
+import type { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
 import ProactiveQuestionnaireAnswer from '../models/proactive-questionnaire-answer';
 import QuestionnaireAnswer from '../models/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
 import QuestionnaireOrder from '../models/questionnaire-order';
+import { convertToLegacyFormat } from '../util/convert-to-legacy-format';
 
 const logger = loggerFactory('growi:service:questionnaire-cron');
 
@@ -38,8 +39,8 @@ class QuestionnaireCronService {
   sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
 
   startCron(): void {
-    const cronSchedule = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronSchedule');
-    const maxHoursUntilRequest = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
+    const cronSchedule = this.crowi.configManager.getConfig('app:questionnaireCronSchedule');
+    const maxHoursUntilRequest = this.crowi.configManager.getConfig('app:questionnaireCronMaxHoursUntilRequest');
 
     const maxSecondsUntilRequest = maxHoursUntilRequest * 60 * 60;
 
@@ -53,7 +54,7 @@ class QuestionnaireCronService {
   }
 
   async executeJob(): Promise<void> {
-    const questionnaireServerOrigin = this.crowi.configManager?.getConfig('crowi', 'app:questionnaireServerOrigin');
+    const questionnaireServerOrigin = this.crowi.configManager.getConfig('app:questionnaireServerOrigin');
 
     const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
       const response = await axios.get(`${questionnaireServerOrigin}/questionnaire-order/index`);
@@ -75,15 +76,23 @@ class QuestionnaireCronService {
 
     const resendQuestionnaireAnswers = async() => {
       const questionnaireAnswers = await QuestionnaireAnswer.find()
-        .select('-_id -answers._id  -growiInfo._id -userInfo._id');
+        .select('-_id -answers._id  -growiInfo._id -userInfo._id')
+        .lean();
       const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find()
-        .select('-_id -growiInfo._id -userInfo._id');
+        .select('-_id -growiInfo._id -userInfo._id')
+        .lean();
 
-      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/batch`, { questionnaireAnswers })
+      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/batch`, {
+        // convert to legacy format
+        questionnaireAnswers: questionnaireAnswers.map(answer => convertToLegacyFormat(answer)),
+      })
         .then(async() => {
           await QuestionnaireAnswer.deleteMany();
         });
-      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive/batch`, { proactiveQuestionnaireAnswers })
+      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive/batch`, {
+        // convert to legacy format
+        proactiveQuestionnaireAnswers: proactiveQuestionnaireAnswers.map(answer => convertToLegacyFormat(answer)),
+      })
         .then(async() => {
           await ProactiveQuestionnaireAnswer.deleteMany();
         });

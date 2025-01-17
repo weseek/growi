@@ -139,8 +139,8 @@ module.exports = (crowi) => {
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
 
-    const hideRestrictedByOwner = await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const hideRestrictedByGroup = await crowi.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
+    const hideRestrictedByOwner = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByOwner');
+    const hideRestrictedByGroup = await crowi.configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     /**
     * @type {import('~/server/models/page').FindRecentUpdatedPagesOption}
@@ -426,7 +426,7 @@ module.exports = (crowi) => {
   router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
 
     const { path } = req.query;
-    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
     const page = req.query.page || 1;
     const offset = (page - 1) * limit;
 
@@ -719,7 +719,7 @@ module.exports = (crowi) => {
 
   router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
     try {
-      const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+      const isV5Compatible = crowi.configManager.getConfig('app:isV5Compatible');
       const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
       return res.apiv3({ isV5Compatible, migratablePagesCount });
     }

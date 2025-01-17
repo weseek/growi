@@ -223,8 +223,8 @@ class PageService implements IPageService {
   ): boolean {
     if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
 
-    const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
+    const pageCompleteDeletionAuthority = configManager.getConfig('security:pageCompleteDeletionAuthority');
+    const pageRecursiveCompleteDeletionAuthority = configManager.getConfig('security:pageRecursiveCompleteDeletionAuthority');
 
     if (!this.canDeleteCompletelyAsMultiGroupGrantedPage(page, creatorId, operator, userRelatedGroups)) return false;
 
@@ -241,10 +241,8 @@ class PageService implements IPageService {
   canDeleteCompletelyAsMultiGroupGrantedPage(
       page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[],
   ): boolean {
-    const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    const isAllGroupMembershipRequiredForPageCompleteDeletion = this.crowi.configManager.getConfig(
-      'crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion',
-    );
+    const pageCompleteDeletionAuthority = configManager.getConfig('security:pageCompleteDeletionAuthority');
+    const isAllGroupMembershipRequiredForPageCompleteDeletion = configManager.getConfig('security:isAllGroupMembershipRequiredForPageCompleteDeletion');
 
     const isAdmin = operator?.admin ?? false;
     const isAuthor = operator?._id == null ? false : operator._id.equals(creatorId);
@@ -281,8 +279,8 @@ class PageService implements IPageService {
   canDelete(page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, isRecursively: boolean): boolean {
     if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
 
-    const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
-    const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
+    const pageDeletionAuthority = configManager.getConfig('security:pageDeletionAuthority');
+    const pageRecursiveDeletionAuthority = configManager.getConfig('security:pageRecursiveDeletionAuthority');
 
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
 
@@ -290,7 +288,7 @@ class PageService implements IPageService {
   }
 
   canDeleteUserHomepageByConfig(): boolean {
-    return configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled') ?? false;
+    return configManager.getConfig('security:user-homepage-deletion:isEnabled') ?? false;
   }
 
   async isUsersHomepageOwnerAbsent(path: string): Promise<boolean> {
@@ -299,8 +297,8 @@ class PageService implements IPageService {
     if (username == null) {
       throw new Error('Cannot found username by path');
     }
-    const ownerExists = await User.exists({ username });
-    return ownerExists === null;
+    const ownerExists = await User.exists({ username }).exec();
+    return ownerExists == null;
   }
 
   private canDeleteLogic(
@@ -404,7 +402,7 @@ class PageService implements IPageService {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async findPageAndMetaDataByViewer(
-      pageId: string, path: string, user: IUserHasId, includeEmpty = false, isSharedPage = false,
+      pageId: string | null, path: string, user?: HydratedDocument<IUser>, includeEmpty = false, isSharedPage = false,
   ): Promise<IDataWithMeta<HydratedDocument<PageDocument>, IPageInfoAll>|null> {
 
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
@@ -456,7 +454,7 @@ class PageService implements IPageService {
     const isBookmarked: boolean = (await Bookmark.findByPageIdAndUserId(pageId, user._id)) != null;
     const isLiked: boolean = page.isLiked(user);
 
-    const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
+    const subscription = await Subscription.findByUserIdAndTargetId(user._id, page._id);
 
     const creatorId = await this.getCreatorIdForCanDelete(page);
 
@@ -481,7 +479,7 @@ class PageService implements IPageService {
   private shouldUseV4ProcessForRevert(page): boolean {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isV5Compatible = configManager.getConfig('app:isV5Compatible');
     const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
 
     const shouldUseV4Process = !isV5Compatible || isPageRestricted;
@@ -3107,9 +3105,7 @@ class PageService implements IPageService {
 
   private async _setIsV5CompatibleTrue() {
     try {
-      await this.crowi.configManager.updateConfigsInTheSameNamespace('crowi', {
-        'app:isV5Compatible': true,
-      });
+      await configManager.updateConfig('app:isV5Compatible', true);
       logger.info('Successfully migrated all public pages.');
     }
     catch (err) {
@@ -3773,7 +3769,7 @@ class PageService implements IPageService {
    */
   async create(_path: string, body: string, user: HasObjectId, options: IOptionsForCreate = {}): Promise<HydratedDocument<PageDocument>> {
     // Switch method
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isV5Compatible = configManager.getConfig('app:isV5Compatible');
     if (!isV5Compatible) {
       return this.createV4(_path, body, user, options);
     }
@@ -3904,7 +3900,7 @@ class PageService implements IPageService {
 
     const format = options.format || 'markdown';
     const grantUserGroupIds = options.grantUserGroupIds || null;
-    const expandContentWidth = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
+    const expandContentWidth = configManager.getConfig('customize:isContainerFluid');
 
     // sanitize path
     path = generalXssFilter.process(path); // eslint-disable-line no-param-reassign
@@ -3981,7 +3977,7 @@ class PageService implements IPageService {
   async forceCreateBySystem(path: string, body: string, options: IOptionsForCreate & { grantUserIds?: ObjectIdLike[] }): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isV5Compatible = configManager.getConfig('app:isV5Compatible');
     if (!isV5Compatible) {
       throw Error('This method is available only when v5 compatible');
     }
@@ -4150,7 +4146,7 @@ class PageService implements IPageService {
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const wasOnTree = pageData.parent != null || isTopPage(pageData.path);
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isV5Compatible = configManager.getConfig('app:isV5Compatible');
 
     const shouldUseV4Process = this.shouldUseUpdatePageV4(pageData.grant, isV5Compatible, wasOnTree);
     if (shouldUseV4Process) {
@@ -4464,7 +4460,7 @@ class PageService implements IPageService {
   }
 
   async createTtlIndex(): Promise<void> {
-    const wipPageExpirationSeconds = configManager.getConfig('crowi', 'app:wipPageExpirationSeconds') ?? 172800;
+    const wipPageExpirationSeconds = configManager.getConfig('app:wipPageExpirationSeconds') ?? 172800;
     const collection = mongoose.connection.collection('pages');
 
     try {

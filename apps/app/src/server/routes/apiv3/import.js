@@ -118,10 +118,10 @@ export default function route(crowi) {
   router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     try {
       const importSettingsParams = {
-        esaTeamName: await crowi.configManager.getConfig('crowi', 'importer:esa:team_name'),
-        esaAccessToken: await crowi.configManager.getConfig('crowi', 'importer:esa:access_token'),
-        qiitaTeamName: await crowi.configManager.getConfig('crowi', 'importer:qiita:team_name'),
-        qiitaAccessToken: await crowi.configManager.getConfig('crowi', 'importer:qiita:access_token'),
+        esaTeamName: await crowi.configManager.getConfig('importer:esa:team_name'),
+        esaAccessToken: await crowi.configManager.getConfig('importer:esa:access_token'),
+        qiitaTeamName: await crowi.configManager.getConfig('importer:qiita:team_name'),
+        qiitaAccessToken: await crowi.configManager.getConfig('importer:qiita:access_token'),
       };
       return res.apiv3({
         importSettingsParams,
@@ -201,7 +201,7 @@ export default function route(crowi) {
     const { fileName, collections, options } = req.body;
 
     // pages collection can only be imported by upsert if isV5Compatible is true
-    const isV5Compatible = crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
+    const isV5Compatible = crowi.configManager.getConfig('app:isV5Compatible');
     const isImportPagesCollection = collections.includes('pages');
     if (isV5Compatible && isImportPagesCollection) {
       /** @type {ImportOptionForPages} */

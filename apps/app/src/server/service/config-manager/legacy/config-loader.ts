@@ -1,12 +1,12 @@
+import { GrowiServiceType } from '@growi/core/dist/consts';
 import { envUtils } from '@growi/core/dist/utils';
 import { parseISO } from 'date-fns/parseISO';
 
-import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 import loggerFactory from '~/utils/logger';
 
 import {
   Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
-} from '../models/config';
+} from '../../../models/config';
 
 
 const logger = loggerFactory('growi:service:ConfigLoader');
@@ -58,7 +58,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   FILE_UPLOAD_USES_ONLY_ENV_VAR_FOR_FILE_UPLOAD_TYPE: {
     ns:      'crowi',
-    key:     'app:useOnlyEnvVarForFileUploadType',
+    key:     'env:useOnlyEnvVars:app:fileUploadType',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -124,7 +124,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   APP_SITE_URL_USES_ONLY_ENV_VARS: {
     ns:      'crowi',
-    key:     'app:siteUrl:useOnlyEnvVars',
+    key:     'env:useOnlyEnvVars:app:siteUrl',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -366,7 +366,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   LOCAL_STRATEGY_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'security:passport-local:useOnlyEnvVarsForSomeOptions',
+    key:     'env:useOnlyEnvVars:security:passport-local',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -384,7 +384,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   SAML_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'security:passport-saml:useOnlyEnvVarsForSomeOptions',
+    key:     'env:useOnlyEnvVars:security:passport-saml',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -514,7 +514,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     ns:      'crowi',
     key:     'gcs:uploadNamespace',
     type:    ValueType.STRING,
-    default: null,
+    default: '',
   },
   GCS_LIFETIME_SEC_FOR_TEMPORARY_URL: {
     ns:      'crowi',
@@ -530,7 +530,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   GCS_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'gcs:useOnlyEnvVarsForSomeOptions',
+    key:     'env:useOnlyEnvVars:gcs',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -581,7 +581,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
   },
   AZURE_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
     ns:      'crowi',
-    key:     'azure:useOnlyEnvVarsForSomeOptions',
+    key:     'env:useOnlyEnvVars:azure',
     type:    ValueType.BOOLEAN,
     default: false,
   },
@@ -751,6 +751,26 @@ const ENV_VAR_NAME_TO_CONFIG_INFO: Record<string, EnvConfig> = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  OPENTELEMETRY_ENABLED: {
+    ns: 'crowi',
+    key: 'otel:enabled',
+    type: ValueType.BOOLEAN,
+    default: true,
+  },
+  OPENTELEMETRY_IS_APP_SITE_URL_HASHED: {
+    ns: 'crowi',
+    key: 'otel:isAppSiteUrlHashed',
+    type: ValueType.BOOLEAN,
+    default: false,
+  },
+  // TODO: fix after the decision of the instrumentation data specification
+  // https://redmine.weseek.co.jp/issues/144351
+  OPENTELEMETRY_SERVICE_INSTANCE_ID: {
+    ns: 'crowi',
+    key: 'otel:serviceInstanceId',
+    type: ValueType.STRING,
+    default: null,
+  },
   AI_ENABLED: {
     ns: 'crowi',
     key: 'app:aiEnabled',
@@ -874,11 +894,13 @@ export default class ConfigLoader {
     const configFromDB: any = await this.loadFromDB();
     const configFromEnvVars: any = this.loadFromEnvVars();
 
-    // merge defaults per ns
+    // deperecate 'ns' and unified to 'crowi' -- 2024.12.10 Yuki Takei
     const mergedConfigFromDB = {
-      crowi: Object.assign(defaultCrowiConfigs, configFromDB.crowi),
-      markdown: Object.assign(defaultMarkdownConfigs, configFromDB.markdown),
-      notification: Object.assign(defaultNotificationConfigs, configFromDB.notification),
+      crowi: Object.assign(
+        Object.assign(defaultCrowiConfigs, configFromDB.crowi),
+        Object.assign(defaultMarkdownConfigs, configFromDB.markdown),
+        Object.assign(defaultNotificationConfigs, configFromDB.notification),
+      ),
     };
 
     // In getConfig API, only null is used as a value to indicate that a config is not set.
@@ -901,14 +923,13 @@ export default class ConfigLoader {
   }
 
   async loadFromDB(): Promise<any> {
-    const config = {};
+    const config = {
+      crowi: {},
+    };
     const docs = await Config.find().exec();
 
     for (const doc of docs) {
-      if (!config[doc.ns]) {
-        config[doc.ns] = {};
-      }
-      config[doc.ns][doc.key] = doc.value ? JSON.parse(doc.value) : null;
+      config.crowi[doc.key] = doc.value ? JSON.parse(doc.value) : null;
     }
 
     logger.debug('ConfigLoader#loadFromDB', config);
@@ -917,50 +938,22 @@ export default class ConfigLoader {
   }
 
   loadFromEnvVars(): any {
-    const config = {};
+    const config = {
+      crowi: {},
+    };
     for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_INFO)) {
       const configInfo = ENV_VAR_NAME_TO_CONFIG_INFO[ENV_VAR_NAME];
-      if (config[configInfo.ns] === undefined) {
-        config[configInfo.ns] = {};
-      }
-
       if (process.env[ENV_VAR_NAME] === undefined) {
-        config[configInfo.ns][configInfo.key] = configInfo.default;
+        config.crowi[configInfo.key] = configInfo.default;
       }
       else {
         const parser = parserDictionary[configInfo.type];
-        config[configInfo.ns][configInfo.key] = parser.parse(process.env[ENV_VAR_NAME] as string);
+        config.crowi[configInfo.key] = parser.parse(process.env[ENV_VAR_NAME] as string);
       }
     }
 
     logger.debug('ConfigLoader#loadFromEnvVars', config);
 
-    return config;
-  }
-
-  /**
-   * get config from the environment variables for display admin page
-   *
-   * **use this only admin homepage.**
-   */
-  static getEnvVarsForDisplay(avoidSecurity = false): any {
-    const config = {};
-    for (const ENV_VAR_NAME of Object.keys(ENV_VAR_NAME_TO_CONFIG_INFO)) {
-      const configInfo = ENV_VAR_NAME_TO_CONFIG_INFO[ENV_VAR_NAME];
-      if (process.env[ENV_VAR_NAME] === undefined) {
-        continue;
-      }
-
-      // skip to show secret values
-      if (avoidSecurity && configInfo.isSecret) {
-        continue;
-      }
-
-      const parser = parserDictionary[configInfo.type];
-      config[ENV_VAR_NAME] = parser.parse(process.env[ENV_VAR_NAME] as string);
-    }
-
-    logger.debug('ConfigLoader#getEnvVarsForDisplay', config);
     return config;
   }
 

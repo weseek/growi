@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -110,14 +111,14 @@ module.exports = (crowi) => {
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const markdownParams = {
-      isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-      isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-      adminPreferredIndentSize: await crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-      isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
-      isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-      xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-      tagWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-      attrWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
+      isEnabledLinebreaks: await crowi.configManager.getConfig('markdown:isEnabledLinebreaks'),
+      isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
+      adminPreferredIndentSize: await crowi.configManager.getConfig('markdown:adminPreferredIndentSize'),
+      isIndentSizeForced: await crowi.configManager.getConfig('markdown:isIndentSizeForced'),
+      isEnabledXss: await crowi.configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
+      xssOption: await crowi.configManager.getConfig('markdown:rehypeSanitize:option'),
+      tagWhitelist: await crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
+      attrWhitelist: await crowi.configManager.getConfig('markdown:rehypeSanitize:attributes'),
     };
 
     return res.apiv3({ markdownParams });
@@ -154,10 +155,10 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestLineBreakParams);
+      await configManager.updateConfigs(requestLineBreakParams);
       const lineBreaksParams = {
-        isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-        isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+        isEnabledLinebreaks: await crowi.configManager.getConfig('markdown:isEnabledLinebreaks'),
+        isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_LINE_BREAK_UPDATE };
@@ -181,10 +182,10 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestIndentParams);
+      await configManager.updateConfigs(requestIndentParams);
       const indentParams = {
-        adminPreferredIndentSize: await crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-        isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+        adminPreferredIndentSize: await crowi.configManager.getConfig('markdown:adminPreferredIndentSize'),
+        isIndentSizeForced: await crowi.configManager.getConfig('markdown:isIndentSizeForced'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_INDENT_UPDATE };
@@ -245,12 +246,12 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', reqestXssParams);
+      await configManager.updateConfigs(reqestXssParams);
       const xssParams = {
-        isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-        xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-        tagWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-        attrWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
+        isEnabledXss: await crowi.configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
+        xssOption: await crowi.configManager.getConfig('markdown:rehypeSanitize:option'),
+        tagWhitelist: await crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
+        attrWhitelist: await crowi.configManager.getConfig('markdown:rehypeSanitize:attributes'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_XSS_UPDATE };
