@@ -1,8 +1,23 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.6...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.7](https://github.com/weseek/growi/compare/v7.1.6...v7.1.7) - 2025-01-16
+
+### 🐛 Bug Fixes
+
+* fix: Unable to select group viewing permissions (#9541) @miya
+* fix: Fix i18n of oidc settings (#9536) @ryu-sato
+
+### 🧰 Maintenance
+
+* support: Update Swagger documentation for the PUT endpoint to update a page (#9529) @tkfm1991
+* ci(deps): bump docker/metadata-action from 4 to 5 (#9181) @dependabot
+* ci(deps): bump github/codeql-action from 2 to 3 (#9180) @dependabot
+* ci(deps): bump next from 14.2.15 to 14.2.21 (#9538) @dependabot
+* ci(deps-dev): bump @marp-team/marp-core from 3.9.0 to 3.9.1 (#9530) @dependabot
 
 ## [v7.1.6](https://github.com/weseek/growi/compare/v7.1.5...v7.1.6) - 2024-12-26
 
