@@ -2,10 +2,7 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import {
-  IUser,
-  IUserGroup, PageGrant, Ref, getIdForRef, isPopulated,
-} from '@growi/core';
+import { PageGrant, getIdForRef, isPopulated } from '@growi/core';
 import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { HydratedDocument, Types } from 'mongoose';
@@ -26,7 +23,7 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
-import { type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope } from '../../interfaces/ai-assistant';
+import { type AiAssistant, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 
@@ -423,20 +420,25 @@ class OpenaiService implements IOpenaiService {
     await pipeline(pagesStream, batchStream, createVectorStoreFileStream);
   }
 
-  private async createConditionForCreateAiAssistant(data: AiAssistant): Promise<mongoose.FilterQuery<PageDocument>> {
-    const converterdPagePatgPatterns = convertPathPatternsToRegExp(data.pagePathPatterns);
+  private async createConditionForCreateAiAssistant(
+      owner: AiAssistant['owner'],
+      accessScope: AiAssistant['accessScope'],
+      grantedGroups: AiAssistant['grantedGroups'],
+      pagePathPatterns: AiAssistant['pagePathPatterns'],
+  ): Promise<mongoose.FilterQuery<PageDocument>> {
+    const converterdPagePatgPatterns = convertPathPatternsToRegExp(pagePathPatterns);
 
-    if (data.accessScope === AiAssistantAccessScope.PUBLIC_ONLY) {
+    if (accessScope === AiAssistantAccessScope.PUBLIC_ONLY) {
       return {
         grant: PageGrant.GRANT_PUBLIC,
         path: { $in: converterdPagePatgPatterns },
       };
     }
 
-    if (data.accessScope === AiAssistantAccessScope.GROUPS) {
-      if (data.grantedGroups != null && data.grantedGroups.length > 0) {
-        const ownerMemberGroups = (await userGroupRelation.findAllUserGroupIdsRelatedToUser(data.owner)).map(group => group.toString());
-        const isValid = data.grantedGroups.every(group => ownerMemberGroups.includes(getIdForRef(group.item).toString()));
+    if (accessScope === AiAssistantAccessScope.GROUPS) {
+      if (grantedGroups != null && grantedGroups.length > 0) {
+        const ownerMemberGroups = (await userGroupRelation.findAllUserGroupIdsRelatedToUser(owner)).map(group => group.toString());
+        const isValid = grantedGroups.every(group => ownerMemberGroups.includes(getIdForRef(group.item).toString()));
         if (!isValid) {
           throw new Error('A group to which the owner does not belong is specified.');
         }
@@ -446,18 +448,18 @@ class OpenaiService implements IOpenaiService {
         grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP] },
         path: { $in: converterdPagePatgPatterns },
         $or: [
-          { 'grantedGroups.item': { $in: data.grantedGroups?.map(group => getIdForRef(group.item)) } },
+          { 'grantedGroups.item': { $in: grantedGroups?.map(group => getIdForRef(group.item)) } },
           { grant: PageGrant.GRANT_PUBLIC },
         ],
       };
     }
 
-    if (data.accessScope === AiAssistantAccessScope.OWNER) {
+    if (accessScope === AiAssistantAccessScope.OWNER) {
       return {
         grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_OWNER] },
         path: { $in: converterdPagePatgPatterns },
         $or: [
-          { grantedUsers: { $in: [getIdForRef(data.owner)] } },
+          { grantedUsers: { $in: [getIdForRef(owner)] } },
           { grant: PageGrant.GRANT_PUBLIC },
         ],
       };
@@ -467,7 +469,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
-    const conditions = await this.createConditionForCreateAiAssistant(data as AiAssistant);
+    const conditions = await this.createConditionForCreateAiAssistant(data.owner, data.accessScope, data.grantedGroups, data.pagePathPatterns);
 
     const vectorStoreRelation = await this.createVectorStore(data.name);
     const aiAssistant = await AiAssistantModel.create({
