@@ -1,4 +1,8 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import {
+  render, screen, fireEvent, waitFor,
+} from '@testing-library/react';
+
+import '@testing-library/jest-dom/vitest';
 
 import { DescendantsPageListModal } from './DescendantsPageListModal';
 
@@ -27,28 +31,42 @@ vi.mock('~/stores/ui', () => ({
 
 describe('DescendantsPageListModal.tsx', () => {
 
-  it('should render the modal when isOpened is true', () => {
+  it('should render the modal when isOpened is true', async() => {
     render(<DescendantsPageListModal />);
-    expect(screen.getByTestId('descendants-page-list-modal')).not.toBeNull();
+
+    await waitFor(() => {
+      expect(screen.getByTestId('descendants-page-list-modal')).toBeInTheDocument();
+    });
   });
 
-  it('should call close function when close button is clicked', () => {
+  it('should call close function when close button is clicked', async() => {
     render(<DescendantsPageListModal />);
-    const closeButton = screen.getByLabelText('Close');
+
+    const closeButton = await waitFor(() => screen.getByLabelText('Close'));
+
     fireEvent.click(closeButton);
-    expect(mockClose).toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(mockClose).toHaveBeenCalled();
+    });
   });
 
   describe('when device is larger than lg', () => {
 
-    it('should render CustomNavTab', () => {
+    it('should render CustomNavTab', async() => {
       render(<DescendantsPageListModal />);
-      expect(screen.getByTestId('custom-nav-tab')).not.toBeNull();
+
+      await waitFor(() => {
+        expect(screen.getByTestId('custom-nav-tab')).toBeInTheDocument();
+      });
     });
 
-    it('should not render CustomNavDropdown', () => {
+    it('should not render CustomNavDropdown', async() => {
       render(<DescendantsPageListModal />);
-      expect(screen.queryByTestId('custom-nav-dropdown')).toBeNull();
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('custom-nav-dropdown')).not.toBeInTheDocument();
+      });
     });
   });
 
@@ -57,14 +75,20 @@ describe('DescendantsPageListModal.tsx', () => {
       useIsDeviceLargerThanLg.mockReturnValue({ data: false });
     });
 
-    it('should render CustomNavDropdown on devices smaller than lg', () => {
+    it('should render CustomNavDropdown on devices smaller than lg', async() => {
       render(<DescendantsPageListModal />);
-      expect(screen.getByTestId('custom-nav-dropdown')).not.toBeNull();
+
+      await waitFor(() => {
+        expect(screen.getByTestId('custom-nav-dropdown')).toBeInTheDocument();
+      });
     });
 
-    it('should not render CustomNavTab', () => {
+    it('should not render CustomNavTab', async() => {
       render(<DescendantsPageListModal />);
-      expect(screen.queryByTestId('custom-nav-tab')).toBeNull();
+
+      await waitFor(() => {
+        expect(screen.queryByTestId('custom-nav-tab')).not.toBeInTheDocument();
+      });
     });
   });
 });
