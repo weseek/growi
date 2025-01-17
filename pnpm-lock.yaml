@@ -288,6 +288,9 @@ importers:
       axios-retry:
         specifier: ^3.2.4
         version: 3.9.1
+      babel-plugin-superjson-next:
+        specifier: ^0.4.2
+        version: 0.4.5(next@14.2.21(@babel/core@7.24.6)(@playwright/test@1.46.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.6))(superjson@1.13.3)
       body-parser:
         specifier: ^1.20.3
         version: 1.20.3
@@ -820,9 +823,6 @@ importers:
       babel-loader:
         specifier: ^8.2.5
         version: 8.3.0(@babel/core@7.24.6)(webpack@5.92.1(@swc/core@1.5.25(@swc/helpers@0.5.11)))
-      babel-plugin-superjson-next:
-        specifier: ^0.4.2
-        version: 0.4.5(next@14.2.21(@babel/core@7.24.6)(@playwright/test@1.46.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.6))(superjson@1.13.3)
       bootstrap:
         specifier: '=5.3.2'
         version: 5.3.2(@popperjs/core@2.11.8)
