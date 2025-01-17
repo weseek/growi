@@ -3,7 +3,7 @@
     "display_name": "Français"
   },
   "Help": "Aide",
-  "view": "Voir",
+  "View": "Voir",
   "Edit": "Modifier",
   "Delete": "Supprimer",
   "delete_all": "Tout supprimer",
@@ -60,7 +60,7 @@
   "Timeline View": "Chronologie",
   "History": "Historique",
   "attachment_data": "Pièces jointes",
-  "No_attachments_yet": "Aucunes pièces jointes.",
+  "No_attachments_yet": "Aucune pièce jointe.",
   "Presentation Mode": "Mode présentation",
   "Not available for guest": "Indisponible pour les invités",
   "Not available in this version": "Indisponible dans cette version",
@@ -90,24 +90,25 @@
   "No diff": "Aucune différences",
   "Latest": "Dernière version",
   "User ID": "Identifiant utilisateur",
-  "User Information": "Informations utilisateur",
+  "User Settings": "Paramètres utilisateur",
+  "User Information": "Mon compte",
   "User Activation": "Activation utilisateur",
-  "Basic Info": "Informations de base",
+  "Basic Info": "Informations du compte",
   "Name": "Nom",
   "Email": "Adresse courriel",
   "Language": "Langue",
   "English": "Anglais",
   "Japanese": "Japonais",
-  "Set Profile Image": "Sélectionner image de profil",
-  "Upload Image": "Téléverser image",
-  "Current Image": "Image actuelle",
-  "Delete Image": "Supprimer image",
-  "Delete this image?": "Supprimer cette image?",
+  "Set Profile Image": "Photo de profil",
+  "Upload Image": "Photo personalisée",
+  "Current Image": "Photo actuelle",
+  "Delete Image": "Supprimer photo",
+  "Delete this image?": "Supprimer cette photo?",
   "Updated": "Modifié",
-  "Upload new image": "Téléverser nouvelle image",
+  "Upload new image": "Téléverser une photo",
   "Connected": "Connecté",
   "Loading": "Chargement...",
-  "Disclose E-mail": "Afficher adresse courriel",
+  "Disclose E-mail": "Divulguer adresse courriel",
   "page exists": "cette page est déjà existante",
   "Error occurred": "Une erreur est survenue",
   "Input page name": "Nom de la page",
@@ -122,21 +123,21 @@
   "UserGroup": "Groupe utilisateur",
   "Basic Settings": "Paramètres de base",
   "The contents entered here will be shown in the header etc": "Le contenu entré ici sera visible dans l'en-tête",
-  "Public": "Public",
+  "Public": "Tout le monde",
   "Anyone with the link": "Tous les utilisateurs disposant du lien",
   "Specified users only": "Utilisateurs spécifiés",
   "Only me": "Seulement moi",
   "Only inside the group": "Utilisateurs du groupe",
-  "page_list": "Liste de pages",
+  "page_list": "Pages enfants",
   "comments": "Commentaires",
   "Reselect the group": "Resélectionner ce groupe",
   "Shareable link": "Lien partageable",
   "The whitelist of registration permission E-mail address": "Les adresses courriel permises lors de l'inscription",
   "Add tags for this page": "Ajouter des étiquettes",
   "tag_list": "Étiquettes",
-  "popular_tags": "Étiquettes populaires",
-  "Check All tags": "voir toutes les étiquettes",
-  "You have no tag, You can set tags on pages": "Vous n'avez aucunes étiquettes, vous pouvez assigner des étiquettes aux pages",
+  "popular_tags": "Étiquettes fréquentes",
+  "Check All tags": "Toutes les étiquettes",
+  "You have no tag, You can set tags on pages": "Aucune étiquette existante.",
   "Show latest": "Voir le plus récent",
   "Load latest": "Charger le plus récent",
   "edited this page": "à modifié cette page.",
@@ -147,9 +148,9 @@
   "No bookmarks yet": "Aucuns favoris",
   "add_bookmark": "Ajouter aux favoris",
   "remove_bookmark": "Retirer des favoris",
-  "wide_view": "Vue élargie",
+  "wide_view": "Affichage large",
   "Recent Changes": "Modifications récentes",
-  "Page Tree": "Arbre",
+  "Page Tree": "Arborescence",
   "Bookmarks": "Favoris",
   "In-App Notification": "Notifications",
   "original_path": "Chemin originel",
@@ -227,7 +228,7 @@
     "form_help": {}
   },
   "Password": "Mot de passe",
-  "Password Settings": "Paramètres de mot passe",
+  "Password Settings": "Sécurité",
   "personal_settings": {
     "disassociate_external_account": "Dissocier compte externe",
     "disassociate_external_account_desc": "Dissocier le compte externe <strong>{{providerType}}</strong> <strong>{{accountId}}</strong>?",
@@ -241,7 +242,7 @@
   "share_links": {
     "Shere this page link to public": "Partager cette page publiquement",
     "share_link_list": "Liens de partage",
-    "share_link_management": "Gestion des liens de partage",
+    "share_link_management": "Liens de partage",
     "delete_all_share_links": "Supprimer tout les liens de partage",
     "expire": "Expiration",
     "Days": "Jour",
@@ -254,23 +255,23 @@
     "Invalid_Number_of_Date": "Valeurs invalides",
     "link_sharing_is_disabled": "Le partage est désactivé"
   },
-  "API Settings": "Configuration API",
+  "API Settings": "API GROWI",
   "Other Settings": "Autres paramètres",
-  "API Token Settings": "Paramètres de jetons",
-  "Current API Token": "Jeton d'API actuel",
-  "Update API Token": "Modifier jeton",
+  "API Token Settings": "Jetons d'API",
+  "Current API Token": "Mon jeton d'API",
+  "Update API Token": "Regénérer",
   "in_app_notification_settings": {
-    "in_app_notification_settings": "Paramètres de notifications",
+    "in_app_notification_settings": "Notifications",
     "subscribe_settings": "Paramètres d'abonnement automatique aux notifications de pages",
     "default_subscribe_rules": {
-      "page_create": "S'abonner à la page lors de sa création."
+      "page_create": "S'abonner aux modifications d'une page lors de sa création."
     }
   },
   "ui_settings": {
-    "ui_settings": "Paramètres UI",
+    "ui_settings": "Interface",
     "side_bar_mode": {
       "settings": "Paramètres navigation latérale",
-      "side_bar_mode_setting": "Activer la navigation latérale",
+      "side_bar_mode_setting": "Épingler la navigation latérale",
       "description": "Activer pour toujours afficher la barre de navigation latérale lorsque l'écran est large. Si la largeur d'écran est faible, le cas inverse est applicable."
     }
   },
@@ -278,7 +279,7 @@
     "light": "Clair",
     "dark": "Sombre",
     "system": "Système",
-    "settings": "Paramètres de thème",
+    "settings": "Thème",
     "description": "Affichage en mode clair, sombre ou selon les paramètres système.<br>Seuls les thèmes supportés seront modifiés."
   },
   "editor_settings": {
@@ -331,17 +332,17 @@
   "page_edit": {
     "input_channels": "Canal Slack...",
     "theme": "Thème",
-    "keymap": "Touches",
+    "keymap": "Raccourcis",
     "indent": "Indentation",
     "paste": {
       "title": "Comportement du collage",
-      "both": "Les deux",
+      "both": "Texte et fichier",
       "text": "Texte seulement",
       "file": "Fichier seulement"
     },
-    "editor_config": "Configuration de l'éditeur",
-    "Show active line": "Montrer la ligne active",
-    "auto_format_table": "Formattage les tables",
+    "editor_config": "Préférences de l'éditeur",
+    "Show active line": "Surligner la ligne active",
+    "auto_format_table": "Formatter les tableaux",
     "overwrite_scopes": "{{operation}} et écraser les scopes des pages enfants",
     "notice": {
       "conflict": "Sauvegarde impossible, la page est en cours de modification par un autre utilisateur. Recharger la page."
@@ -370,28 +371,28 @@
   },
   "page_history": {
     "revision_list": "Historique des modifications",
-    "revision": "version",
+    "revision": "Révision",
     "comparing_source": "Source",
-    "comparing_target": "Destination",
+    "comparing_target": "Cible",
     "comparing_revisions": "Comparer les modifications",
     "compare_latest": "Comparer avec la version la plus récente",
-    "compare_previous": "Compare avec une version précédente"
+    "compare_previous": "Comparer avec la version précédente"
   },
   "modal_rename": {
     "label": {
       "Move/Rename page": "Déplacer/renommer page",
-      "New page name": "Nom de la page",
+      "New page name": "Nouveau chemin",
       "Failed to get subordinated pages": "échec de récupération des pages subordinnées",
       "Failed to get exist path": "échec de la récupération du chemin",
-      "Current page name": "Nom de la page courante",
+      "Current page name": "Chemin actuel",
       "Rename this page only": "Renommer cette page",
       "Force rename all child pages": "Forcer le renommage des pages",
       "Other options": "Autres options",
       "Do not update metadata": "Ne pas modifier les métadonnées",
-      "Redirect": "Rediriger"
+      "Redirect": "Redirection automatique"
     },
     "help": {
-      "redirect": "Rediriger vers la nouvelle page",
+      "redirect": "Redirige automatiquement vers le nouveau chemin de la page.",
       "metadata": "Conserve les métadonnées d'édition de la page",
       "recursive": "Déplacer/renommer les pages enfants récursivement"
     }
@@ -515,7 +516,7 @@
     "initialize_successed": "Initialisation de {{target}} réussie",
     "remove_share_link_success": "Suppression de {{shareLinkId}} réussie",
     "issue_share_link": "Lien de partage ajouté",
-    "remove_share_link": "{{count}} liens de partage supprimés",
+    "remove_share_link": "{{count}} liens supprimés",
     "switch_disable_link_sharing_success": "Paramètres des liens de partage modifiés",
     "failed_to_reset_password": "Échec de la réinitialisation du mot de passe",
     "save_succeeded": "Sauvegarde réussie"
@@ -759,9 +760,9 @@
     "select_page_to_see": "Sélectionner une page"
   },
   "user_group": {
-    "select_group": "Sélectionner groupe",
-    "belonging_to_no_group": "Appartenance au groupe introuvable.",
-    "manage_user_groups": "Gestion des groupes utilisateurs"
+    "select_group": "Groupes autorisés",
+    "belonging_to_no_group": "Vous n'appartenez à aucun groupe.",
+    "manage_user_groups": "Gestion des groupes"
   },
   "fix_page_grant": {
     "modal": {
@@ -792,11 +793,11 @@
   "tooltip": {
     "like": "Like!",
     "cancel_like": "Annuler",
-    "bookmark": "Favori",
-    "cancel_bookmark": "Annuler favori",
-    "receive_notifications": "Recevoir les notifications",
-    "stop_notification": "Stopper les notifications",
-    "footprints": "Visiteurs",
+    "bookmark": "Ajouter aux favoris",
+    "cancel_bookmark": "Retirer des favoris",
+    "receive_notifications": "S'abonner",
+    "stop_notification": "Se désabonner",
+    "footprints": "Lecteurs",
     "login_required": "Connexion requise",
     "operation": {
       "attention": {
@@ -810,7 +811,7 @@
   },
   "user_home_page": {
     "bookmarks": "Favoris",
-    "recently_created": "Crée récemment"
+    "recently_created": "Page récentes"
   },
   "bookmark_folder": {
     "bookmark_folder": "dossier de favoris",
@@ -843,18 +844,18 @@
     "disagree": "En désaccord",
     "answer": "Répondre",
     "no_answer": "Aucune réponse",
-    "settings": "Configuration du questionnaire",
-    "failed_to_send": "Échec de l'envoi du questionnaire",
-    "denied": "Le questionnaire ne sera plus montré",
-    "personal_settings_explanation": "Les questionnaires de satisfaction seront actifs.",
-    "enable_questionnaire": "Activer questionnaire",
-    "disabled_by_admin": "Questionnaire désactivé par l'administrateur"
+    "settings": "Sondages anonymes",
+    "failed_to_send": "Échec de l'envoi du sondage",
+    "denied": "Les sondages ne seront plus affichés.",
+    "personal_settings_explanation": "Sondages de satisfaction anonymes.",
+    "enable_questionnaire": "Sondages anonymes",
+    "disabled_by_admin": "Sondages anonymes désactivés par l'administrateur"
   },
   "tag_edit_modal": {
-    "edit_tags": "Modifier étiquettes",
-    "done": "Terminer",
+    "edit_tags": "Étiquettes",
+    "done": "Mettre à jour",
     "tags_input": {
-      "tag_name": "nom de l'étiquette"
+      "tag_name": "Choisir ou créer une étiquette"
     }
   },
   "delete_attachment_modal": {
@@ -881,11 +882,11 @@
     "size_l": "Taille: G"
   },
   "sync-latest-revision-body": {
-    "menuitem": "Synchroniser le texte de l'éditeur avec le corps de la dernière révision",
-    "confirm": "Delete the draft data being entered into the editor and synchronize the latest text. Are you sure you want to run it?",
+    "menuitem": "Synchroniser avec la dernière révision",
+    "confirm": "Supprime les données en brouillon et synchronise avec la dernière révision. Synchroniser?",
     "alert": "Il se peut que le texte le plus récent n'ait pas été synchronisé. Veuillez recharger et vérifier à nouveau.",
     "success-toaster": "Dernier texte synchronisé",
-    "skipped-toaster": "Synchronisation ignorée car l'éditeur n'est pas activé. Ouvrir l'éditeur et réessayer.",
-    "error-toaster": "La synchronisation du dernier texte a échoué"
+    "skipped-toaster": "L'éditeur n'est pas actif. Synchronisation annulée.",
+    "error-toaster": "Synchronisation échouée"
   }
 }
