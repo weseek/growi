@@ -436,19 +436,23 @@ class OpenaiService implements IOpenaiService {
     }
 
     if (accessScope === AiAssistantAccessScope.GROUPS) {
-      if (grantedGroups != null && grantedGroups.length > 0) {
-        const ownerMemberGroups = (await userGroupRelation.findAllUserGroupIdsRelatedToUser(owner)).map(group => group.toString());
-        const isValid = grantedGroups.every(group => ownerMemberGroups.includes(getIdForRef(group.item).toString()));
-        if (!isValid) {
-          throw new Error('A group to which the owner does not belong is specified.');
-        }
+      if (grantedGroups == null || grantedGroups.length === 0) {
+        throw new Error('grantedGroups is required when accessScope is GROUPS');
+      }
+
+      const extractedGrantedGroupIds = grantedGroups.map(group => getIdForRef(group.item).toString());
+      const extractedOwnerGroupIds = (await userGroupRelation.findAllUserGroupIdsRelatedToUser(owner)).map(group => group.toString());
+
+      const isValid = extractedGrantedGroupIds.every(groupId => extractedOwnerGroupIds.includes(groupId));
+      if (!isValid) {
+        throw new Error('A group to which the owner does not belong is specified.');
       }
 
       return {
         grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP] },
         path: { $in: converterdPagePatgPatterns },
         $or: [
-          { 'grantedGroups.item': { $in: grantedGroups?.map(group => getIdForRef(group.item)) } },
+          { 'grantedGroups.item': { $in: extractedGrantedGroupIds } },
           { grant: PageGrant.GRANT_PUBLIC },
         ],
       };
