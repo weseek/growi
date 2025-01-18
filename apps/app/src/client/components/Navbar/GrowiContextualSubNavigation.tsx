@@ -20,6 +20,7 @@ import { DropdownItem, UncontrolledTooltip } from 'reactstrap';
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
+import { useWorkflowModal } from '~/features/approval-workflow/client/stores/workflow';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
@@ -247,6 +248,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { open: openWorkflowModal } = useWorkflowModal();
 
   const [isStickyActive, setStickyActive] = useState(false);
 
@@ -306,6 +308,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
     }
   }, [isSharedPage, mutateCurrentPage]);
+
+
+  const workflowItemClickedHandler = useCallback((pageId: string) => {
+    openWorkflowModal(pageId);
+  }, [openWorkflowModal]);
+
 
   const additionalMenuItemsRenderer = useCallback(() => {
     if (revisionId == null || pageId == null) {
@@ -380,6 +388,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                 onClickRenameMenuItem={renameItemClickedHandler}
                 onClickDeleteMenuItem={deleteItemClickedHandler}
                 onClickSwitchContentWidth={switchContentWidthHandler}
+                onClickWorkflowMenuItem={workflowItemClickedHandler}
               />
             )}
 
