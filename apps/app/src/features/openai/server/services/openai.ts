@@ -443,6 +443,7 @@ class OpenaiService implements IOpenaiService {
       const extractedGrantedGroupIds = grantedGroups.map(group => getIdForRef(group.item).toString());
       const extractedOwnerGroupIds = (await userGroupRelation.findAllUserGroupIdsRelatedToUser(owner)).map(group => group.toString());
 
+      // Check if the owner belongs to the group specified in grantedGroups
       const isValid = extractedGrantedGroupIds.every(groupId => extractedOwnerGroupIds.includes(groupId));
       if (!isValid) {
         throw new Error('A group to which the owner does not belong is specified.');
