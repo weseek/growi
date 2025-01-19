@@ -34,6 +34,7 @@ COPY . .
 RUN pnpm install ---frozen-lockfile
 
 # build
+RUN turbo run clean
 RUN turbo run build --filter @growi/pdf-converter
 
 # make artifacts
@@ -60,6 +61,9 @@ ENV LANG="ja_JP.UTF-8"
 
 ENV optDir="/opt"
 ENV appDir="${optDir}/pdf-converter"
+
+# create shared directory for bulk export and set permission
+RUN mkdir -p /tmp/page-bulk-export && chown -R node:node /tmp/page-bulk-export && chmod 700 /tmp/page-bulk-export
 
 RUN apt-get update && apt-get install -y chromium fonts-lato fonts-ipafont-gothic fonts-noto-cjk \
     && apt-get clean \
