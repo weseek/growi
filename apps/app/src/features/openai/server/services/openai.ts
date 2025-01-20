@@ -460,10 +460,12 @@ class OpenaiService implements IOpenaiService {
     }
 
     if (accessScope === AiAssistantAccessScope.OWNER) {
+      const extractedOwnerGroupIds = (await userGroupRelation.findAllUserGroupIdsRelatedToUser(owner)).map(group => group.toString());
       return {
-        grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_OWNER] },
+        grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP, PageGrant.GRANT_OWNER] },
         path: { $in: converterdPagePatgPatterns },
         $or: [
+          { 'grantedGroups.item': { $in: extractedOwnerGroupIds } },
           { grantedUsers: { $in: [getIdForRef(owner)] } },
           { grant: PageGrant.GRANT_PUBLIC },
         ],
