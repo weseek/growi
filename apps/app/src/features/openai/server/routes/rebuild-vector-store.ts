@@ -30,7 +30,7 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
 
       try {
         const openaiService = getOpenaiService();
-        await openaiService?.rebuildVectorStoreAll();
+        // await openaiService?.rebuildVectorStoreAll();
         return res.apiv3({});
 
       }

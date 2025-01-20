@@ -1,12 +1,12 @@
 import type { KeyboardEvent } from 'react';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import {
   Collapse,
   Modal, ModalBody, ModalFooter, ModalHeader,
-  UncontrolledTooltip,
+  UncontrolledTooltip, Input,
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -14,6 +14,7 @@ import { toastError } from '~/client/util/toastr';
 import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
+import { SelectedPageList } from '../../../client/components/Common/SelectedPageList';
 import { useRagSearchModal } from '../../../client/stores/rag-search';
 import { MessageErrorCode, StreamErrorCode } from '../../../interfaces/message-error';
 
@@ -193,7 +194,46 @@ const AiChatModalSubstance = (): JSX.Element => {
   return (
     <>
       <ModalBody className="pb-0 pt-3 pt-lg-4 px-3 px-lg-4">
-        <div className="vstack gap-4 pb-4">
+        <div className="d-flex mb-4">
+          <Input type="select" className="border rounded">
+            <option>
+              GROWI AI の機能について
+            </option>
+          </Input>
+
+          <button type="button" className="btn btn-outline-secondary bg-transparent ms-2">
+            <span className="fs-5 material-symbols-outlined">edit</span>
+          </button>
+
+          <button type="button" className="btn btn-outline-secondary bg-transparent ms-2">
+            <span className="fs-5 material-symbols-outlined">add</span>
+          </button>
+        </div>
+
+        <div className="text-muted mb-4">
+          ここに設定したアシスタントの説明が入ります。ここに設定したアシスタントの説明が入ります。
+        </div>
+
+        <div className="mb-4">
+          <p className="mb-2">アシスタントへの指示</p>
+          <div className="p-3 alert alert-primary">
+            <p className="mb-0 text-break">
+              あなたは生成AIの専門家および、リサーチャーです。ナレッジベースのWikiツールである GROWIのAI機能に関する情報を提示したり、使われている技術に関する説明をしたりします。
+            </p>
+          </div>
+        </div>
+
+        <div className="d-flex align-items-center mb-2">
+          <p className="mb-0">参照するページ</p>
+          <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
+        </div>
+        <SelectedPageList selectedPages={[
+          { page: { _id: '1', path: '/Project/GROWI/新機能/GROWI AI' }, isIncludeSubPage: true },
+          { page: { _id: '2', path: '/AI導入検討/調査' }, isIncludeSubPage: false },
+        ]}
+        />
+
+        <div className="vstack gap-4 pb-2">
           { messageLogs.map(message => (
             <MessageCard key={message.id} role={message.isUserMessage ? 'user' : 'assistant'}>{message.content}</MessageCard>
           )) }
@@ -315,7 +355,7 @@ export const AiChatModal = (): JSX.Element => {
     <Modal size="lg" isOpen={isOpened} toggle={closeRagSearchModal} className={moduleClass} scrollable>
 
       <ModalHeader tag="h4" toggle={closeRagSearchModal} className="pe-4">
-        <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">knowledge_assistant</span>
+        <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
         <span className="fw-bold">{t('modal_aichat.title')}</span>
         <span className="fs-5 text-body-secondary ms-3">{t('modal_aichat.title_beta_label')}</span>
       </ModalHeader>
