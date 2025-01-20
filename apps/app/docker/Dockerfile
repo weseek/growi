@@ -71,6 +71,9 @@ ENV NODE_ENV="production"
 ENV optDir=/opt
 ENV appDir=${optDir}/growi
 
+# create shared directory for bulk export and set permission
+RUN mkdir -p /tmp/page-bulk-export && chown -R node:node /tmp/page-bulk-export && chmod 700 /tmp/page-bulk-export
+
 # Add gosu
 # see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
 RUN set -eux; \
