@@ -34,3 +34,5 @@ export interface AiAssistant {
   shareScope: AiAssistantShareScope
   accessScope: AiAssistantAccessScope
 }
+
+export type IApiv3AiAssistantCreateParams = Omit<AiAssistant, 'owner' | 'vectorStore'>

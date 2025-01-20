@@ -5,16 +5,22 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input,
 } from 'reactstrap';
 
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IPageForItem } from '~/interfaces/page';
 import { usePageSelectModal } from '~/stores/modal';
+import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../interfaces/selected-page';
+import { createAiAssistant } from '../../services/ai-assistant';
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 import { SelectedPageList } from '../Common/SelectedPageList';
+
 
 import styles from './AiAssistantManegementModal.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
+
+const logger = loggerFactory('growi:openai:client:components:AiAssistantManegementModal');
 
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
   const { open: openPageSelectModal } = usePageSelectModal();
@@ -36,6 +42,27 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
     setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
   }, [selectedPages]);
 
+  const clickCreateAiAssistantHandler = useCallback(async() => {
+    try {
+      const pagePathPatterns = selectedPages
+        .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
+        .filter((path): path is string => path !== undefined && path !== null);
+
+      await createAiAssistant({
+        name: 'test',
+        description: 'test',
+        additionalInstruction: 'test',
+        pagePathPatterns,
+        shareScope: 'publicOnly',
+        accessScope: 'publicOnly',
+      });
+      toastSuccess('アシスタントを作成しました');
+    }
+    catch (err) {
+      toastError('アシスタントの作成に失敗しました');
+      logger.error(err);
+    }
+  }, [selectedPages]);
 
   return (
     <div className="px-4">
@@ -136,7 +163,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 
       <ModalFooter className="border-0 pt-0 mb-3">
         <button type="button" className="btn btn-outline-secondary" onClick={() => {}}>キャンセル</button>
-        <button type="button" className="btn btn-primary" onClick={() => {}}>作成</button>
+        <button type="button" className="btn btn-primary" onClick={clickCreateAiAssistantHandler}>作成</button>
       </ModalFooter>
     </div>
   );

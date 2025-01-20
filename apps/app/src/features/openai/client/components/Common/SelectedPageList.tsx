@@ -1,10 +1,16 @@
+import type { FC } from 'react';
 import { memo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import type { SelectedPage } from '../../../interfaces/selected-page';
 
-export const SelectedPageList = memo(({ selectedPages, onRemove }: { selectedPages: SelectedPage[], onRemove?: (pageId?: string) => void }): JSX.Element => {
+type SelectedPageListProps = {
+  selectedPages: SelectedPage[];
+  onRemove?: (pageId?: string) => void;
+};
+
+const SelectedPageListBase: FC<SelectedPageListProps> = ({ selectedPages, onRemove }) => {
   const { t } = useTranslation();
 
   if (selectedPages.length === 0) {
@@ -26,4 +32,6 @@ export const SelectedPageList = memo(({ selectedPages, onRemove }: { selectedPag
       ))}
     </div>
   );
-});
+};
+
+export const SelectedPageList = memo(SelectedPageListBase);
