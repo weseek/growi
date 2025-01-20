@@ -2,7 +2,7 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import { PageGrant, isPopulated } from '@growi/core';
+import { PageGrant, getIdForRef, isPopulated } from '@growi/core';
 import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { HydratedDocument, Types } from 'mongoose';
@@ -10,6 +10,7 @@ import mongoose from 'mongoose';
 import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
 import VectorStoreModel, { type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
 import VectorStoreFileRelationModel, {
@@ -17,12 +18,13 @@ import VectorStoreFileRelationModel, {
   prepareVectorStoreFileRelations,
 } from '~/features/openai/server/models/vector-store-file-relation';
 import type { PageDocument, PageModel } from '~/server/models/page';
+import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
-import { type AiAssistant } from '../../interfaces/ai-assistant';
+import { type AiAssistant, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 
@@ -419,15 +421,75 @@ class OpenaiService implements IOpenaiService {
     await pipeline(pagesStream, batchStream, createVectorStoreFileStream);
   }
 
+  private async createConditionForCreateAiAssistant(
+      owner: AiAssistant['owner'],
+      accessScope: AiAssistant['accessScope'],
+      grantedGroups: AiAssistant['grantedGroups'],
+      pagePathPatterns: AiAssistant['pagePathPatterns'],
+  ): Promise<mongoose.FilterQuery<PageDocument>> {
+    const converterdPagePatgPatterns = convertPathPatternsToRegExp(pagePathPatterns);
+
+    if (accessScope === AiAssistantAccessScope.PUBLIC_ONLY) {
+      return {
+        grant: PageGrant.GRANT_PUBLIC,
+        path: { $in: converterdPagePatgPatterns },
+      };
+    }
+
+    if (accessScope === AiAssistantAccessScope.GROUPS) {
+      if (grantedGroups == null || grantedGroups.length === 0) {
+        throw new Error('grantedGroups is required when accessScope is GROUPS');
+      }
+
+      const extractedGrantedGroupIds = grantedGroups.map(group => getIdForRef(group.item).toString());
+      const extractedOwnerGroupIds = [
+        ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+        ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+      ].map(group => group.toString());
+
+      // Check if the owner belongs to the group specified in grantedGroups
+      const isValid = extractedGrantedGroupIds.every(groupId => extractedOwnerGroupIds.includes(groupId));
+      if (!isValid) {
+        throw new Error('A group to which the owner does not belong is specified.');
+      }
+
+      return {
+        grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP] },
+        path: { $in: converterdPagePatgPatterns },
+        $or: [
+          { 'grantedGroups.item': { $in: extractedGrantedGroupIds } },
+          { grant: PageGrant.GRANT_PUBLIC },
+        ],
+      };
+    }
+
+    if (accessScope === AiAssistantAccessScope.OWNER) {
+      const ownerUserGroup = [
+        ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+        ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+      ].map(group => group.toString());
+
+      return {
+        grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP, PageGrant.GRANT_OWNER] },
+        path: { $in: converterdPagePatgPatterns },
+        $or: [
+          { 'grantedGroups.item': { $in: ownerUserGroup } },
+          { grantedUsers: { $in: [getIdForRef(owner)] } },
+          { grant: PageGrant.GRANT_PUBLIC },
+        ],
+      };
+    }
+
+    throw new Error('Invalid accessScope value');
+  }
+
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
+    const conditions = await this.createConditionForCreateAiAssistant(data.owner, data.accessScope, data.grantedGroups, data.pagePathPatterns);
+
     const vectorStoreRelation = await this.createVectorStore(data.name);
     const aiAssistant = await AiAssistantModel.create({
       ...data, vectorStore: vectorStoreRelation,
     });
-
-    const conditions = {
-      path: { $in: convertPathPatternsToRegExp(data.pagePathPatterns) },
-    };
 
     // VectorStore creation process does not await
     this.createVectorStoreFileWithStream(vectorStoreRelation, conditions);
