@@ -408,8 +408,7 @@ class OpenaiService implements IOpenaiService {
       objectMode: true,
       async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
         try {
-          // await createVectorStoreFile(vectorStoreRelation, chunk);
-          console.log(chunk.map(page => page.path));
+          await createVectorStoreFile(vectorStoreRelation, chunk);
           this.push(chunk);
           callback();
         }
