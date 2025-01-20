@@ -10,6 +10,7 @@ import mongoose from 'mongoose';
 import type OpenAI from 'openai';
 import { toFile } from 'openai';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
 import VectorStoreModel, { type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
 import VectorStoreFileRelationModel, {
@@ -17,7 +18,7 @@ import VectorStoreFileRelationModel, {
   prepareVectorStoreFileRelations,
 } from '~/features/openai/server/models/vector-store-file-relation';
 import type { PageDocument, PageModel } from '~/server/models/page';
-import userGroupRelation from '~/server/models/user-group-relation';
+import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -407,7 +408,8 @@ class OpenaiService implements IOpenaiService {
       objectMode: true,
       async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
         try {
-          await createVectorStoreFile(vectorStoreRelation, chunk);
+          // await createVectorStoreFile(vectorStoreRelation, chunk);
+          console.log(chunk.map(page => page.path));
           this.push(chunk);
           callback();
         }
@@ -441,7 +443,10 @@ class OpenaiService implements IOpenaiService {
       }
 
       const extractedGrantedGroupIds = grantedGroups.map(group => getIdForRef(group.item).toString());
-      const extractedOwnerGroupIds = (await userGroupRelation.findAllUserGroupIdsRelatedToUser(owner)).map(group => group.toString());
+      const extractedOwnerGroupIds = [
+        ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+        ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+      ].map(group => group.toString());
 
       // Check if the owner belongs to the group specified in grantedGroups
       const isValid = extractedGrantedGroupIds.every(groupId => extractedOwnerGroupIds.includes(groupId));
@@ -460,12 +465,16 @@ class OpenaiService implements IOpenaiService {
     }
 
     if (accessScope === AiAssistantAccessScope.OWNER) {
-      const extractedOwnerGroupIds = (await userGroupRelation.findAllUserGroupIdsRelatedToUser(owner)).map(group => group.toString());
+      const ownerUserGroup = [
+        ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+        ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+      ].map(group => group.toString());
+
       return {
         grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP, PageGrant.GRANT_OWNER] },
         path: { $in: converterdPagePatgPatterns },
         $or: [
-          { 'grantedGroups.item': { $in: extractedOwnerGroupIds } },
+          { 'grantedGroups.item': { $in: ownerUserGroup } },
           { grantedUsers: { $in: [getIdForRef(owner)] } },
           { grant: PageGrant.GRANT_PUBLIC },
         ],
