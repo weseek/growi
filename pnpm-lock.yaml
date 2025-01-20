@@ -960,7 +960,7 @@ importers:
         version: 6.1.4(@tsed/platform-http@8.3.5(@tsed/engines@8.3.5)(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5))(@tsed/swagger@8.3.5(@tsed/platform-http@8.3.5(@tsed/engines@8.3.5)(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5)))
       '@tsed/common':
         specifier: '=8.3.5'
-        version: 8.3.5(@tsed/engines@8.3.5)(@tsed/logger-file@6.7.8(@tsed/logger@7.0.1))(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5)
+        version: 8.3.5(@tsed/engines@8.3.5)(@tsed/logger-file@7.0.1(@tsed/logger@7.0.1))(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5)
       '@tsed/components-scan':
         specifier: '=8.3.5'
         version: 8.3.5(@tsed/core@8.3.5)
@@ -979,6 +979,9 @@ importers:
       '@tsed/json-mapper':
         specifier: '=8.3.5'
         version: 8.3.5(@tsed/core@8.3.5)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5))
+      '@tsed/logger':
+        specifier: '>=7.0.1'
+        version: 7.0.1
       '@tsed/platform-express':
         specifier: '=8.3.5'
         version: 8.3.5(@tsed/core@8.3.5)(@tsed/di@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/json-mapper@8.3.5(@tsed/core@8.3.5)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5)(@tsed/platform-http@8.3.5(@tsed/engines@8.3.5)(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5))(@tsed/platform-views@8.3.5(@tsed/core@8.3.5)(@tsed/di@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/logger@7.0.1)(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/engines@8.3.5)(@tsed/exceptions@8.3.5(@tsed/core@8.3.5))(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)))(@tsed/schema@8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5))(@types/multer@1.4.12)(body-parser@1.20.3)(cross-env@7.0.0)(multer@1.4.4)
@@ -1332,6 +1335,9 @@ importers:
       axios:
         specifier: ^0.24.0
         version: 0.24.0
+      tslib:
+        specifier: ^2.8.0
+        version: 2.8.0
     devDependencies:
       orval:
         specifier: '=7.2.0'
@@ -4598,10 +4604,10 @@ packages:
       '@tsed/core': 8.3.5
       '@tsed/schema': 8.3.5
 
-  '@tsed/logger-file@6.7.8':
-    resolution: {integrity: sha512-xOZtTia2ipZRSdaRcOeCSajfYHV+FvTxvtmtiu1gP9l7tvtsAS7TZ3e6XY0LsFZdv/3Eor7n1jVdaEKZYznMwA==}
+  '@tsed/logger-file@7.0.1':
+    resolution: {integrity: sha512-F2eDpqMMXi3rcUUhORrbLoLzIML7r9hb2eBqTQcmbv5C6+teAhBmgyyPj5kuQvYDyA7ZXLAVsZs1DvKogvvgxA==}
     peerDependencies:
-      '@tsed/logger': 6.7.8
+      '@tsed/logger': 7.0.1
 
   '@tsed/logger@5.17.0':
     resolution: {integrity: sha512-co8DdRgtQaisudEQFP2/7y/ji9bnB9QrJYfEr0SEqdHIBJdwuq8joo2vyfOY8ht/w5LOcqo2NVebtwULSsD9Pg==}
@@ -18546,10 +18552,10 @@ snapshots:
       - walrus
       - whiskers
 
-  '@tsed/common@8.3.5(@tsed/engines@8.3.5)(@tsed/logger-file@6.7.8(@tsed/logger@7.0.1))(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5)':
+  '@tsed/common@8.3.5(@tsed/engines@8.3.5)(@tsed/logger-file@7.0.1(@tsed/logger@7.0.1))(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5)':
     dependencies:
       '@tsed/logger': 7.0.1
-      '@tsed/logger-file': 6.7.8(@tsed/logger@7.0.1)
+      '@tsed/logger-file': 7.0.1(@tsed/logger@7.0.1)
       '@tsed/platform-http': 8.3.5(@tsed/engines@8.3.5)(@tsed/logger@7.0.1)(@tsed/openspec@8.3.5)
       tslib: 2.7.0
     transitivePeerDependencies:
@@ -18623,7 +18629,7 @@ snapshots:
       '@tsed/schema': 8.3.5(@tsed/core@8.3.5)(@tsed/hooks@8.3.5)(@tsed/openspec@8.3.5)
       tslib: 2.7.0
 
-  '@tsed/logger-file@6.7.8(@tsed/logger@7.0.1)':
+  '@tsed/logger-file@7.0.1(@tsed/logger@7.0.1)':
     dependencies:
       '@tsed/logger': 7.0.1
       streamroller: 3.1.5

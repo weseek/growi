@@ -1,5 +1,5 @@
-import { Logger } from '@tsed/common';
 import { Inject, Injectable } from '@tsed/di';
+import { Logger } from '@tsed/logger';
 
 import PdfConvertService from '../service/pdf-convert.js';
 
