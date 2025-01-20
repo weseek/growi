@@ -44,11 +44,15 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 
   const clickCreateAiAssistantHandler = useCallback(async() => {
     try {
+      const pagePathPatterns = selectedPages
+        .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
+        .filter((path): path is string => path !== undefined && path !== null);
+
       await createAiAssistant({
         name: 'test',
         description: 'test',
         additionalInstruction: 'test',
-        pagePathPatterns: ['/Sandbox'],
+        pagePathPatterns,
         shareScope: 'publicOnly',
         accessScope: 'publicOnly',
       });
@@ -58,7 +62,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
       toastError('アシスタントの作成に失敗しました');
       logger.error(err);
     }
-  }, []);
+  }, [selectedPages]);
 
   return (
     <div className="px-4">
