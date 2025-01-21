@@ -408,6 +408,7 @@ class OpenaiService implements IOpenaiService {
       objectMode: true,
       async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
         try {
+          logger.debug('Search results of page paths', chunk.map(page => page.path));
           await createVectorStoreFile(vectorStoreRelation, chunk);
           this.push(chunk);
           callback();
@@ -429,10 +430,22 @@ class OpenaiService implements IOpenaiService {
   ): Promise<mongoose.FilterQuery<PageDocument>> {
     const converterdPagePatgPatterns = convertPathPatternsToRegExp(pagePathPatterns);
 
+    // Include pages in search targets when their paths with 'Anyone with the link' permission are directly specified instead of using glob pattern
+    const nonGrabPagePathPatterns = pagePathPatterns.filter(pagePathPattern => !isGrobPatternPath(pagePathPattern));
+    const baseCondition: mongoose.FilterQuery<PageDocument> = {
+      grant: PageGrant.GRANT_RESTRICTED,
+      path: nonGrabPagePathPatterns,
+    };
+
     if (accessScope === AiAssistantAccessScope.PUBLIC_ONLY) {
       return {
-        grant: PageGrant.GRANT_PUBLIC,
-        path: { $in: converterdPagePatgPatterns },
+        $or: [
+          baseCondition,
+          {
+            grant: PageGrant.GRANT_PUBLIC,
+            path: { $in: converterdPagePatgPatterns },
+          },
+        ],
       };
     }
 
@@ -454,11 +467,16 @@ class OpenaiService implements IOpenaiService {
       }
 
       return {
-        grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP] },
-        path: { $in: converterdPagePatgPatterns },
         $or: [
-          { 'grantedGroups.item': { $in: extractedGrantedGroupIds } },
-          { grant: PageGrant.GRANT_PUBLIC },
+          baseCondition,
+          {
+            grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP] },
+            path: { $in: converterdPagePatgPatterns },
+            $or: [
+              { 'grantedGroups.item': { $in: extractedGrantedGroupIds } },
+              { grant: PageGrant.GRANT_PUBLIC },
+            ],
+          },
         ],
       };
     }
@@ -470,12 +488,17 @@ class OpenaiService implements IOpenaiService {
       ].map(group => group.toString());
 
       return {
-        grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP, PageGrant.GRANT_OWNER] },
-        path: { $in: converterdPagePatgPatterns },
         $or: [
-          { 'grantedGroups.item': { $in: ownerUserGroup } },
-          { grantedUsers: { $in: [getIdForRef(owner)] } },
-          { grant: PageGrant.GRANT_PUBLIC },
+          baseCondition,
+          {
+            grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP, PageGrant.GRANT_OWNER] },
+            path: { $in: converterdPagePatgPatterns },
+            $or: [
+              { 'grantedGroups.item': { $in: ownerUserGroup } },
+              { grantedUsers: { $in: [getIdForRef(owner)] } },
+              { grant: PageGrant.GRANT_PUBLIC },
+            ],
+          },
         ],
       };
     }
