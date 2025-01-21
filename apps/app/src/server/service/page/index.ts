@@ -38,9 +38,8 @@ import {
 import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
-import type { CreateMethod } from '~/server/models/page';
 import {
-  type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
+  type PageModel, type PageDocument, type CreateMethod, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
