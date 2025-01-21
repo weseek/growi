@@ -187,6 +187,16 @@ export const CONFIG_KEYS = [
   // GridFS Settings
   'gridfs:totalLimit',
 
+  // Mail Settings
+  'mail:from',
+  'mail:transmissionMethod',
+  'mail:smtpHost',
+  'mail:smtpPort',
+  'mail:smtpUser',
+  'mail:smtpPassword',
+  'mail:sesSecretAccessKey',
+  'mail:sesAccessKeyId',
+
   // Customize Settings
   'customize:isEmailPublishedForNewUser',
   'customize:css',
@@ -872,6 +882,31 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: undefined,
   }),
 
+  // Mail Settings
+  'mail:from': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:transmissionMethod': defineConfig<'smtp' | 'ses' | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:smtpHost': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:smtpPort': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:smtpUser': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:smtpPassword': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:sesAccessKeyId': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:sesSecretAccessKey': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
 
   // Customize Settings
   'customize:isEmailPublishedForNewUser': defineConfig<boolean>({

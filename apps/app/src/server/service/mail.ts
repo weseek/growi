@@ -8,6 +8,8 @@ import loggerFactory from '~/utils/logger';
 import S2sMessage from '../models/vo/s2s-message';
 
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
+import type { IConfigManagerForApp } from './config-manager';
+import type Crowi from '../crowi';
 
 const logger = loggerFactory('growi:service:mail');
 
@@ -23,7 +25,7 @@ class MailService implements S2sMessageHandlable {
 
   appService!: any;
 
-  configManager!: any;
+  configManager: IConfigManagerForApp;
 
   s2sMessagingService!: any;
 
@@ -38,7 +40,7 @@ class MailService implements S2sMessageHandlable {
    */
   isMailerSetup = false;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.appService = crowi.appService;
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
