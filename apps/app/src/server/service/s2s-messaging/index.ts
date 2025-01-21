@@ -1,6 +1,7 @@
+import type Crowi from '~/server/crowi';
 import loggerFactory from '~/utils/logger';
 
-import { S2sMessagingService } from './base';
+import type { S2sMessagingService } from './base';
 
 const logger = loggerFactory('growi:service:s2s-messaging:S2sMessagingServiceFactory');
 
@@ -42,7 +43,7 @@ class S2sMessagingServiceFactory {
 
   delegator!: S2sMessagingService;
 
-  initializeDelegator(crowi) {
+  initializeDelegator(crowi: Crowi) {
     const type = crowi.configManager.getConfig('s2sMessagingPubsub:serverType');
 
     if (type == null) {
@@ -63,7 +64,7 @@ class S2sMessagingServiceFactory {
     }
   }
 
-  getDelegator(crowi) {
+  getDelegator(crowi: Crowi) {
     if (this.delegator == null) {
       this.initializeDelegator(crowi);
     }
@@ -74,6 +75,6 @@ class S2sMessagingServiceFactory {
 
 const factory = new S2sMessagingServiceFactory();
 
-module.exports = (crowi) => {
+module.exports = (crowi: Crowi) => {
   return factory.getDelegator(crowi);
 };
