@@ -1,4 +1,4 @@
-import type { IUserGroupRelation, IUserHasId } from '@growi/core';
+import type { IGrantedGroup, IUserHasId } from '@growi/core';
 import type { SWRResponse } from 'swr';
 import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -51,7 +51,7 @@ export const useSWRxUsernames = (q: string, offset?: number, limit?: number, opt
 };
 
 type RelatedGroupsResponse = {
-  relatedGroups: IUserGroupRelation[],
+  relatedGroups: IGrantedGroup[]
 }
 
 export const useSWRxUserRelatedGroups = (): SWRResponse<RelatedGroupsResponse, Error> => {
