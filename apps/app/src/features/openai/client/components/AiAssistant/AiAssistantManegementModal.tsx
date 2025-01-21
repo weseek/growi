@@ -8,7 +8,6 @@ import {
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IPageForItem } from '~/interfaces/page';
 import { usePageSelectModal } from '~/stores/modal';
-import { useSWRxUserRelatedGroups } from '~/stores/user';
 import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../interfaces/selected-page';
@@ -16,6 +15,7 @@ import { createAiAssistant } from '../../services/ai-assistant';
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 import { SelectedPageList } from '../Common/SelectedPageList';
 
+import { ShareScopeDropdown } from './ShareScopeDropdown';
 
 import styles from './AiAssistantManegementModal.module.scss';
 
@@ -28,7 +28,6 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
   *  stores
   */
   const { open: openPageSelectModal } = usePageSelectModal();
-  const { data: userRelatedGroups } = useSWRxUserRelatedGroups();
 
   /*
   * States
@@ -116,10 +115,9 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               <Label className="mb-0">共有範囲</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
-            <Input type="select" className="border rounded w-50">
-              <option>自分のみ</option>
-            </Input>
+            <ShareScopeDropdown />
           </FormGroup>
+
 
           <FormGroup className="mb-4">
             <div className="d-flex align-items-center mb-2">
