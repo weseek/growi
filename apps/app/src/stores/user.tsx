@@ -1,4 +1,4 @@
-import type { IUserHasId } from '@growi/core';
+import type { IUserGroupRelation, IUserHasId } from '@growi/core';
 import type { SWRResponse } from 'swr';
 import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -47,5 +47,16 @@ export const useSWRxUsernames = (q: string, offset?: number, limit?: number, opt
     ([endpoint, q, offset, limit, options]) => apiv3Get(endpoint, {
       q, offset, limit, options,
     }).then(result => result.data),
+  );
+};
+
+type RelatedGroupsResponse = {
+  relatedGroups: IUserGroupRelation[],
+}
+
+export const useSWRxUserRelatedGroups = (): SWRResponse<RelatedGroupsResponse, Error> => {
+  return useSWRImmutable<RelatedGroupsResponse>(
+    ['/user/related-groups'],
+    ([endpoint]) => apiv3Get(endpoint).then(response => response.data),
   );
 };

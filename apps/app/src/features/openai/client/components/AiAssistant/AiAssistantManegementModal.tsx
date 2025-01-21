@@ -8,6 +8,7 @@ import {
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IPageForItem } from '~/interfaces/page';
 import { usePageSelectModal } from '~/stores/modal';
+import { useSWRxUserRelatedGroups } from '~/stores/user';
 import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../interfaces/selected-page';
@@ -23,9 +24,21 @@ const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 const logger = loggerFactory('growi:openai:client:components:AiAssistantManegementModal');
 
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
+  /*
+  *  stores
+  */
   const { open: openPageSelectModal } = usePageSelectModal();
+  const { data: userRelatedGroups } = useSWRxUserRelatedGroups();
+
+  /*
+  * States
+  */
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
 
+
+  /*
+  *  Methods
+  */
   const clickOpenPageSelectModalHandler = useCallback(() => {
     const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
       const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
