@@ -41,7 +41,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     publishOpen();
   };
 
-  const renderActionUserPictures = (): JSX.Element => {
+  const renderActionUserPictures = (): React.ReactElement => {
     const actionUsers = notification.actionUsers;
 
     if (actionUsers.length < 1) {

@@ -27,7 +27,7 @@ type Props = {
   onToggleIsAlsoNameSearched: () => void,
 }
 
-const UserGroupUserModal = (props: Props): JSX.Element => {
+const UserGroupUserModal = (props: Props): React.ReactElement => {
   const { t } = useTranslation();
   const {
     isOpen,

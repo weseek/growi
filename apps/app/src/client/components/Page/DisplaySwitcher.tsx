@@ -12,7 +12,7 @@ const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
 const PageEditorReadOnly = dynamic(() => import('../PageEditor/PageEditorReadOnly').then(mod => mod.PageEditorReadOnly), { ssr: false });
 
 
-export const DisplaySwitcher = (): JSX.Element => {
+export const DisplaySwitcher = (): React.ReactElement => {
 
   const { data: editorMode = EditorMode.View } = useEditorMode();
   const { data: isEditable } = useIsEditable();

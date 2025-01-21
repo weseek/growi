@@ -31,7 +31,7 @@ type Props = {
   onRenameTerminated?: () => void,
 }
 
-export const PagePathHeader = memo((props: Props): JSX.Element => {
+export const PagePathHeader = memo((props: Props): React.ReactElement => {
   const { t } = useTranslation();
   const {
     currentPage, className, maxWidth, onRenameTerminated,

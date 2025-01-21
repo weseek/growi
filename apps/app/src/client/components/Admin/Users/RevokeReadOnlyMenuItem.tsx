@@ -11,7 +11,7 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 const RevokeReadOnlyMenuItem: React.FC<{
   adminUsersContainer: AdminUsersContainer,
   user: IUserHasId,
-}> = ({ adminUsersContainer, user }): JSX.Element => {
+}> = ({ adminUsersContainer, user }): React.ReactElement => {
   const { t } = useTranslation('admin');
 
   const clickRevokeReadOnlyBtnHandler = useCallback(async() => {

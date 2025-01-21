@@ -15,7 +15,7 @@ type Props = {
   children?: ReactNode
 }
 
-export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
+export const ShareLinkLayout = ({ children }: Props): React.ReactElement => {
   return (
     <RawLayout>
 

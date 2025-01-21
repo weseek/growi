@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { useIsEnabledStaleNotification } from '~/stores-universal/context';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
-export const PageStaleAlert = ():JSX.Element => {
+export const PageStaleAlert = (): React.ReactElement => {
   const { t } = useTranslation();
   const { data: isEnabledStaleNotification } = useIsEnabledStaleNotification();
 

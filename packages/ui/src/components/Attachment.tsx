@@ -10,7 +10,7 @@ type AttachmentProps = {
   isUserLoggedIn?: boolean,
 };
 
-export const Attachment = (props: AttachmentProps): JSX.Element => {
+export const Attachment = (props: AttachmentProps): React.ReactElement => {
 
   const {
     attachment, inUse, isUserLoggedIn, onAttachmentDeleteClicked,

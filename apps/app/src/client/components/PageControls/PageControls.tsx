@@ -51,7 +51,7 @@ type TagsProps = {
   onClickEditTagsButton: () => void,
 }
 
-const Tags = (props: TagsProps): JSX.Element => {
+const Tags = (props: TagsProps): React.ReactElement => {
   const { onClickEditTagsButton } = props;
   const { t } = useTranslation();
 
@@ -74,7 +74,7 @@ type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
   expandContentWidth?: boolean,
 }
 
-const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
+const WideViewMenuItem = (props: WideViewMenuItemProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const {
@@ -121,7 +121,7 @@ type PageControlsSubstanceProps = CommonProps & {
   onClickEditTagsButton: () => void,
 }
 
-const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element => {
+const PageControlsSubstance = (props: PageControlsSubstanceProps): React.ReactElement => {
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
@@ -348,7 +348,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
 type PageControlsProps = CommonProps;
 
-export const PageControls = memo((props: PageControlsProps): JSX.Element => {
+export const PageControls = memo((props: PageControlsProps): React.ReactElement => {
   const {
     pageId, revisionId, shareLinkId,
     ...rest

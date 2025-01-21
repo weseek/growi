@@ -6,7 +6,7 @@ import {
 import { pagePathUtils } from '@growi/core/dist/utils';
 import Link from 'next/link';
 
-export const Username: React.FC<{ user?: IUserHasId | Ref<IUser> }> = ({ user }): JSX.Element => {
+export const Username: React.FC<{ user?: IUserHasId | Ref<IUser> }> = ({ user }): React.ReactElement => {
 
   if (user == null || !isPopulated(user)) {
     return <i>(anyone)</i>;

@@ -19,7 +19,7 @@ type Props = {
 export const ExtractedAttachments = React.memo(({
   attachments,
   refsContext,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
 
   // const [showCarousel, setShowCarousel] = useState(false);
   // const [currentIndex, setCurrentIndex] = useState<number | null>(null);

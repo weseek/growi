@@ -14,7 +14,7 @@ type RevokeAdminButtonProps = {
   user: IUserHasId,
 }
 
-const RevokeAdminButton = (props: RevokeAdminButtonProps): JSX.Element => {
+const RevokeAdminButton = (props: RevokeAdminButtonProps): React.ReactElement => {
 
   const { t } = useTranslation('admin');
   const { data: currentUser } = useCurrentUser();

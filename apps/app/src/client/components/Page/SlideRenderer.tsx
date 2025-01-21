@@ -9,7 +9,7 @@ type SlideRendererProps = {
   marp?: boolean,
 };
 
-export const SlideRenderer = (props: SlideRendererProps): JSX.Element => {
+export const SlideRenderer = (props: SlideRendererProps): React.ReactElement => {
 
   const { markdown, marp = false } = props;
 

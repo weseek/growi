@@ -17,7 +17,7 @@ const IGNORED_COLLECTION_NAMES = [
   'sessions', 'rlflx', 'yjs-writings', 'transferkeys',
 ];
 
-const ExportArchiveDataPage = (): JSX.Element => {
+const ExportArchiveDataPage = (): React.ReactElement => {
   const { data: socket } = useAdminSocket();
   const { t } = useTranslation('admin');
 

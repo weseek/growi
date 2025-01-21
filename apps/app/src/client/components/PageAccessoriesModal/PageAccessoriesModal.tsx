@@ -26,7 +26,7 @@ const PageHistory = dynamic(() => import('./PageHistory').then(mod => mod.PageHi
 const ShareLink = dynamic(() => import('./ShareLink').then(mod => mod.ShareLink), { ssr: false });
 
 
-export const PageAccessoriesModal = (): JSX.Element => {
+export const PageAccessoriesModal = (): React.ReactElement => {
 
   const { t } = useTranslation();
 

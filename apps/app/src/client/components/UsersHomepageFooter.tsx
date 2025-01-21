@@ -13,7 +13,7 @@ type UsersHomepageFooterProps = {
   creatorId: string;
 };
 
-export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Element => {
+export const UsersHomepageFooter = (props: UsersHomepageFooterProps): React.ReactElement => {
   const { t } = useTranslation();
   const { creatorId } = props;
   const [isExpanded, setIsExpanded] = useState<boolean>(false);

@@ -16,7 +16,7 @@ type Props = {
   adminCustomizeContainer: AdminCustomizeContainer
 }
 
-const CustomizeFunctionSetting = (props: Props): JSX.Element => {
+const CustomizeFunctionSetting = (props: Props): React.ReactElement => {
 
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();

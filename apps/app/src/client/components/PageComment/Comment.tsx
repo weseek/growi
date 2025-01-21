@@ -35,7 +35,7 @@ type CommentProps = {
   onComment: () => void,
 }
 
-export const Comment = (props: CommentProps): JSX.Element => {
+export const Comment = (props: CommentProps): React.ReactElement => {
 
   const {
     comment, rendererOptions, revisionId, revisionCreatedAt, currentUser, isReadOnly,

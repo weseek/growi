@@ -10,7 +10,7 @@ type Props = {
   onDeleteButtonClicked?: (slackAppIntegration: unknown) => void,
 }
 
-export const SlackAppIntegrationControl = (props: Props): JSX.Element => {
+export const SlackAppIntegrationControl = (props: Props): React.ReactElement => {
   const { t } = useTranslation();
 
   const { slackAppIntegration, onIsPrimaryChanged, onDeleteButtonClicked } = props;

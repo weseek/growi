@@ -30,7 +30,7 @@ type Props = {
   onMoveTerminated?: () => void,
 };
 
-export const PageTitleHeader = (props: Props): JSX.Element => {
+export const PageTitleHeader = (props: Props): React.ReactElement => {
   const { t } = useTranslation();
   const { currentPage, maxWidth, onMoveTerminated } = props;
 

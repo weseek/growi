@@ -17,7 +17,7 @@ type Props = {
   onDelete: () => void,
 }
 
-export const PluginCard = (props: Props): JSX.Element => {
+export const PluginCard = (props: Props): React.ReactElement => {
 
   const {
     id, name, url, isEnabled, desc,
@@ -25,7 +25,7 @@ export const PluginCard = (props: Props): JSX.Element => {
 
   const { t } = useTranslation('admin');
 
-  const PluginCardButton = (): JSX.Element => {
+  const PluginCardButton = (): React.ReactElement => {
     const [_isEnabled, setIsEnabled] = useState<boolean>(isEnabled);
 
     const onChangeHandler = async() => {
@@ -68,7 +68,7 @@ export const PluginCard = (props: Props): JSX.Element => {
     );
   };
 
-  const PluginDeleteButton = (): JSX.Element => {
+  const PluginDeleteButton = (): React.ReactElement => {
 
     return (
       <div>

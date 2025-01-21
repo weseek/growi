@@ -13,7 +13,7 @@ export type SlidesProps = {
   presentation?: boolean,
 }
 
-export const Slides = (props: SlidesProps): JSX.Element => {
+export const Slides = (props: SlidesProps): React.ReactElement => {
   const {
     options, children, hasMarpFlag, presentation,
   } = props;

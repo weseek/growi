@@ -13,7 +13,7 @@ import Link from 'next/link';
 
 import styles from './AuthorInfo.module.scss';
 
-const UserLabel = ({ user }: { user: IUserHasId | Ref<IUser> }): JSX.Element => {
+const UserLabel = ({ user }: { user: IUserHasId | Ref<IUser> }): React.ReactElement => {
   if (isPopulated(user)) {
     return (
       <Link href={pagePathUtils.userHomepagePath(user)} prefetch={false}>
@@ -33,7 +33,7 @@ type AuthorInfoProps = {
   locate: 'subnav' | 'footer',
 }
 
-export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
+export const AuthorInfo = (props: AuthorInfoProps): React.ReactElement => {
   const { t } = useTranslation();
   const {
     date, user, mode = 'create', locate = 'subnav',

@@ -14,7 +14,7 @@ type Props = {
   editorKey: string,
 }
 
-export const EmojiButton = (props: Props): JSX.Element => {
+export const EmojiButton = (props: Props): React.ReactElement => {
   const { editorKey } = props;
 
   const [isOpen, setIsOpen] = useState(false);

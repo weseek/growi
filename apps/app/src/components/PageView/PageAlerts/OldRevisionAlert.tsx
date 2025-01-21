@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useSWRxCurrentPage, useSWRMUTxCurrentPage, useIsLatestRevision } from '~/stores/page';
 
-export const OldRevisionAlert = (): JSX.Element => {
+export const OldRevisionAlert = (): React.ReactElement => {
   const router = useRouter();
   const { t } = useTranslation();
 
