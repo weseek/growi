@@ -4,7 +4,7 @@ import { Skeleton } from '~/client/components/Skeleton';
 
 import styles from './DefaultContentSkelton.module.scss';
 
-const DefaultContentSkeleton = (): JSX.Element => {
+const DefaultContentSkeleton = (): React.ReactElement => {
 
   return (
     <div className={`py-3 grw-default-content-skelton ${styles['grw-default-content-skelton']}`}>

@@ -15,7 +15,7 @@ export type AwsSettingMoleculeProps = {
   onChangeS3SecretAccessKey: (val: string) => void
 };
 
-export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element => {
+export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): React.ReactElement => {
   const { t } = useTranslation();
 
   return (

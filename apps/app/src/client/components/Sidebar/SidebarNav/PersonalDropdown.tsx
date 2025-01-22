@@ -19,7 +19,7 @@ import styles from './PersonalDropdown.module.scss';
 
 const ProactiveQuestionnaireModal = dynamic(() => import('~/features/questionnaire/client/components/ProactiveQuestionnaireModal'), { ssr: false });
 
-export const PersonalDropdown = (): JSX.Element => {
+export const PersonalDropdown = (): React.ReactElement => {
   const { t } = useTranslation('commons');
   const { data: currentUser } = useCurrentUser();
 

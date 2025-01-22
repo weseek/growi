@@ -8,7 +8,7 @@ import styles from './DropendToggle.module.scss';
 const moduleClass = styles['btn-toggle'];
 
 
-export const DropendToggle = (): JSX.Element => {
+export const DropendToggle = (): React.ReactElement => {
   return (
     <DropdownToggle
       color="primary"

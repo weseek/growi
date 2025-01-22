@@ -20,7 +20,7 @@ type Props = {
   tagsElementHeight?: number
 }
 
-const TableOfContents = ({ tagsElementHeight }: Props): JSX.Element => {
+const TableOfContents = ({ tagsElementHeight }: Props): React.ReactElement => {
   const { data: currentPagePath } = useCurrentPagePath();
 
   const isUsersHomePage = currentPagePath != null && _isUsersHomepage(currentPagePath);

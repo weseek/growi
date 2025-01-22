@@ -16,7 +16,7 @@ const RefSubstance = React.memo(({
   fileNameOrId,
   pagePath,
   isImmutable,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
   const refsContext = useMemo(() => {
     return new RefsContext('ref', pagePath, { fileNameOrId });
   }, [fileNameOrId, pagePath]);
@@ -34,11 +34,11 @@ const RefSubstance = React.memo(({
   );
 });
 
-export const Ref = React.memo((props: Props): JSX.Element => {
+export const Ref = React.memo((props: Props): React.ReactElement => {
   return <RefSubstance {...props} />;
 });
 
-export const RefImmutable = React.memo((props: Omit<Props, 'isImmutable'>): JSX.Element => {
+export const RefImmutable = React.memo((props: Omit<Props, 'isImmutable'>): React.ReactElement => {
   return <RefSubstance {...props} isImmutable />;
 });
 

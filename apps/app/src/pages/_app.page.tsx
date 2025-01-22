@@ -36,7 +36,7 @@ type GrowiAppProps = AppProps & {
 // register custom serializer
 registerTransformerForObjectId();
 
-function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Element {
+function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): React.ReactElement {
   const router = useRouter();
 
   useEffect(() => {

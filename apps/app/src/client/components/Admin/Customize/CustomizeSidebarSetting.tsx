@@ -8,7 +8,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { useSWRxSidebarConfig } from '~/stores/admin/sidebar-config';
 
-const CustomizeSidebarsetting = (): JSX.Element => {
+const CustomizeSidebarsetting = (): React.ReactElement => {
   const { t } = useTranslation(['admin', 'commons']);
 
   const {

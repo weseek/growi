@@ -10,7 +10,7 @@ type Props = {
   tabIndex?: number | undefined
 };
 
-export default function MaskedInput(props: Props): JSX.Element {
+export default function MaskedInput(props: Props): React.ReactElement {
   const [passwordShown, setPasswordShown] = useState(false);
   const togglePassword = () => {
     setPasswordShown(!passwordShown);

@@ -34,7 +34,7 @@ type RevisioinDiffProps = {
   onClose: () => void,
 }
 
-export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
+export const RevisionDiff = (props: RevisioinDiffProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const {

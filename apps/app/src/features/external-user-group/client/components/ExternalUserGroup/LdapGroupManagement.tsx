@@ -39,7 +39,7 @@ export const LdapGroupManagement: FC = () => {
     }
   }, [isUserBind]);
 
-  const AdditionalForm = (): JSX.Element => {
+  const AdditionalForm = (): React.ReactElement => {
     return isUserBind ? (
       <div className="row form-group">
         <label htmlFor="ldapGroupSyncPassword" className="text-left text-md-right col-md-3 col-form-label">{t('external_user_group.ldap.password')}</label>

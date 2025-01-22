@@ -16,11 +16,11 @@ import styles from './PagePathNav.module.scss';
 const { isTrashPage } = pagePathUtils;
 
 
-const Separator = ({ className }: {className?: string}): JSX.Element => {
+const Separator = ({ className }: {className?: string}): React.ReactElement => {
   return <span className={`separator ${className ?? ''} ${styles['grw-mx-02em']}`}>/</span>;
 };
 
-export const PagePathNav = (props: PagePathNavLayoutProps): JSX.Element => {
+export const PagePathNav = (props: PagePathNavLayoutProps): React.ReactElement => {
   const { pagePath } = props;
 
   const isInTrash = isTrashPage(pagePath);

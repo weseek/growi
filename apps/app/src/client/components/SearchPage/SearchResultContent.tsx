@@ -47,7 +47,7 @@ type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   revisionId: string,
 }
 
-const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
+const AdditionalMenuItems = (props: AdditionalMenuItemsProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const { pageId, revisionId } = props;

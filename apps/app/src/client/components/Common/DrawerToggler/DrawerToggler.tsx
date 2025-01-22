@@ -13,7 +13,7 @@ type Props = {
   children?: ReactNode,
 }
 
-export const DrawerToggler = (props: Props): JSX.Element => {
+export const DrawerToggler = (props: Props): React.ReactElement => {
 
   const { className, children } = props;
 

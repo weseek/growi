@@ -34,7 +34,7 @@ const convertToIDataWithMeta = (page: IPageHasId): IDataWithMeta<IPageHasId> => 
   return { data: page };
 };
 
-const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
+const DescendantsPageListSubstance = (props: SubstanceProps): React.ReactElement => {
 
   const { t } = useTranslation();
 
@@ -128,7 +128,7 @@ export type DescendantsPageListProps = {
   forceHideMenuItems?: ForceHideMenuItems,
 }
 
-export const DescendantsPageList = (props: DescendantsPageListProps): JSX.Element => {
+export const DescendantsPageList = (props: DescendantsPageListProps): React.ReactElement => {
   const { path, limit, forceHideMenuItems } = props;
 
   const [activePage, setActivePage] = useState(1);

@@ -24,7 +24,7 @@ const useIsContainerFluid = () => {
   };
 };
 
-const CustomizeLayoutSetting = (): JSX.Element => {
+const CustomizeLayoutSetting = (): React.ReactElement => {
   const { t } = useTranslation('admin');
 
   const { resolvedTheme } = useNextThemes();

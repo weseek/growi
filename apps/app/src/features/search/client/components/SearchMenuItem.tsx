@@ -12,7 +12,7 @@ type Props = {
   children: React.ReactNode
 }
 
-export const SearchMenuItem = (props: Props): JSX.Element => {
+export const SearchMenuItem = (props: Props): React.ReactElement => {
   const {
     url, index, isActive, getItemProps, children,
   } = props;
