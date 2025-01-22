@@ -123,7 +123,7 @@ type GetAiAssistantsFactoryReq = Request<undefined, Response, undefined> & {
   user: IUserHasId,
 }
 
-export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
+export const getAccessibleAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
 
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
