@@ -526,9 +526,34 @@ class OpenaiService implements IOpenaiService {
   async getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants> {
     const myAiAssistants = await AiAssistantModel.find({ owner: user });
 
+    const userGroups = [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ].map(group => group.toString());
+
+    const teamAiAssistantsConditions: mongoose.FilterQuery<AiAssistantDocument> = {
+      $or: [
+        {
+          $and: [
+            { owner: { $ne: user } },
+            { accessScope: AiAssistantAccessScope.PUBLIC_ONLY },
+          ],
+        },
+        {
+          $and: [
+            { owner: { $ne: user } },
+            { accessScope: AiAssistantAccessScope.GROUPS },
+            { 'grantedGroups.item': { $in: userGroups } },
+          ],
+        },
+      ],
+    };
+
+    const teamAiAssistants = await AiAssistantModel.find(teamAiAssistantsConditions);
+
     return {
       myAiAssistants: myAiAssistants as AiAssistant[] ?? [],
-      teamAiAssistants: [],
+      teamAiAssistants: teamAiAssistants as AiAssistant[] ?? [],
     };
   }
 
