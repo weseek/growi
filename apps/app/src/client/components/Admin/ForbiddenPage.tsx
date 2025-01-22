@@ -4,7 +4,7 @@ import DefaultErrorPage from 'next/error';
 import { useTranslation } from 'react-i18next';
 
 
-export const ForbiddenPage = (): JSX.Element => {
+export const ForbiddenPage = (): React.ReactElement => {
   const { t } = useTranslation('admin');
 
   const errorMessage = t('forbidden_page.do_not_have_admin_permission');

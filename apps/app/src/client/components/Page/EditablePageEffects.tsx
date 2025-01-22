@@ -1,7 +1,7 @@
 import { usePageUpdatedEffect } from '~/client/services/side-effects/page-updated';
 import { useCurrentPageYjsDataEffect } from '~/client/services/side-effects/yjs';
 
-export const EditablePageEffects = (): JSX.Element => {
+export const EditablePageEffects = (): React.ReactElement => {
 
   usePageUpdatedEffect();
   useCurrentPageYjsDataEffect();

@@ -43,7 +43,7 @@ export type ContentLinkButtonsProps = {
   author?: IUserHasId,
 }
 
-export const ContentLinkButtons = (props: ContentLinkButtonsProps): JSX.Element => {
+export const ContentLinkButtons = (props: ContentLinkButtonsProps): React.ReactElement => {
   const { author } = props;
 
   if (author == null || author.status === USER_STATUS.DELETED) {

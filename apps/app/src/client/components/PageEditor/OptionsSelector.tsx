@@ -24,7 +24,7 @@ type RadioListItemProps = {
   checked?: boolean
 }
 
-const RadioListItem = (props: RadioListItemProps): JSX.Element => {
+const RadioListItem = (props: RadioListItemProps): React.ReactElement => {
   const {
     onClick, icon, text, checked,
   } = props;
@@ -48,10 +48,10 @@ const RadioListItem = (props: RadioListItemProps): JSX.Element => {
 type SelectorProps = {
   header: string,
   onClickBefore: () => void,
-  items: JSX.Element,
+  items: React.ReactElement,
 }
 
-const Selector = (props: SelectorProps): JSX.Element => {
+const Selector = (props: SelectorProps): React.ReactElement => {
 
   const { header, onClickBefore, items } = props;
   return (
@@ -87,7 +87,7 @@ const EDITORTHEME_LABEL_MAP: EditorThemeToLabel = {
   kimbie: 'Kimbie',
 };
 
-const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
+const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): React.ReactElement => {
 
   const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
@@ -122,7 +122,7 @@ const KEYMAP_LABEL_MAP: KeyMapModeToLabel = {
   vscode: 'Visual Studio Code',
 };
 
-const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
+const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): React.ReactElement => {
 
   const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
@@ -152,7 +152,7 @@ KeymapSelector.displayName = 'KeymapSelector';
 
 const TYPICAL_INDENT_SIZE = [2, 4];
 
-const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
+const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): React.ReactElement => {
 
   const { t } = useTranslation();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
@@ -174,7 +174,7 @@ const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void})
 IndentSizeSelector.displayName = 'IndentSizeSelector';
 
 
-const PasteSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
+const PasteSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): React.ReactElement => {
 
   const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
@@ -203,7 +203,7 @@ type SwitchItemProps = {
   checked: boolean,
   text: string,
 };
-const SwitchItem = memo((props: SwitchItemProps): JSX.Element => {
+const SwitchItem = memo((props: SwitchItemProps): React.ReactElement => {
   const {
     inputId, onChange, checked, text,
   } = props;
@@ -216,7 +216,7 @@ const SwitchItem = memo((props: SwitchItemProps): JSX.Element => {
   );
 });
 
-const ConfigurationSelector = memo((): JSX.Element => {
+const ConfigurationSelector = memo((): React.ReactElement => {
   const { t } = useTranslation();
 
   const { data: editorSettings, update } = useEditorSettings();
@@ -271,7 +271,7 @@ type ChangeStateButtonProps = {
   data: string,
   disabled?: boolean,
 }
-const ChangeStateButton = memo((props: ChangeStateButtonProps): JSX.Element => {
+const ChangeStateButton = memo((props: ChangeStateButtonProps): React.ReactElement => {
   const {
     onClick, header, data, disabled,
   } = props;
@@ -296,7 +296,7 @@ const OptionsStatus = {
 } as const;
 type OptionStatus = typeof OptionsStatus[keyof typeof OptionsStatus];
 
-export const OptionsSelector = (): JSX.Element => {
+export const OptionsSelector = (): React.ReactElement => {
 
   const { t } = useTranslation();
 

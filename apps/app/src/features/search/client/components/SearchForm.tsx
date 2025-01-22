@@ -11,7 +11,7 @@ type Props = {
   getInputProps: GetInputProps,
 }
 
-export const SearchForm = (props: Props): JSX.Element => {
+export const SearchForm = (props: Props): React.ReactElement => {
   const {
     searchKeyword, onChange, onSubmit, getInputProps,
   } = props;

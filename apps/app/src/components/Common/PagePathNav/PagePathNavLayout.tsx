@@ -25,7 +25,7 @@ type Props = PagePathNavLayoutProps & {
 
 const CopyDropdown = dynamic(() => import('~/client/components/Common/CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
 
-export const PagePathNavLayout = (props: Props): JSX.Element => {
+export const PagePathNavLayout = (props: Props): React.ReactElement => {
   const {
     className = '',
     pageId, pagePath, isWipPage,

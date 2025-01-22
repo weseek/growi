@@ -15,7 +15,7 @@ const PageTreeContent = dynamic(
 );
 
 
-export const PageTree = (): JSX.Element => {
+export const PageTree = (): React.ReactElement => {
   const { t } = useTranslation();
 
   const [isWipPageShown, setIsWipPageShown] = useState(true);

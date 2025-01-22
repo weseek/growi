@@ -12,7 +12,7 @@ type Props = {
   onSelected?: (themeName: string) => void,
 };
 
-const CustomizeThemeOptions = (props: Props): JSX.Element => {
+const CustomizeThemeOptions = (props: Props): React.ReactElement => {
   const { t } = useTranslation('admin');
 
   const { availableThemes, selectedTheme, onSelected } = props;

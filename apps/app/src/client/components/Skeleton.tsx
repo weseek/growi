@@ -8,7 +8,7 @@ type SkeletonProps = {
   roundedPill?: boolean,
 }
 
-export const Skeleton = (props: SkeletonProps): JSX.Element => {
+export const Skeleton = (props: SkeletonProps): React.ReactElement => {
   const {
     additionalClass, roundedPill,
   } = props;

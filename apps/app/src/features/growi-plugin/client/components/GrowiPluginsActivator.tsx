@@ -36,7 +36,7 @@ async function activateAll(): Promise<void> {
 }
 
 
-export const GrowiPluginsActivator = (): JSX.Element => {
+export const GrowiPluginsActivator = (): React.ReactElement => {
 
   useEffect(() => {
     activateAll();

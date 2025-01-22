@@ -33,7 +33,7 @@ type SearchResultListHeadProps = {
   onPagingSizeChanged: (size: number) => void,
 }
 
-const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.Element => {
+const SearchResultListHead = React.memo((props: SearchResultListHeadProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const {
@@ -82,7 +82,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 SearchResultListHead.displayName = 'SearchResultListHead';
 
 
-export const SearchPage = (): JSX.Element => {
+export const SearchPage = (): React.ReactElement => {
   const { t } = useTranslation();
   const { data: showPageLimitationL } = useShowPageLimitationL();
 

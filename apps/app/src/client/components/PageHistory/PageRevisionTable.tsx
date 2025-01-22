@@ -21,7 +21,7 @@ type PageRevisionTableProps = {
   currentPagePath: string
 }
 
-export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element => {
+export const PageRevisionTable = (props: PageRevisionTableProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const REVISIONS_PER_PAGE = 10;

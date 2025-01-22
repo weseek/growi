@@ -18,7 +18,7 @@ type Props = {
   onClickEditTagsButton: () => void,
 }
 
-export const PageTagsSkeleton = (): JSX.Element => {
+export const PageTagsSkeleton = (): React.ReactElement => {
   return <Skeleton additionalClass={`${styles['grw-tag-labels-skeleton']} mb-2`} />;
 };
 

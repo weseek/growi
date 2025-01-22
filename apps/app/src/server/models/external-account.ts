@@ -1,7 +1,8 @@
 // disable no-return-await for model functions
 /* eslint-disable no-return-await */
-import type { IUser } from '@growi/core/dist/interfaces';
-import { type IExternalAccount, type IExternalAccountHasId, type IUserHasId } from '@growi/core/dist/interfaces';
+import {
+  type IExternalAccount, type IExternalAccountHasId, type IUser, type IUserHasId,
+} from '@growi/core/dist/interfaces';
 import type { Model, Document, HydratedDocument } from 'mongoose';
 import mongoose, { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
