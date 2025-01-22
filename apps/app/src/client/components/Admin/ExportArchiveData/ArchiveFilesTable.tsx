@@ -10,7 +10,7 @@ type ArchiveFilesTableProps = {
   onZipFileStatRemove: (fileName: string) => void,
 }
 
-const ArchiveFilesTable = (props: ArchiveFilesTableProps): React.ReactElement => {
+const ArchiveFilesTable = (props: ArchiveFilesTableProps): JSX.Element => {
   const { t } = useTranslation();
 
   return (

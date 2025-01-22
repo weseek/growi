@@ -38,7 +38,7 @@ type FormData = {
   summaryMode?: boolean;
 };
 
-const AiChatModalSubstance = (): React.ReactElement => {
+const AiChatModalSubstance = (): JSX.Element => {
 
   const { t } = useTranslation();
 
@@ -303,7 +303,7 @@ const AiChatModalSubstance = (): React.ReactElement => {
 };
 
 
-export const AiChatModal = (): React.ReactElement => {
+export const AiChatModal = (): JSX.Element => {
 
   const { t } = useTranslation();
 

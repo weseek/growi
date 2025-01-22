@@ -8,7 +8,7 @@ type Props = {
   editorKey: string,
 }
 
-export const TableButton = (props: Props): React.ReactElement => {
+export const TableButton = (props: Props): JSX.Element => {
   const { editorKey } = props;
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const { open: openTableModal } = useHandsontableModalForEditor();

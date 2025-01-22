@@ -19,7 +19,7 @@ type Props = {
 
 export const NoLoginLayout = ({
   children, className,
-}: Props): React.ReactElement => {
+}: Props): JSX.Element => {
 
   const { data: appTitle } = useAppTitle();
 

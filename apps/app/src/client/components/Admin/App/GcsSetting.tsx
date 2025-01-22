@@ -15,7 +15,7 @@ export type GcsSettingMoleculeProps = {
   onChangeGcsUploadNamespace: (val: string) => void
 };
 
-export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): React.ReactElement => {
+export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {

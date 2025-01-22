@@ -17,7 +17,7 @@ type Props = {
   onClick?: () => void,
 }
 
-export const PageAccessoriesControl = memo((props: Props): React.ReactElement => {
+export const PageAccessoriesControl = memo((props: Props): JSX.Element => {
   const {
     icon, label, count, offset,
     className,

@@ -25,7 +25,7 @@ declare global {
 }
 
 
-export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps): React.ReactElement => {
+export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { bol, eol } = props;

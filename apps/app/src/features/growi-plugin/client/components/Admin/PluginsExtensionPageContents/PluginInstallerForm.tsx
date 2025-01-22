@@ -8,7 +8,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { IGrowiPluginOrigin } from '../../../../interfaces';
 import { useSWRxAdminPlugins } from '../../../stores/admin-plugins';
 
-export const PluginInstallerForm = (): React.ReactElement => {
+export const PluginInstallerForm = (): JSX.Element => {
   const { mutate } = useSWRxAdminPlugins();
   const { t } = useTranslation('admin');
 

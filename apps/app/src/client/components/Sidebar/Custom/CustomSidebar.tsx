@@ -12,7 +12,7 @@ import DefaultContentSkeleton from '../Skeleton/DefaultContentSkeleton';
 
 const CustomSidebarContent = dynamic(() => import('./CustomSidebarSubstance').then(mod => mod.CustomSidebarSubstance), { ssr: false });
 
-export const CustomSidebar = (): React.ReactElement => {
+export const CustomSidebar = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { mutate, isLoading } = useSWRxPageByPath('/Sidebar');

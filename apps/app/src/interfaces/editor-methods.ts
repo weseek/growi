@@ -16,5 +16,5 @@ export interface IEditorInnerMethods {
   insertLinebreak: () => void,
   dispatchSave: () => void,
   dispatchPasteFiles: (event: Event) => void,
-  getNavbarItems: () => React.ReactElement[],
+  getNavbarItems: () => JSX.Element[],
 }

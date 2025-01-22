@@ -7,7 +7,7 @@ type Props = {
   children?: React.ReactNode,
 }
 
-export const ResizableAreaFallback = memo((props: Props): React.ReactElement => {
+export const ResizableAreaFallback = memo((props: Props): JSX.Element => {
   const {
     className = '',
     width,

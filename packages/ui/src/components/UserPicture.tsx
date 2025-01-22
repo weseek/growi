@@ -77,7 +77,7 @@ type Props = {
   additionalClassName?: string
 };
 
-export const UserPicture = memo((props: Props): React.ReactElement => {
+export const UserPicture = memo((props: Props): JSX.Element => {
 
   const {
     user, size, noLink, noTooltip, additionalClassName,

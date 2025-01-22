@@ -5,7 +5,7 @@ import type { ResizableAreaProps } from './props';
 import styles from './ResizableArea.module.scss';
 
 
-export const ResizableArea = memo((props: ResizableAreaProps): React.ReactElement => {
+export const ResizableArea = memo((props: ResizableAreaProps): JSX.Element => {
   const {
     className,
     width, minWidth = 0,

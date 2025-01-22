@@ -18,7 +18,7 @@ type TimelineCardProps = {
   page: IPageHasId,
 }
 
-const TimelineCard = ({ page }: TimelineCardProps): React.ReactElement => {
+const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
 
   const { data: rendererOptions } = useTimelineOptions(page.path);
 
@@ -42,7 +42,7 @@ const TimelineCard = ({ page }: TimelineCardProps): React.ReactElement => {
   );
 };
 
-export const PageTimeline = (): React.ReactElement => {
+export const PageTimeline = (): JSX.Element => {
 
   const PER_PAGE = 3;
   const { t } = useTranslation();

@@ -16,7 +16,7 @@ import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
 import { PlaygroundController } from './PlaygroundController';
 import { Preview } from './Preview';
 
-export const Playground = (): React.ReactElement => {
+export const Playground = (): JSX.Element => {
 
   const [markdownToPreview, setMarkdownToPreview] = useState('');
   const [editorTheme, setEditorTheme] = useState<EditorTheme>('defaultlight');

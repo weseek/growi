@@ -3,7 +3,8 @@ import { Types } from 'mongoose';
 import { mock } from 'vitest-mock-extended';
 
 import { getIdForRef, isPopulated } from './common';
-import { type IPageHasId, type IPage } from './page';
+import type { IPageHasId } from './page';
+import { type IPage } from './page';
 
 describe('isPopulated', () => {
 

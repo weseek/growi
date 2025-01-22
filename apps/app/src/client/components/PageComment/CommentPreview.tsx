@@ -12,7 +12,7 @@ type CommentPreviewPorps = {
   markdown: string,
 }
 
-export const CommentPreview = (props: CommentPreviewPorps): React.ReactElement => {
+export const CommentPreview = (props: CommentPreviewPorps): JSX.Element => {
 
   const { markdown } = props;
 

@@ -140,7 +140,7 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
 };
 
 
-export const SavePageControls = (): React.ReactElement | null => {
+export const SavePageControls = (): JSX.Element | null => {
   const { t } = useTranslation('commons');
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isEditable } = useIsEditable();
