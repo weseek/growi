@@ -38,8 +38,9 @@ import {
 import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
+import type { CreateMethod } from '~/server/models/page';
 import {
-  type PageModel, type PageDocument, type CreateMethod, pushRevision, PageQueryBuilder,
+  type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
@@ -4393,7 +4394,7 @@ class PageService implements IPageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const ancestorPaths = isTopPage(path) ? ['/'] : collectAncestorPaths(path); // root path is necessary for rendering
-    const regexps = ancestorPaths.map(path => generateChildrenRegExp(path)); // cannot use re2
+    const regexps = ancestorPaths.map(path => new RegExp(generateChildrenRegExp(path))); // cannot use re2
 
     // get pages at once
     const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);

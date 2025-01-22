@@ -30,7 +30,7 @@ const LsxSubstance = React.memo(({
   prefix,
   num, depth, sort, reverse, filter, except,
   isImmutable,
-}: Props): React.ReactElement => {
+}: Props): JSX.Element => {
 
   const lsxContext = useMemo(() => {
     const options = {
@@ -46,7 +46,7 @@ const LsxSubstance = React.memo(({
   const hasError = error != null;
   const errorMessage = error?.message;
 
-  const Error = useCallback((): React.ReactElement => {
+  const Error = useCallback((): JSX.Element => {
     if (!hasError) {
       return <></>;
     }
@@ -61,7 +61,7 @@ const LsxSubstance = React.memo(({
     );
   }, [errorMessage, hasError, lsxContext]);
 
-  const Loading = useCallback((): React.ReactElement => {
+  const Loading = useCallback((): JSX.Element => {
     if (hasError) {
       return <></>;
     }
@@ -137,7 +137,7 @@ const LsxSubstance = React.memo(({
 });
 LsxSubstance.displayName = 'LsxSubstance';
 
-const LsxDisabled = React.memo((): React.ReactElement => {
+const LsxDisabled = React.memo((): JSX.Element => {
   return (
     <div className="text-muted">
       <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">info</span>
@@ -147,7 +147,7 @@ const LsxDisabled = React.memo((): React.ReactElement => {
 });
 LsxDisabled.displayName = 'LsxDisabled';
 
-export const Lsx = React.memo((props: Props): React.ReactElement => {
+export const Lsx = React.memo((props: Props): JSX.Element => {
   if (props.isSharedPage) {
     return <LsxDisabled />;
   }
@@ -156,7 +156,7 @@ export const Lsx = React.memo((props: Props): React.ReactElement => {
 });
 Lsx.displayName = 'Lsx';
 
-export const LsxImmutable = React.memo((props: Omit<Props, 'isImmutable'>): React.ReactElement => {
+export const LsxImmutable = React.memo((props: Omit<Props, 'isImmutable'>): JSX.Element => {
   return <Lsx {...props} isImmutable />;
 });
 LsxImmutable.displayName = 'LsxImmutable';

@@ -47,6 +47,7 @@
     "@types/mdast": "^4.0.4",
     "@types/reveal.js": "^4.4.1",
     "@types/unist": "^3.0.3",
+    "eslint-plugin-regex": "^1.8.0",
     "hast-util-sanitize": "^5.0.1",
     "hast-util-select": "^6.0.2",
     "mdast-util-frontmatter": "^2.0.1",
@@ -63,7 +64,7 @@
   },
   "peerDependencies": {
     "next": "^14",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }

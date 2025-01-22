@@ -13,7 +13,7 @@ type InvitedFormProps = {
   invitedFormName: string,
 }
 
-export const InvitedForm = (props: InvitedFormProps): React.ReactElement => {
+export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
 
   const { t } = useTranslation();
   const router = useRouter();

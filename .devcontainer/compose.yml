@@ -7,7 +7,6 @@ services:
       - node_modules:/workspace/growi/node_modules
       - buildcache_app:/workspace/growi/apps/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
-      - ../../share:/workspace/share:delegated
     tty: true
 
   mongo:

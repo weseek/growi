@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Collapse } from 'reactstrap';
 
-export const SearchHelp = (): React.ReactElement => {
+export const SearchHelp = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [isOpen, setIsOpen] = useState(false);

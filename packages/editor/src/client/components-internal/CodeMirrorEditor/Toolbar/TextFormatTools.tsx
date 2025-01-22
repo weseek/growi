@@ -14,7 +14,7 @@ type TogglarProps = {
   onClick?: () => void,
 }
 
-const TextFormatToolsToggler = (props: TogglarProps): React.ReactElement => {
+const TextFormatToolsToggler = (props: TogglarProps): JSX.Element => {
 
   const { isOpen, onClick } = props;
 
@@ -36,7 +36,7 @@ type TextFormatToolsType = {
   onTextFormatToolsCollapseChange: () => void,
 }
 
-export const TextFormatTools = (props: TextFormatToolsType): React.ReactElement => {
+export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
   const { editorKey, onTextFormatToolsCollapseChange } = props;
   const [isOpen, setOpen] = useState(false);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);

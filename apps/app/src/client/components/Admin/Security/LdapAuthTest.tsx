@@ -16,7 +16,7 @@ type LdapAuthTestProps = {
   onChangePassword: (password: string) => void,
 }
 
-export const LdapAuthTest = (props: LdapAuthTestProps): React.ReactElement => {
+export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
   const {
     username, password, onChangeUsername, onChangePassword,
   } = props;

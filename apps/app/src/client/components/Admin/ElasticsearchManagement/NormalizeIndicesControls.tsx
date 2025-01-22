@@ -8,7 +8,7 @@ type Props = {
   isNormalized?: boolean,
 }
 
-const NormalizeIndicesControls = (props: Props): React.ReactElement => {
+const NormalizeIndicesControls = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
   const { isNormalized, isRebuildingProcessing } = props;
 

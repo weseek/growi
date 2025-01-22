@@ -13,7 +13,7 @@ type Props = {
   isExternalGroup?: boolean
 }
 
-export const UserGroupUserTable = (props: Props): React.ReactElement => {
+export const UserGroupUserTable = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
 
   return (

@@ -1,5 +1,6 @@
+import type { IPage } from '@growi/core';
 import {
-  type IGrantedGroup, type IPage,
+  type IGrantedGroup,
   PageGrant, GroupType, getIdForRef,
 } from '@growi/core';
 import {
@@ -11,7 +12,8 @@ import mongoose from 'mongoose';
 import type { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import { UserGroupPageGrantStatus, type UserRelatedGroupsData, type GroupGrantData } from '~/interfaces/page';
+import type { UserRelatedGroupsData } from '~/interfaces/page';
+import { UserGroupPageGrantStatus, type GroupGrantData } from '~/interfaces/page';
 import type { IRecordApplicableGrant, PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';

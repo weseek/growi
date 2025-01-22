@@ -50,7 +50,7 @@ type Props = {
   isExternalGroup: boolean,
 }
 
-const UserGroupDetailPage = (props: Props): React.ReactElement => {
+const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
   const router = useRouter();
   const { userGroupId: currentUserGroupId, isExternalGroup } = props;

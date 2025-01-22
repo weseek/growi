@@ -17,7 +17,7 @@ const additionalExtensions: Extension[] = [
   ],
 ];
 
-export const CodeMirrorEditorDiff = (): React.ReactElement => {
+export const CodeMirrorEditorDiff = (): JSX.Element => {
   const codeMirrorRef = useRef(null);
 
   const cmProps = useMemo<ReactCodeMirrorProps>(() => {

@@ -1,9 +1,7 @@
 import React from 'react';
 
-import {
-  isPopulated,
-  type IUser, type Ref, type IUserHasId,
-} from '@growi/core';
+import type { IUserHasId } from '@growi/core';
+import { isPopulated, type IUser, type Ref } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns/format';
@@ -13,7 +11,7 @@ import Link from 'next/link';
 
 import styles from './AuthorInfo.module.scss';
 
-const UserLabel = ({ user }: { user: IUserHasId | Ref<IUser> }): React.ReactElement => {
+const UserLabel = ({ user }: { user: IUserHasId | Ref<IUser> }): JSX.Element => {
   if (isPopulated(user)) {
     return (
       <Link href={pagePathUtils.userHomepagePath(user)} prefetch={false}>
@@ -33,7 +31,7 @@ type AuthorInfoProps = {
   locate: 'subnav' | 'footer',
 }
 
-export const AuthorInfo = (props: AuthorInfoProps): React.ReactElement => {
+export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   const { t } = useTranslation();
   const {
     date, user, mode = 'create', locate = 'subnav',

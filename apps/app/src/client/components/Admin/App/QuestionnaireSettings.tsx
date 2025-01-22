@@ -11,7 +11,7 @@ import { useSWRxAppSettings } from '~/stores/admin/app-settings';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-const QuestionnaireSettings = (): React.ReactElement => {
+const QuestionnaireSettings = (): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
 
   const { data, error, mutate } = useSWRxAppSettings();

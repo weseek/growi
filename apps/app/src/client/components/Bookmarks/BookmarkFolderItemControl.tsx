@@ -15,7 +15,7 @@ export const BookmarkFolderItemControl: React.FC<{
   onClickMoveToRoot,
   onClickRename,
   onClickDelete,
-}): React.ReactElement => {
+}): JSX.Element => {
   const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 

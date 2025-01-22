@@ -27,7 +27,7 @@ const moduleClass = styles['grw-page-path-nav-sticky'];
 const { isTrashPage } = pagePathUtils;
 
 
-export const PagePathNavSticky = (props: PagePathNavLayoutProps): React.ReactElement => {
+export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element => {
   const { pagePath } = props;
 
   const { data: pageControlsX } = usePageControlsX();

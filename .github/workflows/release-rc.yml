@@ -27,7 +27,7 @@ jobs:
       id: package-json
 
     - name: Docker meta for docker.io
-      uses: docker/metadata-action@v5
+      uses: docker/metadata-action@v4
       id: meta
       with:
         images: docker.io/weseek/growi

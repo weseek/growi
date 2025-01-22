@@ -1,5 +1,5 @@
 import type { Ref } from './common';
-import type { HasObjectId } from './has-object-id';
+import { HasObjectId } from './has-object-id';
 import type { IPage } from './page';
 import type { IUser } from './user';
 
