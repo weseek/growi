@@ -19,7 +19,7 @@ type SeenUsersCountProps = {
   shouldSpaceOutIcon?: boolean,
 }
 
-const SeenUsersCount = (props: SeenUsersCountProps): JSX.Element => {
+const SeenUsersCount = (props: SeenUsersCountProps): React.ReactElement => {
 
   const { count, shouldSpaceOutIcon, basisViewersCount } = props;
 

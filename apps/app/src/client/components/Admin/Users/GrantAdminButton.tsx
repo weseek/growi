@@ -13,7 +13,7 @@ type GrantAdminButtonProps = {
   user: IUserHasId,
 }
 
-const GrantAdminButton = (props: GrantAdminButtonProps): JSX.Element => {
+const GrantAdminButton = (props: GrantAdminButtonProps): React.ReactElement => {
 
   const { t } = useTranslation('admin');
   const { adminUsersContainer, user } = props;

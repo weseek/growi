@@ -18,7 +18,7 @@ import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 import PagePathAutoComplete from './PagePathAutoComplete';
 
 
-const PageDuplicateModal = (): JSX.Element => {
+const PageDuplicateModal = (): React.ReactElement => {
   const { t } = useTranslation();
 
   const { data: siteUrl } = useSiteUrl();

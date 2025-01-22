@@ -28,7 +28,7 @@ const PagePathNavSticky = withLoadingProps<PagePathNavLayoutProps>(useLoadingPro
  * Switch PagePathNav and PagePathNavSticky
  * @returns
  */
-export const PagePathNavTitle = (props: PagePathNavLayoutProps): JSX.Element => {
+export const PagePathNavTitle = (props: PagePathNavLayoutProps): React.ReactElement => {
 
   const [isClient, setClient] = useState(false);
 

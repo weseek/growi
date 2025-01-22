@@ -7,7 +7,7 @@ import { useIsGuestUser } from '~/stores-universal/context';
 
 import { BookmarkContents } from './Bookmarks/BookmarkContents';
 
-export const Bookmarks = () : JSX.Element => {
+export const Bookmarks = () : React.ReactElement => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
 

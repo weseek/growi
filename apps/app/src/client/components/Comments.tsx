@@ -24,7 +24,7 @@ type CommentsProps = {
   onLoaded?: () => void,
 }
 
-export const Comments = (props: CommentsProps): JSX.Element => {
+export const Comments = (props: CommentsProps): React.ReactElement => {
 
   const {
     pageId, pagePath, revision, onLoaded,

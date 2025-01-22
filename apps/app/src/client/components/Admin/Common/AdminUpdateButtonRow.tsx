@@ -7,7 +7,7 @@ type Props = {
   disabled?: boolean,
 }
 
-const AdminUpdateButtonRow = (props: Props): JSX.Element => {
+const AdminUpdateButtonRow = (props: Props): React.ReactElement => {
   const { t } = useTranslation('admin');
 
   return (

@@ -8,7 +8,7 @@ type ErrorViewerProps = {
   onClose: () => void,
 }
 
-const ErrorViewer = (props: ErrorViewerProps): JSX.Element => {
+const ErrorViewer = (props: ErrorViewerProps): React.ReactElement => {
   const { errors } = props;
 
   let value = '(no errors)';

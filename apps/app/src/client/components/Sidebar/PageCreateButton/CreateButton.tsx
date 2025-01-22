@@ -9,7 +9,7 @@ const moduleClass = styles['btn-create'];
 
 type Props = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
 
-export const CreateButton = (props: Props): JSX.Element => {
+export const CreateButton = (props: Props): React.ReactElement => {
   return (
     <button
       type="button"

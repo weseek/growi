@@ -11,7 +11,7 @@ import styles from './SimpleItemContent.module.scss';
 const moduleClass = styles['simple-item-content'] ?? '';
 
 
-export const SimpleItemContent = ({ page }: { page: IPageForItem }): JSX.Element => {
+export const SimpleItemContent = ({ page }: { page: IPageForItem }): React.ReactElement => {
   const { t } = useTranslation();
 
   const pageName = nodePath.basename(page.path ?? '') || '/';

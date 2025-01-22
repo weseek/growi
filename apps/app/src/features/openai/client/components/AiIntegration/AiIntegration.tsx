@@ -6,7 +6,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 
 
-export const AiIntegration = (): JSX.Element => {
+export const AiIntegration = (): React.ReactElement => {
   const { t } = useTranslation('admin');
 
   const clickRebuildVectorStoreButtonHandler = useCallback(async() => {

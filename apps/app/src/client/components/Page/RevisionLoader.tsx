@@ -25,7 +25,7 @@ const logger = loggerFactory('growi:Page:RevisionLoader');
 /**
  * Load data from server and render RevisionBody component
  */
-export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
+export const RevisionLoader = (props: RevisionLoaderProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const {

@@ -1,8 +1,7 @@
 import { parseISO } from 'date-fns/parseISO';
 import isIsoDate from 'is-iso-date';
-import type { Schema } from 'mongoose';
 import {
-  Types, type Document,
+  Types, type Document, type Schema,
 } from 'mongoose';
 
 
