@@ -113,6 +113,7 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   ];
 };
 
+
 /*
 *  GetAiAssistantsFactory
 */
@@ -131,9 +132,9 @@ export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
     async(req: GetAiAssistantsFactoryReq, res: ApiV3Response) => {
       try {
         const openaiService = getOpenaiService();
-        const aiAssistants = await openaiService?.getAiAssistants(req.user);
+        const accessibleAiAssistants = await openaiService?.getAccessibleAiAssistants(req.user);
 
-        return res.apiv3({ aiAssistants });
+        return res.apiv3({ accessibleAiAssistants });
       }
       catch (err) {
         logger.error(err);

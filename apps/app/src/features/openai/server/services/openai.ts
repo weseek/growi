@@ -25,6 +25,7 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
+import type { AccessibleAiAssistants } from '../../interfaces/ai-assistant';
 import { type AiAssistant, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
@@ -67,7 +68,7 @@ export interface IOpenaiService {
   // rebuildVectorStoreAll(): Promise<void>;
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
-  getAiAssistants(user: IUserHasId): Promise<AiAssistantDocument[]>;
+  getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
 }
 class OpenaiService implements IOpenaiService {
 
@@ -522,9 +523,13 @@ class OpenaiService implements IOpenaiService {
     return aiAssistant;
   }
 
-  async getAiAssistants(user: IUserHasId): Promise<AiAssistantDocument[]> {
-    const aiAssistants = await AiAssistantModel.find({ owner: user });
-    return aiAssistants;
+  async getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants> {
+    const myAiAssistants = await AiAssistantModel.find({ owner: user });
+
+    return {
+      myAiAssistants: myAiAssistants as AiAssistant[] ?? [],
+      teamAiAssistants: [],
+    };
   }
 
 }
