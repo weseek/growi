@@ -10,7 +10,7 @@ export type UserInfoProps = {
   author?: IUserHasId,
 }
 
-export const UserInfo = (props: UserInfoProps): React.ReactElement => {
+export const UserInfo = (props: UserInfoProps): JSX.Element => {
 
   const { author } = props;
 

@@ -23,7 +23,7 @@ type Props = {
   minPasswordLength: number,
 }
 
-const InstallerForm = memo((props: Props): React.ReactElement => {
+const InstallerForm = memo((props: Props): JSX.Element => {
   const { t, i18n } = useTranslation();
 
   const { minPasswordLength } = props;

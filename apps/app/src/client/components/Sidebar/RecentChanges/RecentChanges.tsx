@@ -12,7 +12,7 @@ const RecentChangesContent = dynamic(
 );
 
 
-export const RecentChanges = (): React.ReactElement => {
+export const RecentChanges = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [isSmall, setIsSmall] = useState(false);

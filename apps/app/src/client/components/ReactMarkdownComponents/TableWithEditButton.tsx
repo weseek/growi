@@ -23,7 +23,7 @@ type TableWithEditButtonProps = {
   className?: string
 }
 
-const TableWithEditButtonNoMemorized = (props: TableWithEditButtonProps): React.ReactElement => {
+const TableWithEditButtonNoMemorized = (props: TableWithEditButtonProps): JSX.Element => {
   const { children, node, className } = props;
 
   const { data: isGuestUser } = useIsGuestUser();

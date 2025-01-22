@@ -35,7 +35,7 @@ type CustomNavDropdownProps = {
   onNavSelected?: (selectedTabKey: string) => void,
 };
 
-export const CustomNavDropdown = (props: CustomNavDropdownProps): React.ReactElement => {
+export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element => {
   const {
     activeTab, navTabMapping, onNavSelected,
   } = props;
@@ -109,10 +109,10 @@ type CustomNavTabProps = {
   onNavSelected?: (selectedTabKey: string) => void,
   hideBorderBottom?: boolean,
   breakpointToHideInactiveTabsDown?: Breakpoint,
-  navRightElement?: React.ReactElement,
+  navRightElement?: JSX.Element,
 };
 
-export const CustomNavTab = (props: CustomNavTabProps): React.ReactElement => {
+export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
   const [sliderWidth, setSliderWidth] = useState(0);
   const [sliderMarginLeft, setSliderMarginLeft] = useState(0);
 
@@ -224,7 +224,7 @@ type CustomNavProps = {
   breakpointToSwitchDropdownDown?: Breakpoint,
 };
 
-const CustomNav = (props: CustomNavProps): React.ReactElement => {
+const CustomNav = (props: CustomNavProps): JSX.Element => {
 
   const tabClassnames = ['d-none'];
   const dropdownClassnames = ['d-block'];

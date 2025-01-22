@@ -20,7 +20,7 @@ type Props = {
   onUpload?: (files: File[]) => void,
 }
 
-export const Toolbar = memo((props: Props): React.ReactElement => {
+export const Toolbar = memo((props: Props): JSX.Element => {
   const { editorKey, acceptedUploadFileType, onUpload } = props;
   const simpleBarRef = useRef<SimpleBar>(null);
 

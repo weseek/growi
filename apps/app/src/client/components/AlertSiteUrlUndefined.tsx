@@ -13,7 +13,7 @@ const isValidUrl = (str: string): boolean => {
   }
 };
 
-export const AlertSiteUrlUndefined = (): React.ReactElement => {
+export const AlertSiteUrlUndefined = (): JSX.Element => {
   const { t } = useTranslation('commons');
   const { data: siteUrl, error: errorSiteUrl } = useSiteUrl();
   const isLoadingSiteUrl = siteUrl === undefined && errorSiteUrl === undefined;

@@ -27,7 +27,7 @@ export type PrimaryItemProps = {
   onClick?: () => void,
 }
 
-export const PrimaryItem = (props: PrimaryItemProps): React.ReactElement => {
+export const PrimaryItem = (props: PrimaryItemProps): JSX.Element => {
   const {
     contents, label, iconName, sidebarMode, badgeContents,
     onClick, onHover,

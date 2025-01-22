@@ -10,7 +10,7 @@ import {
 } from '../../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
 
-export const InitEditorValueRow = (): React.ReactElement => {
+export const InitEditorValueRow = (): JSX.Element => {
 
   const { data } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
@@ -38,7 +38,7 @@ type SetCaretLineRowFormData = {
   lineNumber: number | string;
 };
 
-export const SetCaretLineRow = (): React.ReactElement => {
+export const SetCaretLineRow = (): JSX.Element => {
 
   const { data } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const { register, handleSubmit } = useForm<SetCaretLineRowFormData>({
@@ -81,7 +81,7 @@ type SetParamRowProps = {
 
 const SetParamRow = (
     props: SetParamRowProps,
-): React.ReactElement => {
+): JSX.Element => {
   const { update, items } = props;
   return (
     <>
@@ -115,7 +115,7 @@ type PlaygroundControllerProps = {
   setEditorPaste: (value: PasteMode) => void
 };
 
-export const PlaygroundController = (props: PlaygroundControllerProps): React.ReactElement => {
+export const PlaygroundController = (props: PlaygroundControllerProps): JSX.Element => {
   const { setEditorTheme, setEditorKeymap, setEditorPaste } = props;
   return (
     <div className="container mt-5">

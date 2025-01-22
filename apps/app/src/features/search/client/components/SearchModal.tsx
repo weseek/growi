@@ -16,7 +16,7 @@ import { SearchHelp } from './SearchHelp';
 import { SearchMethodMenuItem } from './SearchMethodMenuItem';
 import { SearchResultMenuItem } from './SearchResultMenuItem';
 
-const SearchModal = (): React.ReactElement => {
+const SearchModal = (): JSX.Element => {
 
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isMenthionedToAi, setMenthionedToAi] = useState(false);

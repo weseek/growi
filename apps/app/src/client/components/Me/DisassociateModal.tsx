@@ -19,7 +19,7 @@ type Props = {
 }
 
 
-const DisassociateModal = (props: Props): React.ReactElement => {
+const DisassociateModal = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
   const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
