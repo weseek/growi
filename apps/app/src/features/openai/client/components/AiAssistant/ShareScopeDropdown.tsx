@@ -19,9 +19,9 @@ export const ShareScopeDropdown = (): JSX.Element => {
       </DropdownToggle>
 
       <DropdownMenu>
+        <DropdownItem>公開ページのみ</DropdownItem>
         <DropdownItem>自分がアクセスできるページ</DropdownItem>
-        <DropdownItem>グローバル</DropdownItem>
-        <DropdownItem>自分が所属てい</DropdownItem>
+        <DropdownItem>自分が所属しているグループがアクセスできるページ</DropdownItem>
 
         { userRelatedGroups != null && userRelatedGroups.relatedGroups.map(group => (
           <DropdownItem>
