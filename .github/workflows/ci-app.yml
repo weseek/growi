@@ -67,6 +67,7 @@ jobs:
 
       - run: |
           pnpm store path
+          pnpm store prune --force
 
       - name: Install dependencies
         run: |
