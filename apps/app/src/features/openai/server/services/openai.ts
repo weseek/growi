@@ -485,7 +485,7 @@ class OpenaiService implements IOpenaiService {
     }
 
     if (accessScope === AiAssistantAccessScope.OWNER) {
-      const ownerUserGroup = [
+      const ownerUserGroups = [
         ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
         ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
       ].map(group => group.toString());
@@ -497,7 +497,7 @@ class OpenaiService implements IOpenaiService {
             grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP, PageGrant.GRANT_OWNER] },
             path: { $in: converterdPagePatgPatterns },
             $or: [
-              { 'grantedGroups.item': { $in: ownerUserGroup } },
+              { 'grantedGroups.item': { $in: ownerUserGroups } },
               { grantedUsers: { $in: [getIdForRef(owner)] } },
               { grant: PageGrant.GRANT_PUBLIC },
             ],
