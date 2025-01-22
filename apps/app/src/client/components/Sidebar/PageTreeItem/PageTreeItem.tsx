@@ -17,9 +17,8 @@ import type { IPageForItem } from '~/interfaces/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
-import type { ItemNode } from '../../TreeItem';
 import {
-  TreeItemLayout, useNewPageInput, type TreeItemProps,
+  TreeItemLayout, useNewPageInput, type TreeItemProps, type ItemNode,
 } from '../../TreeItem';
 
 import { CountBadgeForPageTreeItem } from './CountBadgeForPageTreeItem';

@@ -81,7 +81,7 @@ type Props = {
   visibility?: boolean,
 }
 
-export const PageEditor = React.memo((props: Props): JSX.Element => {
+export const PageEditor = React.memo((props: Props): React.ReactElement => {
 
   const { t } = useTranslation();
 

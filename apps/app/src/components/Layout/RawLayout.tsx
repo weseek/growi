@@ -24,7 +24,7 @@ type Props = {
   children?: ReactNode,
 }
 
-export const RawLayout = ({ children, className }: Props): JSX.Element => {
+export const RawLayout = ({ children, className }: Props): React.ReactElement => {
   const classNames: string[] = ['layout-root', 'growi'];
   if (className != null) {
     classNames.push(className);

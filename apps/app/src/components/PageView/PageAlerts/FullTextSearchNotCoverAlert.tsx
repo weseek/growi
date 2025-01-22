@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useElasticsearchMaxBodyLengthToIndex } from '~/stores-universal/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-export const FullTextSearchNotCoverAlert = (): JSX.Element => {
+export const FullTextSearchNotCoverAlert = (): React.ReactElement => {
   const { t } = useTranslation();
 
   const { data: elasticsearchMaxBodyLengthToIndex } = useElasticsearchMaxBodyLengthToIndex();

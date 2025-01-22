@@ -14,7 +14,7 @@ type Props = {
   drawioUri: string;
 }
 
-export const DrawioViewerScript = ({ drawioUri }: Props): JSX.Element => {
+export const DrawioViewerScript = ({ drawioUri }: Props): React.ReactElement => {
   const viewerMinJsSrc = useViewerMinJsUrl(drawioUri);
 
   const loadedHandler = useCallback(() => {

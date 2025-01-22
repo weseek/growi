@@ -42,7 +42,7 @@ type LoginFormProps = {
   externalAccountLoginError?: IExternalAccountLoginError,
   minPasswordLength: number,
 }
-export const LoginForm = (props: LoginFormProps): JSX.Element => {
+export const LoginForm = (props: LoginFormProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const router = useRouter();
@@ -136,7 +136,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, []);
 
   // wrap error elements which use dangerouslySetInnerHtml
-  const generateDangerouslySetErrors = useCallback((errors: IErrorV3[]): JSX.Element => {
+  const generateDangerouslySetErrors = useCallback((errors: IErrorV3[]): React.ReactElement => {
     if (errors == null || errors.length === 0) return <></>;
     return (
       <div className="alert alert-danger">
@@ -149,7 +149,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, [tWithOpt]);
 
   // wrap error elements which do not use dangerouslySetInnerHtml
-  const generateSafelySetErrors = useCallback((errors: (IErrorV3 | IExternalAccountLoginError)[]): JSX.Element => {
+  const generateSafelySetErrors = useCallback((errors: (IErrorV3 | IExternalAccountLoginError)[]): React.ReactElement => {
     if (errors == null || errors.length === 0) return <></>;
     return (
       <ul className="alert alert-danger">

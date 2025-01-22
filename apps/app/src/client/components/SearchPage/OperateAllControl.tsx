@@ -14,7 +14,7 @@ type Props = {
   children?: React.ReactNode,
 }
 
-const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeterminatable, Props> = (props: Props, ref): JSX.Element => {
+const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeterminatable, Props> = (props: Props, ref): React.ReactElement => {
   const {
     inputId,
     inputClassName = '',

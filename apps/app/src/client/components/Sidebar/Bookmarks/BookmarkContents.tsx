@@ -9,7 +9,7 @@ import { toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores-universal/context';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 
-export const BookmarkContents = (): JSX.Element => {
+export const BookmarkContents = (): React.ReactElement => {
 
   const { t } = useTranslation();
   const [isCreateAction, setIsCreateAction] = useState<boolean>(false);

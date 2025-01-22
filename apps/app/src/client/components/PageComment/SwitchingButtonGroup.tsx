@@ -38,7 +38,7 @@ type Props = {
   onSelected?: (showPreview: boolean) => void,
 };
 
-export const SwitchingButtonGroup = (props: Props): JSX.Element => {
+export const SwitchingButtonGroup = (props: Props): React.ReactElement => {
 
   const { t } = useTranslation();
 

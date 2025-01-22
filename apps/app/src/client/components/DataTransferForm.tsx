@@ -7,7 +7,7 @@ import { useGrowiDocumentationUrl } from '~/stores-universal/context';
 
 import CustomCopyToClipBoard from './Common/CustomCopyToClipBoard';
 
-const DataTransferForm = (): JSX.Element => {
+const DataTransferForm = (): React.ReactElement => {
   const { t } = useTranslation('commons');
   const { transferKey, generateTransferKey } = useGenerateTransferKey();
   const { data: documentationUrl } = useGrowiDocumentationUrl();

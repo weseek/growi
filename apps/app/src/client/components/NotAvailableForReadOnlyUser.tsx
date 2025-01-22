@@ -7,7 +7,7 @@ import { useIsReadOnlyUser, useIsRomUserAllowedToComment } from '~/stores-univer
 import { NotAvailable } from './NotAvailable';
 
 export const NotAvailableForReadOnlyUser: React.FC<{
-  children: JSX.Element
+  children: React.ReactElement
 }> = React.memo(({ children }) => {
   const { t } = useTranslation();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
@@ -28,7 +28,7 @@ export const NotAvailableForReadOnlyUser: React.FC<{
 NotAvailableForReadOnlyUser.displayName = 'NotAvailableForReadOnlyUser';
 
 export const NotAvailableIfReadOnlyUserNotAllowedToComment: React.FC<{
-  children: JSX.Element
+  children: React.ReactElement
 }> = React.memo(({ children }) => {
   const { t } = useTranslation();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();

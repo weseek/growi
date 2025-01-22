@@ -5,7 +5,7 @@ import type { UncontrolledTooltipProps } from 'reactstrap';
 import { UncontrolledTooltip } from 'reactstrap';
 
 type NotAvailableProps = {
-  children: JSX.Element
+  children: React.ReactElement
   isDisabled: boolean
   title: string
   classNamePrefix?: string
@@ -14,7 +14,7 @@ type NotAvailableProps = {
 
 export const NotAvailable = ({
   children, isDisabled, title, classNamePrefix = 'grw-not-available', placement = 'top',
-}: NotAvailableProps): JSX.Element => {
+}: NotAvailableProps): React.ReactElement => {
 
   if (!isDisabled) {
     return children;

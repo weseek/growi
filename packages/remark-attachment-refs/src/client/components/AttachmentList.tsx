@@ -23,7 +23,7 @@ export const AttachmentList = ({
   isLoading,
   error,
   attachments,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
   const renderNoAttachmentsMessage = useCallback(() => {
     return (
       <div className="text-muted">

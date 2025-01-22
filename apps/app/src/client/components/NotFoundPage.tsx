@@ -10,7 +10,7 @@ type NotFoundPageProps = {
   path: string,
 }
 
-const NotFoundPage = (props: NotFoundPageProps): JSX.Element => {
+const NotFoundPage = (props: NotFoundPageProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const { path } = props;

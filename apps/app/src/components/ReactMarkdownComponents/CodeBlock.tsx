@@ -18,7 +18,7 @@ type InlineCodeBlockProps = {
   className?: string,
 }
 
-const InlineCodeBlockSubstance = (props: InlineCodeBlockProps): JSX.Element => {
+const InlineCodeBlockSubstance = (props: InlineCodeBlockProps): React.ReactElement => {
   const { children, className, ...rest } = props;
   return <code className={`code-inline ${className ?? ''}`} {...rest}>{children}</code>;
 };
@@ -49,7 +49,7 @@ function extractChildrenToIgnoreReactNode(children: ReactNode): ReactNode {
   return String(children).replace(/\n$/, '');
 }
 
-function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactNode }): JSX.Element {
+function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactNode }): React.ReactElement {
   // return alternative element
   //   in order to fix "CodeBlock string is be [object Object] if searched"
   // see: https://github.com/weseek/growi/pull/7484
@@ -84,7 +84,7 @@ type CodeBlockProps = {
   inline?: true,
 }
 
-export const CodeBlock = (props: CodeBlockProps): JSX.Element => {
+export const CodeBlock = (props: CodeBlockProps): React.ReactElement => {
 
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
   const { className, children, inline } = props;

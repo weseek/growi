@@ -22,7 +22,7 @@ type Props = {
   onScroll?: () => void,
 }
 
-export const CodeMirrorEditorReadOnly = ({ markdown, onScroll }: Props): JSX.Element => {
+export const CodeMirrorEditorReadOnly = ({ markdown, onScroll }: Props): React.ReactElement => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.READONLY);
 
   codeMirrorEditor?.initDoc(markdown);
