@@ -55,6 +55,23 @@ const getDeleteConfigValueForT = (DeleteConfigValue) => {
   }
 };
 
+const getTextForSecuritySetting = (securitySetting) => {
+  switch (securitySetting) {
+    case 'isShowRestrictedByOwner':
+      return {
+        isShowRestrictedByOwner: 'security_settings.displayed',
+        isShowRestrictedByGroup: 'security_settings.not_displayed'
+      };
+    case 'isShowRestrictedByGroup':
+      return {
+        isShowRestrictedByOwner: 'security_settings.not_displayed',
+        isShowRestrictedByGroup: 'security_settings.displayed'
+      };
+    default:
+      return null;
+  }
+};
+
 /**
  * Return true if "deletionType" is DeletionType.RecursiveDeletion or DeletionType.RecursiveCompleteDeletion.
  * @param deletionType Deletion type
@@ -90,7 +107,6 @@ class SecuritySetting extends React.Component {
     // render
     this.renderPageDeletePermission = this.renderPageDeletePermission.bind(this);
     this.renderPageDeletePermissionDropdown = this.renderPageDeletePermissionDropdown.bind(this);
-    this.securitySettingDropdown = this.securitySettingDropdown.bind(this);
   }
 
   async putSecuritySetting() {
@@ -186,16 +202,25 @@ class SecuritySetting extends React.Component {
     return;
   }
 
+  setTextForSecuritySetting(setState) {
+    const { adminGeneralSecurityContainer } = this.props;
 
-  securitySettingDropdown = () => {
-    const { t, adminGeneralSecurityContainer } = this.props;
-    const getDisplayText = () => {
-      const isDisplayed = adminGeneralSecurityContainer.setState.isShowRestrictedByOwener
-                        || adminGeneralSecurityContainer.setState.isShowRestrictedByGroup;
-      return isDisplayed ? t('security_settings.displayed') : t('security_settings.not_displayed');
-    };
-    const displayText = (t('security_settings.displayed'));
+    if (adminGeneralSecurityContainer.setState.isShowRestrictedByOwner) {
+      adminGeneralSecurityContainer.setState({
+        isShowRestrictedByOwner: true,
+        isShowRestrictedByGroup: false
+      });
+    } else {
+      adminGeneralSecurityContainer.setState({
+        isShowRestrictedByOwner: false,
+        isShowRestrictedByGroup: true
+      });
+    }
+  }
 
+
+  securitySettingDropdown = (currentState,setState) => {
+    const { t } = this.props;
     return (
       <div className="dropdown">
         <button
@@ -206,7 +231,7 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          {/* <span>{getDisplayText()}</span> */}
+          <span>{t(getTextForSecuritySetting(currentState))}</span>
         </button>
         <div
           className="dropdown-menu"
@@ -215,14 +240,14 @@ class SecuritySetting extends React.Component {
           <button
             className="dropdown-item"
             type="button"
-            // onClick={handleOwnerClick}
+            onClick={this.setTextForSecuritySetting(setState)}
           >
             {t('security_settings.displayed')}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            // onClick={handleGroupClick}
+            onClick={this.setTextForSecuritySetting(setState)}
           >
             {t('security_settings.not_displayed')}
           </button>
