@@ -29,7 +29,6 @@ type CreateAssistantFactoryReq = Request<undefined, Response, IApiv3AiAssistantC
 
 export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
-  const adminRequired = require('~/server/middlewares/admin-required')(crowi);
 
   const validator: ValidationChain[] = [
     body('name')
@@ -97,7 +96,7 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateAssistantFactoryReq, res: ApiV3Response) => {
       try {
         const aiAssistantData = { ...req.body, owner: req.user._id };
