@@ -21,7 +21,7 @@ export interface IGrowiAdditionalInfo {
 
 export interface IGrowiInfo<A extends object = IGrowiAdditionalInfo> {
   serviceInstanceId: string
-  appSiteUrl?: string
+  appSiteUrl: string
   osInfo: IGrowiOSInfo
   version: string
   type: GrowiServiceType
