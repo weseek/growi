@@ -109,3 +109,31 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
     },
   ];
 };
+
+
+type GetAiAssistantsFactory = (crowi: Crowi) => RequestHandler[];
+
+type GetAiAssistantsFactoryReq = Request<undefined, Response, undefined> & {
+  user: IUserHasId,
+}
+
+export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
+
+  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
+
+  return [
+    accessTokenParser, loginRequiredStrictly, certifyAiService,
+    async(req: GetAiAssistantsFactoryReq, res: ApiV3Response) => {
+      try {
+        const openaiService = getOpenaiService();
+        const aiAssistants = await openaiService?.getAiAssistants(req.user);
+
+        return res.apiv3({ aiAssistants });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Failed to get AiAssistants'));
+      }
+    },
+  ];
+};

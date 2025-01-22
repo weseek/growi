@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
+import type { IUserHasId } from '@growi/core';
 import { PageGrant, getIdForRef, isPopulated } from '@growi/core';
 import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -66,6 +67,7 @@ export interface IOpenaiService {
   // rebuildVectorStoreAll(): Promise<void>;
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
+  getAiAssistants(user: IUserHasId): Promise<AiAssistantDocument[]>;
 }
 class OpenaiService implements IOpenaiService {
 
@@ -518,6 +520,11 @@ class OpenaiService implements IOpenaiService {
     this.createVectorStoreFileWithStream(vectorStoreRelation, conditions);
 
     return aiAssistant;
+  }
+
+  async getAiAssistants(user: IUserHasId): Promise<AiAssistantDocument[]> {
+    const aiAssistants = await AiAssistantModel.find({ owner: user });
+    return aiAssistants;
   }
 
 }
