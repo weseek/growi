@@ -21,7 +21,7 @@ const IGNORED_COLLECTION_NAMES = [
   'sessions', 'rlflx', 'activities', 'attachmentFiles.files', 'attachmentFiles.chunks',
 ];
 
-const G2GDataTransfer = (): React.ReactElement => {
+const G2GDataTransfer = (): JSX.Element => {
   const { data: socket } = useAdminSocket();
   const { t } = useTranslation(['admin', 'commons']);
 

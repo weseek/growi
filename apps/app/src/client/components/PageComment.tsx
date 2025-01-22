@@ -38,7 +38,7 @@ type PageCommentProps = {
   isReadOnly: boolean,
 }
 
-export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps): React.ReactElement => {
+export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps): JSX.Element => {
 
   const {
     rendererOptions: rendererOptionsByProps,

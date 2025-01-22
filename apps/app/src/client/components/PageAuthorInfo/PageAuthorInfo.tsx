@@ -12,7 +12,7 @@ import { AuthorInfo } from '../AuthorInfo';
 import styles from './PageAuthorInfo.module.scss';
 
 
-export const PageAuthorInfo = memo((): React.ReactElement => {
+export const PageAuthorInfo = memo((): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
 
   const { data: currentPathname } = useCurrentPathname();

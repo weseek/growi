@@ -13,7 +13,7 @@ import styles from './CustomSidebarSubstance.module.scss';
 const logger = loggerFactory('growi:components:CustomSidebarSubstance');
 
 
-export const CustomSidebarSubstance = (): React.ReactElement => {
+export const CustomSidebarSubstance = (): JSX.Element => {
   const { data: rendererOptions } = useCustomSidebarOptions({ suspense: true });
   const { data: page } = useSWRxPageByPath('/Sidebar', { suspense: true });
 

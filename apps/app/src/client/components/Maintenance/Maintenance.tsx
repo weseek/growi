@@ -10,7 +10,7 @@ type Props = {
   currentUser: IUserHasId,
 };
 
-export const Maintenance = (props: Props): React.ReactElement => {
+export const Maintenance = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   useCurrentUser(props.currentUser ?? null);

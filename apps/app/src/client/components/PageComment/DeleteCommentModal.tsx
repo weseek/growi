@@ -22,7 +22,7 @@ export type DeleteCommentModalProps = {
   confirmToDelete: () => void,
 }
 
-export const DeleteCommentModal = (props: DeleteCommentModalProps): React.ReactElement => {
+export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element => {
   const {
     isShown, comment, errorMessage, cancelToDelete, confirmToDelete,
   } = props;

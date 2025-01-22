@@ -8,7 +8,7 @@ type Props = {
   children?: ReactNode,
 }
 
-const SearchResultLayout = ({ children }: Props): React.ReactElement => {
+const SearchResultLayout = ({ children }: Props): JSX.Element => {
 
   return (
     <BasicLayout className={`on-search ${commonStyles['on-search']}`}>

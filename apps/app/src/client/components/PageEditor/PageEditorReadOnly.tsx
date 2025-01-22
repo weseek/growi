@@ -16,7 +16,7 @@ type Props = {
   visibility?: boolean,
 }
 
-export const PageEditorReadOnly = react.memo(({ visibility }: Props): React.ReactElement => {
+export const PageEditorReadOnly = react.memo(({ visibility }: Props): JSX.Element => {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const { data: currentPage } = useSWRxCurrentPage();

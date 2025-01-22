@@ -1,5 +1,6 @@
+import type { ChangeEvent } from 'react';
 import React, {
-  useState, type FC, useCallback, useRef, type ChangeEvent,
+  useState, type FC, useCallback, useRef,
 } from 'react';
 
 import nodePath from 'path';
