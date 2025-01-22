@@ -279,6 +279,7 @@ describe('QuestionnaireCronService', () => {
       answeredAt: new Date(),
       growiInfo: {
         version: '1.0',
+        appSiteUrl: 'https://example.com',
         serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
         type: GrowiServiceType.cloud,
         wikiType: GrowiWikiType.open,
@@ -313,6 +314,7 @@ describe('QuestionnaireCronService', () => {
       answeredAt: new Date(),
       growiInfo: {
         version: '1.0',
+        appSiteUrl: 'https://example.com',
         appSiteUrlHashed: 'hashed',
         serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
         type: GrowiServiceType.cloud,
@@ -351,6 +353,7 @@ describe('QuestionnaireCronService', () => {
       commentText: 'answer text',
       growiInfo: {
         version: '1.0',
+        appSiteUrl: 'https://example.com',
         serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
         type: GrowiServiceType.cloud,
         wikiType: GrowiWikiType.open,
@@ -381,6 +384,7 @@ describe('QuestionnaireCronService', () => {
       commentText: 'answer text',
       growiInfo: {
         version: '1.0',
+        appSiteUrl: 'https://example.com',
         appSiteUrlHashed: 'hashed',
         serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
         type: GrowiServiceType.cloud,
@@ -432,6 +436,7 @@ describe('QuestionnaireCronService', () => {
     const savedOrders = await QuestionnaireOrder.find()
       .select('-condition._id -questions._id -questions.createdAt -questions.updatedAt')
       .sort({ _id: 1 });
+
     expect(JSON.parse(JSON.stringify(savedOrders))).toEqual([
       {
         _id: '63a8354837e7aa378e16f0b1',
