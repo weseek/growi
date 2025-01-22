@@ -15,7 +15,7 @@ type Props = CodeMirrorEditorProps & {
   editorKey: string | GlobalCodeMirrorEditorKey,
 }
 
-export const CodeMirrorEditorComment = memo((props: Props): JSX.Element => {
+export const CodeMirrorEditorComment = memo((props: Props): React.ReactElement => {
   const {
     editorKey,
     onSave, ...rest

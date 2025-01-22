@@ -25,7 +25,7 @@ const isV5Compatible = (meta: unknown): boolean => {
 };
 
 
-const PageRenameModal = (): JSX.Element => {
+const PageRenameModal = (): React.ReactElement => {
   const { t } = useTranslation();
 
   const { isUsersHomepage } = pagePathUtils;

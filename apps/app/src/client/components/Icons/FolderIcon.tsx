@@ -3,7 +3,7 @@ import React from 'react';
 type Props = {
   isOpen: boolean
 }
-export const FolderIcon = (props: Props): JSX.Element => {
+export const FolderIcon = (props: Props): React.ReactElement => {
   const { isOpen } = props;
 
   return (

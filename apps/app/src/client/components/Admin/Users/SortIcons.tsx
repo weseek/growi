@@ -6,7 +6,7 @@ type SortIconsProps = {
   isAsc: boolean,
 }
 
-export const SortIcons = (props: SortIconsProps): JSX.Element => {
+export const SortIcons = (props: SortIconsProps): React.ReactElement => {
 
   const { onClick, isSelected, isAsc } = props;
 

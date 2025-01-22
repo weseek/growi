@@ -47,7 +47,7 @@ const logger = loggerFactory('growi:components:CommentEditor');
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
 
 
-const CommentEditorLayout = ({ children }: { children: ReactNode }): JSX.Element => {
+const CommentEditorLayout = ({ children }: { children: ReactNode }): React.ReactElement => {
   return (
     <div className={`${styles['comment-editor-styles']} form`}>
       <div className="comment-form">
@@ -70,7 +70,7 @@ type CommentEditorProps = {
   onCommented?: () => void,
 }
 
-export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
+export const CommentEditor = (props: CommentEditorProps): React.ReactElement => {
 
   const {
     pageId, replyTo, revisionId,
@@ -312,7 +312,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 };
 
 
-export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
+export const CommentEditorPre = (props: CommentEditorProps): React.ReactElement => {
 
   const { onCommented, onCanceled, ...rest } = props;
 
@@ -325,7 +325,7 @@ export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
 
   const { t } = useTranslation('');
 
-  const render = useCallback((): JSX.Element => {
+  const render = useCallback((): React.ReactElement => {
     return (
       <CommentEditorLayout>
         <NotAvailableForGuest>

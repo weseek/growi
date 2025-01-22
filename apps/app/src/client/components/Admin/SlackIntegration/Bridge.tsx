@@ -18,7 +18,7 @@ type BridgeCoreProps = {
   hrClass: string,
   withProxy?: boolean,
 }
-const BridgeCore = (props: BridgeCoreProps): JSX.Element => {
+const BridgeCore = (props: BridgeCoreProps): React.ReactElement => {
   const {
     description, iconClass, iconName, hrClass, withProxy,
   } = props;
@@ -55,7 +55,7 @@ type BridgeProps = {
   totalCount: number,
   withProxy?: boolean,
 }
-export const Bridge = (props: BridgeProps): JSX.Element => {
+export const Bridge = (props: BridgeProps): React.ReactElement => {
   const { t } = useTranslation();
   const { errorCount, totalCount, withProxy } = props;
 

@@ -30,7 +30,7 @@ import styles from './LinkEditPreview.module.scss';
 
 const logger = loggerFactory('growi:components:LinkEditModal');
 
-export const LinkEditModal = (): JSX.Element => {
+export const LinkEditModal = (): React.ReactElement => {
   const { t } = useTranslation();
   const { data: currentPath } = useCurrentPagePath();
   const { data: rendererOptions } = usePreviewOptions();
@@ -169,7 +169,7 @@ export const LinkEditModal = (): JSX.Element => {
     return new Linker(linkerType, labelInputValue, reshapedLink);
   };
 
-  const renderLinkPreview = (): JSX.Element => {
+  const renderLinkPreview = (): React.ReactElement => {
     const linker = generateLink();
     return (
       <div className="d-flex justify-content-between mb-3 flex-column flex-sm-row">
@@ -236,7 +236,7 @@ export const LinkEditModal = (): JSX.Element => {
     setIsPreviewOpen(!isPreviewOpen);
   };
 
-  const renderLinkAndLabelForm = (): JSX.Element => {
+  const renderLinkAndLabelForm = (): React.ReactElement => {
     return (
       <>
         <h3 className="grw-modal-head">{t('link_edit.set_link_and_label')}</h3>
@@ -292,7 +292,7 @@ export const LinkEditModal = (): JSX.Element => {
     );
   };
 
-  const renderPathFormatForm = (): JSX.Element => {
+  const renderPathFormatForm = (): React.ReactElement => {
     return (
       <div className="card custom-card pt-3">
         <form className="mb-0">

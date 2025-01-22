@@ -2,6 +2,6 @@ import { Slides as SlidesSubstance, type SlidesProps } from '@growi/presentation
 
 import '@growi/presentation/dist/style.css';
 
-export const Slides = (props: SlidesProps): JSX.Element => {
+export const Slides = (props: SlidesProps): React.ReactElement => {
   return <SlidesSubstance {...props} />;
 };

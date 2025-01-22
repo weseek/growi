@@ -32,7 +32,7 @@ type Props = {
   isAllChecked?: boolean,
 };
 
-const SelectCollectionsModal = (props: Props): JSX.Element => {
+const SelectCollectionsModal = (props: Props): React.ReactElement => {
   const { t } = useTranslation();
 
   const {

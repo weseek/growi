@@ -20,7 +20,7 @@ const authLabel = {
 };
 
 
-export const ExternalAuthButton = ({ authType }: {authType: IExternalAuthProviderType}): JSX.Element => {
+export const ExternalAuthButton = ({ authType }: {authType: IExternalAuthProviderType}): React.ReactElement => {
   const { t } = useTranslation();
 
   const key = `btn-auth-${authType.toString()}`;

@@ -7,7 +7,7 @@ import {
 
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 
-const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
+const GrantedGroupsInheritanceSelectModal = (): React.ReactElement => {
   const { t } = useTranslation();
   const { data: modalData, close: closeModal } = useGrantedGroupsInheritanceSelectModal();
   const [onlyInheritUserRelatedGrantedGroups, setOnlyInheritUserRelatedGrantedGroups] = useState(false);

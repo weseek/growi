@@ -25,7 +25,7 @@ type Props = {
   linkedPagePath: LinkedPagePath,
 }
 
-export const CollapsedParentsDropdown = (props: Props): JSX.Element => {
+export const CollapsedParentsDropdown = (props: Props): React.ReactElement => {
   const { linkedPagePath } = props;
 
   const ancestorPathAndPathNames = useMemo(() => getAncestorPathAndPathNames(linkedPagePath), [linkedPagePath]);

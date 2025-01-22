@@ -15,7 +15,7 @@ interface Props extends ComponentPropsWithoutRef<'span'>{
 /**
  * Icon for G2G transfer status
  */
-const G2GDataTransferStatusIcon = ({ status, className, ...props }: Props): JSX.Element => {
+const G2GDataTransferStatusIcon = ({ status, className, ...props }: Props): React.ReactElement => {
   if (status === G2G_PROGRESS_STATUS.IN_PROGRESS) {
     return (
       <LoadingSpinner className={`${className}`} aria-label="in progress" {...props} />

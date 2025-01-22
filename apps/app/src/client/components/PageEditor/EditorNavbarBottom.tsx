@@ -9,7 +9,7 @@ const moduleClass = styles['grw-editor-navbar-bottom'];
 const SavePageControls = dynamic(() => import('~/client/components/SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
 const OptionsSelector = dynamic(() => import('~/client/components/PageEditor/OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
 
-const EditorNavbarBottom = (): JSX.Element => {
+const EditorNavbarBottom = (): React.ReactElement => {
 
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
 

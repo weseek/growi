@@ -26,7 +26,7 @@ type Props = {
 
 const AdminLayout = ({
   children, componentTitle,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
 
   return (
     <RawLayout>

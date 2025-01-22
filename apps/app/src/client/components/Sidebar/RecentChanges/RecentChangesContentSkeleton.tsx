@@ -24,7 +24,7 @@ const SkeletonItem = () => {
   );
 };
 
-const RecentChangesContentSkeleton = (): JSX.Element => {
+const RecentChangesContentSkeleton = (): React.ReactElement => {
 
   return (
     <div className="grw-recent-changes py-3">

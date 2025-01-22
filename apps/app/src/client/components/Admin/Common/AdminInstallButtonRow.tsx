@@ -6,7 +6,7 @@ type Props = {
 
 }
 
-export const AdminInstallButtonRow = (props: Props): JSX.Element => {
+export const AdminInstallButtonRow = (props: Props): React.ReactElement => {
   return (
     <div className="row my-3">
       <div className="mx-auto">

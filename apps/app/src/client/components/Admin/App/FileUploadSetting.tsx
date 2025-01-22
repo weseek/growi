@@ -26,7 +26,7 @@ type FileUploadSettingMoleculeProps = {
   onChangeFileUploadType: (e: ChangeEvent, type: string) => void
 } & AwsSettingMoleculeProps & GcsSettingMoleculeProps & AzureSettingMoleculeProps;
 
-export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMoleculeProps): JSX.Element => {
+export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMoleculeProps): React.ReactElement => {
   const { t } = useTranslation(['admin', 'commons']);
 
   return (
@@ -136,7 +136,7 @@ type FileUploadSettingProps = {
   adminAppContainer: AdminAppContainer
 }
 
-const FileUploadSetting = (props: FileUploadSettingProps): JSX.Element => {
+const FileUploadSetting = (props: FileUploadSettingProps): React.ReactElement => {
   const { t } = useTranslation(['admin', 'commons']);
   const { adminAppContainer } = props;
 
