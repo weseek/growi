@@ -524,21 +524,25 @@ class OpenaiService implements IOpenaiService {
   }
 
   async getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants> {
-    const myAiAssistants = await AiAssistantModel.find({ owner: user });
-
     const userGroups = [
       ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
       ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
     ].map(group => group.toString());
 
-    const teamAiAssistantsConditions: mongoose.FilterQuery<AiAssistantDocument> = {
+    const assistants = await AiAssistantModel.find({
       $or: [
+        // Case 1: Assistants owned by the user
+        { owner: user },
+
+        // Case 2: Public assistants owned by others
         {
           $and: [
             { owner: { $ne: user } },
             { accessScope: AiAssistantAccessScope.PUBLIC_ONLY },
           ],
         },
+
+        // Case 3: Group-restricted assistants where user is in granted groups
         {
           $and: [
             { owner: { $ne: user } },
@@ -547,13 +551,11 @@ class OpenaiService implements IOpenaiService {
           ],
         },
       ],
-    };
-
-    const teamAiAssistants = await AiAssistantModel.find(teamAiAssistantsConditions);
+    });
 
     return {
-      myAiAssistants: myAiAssistants as AiAssistant[] ?? [],
-      teamAiAssistants: teamAiAssistants as AiAssistant[] ?? [],
+      myAiAssistants: assistants.filter(assistant => assistant.owner.toString() === user._id.toString()) as AiAssistant[] ?? [],
+      teamAiAssistants: assistants.filter(assistant => assistant.owner.toString() !== user._id.toString()) as AiAssistant[] ?? [],
     };
   }
 
