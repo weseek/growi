@@ -46,7 +46,7 @@ export const BasicLayout = ({ children, className }: Props): React.ReactElement 
   return (
     <RawLayout className={`${moduleClass} ${className ?? ''}`}>
       <div className="page-wrapper flex-row">
-        <div className="z-2">
+        <div className="z-2 d-print-none">
           <Sidebar />
         </div>
 
