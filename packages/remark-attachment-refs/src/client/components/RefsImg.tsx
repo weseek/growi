@@ -29,7 +29,7 @@ export const RefsImgSubstance = React.memo(({
   display, grid, gridGap, noCarousel,
 
   isImmutable,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
   const refsContext = useMemo(() => {
     const options = {
       pagePath,
@@ -78,11 +78,11 @@ export const RefsImgSubstance = React.memo(({
   );
 });
 
-export const RefsImg = React.memo((props: Props): JSX.Element => {
+export const RefsImg = React.memo((props: Props): React.ReactElement => {
   return <RefsImgSubstance {...props} />;
 });
 
-export const RefsImgImmutable = React.memo((props: Omit<Props, 'isImmutable'>): JSX.Element => {
+export const RefsImgImmutable = React.memo((props: Omit<Props, 'isImmutable'>): React.ReactElement => {
   return <RefsImgSubstance {...props} isImmutable />;
 });
 

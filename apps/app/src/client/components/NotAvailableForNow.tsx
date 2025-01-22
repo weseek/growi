@@ -6,10 +6,10 @@ import { NotAvailable } from './NotAvailable';
 
 
 type NotAvailableForNowProps = {
-  children: JSX.Element
+  children: React.ReactElement
 }
 
-export const NotAvailableForNow = React.memo(({ children }: NotAvailableForNowProps): JSX.Element => {
+export const NotAvailableForNow = React.memo(({ children }: NotAvailableForNowProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const title = t('Not available in this version');

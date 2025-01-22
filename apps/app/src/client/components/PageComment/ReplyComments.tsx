@@ -27,7 +27,7 @@ type ReplycommentsProps = {
   onComment: () => void,
 }
 
-export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
+export const ReplyComments = (props: ReplycommentsProps): React.ReactElement => {
 
   const {
     rendererOptions, isReadOnly, revisionId, revisionCreatedAt, currentUser, replyList,

@@ -13,7 +13,7 @@ type ShareLinkTrProps = {
   onDelete?: () => void,
 }
 
-const ShareLinkTr = (props: ShareLinkTrProps): JSX.Element => {
+const ShareLinkTr = (props: ShareLinkTrProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const { isAdmin, shareLink, onDelete } = props;
@@ -69,7 +69,7 @@ type Props = {
   isAdmin?: boolean,
 }
 
-const ShareLinkList = (props: Props): JSX.Element => {
+const ShareLinkList = (props: Props): React.ReactElement => {
 
   const { t } = useTranslation('commons');
 

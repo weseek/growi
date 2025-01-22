@@ -14,7 +14,7 @@ const IconWithTooltip = ({
 }: {
 id: string,
 label: string,
-children: JSX.Element,
+children: React.ReactElement,
 additionalClasses: string
 }) => (
   <>
@@ -23,7 +23,7 @@ additionalClasses: string
   </>
 );
 
-export const UISettings = (): JSX.Element => {
+export const UISettings = (): React.ReactElement => {
   const { t } = useTranslation();
   const {
     isDockMode, isCollapsedMode,

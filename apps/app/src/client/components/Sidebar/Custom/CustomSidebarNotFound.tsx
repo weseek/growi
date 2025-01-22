@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useCreatePage } from '~/client/services/create-page';
 
-export const SidebarNotFound = (): JSX.Element => {
+export const SidebarNotFound = (): React.ReactElement => {
   const { t } = useTranslation();
 
   const { create } = useCreatePage();

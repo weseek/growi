@@ -36,7 +36,7 @@ type BotTypeCardProps = {
   onBotTypeSelectHandler: (botType: SlackbotType) => void,
 };
 
-export const BotTypeCard = (props: BotTypeCardProps): JSX.Element => {
+export const BotTypeCard = (props: BotTypeCardProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const { isActive, botType, onBotTypeSelectHandler } = props;

@@ -35,7 +35,7 @@ type Props = {
   updateOptionsMap: (newOptionsMap: any) => void,
 };
 
-const G2GDataTransferExportForm = (props: Props): JSX.Element => {
+const G2GDataTransferExportForm = (props: Props): React.ReactElement => {
   const { t } = useTranslation('admin');
 
   const {
@@ -66,7 +66,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     });
   }, [optionsMap, updateOptionsMap]);
 
-  const ImportItems = ({ collectionNames }): JSX.Element => {
+  const ImportItems = ({ collectionNames }): React.ReactElement => {
     const toggleCheckbox = (collectionName, bool) => {
       const collections = new Set(selectedCollections);
       if (bool) {
@@ -122,7 +122,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     );
   };
 
-  const WarnForGroups = ({ errors }: { errors: Error[] }): JSX.Element => {
+  const WarnForGroups = ({ errors }: { errors: Error[] }): React.ReactElement => {
     if (errors.length === 0) {
       return <></>;
     }
@@ -138,7 +138,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     );
   };
 
-  const GroupImportItems = ({ groupList, groupName, errors }): JSX.Element => {
+  const GroupImportItems = ({ groupList, groupName, errors }): React.ReactElement => {
     const collectionNames = groupList.filter((groupCollectionName) => {
       return allCollectionNames.includes(groupCollectionName);
     });
@@ -156,7 +156,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
     );
   };
 
-  const OtherImportItems = (): JSX.Element => {
+  const OtherImportItems = (): React.ReactElement => {
     const collectionNames = allCollectionNames.filter((collectionName) => {
       return !ALL_GROUPED_COLLECTIONS.includes(collectionName);
     });

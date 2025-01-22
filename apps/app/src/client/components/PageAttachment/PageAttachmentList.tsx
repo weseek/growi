@@ -11,7 +11,7 @@ type Props = {
   isUserLoggedIn?: boolean,
 }
 
-export const PageAttachmentList = (props: Props): JSX.Element => {
+export const PageAttachmentList = (props: Props): React.ReactElement => {
   const { t } = useTranslation();
 
   const {

@@ -14,7 +14,7 @@ type Props = {
   searchKeyword: string,
   getItemProps: GetItemProps,
 }
-export const SearchResultMenuItem = (props: Props): JSX.Element => {
+export const SearchResultMenuItem = (props: Props): React.ReactElement => {
   const { activeIndex, searchKeyword, getItemProps } = props;
 
   const debouncedKeyword = useDebounce(searchKeyword, 500);

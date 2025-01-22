@@ -24,7 +24,7 @@ type Props = {
   onUpload?: (files: File[]) => void,
 }
 
-export const AttachmentsDropup = (props: Props): JSX.Element => {
+export const AttachmentsDropup = (props: Props): React.ReactElement => {
   const { acceptedUploadFileType, editorKey, onUpload } = props;
 
   const [isOpen, setOpen] = useState(false);
