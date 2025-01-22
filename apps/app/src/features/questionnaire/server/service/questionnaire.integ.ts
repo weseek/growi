@@ -1,4 +1,4 @@
-import type { IGrowiInfo } from '^/../../packages/core/dist';
+import type { IGrowiInfo } from '@growi/core/dist/interfaces';
 import { mock } from 'vitest-mock-extended';
 
 import pkg from '^/package.json';
@@ -38,9 +38,6 @@ describe('QuestionnaireService', () => {
           });
         }
       }),
-      // appService: {
-      //   getSiteUrl: () => 'http://growi.test.jp',
-      // },
     });
     const userModelFactory = (await import('~/server/models/user')).default;
     User = userModelFactory(crowiMock);
