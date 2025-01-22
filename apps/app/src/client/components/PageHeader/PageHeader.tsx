@@ -12,7 +12,7 @@ import styles from './PageHeader.module.scss';
 
 const moduleClass = styles['page-header'] ?? '';
 
-export const PageHeader = (): React.ReactElement => {
+export const PageHeader = (): JSX.Element => {
 
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: pageControlsX } = usePageControlsX();

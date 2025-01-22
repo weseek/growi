@@ -65,7 +65,7 @@ type PageOperationMenuItemsProps = {
   isLinkSharingDisabled?: boolean,
 }
 
-const PageOperationMenuItems = (props: PageOperationMenuItemsProps): React.ReactElement => {
+const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
@@ -182,7 +182,7 @@ type CreateTemplateMenuItemsProps = {
   onClickTemplateMenuItem: (isPageTemplateModalShown: boolean) => void,
 }
 
-const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): React.ReactElement => {
+const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { onClickTemplateMenuItem } = props;
@@ -211,7 +211,7 @@ type GrowiContextualSubNavigationProps = {
   isLinkSharingDisabled?: boolean,
 };
 
-const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): React.ReactElement => {
+const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
   const { currentPage } = props;
 

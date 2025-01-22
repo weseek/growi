@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 
 type Props = {
   shouldRender: boolean | (() => boolean),
-  children: React.ReactElement,
+  children: JSX.Element,
 }
 
-export const LazyRenderer = (props: Props): React.ReactElement => {
+export const LazyRenderer = (props: Props): JSX.Element => {
   const { shouldRender: _shouldRender, children } = props;
 
   const [isActivated, setActivated] = useState(false);

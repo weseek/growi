@@ -48,7 +48,7 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
 };
 
 
-export const IdenticalPathPage = (): React.ReactElement => {
+export const IdenticalPathPage = (): JSX.Element => {
 
   const { data: currentPath } = useCurrentPathname();
 

@@ -62,7 +62,7 @@ const PaginationWrapper: FC<Props> = memo((props: Props) => {
    * this function set << & <
    */
   const generateFirstPrev = useCallback(() => {
-    const paginationItems: React.ReactElement[] = [];
+    const paginationItems: JSX.Element[] = [];
     if (activePage !== 1) {
       paginationItems.push(
         <PaginationItem key="painationItemFirst">
@@ -92,7 +92,7 @@ const PaginationWrapper: FC<Props> = memo((props: Props) => {
    * this function set  numbers
    */
   const generatePaginations = useCallback(() => {
-    const paginationItems: React.ReactElement[] = [];
+    const paginationItems: JSX.Element[] = [];
     for (let number = paginationStart; number <= maxViewPageNum; number++) {
       paginationItems.push(
         <PaginationItem key={`paginationItem-${number}`} active={number === activePage}>
@@ -111,7 +111,7 @@ const PaginationWrapper: FC<Props> = memo((props: Props) => {
    * this function set > & >>
    */
   const generateNextLast = useCallback(() => {
-    const paginationItems: React.ReactElement[] = [];
+    const paginationItems: JSX.Element[] = [];
     if (totalPage !== activePage) {
       paginationItems.push(
         <PaginationItem key="painationItemNext">

@@ -12,7 +12,7 @@ const PageRedirectedAlert = dynamic(() => import('./PageRedirectedAlert').then(m
 const FixPageGrantAlert = dynamic(() => import('./FixPageGrantAlert').then(mod => mod.FixPageGrantAlert), { ssr: false });
 const TrashPageAlert = dynamic(() => import('./TrashPageAlert').then(mod => mod.TrashPageAlert), { ssr: false });
 
-export const PageAlerts = (): React.ReactElement => {
+export const PageAlerts = (): JSX.Element => {
 
   const { data: isNotFound } = useIsNotFound();
 

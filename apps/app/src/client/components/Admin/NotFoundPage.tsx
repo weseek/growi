@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-export const AdminNotFoundPage = (): React.ReactElement => {
+export const AdminNotFoundPage = (): JSX.Element => {
   const { t } = useTranslation('commons');
 
   return (

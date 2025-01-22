@@ -7,7 +7,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRxPersonalSettings, usePersonalSettings } from '~/stores/personal-settings';
 
 
-const ApiSettings = React.memo((): React.ReactElement => {
+const ApiSettings = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
   const { mutate: mutateDatabaseData } = useSWRxPersonalSettings();

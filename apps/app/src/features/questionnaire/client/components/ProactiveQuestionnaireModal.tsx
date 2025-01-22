@@ -12,7 +12,7 @@ type ModalProps = {
   onClose: () => void,
 };
 
-const QuestionnaireCompletionModal = (props: ModalProps): React.ReactElement => {
+const QuestionnaireCompletionModal = (props: ModalProps): JSX.Element => {
   const { t } = useTranslation('commons');
 
   const { isOpen, onClose } = props;
@@ -40,7 +40,7 @@ const QuestionnaireCompletionModal = (props: ModalProps): React.ReactElement => 
   );
 };
 
-const ProactiveQuestionnaireModal = (props: ModalProps): React.ReactElement => {
+const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
   const { t } = useTranslation('commons');
 
   const { isOpen, onClose } = props;

@@ -18,7 +18,7 @@ const logger = loggerFactory('growi:page:_document');
 type HeadersForGrowiPluginProps = {
   pluginResourceEntries: GrowiPluginResourceEntries;
 }
-const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): React.ReactElement => {
+const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element => {
   const { pluginResourceEntries } = props;
 
   return (
@@ -79,28 +79,28 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     };
   }
 
-  renderCustomScript(customScript: string | null): React.ReactElement {
+  renderCustomScript(customScript: string | null): JSX.Element {
     if (customScript == null || customScript.length === 0) {
       return <></>;
     }
     return <script id="customScript" dangerouslySetInnerHTML={{ __html: customScript }} />;
   }
 
-  renderCustomCss(customCss: string | null): React.ReactElement {
+  renderCustomCss(customCss: string | null): JSX.Element {
     if (customCss == null || customCss.length === 0) {
       return <></>;
     }
     return <style dangerouslySetInnerHTML={{ __html: customCss }} />;
   }
 
-  renderCustomNoscript(customNoscript: string | null): React.ReactElement {
+  renderCustomNoscript(customNoscript: string | null): JSX.Element {
     if (customNoscript == null || customNoscript.length === 0) {
       return <></>;
     }
     return <noscript dangerouslySetInnerHTML={{ __html: customNoscript }} />;
   }
 
-  override render(): React.ReactElement {
+  override render(): JSX.Element {
     const {
       customCss, customScript, customNoscript,
       themeHref, pluginResourceEntries,

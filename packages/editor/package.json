@@ -20,8 +20,8 @@
   "dependencies": {
     "lib0": "^0.2.94",
     "markdown-table": "^3.0.3",
-    "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "// comments for devDependencies": {
     "string-width": "5.0.0 or above exports only ESM.",
@@ -46,8 +46,8 @@
     "@replit/codemirror-emacs": "^6.1.0",
     "@replit/codemirror-vim": "^6.2.1",
     "@replit/codemirror-vscode-keymap": "^6.0.2",
-    "@types/react": "^18.3.0",
-    "@types/react-dom": "^18.3.0",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
     "@uiw/codemirror-theme-eclipse": "^4.23.5",
     "@uiw/codemirror-theme-kimbie": "^4.23.5",
     "@uiw/codemirror-themes": "^4.23.5",

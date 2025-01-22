@@ -75,7 +75,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
     };
   }, [t]);
 
-  const getTargetPageToRender = (pagesMap, keys): {title: string, component: React.ReactElement} => {
+  const getTargetPageToRender = (pagesMap, keys): {title: string, component: JSX.Element} => {
     return keys.reduce((pagesMap, key) => {
       const page = pagesMap[key];
       if (page == null) {
@@ -148,7 +148,7 @@ type LayoutProps = Props & {
   children?: ReactNode
 }
 
-const Layout = ({ children, ...props }: LayoutProps): React.ReactElement => {
+const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 

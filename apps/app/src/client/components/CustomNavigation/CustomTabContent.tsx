@@ -15,7 +15,7 @@ type Props = {
   additionalClassNames?: string[],
 }
 
-const CustomTabContent = (props: Props): React.ReactElement => {
+const CustomTabContent = (props: Props): JSX.Element => {
 
   const { activeTab, navTabMapping, additionalClassNames } = props;
 

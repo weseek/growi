@@ -9,7 +9,7 @@ type Props ={
   adminMarkDownContainer: AdminMarkDownContainer
 }
 
-export const WhitelistInput = (props: Props): React.ReactElement => {
+export const WhitelistInput = (props: Props): JSX.Element => {
 
   const { t } = useTranslation('admin');
   const { adminMarkDownContainer } = props;

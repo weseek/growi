@@ -14,7 +14,7 @@ type Props = {
   onClose?: () => void,
 }
 
-export const AttachmentsDropdownItem = (props: Props): React.ReactElement => {
+export const AttachmentsDropdownItem = (props: Props): JSX.Element => {
 
   const {
     acceptedUploadFileType,

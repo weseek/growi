@@ -14,7 +14,7 @@ type Props = {
   expandContentWidth?: boolean,
 }
 
-export const PageViewLayout = (props: Props): React.ReactElement => {
+export const PageViewLayout = (props: Props): JSX.Element => {
   const {
     className,
     children, headerContents, sideContents, footerContents,

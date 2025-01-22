@@ -10,7 +10,7 @@ import { useSWRxIsQuestionnaireEnabled } from '~/features/questionnaire/client/s
 import { useCurrentUser } from '~/stores-universal/context';
 
 
-export const QuestionnaireSettings = (): React.ReactElement => {
+export const QuestionnaireSettings = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser, error: errorCurrentUser } = useCurrentUser();
   const { data: growiIsQuestionnaireEnabled } = useSWRxIsQuestionnaireEnabled();
