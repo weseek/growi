@@ -6,6 +6,7 @@ import { body, validationResult } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { RegistrationMode } from '~/interfaces/registration-mode';
+import type Crowi from '~/server/crowi';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 import { configManager } from '~/server/service/config-manager';
 import { growiInfoService } from '~/server/service/growi-info';
@@ -67,7 +68,7 @@ async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, tem
   });
 }
 
-export const completeRegistrationAction = (crowi) => {
+export const completeRegistrationAction = (crowi: Crowi) => {
   const User = crowi.model('User');
   const activityEvent = crowi.event('activity');
   const {
@@ -207,7 +208,7 @@ export const validateRegisterForm = (req, res, next) => {
   return res.apiv3Err(extractedErrors, 400);
 };
 
-async function makeRegistrationEmailToken(email, crowi) {
+async function makeRegistrationEmailToken(email, crowi: Crowi) {
   const {
     mailService,
     localeDir,
@@ -242,7 +243,7 @@ async function makeRegistrationEmailToken(email, crowi) {
   });
 }
 
-export const registerAction = (crowi) => {
+export const registerAction = (crowi: Crowi) => {
   const User = crowi.model('User');
 
   return async function(req, res) {

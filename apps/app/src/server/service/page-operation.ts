@@ -6,6 +6,7 @@ import type { PageOperationDocument } from '~/server/models/page-operation';
 import PageOperation from '~/server/models/page-operation';
 import loggerFactory from '~/utils/logger';
 
+import type Crowi from '../crowi';
 import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { collectAncestorPaths } from '../util/collect-ancestor-paths';
 
@@ -23,9 +24,9 @@ const {
 
 class PageOperationService {
 
-  crowi: any;
+  crowi: Crowi;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
   }
 

@@ -38,6 +38,7 @@ import {
 import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
+import type Crowi from '~/server/crowi';
 import type { CreateMethod } from '~/server/models/page';
 import {
   type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
@@ -166,7 +167,7 @@ class PageCursorsForDescendantsFactory {
 
 class PageService implements IPageService {
 
-  crowi: any;
+  crowi: Crowi;
 
   pageEvent: EventEmitter & {
     onCreate,
@@ -180,7 +181,7 @@ class PageService implements IPageService {
 
   pageGrantService: IPageGrantService;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
     this.tagEvent = crowi.event('tag');

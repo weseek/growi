@@ -16,6 +16,7 @@ import mongoose from 'mongoose';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
+import type Crowi from '../crowi';
 import { Attachment } from '../models/attachment';
 import type { PageDocument, PageModel } from '../models/page';
 import { configManager } from '../service/config-manager';
@@ -33,7 +34,7 @@ fs.readFile(path.join(projectRoot, DEFAULT_USER_IMAGE_PATH), (err, buffer) => {
 });
 
 
-module.exports = function(crowi) {
+module.exports = function(crowi: Crowi) {
 
   const isUserImageAttachment = (userImageUrlCached: string): boolean => {
     return /^\/attachment\/.+/.test(userImageUrlCached);

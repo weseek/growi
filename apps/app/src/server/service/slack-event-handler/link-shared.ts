@@ -5,6 +5,7 @@ import type {
 } from '@slack/web-api';
 import urljoin from 'url-join';
 
+import type Crowi from '~/server/crowi';
 import type { EventActionsPermission } from '~/server/interfaces/slack-integration/events';
 import loggerFactory from '~/utils/logger';
 
@@ -19,9 +20,9 @@ const logger = loggerFactory('growi:service:SlackEventHandler:link-shared');
 
 export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEvent> {
 
-  crowi!: any;
+  crowi: Crowi;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
   }
 

@@ -1,8 +1,9 @@
 import loggerFactory from '~/utils/logger';
 
+import type Crowi from '../crowi';
 import S2sMessage from '../models/vo/s2s-message';
 
-import type { ConfigManager } from './config-manager';
+import type { IConfigManagerForApp } from './config-manager';
 import type { S2sMessagingService } from './s2s-messaging/base';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
@@ -10,15 +11,15 @@ const logger = loggerFactory('growi:service:FileUploaderSwitch');
 
 class FileUploaderSwitch implements S2sMessageHandlable {
 
-  crowi: any;
+  crowi: Crowi;
 
-  configManager: ConfigManager;
+  configManager: IConfigManagerForApp;
 
   s2sMessagingService: S2sMessagingService;
 
   lastLoadedAt?: Date;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;

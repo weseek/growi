@@ -8,10 +8,11 @@ import uglifycss from 'uglifycss';
 import { growiPluginService } from '~/features/growi-plugin/server/services';
 import loggerFactory from '~/utils/logger';
 
+import type Crowi from '../crowi';
 import S2sMessage from '../models/vo/s2s-message';
 
 
-import type { ConfigManager } from './config-manager';
+import type { IConfigManagerForApp } from './config-manager';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 
@@ -23,7 +24,7 @@ const logger = loggerFactory('growi:service:CustomizeService');
  */
 class CustomizeService implements S2sMessageHandlable {
 
-  configManager: ConfigManager;
+  configManager: IConfigManagerForApp;
 
   s2sMessagingService: any;
 
@@ -41,7 +42,7 @@ class CustomizeService implements S2sMessageHandlable {
 
   forcedColorScheme?: ColorScheme;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
     this.appService = crowi.appService;

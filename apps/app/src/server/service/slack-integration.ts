@@ -13,12 +13,13 @@ import mongoose from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 
+import type Crowi from '../crowi';
 import type { EventActionsPermission } from '../interfaces/slack-integration/events';
 import S2sMessage from '../models/vo/s2s-message';
 import { SlackCommandHandlerError } from '../models/vo/slack-command-handler-error';
 import { slackLegacyUtilFactory } from '../util/slack-legacy';
 
-import type { ConfigManager } from './config-manager';
+import type { IConfigManagerForApp } from './config-manager';
 import type { S2sMessagingService } from './s2s-messaging/base';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 import { LinkSharedEventHandler } from './slack-event-handler/link-shared';
@@ -31,9 +32,9 @@ type S2sMessageForSlackIntegration = S2sMessage & { updatedAt: Date };
 
 export class SlackIntegrationService implements S2sMessageHandlable {
 
-  crowi!: any;
+  crowi: Crowi;
 
-  configManager!: ConfigManager;
+  configManager: IConfigManagerForApp;
 
   s2sMessagingService!: S2sMessagingService;
 
@@ -41,7 +42,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
 
   linkSharedHandler!: LinkSharedEventHandler;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;

@@ -1,5 +1,6 @@
 import axiosRetry from 'axios-retry';
 
+import type Crowi from '~/server/crowi';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 import { getRandomIntInRange } from '~/utils/rand';
@@ -28,12 +29,11 @@ axiosRetry(axios, { retries: 3 });
  */
 class QuestionnaireCronService {
 
-  crowi: any;
+  crowi: Crowi;
 
   cronJob: any;
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
   }
 
