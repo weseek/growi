@@ -6,7 +6,7 @@ import { createPortal } from 'react-dom';
 
 type Props = DetailedHTMLProps<ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>
 
-export const LightBox = (props: Props): JSX.Element => {
+export const LightBox = (props: Props): React.ReactElement => {
   const [toggler, setToggler] = useState(false);
   const { alt, ...rest } = props;
 

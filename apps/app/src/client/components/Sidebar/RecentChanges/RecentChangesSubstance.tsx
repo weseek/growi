@@ -36,7 +36,7 @@ type PageItemProps = PageItemLowerProps & {
   onClickTag?: (tagName: string) => void,
 }
 
-const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
+const PageItemLower = memo(({ page }: PageItemLowerProps): React.ReactElement => {
   return (
     <div className={`${pageItemLowerClass} d-flex justify-content-between grw-recent-changes-item-lower`}>
       <div className="d-flex align-items-center">
@@ -58,7 +58,7 @@ const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
 PageItemLower.displayName = 'PageItemLower';
 
 type PageTagsProps = PageItemProps;
-const PageTags = memo((props: PageTagsProps): JSX.Element => {
+const PageTags = memo((props: PageTagsProps): React.ReactElement => {
   const { page, isSmall, onClickTag } = props;
 
   if (isSmall || (page.tags.length === 0)) {
@@ -87,7 +87,7 @@ const PageTags = memo((props: PageTagsProps): JSX.Element => {
 });
 PageTags.displayName = 'PageTags';
 
-const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Element => {
+const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): React.ReactElement => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
@@ -153,7 +153,7 @@ type HeaderProps = {
 
 export const RecentChangesHeader = ({
   isSmall, onSizeChange, isWipPageShown, onWipPageShownChange,
-}: HeaderProps): JSX.Element => {
+}: HeaderProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const { mutate } = useSWRINFxRecentlyUpdated(isWipPageShown, { suspense: true });
@@ -230,7 +230,7 @@ type ContentProps = {
   isWipPageShown: boolean,
 }
 
-export const RecentChangesContent = ({ isSmall, isWipPageShown }: ContentProps): JSX.Element => {
+export const RecentChangesContent = ({ isSmall, isWipPageShown }: ContentProps): React.ReactElement => {
   const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(isWipPageShown, { suspense: true });
   const { data } = swrInifinitexRecentlyUpdated;
 

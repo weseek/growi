@@ -8,7 +8,7 @@ import { useShortcutsModal } from '~/stores/modal';
 import styles from './ShortcutsModal.module.scss';
 
 
-const ShortcutsModal = (): JSX.Element => {
+const ShortcutsModal = (): React.ReactElement => {
   const { t } = useTranslation();
 
   const { data: status, close } = useShortcutsModal();

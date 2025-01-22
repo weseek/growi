@@ -16,7 +16,7 @@ type Props = {
   relatedPages?: IPageHasId[],
 }
 
-const UserGroupPageList = (props: Props): JSX.Element => {
+const UserGroupPageList = (props: Props): React.ReactElement => {
   const { t } = useTranslation('admin');
   const { userGroupId, relatedPages } = props;
 

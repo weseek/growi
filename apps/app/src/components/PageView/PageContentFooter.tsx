@@ -9,7 +9,7 @@ export type PageContentFooterProps = {
   page: IPage | IPagePopulatedToShowRevision,
 }
 
-export const PageContentFooter = (props: PageContentFooterProps): JSX.Element => {
+export const PageContentFooter = (props: PageContentFooterProps): React.ReactElement => {
 
   const { page } = props;
 

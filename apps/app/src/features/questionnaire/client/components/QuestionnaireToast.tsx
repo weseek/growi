@@ -18,7 +18,7 @@ type QuestionnaireToastProps = {
   questionnaireOrder: IQuestionnaireOrderHasId,
 }
 
-const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JSX.Element => {
+const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): React.ReactElement => {
   const { open: openQuestionnaireModal } = useQuestionnaireModal();
   const { data: currentUser } = useCurrentUser();
   const lang = currentUser?.lang;

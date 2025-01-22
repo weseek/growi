@@ -23,7 +23,7 @@ const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./De
 
 const PageTimeline = dynamic(() => import('./PageTimeline').then(mod => mod.PageTimeline), { ssr: false });
 
-export const DescendantsPageListModal = (): JSX.Element => {
+export const DescendantsPageListModal = (): React.ReactElement => {
   const { t } = useTranslation();
 
   const [activeTab, setActiveTab] = useState('pagelist');

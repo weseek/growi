@@ -14,7 +14,7 @@ type PageListItemSProps = {
   isNarrowView?: boolean,
 }
 
-export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
+export const PageListItemS = (props: PageListItemSProps): React.ReactElement => {
 
   const {
     page,

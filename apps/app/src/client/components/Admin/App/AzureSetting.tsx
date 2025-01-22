@@ -23,7 +23,7 @@ export type AzureSettingMoleculeProps = {
   onChangeAzureStorageContainerName: (val: string) => void
 };
 
-export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Element => {
+export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const {

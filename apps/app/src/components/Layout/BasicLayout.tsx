@@ -47,7 +47,7 @@ type Props = {
 }
 
 
-export const BasicLayout = ({ children, className }: Props): JSX.Element => {
+export const BasicLayout = ({ children, className }: Props): React.ReactElement => {
   return (
     <RawLayout className={`${moduleClass} ${className ?? ''}`}>
       <div className="page-wrapper flex-row">

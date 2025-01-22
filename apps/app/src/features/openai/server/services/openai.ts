@@ -437,7 +437,7 @@ class OpenaiService implements IOpenaiService {
     const nonGrabPagePathPatterns = pagePathPatterns.filter(pagePathPattern => !isGrobPatternPath(pagePathPattern));
     const baseCondition: mongoose.FilterQuery<PageDocument> = {
       grant: PageGrant.GRANT_RESTRICTED,
-      path: nonGrabPagePathPatterns,
+      path: { $in: nonGrabPagePathPatterns },
     };
 
     if (accessScope === AiAssistantAccessScope.PUBLIC_ONLY) {

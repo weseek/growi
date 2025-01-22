@@ -2,7 +2,7 @@ type Props = {
   markdown?: string,
 }
 
-export const Preview = (props: Props): JSX.Element => {
+export const Preview = (props: Props): React.ReactElement => {
   return (
     <div className="container">
       <h3>Preview</h3>

@@ -30,7 +30,7 @@ export const SyncExecution = ({
   provider,
   requestSyncAPI,
   AdditionalForm = () => <></>,
-}: SyncExecutionProps): JSX.Element => {
+}: SyncExecutionProps): React.ReactElement => {
   const { t } = useTranslation('admin');
   const { data: socket } = useAdminSocket();
   const { mutate: mutateExternalUserGroups } = useSWRxExternalUserGroupList();

@@ -15,7 +15,7 @@ type RecentCreatedProps = {
   userId: string,
 }
 
-export const RecentCreated = (props: RecentCreatedProps): JSX.Element => {
+export const RecentCreated = (props: RecentCreatedProps): React.ReactElement => {
 
   const { userId } = props;
 

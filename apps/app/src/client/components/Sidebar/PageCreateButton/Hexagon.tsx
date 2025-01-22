@@ -4,7 +4,7 @@ type Props = {
   className?: string,
 }
 
-export const Hexagon = React.memo((props: Props): JSX.Element => (
+export const Hexagon = React.memo((props: Props): React.ReactElement => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 27.691 23.999"

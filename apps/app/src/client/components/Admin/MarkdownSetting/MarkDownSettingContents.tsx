@@ -20,7 +20,7 @@ type Props ={
   adminMarkDownContainer: AdminMarkDownContainer
 }
 
-const MarkDownSettingContents = React.memo((props: Props): JSX.Element => {
+const MarkDownSettingContents = React.memo((props: Props): React.ReactElement => {
   const { t } = useTranslation('admin');
   const { adminMarkDownContainer } = props;
 

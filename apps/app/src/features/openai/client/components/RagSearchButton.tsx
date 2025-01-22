@@ -7,7 +7,7 @@ import { useRagSearchModal } from '../stores/rag-search';
 
 import styles from './RagSearchButton.module.scss';
 
-const RagSearchButton = (): JSX.Element => {
+const RagSearchButton = (): React.ReactElement => {
   const { data: isAiEnabled } = useIsAiEnabled();
   const { open: openRagSearchModal } = useRagSearchModal();
 

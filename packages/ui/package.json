@@ -37,19 +37,18 @@
     "lint:typecheck": "vue-tsc --noEmit",
     "lint": "npm-run-all -p lint:*"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@growi/core": "workspace:^",
     "@growi/core-styles": "workspace:^",
-    "@types/react": "^18.2.14",
-    "@types/react-dom": "^18.2.6",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
     "date-fns": "^3.6.0",
     "reactstrap": "^9.2.2"
   },
   "peerDependencies": {
     "next": "^14",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0"
   }
 }

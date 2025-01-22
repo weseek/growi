@@ -8,7 +8,7 @@ type EmptyTrashButtonProps = {
 };
 
 
-const EmptyTrashButton = (props: EmptyTrashButtonProps): JSX.Element => {
+const EmptyTrashButton = (props: EmptyTrashButtonProps): React.ReactElement => {
   const { onEmptyTrashButtonClick, disableEmptyButton } = props;
   const { t } = useTranslation();
 

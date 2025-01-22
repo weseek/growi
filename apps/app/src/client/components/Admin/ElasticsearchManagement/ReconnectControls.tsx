@@ -10,7 +10,7 @@ type Props = {
   onReconnectingRequested: () => void,
 }
 
-const ReconnectControls = (props: Props): JSX.Element => {
+const ReconnectControls = (props: Props): React.ReactElement => {
   const { t } = useTranslation('admin');
 
   const { isEnabled, isProcessing } = props;

@@ -2,6 +2,6 @@ import { Presentation as PresentationSubstance, type PresentationProps } from '@
 
 import '@growi/presentation/dist/style.css';
 
-export const Presentation = (props: PresentationProps): JSX.Element => {
+export const Presentation = (props: PresentationProps): React.ReactElement => {
   return <PresentationSubstance {...props} />;
 };

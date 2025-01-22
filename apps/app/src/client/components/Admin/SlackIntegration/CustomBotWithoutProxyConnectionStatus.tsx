@@ -10,7 +10,7 @@ type CustomBotWithoutProxyConnectionStatusProps = {
   connectionStatuses: any,
 }
 
-export const CustomBotWithoutProxyConnectionStatus = (props: CustomBotWithoutProxyConnectionStatusProps): JSX.Element => {
+export const CustomBotWithoutProxyConnectionStatus = (props: CustomBotWithoutProxyConnectionStatusProps): React.ReactElement => {
   const { siteName, connectionStatuses } = props;
 
   const connectionStatusValues: ConnectionStatus[] = Object.values(connectionStatuses);

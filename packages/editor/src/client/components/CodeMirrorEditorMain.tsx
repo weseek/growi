@@ -28,7 +28,7 @@ type Props = CodeMirrorEditorProps & {
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
-export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
+export const CodeMirrorEditorMain = (props: Props): React.ReactElement => {
   const {
     user, pageId, initialValue, isEditorMode, cmProps,
     onSave, onEditorsUpdated, ...otherProps

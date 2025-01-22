@@ -12,7 +12,7 @@ type NotificationTypeIconProps = {
   notification: INotificationType
 }
 
-export const NotificationTypeIcon = (props: NotificationTypeIconProps): JSX.Element => {
+export const NotificationTypeIcon = (props: NotificationTypeIconProps): React.ReactElement => {
   const { __t, _id, provider } = props.notification;
 
   const type = __t != null && __t === 'mail' ? 'mail' : 'slack';

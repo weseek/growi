@@ -9,7 +9,7 @@ type Props = {
   isInProgress?: boolean,
 }
 
-const LabeledProgressBar = (props: Props): JSX.Element => {
+const LabeledProgressBar = (props: Props): React.ReactElement => {
   const {
     header, currentCount, totalCount, isInProgress,
   } = props;

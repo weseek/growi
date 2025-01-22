@@ -27,7 +27,7 @@ const RefImgSubstance = React.memo(({
   maxHeight,
   alt,
   isImmutable,
-}: Props): JSX.Element => {
+}: Props): React.ReactElement => {
   const refsContext = useMemo(() => {
     const options = {
       fileNameOrId, width, height, maxWidth, maxHeight, alt,
@@ -48,11 +48,11 @@ const RefImgSubstance = React.memo(({
   );
 });
 
-export const RefImg = React.memo((props: Props): JSX.Element => {
+export const RefImg = React.memo((props: Props): React.ReactElement => {
   return <RefImgSubstance {...props} />;
 });
 
-export const RefImgImmutable = React.memo((props: Omit<Props, 'isImmutable'>): JSX.Element => {
+export const RefImgImmutable = React.memo((props: Omit<Props, 'isImmutable'>): React.ReactElement => {
   return <RefImgSubstance {...props} isImmutable />;
 });
 
