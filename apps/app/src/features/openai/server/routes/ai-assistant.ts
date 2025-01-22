@@ -15,11 +15,15 @@ import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:create-ai-assistant');
+const logger = loggerFactory('growi:routes:apiv3:openai:ai-assistant');
 
+
+/*
+*  CreateAssistantFactory
+*/
 type CreateAssistantFactory = (crowi: Crowi) => RequestHandler[];
 
-type Req = Request<undefined, Response, IApiv3AiAssistantCreateParams> & {
+type CreateAssistantFactoryReq = Request<undefined, Response, IApiv3AiAssistantCreateParams> & {
   user: IUserHasId,
 }
 
@@ -94,7 +98,7 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
 
   return [
     accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    async(req: CreateAssistantFactoryReq, res: ApiV3Response) => {
       try {
         const aiAssistantData = { ...req.body, owner: req.user._id };
         const openaiService = getOpenaiService();
@@ -110,7 +114,9 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   ];
 };
 
-
+/*
+*  GetAiAssistantsFactory
+*/
 type GetAiAssistantsFactory = (crowi: Crowi) => RequestHandler[];
 
 type GetAiAssistantsFactoryReq = Request<undefined, Response, undefined> & {
