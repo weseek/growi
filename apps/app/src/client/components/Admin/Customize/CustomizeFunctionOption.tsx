@@ -8,7 +8,7 @@ type Props = {
   children: React.ReactNode,
 }
 
-const CustomizeFunctionOption = (props: Props): React.ReactElement => {
+const CustomizeFunctionOption = (props: Props): JSX.Element => {
 
   const {
     optionId, label, isChecked, onChecked, children,

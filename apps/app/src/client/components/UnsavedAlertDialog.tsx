@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 import { useIsEnabledUnsavedWarning } from '~/stores/editor';
 
-const UnsavedAlertDialog = (): React.ReactElement => {
+const UnsavedAlertDialog = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
   const { data: isEnabledUnsavedWarning, mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();

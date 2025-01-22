@@ -12,7 +12,7 @@ import { Username } from '../../components/User/Username';
 
 import styles from './PageStatusAlert.module.scss';
 
-export const PageStatusAlert = (): React.ReactElement => {
+export const PageStatusAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: editorMode } = useEditorMode();

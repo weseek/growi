@@ -40,7 +40,7 @@ type CalloutViewerProps = {
   label?: string,
 }
 
-export const CalloutViewer = React.memo((props: CalloutViewerProps): React.ReactElement => {
+export const CalloutViewer = React.memo((props: CalloutViewerProps): JSX.Element => {
 
   const {
     node, type, label, children,

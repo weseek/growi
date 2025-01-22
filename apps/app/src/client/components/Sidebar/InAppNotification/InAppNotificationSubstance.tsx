@@ -10,7 +10,7 @@ import { useSWRxInAppNotifications } from '~/stores/in-app-notification';
 type InAppNotificationFormsProps = {
   onChangeUnopendNotificationsVisible: () => void
 }
-export const InAppNotificationForms = (props: InAppNotificationFormsProps): React.ReactElement => {
+export const InAppNotificationForms = (props: InAppNotificationFormsProps): JSX.Element => {
   const { onChangeUnopendNotificationsVisible } = props;
   const { t } = useTranslation('commons');
 
@@ -34,7 +34,7 @@ export const InAppNotificationForms = (props: InAppNotificationFormsProps): Reac
 type InAppNotificationContentProps = {
   isUnopendNotificationsVisible: boolean
 }
-export const InAppNotificationContent = (props: InAppNotificationContentProps): React.ReactElement => {
+export const InAppNotificationContent = (props: InAppNotificationContentProps): JSX.Element => {
   const { isUnopendNotificationsVisible } = props;
   const { t } = useTranslation('commons');
 

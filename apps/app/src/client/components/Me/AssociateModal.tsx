@@ -22,7 +22,7 @@ type Props = {
   onClose: () => void,
 }
 
-const AssociateModal = (props: Props): React.ReactElement => {
+const AssociateModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { mutate: mutatePersonalExternalAccounts } = useSWRxPersonalExternalAccounts();
   const { associateLdapAccount } = usePersonalSettings();

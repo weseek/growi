@@ -34,7 +34,7 @@ export type DrawioEditByViewerProps = {
   drawioMxFile: string,
 }
 
-export const DrawioViewer = memo((props: DrawioViewerProps): React.ReactElement => {
+export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
   const {
     diagramIndex, bol, eol, children,
     onRenderingStart, onRenderingUpdated,

@@ -4,8 +4,9 @@ import type {
   IRevision,
   Origin,
 } from '@growi/core/dist/interfaces';
+import type { Types } from 'mongoose';
 import {
-  Schema, type Types, type Document, type Model,
+  Schema, type Document, type Model,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 

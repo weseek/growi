@@ -23,7 +23,7 @@ type BookmarkFolderMenuProps = {
   children?: React.ReactNode,
 }
 
-export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): React.ReactElement => {
+export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element => {
   const {
     isOpen, pageId, isBookmarked, onToggle, onUnbookmark, children,
   } = props;

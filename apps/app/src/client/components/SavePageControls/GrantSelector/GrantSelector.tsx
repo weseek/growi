@@ -48,7 +48,7 @@ type Props = {
 /**
  * Page grant select component
  */
-export const GrantSelector = (props: Props): React.ReactElement => {
+export const GrantSelector = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {

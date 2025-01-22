@@ -38,7 +38,7 @@ type EditLinkProps = {
 /**
  * Inner FC to display edit link icon
  */
-const EditLink = (props: EditLinkProps): React.ReactElement => {
+const EditLink = (props: EditLinkProps): JSX.Element => {
   const isDisabled = props.line == null;
 
   return (
@@ -57,7 +57,7 @@ type HeaderProps = {
   id?: string,
 }
 
-export const Header = (props: HeaderProps): React.ReactElement => {
+export const Header = (props: HeaderProps): JSX.Element => {
   const {
     node, id, children,
   } = props;

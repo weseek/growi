@@ -55,7 +55,7 @@ type Props = {
   path?: string,
 }
 
-export const PageEditorModeManager = (props: Props): React.ReactElement => {
+export const PageEditorModeManager = (props: Props): JSX.Element => {
   const {
     editorMode = EditorMode.View,
     isBtnDisabled,

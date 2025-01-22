@@ -6,7 +6,7 @@ type RichSlideSectionProps = {
   presentation?: boolean,
 }
 
-const OriginalRichSlideSection = React.memo((props: RichSlideSectionProps): React.ReactElement => {
+const OriginalRichSlideSection = React.memo((props: RichSlideSectionProps): JSX.Element => {
   const { children, presentation } = props;
 
   return (
@@ -23,7 +23,7 @@ const OriginalRichSlideSection = React.memo((props: RichSlideSectionProps): Reac
 });
 
 
-const RichSlideSectionNoMemorized = (props: RichSlideSectionProps): React.ReactElement => {
+const RichSlideSectionNoMemorized = (props: RichSlideSectionProps): JSX.Element => {
   const { children } = props;
 
   return (
@@ -35,7 +35,7 @@ const RichSlideSectionNoMemorized = (props: RichSlideSectionProps): React.ReactE
 export const RichSlideSection = React.memo(RichSlideSectionNoMemorized) as typeof RichSlideSectionNoMemorized;
 
 
-const PresentationRichSlideSectionNoMemorized = (props: RichSlideSectionProps): React.ReactElement => {
+const PresentationRichSlideSectionNoMemorized = (props: RichSlideSectionProps): JSX.Element => {
   const { children } = props;
 
   return (

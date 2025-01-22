@@ -79,7 +79,7 @@ const MenuLink = ({
   );
 };
 
-export const AdminNavigation = (): React.ReactElement => {
+export const AdminNavigation = (): JSX.Element => {
   const pathname = window.location.pathname;
 
   const { data: growiCloudUri } = useGrowiCloudUri();

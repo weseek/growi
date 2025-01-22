@@ -9,7 +9,7 @@ import { useSWRxAdminPlugins, usePluginDeleteModal } from '../../../stores/admin
 import { PluginCard } from './PluginCard';
 import { PluginInstallerForm } from './PluginInstallerForm';
 
-const Loading = (): React.ReactElement => {
+const Loading = (): JSX.Element => {
   return (
     <Spinner className="d-flex justify-content-center aligh-items-center">
       Loading...
@@ -17,7 +17,7 @@ const Loading = (): React.ReactElement => {
   );
 };
 
-export const PluginsExtensionPageContents = (): React.ReactElement => {
+export const PluginsExtensionPageContents = (): JSX.Element => {
   const { t } = useTranslation('admin');
   const PluginDeleteModal = dynamic(() => import('./PluginDeleteModal')
     .then(mod => mod.PluginDeleteModal), { ssr: false });

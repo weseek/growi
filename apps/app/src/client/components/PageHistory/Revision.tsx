@@ -21,7 +21,7 @@ type RevisionProps = {
   onClose: () => void,
 }
 
-export const Revision = (props: RevisionProps): React.ReactElement => {
+export const Revision = (props: RevisionProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {

@@ -5,7 +5,8 @@ import type { IPage, IUserHasId } from '@growi/core';
 import { YDocStatus } from '@growi/core/dist/consts';
 import mongoose from 'mongoose';
 import type { Server } from 'socket.io';
-import { YSocketIO, type Document } from 'y-socket.io/dist/server';
+import type { Document } from 'y-socket.io/dist/server';
+import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 
 import { SocketEventName } from '~/interfaces/websocket';
 import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
@@ -35,7 +36,7 @@ type RequestWithUser = IncomingMessage & { user: IUserHasId };
 export interface IYjsService {
   getYDocStatus(pageId: string): Promise<YDocStatus>;
   syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody>
-  getCurrentYdoc(pageId: string): Document | undefined;
+  getCurrentYdoc(pageId: string): Ydoc | undefined;
 }
 
 
@@ -203,7 +204,7 @@ class YjsService implements IYjsService {
     };
   }
 
-  public getCurrentYdoc(pageId: string): Document | undefined {
+  public getCurrentYdoc(pageId: string): Ydoc | undefined {
     const currentYdoc = this.ysocketio.documents.get(pageId);
     return currentYdoc;
   }

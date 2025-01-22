@@ -5,7 +5,7 @@ import { useShortcutsModal } from '~/stores/modal';
 type Props = {
   onDeleteRender: () => void,
 }
-const ShowShortcutsModal = (props: Props): React.ReactElement => {
+const ShowShortcutsModal = (props: Props): JSX.Element => {
 
   const { data: status, open } = useShortcutsModal();
 

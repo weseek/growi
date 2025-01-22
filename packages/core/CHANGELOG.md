@@ -1,11 +1,5 @@
 # @growi/core
 
-## 1.3.1
-
-### Patch Changes
-
-- [#9550](https://github.com/weseek/growi/pull/9550) [`acd3787`](https://github.com/weseek/growi/commit/acd3787fc4b8c8630ba9fa5a06d837639da8d10a) Thanks [@yuki-takei](https://github.com/yuki-takei)! - Fix generateChildrenRegExp method
-
 ## 1.3.0
 
 ### Minor Changes

@@ -7,6 +7,7 @@
   "Sign out": "Se déconnecter",
   "New": "Nouveau",
   "Delete": "Supprimer",
+
   "meta": {
     "display_name": "Français"
   },
@@ -27,8 +28,9 @@
     "email_is_already_in_use": "La configuration SMTP est déjà faite."
   },
   "headers": {
-    "app_settings": "Application"
+    "app_settings": "Paramètres de l'application"
   },
+
   "header_search_box": {
     "label": {
       "All pages": "Toutes les pages",
@@ -39,26 +41,30 @@
       "This tree": "Enfants de cette arbre"
     }
   },
+
   "search_method_menu_item": {
     "search_in_all": "Rechercher dans tout",
     "only_children_of_this_tree": "Enfants de cet arbre",
     "exact_mutch": "Correspondance exacte"
   },
+
   "share_links": {
     "Share Link": "Liens de partage",
     "Page Path": "Chemin de la page",
     "expire": "Expiration",
     "description": "Description"
   },
+
   "in_app_notification": {
     "notification_list": "Notifications d'application",
     "see_all": "Voir tout",
-    "no_notification": "Aucune notification.",
+    "no_notification": "Vous n'avez pas de notifications.",
     "all": "Toutes",
     "unopend": "Non-lues",
     "mark_all_as_read": "Tout marquer comme lu",
     "no_unread_messages": "aucun message non lu"
   },
+
   "personal_dropdown": {
     "home": "Accueil",
     "settings": "Paramètres",
@@ -66,21 +72,24 @@
     "sidebar_mode": "Navigation latérale",
     "sidebar_mode_editor": "Navigation latérale dans l'éditeur",
     "use_os_settings": "Utiliser les paramètres système",
-    "feedback": "Sondage"
+    "feedback": "Avis"
   },
+
+
   "create_page_dropdown": {
-    "new_page": "Nouvelle page",
-    "open_page_create_modal": "Modale de création de page",
+    "new_page": "Créer nouvelle page",
+    "open_page_create_modal": "Ouvrir une nouvelle page créer une fenêtre modale",
     "todays": {
-      "desc": "Mémo du jour",
+      "desc": "Créer le mémo du jour",
       "memo": "mémo"
     },
     "template": {
-      "desc": "Modèles",
-      "children": "Modèle pour page enfant",
-      "descendants": "Modèle pour page adjacentes"
+      "desc": "Créer/modifier page modèle",
+      "children": "Modèle page enfant",
+      "descendants": "Modèle pour descendants"
     }
   },
+
   "copy_to_clipboard": {
     "Copy to clipboard": "Copier dans le presse-papier",
     "Page path": "Chemin de la page",
@@ -90,27 +99,30 @@
     "Markdown link": "Lien Markdown",
     "Append params": "Affixer les paramètres"
   },
+
   "crop_image_modal": {
     "image_crop": "Recadrage d'image",
     "crop": "Recadrer",
     "save": "Sauvegarder",
     "cancel": "Annuler"
   },
+
   "handsontable_modal": {
-    "title": "Tableau",
-    "data_import": "Importer des données",
+    "title": "Modifier table",
+    "data_import": "Import de données",
     "save": "Sauvegarder",
     "cancel": "Annuler",
-    "done": "Mettre à jour",
+    "done": "Terminer",
     "data_import_form": {
-      "select_data_format": "Format",
-      "import_data": "Données du fichier",
-      "paste_table_data": "Coller les données de la fichier",
-      "parse_error": "Erreur lors de l'importation des données",
+      "select_data_format": "Sélectionner format de données",
+      "import_data": "Importer données",
+      "paste_table_data": "Coller les données de la table",
+      "parse_error": "Erreur d'analyse",
       "cancel": "Annuler",
       "import": "Importer"
     }
   },
+
   "questionnaire_modal": {
     "required": "Requis",
     "submit": "Soumettre",
@@ -134,9 +146,11 @@
     "successfully_submitted": "Questionnaire soumis.",
     "thanks_for_answering": "Merci pour votre avis."
   },
+
   "not_found_page": {
     "page_not_exist": "Cette page est introuvable."
   },
+
   "g2g_data_transfer": {
     "tab": "Transfert de données",
     "data_transfer": "Transfert de données",

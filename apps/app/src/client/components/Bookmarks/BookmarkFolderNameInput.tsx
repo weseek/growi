@@ -15,7 +15,7 @@ import type { SubmittableInputProps } from '../Common/SubmittableInput/types';
 
 type Props = Pick<SubmittableInputProps<AutosizeInputProps>, 'value' | 'onSubmit' | 'onCancel'>;
 
-export const BookmarkFolderNameInput = (props: Props): React.ReactElement => {
+export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { value, onSubmit, onCancel } = props;

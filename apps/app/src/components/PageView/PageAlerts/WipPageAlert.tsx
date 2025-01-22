@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
 
 
-export const WipPageAlert = (): React.ReactElement => {
+export const WipPageAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentPage } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();

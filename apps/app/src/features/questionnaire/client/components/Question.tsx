@@ -7,7 +7,7 @@ type QuestionProps = {
   inputNamePrefix: string,
 }
 
-const Question = ({ question, inputNamePrefix }: QuestionProps): React.ReactElement => {
+const Question = ({ question, inputNamePrefix }: QuestionProps): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const lang = currentUser?.lang;
 
