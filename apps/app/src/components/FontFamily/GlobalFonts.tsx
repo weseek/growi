@@ -8,7 +8,7 @@ import { useSourceHanCodeJP } from './use-source-han-code-jp';
 /**
  * Define prefixed by '--grw-font-family'
  */
-export const GlobalFonts = memo((): JSX.Element => {
+export const GlobalFonts = memo((): React.ReactElement => {
   const latoFontFamily = useLatoFontFamily();
   const sourceHanCodeJPFontFamily = useSourceHanCodeJP();
   const materialSymbolsOutlinedFontFamily = useMaterialSymbolsOutlined();

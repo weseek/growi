@@ -12,7 +12,7 @@ import { useDrawerOpened } from '~/stores/ui';
 import styles from './GrowiNavbarBottom.module.scss';
 
 
-export const GrowiNavbarBottom = (): JSX.Element => {
+export const GrowiNavbarBottom = (): React.ReactElement => {
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { open: openCreateModal } = usePageCreateModal();

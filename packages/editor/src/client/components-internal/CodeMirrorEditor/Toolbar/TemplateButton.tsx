@@ -7,7 +7,7 @@ type Props = {
   editorKey: string,
 }
 
-export const TemplateButton = (props: Props): JSX.Element => {
+export const TemplateButton = (props: Props): React.ReactElement => {
   const { editorKey } = props;
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const { open: openTemplateModal } = useTemplateModal();

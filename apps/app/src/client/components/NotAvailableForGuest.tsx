@@ -7,10 +7,10 @@ import { useIsGuestUser } from '~/stores-universal/context';
 import { NotAvailable } from './NotAvailable';
 
 type NotAvailableForGuestProps = {
-  children: JSX.Element
+  children: React.ReactElement
 }
 
-export const NotAvailableForGuest = React.memo(({ children }: NotAvailableForGuestProps): JSX.Element => {
+export const NotAvailableForGuest = React.memo(({ children }: NotAvailableForGuestProps): React.ReactElement => {
   const { t } = useTranslation();
   const { data: isGuestUser } = useIsGuestUser();
 

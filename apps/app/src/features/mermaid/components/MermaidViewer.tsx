@@ -6,7 +6,7 @@ type MermaidViewerProps = {
   value: string
 }
 
-export const MermaidViewer = React.memo((props: MermaidViewerProps): JSX.Element => {
+export const MermaidViewer = React.memo((props: MermaidViewerProps): React.ReactElement => {
   const { value } = props;
 
   const ref = useRef<HTMLDivElement>(null);

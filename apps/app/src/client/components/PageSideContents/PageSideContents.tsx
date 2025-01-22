@@ -34,7 +34,7 @@ type TagsProps = {
   revisionId: string,
 }
 
-const Tags = (props: TagsProps): JSX.Element => {
+const Tags = (props: TagsProps): React.ReactElement => {
   const { pageId, revisionId } = props;
 
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId, { suspense: true });
@@ -74,7 +74,7 @@ type PageSideContentsProps = {
   isSharedUser?: boolean,
 }
 
-export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
+export const PageSideContents = (props: PageSideContentsProps): React.ReactElement => {
   const { t } = useTranslation();
 
   const { open: openDescendantPageListModal } = useDescendantsPageListModal();

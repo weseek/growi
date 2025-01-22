@@ -128,7 +128,7 @@ type LayoutProps = Props & {
   children?: ReactNode
 }
 
-const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
+const Layout = ({ children, ...props }: LayoutProps): React.ReactElement => {
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 

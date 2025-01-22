@@ -36,7 +36,7 @@ type Props = {
   disableLinkSharing: boolean,
 }
 
-export const ShareLinkPageView = (props: Props): JSX.Element => {
+export const ShareLinkPageView = (props: Props): React.ReactElement => {
   const {
     pagePath, rendererConfig,
     page, shareLink,

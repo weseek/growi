@@ -56,7 +56,7 @@ const drawioConfig: DrawioConfig = {
 };
 
 
-export const DrawioModal = (): JSX.Element => {
+export const DrawioModal = (): React.ReactElement => {
   const { data: rendererConfig } = useRendererConfig();
   const { data: personalSettingsInfo } = usePersonalSettings({
     // make immutable

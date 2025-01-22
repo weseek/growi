@@ -102,7 +102,7 @@ type ItemsTreeProps = {
 /*
  * ItemsTree
  */
-export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
+export const ItemsTree = (props: ItemsTreeProps): React.ReactElement => {
   const {
     targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, isWipPageShown, CustomTreeItem, onClickTreeItem,
   } = props;

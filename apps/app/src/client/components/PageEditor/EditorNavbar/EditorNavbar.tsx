@@ -8,7 +8,7 @@ import styles from './EditorNavbar.module.scss';
 
 const moduleClass = styles['editor-navbar'] ?? '';
 
-export const EditorNavbar = (): JSX.Element => {
+export const EditorNavbar = (): React.ReactElement => {
   const { data: editingUsers } = useEditingUsers();
 
   return (

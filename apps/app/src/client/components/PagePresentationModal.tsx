@@ -30,7 +30,7 @@ const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Pre
 });
 
 
-const PagePresentationModal = (): JSX.Element => {
+const PagePresentationModal = (): React.ReactElement => {
 
   const { data: presentationModalData, close: closePresentationModal } = usePagePresentationModal();
 

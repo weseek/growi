@@ -13,7 +13,7 @@ import { DropendToggle } from './DropendToggle';
 import { useCreateNewPage, useCreateTodaysMemo } from './hooks';
 
 
-export const PageCreateButton = React.memo((): JSX.Element => {
+export const PageCreateButton = React.memo((): React.ReactElement => {
   const [isHovered, setIsHovered] = useState(false);
 
   const [dropdownOpen, setDropdownOpen] = useState(false);

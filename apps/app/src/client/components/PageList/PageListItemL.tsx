@@ -51,7 +51,7 @@ type Props = {
   onPagePutBacked?: OnPutBackedFunction,
 }
 
-const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
+const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): React.ReactElement => {
   const {
     page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions, isReadOnlyUser,
     forceHideMenuItems,

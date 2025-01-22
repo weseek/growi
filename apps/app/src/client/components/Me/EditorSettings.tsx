@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-export const EditorSettings = memo((): JSX.Element => {
+export const EditorSettings = memo((): React.ReactElement => {
   // const { t } = useTranslation();
 
   // const { data: dataEditorSettings, update: updateEditorSettings } = useEditorSettings();

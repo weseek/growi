@@ -2,7 +2,7 @@ type Props = {
   isEnabled: boolean,
 }
 
-export const FileDropzoneOverlay = (props: Props): JSX.Element => {
+export const FileDropzoneOverlay = (props: Props): React.ReactElement => {
   const { isEnabled } = props;
 
   if (isEnabled) {

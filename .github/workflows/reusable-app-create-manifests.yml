@@ -29,7 +29,7 @@ jobs:
     steps:
     - name: Docker meta for extra-images
       id: meta-extra-images
-      uses: docker/metadata-action@v4
+      uses: docker/metadata-action@v5
       with:
         images: ${{ inputs.registry }}/${{ inputs.image-name }}
         sep-tags: ','

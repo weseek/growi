@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useSWRxCurrentPage } from '~/stores/page';
 
 
-export const PageGrantAlert = (): JSX.Element => {
+export const PageGrantAlert = (): React.ReactElement => {
   const { t } = useTranslation();
   const { data: pageData } = useSWRxCurrentPage();
 

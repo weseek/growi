@@ -16,7 +16,7 @@ type Props = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const CustomizeThemeSetting = (props: Props): JSX.Element => {
+const CustomizeThemeSetting = (props: Props): React.ReactElement => {
   const { t } = useTranslation();
 
   const { data, error, update } = useSWRxGrowiThemeSetting();

@@ -14,7 +14,7 @@ type DropendMenuProps = {
   todaysPath: string | null,
 }
 
-export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => {
+export const DropendMenu = React.memo((props: DropendMenuProps): React.ReactElement => {
   const {
     onClickCreateNewPage,
     onClickOpenPageCreateModal,

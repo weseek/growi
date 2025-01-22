@@ -15,7 +15,7 @@ const moduleClass = styles['message-card'] ?? '';
 
 const userMessageCardModuleClass = styles['user-message-card'] ?? '';
 
-const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
+const UserMessageCard = ({ children }: { children: string }): React.ReactElement => (
   <div className={`card d-inline-flex align-self-end bg-success-subtle bg-info-subtle ${moduleClass} ${userMessageCardModuleClass}`}>
     <div className="card-body">
       <ReactMarkdown>{children}</ReactMarkdown>
@@ -26,7 +26,7 @@ const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
 
 const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
 
-const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): JSX.Element => {
+const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): React.ReactElement => {
   const { close: closeRagSearchModal } = useRagSearchModal();
 
   const onClick = useCallback(() => {
@@ -39,7 +39,7 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
     </NextLink>
   );
 };
-const AssistantMessageCard = ({ children }: { children: string }): JSX.Element => {
+const AssistantMessageCard = ({ children }: { children: string }): React.ReactElement => {
   const { t } = useTranslation();
 
   return (
@@ -70,7 +70,7 @@ type Props = {
   children: string,
 }
 
-export const MessageCard = (props: Props): JSX.Element => {
+export const MessageCard = (props: Props): React.ReactElement => {
   const { role, children } = props;
 
   return role === 'user'

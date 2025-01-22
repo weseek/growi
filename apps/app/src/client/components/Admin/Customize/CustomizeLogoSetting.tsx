@@ -15,7 +15,7 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 const DEFAULT_LOGO = '/images/logo.svg';
 const CUSTOMIZED_LOGO = '/attachment/brand-logo';
 
-const CustomizeLogoSetting = (): JSX.Element => {
+const CustomizeLogoSetting = (): React.ReactElement => {
 
   const { t } = useTranslation();
   const { data: isDefaultLogo } = useIsDefaultLogo();

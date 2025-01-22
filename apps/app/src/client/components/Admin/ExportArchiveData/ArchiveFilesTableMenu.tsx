@@ -9,7 +9,7 @@ type ArchiveFilesTableMenuProps = {
   onZipFileStatRemove: (fileName: string) => void,
 }
 
-const ArchiveFilesTableMenu = (props: ArchiveFilesTableMenuProps):JSX.Element => {
+const ArchiveFilesTableMenu = (props: ArchiveFilesTableMenuProps): React.ReactElement => {
   const { t } = useTranslation();
 
   return (
