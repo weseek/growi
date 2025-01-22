@@ -21,6 +21,7 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi, app) => {
   const isInstalled = crowi.configManager.getConfig('app:installed');
   const minPasswordLength = crowi.configManager.getConfig('app:minPasswordLength');

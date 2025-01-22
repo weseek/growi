@@ -20,6 +20,7 @@ import S2sMessage from '../models/vo/s2s-message';
 
 import { configManager } from './config-manager';
 import type { ConfigKey } from './config-manager/config-definition';
+import { growiInfoService } from './growi-info';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:PassportService');
@@ -449,7 +450,6 @@ class PassportService implements S2sMessageHandlable {
 
     this.resetGoogleStrategy();
 
-    const { configManager } = this.crowi;
     const isGoogleEnabled = configManager.getConfig('security:passport-google:isEnabled');
 
     // when disabled
@@ -463,9 +463,9 @@ class PassportService implements S2sMessageHandlable {
         {
           clientID: configManager.getConfig('security:passport-google:clientId'),
           clientSecret: configManager.getConfig('security:passport-google:clientSecret'),
-          callbackURL: (this.crowi.appService.getSiteUrl() != null)
-            ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+          callbackURL: configManager.getConfig('app:siteUrl') != null
+            ? urljoin(growiInfoService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
+            : configManager.getConfigLegacy<string>('security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -497,7 +497,6 @@ class PassportService implements S2sMessageHandlable {
 
     this.resetGitHubStrategy();
 
-    const { configManager } = this.crowi;
     const isGitHubEnabled = configManager.getConfig('security:passport-github:isEnabled');
 
     // when disabled
@@ -511,9 +510,9 @@ class PassportService implements S2sMessageHandlable {
         {
           clientID: configManager.getConfig('security:passport-github:clientId'),
           clientSecret: configManager.getConfig('security:passport-github:clientSecret'),
-          callbackURL: (this.crowi.appService.getSiteUrl() != null)
-            ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+          callbackURL: configManager.getConfig('app:siteUrl') != null
+            ? urljoin(growiInfoService.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
+            : configManager.getConfigLegacy('security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -545,7 +544,6 @@ class PassportService implements S2sMessageHandlable {
 
     this.resetOidcStrategy();
 
-    const { configManager } = this.crowi;
     const isOidcEnabled = configManager.getConfig('security:passport-oidc:isEnabled');
 
     // when disabled
@@ -567,13 +565,13 @@ class PassportService implements S2sMessageHandlable {
     const issuerHost = configManager.getConfig('security:passport-oidc:issuerHost');
     const clientId = configManager.getConfig('security:passport-oidc:clientId');
     const clientSecret = configManager.getConfig('security:passport-oidc:clientSecret');
-    const redirectUri = (configManager.getConfig('app:siteUrl') != null)
-      ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/oidc/callback')
-      : configManager.getConfig('security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
+    const redirectUri = configManager.getConfig('app:siteUrl') != null
+      ? urljoin(growiInfoService.getSiteUrl(), '/passport/oidc/callback')
+      : configManager.getConfigLegacy<string>('security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
 
     // Prevent request timeout error on app init
     const oidcIssuer = await this.getOIDCIssuerInstance(issuerHost);
-    if (oidcIssuer != null) {
+    if (clientId != null && oidcIssuer != null) {
       const oidcIssuerMetadata = oidcIssuer.metadata;
 
       logger.debug('Discovered issuer %s %O', oidcIssuer.issuer, oidcIssuer.metadata);
@@ -715,15 +713,17 @@ class PassportService implements S2sMessageHandlable {
    * @param issuerHost string
    * @returns instance of OIDCIssuer
    */
-  async getOIDCIssuerInstance(issuerHost: string): Promise<void | OIDCIssuer> {
-    const OIDC_TIMEOUT_MULTIPLIER = await configManager.getConfig('security:passport-oidc:timeoutMultiplier');
-    const OIDC_DISCOVERY_RETRIES = await configManager.getConfig('security:passport-oidc:discoveryRetries');
-    const OIDC_ISSUER_TIMEOUT_OPTION = await configManager.getConfig('security:passport-oidc:oidcIssuerTimeoutOption');
-    const oidcIssuerHostReady = await this.isOidcHostReachable(issuerHost);
+  async getOIDCIssuerInstance(issuerHost: string | undefined): Promise<void | OIDCIssuer> {
+    const OIDC_TIMEOUT_MULTIPLIER = configManager.getConfig('security:passport-oidc:timeoutMultiplier');
+    const OIDC_DISCOVERY_RETRIES = configManager.getConfig('security:passport-oidc:discoveryRetries');
+    const OIDC_ISSUER_TIMEOUT_OPTION = configManager.getConfig('security:passport-oidc:oidcIssuerTimeoutOption');
+    const oidcIssuerHostReady = issuerHost != null && this.isOidcHostReachable(issuerHost);
+
     if (!oidcIssuerHostReady) {
       logger.error('OidcStrategy: setup failed');
       return;
     }
+
     const metadataURL = this.getOIDCMetadataURL(issuerHost);
     const oidcIssuer = await pRetry(async() => {
       return OIDCIssuer.discover(metadataURL);
@@ -751,7 +751,6 @@ class PassportService implements S2sMessageHandlable {
 
     this.resetSamlStrategy();
 
-    const { configManager } = this.crowi;
     const isSamlEnabled = configManager.getConfig('security:passport-saml:isEnabled');
 
     // when disabled
@@ -760,15 +759,22 @@ class PassportService implements S2sMessageHandlable {
     }
 
     logger.debug('SamlStrategy: setting up..');
+
+    const cert = configManager.getConfig('security:passport-saml:cert');
+    if (cert == null) {
+      logger.warn('SamlStrategy: cert is not set. setup is skipped.');
+      return;
+    }
+
     passport.use(
       new SamlStrategy(
         {
           entryPoint: configManager.getConfig('security:passport-saml:entryPoint'),
-          callbackUrl: (this.crowi.appService.getSiteUrl() != null)
-            ? urljoin(this.crowi.appService.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
+          callbackUrl: configManager.getConfig('app:siteUrl') != null
+            ? urljoin(growiInfoService.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
             : configManager.getConfig('security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           issuer: configManager.getConfig('security:passport-saml:issuer'),
-          cert: configManager.getConfig('security:passport-saml:cert'),
+          cert,
           disableRequestedAuthnContext: true,
         },
         (profile: Profile, done: VerifiedCallback) => {

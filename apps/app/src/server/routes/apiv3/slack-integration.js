@@ -10,6 +10,7 @@ import createError from 'http-errors';
 
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import { configManager } from '~/server/service/config-manager';
+import { growiInfoService } from '~/server/service/growi-info';
 import loggerFactory from '~/utils/logger';
 
 
@@ -104,7 +105,7 @@ module.exports = (crowi) => {
       id: req.body.channel_id,
       name: req.body.channel_name,
     };
-    const siteUrl = crowi.appService.getSiteUrl();
+    const siteUrl = growiInfoService.getSiteUrl();
 
     let commandPermission;
     if (extractPermissions != null) { // with proxy
@@ -145,7 +146,7 @@ module.exports = (crowi) => {
     res.send();
 
     const { interactionPayloadAccessor } = req;
-    const siteUrl = crowi.appService.getSiteUrl();
+    const siteUrl = growiInfoService.getSiteUrl();
 
     const { actionId, callbackId } = interactionPayloadAccessor.getActionIdAndCallbackIdFromPayLoad();
     const callbacIdkOrActionId = callbackId || actionId;
@@ -214,7 +215,7 @@ module.exports = (crowi) => {
   function getRespondUtil(responseUrl) {
     const proxyUri = slackIntegrationService.proxyUriForCurrentType ?? null; // can be null
 
-    const appSiteUrl = crowi.appService.getSiteUrl();
+    const appSiteUrl = growiInfoService.getSiteUrl();
     if (appSiteUrl == null || appSiteUrl === '') {
       logger.error('App site url must exist.');
       throw SlackCommandHandlerError('App site url must exist.');
@@ -268,7 +269,7 @@ module.exports = (crowi) => {
 
     // Send response immediately to avoid opelation_timeout error
     // See https://api.slack.com/apis/connections/events-api#the-events-api__responding-to-events
-    const appSiteUrl = crowi.appService.getSiteUrl();
+    const appSiteUrl = growiInfoService.getSiteUrl();
     try {
       await respondUtil.respond({
         text: 'Processing your request ...',

@@ -11,8 +11,9 @@ import loggerFactory from '~/utils/logger';
 import type {
   DataForUnfurl, PublicData, UnfurlEventLink, UnfurlRequestEvent,
 } from '../../interfaces/slack-integration/link-shared-unfurl';
+import { growiInfoService } from '../growi-info';
 
-import { SlackEventHandler } from './base-event-handler';
+import type { SlackEventHandler } from './base-event-handler';
 
 const logger = loggerFactory('growi:service:SlackEventHandler:link-shared');
 
@@ -38,7 +39,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
   async handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<UnfurlRequestEvent>, data?: {origin: string}): Promise<void> {
     const { event } = growiBotEvent;
-    const origin = data?.origin || this.crowi.appService.getSiteUrl();
+    const origin = data?.origin || growiInfoService.getSiteUrl();
     const { channel, message_ts: ts, links } = event;
 
     let unfurlData: DataForUnfurl[];
@@ -90,7 +91,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     const { pageBody: text, updatedAt } = body;
 
     const appTitle = this.crowi.appService.getAppTitle();
-    const siteUrl = this.crowi.appService.getSiteUrl();
+    const siteUrl = growiInfoService.getSiteUrl();
 
     const attachment: MessageAttachment = {
       title: body.path,

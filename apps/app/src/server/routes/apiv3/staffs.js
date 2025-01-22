@@ -21,6 +21,7 @@ const compareFunction = function(a, b) {
   return a.order - b.order;
 };
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
 
   router.get('/', async(req, res) => {

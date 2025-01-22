@@ -279,10 +279,17 @@ describe('QuestionnaireCronService', () => {
       answeredAt: new Date(),
       growiInfo: {
         version: '1.0',
-        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        appSiteUrl: 'https://example.com',
+        serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
         type: GrowiServiceType.cloud,
         wikiType: GrowiWikiType.open,
         deploymentType: GrowiDeploymentType.others,
+        osInfo: {
+          type: 'Linux',
+          platform: 'linux',
+          arch: 'x64',
+          totalmem: 8589934592,
+        },
         additionalInfo: {
           installedAt: new Date('2000-01-01'),
           installedAtByOldestUser: new Date('2020-01-01'),
@@ -307,7 +314,9 @@ describe('QuestionnaireCronService', () => {
       answeredAt: new Date(),
       growiInfo: {
         version: '1.0',
-        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        appSiteUrl: 'https://example.com',
+        appSiteUrlHashed: 'hashed',
+        serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
         type: GrowiServiceType.cloud,
         wikiType: GrowiWikiType.open,
         deploymentType: GrowiDeploymentType.others,
@@ -315,6 +324,12 @@ describe('QuestionnaireCronService', () => {
         installedAtByOldestUser: new Date('2020-01-01'),
         currentUsersCount: 100,
         currentActiveUsersCount: 50,
+        osInfo: {
+          type: 'Linux',
+          platform: 'linux',
+          arch: 'x64',
+          totalmem: 8589934592,
+        },
         attachmentType: AttachmentMethodType.aws,
       },
       userInfo: {
@@ -338,10 +353,17 @@ describe('QuestionnaireCronService', () => {
       commentText: 'answer text',
       growiInfo: {
         version: '1.0',
-        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        appSiteUrl: 'https://example.com',
+        serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
         type: GrowiServiceType.cloud,
         wikiType: GrowiWikiType.open,
         deploymentType: GrowiDeploymentType.others,
+        osInfo: {
+          type: 'Linux',
+          platform: 'linux',
+          arch: 'x64',
+          totalmem: 8589934592,
+        },
         additionalInfo: {
           installedAt: new Date('2000-01-01'),
           installedAtByOldestUser: new Date('2020-01-01'),
@@ -362,10 +384,18 @@ describe('QuestionnaireCronService', () => {
       commentText: 'answer text',
       growiInfo: {
         version: '1.0',
-        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        appSiteUrl: 'https://example.com',
+        appSiteUrlHashed: 'hashed',
+        serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
         type: GrowiServiceType.cloud,
         wikiType: GrowiWikiType.open,
         deploymentType: GrowiDeploymentType.others,
+        osInfo: {
+          type: 'Linux',
+          platform: 'linux',
+          arch: 'x64',
+          totalmem: 8589934592,
+        },
         // legacy properties
         installedAt: new Date('2000-01-01'),
         installedAtByOldestUser: new Date('2020-01-01'),
@@ -406,6 +436,7 @@ describe('QuestionnaireCronService', () => {
     const savedOrders = await QuestionnaireOrder.find()
       .select('-condition._id -questions._id -questions.createdAt -questions.updatedAt')
       .sort({ _id: 1 });
+
     expect(JSON.parse(JSON.stringify(savedOrders))).toEqual([
       {
         _id: '63a8354837e7aa378e16f0b1',

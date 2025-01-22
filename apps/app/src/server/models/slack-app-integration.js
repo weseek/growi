@@ -38,8 +38,10 @@ class SlackAppIntegration {
     let generateTokens;
 
     // get salt strings
-    const saltForGtoP = this.crowi.configManager.getConfig('slackbot:withProxy:saltForGtoP');
-    const saltForPtoG = this.crowi.configManager.getConfig('slackbot:withProxy:saltForPtoG');
+    /** @type {import('~/server/crowi').default} Crowi instance */
+    const crowi = this.crowi;
+    const saltForGtoP = crowi.configManager.getConfig('slackbot:withProxy:saltForGtoP');
+    const saltForPtoG = crowi.configManager.getConfig('slackbot:withProxy:saltForPtoG');
 
     do {
       generateTokens = this.generateAccessTokens(saltForGtoP, saltForPtoG);
@@ -55,6 +57,7 @@ class SlackAppIntegration {
 
 }
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 const factory = (crowi) => {
   const modelExists = getModelSafely('SlackAppIntegration');
   if (modelExists != null) {

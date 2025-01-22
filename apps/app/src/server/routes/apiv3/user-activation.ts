@@ -8,6 +8,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 import { configManager } from '~/server/service/config-manager';
+import { growiInfoService } from '~/server/service/growi-info';
 import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
 
@@ -146,7 +147,7 @@ export const completeRegistrationAction = (crowi) => {
             const appTitle = appService.getAppTitle();
             const locale = configManager.getConfig('app:globalLang');
             const template = path.join(crowi.localeDir, `${locale}/admin/userWaitingActivation.ejs`);
-            const url = appService.getSiteUrl();
+            const url = growiInfoService.getSiteUrl();
 
             sendEmailToAllAdmins(userData, admins, appTitle, mailService, template, url);
           }
@@ -219,7 +220,7 @@ async function makeRegistrationEmailToken(email, crowi) {
   }
 
   const locale = configManager.getConfig('app:globalLang');
-  const appUrl = appService.getSiteUrl();
+  const appUrl = growiInfoService.getSiteUrl();
 
   const userRegistrationOrder = await UserRegistrationOrder.createUserRegistrationOrder(email);
   const grwTzoffsetSec = crowi.appService.getTzoffset() * 60;

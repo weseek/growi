@@ -31,6 +31,7 @@ export const CONFIG_KEYS = [
 
   // App Settings
   'app:installed',
+  'app:serviceInstanceId',
   'app:isV5Compatible',
   'app:isMaintenanceMode',
   'app:confidential',
@@ -138,8 +139,18 @@ export const CONFIG_KEYS = [
   'security:passport-github:clientSecret',
   'security:passport-github:isSameUsernameTreatedAsIdenticalUser',
   'security:passport-github:isSameEmailTreatedAsIdenticalUser',
+  'security:passport-oidc:clientId',
+  'security:passport-oidc:clientSecret',
   'security:passport-oidc:isEnabled',
   'security:passport-oidc:issuerHost',
+  'security:passport-oidc:authorizationEndpoint',
+  'security:passport-oidc:tokenEndpoint',
+  'security:passport-oidc:revocationEndpoint',
+  'security:passport-oidc:introspectionEndpoint',
+  'security:passport-oidc:userInfoEndpoint',
+  'security:passport-oidc:endSessionEndpoint',
+  'security:passport-oidc:registrationEndpoint',
+  'security:passport-oidc:jwksUri',
   'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser',
   'security:passport-oidc:isSameEmailTreatedAsIdenticalUser',
 
@@ -175,6 +186,16 @@ export const CONFIG_KEYS = [
 
   // GridFS Settings
   'gridfs:totalLimit',
+
+  // Mail Settings
+  'mail:from',
+  'mail:transmissionMethod',
+  'mail:smtpHost',
+  'mail:smtpPort',
+  'mail:smtpUser',
+  'mail:smtpPassword',
+  'mail:sesSecretAccessKey',
+  'mail:sesAccessKeyId',
 
   // Customize Settings
   'customize:isEmailPublishedForNewUser',
@@ -337,6 +358,9 @@ export const CONFIG_DEFINITIONS = {
   // App Settings
   'app:installed': defineConfig<boolean>({
     defaultValue: false,
+  }),
+  'app:serviceInstanceId': defineConfig<string>({
+    defaultValue: '',
   }),
   'app:isV5Compatible': defineConfig<boolean>({
     defaultValue: false,
@@ -717,10 +741,40 @@ export const CONFIG_DEFINITIONS = {
   'security:passport-github:isSameEmailTreatedAsIdenticalUser': defineConfig<boolean>({
     defaultValue: false,
   }),
+  'security:passport-oidc:clientId': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:clientSecret': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
   'security:passport-oidc:isEnabled': defineConfig<boolean>({
     defaultValue: false,
   }),
   'security:passport-oidc:issuerHost': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:authorizationEndpoint': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:tokenEndpoint': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:revocationEndpoint': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:introspectionEndpoint': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:userInfoEndpoint': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:endSessionEndpoint': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:registrationEndpoint': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'security:passport-oidc:jwksUri': defineConfig<string | undefined>({
     defaultValue: undefined,
   }),
   'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser': defineConfig<boolean>({
@@ -828,6 +882,31 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: undefined,
   }),
 
+  // Mail Settings
+  'mail:from': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:transmissionMethod': defineConfig<'smtp' | 'ses' | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:smtpHost': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:smtpPort': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:smtpUser': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:smtpPassword': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:sesAccessKeyId': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
+  'mail:sesSecretAccessKey': defineConfig<string | undefined>({
+    defaultValue: undefined,
+  }),
 
   // Customize Settings
   'customize:isEmailPublishedForNewUser': defineConfig<boolean>({

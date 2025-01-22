@@ -53,8 +53,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   name!: SearchDelegatorName.DEFAULT;
 
-  configManager!: any;
-
   socketIoService!: any;
 
   isElasticsearchV7: boolean;
