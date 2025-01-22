@@ -62,9 +62,6 @@ ENV LANG="ja_JP.UTF-8"
 ENV optDir="/opt"
 ENV appDir="${optDir}/pdf-converter"
 
-# create shared directory for bulk export and set permission
-RUN mkdir -p /tmp/page-bulk-export && chown -R node:node /tmp/page-bulk-export && chmod 700 /tmp/page-bulk-export
-
 RUN apt-get update && apt-get install -y chromium fonts-lato fonts-ipafont-gothic fonts-noto-cjk \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*;
@@ -76,6 +73,8 @@ COPY --from=builder --chown=node:node \
 USER node
 WORKDIR ${appDir}
 RUN tar -xf packages.tar.gz && rm packages.tar.gz
+
+COPY --chown=node:node --chmod=700 apps/pdf-converter/docker/docker-entrypoint.sh /
 
 WORKDIR ${appDir}/apps/pdf-converter
 
