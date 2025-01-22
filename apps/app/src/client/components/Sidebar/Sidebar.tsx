@@ -64,7 +64,7 @@ type ResizableContainerProps = {
   children?: React.ReactNode,
 }
 
-const ResizableContainer = memo((props: ResizableContainerProps): React.ReactElement => {
+const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element => {
 
   const { children } = props;
 
@@ -134,7 +134,7 @@ type CollapsibleContainerProps = {
   children?: React.ReactNode,
 }
 
-const CollapsibleContainer = memo((props: CollapsibleContainerProps): React.ReactElement => {
+const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Element => {
 
   const { Nav, className, children } = props;
 
@@ -201,7 +201,7 @@ type DrawableContainerProps = {
   children?: React.ReactNode,
 }
 
-const DrawableContainer = memo((props: DrawableContainerProps): React.ReactElement => {
+const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
   const { divProps, className, children } = props;
 
@@ -222,7 +222,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): React.ReactEleme
 });
 
 
-export const Sidebar = (): React.ReactElement => {
+export const Sidebar = (): JSX.Element => {
 
   const {
     data: sidebarMode,

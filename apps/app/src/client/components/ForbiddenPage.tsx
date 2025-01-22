@@ -6,7 +6,7 @@ type Props = {
   isLinkSharingDisabled?: boolean,
 }
 
-const ForbiddenPage = React.memo((props: Props): React.ReactElement => {
+const ForbiddenPage = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   return (

@@ -22,7 +22,7 @@ const RefsSubstance = React.memo(({
   regexp,
 
   isImmutable,
-}: Props): React.ReactElement => {
+}: Props): JSX.Element => {
   const refsContext = useMemo(() => {
     const options = {
       prefix, depth, regexp,
@@ -43,11 +43,11 @@ const RefsSubstance = React.memo(({
   );
 });
 
-export const Refs = React.memo((props: Props): React.ReactElement => {
+export const Refs = React.memo((props: Props): JSX.Element => {
   return <RefsSubstance {...props} />;
 });
 
-export const RefsImmutable = React.memo((props: Omit<Props, 'isImmutable'>): React.ReactElement => {
+export const RefsImmutable = React.memo((props: Omit<Props, 'isImmutable'>): JSX.Element => {
   return <RefsSubstance {...props} isImmutable />;
 });
 

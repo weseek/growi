@@ -22,7 +22,7 @@ type QuestionnaireModalProps = {
   questionnaireOrder: IQuestionnaireOrderHasId
 }
 
-const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): React.ReactElement => {
+const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const lang = currentUser?.lang;
 

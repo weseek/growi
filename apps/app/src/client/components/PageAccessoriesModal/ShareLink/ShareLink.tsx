@@ -12,7 +12,7 @@ import { useSWRxSharelink } from '~/stores/share-link';
 import { ShareLinkForm } from './ShareLinkForm';
 import ShareLinkList from './ShareLinkList';
 
-export const ShareLink = (): React.ReactElement => {
+export const ShareLink = (): JSX.Element => {
   const { t } = useTranslation();
   const [isOpenShareLinkForm, setIsOpenShareLinkForm] = useState<boolean>(false);
 

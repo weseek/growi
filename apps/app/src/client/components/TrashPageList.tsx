@@ -62,7 +62,7 @@ const useEmptyTrashButton = () => {
   return emptyTrashButton;
 };
 
-const DescendantsPageListForTrash = (): React.ReactElement => {
+const DescendantsPageListForTrash = (): JSX.Element => {
   const { data: limit } = useShowPageLimitationXL();
 
   return (
@@ -74,7 +74,7 @@ const DescendantsPageListForTrash = (): React.ReactElement => {
   );
 };
 
-export const TrashPageList = (): React.ReactElement => {
+export const TrashPageList = (): JSX.Element => {
   const { t } = useTranslation();
   const emptyTrashButton = useEmptyTrashButton();
 

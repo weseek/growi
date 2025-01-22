@@ -38,7 +38,7 @@ const formatedDate = (date: Date): string => {
   return format(date, 'yyyy/MM/dd HH:mm:ss');
 };
 
-const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): React.ReactElement => {
+const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
   const { request, latest } = props;
 
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
@@ -185,7 +185,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): React.ReactEl
 };
 
 
-export const ConflictDiffModal = (): React.ReactElement => {
+export const ConflictDiffModal = (): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: conflictDiffModalStatus } = useConflictDiffModal();

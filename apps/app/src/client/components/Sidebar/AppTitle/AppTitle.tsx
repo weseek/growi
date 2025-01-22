@@ -14,7 +14,7 @@ type Props = {
   className?: string,
 }
 
-const AppTitleSubstance = memo((props: Props): React.ReactElement => {
+const AppTitleSubstance = memo((props: Props): JSX.Element => {
 
   const { className } = props;
 
@@ -52,10 +52,10 @@ const AppTitleSubstance = memo((props: Props): React.ReactElement => {
   );
 });
 
-export const AppTitleOnSubnavigation = memo((): React.ReactElement => {
+export const AppTitleOnSubnavigation = memo((): JSX.Element => {
   return <AppTitleSubstance className={`position-absolute ${styles['on-subnavigation']}`} />;
 });
 
-export const AppTitleOnSidebarHead = memo((): React.ReactElement => {
+export const AppTitleOnSidebarHead = memo((): JSX.Element => {
   return <AppTitleSubstance className={`position-absolute z-1 ${styles['on-sidebar-head']}`} />;
 });

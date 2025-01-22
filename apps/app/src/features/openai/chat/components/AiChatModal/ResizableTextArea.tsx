@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 
 type Props = DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;
 
-export const ResizableTextarea = (props: Props): React.ReactElement => {
+export const ResizableTextarea = (props: Props): JSX.Element => {
 
   const { onChange: _onChange, ...rest } = props;
 

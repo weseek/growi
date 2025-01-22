@@ -115,7 +115,7 @@ type TemplateModalSubstanceProps = {
   close: () => void,
 }
 
-const TemplateModalSubstance = (props: TemplateModalSubstanceProps): React.ReactElement => {
+const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element => {
   const { templateModalStatus, close } = props;
 
   const { t } = useTranslation(['translation', 'commons']);
@@ -301,7 +301,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): React.React
 };
 
 
-export const TemplateModal = (): React.ReactElement => {
+export const TemplateModal = (): JSX.Element => {
   const { data: templateModalStatus, close } = useTemplateModal();
 
   if (templateModalStatus == null) {

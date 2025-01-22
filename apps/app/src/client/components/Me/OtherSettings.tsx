@@ -2,7 +2,7 @@ import { ColorModeSettings } from './ColorModeSettings';
 import { QuestionnaireSettings } from './QuestionnaireSettings';
 import { UISettings } from './UISettings';
 
-const OtherSettings = (): React.ReactElement => {
+const OtherSettings = (): JSX.Element => {
 
   return (
     <>

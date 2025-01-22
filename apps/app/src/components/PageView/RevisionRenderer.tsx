@@ -29,7 +29,7 @@ const ErrorFallback: React.FC<FallbackProps> = React.memo(({ error, resetErrorBo
 });
 ErrorFallback.displayName = 'ErrorFallback';
 
-const RevisionRenderer = React.memo((props: Props): React.ReactElement => {
+const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   const {
     rendererOptions, markdown, additionalClassName,

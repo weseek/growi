@@ -52,7 +52,7 @@ type SearchResultListHeadProps = {
   migrationStatus?: V5MigrationStatus,
 }
 
-const SearchResultListHead = React.memo((props: SearchResultListHeadProps): React.ReactElement => {
+const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
@@ -139,7 +139,7 @@ type ConvertByPathModalProps = {
   close?: () => void,
   onSubmit?: (convertPath: string) => Promise<void> | void,
 }
-const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): React.ReactElement => {
+const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Element => {
   const { t } = useTranslation();
 
   const [currentInput, setInput] = useState<string>('');
@@ -191,7 +191,7 @@ ConvertByPathModal.displayName = 'ConvertByPathModal';
  * LegacyPage
  */
 
-const PrivateLegacyPages = (): React.ReactElement => {
+const PrivateLegacyPages = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: isAdmin } = useIsAdmin();

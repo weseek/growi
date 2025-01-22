@@ -43,7 +43,7 @@ type Props = Omit<LinkProps, 'href'> & {
   className?: string,
 };
 
-export const NextLink = (props: Props): React.ReactElement => {
+export const NextLink = (props: Props): JSX.Element => {
   const {
     id, href, children, className, onClick, ...rest
   } = props;

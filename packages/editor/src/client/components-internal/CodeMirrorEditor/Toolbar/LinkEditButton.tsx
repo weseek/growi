@@ -12,7 +12,7 @@ type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
 }
 
-export const LinkEditButton = (props: Props): React.ReactElement => {
+export const LinkEditButton = (props: Props): JSX.Element => {
   const { editorKey } = props;
   const { open: openLinkEditModal } = useLinkEditModal();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);

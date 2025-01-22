@@ -24,9 +24,9 @@ export type SidebarContentsType = typeof SidebarContentsType[keyof typeof Sideba
 
 
 export type ICustomTabContent = {
-  Content?: () => React.ReactElement,
+  Content?: () => JSX.Element,
   i18n?: string,
-  Icon?: () => React.ReactElement,
+  Icon?: () => JSX.Element,
   isLinkEnabled?: boolean | ((content: ICustomTabContent) => boolean),
 };
 

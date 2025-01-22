@@ -36,7 +36,7 @@ export type PresentationProps = {
   children?: string,
 }
 
-export const Presentation = (props: PresentationProps): React.ReactElement => {
+export const Presentation = (props: PresentationProps): JSX.Element => {
   const { options, marp, children } = props;
   const { revealOptions } = options;
 

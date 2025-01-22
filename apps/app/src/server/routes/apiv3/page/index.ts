@@ -341,14 +341,14 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/Revision/properties/body'
    *                  page_id:
    *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  revisionId:
+   *                  revision_id:
    *                    $ref: '#/components/schemas/Revision/properties/_id'
    *                  grant:
    *                    $ref: '#/components/schemas/Page/properties/grant'
    *                required:
    *                  - body
    *                  - page_id
-   *                  - revisionId
+   *                  - revision_id
    *        responses:
    *          200:
    *            description: Succeeded to update page.

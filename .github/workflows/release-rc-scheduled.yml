@@ -27,7 +27,7 @@ jobs:
       id: package-json
 
     - name: Docker meta for docker.io
-      uses: docker/metadata-action@v5
+      uses: docker/metadata-action@v4
       id: meta
       with:
         images: docker.io/weseek/growi
@@ -36,7 +36,7 @@ jobs:
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
 
     - name: Docker meta for ghcr.io
-      uses: docker/metadata-action@v5
+      uses: docker/metadata-action@v4
       id: meta-ghcr
       with:
         images: ghcr.io/weseek/growi

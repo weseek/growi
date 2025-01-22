@@ -61,7 +61,7 @@ type DropdownMenuProps = CommonProps & {
   operationProcessData?: IPageOperationProcessData,
 }
 
-const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): React.ReactElement => {
+const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.Element => {
   const { t } = useTranslation('');
 
   const {
@@ -271,7 +271,7 @@ type PageItemControlSubstanceProps = CommonProps & {
   operationProcessData?: IPageOperationProcessData,
 }
 
-export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): React.ReactElement => {
+export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
     pageId, pageInfo: presetPageInfo, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
@@ -370,7 +370,7 @@ export type PageItemControlProps = CommonProps & {
   operationProcessData?: IPageOperationProcessData,
 }
 
-export const PageItemControl = (props: PageItemControlProps): React.ReactElement => {
+export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
   const { pageId } = props;
 
   if (pageId == null) {

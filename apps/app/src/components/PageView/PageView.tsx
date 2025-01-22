@@ -44,7 +44,7 @@ type Props = {
   className?: string,
 }
 
-export const PageView = (props: Props): React.ReactElement => {
+export const PageView = (props: Props): JSX.Element => {
 
   const commentsContainerRef = useRef<HTMLDivElement>(null);
 
