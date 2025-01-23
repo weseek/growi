@@ -584,7 +584,7 @@ class OpenaiService implements IOpenaiService {
         {
           $and: [
             { owner: { $ne: user } },
-            { shareScope: AiAssistantAccessScope.PUBLIC_ONLY },
+            { shareScope: AiAssistantShareScope.PUBLIC_ONLY },
           ],
         },
 
@@ -592,7 +592,7 @@ class OpenaiService implements IOpenaiService {
         {
           $and: [
             { owner: { $ne: user } },
-            { shareScope: AiAssistantAccessScope.GROUPS },
+            { shareScope: AiAssistantShareScope.GROUPS },
             { 'grantedGroupsForShareScope.item': { $in: userGroupIds } },
           ],
         },
