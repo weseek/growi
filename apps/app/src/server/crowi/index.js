@@ -57,6 +57,9 @@ class Crowi {
    */
   accessTokenParser;
 
+  /** @type {ReturnType<typeof next>} */
+  nextApp;
+
   /** @type {import('../service/config-manager').IConfigManagerForApp} */
   configManager;
 
@@ -74,6 +77,9 @@ class Crowi {
 
   /** @type {import('../service/page').IPageService} */
   pageService;
+
+  /** @type {import('../service/page-operation').default} */
+  pageOperationService;
 
   /** @type {PassportService} */
   passportService;

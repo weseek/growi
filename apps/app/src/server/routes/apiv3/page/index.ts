@@ -109,6 +109,7 @@ const router = express.Router();
  *            description: page ID
  *            example: 5e07345972560e001761fa63
  */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);

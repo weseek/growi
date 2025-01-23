@@ -27,6 +27,7 @@ import type { IOptionsForCreate } from '~/interfaces/page';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
+import type Crowi from '../crowi';
 import { collectAncestorPaths } from '../util/collect-ancestor-paths';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
@@ -1154,7 +1155,8 @@ schema.methods.makeWip = function(disableTtl: boolean) {
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
-export default function PageModel(crowi): any {
+
+export default function PageModel(crowi: Crowi): any {
   // add old page schema methods
   const pageSchema = getPageSchema(crowi);
   schema.methods = { ...pageSchema.methods, ...schema.methods };

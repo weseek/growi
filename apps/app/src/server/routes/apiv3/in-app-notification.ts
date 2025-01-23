@@ -13,7 +13,7 @@ import type { ApiV3Response } from './interfaces/apiv3-response';
 
 const router = express.Router();
 
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);

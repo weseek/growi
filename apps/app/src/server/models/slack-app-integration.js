@@ -20,6 +20,7 @@ const schema = new mongoose.Schema({
 
 class SlackAppIntegration {
 
+  /** @type {import('../service/page').IPageService} */
   crowi;
 
   static generateAccessTokens(saltForGtoP, saltForPtoG) {
