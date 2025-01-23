@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { defaultSupportedSlackEventActions } from '@growi/slack';
 import mongoose from 'mongoose';
 
+import { configManager } from '../service/config-manager';
 import { getModelSafely } from '../util/mongoose-utils';
 
 
@@ -20,9 +21,6 @@ const schema = new mongoose.Schema({
 
 class SlackAppIntegration {
 
-  /** @type {import('../service/page').IPageService} */
-  crowi;
-
   static generateAccessTokens(saltForGtoP, saltForPtoG) {
     const now = new Date().getTime();
     const hasher1 = crypto.createHash('sha512');
@@ -39,10 +37,8 @@ class SlackAppIntegration {
     let generateTokens;
 
     // get salt strings
-    /** @type {import('~/server/crowi').default} Crowi instance */
-    const crowi = this.crowi;
-    const saltForGtoP = crowi.configManager.getConfig('slackbot:withProxy:saltForGtoP');
-    const saltForPtoG = crowi.configManager.getConfig('slackbot:withProxy:saltForPtoG');
+    const saltForGtoP = configManager.getConfig('slackbot:withProxy:saltForGtoP');
+    const saltForPtoG = configManager.getConfig('slackbot:withProxy:saltForPtoG');
 
     do {
       generateTokens = this.generateAccessTokens(saltForGtoP, saltForPtoG);
@@ -58,14 +54,12 @@ class SlackAppIntegration {
 
 }
 
-/** @param {import('~/server/crowi').default} crowi Crowi instance */
 const factory = (crowi) => {
   const modelExists = getModelSafely('SlackAppIntegration');
   if (modelExists != null) {
     return modelExists;
   }
 
-  SlackAppIntegration.crowi = crowi;
   schema.loadClass(SlackAppIntegration);
   return mongoose.model('SlackAppIntegration', schema);
 };
