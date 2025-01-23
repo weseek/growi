@@ -25,8 +25,8 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
-import type { AccessibleAiAssistants } from '../../interfaces/ai-assistant';
-import { type AiAssistant, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
+import { AiAssistantAccessScope } from '../../interfaces/ai-assistant';
+import type { AccessibleAiAssistants, AiAssistant } from '../../interfaces/ai-assistant';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 
@@ -554,8 +554,8 @@ class OpenaiService implements IOpenaiService {
     });
 
     return {
-      myAiAssistants: assistants.filter(assistant => assistant.owner.toString() === user._id.toString()) as AiAssistant[] ?? [],
-      teamAiAssistants: assistants.filter(assistant => assistant.owner.toString() !== user._id.toString()) as AiAssistant[] ?? [],
+      myAiAssistants: assistants.filter(assistant => assistant.owner.toString() === user._id.toString()) ?? [],
+      teamAiAssistants: assistants.filter(assistant => assistant.owner.toString() !== user._id.toString()) ?? [],
     };
   }
 
