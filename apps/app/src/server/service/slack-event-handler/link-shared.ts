@@ -1,12 +1,15 @@
+import { PageGrant, type IPage } from '@growi/core';
 import type { GrowiBotEvent } from '@growi/slack';
 import { generateLastUpdateMrkdwn } from '@growi/slack/dist/utils/generate-last-update-markdown';
 import type {
   MessageAttachment, LinkUnfurls, WebClient,
 } from '@slack/web-api';
+import mongoose from 'mongoose';
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
 import type { EventActionsPermission } from '~/server/interfaces/slack-integration/events';
+import type { PageModel } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
 import type {
@@ -122,7 +125,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     const ids = pathOrIds.filter(pathOrId => idRegExp.test(pathOrId)).map(id => id.replace('/', '')); // remove a slash
 
     // get pages with revision
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
     const pageQueryBuilderByPaths = new PageQueryBuilder(Page.find());
@@ -154,7 +157,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
     pages.forEach((page) => {
       // not send non-public page
-      if (page.grant !== Page.GRANT_PUBLIC) {
+      if (page.grant !== PageGrant.GRANT_PUBLIC) {
         return unfurlData.push({
           isPublic: false, isPermalink, id: page._id.toString(), path: page.path,
         });

@@ -272,7 +272,7 @@ export class PageQueryBuilder {
   /**
    * generate the query to find the pages '{path}/*' (exclude '{path}' self).
    */
-  addConditionToListOnlyDescendants(path: string, option): PageQueryBuilder {
+  addConditionToListOnlyDescendants(path: string): PageQueryBuilder {
     // exclude the target page
     this.query = this.query.and({ path: { $ne: path } });
 
@@ -1156,7 +1156,7 @@ schema.methods.makeWip = function(disableTtl: boolean) {
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
 
-export default function PageModel(crowi: Crowi): any {
+export default function PageModel(crowi: Crowi | null): any {
   // add old page schema methods
   const pageSchema = getPageSchema(crowi);
   schema.methods = { ...pageSchema.methods, ...schema.methods };

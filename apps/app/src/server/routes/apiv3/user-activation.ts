@@ -1,8 +1,10 @@
 import path from 'path';
 
+import type { IUser } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { format, subSeconds } from 'date-fns';
 import { body, validationResult } from 'express-validator';
+import mongoose from 'mongoose';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { RegistrationMode } from '~/interfaces/registration-mode';
@@ -69,7 +71,7 @@ async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, tem
 }
 
 export const completeRegistrationAction = (crowi: Crowi) => {
-  const User = crowi.model('User');
+  const User = mongoose.model<IUser, { isEmailValid, isRegisterable, createUserByEmailAndPassword, findAdmins }>('User');
   const activityEvent = crowi.event('activity');
   const {
     aclService,
@@ -244,7 +246,7 @@ async function makeRegistrationEmailToken(email, crowi: Crowi) {
 }
 
 export const registerAction = (crowi: Crowi) => {
-  const User = crowi.model('User');
+  const User = mongoose.model<IUser, { isRegisterableEmail, isEmailValid }>('User');
 
   return async function(req, res) {
     const registerForm = req.body.registerForm || {};

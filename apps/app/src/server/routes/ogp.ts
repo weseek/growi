@@ -40,13 +40,18 @@ module.exports = function(crowi: Crowi) {
     return /^\/attachment\/.+/.test(userImageUrlCached);
   };
 
-  const getBufferedUserImage = async(userImageUrlCached: string): Promise<Buffer> => {
+  const getBufferedUserImage = async(userImageUrlCached: string): Promise<Buffer | null> => {
 
     let bufferedUserImage: Buffer;
 
     if (isUserImageAttachment(userImageUrlCached)) {
       const { fileUploadService } = crowi;
       const attachment = await Attachment.findById(userImageUrlCached);
+
+      if (attachment == null) {
+        return null;
+      }
+
       const fileStream = await fileUploadService.findDeliveryFile(attachment);
       bufferedUserImage = await convertStreamToBuffer(fileStream);
       return bufferedUserImage;
@@ -85,7 +90,7 @@ module.exports = function(crowi: Crowi) {
           userName = user.username;
           userImage = user.imageUrlCached !== DEFAULT_USER_IMAGE_URL
             ? bufferedDefaultUserImageCache
-            : await getBufferedUserImage(user.imageUrlCached);
+            : await getBufferedUserImage(user.imageUrlCached) ?? bufferedDefaultUserImageCache;
         }
       }
     }

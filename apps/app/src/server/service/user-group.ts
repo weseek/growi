@@ -1,6 +1,6 @@
 import type { IUser, IGrantedGroup } from '@growi/core';
 import type { DeleteResult } from 'mongodb';
-import type { Model } from 'mongoose';
+import mongoose, { type Model } from 'mongoose';
 
 import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
@@ -148,7 +148,7 @@ class UserGroupService implements IUserGroupService {
   }
 
   async removeUserByUsername(userGroupId: ObjectIdLike, username: string): Promise<{user: IUser, deletedGroupsCount: number}> {
-    const User = this.crowi.model('User');
+    const User = mongoose.model<IUser, { findUserByUsername }>('User');
 
     const [userGroup, user] = await Promise.all([
       UserGroup.findById(userGroupId),

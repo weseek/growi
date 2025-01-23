@@ -78,6 +78,9 @@ class Crowi {
   /** @type {import('../service/page').IPageService} */
   pageService;
 
+  /** @type {import('../service/page-grant').default} */
+  pageGrantService;
+
   /** @type {import('../service/page-operation').default} */
   pageOperationService;
 

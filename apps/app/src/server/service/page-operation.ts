@@ -1,4 +1,6 @@
+import type { IPage } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
+import mongoose from 'mongoose';
 
 import type { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
 import { PageActionType, PageActionStage } from '~/interfaces/page-operation';
@@ -8,6 +10,7 @@ import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../crowi';
 import type { ObjectIdLike } from '../interfaces/mongoose-utils';
+import type { PageModel } from '../models/page';
 import { collectAncestorPaths } from '../util/collect-ancestor-paths';
 
 const logger = loggerFactory('growi:services:page-operation');
@@ -58,7 +61,7 @@ class PageOperationService {
   private async executeAllRenameOperationBySystem(pageOps: PageOperationDocument[]): Promise<void> {
     if (pageOps.length === 0) return;
 
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     for await (const pageOp of pageOps) {
 
