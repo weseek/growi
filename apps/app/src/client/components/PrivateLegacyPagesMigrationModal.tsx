@@ -11,7 +11,7 @@ import { usePrivateLegacyPagesMigrationModal } from '~/stores/modal';
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
 
 
-export const PrivateLegacyPagesMigrationModal = (): React.ReactElement => {
+export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: status, close } = usePrivateLegacyPagesMigrationModal();

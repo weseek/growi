@@ -21,7 +21,7 @@ const onDeletedHandler = (pathOrPathsToDelete) => {
   window.location.href = '/';
 };
 
-export const TrashPageAlert = (): React.ReactElement => {
+export const TrashPageAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 

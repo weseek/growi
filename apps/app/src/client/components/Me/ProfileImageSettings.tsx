@@ -15,7 +15,7 @@ import { generateGravatarSrc, GRAVATAR_DEFAULT } from '~/utils/gravatar';
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 
-const ProfileImageSettings = (): React.ReactElement => {
+const ProfileImageSettings = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();

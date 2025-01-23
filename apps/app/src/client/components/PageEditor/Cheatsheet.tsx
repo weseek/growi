@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
-export const Cheatsheet = (): React.ReactElement => {
+export const Cheatsheet = (): JSX.Element => {
   const { t } = useTranslation();
 
   /*

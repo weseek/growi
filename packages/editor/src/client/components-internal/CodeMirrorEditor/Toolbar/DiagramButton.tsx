@@ -6,7 +6,7 @@ type Props = {
   editorKey: string,
 }
 
-export const DiagramButton = (props: Props): React.ReactElement => {
+export const DiagramButton = (props: Props): JSX.Element => {
   const { editorKey } = props;
   const { open: openDrawioModal } = useDrawioModalForEditor();
   const onClickDiagramButton = useCallback(() => {

@@ -1,11 +1,12 @@
-import { Schema } from 'mongoose';
-import type { Types, Model, Document } from 'mongoose';
+import type { Types } from 'mongoose';
+import type mongoose from 'mongoose';
+import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 export interface VectorStoreFileRelation {
-  vectorStoreRelationId: Types.ObjectId;
-  page: Types.ObjectId;
+  vectorStoreRelationId: mongoose.Types.ObjectId;
+  page: mongoose.Types.ObjectId;
   fileIds: string[];
   isAttachedToVectorStore: boolean;
 }

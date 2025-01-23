@@ -29,7 +29,7 @@ type Props = {
   onClosed?: () => void,
 }
 
-const StaffCredit = (props: Props): React.ReactElement => {
+const StaffCredit = (props: Props): JSX.Element => {
 
   const { onClosed } = props;
 

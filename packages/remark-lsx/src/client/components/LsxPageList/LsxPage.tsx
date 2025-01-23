@@ -18,7 +18,7 @@ type Props = {
   basisViewersCount?: number,
 };
 
-export const LsxPage = React.memo((props: Props): React.ReactElement => {
+export const LsxPage = React.memo((props: Props): JSX.Element => {
   const {
     pageNode, lsxContext, depth, basisViewersCount,
   } = props;
@@ -39,7 +39,7 @@ export const LsxPage = React.memo((props: Props): React.ReactElement => {
   })();
   const hasChildren = pageNode.children.length > 0;
 
-  const childrenElements: React.ReactElement = useMemo(() => {
+  const childrenElements: JSX.Element = useMemo(() => {
     let element = <></>;
 
     // create child pages elements
@@ -62,14 +62,14 @@ export const LsxPage = React.memo((props: Props): React.ReactElement => {
     return element;
   }, [basisViewersCount, depth, hasChildren, lsxContext, pageNode.children]);
 
-  const iconElement: React.ReactElement = useMemo(() => {
+  const iconElement: JSX.Element = useMemo(() => {
     const isExists = pageId != null;
     return (isExists)
       ? <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">description</span>
       : <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">draft</span>;
   }, [pageId]);
 
-  const pagePathElement: React.ReactElement = useMemo(() => {
+  const pagePathElement: JSX.Element = useMemo(() => {
     const isExists = pageId != null;
 
     const classNames: string[] = [];
@@ -93,7 +93,7 @@ export const LsxPage = React.memo((props: Props): React.ReactElement => {
     return pagePathNode;
   }, [isLinkable, pageId, pagePath]);
 
-  const pageListMetaElement: React.ReactElement = useMemo(() => {
+  const pageListMetaElement: JSX.Element = useMemo(() => {
     if (pageNode.page == null) {
       return <></>;
     }

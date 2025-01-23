@@ -40,7 +40,7 @@ const AppSetting = (props) => {
           <input
             className="form-control"
             type="text"
-            defaultValue={adminAppContainer.state.title || ''}
+            defaletValue={adminAppContainer.state.title || ''}
             onChange={(e) => {
               adminAppContainer.changeTitle(e.target.value);
             }}

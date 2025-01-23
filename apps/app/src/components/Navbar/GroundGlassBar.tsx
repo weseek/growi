@@ -6,7 +6,7 @@ const moduleClass = styles['ground-glass-bar'];
 
 type Props = DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>;
 
-export const GroundGlassBar = (props: Props): React.ReactElement => {
+export const GroundGlassBar = (props: Props): JSX.Element => {
   const { className, children, ...rest } = props;
 
   return (
