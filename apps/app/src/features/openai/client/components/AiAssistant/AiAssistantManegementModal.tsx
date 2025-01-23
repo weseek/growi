@@ -15,6 +15,7 @@ import { createAiAssistant } from '../../services/ai-assistant';
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 import { SelectedPageList } from '../Common/SelectedPageList';
 
+
 import styles from './AiAssistantManegementModal.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
@@ -106,7 +107,6 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               <option>自分のみ</option>
             </Input>
           </FormGroup>
-
 
           <FormGroup className="mb-4">
             <div className="d-flex align-items-center mb-2">
