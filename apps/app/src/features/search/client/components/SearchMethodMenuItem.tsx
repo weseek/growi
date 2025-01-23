@@ -15,7 +15,7 @@ type Props = {
   getItemProps: GetItemProps
 }
 
-export const SearchMethodMenuItem = (props: Props): React.ReactElement => {
+export const SearchMethodMenuItem = (props: Props): JSX.Element => {
   const {
     activeIndex, searchKeyword, getItemProps,
   } = props;

@@ -13,7 +13,7 @@ import QuestionnaireToast from './QuestionnaireToast';
 
 import styles from './QuestionnaireModalManager.module.scss';
 
-const QuestionnaireModalManager = (): React.ReactElement => {
+const QuestionnaireModalManager = ():JSX.Element => {
   const { data: questionnaireOrders } = useSWRxQuestionnaireOrders();
   const { data: currentUser } = useCurrentUser();
 

@@ -9,7 +9,7 @@ import { InAppNotificationForms } from './InAppNotificationSubstance';
 
 const InAppNotificationContent = dynamic(() => import('./InAppNotificationSubstance').then(mod => mod.InAppNotificationContent), { ssr: false });
 
-export const InAppNotification = (): React.ReactElement => {
+export const InAppNotification = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [isUnopendNotificationsVisible, setUnopendNotificationsVisible] = useState(false);

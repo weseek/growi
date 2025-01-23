@@ -13,7 +13,7 @@ type Props = {
   onSelected?: () => void,
 };
 
-export const ThemeColorBox = (props: Props): React.ReactElement => {
+export const ThemeColorBox = (props: Props): JSX.Element => {
 
   const {
     isSelected, metadata, onSelected,

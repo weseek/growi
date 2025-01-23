@@ -11,7 +11,7 @@ import { useDefaultSocket } from '~/stores/socket-io';
 
 import InAppNotificationList from './InAppNotificationList';
 
-export const InAppNotificationDropdown = (): React.ReactElement => {
+export const InAppNotificationDropdown = (): JSX.Element => {
   const { t } = useTranslation('commons');
 
   const [isOpen, setIsOpen] = useState(false);

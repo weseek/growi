@@ -29,7 +29,7 @@ type RevisionComparerProps = {
   onClose: () => void
 }
 
-export const RevisionComparer = (props: RevisionComparerProps): React.ReactElement => {
+export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
   const { t } = useTranslation(['translation', 'commons']);
 
   const {

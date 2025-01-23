@@ -1,15 +1,16 @@
 
+import type { IGrantedGroup } from '@growi/core';
 import {
-  PageGrant, type IPage, type IGrantedGroup, GroupType, getIdForRef,
+  PageGrant, type IPage, GroupType, getIdForRef,
 } from '@growi/core';
 import mongoose from 'mongoose';
 
-import { PageActionOnGroupDelete } from '../../../src/interfaces/user-group';
 import type { PageDocument, PageModel } from '../../../src/server/models/page';
 import UserGroup from '../../../src/server/models/user-group';
 import UserGroupRelation from '../../../src/server/models/user-group-relation';
 import type { IUserGroupService } from '../../../src/server/service/user-group';
 import { getInstance } from '../setup-crowi';
+import { PageActionOnGroupDelete } from '../../../src/interfaces/user-group';
 
 describe('UserGroupService', () => {
   let crowi;

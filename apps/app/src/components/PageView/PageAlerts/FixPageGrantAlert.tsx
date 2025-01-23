@@ -19,7 +19,7 @@ type ModalProps = {
   close(): void
 }
 
-const FixPageGrantModal = (props: ModalProps): React.ReactElement => {
+const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
@@ -278,7 +278,7 @@ const FixPageGrantModal = (props: ModalProps): React.ReactElement => {
   );
 };
 
-export const FixPageGrantAlert = (): React.ReactElement => {
+export const FixPageGrantAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();

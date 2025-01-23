@@ -36,7 +36,7 @@ type Props = {
   bookmarkFolderTreeMutation: () => void,
 }
 
-export const BookmarkItem = (props: Props): React.ReactElement => {
+export const BookmarkItem = (props: Props): JSX.Element => {
   const BASE_FOLDER_PADDING = 15;
   const BASE_BOOKMARK_PADDING = 16;
 

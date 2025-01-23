@@ -11,7 +11,7 @@ type ColorModeSettingsButtonProps = {
   onClick?: () => void,
 }
 
-const ColorModeSettingsButton = ({ isActive, children, onClick }: ColorModeSettingsButtonProps): React.ReactElement => {
+const ColorModeSettingsButton = ({ isActive, children, onClick }: ColorModeSettingsButtonProps): JSX.Element => {
   return (
     <button
       type="button"
@@ -24,7 +24,7 @@ const ColorModeSettingsButton = ({ isActive, children, onClick }: ColorModeSetti
 };
 
 
-export const ColorModeSettings = (): React.ReactElement => {
+export const ColorModeSettings = (): JSX.Element => {
   const { t } = useTranslation();
 
   const { setTheme, theme } = useNextThemes();

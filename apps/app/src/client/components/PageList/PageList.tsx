@@ -21,7 +21,7 @@ type Props<M extends IPageInfoForEntity> = {
   onPagePutBacked?: OnPutBackedFunction,
 }
 
-const PageList = (props: Props<IPageInfoForEntity>): React.ReactElement => {
+const PageList = (props: Props<IPageInfoForEntity>): JSX.Element => {
   const { t } = useTranslation();
   const {
     pages, isEnableActions, isReadOnlyUser, forceHideMenuItems, onPagesDeleted, onPagePutBacked,

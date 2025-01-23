@@ -10,8 +10,9 @@ import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import { useRouter } from 'next/router';
 import type { HtmlElementNode } from 'rehype-toc';
+import type { MutatorOptions } from 'swr';
 import {
-  useSWRConfig, type SWRResponse, type Key, type MutatorOptions,
+  useSWRConfig, type SWRResponse, type Key,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -20,13 +21,13 @@ import type { IPageSelectedGrant } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
-  useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
-} from '~/stores/page';
-import {
   useIsEditable, useIsReadOnlyUser,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import {
+  useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
+} from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';

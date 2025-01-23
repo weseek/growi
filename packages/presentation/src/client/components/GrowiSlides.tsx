@@ -14,7 +14,7 @@ type Props = {
   presentation?: boolean,
 }
 
-export const GrowiSlides = (props: Props): React.ReactElement => {
+export const GrowiSlides = (props: Props): JSX.Element => {
   const {
     options, children, presentation,
   } = props;

@@ -14,7 +14,7 @@ type Props = {
   expandContentWidth?: boolean,
 }
 
-export const PageViewLayout = (props: Props): React.ReactElement => {
+export const PageViewLayout = (props: Props): JSX.Element => {
   const {
     className,
     children, headerContents, sideContents, footerContents,
@@ -51,7 +51,7 @@ export const PageViewLayout = (props: Props): React.ReactElement => {
       </div>
 
       { footerContents != null && (
-        <footer className={`footer d-edit-none wide-gutter-x-lg ${fluidLayoutClass}`}>
+        <footer className={`footer d-edit-none container-lg wide-gutter-x-lg ${fluidLayoutClass}`}>
           {footerContents}
         </footer>
       ) }

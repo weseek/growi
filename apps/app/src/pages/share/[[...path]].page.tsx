@@ -81,7 +81,7 @@ type GrowiContextualSubNavigationForSharedPageProps = {
   isLinkSharingDisabled: boolean,
 }
 
-const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): React.ReactElement => {
+const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
   const { page, isLinkSharingDisabled } = props;
 
   return (

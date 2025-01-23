@@ -15,7 +15,7 @@ type ManageExternalAccountProps = {
   adminExternalAccountsContainer: AdminExternalAccountsContainer,
 }
 
-const ManageExternalAccount = (props: ManageExternalAccountProps): React.ReactElement => {
+const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element => {
 
   const { t } = useTranslation();
   const { adminExternalAccountsContainer } = props;

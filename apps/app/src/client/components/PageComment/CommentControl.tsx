@@ -7,7 +7,7 @@ type CommentControlProps = {
   onClickDeleteBtn: () => void,
 }
 
-export const CommentControl = (props: CommentControlProps): React.ReactElement => {
+export const CommentControl = (props: CommentControlProps): JSX.Element => {
 
   const { onClickEditBtn, onClickDeleteBtn } = props;
 
