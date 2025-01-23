@@ -15,15 +15,12 @@ import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:ai-assistant');
+const logger = loggerFactory('growi:routes:apiv3:openai:create-ai-assistant');
 
 
-/*
-*  CreateAssistantFactory
-*/
 type CreateAssistantFactory = (crowi: Crowi) => RequestHandler[];
 
-type CreateAssistantFactoryReq = Request<undefined, Response, IApiv3AiAssistantCreateParams> & {
+type Req = Request<undefined, Response, IApiv3AiAssistantCreateParams> & {
   user: IUserHasId,
 }
 
@@ -97,7 +94,7 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
 
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: CreateAssistantFactoryReq, res: ApiV3Response) => {
+    async(req: Req, res: ApiV3Response) => {
       try {
         const aiAssistantData = { ...req.body, owner: req.user._id };
         const openaiService = getOpenaiService();
@@ -108,37 +105,6 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       catch (err) {
         logger.error(err);
         return res.apiv3Err(new ErrorV3('AiAssistant creation failed'));
-      }
-    },
-  ];
-};
-
-
-/*
-*  GetAiAssistantsFactory
-*/
-type GetAiAssistantsFactory = (crowi: Crowi) => RequestHandler[];
-
-type GetAiAssistantsFactoryReq = Request<undefined, Response, undefined> & {
-  user: IUserHasId,
-}
-
-export const getAccessibleAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
-
-  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
-
-  return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService,
-    async(req: GetAiAssistantsFactoryReq, res: ApiV3Response) => {
-      try {
-        const openaiService = getOpenaiService();
-        const accessibleAiAssistants = await openaiService?.getAccessibleAiAssistants(req.user);
-
-        return res.apiv3({ accessibleAiAssistants });
-      }
-      catch (err) {
-        logger.error(err);
-        return res.apiv3Err(new ErrorV3('Failed to get AiAssistants'));
       }
     },
   ];
