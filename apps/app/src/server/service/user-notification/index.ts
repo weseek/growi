@@ -1,5 +1,6 @@
 import type { IRevisionHasId } from '@growi/core';
 
+import type Crowi from '~/server/crowi';
 import { toArrayFromCsv } from '~/utils/to-array-from-csv';
 
 
@@ -14,10 +15,9 @@ import { growiInfoService } from '../growi-info';
  */
 export class UserNotificationService {
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  crowi!: any;
+  crowi: Crowi;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
   }
 

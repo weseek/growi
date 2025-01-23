@@ -21,7 +21,7 @@ const logger = loggerFactory('growi:routes:apiv3:installer');
 type FormRequest = Request & { form: any, logIn: any };
 
 module.exports = (crowi: Crowi): Router => {
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   const activityEvent = crowi.event('activity');
 

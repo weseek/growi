@@ -18,6 +18,7 @@ import {
   type BlockBlobParallelUploadOptions,
 } from '@azure/storage-blob';
 
+import type Crowi from '~/server/crowi';
 import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
@@ -237,7 +238,7 @@ class AzureFileUploader extends AbstractFileUploader {
 
 }
 
-module.exports = (crowi) => {
+module.exports = (crowi: Crowi) => {
   const lib = new AzureFileUploader(crowi);
 
   lib.isValidUploadSettings = function() {

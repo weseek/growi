@@ -1,11 +1,14 @@
 import path from 'path';
 
+import type { IUser } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { format, subSeconds } from 'date-fns';
 import { body, validationResult } from 'express-validator';
+import mongoose from 'mongoose';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { RegistrationMode } from '~/interfaces/registration-mode';
+import type Crowi from '~/server/crowi';
 import UserRegistrationOrder from '~/server/models/user-registration-order';
 import { configManager } from '~/server/service/config-manager';
 import { growiInfoService } from '~/server/service/growi-info';
@@ -67,8 +70,8 @@ async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, tem
   });
 }
 
-export const completeRegistrationAction = (crowi) => {
-  const User = crowi.model('User');
+export const completeRegistrationAction = (crowi: Crowi) => {
+  const User = mongoose.model<IUser, { isEmailValid, isRegisterable, createUserByEmailAndPassword, findAdmins }>('User');
   const activityEvent = crowi.event('activity');
   const {
     aclService,
@@ -207,7 +210,7 @@ export const validateRegisterForm = (req, res, next) => {
   return res.apiv3Err(extractedErrors, 400);
 };
 
-async function makeRegistrationEmailToken(email, crowi) {
+async function makeRegistrationEmailToken(email, crowi: Crowi) {
   const {
     mailService,
     localeDir,
@@ -242,8 +245,8 @@ async function makeRegistrationEmailToken(email, crowi) {
   });
 }
 
-export const registerAction = (crowi) => {
-  const User = crowi.model('User');
+export const registerAction = (crowi: Crowi) => {
+  const User = mongoose.model<IUser, { isRegisterableEmail, isEmailValid }>('User');
 
   return async function(req, res) {
     const registerForm = req.body.registerForm || {};

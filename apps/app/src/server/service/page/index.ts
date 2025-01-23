@@ -25,6 +25,7 @@ import type { ExternalUserGroupDocument } from '~/features/external-user-group/s
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { isAiEnabled } from '~/features/openai/server/services';
 import { SupportedAction } from '~/interfaces/activity';
+import type { BookmarkedPage } from '~/interfaces/bookmark-info';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import type { IOptionsForCreate, IOptionsForUpdate } from '~/interfaces/page';
 import type { IPageDeleteConfigValueToProcessValidation } from '~/interfaces/page-delete-config';
@@ -38,6 +39,7 @@ import {
 import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
+import type Crowi from '~/server/crowi';
 import type { CreateMethod } from '~/server/models/page';
 import {
   type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
@@ -166,7 +168,7 @@ class PageCursorsForDescendantsFactory {
 
 class PageService implements IPageService {
 
-  crowi: any;
+  crowi: Crowi;
 
   pageEvent: EventEmitter & {
     onCreate,
@@ -180,7 +182,7 @@ class PageService implements IPageService {
 
   pageGrantService: IPageGrantService;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.pageEvent = crowi.event('page');
     this.tagEvent = crowi.event('tag');
@@ -436,7 +438,7 @@ class PageService implements IPageService {
     const isGuestUser = user == null;
     const pageInfo = this.constructBasicPageInfo(page, isGuestUser);
 
-    const Bookmark = this.crowi.model('Bookmark');
+    const Bookmark = mongoose.model<BookmarkedPage, { countByPageId, findByPageIdAndUserId }>('Bookmark');
     const bookmarkCount = await Bookmark.countByPageId(pageId);
 
     const metadataForGuest = {
@@ -500,7 +502,7 @@ class PageService implements IPageService {
    */
   private async generateReadStreamToOperateOnlyDescendants(targetPagePath, userToOperate) {
 
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find(), true)
@@ -2164,7 +2166,7 @@ class PageService implements IPageService {
 
   // use the same process in both v4 and v5
   private async revertDeletedDescendants(pages, user) {
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     const revertPageOperations: any[] = [];
     const fromPathsToDelete: string[] = [];
@@ -2201,7 +2203,7 @@ class PageService implements IPageService {
     /*
      * Common Operation
      */
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     const parameters = {
       ip: activityParameters.ip,
@@ -2360,7 +2362,7 @@ class PageService implements IPageService {
   }
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
@@ -2388,7 +2390,7 @@ class PageService implements IPageService {
   }
 
   private async applyScopesToDescendantsWithStream(parentPage, user, isV4 = false) {
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const builder = new Page.PageQueryBuilder(Page.find());
     builder.addConditionToListOnlyDescendants(parentPage.path);
 
@@ -2525,7 +2527,10 @@ class PageService implements IPageService {
 
 
   async handlePrivatePagesForGroupsToDelete(
-      groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[], action: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup, user,
+      groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[],
+      action: PageActionOnGroupDelete,
+      transferToUserGroup: IGrantedGroup | undefined,
+      user: IUser,
   ): Promise<void> {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const pages = await Page.find({ grantedGroups: { $elemMatch: { item: { $in: groupsToDelete } } } });
@@ -3430,7 +3435,7 @@ class PageService implements IPageService {
    */
   async updateDescendantCountOfSelfAndDescendants(path: string): Promise<void> {
     const BATCH_SIZE = 200;
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find(), true);
@@ -3447,7 +3452,7 @@ class PageService implements IPageService {
    */
   async updateDescendantCountOfPagesWithPaths(paths: string[]): Promise<void> {
     const BATCH_SIZE = 200;
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find(), true);
@@ -3462,7 +3467,7 @@ class PageService implements IPageService {
    * Recount descendantCount of pages one by one
    */
   async recountAndUpdateDescendantCountOfPages(pageCursor: Cursor<any>, batchSize:number): Promise<void> {
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const batchStream = createBatchStream(batchSize);
     const recountWriteStream = new Writable({
       objectMode: true,
@@ -3483,7 +3488,7 @@ class PageService implements IPageService {
 
   // update descendantCount of all pages that are ancestors of a provided pageId by count
   async updateDescendantCountOfAncestors(pageId: ObjectIdLike, inc: number, shouldIncludeTarget: boolean): Promise<void> {
-    const Page = this.crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const ancestors = await Page.findAncestorsUsingParentRecursively(pageId, shouldIncludeTarget);
     const ancestorPageIds = ancestors.map(p => p._id);
 

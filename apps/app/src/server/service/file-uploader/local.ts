@@ -5,6 +5,7 @@ import { pipeline } from 'stream/promises';
 
 import type { Response } from 'express';
 
+import type Crowi from '~/server/crowi';
 import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
@@ -103,7 +104,7 @@ class LocalFileUploader extends AbstractFileUploader {
 
 }
 
-module.exports = function(crowi) {
+module.exports = function(crowi: Crowi) {
   const lib = new LocalFileUploader(crowi);
 
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
