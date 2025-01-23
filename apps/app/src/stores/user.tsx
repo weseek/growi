@@ -1,9 +1,10 @@
-import type { IGrantedGroup, IUserHasId, Populated } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import type { SWRResponse } from 'swr';
 import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { checkAndUpdateImageUrlCached } from '~/stores/middlewares/user';
 
 export const useSWRxUsersList = (userIds: string[]): SWRResponse<IUserHasId[], Error> => {
@@ -51,7 +52,7 @@ export const useSWRxUsernames = (q: string, offset?: number, limit?: number, opt
 };
 
 type RelatedGroupsResponse = {
-  relatedGroups: Populated<IGrantedGroup, 'item'>[]
+  relatedGroups: PopulatedGrantedGroup[]
 }
 
 export const useSWRxUserRelatedGroups = (): SWRResponse<RelatedGroupsResponse, Error> => {
