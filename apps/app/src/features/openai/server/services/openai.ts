@@ -2,14 +2,13 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import type { IUserHasId } from '@growi/core';
-import { PageGrant, getIdForRef, isPopulated } from '@growi/core';
+import {
+  PageGrant, getIdForRef, isPopulated, type IUserHasId,
+} from '@growi/core';
 import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
-import type { HydratedDocument, Types } from 'mongoose';
-import mongoose from 'mongoose';
-import type OpenAI from 'openai';
-import { toFile } from 'openai';
+import mongoose, { type HydratedDocument, type Types } from 'mongoose';
+import { type OpenAI, toFile } from 'openai';
 
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
@@ -25,8 +24,9 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
-import { AiAssistantAccessScope } from '../../interfaces/ai-assistant';
-import type { AccessibleAiAssistants, AiAssistant } from '../../interfaces/ai-assistant';
+import {
+  type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
+} from '../../interfaces/ai-assistant';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 
@@ -428,10 +428,11 @@ class OpenaiService implements IOpenaiService {
   private async createConditionForCreateAiAssistant(
       owner: AiAssistant['owner'],
       accessScope: AiAssistant['accessScope'],
-      grantedGroups: AiAssistant['grantedGroups'],
+      grantedGroupsForAccessScope: AiAssistant['grantedGroupsForAccessScope'],
       pagePathPatterns: AiAssistant['pagePathPatterns'],
   ): Promise<mongoose.FilterQuery<PageDocument>> {
-    const converterdPagePatgPatterns = convertPathPatternsToRegExp(pagePathPatterns);
+
+    const converterdPagePathPatterns = convertPathPatternsToRegExp(pagePathPatterns);
 
     // Include pages in search targets when their paths with 'Anyone with the link' permission are directly specified instead of using glob pattern
     const nonGrabPagePathPatterns = pagePathPatterns.filter(pagePathPattern => !isGrobPatternPath(pagePathPattern));
@@ -446,37 +447,27 @@ class OpenaiService implements IOpenaiService {
           baseCondition,
           {
             grant: PageGrant.GRANT_PUBLIC,
-            path: { $in: converterdPagePatgPatterns },
+            path: { $in: converterdPagePathPatterns },
           },
         ],
       };
     }
 
     if (accessScope === AiAssistantAccessScope.GROUPS) {
-      if (grantedGroups == null || grantedGroups.length === 0) {
+      if (grantedGroupsForAccessScope == null || grantedGroupsForAccessScope.length === 0) {
         throw new Error('grantedGroups is required when accessScope is GROUPS');
       }
 
-      const extractedGrantedGroupIds = grantedGroups.map(group => getIdForRef(group.item).toString());
-      const extractedOwnerGroupIds = [
-        ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
-        ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
-      ].map(group => group.toString());
-
-      // Check if the owner belongs to the group specified in grantedGroups
-      const isValid = extractedGrantedGroupIds.every(groupId => extractedOwnerGroupIds.includes(groupId));
-      if (!isValid) {
-        throw new Error('A group to which the owner does not belong is specified.');
-      }
+      const extractedGrantedGroupIdsForAccessScope = grantedGroupsForAccessScope.map(group => getIdForRef(group.item).toString());
 
       return {
         $or: [
           baseCondition,
           {
             grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP] },
-            path: { $in: converterdPagePatgPatterns },
+            path: { $in: converterdPagePathPatterns },
             $or: [
-              { 'grantedGroups.item': { $in: extractedGrantedGroupIds } },
+              { 'grantedGroups.item': { $in: extractedGrantedGroupIdsForAccessScope } },
               { grant: PageGrant.GRANT_PUBLIC },
             ],
           },
@@ -495,7 +486,7 @@ class OpenaiService implements IOpenaiService {
           baseCondition,
           {
             grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP, PageGrant.GRANT_OWNER] },
-            path: { $in: converterdPagePatgPatterns },
+            path: { $in: converterdPagePathPatterns },
             $or: [
               { 'grantedGroups.item': { $in: ownerUserGroups } },
               { grantedUsers: { $in: [getIdForRef(owner)] } },
@@ -509,8 +500,63 @@ class OpenaiService implements IOpenaiService {
     throw new Error('Invalid accessScope value');
   }
 
+  private async validateGrantedUserGroupsForCreateAiAssistant(
+      owner: AiAssistant['owner'],
+      shareScope: AiAssistant['shareScope'],
+      accessScope: AiAssistant['accessScope'],
+      grantedGroupsForShareScope: AiAssistant['grantedGroupsForShareScope'],
+      grantedGroupsForAccessScope: AiAssistant['grantedGroupsForAccessScope'],
+  ) {
+
+    // Check if grantedGroupsForShareScope is not specified when shareScope is not a “group”
+    if (shareScope !== AiAssistantShareScope.GROUPS && grantedGroupsForShareScope != null) {
+      throw new Error('grantedGroupsForShareScope is specified when shareScope is not “groups”.');
+    }
+
+    // Check if grantedGroupsForAccessScope is not specified when accessScope is not a “group”
+    if (accessScope !== AiAssistantAccessScope.GROUPS && grantedGroupsForAccessScope != null) {
+      throw new Error('grantedGroupsForAccessScope is specified when accsessScope is not “groups”.');
+    }
+
+    const ownerUserGroupIds = [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(owner)),
+    ].map(group => group.toString());
+
+    // Check if the owner belongs to the group specified in grantedGroupsForShareScope
+    if (grantedGroupsForShareScope != null && grantedGroupsForShareScope.length > 0) {
+      const extractedGrantedGroupIdsForShareScope = grantedGroupsForShareScope.map(group => getIdForRef(group.item).toString());
+      const isValid = extractedGrantedGroupIdsForShareScope.every(groupId => ownerUserGroupIds.includes(groupId));
+      if (!isValid) {
+        throw new Error('A userGroup to which the owner does not belong is specified in grantedGroupsForShareScope');
+      }
+    }
+
+    // Check if the owner belongs to the group specified in grantedGroupsForAccessScope
+    if (grantedGroupsForAccessScope != null && grantedGroupsForAccessScope.length > 0) {
+      const extractedGrantedGroupIdsForAccessScope = grantedGroupsForAccessScope.map(group => getIdForRef(group.item).toString());
+      const isValid = extractedGrantedGroupIdsForAccessScope.every(groupId => ownerUserGroupIds.includes(groupId));
+      if (!isValid) {
+        throw new Error('A userGroup to which the owner does not belong is specified in grantedGroupsForAccessScope');
+      }
+    }
+  }
+
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
-    const conditions = await this.createConditionForCreateAiAssistant(data.owner, data.accessScope, data.grantedGroups, data.pagePathPatterns);
+    await this.validateGrantedUserGroupsForCreateAiAssistant(
+      data.owner,
+      data.shareScope,
+      data.accessScope,
+      data.grantedGroupsForShareScope,
+      data.grantedGroupsForAccessScope,
+    );
+
+    const conditions = await this.createConditionForCreateAiAssistant(
+      data.owner,
+      data.accessScope,
+      data.grantedGroupsForAccessScope,
+      data.pagePathPatterns,
+    );
 
     const vectorStoreRelation = await this.createVectorStore(data.name);
     const aiAssistant = await AiAssistantModel.create({
@@ -524,10 +570,10 @@ class OpenaiService implements IOpenaiService {
   }
 
   async getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants> {
-    const userGroups = [
+    const userGroupIds = [
       ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
       ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
-    ].map(group => group.toString());
+    ];
 
     const assistants = await AiAssistantModel.find({
       $or: [
@@ -538,7 +584,7 @@ class OpenaiService implements IOpenaiService {
         {
           $and: [
             { owner: { $ne: user } },
-            { accessScope: AiAssistantAccessScope.PUBLIC_ONLY },
+            { shareScope: AiAssistantAccessScope.PUBLIC_ONLY },
           ],
         },
 
@@ -546,8 +592,8 @@ class OpenaiService implements IOpenaiService {
         {
           $and: [
             { owner: { $ne: user } },
-            { accessScope: AiAssistantAccessScope.GROUPS },
-            { 'grantedGroups.item': { $in: userGroups } },
+            { shareScope: AiAssistantAccessScope.GROUPS },
+            { 'grantedGroupsForShareScope.item': { $in: userGroupIds } },
           ],
         },
       ],
