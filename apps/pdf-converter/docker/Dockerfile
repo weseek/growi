@@ -81,4 +81,3 @@ WORKDIR ${appDir}/apps/pdf-converter
 EXPOSE 3010
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["node", "dist/index.js"]
