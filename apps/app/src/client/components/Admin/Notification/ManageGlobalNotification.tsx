@@ -26,7 +26,7 @@ type Props = {
   globalNotificationId?: string,
 }
 
-const ManageGlobalNotification = (props: Props): React.ReactElement => {
+const ManageGlobalNotification = (props: Props): JSX.Element => {
 
   const [triggerPath, setTriggerPath] = useState('');
   const [notifyType, setNotifyType] = useState<NotifyType>(NotifyType.Email);

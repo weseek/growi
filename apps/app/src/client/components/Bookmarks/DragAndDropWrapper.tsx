@@ -14,7 +14,7 @@ type DragAndDropWrapperProps = {
   isDropable?:(item: Partial<DragItemDataType>, type: string | null | symbol) => boolean
 }
 
-export const DragAndDropWrapper = (props: DragAndDropWrapperProps): React.ReactElement => {
+export const DragAndDropWrapper = (props: DragAndDropWrapperProps): JSX.Element => {
   const {
     item, children, useDragMode, useDropMode, type, onDropItem, isDropable,
   } = props;

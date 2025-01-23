@@ -1,7 +1,7 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .page-content-footer :global {
-  border-top: solid 1px transparent;
+  border-top: solid 1px var(--bs-border-color);
   .page-meta {
     font-size: 0.95em;
   }

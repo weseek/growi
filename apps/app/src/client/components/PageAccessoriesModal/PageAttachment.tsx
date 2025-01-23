@@ -18,7 +18,7 @@ const checkIfFileInUse = (markdown: string, attachment): boolean => {
   return markdown.indexOf(attachment._id) >= 0;
 };
 
-const PageAttachment = (): React.ReactElement => {
+const PageAttachment = (): JSX.Element => {
 
   // Static SWRs
   const { data: pageId } = useCurrentPageId();

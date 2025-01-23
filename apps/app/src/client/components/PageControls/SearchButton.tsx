@@ -5,7 +5,7 @@ import { useSearchModal } from '../../../features/search/client/stores/search';
 import styles from './SearchButton.module.scss';
 
 
-const SearchButton = (): React.ReactElement => {
+const SearchButton = (): JSX.Element => {
 
   const { open: openSearchModal } = useSearchModal();
 

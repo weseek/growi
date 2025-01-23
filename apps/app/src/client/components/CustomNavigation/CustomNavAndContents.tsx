@@ -13,7 +13,7 @@ type CustomNavAndContentsProps = {
 }
 
 
-const CustomNavAndContents = (props: CustomNavAndContentsProps): React.ReactElement => {
+const CustomNavAndContents = (props: CustomNavAndContentsProps): JSX.Element => {
   const {
     navTabMapping, defaultTabIndex, navigationMode = 'tab', tabContentClasses = ['p-4'], breakpointToHideInactiveTabsDown, navRightElement,
   } = props;

@@ -27,7 +27,7 @@ type Props = {
   isCollapsed?: boolean,
 }
 
-const SearchControl = React.memo((props: Props): React.ReactElement => {
+const SearchControl = React.memo((props: Props): JSX.Element => {
 
   const {
     isEnableSort,

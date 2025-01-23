@@ -7,7 +7,7 @@ type Props = {
   presentation?: boolean,
 }
 
-export const MarpSlides = (props: Props): React.ReactElement => {
+export const MarpSlides = (props: Props): JSX.Element => {
   const { children, presentation } = props;
 
   const marpit = presentation ? presentationMarpit : slideMarpit;

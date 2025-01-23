@@ -22,7 +22,7 @@ type Props = {
   onScroll?: (scrollTop: number) => void,
 }
 
-const Preview = (props: Props): React.ReactElement => {
+const Preview = (props: Props): JSX.Element => {
 
   const {
     rendererOptions,

@@ -50,7 +50,7 @@ type Props = CodeMirrorEditorProps & {
   hideToolbar?: boolean,
 }
 
-export const CodeMirrorEditor = (props: Props): React.ReactElement => {
+export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
     hideToolbar,

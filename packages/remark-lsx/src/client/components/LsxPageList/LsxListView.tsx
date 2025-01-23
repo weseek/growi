@@ -16,7 +16,7 @@ type Props = {
 };
 
 
-export const LsxListView = React.memo((props: Props): React.ReactElement => {
+export const LsxListView = React.memo((props: Props): JSX.Element => {
 
   const { nodeTree, lsxContext, basisViewersCount } = props;
 

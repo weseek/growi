@@ -8,7 +8,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useRegistrationWhitelist } from '~/stores-universal/context';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
-export const BasicInfoSettings = (): React.ReactElement => {
+export const BasicInfoSettings = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: registrationWhitelist } = useRegistrationWhitelist();
 

@@ -64,7 +64,7 @@ type UserGroupEditLinkProps = {
   isExternalGroup:boolean,
 }
 
-const UserGroupEditLink = (props: UserGroupEditLinkProps): React.ReactElement => {
+const UserGroupEditLink = (props: UserGroupEditLinkProps): JSX.Element => {
   return (
     <Link
       href={`/admin/user-group-detail/${props.group._id}?isExternalGroup=${props.isExternalGroup}`}

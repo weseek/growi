@@ -6,13 +6,13 @@ import { Skeleton } from '~/client/components/Skeleton';
 
 import styles from '../Tag.module.scss';
 
-export const TagListSkeleton = (): React.ReactElement => {
+export const TagListSkeleton = (): JSX.Element => {
   return (
     <Skeleton additionalClass={`${styles['grw-tag-list-skeleton']} w-100 rounded overflow-hidden`} />
   );
 };
 
-const TagContentSkeleton = (): React.ReactElement => {
+const TagContentSkeleton = (): JSX.Element => {
   const { t } = useTranslation('');
 
   return (

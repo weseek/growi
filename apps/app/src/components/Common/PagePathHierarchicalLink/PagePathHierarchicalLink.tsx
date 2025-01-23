@@ -19,7 +19,7 @@ type PagePathHierarchicalLinkProps = {
   isInnerElem?: boolean,
 };
 
-export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): React.ReactElement => {
+export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkProps): JSX.Element => {
   const {
     linkedPagePath, linkedPagePathByHtml, basePath, isInTrash, isInnerElem,
   } = props;

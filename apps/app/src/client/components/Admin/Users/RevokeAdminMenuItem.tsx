@@ -10,7 +10,7 @@ import { useCurrentUser } from '~/stores-universal/context';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 
-const RevokeAdminAlert = React.memo((): React.ReactElement => {
+const RevokeAdminAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -28,7 +28,7 @@ type Props = {
   user: IUserHasId,
 }
 
-const RevokeAdminMenuItem = (props: Props): React.ReactElement => {
+const RevokeAdminMenuItem = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
 
   const { adminUsersContainer, user } = props;

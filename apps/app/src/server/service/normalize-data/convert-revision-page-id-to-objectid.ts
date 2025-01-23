@@ -4,7 +4,8 @@ import { type IRevisionHasId } from '@growi/core';
 import type { FilterQuery, UpdateQuery } from 'mongoose';
 import mongoose from 'mongoose';
 
-import type { IRevisionDocument, IRevisionModel } from '~/server/models/revision';
+import type { IRevisionDocument } from '~/server/models/revision';
+import { type IRevisionModel } from '~/server/models/revision';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:NormalizeData:convert-revision-page-id-to-string');

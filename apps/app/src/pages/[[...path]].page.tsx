@@ -133,7 +133,7 @@ type GrowiContextualSubNavigationProps = {
   isLinkSharingDisabled: boolean,
 }
 
-const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): React.ReactElement => {
+const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
   const { isLinkSharingDisabled } = props;
   const { data: currentPage } = useSWRxCurrentPage();
   return (
@@ -386,7 +386,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 };
 
 
-const BasicLayoutWithEditor = ({ children }: { children?: ReactNode }): React.ReactElement => {
+const BasicLayoutWithEditor = ({ children }: { children?: ReactNode }): JSX.Element => {
   const editorModeClassName = useEditorModeClassName();
   return <BasicLayout className={editorModeClassName}>{children}</BasicLayout>;
 };
@@ -395,7 +395,7 @@ type LayoutProps = Props & {
   children?: ReactNode
 }
 
-const Layout = ({ children, ...props }: LayoutProps): React.ReactElement => {
+const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 

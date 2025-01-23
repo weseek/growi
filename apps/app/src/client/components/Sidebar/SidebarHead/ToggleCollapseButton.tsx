@@ -8,7 +8,7 @@ import {
 import styles from './ToggleCollapseButton.module.scss';
 
 
-export const ToggleCollapseButton = memo((): React.ReactElement => {
+export const ToggleCollapseButton = memo((): JSX.Element => {
 
   const { isDrawerMode, isCollapsedMode } = useSidebarMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();

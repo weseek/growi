@@ -13,7 +13,7 @@ type MarkdownTableDataImportFormProps = {
   onImport: (table: MarkdownTable) => void,
 }
 
-export const MarkdownTableDataImportForm = (props: MarkdownTableDataImportFormProps): React.ReactElement => {
+export const MarkdownTableDataImportForm = (props: MarkdownTableDataImportFormProps): JSX.Element => {
 
   const { onCancel, onImport } = props;
 

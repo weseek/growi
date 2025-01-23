@@ -9,7 +9,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores-universal/context';
 
 
-const SuspendAlert = React.memo((): React.ReactElement => {
+const SuspendAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -27,7 +27,7 @@ type Props = {
   user: IUserHasId,
 }
 
-const StatusSuspendMenuItem = (props: Props): React.ReactElement => {
+const StatusSuspendMenuItem = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
 
   const { adminUsersContainer, user } = props;

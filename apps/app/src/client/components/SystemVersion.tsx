@@ -10,7 +10,7 @@ type Props = {
   showShortcutsButton?: boolean,
 }
 
-const SystemVersion = (props: Props): React.ReactElement => {
+const SystemVersion = (props: Props): JSX.Element => {
   const { showShortcutsButton } = props;
 
   const { open: openShortcutsModal } = useShortcutsModal();

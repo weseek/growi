@@ -9,7 +9,7 @@ type Props = {
 
 // }
 
-export const TemplateTab = (props: Props): React.ReactElement => {
+export const TemplateTab = (props: Props): JSX.Element => {
   const { template, onChangeHandler } = props;
 
   return (
