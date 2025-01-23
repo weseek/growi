@@ -11,16 +11,6 @@ type ObjectId = Types.ObjectId;
 // Foreign key field
 export type Ref<T> = string | ObjectId | T & { _id: string | ObjectId };
 
-export type Populated<T, K extends keyof T> = {
-  [P in keyof T]: P extends K
-    ? T[P] extends null
-      ? null
-      : T[P] extends Ref<infer R>
-        ? R
-        : T[P]
-    : T[P];
-};
-
 export type Nullable<T> = T | null | undefined;
 
 export const isRef = <T>(obj: unknown): obj is Ref<T> => {

@@ -15,8 +15,6 @@ import { createAiAssistant } from '../../services/ai-assistant';
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 import { SelectedPageList } from '../Common/SelectedPageList';
 
-import { ShareScopeDropdown } from './ShareScopeDropdown';
-
 import styles from './AiAssistantManegementModal.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
@@ -24,20 +22,9 @@ const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
 const logger = loggerFactory('growi:openai:client:components:AiAssistantManegementModal');
 
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
-  /*
-  *  stores
-  */
   const { open: openPageSelectModal } = usePageSelectModal();
-
-  /*
-  * States
-  */
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
 
-
-  /*
-  *  Methods
-  */
   const clickOpenPageSelectModalHandler = useCallback(() => {
     const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
       const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
@@ -115,7 +102,9 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               <Label className="mb-0">共有範囲</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
-            <ShareScopeDropdown />
+            <Input type="select" className="border rounded w-50">
+              <option>自分のみ</option>
+            </Input>
           </FormGroup>
 
 
