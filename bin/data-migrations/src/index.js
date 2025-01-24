@@ -36,6 +36,11 @@ pagesCollection.find({}).forEach((doc) => {
   if (doc.revision) {
     try {
       var revision = revisionsCollection.findOne({ _id: doc.revision });
+
+      if (revision == null || revision.body == null) {
+        return;
+      }
+
       var replacedBody = replaceLatestRevisions(revision.body, [...migrationModules]);
       var operation = {
         updateOne: {
