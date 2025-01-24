@@ -34,24 +34,29 @@ function replaceLatestRevisions(body, migrationModules) {
 var operations = [];
 pagesCollection.find({}).forEach((doc) => {
   if (doc.revision) {
-    var revision = revisionsCollection.findOne({ _id: doc.revision });
-    var replacedBody = replaceLatestRevisions(revision.body, [...migrationModules]);
-    var operation = {
-      updateOne: {
-        filter: { _id: revision._id },
-        update: {
-          $set: { body: replacedBody },
+    try {
+      var revision = revisionsCollection.findOne({ _id: doc.revision });
+      var replacedBody = replaceLatestRevisions(revision.body, [...migrationModules]);
+      var operation = {
+        updateOne: {
+          filter: { _id: revision._id },
+          update: {
+            $set: { body: replacedBody },
+          },
         },
-      },
-    };
-    operations.push(operation);
+      };
+      operations.push(operation);
 
-    // bulkWrite per 100 revisions
-    if (operations.length > (batchSize - 1)) {
-      revisionsCollection.bulkWrite(operations);
-      // sleep time can be set from env var
-      sleep(batchSizeInterval);
-      operations = [];
+      // bulkWrite per 100 revisions
+      if (operations.length > (batchSize - 1)) {
+        revisionsCollection.bulkWrite(operations);
+        // sleep time can be set from env var
+        sleep(batchSizeInterval);
+        operations = [];
+      }
+    }
+    catch (err) {
+      print(`Error in updating revision ${doc.revision}: ${err}`);
     }
   }
 });
