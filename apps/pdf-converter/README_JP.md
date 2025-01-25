@@ -26,3 +26,14 @@ GROWI には、ページを PDF 形式で一括エクスポートする機能が
 1. 両方のアプリを起動
 1. GROWI アプリのページメニューから PDF の一括エクスポートをリクエスト
    - GROWI の設定によっては、処理に数分かかる場合があります
+
+## PDF-Converter クライアントライブラリ
+[pdf-converter-client](../../packages/pdf-converter-client) は、PDF-Converter へのリクエストを行うクライアントライブラリであり、GROWI 内部で使用されています。このコードは PDF-Converter のコードから自動生成されます。
+
+PDF-Converter API を更新した際は、必ずクライアントライブラリも更新してください。
+
+クライアントライブラリは以下のいずれかの方法で更新可能です:
+- `cd ${growi_root_path}/packages/pdf-converter-client && pnpm gen:client-code` を実行
+- GROWI アプリを起動
+    - GROWI の devcontainer 内 **(PDF-Converter の devcontainer ではない)** で
+      `cd ${growi_root_path}/apps/app && turbo dev` を実行

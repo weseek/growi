@@ -13,7 +13,7 @@ This app (PDF-Converter) is necessary to convert markdown pages to PDF during th
 1. Open command palette (Windows: Ctrl + Shift + P, Mac: Cmd + Shift + P)
 1. Choose `Dev Containers: Open folder in Container...`
 1. Choose the root growi directory you have cloned from https://github.com/weseek/growi
-    - Not the PDF-Converter directory (growi/apps/pdf-converter)
+    - **Not the PDF-Converter directory (growi/apps/pdf-converter)**
 1. Choose `GROWI-PDF-Converter` as the container to open
 1. Execute `cd apps/pdf-converter && turbo dev:pdf-converter` to start the pdf-converter app
 1. Edit files in apps/pdf-converter for development
@@ -26,3 +26,13 @@ This app (PDF-Converter) is necessary to convert markdown pages to PDF during th
 1. Start both apps
 1. Request PDF bulk export from the page menu in the GROWI app
     - It might take a few minutes, depending on GROWI's configurations
+
+## PDF-Converter client library
+[pdf-converter-client](../../packages/pdf-converter-client) is a client library for requesting PDF-Converter, and is used by GROWI internally. It's code is auto-generated from the PDF-Converter code.
+
+When you update the PDF-Converter API, you should also always update the client library.
+
+You can update the client library by one of the following ways:
+- Execute `cd ${growi_root_path}/packages/pdf-converter-client && pnpm gen:client-code`
+- Start GROWI app
+    - Inside GROWI devcontainer (not PDF-Converter devcontainer), execute `cd ${growi_root_path}/apps/app && turbo dev`
