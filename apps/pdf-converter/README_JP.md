@@ -18,7 +18,7 @@ GROWI には、ページを PDF 形式で一括エクスポートする機能が
 1. `cd apps/pdf-converter && turbo dev:pdf-converter` を実行し、PDF-Converter アプリを起動
 1. `apps/pdf-converter` 内のファイルを編集して開発を行う
 
-## GROWI から PDF-Converter へのリクエスト（両方とも devcontainer 内で実行）
+## GROWI から PDF-Converter へのリクエストを実行（両方とも devcontainer 内で起動）
 1. VSCode を開き、GROWI の devcontainer を開く
    - `GROWI-Dev` をコンテナとして選択
 1. 新しい VSCode ウィンドウを開き、PDF-Converter の devcontainer を開く
