@@ -303,7 +303,9 @@ jobs:
         pnpm install --frozen-lockfile
 
     - name: Merge into HTML Report
-      run: pnpm playwright merge-reports --reporter html ./all-blob-reports
+      run: |
+        mkdir -p all-blob-reports
+        pnpm playwright merge-reports --reporter html ./all-blob-reports
 
     - name: Upload HTML report
       uses: actions/upload-artifact@v4
