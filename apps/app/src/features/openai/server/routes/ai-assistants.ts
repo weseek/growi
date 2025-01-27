@@ -13,14 +13,16 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:get-ai-assistants');
 
-type GetAiAssistantsFactory = (crowi: Crowi) => Promise<RequestHandler[]>;
+
+type GetAiAssistantsFactory = (crowi: Crowi) => RequestHandler[];
 
 type Req = Request<undefined, Response, undefined> & {
   user: IUserHasId,
 }
 
-export const getAiAssistantsFactory: GetAiAssistantsFactory = async(crowi) => {
-  const loginRequiredStrictly = (await import('~/server/middlewares/login-required')).default(crowi);
+export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
+
+  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService,
