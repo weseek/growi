@@ -5,13 +5,14 @@
 /**
  * @typedef {import('./types').MigrationModule} MigrationModule
  * @typedef {import('./types').ReplaceLatestRevisions} ReplaceLatestRevisions
+ * @typedef {import('./types').Operatioins } Operations
  */
 
 var pagesCollection = db.getCollection('pages');
 var revisionsCollection = db.getCollection('revisions');
 
-var batchSize = process.env.BATCH_SIZE ?? 100; // default 100 revisions in 1 bulkwrite
-var batchSizeInterval = process.env.BATCH_INTERVAL ?? 3000; // default 3 sec
+var batchSize = Number(process.env.BATCH_SIZE ?? 100); // default 100 revisions in 1 bulkwrite
+var batchSizeInterval = Number(process.env.BATCH_INTERVAL ?? 3000); // default 3 sec
 
 var migrationModule = process.env.MIGRATION_MODULE;
 
@@ -31,8 +32,9 @@ function replaceLatestRevisions(body, migrationModules) {
   return replacedBody;
 }
 
+/** @type {Operations} */
 var operations = [];
-pagesCollection.find({}).forEach((doc) => {
+pagesCollection.find({}).forEach((/** @type {any} */ doc) => {
   if (doc.revision) {
     try {
       var revision = revisionsCollection.findOne({ _id: doc.revision });
