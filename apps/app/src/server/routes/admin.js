@@ -4,6 +4,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:routes:admin');
 
 /* eslint-disable no-use-before-define */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = function(crowi, app) {
   const {
     configManager,

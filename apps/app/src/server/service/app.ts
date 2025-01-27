@@ -2,6 +2,7 @@ import { ConfigSource } from '@growi/core/dist/interfaces';
 
 import loggerFactory from '~/utils/logger';
 
+import type Crowi from '../crowi';
 import S2sMessage from '../models/vo/s2s-message';
 
 import { configManager } from './config-manager';
@@ -14,11 +15,11 @@ const logger = loggerFactory('growi:service:AppService');
  */
 export default class AppService implements S2sMessageHandlable {
 
-  crowi!: any;
+  crowi: Crowi;
 
   s2sMessagingService: S2sMessagingService;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.s2sMessagingService = crowi.s2sMessagingService;
   }

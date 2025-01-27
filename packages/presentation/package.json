@@ -39,7 +39,6 @@
     "lint": "run-p lint:*"
   },
   "dependencies": {
-    "@growi/core": "workspace:^"
   },
   "devDependencies": {
     "@marp-team/marp-core": "^3.9.1",

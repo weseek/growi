@@ -41,6 +41,7 @@ const { body } = require('express-validator');
 
 const router = express.Router();
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const { appService, mailService } = crowi;
   const User = crowi.model('User');

@@ -4,6 +4,7 @@ import type { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { ICheckLimitResult } from '~/interfaces/attachment';
+import type Crowi from '~/server/crowi';
 import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachment';
 import { Attachment, type IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
@@ -45,9 +46,9 @@ export interface FileUploader {
 
 export abstract class AbstractFileUploader implements FileUploader {
 
-  private crowi;
+  private crowi: Crowi;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
   }
 

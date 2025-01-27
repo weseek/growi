@@ -17,6 +17,10 @@ function getAxios(team, token) {
 
 class RestQiitaAPIService {
 
+  /** @type {import('~/server/crowi').default} Crowi instance */
+  crowi;
+
+  /** @param {import('~/server/crowi').default} crowi Crowi instance */
   constructor(crowi) {
     this.crowi = crowi;
     this.configManager = crowi.configManager;
