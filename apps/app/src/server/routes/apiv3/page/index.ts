@@ -340,15 +340,35 @@ module.exports = (crowi) => {
    *                properties:
    *                  body:
    *                    $ref: '#/components/schemas/Revision/properties/body'
-   *                  page_id:
+   *                  pageId:
    *                    $ref: '#/components/schemas/Page/properties/_id'
    *                  revisionId:
    *                    $ref: '#/components/schemas/Revision/properties/_id'
    *                  grant:
    *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                  userRelatedGrantUserGroupIds:
+   *                    type: array
+   *                    items:
+   *                      type: string
+   *                      description: UserGroup ID
+   *                  overwriteScopesOfDescendants:
+   *                    type: boolean
+   *                    description: Determine whether the scopes of descendants should be overwritten
+   *                  isSlackEnabled:
+   *                    type: boolean
+   *                    description: Determine whether the page is enabled to be posted to Slack
+   *                  slackChannels:
+   *                    type: string
+   *                    description: Slack channel IDs
+   *                  origin:
+   *                    type: string
+   *                    description: Origin is "view" or "editor"
+   *                  wip:
+   *                    type: boolean
+   *                    description: Determine whether the page is WIP
    *                required:
    *                  - body
-   *                  - page_id
+   *                  - pageId
    *                  - revisionId
    *        responses:
    *          200:
