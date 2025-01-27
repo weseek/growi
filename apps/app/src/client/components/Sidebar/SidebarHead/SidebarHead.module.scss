@@ -25,3 +25,12 @@
     );
   }
 }
+
+// == Editor mode logo
+@include bs.media-breakpoint-down(xl) {
+  .grw-sidebar-head :global {
+    .grw-editor-logo {
+      visibility: hidden;
+    }
+  }
+}
