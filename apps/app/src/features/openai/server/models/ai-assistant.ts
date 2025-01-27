@@ -43,7 +43,29 @@ const schema = new Schema<AiAssistantDocument>(
       ref: 'User',
       required: true,
     },
-    grantedGroups: {
+    grantedGroupsForShareScope: {
+      type: [{
+        type: {
+          type: String,
+          enum: Object.values(GroupType),
+          required: true,
+          default: 'UserGroup',
+        },
+        item: {
+          type: Schema.Types.ObjectId,
+          refPath: 'grantedGroups.type',
+          required: true,
+          index: true,
+        },
+      }],
+      validate: [function(arr: IGrantedGroup[]): boolean {
+        if (arr == null) return true;
+        const uniqueItemValues = new Set(arr.map(e => e.item));
+        return arr.length === uniqueItemValues.size;
+      }, 'grantedGroups contains non unique item'],
+      default: [],
+    },
+    grantedGroupsForAccessScope: {
       type: [{
         type: {
           type: String,

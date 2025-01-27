@@ -30,9 +30,15 @@ export interface AiAssistant {
   pagePathPatterns: string[],
   vectorStore: Ref<VectorStore>
   owner: Ref<IUser>
-  grantedGroups?: IGrantedGroup[]
+  grantedGroupsForShareScope?: IGrantedGroup[]
+  grantedGroupsForAccessScope?: IGrantedGroup[]
   shareScope: AiAssistantShareScope
   accessScope: AiAssistantAccessScope
 }
 
 export type IApiv3AiAssistantCreateParams = Omit<AiAssistant, 'owner' | 'vectorStore'>
+
+export type AccessibleAiAssistants = {
+  myAiAssistants: AiAssistant[],
+  teamAiAssistants: AiAssistant[],
+}

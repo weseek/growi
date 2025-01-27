@@ -17,6 +17,7 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:create-ai-assistant');
 
+
 type CreateAssistantFactory = (crowi: Crowi) => RequestHandler[];
 
 type Req = Request<undefined, Response, IApiv3AiAssistantCreateParams> & {
@@ -25,7 +26,6 @@ type Req = Request<undefined, Response, IApiv3AiAssistantCreateParams> & {
 
 export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
-  const adminRequired = require('~/server/middlewares/admin-required')(crowi);
 
   const validator: ValidationChain[] = [
     body('name')
@@ -70,18 +70,31 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
         return isCreatablePage(value);
       }),
 
-    body('grantedGroups')
+    body('grantedGroupsForShareScope')
       .optional()
       .isArray()
-      .withMessage('Granted groups must be an array'),
+      .withMessage('grantedGroupsForShareScope must be an array'),
 
-    body('grantedGroups.*.type') // each item of grantedGroups
+    body('grantedGroupsForShareScope.*.type') // each item of grantedGroupsForShareScope
       .isIn(Object.values(GroupType))
-      .withMessage('Invalid grantedGroups type value'),
+      .withMessage('Invalid grantedGroupsForShareScope type value'),
 
-    body('grantedGroups.*.item') // each item of grantedGroups
+    body('grantedGroupsForShareScope.*.item') // each item of grantedGroupsForShareScope
       .isMongoId()
-      .withMessage('Invalid grantedGroups item value'),
+      .withMessage('Invalid grantedGroupsForShareScope item value'),
+
+    body('grantedGroupsForAccessScope')
+      .optional()
+      .isArray()
+      .withMessage('grantedGroupsForAccessScope must be an array'),
+
+    body('grantedGroupsForAccessScope.*.type') // each item of grantedGroupsForAccessScope
+      .isIn(Object.values(GroupType))
+      .withMessage('Invalid grantedGroupsForAccessScope type value'),
+
+    body('grantedGroupsForAccessScope.*.item') // each item of grantedGroupsForAccessScope
+      .isMongoId()
+      .withMessage('Invalid grantedGroupsForAccessScope item value'),
 
     body('shareScope')
       .isIn(Object.values(AiAssistantShareScope))
@@ -93,7 +106,7 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       try {
         const aiAssistantData = { ...req.body, owner: req.user._id };
