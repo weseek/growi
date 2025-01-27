@@ -6,7 +6,7 @@ declare module '~/server/middlewares/login-required' {
       crowi: Crowi,
       isGuestAllowed?: boolean,
       fallback?: null | ((req, res) => void)
-    ): (req: any, res: any, next: any) => void;
+    ): (req, res, next) => void;
   }
 
   const loginRequired: LoginRequired;
