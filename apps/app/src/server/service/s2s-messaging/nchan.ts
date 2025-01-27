@@ -5,6 +5,7 @@ import axios from 'axios';
 import ReconnectingWebSocket from 'reconnecting-websocket';
 import WebSocket from 'ws';
 
+import type Crowi from '~/server/crowi';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../../models/vo/s2s-message';
@@ -175,7 +176,7 @@ class NchanDelegator extends AbstractS2sMessagingService {
 
 }
 
-module.exports = function(crowi) {
+module.exports = function(crowi: Crowi) {
   const { configManager } = crowi;
 
   const uri = configManager.getConfig('app:nchanUri');

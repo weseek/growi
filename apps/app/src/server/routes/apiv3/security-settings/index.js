@@ -309,6 +309,7 @@ const validator = {
  *            type: boolean
  *            description: local account automatically linked the email matched
  */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);

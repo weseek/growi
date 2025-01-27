@@ -5,6 +5,7 @@ import util from 'util';
 import mongoose from 'mongoose';
 import { createModel } from 'mongoose-gridfs';
 
+import type Crowi from '~/server/crowi';
 import type { RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
@@ -101,7 +102,7 @@ class GridfsFileUploader extends AbstractFileUploader {
 }
 
 
-module.exports = function(crowi) {
+module.exports = function(crowi: Crowi) {
   const lib = new GridfsFileUploader(crowi);
 
   // get Collection instance of chunk

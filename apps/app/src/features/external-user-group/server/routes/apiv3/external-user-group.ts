@@ -30,7 +30,7 @@ interface AuthorizedRequest extends Request {
 module.exports = (crowi: Crowi): Router => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   const activityEvent = crowi.event('activity');
 
