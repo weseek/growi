@@ -13,6 +13,7 @@ const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 const PAGINGLIMIT = 7;
 
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler(crowi);

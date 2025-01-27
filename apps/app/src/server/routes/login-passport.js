@@ -10,6 +10,7 @@ import { externalAccountService } from '../service/external-account';
 
 /* eslint-disable no-use-before-define */
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:login-passport');
   const passport = require('passport');

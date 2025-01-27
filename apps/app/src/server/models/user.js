@@ -22,6 +22,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const logger = loggerFactory('growi:models:user');
 
+/** @param {import('~/server/crowi').default | null} crowi Crowi instance */
 const factory = (crowi) => {
 
   const userModelExists = getModelSafely('User');
