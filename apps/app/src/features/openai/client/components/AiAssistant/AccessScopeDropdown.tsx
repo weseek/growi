@@ -8,7 +8,7 @@ import {
 import { useCurrentUser } from '~/stores-universal/context';
 import { useSWRxUserRelatedGroups } from '~/stores/user';
 
-import { AiAssistantAccessScope } from '../../../interfaces/ai-assistant';
+import { AiAssistantAccessScope, AiAssistantShareScope } from '../../../interfaces/ai-assistant';
 
 export const AccessScopeDropdown: React.FC = () => {
   const { t } = useTranslation();
@@ -22,7 +22,6 @@ export const AccessScopeDropdown: React.FC = () => {
     return accessScope === AiAssistantAccessScope.OWNER
       ? t(baseLabel, { username: currentUser?.username })
       : t(baseLabel);
-
   }, [currentUser?.username, t]);
 
   return (
@@ -34,17 +33,11 @@ export const AccessScopeDropdown: React.FC = () => {
         {getAccessScopeLabel(selectedAccessScope)}
       </DropdownToggle>
       <DropdownMenu>
-        <DropdownItem onClick={() => setSelectedAccessScope(AiAssistantAccessScope.OWNER)}>
-          {getAccessScopeLabel(AiAssistantAccessScope.OWNER)}
-        </DropdownItem>
-
-        <DropdownItem onClick={() => setSelectedAccessScope(AiAssistantAccessScope.GROUPS)}>
-          {getAccessScopeLabel(AiAssistantAccessScope.GROUPS)}
-        </DropdownItem>
-
-        <DropdownItem onClick={() => setSelectedAccessScope(AiAssistantAccessScope.PUBLIC_ONLY)}>
-          {getAccessScopeLabel(AiAssistantAccessScope.PUBLIC_ONLY)}
-        </DropdownItem>
+        { [AiAssistantAccessScope.OWNER, AiAssistantShareScope.GROUPS, AiAssistantAccessScope.PUBLIC_ONLY].map(accessScope => (
+          <DropdownItem onClick={() => setSelectedAccessScope(accessScope)}>
+            {getAccessScopeLabel(accessScope)}
+          </DropdownItem>
+        ))}
       </DropdownMenu>
     </UncontrolledDropdown>
   );
