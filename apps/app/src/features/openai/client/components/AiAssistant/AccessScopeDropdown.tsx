@@ -6,15 +6,16 @@ import {
 } from 'reactstrap';
 
 import { useCurrentUser } from '~/stores-universal/context';
-import { useSWRxUserRelatedGroups } from '~/stores/user';
 
 import { AiAssistantAccessScope, AiAssistantShareScope } from '../../../interfaces/ai-assistant';
+
+import { UserGroupSelector } from './UserGroupSelector';
 
 export const AccessScopeDropdown: React.FC = () => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
-  const { data: userRelatedGroups } = useSWRxUserRelatedGroups();
 
+  const [isUserGroupSelectorOpen, setIsUserGroupSelectorOpen] = useState(false);
   const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
 
   const getAccessScopeLabel = useCallback((accessScope: AiAssistantAccessScope) => {
@@ -24,21 +25,35 @@ export const AccessScopeDropdown: React.FC = () => {
       : t(baseLabel);
   }, [currentUser?.username, t]);
 
+  const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
+    setSelectedAccessScope(accessScope);
+    if (accessScope === AiAssistantAccessScope.GROUPS) {
+      setIsUserGroupSelectorOpen(true);
+    }
+  }, []);
+
   return (
-    <UncontrolledDropdown>
-      <DropdownToggle
-        caret
-        className="btn-outline-secondary"
-      >
-        {getAccessScopeLabel(selectedAccessScope)}
-      </DropdownToggle>
-      <DropdownMenu>
-        { [AiAssistantAccessScope.OWNER, AiAssistantShareScope.GROUPS, AiAssistantAccessScope.PUBLIC_ONLY].map(accessScope => (
-          <DropdownItem onClick={() => setSelectedAccessScope(accessScope)}>
-            {getAccessScopeLabel(accessScope)}
-          </DropdownItem>
-        ))}
-      </DropdownMenu>
-    </UncontrolledDropdown>
+    <>
+      <UncontrolledDropdown>
+        <DropdownToggle
+          caret
+          className="btn-outline-secondary"
+        >
+          {getAccessScopeLabel(selectedAccessScope)}
+        </DropdownToggle>
+        <DropdownMenu>
+          { [AiAssistantAccessScope.OWNER, AiAssistantShareScope.GROUPS, AiAssistantAccessScope.PUBLIC_ONLY].map(accessScope => (
+            <DropdownItem onClick={() => selectAccessScopeHandler(accessScope)}>
+              {getAccessScopeLabel(accessScope)}
+            </DropdownItem>
+          ))}
+        </DropdownMenu>
+      </UncontrolledDropdown>
+
+      <UserGroupSelector
+        isOpen={isUserGroupSelectorOpen}
+        closeModal={() => setIsUserGroupSelectorOpen(false)}
+      />
+    </>
   );
 };
