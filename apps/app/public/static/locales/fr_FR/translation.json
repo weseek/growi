@@ -483,6 +483,13 @@
     "latest_revision": "les autres",
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
+  "modal_ai_assistant": {
+    "access_scope": {
+      "owner": "Toutes les pages accessibles par {{username}}",
+      "groups": "Spécifier les groupes",
+      "publicOnly": "Pages publiques uniquement"
+    }
+  },
   "modal_aichat": {
     "title": "Assistant de Connaissance",
     "title_beta_label": "(Bêta)",

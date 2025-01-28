@@ -488,6 +488,13 @@
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
+  "modal_ai_assistant": {
+    "access_scope": {
+      "owner": "All pages accessible by {{username}}",
+      "groups": "Specify groups",
+      "publicOnly": "Public pages only"
+    }
+  },
   "modal_aichat": {
     "title": "Knowledge Assistant",
     "title_beta_label": "(Beta)",

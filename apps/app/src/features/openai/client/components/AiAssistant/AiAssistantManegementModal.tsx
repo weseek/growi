@@ -15,6 +15,8 @@ import { createAiAssistant } from '../../services/ai-assistant';
 import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 import { SelectedPageList } from '../Common/SelectedPageList';
 
+import { AccessScopeDropdown } from './AccessScopeDropdown';
+
 
 import styles from './AiAssistantManegementModal.module.scss';
 
@@ -24,6 +26,7 @@ const logger = loggerFactory('growi:openai:client:components:AiAssistantManegeme
 
 const AiAssistantManegementModalSubstance = (): JSX.Element => {
   const { open: openPageSelectModal } = usePageSelectModal();
+
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
 
   const clickOpenPageSelectModalHandler = useCallback(() => {
@@ -103,9 +106,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               <Label className="mb-0">共有範囲</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
-            <Input type="select" className="border rounded w-50">
-              <option>自分のみ</option>
-            </Input>
+            <AccessScopeDropdown />
           </FormGroup>
 
           <FormGroup className="mb-4">

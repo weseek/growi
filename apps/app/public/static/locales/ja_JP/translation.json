@@ -535,6 +535,13 @@
     "error_message": "エラーが発生しました",
     "show_error_detail": "詳細を表示"
   },
+  "modal_ai_assistant": {
+    "access_scope": {
+      "owner": "{{username}} がアクセス可能な全てのページ",
+      "groups": "グループを指定",
+      "publicOnly": "公開ページのみ"
+    }
+  },
   "link_edit": {
     "edit_link": "リンク編集",
     "set_link_and_label": "リンク情報",
