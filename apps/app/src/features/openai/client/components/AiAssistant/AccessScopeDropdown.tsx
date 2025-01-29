@@ -66,7 +66,6 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
         closeModal={() => setIsUserGroupSelectorOpen(false)}
         selectedUserGroup={selectedUserGroup}
         onSelect={onSelectUserGroup}
-        onCompleteSelect={() => setIsUserGroupSelectorOpen(false)}
       />
     </>
   );

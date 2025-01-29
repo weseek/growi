@@ -14,11 +14,10 @@ type Props = {
   closeModal: () => void,
   selectedUserGroup: PopulatedGrantedGroup[],
   onSelect: (userGroup: PopulatedGrantedGroup) => void,
-  onCompleteSelect: () => void,
 }
 
 const UserGroupSelectorSubstance: React.FC<Props> = (props: Props) => {
-  const { selectedUserGroup, onSelect, onCompleteSelect } = props;
+  const { selectedUserGroup, onSelect, closeModal } = props;
 
   const { t } = useTranslation();
   const { data: userRelatedGroups } = useSWRxUserRelatedGroups();
@@ -46,7 +45,7 @@ const UserGroupSelectorSubstance: React.FC<Props> = (props: Props) => {
       <button
         type="button"
         className="btn btn-primary mt-2 mx-auto"
-        onClick={onCompleteSelect}
+        onClick={closeModal}
       >
         {t('Done')}
       </button>
