@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useCallback } from 'react';
 
 import { GroupType } from '@growi/core';
 import { useTranslation } from 'react-i18next';
@@ -13,41 +13,29 @@ type Props = {
   isOpen: boolean,
   closeModal: () => void,
   selectedUserGroup: PopulatedGrantedGroup[],
-  onSelect: (userGroup: PopulatedGrantedGroup[]) => void,
+  onSelect: (userGroup: PopulatedGrantedGroup) => void,
+  onCompleteSelect: () => void,
 }
 
 const UserGroupSelectorSubstance: React.FC<Props> = (props: Props) => {
+  const { selectedUserGroup, onSelect, onCompleteSelect } = props;
+
   const { t } = useTranslation();
   const { data: userRelatedGroups } = useSWRxUserRelatedGroups();
 
-  const [selectedUserGroup_, setSelectedUserGroup_] = useState<PopulatedGrantedGroup[]>(props.selectedUserGroup);
-
-  const groupListItemClickHandler = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
-    const selectedUserGroupIds = selectedUserGroup_.map(userGroup => userGroup.item._id);
-    if (selectedUserGroupIds.includes(targetUserGroup.item._id)) {
-      // if selected, remove it
-      setSelectedUserGroup_(selectedUserGroup_.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
-    }
-    else {
-      // if not selected, add it
-      setSelectedUserGroup_([...selectedUserGroup_, targetUserGroup]);
-    }
-  }, [selectedUserGroup_]);
-
   const checked = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
-    const selectedUserGroupIds = selectedUserGroup_.map(userGroup => userGroup.item._id);
+    const selectedUserGroupIds = selectedUserGroup.map(userGroup => userGroup.item._id);
     return selectedUserGroupIds.includes(targetUserGroup.item._id);
-  }, [selectedUserGroup_]);
+  }, [selectedUserGroup]);
 
   return (
     <ModalBody className="d-flex flex-column">
-
       {userRelatedGroups != null && userRelatedGroups.relatedGroups.map(userGroup => (
         <button
           className="btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3"
           type="button"
           key={userGroup.item.id}
-          onClick={() => groupListItemClickHandler(userGroup)}
+          onClick={() => onSelect(userGroup)}
         >
           <input type="checkbox" checked={checked(userGroup)} />
           <p className="ms-3 mb-0">{userGroup.item.name}</p>
@@ -58,7 +46,7 @@ const UserGroupSelectorSubstance: React.FC<Props> = (props: Props) => {
       <button
         type="button"
         className="btn btn-primary mt-2 mx-auto"
-        onClick={() => props.onSelect(selectedUserGroup_)}
+        onClick={onCompleteSelect}
       >
         {t('Done')}
       </button>

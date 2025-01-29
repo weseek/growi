@@ -36,9 +36,17 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
     setSelectedAccessScope(accessScope);
   }, []);
 
-  const selectUserGroupsForShareScopeHandler = useCallback((userGroups: PopulatedGrantedGroup[]) => {
-    setSelectedUserGroupsForAccessScope(userGroups);
-  }, []);
+  const selectUserGroupsForAccessScopeHandler = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
+    const selectedUserGroupIds = selectedUserGroupsForAccessScope.map(userGroup => userGroup.item._id);
+    if (selectedUserGroupIds.includes(targetUserGroup.item._id)) {
+      // if selected, remove it
+      setSelectedUserGroupsForAccessScope(selectedUserGroupsForAccessScope.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
+    }
+    else {
+      // if not selected, add it
+      setSelectedUserGroupsForAccessScope([...selectedUserGroupsForAccessScope, targetUserGroup]);
+    }
+  }, [selectedUserGroupsForAccessScope]);
 
   const clickOpenPageSelectModalHandler = useCallback(() => {
     const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
@@ -126,7 +134,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               selectedAccessScope={selectedAccessScope}
               selectedUserGroup={selectedUserGroupsForAccessScope}
               onSelectAccessScope={clickAccessScopeItemHandler}
-              onSelectUserGroup={selectUserGroupsForShareScopeHandler}
+              onSelectUserGroup={selectUserGroupsForAccessScopeHandler}
             />
           </FormGroup>
 
