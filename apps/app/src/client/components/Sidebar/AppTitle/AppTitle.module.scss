@@ -5,21 +5,6 @@
 
 // GROWI Logo
 .grw-app-title :global {
-  .grw-logo {
-    $width: var.$grw-sidebar-nav-width;
-    $height: var.$grw-sidebar-nav-width; // declare $height with the same value as the sidebar nav width
-    $logomark-width: 27.7px;
-    $logomark-height: 24px;
-
-    width: $width;
-
-    svg {
-      width: $width;
-      height: $height;
-      padding: (($height - $logomark-height) / 2) (($width - $logomark-width) / 2);
-    }
-  }
-
   .confidential-tooltip {
     max-width: 180px;
   }

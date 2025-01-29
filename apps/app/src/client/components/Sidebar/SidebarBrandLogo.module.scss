@@ -1,0 +1,19 @@
+@use '~/styles/variables' as var;
+
+// GROWI Logo
+.grw-logo {
+  $width: var.$grw-sidebar-nav-width;
+  $height: var.$grw-sidebar-nav-width;
+  $logomark-width: 27.7px;
+  $logomark-height: 24px;
+
+  width: $width;
+
+  :global {
+    svg {
+      width: $width;
+      height: $height;
+      padding: (($height - $logomark-height) / 2) (($width - $logomark-width) / 2);
+    }
+  }
+}

@@ -23,7 +23,7 @@ export const SidebarHead: FC = memo(() => {
       {editorMode === EditorMode.Editor ? (
         <Link
           href="/"
-          className="grw-editor-logo p-2"
+          className="grw-editor-logo"
           data-testid="btn-brand-logo"
         >
           <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
