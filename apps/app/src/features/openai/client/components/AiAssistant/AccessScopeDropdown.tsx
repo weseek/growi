@@ -8,7 +8,7 @@ import {
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores-universal/context';
 
-import { AiAssistantAccessScope, AiAssistantShareScope } from '../../../interfaces/ai-assistant';
+import { AiAssistantAccessScope } from '../../../interfaces/ai-assistant';
 
 import { UserGroupSelector } from './UserGroupSelector';
 
@@ -53,7 +53,7 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
           {getAccessScopeLabel(selectedAccessScope)}
         </DropdownToggle>
         <DropdownMenu>
-          { [AiAssistantAccessScope.OWNER, AiAssistantShareScope.GROUPS, AiAssistantAccessScope.PUBLIC_ONLY].map(accessScope => (
+          { [AiAssistantAccessScope.OWNER, AiAssistantAccessScope.GROUPS, AiAssistantAccessScope.PUBLIC_ONLY].map(accessScope => (
             <DropdownItem onClick={() => selectAccessScopeHandler(accessScope)}>
               {getAccessScopeLabel(accessScope)}
             </DropdownItem>

@@ -127,7 +127,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 
           <FormGroup className="mb-4">
             <div className="d-flex align-items-center mb-2">
-              <Label className="mb-0">共有範囲</Label>
+              <Label className="mb-0">ページのアクセス権限</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
             <AccessScopeDropdown
