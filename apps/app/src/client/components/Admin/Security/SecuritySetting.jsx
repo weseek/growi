@@ -60,12 +60,12 @@ const getTextForSecuritySetting = (securitySetting) => {
     case 'isShowRestrictedByOwner':
       return {
         isShowRestrictedByOwner: 'security_settings.displayed',
-        isShowRestrictedByGroup: 'security_settings.not_displayed'
+        isShowRestrictedByGroup: 'security_settings.not_displayed',
       };
     case 'isShowRestrictedByGroup':
       return {
         isShowRestrictedByOwner: 'security_settings.not_displayed',
-        isShowRestrictedByGroup: 'security_settings.displayed'
+        isShowRestrictedByGroup: 'security_settings.displayed',
       };
     default:
       return null;
@@ -208,18 +208,19 @@ class SecuritySetting extends React.Component {
     if (adminGeneralSecurityContainer.setState.isShowRestrictedByOwner) {
       adminGeneralSecurityContainer.setState({
         isShowRestrictedByOwner: true,
-        isShowRestrictedByGroup: false
+        isShowRestrictedByGroup: false,
       });
-    } else {
+    }
+    else {
       adminGeneralSecurityContainer.setState({
         isShowRestrictedByOwner: false,
-        isShowRestrictedByGroup: true
+        isShowRestrictedByGroup: true,
       });
     }
   }
 
 
-  securitySettingDropdown = (currentState,setState) => {
+  securitySettingDropdown = (currentState, setState) => {
     const { t } = this.props;
     return (
       <div className="dropdown">
