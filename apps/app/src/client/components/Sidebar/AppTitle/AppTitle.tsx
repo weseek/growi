@@ -23,6 +23,7 @@ const AppTitleSubstance = memo((props: Props): JSX.Element => {
   const { data: confidential } = useConfidential();
 
   return (
+    // TODO: https://redmine.weseek.co.jp/issues/145184
     <div className={`${styles['grw-app-title']} ${className} d-flex d-edit-none`}>
       {/* Brand Logo  */}
       <Link href="/" className="grw-logo d-block">
