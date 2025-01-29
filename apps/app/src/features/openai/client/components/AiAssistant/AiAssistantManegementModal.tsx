@@ -30,15 +30,14 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
   const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
-  const [selectedUserGroupsForShareScope, setSelectedUserGroupsForShareScope] = useState<PopulatedGrantedGroup[]>([]);
+  const [selectedUserGroupsForAccessScope, setSelectedUserGroupsForAccessScope] = useState<PopulatedGrantedGroup[]>([]);
 
   const clickAccessScopeItemHandler = useCallback((accessScope: AiAssistantAccessScope) => {
     setSelectedAccessScope(accessScope);
   }, []);
 
   const selectUserGroupsForShareScopeHandler = useCallback((userGroups: PopulatedGrantedGroup[]) => {
-    console.log('userGroups', userGroups);
-    setSelectedUserGroupsForShareScope(userGroups);
+    setSelectedUserGroupsForAccessScope(userGroups);
   }, []);
 
   const clickOpenPageSelectModalHandler = useCallback(() => {
@@ -52,7 +51,6 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
     openPageSelectModal({ onSelected, isHierarchicalSelectionMode: true });
   }, [openPageSelectModal, selectedPages]);
 
-
   const clickRmoveSelectedPageHandler = useCallback((pageId: string) => {
     setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
   }, [selectedPages]);
@@ -63,13 +61,19 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
         .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
         .filter((path): path is string => path !== undefined && path !== null);
 
+      const grantedGroupsForAccessScope = selectedUserGroupsForAccessScope.map(group => ({
+        type: group.type,
+        item: group.item._id, // Convert UserGroupDocument to Ref<IUserGroup>
+      }));
+
       await createAiAssistant({
         name: 'test',
         description: 'test',
         additionalInstruction: 'test',
         pagePathPatterns,
         shareScope: 'publicOnly',
-        accessScope: 'publicOnly',
+        accessScope: selectedAccessScope,
+        grantedGroupsForAccessScope,
       });
       toastSuccess('アシスタントを作成しました');
     }
@@ -77,7 +81,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
       toastError('アシスタントの作成に失敗しました');
       logger.error(err);
     }
-  }, [selectedPages]);
+  }, [selectedPages, selectedUserGroupsForAccessScope, selectedAccessScope]);
 
   return (
     <div className="px-4">
@@ -120,7 +124,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
             </div>
             <AccessScopeDropdown
               selectedAccessScope={selectedAccessScope}
-              selectedUserGroup={selectedUserGroupsForShareScope}
+              selectedUserGroup={selectedUserGroupsForAccessScope}
               onSelectAccessScope={clickAccessScopeItemHandler}
               onSelectUserGroup={selectUserGroupsForShareScopeHandler}
             />
