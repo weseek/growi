@@ -81,7 +81,7 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
         pagePathPatterns,
         shareScope: 'publicOnly',
         accessScope: selectedAccessScope,
-        grantedGroupsForAccessScope,
+        grantedGroupsForAccessScope: selectedAccessScope === AiAssistantAccessScope.GROUPS ? grantedGroupsForAccessScope : undefined,
       });
       toastSuccess('アシスタントを作成しました');
     }
