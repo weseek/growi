@@ -535,6 +535,9 @@
     "error_message": "エラーが発生しました",
     "show_error_detail": "詳細を表示"
   },
+  "modal_ai_assistant": {
+    "default_instruction": "あなたはこのWikiの知識アシスタントです。以下の方針で支援を行ってください：\n\n- 文書の関連性分析と情報の関連付け\n- 新しい視点の提案\n- 質問の意図を理解した的確な情報提供 必要に応じて構造化された形式で情報を提供します。"
+  },
   "link_edit": {
     "edit_link": "リンク編集",
     "set_link_and_label": "リンク情報",
