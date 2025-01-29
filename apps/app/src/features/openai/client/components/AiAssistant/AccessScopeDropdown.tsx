@@ -5,18 +5,29 @@ import {
   UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores-universal/context';
 
 import { AiAssistantAccessScope, AiAssistantShareScope } from '../../../interfaces/ai-assistant';
 
 import { UserGroupSelector } from './UserGroupSelector';
 
-export const AccessScopeDropdown: React.FC = () => {
+type Props = {
+  selectedAccessScope: AiAssistantAccessScope,
+  selectedUserGroup: PopulatedGrantedGroup[];
+  onSelectAccessScope: (accessScope: AiAssistantAccessScope) => void,
+  onSelectUserGroup: (userGroup: PopulatedGrantedGroup[]) => void,
+}
+
+export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
 
   const [isUserGroupSelectorOpen, setIsUserGroupSelectorOpen] = useState(false);
-  const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
+
+  const {
+    selectedAccessScope, selectedUserGroup, onSelectAccessScope, onSelectUserGroup,
+  } = props;
 
   const getAccessScopeLabel = useCallback((accessScope: AiAssistantAccessScope) => {
     const baseLabel = `modal_ai_assistant.access_scope.${accessScope}`;
@@ -26,11 +37,14 @@ export const AccessScopeDropdown: React.FC = () => {
   }, [currentUser?.username, t]);
 
   const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
-    setSelectedAccessScope(accessScope);
+    onSelectAccessScope(accessScope);
     if (accessScope === AiAssistantAccessScope.GROUPS) {
       setIsUserGroupSelectorOpen(true);
     }
-  }, []);
+    else {
+      onSelectUserGroup([]);
+    }
+  }, [onSelectAccessScope, onSelectUserGroup]);
 
   return (
     <>
@@ -53,6 +67,8 @@ export const AccessScopeDropdown: React.FC = () => {
       <UserGroupSelector
         isOpen={isUserGroupSelectorOpen}
         closeModal={() => setIsUserGroupSelectorOpen(false)}
+        selectedUserGroup={selectedUserGroup}
+        onSelect={onSelectUserGroup}
       />
     </>
   );

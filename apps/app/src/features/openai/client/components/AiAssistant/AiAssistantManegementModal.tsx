@@ -6,7 +6,9 @@ import {
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import type { IPageForItem } from '~/interfaces/page';
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { usePageSelectModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
@@ -16,7 +18,6 @@ import { useAiAssistantManegementModal } from '../../stores/ai-assistant';
 import { SelectedPageList } from '../Common/SelectedPageList';
 
 import { AccessScopeDropdown } from './AccessScopeDropdown';
-
 
 import styles from './AiAssistantManegementModal.module.scss';
 
@@ -28,6 +29,17 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
   const { open: openPageSelectModal } = usePageSelectModal();
 
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
+  const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
+  const [selectedUserGroupsForShareScope, setSelectedUserGroupsForShareScope] = useState<PopulatedGrantedGroup[]>([]);
+
+  const clickAccessScopeItemHandler = useCallback((accessScope: AiAssistantAccessScope) => {
+    setSelectedAccessScope(accessScope);
+  }, []);
+
+  const selectUserGroupsForShareScopeHandler = useCallback((userGroups: PopulatedGrantedGroup[]) => {
+    console.log('userGroups', userGroups);
+    setSelectedUserGroupsForShareScope(userGroups);
+  }, []);
 
   const clickOpenPageSelectModalHandler = useCallback(() => {
     const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
@@ -106,7 +118,12 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
               <Label className="mb-0">共有範囲</Label>
               <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
             </div>
-            <AccessScopeDropdown />
+            <AccessScopeDropdown
+              selectedAccessScope={selectedAccessScope}
+              selectedUserGroup={selectedUserGroupsForShareScope}
+              onSelectAccessScope={clickAccessScopeItemHandler}
+              onSelectUserGroup={selectUserGroupsForShareScopeHandler}
+            />
           </FormGroup>
 
           <FormGroup className="mb-4">
