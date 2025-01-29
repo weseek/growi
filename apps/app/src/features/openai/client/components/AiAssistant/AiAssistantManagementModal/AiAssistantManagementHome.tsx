@@ -51,7 +51,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
           <div>
             <button
               type="button"
-              className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0 rounded text-start"
+              className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">アシスタントの共有</span>
               <div className="d-flex align-items-center text-secondary">
@@ -62,7 +62,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
             <button
               type="button"
-              className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0 rounded text-start"
+              className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">参照ページ</span>
               <div className="d-flex align-items-center text-secondary">
@@ -74,7 +74,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
             <button
               type="button"
               onClick={() => { changePageMode(AiAssistantManegementModalPageMode.INSTRUCTION) }}
-              className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0 rounded text-start"
+              className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">アシスタントへの指示</span>
               <div className="d-flex align-items-center text-secondary">
