@@ -24,12 +24,12 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
       <div className="px-4">
         <ModalBody>
-          <div className="mb-4">
+          <div className="mb-4 growi-ai-assistant-name">
             <Input
               type="text"
               placeholder="アシスタント名を入力"
               bsSize="lg"
-              className="border-0 border-bottom border-primary px-0 rounded-0 shadow-none"
+              className="border-0 border-bottom border-2 px-0 rounded-0"
             />
           </div>
 
