@@ -4,7 +4,7 @@ import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:migrate:remove-ns-from-configs');
+const logger = loggerFactory('growi:migrate:remove-index-for-ns-from-configs');
 
 async function dropIndexIfExists(db, collectionName, indexName) {
   // check existence of the collection
