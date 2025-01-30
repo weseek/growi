@@ -20,7 +20,7 @@ import styles from './AiAssistantManagementModal.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-management'] ?? '';
 
-const logger = loggerFactory('growi:openai:client:components:AiAssistantManegementModal');
+const logger = loggerFactory('growi:openai:client:components:AiAssistantManagementModal');
 
 const AiAssistantManagementModalSubstance = (): JSX.Element => {
   // Hooks
