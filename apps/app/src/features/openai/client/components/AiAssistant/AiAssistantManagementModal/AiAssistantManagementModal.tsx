@@ -5,15 +5,14 @@ import { Modal } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IPageForItem } from '~/interfaces/page';
-import { usePageSelectModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { createAiAssistant } from '../../../services/ai-assistant';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
-import { SelectedPageList } from '../../Common/SelectedPageList';
 
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEditInstruction';
+import { AiAssistantManagementEditPages } from './AiAssistantManagementEditPages';
 import { AiAssistantManagementHome } from './AiAssistantManagementHome';
 
 import styles from './AiAssistantManagementModal.module.scss';
@@ -25,7 +24,6 @@ const logger = loggerFactory('growi:openai:client:components:AiAssistantManageme
 const AiAssistantManagementModalSubstance = (): JSX.Element => {
   // Hooks
   const { t } = useTranslation();
-  const { open: openPageSelectModal } = usePageSelectModal();
   const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
 
   const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
@@ -35,21 +33,6 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
 
   // Functions
-  const clickOpenPageSelectModalHandler = useCallback(() => {
-    const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
-      const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
-      if (page._id != null && !selectedPageIds.includes(page._id)) {
-        setSelectedPages([...selectedPages, { page, isIncludeSubPage }]);
-      }
-    };
-
-    openPageSelectModal({ onSelected, isHierarchicalSelectionMode: true });
-  }, [openPageSelectModal, selectedPages]);
-
-  const clickRmoveSelectedPageHandler = useCallback((pageId: string) => {
-    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
-  }, [selectedPages]);
-
   const clickCreateAiAssistantHandler = useCallback(async() => {
     try {
       const pagePathPatterns = selectedPages
@@ -74,6 +57,21 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
 
   /*
+  *  For AiAssistantManagementEditPages methods
+  */
+  const selectPageHandler = useCallback((page: IPageForItem, isIncludeSubPage: boolean) => {
+    const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
+    if (page._id != null && !selectedPageIds.includes(page._id)) {
+      setSelectedPages([...selectedPages, { page, isIncludeSubPage }]);
+    }
+  }, [selectedPages]);
+
+  const removePageHandler = useCallback((pageId: string) => {
+    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
+  }, [selectedPages]);
+
+
+  /*
   *  For AiAssistantManagementEditInstruction methods
   */
   const changeInstructionHandler = useCallback((value: string) => {
@@ -89,6 +87,14 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       {pageMode === AiAssistantManagementModalPageMode.HOME && (
         <AiAssistantManagementHome
           instruction={instruction}
+        />
+      )}
+
+      {pageMode === AiAssistantManagementModalPageMode.PAGES && (
+        <AiAssistantManagementEditPages
+          selectedPages={selectedPages}
+          onSelect={selectPageHandler}
+          onRemove={removePageHandler}
         />
       )}
 
