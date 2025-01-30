@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useTranslation } from 'react-i18next';
 import {
   ModalHeader, ModalBody, ModalFooter, Input,
 } from 'reactstrap';
@@ -12,6 +13,8 @@ type Props = {
 
 export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   const { instruction } = props;
+
+  const { t } = useTranslation();
 
   const { close: closeAiAssistantManagementModal, changePageMode } = useAiAssistantManagementModal();
 
@@ -53,7 +56,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
               type="button"
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
-              <span className="fw-normal">アシスタントの共有</span>
+              <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.share')}</span>
               <div className="d-flex align-items-center text-secondary">
                 <span>UserNameのみ</span>
                 <span className="material-symbols-outlined ms-2 align-middle">chevron_right</span>
@@ -64,7 +67,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
               type="button"
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
-              <span className="fw-normal">参照ページ</span>
+              <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.pages')}</span>
               <div className="d-flex align-items-center text-secondary">
                 <span>3ページ</span>
                 <span className="material-symbols-outlined ms-2 align-middle">chevron_right</span>
@@ -76,7 +79,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
               onClick={() => { changePageMode(AiAssistantManagementModalPageMode.INSTRUCTION) }}
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
-              <span className="fw-normal">アシスタントへの指示</span>
+              <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.instruction')}</span>
               <div className="d-flex align-items-center text-secondary">
                 <span className="text-truncate" style={{ maxWidth: '280px' }}>
                   {instruction}

@@ -5,6 +5,8 @@ import type { SWRResponse } from 'swr';
 
 export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
+  SHARE: 'share',
+  PAGES: 'pages',
   INSTRUCTION: 'instruction',
 } as const;
 

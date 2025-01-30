@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { ModalHeader } from 'reactstrap';
 
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 export const AiAssistantManagementHeader = (): JSX.Element => {
-  const { close, changePageMode } = useAiAssistantManagementModal();
+  const { t } = useTranslation();
+  const { data, close, changePageMode } = useAiAssistantManagementModal();
 
   return (
     <ModalHeader
@@ -17,7 +19,7 @@ export const AiAssistantManagementHeader = (): JSX.Element => {
         <button type="button" className="btn p-0 me-3" onClick={() => changePageMode(AiAssistantManagementModalPageMode.HOME)}>
           <span className="material-symbols-outlined text-primary">chevron_left</span>
         </button>
-        <span>アシスタントへの指示</span>
+        <span>{t(`modal_ai_assistant.page_mode_title.${data?.pageMode}`)}</span>
       </div>
     </ModalHeader>
   );
