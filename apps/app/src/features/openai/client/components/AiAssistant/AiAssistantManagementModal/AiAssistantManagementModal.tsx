@@ -8,13 +8,13 @@ import type { IPageForItem } from '~/interfaces/page';
 import { usePageSelectModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
-import type { SelectedPage } from '../../../interfaces/selected-page';
-import { createAiAssistant } from '../../services/ai-assistant';
-import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../stores/ai-assistant';
-import { SelectedPageList } from '../Common/SelectedPageList';
+import type { SelectedPage } from '../../../../interfaces/selected-page';
+import { createAiAssistant } from '../../../services/ai-assistant';
+import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
+import { SelectedPageList } from '../../Common/SelectedPageList';
 
-import { AiAssistantManagementEditInstruction } from './AiAssistantManagementModal/AiAssistantManagementEditInstruction';
-import { AiAssistantManagementHome } from './AiAssistantManagementModal/AiAssistantManagementHome';
+import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEditInstruction';
+import { AiAssistantManagementHome } from './AiAssistantManagementHome';
 
 import styles from './AiAssistantManagementModal.module.scss';
 

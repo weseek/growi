@@ -36,7 +36,7 @@ const DeleteBookmarkFolderModal = dynamic(
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
 const AiChatModal = dynamic(() => import('~/features/openai/chat/components/AiChatModal').then(mod => mod.AiChatModal), { ssr: false });
 const AiAssistantManagementModal = dynamic(
-  () => import('~/features/openai/client/components/AiAssistant/AiAssistantManagementModal')
+  () => import('~/features/openai/client/components/AiAssistant/AiAssistantManagementModal/AiAssistantManagementModal')
     .then(mod => mod.AiAssistantManagementModal), { ssr: false },
 );
 const PageSelectModal = dynamic(() => import('~/client/components/PageSelectModal/PageSelectModal').then(mod => mod.PageSelectModal), { ssr: false });
