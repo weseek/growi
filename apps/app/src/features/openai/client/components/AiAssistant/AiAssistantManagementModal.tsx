@@ -16,7 +16,7 @@ import { SelectedPageList } from '../Common/SelectedPageList';
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementModal/AiAssistantManagementEditInstruction';
 import { AiAssistantManagementHome } from './AiAssistantManagementModal/AiAssistantManagementHome';
 
-import styles from './AiAssistantManegementModal.module.scss';
+import styles from './AiAssistantManagementModal.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-management'] ?? '';
 
