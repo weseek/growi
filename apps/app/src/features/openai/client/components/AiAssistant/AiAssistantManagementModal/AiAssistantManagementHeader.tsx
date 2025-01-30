@@ -1,9 +1,9 @@
 import { ModalHeader } from 'reactstrap';
 
-import { useAiAssistantManegementModal, AiAssistantManegementModalPageMode } from '../../../stores/ai-assistant';
+import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 export const AiAssistantManagementHeader = (): JSX.Element => {
-  const { close, changePageMode } = useAiAssistantManegementModal();
+  const { close, changePageMode } = useAiAssistantManagementModal();
 
   return (
     <ModalHeader
@@ -14,7 +14,7 @@ export const AiAssistantManagementHeader = (): JSX.Element => {
       )}
     >
       <div className="d-flex align-items-center">
-        <button type="button" className="btn p-0 me-3" onClick={() => changePageMode(AiAssistantManegementModalPageMode.HOME)}>
+        <button type="button" className="btn p-0 me-3" onClick={() => changePageMode(AiAssistantManagementModalPageMode.HOME)}>
           <span className="material-symbols-outlined text-primary">chevron_left</span>
         </button>
         <span>アシスタントへの指示</span>

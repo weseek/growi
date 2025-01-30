@@ -10,7 +10,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../interfaces/selected-page';
 import { createAiAssistant } from '../../services/ai-assistant';
-import { useAiAssistantManegementModal, AiAssistantManegementModalPageMode } from '../../stores/ai-assistant';
+import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../stores/ai-assistant';
 import { SelectedPageList } from '../Common/SelectedPageList';
 
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementModal/AiAssistantManagementEditInstruction';
@@ -18,17 +18,17 @@ import { AiAssistantManagementHome } from './AiAssistantManagementModal/AiAssist
 
 import styles from './AiAssistantManegementModal.module.scss';
 
-const moduleClass = styles['grw-ai-assistant-manegement'] ?? '';
+const moduleClass = styles['grw-ai-assistant-management'] ?? '';
 
 const logger = loggerFactory('growi:openai:client:components:AiAssistantManegementModal');
 
-const AiAssistantManegementModalSubstance = (): JSX.Element => {
+const AiAssistantManagementModalSubstance = (): JSX.Element => {
   // Hooks
   const { t } = useTranslation();
   const { open: openPageSelectModal } = usePageSelectModal();
-  const { data: aiAssistantManegementModalData } = useAiAssistantManegementModal();
+  const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
 
-  const pageMode = aiAssistantManegementModalData?.pageMode ?? AiAssistantManegementModalPageMode.HOME;
+  const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
 
   // States
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
@@ -86,13 +86,13 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 
   return (
     <>
-      {pageMode === AiAssistantManegementModalPageMode.HOME && (
+      {pageMode === AiAssistantManagementModalPageMode.HOME && (
         <AiAssistantManagementHome
           instruction={instruction}
         />
       )}
 
-      {pageMode === AiAssistantManegementModalPageMode.INSTRUCTION && (
+      {pageMode === AiAssistantManagementModalPageMode.INSTRUCTION && (
         <AiAssistantManagementEditInstruction
           instruction={instruction}
           onChange={changeInstructionHandler}
@@ -205,15 +205,15 @@ const AiAssistantManegementModalSubstance = (): JSX.Element => {
 };
 
 
-export const AiAssistantManegementModal = (): JSX.Element => {
-  const { data: aiAssistantManegementModalData, close: closeAiAssistantManegementModal } = useAiAssistantManegementModal();
+export const AiAssistantManagementModal = (): JSX.Element => {
+  const { data: aiAssistantManagementModalData, close: closeAiAssistantManagementModal } = useAiAssistantManagementModal();
 
-  const isOpened = aiAssistantManegementModalData?.isOpened ?? false;
+  const isOpened = aiAssistantManagementModalData?.isOpened ?? false;
 
   return (
-    <Modal size="lg" isOpen={isOpened} toggle={closeAiAssistantManegementModal} className={moduleClass} scrollable>
+    <Modal size="lg" isOpen={isOpened} toggle={closeAiAssistantManagementModal} className={moduleClass} scrollable>
       { isOpened && (
-        <AiAssistantManegementModalSubstance />
+        <AiAssistantManagementModalSubstance />
       ) }
     </Modal>
   );

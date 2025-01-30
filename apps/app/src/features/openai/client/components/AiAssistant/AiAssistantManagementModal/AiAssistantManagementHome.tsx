@@ -4,7 +4,7 @@ import {
   ModalHeader, ModalBody, ModalFooter, Input,
 } from 'reactstrap';
 
-import { useAiAssistantManegementModal, AiAssistantManegementModalPageMode } from '../../../stores/ai-assistant';
+import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 type Props = {
   instruction: string;
@@ -13,11 +13,11 @@ type Props = {
 export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   const { instruction } = props;
 
-  const { close: closeAiAssistantManegementModal, changePageMode } = useAiAssistantManegementModal();
+  const { close: closeAiAssistantManagementModal, changePageMode } = useAiAssistantManagementModal();
 
   return (
     <>
-      <ModalHeader tag="h4" toggle={closeAiAssistantManegementModal} className="pe-4">
+      <ModalHeader tag="h4" toggle={closeAiAssistantManagementModal} className="pe-4">
         <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">ai_assistant</span>
         <span className="fw-bold">新規アシスタントの追加</span> {/* TODO i18n */}
       </ModalHeader>
@@ -73,7 +73,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
             <button
               type="button"
-              onClick={() => { changePageMode(AiAssistantManegementModalPageMode.INSTRUCTION) }}
+              onClick={() => { changePageMode(AiAssistantManagementModalPageMode.INSTRUCTION) }}
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">アシスタントへの指示</span>

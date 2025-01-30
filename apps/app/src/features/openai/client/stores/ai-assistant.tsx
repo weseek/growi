@@ -3,35 +3,35 @@ import { useCallback } from 'react';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
-export const AiAssistantManegementModalPageMode = {
+export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
   INSTRUCTION: 'instruction',
 } as const;
 
-type AiAssistantManegementModalPageMode = typeof AiAssistantManegementModalPageMode[keyof typeof AiAssistantManegementModalPageMode];
+type AiAssistantManagementModalPageMode = typeof AiAssistantManagementModalPageMode[keyof typeof AiAssistantManagementModalPageMode];
 
-type AiAssistantManegementModalStatus = {
+type AiAssistantManagementModalStatus = {
   isOpened: boolean,
-  pageMode?: AiAssistantManegementModalPageMode,
+  pageMode?: AiAssistantManagementModalPageMode,
 }
 
-type AiAssistantManegementModalUtils = {
+type AiAssistantManagementModalUtils = {
   open(): void
   close(): void
-  changePageMode(pageType: AiAssistantManegementModalPageMode): void
+  changePageMode(pageType: AiAssistantManagementModalPageMode): void
 }
 
-export const useAiAssistantManegementModal = (
-    status?: AiAssistantManegementModalStatus,
-): SWRResponse<AiAssistantManegementModalStatus, Error> & AiAssistantManegementModalUtils => {
-  const initialStatus = { isOpened: false, pageType: AiAssistantManegementModalPageMode.HOME };
-  const swrResponse = useSWRStatic<AiAssistantManegementModalStatus, Error>('AiAssistantManegementModal', status, { fallbackData: initialStatus });
+export const useAiAssistantManagementModal = (
+    status?: AiAssistantManagementModalStatus,
+): SWRResponse<AiAssistantManagementModalStatus, Error> & AiAssistantManagementModalUtils => {
+  const initialStatus = { isOpened: false, pageType: AiAssistantManagementModalPageMode.HOME };
+  const swrResponse = useSWRStatic<AiAssistantManagementModalStatus, Error>('AiAssistantManagementModal', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
     open: useCallback(() => { swrResponse.mutate({ isOpened: true }) }, [swrResponse]),
     close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
-    changePageMode: useCallback((pageMode: AiAssistantManegementModalPageMode) => {
+    changePageMode: useCallback((pageMode: AiAssistantManagementModalPageMode) => {
       swrResponse.mutate({ isOpened: swrResponse.data?.isOpened ?? false, pageMode });
     }, [swrResponse]),
   };
