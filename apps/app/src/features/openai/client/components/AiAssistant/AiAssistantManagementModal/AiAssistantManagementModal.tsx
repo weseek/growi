@@ -33,21 +33,6 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
 
   // Functions
-  // const clickOpenPageSelectModalHandler = useCallback(() => {
-  //   const onSelected = (page: IPageForItem, isIncludeSubPage: boolean) => {
-  //     const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
-  //     if (page._id != null && !selectedPageIds.includes(page._id)) {
-  //       setSelectedPages([...selectedPages, { page, isIncludeSubPage }]);
-  //     }
-  //   };
-
-  //   openPageSelectModal({ onSelected, isHierarchicalSelectionMode: true });
-  // }, [openPageSelectModal, selectedPages]);
-
-  // const clickRmoveSelectedPageHandler = useCallback((pageId: string) => {
-  //   setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
-  // }, [selectedPages]);
-
   const clickCreateAiAssistantHandler = useCallback(async() => {
     try {
       const pagePathPatterns = selectedPages
