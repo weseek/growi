@@ -11,8 +11,7 @@ services:
     tty: true
     networks:
     - default
-    # https://redmine.weseek.co.jp/issues/144306 で整備予定
-    # - opentelemetry-collector-dev-setup_default
+    - opentelemetry-collector-dev-setup_default
 
   mongo:
     image: mongo:6.0
@@ -52,6 +51,5 @@ volumes:
 
 networks:
   default:
-  # https://redmine.weseek.co.jp/issues/144306 で整備予定
-  # opentelemetry-collector-dev-setup_default:
-  #   external: true
+  opentelemetry-collector-dev-setup_default:
+    external: ${OPENTELEMETRY_COLLECTOR_DEV_ENABLED:-false}
