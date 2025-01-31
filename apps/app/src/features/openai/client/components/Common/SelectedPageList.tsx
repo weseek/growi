@@ -1,7 +1,4 @@
-import type { FC } from 'react';
 import { memo } from 'react';
-
-import { useTranslation } from 'react-i18next';
 
 import type { SelectedPage } from '../../../interfaces/selected-page';
 
@@ -10,9 +7,7 @@ type SelectedPageListProps = {
   onRemove?: (pageId?: string) => void;
 };
 
-const SelectedPageListBase: FC<SelectedPageListProps> = ({ selectedPages, onRemove }) => {
-  const { t } = useTranslation();
-
+const SelectedPageListBase: React.FC<SelectedPageListProps> = ({ selectedPages, onRemove }: SelectedPageListProps) => {
   if (selectedPages.length === 0) {
     return <></>;
   }
@@ -20,12 +15,23 @@ const SelectedPageListBase: FC<SelectedPageListProps> = ({ selectedPages, onRemo
   return (
     <div className="mb-3">
       {selectedPages.map(({ page, isIncludeSubPage }) => (
-        <div key={page._id} className="mb-1 d-flex align-items-center">
-          <code>{ page.path }</code>
-          {isIncludeSubPage && <span className="badge rounded-pill text-bg-secondary ms-2">{t('Include Subordinated Page')}</span>}
+        <div
+          key={page._id}
+          className="mb-2 d-flex justify-content-between align-items-center bg-light rounded py-2 px-3"
+        >
+          <div className="d-flex align-items-center overflow-hidden">
+            { isIncludeSubPage
+              ? <>{`${page.path}/*`}</>
+              : <>{page.path}</>
+            }
+          </div>
           {onRemove != null && page._id != null && page._id && (
-            <button className="btn border-0 " type="button" onClick={() => onRemove(page._id)}>
-              <span className="fs-5 material-symbols-outlined text-secondary">delete</span>
+            <button
+              type="button"
+              className="btn p-0 ms-3 text-secondary"
+              onClick={() => onRemove(page._id)}
+            >
+              <span className="material-symbols-outlined fs-4">delete</span>
             </button>
           )}
         </div>

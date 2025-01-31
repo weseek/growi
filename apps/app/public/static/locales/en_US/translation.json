@@ -488,13 +488,6 @@
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
-  "modal_ai_assistant": {
-    "access_scope": {
-      "owner": "All pages accessible by {{username}}",
-      "groups": "Specify groups",
-      "publicOnly": "Public pages only"
-    }
-  },
   "modal_aichat": {
     "title": "Knowledge Assistant",
     "title_beta_label": "(Beta)",
@@ -508,7 +501,19 @@
     "budget_exceeded_for_growi_cloud": "You have reached your OpenAI API usage limit. To use the Knowledge Assistant again, please add credits from the GROWI.cloud admin page for Hosted users or from the OpenAI billing page for Owned users.",
     "error_message": "An error has occurred",
     "show_error_detail": "Show error details"
-
+  },
+  "modal_ai_assistant": {
+    "default_instruction": "You are the knowledge assistant for this Wiki. Please provide support according to the following guidelines:\n\n- Analyze document relevance and connect information\n- Suggest new perspectives\n- Provide accurate information based on understanding the intent of questions\nI will provide information in a structured format when necessary.",
+    "page_mode_title": {
+      "share": "Assistant Sharing",
+      "pages": "Reference Pages",
+      "instruction": "Assistant Instructions"
+    },
+    "access_scope": {
+      "owner": "All pages accessible by {{username}}",
+      "groups": "Specify groups",
+      "publicOnly": "Public pages only"
+    }
   },
   "link_edit": {
     "edit_link": "Edit Link",

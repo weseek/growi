@@ -483,13 +483,6 @@
     "latest_revision": "les autres",
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
-  "modal_ai_assistant": {
-    "access_scope": {
-      "owner": "Toutes les pages accessibles par {{username}}",
-      "groups": "Spécifier les groupes",
-      "publicOnly": "Pages publiques uniquement"
-    }
-  },
   "modal_aichat": {
     "title": "Assistant de Connaissance",
     "title_beta_label": "(Bêta)",
@@ -503,6 +496,19 @@
     "budget_exceeded_for_growi_cloud": "Vous avez atteint votre limite d'utilisation de l'API de l'OpenAI. Pour utiliser à nouveau l'assistant de connaissance, veuillez ajouter des crédits à partir de la page d'administration de GROWI.cloud pour les utilisateurs hébergés ou à partir de la page de facturation de l'OpenAI pour les utilisateurs propriétaires.",
     "error_message": "Erreur",
     "show_error_detail": "Détails de l'exposition"
+  },
+  "modal_ai_assistant": {
+    "default_instruction": "Vous êtes l'assistant de connaissances pour ce Wiki. Veuillez fournir un support selon les directives suivantes :\n\n- Analyser la pertinence des documents et relier les informations\n- Proposer de nouvelles perspectives\n- Fournir des informations précises en comprenant l'intention des questions\nJe fournirai les informations sous forme structurée si nécessaire.",
+    "page_mode_title": {
+      "share": "Partage de l'assistant",
+      "pages": "Pages de référence",
+      "instruction": "Instructions de l'assistant"
+    },
+    "access_scope": {
+      "owner": "Toutes les pages accessibles par {{username}}",
+      "groups": "Spécifier les groupes",
+      "publicOnly": "Pages publiques uniquement"
+    }
   },
   "link_edit": {
     "edit_link": "Modifier lien",
