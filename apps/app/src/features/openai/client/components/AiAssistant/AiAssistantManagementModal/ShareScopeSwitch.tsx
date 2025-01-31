@@ -1,20 +1,23 @@
 import React, { useCallback } from 'react';
 
-import { useTranslation } from 'react-i18next';
 import {
   Input, Label, FormGroup,
 } from 'reactstrap';
 
-import { useCurrentUser } from '~/stores-universal/context';
-
-import { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
+import { AiAssistantShareScope } from '../../../../interfaces/ai-assistant';
 
 type Props = {
   isDisabled: boolean,
+  selectedShareScope: AiAssistantShareScope,
+  onSelect: (shareScope: AiAssistantShareScope) => void,
 }
 
 export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
-  const { isDisabled } = props;
+  const { isDisabled, selectedShareScope, onSelect } = props;
+
+  const checkShareScopeRadioHandler = useCallback((shareScope: AiAssistantShareScope) => {
+    onSelect(shareScope);
+  }, [onSelect]);
 
   return (
     <div className="mb-4">
@@ -26,7 +29,9 @@ export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
             name="shareScope"
             id="shareAll"
             className="form-check-input"
+            onChange={() => checkShareScopeRadioHandler(AiAssistantShareScope.PUBLIC_ONLY)}
             disabled={isDisabled}
+            checked={selectedShareScope === AiAssistantShareScope.PUBLIC_ONLY}
           />
           <Label check for="shareAll" className="d-flex flex-column">
             <span>全体公開</span>
@@ -40,7 +45,9 @@ export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
             name="shareScope"
             id="shareGroup"
             className="form-check-input"
+            onChange={() => checkShareScopeRadioHandler(AiAssistantShareScope.GROUPS)}
             disabled={isDisabled}
+            checked={selectedShareScope === AiAssistantShareScope.GROUPS}
           />
           <Label check for="shareGroup" className="d-flex flex-column">
             <span>グループを指定</span>
@@ -55,6 +62,7 @@ export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
             id="shareAccess"
             className="form-check-input"
             disabled={isDisabled}
+            checked={selectedShareScope === AiAssistantShareScope.OWNER}
             defaultChecked
           />
           <Label check for="shareAccess" className="d-flex flex-column">

@@ -1,11 +1,10 @@
 import React, { useCallback, useState } from 'react';
 
 import {
-  ModalBody, Input, Label, Form, FormGroup,
+  ModalBody, Input, Label,
 } from 'reactstrap';
 
-import type { AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
-import { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 
 import { AccessScopeDropdown } from './AccessScopeDropdown';
@@ -19,58 +18,77 @@ type Props = {
   selectedShareScope: AiAssistantShareScope,
   selectedAccessScope: AiAssistantAccessScope,
   onSelectUserGroup: (userGroup: PopulatedGrantedGroup) => void,
-  onSelectAccessScope: (accessScope: AiAssistantAccessScope) => void,
+  onSelectScope: (accessScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: 'Access' | 'Share') => void,
 }
 
 export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
   const {
-    selectedAccessScope, selectedUserGroups, onSelectAccessScope, onSelectUserGroup,
+    selectedAccessScope,
+    selectedShareScope,
+    selectedUserGroups,
+    onSelectScope,
+    onSelectUserGroup,
   } = props;
 
   const [isShared, setIsShared] = useState(false);
   const [isUserGroupSelectorOpen, setIsUserGroupSelectorOpen] = useState(false);
 
+  const changeShareToggleHandler = useCallback(() => {
+    setIsShared((prev) => {
+      if (prev) { // if isShared === true
+        onSelectScope(AiAssistantShareScope.OWNER);
+      }
+      return !prev;
+    });
+  }, [onSelectScope]);
+
   const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
-    onSelectAccessScope(accessScope);
+    onSelectScope(accessScope, 'Access');
     if (accessScope === AiAssistantAccessScope.GROUPS) {
       setIsUserGroupSelectorOpen(true);
     }
-  }, [onSelectAccessScope]);
+  }, [onSelectScope]);
+
+  const selectShareScopeHandler = useCallback((shareScope: AiAssistantShareScope) => {
+    onSelectScope(shareScope, 'Share');
+    if (shareScope === AiAssistantShareScope.GROUPS) {
+      setIsUserGroupSelectorOpen(true);
+    }
+  }, [onSelectScope]);
 
   return (
     <>
       <AiAssistantManagementHeader />
 
       <ModalBody className="px-4">
-        <Form>
-          {/* トグルスイッチ */}
-          <div className="form-check form-switch mb-4">
-            <Input
-              type="switch"
-              role="switch"
-              id="shareAssistantSwitch"
-              className="form-check-input"
-              checked={isShared}
-              onChange={() => setIsShared(!isShared)}
-            />
-            <Label className="form-check-label" for="shareAssistantSwitch">
-              アシスタントを共有する
-            </Label>
-          </div>
+        <div className="form-check form-switch mb-4">
+          <Input
+            type="switch"
+            role="switch"
+            id="shareAssistantSwitch"
+            className="form-check-input"
+            checked={isShared}
+            onChange={changeShareToggleHandler}
+          />
+          <Label className="form-check-label" for="shareAssistantSwitch">
+            アシスタントを共有する
+          </Label>
+        </div>
 
-          {/* アクセス権限ドロップダウン */}
-          <div className="mb-4">
-            <Label className="text-secondary mb-2">ページのアクセス権限</Label>
-            <AccessScopeDropdown
-              isDisabled={!isShared}
-              selectedAccessScope={selectedAccessScope}
-              onSelect={selectAccessScopeHandler}
-            />
-          </div>
+        <div className="mb-4">
+          <Label className="text-secondary mb-2">ページのアクセス権限</Label>
+          <AccessScopeDropdown
+            isDisabled={!isShared}
+            selectedAccessScope={selectedAccessScope}
+            onSelect={selectAccessScopeHandler}
+          />
+        </div>
 
-          {/* 共有範囲ラジオグループ */}
-          <ShareScopeSwitch isDisabled={!isShared} />
-        </Form>
+        <ShareScopeSwitch
+          isDisabled={!isShared}
+          selectedShareScope={selectedShareScope}
+          onSelect={selectShareScopeHandler}
+        />
 
         <UserGroupSelector
           isOpen={isUserGroupSelectorOpen}

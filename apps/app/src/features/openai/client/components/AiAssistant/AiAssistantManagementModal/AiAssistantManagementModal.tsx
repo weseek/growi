@@ -65,8 +65,17 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementEditShare methods
   */
-  const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
+  const selectScopeHandler = useCallback((accessScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: 'Access' | 'Share') => {
+    if (scopeType === 'Access') {
+      setSelectedAccessScope(accessScope);
+      return;
+    }
+    if (scopeType === 'Share') {
+      setSelectedShareScope(accessScope);
+      return;
+    }
     setSelectedAccessScope(accessScope);
+    setSelectedShareScope(accessScope);
   }, []);
 
   const selectUserGroupsForAccessScopeHandler = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
@@ -122,7 +131,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             selectedShareScope={selectedShareScope}
             selectedAccessScope={selectedAccessScope}
             selectedUserGroups={selectedUserGroupsForAccessScope}
-            onSelectAccessScope={selectAccessScopeHandler}
+            onSelectScope={selectScopeHandler}
             onSelectUserGroup={selectUserGroupsForAccessScopeHandler}
           />
         </TabPane>
