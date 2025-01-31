@@ -1,17 +1,37 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import {
-  ModalBody, Input, Label, Form, FormGroup, Dropdown, DropdownItem, DropdownToggle, DropdownMenu,
+  ModalBody, Input, Label, Form, FormGroup,
 } from 'reactstrap';
 
+import { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
+
+import { AccessScopeDropdown } from './AccessScopeDropdown';
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
+import { UserGroupSelector } from './UserGroupSelector';
 
 
 type Props = {
-  //
+  selectedUserGroups: PopulatedGrantedGroup[],
+  selectedAccessScope: AiAssistantAccessScope,
+  onSelectUserGroup: (userGroup: PopulatedGrantedGroup) => void,
+  onSelectAccessScope: (accessScope: AiAssistantAccessScope) => void,
 }
 
 export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
+  const {
+    selectedAccessScope, selectedUserGroups, onSelectAccessScope, onSelectUserGroup,
+  } = props;
+
+  const [isUserGroupSelectorOpen, setIsUserGroupSelectorOpen] = useState(false);
+
+  const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
+    onSelectAccessScope(accessScope);
+    if (accessScope === AiAssistantAccessScope.GROUPS) {
+      setIsUserGroupSelectorOpen(true);
+    }
+  }, [onSelectAccessScope]);
 
   return (
     <>
@@ -36,20 +56,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
           {/* アクセス権限ドロップダウン */}
           <div className="mb-4">
             <Label className="text-secondary mb-2">ページのアクセス権限</Label>
-            <Dropdown className="w-100">
-              <DropdownToggle
-                caret
-                color="light"
-                className="w-100 text-start bg-white border d-flex justify-content-between align-items-center"
-              >
-                <span>UserNameがアクセス可能な全てのページ</span>
-              </DropdownToggle>
-              <DropdownMenu className="w-100">
-                <DropdownItem>
-                  UserNameがアクセス可能な全てのページ
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+            <AccessScopeDropdown selectedAccessScope={selectedAccessScope} onSelect={selectAccessScopeHandler} />
           </div>
 
           {/* 共有範囲ラジオグループ */}
@@ -99,6 +106,12 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
           </div>
         </Form>
 
+        <UserGroupSelector
+          isOpen={isUserGroupSelectorOpen}
+          closeModal={() => setIsUserGroupSelectorOpen(false)}
+          selectedUserGroup={selectedUserGroups}
+          onSelect={onSelectUserGroup}
+        />
       </ModalBody>
     </>
   );

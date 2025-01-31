@@ -64,7 +64,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementEditShare methods
   */
-  const clickAccessScopeItemHandler = useCallback((accessScope: AiAssistantAccessScope) => {
+  const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
     setSelectedAccessScope(accessScope);
   }, []);
 
@@ -117,7 +117,12 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.SHARE}>
-          <AiAssistantManagementEditShare />
+          <AiAssistantManagementEditShare
+            selectedAccessScope={selectedAccessScope}
+            selectedUserGroups={selectedUserGroupsForAccessScope}
+            onSelectAccessScope={selectAccessScopeHandler}
+            onSelectUserGroup={selectUserGroupsForAccessScopeHandler}
+          />
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.PAGES}>
