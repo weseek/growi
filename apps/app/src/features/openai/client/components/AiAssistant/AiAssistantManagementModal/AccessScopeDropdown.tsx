@@ -8,7 +8,7 @@ import {
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores-universal/context';
 
-import { AiAssistantAccessScope } from '../../../interfaces/ai-assistant';
+import { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 
 import { UserGroupSelector } from './UserGroupSelector';
 
