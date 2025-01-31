@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantAccessScope, AiAssistantShareScope, AiAssistantScopeType } from '~/features/openai/interfaces/ai-assistant';
 import type { IPageForItem } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import loggerFactory from '~/utils/logger';
@@ -65,12 +65,12 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementEditShare methods
   */
-  const selectScopeHandler = useCallback((accessScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: 'Access' | 'Share') => {
-    if (scopeType === 'Access') {
+  const selectScopeHandler = useCallback((accessScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: AiAssistantScopeType) => {
+    if (scopeType === AiAssistantScopeType.ACCESS) {
       setSelectedAccessScope(accessScope);
       return;
     }
-    if (scopeType === 'Share') {
+    if (scopeType === AiAssistantScopeType.SHARE) {
       setSelectedShareScope(accessScope);
       return;
     }

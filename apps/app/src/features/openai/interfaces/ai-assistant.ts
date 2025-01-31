@@ -5,6 +5,11 @@ import type { VectorStore } from '../server/models/vector-store';
 /*
 *  Objects
 */
+export const AiAssistantScopeType = {
+  ACCESS: 'Access',
+  SHARE: 'Share',
+} as const;
+
 export const AiAssistantShareScope = {
   PUBLIC_ONLY: 'publicOnly',
   OWNER: 'owner',
@@ -20,6 +25,7 @@ export const AiAssistantAccessScope = {
 /*
 *  Interfaces
 */
+export type AiAssistantScopeType = typeof AiAssistantScopeType[keyof typeof AiAssistantScopeType];
 export type AiAssistantShareScope = typeof AiAssistantShareScope[keyof typeof AiAssistantShareScope];
 export type AiAssistantAccessScope = typeof AiAssistantAccessScope[keyof typeof AiAssistantAccessScope];
 

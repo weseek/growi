@@ -4,7 +4,7 @@ import {
   ModalBody, Input, Label,
 } from 'reactstrap';
 
-import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantAccessScope, AiAssistantShareScope, AiAssistantScopeType } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 
 import { AccessScopeDropdown } from './AccessScopeDropdown';
@@ -18,7 +18,7 @@ type Props = {
   selectedShareScope: AiAssistantShareScope,
   selectedAccessScope: AiAssistantAccessScope,
   onSelectUserGroup: (userGroup: PopulatedGrantedGroup) => void,
-  onSelectScope: (accessScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: 'Access' | 'Share') => void,
+  onSelectScope: (accessScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: AiAssistantScopeType) => void,
 }
 
 export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
@@ -43,14 +43,14 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
   }, [onSelectScope]);
 
   const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
-    onSelectScope(accessScope, 'Access');
+    onSelectScope(accessScope, AiAssistantScopeType.ACCESS);
     if (accessScope === AiAssistantAccessScope.GROUPS) {
       setIsUserGroupSelectorOpen(true);
     }
   }, [onSelectScope]);
 
   const selectShareScopeHandler = useCallback((shareScope: AiAssistantShareScope) => {
-    onSelectScope(shareScope, 'Share');
+    onSelectScope(shareScope, AiAssistantScopeType.SHARE);
     if (shareScope === AiAssistantShareScope.GROUPS) {
       setIsUserGroupSelectorOpen(true);
     }
