@@ -4,7 +4,8 @@ import {
   ModalBody, Input, Label,
 } from 'reactstrap';
 
-import { AiAssistantAccessScope, AiAssistantShareScope, AiAssistantScopeType } from '~/features/openai/interfaces/ai-assistant';
+import type { AiAssistantScopeType } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 
 import { AccessScopeDropdown } from './AccessScopeDropdown';
@@ -18,7 +19,7 @@ type Props = {
   selectedShareScope: AiAssistantShareScope,
   selectedAccessScope: AiAssistantAccessScope,
   onSelectUserGroup: (userGroup: PopulatedGrantedGroup) => void,
-  onSelectScope: (accessScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: AiAssistantScopeType) => void,
+  onSelectScope: (scope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: AiAssistantScopeType) => void,
 }
 
 export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
@@ -42,16 +43,9 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
     });
   }, [onSelectScope]);
 
-  const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
-    onSelectScope(accessScope, AiAssistantScopeType.ACCESS);
-    if (accessScope === AiAssistantAccessScope.GROUPS) {
-      setIsUserGroupSelectorOpen(true);
-    }
-  }, [onSelectScope]);
-
-  const selectShareScopeHandler = useCallback((shareScope: AiAssistantShareScope) => {
-    onSelectScope(shareScope, AiAssistantScopeType.SHARE);
-    if (shareScope === AiAssistantShareScope.GROUPS) {
+  const selectScopeHandler = useCallback((scope: AiAssistantAccessScope | AiAssistantShareScope, scopeType: AiAssistantScopeType) => {
+    onSelectScope(scope, scopeType);
+    if ((scope as AiAssistantAccessScope) === AiAssistantAccessScope.GROUPS || (scope as AiAssistantShareScope) === AiAssistantShareScope.GROUPS) {
       setIsUserGroupSelectorOpen(true);
     }
   }, [onSelectScope]);
@@ -78,13 +72,13 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
         <AccessScopeDropdown
           isDisabled={!isShared}
           selectedAccessScope={selectedAccessScope}
-          onSelect={selectAccessScopeHandler}
+          onSelect={selectScopeHandler}
         />
 
         <ShareScopeSwitch
           isDisabled={!isShared}
           selectedShareScope={selectedShareScope}
-          onSelect={selectShareScopeHandler}
+          onSelect={selectScopeHandler}
         />
 
         <SelectUserGroupModal

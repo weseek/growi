@@ -4,19 +4,19 @@ import {
   Input, Label, FormGroup,
 } from 'reactstrap';
 
-import { AiAssistantShareScope } from '../../../../interfaces/ai-assistant';
+import { AiAssistantShareScope, AiAssistantScopeType } from '../../../../interfaces/ai-assistant';
 
 type Props = {
   isDisabled: boolean,
   selectedShareScope: AiAssistantShareScope,
-  onSelect: (shareScope: AiAssistantShareScope) => void,
+  onSelect: (shareScope: AiAssistantShareScope, scopeType: AiAssistantScopeType) => void,
 }
 
 export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
   const { isDisabled, selectedShareScope, onSelect } = props;
 
   const checkShareScopeRadioHandler = useCallback((shareScope: AiAssistantShareScope) => {
-    onSelect(shareScope);
+    onSelect(shareScope, AiAssistantScopeType.SHARE);
   }, [onSelect]);
 
   return (
