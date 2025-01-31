@@ -54,6 +54,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
           <div>
             <button
               type="button"
+              onClick={() => { changePageMode(AiAssistantManagementModalPageMode.SHARE) }}
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.share')}</span>

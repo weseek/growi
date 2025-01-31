@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import type { IPageForItem } from '~/interfaces/page';
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
@@ -13,6 +15,7 @@ import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } fro
 
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEditInstruction';
 import { AiAssistantManagementEditPages } from './AiAssistantManagementEditPages';
+import { AiAssistantManagementEditShare } from './AiAssistantManagementEditShare';
 import { AiAssistantManagementHome } from './AiAssistantManagementHome';
 
 import styles from './AiAssistantManagementModal.module.scss';
@@ -29,6 +32,8 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
 
   // States
+  const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
+  const [selectedUserGroupsForAccessScope, setSelectedUserGroupsForAccessScope] = useState<PopulatedGrantedGroup[]>([]);
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
 
@@ -54,6 +59,26 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       logger.error(err);
     }
   }, [instruction, selectedPages]);
+
+
+  /*
+  *  For AiAssistantManagementEditShare methods
+  */
+  const clickAccessScopeItemHandler = useCallback((accessScope: AiAssistantAccessScope) => {
+    setSelectedAccessScope(accessScope);
+  }, []);
+
+  const selectUserGroupsForAccessScopeHandler = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
+    const selectedUserGroupIds = selectedUserGroupsForAccessScope.map(userGroup => userGroup.item._id);
+    if (selectedUserGroupIds.includes(targetUserGroup.item._id)) {
+      // if selected, remove it
+      setSelectedUserGroupsForAccessScope(selectedUserGroupsForAccessScope.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
+    }
+    else {
+      // if not selected, add it
+      setSelectedUserGroupsForAccessScope([...selectedUserGroupsForAccessScope, targetUserGroup]);
+    }
+  }, [selectedUserGroupsForAccessScope]);
 
 
   /*
@@ -89,6 +114,10 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
           <AiAssistantManagementHome
             instruction={instruction}
           />
+        </TabPane>
+
+        <TabPane tabId={AiAssistantManagementModalPageMode.SHARE}>
+          <AiAssistantManagementEditShare />
         </TabPane>
 
         <TabPane tabId={AiAssistantManagementModalPageMode.PAGES}>
