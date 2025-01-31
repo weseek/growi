@@ -9,8 +9,8 @@ import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 
 import { AccessScopeDropdown } from './AccessScopeDropdown';
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
+import { SelectUserGroupModal } from './SelectUserGroupModal';
 import { ShareScopeSwitch } from './ShareScopeSwitch';
-import { UserGroupSelector } from './UserGroupSelector';
 
 
 type Props = {
@@ -87,7 +87,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
           onSelect={selectShareScopeHandler}
         />
 
-        <UserGroupSelector
+        <SelectUserGroupModal
           isOpen={isUserGroupSelectorOpen}
           closeModal={() => setIsUserGroupSelectorOpen(false)}
           selectedUserGroup={selectedUserGroups}

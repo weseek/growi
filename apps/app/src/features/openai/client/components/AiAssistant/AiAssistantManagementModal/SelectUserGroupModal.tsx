@@ -16,7 +16,7 @@ type Props = {
   onSelect: (userGroup: PopulatedGrantedGroup) => void,
 }
 
-const UserGroupSelectorSubstance: React.FC<Props> = (props: Props) => {
+const SelectUserGroupModalSubstance: React.FC<Props> = (props: Props) => {
   const { selectedUserGroup, onSelect, closeModal } = props;
 
   const { t } = useTranslation();
@@ -54,7 +54,7 @@ const UserGroupSelectorSubstance: React.FC<Props> = (props: Props) => {
   );
 };
 
-export const UserGroupSelector: React.FC<Props> = (props) => {
+export const SelectUserGroupModal: React.FC<Props> = (props) => {
   const { t } = useTranslation();
 
   const { isOpen, closeModal } = props;
@@ -64,7 +64,7 @@ export const UserGroupSelector: React.FC<Props> = (props) => {
       <ModalHeader toggle={closeModal}>
         {t('user_group.select_group')}
       </ModalHeader>
-      <UserGroupSelectorSubstance {...props} />
+      <SelectUserGroupModalSubstance {...props} />
     </Modal>
   );
 };
