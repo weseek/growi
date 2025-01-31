@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
-  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Label,
 } from 'reactstrap';
 
 import { useCurrentUser } from '~/stores-universal/context';
@@ -35,7 +35,8 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
   }, [onSelect]);
 
   return (
-    <>
+    <div className="mb-4">
+      <Label className="text-secondary mb-2">ページのアクセス権限</Label>
       <UncontrolledDropdown>
         <DropdownToggle
           disabled={isDisabled}
@@ -52,6 +53,6 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
           ))}
         </DropdownMenu>
       </UncontrolledDropdown>
-    </>
+    </div>
   );
 };

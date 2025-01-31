@@ -75,14 +75,11 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
           </Label>
         </div>
 
-        <div className="mb-4">
-          <Label className="text-secondary mb-2">ページのアクセス権限</Label>
-          <AccessScopeDropdown
-            isDisabled={!isShared}
-            selectedAccessScope={selectedAccessScope}
-            onSelect={selectAccessScopeHandler}
-          />
-        </div>
+        <AccessScopeDropdown
+          isDisabled={!isShared}
+          selectedAccessScope={selectedAccessScope}
+          onSelect={selectAccessScopeHandler}
+        />
 
         <ShareScopeSwitch
           isDisabled={!isShared}
