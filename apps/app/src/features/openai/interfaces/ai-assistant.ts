@@ -11,7 +11,7 @@ export const AiAssistantScopeType = {
 } as const;
 
 export const AiAssistantShareScope = {
-  PUBLIC_ONLY: 'publicOnly',
+  PUBLIC_ONLY: 'publicOnly', // TODO: Rename to "PUBLIC"
   OWNER: 'owner',
   GROUPS: 'groups',
 } as const;
