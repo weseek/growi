@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { Modal } from 'reactstrap';
+import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IPageForItem } from '~/interfaces/page';
@@ -84,27 +84,29 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
   return (
     <>
-      {pageMode === AiAssistantManagementModalPageMode.HOME && (
-        <AiAssistantManagementHome
-          instruction={instruction}
-        />
-      )}
+      <TabContent activeTab={pageMode}>
+        <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
+          <AiAssistantManagementHome
+            instruction={instruction}
+          />
+        </TabPane>
 
-      {pageMode === AiAssistantManagementModalPageMode.PAGES && (
-        <AiAssistantManagementEditPages
-          selectedPages={selectedPages}
-          onSelect={selectPageHandler}
-          onRemove={removePageHandler}
-        />
-      )}
+        <TabPane tabId={AiAssistantManagementModalPageMode.PAGES}>
+          <AiAssistantManagementEditPages
+            selectedPages={selectedPages}
+            onSelect={selectPageHandler}
+            onRemove={removePageHandler}
+          />
+        </TabPane>
 
-      {pageMode === AiAssistantManagementModalPageMode.INSTRUCTION && (
-        <AiAssistantManagementEditInstruction
-          instruction={instruction}
-          onChange={changeInstructionHandler}
-          onReset={resetInstructionHandler}
-        />
-      )}
+        <TabPane tabId={AiAssistantManagementModalPageMode.INSTRUCTION}>
+          <AiAssistantManagementEditInstruction
+            instruction={instruction}
+            onChange={changeInstructionHandler}
+            onReset={resetInstructionHandler}
+          />
+        </TabPane>
+      </TabContent>
     </>
     // <div className="px-4">
     //   <ModalBody>
