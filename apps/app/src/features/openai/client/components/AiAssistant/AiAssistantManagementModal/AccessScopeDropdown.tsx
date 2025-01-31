@@ -10,13 +10,14 @@ import { useCurrentUser } from '~/stores-universal/context';
 import { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 
 type Props = {
+  isDisabled: boolean,
   selectedAccessScope: AiAssistantAccessScope,
   onSelect: (accessScope: AiAssistantAccessScope) => void,
 }
 
 export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
   const {
-    selectedAccessScope, onSelect,
+    isDisabled, selectedAccessScope, onSelect,
   } = props;
 
   const { t } = useTranslation();
@@ -37,6 +38,7 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
     <>
       <UncontrolledDropdown>
         <DropdownToggle
+          disabled={isDisabled}
           caret
           className="btn-outline-secondary bg-transparent"
         >

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import type { IPageForItem } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import loggerFactory from '~/utils/logger';
@@ -32,6 +32,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
 
   // States
+  const [selectedShareScope, setSelectedShareScope] = useState<AiAssistantShareScope>(AiAssistantShareScope.OWNER);
   const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
   const [selectedUserGroupsForAccessScope, setSelectedUserGroupsForAccessScope] = useState<PopulatedGrantedGroup[]>([]);
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
@@ -118,6 +119,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
 
         <TabPane tabId={AiAssistantManagementModalPageMode.SHARE}>
           <AiAssistantManagementEditShare
+            selectedShareScope={selectedShareScope}
             selectedAccessScope={selectedAccessScope}
             selectedUserGroups={selectedUserGroupsForAccessScope}
             onSelectAccessScope={selectAccessScopeHandler}
