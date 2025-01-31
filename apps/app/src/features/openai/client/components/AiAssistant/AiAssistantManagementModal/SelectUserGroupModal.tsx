@@ -6,18 +6,22 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
+import type { AiAssistantScopeType } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useSWRxUserRelatedGroups } from '~/stores/user';
 
 type Props = {
   isOpen: boolean,
-  closeModal: () => void,
+  selectedUserGroupType: AiAssistantScopeType,
   selectedUserGroup: PopulatedGrantedGroup[],
-  onSelect: (userGroup: PopulatedGrantedGroup) => void,
+  closeModal: () => void,
+  onSelect: (userGroup: PopulatedGrantedGroup, scopeType: AiAssistantScopeType) => void,
 }
 
 const SelectUserGroupModalSubstance: React.FC<Props> = (props: Props) => {
-  const { selectedUserGroup, onSelect, closeModal } = props;
+  const {
+    selectedUserGroup, selectedUserGroupType, onSelect, closeModal,
+  } = props;
 
   const { t } = useTranslation();
   const { data: userRelatedGroups } = useSWRxUserRelatedGroups();
@@ -34,7 +38,7 @@ const SelectUserGroupModalSubstance: React.FC<Props> = (props: Props) => {
           className="btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3"
           type="button"
           key={userGroup.item.id}
-          onClick={() => onSelect(userGroup)}
+          onClick={() => onSelect(userGroup, selectedUserGroupType)}
         >
           <input type="checkbox" checked={checked(userGroup)} />
           <p className="ms-3 mb-0">{userGroup.item.name}</p>

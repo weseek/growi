@@ -35,6 +35,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const [selectedShareScope, setSelectedShareScope] = useState<AiAssistantShareScope>(AiAssistantShareScope.OWNER);
   const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
   const [selectedUserGroupsForAccessScope, setSelectedUserGroupsForAccessScope] = useState<PopulatedGrantedGroup[]>([]);
+  const [selectedUserGroupsForShareScope, setSelectedUserGroupsForShareScope] = useState<PopulatedGrantedGroup[]>([]);
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
 
@@ -78,17 +79,20 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
     setSelectedShareScope(accessScope);
   }, []);
 
-  const selectUserGroupsForAccessScopeHandler = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
-    const selectedUserGroupIds = selectedUserGroupsForAccessScope.map(userGroup => userGroup.item._id);
+  const selectUserGroupsHandler = useCallback((targetUserGroup: PopulatedGrantedGroup, scopeType: AiAssistantScopeType) => {
+    const selectedUserGroups = scopeType === AiAssistantScopeType.ACCESS ? selectedUserGroupsForAccessScope : selectedUserGroupsForShareScope;
+    const setSelectedUserGroups = scopeType === AiAssistantScopeType.ACCESS ? setSelectedUserGroupsForAccessScope : setSelectedUserGroupsForShareScope;
+
+    const selectedUserGroupIds = selectedUserGroups.map(userGroup => userGroup.item._id);
     if (selectedUserGroupIds.includes(targetUserGroup.item._id)) {
       // if selected, remove it
-      setSelectedUserGroupsForAccessScope(selectedUserGroupsForAccessScope.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
+      setSelectedUserGroups(selectedUserGroups.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
     }
     else {
       // if not selected, add it
-      setSelectedUserGroupsForAccessScope([...selectedUserGroupsForAccessScope, targetUserGroup]);
+      setSelectedUserGroups([...selectedUserGroups, targetUserGroup]);
     }
-  }, [selectedUserGroupsForAccessScope]);
+  }, [selectedUserGroupsForAccessScope, selectedUserGroupsForShareScope]);
 
 
   /*
@@ -130,9 +134,10 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
           <AiAssistantManagementEditShare
             selectedShareScope={selectedShareScope}
             selectedAccessScope={selectedAccessScope}
-            selectedUserGroups={selectedUserGroupsForAccessScope}
+            selectedUserGroupsForShareScope={selectedUserGroupsForShareScope}
+            selectedUserGroupsForAccessScope={selectedUserGroupsForAccessScope}
             onSelectScope={selectScopeHandler}
-            onSelectUserGroup={selectUserGroupsForAccessScopeHandler}
+            onSelectUserGroup={selectUserGroupsHandler}
           />
         </TabPane>
 
