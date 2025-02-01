@@ -66,17 +66,17 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementEditShare methods
   */
-  const selectScopeHandler = useCallback((accessScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: AiAssistantScopeType) => {
+  const selectScopeHandler = useCallback((targetScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: AiAssistantScopeType) => {
     if (scopeType === AiAssistantScopeType.ACCESS) {
-      setSelectedAccessScope(accessScope);
+      setSelectedAccessScope(targetScope);
       return;
     }
     if (scopeType === AiAssistantScopeType.SHARE) {
-      setSelectedShareScope(accessScope);
+      setSelectedShareScope(targetScope);
       return;
     }
-    setSelectedAccessScope(accessScope);
-    setSelectedShareScope(accessScope);
+    setSelectedAccessScope(targetScope);
+    setSelectedShareScope(targetScope);
   }, []);
 
   const selectUserGroupsHandler = useCallback((targetUserGroup: PopulatedGrantedGroup, scopeType: AiAssistantScopeType) => {

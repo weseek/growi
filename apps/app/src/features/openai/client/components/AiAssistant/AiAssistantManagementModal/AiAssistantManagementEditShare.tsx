@@ -24,8 +24,8 @@ type Props = {
 
 export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
   const {
-    selectedAccessScope,
     selectedShareScope,
+    selectedAccessScope,
     selectedUserGroupsForShareScope,
     selectedUserGroupsForAccessScope,
     onSelectScope,
@@ -81,6 +81,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
         <ShareScopeSwitch
           isDisabled={!isShared}
           selectedShareScope={selectedShareScope}
+          selectedAccessScope={selectedAccessScope}
           onSelect={selectScopeHandler}
         />
 
