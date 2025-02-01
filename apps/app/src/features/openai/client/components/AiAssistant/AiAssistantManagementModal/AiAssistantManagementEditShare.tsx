@@ -34,7 +34,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
   } = props;
 
   const [isShared, setIsShared] = useState(false);
-  const [isUserGroupSelectorOpen, setIsUserGroupSelectorOpen] = useState(false);
+  const [isSelectUserGroupModalOpen, setIsSelectUserGroupModalOpen] = useState(false);
   const [selectedUserGroupType, setSelectedUserGroupType] = useState<AiAssistantScopeType>(AiAssistantScopeType.ACCESS);
 
   const changeShareToggleHandler = useCallback(() => {
@@ -50,7 +50,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
     onSelectScope(scope, scopeType);
     if (scope === 'groups') {
       setSelectedUserGroupType(scopeType);
-      setIsUserGroupSelectorOpen(true);
+      setIsSelectUserGroupModalOpen(true);
     }
   }, [onSelectScope]);
 
@@ -87,8 +87,8 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
         />
 
         <SelectUserGroupModal
-          isOpen={isUserGroupSelectorOpen}
-          closeModal={() => setIsUserGroupSelectorOpen(false)}
+          isOpen={isSelectUserGroupModalOpen}
+          closeModal={() => setIsSelectUserGroupModalOpen(false)}
           selectedUserGroupType={selectedUserGroupType}
           selectedUserGroup={selectedUserGroupType === AiAssistantScopeType.ACCESS ? selectedUserGroupsForAccessScope : selectedUserGroupsForShareScope}
           onSelect={onSelectUserGroup}
