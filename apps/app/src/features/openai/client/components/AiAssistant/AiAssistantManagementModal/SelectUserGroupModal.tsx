@@ -37,10 +37,10 @@ const SelectUserGroupModalSubstance: React.FC<Props> = (props: Props) => {
         <button
           className="btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3"
           type="button"
-          key={userGroup.item.id}
+          key={userGroup.item._id}
           onClick={() => onSelect(userGroup, selectedUserGroupType)}
         >
-          <input type="checkbox" checked={checked(userGroup)} />
+          <input type="checkbox" checked={checked(userGroup)} onChange={() => {}} />
           <p className="ms-3 mb-0">{userGroup.item.name}</p>
           {userGroup.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{userGroup.item.provider}</span>}
           {/* TODO: Replace <div className="small">(TBD) List group members</div> */}

@@ -47,7 +47,7 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
         </DropdownToggle>
         <DropdownMenu>
           { [AiAssistantAccessScope.OWNER, AiAssistantAccessScope.GROUPS, AiAssistantAccessScope.PUBLIC_ONLY].map(accessScope => (
-            <DropdownItem onClick={() => selectAccessScopeHandler(accessScope)}>
+            <DropdownItem onClick={() => selectAccessScopeHandler(accessScope)} key={accessScope}>
               {getAccessScopeLabel(accessScope)}
             </DropdownItem>
           ))}
