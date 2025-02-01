@@ -4,7 +4,8 @@ import {
   ModalBody, Input, Label,
 } from 'reactstrap';
 
-import { AiAssistantScopeType, AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
+import type { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantScopeType, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 
 import { AccessScopeDropdown } from './AccessScopeDropdown';
@@ -47,7 +48,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
 
   const selectScopeHandler = useCallback((scope: AiAssistantAccessScope | AiAssistantShareScope, scopeType: AiAssistantScopeType) => {
     onSelectScope(scope, scopeType);
-    if ((scope as AiAssistantAccessScope) === AiAssistantAccessScope.GROUPS || (scope as AiAssistantShareScope) === AiAssistantShareScope.GROUPS) {
+    if (scope === 'groups') {
       setSelectedUserGroupType(scopeType);
       setIsUserGroupSelectorOpen(true);
     }
