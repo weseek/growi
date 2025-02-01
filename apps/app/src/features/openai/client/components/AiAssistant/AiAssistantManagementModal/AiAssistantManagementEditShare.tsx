@@ -94,6 +94,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
 
         <SelectUserGroupModal
           isOpen={isSelectUserGroupModalOpen}
+          userRelatedGroups={userRelatedGroups?.relatedGroups}
           closeModal={() => setIsSelectUserGroupModalOpen(false)}
           selectedUserGroupType={selectedUserGroupType}
           selectedUserGroup={selectedUserGroupType === AiAssistantScopeType.ACCESS ? selectedUserGroupsForAccessScope : selectedUserGroupsForShareScope}

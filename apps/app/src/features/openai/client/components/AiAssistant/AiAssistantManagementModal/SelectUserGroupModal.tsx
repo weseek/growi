@@ -8,10 +8,10 @@ import {
 
 import type { AiAssistantScopeType } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
-import { useSWRxUserRelatedGroups } from '~/stores/user';
 
 type Props = {
   isOpen: boolean,
+  userRelatedGroups?: PopulatedGrantedGroup[],
   selectedUserGroupType: AiAssistantScopeType,
   selectedUserGroup: PopulatedGrantedGroup[],
   closeModal: () => void,
@@ -20,11 +20,14 @@ type Props = {
 
 const SelectUserGroupModalSubstance: React.FC<Props> = (props: Props) => {
   const {
-    selectedUserGroup, selectedUserGroupType, onSelect, closeModal,
+    userRelatedGroups,
+    selectedUserGroup,
+    selectedUserGroupType,
+    onSelect,
+    closeModal,
   } = props;
 
   const { t } = useTranslation();
-  const { data: userRelatedGroups } = useSWRxUserRelatedGroups();
 
   const checked = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
     const selectedUserGroupIds = selectedUserGroup.map(userGroup => userGroup.item._id);
@@ -33,7 +36,7 @@ const SelectUserGroupModalSubstance: React.FC<Props> = (props: Props) => {
 
   return (
     <ModalBody className="d-flex flex-column">
-      {userRelatedGroups != null && userRelatedGroups.relatedGroups.map(userGroup => (
+      {userRelatedGroups != null && userRelatedGroups.map(userGroup => (
         <button
           className="btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3"
           type="button"
