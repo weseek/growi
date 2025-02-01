@@ -546,6 +546,20 @@
       "owner": "{{username}} がアクセス可能な全てのページ",
       "groups": "グループを指定",
       "publicOnly": "公開ページのみ"
+    },
+    "share_scope": {
+      "publicOnly": {
+        "label": "全体公開",
+        "desc": "すべてのユーザーに共有されます"
+      },
+      "groups": {
+        "label": "グループを指定",
+        "desc": "選択したグループのメンバーにのみ共有されます"
+      },
+      "sameAsAccessScope": {
+        "label": "ページのアクセス権限と同じ範囲",
+        "desc": "ページのアクセス権限と同じ範囲で共有されます"
+      }
     }
   },
   "link_edit": {

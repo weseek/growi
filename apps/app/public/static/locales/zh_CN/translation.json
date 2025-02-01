@@ -502,6 +502,20 @@
       "owner": "{{username}} 可访问的所有页面",
       "groups": "指定群组",
       "publicOnly": "仅公开页面"
+    },
+    "share_scope": {
+      "publicOnly": {
+        "label": "公开",
+        "desc": "与所有用户共享"
+      },
+      "groups": {
+        "label": "指定群组",
+        "desc": "仅与选定组的成员共享"
+      },
+      "sameAsAccessScope": {
+        "label": "与页面访问范围相同",
+        "desc": "与页面访问范围相同的范围共享"
+      }
     }
   },
   "link_edit": {
