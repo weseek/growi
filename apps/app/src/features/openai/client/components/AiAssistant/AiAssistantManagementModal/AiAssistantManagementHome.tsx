@@ -11,12 +11,25 @@ import { useCurrentUser } from '~/stores-universal/context';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 type Props = {
+  name: string;
+  description: string;
   instruction: string;
   shareScope: AiAssistantShareScope
+  onNameChange: (value: string) => void;
+  onDescriptionChange: (value: string) => void;
+  onCreateAiAssistant: () => Promise<void>
 }
 
 export const AiAssistantManagementHome = (props: Props): JSX.Element => {
-  const { instruction, shareScope } = props;
+  const {
+    name,
+    description,
+    instruction,
+    shareScope,
+    onNameChange,
+    onDescriptionChange,
+    onCreateAiAssistant,
+  } = props;
 
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
@@ -44,6 +57,8 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
               placeholder="アシスタント名を入力"
               bsSize="lg"
               className="border-0 border-bottom border-2 px-0 rounded-0"
+              value={name}
+              onChange={e => onNameChange(e.target.value)}
             />
           </div>
 
@@ -56,6 +71,8 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
               type="textarea"
               placeholder="内容や用途のメモを表示させることができます"
               rows="4"
+              value={description}
+              onChange={e => onDescriptionChange(e.target.value)}
             />
             <small className="text-secondary d-block mt-2">
               メモの内容はアシスタントの処理に影響しません。
@@ -105,7 +122,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
         <ModalFooter>
           <button type="button" className="btn btn-outline-secondary" onClick={() => {}}>キャンセル</button>
-          <button type="button" className="btn btn-primary" onClick={() => {}}>アシスタントを作成する</button>
+          <button type="button" className="btn btn-primary" onClick={onCreateAiAssistant}>アシスタントを作成する</button>
         </ModalFooter>
       </div>
     </>

@@ -32,6 +32,8 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
 
   // States
+  const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
   const [selectedShareScope, setSelectedShareScope] = useState<AiAssistantShareScope>(AiAssistantShareScope.OWNER);
   const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
   const [selectedUserGroupsForAccessScope, setSelectedUserGroupsForAccessScope] = useState<PopulatedGrantedGroup[]>([]);
@@ -39,28 +41,40 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
 
-  // Functions
-  const clickCreateAiAssistantHandler = useCallback(async() => {
+
+  /*
+  *  For AiAssistantManagementHome methods
+  */
+  const changeNameHandler = useCallback((value: string) => {
+    setName(value);
+  }, []);
+
+  const changeDescriptionHandler = useCallback((value: string) => {
+    setDescription(value);
+  }, []);
+
+  const createAiAssistantHandler = useCallback(async() => {
     try {
       const pagePathPatterns = selectedPages
         .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
         .filter((path): path is string => path !== undefined && path !== null);
 
       await createAiAssistant({
-        name: 'test',
-        description: 'test',
+        name,
+        description,
         additionalInstruction: instruction,
         pagePathPatterns,
-        shareScope: 'publicOnly',
-        accessScope: 'publicOnly',
+        shareScope: selectedShareScope,
+        accessScope: selectedAccessScope,
       });
+
       toastSuccess('アシスタントを作成しました');
     }
     catch (err) {
       toastError('アシスタントの作成に失敗しました');
       logger.error(err);
     }
-  }, [instruction, selectedPages]);
+  }, [description, instruction, name, selectedAccessScope, selectedPages, selectedShareScope]);
 
 
   /*
@@ -126,8 +140,13 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       <TabContent activeTab={pageMode}>
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
           <AiAssistantManagementHome
+            name={name}
+            description={description}
             shareScope={selectedShareScope}
             instruction={instruction}
+            onNameChange={changeNameHandler}
+            onDescriptionChange={changeDescriptionHandler}
+            onCreateAiAssistant={createAiAssistantHandler}
           />
         </TabPane>
 
