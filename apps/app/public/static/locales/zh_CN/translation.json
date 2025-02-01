@@ -504,6 +504,9 @@
       "publicOnly": "仅公开页面"
     },
     "share_scope": {
+      "owner": {
+        "label": "仅 {{ username }}"
+      },
       "publicOnly": {
         "label": "公开",
         "desc": "与所有用户共享"

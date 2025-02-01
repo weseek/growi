@@ -1,22 +1,33 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   ModalHeader, ModalBody, ModalFooter, Input,
 } from 'reactstrap';
 
+import { AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
+import { useCurrentUser } from '~/stores-universal/context';
+
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 type Props = {
   instruction: string;
+  shareScope: AiAssistantShareScope
 }
 
 export const AiAssistantManagementHome = (props: Props): JSX.Element => {
-  const { instruction } = props;
+  const { instruction, shareScope } = props;
 
   const { t } = useTranslation();
-
+  const { data: currentUser } = useCurrentUser();
   const { close: closeAiAssistantManagementModal, changePageMode } = useAiAssistantManagementModal();
+
+  const getShareScopeLabel = useCallback((shareScope: AiAssistantShareScope) => {
+    const baseLabel = `modal_ai_assistant.share_scope.${shareScope}.label`;
+    return shareScope === AiAssistantShareScope.OWNER
+      ? t(baseLabel, { username: currentUser?.username })
+      : t(baseLabel);
+  }, [currentUser?.username, t]);
 
   return (
     <>
@@ -59,7 +70,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.share')}</span>
               <div className="d-flex align-items-center text-secondary">
-                <span>UserNameのみ</span>
+                <span>{getShareScopeLabel(shareScope)}</span>
                 <span className="material-symbols-outlined ms-2 align-middle">chevron_right</span>
               </div>
             </button>

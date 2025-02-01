@@ -510,6 +510,7 @@
       "publicOnly": "Pages publiques uniquement"
     },
     "share_scope": {
+      "owner": "Seulement {{username}}",
       "publicOnly": {
         "label": "Public",
         "desc": "Partagé avec tous les utilisateurs"

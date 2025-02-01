@@ -515,6 +515,9 @@
       "publicOnly": "Public pages only"
     },
     "share_scope": {
+      "owner": {
+        "label": "{{username}} only"
+      },
       "publicOnly": {
         "label": "Public",
         "desc": "Shared with all users"

@@ -126,6 +126,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       <TabContent activeTab={pageMode}>
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
           <AiAssistantManagementHome
+            shareScope={selectedShareScope}
             instruction={instruction}
           />
         </TabPane>

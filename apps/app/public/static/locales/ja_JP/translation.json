@@ -548,6 +548,9 @@
       "publicOnly": "公開ページのみ"
     },
     "share_scope": {
+      "owner": {
+        "label": "{{username}} のみ"
+      },
       "publicOnly": {
         "label": "全体公開",
         "desc": "すべてのユーザーに共有されます"
