@@ -11,13 +11,17 @@ import { AiAssistantScopeType, AiAssistantAccessScope } from '../../../../interf
 
 type Props = {
   isDisabled: boolean,
+  isDisabledGroups: boolean,
   selectedAccessScope: AiAssistantAccessScope,
   onSelect: (accessScope: AiAssistantAccessScope, scopeType: AiAssistantScopeType) => void,
 }
 
 export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
   const {
-    isDisabled, selectedAccessScope, onSelect,
+    isDisabled,
+    isDisabledGroups,
+    selectedAccessScope,
+    onSelect,
   } = props;
 
   const { t } = useTranslation();
@@ -47,7 +51,11 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
         </DropdownToggle>
         <DropdownMenu>
           { [AiAssistantAccessScope.OWNER, AiAssistantAccessScope.GROUPS, AiAssistantAccessScope.PUBLIC_ONLY].map(accessScope => (
-            <DropdownItem onClick={() => selectAccessScopeHandler(accessScope)} key={accessScope}>
+            <DropdownItem
+              disabled={isDisabledGroups && accessScope === AiAssistantAccessScope.GROUPS}
+              onClick={() => selectAccessScopeHandler(accessScope)}
+              key={accessScope}
+            >
               {getAccessScopeLabel(accessScope)}
             </DropdownItem>
           ))}

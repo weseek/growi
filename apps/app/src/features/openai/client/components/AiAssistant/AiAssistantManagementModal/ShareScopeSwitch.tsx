@@ -20,6 +20,7 @@ type ShareScopeSwitchType = typeof ShareScopeSwitchType[keyof typeof ShareScopeS
 
 type Props = {
   isDisabled: boolean,
+  isDisabledGroups: boolean,
   selectedShareScope: AiAssistantShareScope,
   selectedAccessScope: AiAssistantAccessScope,
   onSelect: (shareScope: AiAssistantShareScope, scopeType: AiAssistantScopeType) => void,
@@ -28,6 +29,7 @@ type Props = {
 export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
   const {
     isDisabled,
+    isDisabledGroups,
     selectedShareScope,
     selectedAccessScope,
     onSelect,
@@ -60,7 +62,7 @@ export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
               name="shareScope"
               id="shareGroup"
               className="form-check-input"
-              disabled={isDisabled}
+              disabled={isDisabled || (isDisabledGroups && shareScope === ShareScopeSwitchType.GROUPS)}
               onChange={() => checkShareScopeRadioHandler(shareScope)}
               checked={selectedScope === shareScope}
             />

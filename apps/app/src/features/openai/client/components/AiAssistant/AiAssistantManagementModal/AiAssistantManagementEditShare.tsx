@@ -7,6 +7,7 @@ import {
 import type { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import { AiAssistantScopeType, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
+import { useSWRxUserRelatedGroups } from '~/stores/user';
 
 import { AccessScopeDropdown } from './AccessScopeDropdown';
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
@@ -33,6 +34,9 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
     onSelectUserGroup,
   } = props;
 
+  const { data: userRelatedGroups } = useSWRxUserRelatedGroups();
+  const hasNoRelatedGroups = userRelatedGroups == null || userRelatedGroups.relatedGroups.length === 0;
+
   const [isShared, setIsShared] = useState(false);
   const [isSelectUserGroupModalOpen, setIsSelectUserGroupModalOpen] = useState(false);
   const [selectedUserGroupType, setSelectedUserGroupType] = useState<AiAssistantScopeType>(AiAssistantScopeType.ACCESS);
@@ -48,11 +52,11 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
 
   const selectScopeHandler = useCallback((scope: AiAssistantAccessScope | AiAssistantShareScope, scopeType: AiAssistantScopeType) => {
     onSelectScope(scope, scopeType);
-    if (scope === 'groups') {
+    if (scope === 'groups' && !hasNoRelatedGroups) {
       setSelectedUserGroupType(scopeType);
       setIsSelectUserGroupModalOpen(true);
     }
-  }, [onSelectScope]);
+  }, [hasNoRelatedGroups, onSelectScope]);
 
   return (
     <>
@@ -75,12 +79,14 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
 
         <AccessScopeDropdown
           isDisabled={!isShared}
+          isDisabledGroups={hasNoRelatedGroups}
           selectedAccessScope={selectedAccessScope}
           onSelect={selectScopeHandler}
         />
 
         <ShareScopeSwitch
           isDisabled={!isShared}
+          isDisabledGroups={hasNoRelatedGroups}
           selectedShareScope={selectedShareScope}
           selectedAccessScope={selectedAccessScope}
           onSelect={selectScopeHandler}
