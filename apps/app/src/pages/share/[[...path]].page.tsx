@@ -63,10 +63,7 @@ superjson.registerCustom<IShareLinkRelatedPage, string>(
   {
     isApplicable: (v): v is IShareLinkRelatedPage => {
       return v != null
-        && v.toObject != null
-        && v.lastUpdateUser != null
-        && v.creator != null
-        && v.revision != null;
+        && v.toObject != null;
     },
     serialize: (v) => { return superjson.stringify(v.toObject()) },
     deserialize: (v) => { return superjson.parse(v) },
