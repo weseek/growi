@@ -105,7 +105,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementEditShare methods
   */
-  const selectScopeHandler = useCallback((targetScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType: AiAssistantScopeType) => {
+  const selectScopeHandler = useCallback((scopeType: AiAssistantScopeType, targetScope: AiAssistantAccessScope | AiAssistantShareScope) => {
     if (scopeType === AiAssistantScopeType.ACCESS) {
       setSelectedAccessScope(targetScope as AiAssistantAccessScope);
       return;
