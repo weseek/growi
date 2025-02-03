@@ -4,8 +4,7 @@ import {
   ModalBody, Input, Label,
 } from 'reactstrap';
 
-import type { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
-import { AiAssistantScopeType, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantScopeType, AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useSWRxUserRelatedGroups } from '~/stores/user';
 
@@ -44,7 +43,8 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
   const changeShareToggleHandler = useCallback(() => {
     setIsShared((prev) => {
       if (prev) { // if isShared === true
-        onSelectScope(AiAssistantShareScope.OWNER);
+        onSelectScope(AiAssistantAccessScope.OWNER, AiAssistantScopeType.ACCESS);
+        onSelectScope(AiAssistantShareScope.SAME_AS_ACCESS_SCOPE, AiAssistantScopeType.SHARE);
       }
       return !prev;
     });

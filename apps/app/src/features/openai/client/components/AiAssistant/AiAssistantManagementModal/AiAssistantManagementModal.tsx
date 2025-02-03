@@ -25,6 +25,7 @@ const moduleClass = styles['grw-ai-assistant-management'] ?? '';
 
 const logger = loggerFactory('growi:openai:client:components:AiAssistantManagementModal');
 
+// PopulatedGrantedGroup[] -> IGrantedGroup[]
 const convertToGrantedGroups = (selectedGroups: PopulatedGrantedGroup[]): IGrantedGroup[] => {
   return selectedGroups.map(group => ({
     type: group.type,
@@ -42,7 +43,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   // States
   const [name, setName] = useState<string>('');
   const [description, setDescription] = useState<string>('');
-  const [selectedShareScope, setSelectedShareScope] = useState<AiAssistantShareScope>(AiAssistantShareScope.OWNER);
+  const [selectedShareScope, setSelectedShareScope] = useState<AiAssistantShareScope>(AiAssistantShareScope.SAME_AS_ACCESS_SCOPE);
   const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
   const [selectedUserGroupsForAccessScope, setSelectedUserGroupsForAccessScope] = useState<PopulatedGrantedGroup[]>([]);
   const [selectedUserGroupsForShareScope, setSelectedUserGroupsForShareScope] = useState<PopulatedGrantedGroup[]>([]);
@@ -102,17 +103,15 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementEditShare methods
   */
-  const selectScopeHandler = useCallback((targetScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType?: AiAssistantScopeType) => {
+  const selectScopeHandler = useCallback((targetScope: AiAssistantAccessScope | AiAssistantShareScope, scopeType: AiAssistantScopeType) => {
     if (scopeType === AiAssistantScopeType.ACCESS) {
-      setSelectedAccessScope(targetScope);
+      setSelectedAccessScope(targetScope as AiAssistantAccessScope);
       return;
     }
     if (scopeType === AiAssistantScopeType.SHARE) {
-      setSelectedShareScope(targetScope);
+      setSelectedShareScope(targetScope as AiAssistantShareScope);
       return;
     }
-    setSelectedAccessScope(targetScope);
-    setSelectedShareScope(targetScope);
   }, []);
 
   const selectUserGroupsHandler = useCallback((targetUserGroup: PopulatedGrantedGroup, scopeType: AiAssistantScopeType) => {
@@ -180,6 +179,8 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             selectedUserGroupsForAccessScope={selectedUserGroupsForAccessScope}
             onSelectScope={selectScopeHandler}
             onSelectUserGroup={selectUserGroupsHandler}
+            // onSelectShareScope={selectShareScopeHandler}
+            // onSelectAccessScope={selectAccessScopeHandler}
           />
         </TabPane>
 
