@@ -181,8 +181,6 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             selectedUserGroupsForAccessScope={selectedUserGroupsForAccessScope}
             onSelectScope={selectScopeHandler}
             onSelectUserGroup={selectUserGroupsHandler}
-            // onSelectShareScope={selectShareScopeHandler}
-            // onSelectAccessScope={selectAccessScopeHandler}
           />
         </TabPane>
 
