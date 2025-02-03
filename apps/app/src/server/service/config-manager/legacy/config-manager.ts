@@ -2,13 +2,13 @@ import { parseISO } from 'date-fns/parseISO';
 
 import loggerFactory from '~/utils/logger';
 
-import { Config } from '../models/config';
-import S2sMessage from '../models/vo/s2s-message';
+import { Config } from '../../../models/config';
+import S2sMessage from '../../../models/vo/s2s-message';
+import type { S2sMessagingService } from '../../s2s-messaging/base';
+import type { S2sMessageHandlable } from '../../s2s-messaging/handlable';
 
 import type { ConfigObject } from './config-loader';
 import ConfigLoader from './config-loader';
-import type { S2sMessagingService } from './s2s-messaging/base';
-import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
@@ -237,38 +237,38 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
    * return whether the specified namespace/key should be retrieved only from env vars
    */
   private shouldSearchedFromEnvVarsOnly(namespace, key) {
-    return (namespace === 'crowi' && (
+    return (
       // siteUrl
       (
         KEYS_FOR_APP_SITE_URL_USES_ONLY_ENV_OPTION.includes(key)
-        && this.defaultSearch('crowi', 'app:siteUrl:useOnlyEnvVars')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'env:useOnlyEnvVars:app:siteUrl')
       )
       // local strategy
       || (
         KEYS_FOR_LOCAL_STRATEGY_USE_ONLY_ENV_OPTION.includes(key)
-        && this.defaultSearch('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'env:useOnlyEnvVars:security:passport-local')
       )
       // saml strategy
       || (
         KEYS_FOR_SAML_USE_ONLY_ENV_OPTION.includes(key)
-        && this.defaultSearch('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'env:useOnlyEnvVars:security:passport-saml')
       )
       // file upload option
       || (
         KEYS_FOR_FIEL_UPLOAD_USE_ONLY_ENV_OPTION.includes(key)
-        && this.searchOnlyFromEnvVarConfigs('crowi', 'app:useOnlyEnvVarForFileUploadType')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'env:useOnlyEnvVars:app:fileUploadType')
       )
       // gcs option
       || (
         KEYS_FOR_GCS_USE_ONLY_ENV_OPTION.includes(key)
-        && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:useOnlyEnvVarsForSomeOptions')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'env:useOnlyEnvVars:gcs')
       )
       // azure option
       || (
         KEYS_FOR_AZURE_USE_ONLY_ENV_OPTION.includes(key)
-        && this.searchOnlyFromEnvVarConfigs('crowi', 'azure:useOnlyEnvVarsForSomeOptions')
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'env:useOnlyEnvVars:azure')
       )
-    ));
+    );
   }
 
   /*
@@ -289,25 +289,25 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
     // only exists in db
     if (this.configExistsInDB(namespace, key) && !this.configExistsInEnvVars(namespace, key)) {
       logger.debug(`${namespace}.${key} only exists in db`);
-      return this.configObject.fromDB[namespace][key];
+      return this.configObject.fromDB.crowi[key];
     }
 
     // only exists env vars
     if (!this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
       logger.debug(`${namespace}.${key} only exists in env vars`);
-      return this.configObject.fromEnvVars[namespace][key];
+      return this.configObject.fromEnvVars.crowi[key];
     }
 
     // exists both in db and in env vars [db > env var]
     if (this.configExistsInDB(namespace, key) && this.configExistsInEnvVars(namespace, key)) {
-      if (this.configObject.fromDB[namespace][key] !== null) {
+      if (this.configObject.fromDB.crowi[key] !== null) {
         logger.debug(`${namespace}.${key} exists both in db and in env vars. loaded from db`);
-        return this.configObject.fromDB[namespace][key];
+        return this.configObject.fromDB.crowi[key];
       }
       /* eslint-disable-next-line no-else-return */
       else {
         logger.debug(`${namespace}.${key} exists both in db and in env vars. loaded from env vars`);
-        return this.configObject.fromEnvVars[namespace][key];
+        return this.configObject.fromEnvVars.crowi[key];
       }
     }
   }
@@ -320,7 +320,7 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
       return undefined;
     }
 
-    return this.configObject.fromDB[namespace][key];
+    return this.configObject.fromDB.crowi[key];
   }
 
   /**
@@ -331,29 +331,29 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
       return undefined;
     }
 
-    return this.configObject.fromEnvVars[namespace][key];
+    return this.configObject.fromEnvVars.crowi[key];
   }
 
   /**
    * check whether a specified config exists in configs loaded from the database
    */
   private configExistsInDB(namespace, key) {
-    if (this.configObject.fromDB[namespace] === undefined) {
+    if (this.configObject.fromDB.crowi === undefined) {
       return false;
     }
 
-    return this.configObject.fromDB[namespace][key] !== undefined;
+    return this.configObject.fromDB.crowi[key] !== undefined;
   }
 
   /**
    * check whether a specified config exists in configs loaded from the environment variables
    */
   private configExistsInEnvVars(namespace, key) {
-    if (this.configObject.fromEnvVars[namespace] === undefined) {
+    if (this.configObject.fromEnvVars.crowi === undefined) {
       return false;
     }
 
-    return this.configObject.fromEnvVars[namespace][key] !== undefined;
+    return this.configObject.fromEnvVars.crowi[key] !== undefined;
   }
 
   private convertInsertValue(value) {

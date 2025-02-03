@@ -18,6 +18,7 @@ const router = express.Router();
 
 const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549';
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
@@ -87,7 +88,7 @@ module.exports = (crowi) => {
 
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
-    const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
     const { isSharedPage } = req;
     const offset = req.query.offset || 0;
 

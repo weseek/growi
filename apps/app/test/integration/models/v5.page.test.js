@@ -481,7 +481,7 @@ describe('Page', () => {
     pageGrantService = crowi.pageGrantService;
     pageService = crowi.pageService;
 
-    await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
+    await crowi.configManager.updateConfig('app:isV5Compatible', true);
 
     jest.restoreAllMocks();
     User = mongoose.model('User');
