@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import type { IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
@@ -23,6 +24,13 @@ import styles from './AiAssistantManagementModal.module.scss';
 const moduleClass = styles['grw-ai-assistant-management'] ?? '';
 
 const logger = loggerFactory('growi:openai:client:components:AiAssistantManagementModal');
+
+const convertToGrantedGroups = (selectedGroups: PopulatedGrantedGroup[]): IGrantedGroup[] => {
+  return selectedGroups.map(group => ({
+    type: group.type,
+    item: group.item._id,
+  }));
+};
 
 const AiAssistantManagementModalSubstance = (): JSX.Element => {
   // Hooks
@@ -59,6 +67,9 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
         .filter((path): path is string => path !== undefined && path !== null);
 
+      const grantedGroupsForShareScope = convertToGrantedGroups(selectedUserGroupsForShareScope);
+      const grantedGroupsForAccessScope = convertToGrantedGroups(selectedUserGroupsForAccessScope);
+
       await createAiAssistant({
         name,
         description,
@@ -66,6 +77,8 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         pagePathPatterns,
         shareScope: selectedShareScope,
         accessScope: selectedAccessScope,
+        grantedGroupsForShareScope: selectedShareScope === AiAssistantShareScope.GROUPS ? grantedGroupsForShareScope : undefined,
+        grantedGroupsForAccessScope: selectedAccessScope === AiAssistantAccessScope.GROUPS ? grantedGroupsForAccessScope : undefined,
       });
 
       toastSuccess('アシスタントを作成しました');
@@ -74,7 +87,16 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       toastError('アシスタントの作成に失敗しました');
       logger.error(err);
     }
-  }, [description, instruction, name, selectedAccessScope, selectedPages, selectedShareScope]);
+  }, [
+    description,
+    instruction,
+    name,
+    selectedAccessScope,
+    selectedPages,
+    selectedShareScope,
+    selectedUserGroupsForAccessScope,
+    selectedUserGroupsForShareScope,
+  ]);
 
 
   /*
