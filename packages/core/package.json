@@ -73,8 +73,7 @@
     "escape-string-regexp": "^4.0.0"
   },
   "devDependencies": {
-    "eslint-plugin-regex": "^1.8.0",
-    "mongoose": "^6.11.3",
+    "mongoose": "^6.13.6",
     "socket.io-client": "^4.7.5",
     "swr": "^2.2.2"
   }
