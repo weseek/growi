@@ -62,7 +62,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  /search/connection:
-   *    get:
+   *    post:
    *      tags: [FullTextSearch Management]
    *      summary: /search/connection
    *      description: Reconnect to Elasticsearch
@@ -116,6 +116,13 @@ module.exports = (crowi) => {
    *      responses:
    *        200:
    *          description: Return 200
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  message:
+   *                    type: string
+   *                    description: Operation is successfully processed, or requested
    */
   router.put('/indices', accessTokenParser, loginRequired, adminRequired, addActivity, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
     const operation = req.body.operation;
