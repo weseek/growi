@@ -46,6 +46,9 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
         onSelectScope(AiAssistantAccessScope.OWNER, AiAssistantScopeType.ACCESS);
         onSelectScope(AiAssistantShareScope.SAME_AS_ACCESS_SCOPE, AiAssistantScopeType.SHARE);
       }
+      else {
+        onSelectScope(AiAssistantShareScope.PUBLIC_ONLY, AiAssistantScopeType.SHARE);
+      }
       return !prev;
     });
   }, [onSelectScope]);
