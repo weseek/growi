@@ -18,7 +18,9 @@ import {
   usePreferCollapsedMode,
   useSidebarMode,
   useSidebarScrollerRef,
+  useIsDeviceLargerThanMd,
 } from '~/stores/ui';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
 
@@ -230,6 +232,11 @@ export const Sidebar = (): JSX.Element => {
   } = useSidebarMode();
 
   const { data: isSearchPage } = useIsSearchPage();
+  const { data: editorMode } = useEditorMode();
+  const { data: isMdSize } = useIsDeviceLargerThanMd();
+
+  const isEditorMode = editorMode === EditorMode.Editor;
+  const shouldHideTitle = isEditorMode && isMdSize && (isDrawerMode() || isCollapsedMode());
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -253,8 +260,10 @@ export const Sidebar = (): JSX.Element => {
         <DrawerToggler className="position-fixed d-none d-md-block">
           <span className="material-symbols-outlined">reorder</span>
         </DrawerToggler>
-      ) }
-      { sidebarMode != null && !isDockMode() && !isSearchPage && <AppTitleOnSubnavigation /> }
+      )}
+      { sidebarMode != null && !isDockMode() && !isSearchPage && !shouldHideTitle && (
+        <AppTitleOnSubnavigation />
+      )}
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} divProps={{ 'data-testid': 'grw-sidebar' }}>
         <ResizableContainer>
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
