@@ -1129,7 +1129,7 @@ Guideline as a RAG:
   // OpenTelemetry Settings
   'otel:enabled': defineConfig<boolean>({
     envVarName: 'OPENTELEMETRY_ENABLED',
-    defaultValue: true,
+    defaultValue: false,
   }),
   'otel:isAppSiteUrlHashed': defineConfig<boolean>({
     envVarName: 'OPENTELEMETRY_IS_APP_SITE_URL_HASHED',
