@@ -18,6 +18,42 @@ const router = express.Router();
 
 const MIGRATION_FILE_NAME = '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549';
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Revision:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: The revision ID
+ *         format:
+ *           type: string
+ *           description: The format of the revision
+ *         pageId:
+ *           type: string
+ *           description: The ID of the page the revision belongs to
+ *         body:
+ *           type: string
+ *           description: The content of the revision
+ *         author:
+ *           $ref: '#/components/schemas/User'
+ *         origin:
+ *           type: string
+ *           description: The origin of the revision
+ *         hasDiffToPrev:
+ *           type: boolean
+ *           description: Whether the revision has differences to the previous one
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: The creation time of the revision
+ *         __v:
+ *           type: integer
+ *           description: The version key of the revision
+ */
+
 module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
@@ -38,6 +74,23 @@ module.exports = (crowi) => {
       query('pageId').isMongoId().withMessage('pageId is required'),
       param('id').isMongoId().withMessage('id is required'),
     ],
+  };
+
+  let cachedAppliedAt = null;
+
+  const getAppliedAtOfTheMigrationFile = async() => {
+
+    if (cachedAppliedAt != null) {
+      return cachedAppliedAt;
+    }
+
+    const migrationCollection = connection.collection('migrations');
+    const migration = await migrationCollection.findOne({ fileName: { $regex: `^${MIGRATION_FILE_NAME}` } });
+    const appliedAt = migration.appliedAt;
+
+    cachedAppliedAt = appliedAt;
+
+    return appliedAt;
   };
 
   /**
@@ -66,25 +119,21 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: Return revisions belong to page
-   *
+   *            content:
+   *              application/json:
+   *               schema:
+   *                properties:
+   *                  revisions:
+   *                    type: array
+   *                    items:
+   *                      $ref: '#/components/schemas/Revision'
+   *                  totalCount:
+   *                    type: number
+   *                    description: total count of revisions
+   *                  offset:
+   *                    type: number
+   *                    description: offset of the revisions
    */
-  let cachedAppliedAt = null;
-
-  const getAppliedAtOfTheMigrationFile = async() => {
-
-    if (cachedAppliedAt != null) {
-      return cachedAppliedAt;
-    }
-
-    const migrationCollection = connection.collection('migrations');
-    const migration = await migrationCollection.findOne({ fileName: { $regex: `^${MIGRATION_FILE_NAME}` } });
-    const appliedAt = migration.appliedAt;
-
-    cachedAppliedAt = appliedAt;
-
-    return appliedAt;
-  };
-
   router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
     const pageId = req.query.pageId;
     const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
@@ -177,7 +226,12 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: Return revision
-   *
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    revision:
+   *                      $ref: '#/components/schemas/Revision'
    */
   router.get('/:id', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisionById, apiV3FormValidator, async(req, res) => {
     const revisionId = req.params.id;
