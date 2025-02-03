@@ -3,12 +3,15 @@ import type { Request, Response } from 'express';
 import createError from 'http-errors';
 import { mock } from 'vitest-mock-extended';
 
-import type { LsxApiResponseData } from '../../../interfaces/api';
+import type { LsxApiResponseData, LsxApiParams } from '../../../interfaces/api';
 
 import type { PageQuery, PageQueryBuilder } from './generate-base-query';
 
 import { listPages } from '.';
 
+interface IListPagesRequest extends Request<undefined, undefined, undefined, LsxApiParams> {
+  user: IUser,
+}
 
 // mocking modules
 const mocks = vi.hoisted(() => {
@@ -30,7 +33,7 @@ describe('listPages', () => {
 
   it("returns 400 HTTP response when the query 'pagePath' is undefined", async() => {
     // setup
-    const reqMock = mock<Request & { user: IUser }>();
+    const reqMock = mock<IListPagesRequest>();
     const resMock = mock<Response>();
     const resStatusMock = mock<Response>();
     resMock.status.calledWith(400).mockReturnValue(resStatusMock);
@@ -46,7 +49,7 @@ describe('listPages', () => {
 
   describe('with num option', () => {
 
-    const reqMock = mock<Request & { user: IUser }>();
+    const reqMock = mock<IListPagesRequest>();
     reqMock.query = { pagePath: '/Sandbox' };
 
     const builderMock = mock<PageQueryBuilder>();
@@ -60,7 +63,7 @@ describe('listPages', () => {
     it('returns 200 HTTP response', async() => {
       // setup query.clone().count()
       const queryClonedMock = mock<PageQuery>();
-      queryMock.clone.mockImplementation(() => queryClonedMock);
+      queryMock.clone.mockReturnValue(queryClonedMock);
       queryClonedMock.count.mockResolvedValue(9);
 
       // setup addNumCondition
@@ -70,7 +73,7 @@ describe('listPages', () => {
 
       // setup query.exec()
       const pageMock = mock<IPageHasId>();
-      queryMock.exec.mockImplementation(async() => [pageMock]);
+      queryMock.exec.mockResolvedValue([pageMock]);
       mocks.addSortConditionMock.mockImplementation(() => queryMock);
 
       const resMock = mock<Response>();
@@ -97,7 +100,7 @@ describe('listPages', () => {
 
     it('returns 500 HTTP response when an unexpected error occured', async() => {
       // setup
-      const reqMock = mock<Request & { user: IUser }>();
+      const reqMock = mock<IListPagesRequest>();
       reqMock.query = { pagePath: '/Sandbox' };
 
       // an Error instance will be thrown by addNumConditionMock
@@ -124,7 +127,7 @@ describe('listPages', () => {
 
     it('returns 400 HTTP response when the value is invalid', async() => {
       // setup
-      const reqMock = mock<Request & { user: IUser }>();
+      const reqMock = mock<IListPagesRequest>();
       reqMock.query = { pagePath: '/Sandbox' };
 
       // an http-errors instance will be thrown by addNumConditionMock

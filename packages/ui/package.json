@@ -31,17 +31,18 @@
     "build": "vite build",
     "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
-    "watch": "yarn dev -w --emptyOutDir=false",
-    "lint:js": "yarn eslint **/*.{js,ts}",
+    "watch": "pnpm run dev -w --emptyOutDir=false",
+    "lint:js": "eslint **/*.{js,ts}",
     "lint:styles": "stylelint \"./scss/**/*\"",
-    "lint:typecheck": "tsc",
+    "lint:typecheck": "vue-tsc --noEmit",
     "lint": "npm-run-all -p lint:*"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@growi/core": "link:../core",
-    "@growi/core-styles": "link:../core-styles",
+    "@growi/core": "workspace:^",
+    "@growi/core-styles": "workspace:^",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
     "date-fns": "^3.6.0",
     "reactstrap": "^9.2.2"
   },

@@ -11,12 +11,12 @@ import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
+import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
 import { useCreatePage } from '~/client/services/create-page';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
-import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
-import { mutatePageTree } from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
 import { shouldCreateWipPage } from '../../../../utils/should-create-wip-page';
@@ -99,7 +99,7 @@ export const useNewPageInput = (): UseNewPageInput => {
       const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
 
       if (!isCreatable) {
-        toastWarning(t('you_can_not_create_page_with_this_name'));
+        toastWarning(t('you_can_not_create_page_with_this_name_or_hierarchy'));
         return;
       }
 
@@ -123,6 +123,7 @@ export const useNewPageInput = (): UseNewPageInput => {
             skipTransition: true,
             onCreated: () => {
               mutatePageTree();
+              mutateRecentlyUpdated();
 
               if (!hasDescendants) {
                 stateHandlers?.setIsOpen(true);

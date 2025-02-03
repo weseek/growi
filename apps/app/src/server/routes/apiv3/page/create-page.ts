@@ -1,20 +1,23 @@
 import { allOrigin } from '@growi/core';
 import type {
   IPage, IUser, IUserHasId,
-} from '@growi/core';
+} from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
+import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { isAiEnabled } from '~/features/openai/server/services';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import type { IOptionsForCreate } from '~/interfaces/page';
 import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { GlobalNotificationSettingEvent } from '~/server/models/GlobalNotificationSetting';
 import type { PageDocument, PageModel } from '~/server/models/page';
@@ -99,7 +102,6 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
   const User = mongoose.model<IUser, { isExistUserByUserPagePath: any }>('User');
 
-  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
 
@@ -157,7 +159,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     return PageTagRelation.listTagNamesByPage(createdPage.id);
   }
 
-  async function postAction(req: CreatePageRequest, res: ApiV3Response, createdPage: PageDocument) {
+  async function postAction(req: CreatePageRequest, res: ApiV3Response, createdPage: HydratedDocument<PageDocument>) {
     // persist activity
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
@@ -198,6 +200,18 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     catch (err) {
       logger.error('Failed to create subscription document', err);
     }
+
+    // Rebuild vector store file
+    if (isAiEnabled()) {
+      const { getOpenaiService } = await import('~/features/openai/server/services/openai');
+      try {
+        const openaiService = getOpenaiService();
+        await openaiService?.rebuildVectorStore(createdPage);
+      }
+      catch (err) {
+        logger.error('Rebuild vector store failed', err);
+      }
+    }
   }
 
   const addActivity = generateAddActivityMiddleware(crowi);
@@ -228,7 +242,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
 
       const { body, tags } = await determineBodyAndTags(pathToCreate, bodyByParam, tagsByParam);
 
-      let createdPage;
+      let createdPage: HydratedDocument<PageDocument>;
       try {
         const {
           grant, grantUserGroupIds, onlyInheritUserRelatedGrantedGroups, overwriteScopesOfDescendants, wip, origin,

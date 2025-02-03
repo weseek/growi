@@ -1,4 +1,5 @@
 import { SupportedAction } from '~/interfaces/activity';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -15,36 +16,107 @@ const router = express.Router();
 
 /**
  * @swagger
- *  tags:
- *    name: Export
- */
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:
  *      ExportStatus:
- *        description: ExportStatus
  *        type: object
  *        properties:
  *          zipFileStats:
  *            type: array
  *            items:
- *              type: object
- *              description: the property of each file
- *          progressList:
- *            type: array
- *            items:
- *              type: object
- *              description: progress data for each exporting collections
+ *              $ref: '#/components/schemas/ExportZipFileStat'
  *          isExporting:
  *            type: boolean
- *            description: whether the current exporting job exists or not
+ *          progressList:
+ *            type: [array, null]
+ *            items:
+ *              type: string
+ *      ExportZipFileStat:
+ *        type: object
+ *        properties:
+ *          meta:
+ *            $ref: '#/components/schemas/ExportMeta'
+ *          fileName:
+ *            type: string
+ *          zipFilePath:
+ *            type: string
+ *          fileStat:
+ *            $ref: '#/components/schemas/ExportFileStat'
+ *          innerFileStats:
+ *            type: array
+ *            items:
+ *              $ref: '#/components/schemas/ExportInnerFileStat'
+ *      ExportMeta:
+ *        type: object
+ *        properties:
+ *          version:
+ *            type: string
+ *          url:
+ *            type: string
+ *          passwordSeed:
+ *            type: string
+ *          exportedAt:
+ *            type: string
+ *            format: date-time
+ *          envVars:
+ *            type: object
+ *            additionalProperties:
+ *              type: string
+ *      ExportFileStat:
+ *        type: object
+ *        properties:
+ *          dev:
+ *            type: integer
+ *          mode:
+ *            type: integer
+ *          nlink:
+ *            type: integer
+ *          uid:
+ *            type: integer
+ *          gid:
+ *            type: integer
+ *          rdev:
+ *            type: integer
+ *          blksize:
+ *            type: integer
+ *          ino:
+ *            type: integer
+ *          size:
+ *            type: integer
+ *          blocks:
+ *            type: integer
+ *          atime:
+ *            type: string
+ *            format: date-time
+ *          mtime:
+ *            type: string
+ *            format: date-time
+ *          ctime:
+ *            type: string
+ *            format: date-time
+ *          birthtime:
+ *            type: string
+ *            format: date-time
+ *      ExportInnerFileStat:
+ *        type: object
+ *        properties:
+ *          fileName:
+ *            type: string
+ *          collectionName:
+ *            type: string
+ *          meta:
+ *           progressList:
+ *             type: array
+ *             items:
+ *               type: object
+ *               description: progress data for each exporting collections
+ *           isExporting:
+ *             type: boolean
+ *             description: whether the current exporting job exists or not
  */
 
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
@@ -90,6 +162,9 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
+   *                  ok:
+   *                    type: boolean
+   *                    description: whether the request is succeeded or not
    *                  status:
    *                    $ref: '#/components/schemas/ExportStatus'
    */
@@ -112,6 +187,17 @@ module.exports = (crowi) => {
    *      operationId: createExport
    *      summary: /export
    *      description: generate zipped jsons for collections
+   *      requestBody:
+   *        content:
+   *          application/json:
+   *            schema:
+   *              properties:
+   *                collections:
+   *                  type: array
+   *                  items:
+   *                    type: string
+   *                    description: the collections to export
+   *                    example: ["pages", "tags"]
    *      responses:
    *        200:
    *          description: a zip file is generated
@@ -119,8 +205,9 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  status:
-   *                    $ref: '#/components/schemas/ExportStatus'
+   *                  ok:
+   *                    type: boolean
+   *                    description: whether the request is succeeded
    */
   router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
@@ -167,6 +254,10 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                type: object
+   *                properties:
+   *                  ok:
+   *                    type: boolean
+   *                    description: whether the request is succeeded
    */
   router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, addActivity, async(req, res) => {
     // TODO: add express validator

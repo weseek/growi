@@ -13,6 +13,21 @@ module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
   const addActivity = generateAddActivityMiddleware(crowi);
 
+  /**
+   * @swagger
+   *  /logout:
+   *    post:
+   *      tags: [Users]
+   *      security:
+   *        - cookieAuth: []
+   *      summary: Logout user
+   *      description: Logout the currently authenticated user
+   *      responses:
+   *        200:
+   *          description: Successfully logged out
+   *        500:
+   *          description: Internal server error
+   */
   router.post('/', addActivity, async(req, res) => {
     req.session.destroy();
 

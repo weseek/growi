@@ -15,6 +15,7 @@
     "scope_of_page_disclosure": "Scope of page disclosure",
     "set_point": "Set point",
     "Guest Users Access": "Guest users access",
+    "readonly_users_access": "Read only users' access",
     "always_hidden": "Always hidden",
     "always_displayed": "Always displayed",
     "displayed_or_hidden": "Hidden / Displayed",
@@ -37,6 +38,7 @@
     "page_delete_rights": "Delete rights",
     "page_delete": "Page Delete",
     "page_delete_completely": "Page Delete Completely",
+    "comment_manage_rights": "Comment management rights",
     "other_options": "Other options",
     "deletion_explanation": "Restricts users who can trash the selected single page.",
     "complete_deletion_explanation": "Restricts users who can completely delete  selected single page.",
@@ -84,6 +86,10 @@
     "guest_mode": {
       "deny": "Deny (Registered users only)",
       "readonly": "Accept (Guests can read only)"
+    },
+    "read_only_users_comment": {
+      "deny": "Deny (Prohibit reead only users from comment management)",
+      "accept": "Allow (Read only users can manage comments)"
     },
     "registration_mode": {
       "open": "Open (Anyone can register)",
@@ -194,9 +200,9 @@
         "id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
         "username_detail": "Specification of mappings for <code>username</code> when creating new users",
         "name_detail": "Specification of mappings for <code>name</code> when creating new users",
-        "mapping_detail": "Specification of mappings for %s when creating new users",
+        "mapping_detail": "Specification of mappings for {{target}} when creating new users",
         "register_1": "Contact to OIDC IdP Administrator",
-        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
+        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>{{url}}</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above",
         "updated_oidc": "Succeeded to update OpenID Connect",
         "Use discovered URL if empty": "Use discovered URL from \"Issuer Host\" if empty"
@@ -1132,5 +1138,16 @@
   },
   "forbidden_page": {
     "do_not_have_admin_permission": "Users without administrative rights cannot access the administration screen"
+  },
+  "ai_integration": {
+    "ai_integration": "AI Integration",
+    "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, configure the <code>AI_ENABLED</code> environment variable along with the required additional variables.<br><br>For details, please refer to the <a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>documentation</a>.",
+    "ai_search_management": "AI search management",
+    "rebuild_vector_store": "Rebuild Vector Store",
+    "rebuild_vector_store_label": "Rebuild",
+    "rebuild_vector_store_explanation1": "Delete the existing Vector Store and recreate the Vector Store on the public page.",
+    "rebuild_vector_store_explanation2": "This process may take several minutes.",
+    "rebuild_vector_store_requested": "Vector Store rebuild has been requested",
+    "rebuild_vector_store_failed": "Vector Store rebuild failed"
   }
 }

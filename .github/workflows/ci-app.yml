@@ -6,13 +6,28 @@ on:
       - release/**
       - rc/**
       - changeset-release/**
+      - mergify/merge-queue/**
+      - tmp-mergify/merge-queue/**
     paths:
       - .github/mergify.yml
       - .github/workflows/ci-app.yml
       - .eslint*
       - tsconfig.base.json
       - turbo.json
-      - yarn.lock
+      - pnpm-lock.yaml
+      - package.json
+      - apps/app/**
+      - '!apps/app/docker/**'
+      - packages/**
+  pull_request:
+    types: [opened, reopened, synchronize]
+    paths:
+      - .github/mergify.yml
+      - .github/workflows/ci-app.yml
+      - .eslint*
+      - tsconfig.base.json
+      - turbo.json
+      - pnpm-lock.yaml
       - package.json
       - apps/app/**
       - '!apps/app/docker/**'
@@ -34,21 +49,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
-
-      - name: Cache/Restore node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-            !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
+          cache: 'pnpm'
 
       - name: Cache/Restore dist
         uses: actions/cache@v4
@@ -63,9 +69,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
-          yarn global add node-gyp
-          yarn --frozen-lockfile
+          pnpm add turbo --global
+          pnpm install --frozen-lockfile
 
       - name: Lint
         run: |
@@ -98,21 +103,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
-
-      - name: Cache/Restore node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-            !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
+          cache: 'pnpm'
 
       - name: Cache/Restore dist
         uses: actions/cache@v4
@@ -127,9 +123,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
-          yarn global add node-gyp
-          yarn --frozen-lockfile
+          pnpm add turbo --global
+          pnpm install --frozen-lockfile
 
       - name: Test
         run: |
@@ -172,22 +167,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-          cache-dependency-path: '**/yarn.lock'
-
-      - name: Cache/Restore node_modules
-        uses: actions/cache@v4
-        with:
-          path: |
-            **/node_modules
-            !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
-          restore-keys: |
-            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
-            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
+          cache: 'pnpm'
 
       - name: Cache/Restore dist
         uses: actions/cache@v4
@@ -202,9 +187,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn global add turbo
-          yarn global add node-gyp
-          yarn --frozen-lockfile
+          pnpm add turbo --global
+          pnpm install --frozen-lockfile
 
       - name: turbo run launch-dev:ci
         working-directory: ./apps/app

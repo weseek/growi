@@ -31,8 +31,9 @@
         "request": "launch",
         "name": "Debug: Server",
         "cwd": "${workspaceFolder}/apps/app",
-        "runtimeExecutable": "yarn",
+        "runtimeExecutable": "pnpm",
         "runtimeArgs": [
+          "run",
           "dev"
         ],
         "skipFiles": [

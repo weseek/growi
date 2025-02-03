@@ -27,6 +27,7 @@
     "always_hidden": "总是隐藏",
     "displayed_or_hidden": "隐藏 / 显示",
     "Guest Users Access": "来宾用户访问",
+    "readonly_users_access": "只浏览用户的访问",
 		"Fixed by env var": "这是由env var<code>%s=%s</code>修复的。",
 		"register_limitation": "注册限制",
 		"register_limitation_desc": "限制新用户注册",
@@ -46,6 +47,7 @@
     "page_delete_rights": "删除权限",
     "page_delete": "删除",
     "page_delete_completely": "彻底删除",
+    "comment_manage_rights": "评论管理权限",
     "other_options": "其他选项",
     "deletion_explanation": "限制用户对选定的单一页面进行垃圾处理。",
     "complete_deletion_explanation": "限制可以完全删除所选单页的用户。",
@@ -94,6 +96,10 @@
 			"deny": "拒绝（仅限注册用户）",
 			"readonly": "接受（来宾可以只读）"
 		},
+    "read_only_users_comment": {
+      "deny": "拒绝 (禁止只浏览用户操作评论)",
+      "accept": "允许 (只浏览用户可以管理评论)"
+    },
 		"registration_mode": {
 			"open": "打开（任何人都可以注册）",
 			"restricted": "受限（需要管理员批准）",
@@ -203,9 +209,9 @@
 				"id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
 				"username_detail": "Specification of mappings for <code>username</code> when creating new users",
 				"name_detail": "Specification of mappings for <code>name</code> when creating new users",
-				"mapping_detail": "Specification of mappings for %s when creating new users",
+				"mapping_detail": "Specification of mappings for {{target}} when creating new users",
 				"register_1": "Contact to OIDC IdP Administrator",
-				"register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
+				"register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>{{url}}</code>",
 				"register_3": "Copy and paste your ClientID and Client Secret above",
 				"updated_oidc": "Succeeded to update OpenID Connect",
         "Use discovered URL if empty": "Use discovered URL from \"Issuer Host\" if empty"
@@ -1141,5 +1147,16 @@
   },
   "forbidden_page": {
     "do_not_have_admin_permission": "没有管理权限的用户无法访问管理屏幕"
+  },
+  "ai_integration": {
+    "ai_integration": "AI 集成",
+    "disable_mode_explanation": "目前，AI 集成已被禁用。若要启用，请配置 <code>AI_ENABLED</code> 环境变量以及其他必要的变量。<br><br>详细信息请参考<a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>文档</a>。",
+    "ai_search_management": "AI 搜索管理",
+    "rebuild_vector_store": "重建矢量商店",
+    "rebuild_vector_store_label": "重建",
+    "rebuild_vector_store_explanation1": "删除现有的矢量存储，在公共页面上重新创建矢量存储。",
+    "rebuild_vector_store_explanation2": "这个过程可能需要几分钟。",
+    "rebuild_vector_store_requested": "已要求重建矢量存储库",
+    "rebuild_vector_store_failed": "向量存储区重建失败"
   }
 }

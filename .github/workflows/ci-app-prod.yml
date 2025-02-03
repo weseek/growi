@@ -5,7 +5,6 @@ on:
     branches:
       - master
       - dev/7.*.x
-      - dev/6.*.x
     paths:
       - .github/mergify.yml
       - .github/workflows/ci-app-prod.yml
@@ -13,17 +12,12 @@ on:
       - .github/workflows/reusable-app-reg-suit.yml
       - tsconfig.base.json
       - turbo.json
-      - yarn.lock
+      - pnpm-lock.yaml
       - package.json
       - apps/app/**
       - '!apps/app/docker/**'
       - packages/**
   pull_request:
-    branches:
-      - master
-      - dev/7.*.x
-      - dev/6.*.x
-      - release/*
     types: [opened, reopened, synchronize]
     paths:
       - .github/mergify.yml
@@ -31,7 +25,7 @@ on:
       - .github/workflows/reusable-app-prod.yml
       - .github/workflows/reusable-app-reg-suit.yml
       - tsconfig.base.json
-      - yarn.lock
+      - pnpm-lock.yaml
       - turbo.json
       - package.json
       - apps/app/**
@@ -47,6 +41,12 @@ jobs:
 
   test-prod-node18:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    if: |
+      ( github.event_name == 'push'
+        || github.base_ref == 'master'
+        || github.base_ref == 'dev/7.*.x'
+        || startsWith( github.base_ref, 'release/' )
+        || startsWith( github.head_ref, 'mergify/merge-queue/' ))
     with:
       node-version: 18.x
       skip-e2e-test: true
@@ -56,6 +56,12 @@ jobs:
 
   test-prod-node20:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    if: |
+      ( github.event_name == 'push'
+        || github.base_ref == 'master'
+        || github.base_ref == 'dev/7.*.x'
+        || startsWith( github.base_ref, 'release/' )
+        || startsWith( github.head_ref, 'mergify/merge-queue/' ))
     with:
       node-version: 20.x
       skip-e2e-test: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}

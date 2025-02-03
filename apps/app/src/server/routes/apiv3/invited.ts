@@ -1,20 +1,65 @@
-import type { IUser } from '@growi/core';
+import type { IUser } from '@growi/core/dist/interfaces';
 import type { Request, Router } from 'express';
 import express from 'express';
 import mongoose from 'mongoose';
+
+import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
 import { invitedRules, invitedValidation } from '../../middlewares/invited-form-validator';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
+const logger = loggerFactory('growi:routes:login');
+
 type InvitedFormRequest = Request & { form: any, user: any };
 
 module.exports = (crowi: Crowi): Router => {
   const applicationInstalled = require('../../middlewares/application-installed')(crowi);
-  const debug = require('debug')('growi:routes:login');
   const router = express.Router();
 
+  /**
+   * @swagger
+   *
+   *  /invited:
+   *    post:
+   *      tags: [Users]
+   *      security:
+   *        - cookieAuth: []
+   *      operationId: activateInvitedUser
+   *      summary: /invited
+   *      description: Activate invited user
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                invitedForm:
+   *                  type: object
+   *                  properties:
+   *                    username:
+   *                      type: string
+   *                      description: The username of the invited user.
+   *                    name:
+   *                      type: string
+   *                      description: The name of the invited user.
+   *                    password:
+   *                      type: string
+   *                      description: The password for the invited user.
+   *      responses:
+   *        200:
+   *          description: User activated successfully
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  redirectTo:
+   *                    type: string
+   *                    description: URL to redirect after successful activation.
+   */
   router.post('/', applicationInstalled, invitedRules(), invitedValidation, async(req: InvitedFormRequest, res: ApiV3Response) => {
     if (!req.user) {
       return res.apiv3({ redirectTo: '/login' });
@@ -41,7 +86,7 @@ module.exports = (crowi: Crowi): Router => {
 
     const creatable = await User.isRegisterableUsername(username);
     if (!creatable) {
-      debug('username', username);
+      logger.debug('username', username);
       return res.apiv3Err('message.unable_to_use_this_user', 403);
     }
 

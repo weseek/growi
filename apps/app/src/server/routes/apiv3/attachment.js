@@ -6,6 +6,7 @@ import autoReap from 'multer-autoreap';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { Attachment } from '~/server/models/attachment';
 import { serializePageSecurely, serializeRevisionSecurely } from '~/server/models/serializers';
 import loggerFactory from '~/utils/logger';
@@ -26,20 +27,55 @@ const {
 
 /**
  * @swagger
- *  tags:
- *    name: Attachment
- */
-
-
-/**
- * @swagger
  *
  *  components:
  *    schemas:
+ *      AttachmentPaginateResult:
+ *        description: AttachmentPaginateResult
+ *        type: object
+ *        properties:
+ *          docs:
+ *            type: array
+ *            items:
+ *              $ref: '#/components/schemas/Attachment'
+ *          totalDocs:
+ *            type: number
+ *            example: 1
+ *          limit:
+ *            type: number
+ *            example: 20
+ *          totalPages:
+ *            type: number
+ *            example: 1
+ *          page:
+ *            type: number
+ *            example: 1
+ *          offset:
+ *            type: number
+ *            example: 0
+ *          prevPage:
+ *            type: number
+ *            example: null
+ *          nextPage:
+ *            type: number
+ *            example: null
+ *          hasNextPage:
+ *            type: boolean
+ *            example: false
+ *          hasPrevPage:
+ *            type: boolean
+ *            example: false
+ *          pagingCounter:
+ *            type: number
+ *            example: 1
  *      Attachment:
  *        description: Attachment
  *        type: object
  *        properties:
+ *          id:
+ *            type: string
+ *            description: attachment ID
+ *            example: 5e0734e072560e001761fa67
  *          _id:
  *            type: string
  *            description: attachment ID
@@ -48,6 +84,10 @@ const {
  *            type: number
  *            description: attachment version
  *            example: 0
+ *          attachmentType:
+ *            type: string
+ *            description: attachment type
+ *            example: WIKI_PAGE
  *          fileFormat:
  *            type: string
  *            description: file format in MIME
@@ -61,6 +101,7 @@ const {
  *            description: original file name
  *            example: file.txt
  *          creator:
+ *            type: object
  *            $ref: '#/components/schemas/User'
  *          page:
  *            type: string
@@ -70,14 +111,14 @@ const {
  *            type: string
  *            description: date created at
  *            example: 2010-01-01T00:00:00.000Z
+ *          temporaryUrlExpiredAt:
+ *            type: string
+ *            description: temporary URL expired at
+ *            example: 2024-11-27T00:59:59.962Z
  *          fileSize:
  *            type: number
  *            description: file size
  *            example: 3494332
- *          url:
- *            type: string
- *            description: attachment URL
- *            example: http://localhost/files/5e0734e072560e001761fa67
  *          filePathProxied:
  *            type: string
  *            description: file path proxied
@@ -86,10 +127,12 @@ const {
  *            type: string
  *            description: download path proxied
  *            example: "/download/5e0734e072560e001761fa67"
+ *          temporaryUrlCached:
+ *            type: string
+ *            description: temporary URL cached
+ *            example: "https://example.com/attachment/5e0734e072560e001761fa67"
  */
-
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const Page = crowi.model('Page');
@@ -124,16 +167,35 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [Attachment]
    *        description: Get attachment list
-   *        responses:
-   *          200:
-   *            description: Return attachment list
    *        parameters:
-   *          - name: page_id
+   *          - name: pageId
    *            in: query
    *            required: true
    *            description: page id
    *            schema:
    *              type: string
+   *          - name: pageNumber
+   *            in: query
+   *            required: false
+   *            description: page number
+   *            schema:
+   *              type: number
+   *              example: 1
+   *          - name: limit
+   *            in: query
+   *            required: false
+   *            description: limit
+   *            schema:
+   *              type: number
+   *              example: 10
+   *        responses:
+   *          200:
+   *            description: Return attachment list
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  $ref: '#/components/schemas/AttachmentPaginateResult'
    */
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
 
@@ -209,11 +271,6 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  /**
-   * @api {get} /attachment/limit get available capacity of uploaded file with GridFS
-   * @apiName AddAttachment
-   * @apiGroup Attachment
-   */
   router.get('/limit', accessTokenParser, loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator, async(req, res) => {
     const { fileUploadService } = crowi;
     const fileSize = Number(req.query.fileSize);
@@ -231,7 +288,7 @@ module.exports = (crowi) => {
    *
    *    /attachment:
    *      post:
-   *        tags: [Attachment, CrowiCompatibles]
+   *        tags: [Attachment]
    *        operationId: addAttachment
    *        summary: /attachment
    *        description: Add attachment to the page
@@ -241,10 +298,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  page_id:
-   *                    nullable: true
-   *                    type: string
-   *                  path:
-   *                    nullable: true
+   *                    nullable: false
    *                    type: string
    *                  file:
    *                    type: string
@@ -257,10 +311,7 @@ module.exports = (crowi) => {
    *              schema:
    *                properties:
    *                  page_id:
-   *                    nullable: true
-   *                    type: string
-   *                  path:
-   *                    nullable: true
+   *                    nullable: false
    *                    type: string
    *                  file:
    *                    type: string
@@ -280,25 +331,12 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/Page'
    *                    attachment:
    *                      $ref: '#/components/schemas/Attachment'
-   *                    url:
-   *                      $ref: '#/components/schemas/Attachment/properties/url'
-   *                    pageCreated:
-   *                      type: boolean
-   *                      description: whether the page was created
-   *                      example: false
+   *                    revision:
+   *                      type: string
    *          403:
    *            $ref: '#/components/responses/403'
    *          500:
    *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /attachment Add attachment to the page
-   * @apiName AddAttachment
-   * @apiGroup Attachment
-   *
-   * @apiParam {String} page_id
-   * @apiParam {String} path
-   * @apiParam {File} file
    */
   router.post('/', uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
     validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
@@ -349,6 +387,13 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: Return attachment
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    attachment:
+   *                      $ref: '#/components/schemas/Attachment'
    *        parameters:
    *          - name: id
    *            in: path

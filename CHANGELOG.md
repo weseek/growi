@@ -1,8 +1,277 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.19...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.9](https://github.com/weseek/growi/compare/v7.1.8...v7.1.9) - 2025-02-03
+
+### 💎 Features
+
+* feat: Add error handling for data migration (#9582) @miya
+
+### 🚀 Improvement
+
+* imprv: Data migration script performance (#9599) @miya
+* imprv: Initialization for Passport strategies (#9353) @yuki-takei
+* imprv: Make data migration type safe (#9590) @miya
+* imprv: Printing styles (#9576) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Serializing page data for share link (#9602) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps-dev): bump vite from 5.4.6 to 5.4.12 (#9574) @dependabot
+* ci(deps): bump mongoose from 6.13.0 to 6.13.6 (#9570) @dependabot
+* ci(deps): bump katex from 0.16.11 to 0.16.21 (#9564) @dependabot
+
+## [v7.1.8](https://github.com/weseek/growi/compare/v7.1.7...v7.1.8) - 2025-01-21
+
+### 🐛 Bug Fixes
+
+* fix: Escape page path when generating RegExp to find ancestors children (#9550) @yuki-takei
+
+## [v7.1.7](https://github.com/weseek/growi/compare/v7.1.6...v7.1.7) - 2025-01-16
+
+### 🐛 Bug Fixes
+
+* fix: Unable to select group viewing permissions (#9541) @miya
+* fix: Fix i18n of oidc settings (#9536) @ryu-sato
+
+### 🧰 Maintenance
+
+* support: Update Swagger documentation for the PUT endpoint to update a page (#9529) @tkfm1991
+* ci(deps): bump docker/metadata-action from 4 to 5 (#9181) @dependabot
+* ci(deps): bump github/codeql-action from 2 to 3 (#9180) @dependabot
+* ci(deps): bump next from 14.2.15 to 14.2.21 (#9538) @dependabot
+* ci(deps-dev): bump @marp-team/marp-core from 3.9.0 to 3.9.1 (#9530) @dependabot
+
+## [v7.1.6](https://github.com/weseek/growi/compare/v7.1.5...v7.1.6) - 2024-12-26
+
+### 💎 Features
+
+* feat(ai): Save file to VectorStore in HTML format   (#9462) @miya
+
+### 🐛 Bug Fixes
+
+* fix: remark-lsx pagination (#9513) @miya
+* fix: Spelling miss of external_link in i18n (#9456) @reiji-h
+* fix: Wider copy to clipboard area (#9450) @Ryosei-Fukushima
+* fix: Error when creating pages with deep hierarchy (#9487) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump next from 14.2.13 to 14.2.15 (#9501) @dependabot
+
+## [v7.1.5](https://github.com/weseek/growi/compare/v7.1.4...v7.1.5) - 2024-12-13
+
+### 🚀 Improvement
+
+* imprv: Slim down the sidebar scrollbar (#9430) @reiji-h
+
+### 🐛 Bug Fixes
+
+* fix: Usage for stream pipeline of callback version (#9455) @reiji-h
+* fix: TypeError occurs during export (#9481) @miya
+* fix: Put `/` before the page name (#9471) @Ryosei-Fukushima
+* fix: Cannot comment when comments from rom user are allowed (#9472) @miya
+
+## [v7.1.4](https://github.com/weseek/growi/compare/v7.1.3...v7.1.4) - 2024-11-26
+
+### 🐛 Bug Fixes
+
+* fix: Failed to export the page markdown (#9444) @miya
+
+## [v7.1.3](https://github.com/weseek/growi/compare/v7.1.2...v7.1.3) - 2024-11-26
+
+### 💎 Features
+
+* feat(ai): Set a rate limit for vector store rebuild (#9404) @miya
+
+### 🚀 Improvement
+
+* imprv: Fonts preload settings (#9432) @yuki-takei
+* imprv: Use stream.pipeline (#9361) @reiji-h
+
+### 🐛 Bug Fixes
+
+* fix: Retrieving runtime versions (#9438) @yuki-takei
+* fix: Notification for new user creation (#9434) @yuki-takei
+* fix:  Deleted pages appear in the page tree (#9337) @reiji-h
+
+## [v7.1.2](https://github.com/weseek/growi/compare/v7.1.1...v7.1.2) - 2024-11-18
+
+### 🚀 Improvement
+
+* imprv(ai): GROWI AI Knowledge Assistant instructions (#9407) @yuki-takei
+* imprv(ai): Knowedge Assistant model configuration by env var (#9410) @yuki-takei
+* imprv(ai): Shorten thread deletion expiredAt (#9419) @yuki-takei
+* imprv(ai): Remove unnecessary strings from markdown when creating VectorStoreFIie (#9411) @miya
+* imprv(ai): Create thead before the first post (#9414) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Fixed the message when all read (#9405) @Ryosei-Fukushima
+
+### 🧰 Maintenance
+
+* support: Import OpenAI features dynamically (#9413) @yuki-takei
+* support: Welcome back Hufflepuff badger (#9403) @satof3
+
+## [v7.1.1](https://github.com/weseek/growi/compare/v7.1.0...v7.1.1) - 2024-11-12
+
+### 💎 Features
+
+* feat(ai): Swtch summary mode (#9377) @yuki-takei
+* feat: Return sources when generating responses (Knowledge assistant) (#9362) @miya
+* feat: Set the maximum number of minutes until the request in an environment variable (#9347) @miya
+
+### 🚀 Improvement
+
+* imprv: GitHub Alert with directive syntax (#9392) @yuki-takei
+* imprv: Sidebar button displays tooltip (#9371) @reiji-h
+* imprv: Open the link of PageTreeItem in a new tab when the user middle click (#9365) @yuki-takei
+* support: Avoid using req.t() (#9149) @shironegi39
+* imprv: Tidy up /Sandbox (#9355) @yuki-takei
+* imprv: Reduce sanitizing (#9350) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Output TextDirective and LeafDirective HTML (#9388) @yuki-takei
+* fix: NextLink isCreatablePage always returns false (#9356) @yuki-takei
+* fix: Duplicate page names alert should not occur on a single page (#9348) @reiji-h
+* fix: i18n for security settings (#9379) @yuki-takei
+* fix: Output TextDirective and LeafDirective HTML (#9388) @yuki-takei
+* fix(i18n): i18n for server side (#9372) @yuki-takei
+* fix: Duplicate page names alert should not occur on a single page (#9348) @reiji-h
+* fix: NextLink isCreatablePage always returns false (#9356) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Welcome back new Christmas theme (#9374) @satof3
+* support: Type checking (#9393) @yuki-takei
+* support: Welcome back new Christmas theme (#9374) @satof3
+* support: Omit remark-toc (#9383) @yuki-takei
+* support: Stop managing font files with Git LFS (#9351) @yuki-takei
+* support: Avoid using req.t() (#9149) @shironegi39
+* support: Improve playwright report (#9363) @yuki-takei
+* support: Avoid using req.t() (#9149) @shironegi39
+* support: Stop managing font files with Git LFS (#9351) @yuki-takei
+
+## [v7.1.0](https://github.com/weseek/growi/compare/v7.0.23...v7.1.0) - 2024-10-31
+
+### BREAKING CHANGES
+
+* imprv: Update default value for S3_OBJECT_ACL (#9332) @yuki-takei
+
+### 💎 Features
+
+* feat: GROWI OpenAI Integration (#9246) @yuki-takei
+
+### 🚀 Improvement
+
+* imprv: Add GitHub Markdown alerts  (#9127) @reiji-h
+* imprv: Upgrade unified and remark-growi-directive (#9048) @reiji-h
+* imprv: ROM users can manage comments (#9101) @WNomunomu
+* imprv: Update default value for S3_OBJECT_ACL (#9332) @yuki-takei
+* imprv: Sandbox (#9330) @yuki-takei
+* support: JSDoc for OpenAPI document (#9311) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Couldn't show old revision (#9296) @yuki-takei
+* fix: Replace the word ROM (#9295) @satof3
+* fix: forgot-password API (#9257) @reiji-h
+* fix: Edit button appear for the side of header (#9270) @yuki-takei
+* fix: Ensure text-only paste for mixed content from various sources (#9096) @reiji-h
+* fix: Notification count badge (#9124) @shironegi39
+* fix(ogp): Set an unknown label when the user is not found (#9232) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Migrate to pnpm from yarn v1 (#9249) @yuki-takei
+* support: Omit MongoDB 4.x compatible code (#9334) @yuki-takei
+* support: Pull LFS files with turbo (#9325) @yuki-takei
+* support: Use `pnpm deploy` instead of `turbo prune` (#9323) @yuki-takei
+* support: Maintenance API docs generation (#9302) @yuki-takei
+* support: Improve typings for PageService (#9220) @yuki-takei
+* support: Typescriptize accessTokenParser (#9320) @yuki-takei
+* support: Migrate to pnpm from yarn v1 (#9249) @yuki-takei
+* support: JSDoc for OpenAPI document (#9311) @yuki-takei
+* support: Maintenance API docs generation (#9302) @yuki-takei
+* support: Omit docs route (#9299) @yuki-takei
+
+## [v7.0.23](https://github.com/weseek/growi/compare/v7.0.22...v7.0.23) - 2024-10-24
+
+### 🐛 Bug Fixes
+
+* fix: Couln't show old revision (#9296) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Maintenance API docs generation (#9302) @yuki-takei
+* support: Omit docs route (#9299) @yuki-takei
+
+## [v7.0.22](https://github.com/weseek/growi/compare/v7.0.21...v7.0.22) - 2024-10-21
+
+### 🐛 Bug Fixes
+
+* fix: Edit button appear for the side of header (#9270) @yuki-takei
+* fix: Collaborative editing occurs unstable behavior (#9267) @yuki-takei
+
+## [v7.0.21](https://github.com/weseek/growi/compare/v7.0.20...v7.0.21) - 2024-10-15
+
+### 🚀 Improvement
+
+* imprv: Update Recent Changes when a page is created, updated, or deleted (#9092) @nHigashiWeseek
+* imprv: Documentation URL for g2gtransfer (#9183) @moekumasaka
+
+### 🐛 Bug Fixes
+
+* fix: Add validators to lsx API (#9182) @WNomunomu
+* fix: Display revisions only if they are not corrupted (#9099) @WNomunomu
+* fix: Make it impossible to overwrite grants on descendant pages when 'anyone with the link' is selected. (#9125) @WNomunomu
+* fix: Forgot password API - reject requests with invalid email format (#9179) @abichan99911111
+
+### 🧰 Maintenance
+
+* support: Upgrade codemirror and yjs packages (#9218) @yuki-takei
+
+## [v7.0.20](https://github.com/weseek/growi/compare/v7.0.19...v7.0.20) - 2024-09-25
+
+### 🚀 Improvement
+
+* imprv: The color of the dropdown list when it is activated (#9102) @WNomunomu
+* imprv: PageTitleHeader max-width (#9166) @yuki-takei
+* imprv: Documentation URL for g2gtransfer (#9157) @yuki-takei
+* imprv: Corrected wording on admin page (/admin/data-transfer) (#9106) @miya
+* imprv: Add hover-activated clipboard copy button with icon (#9095) @reiji-h
+
+### 🐛 Bug Fixes
+
+* fix: Make PageAccessoriesModal responsive (#9171) @moekumasaka
+* fix: PageControls unexpectedly move in response to opening and closing the sidebar (#9094) @WNomunomu
+* fix: Make CustomNavTab responsive (#9123) @moekumasaka
+
+### 🧰 Maintenance
+
+* ci(deps): bump rollup from 4.22.0 to 4.22.4 (#9160) @dependabot
+* ci(deps): bump google-github-actions/setup-gcloud from 1 to 2 (#9153) @dependabot
+* ci(deps): bump softprops/action-gh-release from 1 to 2 (#9152) @dependabot
+* support: Improve vitest environment (#9144) @yuki-takei
+* ci(deps): bump next from 14.1.3 to 14.2.13 (#9154) @dependabot
+* support: Upgrade @testing-library/react (#9141) @yuki-takei
+* support: Update logo image in README.md for the official docker image (#9139) @satof3
+* ci(deps-dev): bump vite from 5.2.9 to 5.2.14 (#9134) @dependabot
+* ci(deps): bump myrotvorets/info-from-package-json-action from 1.2.0 to 2.0.1 (#9129) @dependabot
+* ci(deps): bump stefanzweifel/git-auto-commit-action from 4 to 5 (#9128) @dependabot
+* ci(deps): bump nodemailer from 6.9.14 to 6.9.15 (#9075) @dependabot
+* ci(deps): bump docker/setup-buildx-action from 2 to 3 (#8207) @dependabot
+* ci(deps): bump jose from 4.11.4 to 4.15.9 (#9114) @dependabot
+* ci(deps): bump express from 4.19.2 to 4.20.0 (#9110) @dependabot
+* ci(deps): bump body-parser from 1.20.2 to 1.20.3 (#9109) @dependabot
 
 ## [v7.0.19](https://github.com/weseek/growi/compare/v7.0.18...v7.0.19) - 2024-09-12
 

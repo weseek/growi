@@ -4,6 +4,7 @@
 node_modules
 /.pnp
 .pnp.js
+.pnpm-store
 
 # testing
 coverage
@@ -40,4 +41,6 @@ yarn-error.log*
 
 # turborepo
 .turbo
+
+# pnpm deploy target dir
 out

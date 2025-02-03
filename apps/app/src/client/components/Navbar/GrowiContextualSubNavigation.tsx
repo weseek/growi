@@ -9,11 +9,10 @@ import type {
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { auto } from '@popperjs/core';
-import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import Sticky from 'react-stickynode';
 import { DropdownItem, UncontrolledTooltip } from 'reactstrap';
 
@@ -23,23 +22,23 @@ import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
-  useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
-} from '~/stores-universal/context';
-import { useEditorMode } from '~/stores-universal/ui';
-import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
   useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
 } from '~/stores/page';
-import { mutatePageTree } from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import {
   useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
+import {
+  useCurrentPathname,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
+} from '~/stores-universal/context';
+import { useEditorMode } from '~/stores-universal/ui';
 
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
@@ -271,6 +270,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
+      mutateRecentlyUpdated();
     };
     openRenameModal(page, { onRenamed: renamedHandler });
   }, [mutateCurrentPage, mutatePageInfo, openRenameModal]);
@@ -294,6 +294,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
       mutatePageInfo();
       mutatePageTree();
+      mutateRecentlyUpdated();
     };
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
   }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
@@ -348,7 +349,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     <>
       <GroundGlassBar className="py-4 d-block d-md-none d-print-none border-bottom" />
 
-      <Sticky className="z-1" onStateChange={status => setStickyActive(status.status === Sticky.STATUS_FIXED)}>
+      <Sticky
+        className="z-1"
+        onStateChange={status => setStickyActive(status.status === Sticky.STATUS_FIXED)}
+        innerActiveClass="w-100 end-0"
+      >
         <GroundGlassBar>
 
           <nav

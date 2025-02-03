@@ -12,12 +12,14 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
+import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import UserEvent from '../events/user';
+import { accessTokenParser } from '../middlewares/access-token-parser';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
@@ -50,6 +52,12 @@ const sep = path.sep;
 
 class Crowi {
 
+  /**
+   * For retrieving other packages
+   * @type {(req: import('express').Request, res: import('express').Response, next: import('express').NextFunction) => Promise<void>}
+   */
+  accessTokenParser;
+
   /** @type {AppService} */
   appService;
 
@@ -67,7 +75,6 @@ class Crowi {
 
   constructor() {
     this.version = pkg.version;
-    this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
     this.publicDir = path.join(projectRoot, 'public') + sep;
     this.resourceDir = path.join(projectRoot, 'resource') + sep;
@@ -77,6 +84,8 @@ class Crowi {
     this.cacheDir = path.join(this.tmpDir, 'cache');
 
     this.express = null;
+
+    this.accessTokenParser = accessTokenParser;
 
     this.config = {};
     this.configManager = null;
@@ -102,6 +111,8 @@ class Crowi {
     this.commentService = null;
     this.questionnaireService = null;
     this.questionnaireCronService = null;
+    this.openaiThreadDeletionCronService = null;
+    this.openaiVectorStoreFileDeletionCronService = null;
 
     this.tokens = null;
 
@@ -145,7 +156,6 @@ Crowi.prototype.init = async function() {
   ]);
 
   await Promise.all([
-    this.scanRuntimeVersions(),
     this.setupPassport(),
     this.setupSearcher(),
     this.setupMailer(),
@@ -312,25 +322,12 @@ Crowi.prototype.setupSocketIoService = async function() {
 Crowi.prototype.setupCron = function() {
   this.questionnaireCronService = new QuestionnaireCronService(this);
   this.questionnaireCronService.startCron();
+
+  startOpenaiCronIfEnabled();
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {
   this.questionnaireService = new QuestionnaireService(this);
-};
-
-Crowi.prototype.scanRuntimeVersions = async function() {
-  const self = this;
-
-  const check = require('check-node-version');
-  return new Promise((resolve, reject) => {
-    check((err, result) => {
-      if (err) {
-        reject(err);
-      }
-      self.runtimeVersions = result;
-      resolve();
-    });
-  });
 };
 
 Crowi.prototype.getSlack = function() {

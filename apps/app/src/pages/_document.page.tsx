@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
-import type { Locale } from '@growi/core';
+import type { Locale } from '@growi/core/dist/interfaces';
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import Document, {
   Html, Head, Main, NextScript,

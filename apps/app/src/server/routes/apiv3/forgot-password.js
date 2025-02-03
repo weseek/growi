@@ -18,6 +18,25 @@ const logger = loggerFactory('growi:routes:apiv3:forgotPassword'); // eslint-dis
 const express = require('express');
 const { body } = require('express-validator');
 
+/**
+ * @swagger
+ *
+ * components:
+ *   schemas:
+ *     PasswordResetRequest:
+ *       type: object
+ *       properties:
+ *         email:
+ *           type: string
+ *           format: email
+ *     PasswordResetResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *         error:
+ *           type: string
+*/
 
 const router = express.Router();
 
@@ -43,6 +62,14 @@ module.exports = (crowi) => {
           return (value === req.body.newPassword);
         }),
     ],
+    email: [
+      body('email')
+        .isEmail()
+        .escape()
+        .withMessage('message.Email format is invalid')
+        .notEmpty()
+        .withMessage('message.Email field is required'),
+    ],
   };
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
@@ -61,7 +88,35 @@ module.exports = (crowi) => {
     });
   }
 
-  router.post('/', checkPassportStrategyMiddleware, addActivity, async(req, res) => {
+  /**
+   * @swagger
+   *
+   *  /forgot-password:
+   *    post:
+   *      summary: Request password reset
+   *      tags: [Users]
+   *      security:
+   *        -
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                email:
+   *                  type: string
+   *                  format: email
+   *                  description: Email address of the user requesting password reset
+   *      responses:
+   *        '200':
+   *          description: Password reset request processed
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   */
+  router.post('/', checkPassportStrategyMiddleware, validator.email, apiV3FormValidator, addActivity, async(req, res) => {
     const { email } = req.body;
     const locale = configManager.getConfig('crowi', 'app:globalLang');
     const appUrl = appService.getSiteUrl();
@@ -71,7 +126,8 @@ module.exports = (crowi) => {
 
       // when the user is not found or active
       if (user == null || user.status !== 2) {
-        await sendPasswordResetEmail('notActiveUser', locale, email, appUrl);
+        // Do not send emails to non GROWI user
+        // For security reason, do not use error messages like "Email does not exist"
         return res.apiv3();
       }
 
@@ -94,6 +150,37 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *  /forgot-password:
+   *    put:
+   *      summary: Reset password
+   *      tags: [Users]
+   *      security:
+   *        -
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                newPassword:
+   *                  type: string
+   *                  format: password
+   *                  description: New password
+   *      responses:
+   *        '200':
+   *          description: Password reset successful
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  userData:
+   *                    $ref: '#/components/schemas/User'
+   */
   // eslint-disable-next-line max-len
   router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, addActivity, async(req, res) => {
     const { passwordResetOrder } = req;

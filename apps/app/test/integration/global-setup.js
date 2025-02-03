@@ -8,7 +8,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 module.exports = async() => {
-  mongoose.connect(getMongoUri(), mongoOptions);
+  await mongoose.connect(getMongoUri(), mongoOptions);
 
   // drop database
   await mongoose.connection.dropDatabase();

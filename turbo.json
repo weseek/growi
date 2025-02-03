@@ -19,16 +19,6 @@
       "cache": false
     },
 
-    "@growi/remark-attachment-refs#build": {
-      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
-      "outputs": ["dist/**"],
-      "outputLogs": "new-only"
-    },
-    "@growi/remark-lsx#build": {
-      "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
-      "outputs": ["dist/**"],
-      "outputLogs": "new-only"
-    },
     "@growi/ui#build": {
       "dependsOn": ["@growi/core#build"],
       "outputs": ["dist/**"],
@@ -40,22 +30,13 @@
         "src/**/*.js", "src/**/*.jsx",
         "src/**/*.ts", "src/**/*.tsx",
         "src/**/*.css", "src/**/*.scss",
+        "package.json",
         "tsconfig*.json",
         "vite*.ts"
       ],
       "outputLogs": "new-only"
     },
 
-    "@growi/remark-attachment-refs#dev": {
-      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
-      "outputs": ["dist/**"],
-      "outputLogs": "new-only"
-    },
-    "@growi/remark-lsx#dev": {
-      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
-      "outputs": ["dist/**"],
-      "outputLogs": "new-only"
-    },
     "@growi/ui#dev": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["dist/**"],
@@ -67,6 +48,7 @@
         "src/**/*.js", "src/**/*.jsx",
         "src/**/*.ts", "src/**/*.tsx",
         "src/**/*.css", "src/**/*.scss",
+        "package.json",
         "tsconfig*.json",
         "vite*.ts"
       ],
@@ -85,12 +67,6 @@
       "persistent": true
     },
 
-    "@growi/remark-attachment-refs#lint": {
-      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
-    },
-    "@growi/remark-lsx#lint": {
-      "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
-    },
     "@growi/ui#lint": {
       "dependsOn": ["@growi/core#dev"]
     },
@@ -101,18 +77,23 @@
       "dependsOn": ["@growi/pluginkit#dev"],
       "outputLogs": "new-only"
     },
-    "@growi/remark-lsx#test": {
-      "dependsOn": ["@growi/core#dev"],
-      "outputLogs": "new-only"
-    },
     "test": {
       "outputLogs": "new-only"
     },
 
-    "version": {
+    "//#version:patch": {
       "cache": false
     },
-    "//#version": {
+    "//#version:prerelease": {
+      "cache": false
+    },
+    "//#version:prepatch": {
+      "cache": false
+    },
+    "//#version:preminor": {
+      "cache": false
+    },
+    "//#version:premajor": {
       "cache": false
     }
 

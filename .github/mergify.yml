@@ -23,8 +23,8 @@ pull_request_rules:
   - name: Automatic queue to merge
     conditions:
       - '#approved-reviews-by >= 1'
+      - '#changes-requested-reviews-by = 0'
       - '#review-requested = 0'
-      - check-success = check-title
     actions:
       queue:
 

@@ -31,6 +31,22 @@
     "test": {
       "dependsOn": ["@growi/slack#dev"],
       "outputLogs": "new-only"
+    },
+
+    "version:patch": {
+      "cache": false
+    },
+    "version:prerelease": {
+      "cache": false
+    },
+    "version:prepatch": {
+      "cache": false
+    },
+    "version:preminor": {
+      "cache": false
+    },
+    "version:premajor": {
+      "cache": false
     }
 
   }

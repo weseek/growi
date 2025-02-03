@@ -13,12 +13,6 @@ const router = express.Router();
 
 const validator = {};
 
-/**
- * @swagger
- *  tags:
- *    name: UserGroupRelation
- */
-
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -33,7 +27,7 @@ module.exports = (crowi) => {
    *  paths:
    *    /user-group-relations:
    *      get:
-   *        tags: [UserGroupRelation]
+   *        tags: [UserGroupRelations]
    *        operationId: listUserGroupRelations
    *        summary: /user-group-relations
    *        description: Gets the user group relations
