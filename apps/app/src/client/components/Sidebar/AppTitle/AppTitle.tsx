@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { useAppTitle, useConfidential, useIsDefaultLogo } from '~/stores-universal/context';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { useIsDeviceLargerThanXl } from '~/stores/ui';
 
 import { SidebarBrandLogo } from '../SidebarBrandLogo';
 
@@ -21,22 +23,28 @@ const AppTitleSubstance = memo((props: Props): JSX.Element => {
   const { data: isDefaultLogo } = useIsDefaultLogo();
   const { data: appTitle } = useAppTitle();
   const { data: confidential } = useConfidential();
+  const { data: editorMode } = useEditorMode();
+  const { data: isXlSize } = useIsDeviceLargerThanXl();
+
+  const isEditorMode = editorMode === EditorMode.Editor;
+  const shouldHideTitle = isEditorMode && isXlSize; //
 
   return (
-    <div className={`${styles['grw-app-title']} ${className} d-flex d-edit-none`}>
+    <div className={`${styles['grw-app-title']} ${className} d-flex`}>
       {/* Brand Logo  */}
       <Link href="/" className="grw-logo d-block">
         <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
       </Link>
       <div className="flex-grow-1 d-flex align-items-center justify-content-between gap-3 overflow-hidden">
-        <div id="grw-site-name" className="grw-site-name text-truncate">
-          <Link href="/" className="fs-4">
-            {appTitle}
-          </Link>
-        </div>
+        {!shouldHideTitle && (
+          <div id="grw-site-name" className="grw-site-name text-truncate">
+            <Link href="/" className="fs-4">
+              {appTitle}
+            </Link>
+          </div>
+        )}
       </div>
-      {!(confidential == null || confidential === '')
-      && (
+      {!(confidential == null || confidential === '') && (
         <UncontrolledTooltip
           className="d-none d-sm-block confidential-tooltip"
           innerClassName="text-start"
