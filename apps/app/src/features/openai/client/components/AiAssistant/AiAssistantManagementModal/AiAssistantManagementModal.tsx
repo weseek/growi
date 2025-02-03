@@ -36,7 +36,7 @@ const convertToGrantedGroups = (selectedGroups: PopulatedGrantedGroup[]): IGrant
 const AiAssistantManagementModalSubstance = (): JSX.Element => {
   // Hooks
   const { t } = useTranslation();
-  const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
+  const { data: aiAssistantManagementModalData, close: closeAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
 
@@ -83,12 +83,14 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       });
 
       toastSuccess('アシスタントを作成しました');
+      closeAiAssistantManagementModal();
     }
     catch (err) {
       toastError('アシスタントの作成に失敗しました');
       logger.error(err);
     }
   }, [
+    closeAiAssistantManagementModal,
     description,
     instruction,
     name,
