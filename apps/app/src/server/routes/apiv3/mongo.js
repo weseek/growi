@@ -27,6 +27,9 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
+   *                  ok:
+   *                    type: boolean
+   *                    description: whether the request is succeeded
    *                  collections:
    *                    type: array
    *                    items:
