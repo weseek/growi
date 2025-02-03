@@ -369,7 +369,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /bookmark-folder/add-boookmark-to-folder:
+   *    /bookmark-folder/add-bookmark-to-folder:
    *      post:
    *        tags: [BookmarkFolders]
    *        operationId: addBookmarkToFolder
@@ -401,7 +401,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.post('/add-boookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator, async(req, res) => {
+  router.post('/add-bookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator, async(req, res) => {
     const userId = req.user?._id;
     const { pageId, folderId } = req.body;
 
