@@ -5,80 +5,36 @@ import { EditorSelection, type ChangeSpec } from '@codemirror/state';
 import { keymap, type Command, EditorView } from '@codemirror/view';
 
 import type { UseCodeMirrorEditor } from '../services';
+import type { InsertMarkdownElements } from '../services/use-codemirror-editor/utils/insert-markdown-elements';
+import { useInsertMarkdownElements } from '../services/use-codemirror-editor/utils/insert-markdown-elements';
+import { useInsertPrefix } from '../services/use-codemirror-editor/utils/insert-prefix';
+import type { InsertPrefix } from '../services/use-codemirror-editor/utils/insert-prefix';
 
-const addPrefixSymbol = (text: string, symbol: string): string => {
-  return `${symbol}${text}`;
-};
+const generateAddMarkdownSymbolCommand = (
+    insertMarkdown: InsertMarkdownElements | InsertPrefix,
+    prefix: string,
+    suffix?: string,
+): Command => {
 
-const addSuffixSymbol = (text: string, symbol: string): string => {
-  return `${text}${symbol}`;
-};
+  const isInsertMarkdownElements = (
+      fn: InsertMarkdownElements | InsertPrefix,
+  ): fn is InsertMarkdownElements => {
+    return fn.length === 2;
+  };
 
-const wrapTextWithSymbol = (text: string, symbol: string): string => {
-  return `${symbol}${text}${symbol}`;
-};
-
-const removeSymbol = (text: string, symbol: string): string => {
-  const replaceRegex = new RegExp(`${symbol}`, 'g');
-  return text.replace(replaceRegex, '');
-};
-
-const escapeSymbol = (symbol: string): string => {
-  const specialCharactersRegex = /[.*+?^${}()|[\]\\]/g;
-  return symbol.replace(specialCharactersRegex, '\\$&');
-};
-
-const processLine = (
-    lineText: string, symbol: string, addSymbol: (text: string, symbol: string) => string,
-): string => {
-
-  const safeSymbol = escapeSymbol(symbol);
-
-  const isMarkdownRegex = new RegExp(`${safeSymbol}`, 'g');
-  const isMarkdown = isMarkdownRegex.test(lineText);
-
-  if (isMarkdown) {
-    return removeSymbol(lineText, safeSymbol);
-  }
-  return addSymbol(lineText, symbol);
-};
-
-const generateAddMarkdownSymbolCommand = (symbol: string, addSymbol: (text: string, symbol: string) => string): Command => {
   const addMarkdownSymbolCommand: Command = (view: EditorView) => {
-    const state = view.state;
-    const dispatch = view.dispatch;
-
-    if (state.selection.ranges.length === 0) return false;
-
-    dispatch(state.update({
-      changes: state.selection.ranges.map((range) => {
-        const selectedText = state.sliceDoc(range.from, range.to);
-
-        const changedText = selectedText
-          .split('\n')
-          .map(line => processLine(line, symbol, addSymbol))
-          .join('\n');
-
-        return {
-          from: range.from,
-          to: range.to,
-          insert: changedText,
-        };
-      }),
-    }));
+    if (isInsertMarkdownElements(insertMarkdown)) {
+      if (suffix == null) return false;
+      insertMarkdown(prefix, suffix);
+    }
+    else {
+      insertMarkdown(prefix);
+    }
 
     return true;
   };
 
   return addMarkdownSymbolCommand;
-};
-
-const makeTextHyperLink: Command = (view: EditorView) => {
-  const addPrefixCommand = generateAddMarkdownSymbolCommand('[', addPrefixSymbol);
-  addPrefixCommand(view);
-  const addSuffixCommand = generateAddMarkdownSymbolCommand(']()', addSuffixSymbol);
-  addSuffixCommand(view);
-  return true;
 };
 
 const makeTextCodeBlock: Command = (view: EditorView) => {
@@ -185,28 +141,10 @@ const makeCodeBlockExtension: Extension = EditorView.domEventHandlers({
   },
 });
 
-const altClickExtension = EditorView.domEventHandlers({
-  mousedown: (event, view) => {
-    if (event.altKey) {
-      event.preventDefault();
-
-      const pos = view.posAtCoords({ x: event.clientX, y: event.clientY });
-      if (pos === null) return;
-
-      const newSelection = EditorSelection.create([
-        ...view.state.selection.ranges,
-        EditorSelection.cursor(pos),
-      ]);
-      view.dispatch(view.state.update({ selection: newSelection }));
-    }
-  },
-});
-
 export const useEditorShortcuts = (codeMirrorEditor?: UseCodeMirrorEditor): void => {
-  useEffect(() => {
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.([altClickExtension]);
-    return cleanupFunction;
-  }, [codeMirrorEditor]);
+
+  const insertMarkdownElements = useInsertMarkdownElements(codeMirrorEditor?.view);
+  const insertPrefix = useInsertPrefix(codeMirrorEditor?.view);
 
   useEffect(() => {
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.([makeCodeBlockExtension]);
@@ -216,20 +154,20 @@ export const useEditorShortcuts = (codeMirrorEditor?: UseCodeMirrorEditor): void
   useEffect(() => {
 
     const extension = keymap.of([
-      { key: 'mod-i', run: generateAddMarkdownSymbolCommand('*', wrapTextWithSymbol) },
-      { key: 'mod-b', run: generateAddMarkdownSymbolCommand('**', wrapTextWithSymbol) },
-      { key: 'mod-shift-x', run: generateAddMarkdownSymbolCommand('~~', wrapTextWithSymbol) },
-      { key: 'mod-shift-c', run: generateAddMarkdownSymbolCommand('`', wrapTextWithSymbol) },
-      { key: 'mod-shift-7', run: generateAddMarkdownSymbolCommand('1. ', addPrefixSymbol) },
-      { key: 'mod-shift-8', run: generateAddMarkdownSymbolCommand('- ', addPrefixSymbol) },
-      { key: 'mod-shift-9', run: generateAddMarkdownSymbolCommand('> ', addPrefixSymbol) },
-      { key: 'mod-shift-u', run: makeTextHyperLink },
+      { key: 'mod-b', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '**', '**') },
+      { key: 'mod-shift-i', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '*', '*') },
+      { key: 'mod-shift-x', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '~~', '~~') },
+      { key: 'mod-shift-c', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '`', '`') },
+      { key: 'mod-shift-7', run: generateAddMarkdownSymbolCommand(insertPrefix, '1.') },
+      { key: 'mod-shift-8', run: generateAddMarkdownSymbolCommand(insertPrefix, '-') },
+      { key: 'mod-shift-9', run: generateAddMarkdownSymbolCommand(insertPrefix, '>') },
+      { key: 'mod-shift-u', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '[', ']()') },
     ]);
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
     return cleanupFunction;
 
-  }, [codeMirrorEditor]);
+  }, [codeMirrorEditor, insertMarkdownElements, insertPrefix]);
 
   useEffect(() => {
 
