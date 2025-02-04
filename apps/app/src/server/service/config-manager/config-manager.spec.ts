@@ -4,12 +4,6 @@ import type { S2sMessagingService } from '../s2s-messaging/base';
 
 import { configManager } from './config-manager';
 
-vi.mock('./legacy/config-manager', () => ({
-  configManager: {
-    loadConfigs: vi.fn(),
-  },
-}));
-
 const mocks = vi.hoisted(() => ({
   ConfigMock: {
     updateOne: vi.fn(),
