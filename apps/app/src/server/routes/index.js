@@ -6,6 +6,7 @@ import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter
 import { accessTokenParser } from '../middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
+import * as applicationNotInstalled from '../middlewares/application-not-installed';
 import { excludeReadOnlyUser, excludeReadOnlyUserIfCommentNotAllowed } from '../middlewares/exclude-read-only-user';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
@@ -30,7 +31,6 @@ autoReap.options.reapOnError = true; // continue reaping the file even if an err
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = function(crowi, app) {
   const autoReconnectToSearch = require('../middlewares/auto-reconnect-to-search')(crowi);
-  const applicationNotInstalled = require('../middlewares/application-not-installed')(crowi);
   const applicationInstalled = require('../middlewares/application-installed')(crowi);
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
   const loginRequired = require('../middlewares/login-required')(crowi, true);
@@ -83,7 +83,10 @@ module.exports = function(crowi, app) {
   app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
 
   // installer
-  app.get('/installer'                , applicationNotInstalled, next.delegateToNext);
+  app.get('/installer',
+    applicationNotInstalled.generateCheckerMiddleware(crowi),
+    next.delegateToNext,
+    applicationNotInstalled.redirectToTopOnError);
 
   // OAuth
   app.get('/passport/google'                      , loginPassport.loginWithGoogle, loginPassport.loginFailureForExternalAccount);
