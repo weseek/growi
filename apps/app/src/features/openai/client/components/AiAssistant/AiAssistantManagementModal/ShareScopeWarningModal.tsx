@@ -7,7 +7,7 @@ import {
 type Props = {
   isOpen: boolean,
   closeModal: () => void,
-  onCreateAiAssistant: () => void,
+  onCreateAiAssistant: () => Promise<void>,
 }
 
 export const ShareScopeWarningModal = (props: Props): JSX.Element => {
