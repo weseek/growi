@@ -24,9 +24,9 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
 
   return (
     <Modal size="lg" isOpen={isOpen} toggle={closeModal}>
-      <ModalHeader className="border-bottom" toggle={closeModal}>
+      <ModalHeader toggle={closeModal}>
         <div className="d-flex align-items-center">
-          <span className="material-symbols-outlined text-warning me-2">warning</span>
+          <span className="material-symbols-outlined text-warning me-2 fs-4">warning</span>
           <span className="text-warning fw-bold">共有範囲の確認</span>
         </div>
       </ModalHeader>
@@ -49,7 +49,7 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
         </p>
       </ModalBody>
 
-      <ModalFooter className="border-0">
+      <ModalFooter>
         <button
           type="button"
           className="btn btn-outline-secondary"
