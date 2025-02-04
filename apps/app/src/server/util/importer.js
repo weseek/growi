@@ -2,6 +2,8 @@ import Esa from 'esa-node';
 
 import loggerFactory from '~/utils/logger';
 
+import { configManager } from '../service/config-manager';
+
 const logger = loggerFactory('growi:util:importer');
 
 /**
@@ -13,9 +15,6 @@ const logger = loggerFactory('growi:util:importer');
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const createGrowiPages = require('./createGrowiPagesFromImports')(crowi);
-  const restQiitaAPIService = crowi.getRestQiitaAPIService();
-
-  const configManager = crowi.configManager;
 
   const importer = {};
   let esaClient = () => {};
@@ -34,7 +33,7 @@ module.exports = (crowi) => {
    * Initialize importer
    */
   importer.initializeQiitaClient = () => {
-    restQiitaAPIService.reset();
+    crowi.restQiitaAPIService.reset();
     logger.debug('initialize qiita importer');
   };
 
@@ -90,7 +89,7 @@ module.exports = (crowi) => {
    */
   const importPostsFromQiita = async(pageNum, user, errors) => {
     const perPage = '100';
-    const res = await restQiitaAPIService.getQiitaPages(pageNum, perPage);
+    const res = await crowi.restQiitaAPIService.getQiitaPages(pageNum, perPage);
     const next = pageNum * perPage;
     const postsReceived = res.pages;
     const pageTotal = res.total;
@@ -165,7 +164,7 @@ module.exports = (crowi) => {
    * Import page data from qiita to GROWI
    */
   importer.testConnectionToQiita = async() => {
-    await restQiitaAPIService.getQiitaUser();
+    await crowi.restQiitaAPIService.getQiitaUser();
   };
 
   /**
