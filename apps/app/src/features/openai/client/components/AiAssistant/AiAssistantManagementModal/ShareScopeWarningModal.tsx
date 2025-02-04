@@ -23,8 +23,8 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
   }, [closeModal, onCreateAiAssistant]);
 
   return (
-    <Modal size="lg" isOpen={isOpen}>
-      <ModalHeader className="border-bottom">
+    <Modal size="lg" isOpen={isOpen} toggle={closeModal}>
+      <ModalHeader className="border-bottom" toggle={closeModal}>
         <div className="d-flex align-items-center">
           <span className="material-symbols-outlined text-warning me-2">warning</span>
           <span className="text-warning fw-bold">共有範囲の確認</span>
