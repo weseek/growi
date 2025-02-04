@@ -11,15 +11,12 @@ import type { S2sMessageHandlable } from '../s2s-messaging/handlable';
 import type { ConfigKey, ConfigValues } from './config-definition';
 import { ENV_ONLY_GROUPS } from './config-definition';
 import { ConfigLoader } from './config-loader';
-import type { ConfigManager as ConfigManagerLegacy } from './legacy/config-manager';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
 export type IConfigManagerForApp = IConfigManager<ConfigKey, ConfigValues>
 
 export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable {
-
-  private configManagerLegacy: ConfigManagerLegacy;
 
   private configLoader: ConfigLoader;
 
@@ -60,45 +57,32 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
       this.dbConfig = await this.configLoader.loadFromDB();
     }
 
-    // Load legacy configs
-    if (options == null) {
-      this.configManagerLegacy = await import('./legacy/config-manager').then(m => m.configManager);
-      await this.configManagerLegacy.loadConfigs();
-    }
-
     this.lastLoadedAt = new Date();
   }
 
   getConfig<K extends ConfigKey>(key: K, source?: ConfigSource): ConfigValues[K] {
-    const value = (() => {
-      if (source === ConfigSource.env) {
-        if (!this.envConfig) {
-          throw new Error('Config is not loaded');
-        }
-        return this.envConfig[key]?.value;
-      }
-      if (source === ConfigSource.db) {
-        if (!this.dbConfig) {
-          throw new Error('Config is not loaded');
-        }
-        return this.dbConfig[key]?.value;
-      }
-
-      if (!this.envConfig || !this.dbConfig) {
+    if (source === ConfigSource.env) {
+      if (!this.envConfig) {
         throw new Error('Config is not loaded');
       }
-
-      return this.shouldUseEnvOnly(key)
-        ? this.envConfig[key]?.value
-        : (this.dbConfig[key] ?? this.envConfig[key])?.value;
-    })() as ConfigValues[K];
-
-    // check difference between new and legacy config managers
-    if (this.configManagerLegacy != null) {
-      this.checkDifference(key, value);
+      return this.envConfig[key]?.value as ConfigValues[K];
+    }
+    if (source === ConfigSource.db) {
+      if (!this.dbConfig) {
+        throw new Error('Config is not loaded');
+      }
+      return this.dbConfig[key]?.value as ConfigValues[K];
     }
 
-    return value;
+    if (!this.envConfig || !this.dbConfig) {
+      throw new Error('Config is not loaded');
+    }
+
+    return (
+      this.shouldUseEnvOnly(key)
+        ? this.envConfig[key]?.value
+        : (this.dbConfig[key] ?? this.envConfig[key])?.value
+    ) as ConfigValues[K];
   }
 
   /**
@@ -108,39 +92,6 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
   getConfigLegacy<T = any>(key: string, source?: ConfigSource): T {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.getConfig(key as any, source) as T;
-  }
-
-  private checkDifference<K extends ConfigKey>(key: K, value: ConfigValues[K], source?: ConfigSource): void {
-    const valueByLegacy = (() => {
-      if (source === ConfigSource.env) {
-        return this.configManagerLegacy.getConfigFromEnvVars('crowi', key);
-      }
-      if (source === ConfigSource.db) {
-        return this.configManagerLegacy.getConfigFromDB('crowi', key);
-      }
-      return this.configManagerLegacy.getConfig('crowi', key);
-    })();
-
-    const isDifferent = (() => {
-      if (Array.isArray(value)) {
-        return value.length !== valueByLegacy.length || value.some((v, i) => v !== valueByLegacy[i]);
-      }
-
-      if (typeof value === 'object') {
-        return JSON.stringify(value) !== JSON.stringify(valueByLegacy);
-      }
-
-      return value !== valueByLegacy;
-    })();
-
-    if (isDifferent) {
-      if (!(value === undefined && valueByLegacy === null)) {
-        logger.warn(
-          `The value of the config key '${key}'${source != null ? ` (source: ${source})` : ''} is different between the new and legacy config managers:`,
-          { value, valueByLegacy },
-        );
-      }
-    }
   }
 
   private shouldUseEnvOnly(key: ConfigKey): boolean {
