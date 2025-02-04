@@ -46,6 +46,9 @@ describe('convertToLegacyFormat', () => {
   });
 
   test('should convert new format to legacy format', () => {
+    const installedAt = new Date();
+    const installedAtByOldestUser = new Date();
+
     const growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo> = {
       version: '1.0.0',
       appSiteUrl: 'https://example.com',
@@ -60,8 +63,8 @@ describe('convertToLegacyFormat', () => {
         totalmem: 8589934592,
       },
       additionalInfo: {
-        installedAt: new Date(),
-        installedAtByOldestUser: new Date(),
+        installedAt,
+        installedAtByOldestUser,
         currentUsersCount: 1,
         currentActiveUsersCount: 1,
         attachmentType: AttachmentMethodType.local,
@@ -88,8 +91,8 @@ describe('convertToLegacyFormat', () => {
       },
 
       // legacy properties
-      installedAt: new Date(),
-      installedAtByOldestUser: new Date(),
+      installedAt,
+      installedAtByOldestUser,
       currentUsersCount: 1,
       currentActiveUsersCount: 1,
       attachmentType: AttachmentMethodType.local,
