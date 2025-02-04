@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { AiAssistantAccessScope, AiAssistantShareScope, AiAssistantScopeType } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import type { IPageForItem } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import loggerFactory from '~/utils/logger';
@@ -113,20 +113,29 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
     setSelectedAccessScope(accessScope);
   }, []);
 
-  const selectUserGroupsHandler = useCallback((targetUserGroup: PopulatedGrantedGroup, scopeType: AiAssistantScopeType) => {
-    const selectedUserGroups = scopeType === AiAssistantScopeType.ACCESS ? selectedUserGroupsForAccessScope : selectedUserGroupsForShareScope;
-    const setSelectedUserGroups = scopeType === AiAssistantScopeType.ACCESS ? setSelectedUserGroupsForAccessScope : setSelectedUserGroupsForShareScope;
-
-    const selectedUserGroupIds = selectedUserGroups.map(userGroup => userGroup.item._id);
+  const selectShareScopeUserGroups = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
+    const selectedUserGroupIds = selectedUserGroupsForShareScope.map(userGroup => userGroup.item._id);
     if (selectedUserGroupIds.includes(targetUserGroup.item._id)) {
       // if selected, remove it
-      setSelectedUserGroups(selectedUserGroups.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
+      setSelectedUserGroupsForShareScope(selectedUserGroupsForShareScope.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
     }
     else {
       // if not selected, add it
-      setSelectedUserGroups([...selectedUserGroups, targetUserGroup]);
+      setSelectedUserGroupsForShareScope([...selectedUserGroupsForShareScope, targetUserGroup]);
     }
-  }, [selectedUserGroupsForAccessScope, selectedUserGroupsForShareScope]);
+  }, [selectedUserGroupsForShareScope]);
+
+  const selectAccessScopeUserGroups = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
+    const selectedUserGroupIds = selectedUserGroupsForAccessScope.map(userGroup => userGroup.item._id);
+    if (selectedUserGroupIds.includes(targetUserGroup.item._id)) {
+      // if selected, remove it
+      setSelectedUserGroupsForAccessScope(selectedUserGroupsForAccessScope.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
+    }
+    else {
+      // if not selected, add it
+      setSelectedUserGroupsForAccessScope([...selectedUserGroupsForAccessScope, targetUserGroup]);
+    }
+  }, [selectedUserGroupsForAccessScope]);
 
 
   /*
@@ -176,9 +185,10 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             selectedAccessScope={selectedAccessScope}
             selectedUserGroupsForShareScope={selectedUserGroupsForShareScope}
             selectedUserGroupsForAccessScope={selectedUserGroupsForAccessScope}
-            onSelectUserGroup={selectUserGroupsHandler}
             onSelectShareScope={selectShareScopeHandler}
             onSelectAccessScope={selectAccessScopeHandler}
+            onSelectAccessScopeUserGroups={selectAccessScopeUserGroups}
+            onSelectShareScopeUserGroups={selectShareScopeUserGroups}
           />
         </TabPane>
 

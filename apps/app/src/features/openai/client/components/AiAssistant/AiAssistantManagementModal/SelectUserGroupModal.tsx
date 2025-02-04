@@ -6,23 +6,20 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import type { AiAssistantScopeType } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 
 type Props = {
   isOpen: boolean,
   userRelatedGroups?: PopulatedGrantedGroup[],
-  selectedUserGroupType: AiAssistantScopeType,
-  selectedUserGroup: PopulatedGrantedGroup[],
+  selectedUserGroups: PopulatedGrantedGroup[],
   closeModal: () => void,
-  onSelect: (userGroup: PopulatedGrantedGroup, scopeType: AiAssistantScopeType) => void,
+  onSelect: (userGroup: PopulatedGrantedGroup) => void,
 }
 
 const SelectUserGroupModalSubstance: React.FC<Props> = (props: Props) => {
   const {
     userRelatedGroups,
-    selectedUserGroup,
-    selectedUserGroupType,
+    selectedUserGroups,
     onSelect,
     closeModal,
   } = props;
@@ -30,9 +27,9 @@ const SelectUserGroupModalSubstance: React.FC<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   const checked = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
-    const selectedUserGroupIds = selectedUserGroup.map(userGroup => userGroup.item._id);
+    const selectedUserGroupIds = selectedUserGroups.map(userGroup => userGroup.item._id);
     return selectedUserGroupIds.includes(targetUserGroup.item._id);
-  }, [selectedUserGroup]);
+  }, [selectedUserGroups]);
 
   return (
     <ModalBody className="d-flex flex-column">
@@ -41,7 +38,7 @@ const SelectUserGroupModalSubstance: React.FC<Props> = (props: Props) => {
           className="btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3"
           type="button"
           key={userGroup.item._id}
-          onClick={() => onSelect(userGroup, selectedUserGroupType)}
+          onClick={() => onSelect(userGroup)}
         >
           <input type="checkbox" checked={checked(userGroup)} onChange={() => {}} />
           <p className="ms-3 mb-0">{userGroup.item.name}</p>
