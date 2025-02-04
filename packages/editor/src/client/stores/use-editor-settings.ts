@@ -14,7 +14,7 @@ import {
   getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable,
 } from '../services-internal';
 
-import { useKeyBindings, useKeyboardShortcuts, useGetCustomKeyBindings } from './use-editor-shortcuts';
+import { useKeyBindings, useKeyboardShortcuts, useCustomKeyBindings } from './use-editor-shortcuts';
 
 
 export const useEditorSettings = (
@@ -94,7 +94,7 @@ export const useEditorSettings = (
 
   }, [codeMirrorEditor, keymapExtension]);
 
-  const customKeyBindings = useGetCustomKeyBindings(codeMirrorEditor?.view, editorSettings?.keymapMode);
+  const customKeyBindings = useCustomKeyBindings(codeMirrorEditor?.view, editorSettings?.keymapMode);
   const keyBindings = useKeyBindings(codeMirrorEditor?.view, customKeyBindings);
   useKeyboardShortcuts(codeMirrorEditor, keyBindings);
 };

@@ -2,13 +2,17 @@ import { useEffect } from 'react';
 
 import type { SelectionRange, Extension } from '@codemirror/state';
 import { EditorSelection, type ChangeSpec } from '@codemirror/state';
-import { keymap, type Command, EditorView } from '@codemirror/view';
+import {
+  keymap, type Command, EditorView, type KeyBinding,
+} from '@codemirror/view';
 
 import type { UseCodeMirrorEditor } from '../services';
 import type { InsertMarkdownElements } from '../services/use-codemirror-editor/utils/insert-markdown-elements';
 import { useInsertMarkdownElements } from '../services/use-codemirror-editor/utils/insert-markdown-elements';
 import { useInsertPrefix } from '../services/use-codemirror-editor/utils/insert-prefix';
 import type { InsertPrefix } from '../services/use-codemirror-editor/utils/insert-prefix';
+
+import type { KeyMapMode } from 'src/consts';
 
 const generateAddMarkdownSymbolCommand = (
     insertMarkdown: InsertMarkdownElements | InsertPrefix,
@@ -141,10 +145,50 @@ const makeCodeBlockExtension: Extension = EditorView.domEventHandlers({
   },
 });
 
-export const useEditorShortcuts = (codeMirrorEditor?: UseCodeMirrorEditor): void => {
+export const useCustomKeyBindings = (view?: EditorView, keyMapName?: KeyMapMode): KeyBinding[] => {
 
-  const insertMarkdownElements = useInsertMarkdownElements(codeMirrorEditor?.view);
-  const insertPrefix = useInsertPrefix(codeMirrorEditor?.view);
+  const insertMarkdownElements = useInsertMarkdownElements(view);
+
+  const customKeyBindings: KeyBinding[] = [];
+  switch (keyMapName) {
+    case 'vim':
+      customKeyBindings.push(
+        { key: 'mod-shift-b', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '**', '**') },
+      );
+      break;
+    default:
+      customKeyBindings.push(
+        { key: 'mod-b', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '**', '**') },
+      );
+  }
+  return customKeyBindings;
+};
+
+export const useKeyBindings = (view?: EditorView, customKeyBindings?: KeyBinding[]): KeyBinding[] => {
+
+  const insertMarkdownElements = useInsertMarkdownElements(view);
+  const insertPrefix = useInsertPrefix(view);
+
+  const keyBindings: KeyBinding[] = [
+    { key: 'mod-shift-i', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '*', '*') },
+    { key: 'mod-shift-x', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '~~', '~~') },
+    { key: 'mod-shift-c', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '`', '`') },
+    { key: 'mod-shift-7', run: generateAddMarkdownSymbolCommand(insertPrefix, '1.') },
+    { key: 'mod-shift-8', run: generateAddMarkdownSymbolCommand(insertPrefix, '-') },
+    { key: 'mod-shift-9', run: generateAddMarkdownSymbolCommand(insertPrefix, '>') },
+    { key: 'mod-shift-u', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '[', ']()') },
+    { key: 'mod-alt-ArrowUp', run: view => addMultiCursor(view, 'up') },
+    { key: 'mod-alt-ArrowDown', run: view => addMultiCursor(view, 'down') },
+  ];
+
+  if (customKeyBindings != null) {
+    keyBindings.push(...customKeyBindings);
+  }
+
+  return keyBindings;
+};
+
+export const useKeyboardShortcuts = (codeMirrorEditor?: UseCodeMirrorEditor, keyBindings?: KeyBinding[]): void => {
 
   useEffect(() => {
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.([makeCodeBlockExtension]);
@@ -153,32 +197,15 @@ export const useEditorShortcuts = (codeMirrorEditor?: UseCodeMirrorEditor): void
 
   useEffect(() => {
 
-    const extension = keymap.of([
-      { key: 'mod-b', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '**', '**') },
-      { key: 'mod-shift-i', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '*', '*') },
-      { key: 'mod-shift-x', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '~~', '~~') },
-      { key: 'mod-shift-c', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '`', '`') },
-      { key: 'mod-shift-7', run: generateAddMarkdownSymbolCommand(insertPrefix, '1.') },
-      { key: 'mod-shift-8', run: generateAddMarkdownSymbolCommand(insertPrefix, '-') },
-      { key: 'mod-shift-9', run: generateAddMarkdownSymbolCommand(insertPrefix, '>') },
-      { key: 'mod-shift-u', run: generateAddMarkdownSymbolCommand(insertMarkdownElements, '[', ']()') },
-    ]);
+    if (keyBindings == null) {
+      return;
+    }
 
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
+    const keyboardShortcutsExtension = keymap.of(keyBindings);
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(keyboardShortcutsExtension);
     return cleanupFunction;
 
-  }, [codeMirrorEditor, insertMarkdownElements, insertPrefix]);
-
-  useEffect(() => {
-
-    const extension = keymap.of([
-      { key: 'mod-alt-ArrowUp', run: view => addMultiCursor(view, 'up') },
-      { key: 'mod-alt-ArrowDown', run: view => addMultiCursor(view, 'down') },
-    ]);
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
-    return cleanupFunction;
-
-  }, [codeMirrorEditor]);
+  }, [codeMirrorEditor, keyBindings]);
 
 };
