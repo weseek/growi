@@ -497,6 +497,14 @@
     "error_message": "Erreur",
     "show_error_detail": "Détails de l'exposition"
   },
+  "modal_ai_assistant": {
+    "default_instruction": "Vous êtes l'assistant de connaissances pour ce Wiki. Veuillez fournir un support selon les directives suivantes :\n\n- Analyser la pertinence des documents et relier les informations\n- Proposer de nouvelles perspectives\n- Fournir des informations précises en comprenant l'intention des questions\nJe fournirai les informations sous forme structurée si nécessaire.",
+    "page_mode_title": {
+      "share": "Partage de l'assistant",
+      "pages": "Pages de référence",
+      "instruction": "Instructions de l'assistant"
+    }
+  },
   "link_edit": {
     "edit_link": "Modifier lien",
     "set_link_and_label": "Ajouter lien et étiquette",

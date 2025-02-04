@@ -491,6 +491,14 @@
     "error_message": "错误",
     "show_error_detail": "显示详情"
   },
+  "modal_ai_assistant": {
+    "default_instruction": "您是这个Wiki的知识助手。请按照以下方针提供支持：\n\n- 分析文档相关性并连接信息\n- 提出新的观点\n- 理解问题意图并提供准确信息\n必要时我会以结构化的形式提供信息。",
+    "page_mode_title": {
+      "share": "助理共享",
+      "pages": "参考页面",
+      "instruction": "助理指示"
+    }
+  },
   "link_edit": {
     "edit_link": "Edit Link",
     "set_link_and_label": "Set link and label",

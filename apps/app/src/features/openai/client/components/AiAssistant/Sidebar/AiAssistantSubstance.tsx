@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { useAiAssistantManegementModal } from '../../../stores/ai-assistant';
+import { useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
 import styles from './AiAssistantSubstance.module.scss';
 
 const moduleClass = styles['grw-ai-assistant-substance'] ?? '';
 
 export const AiAssistantContent = (): JSX.Element => {
-  const { open } = useAiAssistantManegementModal();
+  const { open } = useAiAssistantManagementModal();
 
   return (
     <div className={moduleClass}>
