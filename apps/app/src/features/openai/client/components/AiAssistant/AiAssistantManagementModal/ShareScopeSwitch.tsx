@@ -5,16 +5,13 @@ import {
   Input, Label, FormGroup,
 } from 'reactstrap';
 
-import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
-import { AiAssistantShareScope, AiAssistantScopeType } from '../../../../interfaces/ai-assistant';
-
+import { AiAssistantShareScope } from '../../../../interfaces/ai-assistant';
 
 type Props = {
   isDisabled: boolean,
   isDisabledGroups: boolean,
   selectedShareScope: AiAssistantShareScope,
-  selectedAccessScope: AiAssistantAccessScope,
-  onSelect: (shareScope: AiAssistantShareScope, scopeType: AiAssistantScopeType) => void,
+  onSelect: (shareScope: AiAssistantShareScope) => void,
 }
 
 export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
@@ -40,7 +37,7 @@ export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
               id="shareGroup"
               className="form-check-input"
               disabled={isDisabled || (isDisabledGroups && shareScope === AiAssistantShareScope.GROUPS)}
-              onChange={() => onSelect(shareScope, AiAssistantScopeType.SHARE)}
+              onChange={() => onSelect(shareScope)}
               checked={selectedShareScope === shareScope}
             />
             <Label check for="shareGroup" className="d-flex flex-column">

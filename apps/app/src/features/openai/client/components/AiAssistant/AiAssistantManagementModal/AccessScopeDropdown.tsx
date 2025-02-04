@@ -7,13 +7,13 @@ import {
 
 import { useCurrentUser } from '~/stores-universal/context';
 
-import { AiAssistantScopeType, AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
+import { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 
 type Props = {
   isDisabled: boolean,
   isDisabledGroups: boolean,
   selectedAccessScope: AiAssistantAccessScope,
-  onSelect: (accessScope: AiAssistantAccessScope, scopeType: AiAssistantScopeType) => void,
+  onSelect: (accessScope: AiAssistantAccessScope) => void,
 }
 
 export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
@@ -35,7 +35,7 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
   }, [currentUser?.username, t]);
 
   const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
-    onSelect(accessScope, AiAssistantScopeType.ACCESS);
+    onSelect(accessScope);
   }, [onSelect]);
 
   return (
