@@ -31,7 +31,7 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
         </div>
       </ModalHeader>
 
-      <ModalBody className="py-4">
+      <ModalBody className="py-4 px-4">
         <p className="mb-4">
           このアシスタントには限定公開されているページが含まれています。<br />
           現在の設定では、アシスタントを通じてこれらのページの情報が、本来のアクセス権限を超えて共有される可能性があります。
