@@ -1,5 +1,6 @@
 import growiPlugin from '~/features/growi-plugin/server/routes/apiv3/admin';
 import { factory as openaiRouteFactory } from '~/features/openai/server/routes';
+import { allreadyInstalledMiddleware } from '~/server/middlewares/application-not-installed';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -71,8 +72,11 @@ module.exports = (crowi, app) => {
     userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   // installer
+  routerForAdmin.use('/installer', isInstalled
+    ? allreadyInstalledMiddleware
+    : require('./installer')(crowi));
+
   if (!isInstalled) {
-    routerForAdmin.use('/installer', require('./installer')(crowi));
     return [router, routerForAdmin, routerForAuth];
   }
 
