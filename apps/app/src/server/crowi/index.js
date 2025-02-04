@@ -93,6 +93,9 @@ class Crowi {
   /** @type {QuestionnaireCronService} */
   questionnaireCronService;
 
+  /** @type {import('../service/rest-qiita-API')} */
+  restQiitaAPIService;
+
   /** @type {SearchService} */
   searchService;
 
@@ -130,7 +133,6 @@ class Crowi {
     this.aclService = null;
     this.appService = null;
     this.fileUploadService = null;
-    this.restQiitaAPIService = null;
     this.growiBridgeService = null;
     this.exportService = null;
     this.pluginService = null;
@@ -377,10 +379,6 @@ Crowi.prototype.getGlobalNotificationService = function() {
 
 Crowi.prototype.getUserNotificationService = function() {
   return this.userNotificationService;
-};
-
-Crowi.prototype.getRestQiitaAPIService = function() {
-  return this.restQiitaAPIService;
 };
 
 Crowi.prototype.setupPassport = async function() {
