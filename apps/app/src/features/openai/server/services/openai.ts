@@ -3,7 +3,7 @@ import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import {
-  PageGrant, getIdForRef, isPopulated, type IUserHasId,
+  PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
 import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -69,6 +69,7 @@ export interface IOpenaiService {
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
+  deleteAiAssistant(aiAssistantId: string): Promise<AiAssistantDocument>
 }
 class OpenaiService implements IOpenaiService {
 
@@ -205,22 +206,21 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  // TODO: https://redmine.weseek.co.jp/issues/160333
-  // private async deleteVectorStore(vectorStoreScopeType: VectorStoreScopeType): Promise<void> {
-  //   const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ scopeType: vectorStoreScopeType, isDeleted: false });
-  //   if (vectorStoreDocument == null) {
-  //     return;
-  //   }
+  private async deleteVectorStore(vectorStoreRelationId: string): Promise<void> {
+    const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ _id: vectorStoreRelationId, isDeleted: false });
+    if (vectorStoreDocument == null) {
+      return;
+    }
 
-  //   try {
-  //     await this.client.deleteVectorStore(vectorStoreDocument.vectorStoreId);
-  //     await vectorStoreDocument.markAsDeleted();
-  //   }
-  //   catch (err) {
-  //     await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
-  //     throw new Error(err);
-  //   }
-  // }
+    try {
+      await this.client.deleteVectorStore(vectorStoreDocument.vectorStoreId);
+      await vectorStoreDocument.markAsDeleted();
+    }
+    catch (err) {
+      await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
+      throw new Error(err);
+    }
+  }
 
   async createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: Array<HydratedDocument<PageDocument>>): Promise<void> {
     // const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
@@ -603,6 +603,25 @@ class OpenaiService implements IOpenaiService {
       myAiAssistants: assistants.filter(assistant => assistant.owner.toString() === user._id.toString()) ?? [],
       teamAiAssistants: assistants.filter(assistant => assistant.owner.toString() !== user._id.toString()) ?? [],
     };
+  }
+
+  async deleteAiAssistant(aiAssistantId: string): Promise<AiAssistantDocument> {
+    const aiAssistant = await AiAssistantModel.findOne({ _id: aiAssistantId });
+
+    if (aiAssistant == null) {
+      throw new Error('AiAssistant document is not exists');
+    }
+
+    try {
+      const vectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);
+      await this.deleteVectorStore(vectorStoreRelationId);
+    }
+    catch (err) {
+      throw new Error(err);
+    }
+
+    const deletedAiAssistant = await aiAssistant.remove();
+    return deletedAiAssistant;
   }
 
 }

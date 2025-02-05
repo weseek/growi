@@ -40,7 +40,7 @@ export const factory = (crowi: Crowi): express.Router => {
     });
 
     import('./delete-ai-assistant').then(({ deleteAiAssistantsFactory }) => {
-      router.delete('/ai-assistant', deleteAiAssistantsFactory(crowi));
+      router.delete('/ai-assistant/:id', deleteAiAssistantsFactory(crowi));
     });
   }
 
