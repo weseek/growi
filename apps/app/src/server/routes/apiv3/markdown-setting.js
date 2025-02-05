@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -37,6 +38,37 @@ const validator = {
  *
  *  components:
  *    schemas:
+ *      MarkdownParams:
+ *        description: MarkdownParams
+ *        type: object
+ *        properties:
+ *          isEnabledLinebreaks:
+ *            type: boolean
+ *            description: enable lineBreak
+ *          isEnabledLinebreaksInComments:
+ *            type: boolean
+ *            description: enable lineBreak in comment
+ *          adminPreferredIndentSize:
+ *            type: number
+ *            description: preferred indent size
+ *          isIndentSizeForced:
+ *            type: boolean
+ *            description: force indent size
+ *          isEnabledXss:
+ *            type: boolean
+ *            description: enable xss
+ *          xssOption:
+ *            type: number
+ *            description: number of xss option
+ *          tagWhitelist:
+ *            type: array
+ *            description: array of tag whitelist
+ *            items:
+ *              type: string
+ *              description: tag whitelist
+ *          attrWhitelist:
+ *            type: string
+ *            description: attr whitelist
  *      LineBreakParams:
  *        description: LineBreakParams
  *        type: object
@@ -61,7 +93,7 @@ const validator = {
  *        description: XssParams
  *        type: object
  *        properties:
- *          isEnabledPrevention:
+ *          isEnabledXss:
  *            type: boolean
  *            description: enable xss
  *          xssOption:
@@ -74,13 +106,21 @@ const validator = {
  *              type: string
  *              description: tag whitelist
  *          attrWhitelist:
- *            type: array
- *            description: array of attr whitelist
- *            items:
- *              type: string
- *              description: attr whitelist
+ *            type: string
+ *            description: attr whitelist
+ *      IndentParams:
+ *        description: IndentParams
+ *        type: object
+ *        properties:
+ *          adminPreferredIndentSize:
+ *            type: number
+ *            description: preferred indent size
+ *          isIndentSizeForced:
+ *            type: boolean
+ *            description: force indent size
  */
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -94,9 +134,10 @@ module.exports = (crowi) => {
    *    /markdown-setting:
    *      get:
    *        tags: [MarkDownSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getMarkdownSetting
-   *        summary: /markdown-setting
-   *        description: Get markdown parameters
+   *        summary: Get markdown parameters
    *        responses:
    *          200:
    *            description: params of markdown
@@ -107,17 +148,18 @@ module.exports = (crowi) => {
    *                    markdownParams:
    *                      type: object
    *                      description: markdown params
+   *                      $ref: '#/components/schemas/MarkdownParams'
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const markdownParams = {
-      isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-      isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-      adminPreferredIndentSize: await crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-      isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
-      isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-      xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-      tagWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-      attrWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
+      isEnabledLinebreaks: await crowi.configManager.getConfig('markdown:isEnabledLinebreaks'),
+      isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
+      adminPreferredIndentSize: await crowi.configManager.getConfig('markdown:adminPreferredIndentSize'),
+      isIndentSizeForced: await crowi.configManager.getConfig('markdown:isIndentSizeForced'),
+      isEnabledXss: await crowi.configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
+      xssOption: await crowi.configManager.getConfig('markdown:rehypeSanitize:option'),
+      tagWhitelist: await crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
+      attrWhitelist: await crowi.configManager.getConfig('markdown:rehypeSanitize:attributes'),
     };
 
     return res.apiv3({ markdownParams });
@@ -129,9 +171,10 @@ module.exports = (crowi) => {
    *    /markdown-setting/lineBreak:
    *      put:
    *        tags: [MarkDownSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: updateLineBreakMarkdownSetting
-   *        summary: /markdown-setting/lineBreak
-   *        description: Update lineBreak setting
+   *        summary: Update lineBreak setting
    *        requestBody:
    *          required: true
    *          content:
@@ -144,7 +187,11 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-  *                   $ref: '#/components/schemas/LineBreakParams'
+   *                  type: object
+   *                  properties:
+   *                    lineBreaksParams:
+   *                      type: object
+   *                      $ref: '#/components/schemas/LineBreakParams'
    */
   router.put('/lineBreak', loginRequiredStrictly, adminRequired, addActivity, validator.lineBreak, apiV3FormValidator, async(req, res) => {
 
@@ -154,10 +201,10 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestLineBreakParams);
+      await configManager.updateConfigs(requestLineBreakParams);
       const lineBreaksParams = {
-        isEnabledLinebreaks: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-        isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
+        isEnabledLinebreaks: await crowi.configManager.getConfig('markdown:isEnabledLinebreaks'),
+        isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_LINE_BREAK_UPDATE };
@@ -173,6 +220,35 @@ module.exports = (crowi) => {
 
   });
 
+  /**
+   * @swagger
+   *
+   *    /markdown-setting/indent:
+   *      put:
+   *        tags: [MarkDownSetting]
+   *        security:
+   *          - cookieAuth: []
+   *        operationId: updateIndentMarkdownSetting
+   *        summary: Update indent setting
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                $ref: '#/components/schemas/IndentParams'
+   *        responses:
+   *          200:
+   *            description: Succeeded to update indent setting
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
+   *                  properties:
+   *                    indentParams:
+   *                      type: object
+   *                      description: indent params
+   *                      $ref: '#/components/schemas/IndentParams'
+   */
   router.put('/indent', loginRequiredStrictly, adminRequired, addActivity, validator.indent, apiV3FormValidator, async(req, res) => {
 
     const requestIndentParams = {
@@ -181,10 +257,10 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', requestIndentParams);
+      await configManager.updateConfigs(requestIndentParams);
       const indentParams = {
-        adminPreferredIndentSize: await crowi.configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-        isIndentSizeForced: await crowi.configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+        adminPreferredIndentSize: await crowi.configManager.getConfig('markdown:adminPreferredIndentSize'),
+        isIndentSizeForced: await crowi.configManager.getConfig('markdown:isIndentSizeForced'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_INDENT_UPDATE };
@@ -206,8 +282,10 @@ module.exports = (crowi) => {
    *    /markdown-setting/xss:
    *      put:
    *        tags: [MarkDownSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: updateXssMarkdownSetting
-   *        summary: /markdown-setting/xss
+   *        summary: Update XSS setting
    *        description: Update xss
    *        requestBody:
    *          required: true
@@ -245,12 +323,12 @@ module.exports = (crowi) => {
     };
 
     try {
-      await crowi.configManager.updateConfigsInTheSameNamespace('markdown', reqestXssParams);
+      await configManager.updateConfigs(reqestXssParams);
       const xssParams = {
-        isEnabledXss: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-        xssOption: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-        tagWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-        attrWhitelist: await crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes'),
+        isEnabledXss: await crowi.configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
+        xssOption: await crowi.configManager.getConfig('markdown:rehypeSanitize:option'),
+        tagWhitelist: await crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
+        attrWhitelist: await crowi.configManager.getConfig('markdown:rehypeSanitize:attributes'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_MARKDOWN_XSS_UPDATE };

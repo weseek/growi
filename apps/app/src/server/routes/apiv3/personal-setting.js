@@ -66,6 +66,7 @@ const router = express.Router();
  *          accountId:
  *            type: string
  */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
@@ -74,7 +75,7 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+  const minPasswordLength = crowi.configManager.getConfig('app:minPasswordLength');
 
   const validator = {
     personal: [
@@ -189,7 +190,7 @@ module.exports = (crowi) => {
     try {
       const user = await User.findUserByUsername(username);
       const isPasswordSet = user.isPasswordSet();
-      const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+      const minPasswordLength = crowi.configManager.getConfig('app:minPasswordLength');
       return res.apiv3({ isPasswordSet, minPasswordLength });
     }
     catch (err) {
