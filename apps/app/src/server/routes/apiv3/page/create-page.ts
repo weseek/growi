@@ -135,7 +135,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     let tags: string[] = _tags ?? [];
 
     if (_body == null) {
-      const isEnabledAttachTitleHeader = await configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+      const isEnabledAttachTitleHeader = await configManager.getConfig('customize:isEnabledAttachTitleHeader');
       if (isEnabledAttachTitleHeader) {
         body += `${attachTitleHeader(path)}\n`;
       }
@@ -215,7 +215,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     }
   }
 
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   return [
     accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,
