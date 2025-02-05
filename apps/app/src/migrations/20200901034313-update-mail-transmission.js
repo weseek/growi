@@ -13,11 +13,9 @@ module.exports = {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const sesAccessKeyId = await Config.findOne({
-      ns: 'crowi',
       key: 'mail:sesAccessKeyId',
     });
     const transmissionMethod = await Config.findOne({
-      ns: 'crowi',
       key: 'mail:transmissionMethod',
     });
 
@@ -47,7 +45,6 @@ module.exports = {
 
     // remote 'mail:transmissionMethod'
     await Config.findOneAndDelete({
-      ns: 'crowi',
       key: 'mail:transmissionMethod',
     });
 

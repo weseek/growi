@@ -22,6 +22,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 const logger = loggerFactory('growi:models:user');
 
+/** @param {import('~/server/crowi').default | null} crowi Crowi instance */
 const factory = (crowi) => {
 
   const userModelExists = getModelSafely('User');
@@ -101,13 +102,13 @@ const factory = (crowi) => {
   function decideUserStatusOnRegistration() {
     validateCrowi();
 
-    const isInstalled = configManager.getConfig('crowi', 'app:installed');
+    const isInstalled = configManager.getConfig('app:installed');
     if (!isInstalled) {
       return STATUS_ACTIVE; // is this ok?
     }
 
     // status decided depends on registrationMode
-    const registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
+    const registrationMode = configManager.getConfig('security:registrationMode');
     switch (registrationMode) {
       case aclService.labels.SECURITY_REGISTRATION_MODE_OPEN:
         return STATUS_ACTIVE;
@@ -278,7 +279,7 @@ const factory = (crowi) => {
     this.name = name;
     this.username = username;
     this.status = STATUS_ACTIVE;
-    this.isEmailPublished = configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
+    this.isEmailPublished = configManager.getConfig('customize:isEmailPublishedForNewUser');
 
     this.save((err, userData) => {
       userEvent.emit('activated', userData);
@@ -371,7 +372,7 @@ const factory = (crowi) => {
   userSchema.statics.isEmailValid = function(email, callback) {
     validateCrowi();
 
-    const whitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
+    const whitelist = configManager.getConfig('security:registrationWhitelist');
 
     if (Array.isArray(whitelist) && whitelist.length > 0) {
       return whitelist.some((allowedEmail) => {
@@ -480,7 +481,7 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.isUserCountExceedsUpperLimit = async function() {
-    const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
+    const userUpperLimit = configManager.getConfig('security:userUpperLimit');
 
     const activeUsers = await this.countActiveUsers();
     if (userUpperLimit <= activeUsers) {
@@ -576,7 +577,7 @@ const factory = (crowi) => {
     newUser.setPassword(password);
     newUser.status = STATUS_INVITED;
 
-    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const globalLang = configManager.getConfig('app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;
     }
@@ -651,9 +652,9 @@ const factory = (crowi) => {
     }
 
     // Default email show/hide is up to the administrator
-    newUser.isEmailPublished = configManager.getConfig('crowi', 'customize:isEmailPublishedForNewUser');
+    newUser.isEmailPublished = configManager.getConfig('customize:isEmailPublishedForNewUser');
 
-    const globalLang = configManager.getConfig('crowi', 'app:globalLang');
+    const globalLang = configManager.getConfig('app:globalLang');
     if (globalLang != null) {
       newUser.lang = globalLang;
     }
