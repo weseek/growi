@@ -186,8 +186,15 @@ class SecuritySetting extends React.Component {
     return;
   }
 
+  setDisplayState(newState) {
+    const { adminGeneralSecurityContainer } = this.props;
+    this.setState(newState);
+    if (adminGeneralSecurityContainer.state.isShowRestrictedByOwner);
+    if (adminGeneralSecurityContainer.state.isShowRestrictedByGroup);
+  }
 
-  securitySettingDropdown = (isDisplayed) => {
+
+  securitySettingDropdown = (isDisplayed, setState, currentState, displayType) => {
     const { t } = this.props;
     return (
       <div className="dropdown">
@@ -211,14 +218,14 @@ class SecuritySetting extends React.Component {
           <button
             className="dropdown-item"
             type="button"
-            // onClick={() => onDisplayChange(true)}
+            onClick={() => this.setDisplayState(setState, displayType)}
           >
             {t('security_settings.displayed')}
           </button>
           <button
             className="dropdown-item"
             type="button"
-            // onClick={() => onDisplayChange(false)}
+            onClick={() => this.setDisplayState(setState, displayType)}
           >
             {t('security_settings.not_displayed')}
           </button>
