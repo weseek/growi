@@ -6,7 +6,8 @@ import type { VectorStore } from '../server/models/vector-store';
 *  Objects
 */
 export const AiAssistantShareScope = {
-  PUBLIC_ONLY: 'publicOnly',
+  SAME_AS_ACCESS_SCOPE: 'sameAsAccessScope',
+  PUBLIC_ONLY: 'publicOnly', // TODO: Rename to "PUBLIC"
   OWNER: 'owner',
   GROUPS: 'groups',
 } as const;

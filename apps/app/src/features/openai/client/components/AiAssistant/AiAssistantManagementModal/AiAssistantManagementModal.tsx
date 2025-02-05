@@ -1,10 +1,13 @@
 import React, { useCallback, useState } from 'react';
 
+import type { IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import type { IPageForItem } from '~/interfaces/page';
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
@@ -13,6 +16,7 @@ import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } fro
 
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEditInstruction';
 import { AiAssistantManagementEditPages } from './AiAssistantManagementEditPages';
+import { AiAssistantManagementEditShare } from './AiAssistantManagementEditShare';
 import { AiAssistantManagementHome } from './AiAssistantManagementHome';
 
 import styles from './AiAssistantManagementModal.module.scss';
@@ -21,39 +25,117 @@ const moduleClass = styles['grw-ai-assistant-management'] ?? '';
 
 const logger = loggerFactory('growi:openai:client:components:AiAssistantManagementModal');
 
+// PopulatedGrantedGroup[] -> IGrantedGroup[]
+const convertToGrantedGroups = (selectedGroups: PopulatedGrantedGroup[]): IGrantedGroup[] => {
+  return selectedGroups.map(group => ({
+    type: group.type,
+    item: group.item._id,
+  }));
+};
+
 const AiAssistantManagementModalSubstance = (): JSX.Element => {
   // Hooks
   const { t } = useTranslation();
-  const { data: aiAssistantManagementModalData } = useAiAssistantManagementModal();
+  const { data: aiAssistantManagementModalData, close: closeAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
 
   // States
+  const [name, setName] = useState<string>('');
+  const [description, setDescription] = useState<string>('');
+  const [selectedShareScope, setSelectedShareScope] = useState<AiAssistantShareScope>(AiAssistantShareScope.SAME_AS_ACCESS_SCOPE);
+  const [selectedAccessScope, setSelectedAccessScope] = useState<AiAssistantAccessScope>(AiAssistantAccessScope.OWNER);
+  const [selectedUserGroupsForAccessScope, setSelectedUserGroupsForAccessScope] = useState<PopulatedGrantedGroup[]>([]);
+  const [selectedUserGroupsForShareScope, setSelectedUserGroupsForShareScope] = useState<PopulatedGrantedGroup[]>([]);
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
 
-  // Functions
-  const clickCreateAiAssistantHandler = useCallback(async() => {
+
+  /*
+  *  For AiAssistantManagementHome methods
+  */
+  const changeNameHandler = useCallback((value: string) => {
+    setName(value);
+  }, []);
+
+  const changeDescriptionHandler = useCallback((value: string) => {
+    setDescription(value);
+  }, []);
+
+  const createAiAssistantHandler = useCallback(async() => {
     try {
       const pagePathPatterns = selectedPages
         .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
         .filter((path): path is string => path !== undefined && path !== null);
 
+      const grantedGroupsForShareScope = convertToGrantedGroups(selectedUserGroupsForShareScope);
+      const grantedGroupsForAccessScope = convertToGrantedGroups(selectedUserGroupsForAccessScope);
+
       await createAiAssistant({
-        name: 'test',
-        description: 'test',
+        name,
+        description,
         additionalInstruction: instruction,
         pagePathPatterns,
-        shareScope: 'publicOnly',
-        accessScope: 'publicOnly',
+        shareScope: selectedShareScope,
+        accessScope: selectedAccessScope,
+        grantedGroupsForShareScope: selectedShareScope === AiAssistantShareScope.GROUPS ? grantedGroupsForShareScope : undefined,
+        grantedGroupsForAccessScope: selectedAccessScope === AiAssistantAccessScope.GROUPS ? grantedGroupsForAccessScope : undefined,
       });
+
       toastSuccess('アシスタントを作成しました');
+      closeAiAssistantManagementModal();
     }
     catch (err) {
       toastError('アシスタントの作成に失敗しました');
       logger.error(err);
     }
-  }, [instruction, selectedPages]);
+  }, [
+    closeAiAssistantManagementModal,
+    description,
+    instruction,
+    name,
+    selectedAccessScope,
+    selectedPages,
+    selectedShareScope,
+    selectedUserGroupsForAccessScope,
+    selectedUserGroupsForShareScope,
+  ]);
+
+
+  /*
+  *  For AiAssistantManagementEditShare methods
+  */
+  const selectShareScopeHandler = useCallback((shareScope: AiAssistantShareScope) => {
+    setSelectedShareScope(shareScope);
+  }, []);
+
+  const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
+    setSelectedAccessScope(accessScope);
+  }, []);
+
+  const selectShareScopeUserGroups = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
+    const selectedUserGroupIds = selectedUserGroupsForShareScope.map(userGroup => userGroup.item._id);
+    if (selectedUserGroupIds.includes(targetUserGroup.item._id)) {
+      // if selected, remove it
+      setSelectedUserGroupsForShareScope(selectedUserGroupsForShareScope.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
+    }
+    else {
+      // if not selected, add it
+      setSelectedUserGroupsForShareScope([...selectedUserGroupsForShareScope, targetUserGroup]);
+    }
+  }, [selectedUserGroupsForShareScope]);
+
+  const selectAccessScopeUserGroups = useCallback((targetUserGroup: PopulatedGrantedGroup) => {
+    const selectedUserGroupIds = selectedUserGroupsForAccessScope.map(userGroup => userGroup.item._id);
+    if (selectedUserGroupIds.includes(targetUserGroup.item._id)) {
+      // if selected, remove it
+      setSelectedUserGroupsForAccessScope(selectedUserGroupsForAccessScope.filter(userGroup => userGroup.item._id !== targetUserGroup.item._id));
+    }
+    else {
+      // if not selected, add it
+      setSelectedUserGroupsForAccessScope([...selectedUserGroupsForAccessScope, targetUserGroup]);
+    }
+  }, [selectedUserGroupsForAccessScope]);
 
 
   /*
@@ -87,7 +169,26 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       <TabContent activeTab={pageMode}>
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
           <AiAssistantManagementHome
+            name={name}
+            description={description}
+            shareScope={selectedShareScope}
             instruction={instruction}
+            onNameChange={changeNameHandler}
+            onDescriptionChange={changeDescriptionHandler}
+            onCreateAiAssistant={createAiAssistantHandler}
+          />
+        </TabPane>
+
+        <TabPane tabId={AiAssistantManagementModalPageMode.SHARE}>
+          <AiAssistantManagementEditShare
+            selectedShareScope={selectedShareScope}
+            selectedAccessScope={selectedAccessScope}
+            selectedUserGroupsForShareScope={selectedUserGroupsForShareScope}
+            selectedUserGroupsForAccessScope={selectedUserGroupsForAccessScope}
+            onSelectShareScope={selectShareScopeHandler}
+            onSelectAccessScope={selectAccessScopeHandler}
+            onSelectAccessScopeUserGroups={selectAccessScopeUserGroups}
+            onSelectShareScopeUserGroups={selectShareScopeUserGroups}
           />
         </TabPane>
 
@@ -108,107 +209,6 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         </TabPane>
       </TabContent>
     </>
-    // <div className="px-4">
-    //   <ModalBody>
-    //     <Form>
-    //       <FormGroup className="mb-4">
-    //         <Label className="mb-2 ">アシスタント名</Label>
-    //         <Input
-    //           type="text"
-    //           placeholder="アシスタント名を入力"
-    //           className="border rounded"
-    //         />
-    //       </FormGroup>
-
-  //       <FormGroup className="mb-4">
-  //         <div className="d-flex align-items-center mb-2">
-  //           <Label className="mb-0">アシスタントの種類</Label>
-  //           <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
-  //         </div>
-  //         <div className="d-flex gap-4">
-  //           <FormGroup check>
-  //             <Input type="checkbox" defaultChecked />
-  //             <Label check>ナレッジアシスタント</Label>
-  //           </FormGroup>
-  //           <FormGroup check>
-  //             <Input type="checkbox" />
-  //             <Label check>エディタアシスタント</Label>
-  //           </FormGroup>
-  //           <FormGroup check>
-  //             <Input type="checkbox" />
-  //             <Label check>ラーニングアシスタント</Label>
-  //           </FormGroup>
-  //         </div>
-  //       </FormGroup>
-
-  //       <FormGroup className="mb-4">
-  //         <div className="d-flex align-items-center mb-2">
-  //           <Label className="mb-0">共有範囲</Label>
-  //           <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
-  //         </div>
-  //         <Input type="select" className="border rounded w-50">
-  //           <option>自分のみ</option>
-  //         </Input>
-  //       </FormGroup>
-
-  //       <FormGroup className="mb-4">
-  //         <div className="d-flex align-items-center mb-2">
-  //           <Label className="mb-0">参照するページ</Label>
-  //           <span className="ms-1 fs-5 material-symbols-outlined text-secondary">help</span>
-  //         </div>
-  //         <SelectedPageList selectedPages={selectedPages} onRemove={clickRmoveSelectedPageHandler} />
-  //         <button
-  //           type="button"
-  //           className="btn btn-outline-primary d-flex align-items-center gap-1"
-  //           onClick={clickOpenPageSelectModalHandler}
-  //         >
-  //           <span>+</span>
-  //           追加する
-  //         </button>
-  //       </FormGroup>
-
-  //       <FormGroup>
-  //         <div className="d-flex align-items-center mb-2">
-  //           <Label className="mb-0 me-2">アシスタントへの指示</Label>
-  //           <label className="form-label form-check-label">
-  //             <span className="badge text-bg-danger mt-2">
-  //               必須
-  //             </span>
-  //           </label>
-  //         </div>
-  //         <Input
-  //           type="textarea"
-  //           placeholder="アシスタントに実行して欲しい内容を具体的に記入してください"
-  //           className="border rounded"
-  //           rows={4}
-  //         />
-  //       </FormGroup>
-
-  //       <FormGroup>
-  //         <div className="d-flex align-items-center mb-2">
-  //           <Label className="mb-0 me-2">アシスタントのメモ</Label>
-  //           <label className="form-label form-check-label">
-  //             <span className="badge text-bg-secondary mt-2">
-  //               必須
-  //             </span>
-  //           </label>
-  //         </div>
-  //         <Input
-  //           type="textarea"
-  //           placeholder="内容や用途のメモを表示させることができます"
-  //           className="border rounded"
-  //           rows={4}
-  //         />
-  //         <p className="mt-1 text-muted">メモ内容はアシスタントには影響しません。</p>
-  //       </FormGroup>
-  //     </Form>
-  //   </ModalBody>
-
-  //   <ModalFooter className="border-0 pt-0 mb-3">
-  //     <button type="button" className="btn btn-outline-secondary" onClick={() => {}}>キャンセル</button>
-  //     <button type="button" className="btn btn-primary" onClick={clickCreateAiAssistantHandler}>作成</button>
-  //   </ModalFooter>
-  // </div>
   );
 };
 
