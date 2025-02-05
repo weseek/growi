@@ -100,7 +100,8 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
    * Get the output directory on the fs to temporarily store page files before compressing and uploading
    */
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string {
-    return `${this.tmpOutputRootDir}/${pageBulkExportJob._id}`;
+    const userId = getIdForRef(pageBulkExportJob.user).toString();
+    return `${this.tmpOutputRootDir}/${userId}/${pageBulkExportJob._id}`;
   }
 
   /**
