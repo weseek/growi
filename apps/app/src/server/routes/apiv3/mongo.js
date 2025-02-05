@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 
 const router = express.Router();
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -27,6 +28,9 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
+   *                  ok:
+   *                    type: boolean
+   *                    description: whether the request is succeeded
    *                  collections:
    *                    type: array
    *                    items:
