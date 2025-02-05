@@ -607,18 +607,12 @@ class OpenaiService implements IOpenaiService {
 
   async deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument> {
     const aiAssistant = await AiAssistantModel.findOne({ owner: ownerId, _id: aiAssistantId });
-
     if (aiAssistant == null) {
-      throw new Error('AiAssistant document is not exists');
+      throw new Error('AiAssistant document does not exist');
     }
 
-    try {
-      const vectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);
-      await this.deleteVectorStore(vectorStoreRelationId);
-    }
-    catch (err) {
-      throw new Error(err);
-    }
+    const vectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);
+    await this.deleteVectorStore(vectorStoreRelationId);
 
     const deletedAiAssistant = await aiAssistant.remove();
     return deletedAiAssistant;
