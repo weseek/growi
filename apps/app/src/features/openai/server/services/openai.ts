@@ -32,7 +32,7 @@ import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 
 import { getClient } from './client-delegator';
 // import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
-import { oepnaiApiErrorHandler } from './openai-api-error-handler';
+import { openaiApiErrorHandler } from './openai-api-error-handler';
 
 
 const BATCH_SIZE = 100;
@@ -106,7 +106,7 @@ class OpenaiService implements IOpenaiService {
       return thread;
     }
     catch (err) {
-      await oepnaiApiErrorHandler(err, { notFoundError: async() => { await threadRelation.remove() } });
+      await openaiApiErrorHandler(err, { notFoundError: async() => { await threadRelation.remove() } });
       throw new Error(err);
     }
   }
@@ -217,7 +217,7 @@ class OpenaiService implements IOpenaiService {
       await vectorStoreDocument.markAsDeleted();
     }
     catch (err) {
-      await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
+      await openaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
       throw new Error(err);
     }
   }
@@ -328,7 +328,7 @@ class OpenaiService implements IOpenaiService {
         }
       }
       catch (err) {
-        await oepnaiApiErrorHandler(err, { notFoundError: async() => { deletedFileIds.push(fileId) } });
+        await openaiApiErrorHandler(err, { notFoundError: async() => { deletedFileIds.push(fileId) } });
         logger.error(err);
       }
     }
