@@ -24,11 +24,10 @@ type Req = Request<{id: string}, Response, undefined> & {
 }
 
 export const deleteAiAssistantsFactory: DeleteAiAssistantsFactory = (crowi) => {
-
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
-    param('id').isMongoId().withMessage('pluginId is required'),
+    param('id').isMongoId().withMessage('aiAssistant id is required'),
   ];
 
   return [
