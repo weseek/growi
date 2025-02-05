@@ -35,10 +35,11 @@ export const deleteAiAssistantsFactory: DeleteAiAssistantsFactory = (crowi) => {
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { id } = req.params;
+      const { user } = req;
 
       try {
         const openaiService = getOpenaiService();
-        const deletedAiAssistant = await openaiService?.deleteAiAssistant(id);
+        const deletedAiAssistant = await openaiService?.deleteAiAssistant(user._id, id);
         return res.apiv3({ deletedAiAssistant });
       }
       catch (err) {

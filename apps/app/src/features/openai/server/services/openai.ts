@@ -69,7 +69,7 @@ export interface IOpenaiService {
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
-  deleteAiAssistant(aiAssistantId: string): Promise<AiAssistantDocument>
+  deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument>
 }
 class OpenaiService implements IOpenaiService {
 
@@ -605,8 +605,8 @@ class OpenaiService implements IOpenaiService {
     };
   }
 
-  async deleteAiAssistant(aiAssistantId: string): Promise<AiAssistantDocument> {
-    const aiAssistant = await AiAssistantModel.findOne({ _id: aiAssistantId });
+  async deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument> {
+    const aiAssistant = await AiAssistantModel.findOne({ owner: ownerId, _id: aiAssistantId });
 
     if (aiAssistant == null) {
       throw new Error('AiAssistant document is not exists');
