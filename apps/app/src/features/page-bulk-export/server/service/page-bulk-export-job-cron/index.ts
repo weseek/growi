@@ -96,12 +96,29 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
     }
   }
 
+  private getTmpOutputUserDir(pageBulkExportJob: PageBulkExportJobDocument): string {
+    const userId = getIdForRef(pageBulkExportJob.user).toString();
+    return `${this.tmpOutputRootDir}/${userId}`;
+  }
+
   /**
    * Get the output directory on the fs to temporarily store page files before compressing and uploading
    */
   getTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): string {
-    const userId = getIdForRef(pageBulkExportJob.user).toString();
-    return `${this.tmpOutputRootDir}/${userId}/${pageBulkExportJob._id}`;
+    return `${this.getTmpOutputUserDir(pageBulkExportJob)}/${pageBulkExportJob._id.toString()}`;
+  }
+
+  async removeTmpOutputDir(pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
+    const bulkExportInProgressByUser = await PageBulkExportJob.find({
+      user: pageBulkExportJob.user,
+      $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
+    });
+    if (bulkExportInProgressByUser.length === 0) {
+      await fs.promises.rm(this.getTmpOutputUserDir(pageBulkExportJob), { recursive: true, force: true });
+    }
+    else {
+      await fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true });
+    }
   }
 
   /**
@@ -231,7 +248,7 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
     const promises = [
       PageBulkExportPageSnapshot.deleteMany({ pageBulkExportJob }),
-      fs.promises.rm(this.getTmpOutputDir(pageBulkExportJob), { recursive: true, force: true }),
+      this.removeTmpOutputDir(pageBulkExportJob),
     ];
 
     const results = await Promise.allSettled(promises);
