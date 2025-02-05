@@ -19,7 +19,11 @@ const logger = loggerFactory('growi:routes:apiv3:openai:delete-ai-assistants');
 
 type DeleteAiAssistantsFactory = (crowi: Crowi) => RequestHandler[];
 
-type Req = Request<{id: string}, Response, undefined> & {
+type ReqParams = {
+  id: string,
+}
+
+type Req = Request<ReqParams, Response, undefined> & {
   user: IUserHasId,
 }
 
