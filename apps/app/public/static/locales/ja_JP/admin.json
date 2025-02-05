@@ -192,9 +192,6 @@
         "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
         "updated_google": "Google OAuth を更新しました"
       },
-      "Facebook": {
-        "name": "Facebook OAuth"
-      },
       "GitHub": {
         "enable_github": "GitHub OAuth を有効にする",
         "name": "GitHub OAuth",

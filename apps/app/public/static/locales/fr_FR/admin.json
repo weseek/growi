@@ -183,9 +183,6 @@
         "register_5": "Copier l'ID client et Secret client ci-dessus",
         "updated_google": "Paramètres mis à jour"
       },
-      "Facebook": {
-        "name": "Facebook OAuth"
-      },
       "GitHub": {
         "enable_github": "Activer GitHub OAuth",
         "name": "GitHub OAuth",
