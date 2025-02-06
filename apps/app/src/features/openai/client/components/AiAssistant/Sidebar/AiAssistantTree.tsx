@@ -1,5 +1,9 @@
 import React, { useCallback, useState } from 'react';
 
+import { getIdStringForRef } from '@growi/core';
+
+import { useCurrentUser } from '~/stores-universal/context';
+
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 
@@ -39,11 +43,13 @@ const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAss
 };
 
 type AiAssistantItemProps = {
+  currentUserId?: string;
   aiAssistant: AiAssistantHasId;
   threads: { id: string; name: string }[]; // dummy data
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
+  currentUserId,
   aiAssistant,
   threads,
 }) => {
@@ -52,6 +58,8 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   const clickItemHandler = useCallback(() => {
     setIsExpanded(toggle => !toggle);
   }, []);
+
+  const isOperable = currentUserId != null && getIdStringForRef(aiAssistant.owner) === currentUserId;
 
   return (
     <div className="grw-ai-assistant-item-container">
@@ -77,20 +85,22 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
           <p className="text-truncate m-auto">{aiAssistant.name}</p>
         </div>
 
-        <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
-          <button
-            type="button"
-            className="btn btn-link text-secondary p-0 ms-2"
-          >
-            <span className="material-symbols-outlined fs-5">edit</span>
-          </button>
-          <button
-            type="button"
-            className="btn btn-link text-secondary p-0"
-          >
-            <span className="material-symbols-outlined fs-5">delete</span>
-          </button>
-        </div>
+        { isOperable && (
+          <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
+            <button
+              type="button"
+              className="btn btn-link text-secondary p-0 ms-2"
+            >
+              <span className="material-symbols-outlined fs-5">edit</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-link text-secondary p-0"
+            >
+              <span className="material-symbols-outlined fs-5">delete</span>
+            </button>
+          </div>
+        )}
       </li>
 
       {isExpanded && threads.length > 0 && (
@@ -119,11 +129,13 @@ type AiAssistantTreeProps = {
 };
 
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants }) => {
+  const { data: currentUser } = useCurrentUser();
   return (
     <ul className="list-group">
       {aiAssistants.map(assistant => (
         <AiAssistantItem
           key={assistant._id}
+          currentUserId={currentUser?._id}
           aiAssistant={assistant}
           threads={dummyThreads}
         />
