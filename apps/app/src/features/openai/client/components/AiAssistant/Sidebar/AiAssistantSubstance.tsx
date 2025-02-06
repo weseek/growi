@@ -10,7 +10,7 @@ const moduleClass = styles['grw-ai-assistant-substance'] ?? '';
 
 export const AiAssistantContent = (): JSX.Element => {
   const { open } = useAiAssistantManagementModal();
-  const { data: aiAssistants } = useSWRxAiAssistants();
+  const { data: aiAssistants, mutate: mutateAiAssistants } = useSWRxAiAssistants();
 
   return (
     <div className={moduleClass}>
@@ -29,7 +29,10 @@ export const AiAssistantContent = (): JSX.Element => {
             マイアシスタント
           </h3>
           {aiAssistants?.myAiAssistants != null && aiAssistants.myAiAssistants.length !== 0 && (
-            <AiAssistantTree aiAssistants={aiAssistants.myAiAssistants} />
+            <AiAssistantTree
+              onDeleted={mutateAiAssistants}
+              aiAssistants={aiAssistants.myAiAssistants}
+            />
           )}
         </div>
 

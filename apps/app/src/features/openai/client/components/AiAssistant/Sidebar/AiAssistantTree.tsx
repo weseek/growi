@@ -2,10 +2,12 @@ import React, { useCallback, useState } from 'react';
 
 import { getIdStringForRef } from '@growi/core';
 
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores-universal/context';
 
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
+import { deleteAiAssistant } from '../../../services/ai-assistant';
 
 type ThreadItemProps = {
   name: string;
@@ -46,18 +48,31 @@ type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
   threads: { id: string; name: string }[]; // dummy data
+  onDeleted?: () => void;
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   currentUserId,
   aiAssistant,
   threads,
+  onDeleted,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const clickItemHandler = useCallback(() => {
     setIsExpanded(toggle => !toggle);
   }, []);
+
+  const clickDeleteAiAssistantHandler = useCallback(async() => {
+    try {
+      await deleteAiAssistant(aiAssistant._id);
+      onDeleted?.();
+      toastSuccess('アシスタントを削除しました');
+    }
+    catch (err) {
+      toastError('アシスタントの削除に失敗しました');
+    }
+  }, [aiAssistant._id, onDeleted]);
 
   const isOperable = currentUserId != null && getIdStringForRef(aiAssistant.owner) === currentUserId;
 
@@ -96,6 +111,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
             <button
               type="button"
               className="btn btn-link text-secondary p-0"
+              onClick={clickDeleteAiAssistantHandler}
             >
               <span className="material-symbols-outlined fs-5">delete</span>
             </button>
@@ -126,9 +142,10 @@ const dummyThreads = [
 
 type AiAssistantTreeProps = {
   aiAssistants: AiAssistantHasId[];
+  onDeleted?: () => void;
 };
 
-export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants }) => {
+export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
   return (
     <ul className="list-group">
@@ -138,6 +155,7 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants }
           currentUserId={currentUser?._id}
           aiAssistant={assistant}
           threads={dummyThreads}
+          onDeleted={onDeleted}
         />
       ))}
     </ul>
