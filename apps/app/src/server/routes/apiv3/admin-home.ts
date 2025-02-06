@@ -1,4 +1,5 @@
-import ConfigLoader from '../../service/config-loader';
+import { configManager } from '~/server/service/config-manager';
+import { getGrowiVersion } from '~/utils/growi-version';
 
 const express = require('express');
 
@@ -56,7 +57,7 @@ const router = express.Router();
  *            type: object
  *            description: installed plugins
  */
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -87,13 +88,13 @@ module.exports = (crowi) => {
     const runtimeVersions = await getRuntimeVersions();
 
     const adminHomeParams = {
-      growiVersion: crowi.version,
+      growiVersion: getGrowiVersion(),
       nodeVersion: runtimeVersions.node ?? '-',
       npmVersion: runtimeVersions.npm ?? '-',
       pnpmVersion: runtimeVersions.pnpm ?? '-',
-      envVars: await ConfigLoader.getEnvVarsForDisplay(true),
-      isV5Compatible: crowi.configManager.getConfig('crowi', 'app:isV5Compatible'),
-      isMaintenanceMode: crowi.configManager.getConfig('crowi', 'app:isMaintenanceMode'),
+      envVars: configManager.getManagedEnvVars(),
+      isV5Compatible: configManager.getConfig('app:isV5Compatible'),
+      isMaintenanceMode: configManager.getConfig('app:isMaintenanceMode'),
     };
 
     return res.apiv3({ adminHomeParams });

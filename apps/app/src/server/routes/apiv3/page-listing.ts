@@ -105,8 +105,8 @@ const routerFactory = (crowi: Crowi): Router => {
 
     const pageService = crowi.pageService;
 
-    const hideRestrictedByOwner = await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const hideRestrictedByGroup = await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
+    const hideRestrictedByOwner = await configManager.getConfig('security:list-policy:hideRestrictedByOwner');
+    const hideRestrictedByGroup = await configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
     try {
       const pages = await pageService.findChildrenByParentPathOrIdAndViewer(

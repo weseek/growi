@@ -110,11 +110,12 @@ const router = express.Router();
  *            description: page ID
  *            example: 5e07345972560e001761fa63
  */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
   const certifySharedPage = require('../../../middlewares/certify-shared-page')(crowi);
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const Page = mongoose.model<IPage, PageModel>('Page');
@@ -340,15 +341,35 @@ module.exports = (crowi) => {
    *                properties:
    *                  body:
    *                    $ref: '#/components/schemas/Revision/properties/body'
-   *                  page_id:
+   *                  pageId:
    *                    $ref: '#/components/schemas/Page/properties/_id'
    *                  revisionId:
    *                    $ref: '#/components/schemas/Revision/properties/_id'
    *                  grant:
    *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                  userRelatedGrantUserGroupIds:
+   *                    type: array
+   *                    items:
+   *                      type: string
+   *                      description: UserGroup ID
+   *                  overwriteScopesOfDescendants:
+   *                    type: boolean
+   *                    description: Determine whether the scopes of descendants should be overwritten
+   *                  isSlackEnabled:
+   *                    type: boolean
+   *                    description: Determine whether the page is enabled to be posted to Slack
+   *                  slackChannels:
+   *                    type: string
+   *                    description: Slack channel IDs
+   *                  origin:
+   *                    type: string
+   *                    description: Origin is "view" or "editor"
+   *                  wip:
+   *                    type: boolean
+   *                    description: Determine whether the page is WIP
    *                required:
    *                  - body
-   *                  - page_id
+   *                  - pageId
    *                  - revisionId
    *        responses:
    *          200:
@@ -888,7 +909,7 @@ module.exports = (crowi) => {
       const { pageId } = req.params;
       const { expandContentWidth } = req.body;
 
-      const isContainerFluidBySystem = configManager.getConfig('crowi', 'customize:isContainerFluid');
+      const isContainerFluidBySystem = configManager.getConfig('customize:isContainerFluid');
 
       try {
         const updateQuery = expandContentWidth === isContainerFluidBySystem

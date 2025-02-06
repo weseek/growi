@@ -1,8 +1,37 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.7...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.9](https://github.com/weseek/growi/compare/v7.1.8...v7.1.9) - 2025-02-03
+
+### 💎 Features
+
+* feat: Add error handling for data migration (#9582) @miya
+
+### 🚀 Improvement
+
+* imprv: Data migration script performance (#9599) @miya
+* imprv: Initialization for Passport strategies (#9353) @yuki-takei
+* imprv: Make data migration type safe (#9590) @miya
+* imprv: Printing styles (#9576) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Serializing page data for share link (#9602) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps-dev): bump vite from 5.4.6 to 5.4.12 (#9574) @dependabot
+* ci(deps): bump mongoose from 6.13.0 to 6.13.6 (#9570) @dependabot
+* ci(deps): bump katex from 0.16.11 to 0.16.21 (#9564) @dependabot
+
+## [v7.1.8](https://github.com/weseek/growi/compare/v7.1.7...v7.1.8) - 2025-01-21
+
+### 🐛 Bug Fixes
+
+* fix: Escape page path when generating RegExp to find ancestors children (#9550) @yuki-takei
 
 ## [v7.1.7](https://github.com/weseek/growi/compare/v7.1.6...v7.1.7) - 2025-01-16
 

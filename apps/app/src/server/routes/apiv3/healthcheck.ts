@@ -44,7 +44,7 @@ const router = express.Router();
  *              }
  *            }
  */
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
 
   async function checkMongo(errors, info) {

@@ -5,6 +5,7 @@ import { finished } from 'stream/promises';
 
 import unzipStream, { type Entry } from 'unzip-stream';
 
+import type Crowi from '~/server/crowi';
 import loggerFactory from '~/utils/logger';
 
 import type { ZipFileStat } from '../interfaces/export';
@@ -20,7 +21,7 @@ const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-dis
  */
 class GrowiBridgeService {
 
-  crowi: any;
+  crowi: Crowi;
 
   encoding: BufferEncoding = 'utf-8';
 
@@ -28,7 +29,7 @@ class GrowiBridgeService {
 
   baseDir: string | undefined;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
   }
 
