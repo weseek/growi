@@ -105,10 +105,9 @@ const dummyThreads = [
 
 type AiAssistantTreeProps = {
   aiAssistants: AiAssistantHasId[];
-  onThreadClick?: (threadId: string) => void;
 };
 
-export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onThreadClick }) => {
+export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants }) => {
   return (
     <ul className="list-group">
       {aiAssistants.map(assistant => (
