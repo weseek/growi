@@ -32,6 +32,7 @@ describe('PageBulkExportJobCleanUpCronService', () => {
   let user;
 
   beforeAll(async() => {
+    await configManager.loadConfigs();
     user = await User.create({
       name: 'Example for PageBulkExportJobCleanUpCronService Test',
       username: 'page bulk export job cleanup cron test user',
