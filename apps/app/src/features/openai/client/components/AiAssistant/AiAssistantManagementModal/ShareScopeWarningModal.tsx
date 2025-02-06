@@ -7,20 +7,20 @@ import {
 type Props = {
   isOpen: boolean,
   closeModal: () => void,
-  onCreateAiAssistant: () => Promise<void>,
+  onSubmit: () => Promise<void>,
 }
 
 export const ShareScopeWarningModal = (props: Props): JSX.Element => {
   const {
     isOpen,
     closeModal,
-    onCreateAiAssistant,
+    onSubmit,
   } = props;
 
   const createAiAssistantHandler = useCallback(() => {
     closeModal();
-    onCreateAiAssistant();
-  }, [closeModal, onCreateAiAssistant]);
+    onSubmit();
+  }, [closeModal, onSubmit]);
 
   return (
     <Modal size="lg" isOpen={isOpen} toggle={closeModal}>
