@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 
 type ThreadItemProps = {
@@ -28,16 +29,30 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
 };
 
 
+const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAssistantAccessScope): string => {
+  const targetScope = shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE ? accessScope : shareScope;
+  switch (targetScope) {
+    case AiAssistantShareScope.OWNER:
+      return 'lock';
+    case AiAssistantShareScope.GROUPS:
+      return 'polyline';
+    case AiAssistantShareScope.PUBLIC_ONLY:
+      return 'group';
+  }
+};
+
 type AiAssistantItemProps = {
   name: string;
-  type: AiAssistantShareScope;
+  shareScope: AiAssistantShareScope;
+  accessScope: AiAssistantAccessScope;
   threads: { id: string; name: string }[]; // dummy data
   onThreadClick?: (threadId: string) => void;
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   name,
-  type,
+  shareScope,
+  accessScope,
   threads,
   onThreadClick,
 }) => {
@@ -51,19 +66,6 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     e.stopPropagation();
     handleToggle();
   }, [handleToggle]);
-
-  const getShareScopeIcon = (shareScope: AiAssistantShareScope): string => {
-    switch (shareScope) {
-      case AiAssistantShareScope.OWNER:
-        return 'lock';
-      case AiAssistantShareScope.GROUPS:
-        return 'polyline';
-      case AiAssistantShareScope.PUBLIC_ONLY:
-        return 'group';
-      case AiAssistantShareScope.SAME_AS_ACCESS_SCOPE:
-        return 'group';
-    }
-  };
 
   return (
     <div className="grw-ai-assistant-item-container">
@@ -84,7 +86,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
           </button>
         </div>
         <div>
-          <span className="material-symbols-outlined fs-5">{getShareScopeIcon(type)}</span>
+          <span className="material-symbols-outlined fs-5">{getShareScopeIcon(shareScope, accessScope)}</span>
         </div>
         <div className="grw-ai-assistant-title-anchor ps-1">
           <p className="text-truncate m-auto">{name}</p>
@@ -125,7 +127,8 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
         <AiAssistantItem
           key={assistant._id}
           name={assistant.name}
-          type={assistant.shareScope}
+          shareScope={assistant.shareScope}
+          accessScope={assistant.accessScope}
           threads={dummyThreads}
           onThreadClick={onThreadClick}
         />
