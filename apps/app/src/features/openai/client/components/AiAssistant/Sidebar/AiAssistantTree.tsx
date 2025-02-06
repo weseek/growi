@@ -24,7 +24,6 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
   return (
     <li
       className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1 ps-5"
-      role="button"
     >
       <div>
         <span className="material-symbols-outlined fs-5">chat</span>
