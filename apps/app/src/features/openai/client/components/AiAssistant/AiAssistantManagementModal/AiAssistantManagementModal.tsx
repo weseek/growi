@@ -12,7 +12,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { createAiAssistant } from '../../../services/ai-assistant';
-import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
+import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode, useSWRxAiAssistants } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEditInstruction';
 import { AiAssistantManagementEditPages } from './AiAssistantManagementEditPages';
@@ -36,6 +36,7 @@ const convertToGrantedGroups = (selectedGroups: PopulatedGrantedGroup[]): IGrant
 const AiAssistantManagementModalSubstance = (): JSX.Element => {
   // Hooks
   const { t } = useTranslation();
+  const { mutate: mutateAiAssistants } = useSWRxAiAssistants();
   const { data: aiAssistantManagementModalData, close: closeAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
@@ -83,6 +84,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       });
 
       toastSuccess('アシスタントを作成しました');
+      mutateAiAssistants();
       closeAiAssistantManagementModal();
     }
     catch (err) {
@@ -90,6 +92,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       logger.error(err);
     }
   }, [
+    mutateAiAssistants,
     closeAiAssistantManagementModal,
     description,
     instruction,
