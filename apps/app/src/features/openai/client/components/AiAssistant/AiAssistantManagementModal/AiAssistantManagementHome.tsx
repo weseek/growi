@@ -46,7 +46,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
       : t(baseLabel);
   }, [currentUser?.username, t]);
 
-  const createAiAssistantHandler = useCallback(() => {
+  const createAiAssistantHandler = useCallback(async() => {
     // TODO: Implement the logic to check if the assistant has a share scope that includes private pages
     // task: https://redmine.weseek.co.jp/issues/161341
     if (true) {
@@ -54,7 +54,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
       return;
     }
 
-    onCreateAiAssistant();
+    await onCreateAiAssistant();
   }, [onCreateAiAssistant]);
 
   return (
@@ -144,7 +144,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
       <ShareScopeWarningModal
         isOpen={isShareScopeWarningModalOpen}
         closeModal={() => setIsShareScopeWarningModalOpen(false)}
-        onCreateAiAssistant={onCreateAiAssistant}
+        onSubmit={createAiAssistantHandler}
       />
     </>
   );
