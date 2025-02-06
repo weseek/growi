@@ -2,9 +2,6 @@ import React, { useCallback, useState } from 'react';
 
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 
-import styles from './AiAssistantTree.module.scss';
-
-
 type ThreadItemProps = {
   name: string;
   onClick?: () => void;
@@ -71,7 +68,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   return (
     <div className="grw-ai-assistant-item-container">
       <li
-        className="list-group-item list-group-item-action border-0 py- d-flex align-items-center rounded-1"
+        className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
         onClick={handleToggle}
         role="button"
       >
@@ -110,14 +107,12 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
 };
 
 
-// hardcoded data
 const dummyThreads = [
   { id: '1', name: 'thread1' },
   { id: '2', name: 'thread2' },
   { id: '3', name: 'thread3' },
 ];
 
-// Tree Component
 type AiAssistantTreeProps = {
   aiAssistants: AiAssistantHasId[];
   onThreadClick?: (threadId: string) => void;
@@ -125,18 +120,16 @@ type AiAssistantTreeProps = {
 
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onThreadClick }) => {
   return (
-    <div className={`${styles['grw-ai-assistant-tree-container']} grw-ai-assistant-item-container`}>
-      <ul className="grw-ai-assistant-tree list-group">
-        {aiAssistants.map(assistant => (
-          <AiAssistantItem
-            key={assistant._id}
-            name={assistant.name}
-            type={assistant.shareScope}
-            threads={dummyThreads}
-            onThreadClick={onThreadClick}
-          />
-        ))}
-      </ul>
-    </div>
+    <ul className="list-group">
+      {aiAssistants.map(assistant => (
+        <AiAssistantItem
+          key={assistant._id}
+          name={assistant.name}
+          type={assistant.shareScope}
+          threads={dummyThreads}
+          onThreadClick={onThreadClick}
+        />
+      ))}
+    </ul>
   );
 };
