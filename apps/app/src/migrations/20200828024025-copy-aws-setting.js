@@ -25,7 +25,6 @@ module.exports = {
           insertOne: {
             document: {
               key: 'mail:sesAccessKeyId',
-              ns: 'crowi',
               value: accessKeyId.value,
             },
           },
@@ -39,7 +38,6 @@ module.exports = {
           insertOne: {
             document: {
               key: 'mail:sesSecretAccessKey',
-              ns: 'crowi',
               value: secretAccessKey.value,
             },
           },

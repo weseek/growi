@@ -1,16 +1,19 @@
+import { GrowiDeploymentType, GrowiServiceType, GrowiWikiType } from '@growi/core';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
 
 import { configManager } from '~/server/service/config-manager';
-
-import type { IProactiveQuestionnaireAnswer } from '../../interfaces/proactive-questionnaire-answer';
-import type { IQuestionnaireAnswer } from '../../interfaces/questionnaire-answer';
+import type {
+  IProactiveQuestionnaireAnswer, IProactiveQuestionnaireAnswerLegacy,
+} from '../../interfaces/proactive-questionnaire-answer';
+import type { IQuestionnaireAnswer, IQuestionnaireAnswerLegacy } from '../../interfaces/questionnaire-answer';
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
-import ProactiveQuestionnaireAnswer from '../models/proactive-questionnaire-answer';
-import QuestionnaireAnswer from '../models/questionnaire-answer';
-import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
-import QuestionnaireOrder from '../models/questionnaire-order';
+import ProactiveQuestionnaireAnswer from '../../server/models/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '../../server/models/questionnaire-answer';
+import QuestionnaireAnswerStatus from '../../server/models/questionnaire-answer-status';
+import QuestionnaireOrder from '../../server/models/questionnaire-order';
+import { AttachmentMethodType } from '../../../../../src/interfaces/attachment';
 
 import questionnaireCronService from './questionnaire-cron';
 
@@ -140,8 +143,7 @@ describe('QuestionnaireCronService', () => {
 
   beforeAll(async() => {
     await configManager.loadConfigs();
-    await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:questionnaireCronMaxHoursUntilRequest': 0 });
-
+    await configManager.updateConfig('app:questionnaireCronMaxHoursUntilRequest', 0);
     await User.create({
       name: 'Example for Questionnaire Service Test',
       username: 'questionnaire cron test user',
@@ -276,14 +278,58 @@ describe('QuestionnaireCronService', () => {
       answeredAt: new Date(),
       growiInfo: {
         version: '1.0',
-        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        appSiteUrl: 'https://example.com',
+        serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
+        type: GrowiServiceType.cloud,
+        wikiType: GrowiWikiType.open,
+        deploymentType: GrowiDeploymentType.others,
+        osInfo: {
+          type: 'Linux',
+          platform: 'linux',
+          arch: 'x64',
+          totalmem: 8589934592,
+        },
+        additionalInfo: {
+          installedAt: new Date('2000-01-01'),
+          installedAtByOldestUser: new Date('2020-01-01'),
+          currentUsersCount: 100,
+          currentActiveUsersCount: 50,
+          attachmentType: AttachmentMethodType.aws,
+        },
+      },
+      userInfo: {
+        userIdHash: '542bcc3bc5bc61b840017a18',
+        type: 'general',
+        userCreatedAt: new Date(),
+      },
+      questionnaireOrder: '63a8354837e7aa378e16f0b1',
+    };
+
+    const validQuestionnaireAnswerLegacy: IQuestionnaireAnswerLegacy = {
+      answers: [{
+        question: '63c6da88143e531d95346188',
+        value: '1',
+      }],
+      answeredAt: new Date(),
+      growiInfo: {
+        version: '1.0',
+        appSiteUrl: 'https://example.com',
+        appSiteUrlHashed: 'hashed',
+        serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
+        type: GrowiServiceType.cloud,
+        wikiType: GrowiWikiType.open,
+        deploymentType: GrowiDeploymentType.others,
         installedAt: new Date('2000-01-01'),
         installedAtByOldestUser: new Date('2020-01-01'),
-        type: 'cloud',
         currentUsersCount: 100,
         currentActiveUsersCount: 50,
-        wikiType: 'open',
-        attachmentType: 'aws',
+        osInfo: {
+          type: 'Linux',
+          platform: 'linux',
+          arch: 'x64',
+          totalmem: 8589934592,
+        },
+        attachmentType: AttachmentMethodType.aws,
       },
       userInfo: {
         userIdHash: '542bcc3bc5bc61b840017a18',
@@ -297,6 +343,8 @@ describe('QuestionnaireCronService', () => {
       validQuestionnaireAnswer,
       validQuestionnaireAnswer,
       validQuestionnaireAnswer,
+      validQuestionnaireAnswerLegacy,
+      validQuestionnaireAnswerLegacy,
     ]);
 
     const validProactiveQuestionnaireAnswer: IProactiveQuestionnaireAnswer = {
@@ -304,14 +352,55 @@ describe('QuestionnaireCronService', () => {
       commentText: 'answer text',
       growiInfo: {
         version: '1.0',
-        appSiteUrlHashed: 'c83e8d2a1aa87b2a3f90561be372ca523bb931e2d00013c1d204879621a25b90',
+        appSiteUrl: 'https://example.com',
+        serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
+        type: GrowiServiceType.cloud,
+        wikiType: GrowiWikiType.open,
+        deploymentType: GrowiDeploymentType.others,
+        osInfo: {
+          type: 'Linux',
+          platform: 'linux',
+          arch: 'x64',
+          totalmem: 8589934592,
+        },
+        additionalInfo: {
+          installedAt: new Date('2000-01-01'),
+          installedAtByOldestUser: new Date('2020-01-01'),
+          currentUsersCount: 100,
+          currentActiveUsersCount: 50,
+          attachmentType: AttachmentMethodType.aws,
+        },
+      },
+      userInfo: {
+        userIdHash: '542bcc3bc5bc61b840017a18',
+        type: 'general',
+        userCreatedAt: new Date(),
+      },
+      answeredAt: new Date(),
+    };
+    const validProactiveQuestionnaireAnswerLegacy: IProactiveQuestionnaireAnswerLegacy = {
+      satisfaction: 1,
+      commentText: 'answer text',
+      growiInfo: {
+        version: '1.0',
+        appSiteUrl: 'https://example.com',
+        appSiteUrlHashed: 'hashed',
+        serviceInstanceId: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed',
+        type: GrowiServiceType.cloud,
+        wikiType: GrowiWikiType.open,
+        deploymentType: GrowiDeploymentType.others,
+        osInfo: {
+          type: 'Linux',
+          platform: 'linux',
+          arch: 'x64',
+          totalmem: 8589934592,
+        },
+        // legacy properties
         installedAt: new Date('2000-01-01'),
         installedAtByOldestUser: new Date('2020-01-01'),
-        type: 'cloud',
         currentUsersCount: 100,
         currentActiveUsersCount: 50,
-        wikiType: 'open',
-        attachmentType: 'aws',
+        attachmentType: AttachmentMethodType.aws,
       },
       userInfo: {
         userIdHash: '542bcc3bc5bc61b840017a18',
@@ -325,6 +414,8 @@ describe('QuestionnaireCronService', () => {
       validProactiveQuestionnaireAnswer,
       validProactiveQuestionnaireAnswer,
       validProactiveQuestionnaireAnswer,
+      validProactiveQuestionnaireAnswerLegacy,
+      validProactiveQuestionnaireAnswerLegacy,
     ]);
 
     questionnaireCronService.startCron();
@@ -344,6 +435,7 @@ describe('QuestionnaireCronService', () => {
     const savedOrders = await QuestionnaireOrder.find()
       .select('-condition._id -questions._id -questions.createdAt -questions.updatedAt')
       .sort({ _id: 1 });
+
     expect(JSON.parse(JSON.stringify(savedOrders))).toEqual([
       {
         _id: '63a8354837e7aa378e16f0b1',

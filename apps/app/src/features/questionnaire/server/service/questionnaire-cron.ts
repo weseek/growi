@@ -10,6 +10,7 @@ import ProactiveQuestionnaireAnswer from '../models/proactive-questionnaire-answ
 import QuestionnaireAnswer from '../models/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
 import QuestionnaireOrder from '../models/questionnaire-order';
+import { convertToLegacyFormat } from '../util/convert-to-legacy-format';
 
 const axios = require('axios').default;
 
@@ -27,14 +28,15 @@ class QuestionnaireCronService extends CronService {
   sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
 
   override getCronSchedule(): string {
-    return configManager.getConfig('crowi', 'app:questionnaireCronSchedule');
+    return configManager.getConfig('app:questionnaireCronSchedule');
   }
 
   override async executeJob(): Promise<void> {
     // sleep for a random amount to scatter request time from GROWI apps to questionnaire server
     await this.sleepBeforeJob();
 
-    const questionnaireServerOrigin = configManager.getConfig('crowi', 'app:questionnaireServerOrigin');
+    const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
+    const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
 
     const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
       const response = await axios.get(`${questionnaireServerOrigin}/questionnaire-order/index`);
@@ -56,15 +58,23 @@ class QuestionnaireCronService extends CronService {
 
     const resendQuestionnaireAnswers = async() => {
       const questionnaireAnswers = await QuestionnaireAnswer.find()
-        .select('-_id -answers._id  -growiInfo._id -userInfo._id');
+        .select('-_id -answers._id  -growiInfo._id -userInfo._id')
+        .lean();
       const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find()
-        .select('-_id -growiInfo._id -userInfo._id');
+        .select('-_id -growiInfo._id -userInfo._id')
+        .lean();
 
-      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/batch`, { questionnaireAnswers })
+      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/batch`, {
+        // convert to legacy format
+        questionnaireAnswers: questionnaireAnswers.map(answer => convertToLegacyFormat(answer, isAppSiteUrlHashed)),
+      })
         .then(async() => {
           await QuestionnaireAnswer.deleteMany();
         });
-      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive/batch`, { proactiveQuestionnaireAnswers })
+      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive/batch`, {
+        // convert to legacy format
+        proactiveQuestionnaireAnswers: proactiveQuestionnaireAnswers.map(answer => convertToLegacyFormat(answer, isAppSiteUrlHashed)),
+      })
         .then(async() => {
           await ProactiveQuestionnaireAnswer.deleteMany();
         });
@@ -82,7 +92,7 @@ class QuestionnaireCronService extends CronService {
   }
 
   private async sleepBeforeJob() {
-    const maxHoursUntilRequest = configManager.getConfig('crowi', 'app:questionnaireCronMaxHoursUntilRequest');
+    const maxHoursUntilRequest = configManager.getConfig('app:questionnaireCronMaxHoursUntilRequest');
     const maxSecondsUntilRequest = maxHoursUntilRequest * 60 * 60;
 
     const secToSleep = getRandomIntInRange(0, maxSecondsUntilRequest);

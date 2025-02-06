@@ -51,7 +51,7 @@ describe('PageBulkExportJobCleanUpCronService', () => {
     const jobId3 = new mongoose.Types.ObjectId();
     const jobId4 = new mongoose.Types.ObjectId();
     beforeEach(async() => {
-      await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:bulkExportJobExpirationSeconds': 86400 }); // 1 day
+      await configManager.updateConfig('app:bulkExportJobExpirationSeconds', 86400); // 1 day
 
       await PageBulkExportJob.insertMany([
         {
@@ -104,7 +104,7 @@ describe('PageBulkExportJobCleanUpCronService', () => {
     const jobId3 = new mongoose.Types.ObjectId();
     const jobId4 = new mongoose.Types.ObjectId();
     beforeEach(async() => {
-      await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:bulkExportDownloadExpirationSeconds': 86400 }); // 1 day
+      await configManager.updateConfig('app:bulkExportDownloadExpirationSeconds', 86400); // 1 day
 
       await PageBulkExportJob.insertMany([
         {

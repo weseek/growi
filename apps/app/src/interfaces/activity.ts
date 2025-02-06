@@ -378,6 +378,7 @@ export const ActionGroupSize = {
   Medium: 'MEDIUM',
   Large: 'LARGE',
 } as const;
+export type ActionGroupSize = typeof ActionGroupSize[keyof typeof ActionGroupSize];
 
 export const SmallActionGroup = {
   ACTION_USER_LOGIN_WITH_LOCAL,
