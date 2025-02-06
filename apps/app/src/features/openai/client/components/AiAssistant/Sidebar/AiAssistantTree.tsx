@@ -57,10 +57,10 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   threads,
   onDeleted,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
-  const clickItemHandler = useCallback(() => {
-    setIsExpanded(toggle => !toggle);
+  const clickOpenThreadHandler = useCallback(() => {
+    setIsThreadsOpened(toggle => !toggle);
   }, []);
 
   const clickDeleteAiAssistantHandler = useCallback(async() => {
@@ -80,13 +80,12 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     <div className="grw-ai-assistant-item-container">
       <li
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
-        onClick={clickItemHandler}
-        role="button"
       >
         <div className="d-flex justify-content-center">
           <button
             type="button"
-            className={`grw-ai-assistant-triangle-btn btn px-0 ${isExpanded ? 'grw-ai-assistant-open' : ''}`}
+            onClick={clickOpenThreadHandler}
+            className={`grw-ai-assistant-triangle-btn btn px-0 ${isThreadsOpened ? 'grw-ai-assistant-open' : ''}`}
           >
             <div className="d-flex justify-content-center">
               <span className="material-symbols-outlined fs-5">arrow_right</span>
@@ -119,7 +118,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         )}
       </li>
 
-      {isExpanded && threads.length > 0 && (
+      {isThreadsOpened && threads.length > 0 && (
         <div className="grw-ai-assistant-item-children">
           {threads.map(thread => (
             <ThreadItem
