@@ -503,6 +503,28 @@
       "share": "Partage de l'assistant",
       "pages": "Pages de référence",
       "instruction": "Instructions de l'assistant"
+    },
+    "access_scope": {
+      "owner": "Toutes les pages accessibles par {{username}}",
+      "groups": "Spécifier les groupes",
+      "publicOnly": "Pages publiques uniquement"
+    },
+    "share_scope": {
+      "owner": {
+        "label": "Seulement {{username}}"
+      },
+      "publicOnly": {
+        "label": "Public",
+        "desc": "Partagé avec tous les utilisateurs"
+      },
+      "groups": {
+        "label": "Spécifier les groupes",
+        "desc": "Partagé uniquement avec les membres des groupes sélectionnés"
+      },
+      "sameAsAccessScope": {
+        "label": "Même portée que l'accès à la page",
+        "desc": "Partagé avec la même portée que l'accès à la page"
+      }
     }
   },
   "link_edit": {

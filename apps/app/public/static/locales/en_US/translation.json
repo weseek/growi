@@ -508,6 +508,28 @@
       "share": "Assistant Sharing",
       "pages": "Reference Pages",
       "instruction": "Assistant Instructions"
+    },
+    "access_scope": {
+      "owner": "All pages accessible by {{username}}",
+      "groups": "Specify groups",
+      "publicOnly": "Public pages only"
+    },
+    "share_scope": {
+      "owner": {
+        "label": "{{username}} only"
+      },
+      "publicOnly": {
+        "label": "Public",
+        "desc": "Shared with all users"
+      },
+      "groups": {
+        "label": "Specify groups",
+        "desc": "Shared only with members of selected groups"
+      },
+      "sameAsAccessScope": {
+        "label": "Same as page access scope",
+        "desc": "Shared with the same scope as page access"
+      }
     }
   },
   "link_edit": {
