@@ -1,0 +1,25 @@
+.grw-ai-assistant-tree-container :global {
+  .grw-ai-assistant-item-container {
+    .list-group-item {
+      .grw-ai-assistant-triangle-btn {
+        border: 0;
+        transition: transform 0.2s ease-out;
+        transform: rotate(0deg);
+
+        &.grw-ai-assistant-open {
+          transform: rotate(90deg);
+        }
+      }
+
+      .grw-triangle-container {
+        height: 30px;
+      }
+
+      .grw-ai-assistant-title-anchor {
+        width: 100%;
+        overflow: hidden;
+        font-size: 14px;
+      }
+    }
+  }
+}
