@@ -39,6 +39,8 @@ export interface AiAssistant {
 
 export type IApiv3AiAssistantCreateParams = Omit<AiAssistant, 'owner' | 'vectorStore'>
 
+export type AiAssistantUpdateData = Partial<Omit<AiAssistant, 'owner' | 'vectorStore'>>
+
 export type AccessibleAiAssistants = {
   myAiAssistants: AiAssistant[],
   teamAiAssistants: AiAssistant[],

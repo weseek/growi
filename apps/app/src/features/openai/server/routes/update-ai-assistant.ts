@@ -10,6 +10,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import { type AiAssistantUpdateData } from '../../interfaces/ai-assistant';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -23,7 +24,9 @@ type ReqParams = {
   id: string,
 }
 
-type Req = Request<ReqParams, Response, undefined> & {
+type ReqBody = AiAssistantUpdateData;
+
+type Req = Request<ReqParams, Response, ReqBody> & {
   user: IUserHasId,
 }
 
@@ -42,8 +45,9 @@ export const updateAiAssistantsFactory: UpdateAiAssistantsFactory = (crowi) => {
 
       try {
         const openaiService = getOpenaiService();
+        const updatedAiAssistant = await openaiService?.updateAiAssistant(id, user._id, {});
 
-        return res.apiv3({ });
+        return res.apiv3({ updatedAiAssistant });
       }
       catch (err) {
         logger.error(err);
