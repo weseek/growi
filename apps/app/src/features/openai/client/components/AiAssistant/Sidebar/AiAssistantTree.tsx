@@ -39,16 +39,12 @@ const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAss
 };
 
 type AiAssistantItemProps = {
-  name: string;
-  shareScope: AiAssistantShareScope;
-  accessScope: AiAssistantAccessScope;
+  aiAssistant: AiAssistantHasId;
   threads: { id: string; name: string }[]; // dummy data
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
-  name,
-  shareScope,
-  accessScope,
+  aiAssistant,
   threads,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -75,10 +71,10 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
           </button>
         </div>
         <div>
-          <span className="material-symbols-outlined fs-5">{getShareScopeIcon(shareScope, accessScope)}</span>
+          <span className="material-symbols-outlined fs-5">{getShareScopeIcon(aiAssistant.shareScope, aiAssistant.accessScope)}</span>
         </div>
         <div className="grw-ai-assistant-title-anchor ps-1">
-          <p className="text-truncate m-auto">{name}</p>
+          <p className="text-truncate m-auto">{aiAssistant.name}</p>
         </div>
 
         <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
@@ -128,9 +124,7 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants }
       {aiAssistants.map(assistant => (
         <AiAssistantItem
           key={assistant._id}
-          name={assistant.name}
-          shareScope={assistant.shareScope}
-          accessScope={assistant.accessScope}
+          aiAssistant={assistant}
           threads={dummyThreads}
         />
       ))}
