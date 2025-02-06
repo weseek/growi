@@ -9,28 +9,46 @@ import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
 
-type ThreadItemProps = {
+
+type Thread = {
+  _id: string;
   name: string;
+}
+
+const dummyThreads: Thread[] = [
+  { _id: '1', name: 'thread1' },
+  { _id: '2', name: 'thread2' },
+  { _id: '3', name: 'thread3' },
+];
+
+type ThreadItemProps = {
+  thread: Thread;
 };
 
 const ThreadItem: React.FC<ThreadItemProps> = ({
-  name,
+  thread,
 }) => {
 
   const deleteThreadHandler = useCallback(() => {
-    //
+    // TODO: https://redmine.weseek.co.jp/issues/161490
+  }, []);
+
+  const openChatHandler = useCallback(() => {
+    // TODO: https://redmine.weseek.co.jp/issues/159530
   }, []);
 
   return (
     <li
+      role="button"
       className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1 ps-5"
+      onClick={openChatHandler}
     >
       <div>
         <span className="material-symbols-outlined fs-5">chat</span>
       </div>
 
       <div className="grw-ai-assistant-title-anchor ps-1">
-        <p className="text-truncate m-auto">{name}</p>
+        <p className="text-truncate m-auto">{thread.name}</p>
       </div>
 
       <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
@@ -62,7 +80,7 @@ const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAss
 type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
-  threads: { id: string; name: string }[]; // dummy data
+  threads: Thread[];
   onDeleted?: () => void;
 };
 
@@ -74,11 +92,15 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
-  const clickOpenThreadHandler = useCallback(() => {
+  const openChatHandler = useCallback(() => {
+    // TODO: https://redmine.weseek.co.jp/issues/159530
+  }, []);
+
+  const openThreadsHandler = useCallback(() => {
     setIsThreadsOpened(toggle => !toggle);
   }, []);
 
-  const clickDeleteAiAssistantHandler = useCallback(async() => {
+  const deleteAiAssistantHandler = useCallback(async() => {
     try {
       await deleteAiAssistant(aiAssistant._id);
       onDeleted?.();
@@ -94,12 +116,14 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   return (
     <div className="grw-ai-assistant-item-container">
       <li
+        onClick={openChatHandler}
+        role="button"
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
       >
         <div className="d-flex justify-content-center">
           <button
             type="button"
-            onClick={clickOpenThreadHandler}
+            onClick={openThreadsHandler}
             className={`grw-ai-assistant-triangle-btn btn px-0 ${isThreadsOpened ? 'grw-ai-assistant-open' : ''}`}
           >
             <div className="d-flex justify-content-center">
@@ -127,7 +151,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
             <button
               type="button"
               className="btn btn-link text-secondary p-0"
-              onClick={clickDeleteAiAssistantHandler}
+              onClick={deleteAiAssistantHandler}
             >
               <span className="material-symbols-outlined fs-5">delete</span>
             </button>
@@ -139,8 +163,8 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         <div className="grw-ai-assistant-item-children">
           {threads.map(thread => (
             <ThreadItem
-              key={thread.id}
-              name={thread.name}
+              key={thread._id}
+              thread={thread}
             />
           ))}
         </div>
@@ -148,13 +172,6 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     </div>
   );
 };
-
-
-const dummyThreads = [
-  { id: '1', name: 'thread1' },
-  { id: '2', name: 'thread2' },
-  { id: '3', name: 'thread3' },
-];
 
 type AiAssistantTreeProps = {
   aiAssistants: AiAssistantHasId[];

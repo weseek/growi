@@ -41,7 +41,9 @@ export const AiAssistantContent = (): JSX.Element => {
             チームアシスタント
           </h3>
           {aiAssistants?.teamAiAssistants != null && aiAssistants.teamAiAssistants.length !== 0 && (
-            <AiAssistantTree aiAssistants={aiAssistants.teamAiAssistants} />
+            <AiAssistantTree
+              aiAssistants={aiAssistants.teamAiAssistants}
+            />
           )}
         </div>
       </div>
