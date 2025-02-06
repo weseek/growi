@@ -1,3 +1,4 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .grw-ai-assistant-substance :global {
   .grw-ai-assistant-substance-header {
@@ -31,7 +32,7 @@
 
         .btn-link {
           &:hover {
-            color: var(--bs-primary) !important;
+            color: var(--bs-gray-800) !important;
           }
         }
       }

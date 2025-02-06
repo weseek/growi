@@ -18,7 +18,7 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
 }) => {
   return (
     <li
-      className="list-group-item list-group-item-action border-0  d-flex align-items-center rounded-1 ps-5"
+      className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1 ps-5"
       role="button"
     >
       <div>
@@ -33,12 +33,12 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
 
 
 const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAssistantAccessScope): string => {
-  const targetScope = shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE ? accessScope : shareScope;
-  switch (targetScope) {
+  const determinedSharedScope = shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE ? accessScope : shareScope;
+  switch (determinedSharedScope) {
     case AiAssistantShareScope.OWNER:
       return 'lock';
     case AiAssistantShareScope.GROUPS:
-      return 'polyline';
+      return 'account_tree';
     case AiAssistantShareScope.PUBLIC_ONLY:
       return 'group';
   }
@@ -92,9 +92,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
             </div>
           </button>
         </div>
-        <div>
+
+        <div className="d-flex justify-content-center">
           <span className="material-symbols-outlined fs-5">{getShareScopeIcon(aiAssistant.shareScope, aiAssistant.accessScope)}</span>
         </div>
+
         <div className="grw-ai-assistant-title-anchor ps-1">
           <p className="text-truncate m-auto">{aiAssistant.name}</p>
         </div>
