@@ -144,7 +144,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
       <ShareScopeWarningModal
         isOpen={isShareScopeWarningModalOpen}
         closeModal={() => setIsShareScopeWarningModalOpen(false)}
-        onSubmit={createAiAssistantHandler}
+        onSubmit={onCreateAiAssistant}
       />
     </>
   );
