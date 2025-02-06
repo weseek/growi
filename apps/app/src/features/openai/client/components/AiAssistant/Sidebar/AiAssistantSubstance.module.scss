@@ -6,6 +6,7 @@
 
   .grw-ai-assistant-item-container {
     .list-group-item {
+      height: 40px;
       padding-left: 4px;
 
       .grw-ai-assistant-triangle-btn {
@@ -18,14 +19,27 @@
         }
       }
 
-      .grw-triangle-container {
-        height: 30px;
-      }
-
       .grw-ai-assistant-title-anchor {
         width: 100%;
         overflow: hidden;
         font-size: 14px;
+      }
+
+
+      .grw-ai-assistant-actions {
+        transition: opacity 0.2s ease-out;
+
+        .btn-link {
+          &:hover {
+            color: var(--bs-primary) !important;
+          }
+        }
+      }
+
+      &:hover {
+        .grw-ai-assistant-actions {
+          opacity: 1 !important;
+        }
       }
     }
   }

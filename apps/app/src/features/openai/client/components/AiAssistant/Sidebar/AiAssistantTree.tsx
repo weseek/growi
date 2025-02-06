@@ -64,7 +64,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         onClick={clickItemHandler}
         role="button"
       >
-        <div className="grw-triangle-container d-flex justify-content-center">
+        <div className="d-flex justify-content-center">
           <button
             type="button"
             className={`grw-ai-assistant-triangle-btn btn px-0 ${isExpanded ? 'grw-ai-assistant-open' : ''}`}
@@ -79,6 +79,21 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         </div>
         <div className="grw-ai-assistant-title-anchor ps-1">
           <p className="text-truncate m-auto">{name}</p>
+        </div>
+
+        <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
+          <button
+            type="button"
+            className="btn btn-link text-secondary p-0 ms-2"
+          >
+            <span className="material-symbols-outlined fs-5">edit</span>
+          </button>
+          <button
+            type="button"
+            className="btn btn-link text-secondary p-0"
+          >
+            <span className="material-symbols-outlined fs-5">delete</span>
+          </button>
         </div>
       </li>
 
