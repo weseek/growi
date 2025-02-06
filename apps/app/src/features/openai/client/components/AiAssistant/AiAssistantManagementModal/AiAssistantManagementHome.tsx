@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -9,6 +9,8 @@ import { AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant
 import { useCurrentUser } from '~/stores-universal/context';
 
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
+
+import { ShareScopeWarningModal } from './ShareScopeWarningModal';
 
 type Props = {
   name: string;
@@ -35,12 +37,25 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { close: closeAiAssistantManagementModal, changePageMode } = useAiAssistantManagementModal();
 
+  const [isShareScopeWarningModalOpen, setIsShareScopeWarningModalOpen] = useState(false);
+
   const getShareScopeLabel = useCallback((shareScope: AiAssistantShareScope) => {
     const baseLabel = `modal_ai_assistant.share_scope.${shareScope}.label`;
     return shareScope === AiAssistantShareScope.OWNER
       ? t(baseLabel, { username: currentUser?.username })
       : t(baseLabel);
   }, [currentUser?.username, t]);
+
+  const createAiAssistantHandler = useCallback(async() => {
+    // TODO: Implement the logic to check if the assistant has a share scope that includes private pages
+    // task: https://redmine.weseek.co.jp/issues/161341
+    if (true) {
+      setIsShareScopeWarningModalOpen(true);
+      return;
+    }
+
+    await onCreateAiAssistant();
+  }, [onCreateAiAssistant]);
 
   return (
     <>
@@ -121,10 +136,16 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
         </ModalBody>
 
         <ModalFooter>
-          <button type="button" className="btn btn-outline-secondary" onClick={() => {}}>キャンセル</button>
-          <button type="button" className="btn btn-primary" onClick={onCreateAiAssistant}>アシスタントを作成する</button>
+          <button type="button" className="btn btn-outline-secondary" onClick={closeAiAssistantManagementModal}>キャンセル</button>
+          <button type="button" className="btn btn-primary" onClick={createAiAssistantHandler}>アシスタントを作成する</button>
         </ModalFooter>
       </div>
+
+      <ShareScopeWarningModal
+        isOpen={isShareScopeWarningModalOpen}
+        closeModal={() => setIsShareScopeWarningModalOpen(false)}
+        onSubmit={createAiAssistantHandler}
+      />
     </>
   );
 };
