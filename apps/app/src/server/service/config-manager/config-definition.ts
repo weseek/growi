@@ -1300,7 +1300,7 @@ Guideline as a RAG:
   }),
   'app:pageBulkExportJobCronSchedule': defineConfig<string>({
     envVarName: 'BULK_EXPORT_JOB_CRON_SCHEDULE',
-    defaultValue: '*/10 * * * *',
+    defaultValue: '*/10 * * * * *',
   }),
   'app:checkPageBulkExportJobInProgressCronSchedule': defineConfig<string>({
     envVarName: 'CHECK_PAGE_BULK_EXPORT_JOB_IN_PROGRESS_CRON_SCHEDULE',
