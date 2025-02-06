@@ -16,6 +16,11 @@ type ThreadItemProps = {
 const ThreadItem: React.FC<ThreadItemProps> = ({
   name,
 }) => {
+
+  const deleteThreadHandler = useCallback(() => {
+    //
+  }, []);
+
   return (
     <li
       className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1 ps-5"
@@ -24,8 +29,19 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
       <div>
         <span className="material-symbols-outlined fs-5">chat</span>
       </div>
+
       <div className="grw-ai-assistant-title-anchor ps-1">
         <p className="text-truncate m-auto">{name}</p>
+      </div>
+
+      <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
+        <button
+          type="button"
+          className="btn btn-link text-secondary p-0"
+          onClick={deleteThreadHandler}
+        >
+          <span className="material-symbols-outlined fs-5">delete</span>
+        </button>
       </div>
     </li>
   );
