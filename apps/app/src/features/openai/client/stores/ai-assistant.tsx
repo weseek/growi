@@ -1,7 +1,11 @@
 import { useCallback } from 'react';
 
 import { useSWRStatic } from '@growi/core/dist/swr';
-import type { SWRResponse } from 'swr';
+import useSWR, { type SWRResponse } from 'swr';
+
+import { apiv3Get } from '~/client/util/apiv3-client';
+
+import { type AccessibleAiAssistantsHasId } from '../../interfaces/ai-assistant';
 
 export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
@@ -37,4 +41,12 @@ export const useAiAssistantManagementModal = (
       swrResponse.mutate({ isOpened: swrResponse.data?.isOpened ?? false, pageMode });
     }, [swrResponse]),
   };
+};
+
+
+export const useSWRxAiAssistants = (): SWRResponse<AccessibleAiAssistantsHasId, Error> => {
+  return useSWR<AccessibleAiAssistantsHasId>(
+    ['/openai/ai-assistants'],
+    ([endpoint]) => apiv3Get(endpoint).then(response => response.data.accessibleAiAssistants),
+  );
 };
