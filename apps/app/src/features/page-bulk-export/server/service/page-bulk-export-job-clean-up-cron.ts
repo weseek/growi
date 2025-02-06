@@ -26,7 +26,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   }
 
   override getCronSchedule(): string {
-    return configManager.getConfig('crowi', 'app:pageBulkExportJobCleanUpCronSchedule');
+    return configManager.getConfig('app:pageBulkExportJobCleanUpCronSchedule');
   }
 
   override async executeJob(): Promise<void> {
@@ -41,7 +41,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
    * Delete bulk export jobs which are on-going and has passed the limit time for execution
    */
   async deleteExpiredExportJobs() {
-    const exportJobExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportJobExpirationSeconds');
+    const exportJobExpirationSeconds = configManager.getConfig('app:bulkExportJobExpirationSeconds');
     const expiredExportJobs = await PageBulkExportJob.find({
       $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
@@ -56,7 +56,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
    * Delete bulk export jobs which have completed but the due time for downloading has passed
    */
   async deleteDownloadExpiredExportJobs() {
-    const downloadExpirationSeconds = configManager.getConfig('crowi', 'app:bulkExportDownloadExpirationSeconds');
+    const downloadExpirationSeconds = configManager.getConfig('app:bulkExportDownloadExpirationSeconds');
     const thresholdDate = new Date(Date.now() - downloadExpirationSeconds * 1000);
     const downloadExpiredExportJobs = await PageBulkExportJob.find({
       status: PageBulkExportJobStatus.completed,

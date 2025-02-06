@@ -499,7 +499,7 @@ module.exports = (crowi) => {
       isMaintenanceMode: configManager.getConfig('app:isMaintenanceMode'),
 
       isBulkExportPagesEnabled: crowi.configManager.getConfig('app:isBulkExportPagesEnabled'),
-      envIsBulkExportPagesEnabled: crowi.configManager.getConfigFromEnvVars('app:isBulkExportPagesEnabled'),
+      envIsBulkExportPagesEnabled: crowi.configManager.getConfig('app:isBulkExportPagesEnabled'),
       bulkExportDownloadExpirationSeconds: crowi.configManager.getConfig('app:bulkExportDownloadExpirationSeconds'),
     };
     return res.apiv3({ appSettingsParams });
@@ -1036,10 +1036,10 @@ module.exports = (crowi) => {
       };
 
       try {
-        await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
+        await crowi.configManager.updateConfigs(requestParams, { skipPubsub: true });
         const responseParams = {
-          isBulkExportPagesEnabled: crowi.configManager.getConfig('crowi', 'app:isBulkExportPagesEnabled'),
-          bulkExportDownloadExpirationSeconds: crowi.configManager.getConfig('crowi', 'app:bulkExportDownloadExpirationSeconds'),
+          isBulkExportPagesEnabled: crowi.configManager.getConfig('app:isBulkExportPagesEnabled'),
+          bulkExportDownloadExpirationSeconds: crowi.configManager.getConfig('app:bulkExportDownloadExpirationSeconds'),
         };
 
         const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };
