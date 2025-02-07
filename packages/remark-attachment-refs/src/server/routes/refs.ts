@@ -87,6 +87,7 @@ export const routesFactory = (crowi): any => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
     const filterXSS = new FilterXSS();
+
     if (pagePath == null) {
       res.status(400).send('the param \'pagePath\' must be set.');
       return;
