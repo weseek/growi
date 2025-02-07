@@ -1,4 +1,6 @@
-import type { IGrantedGroup, IUser, Ref } from '@growi/core';
+import type {
+  IGrantedGroup, IUser, Ref, HasObjectId,
+} from '@growi/core';
 
 import type { VectorStore } from '../server/models/vector-store';
 
@@ -37,6 +39,8 @@ export interface AiAssistant {
   accessScope: AiAssistantAccessScope
 }
 
+export type AiAssistantHasId = AiAssistant & HasObjectId
+
 export type IApiv3AiAssistantCreateParams = Omit<AiAssistant, 'owner' | 'vectorStore'>
 
 export type AiAssistantUpdateData = Partial<Omit<AiAssistant, 'owner' | 'vectorStore'>>
@@ -44,4 +48,9 @@ export type AiAssistantUpdateData = Partial<Omit<AiAssistant, 'owner' | 'vectorS
 export type AccessibleAiAssistants = {
   myAiAssistants: AiAssistant[],
   teamAiAssistants: AiAssistant[],
+}
+
+export type AccessibleAiAssistantsHasId = {
+  myAiAssistants: AiAssistantHasId[],
+  teamAiAssistants: AiAssistantHasId[],
 }
