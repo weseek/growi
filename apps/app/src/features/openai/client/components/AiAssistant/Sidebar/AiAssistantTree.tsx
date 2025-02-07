@@ -9,6 +9,9 @@ import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
 
+import styles from './AiAssistantTree.module.scss';
+
+const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 
 type Thread = {
   _id: string;
@@ -114,7 +117,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   const isOperable = currentUserId != null && getIdStringForRef(aiAssistant.owner) === currentUserId;
 
   return (
-    <div className="grw-ai-assistant-item-container">
+    <>
       <li
         onClick={openChatHandler}
         role="button"
@@ -169,7 +172,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 };
 
@@ -181,7 +184,7 @@ type AiAssistantTreeProps = {
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
   return (
-    <ul className="list-group">
+    <ul className={`list-group ${moduleClass}`}>
       {aiAssistants.map(assistant => (
         <AiAssistantItem
           key={assistant._id}
