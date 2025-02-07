@@ -109,11 +109,12 @@ const router = express.Router();
  *            description: page ID
  *            example: 5e07345972560e001761fa63
  */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
   const certifySharedPage = require('../../../middlewares/certify-shared-page')(crowi);
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const Page = mongoose.model<IPage, PageModel>('Page');
@@ -904,7 +905,7 @@ module.exports = (crowi) => {
       const { pageId } = req.params;
       const { expandContentWidth } = req.body;
 
-      const isContainerFluidBySystem = configManager.getConfig('crowi', 'customize:isContainerFluid');
+      const isContainerFluidBySystem = configManager.getConfig('customize:isContainerFluid');
 
       try {
         const updateQuery = expandContentWidth === isContainerFluidBySystem

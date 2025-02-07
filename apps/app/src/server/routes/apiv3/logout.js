@@ -9,6 +9,7 @@ const express = require('express');
 
 const router = express.Router();
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
   const addActivity = generateAddActivityMiddleware(crowi);
