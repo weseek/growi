@@ -27,7 +27,7 @@ const AppTitleSubstance = memo((props: Props): JSX.Element => {
   const { data: isXlSize } = useIsDeviceLargerThanXl();
 
   const isEditorMode = editorMode === EditorMode.Editor;
-  const shouldHideTitle = isEditorMode && isXlSize; //
+  const isEditorXlMode = isEditorMode && isXlSize;
 
   return (
     <div className={`${styles['grw-app-title']} ${className} d-flex`}>
@@ -36,7 +36,7 @@ const AppTitleSubstance = memo((props: Props): JSX.Element => {
         <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
       </Link>
       <div className="flex-grow-1 d-flex align-items-center justify-content-between gap-3 overflow-hidden">
-        {!shouldHideTitle && (
+        {!isEditorXlMode && (
           <div id="grw-site-name" className="grw-site-name text-truncate">
             <Link href="/" className="fs-4">
               {appTitle}
@@ -65,5 +65,17 @@ export const AppTitleOnSubnavigation = memo((): JSX.Element => {
 });
 
 export const AppTitleOnSidebarHead = memo((): JSX.Element => {
-  return <AppTitleSubstance className={`position-absolute z-1 ${styles['on-sidebar-head']}`} />;
+  const { data: editorMode } = useEditorMode();
+  const { data: isXlSize } = useIsDeviceLargerThanXl();
+
+  const isEditorMode = editorMode === EditorMode.Editor;
+  const isEditorXlMode = isEditorMode && isXlSize;
+
+  const positionClass = isEditorXlMode ? '' : 'position-absolute z-1';
+
+  return (
+    <AppTitleSubstance
+      className={`${positionClass} ${styles['on-sidebar-head']}`}
+    />
+  );
 });

@@ -11,6 +11,7 @@ import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { SidebarMode } from '~/interfaces/ui';
 import { useIsSearchPage } from '~/stores-universal/context';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import {
   useDrawerOpened,
   useCollapsedContentsOpened,
@@ -19,15 +20,15 @@ import {
   useSidebarMode,
   useSidebarScrollerRef,
   useIsDeviceLargerThanMd,
+  useIsDeviceLargerThanXl,
 } from '~/stores/ui';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
 
 import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableAreaFallback } from './ResizableArea/ResizableAreaFallback';
 import type { ResizableAreaProps } from './ResizableArea/props';
-import { SidebarHead } from './SidebarHead';
+import { SidebarHead, EditorSidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 
 import 'simplebar-react/dist/simplebar.min.css';
@@ -234,9 +235,11 @@ export const Sidebar = (): JSX.Element => {
   const { data: isSearchPage } = useIsSearchPage();
   const { data: editorMode } = useEditorMode();
   const { data: isMdSize } = useIsDeviceLargerThanMd();
+  const { data: isXlSize } = useIsDeviceLargerThanXl();
 
   const isEditorMode = editorMode === EditorMode.Editor;
   const shouldHideTitle = isEditorMode && isMdSize && (isDrawerMode() || isCollapsedMode());
+  const shouldShowEditorHead = isEditorMode && isXlSize;
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -267,7 +270,7 @@ export const Sidebar = (): JSX.Element => {
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} divProps={{ 'data-testid': 'grw-sidebar' }}>
         <ResizableContainer>
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
-          <SidebarHead />
+          {shouldShowEditorHead ? <EditorSidebarHead /> : <SidebarHead />}
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />
           </CollapsibleContainer>

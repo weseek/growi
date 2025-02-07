@@ -1,1 +1,2 @@
-export * from './SidebarHead';
+export { SidebarHead } from './SidebarHead';
+export { EditorSidebarHead } from './EditorSidebarHead';
