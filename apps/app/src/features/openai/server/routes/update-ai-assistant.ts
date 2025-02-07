@@ -122,7 +122,7 @@ export const updateAiAssistantsFactory: UpdateAiAssistantsFactory = (crowi) => {
 
       try {
         const openaiService = getOpenaiService();
-        const updatedAiAssistant = await openaiService?.updateAiAssistant(user._id, id, {});
+        const updatedAiAssistant = await openaiService?.updateAiAssistant(user._id, id, req.body);
 
         return res.apiv3({ updatedAiAssistant });
       }
