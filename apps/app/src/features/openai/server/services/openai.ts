@@ -5,8 +5,10 @@ import { pipeline } from 'stream/promises';
 import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
+import { deepEquals } from '@growi/core/dist/utils';
 import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
+import createError from 'http-errors';
 import mongoose, { type HydratedDocument, type Types } from 'mongoose';
 import { type OpenAI, toFile } from 'openai';
 
@@ -34,6 +36,7 @@ import { getClient } from './client-delegator';
 // import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { openaiApiErrorHandler } from './openai-api-error-handler';
 
+const { isDeepEquals } = deepEquals;
 
 const BATCH_SIZE = 100;
 
@@ -68,6 +71,7 @@ export interface IOpenaiService {
   // rebuildVectorStoreAll(): Promise<void>;
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
+  updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
   deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument>
 }
@@ -425,7 +429,7 @@ class OpenaiService implements IOpenaiService {
     await pipeline(pagesStream, batchStream, createVectorStoreFileStream);
   }
 
-  private async createConditionForCreateAiAssistant(
+  private async createConditionForCreateVectorStoreFile(
       owner: AiAssistant['owner'],
       accessScope: AiAssistant['accessScope'],
       grantedGroupsForAccessScope: AiAssistant['grantedGroupsForAccessScope'],
@@ -500,7 +504,7 @@ class OpenaiService implements IOpenaiService {
     throw new Error('Invalid accessScope value');
   }
 
-  private async validateGrantedUserGroupsForCreateAiAssistant(
+  private async validateGrantedUserGroupsForAiAssistant(
       owner: AiAssistant['owner'],
       shareScope: AiAssistant['shareScope'],
       accessScope: AiAssistant['accessScope'],
@@ -543,7 +547,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
-    await this.validateGrantedUserGroupsForCreateAiAssistant(
+    await this.validateGrantedUserGroupsForAiAssistant(
       data.owner,
       data.shareScope,
       data.accessScope,
@@ -551,7 +555,7 @@ class OpenaiService implements IOpenaiService {
       data.grantedGroupsForAccessScope,
     );
 
-    const conditions = await this.createConditionForCreateAiAssistant(
+    const conditions = await this.createConditionForCreateVectorStoreFile(
       data.owner,
       data.accessScope,
       data.grantedGroupsForAccessScope,
@@ -567,6 +571,58 @@ class OpenaiService implements IOpenaiService {
     this.createVectorStoreFileWithStream(vectorStoreRelation, conditions);
 
     return aiAssistant;
+  }
+
+  async updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
+    const aiAssistant = await AiAssistantModel.findOne({ owner: data.owner, _id: aiAssistantId });
+    if (aiAssistant == null) {
+      throw createError(404, 'AiAssistant document does not exist');
+    }
+
+    await this.validateGrantedUserGroupsForAiAssistant(
+      data.owner,
+      data.shareScope,
+      data.accessScope,
+      data.grantedGroupsForShareScope,
+      data.grantedGroupsForAccessScope,
+    );
+
+    const grantedGroupIdsForAccessScopeFromReq = data.grantedGroupsForAccessScope?.map(group => getIdStringForRef(group.item)) ?? []; // ObjectId[] -> string[]
+    const grantedGroupIdsForAccessScopeFromDb = aiAssistant.grantedGroupsForAccessScope?.map(group => getIdStringForRef(group.item)) ?? []; // ObjectId[] -> string[]
+
+    // If accessScope, pagePathPatterns, grantedGroupsForAccessScope have not changed, do not build VectorStore
+    const shouldRebuildVectorStore = data.accessScope !== aiAssistant.accessScope
+      || !isDeepEquals(data.pagePathPatterns, aiAssistant.pagePathPatterns)
+      || !isDeepEquals(grantedGroupIdsForAccessScopeFromReq, grantedGroupIdsForAccessScopeFromDb);
+
+    let newVectorStoreRelation: VectorStoreDocument | undefined;
+    if (shouldRebuildVectorStore) {
+      const conditions = await this.createConditionForCreateVectorStoreFile(
+        data.owner,
+        data.accessScope,
+        data.grantedGroupsForAccessScope,
+        data.pagePathPatterns,
+      );
+
+      // Delete obsoleted VectorStore
+      const obsoletedVectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);
+      await this.deleteVectorStore(obsoletedVectorStoreRelationId);
+
+      newVectorStoreRelation = await this.createVectorStore(data.name);
+
+      // VectorStore creation process does not await
+      this.createVectorStoreFileWithStream(newVectorStoreRelation, conditions);
+    }
+
+    const newData = {
+      ...data,
+      vectorStore: newVectorStoreRelation ?? aiAssistant.vectorStore,
+    };
+
+    aiAssistant.set({ ...newData });
+    const updatedAiAssistant = await aiAssistant.save();
+
+    return updatedAiAssistant;
   }
 
   async getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants> {
@@ -608,7 +664,7 @@ class OpenaiService implements IOpenaiService {
   async deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument> {
     const aiAssistant = await AiAssistantModel.findOne({ owner: ownerId, _id: aiAssistantId });
     if (aiAssistant == null) {
-      throw new Error('AiAssistant document does not exist');
+      throw createError(404, 'AiAssistant document does not exist');
     }
 
     const vectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);

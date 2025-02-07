@@ -1,8 +1,8 @@
 import { apiv3Post, apiv3Delete } from '~/client/util/apiv3-client';
 
-import type { IApiv3AiAssistantCreateParams } from '../../interfaces/ai-assistant';
+import type { UpsertAiAssistantData } from '../../interfaces/ai-assistant';
 
-export const createAiAssistant = async(body: IApiv3AiAssistantCreateParams): Promise<void> => {
+export const createAiAssistant = async(body: UpsertAiAssistantData): Promise<void> => {
   await apiv3Post('/openai/ai-assistant', body);
 };
 

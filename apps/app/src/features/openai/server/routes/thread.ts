@@ -1,4 +1,5 @@
 import type { IUserHasId } from '@growi/core/dist/interfaces';
+import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
@@ -30,8 +31,13 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
+
+      const openaiService = getOpenaiService();
+      if (openaiService == null) {
+        return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
+      }
+
       try {
-        const openaiService = getOpenaiService();
         const filterdThreadId = req.body.threadId != null ? filterXSS(req.body.threadId) : undefined;
         // const vectorStore = await openaiService?.getOrCreateVectorStoreForPublicScope();
         // const thread = await openaiService?.getOrCreateThread(req.user._id, vectorStore?.vectorStoreId, filterdThreadId);
