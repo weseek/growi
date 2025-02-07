@@ -576,9 +576,35 @@ class OpenaiService implements IOpenaiService {
       throw new Error('AiAssistant document does not exist');
     }
 
-    // Implement the logic to update AiAssistant
+    await this.validateGrantedUserGroupsForCreateAiAssistant(
+      data.owner,
+      data.shareScope,
+      data.accessScope,
+      data.grantedGroupsForShareScope,
+      data.grantedGroupsForAccessScope,
+    );
 
-    return aiAssistant;
+    const conditions = await this.createConditionForCreateAiAssistant(
+      data.owner,
+      data.accessScope,
+      data.grantedGroupsForAccessScope,
+      data.pagePathPatterns,
+    );
+
+    const oldVectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);
+    await this.deleteVectorStore(oldVectorStoreRelationId);
+
+    const newVectorStoreRelation = await this.createVectorStore(data.name);
+    // VectorStore creation process does not await
+    this.createVectorStoreFileWithStream(newVectorStoreRelation, conditions);
+
+    const newData = {
+      ...data,
+      vectorStore: newVectorStoreRelation,
+    };
+
+    const updatedAiAssistant = await aiAssistant.updateOne(newData);
+    return updatedAiAssistant;
   }
 
   async getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants> {
