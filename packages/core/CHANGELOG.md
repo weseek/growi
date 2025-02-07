@@ -1,5 +1,11 @@
 # @growi/core
 
+## 1.4.0
+
+### Minor Changes
+
+- [#9542](https://github.com/weseek/growi/pull/9542) [`708c45a`](https://github.com/weseek/growi/commit/708c45ab76ee7a3d3861033d1f82714f2f07e4ec) Thanks [@yuki-takei](https://github.com/yuki-takei)! - Update GrowiInfo interface
+
 ## 1.3.1
 
 ### Patch Changes
