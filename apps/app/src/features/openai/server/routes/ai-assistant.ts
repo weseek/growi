@@ -30,10 +30,14 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, upsertAiAssistantValidator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
+      const openaiService = getOpenaiService();
+      if (openaiService == null) {
+        return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
+      }
+
       try {
         const aiAssistantData = { ...req.body, owner: req.user._id };
-        const openaiService = getOpenaiService();
-        const aiAssistant = await openaiService?.createAiAssistant(aiAssistantData);
+        const aiAssistant = await openaiService.createAiAssistant(aiAssistantData);
 
         return res.apiv3({ aiAssistant });
       }

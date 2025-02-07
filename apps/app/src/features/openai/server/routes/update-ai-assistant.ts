@@ -43,10 +43,14 @@ export const updateAiAssistantsFactory: UpdateAiAssistantsFactory = (crowi) => {
       const { id } = req.params;
       const { user } = req;
 
+      const openaiService = getOpenaiService();
+      if (openaiService == null) {
+        return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
+      }
+
       try {
-        const openaiService = getOpenaiService();
         const aiAssistantData = { ...req.body, owner: user._id };
-        const updatedAiAssistant = await openaiService?.updateAiAssistant(id, aiAssistantData);
+        const updatedAiAssistant = await openaiService.updateAiAssistant(id, aiAssistantData);
 
         return res.apiv3({ updatedAiAssistant });
       }

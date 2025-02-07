@@ -40,9 +40,13 @@ export const deleteAiAssistantsFactory: DeleteAiAssistantsFactory = (crowi) => {
       const { id } = req.params;
       const { user } = req;
 
+      const openaiService = getOpenaiService();
+      if (openaiService == null) {
+        return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
+      }
+
       try {
-        const openaiService = getOpenaiService();
-        const deletedAiAssistant = await openaiService?.deleteAiAssistant(user._id, id);
+        const deletedAiAssistant = await openaiService.deleteAiAssistant(user._id, id);
         return res.apiv3({ deletedAiAssistant });
       }
       catch (err) {

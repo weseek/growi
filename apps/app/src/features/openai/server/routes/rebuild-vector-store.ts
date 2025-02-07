@@ -28,8 +28,12 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
     accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
     async(req: Request, res: ApiV3Response) => {
 
+      const openaiService = getOpenaiService();
+      if (openaiService == null) {
+        return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
+      }
+
       try {
-        const openaiService = getOpenaiService();
         // await openaiService?.rebuildVectorStoreAll();
         return res.apiv3({});
 

@@ -27,9 +27,13 @@ export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService,
     async(req: Req, res: ApiV3Response) => {
+      const openaiService = getOpenaiService();
+      if (openaiService == null) {
+        return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
+      }
+
       try {
-        const openaiService = getOpenaiService();
-        const accessibleAiAssistants = await openaiService?.getAccessibleAiAssistants(req.user);
+        const accessibleAiAssistants = await openaiService.getAccessibleAiAssistants(req.user);
 
         return res.apiv3({ accessibleAiAssistants });
       }
