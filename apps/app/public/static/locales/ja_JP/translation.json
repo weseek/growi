@@ -807,7 +807,8 @@
   "pagetree": {
     "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",
     "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
-    "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"
+    "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました",
+    "error_retrieving_the_pagetree": "ページツリーの取得中にエラーが発生しました"
   },
   "duplicated_page_alert": {
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
