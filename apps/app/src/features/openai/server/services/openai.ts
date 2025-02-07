@@ -571,6 +571,17 @@ class OpenaiService implements IOpenaiService {
     return aiAssistant;
   }
 
+  async updateAiAssistant(ownerId: string, aiAssistantId: string, data: AiAssistantUpdateData): Promise<AiAssistantDocument> {
+    const aiAssistant = await AiAssistantModel.findOne({ owner: ownerId, _id: aiAssistantId });
+    if (aiAssistant == null) {
+      throw new Error('AiAssistant document does not exist');
+    }
+
+    // Implement the logic to update AiAssistant
+
+    return aiAssistant;
+  }
+
   async getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants> {
     const userGroupIds = [
       ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
@@ -605,17 +616,6 @@ class OpenaiService implements IOpenaiService {
       myAiAssistants: assistants.filter(assistant => assistant.owner.toString() === user._id.toString()) ?? [],
       teamAiAssistants: assistants.filter(assistant => assistant.owner.toString() !== user._id.toString()) ?? [],
     };
-  }
-
-  async updateAiAssistant(ownerId: string, aiAssistantId: string, data: AiAssistantUpdateData): Promise<AiAssistantDocument> {
-    const aiAssistant = await AiAssistantModel.findOne({ owner: ownerId, _id: aiAssistantId });
-    if (aiAssistant == null) {
-      throw new Error('AiAssistant document does not exist');
-    }
-
-    // Implement the logic to update AiAssistant
-
-    return aiAssistant;
   }
 
   async deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument> {
