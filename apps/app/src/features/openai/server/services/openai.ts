@@ -614,10 +614,12 @@ class OpenaiService implements IOpenaiService {
 
     const newData = {
       ...data,
-      vectorStore: newVectorStoreRelation, // If undefined, it is not updated
+      vectorStore: newVectorStoreRelation ?? aiAssistant.vectorStore,
     };
 
-    const updatedAiAssistant = await aiAssistant.update(newData, { new: true });
+    aiAssistant.set({ ...newData });
+    const updatedAiAssistant = await aiAssistant.save();
+
     return updatedAiAssistant;
   }
 
