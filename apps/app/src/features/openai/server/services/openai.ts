@@ -426,7 +426,7 @@ class OpenaiService implements IOpenaiService {
     await pipeline(pagesStream, batchStream, createVectorStoreFileStream);
   }
 
-  private async createConditionForCreateAiAssistant(
+  private async createConditionForCreateVectorStoreFile(
       owner: AiAssistant['owner'],
       accessScope: AiAssistant['accessScope'],
       grantedGroupsForAccessScope: AiAssistant['grantedGroupsForAccessScope'],
@@ -501,7 +501,7 @@ class OpenaiService implements IOpenaiService {
     throw new Error('Invalid accessScope value');
   }
 
-  private async validateGrantedUserGroupsForCreateAiAssistant(
+  private async validateGrantedUserGroupsForAiAssistant(
       owner: AiAssistant['owner'],
       shareScope: AiAssistant['shareScope'],
       accessScope: AiAssistant['accessScope'],
@@ -544,7 +544,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
-    await this.validateGrantedUserGroupsForCreateAiAssistant(
+    await this.validateGrantedUserGroupsForAiAssistant(
       data.owner,
       data.shareScope,
       data.accessScope,
@@ -552,7 +552,7 @@ class OpenaiService implements IOpenaiService {
       data.grantedGroupsForAccessScope,
     );
 
-    const conditions = await this.createConditionForCreateAiAssistant(
+    const conditions = await this.createConditionForCreateVectorStoreFile(
       data.owner,
       data.accessScope,
       data.grantedGroupsForAccessScope,
@@ -576,7 +576,7 @@ class OpenaiService implements IOpenaiService {
       throw new Error('AiAssistant document does not exist');
     }
 
-    await this.validateGrantedUserGroupsForCreateAiAssistant(
+    await this.validateGrantedUserGroupsForAiAssistant(
       data.owner,
       data.shareScope,
       data.accessScope,
@@ -584,7 +584,7 @@ class OpenaiService implements IOpenaiService {
       data.grantedGroupsForAccessScope,
     );
 
-    const conditions = await this.createConditionForCreateAiAssistant(
+    const conditions = await this.createConditionForCreateVectorStoreFile(
       data.owner,
       data.accessScope,
       data.grantedGroupsForAccessScope,
