@@ -78,6 +78,8 @@ const today = new Date();
  *           type: string
  *           description: The unique identifier of the share link
  */
+
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -91,7 +93,7 @@ module.exports = (crowi) => {
    * middleware to limit link sharing
    */
   const linkSharingRequired = (req, res, next) => {
-    const isLinkSharingDisabled = crowi.configManager.getConfig('crowi', 'security:disableLinkSharing');
+    const isLinkSharingDisabled = crowi.configManager.getConfig('security:disableLinkSharing');
     logger.debug(`isLinkSharingDisabled: ${isLinkSharingDisabled}`);
 
     if (isLinkSharingDisabled) {

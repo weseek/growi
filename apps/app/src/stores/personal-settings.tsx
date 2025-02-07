@@ -1,8 +1,9 @@
-import type { IExternalAccountHasId, IExternalAuthProviderType, IUser } from '@growi/core';
+import type { HasObjectId, IExternalAccount, IUser } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import type { SWRConfiguration, SWRResponse } from 'swr';
 import useSWR from 'swr';
 
+import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 import { useIsGuestUser } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
@@ -103,7 +104,7 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
   };
 };
 
-export const useSWRxPersonalExternalAccounts = (): SWRResponse<IExternalAccountHasId[], Error> => {
+export const useSWRxPersonalExternalAccounts = (): SWRResponse<(IExternalAccount<IExternalAuthProviderType> & HasObjectId)[], Error> => {
   return useSWR(
     '/personal-setting/external-accounts',
     endpoint => apiv3Get(endpoint).then(response => response.data.externalAccounts),
