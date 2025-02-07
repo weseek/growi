@@ -24,7 +24,6 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
-import type { AiAssistantUpdateData } from '../../interfaces/ai-assistant';
 import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
@@ -69,7 +68,7 @@ export interface IOpenaiService {
   // rebuildVectorStoreAll(): Promise<void>;
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
-  updateAiAssistant(ownerId: string, aiAssistantId: string, data: AiAssistantUpdateData): Promise<AiAssistantDocument>;
+  updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
   deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument>
 }
@@ -571,8 +570,8 @@ class OpenaiService implements IOpenaiService {
     return aiAssistant;
   }
 
-  async updateAiAssistant(ownerId: string, aiAssistantId: string, data: AiAssistantUpdateData): Promise<AiAssistantDocument> {
-    const aiAssistant = await AiAssistantModel.findOne({ owner: ownerId, _id: aiAssistantId });
+  async updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
+    const aiAssistant = await AiAssistantModel.findOne({ owner: data.owner, _id: aiAssistantId });
     if (aiAssistant == null) {
       throw new Error('AiAssistant document does not exist');
     }

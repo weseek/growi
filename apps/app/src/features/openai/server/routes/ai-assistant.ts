@@ -8,7 +8,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { type IApiv3AiAssistantCreateParams } from '../../interfaces/ai-assistant';
+import { type UpsertAiAssistantData } from '../../interfaces/ai-assistant';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -18,7 +18,9 @@ const logger = loggerFactory('growi:routes:apiv3:openai:create-ai-assistant');
 
 type CreateAssistantFactory = (crowi: Crowi) => RequestHandler[];
 
-type Req = Request<undefined, Response, IApiv3AiAssistantCreateParams> & {
+type ReqBody = UpsertAiAssistantData;
+
+type Req = Request<undefined, Response, ReqBody> & {
   user: IUserHasId,
 }
 
