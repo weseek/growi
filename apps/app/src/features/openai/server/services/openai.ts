@@ -588,11 +588,12 @@ class OpenaiService implements IOpenaiService {
 
     const grantedGroupIdsForAccessScopeFromReq = data.grantedGroupsForAccessScope?.map(group => getIdStringForRef(group.item)) ?? []; // ObjectId[] -> string[]
     const grantedGroupIdsForAccessScopeFromDb = aiAssistant.grantedGroupsForAccessScope?.map(group => getIdStringForRef(group.item)) ?? []; // ObjectId[] -> string[]
+
+    // If accessScope, pagePathPatterns, grantedGroupsForAccessScope have not changed, do not build VectorStore
     const shouldRebuildVectorStore = data.accessScope !== aiAssistant.accessScope
       || !isDeepEquals(data.pagePathPatterns, aiAssistant.pagePathPatterns)
       || !isDeepEquals(grantedGroupIdsForAccessScopeFromReq, grantedGroupIdsForAccessScopeFromDb);
 
-    // If accessScope, pagePathPatterns, grantedGroupsForAccessScope have not changed, do not build VectorStore
     let newVectorStoreRelation: VectorStoreDocument | undefined;
     if (shouldRebuildVectorStore) {
       const conditions = await this.createConditionForCreateVectorStoreFile(
