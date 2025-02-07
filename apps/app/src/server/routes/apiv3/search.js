@@ -98,7 +98,7 @@ const noCache = require('nocache');
  *             write_load:
  *               type: number
  */
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);

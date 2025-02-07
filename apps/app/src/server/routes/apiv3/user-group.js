@@ -23,7 +23,7 @@ const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable
 
 const router = express.Router();
 
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);

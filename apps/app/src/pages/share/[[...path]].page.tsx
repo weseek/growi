@@ -18,7 +18,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
-import type { PageDocument } from '~/server/models/page';
+import type { PageDocument, PageModel } from '~/server/models/page';
 import ShareLink from '~/server/models/share-link';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
@@ -156,37 +156,39 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const { crowi } = req;
   const { configManager, searchService } = crowi;
 
-  props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
+  props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
-  props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
+  props.isSearchScopeChildrenAsDefault = configManager.getConfig('customize:isSearchScopeChildrenAsDefault');
 
-  props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+  props.drawioUri = configManager.getConfig('app:drawioUri');
 
   props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
-    && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
+    && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.rendererConfig = {
     isSharedPage: true,
-    isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),
-    isEnabledLinebreaksInComments: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaksInComments'),
-    isEnabledMarp: configManager.getConfig('crowi', 'customize:isEnabledMarp'),
-    adminPreferredIndentSize: configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize'),
-    isIndentSizeForced: configManager.getConfig('markdown', 'markdown:isIndentSizeForced'),
+    isEnabledLinebreaks: configManager.getConfig('markdown:isEnabledLinebreaks'),
+    isEnabledLinebreaksInComments: configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
+    isEnabledMarp: configManager.getConfig('customize:isEnabledMarp'),
+    adminPreferredIndentSize: configManager.getConfig('markdown:adminPreferredIndentSize'),
+    isIndentSizeForced: configManager.getConfig('markdown:isIndentSizeForced'),
 
-    drawioUri: configManager.getConfig('crowi', 'app:drawioUri'),
-    plantumlUri: configManager.getConfig('crowi', 'app:plantumlUri'),
+    drawioUri: configManager.getConfig('app:drawioUri'),
+    plantumlUri: configManager.getConfig('app:plantumlUri'),
 
     // XSS Options
-    isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    sanitizeType: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    customAttrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    customTagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
-    highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
+    isEnabledXssPrevention: configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
+    sanitizeType: configManager.getConfig('markdown:rehypeSanitize:option'),
+    customTagWhitelist: crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
+    customAttrWhitelist: configManager.getConfig('markdown:rehypeSanitize:attributes') != null
+      ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
+      : undefined,
+    highlightJsStyleBorder: crowi.configManager.getConfig('customize:highlightJsStyleBorder'),
   };
 
-  props.ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+  props.ssrMaxRevisionBodyLength = configManager.getConfig('app:ssrMaxRevisionBodyLength');
 }
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
@@ -229,13 +231,16 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
       props.shareLink = shareLink.toObject();
 
       // retrieve Page
-      const Page = crowi.model('Page');
+      const Page = crowi.model('Page') as PageModel;
       const relatedPage = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
       // determine whether skip SSR
-      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
-      props.skipSSR = await skipSSR(relatedPage, ssrMaxRevisionBodyLength);
-      // populate
-      props.shareLinkRelatedPage = await relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
+      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('app:ssrMaxRevisionBodyLength');
+
+      if (relatedPage != null) {
+        props.skipSSR = await skipSSR(relatedPage, ssrMaxRevisionBodyLength);
+        // populate
+        props.shareLinkRelatedPage = await relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
+      }
     }
   }
   catch (err) {

@@ -24,7 +24,6 @@ module.exports = {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const insertConfig = new Config({
-      ns: 'crowi',
       key: 'customize:isEnabledTimeline',
       value: true,
     });
