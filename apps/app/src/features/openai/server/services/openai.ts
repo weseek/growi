@@ -2,6 +2,7 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
+
 import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
@@ -21,6 +22,7 @@ import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
+import { isDeepEquals } from '~/utils/is-deep-equal';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
@@ -584,26 +586,38 @@ class OpenaiService implements IOpenaiService {
       data.grantedGroupsForAccessScope,
     );
 
-    const conditions = await this.createConditionForCreateVectorStoreFile(
-      data.owner,
-      data.accessScope,
-      data.grantedGroupsForAccessScope,
-      data.pagePathPatterns,
-    );
+    const grantedGroupIdsForAccessScopeFromReq = data.grantedGroupsForAccessScope?.map(group => getIdStringForRef(group.item)) ?? []; // ObjectId[] -> string[]
+    const grantedGroupIdsForAccessScopeFromDb = aiAssistant.grantedGroupsForAccessScope?.map(group => getIdStringForRef(group.item)) ?? []; // ObjectId[] -> string[]
+    const shouldRebuildVectorStore = data.accessScope !== aiAssistant.accessScope
+      || !isDeepEquals(data.pagePathPatterns, aiAssistant.pagePathPatterns)
+      || !isDeepEquals(grantedGroupIdsForAccessScopeFromReq, grantedGroupIdsForAccessScopeFromDb);
 
-    const oldVectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);
-    await this.deleteVectorStore(oldVectorStoreRelationId);
+    // If accessScope, pagePathPatterns, grantedGroupsForAccessScope have not changed, do not build VectorStore
+    let newVectorStoreRelation: VectorStoreDocument | undefined;
+    if (shouldRebuildVectorStore) {
+      const conditions = await this.createConditionForCreateVectorStoreFile(
+        data.owner,
+        data.accessScope,
+        data.grantedGroupsForAccessScope,
+        data.pagePathPatterns,
+      );
 
-    const newVectorStoreRelation = await this.createVectorStore(data.name);
-    // VectorStore creation process does not await
-    this.createVectorStoreFileWithStream(newVectorStoreRelation, conditions);
+      // Delete obsoleted VectorStore
+      const obsoletedVectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);
+      await this.deleteVectorStore(obsoletedVectorStoreRelationId);
+
+      newVectorStoreRelation = await this.createVectorStore(data.name);
+
+      // VectorStore creation process does not await
+      this.createVectorStoreFileWithStream(newVectorStoreRelation, conditions);
+    }
 
     const newData = {
       ...data,
-      vectorStore: newVectorStoreRelation,
+      vectorStore: newVectorStoreRelation, // If undefined, it is not updated
     };
 
-    const updatedAiAssistant = await aiAssistant.updateOne(newData);
+    const updatedAiAssistant = await aiAssistant.update(newData, { new: true });
     return updatedAiAssistant;
   }
 
