@@ -5,6 +5,7 @@ import { pipeline } from 'stream/promises';
 import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
+import { deepEquals } from '@growi/core/dist/utils';
 import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import createError from 'http-errors';
@@ -22,7 +23,6 @@ import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
-import { isDeepEquals } from '~/utils/is-deep-equal';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
@@ -36,6 +36,7 @@ import { getClient } from './client-delegator';
 // import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { openaiApiErrorHandler } from './openai-api-error-handler';
 
+const { isDeepEquals } = deepEquals;
 
 const BATCH_SIZE = 100;
 
