@@ -86,7 +86,7 @@ export const routesFactory = (crowi): any => {
   router.get('/ref', accessTokenParser, loginRequired, async(req: RequestWithUser, res) => {
     const user = req.user;
     const { pagePath, fileNameOrId } = req.query;
-
+    const filterXSS = new FilterXSS();
     if (pagePath == null) {
       res.status(400).send('the param \'pagePath\' must be set.');
       return;
@@ -96,7 +96,7 @@ export const routesFactory = (crowi): any => {
 
     // not found
     if (page == null) {
-      res.status(404).send(`pagePath: '${pagePath}' is not found or forbidden.`);
+      res.status(404).send(filterXSS.process(`pagePath: '${pagePath}' is not found or forbidden.`));
       return;
     }
 
@@ -117,7 +117,7 @@ export const routesFactory = (crowi): any => {
 
     // not found
     if (attachment == null) {
-      res.status(404).send(`attachment '${fileNameOrId}' is not found.`);
+      res.status(404).send(filterXSS.process(`attachment '${fileNameOrId}' is not found.`));
       return;
     }
 
