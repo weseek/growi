@@ -2,6 +2,7 @@ import { type IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import { type ValidationChain, param } from 'express-validator';
+import { isHttpError } from 'http-errors';
 
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -56,6 +57,11 @@ export const updateAiAssistantsFactory: UpdateAiAssistantsFactory = (crowi) => {
       }
       catch (err) {
         logger.error(err);
+
+        if (isHttpError(err)) {
+          return res.apiv3Err(new ErrorV3(err.message), err.status);
+        }
+
         return res.apiv3Err(new ErrorV3('Failed to update AiAssistants'));
       }
     },

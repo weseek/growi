@@ -2,12 +2,12 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-
 import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
 import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
+import createError from 'http-errors';
 import mongoose, { type HydratedDocument, type Types } from 'mongoose';
 import { type OpenAI, toFile } from 'openai';
 
@@ -575,7 +575,7 @@ class OpenaiService implements IOpenaiService {
   async updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
     const aiAssistant = await AiAssistantModel.findOne({ owner: data.owner, _id: aiAssistantId });
     if (aiAssistant == null) {
-      throw new Error('AiAssistant document does not exist');
+      throw createError(404, 'AiAssistant document does not exist');
     }
 
     await this.validateGrantedUserGroupsForAiAssistant(
@@ -662,7 +662,7 @@ class OpenaiService implements IOpenaiService {
   async deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument> {
     const aiAssistant = await AiAssistantModel.findOne({ owner: ownerId, _id: aiAssistantId });
     if (aiAssistant == null) {
-      throw new Error('AiAssistant document does not exist');
+      throw createError(404, 'AiAssistant document does not exist');
     }
 
     const vectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);
