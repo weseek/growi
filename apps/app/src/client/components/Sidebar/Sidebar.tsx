@@ -239,7 +239,7 @@ export const Sidebar = (): JSX.Element => {
 
   const isEditorMode = editorMode === EditorMode.Editor;
   const shouldHideTitle = isEditorMode && isMdSize && (isDrawerMode() || isCollapsedMode());
-  const shouldShowEditorHead = isEditorMode && isXlSize;
+  const shouldShowEditorSidebarHead = isEditorMode && isXlSize;
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -270,7 +270,7 @@ export const Sidebar = (): JSX.Element => {
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} divProps={{ 'data-testid': 'grw-sidebar' }}>
         <ResizableContainer>
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
-          {shouldShowEditorHead ? <EditorSidebarHead /> : <SidebarHead />}
+          {shouldShowEditorSidebarHead ? <EditorSidebarHead /> : <SidebarHead />}
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />
           </CollapsibleContainer>
