@@ -79,7 +79,7 @@ export const Playground = (): JSX.Element => {
       <div className="flex-expand-horiz">
         <div className="flex-expand-vert">
           <CodeMirrorEditorMain
-            isEditorMode
+            enableCollaboration
             onSave={saveHandler}
             onUpload={uploadHandler}
             indentSize={4}
