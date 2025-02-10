@@ -1,6 +1,5 @@
 import { useEffect, useCallback, useState } from 'react';
 
-import { unifiedMergeView } from '@codemirror/merge';
 import type { Extension } from '@codemirror/state';
 import { Prec } from '@codemirror/state';
 import {
@@ -96,25 +95,6 @@ const useKeymapExtension = (
   }, [codeMirrorEditor, keymapExtension]);
 };
 
-const useUnifiedMergeView = (
-    codeMirrorEditor?: UseCodeMirrorEditor,
-    unifiedMergeViewEnabled?: boolean,
-): void => {
-  useEffect(() => {
-    if (unifiedMergeViewEnabled == null) {
-      return;
-    }
-    const extension = unifiedMergeViewEnabled ? [
-      unifiedMergeView({
-        original: codeMirrorEditor?.getDoc() ?? '',
-      }),
-    ] : [];
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
-    return cleanupFunction;
-  }, [codeMirrorEditor, unifiedMergeViewEnabled]);
-};
-
 export const useEditorSettings = (
     codeMirrorEditor?: UseCodeMirrorEditor,
     editorSettings?: EditorSettings,
@@ -124,5 +104,4 @@ export const useEditorSettings = (
   useEnterKeyHandler(codeMirrorEditor, editorSettings?.autoFormatMarkdownTable);
   useThemeExtension(codeMirrorEditor, editorSettings?.theme);
   useKeymapExtension(codeMirrorEditor, editorSettings?.keymapMode, onSave);
-  useUnifiedMergeView(codeMirrorEditor, editorSettings?.unifiedMergeView);
 };

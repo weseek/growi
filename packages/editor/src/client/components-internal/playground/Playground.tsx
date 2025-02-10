@@ -22,7 +22,7 @@ export const Playground = (): JSX.Element => {
   const [editorTheme, setEditorTheme] = useState<EditorTheme>('defaultlight');
   const [editorKeymap, setEditorKeymap] = useState<KeyMapMode>('default');
   const [editorPaste, setEditorPaste] = useState<PasteMode>('both');
-  const [unifiedMergeView, setUnifiedMergeView] = useState(false);
+  const [enableUnifiedMergeView, setUnifiedMergeViewEnabled] = useState(false);
   const [editorSettings, setEditorSettings] = useState<EditorSettings>();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -46,10 +46,9 @@ export const Playground = (): JSX.Element => {
       keymapMode: editorKeymap,
       styleActiveLine: true,
       autoFormatMarkdownTable: true,
-      unifiedMergeView,
       pasteMode: editorPaste,
     });
-  }, [setEditorSettings, editorKeymap, editorTheme, editorPaste, unifiedMergeView]);
+  }, [setEditorSettings, editorKeymap, editorTheme, editorPaste]);
 
   // set handler to save with shortcut key
   const saveHandler = useCallback(() => {
@@ -82,6 +81,7 @@ export const Playground = (): JSX.Element => {
         <div className="flex-expand-vert">
           <CodeMirrorEditorMain
             enableCollaboration
+            enableUnifiedMergeView={enableUnifiedMergeView}
             onSave={saveHandler}
             onUpload={uploadHandler}
             indentSize={4}
@@ -97,7 +97,7 @@ export const Playground = (): JSX.Element => {
             setEditorTheme={setEditorTheme}
             setEditorKeymap={setEditorKeymap}
             setEditorPaste={setEditorPaste}
-            setUnifiedMergeView={setUnifiedMergeView}
+            setUnifiedMergeView={setUnifiedMergeViewEnabled}
           />
         </div>
       </div>

@@ -8,5 +8,4 @@ export interface EditorSettings {
   pasteMode: undefined | PasteMode,
   styleActiveLine: boolean,
   autoFormatMarkdownTable: boolean,
-  unifiedMergeView: boolean,
 }
