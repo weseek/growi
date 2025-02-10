@@ -1,4 +1,4 @@
-export const isDeepEquals = <T extends object>(obj1: T, obj2: T, isShallow = false): boolean => {
+export const isDeepEquals = <T extends object>(obj1: T, obj2: T, isRecursively = true): boolean => {
   const typedKeys1 = Object.keys(obj1) as (keyof T)[];
   const typedKeys2 = Object.keys(obj2) as (keyof T)[];
 
@@ -10,7 +10,7 @@ export const isDeepEquals = <T extends object>(obj1: T, obj2: T, isShallow = fal
     const val1 = obj1[key];
     const val2 = obj2[key];
 
-    if (isShallow) {
+    if (!isRecursively) {
       return val1 === val2;
     }
 
