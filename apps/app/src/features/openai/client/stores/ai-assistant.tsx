@@ -51,3 +51,26 @@ export const useSWRxAiAssistants = (): SWRResponse<AccessibleAiAssistantsHasId, 
     ([endpoint]) => apiv3Get(endpoint).then(response => response.data.accessibleAiAssistants),
   );
 };
+
+
+type AiAssistantChatSidebarStatus = {
+  isOpened: boolean,
+}
+
+type AiAssistantChatSidebarUtils = {
+  open(): void
+  close(): void
+}
+
+export const useAiAssistantChatSidebar = (
+    status?: AiAssistantChatSidebarStatus,
+): SWRResponse<AiAssistantChatSidebarStatus, Error> & AiAssistantChatSidebarUtils => {
+  const initialStatus = { isOpened: false };
+  const swrResponse = useSWRStatic<AiAssistantChatSidebarStatus, Error>('AiAssistantChatSidebar', status, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    open: useCallback(() => { swrResponse.mutate({ isOpened: true }) }, [swrResponse]),
+    close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
+  };
+};

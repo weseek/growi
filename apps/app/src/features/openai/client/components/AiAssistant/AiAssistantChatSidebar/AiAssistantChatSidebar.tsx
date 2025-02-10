@@ -5,6 +5,8 @@ import {
 
 import SimpleBar from 'simplebar-react';
 
+import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
+
 const RIGHT_SIDEBAR_WIDTH = 500;
 
 // Assistant Info Component
@@ -17,49 +19,52 @@ const AssistantInfo: FC = () => {
   );
 };
 
-// Right Sidebar Tab
-type RightSidebarTabProps = {
-  isOpen: boolean;
-  onClick: () => void;
-};
+// // Right Sidebar Tab
+// type RightSidebarTabProps = {
+//   isOpen: boolean;
+//   onClick: () => void;
+// };
 
-const RightSidebarTab: FC<RightSidebarTabProps> = memo(({ isOpen, onClick }) => {
-  return (
-    <button
-      type="button"
-      className="position-fixed top-50 end-0 bg-white border-start border-top border-bottom px-2 py-3 translate-middle-y"
-      style={{
-        transform: 'translateX(-100%) translateY(-50%) rotate(-90deg)',
-        transformOrigin: '100% 50%',
-        borderRadius: '4px 4px 0 0',
-        zIndex: 1030,
-      }}
-      onClick={onClick}
-    >
-      <span className="d-flex align-items-center">
-        <span className="material-symbols-outlined me-2" style={{ transform: 'rotate(90deg)' }}>
-          {isOpen ? 'close' : 'robot'}
-        </span>
-        GROWI AI について
-      </span>
-    </button>
-  );
-});
+// const RightSidebarTab: FC<RightSidebarTabProps> = memo(({ isOpen, onClick }) => {
+//   return (
+//     <button
+//       type="button"
+//       className="position-fixed top-50 end-0 bg-white border-start border-top border-bottom px-2 py-3 translate-middle-y"
+//       style={{
+//         transform: 'translateX(-100%) translateY(-50%) rotate(-90deg)',
+//         transformOrigin: '100% 50%',
+//         borderRadius: '4px 4px 0 0',
+//         zIndex: 1030,
+//       }}
+//       onClick={onClick}
+//     >
+//       <span className="d-flex align-items-center">
+//         <span className="material-symbols-outlined me-2" style={{ transform: 'rotate(90deg)' }}>
+//           {isOpen ? 'close' : 'robot'}
+//         </span>
+//         GROWI AI について
+//       </span>
+//     </button>
+//   );
+// });
 
 
 export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
-  const [isOpen, setIsOpen] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
-  const handleToggle = useCallback(() => {
-    setIsOpen(prev => !prev);
-  }, []);
+  const { data: aiAssistantChatSidebarData, close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+  const isOpened = aiAssistantChatSidebarData?.isOpened ?? false;
+
+
+  // const handleToggle = useCallback(() => {
+  //   setIsOpen(prev => !prev);
+  // }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isOpen && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+      if (isOpened && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+        closeAiAssistantChatSidebar();
       }
     };
 
@@ -67,15 +72,11 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [closeAiAssistantChatSidebar, isOpened]);
 
   return (
     <>
-      <RightSidebarTab
-        isOpen={isOpen}
-        onClick={handleToggle}
-      />
-      {isOpen && (
+      {isOpened && (
         <div
           ref={sidebarRef}
           className="position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm"
@@ -88,7 +89,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
             <button
               type="button"
               className="btn btn-link p-0 border-0"
-              onClick={handleToggle}
+              onClick={closeAiAssistantChatSidebar}
             >
               <span className="material-symbols-outlined">close</span>
             </button>
