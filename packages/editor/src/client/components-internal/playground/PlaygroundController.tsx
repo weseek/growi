@@ -74,37 +74,31 @@ export const SetCaretLineRow = (): JSX.Element => {
 };
 
 
-type SetParamRowProps = {
-    update: (value: any) => void,
-    items: string[],
+type OutlineSecondaryButtonsProps<V> = {
+    update: (value: V) => void,
+    items: V[],
 }
 
-const SetParamRow = (
-    props: SetParamRowProps,
+const OutlineSecondaryButtons = <V extends { toString: () => string }, >(
+  props: OutlineSecondaryButtonsProps<V>,
 ): JSX.Element => {
   const { update, items } = props;
   return (
-    <>
-      <div className="row mt-3">
-        <h2>default</h2>
-        <div className="col">
-          <div>
-            { items.map((item) => {
-              return (
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary"
-                  onClick={() => {
-                    update(item);
-                  }}
-                >{item}
-                </button>
-              );
-            }) }
-          </div>
-        </div>
-      </div>
-    </>
+    <div className="d-flex flex-wrap gap-1">
+      { items.map((item) => {
+        return (
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={() => {
+              update(item);
+            }}
+          >
+            {item.toString()}
+          </button>
+        );
+      }) }
+    </div>
   );
 };
 
@@ -118,12 +112,32 @@ type PlaygroundControllerProps = {
 export const PlaygroundController = (props: PlaygroundControllerProps): JSX.Element => {
   const { setEditorTheme, setEditorKeymap, setEditorPaste } = props;
   return (
-    <div className="container mt-5">
+    <div className="container">
       <InitEditorValueRow />
+
       <SetCaretLineRow />
-      <SetParamRow update={setEditorTheme} items={AllEditorTheme} />
-      <SetParamRow update={setEditorKeymap} items={AllKeyMap} />
-      <SetParamRow update={setEditorPaste} items={AllPasteMode} />
+
+      <div className="row mt-5">
+        <h2>Themes</h2>
+        <div className="col">
+          <OutlineSecondaryButtons<EditorTheme> update={setEditorTheme} items={AllEditorTheme} />
+        </div>
+      </div>
+
+      <div className="row mt-5">
+        <h2>Keymaps</h2>
+        <div className="col">
+          <OutlineSecondaryButtons<KeyMapMode> update={setEditorKeymap} items={AllKeyMap} />
+        </div>
+      </div>
+
+      <div className="row mt-5">
+        <h2>Paste mode</h2>
+        <div className="col">
+          <OutlineSecondaryButtons<PasteMode> update={setEditorPaste} items={AllPasteMode} />
+        </div>
+      </div>
+
     </div>
   );
 };
