@@ -6,6 +6,10 @@ import SimpleBar from 'simplebar-react';
 
 import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
 
+import styles from './AiAssistantChatSidebar.module.scss';
+
+const moduleClass = styles['grw-ai-assistant-chat-sidebar'] ?? '';
+
 const RIGHT_SIDEBAR_WIDTH = 500;
 
 type AiAssistantChatSidebarSubstanceProps = {
@@ -18,8 +22,8 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
   return (
     <>
       <div className="d-flex align-items-center p-3 border-bottom">
-        <span className="material-symbols-outlined me-2">robot</span>
-        <h6 className="mb-0 flex-grow-1">GROWI AI について</h6>
+        <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
+        <h5 className="mb-0 fw-bold flex-grow-1">GROWI AI について</h5>
         <button
           type="button"
           className="btn btn-link p-0 border-0"
@@ -63,7 +67,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
       {isOpened && (
         <div
           ref={sidebarRef}
-          className="position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm"
+          className={`position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm ${moduleClass}`}
           style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
           data-testid="grw-right-sidebar"
         >
