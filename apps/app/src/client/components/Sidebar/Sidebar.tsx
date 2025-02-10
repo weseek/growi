@@ -238,7 +238,8 @@ export const Sidebar = (): JSX.Element => {
   const { data: isXlSize } = useIsDeviceLargerThanXl();
 
   const isEditorMode = editorMode === EditorMode.Editor;
-  const shouldHideTitle = isEditorMode && isMdSize && (isDrawerMode() || isCollapsedMode());
+  const shouldHideSiteName = isEditorMode && isXlSize;
+  const shouldHideSubnavAppTitle = isEditorMode && isMdSize && (isDrawerMode() || isCollapsedMode());
   const shouldShowEditorSidebarHead = isEditorMode && isXlSize;
 
   // css styles
@@ -264,12 +265,14 @@ export const Sidebar = (): JSX.Element => {
           <span className="material-symbols-outlined">reorder</span>
         </DrawerToggler>
       )}
-      { sidebarMode != null && !isDockMode() && !isSearchPage && !shouldHideTitle && (
+      { sidebarMode != null && !isDockMode() && !isSearchPage && !shouldHideSubnavAppTitle && (
         <AppTitleOnSubnavigation />
       )}
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} divProps={{ 'data-testid': 'grw-sidebar' }}>
         <ResizableContainer>
-          { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
+          { sidebarMode != null && !isCollapsedMode() && (
+            <AppTitleOnSidebarHead hideAppTitle={shouldHideSiteName} />
+          )}
           {shouldShowEditorSidebarHead ? <EditorSidebarHead /> : <SidebarHead />}
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />

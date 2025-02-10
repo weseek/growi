@@ -4,8 +4,6 @@ import Link from 'next/link';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { useAppTitle, useConfidential, useIsDefaultLogo } from '~/stores-universal/context';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
-import { useIsDeviceLargerThanXl } from '~/stores/ui';
 
 import { SidebarBrandLogo } from '../SidebarBrandLogo';
 
@@ -14,20 +12,14 @@ import styles from './AppTitle.module.scss';
 
 type Props = {
   className?: string,
+  hideAppTitle?: boolean;
 }
 
-const AppTitleSubstance = memo((props: Props): JSX.Element => {
-
-  const { className } = props;
+const AppTitleSubstance = memo(({ className = '', hideAppTitle = false }: Props): JSX.Element => {
 
   const { data: isDefaultLogo } = useIsDefaultLogo();
   const { data: appTitle } = useAppTitle();
   const { data: confidential } = useConfidential();
-  const { data: editorMode } = useEditorMode();
-  const { data: isXlSize } = useIsDeviceLargerThanXl();
-
-  const isEditorMode = editorMode === EditorMode.Editor;
-  const isXlEditorMode = isEditorMode && isXlSize;
 
   return (
     <div className={`${styles['grw-app-title']} ${className} d-flex`}>
@@ -36,7 +28,7 @@ const AppTitleSubstance = memo((props: Props): JSX.Element => {
         <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
       </Link>
       <div className="flex-grow-1 d-flex align-items-center justify-content-between gap-3 overflow-hidden">
-        {!isXlEditorMode && (
+        {!hideAppTitle && (
           <div id="grw-site-name" className="grw-site-name text-truncate">
             <Link href="/" className="fs-4">
               {appTitle}
@@ -65,17 +57,17 @@ export const AppTitleOnSubnavigation = memo((): JSX.Element => {
 });
 
 export const AppTitleOnSidebarHead = memo((): JSX.Element => {
-  const { data: editorMode } = useEditorMode();
-  const { data: isXlSize } = useIsDeviceLargerThanXl();
-
-  const isEditorMode = editorMode === EditorMode.Editor;
-  const isXlEditorMode = isEditorMode && isXlSize;
-
-  const positionClass = isXlEditorMode ? '' : 'position-absolute z-1';
-
   return (
     <AppTitleSubstance
-      className={`${positionClass} ${styles['on-sidebar-head']}`}
+      className={`position-absolute z-1 ${styles['on-sidebar-head']}`}
     />
   );
 });
+
+// export const AppTitleOnEditorSidebarHead = memo((): JSX.Element => {
+//   return (
+//     <AppTitleSubstance
+//       className={`${styles['on-sidebar-head']}`}
+//     />
+//   );
+// });
