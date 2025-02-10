@@ -8,6 +8,7 @@ import { useCurrentUser } from '~/stores-universal/context';
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
+import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
 
 import styles from './AiAssistantTree.module.scss';
 
@@ -84,6 +85,7 @@ type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
   threads: Thread[];
+  onItemClicked?: (aiAssistantData: AiAssistantHasId) => void;
   onDeleted?: () => void;
 };
 
@@ -91,13 +93,14 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   currentUserId,
   aiAssistant,
   threads,
+  onItemClicked,
   onDeleted,
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
-  const openChatHandler = useCallback(() => {
-    // TODO: https://redmine.weseek.co.jp/issues/159530
-  }, []);
+  const openChatHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
+    onItemClicked?.(aiAssistantData);
+  }, [onItemClicked]);
 
   const openThreadsHandler = useCallback(() => {
     setIsThreadsOpened(toggle => !toggle);
@@ -119,7 +122,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   return (
     <>
       <li
-        onClick={openChatHandler}
+        onClick={() => openChatHandler(aiAssistant)}
         role="button"
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
       >
@@ -183,6 +186,8 @@ type AiAssistantTreeProps = {
 
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
+  const { open: openAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+
   return (
     <ul className={`list-group ${moduleClass}`}>
       {aiAssistants.map(assistant => (
@@ -191,6 +196,7 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           currentUserId={currentUser?._id}
           aiAssistant={assistant}
           threads={dummyThreads}
+          onItemClicked={openAiAssistantChatSidebar}
           onDeleted={onDeleted}
         />
       ))}

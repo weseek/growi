@@ -1,0 +1,14 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/variables/growi-official-colors';
+@use '@growi/ui/scss/atoms/btn-muted';
+
+// == Colors
+.grw-ai-assistant-chat-sidebar :global {
+  .growi-ai-chat-icon {
+    color: growi-official-colors.$growi-ai-purple;
+  }
+
+  .btn-submit {
+    @include btn-muted.colorize(bs.$purple, bs.$purple);
+  }
+}
