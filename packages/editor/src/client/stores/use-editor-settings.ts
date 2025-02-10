@@ -1,5 +1,6 @@
 import { useEffect, useCallback, useState } from 'react';
 
+import { unifiedMergeView } from '@codemirror/merge';
 import type { Extension } from '@codemirror/state';
 import { Prec } from '@codemirror/state';
 import {
@@ -92,5 +93,19 @@ export const useEditorSettings = (
 
   }, [codeMirrorEditor, keymapExtension]);
 
+
+  useEffect(() => {
+    if (editorSettings?.unifiedMergeView == null) {
+      return;
+    }
+    const extension = editorSettings.unifiedMergeView ? [
+      unifiedMergeView({
+        original: codeMirrorEditor?.getDoc() ?? '',
+      }),
+    ] : [];
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
+    return cleanupFunction;
+  }, [codeMirrorEditor, editorSettings?.unifiedMergeView]);
 
 };
