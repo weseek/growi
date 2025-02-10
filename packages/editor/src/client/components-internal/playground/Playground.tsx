@@ -22,6 +22,7 @@ export const Playground = (): JSX.Element => {
   const [editorTheme, setEditorTheme] = useState<EditorTheme>('defaultlight');
   const [editorKeymap, setEditorKeymap] = useState<KeyMapMode>('default');
   const [editorPaste, setEditorPaste] = useState<PasteMode>('both');
+  const [unifiedMergeView, setUnifiedMergeView] = useState(false);
   const [editorSettings, setEditorSettings] = useState<EditorSettings>();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -45,9 +46,10 @@ export const Playground = (): JSX.Element => {
       keymapMode: editorKeymap,
       styleActiveLine: true,
       autoFormatMarkdownTable: true,
+      unifiedMergeView,
       pasteMode: editorPaste,
     });
-  }, [setEditorSettings, editorKeymap, editorTheme, editorPaste]);
+  }, [setEditorSettings, editorKeymap, editorTheme, editorPaste, unifiedMergeView]);
 
   // set handler to save with shortcut key
   const saveHandler = useCallback(() => {
@@ -91,7 +93,12 @@ export const Playground = (): JSX.Element => {
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
           <Preview markdown={markdownToPreview} />
           <hr />
-          <PlaygroundController setEditorTheme={setEditorTheme} setEditorKeymap={setEditorKeymap} setEditorPaste={setEditorPaste} />
+          <PlaygroundController
+            setEditorTheme={setEditorTheme}
+            setEditorKeymap={setEditorKeymap}
+            setEditorPaste={setEditorPaste}
+            setUnifiedMergeView={setUnifiedMergeView}
+          />
         </div>
       </div>
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '50px' }}>
