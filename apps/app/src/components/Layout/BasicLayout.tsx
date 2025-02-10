@@ -8,7 +8,10 @@ import { RawLayout } from './RawLayout';
 
 import styles from './BasicLayout.module.scss';
 
-const RightSidebar = dynamic(() => import('~/client/components/RightSidebar').then(mod => mod.RightSidebar), { ssr: false });
+const AiAssistantChatSidebar = dynamic(
+  () => import('~/features/openai/client/components/AiAssistant/AiAssistantChatSidebar/AiAssistantChatSidebar')
+    .then(mod => mod.AiAssistantChatSidebar), { ssr: false },
+);
 
 
 const moduleClass = styles['grw-basic-layout'] ?? '';
@@ -63,7 +66,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
           {children}
         </div>
 
-        <RightSidebar />
+        <AiAssistantChatSidebar />
       </div>
 
       <GrowiNavbarBottom />
