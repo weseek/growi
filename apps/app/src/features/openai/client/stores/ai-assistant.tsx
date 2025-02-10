@@ -6,7 +6,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-import { type AccessibleAiAssistantsHasId } from '../../interfaces/ai-assistant';
+import { type AccessibleAiAssistantsHasId, type AiAssistantHasId } from '../../interfaces/ai-assistant';
 
 export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
@@ -55,10 +55,11 @@ export const useSWRxAiAssistants = (): SWRResponse<AccessibleAiAssistantsHasId, 
 
 type AiAssistantChatSidebarStatus = {
   isOpened: boolean,
+  aiAssistantData?: AiAssistantHasId;
 }
 
 type AiAssistantChatSidebarUtils = {
-  open(): void
+  open(aiAssistantData: AiAssistantHasId): void
   close(): void
 }
 
@@ -70,7 +71,7 @@ export const useAiAssistantChatSidebar = (
 
   return {
     ...swrResponse,
-    open: useCallback(() => { swrResponse.mutate({ isOpened: true }) }, [swrResponse]),
+    open: useCallback((aiAssistantData: AiAssistantHasId) => { swrResponse.mutate({ isOpened: true, aiAssistantData }) }, [swrResponse]),
     close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
   };
 };

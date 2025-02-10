@@ -4,6 +4,7 @@ import {
 
 import SimpleBar from 'simplebar-react';
 
+import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
 
 import styles from './AiAssistantChatSidebar.module.scss';
@@ -13,17 +14,18 @@ const moduleClass = styles['grw-ai-assistant-chat-sidebar'] ?? '';
 const RIGHT_SIDEBAR_WIDTH = 500;
 
 type AiAssistantChatSidebarSubstanceProps = {
+  aiAssistantData?: AiAssistantHasId;
   closeAiAssistantChatSidebar: () => void
 }
 
 const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
-  const { closeAiAssistantChatSidebar } = props;
+  const { aiAssistantData, closeAiAssistantChatSidebar } = props;
 
   return (
     <>
       <div className="d-flex align-items-center p-3 border-bottom">
         <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
-        <h5 className="mb-0 fw-bold flex-grow-1">GROWI AI について</h5>
+        <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{aiAssistantData?.name}</h5>
         <button
           type="button"
           className="btn btn-link p-0 border-0"
@@ -77,6 +79,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
             autoHide
           >
             <AiAssistantChatSidebarSubstance
+              aiAssistantData={aiAssistantChatSidebarData?.aiAssistantData}
               closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
             />
           </SimpleBar>

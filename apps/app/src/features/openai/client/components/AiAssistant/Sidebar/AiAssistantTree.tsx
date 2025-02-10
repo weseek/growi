@@ -85,7 +85,7 @@ type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
   threads: Thread[];
-  onItemClicked?: () => void;
+  onItemClicked?: (aiAssistantData: AiAssistantHasId) => void;
   onDeleted?: () => void;
 };
 
@@ -98,8 +98,8 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
-  const openChatHandler = useCallback(() => {
-    onItemClicked?.();
+  const openChatHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
+    onItemClicked?.(aiAssistantData);
   }, [onItemClicked]);
 
   const openThreadsHandler = useCallback(() => {
@@ -122,7 +122,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   return (
     <>
       <li
-        onClick={openChatHandler}
+        onClick={() => openChatHandler(aiAssistant)}
         role="button"
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
       >
