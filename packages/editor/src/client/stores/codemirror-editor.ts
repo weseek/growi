@@ -32,7 +32,7 @@ export const useCodeMirrorEditorIsolated = (
 
   const shouldUpdate = swrKey != null && container != null && (
     currentData == null
-    || (isValid(newData) && !isDeepEquals(currentData, newData, true))
+    || (isValid(newData) && !isDeepEquals(currentData, newData, false))
   );
 
   if (shouldUpdate) {
