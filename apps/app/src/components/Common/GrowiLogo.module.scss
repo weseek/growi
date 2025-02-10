@@ -1,6 +1,4 @@
 @use '@growi/core-styles/scss/variables/growi-official-colors';
-@use '~/styles/mixins';
-@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 // == Colors
 .grw-logo :global {
@@ -21,22 +19,6 @@
 
       .group2 {
         fill: growi-official-colors.$growi-blue;
-      }
-    }
-  }
-}
-
-// == Editor mode
-@include mixins.at-editing() {
-  @include bs.media-breakpoint-up(xl) {
-    .grw-logo {
-      &:global {
-        opacity: 0.5;
-        transition: opacity 0.8s ease;
-
-        &:hover {
-          opacity: 1;
-        }
       }
     }
   }

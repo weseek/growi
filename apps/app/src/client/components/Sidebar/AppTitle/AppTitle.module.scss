@@ -2,6 +2,7 @@
 @use '@growi/core-styles/scss/variables/growi-official-colors';
 @use '~/styles/variables' as var;
 @use '../button-styles';
+@use '~/styles/mixins';
 
 // GROWI Logo
 .grw-app-title :global {
@@ -22,6 +23,22 @@
 
   .confidential-tooltip {
     max-width: 180px;
+  }
+}
+
+// == GROWI Logo when Editor mode
+@include mixins.at-editing() {
+  @include bs.media-breakpoint-up(xl) {
+    .grw-app-title :global {
+      .grw-logo {
+          opacity: 0.5;
+          transition: opacity 0.8s ease;
+
+          &:hover {
+            opacity: 1;
+          }
+      }
+    }
   }
 }
 
