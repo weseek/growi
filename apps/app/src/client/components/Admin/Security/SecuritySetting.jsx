@@ -186,9 +186,9 @@ class SecuritySetting extends React.Component {
     return;
   }
 
-  setDisplayState(newState) {
+  setDisplayState(newState, setState) {
     const { adminGeneralSecurityContainer } = this.props;
-    this.setState(newState);
+    setState(newState);
     if (adminGeneralSecurityContainer.state.isShowRestrictedByOwner);
     if (adminGeneralSecurityContainer.state.isShowRestrictedByGroup);
   }
