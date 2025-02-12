@@ -67,7 +67,7 @@ export const useCollaborativeEditorMode = (
 
   // Setup provider
   useEffect(() => {
-    if (provider != null || pageId == null || ydoc == null || socket == null || onEditorsUpdated == null) {
+    if (provider != null || pageId == null || ydoc == null || socket == null) {
       return;
     }
 
@@ -91,7 +91,7 @@ export const useCollaborativeEditorMode = (
     socketIOProvider.awareness.setLocalStateField('user', userLocalState);
 
     socketIOProvider.on('sync', (isSync: boolean) => {
-      if (isSync) {
+      if (isSync && onEditorsUpdated != null) {
         const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
         onEditorsUpdated(userList);
       }
@@ -99,6 +99,8 @@ export const useCollaborativeEditorMode = (
 
     // update args type see: SocketIOProvider.Awareness.awarenessUpdate
     socketIOProvider.awareness.on('update', (update: { added: unknown[]; removed: unknown[]; }) => {
+      if (onEditorsUpdated == null) return;
+
       const { added, removed } = update;
       if (added.length > 0 || removed.length > 0) {
         const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
