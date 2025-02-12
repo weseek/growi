@@ -4,16 +4,17 @@ import axios from 'axios';
 import mongoose from 'mongoose';
 
 import { configManager } from '~/server/service/config-manager';
+
+import { AttachmentMethodType } from '../../../../interfaces/attachment';
 import type {
   IProactiveQuestionnaireAnswer, IProactiveQuestionnaireAnswerLegacy,
 } from '../../interfaces/proactive-questionnaire-answer';
 import type { IQuestionnaireAnswer, IQuestionnaireAnswerLegacy } from '../../interfaces/questionnaire-answer';
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
-import ProactiveQuestionnaireAnswer from '../../server/models/proactive-questionnaire-answer';
-import QuestionnaireAnswer from '../../server/models/questionnaire-answer';
-import QuestionnaireAnswerStatus from '../../server/models/questionnaire-answer-status';
-import QuestionnaireOrder from '../../server/models/questionnaire-order';
-import { AttachmentMethodType } from '../../../../../src/interfaces/attachment';
+import ProactiveQuestionnaireAnswer from '../models/proactive-questionnaire-answer';
+import QuestionnaireAnswer from '../models/questionnaire-answer';
+import QuestionnaireAnswerStatus from '../models/questionnaire-answer-status';
+import QuestionnaireOrder from '../models/questionnaire-order';
 
 import questionnaireCronService from './questionnaire-cron';
 
