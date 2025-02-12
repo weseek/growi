@@ -64,10 +64,12 @@ export const AppTitleOnSidebarHead = memo((): JSX.Element => {
   );
 });
 
-// export const AppTitleOnEditorSidebarHead = memo((): JSX.Element => {
-//   return (
-//     <AppTitleSubstance
-//       className={`${styles['on-sidebar-head']}`}
-//     />
-//   );
-// });
+export const AppTitleOnEditorSidebarHead = memo((): JSX.Element => {
+  return (
+    <div className={`${styles['on-editor-sidebar-head']}`}>
+      <AppTitleSubstance
+        className={`${styles['on-sidebar-head']}`}
+      />
+    </div>
+  );
+});

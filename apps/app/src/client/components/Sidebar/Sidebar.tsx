@@ -25,10 +25,10 @@ import {
 
 import { DrawerToggler } from '../Common/DrawerToggler';
 
-import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
+import { AppTitleOnSidebarHead, AppTitleOnEditorSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableAreaFallback } from './ResizableArea/ResizableAreaFallback';
 import type { ResizableAreaProps } from './ResizableArea/props';
-import { SidebarHead, EditorSidebarHead } from './SidebarHead';
+import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 
 import 'simplebar-react/dist/simplebar.min.css';
@@ -273,7 +273,7 @@ export const Sidebar = (): JSX.Element => {
           { sidebarMode != null && !isCollapsedMode() && (
             <AppTitleOnSidebarHead hideAppTitle={shouldHideSiteName} />
           )}
-          {shouldShowEditorSidebarHead ? <EditorSidebarHead /> : <SidebarHead />}
+          {shouldShowEditorSidebarHead ? <AppTitleOnEditorSidebarHead /> : <SidebarHead />}
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />
           </CollapsibleContainer>

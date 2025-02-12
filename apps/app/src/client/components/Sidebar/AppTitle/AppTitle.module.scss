@@ -81,6 +81,30 @@
   width: calc(100% - $toggle-collapse-button-width);
 }
 
+// ==Sidebar Head when Editor
+@include bs.color-mode(light) {
+  .on-editor-sidebar-head {
+    background-color: var(
+      --on-editor-sidebar-head-bg,
+      var(
+        --grw-sidebar-nav-bg,
+        var(--grw-highlight-100)
+      )
+    );
+  }
+}
+
+@include bs.color-mode(dark) {
+  .on-editor-sidebar-head {
+    background-color: var(
+      --on-editor-sidebar-head-bg,
+      var(
+        --grw-sidebar-nav-bg,
+        var(--grw-highlight-800)
+      )
+    );
+  }
+}
 
 // == Interaction
 @keyframes bounce-to-right {
