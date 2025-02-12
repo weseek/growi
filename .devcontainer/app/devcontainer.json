@@ -8,8 +8,7 @@
 
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "20.18.0",
-      "pnpmVersion": "9.4.0"
+      "version": "20.18.0"
     }
   },
 
