@@ -119,22 +119,22 @@ export const useCollaborativeEditorMode = (
     }
 
     const ytext = ydoc.getText('codemirror');
+
+    // setup observer to mark collaborative changes
+    ytext.observe((event) => {
+      if (event.transaction.local) return;
+
+      codeMirrorEditor.view?.dispatch({
+        effects: CollaborativeChange.of(event.delta),
+      });
+    });
+
     const undoManager = new Y.UndoManager(ytext);
 
     const extensions = [
       keymap.of(yUndoManagerKeymap),
       yCollab(ytext, provider.awareness, { undoManager }),
     ];
-
-    // Setup observer for collaborative changes
-    ytext.observe((event) => {
-      if (event.transaction.local) return;
-
-      // 外部からの変更があったことを通知
-      codeMirrorEditor.view?.dispatch({
-        effects: CollaborativeChange.of(event.delta),
-      });
-    });
 
     const cleanupFunctions = extensions.map(ext => codeMirrorEditor.appendExtensions([ext]));
 

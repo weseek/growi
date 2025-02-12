@@ -17,6 +17,7 @@ export const useUnifiedMergeView = (
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
 
+  // setup unifiedMergeView
   useEffect(() => {
     if (unifiedMergeViewEnabled == null || !codeMirrorEditor) {
       return;
@@ -41,10 +42,6 @@ export const useUnifiedMergeView = (
     const extension = StateField.define({
       create: () => null,
       update(value, tr) {
-        if (codeMirrorEditor.state == null) {
-          return value;
-        }
-
         for (const e of tr.effects) {
           if (e.is(CollaborativeChange)) {
             const changeSpecs = deltaToChangeSpecs(e.value);
