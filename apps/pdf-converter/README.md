@@ -27,6 +27,10 @@ This app (PDF-Converter) is necessary to convert markdown pages to PDF during th
 1. Request PDF bulk export from the page menu in the GROWI app
     - It might take a few minutes, depending on GROWI's configurations
 
+### Note
+When creating both containers from scratch or rebuilding them, **make sure to select and create GROWI-Dev first**.  
+This is necessary because GROWI-Dev uses devcontainer features for enabling node, and [features is only enabled for the first container created](https://github.com/devcontainers/spec/issues/546).
+
 ## PDF-Converter client library
 [pdf-converter-client](../../packages/pdf-converter-client) is a client library for requesting PDF-Converter, and is used by GROWI internally. It's code is auto-generated from the PDF-Converter code.
 

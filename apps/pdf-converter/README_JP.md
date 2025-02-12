@@ -27,6 +27,10 @@ GROWI には、ページを PDF 形式で一括エクスポートする機能が
 1. GROWI アプリのページメニューから PDF の一括エクスポートをリクエスト
    - GROWI の設定によっては、処理に数分かかる場合があります
 
+### 備考
+二つのコンテナを初めて作成する時や、コンテナを rebuild する時、**必ず GROWI-Dev を先に選択して作成してください**。  
+GROWI-Dev は devcontainer features を使用して node を有効化していますが、[features は最初に作成したコンテナにしか有効になりません](https://github.com/devcontainers/spec/issues/546)。
+
 ## PDF-Converter クライアントライブラリ
 [pdf-converter-client](../../packages/pdf-converter-client) は、PDF-Converter へのリクエストを行うクライアントライブラリであり、GROWI 内部で使用されています。このコードは PDF-Converter のコードから自動生成されます。
 

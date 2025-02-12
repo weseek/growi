@@ -16,6 +16,12 @@
     "build": {
       "outputs": ["dist/**"],
       "outputLogs": "new-only"
+    },
+    "version:prerelease": {
+      "cache": false
+    },
+    "version:prepatch": {
+      "cache": false
     }
   }
 }
