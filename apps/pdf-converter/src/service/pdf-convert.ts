@@ -3,8 +3,9 @@ import path from 'path';
 import { Readable, Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
-import { Logger, OnInit } from '@tsed/common';
+import { OnInit } from '@tsed/common';
 import { Inject, Service } from '@tsed/di';
+import { Logger } from '@tsed/logger';
 import { Cluster } from 'puppeteer-cluster';
 
 interface PageInfo {

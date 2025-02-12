@@ -1,6 +1,7 @@
-import { BodyParams, Logger } from '@tsed/common';
+import { BodyParams } from '@tsed/common';
 import { Controller, Inject } from '@tsed/di';
 import { InternalServerError } from '@tsed/exceptions';
+import { Logger } from '@tsed/logger';
 import {
   Post, Returns, Enum, Description,
 } from '@tsed/schema';

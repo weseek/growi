@@ -34,6 +34,7 @@ COPY . .
 RUN pnpm install ---frozen-lockfile
 
 # build
+RUN turbo run clean
 RUN turbo run build --filter @growi/pdf-converter
 
 # make artifacts
@@ -73,8 +74,10 @@ USER node
 WORKDIR ${appDir}
 RUN tar -xf packages.tar.gz && rm packages.tar.gz
 
+COPY --chown=node:node --chmod=700 apps/pdf-converter/docker/docker-entrypoint.sh /
+
 WORKDIR ${appDir}/apps/pdf-converter
 
 EXPOSE 3010
 
-CMD ["node", "dist/index.js"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

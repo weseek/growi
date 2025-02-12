@@ -27,6 +27,7 @@ import type { IOptionsForCreate } from '~/interfaces/page';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
+import type Crowi from '../crowi';
 import { collectAncestorPaths } from '../util/collect-ancestor-paths';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
@@ -51,7 +52,7 @@ export interface PageDocument extends IPage, Document<Types.ObjectId> {
   [x:string]: any // for obsolete methods
   getLatestRevisionBodyLength(): Promise<number | null | undefined>
   calculateAndUpdateLatestRevisionBodyLength(this: PageDocument): Promise<void>
-  populateDataToShowRevision(shouldExcludeBody?: boolean): Promise<IPagePopulatedToShowRevision>
+  populateDataToShowRevision(shouldExcludeBody?: boolean): Promise<IPagePopulatedToShowRevision & PageDocument>
 }
 
 type TargetAndAncestorsResult = {
@@ -1154,7 +1155,8 @@ schema.methods.makeWip = function(disableTtl: boolean) {
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
-export default function PageModel(crowi): any {
+
+export default function PageModel(crowi: Crowi | null): any {
   // add old page schema methods
   const pageSchema = getPageSchema(crowi);
   schema.methods = { ...pageSchema.methods, ...schema.methods };

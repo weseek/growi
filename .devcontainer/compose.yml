@@ -7,8 +7,12 @@ services:
       - node_modules:/workspace/growi/node_modules
       - buildcache_app:/workspace/growi/apps/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
+      - ../../share:/workspace/share:delegated
       - page_bulk_export_tmp:/tmp/page-bulk-export
     tty: true
+    networks:
+    - default
+    - opentelemetry-collector-dev-setup_default
 
   mongo:
     image: mongo:6.0
@@ -56,3 +60,8 @@ volumes:
   node_modules:
   buildcache_app:
   page_bulk_export_tmp:
+
+networks:
+  default:
+  opentelemetry-collector-dev-setup_default:
+    external: ${OPENTELEMETRY_COLLECTOR_DEV_ENABLED:-false}

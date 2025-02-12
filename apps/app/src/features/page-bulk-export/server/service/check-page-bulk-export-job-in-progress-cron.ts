@@ -16,11 +16,11 @@ const logger = loggerFactory('growi:service:check-page-bulk-export-job-in-progre
 class CheckPageBulkExportJobInProgressCronService extends CronService {
 
   override getCronSchedule(): string {
-    return configManager.getConfig('crowi', 'app:checkPageBulkExportJobInProgressCronSchedule');
+    return configManager.getConfig('app:checkPageBulkExportJobInProgressCronSchedule');
   }
 
   override async executeJob(): Promise<void> {
-    const isBulkExportPagesEnabled = configManager.getConfig('crowi', 'app:isBulkExportPagesEnabled');
+    const isBulkExportPagesEnabled = configManager.getConfig('app:isBulkExportPagesEnabled');
     if (!isBulkExportPagesEnabled) return;
 
     const pageBulkExportJobInProgress = await PageBulkExportJob.findOne({

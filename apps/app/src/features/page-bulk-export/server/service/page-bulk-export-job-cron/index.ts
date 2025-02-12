@@ -77,11 +77,11 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
     super();
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');
-    this.parallelExecLimit = configManager.getConfig('crowi', 'app:pageBulkExportParallelExecLimit');
+    this.parallelExecLimit = configManager.getConfig('app:pageBulkExportParallelExecLimit');
   }
 
   override getCronSchedule(): string {
-    return configManager.getConfig('crowi', 'app:pageBulkExportJobCronSchedule');
+    return configManager.getConfig('app:pageBulkExportJobCronSchedule');
   }
 
   override async executeJob(): Promise<void> {

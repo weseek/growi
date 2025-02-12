@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next';
 
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -76,7 +77,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
           </tr>
         </thead>
         <tbody>
-          { adminExternalAccountsContainer.state.externalAccounts.map((ea: IAdminExternalAccount) => {
+          { adminExternalAccountsContainer.state.externalAccounts.map((ea: IAdminExternalAccount<IExternalAuthProviderType>) => {
             return (
               <tr key={ea._id}>
                 <td><span>{ea.providerType}</span></td>

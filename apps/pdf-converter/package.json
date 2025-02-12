@@ -28,6 +28,7 @@
     "@tsed/di": "=8.3.5",
     "@tsed/exceptions": "=8.3.5",
     "@tsed/json-mapper": "=8.3.5",
+    "@tsed/logger": ">=7.0.1",
     "@tsed/platform-express": "=8.3.5",
     "@tsed/schema": "=8.3.5",
     "@tsed/swagger": "=8.3.5",
