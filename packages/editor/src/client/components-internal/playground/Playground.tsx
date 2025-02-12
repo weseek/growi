@@ -3,7 +3,7 @@ import {
 } from 'react';
 
 import { AcceptedUploadFileType } from '@growi/core';
-import { GLOBAL_SOCKET_KEY, useSWRStatic } from '@growi/core/dist/swr';
+import { GLOBAL_SOCKET_KEY, GLOBAL_SOCKET_NS, useSWRStatic } from '@growi/core/dist/swr';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { toast } from 'react-toastify';
 
@@ -57,7 +57,7 @@ export const Playground = (): JSX.Element => {
   useEffect(() => {
     const setUpSocket = async() => {
       const { io } = await import('socket.io-client');
-      const socket = io({
+      const socket = io(GLOBAL_SOCKET_NS, {
         transports: ['websocket'],
       });
 
