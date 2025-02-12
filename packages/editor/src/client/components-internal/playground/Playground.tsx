@@ -30,14 +30,6 @@ export const Playground = (): JSX.Element => {
 
   const { mutate } = useSWRStatic(GLOBAL_SOCKET_KEY);
 
-  const initialValue = '# header\n';
-
-  // initialize
-  useEffect(() => {
-    codeMirrorEditor?.initDoc(initialValue);
-    setMarkdownToPreview(initialValue);
-  }, [codeMirrorEditor, initialValue]);
-
   // initial caret line
   useEffect(() => {
     codeMirrorEditor?.setCaretLine();
