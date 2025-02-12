@@ -8,7 +8,7 @@ import deepmerge from 'ts-deepmerge';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { CodeMirrorEditor, type CodeMirrorEditorProps } from '../components-internal/CodeMirrorEditor';
-import { setDataLine } from '../services-internal';
+import { setDataLine, useUnifiedMergeView } from '../services-internal';
 import { useCodeMirrorEditorIsolated } from '../stores/codemirror-editor';
 import { useCollaborativeEditorMode } from '../stores/use-collaborative-editor-mode';
 
@@ -24,19 +24,24 @@ type Props = CodeMirrorEditorProps & {
   user?: IUserHasId,
   pageId?: string,
   initialValue?: string,
-  isEditorMode: boolean,
+  enableCollaboration?: boolean,
+  enableUnifiedMergeView?: boolean,
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    user, pageId, initialValue, isEditorMode, cmProps,
+    user, pageId, initialValue,
+    enableCollaboration = false, enableUnifiedMergeView = false,
+    cmProps,
     onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(isEditorMode, user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
+  useCollaborativeEditorMode(enableCollaboration, user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
+
+  useUnifiedMergeView(enableUnifiedMergeView, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {
