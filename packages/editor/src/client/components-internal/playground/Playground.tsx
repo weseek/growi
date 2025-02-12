@@ -3,6 +3,7 @@ import {
 } from 'react';
 
 import { AcceptedUploadFileType } from '@growi/core';
+import { GLOBAL_SOCKET_KEY, useSWRStatic } from '@growi/core/dist/swr';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { toast } from 'react-toastify';
 
@@ -27,6 +28,8 @@ export const Playground = (): JSX.Element => {
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
+  const { mutate } = useSWRStatic(GLOBAL_SOCKET_KEY);
+
   const initialValue = '# header\n';
 
   // initialize
@@ -49,6 +52,26 @@ export const Playground = (): JSX.Element => {
       pasteMode: editorPaste,
     });
   }, [setEditorSettings, editorKeymap, editorTheme, editorPaste]);
+
+  // initialize global socket
+  useEffect(() => {
+    const setUpSocket = async() => {
+      const { io } = await import('socket.io-client');
+      const socket = io({
+        transports: ['websocket'],
+      });
+
+      // eslint-disable-next-line no-console
+      socket.on('error', (err) => { console.error(err) });
+      // eslint-disable-next-line no-console
+      socket.on('connect_error', (err) => { console.error('Failed to connect with websocket.', err) });
+
+      mutate(socket);
+    };
+
+    setUpSocket();
+
+  }, [mutate]);
 
   // set handler to save with shortcut key
   const saveHandler = useCallback(() => {
@@ -82,6 +105,7 @@ export const Playground = (): JSX.Element => {
           <CodeMirrorEditorMain
             enableCollaboration
             enableUnifiedMergeView={enableUnifiedMergeView}
+            pageId="pageId-for-playground"
             onSave={saveHandler}
             onUpload={uploadHandler}
             indentSize={4}
