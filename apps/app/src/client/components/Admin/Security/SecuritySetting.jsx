@@ -55,7 +55,12 @@ const getDeleteConfigValueForT = (DeleteConfigValue) => {
   }
 };
 
-
+const getDisplayValue = (isShowRestrictedByOwner, isShowRestrictedByGroup) => {
+  if (isShowRestrictedByOwner === true || isShowRestrictedByGroup === true) {
+    return 'security_settings.displayed';
+  }
+  return 'security_settings.not_displayed';
+};
 /**
  * Return true if "deletionType" is DeletionType.RecursiveDeletion or DeletionType.RecursiveCompleteDeletion.
  * @param deletionType Deletion type
@@ -186,15 +191,26 @@ class SecuritySetting extends React.Component {
     return;
   }
 
-  setDisplayState(newState, setState) {
+  setDisplayState(displayType) {
     const { adminGeneralSecurityContainer } = this.props;
-    setState(newState);
-    if (adminGeneralSecurityContainer.state.isShowRestrictedByOwner);
-    if (adminGeneralSecurityContainer.state.isShowRestrictedByGroup);
+
+    if (adminGeneralSecurityContainer.state.isShowRestrictedByOwner === true) {
+      this.displayType(true);
+    }
+    else {
+      this.displayType(false);
+    }
+
+    if (adminGeneralSecurityContainer.state.isShowRestrictedByGroup === true) {
+      this.displayType(true);
+    }
+    else {
+      this.displayType(false);
+    }
   }
 
 
-  securitySettingDropdown = (isDisplayed, setState, currentState, displayType) => {
+  securitySettingDropdown = (setState, displayType) => {
     const { t } = this.props;
     return (
       <div className="dropdown">
@@ -206,9 +222,7 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span> {isDisplayed
-            ? t('security_settings.displayed')
-            : t('security_settings.not_displayed')}
+          <span> {t(getDisplayValue)}
           </span>
         </button>
         <div
