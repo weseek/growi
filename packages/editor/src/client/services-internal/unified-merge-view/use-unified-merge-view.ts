@@ -7,9 +7,9 @@ import {
 } from '@codemirror/merge';
 import { StateField, ChangeSet } from '@codemirror/state';
 
+import { CollaborativeChange } from '../../../consts/collaborative-change';
 import { deltaToChangeSpecs } from '../../../utils/delta-to-changespecs';
 import type { UseCodeMirrorEditor } from '../../services';
-import { collaborativeChange } from '../../stores/use-collaborative-editor-mode';
 
 
 export const useUnifiedMergeView = (
@@ -46,7 +46,7 @@ export const useUnifiedMergeView = (
         }
 
         for (const e of tr.effects) {
-          if (e.is(collaborativeChange)) {
+          if (e.is(CollaborativeChange)) {
             const changeSpecs = deltaToChangeSpecs(e.value);
             const changeSet = ChangeSet.of(changeSpecs, getOriginalDoc(tr.state).length);
             const effect = originalDocChangeEffect(tr.state, changeSet);

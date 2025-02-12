@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { StateEffect } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
 import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { useGlobalSocket } from '@growi/core/dist/swr';
@@ -9,7 +8,7 @@ import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
 
 import { userColor } from '../../consts';
-import type { Delta } from '../../interfaces';
+import { CollaborativeChange } from '../../consts/collaborative-change';
 import type { UseCodeMirrorEditor } from '../services';
 
 type UserLocalState = {
@@ -18,9 +17,6 @@ type UserLocalState = {
   color: string;
   colorLight: string;
 }
-
-// collaborative changesを通知するための StateEffect
-export const collaborativeChange = StateEffect.define<Delta>();
 
 export const useCollaborativeEditorMode = (
     isEnabled: boolean,
@@ -136,7 +132,7 @@ export const useCollaborativeEditorMode = (
 
       // 外部からの変更があったことを通知
       codeMirrorEditor.view?.dispatch({
-        effects: collaborativeChange.of(event.delta),
+        effects: CollaborativeChange.of(event.delta),
       });
     });
 
