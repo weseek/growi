@@ -36,7 +36,8 @@ const AppTitleSubstance = memo(({ className = '', hideAppTitle = false }: Props)
           </div>
         )}
       </div>
-      {!(confidential == null || confidential === '') && (
+      {!(confidential == null || confidential === '')
+      && (
         <UncontrolledTooltip
           className="d-none d-sm-block confidential-tooltip"
           innerClassName="text-start"

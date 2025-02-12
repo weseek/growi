@@ -81,7 +81,7 @@
   width: calc(100% - $toggle-collapse-button-width);
 }
 
-// ==Sidebar Head when Editor
+// ==Sidebar Head when Editor mode
 @include bs.color-mode(light) {
   .on-editor-sidebar-head {
     background-color: var(
