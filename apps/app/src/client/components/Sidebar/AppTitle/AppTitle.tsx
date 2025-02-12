@@ -58,11 +58,7 @@ export const AppTitleOnSubnavigation = memo((): JSX.Element => {
 });
 
 export const AppTitleOnSidebarHead = memo((): JSX.Element => {
-  return (
-    <AppTitleSubstance
-      className={`position-absolute z-1 ${styles['on-sidebar-head']}`}
-    />
-  );
+  return <AppTitleSubstance className={`position-absolute z-1 ${styles['on-sidebar-head']}`} />;
 });
 
 export const AppTitleOnEditorSidebarHead = memo((): JSX.Element => {
