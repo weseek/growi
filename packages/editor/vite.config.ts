@@ -8,7 +8,7 @@ import { Server } from 'socket.io';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
-
+import { YSocketIO } from 'y-socket.io/dist/server';
 
 const excludeFiles = [
   '**/components/playground/*',
@@ -22,8 +22,8 @@ const devSocketIOPlugin = (): Plugin => ({
   configureServer(server) {
     if (!server.httpServer) return;
 
+    // setup socket.io
     const io = new Server(server.httpServer);
-
     io.on('connection', (socket) => {
       // eslint-disable-next-line no-console
       console.log('Client connected');
@@ -33,6 +33,10 @@ const devSocketIOPlugin = (): Plugin => ({
         console.log('Client disconnected');
       });
     });
+
+    // setup y-socket.io
+    const ysocketio = new YSocketIO(io);
+    ysocketio.initialize();
   },
 });
 
