@@ -5,6 +5,13 @@ import type { EditorView } from '@codemirror/view';
 
 export type InsertPrefix = (prefix: string, noSpaceIfPrefixExists?: boolean) => void;
 
+const removePrefix = (text: string, prefix: string): string => {
+  if (text.startsWith(prefix)) {
+    return text.slice(prefix.length).trimStart();
+  }
+  return text;
+};
+
 export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
   return useCallback((prefix: string, noSpaceIfPrefixExists = false) => {
     if (view == null) {
@@ -83,11 +90,12 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
             const prefixWithSpaces = contentStartMatch[0];
             const indentLevel = Math.floor(leadingSpaces.length / 2) * 2;
             const newIndent = ' '.repeat(indentLevel);
+            const prefixRemovedText = removePrefix(contentTrimmed, prefix);
 
             changes.push({
               from: line.from,
               to: line.from + prefixWithSpaces.length,
-              insert: newIndent,
+              insert: `${newIndent}${prefixRemovedText}`,
             });
 
             totalLengthChange -= (prefixWithSpaces.length - newIndent.length);
