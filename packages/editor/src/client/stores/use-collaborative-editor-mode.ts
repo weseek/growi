@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+import { StateEffect } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
 import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { useGlobalSocket } from '@growi/core/dist/swr';
@@ -8,6 +9,7 @@ import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
 
 import { userColor } from '../../consts';
+import type { Delta } from '../../interfaces';
 import type { UseCodeMirrorEditor } from '../services';
 
 type UserLocalState = {
@@ -16,6 +18,9 @@ type UserLocalState = {
   color: string;
   colorLight: string;
 }
+
+// collaborative changesを通知するための StateEffect
+export const collaborativeChange = StateEffect.define<Delta>();
 
 export const useCollaborativeEditorMode = (
     isEnabled: boolean,
@@ -120,19 +125,25 @@ export const useCollaborativeEditorMode = (
     const ytext = ydoc.getText('codemirror');
     const undoManager = new Y.UndoManager(ytext);
 
-    codeMirrorEditor.initDoc(ytext.toString());
-
-    const cleanupYUndoManagerKeymap = codeMirrorEditor.appendExtensions([
+    const extensions = [
       keymap.of(yUndoManagerKeymap),
-    ]);
-    const cleanupYCollab = codeMirrorEditor.appendExtensions([
       yCollab(ytext, provider.awareness, { undoManager }),
-    ]);
+    ];
+
+    // Setup observer for collaborative changes
+    ytext.observe((event) => {
+      if (event.transaction.local) return;
+
+      // 外部からの変更があったことを通知
+      codeMirrorEditor.view?.dispatch({
+        effects: collaborativeChange.of(event.delta),
+      });
+    });
+
+    const cleanupFunctions = extensions.map(ext => codeMirrorEditor.appendExtensions([ext]));
 
     return () => {
-      cleanupYUndoManagerKeymap?.();
-      cleanupYCollab?.();
-      // clean up editor
+      cleanupFunctions.forEach(cleanup => cleanup?.());
       codeMirrorEditor.initDoc('');
     };
   }, [codeMirrorEditor, provider, ydoc]);
