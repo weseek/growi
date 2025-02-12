@@ -54,10 +54,13 @@ const makeTextCodeBlock: Command = (view: EditorView) => {
     const startLine = doc.lineAt(range.from);
     const endLine = doc.lineAt(range.to);
 
-    const isAlreadyWrapped = startLine.text.trimStart().startsWith('```')
-      && endLine.text.trimEnd().endsWith('```');
+    const selectedText = doc.sliceString(range.from, range.to, '');
+
+    const isAlreadyWrapped = selectedText.startsWith('```') && selectedText.endsWith('```');
 
     if (isAlreadyWrapped) {
+      const textContentLength = selectedText.length - 6;
+
       changes.push({
         from: startLine.from,
         to: startLine.from + 4,
@@ -70,7 +73,7 @@ const makeTextCodeBlock: Command = (view: EditorView) => {
         insert: '',
       });
 
-      newSelectionRanges.push(EditorSelection.range(startLine.from, endLine.to - 8));
+      newSelectionRanges.push(EditorSelection.cursor(startLine.from + textContentLength));
     }
     else {
       changes.push({
@@ -83,7 +86,7 @@ const makeTextCodeBlock: Command = (view: EditorView) => {
         insert: '\n```',
       });
 
-      newSelectionRanges.push(EditorSelection.range(startLine.from, endLine.to + 8));
+      newSelectionRanges.push(EditorSelection.cursor(endLine.to + 4));
     }
   });
 
