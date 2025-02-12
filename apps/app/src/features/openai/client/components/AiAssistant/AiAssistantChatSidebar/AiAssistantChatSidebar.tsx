@@ -35,9 +35,39 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
         </button>
       </div>
 
-      <div className="p-3 w-100">
-        {/* AI Chat Screen Implementation */}
-        {/* TODO: https://redmine.weseek.co.jp/issues/161511 */}
+      <div className="p-4 d-flex flex-column gap-4">
+        <p className="fs-6 text-secondary mb-0">
+          {aiAssistantData?.description}
+        </p>
+
+        <div>
+          <p className="text-secondary">アシスタントへの指示</p>
+          <div className="card bg-light border-0">
+            <div className="card-body p-3">
+              <p className="fs-6 text-secondary mb-0">
+                {aiAssistantData?.additionalInstruction}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="d-flex align-items-center">
+            <p className="text-secondary mb-0">参照するページ</p>
+          </div>
+          <div className="d-flex flex-column gap-1">
+            { aiAssistantData?.pagePathPatterns.map(pagePathPattern => (
+              <a
+                key={pagePathPattern}
+                href="#"
+                className="fs-6 text-secondary text-decoration-none"
+              >
+                {pagePathPattern}
+              </a>
+            ))}
+          </div>
+        </div>
+
       </div>
     </>
   );
