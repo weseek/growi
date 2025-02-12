@@ -29,9 +29,4 @@ and go to `http://localhost:3010/` .
 
 ### docker-compose
 
-(TBD)
-
-Configuration
------------
-
-(TBD)
+PDF Converter is configured by default in [weseek/growi-docker-compose](https://github.com/weseek/growi-docker-compose). GROWI will be able to request to PDF Converter after `docker-compose up`.
