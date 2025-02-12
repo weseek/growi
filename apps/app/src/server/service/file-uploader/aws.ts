@@ -14,6 +14,7 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
 
+import type Crowi from '~/server/crowi';
 import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
@@ -59,7 +60,7 @@ const ObjectCannedACLs = [
   ObjectCannedACL.public_read,
   ObjectCannedACL.public_read_write,
 ];
-const isValidObjectCannedACL = (acl: string | null): acl is ObjectCannedACL => {
+const isValidObjectCannedACL = (acl: string | undefined): acl is ObjectCannedACL => {
   return ObjectCannedACLs.includes(acl as ObjectCannedACL);
 };
 /**
@@ -67,7 +68,7 @@ const isValidObjectCannedACL = (acl: string | null): acl is ObjectCannedACL => {
  * @returns ObjectCannedACL
  */
 const getS3PutObjectCannedAcl = (): ObjectCannedACL | undefined => {
-  const s3ObjectCannedACL = configManager.getConfig('crowi', 'aws:s3ObjectCannedACL');
+  const s3ObjectCannedACL = configManager.getConfig('aws:s3ObjectCannedACL');
   if (isValidObjectCannedACL(s3ObjectCannedACL)) {
     return s3ObjectCannedACL;
   }
@@ -75,18 +76,23 @@ const getS3PutObjectCannedAcl = (): ObjectCannedACL | undefined => {
 };
 
 const getS3Bucket = (): string | undefined => {
-  return configManager.getConfig('crowi', 'aws:s3Bucket') ?? undefined; // return undefined when getConfig() returns null
+  return configManager.getConfig('aws:s3Bucket') ?? undefined; // return undefined when getConfig() returns null
 };
 
 const S3Factory = (): S3Client => {
+  const accessKeyId = configManager.getConfig('aws:s3AccessKeyId');
+  const secretAccessKey = configManager.getConfig('aws:s3SecretAccessKey');
+
   return new S3Client({
-    credentials: {
-      accessKeyId: configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
-      secretAccessKey: configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
-    },
-    region: configManager.getConfig('crowi', 'aws:s3Region'),
-    endpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
-    forcePathStyle: configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null, // s3ForcePathStyle renamed to forcePathStyle in v3
+    credentials: accessKeyId != null && secretAccessKey != null
+      ? {
+        accessKeyId,
+        secretAccessKey,
+      }
+      : undefined,
+    region: configManager.getConfig('aws:s3Region'),
+    endpoint: configManager.getConfig('aws:s3CustomEndpoint'),
+    forcePathStyle: configManager.getConfig('aws:s3CustomEndpoint') != null, // s3ForcePathStyle renamed to forcePathStyle in v3
   });
 };
 
@@ -139,7 +145,7 @@ class AwsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
-    return configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode')
+    return configManager.getConfig('aws:referenceFileWithRelayMode')
       ? ResponseMode.RELAY
       : ResponseMode.REDIRECT;
   }
@@ -227,7 +233,7 @@ class AwsFileUploader extends AbstractFileUploader {
 
     const s3 = S3Factory();
     const filePath = getFilePathOnStorage(attachment);
-    const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'aws:lifetimeSecForTemporaryUrl');
+    const lifetimeSecForTemporaryUrl = configManager.getConfig('aws:lifetimeSecForTemporaryUrl');
 
     // issue signed url (default: expires 120 seconds)
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
@@ -252,17 +258,17 @@ class AwsFileUploader extends AbstractFileUploader {
 
 }
 
-module.exports = (crowi) => {
+module.exports = (crowi: Crowi) => {
   const lib = new AwsFileUploader(crowi);
 
   lib.isValidUploadSettings = function() {
-    return configManager.getConfig('crowi', 'aws:s3AccessKeyId') != null
-      && configManager.getConfig('crowi', 'aws:s3SecretAccessKey') != null
+    return configManager.getConfig('aws:s3AccessKeyId') != null
+      && configManager.getConfig('aws:s3SecretAccessKey') != null
       && (
-        configManager.getConfig('crowi', 'aws:s3Region') != null
-          || configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null
+        configManager.getConfig('aws:s3Region') != null
+          || configManager.getConfig('aws:s3CustomEndpoint') != null
       )
-      && configManager.getConfig('crowi', 'aws:s3Bucket') != null;
+      && configManager.getConfig('aws:s3Bucket') != null;
   };
 
   (lib as any).deleteFile = async function(attachment) {
@@ -321,8 +327,8 @@ module.exports = (crowi) => {
   };
 
   (lib as any).checkLimit = async function(uploadFileSize) {
-    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
-    const totalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+    const maxFileSize = configManager.getConfig('app:maxFileSize');
+    const totalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 

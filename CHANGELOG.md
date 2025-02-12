@@ -1,8 +1,69 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.1.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.1.9](https://github.com/weseek/growi/compare/v7.1.8...v7.1.9) - 2025-02-03
+
+### 💎 Features
+
+* feat: Add error handling for data migration (#9582) @miya
+
+### 🚀 Improvement
+
+* imprv: Data migration script performance (#9599) @miya
+* imprv: Initialization for Passport strategies (#9353) @yuki-takei
+* imprv: Make data migration type safe (#9590) @miya
+* imprv: Printing styles (#9576) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Serializing page data for share link (#9602) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps-dev): bump vite from 5.4.6 to 5.4.12 (#9574) @dependabot
+* ci(deps): bump mongoose from 6.13.0 to 6.13.6 (#9570) @dependabot
+* ci(deps): bump katex from 0.16.11 to 0.16.21 (#9564) @dependabot
+
+## [v7.1.8](https://github.com/weseek/growi/compare/v7.1.7...v7.1.8) - 2025-01-21
+
+### 🐛 Bug Fixes
+
+* fix: Escape page path when generating RegExp to find ancestors children (#9550) @yuki-takei
+
+## [v7.1.7](https://github.com/weseek/growi/compare/v7.1.6...v7.1.7) - 2025-01-16
+
+### 🐛 Bug Fixes
+
+* fix: Unable to select group viewing permissions (#9541) @miya
+* fix: Fix i18n of oidc settings (#9536) @ryu-sato
+
+### 🧰 Maintenance
+
+* support: Update Swagger documentation for the PUT endpoint to update a page (#9529) @tkfm1991
+* ci(deps): bump docker/metadata-action from 4 to 5 (#9181) @dependabot
+* ci(deps): bump github/codeql-action from 2 to 3 (#9180) @dependabot
+* ci(deps): bump next from 14.2.15 to 14.2.21 (#9538) @dependabot
+* ci(deps-dev): bump @marp-team/marp-core from 3.9.0 to 3.9.1 (#9530) @dependabot
+
+## [v7.1.6](https://github.com/weseek/growi/compare/v7.1.5...v7.1.6) - 2024-12-26
+
+### 💎 Features
+
+* feat(ai): Save file to VectorStore in HTML format   (#9462) @miya
+
+### 🐛 Bug Fixes
+
+* fix: remark-lsx pagination (#9513) @miya
+* fix: Spelling miss of external_link in i18n (#9456) @reiji-h
+* fix: Wider copy to clipboard area (#9450) @Ryosei-Fukushima
+* fix: Error when creating pages with deep hierarchy (#9487) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump next from 14.2.13 to 14.2.15 (#9501) @dependabot
 
 ## [v7.1.5](https://github.com/weseek/growi/compare/v7.1.4...v7.1.5) - 2024-12-13
 

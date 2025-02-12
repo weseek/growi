@@ -1,7 +1,10 @@
-import { ICondition } from '../../interfaces/condition';
-import { IGrowiInfo } from '../../interfaces/growi-info';
-import { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
-import { IUserInfo, UserType } from '../../interfaces/user-info';
+import type { IGrowiInfo } from '@growi/core/dist/interfaces';
+
+import type { ICondition } from '../../interfaces/condition';
+import type { IGrowiAppAdditionalInfo } from '../../interfaces/growi-app-info';
+import type { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
+import type { IUserInfo } from '../../interfaces/user-info';
+import { UserType } from '../../interfaces/user-info';
 
 
 const checkUserInfo = (condition: ICondition, userInfo: IUserInfo): boolean => {
@@ -39,7 +42,7 @@ const checkUserInfo = (condition: ICondition, userInfo: IUserInfo): boolean => {
   return true;
 };
 
-const checkGrowiInfo = (condition: ICondition, growiInfo: IGrowiInfo): boolean => {
+const checkGrowiInfo = (condition: ICondition, growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>): boolean => {
   const { growi: { types, versionRegExps } } = condition;
 
   if (!types.includes(growiInfo.type)) {
@@ -53,7 +56,7 @@ const checkGrowiInfo = (condition: ICondition, growiInfo: IGrowiInfo): boolean =
   return true;
 };
 
-export const isShowableCondition = (order: IQuestionnaireOrder, userInfo: IUserInfo, growiInfo: IGrowiInfo): boolean => {
+export const isShowableCondition = (order: IQuestionnaireOrder, userInfo: IUserInfo, growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>): boolean => {
   const { condition } = order;
 
   if (!checkUserInfo(condition, userInfo)) {

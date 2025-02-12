@@ -1,23 +1,40 @@
-const { getInstance } = require('../setup-crowi');
+import type { MockInstance } from 'vitest';
+import { mock } from 'vitest-mock-extended';
+
+import type Crowi from '~/server/crowi';
+import type UserEvent from '~/server/events/user';
+
+import { configManager } from './config-manager';
+import PassportService from './passport';
 
 describe('PassportService test', () => {
-  let crowi;
 
-  beforeEach(async() => {
-    crowi = await getInstance();
+  let crowiMock;
+
+  beforeAll(async() => {
+    crowiMock = mock<Crowi>({
+      event: vi.fn().mockImplementation((eventName) => {
+        if (eventName === 'user') {
+          return mock<UserEvent>({
+            on: vi.fn(),
+          });
+        }
+      }),
+    });
   });
-
 
   describe('verifySAMLResponseByABLCRule()', () => {
 
-    let getConfigSpy;
-    let extractAttributesFromSAMLResponseSpy;
+    const passportService = new PassportService(crowiMock);
+
+    let getConfigSpy: MockInstance<typeof configManager.getConfig>;
+    let extractAttributesFromSAMLResponseSpy: MockInstance<typeof passportService.extractAttributesFromSAMLResponse>;
 
     beforeEach(async() => {
       // prepare spy for ConfigManager.getConfig
-      getConfigSpy = jest.spyOn(crowi.configManager, 'getConfig');
+      getConfigSpy = vi.spyOn(configManager, 'getConfig');
       // prepare spy for extractAttributesFromSAMLResponse method
-      extractAttributesFromSAMLResponseSpy = jest.spyOn(crowi.passportService, 'extractAttributesFromSAMLResponse');
+      extractAttributesFromSAMLResponseSpy = vi.spyOn(passportService, 'extractAttributesFromSAMLResponse');
     });
 
     /* eslint-disable indent */
@@ -49,8 +66,8 @@ describe('PassportService test', () => {
         const responseMock = {};
 
         // setup mock implementation
-        getConfigSpy.mockImplementation((ns, key) => {
-          if (ns === 'crowi' && key === 'security:passport-saml:ABLCRule') {
+        getConfigSpy.mockImplementation((key) => {
+          if (key === 'security:passport-saml:ABLCRule') {
             return ruleStr;
           }
           throw new Error('Unexpected behavior.');
@@ -65,7 +82,7 @@ describe('PassportService test', () => {
           };
         });
 
-        const result = crowi.passportService.verifySAMLResponseByABLCRule(responseMock);
+        const result = passportService.verifySAMLResponseByABLCRule(responseMock);
 
         expect(result).toBe(expected);
       });

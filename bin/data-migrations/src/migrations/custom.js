@@ -1,5 +1,5 @@
 /**
- * @typedef {import('../../types').MigrationModule} MigrationModule
+ * @typedef {import('../types').MigrationModule} MigrationModule
  */
 
 module.exports = [

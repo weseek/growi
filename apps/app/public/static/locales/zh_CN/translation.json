@@ -745,7 +745,8 @@
   "pagetree": {
     "cannot_rename_a_title_that_contains_slash": "不能重命名包含 ’/' 的标题",
     "you_cannot_move_this_page_now": "你现在不能移动这个页面",
-    "something_went_wrong_with_moving_page": "移动页面时出了问题"
+    "something_went_wrong_with_moving_page": "移动页面时出了问题",
+    "error_retrieving_the_pagetree": "检索页面树时发生错误"
   },
   "duplicated_page_alert": {
     "same_page_name_exists": "页面名称「{{pageName}}」是重复的",
