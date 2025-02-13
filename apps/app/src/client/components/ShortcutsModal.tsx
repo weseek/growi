@@ -65,9 +65,11 @@ const ShortcutsModal = (): JSX.Element => {
                   </th>
                   <td className="text-nowrap d-flex justify-content-end">
                     <div className="text-start">
-                      <span className="text-secondary small">
-                        {t('modal_shortcuts.global.Konami Code')}
-                      </span>
+                      <a href={t('modal_shortcuts.global.konami_code_url')} target="_blank" rel="noreferrer">
+                        <span className="text-secondary small">
+                          {t('modal_shortcuts.global.Konami Code')}
+                        </span>
+                      </a>
                       <br />
                       <span className="key key-small">&uarr;</span>&nbsp;<span className="key key-small">&uarr;</span>
                       <span className="key key-small">&darr;</span>&nbsp;<span className="key key-small">&darr;</span>
@@ -83,9 +85,11 @@ const ShortcutsModal = (): JSX.Element => {
                   <th>{t('modal_shortcuts.global.MirrorMode')}</th>
                   <td className="text-nowrap d-flex justify-content-end">
                     <div className="text-start">
-                      <span className="text-secondary small">
-                        {t('modal_shortcuts.global.Konami Code')}
-                      </span>
+                      <a href={t('modal_shortcuts.global.konami_code_url')} target="_blank" rel="noreferrer">
+                        <span className="text-secondary small">
+                          {t('modal_shortcuts.global.Konami Code')}
+                        </span>
+                      </a>
                       <br />
                       <span className="key key-small">X</span>&nbsp;<span className="key key-small">X</span>
                       <span className="key key-small">B</span>&nbsp;<span className="key key-small">B</span>
