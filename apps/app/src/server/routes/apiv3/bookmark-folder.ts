@@ -118,6 +118,7 @@ const validator = {
   ],
 };
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
 
@@ -368,7 +369,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /bookmark-folder/add-boookmark-to-folder:
+   *    /bookmark-folder/add-bookmark-to-folder:
    *      post:
    *        tags: [BookmarkFolders]
    *        operationId: addBookmarkToFolder
@@ -400,7 +401,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.post('/add-boookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator, async(req, res) => {
+  router.post('/add-bookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator, async(req, res) => {
     const userId = req.user?._id;
     const { pageId, folderId } = req.body;
 

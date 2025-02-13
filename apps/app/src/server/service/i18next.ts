@@ -42,7 +42,7 @@ type Opts = {
 }
 
 export async function getTranslation(opts?: Opts): Promise<Translation> {
-  const globalLang = configManager.getConfig('crowi', 'app:globalLang') as Lang;
+  const globalLang = configManager.getConfig('app:globalLang');
   const fixedLang = opts?.lang ?? globalLang;
 
   const initOptions: InitOptions = {

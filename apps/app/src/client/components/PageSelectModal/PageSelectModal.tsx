@@ -13,7 +13,7 @@ import {
 import SimpleBar from 'simplebar-react';
 
 import type { IPageForItem } from '~/interfaces/page';
-import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { usePageSelectModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -38,7 +38,6 @@ export const PageSelectModal: FC = () => {
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
-  const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: currentPage } = useSWRxCurrentPage();
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
@@ -96,7 +95,6 @@ export const PageSelectModal: FC = () => {
                 isReadOnlyUser={!!isReadOnlyUser}
                 targetPath={targetPath}
                 targetPathOrId={targetPathOrId}
-                targetAndAncestorsData={targetAndAncestorsData}
                 onClickTreeItem={onClickTreeItem}
               />
             </div>
