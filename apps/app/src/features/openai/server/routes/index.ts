@@ -30,6 +30,22 @@ export const factory = (crowi: Crowi): express.Router => {
     import('./message').then(({ postMessageHandlersFactory }) => {
       router.post('/message', postMessageHandlersFactory(crowi));
     });
+
+    import('./ai-assistant').then(({ createAiAssistantFactory }) => {
+      router.post('/ai-assistant', createAiAssistantFactory(crowi));
+    });
+
+    import('./ai-assistants').then(({ getAiAssistantsFactory }) => {
+      router.get('/ai-assistants', getAiAssistantsFactory(crowi));
+    });
+
+    import('./update-ai-assistant').then(({ updateAiAssistantsFactory }) => {
+      router.put('/ai-assistant/:id', updateAiAssistantsFactory(crowi));
+    });
+
+    import('./delete-ai-assistant').then(({ deleteAiAssistantsFactory }) => {
+      router.delete('/ai-assistant/:id', deleteAiAssistantsFactory(crowi));
+    });
   }
 
   return router;
