@@ -3,20 +3,21 @@
 .shortcuts-modal :global {
 
   table {
+    th, td {
+      padding: bs.$spacer;
+    }
     th {
       font-weight: bs.$font-weight-normal;
     }
     td {
       min-width: 170px;
+      text-align: right;
     }
   }
 
   @include bs.media-breakpoint-up(sm) {
     table {
       table-layout: fixed;
-      th {
-        width: 170px;
-      }
     }
   }
 
@@ -28,7 +29,6 @@
 
     /* Text Properties */
     text-align: center;
-    text-transform: uppercase;
     background: bs.$body-tertiary-bg;
     border: 1px solid bs.$secondary-border-subtle;
     border-radius: bs.$border-radius-sm;
