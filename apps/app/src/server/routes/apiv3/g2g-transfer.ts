@@ -10,6 +10,7 @@ import multer from 'multer';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
 import { configManager } from '~/server/service/config-manager';
+import { exportService } from '~/server/service/export';
 import type { IDataGROWIInfo } from '~/server/service/g2g-transfer';
 import { X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import { getImportService } from '~/server/service/import';
@@ -41,7 +42,7 @@ const validator = {
  */
 module.exports = (crowi: Crowi): Router => {
   const {
-    g2gTransferPusherService, g2gTransferReceiverService, exportService,
+    g2gTransferPusherService, g2gTransferReceiverService,
     growiBridgeService,
   } = crowi;
 
@@ -172,9 +173,9 @@ module.exports = (crowi: Crowi): Router => {
       const zipFile = importService.getFile(file.filename);
       await importService.unzip(zipFile);
 
-      const { meta: parsedMeta, innerFileStats: _innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
-      innerFileStats = _innerFileStats;
-      meta = parsedMeta;
+      const zipFileStat = await growiBridgeService.parseZipFile(zipFile);
+      innerFileStats = zipFileStat?.innerFileStats;
+      meta = zipFileStat?.meta;
     }
     catch (err) {
       logger.error(err);
