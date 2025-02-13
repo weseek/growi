@@ -40,10 +40,17 @@ const router = express.Router();
  *            description: date created at
  *            example: 2010-01-01T00:00:00.000Z
  *          page:
- *            $ref: '#/components/schemas/Page/properties/_id'
+ *            $ref: '#/components/schemas/Page'
  *          user:
  *            $ref: '#/components/schemas/User/properties/_id'
- *
+ *      Bookmarks:
+ *        description: User Root Bookmarks
+ *        type: object
+ *        properties:
+ *          userRootBookmarks:
+ *            type: array
+ *            items:
+ *              $ref: '#/components/schemas/Bookmark'
  *      BookmarkParams:
  *        description: BookmarkParams
  *        type: object
@@ -66,6 +73,14 @@ const router = express.Router();
  *          isBookmarked:
  *            type: boolean
  *            description: Whether the request user bookmarked (will be returned if the user is included in the request)
+ *          pageId:
+ *            type: string
+ *            description: page ID
+ *            example: 5e07345972560e001761fa63
+ *          bookmarkedUsers:
+ *            type: array
+ *            items:
+ *              $ref: '#/components/schemas/User'
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -165,28 +180,13 @@ module.exports = (crowi) => {
    *            description: user id
    *            schema:
    *              type: string
-   *          - name: page
-   *            in: query
-   *            description: selected page number
-   *            schema:
-   *              type: number
-   *          - name: limit
-   *            in: query
-   *            description: page item limit
-   *            schema:
-   *              type: number
-   *          - name: offset
-   *            in: query
-   *            description: page item offset
-   *            schema:
-   *              type: number
    *        responses:
    *          200:
    *            description: Succeeded to get my bookmarked status.
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/Bookmark'
+   *                  $ref: '#/components/schemas/Bookmarks'
    */
   validator.userBookmarkList = [
     param('userId').isMongoId().withMessage('userId is required'),
@@ -244,7 +244,10 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/Bookmark'
+   *                  type: object
+   *                  properties:
+   *                    bookmark:
+   *                      $ref: '#/components/schemas/Bookmark'
    */
   router.put('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator, async(req, res) => {
     const { pageId, bool } = req.body;
