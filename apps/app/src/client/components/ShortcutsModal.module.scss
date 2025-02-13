@@ -1,13 +1,10 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .shortcuts-modal :global {
-  h3 {
-    margin-bottom: 1em;
-  }
 
   table {
     th {
-      vertical-align: middle;
+      font-weight: bs.$font-weight-normal;
     }
     td {
       min-width: 170px;
@@ -23,41 +20,34 @@
     }
   }
 
-  // see http://coliss.com/articles/build-websites/operation/css/css-apple-keyboard-style-by-nrjmadan.html
   .key {
     /* Box Properties */
     display: inline-block;
-    width: 36px;
-    height: 36px;
-    margin: 0 4px;
+    padding: 0 4px;
+    margin: 2px 4px;
 
     /* Text Properties */
-    font: 18px/36px Helvetica, serif;
-    color: bs.$secondary;
     text-align: center;
     text-transform: uppercase;
-    background: white;
-    border-radius: 4px;
-    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 50%);
+    background: bs.$body-tertiary-bg;
+    border: 1px solid bs.$secondary-border-subtle;
+    border-radius: bs.$border-radius-sm;
 
     /* SVG Properties */
     polygon {
       fill: bs.$secondary;
     }
 
-    &.key-longer {
-      width: 64px;
-    }
-    &.key-long {
-      width: 72px;
-    }
-    &.key-small {
-      width: 24px;
-      height: 24px;
-      margin: 4px 2px;
-      font-size: 18px;
-      line-height: 22px;
-    }
+    // &.key-longer {
+    //   width: 64px;
+    // }
+    // &.key-long {
+    //   width: 72px;
+    // }
+    // &.key-small {
+    //   margin: 4px 2px;
+    //   line-height: 22px;
+    // }
   }
 
   .dl-horizontal {

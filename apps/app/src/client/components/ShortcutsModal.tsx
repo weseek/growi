@@ -27,9 +27,9 @@ const ShortcutsModal = (): JSX.Element => {
       <div className="container">
         <div className="row">
           <div className="col-lg-6">
-            <h3>
+            <h6>
               <strong>{t('modal_shortcuts.global.title')}</strong>
-            </h3>
+            </h6>
 
             <table className="table">
               <tbody>
@@ -39,7 +39,7 @@ const ShortcutsModal = (): JSX.Element => {
                     <span dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Open/Close shortcut help') }} />:
                   </th>
                   <td>
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span> + <span className="key">/</span>
+                    <span className={`key cmd-key ${additionalClassByOs}`}></span><span className="text-secondary mx-1">+</span><span className="key">/</span>
                   </td>
                 </tr>
                 <tr>
@@ -64,9 +64,9 @@ const ShortcutsModal = (): JSX.Element => {
                     <span dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Show Contributors') }} />:
                   </th>
                   <td className="text-nowrap">
-                    <a href="{ t('modal_shortcuts.global.konami_code_url') }" target="_blank">
+                    <span className="text-secondary small">
                       {t('modal_shortcuts.global.Konami Code')}
-                    </a>
+                    </span>
                     <br />
                     <span className="key key-small">&uarr;</span>&nbsp;<span className="key key-small">&uarr;</span>
                     <span className="key key-small">&darr;</span>&nbsp;<span className="key key-small">&darr;</span>
@@ -80,9 +80,9 @@ const ShortcutsModal = (): JSX.Element => {
                 <tr>
                   <th>{t('modal_shortcuts.global.MirrorMode')}:</th>
                   <td className="text-nowrap">
-                    <a href="{ t('modal_shortcuts.global.konami_code_url') }" target="_blank">
+                    <span className="text-secondary small">
                       {t('modal_shortcuts.global.Konami Code')}
-                    </a>
+                    </span>
                     <br />
                     <span className="key key-small">X</span>&nbsp;<span className="key key-small">X</span>
                     <span className="key key-small">B</span>&nbsp;<span className="key key-small">B</span>
@@ -98,9 +98,9 @@ const ShortcutsModal = (): JSX.Element => {
           </div>
 
           <div className="col-lg-6">
-            <h3>
+            <h6>
               <strong>{t('modal_shortcuts.editor.title')}</strong>
-            </h3>
+            </h6>
             <table className="table">
               <tbody>
                 <tr>
@@ -112,27 +112,27 @@ const ShortcutsModal = (): JSX.Element => {
                 <tr>
                   <th>{t('modal_shortcuts.editor.Outdent')}:</th>
                   <td className="text-nowrap">
-                    <span className="key key-long">Shift</span> + <span className="key key-longer">Tab</span>
+                    <span className="key key-long">Shift</span><span className="text-secondary mx-1">+</span><span className="key key-longer">Tab</span>
                   </td>
                 </tr>
                 <tr>
                   <th>{t('modal_shortcuts.editor.Save Page')}:</th>
                   <td>
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span> + <span className="key">S</span>
+                    <span className={`key cmd-key ${additionalClassByOs}`}></span><span className="text-secondary mx-1">+</span><span className="key">S</span>
                   </td>
                 </tr>
                 <tr>
                   <th>{t('modal_shortcuts.editor.Delete Line')}:</th>
                   <td>
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span> + <span className="key">D</span>
+                    <span className={`key cmd-key ${additionalClassByOs}`}></span><span className="text-secondary mx-1">+</span><span className="key">D</span>
                   </td>
                 </tr>
               </tbody>
             </table>
 
-            <h3>
+            <h6>
               <strong>{t('modal_shortcuts.commentform.title')}</strong>
-            </h3>
+            </h6>
 
             <table className="table">
               <tbody>
@@ -148,7 +148,7 @@ const ShortcutsModal = (): JSX.Element => {
                 <tr>
                   <th>{t('modal_shortcuts.editor.Delete Line')}:</th>
                   <td>
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span> + <span className="key">D</span>
+                    <span className={`key cmd-key ${additionalClassByOs}`}></span><span className="text-secondary mx-1">+</span><span className="key">D</span>
                   </td>
                 </tr>
               </tbody>
