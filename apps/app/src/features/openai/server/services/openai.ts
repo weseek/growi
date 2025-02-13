@@ -127,7 +127,7 @@ class OpenaiService implements IOpenaiService {
         return vectorStoreDocument;
       }
       catch (err) {
-        await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
+        await oepnaiApiErrorHandler(err, { notFoundError: () => vectorStoreDocument.markAsDeleted() });
         throw new Error(err);
       }
     }
@@ -176,7 +176,7 @@ class OpenaiService implements IOpenaiService {
       await vectorStoreDocument.markAsDeleted();
     }
     catch (err) {
-      await oepnaiApiErrorHandler(err, { notFoundError: vectorStoreDocument.markAsDeleted });
+      await oepnaiApiErrorHandler(err, { notFoundError: () => vectorStoreDocument.markAsDeleted() });
       throw new Error(err);
     }
   }
