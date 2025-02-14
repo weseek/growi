@@ -21,7 +21,7 @@ const ShortcutsModal = (): JSX.Element => {
     // add classes to cmd-key by OS
     const platform = window.navigator.platform.toLowerCase();
     const isMac = (platform.indexOf('mac') > -1);
-    const additionalClassByOs = isMac ? 'mac' : 'key-longer win';
+    const additionalClassByOs = isMac ? 'mac' : 'win';
 
     return (
       <div className="container">
@@ -43,7 +43,7 @@ const ShortcutsModal = (): JSX.Element => {
                 </div>
                 <div className="d-flex align-items-center">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                  <span className="text-secondary mx-1">+</span>
+                  <span className="text-secondary mx-2">+</span>
                   <span className="key">/</span>
                 </div>
               </li>
@@ -83,14 +83,14 @@ const ShortcutsModal = (): JSX.Element => {
                       {t('modal_shortcuts.global.Konami Code')}
                     </span>
                   </a>
-                  <div className="d-flex flex-column align-items-start mt-1">
-                    <div className="d-flex gap-1 mb-1">
+                  <div className="d-flex gap-2 flex-column align-items-start mt-1">
+                    <div className="d-flex gap-1">
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_upward</span>
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_upward</span>
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
                     </div>
-                    <div className="d-flex gap-1 mb-1">
+                    <div className="d-flex gap-1">
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_back</span>
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_forward</span>
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_back</span>
@@ -112,14 +112,14 @@ const ShortcutsModal = (): JSX.Element => {
                       {t('modal_shortcuts.global.Konami Code')}
                     </span>
                   </a>
-                  <div className="d-flex flex-column align-items-start mt-1">
-                    <div className="d-flex gap-1 mb-1">
+                  <div className="d-flex gap-2 flex-column align-items-start mt-1">
+                    <div className="d-flex gap-1">
                       <span className="key">X</span>
                       <span className="key">X</span>
                       <span className="key">B</span>
                       <span className="key">B</span>
                     </div>
-                    <div className="d-flex gap-1 mb-1">
+                    <div className="d-flex gap-1">
                       <span className="key">A</span>
                       <span className="key">Y</span>
                       <span className="key">A</span>
@@ -145,7 +145,7 @@ const ShortcutsModal = (): JSX.Element => {
                 <div className="flex-grow-1">{t('modal_shortcuts.editor.Search in Editor')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                  <span className="text-secondary mx-1">+</span>
+                  <span className="text-secondary mx-2">+</span>
                   <span className="key">F</span>
                 </div>
               </li>
@@ -157,7 +157,7 @@ const ShortcutsModal = (): JSX.Element => {
                 </div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                  <span className="text-secondary mx-1">+</span>
+                  <span className="text-secondary mx-2">+</span>
                   <span className="key">S</span>
                 </div>
               </li>
@@ -165,16 +165,16 @@ const ShortcutsModal = (): JSX.Element => {
               <li className="d-flex align-items-center p-3 border-bottom">
                 <div className="flex-grow-1">{t('modal_shortcuts.editor.Indent')}</div>
                 <div>
-                  <span className="key key-longer">Tab</span>
+                  <span className="key">Tab</span>
                 </div>
               </li>
               {/* Outdent */}
               <li className="d-flex align-items-center p-3 border-bottom">
                 <div className="flex-grow-1">{t('modal_shortcuts.editor.Outdent')}</div>
-                <div className="text-nowrap">
+                <div className="text-nowrap gap-1">
                   <span className="key">Shift</span>
-                  <span className="text-secondary mx-1">+</span>
-                  <span className="key key-longer">Tab</span>
+                  <span className="text-secondary mx-2">+</span>
+                  <span className="key">Tab</span>
                 </div>
               </li>
               {/* Delete Line */}
@@ -182,9 +182,9 @@ const ShortcutsModal = (): JSX.Element => {
                 <div className="flex-grow-1">{t('modal_shortcuts.editor.Delete Line')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                  <span className="text-secondary mx-1">+</span>
+                  <span className="text-secondary mx-2">+</span>
                   <span className="key">Shift</span>
-                  <span className="text-secondary mx-1">+</span>
+                  <span className="text-secondary mx-2">+</span>
                   <span className="key">K</span>
                 </div>
               </li>
@@ -200,7 +200,7 @@ const ShortcutsModal = (): JSX.Element => {
                 </div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                  <span className="text-secondary mx-1">+</span>
+                  <span className="text-secondary mx-2">+</span>
                   <span className="key">Enter</span>
                 </div>
               </li>
@@ -209,9 +209,9 @@ const ShortcutsModal = (): JSX.Element => {
                 <div className="flex-grow-1">{t('modal_shortcuts.editor.Move Line')}</div>
                 <div className="text-nowrap">
                   <span className={`key alt-key ${additionalClassByOs}`}></span>
-                  <span className="text-secondary mx-1">+</span>
+                  <span className="text-secondary mx-2">+</span>
                   <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
-                  <span className="text-secondary mx-1">or</span>
+                  <span className="text-secondary mx-2">or</span>
                   <span className="key material-symbols-outlined fs-5 px-0">arrow_upward</span>
                 </div>
               </li>
@@ -222,13 +222,13 @@ const ShortcutsModal = (): JSX.Element => {
                   <div className="text-start">
                     <div>
                       <span className={`key alt-key ${additionalClassByOs}`}></span>
-                      <span className="text-secondary mx-1">+</span>
+                      <span className="text-secondary mx-2">+</span>
                       <span className="key">Shift</span>
-                      <span className="text-secondary mx-1">+</span>
+                      <span className="text-secondary ms-2">+</span>
                     </div>
                     <div className="mt-1">
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
-                      <span className="text-secondary mx-1">or</span>
+                      <span className="text-secondary mx-2">or</span>
                       <span className="key material-symbols-outlined fs-5 px-0">arrow_upward</span>
                     </div>
                   </div>
@@ -239,7 +239,7 @@ const ShortcutsModal = (): JSX.Element => {
                 <div className="flex-grow-1">{t('modal_shortcuts.editor.Toggle Line')}</div>
                 <div className="text-nowrap">
                   <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                  <span className="text-secondary mx-1">+</span>
+                  <span className="text-secondary mx-2">+</span>
                   <span className="key">/</span>
                 </div>
               </li>
