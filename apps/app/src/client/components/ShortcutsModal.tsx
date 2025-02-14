@@ -208,7 +208,7 @@ const ShortcutsModal = (): JSX.Element => {
               <li className="d-flex align-items-center p-3 border-bottom">
                 <div className="flex-grow-1">{t('modal_shortcuts.editor.Move Line')}</div>
                 <div className="text-nowrap">
-                  <span className={`key cmd-key ${additionalClassByOs}`}></span>
+                  <span className={`key alt-key ${additionalClassByOs}`}></span>
                   <span className="text-secondary mx-1">+</span>
                   <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
                   <span className="text-secondary mx-1">or</span>
@@ -221,7 +221,7 @@ const ShortcutsModal = (): JSX.Element => {
                 <div className="text-nowrap">
                   <div className="text-start">
                     <div>
-                      <span className={`key cmd-key ${additionalClassByOs}`}></span>
+                      <span className={`key alt-key ${additionalClassByOs}`}></span>
                       <span className="text-secondary mx-1">+</span>
                       <span className="key">Shift</span>
                       <span className="text-secondary mx-1">+</span>
