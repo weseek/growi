@@ -2,25 +2,6 @@
 
 .shortcuts-modal :global {
 
-  table {
-    th, td {
-      padding: bs.$spacer;
-    }
-    th {
-      font-weight: bs.$font-weight-normal;
-    }
-    td {
-      min-width: 170px;
-      text-align: right;
-    }
-  }
-
-  @include bs.media-breakpoint-up(sm) {
-    table {
-      table-layout: fixed;
-    }
-  }
-
   .key {
     /* Box Properties */
     display: inline-block;
@@ -32,21 +13,5 @@
     background: bs.$body-tertiary-bg;
     border: 1px solid bs.$secondary-border-subtle;
     border-radius: bs.$border-radius-sm;
-
-    /* SVG Properties */
-    polygon {
-      fill: bs.$secondary;
-    }
-  }
-
-  .dl-horizontal {
-    dt {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-
-      // width: 180px;
-      height: 41px;
-    }
   }
 }

@@ -31,185 +31,216 @@ const ShortcutsModal = (): JSX.Element => {
               <strong>{t('modal_shortcuts.global.title')}</strong>
             </h6>
 
-            <table className="table">
-              <tbody>
-                <tr>
-                  <th>
-                    {/* eslint-disable-next-line react/no-danger */}
-                    <span className="text-nowrap" dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Open/Close shortcut help') }} />
-                  </th>
-                  <td>
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                    <span className="text-secondary mx-1">+</span>
-                    <span className="key">/</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.global.Create Page')}</th>
-                  <td>
-                    <span className="key">C</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.global.Edit Page')}</th>
-                  <td>
-                    <span className="key">E</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.global.Search')}</th>
-                  <td>
-                    <span className="key">/</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>
-                    {/* eslint-disable-next-line react/no-danger */}
-                    <span className="text-nowrap" dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Show Contributors') }} />
-                  </th>
-                  <td className="text-nowrap d-flex justify-content-end">
-                    <div className="text-start">
-                      <a href={t('modal_shortcuts.global.konami_code_url')} target="_blank" rel="noreferrer">
-                        <span className="text-secondary small">
-                          {t('modal_shortcuts.global.Konami Code')}
-                        </span>
-                      </a>
-                      <br />
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_upward</span>&nbsp;
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_upward</span>
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_downward</span>&nbsp;
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_downward</span>
-                      <br />
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_back</span>&nbsp;
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_forward</span>
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_back</span>&nbsp;
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_forward</span>
-                      <br />
-                      <span className="key key-small">B</span>&nbsp;<span className="key key-small">A</span>
+            <ul className="list-unstyled m-0">
+              {/* Open/Close shortcut help */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">
+                  <span
+                    className="text-nowrap"
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Open/Close shortcut help') }}
+                  />
+                </div>
+                <div className="d-flex align-items-center">
+                  <span className={`key cmd-key ${additionalClassByOs}`}></span>
+                  <span className="text-secondary mx-1">+</span>
+                  <span className="key">/</span>
+                </div>
+              </li>
+              {/* Create Page */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">{t('modal_shortcuts.global.Create Page')}</div>
+                <div>
+                  <span className="key">C</span>
+                </div>
+              </li>
+              {/* Edit Page */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">{t('modal_shortcuts.global.Edit Page')}</div>
+                <div>
+                  <span className="key">E</span>
+                </div>
+              </li>
+              {/* Search */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">{t('modal_shortcuts.global.Search')}</div>
+                <div>
+                  <span className="key">/</span>
+                </div>
+              </li>
+              {/* Show Contributors */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">
+                  <span
+                    className="text-nowrap"
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.global.Show Contributors') }}
+                  />
+                </div>
+                <div className="text-start">
+                  <a href={t('modal_shortcuts.global.konami_code_url')} target="_blank" rel="noreferrer">
+                    <span className="text-secondary small">
+                      {t('modal_shortcuts.global.Konami Code')}
+                    </span>
+                  </a>
+                  <div className="d-flex flex-column align-items-start mt-1">
+                    <div className="d-flex gap-1 mb-1">
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_upward</span>
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_upward</span>
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
                     </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.global.MirrorMode')}</th>
-                  <td className="text-nowrap d-flex justify-content-end">
-                    <div className="text-start">
-                      <a href={t('modal_shortcuts.global.konami_code_url')} target="_blank" rel="noreferrer">
-                        <span className="text-secondary small">
-                          {t('modal_shortcuts.global.Konami Code')}
-                        </span>
-                      </a>
-                      <br />
-                      <span className="key key-small">X</span>&nbsp;<span className="key key-small">X</span>
-                      <span className="key key-small">B</span>&nbsp;<span className="key key-small">B</span>
-                      <br />
-                      <span className="key key-small">A</span>&nbsp;<span className="key key-small">Y</span>
-                      <span className="key key-small">A</span>&nbsp;<span className="key key-small">Y</span>
-                      <br />
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_downward</span>&nbsp;
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_back</span>
+                    <div className="d-flex gap-1 mb-1">
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_back</span>
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_forward</span>
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_back</span>
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_forward</span>
                     </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <div className="d-flex gap-1">
+                      <span className="key">B</span>
+                      <span className="key">A</span>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              {/* Mirror Mode */}
+              <li className="d-flex align-items-center p-3">
+                <div className="flex-grow-1">{t('modal_shortcuts.global.MirrorMode')}</div>
+                <div className="text-start">
+                  <a href={t('modal_shortcuts.global.konami_code_url')} target="_blank" rel="noreferrer">
+                    <span className="text-secondary small">
+                      {t('modal_shortcuts.global.Konami Code')}
+                    </span>
+                  </a>
+                  <div className="d-flex flex-column align-items-start mt-1">
+                    <div className="d-flex gap-1 mb-1">
+                      <span className="key">X</span>
+                      <span className="key">X</span>
+                      <span className="key">B</span>
+                      <span className="key">B</span>
+                    </div>
+                    <div className="d-flex gap-1 mb-1">
+                      <span className="key">A</span>
+                      <span className="key">Y</span>
+                      <span className="key">A</span>
+                      <span className="key">Y</span>
+                    </div>
+                    <div className="d-flex gap-1">
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_back</span>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
 
           <div className="col-lg-6">
             <h6>
               <strong>{t('modal_shortcuts.editor.title')}</strong>
             </h6>
-            <table className="table">
-              <tbody>
-                <tr>
-                  <th>{t('modal_shortcuts.editor.Search in Editor')}</th>
-                  <td className="text-nowrap">
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                    <span className="text-secondary mx-1">+</span>
-                    <span className="key">F</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>
-                    {t('modal_shortcuts.editor.Save Page')}
-                    <span className="small text-secondary ms-1">{t('modal_shortcuts.editor.Only Editor')}</span>
-                  </th>
-                  <td className="text-nowrap">
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                    <span className="text-secondary mx-1">+</span>
-                    <span className="key">S</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.editor.Indent')}</th>
-                  <td>
-                    <span className="key key-longer">Tab</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.editor.Outdent')}</th>
-                  <td className="text-nowrap">
-                    <span className="key">Shift</span>
-                    <span className="text-secondary mx-1">+</span>
-                    <span className="key key-longer">Tab</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.editor.Delete Line')}</th>
-                  <td className="text-nowrap">
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                    <span className="text-secondary mx-1">+</span>
-                    <span className="key">Shift</span>
-                    <span className="text-secondary mx-1">+</span>
-                    <span className="key">K</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>
-                    {/* eslint-disable-next-line react/no-danger */}
-                    <span dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.editor.Insert Line') }} />
-                    <br />
-                    <span className="small text-secondary ms-1">{t('modal_shortcuts.editor.Post Comment')}</span>
-                  </th>
-                  <td className="text-nowrap">
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                    <span className="text-secondary mx-1">+</span>
-                    <span className="key">Enter</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.editor.Move Line')}</th>
-                  <td className="text-nowrap">
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                    <span className="text-secondary mx-1">+</span>
-                    <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_downward</span>
-                    <span className="text-secondary mx-1">or</span>
-                    <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_upward</span>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.editor.Copy Line')}</th>
-                  <td className="text-nowrap d-flex justify-content-end">
-                    <div className="text-start">
+            <ul className="list-unstyled m-0">
+              {/* Search in Editor */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">{t('modal_shortcuts.editor.Search in Editor')}</div>
+                <div className="text-nowrap">
+                  <span className={`key cmd-key ${additionalClassByOs}`}></span>
+                  <span className="text-secondary mx-1">+</span>
+                  <span className="key">F</span>
+                </div>
+              </li>
+              {/* Save Page */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">
+                  {t('modal_shortcuts.editor.Save Page')}
+                  <span className="small text-secondary ms-1">{t('modal_shortcuts.editor.Only Editor')}</span>
+                </div>
+                <div className="text-nowrap">
+                  <span className={`key cmd-key ${additionalClassByOs}`}></span>
+                  <span className="text-secondary mx-1">+</span>
+                  <span className="key">S</span>
+                </div>
+              </li>
+              {/* Indent */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">{t('modal_shortcuts.editor.Indent')}</div>
+                <div>
+                  <span className="key key-longer">Tab</span>
+                </div>
+              </li>
+              {/* Outdent */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">{t('modal_shortcuts.editor.Outdent')}</div>
+                <div className="text-nowrap">
+                  <span className="key">Shift</span>
+                  <span className="text-secondary mx-1">+</span>
+                  <span className="key key-longer">Tab</span>
+                </div>
+              </li>
+              {/* Delete Line */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">{t('modal_shortcuts.editor.Delete Line')}</div>
+                <div className="text-nowrap">
+                  <span className={`key cmd-key ${additionalClassByOs}`}></span>
+                  <span className="text-secondary mx-1">+</span>
+                  <span className="key">Shift</span>
+                  <span className="text-secondary mx-1">+</span>
+                  <span className="key">K</span>
+                </div>
+              </li>
+              {/* Insert Line */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">
+                  <span dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.editor.Insert Line') }} />
+                  <br />
+                  <span className="small text-secondary ms-1">{t('modal_shortcuts.editor.Post Comment')}</span>
+                </div>
+                <div className="text-nowrap">
+                  <span className={`key cmd-key ${additionalClassByOs}`}></span>
+                  <span className="text-secondary mx-1">+</span>
+                  <span className="key">Enter</span>
+                </div>
+              </li>
+              {/* Move Line */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">{t('modal_shortcuts.editor.Move Line')}</div>
+                <div className="text-nowrap">
+                  <span className={`key cmd-key ${additionalClassByOs}`}></span>
+                  <span className="text-secondary mx-1">+</span>
+                  <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
+                  <span className="text-secondary mx-1">or</span>
+                  <span className="key material-symbols-outlined fs-5 px-0">arrow_upward</span>
+                </div>
+              </li>
+              {/* Copy Line */}
+              <li className="d-flex align-items-center p-3 border-bottom">
+                <div className="flex-grow-1">{t('modal_shortcuts.editor.Copy Line')}</div>
+                <div className="text-nowrap">
+                  <div className="text-start">
+                    <div>
                       <span className={`key cmd-key ${additionalClassByOs}`}></span>
                       <span className="text-secondary mx-1">+</span>
                       <span className="key">Shift</span>
-                      <span className="text-secondary mx-1">+</span><br />
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_downward</span>
-                      <span className="text-secondary mx-1">or</span>
-                      <span className="key key-small material-symbols-outlined fs-5 px-0">arrow_upward</span>
+                      <span className="text-secondary mx-1">+</span>
                     </div>
-                  </td>
-                </tr>
-                <tr>
-                  <th>{t('modal_shortcuts.editor.Toggle Line')}</th>
-                  <td className="text-nowrap">
-                    <span className={`key cmd-key ${additionalClassByOs}`}></span>
-                    <span className="text-secondary mx-1">+</span>
-                    <span className="key">/</span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    <div className="mt-1">
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_downward</span>
+                      <span className="text-secondary mx-1">or</span>
+                      <span className="key material-symbols-outlined fs-5 px-0">arrow_upward</span>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              {/* Toggle Line */}
+              <li className="d-flex align-items-center p-3">
+                <div className="flex-grow-1">{t('modal_shortcuts.editor.Toggle Line')}</div>
+                <div className="text-nowrap">
+                  <span className={`key cmd-key ${additionalClassByOs}`}></span>
+                  <span className="text-secondary mx-1">+</span>
+                  <span className="key">/</span>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -223,7 +254,7 @@ const ShortcutsModal = (): JSX.Element => {
           <ModalHeader tag="h4" toggle={close} className="px-4">
             {t('Shortcuts')}
           </ModalHeader>
-          <ModalBody className="p-4">
+          <ModalBody className="p-md-4">
             {bodyContent()}
           </ModalBody>
         </Modal>
