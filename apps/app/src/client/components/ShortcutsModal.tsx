@@ -191,7 +191,10 @@ const ShortcutsModal = (): JSX.Element => {
               {/* Insert Line */}
               <li className="d-flex align-items-center p-3 border-bottom">
                 <div className="flex-grow-1">
-                  <span dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.editor.Insert Line') }} />
+                  <span
+                  // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.editor.Insert Line') }}
+                  />
                   <br />
                   <span className="small text-secondary ms-1">{t('modal_shortcuts.editor.Post Comment')}</span>
                 </div>
@@ -242,6 +245,7 @@ const ShortcutsModal = (): JSX.Element => {
               </li>
             </ul>
           </div>
+          {/* TODO: Add docs link button https://redmine.weseek.co.jp/issues/161862 */}
         </div>
       </div>
     );
