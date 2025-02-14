@@ -4,14 +4,12 @@
 
   .key {
     /* Box Properties */
-    display: inline-block;
     padding: 0 4px;
     margin: 2px 4px;
 
     /* Text Properties */
-    text-align: center;
-    background: bs.$body-tertiary-bg;
-    border: 1px solid bs.$secondary-border-subtle;
-    border-radius: bs.$border-radius-sm;
+    background: var(--bs-tertiary-bg);
+    border: var(--bs-border-width) solid var(--bs-secondary-border-subtle);
+    border-radius: var(--bs-border-radius-sm);
   }
 }
