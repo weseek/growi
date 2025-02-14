@@ -88,9 +88,21 @@
   }
 }
 
+.alt-key.mac {
+  &::after {
+    content: '⌥';
+  }
+}
+
 .cmd-key.win {
   &::after {
     content: 'Ctrl';
+  }
+}
+
+.alt-key.win {
+  &::after {
+    content: 'Alt';
   }
 }
 
