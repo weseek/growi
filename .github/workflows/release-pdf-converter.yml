@@ -25,8 +25,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        # TODO: setup GCP_PRJ_ID_PDF_CONVERTER
-        images: weseek/growi-pdf-converter,asia.gcr.io/${{ secrets.GCP_PRJ_ID_PDF_CONVERTER }}/growi-pdf-converter
+        images: growilabs/pdf-converter,asia.gcr.io/${{ secrets.GCP_PRJ_ID_PDF_CONVERTER }}/pdf-converter
         tags: |
           type=raw,value=latest
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}
@@ -38,7 +37,6 @@ jobs:
     - name: Authenticate to Google Cloud for GROWI.cloud
       uses: google-github-actions/auth@v1
       with:
-        # TODO: setup GCP_SA_KEY_PDF_CONVERTER
         credentials_json: '${{ secrets.GCP_SA_KEY_PDF_CONVERTER }}'
 
     - name: Setup gcloud
@@ -80,7 +78,7 @@ jobs:
       with:
         username: wsmoogle
         password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-        repository: weseek/growi-slackbot-proxy
+        repository: growilabs/pdf-converter
         readme-filepath: ./apps/pdf-converter/docker/README.md
 
 

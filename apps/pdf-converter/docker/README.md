@@ -2,7 +2,7 @@
 GROWI PDF Converter Official docker image
 ==============================================
 
-[![Node CI for slackbot-proxy](https://github.com/weseek/growi/actions/workflows/ci-pdf-converter.yml/badge.svg)](https://github.com/weseek/growi/actions/workflows/ci-slackbot-proxy.yml) [![docker-pulls](https://img.shields.io/docker/pulls/weseek/growi-pdf-converter.svg)](https://hub.docker.com/r/weseek/growi-pdf-converter/)
+[![Node CI for pdf-converter](https://github.com/weseek/growi/actions/workflows/ci-pdf-converter.yml/badge.svg)](https://github.com/weseek/growi/actions/workflows/ci-pdf-converter.yml) [![docker-pulls](https://img.shields.io/docker/pulls/growilabs/pdf-converter.svg)](https://hub.docker.com/r/growilabs/pdf-converter/)
 
 
 Supported tags and respective Dockerfile links
@@ -22,7 +22,7 @@ Usage
 -----
 
 ```bash
-docker run -d weseek/pdf-converter
+docker run -d growilabs/pdf-converter
 ```
 
 and go to `http://localhost:3010/` .

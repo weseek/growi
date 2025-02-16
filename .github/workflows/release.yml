@@ -174,7 +174,6 @@ jobs:
         pnpm install --frozen-lockfile
 
     - name: Bump versions for next RC
-      # TODO: check if prepatch for pdf-converter is necessary
       run: |
         turbo run version:prepatch --filter=@growi/app
         turbo run version:prepatch --filter=@growi/slackbot-proxy
