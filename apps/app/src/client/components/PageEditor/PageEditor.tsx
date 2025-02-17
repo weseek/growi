@@ -81,7 +81,7 @@ type Props = {
   visibility?: boolean,
 }
 
-export const PageEditor = React.memo((props: Props): JSX.Element => {
+export const PageEditorSubstance = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
@@ -362,41 +362,47 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }
 
   return (
+    <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
+      <div className="page-editor-editor-container flex-expand-vert border-end">
+        <CodeMirrorEditorMain
+          enableCollaboration={editorMode === EditorMode.Editor}
+          onSave={saveWithShortcut}
+          onUpload={uploadHandler}
+          acceptedUploadFileType={acceptedUploadFileType}
+          onScroll={scrollEditorHandlerThrottle}
+          indentSize={currentIndentSize ?? defaultIndentSize}
+          user={user ?? undefined}
+          pageId={pageId ?? undefined}
+          initialValue={initialValue}
+          editorSettings={editorSettings}
+          onEditorsUpdated={onEditorsUpdated}
+          cmProps={cmProps}
+        />
+      </div>
+      <div
+        ref={previewRef}
+        onScroll={scrollPreviewHandlerThrottle}
+        className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex"
+      >
+        <Preview
+          rendererOptions={rendererOptions}
+          markdown={markdownToPreview}
+          pagePath={currentPagePath}
+          expandContentWidth={shouldExpandContent}
+          style={pastEndStyle}
+        />
+      </div>
+    </div>
+  );
+};
+
+export const PageEditor = React.memo((props: Props): JSX.Element => {
+  return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
 
       <EditorNavbar />
 
-      <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
-        <div className="page-editor-editor-container flex-expand-vert border-end">
-          <CodeMirrorEditorMain
-            enableCollaboration={editorMode === EditorMode.Editor}
-            onSave={saveWithShortcut}
-            onUpload={uploadHandler}
-            acceptedUploadFileType={acceptedUploadFileType}
-            onScroll={scrollEditorHandlerThrottle}
-            indentSize={currentIndentSize ?? defaultIndentSize}
-            user={user ?? undefined}
-            pageId={pageId ?? undefined}
-            initialValue={initialValue}
-            editorSettings={editorSettings}
-            onEditorsUpdated={onEditorsUpdated}
-            cmProps={cmProps}
-          />
-        </div>
-        <div
-          ref={previewRef}
-          onScroll={scrollPreviewHandlerThrottle}
-          className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex"
-        >
-          <Preview
-            rendererOptions={rendererOptions}
-            markdown={markdownToPreview}
-            pagePath={currentPagePath}
-            expandContentWidth={shouldExpandContent}
-            style={pastEndStyle}
-          />
-        </div>
-      </div>
+      <PageEditorSubstance visibility={props.visibility} />
 
       <EditorNavbarBottom />
 
