@@ -53,7 +53,7 @@ const schema = new Schema<AiAssistantDocument>(
         },
         item: {
           type: Schema.Types.ObjectId,
-          refPath: 'grantedGroupsForShareScope.type',
+          refPath: 'grantedGroups.type',
           required: true,
           index: true,
         },
@@ -75,7 +75,7 @@ const schema = new Schema<AiAssistantDocument>(
         },
         item: {
           type: Schema.Types.ObjectId,
-          refPath: 'grantedGroupsForAccessScope.type',
+          refPath: 'grantedGroups.type',
           required: true,
           index: true,
         },
