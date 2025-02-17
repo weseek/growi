@@ -25,7 +25,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: growilabs/pdf-converter,asia.gcr.io/${{ secrets.GCP_PRJ_ID_PDF_CONVERTER }}/pdf-converter
+        images: growilabs/pdf-converter
         tags: |
           type=raw,value=latest
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}
@@ -33,18 +33,6 @@ jobs:
     - name: Login to docker.io registry
       run: |
         echo ${{ secrets.DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
-
-    - name: Authenticate to Google Cloud for GROWI.cloud
-      uses: google-github-actions/auth@v1
-      with:
-        credentials_json: '${{ secrets.GCP_SA_KEY_PDF_CONVERTER }}'
-
-    - name: Setup gcloud
-      uses: google-github-actions/setup-gcloud@v2
-
-    - name: Configure docker for gcloud
-      run: |
-        gcloud auth configure-docker --quiet
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
