@@ -40,7 +40,7 @@ export const useAiAssistantManagementModal = (
     open: useCallback((aiAssistantData) => { swrResponse.mutate({ isOpened: true, aiAssistantData }) }, [swrResponse]),
     close: useCallback(() => swrResponse.mutate({ isOpened: false, aiAssistantData: undefined }), [swrResponse]),
     changePageMode: useCallback((pageMode: AiAssistantManagementModalPageMode) => {
-      swrResponse.mutate({ isOpened: swrResponse.data?.isOpened ?? false, pageMode });
+      swrResponse.mutate({ isOpened: swrResponse.data?.isOpened ?? false, pageMode, aiAssistantData: swrResponse.data?.aiAssistantData });
     }, [swrResponse]),
   };
 };
