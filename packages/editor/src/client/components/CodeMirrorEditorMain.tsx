@@ -39,7 +39,13 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(enableCollaboration, user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
+  useCollaborativeEditorMode(enableCollaboration, codeMirrorEditor, {
+    user,
+    pageId,
+    initialValue,
+    onEditorsUpdated,
+    reviewMode: enableUnifiedMergeView,
+  });
 
   useUnifiedMergeView(enableUnifiedMergeView, codeMirrorEditor);
 

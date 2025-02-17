@@ -18,15 +18,25 @@ type UserLocalState = {
   colorLight: string;
 }
 
+type Configuration = {
+  reviewMode?: boolean,
+  user?: IUserHasId,
+  pageId?: string,
+  initialValue?: string,
+  onEditorsUpdated?: (userList: IUserHasId[]) => void,
+}
+
 export const useCollaborativeEditorMode = (
     isEnabled: boolean,
-    user?: IUserHasId,
-    pageId?: string,
-    initialValue?: string,
-    onEditorsUpdated?: (userList: IUserHasId[]) => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
+    configuration?: Configuration,
 ): void => {
+  const {
+    user, pageId, initialValue, onEditorsUpdated, reviewMode,
+  } = configuration ?? {};
+
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
+  const [reviewDoc, setReviewDoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<SocketIOProvider | null>(null);
   const [cPageId, setCPageId] = useState(pageId);
 
@@ -64,7 +74,26 @@ export const useCollaborativeEditorMode = (
 
     const _ydoc = new Y.Doc();
     setYdoc(_ydoc);
-  }, [isEnabled, provider, ydoc]);
+  }, [isEnabled, provider, ydoc, reviewMode]);
+
+  // Setup Ydoc for review mode
+  useEffect(() => {
+    if (reviewDoc != null || !isEnabled || !reviewMode) {
+      return;
+    }
+
+    const _reviewDoc = new Y.Doc();
+    setReviewDoc(_reviewDoc);
+  }, [isEnabled, reviewMode, reviewDoc]);
+
+  // Apply reviewDoc to Ydoc
+  useEffect(() => {
+    if (reviewDoc == null || ydoc == null || !isEnabled || reviewMode) {
+      return;
+    }
+
+    Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(reviewDoc));
+  }, [isEnabled, reviewMode, reviewDoc, ydoc]);
 
   // Setup provider
   useEffect(() => {
@@ -119,6 +148,7 @@ export const useCollaborativeEditorMode = (
     }
 
     const ytext = ydoc.getText('codemirror');
+    const reviewText = reviewMode ? reviewDoc?.getText('codemirror') : null;
 
     // setup observer to mark collaborative changes
     ytext.observe((event) => {
@@ -127,13 +157,24 @@ export const useCollaborativeEditorMode = (
       codeMirrorEditor.view?.dispatch({
         effects: CollaborativeChange.of(event.delta),
       });
+
+      // レビューモード時は変更をレビュー用のドキュメントにも反映
+      if (reviewMode && reviewText != null) {
+        Y.applyUpdate(reviewDoc!, Y.encodeStateAsUpdate(ydoc));
+      }
     });
 
-    const undoManager = new Y.UndoManager(ytext);
+    // const undoManager = new Y.UndoManager(ytext);
+    const undoManager = new Y.UndoManager(reviewMode && reviewText ? reviewText : ytext);
 
     const extensions = [
       keymap.of(yUndoManagerKeymap),
-      yCollab(ytext, provider.awareness, { undoManager }),
+      // yCollab(ytext, provider.awareness, { undoManager }),
+      yCollab(
+        reviewMode && reviewText ? reviewText : ytext,
+        provider.awareness,
+        { undoManager },
+      ),
     ];
 
     const cleanupFunctions = extensions.map(ext => codeMirrorEditor.appendExtensions([ext]));
@@ -142,5 +183,6 @@ export const useCollaborativeEditorMode = (
       cleanupFunctions.forEach(cleanup => cleanup?.());
       codeMirrorEditor.initDoc('');
     };
-  }, [codeMirrorEditor, provider, ydoc]);
+  // }, [codeMirrorEditor, provider, ydoc, reviewMode]);
+  }, [codeMirrorEditor, provider, ydoc, reviewDoc, reviewMode]);
 };
