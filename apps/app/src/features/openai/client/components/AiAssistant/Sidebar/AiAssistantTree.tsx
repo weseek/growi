@@ -8,6 +8,7 @@ import { useCurrentUser } from '~/stores-universal/context';
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
+import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
 import styles from './AiAssistantTree.module.scss';
 
@@ -84,6 +85,8 @@ type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
   threads: Thread[];
+  onEditClicked?: (aiAssistantData: AiAssistantHasId) => void;
+  onItemClicked?: (aiAssistantData: AiAssistantHasId) => void;
   onDeleted?: () => void;
 };
 
@@ -91,13 +94,20 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   currentUserId,
   aiAssistant,
   threads,
+  onEditClicked,
+  onItemClicked,
   onDeleted,
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
-  const openChatHandler = useCallback(() => {
-    // TODO: https://redmine.weseek.co.jp/issues/159530
-  }, []);
+  const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
+    onEditClicked?.(aiAssistantData);
+  }, [onEditClicked]);
+
+  const openChatHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
+    onItemClicked?.(aiAssistantData);
+  }, [onItemClicked]);
+
 
   const openThreadsHandler = useCallback(() => {
     setIsThreadsOpened(toggle => !toggle);
@@ -119,14 +129,20 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   return (
     <>
       <li
-        onClick={openChatHandler}
+        onClick={(e) => {
+          e.stopPropagation();
+          openChatHandler(aiAssistant);
+        }}
         role="button"
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
       >
         <div className="d-flex justify-content-center">
           <button
             type="button"
-            onClick={openThreadsHandler}
+            onClick={(e) => {
+              e.stopPropagation();
+              openThreadsHandler();
+            }}
             className={`grw-ai-assistant-triangle-btn btn px-0 ${isThreadsOpened ? 'grw-ai-assistant-open' : ''}`}
           >
             <div className="d-flex justify-content-center">
@@ -148,13 +164,20 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
             <button
               type="button"
               className="btn btn-link text-secondary p-0 ms-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                openManagementModalHandler(aiAssistant);
+              }}
             >
               <span className="material-symbols-outlined fs-5">edit</span>
             </button>
             <button
               type="button"
               className="btn btn-link text-secondary p-0"
-              onClick={deleteAiAssistantHandler}
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteAiAssistantHandler();
+              }}
             >
               <span className="material-symbols-outlined fs-5">delete</span>
             </button>
@@ -183,6 +206,9 @@ type AiAssistantTreeProps = {
 
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
+  const { open: openAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+  const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
+
   return (
     <ul className={`list-group ${moduleClass}`}>
       {aiAssistants.map(assistant => (
@@ -191,6 +217,8 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           currentUserId={currentUser?._id}
           aiAssistant={assistant}
           threads={dummyThreads}
+          onEditClicked={openAiAssistantManagementModal}
+          onItemClicked={openAiAssistantChatSidebar}
           onDeleted={onDeleted}
         />
       ))}
