@@ -8,7 +8,7 @@ import { useCurrentUser } from '~/stores-universal/context';
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
-import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
+import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 
 import styles from './AiAssistantTree.module.scss';
 
@@ -85,6 +85,7 @@ type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
   threads: Thread[];
+  onEditClicked?: (aiAssistantData: AiAssistantHasId) => void;
   onItemClicked?: (aiAssistantData: AiAssistantHasId) => void;
   onDeleted?: () => void;
 };
@@ -93,14 +94,20 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   currentUserId,
   aiAssistant,
   threads,
+  onEditClicked,
   onItemClicked,
   onDeleted,
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
+  const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
+    onEditClicked?.(aiAssistantData);
+  }, [onEditClicked]);
+
   const openChatHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
     onItemClicked?.(aiAssistantData);
   }, [onItemClicked]);
+
 
   const openThreadsHandler = useCallback(() => {
     setIsThreadsOpened(toggle => !toggle);
@@ -151,6 +158,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
             <button
               type="button"
               className="btn btn-link text-secondary p-0 ms-2"
+              onClick={() => { openManagementModalHandler(aiAssistant) }}
             >
               <span className="material-symbols-outlined fs-5">edit</span>
             </button>
@@ -187,6 +195,7 @@ type AiAssistantTreeProps = {
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
   const { open: openAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+  const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   return (
     <ul className={`list-group ${moduleClass}`}>
@@ -196,6 +205,7 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           currentUserId={currentUser?._id}
           aiAssistant={assistant}
           threads={dummyThreads}
+          onEditClicked={openAiAssistantManagementModal}
           onItemClicked={openAiAssistantChatSidebar}
           onDeleted={onDeleted}
         />

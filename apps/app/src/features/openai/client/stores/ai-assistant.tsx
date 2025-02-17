@@ -20,10 +20,11 @@ type AiAssistantManagementModalPageMode = typeof AiAssistantManagementModalPageM
 type AiAssistantManagementModalStatus = {
   isOpened: boolean,
   pageMode?: AiAssistantManagementModalPageMode,
+  aiAssistantData?: AiAssistantHasId;
 }
 
 type AiAssistantManagementModalUtils = {
-  open(): void
+  open(aiAssistantData?: AiAssistantHasId): void
   close(): void
   changePageMode(pageType: AiAssistantManagementModalPageMode): void
 }
@@ -36,8 +37,8 @@ export const useAiAssistantManagementModal = (
 
   return {
     ...swrResponse,
-    open: useCallback(() => { swrResponse.mutate({ isOpened: true }) }, [swrResponse]),
-    close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
+    open: useCallback((aiAssistantData) => { swrResponse.mutate({ isOpened: true, aiAssistantData }) }, [swrResponse]),
+    close: useCallback(() => swrResponse.mutate({ isOpened: false, aiAssistantData: undefined }), [swrResponse]),
     changePageMode: useCallback((pageMode: AiAssistantManagementModalPageMode) => {
       swrResponse.mutate({ isOpened: swrResponse.data?.isOpened ?? false, pageMode });
     }, [swrResponse]),

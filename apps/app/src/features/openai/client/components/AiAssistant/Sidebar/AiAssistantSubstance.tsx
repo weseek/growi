@@ -17,7 +17,7 @@ export const AiAssistantContent = (): JSX.Element => {
       <button
         type="button"
         className="btn btn-outline-secondary px-3 d-flex align-items-center mb-4"
-        onClick={open}
+        onClick={() => open()}
       >
         <span className="material-symbols-outlined fs-5 me-2">add</span>
         <span className="fw-normal">アシスタントを追加する</span>
