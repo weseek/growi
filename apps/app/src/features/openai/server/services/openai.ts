@@ -653,9 +653,7 @@ class OpenaiService implements IOpenaiService {
           ],
         },
       ],
-    })
-      .populate('grantedGroupsForShareScope.item')
-      .populate('grantedGroupsForAccessScope.item');
+    });
 
     return {
       myAiAssistants: assistants.filter(assistant => assistant.owner.toString() === user._id.toString()) ?? [],
