@@ -129,14 +129,20 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   return (
     <>
       <li
-        onClick={() => openChatHandler(aiAssistant)}
+        onClick={(e) => {
+          e.stopPropagation();
+          openChatHandler(aiAssistant);
+        }}
         role="button"
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
       >
         <div className="d-flex justify-content-center">
           <button
             type="button"
-            onClick={openThreadsHandler}
+            onClick={(e) => {
+              e.stopPropagation();
+              openThreadsHandler();
+            }}
             className={`grw-ai-assistant-triangle-btn btn px-0 ${isThreadsOpened ? 'grw-ai-assistant-open' : ''}`}
           >
             <div className="d-flex justify-content-center">
@@ -158,14 +164,20 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
             <button
               type="button"
               className="btn btn-link text-secondary p-0 ms-2"
-              onClick={() => { openManagementModalHandler(aiAssistant) }}
+              onClick={(e) => {
+                e.stopPropagation();
+                openManagementModalHandler(aiAssistant);
+              }}
             >
               <span className="material-symbols-outlined fs-5">edit</span>
             </button>
             <button
               type="button"
               className="btn btn-link text-secondary p-0"
-              onClick={deleteAiAssistantHandler}
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteAiAssistantHandler();
+              }}
             >
               <span className="material-symbols-outlined fs-5">delete</span>
             </button>
