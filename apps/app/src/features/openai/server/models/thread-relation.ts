@@ -12,6 +12,7 @@ const generateExpirationDate = (): Date => {
 
 interface ThreadRelation {
   userId: mongoose.Types.ObjectId;
+  vectorStore: mongoose.Types.ObjectId;
   threadId: string;
   expiredAt: Date;
 }
@@ -28,6 +29,11 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   userId: {
     type: Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
+  },
+  vectorStore: {
+    type: Schema.Types.ObjectId,
+    ref: 'VectorStore',
     required: true,
   },
   threadId: {
