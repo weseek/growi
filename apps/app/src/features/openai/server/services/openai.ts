@@ -436,11 +436,6 @@ class OpenaiService implements IOpenaiService {
       await this.deleteVectorStoreFile(vectorStoreRelation._id, page._id);
       await this.createVectorStoreFile(vectorStoreRelation, [page]);
     });
-
-
-    // const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
-    // await this.deleteVectorStoreFile(vectorStore._id, page._id);
-    // await this.createVectorStoreFile([page]);
   }
 
   private async createVectorStoreFileWithStream(vectorStoreRelation: VectorStoreDocument, conditions: mongoose.FilterQuery<PageDocument>): Promise<void> {
