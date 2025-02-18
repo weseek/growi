@@ -4,6 +4,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:routes:admin');
 
 /* eslint-disable no-use-before-define */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = function(crowi, app) {
   const {
     configManager,
@@ -105,7 +106,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('esa.io form is blank'));
     }
 
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+    await configManager.updateConfigs(form);
     importer.initializeEsaClient(); // let it run in the back aftert res
     const parameters = { action: SupportedAction.ACTION_ADMIN_ESA_DATA_UPDATED };
     activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -127,7 +128,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Qiita form is blank'));
     }
 
-    await configManager.updateConfigsInTheSameNamespace('crowi', form);
+    await configManager.updateConfigs(form);
     importer.initializeQiitaClient(); // let it run in the back aftert res
     const parameters = { action: SupportedAction.ACTION_ADMIN_QIITA_DATA_UPDATED };
     activityEvent.emit('update', res.locals.activity._id, parameters);

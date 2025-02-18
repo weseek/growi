@@ -9,7 +9,6 @@ import type {
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { auto } from '@popperjs/core';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
@@ -117,6 +116,14 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
       >
         <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
         {t('sync-latest-revision-body.menuitem')}
+      </DropdownItem>
+
+      {/* Announce */}
+      <DropdownItem
+        className="grw-page-control-dropdown-item"
+      >
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">campaign</span>
+        {t('Announce')}
       </DropdownItem>
 
       {/* Presentation */}

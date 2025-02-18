@@ -184,9 +184,6 @@
         "register_5": "Copy and paste your ClientID and Client Secret above",
         "updated_google": "Succeeded to update Google OAuth setting"
       },
-      "Facebook": {
-        "name": "Facebook OAuth"
-      },
       "GitHub": {
         "enable_github": "Enable GitHub OAuth",
         "name": "GitHub OAuth",
@@ -200,9 +197,9 @@
         "id_detail": "Specification of the name of attribute which can identify the user in OIDC claims",
         "username_detail": "Specification of mappings for <code>username</code> when creating new users",
         "name_detail": "Specification of mappings for <code>name</code> when creating new users",
-        "mapping_detail": "Specification of mappings for %s when creating new users",
+        "mapping_detail": "Specification of mappings for {{target}} when creating new users",
         "register_1": "Contact to OIDC IdP Administrator",
-        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>%s</code>",
+        "register_2": "Register your OIDC App with \"Authorization callback URL\" as <code>{{url}}</code>",
         "register_3": "Copy and paste your ClientID and Client Secret above",
         "updated_oidc": "Succeeded to update OpenID Connect",
         "Use discovered URL if empty": "Use discovered URL from \"Issuer Host\" if empty"

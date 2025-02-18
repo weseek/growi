@@ -1,5 +1,17 @@
 # @growi/core
 
+## 1.4.0
+
+### Minor Changes
+
+- [#9542](https://github.com/weseek/growi/pull/9542) [`708c45a`](https://github.com/weseek/growi/commit/708c45ab76ee7a3d3861033d1f82714f2f07e4ec) Thanks [@yuki-takei](https://github.com/yuki-takei)! - Update GrowiInfo interface
+
+## 1.3.1
+
+### Patch Changes
+
+- [#9550](https://github.com/weseek/growi/pull/9550) [`acd3787`](https://github.com/weseek/growi/commit/acd3787fc4b8c8630ba9fa5a06d837639da8d10a) Thanks [@yuki-takei](https://github.com/yuki-takei)! - Fix generateChildrenRegExp method
+
 ## 1.3.0
 
 ### Minor Changes

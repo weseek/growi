@@ -1,9 +1,8 @@
-import Logger from 'bunyan';
+import type Logger from 'bunyan';
 
+import { initServiceInstanceId, startInstrumentation } from '~/features/opentelemetry/server';
 import loggerFactory from '~/utils/logger';
 import { hasProcessFlag } from '~/utils/process-utils';
-
-import Crowi from './crowi';
 
 const logger: Logger = loggerFactory('growi');
 
@@ -21,9 +20,14 @@ process.on('unhandledRejection', (reason, p) => {
 
 async function main() {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // start OpenTelemetry
+    await startInstrumentation();
+
+    const Crowi = (await import('./crowi')).default;
     const growi = new Crowi();
     const server = await growi.start();
+
+    await initServiceInstanceId();
 
     if (hasProcessFlag('ci')) {
       logger.info('"--ci" flag is detected. Exit process.');

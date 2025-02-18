@@ -130,7 +130,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     }
   }
 
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   return [
     accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,

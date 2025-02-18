@@ -131,6 +131,7 @@ const ApiResponse = require('../../util/apiResponse');
  *            example: "/download/5e0734e072560e001761fa67"
  */
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 export const routesFactory = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');

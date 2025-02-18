@@ -193,9 +193,6 @@
         "register_5": "上記フォームにクライアントIDとクライアントシークレットを入力",
         "updated_google": "Google OAuth を更新しました"
       },
-      "Facebook": {
-        "name": "Facebook OAuth"
-      },
       "GitHub": {
         "enable_github": "GitHub OAuth を有効にする",
         "name": "GitHub OAuth",
@@ -211,7 +208,7 @@
         "name_detail": "新規ユーザー名(<code>name</code>)に関連付ける属性",
         "mapping_detail": "新規ユーザーの{{target}}に関連付ける属性",
         "register_1": "OIDC IdP Administrator へ接続します。",
-        "register_2": "OIDCアプリの認証コールバックURLを<code>%s</code>として登録します。",
+        "register_2": "OIDCアプリの認証コールバックURLを<code>{{url}}</code>として登録します。",
         "register_3": "上記のClientIDとClient Secretをコピー＆ペーストしてください。",
         "updated_oidc": "OpenID Connect を更新しました",
         "Use discovered URL if empty": "データベース側の値が空の場合、\"Issuer Host\"から検出した値を利用します。"

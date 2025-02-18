@@ -1,7 +1,9 @@
 import { toArrayIfNot } from '~/utils/array-utils';
+import { getGrowiVersion } from '~/utils/growi-version';
 import loggerFactory from '~/utils/logger';
 
-import ConfigLoader from './config-loader';
+import { configManager } from './config-manager';
+import { growiInfoService } from './growi-info';
 
 const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-line no-unused-vars
 
@@ -32,6 +34,10 @@ class ExportProgressingStatus extends CollectionProgressingStatus {
 
 class ExportService {
 
+  /** @type {import('~/server/crowi').default} Crowi instance */
+  crowi;
+
+  /** @param {import('~/server/crowi').default} crowi Crowi instance */
   constructor(crowi) {
     this.crowi = crowi;
     this.appService = crowi.appService;
@@ -97,11 +103,11 @@ class ExportService {
     const passwordSeed = this.crowi.env.PASSWORD_SEED || null;
 
     const metaData = {
-      version: this.crowi.version,
-      url: this.appService.getSiteUrl(),
+      version: getGrowiVersion(),
+      url: growiInfoService.getSiteUrl(),
       passwordSeed,
       exportedAt: new Date(),
-      envVars: await ConfigLoader.getEnvVarsForDisplay(),
+      envVars: configManager.getManagedEnvVars(),
     };
 
     writeStream.write(JSON.stringify(metaData));
@@ -349,13 +355,12 @@ class ExportService {
 
     const output = fs.createWriteStream(zipFile);
 
-    // pipe archive data to the file
-    const stream = pipeline(archive, output);
-
     // finalize the archive (ie we are done appending files but streams have to finish yet)
     // 'close', 'end' or 'finish' may be fired right after calling this method so register to them beforehand
     archive.finalize();
-    await finished(stream);
+
+    // pipe archive data to the file
+    await pipeline(archive, output);
 
     logger.info(`zipped GROWI data into ${zipFile} (${archive.pointer()} bytes)`);
 

@@ -17,14 +17,14 @@ jobs:
         ref: ${{ github.event.pull_request.base.ref }}
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@2.0.1
+      uses: myrotvorets/info-from-package-json-action@v2.0.2
       id: package-json
       with:
         workingDir: apps/slackbot-proxy
 
     - name: Docker meta
       id: meta
-      uses: docker/metadata-action@v4
+      uses: docker/metadata-action@v5
       with:
         images: weseek/growi-slackbot-proxy,asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy
         tags: |
@@ -36,7 +36,7 @@ jobs:
         echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
 
     - name: Authenticate to Google Cloud for GROWI.cloud
-      uses: google-github-actions/auth@v1
+      uses: google-github-actions/auth@v2
       with:
         credentials_json: '${{ secrets.GCP_SA_KEY_SLACKBOT_PROXY }}'
 
@@ -110,7 +110,7 @@ jobs:
         turbo run version:prerelease --filter=@growi/slackbot-proxy
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@2.0.1
+      uses: myrotvorets/info-from-package-json-action@v2.0.2
       id: package-json
       with:
         workingDir: apps/slackbot-proxy

@@ -121,6 +121,7 @@ class GrowiArchiveSection extends React.Component {
           : (
             <UploadForm
               onUpload={this.handleUpload}
+              onDiscard={this.state.fileName != null ? this.discardData : undefined}
               onVersionMismatch={this.handleMismatchedVersions}
             />
           )}
