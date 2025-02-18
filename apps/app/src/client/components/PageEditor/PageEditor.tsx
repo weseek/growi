@@ -44,7 +44,7 @@ import {
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
-import { useEditingUsers } from '~/stores/use-editing-users';
+import { useEditingClients } from '~/stores/use-editing-clients';
 import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
@@ -108,7 +108,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
-  const { onEditorsUpdated } = useEditingUsers();
+  const { mutate: mutateEditingUsers } = useEditingClients();
   const onConflict = useConflictResolver();
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
 
@@ -374,7 +374,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
           user={user ?? undefined}
           pageId={pageId ?? undefined}
           editorSettings={editorSettings}
-          onEditorsUpdated={onEditorsUpdated}
+          onEditorsUpdated={mutateEditingUsers}
           cmProps={cmProps}
         />
       </div>

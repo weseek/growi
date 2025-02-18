@@ -7,6 +7,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
+import type { EditingClient } from '../../interfaces';
 import { CodeMirrorEditor, type CodeMirrorEditorProps } from '../components-internal/CodeMirrorEditor';
 import { setDataLine, useUnifiedMergeView } from '../services-internal';
 import { useCodeMirrorEditorIsolated } from '../stores/codemirror-editor';
@@ -26,7 +27,7 @@ type Props = CodeMirrorEditorProps & {
   initialValue?: string,
   enableCollaboration?: boolean,
   enableUnifiedMergeView?: boolean,
-  onEditorsUpdated?: (userList: IUserHasId[]) => void,
+  onEditorsUpdated?: (clientList: EditingClient[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
