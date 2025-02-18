@@ -1,5 +1,6 @@
 @import '@growi/core-styles/scss/helpers/flex-expand';
 @import '@growi/core-styles/scss/helpers/rotate';
+@import '@growi/core-styles/scss/helpers/modifier-keys';
 @import 'mixins';
 
 // atoms
@@ -79,30 +80,6 @@
   &.picture-xs {
     width: 14px;
     height: 14px;
-  }
-}
-
-.cmd-key.mac {
-  &::after {
-    content: '⌘';
-  }
-}
-
-.alt-key.mac {
-  &::after {
-    content: '⌥';
-  }
-}
-
-.cmd-key.win {
-  &::after {
-    content: 'Ctrl';
-  }
-}
-
-.alt-key.win {
-  &::after {
-    content: 'Alt';
   }
 }
 
