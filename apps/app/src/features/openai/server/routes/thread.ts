@@ -49,9 +49,9 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
         // リクエストした user が AiAssistant の owner or shareScope に含まれているかチェックする
         const vectorStoreRelation = await openaiService.getVectorStoreRelation(aiAssistantId);
 
-        const filterdThreadId = threadId != null ? filterXSS(threadId) : undefined;
+        const filteredThreadId = threadId != null ? filterXSS(threadId) : undefined;
 
-        const thread = await openaiService.getOrCreateThread(req.user._id, vectorStoreRelation, filterdThreadId);
+        const thread = await openaiService.getOrCreateThread(req.user._id, vectorStoreRelation, filteredThreadId);
         return res.apiv3({ thread });
       }
       catch (err) {
