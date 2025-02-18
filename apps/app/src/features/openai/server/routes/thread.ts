@@ -46,10 +46,13 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
       try {
         const { aiAssistantId, threadId } = req.body;
 
-        // リクエストした user が AiAssistant の owner or shareScope に含まれているかチェックする
-        const vectorStoreRelation = await openaiService.getVectorStoreRelation(aiAssistantId);
+        const isAiAssistantUsable = await openaiService.isAiAssistantUsable(aiAssistantId, req.user);
+        if (!isAiAssistantUsable) {
+          return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
+        }
 
         const filteredThreadId = threadId != null ? filterXSS(threadId) : undefined;
+        const vectorStoreRelation = await openaiService.getVectorStoreRelation(aiAssistantId);
 
         const thread = await openaiService.getOrCreateThread(req.user._id, vectorStoreRelation, filteredThreadId);
         return res.apiv3({ thread });

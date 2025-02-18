@@ -71,6 +71,7 @@ export interface IOpenaiService {
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   // rebuildVectorStoreAll(): Promise<void>;
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
+  isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
@@ -554,6 +555,42 @@ class OpenaiService implements IOpenaiService {
         throw new Error('A userGroup to which the owner does not belong is specified in grantedGroupsForAccessScope');
       }
     }
+  }
+
+  async isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean> {
+    const aiAssistant = await AiAssistantModel.findById(aiAssistantId);
+
+    if (aiAssistant == null) {
+      throw createError(404, 'AiAssistant document does not exist');
+    }
+
+    const isOwner = getIdStringForRef(aiAssistant.owner) === getIdStringForRef(user._id);
+
+    if (aiAssistant.shareScope === AiAssistantShareScope.PUBLIC_ONLY) {
+      return true;
+    }
+
+    if ((aiAssistant.shareScope === AiAssistantShareScope.OWNER) && isOwner) {
+      return true;
+    }
+
+    if ((aiAssistant.shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE) && (aiAssistant.accessScope === AiAssistantAccessScope.OWNER) && isOwner) {
+      return true;
+    }
+
+    if ((aiAssistant.shareScope === AiAssistantShareScope.GROUPS)
+      || ((aiAssistant.shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE) && (aiAssistant.accessScope === AiAssistantAccessScope.GROUPS))) {
+      const userGroupIds = [
+        ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+        ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ].map(group => group.toString());
+
+      const grantedGroupIdsForShareScope = aiAssistant.grantedGroupsForShareScope?.map(group => getIdStringForRef(group.item)) ?? [];
+      const isShared = userGroupIds.some(userGroupId => grantedGroupIdsForShareScope.includes(userGroupId));
+      return isShared;
+    }
+
+    return false;
   }
 
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
