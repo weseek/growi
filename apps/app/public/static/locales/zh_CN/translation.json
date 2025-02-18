@@ -478,8 +478,6 @@
     "selected_editable_revision": "选定的可编辑页面正文"
   },
   "sidebar_aichat": {
-    "title": "知识助手",
-    "title_beta_label": "(测试版)",
     "placeholder": "问我任何问题。",
     "summary_mode_label": "摘要模式",
     "summary_mode_help": "简洁回答在2-3句话内",

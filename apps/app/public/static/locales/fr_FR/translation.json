@@ -484,8 +484,6 @@
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
   "sidebar_aichat": {
-    "title": "Assistant de Connaissance",
-    "title_beta_label": "(Bêta)",
     "placeholder": "Demandez-moi n'importe quoi.",
     "summary_mode_label": "Mode résumé",
     "summary_mode_help": "Réponse concise en 2-3 phrases",
