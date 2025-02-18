@@ -1,4 +1,5 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/helpers/modifier-keys';
 
 .shortcuts-modal :global {
 
@@ -11,4 +12,6 @@
     border: var(--bs-border-width) solid var(--bs-border-color);
     border-radius: var(--bs-border-radius-sm);
   }
+
+  @include modifier-keys.modifier-key;
 }
