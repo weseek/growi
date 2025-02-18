@@ -13,7 +13,7 @@ import mongoose, { type HydratedDocument, type Types } from 'mongoose';
 import { type OpenAI, toFile } from 'openai';
 
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
+import ThreadRelationModel, { type ThreadRelationDocument } from '~/features/openai/server/models/thread-relation';
 import VectorStoreModel, { type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
 import VectorStoreFileRelationModel, {
   type VectorStoreFileRelation,
@@ -62,6 +62,7 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 
 export interface IOpenaiService {
   getOrCreateThread(userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
+  getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
@@ -115,6 +116,11 @@ class OpenaiService implements IOpenaiService {
       await openaiApiErrorHandler(err, { notFoundError: async() => { await threadRelation.remove() } });
       throw new Error(err);
     }
+  }
+
+  async getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]> {
+    const threadRelations = await ThreadRelationModel.find({ vectorStore: vectorStoreRelationId });
+    return threadRelations;
   }
 
   public async deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void> {

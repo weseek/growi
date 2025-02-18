@@ -17,7 +17,7 @@ interface ThreadRelation {
   expiredAt: Date;
 }
 
-interface ThreadRelationDocument extends ThreadRelation, Document {
+export interface ThreadRelationDocument extends ThreadRelation, Document {
   updateThreadExpiration(): Promise<void>;
 }
 
