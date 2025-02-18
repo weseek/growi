@@ -373,7 +373,6 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
           indentSize={currentIndentSize ?? defaultIndentSize}
           user={user ?? undefined}
           pageId={pageId ?? undefined}
-          initialValue={initialValue}
           editorSettings={editorSettings}
           onEditorsUpdated={onEditorsUpdated}
           cmProps={cmProps}

@@ -31,7 +31,7 @@ type Props = CodeMirrorEditorProps & {
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    user, pageId, initialValue,
+    user, pageId,
     enableCollaboration = false, enableUnifiedMergeView = false,
     cmProps,
     onSave, onEditorsUpdated, ...otherProps
@@ -42,7 +42,6 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   useCollaborativeEditorMode(enableCollaboration, codeMirrorEditor, {
     user,
     pageId,
-    initialValue,
     onEditorsUpdated,
     reviewMode: enableUnifiedMergeView,
   });
