@@ -1,4 +1,4 @@
-import type { IUser, Ref } from '@growi/core';
+import type { IUser, Ref, HasObjectId } from '@growi/core';
 
 import type { IVectorStore } from './vector-store';
 
@@ -8,3 +8,5 @@ export interface IThreadRelation {
   threadId: string;
   expiredAt: Date;
 }
+
+export type IThreadRelationHasId = IThreadRelation & HasObjectId;
