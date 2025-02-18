@@ -10,14 +10,15 @@ import SimpleBar from 'simplebar-react';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { MessageCard } from '~/features/openai/chat/components/AiChatModal/MessageCard';
-import { ResizableTextarea } from '~/features/openai/chat/components/AiChatModal/ResizableTextArea';
 import { MessageErrorCode, StreamErrorCode } from '~/features/openai/interfaces/message-error';
 import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
+
+import { MessageCard } from './MessageCard';
+import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantChatSidebar.module.scss';
 

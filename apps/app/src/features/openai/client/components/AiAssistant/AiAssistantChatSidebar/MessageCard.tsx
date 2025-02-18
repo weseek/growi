@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 
-import { useRagSearchModal } from '../../../client/stores/rag-search';
+import { useRagSearchModal } from '../../../stores/rag-search';
 
 import styles from './MessageCard.module.scss';
 
