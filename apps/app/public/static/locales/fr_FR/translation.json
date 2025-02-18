@@ -483,7 +483,7 @@
     "latest_revision": "les autres",
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
-  "modal_aichat": {
+  "sidebar_aichat": {
     "title": "Assistant de Connaissance",
     "title_beta_label": "(Bêta)",
     "placeholder": "Demandez-moi n'importe quoi.",

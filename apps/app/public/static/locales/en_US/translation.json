@@ -488,7 +488,7 @@
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
-  "modal_aichat": {
+  "sidebar_aichat": {
     "title": "Knowledge Assistant",
     "title_beta_label": "(Beta)",
     "placeholder": "Ask me anything.",

@@ -104,7 +104,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       }
       catch (err) {
         logger.error(err.toString());
-        toastError(t('modal_aichat.failed_to_create_or_retrieve_thread'));
+        toastError(t('sidebar_aichat.failed_to_create_or_retrieve_thread'));
       }
     }
 
@@ -125,7 +125,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
           const hasThreadIdNotSetError = resJson.errors.some(err => err.code === MessageErrorCode.THREAD_ID_IS_NOT_SET);
           if (hasThreadIdNotSetError) {
-            toastError(t('modal_aichat.failed_to_create_or_retrieve_thread'));
+            toastError(t('sidebar_aichat.failed_to_create_or_retrieve_thread'));
           }
         }
         setGeneratingAnswerMessage(undefined);
@@ -166,7 +166,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
             form.setError('input', { type: 'manual', message: error.message });
 
             if (error.code === StreamErrorCode.BUDGET_EXCEEDED) {
-              setErrorMessage(growiCloudUri != null ? 'modal_aichat.budget_exceeded_for_growi_cloud' : 'modal_aichat.budget_exceeded');
+              setErrorMessage(growiCloudUri != null ? 'sidebar_aichat.budget_exceeded_for_growi_cloud' : 'sidebar_aichat.budget_exceeded');
             }
           }
         });
@@ -228,7 +228,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                 { messageLogs.length > 0 && (
                   <div className="d-flex justify-content-center">
                     <span className="bg-body-tertiary text-body-secondary rounded-pill px-3 py-1" style={{ fontSize: 'smaller' }}>
-                      {t('modal_aichat.caution_against_hallucination')}
+                      {t('sidebar_aichat.caution_against_hallucination')}
                     </span>
                   </div>
                 )}
@@ -285,7 +285,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                       className="form-control textarea-ask"
                       style={{ resize: 'none' }}
                       rows={1}
-                      placeholder={!form.formState.isSubmitting ? t('modal_aichat.placeholder') : ''}
+                      placeholder={!form.formState.isSubmitting ? t('sidebar_aichat.placeholder') : ''}
                       onKeyDown={keyDownHandler}
                       disabled={form.formState.isSubmitting}
                     />
@@ -309,7 +309,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                   disabled={form.formState.isSubmitting || isGenerating}
                 />
                 <label className="form-check-label" htmlFor="swSummaryMode">
-                  {t('modal_aichat.summary_mode_label')}
+                  {t('sidebar_aichat.summary_mode_label')}
                 </label>
 
                 {/* Help */}
@@ -323,7 +323,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                 <UncontrolledTooltip
                   target="tooltipForHelpOfSummaryMode"
                 >
-                  {t('modal_aichat.summary_mode_help')}
+                  {t('sidebar_aichat.summary_mode_help')}
                 </UncontrolledTooltip>
               </div>
             </form>
@@ -332,7 +332,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
               <div className="mt-4 bg-danger bg-opacity-10 rounded-3 p-2 w-100">
                 <div>
                   <span className="material-symbols-outlined text-danger me-2">error</span>
-                  <span className="text-danger">{ errorMessage != null ? t(errorMessage) : t('modal_aichat.error_message') }</span>
+                  <span className="text-danger">{ errorMessage != null ? t(errorMessage) : t('sidebar_aichat.error_message') }</span>
                 </div>
 
                 <button
@@ -344,7 +344,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                   <span className={`material-symbols-outlined mt-2 me-1 ${isErrorDetailCollapsed ? 'rotate-90' : ''}`}>
                     chevron_right
                   </span>
-                  <span className="small">{t('modal_aichat.show_error_detail')}</span>
+                  <span className="small">{t('sidebar_aichat.show_error_detail')}</span>
                 </button>
 
                 <Collapse isOpen={isErrorDetailCollapsed}>
