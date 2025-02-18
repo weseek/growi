@@ -13,6 +13,7 @@ import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } fro
 import { ShareScopeWarningModal } from './ShareScopeWarningModal';
 
 type Props = {
+  shouldEdit: boolean;
   name: string;
   description: string;
   instruction: string;
@@ -24,6 +25,7 @@ type Props = {
 
 export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   const {
+    shouldEdit,
     name,
     description,
     instruction,
@@ -61,7 +63,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     <>
       <ModalHeader tag="h4" toggle={closeAiAssistantManagementModal} className="pe-4">
         <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">ai_assistant</span>
-        <span className="fw-bold">新規アシスタントの追加</span> {/* TODO i18n */}
+        <span className="fw-bold">{t(shouldEdit ? 'アシスタントの更新' : '新規アシスタントの追加')}</span> {/* TODO i18n */}
       </ModalHeader>
 
       <div className="px-4">
@@ -137,7 +139,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
         <ModalFooter>
           <button type="button" className="btn btn-outline-secondary" onClick={closeAiAssistantManagementModal}>キャンセル</button>
-          <button type="button" className="btn btn-primary" onClick={createAiAssistantHandler}>アシスタントを作成する</button>
+          <button type="button" className="btn btn-primary" onClick={createAiAssistantHandler}>{t(shouldEdit ? 'アシスタントを更新する' : 'アシスタントを作成する')}</button>
         </ModalFooter>
       </div>
 
