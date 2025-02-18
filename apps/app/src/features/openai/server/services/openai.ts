@@ -401,8 +401,8 @@ class OpenaiService implements IOpenaiService {
       // Stage 1: Match documents with the given pageId
       {
         $match: {
-          page: page._id
-        }
+          page: page._id,
+        },
       },
       // Stage 2: Lookup VectorStore documents
       {
@@ -410,25 +410,25 @@ class OpenaiService implements IOpenaiService {
           from: 'vectorstores',
           localField: 'vectorStoreRelationId',
           foreignField: '_id',
-          as: 'vectorStore'
-        }
+          as: 'vectorStore',
+        },
       },
       // Stage 3: Unwind the vectorStore array
       {
-        $unwind: '$vectorStore'
+        $unwind: '$vectorStore',
       },
       // Stage 4: Match non-deleted vector stores
       {
         $match: {
-          'vectorStore.isDeleted': false
-        }
+          'vectorStore.isDeleted': false,
+        },
       },
       // Stage 5: Replace the root with vectorStore document
       {
         $replaceRoot: {
-          newRoot: '$vectorStore'
-        }
-      }
+          newRoot: '$vectorStore',
+        },
+      },
     ];
 
     const vectorStoreRelations = await VectorStoreFileRelationModel.aggregate<VectorStoreDocument>(pipeline);
