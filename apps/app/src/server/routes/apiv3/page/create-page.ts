@@ -205,7 +205,6 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     if (isAiEnabled()) {
       const { getOpenaiService } = await import('~/features/openai/server/services/openai');
       try {
-        // TODO: https://redmine.weseek.co.jp/issues/160334
         const openaiService = getOpenaiService();
         await openaiService?.rebuildVectorStore(createdPage);
       }
