@@ -207,7 +207,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       try {
         // TODO: https://redmine.weseek.co.jp/issues/160334
         const openaiService = getOpenaiService();
-        // await openaiService?.rebuildVectorStore(createdPage);
+        await openaiService?.rebuildVectorStore(createdPage);
       }
       catch (err) {
         logger.error('Rebuild vector store failed', err);
