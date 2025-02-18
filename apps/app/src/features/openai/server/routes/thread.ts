@@ -40,8 +40,8 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
       try {
         const filterdThreadId = req.body.threadId != null ? filterXSS(req.body.threadId) : undefined;
         // const vectorStore = await openaiService?.getOrCreateVectorStoreForPublicScope();
-        const thread = await openaiService?.getOrCreateThread(req.user._id, 'vs_67b42d73c96881918c3bd6c2db38fb55', filterdThreadId);
-        return res.apiv3({ thread });
+        // const thread = await openaiService?.getOrCreateThread(req.user._id, vectorStore?.vectorStoreId, filterdThreadId);
+        return res.apiv3({ });
       }
       catch (err) {
         logger.error(err);
