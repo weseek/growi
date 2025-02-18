@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 
-import { useRagSearchModal } from '../../../stores/rag-search';
+import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
 
 import styles from './MessageCard.module.scss';
 
@@ -27,11 +27,11 @@ const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
 const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
 
 const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): JSX.Element => {
-  const { close: closeRagSearchModal } = useRagSearchModal();
+  const { close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
 
   const onClick = useCallback(() => {
-    closeRagSearchModal();
-  }, [closeRagSearchModal]);
+    closeAiAssistantChatSidebar();
+  }, [closeAiAssistantChatSidebar]);
 
   return (
     <NextLink href={props.href} onClick={onClick} className="link-primary">
