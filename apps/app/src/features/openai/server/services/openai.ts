@@ -13,7 +13,7 @@ import mongoose, { type HydratedDocument, type Types } from 'mongoose';
 import { type OpenAI, toFile } from 'openai';
 
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import ThreadRelationModel from '~/features/openai/server/models/thread-relation';
+import ThreadRelationModel, { type ThreadRelationDocument } from '~/features/openai/server/models/thread-relation';
 import VectorStoreModel, { type VectorStoreDocument } from '~/features/openai/server/models/vector-store';
 import VectorStoreFileRelationModel, {
   type VectorStoreFileRelation,
@@ -61,16 +61,20 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 
 
 export interface IOpenaiService {
-  getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
+  getOrCreateThread(userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
+  getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
+  getVectorStoreRelation(aiAssistantId: string): Promise<VectorStoreDocument>
   getVectorStoreRelationsByPageIds(pageId: Types.ObjectId[]): Promise<VectorStoreDocument[]>;
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   // rebuildVectorStoreAll(): Promise<void>;
+  // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
+  isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
   updateVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
@@ -84,11 +88,11 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  public async getOrCreateThread(userId: string, vectorStoreId?: string, threadId?: string): Promise<OpenAI.Beta.Threads.Thread> {
-    if (vectorStoreId != null && threadId == null) {
+  public async getOrCreateThread(userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string): Promise<OpenAI.Beta.Threads.Thread> {
+    if (threadId == null) {
       try {
-        const thread = await this.client.createThread(vectorStoreId);
-        await ThreadRelationModel.create({ userId, threadId: thread.id });
+        const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
+        await ThreadRelationModel.create({ userId, threadId: thread.id, vectorStore: vectorStoreRelation._id });
         return thread;
       }
       catch (err) {
@@ -115,6 +119,11 @@ class OpenaiService implements IOpenaiService {
       await openaiApiErrorHandler(err, { notFoundError: async() => { await threadRelation.remove() } });
       throw new Error(err);
     }
+  }
+
+  async getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]> {
+    const threadRelations = await ThreadRelationModel.find({ vectorStore: vectorStoreRelationId });
+    return threadRelations;
   }
 
   public async deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void> {
@@ -173,6 +182,15 @@ class OpenaiService implements IOpenaiService {
 
   //   return newVectorStoreDocument;
   // }
+
+  async getVectorStoreRelation(aiAssistantId: string): Promise<VectorStoreDocument> {
+    const aiAssistant = await AiAssistantModel.findById({ _id: aiAssistantId }).populate('vectorStore');
+    if (aiAssistant == null) {
+      throw createError(404, 'AiAssistant document does not exist');
+    }
+
+    return aiAssistant.vectorStore as VectorStoreDocument;
+  }
 
   async getVectorStoreRelationsByPageIds(pageIds: Types.ObjectId[]): Promise<VectorStoreDocument[]> {
     const pipeline = [
@@ -613,6 +631,42 @@ class OpenaiService implements IOpenaiService {
         throw new Error('A userGroup to which the owner does not belong is specified in grantedGroupsForAccessScope');
       }
     }
+  }
+
+  async isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean> {
+    const aiAssistant = await AiAssistantModel.findById(aiAssistantId);
+
+    if (aiAssistant == null) {
+      throw createError(404, 'AiAssistant document does not exist');
+    }
+
+    const isOwner = getIdStringForRef(aiAssistant.owner) === getIdStringForRef(user._id);
+
+    if (aiAssistant.shareScope === AiAssistantShareScope.PUBLIC_ONLY) {
+      return true;
+    }
+
+    if ((aiAssistant.shareScope === AiAssistantShareScope.OWNER) && isOwner) {
+      return true;
+    }
+
+    if ((aiAssistant.shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE) && (aiAssistant.accessScope === AiAssistantAccessScope.OWNER) && isOwner) {
+      return true;
+    }
+
+    if ((aiAssistant.shareScope === AiAssistantShareScope.GROUPS)
+      || ((aiAssistant.shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE) && (aiAssistant.accessScope === AiAssistantAccessScope.GROUPS))) {
+      const userGroupIds = [
+        ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+        ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ].map(group => group.toString());
+
+      const grantedGroupIdsForShareScope = aiAssistant.grantedGroupsForShareScope?.map(group => getIdStringForRef(group.item)) ?? [];
+      const isShared = userGroupIds.some(userGroupId => grantedGroupIdsForShareScope.includes(userGroupId));
+      return isShared;
+    }
+
+    return false;
   }
 
   async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
