@@ -5,7 +5,10 @@ import {
   originalDocChangeEffect,
   getOriginalDoc,
 } from '@codemirror/merge';
-import { ChangeSet } from '@codemirror/state';
+import {
+  ChangeSet, Transaction,
+} from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
 import * as Y from 'yjs';
 
 import { deltaToChangeSpecs } from '../../../utils/delta-to-changespecs';
@@ -85,6 +88,33 @@ export const useUnifiedMergeView = (
     // cleanup
     return () => {
       primaryYText.unobserve(sync);
+    };
+  }, [codeMirrorEditor, isEnabled, primaryDoc, secondaryDoc]);
+
+  // Setup sync from secondaryDoc to primaryDoc when accepting chunks
+  useEffect(() => {
+    if (!isEnabled || primaryDoc == null || secondaryDoc == null || codeMirrorEditor == null) {
+      return;
+    }
+
+    // EditorView.updateListener を使用
+    const extension = EditorView.updateListener.of((update) => {
+      // handle only when the transaction has `userEvent: 'accept'` annotation
+      // ref: https://github.com/codemirror/merge/blob/6.8.0/src/unified.ts#L220
+      const shouldSync = update.transactions.some((tr) => {
+        const userEventAnnotation = tr.annotation(Transaction.userEvent);
+        return userEventAnnotation === 'accept';
+      });
+
+      if (shouldSync) {
+        Y.applyUpdate(primaryDoc, Y.encodeStateAsUpdate(secondaryDoc));
+      }
+    });
+
+    const cleanup = codeMirrorEditor?.appendExtensions([extension]);
+
+    return () => {
+      cleanup?.();
     };
   }, [codeMirrorEditor, isEnabled, primaryDoc, secondaryDoc]);
 
