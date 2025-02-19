@@ -16,8 +16,9 @@ import styles from './AiAssistantTree.module.scss';
 
 const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 
+
 /*
-*  For ThreadItem
+*  ThreadItem
 */
 type ThreadItemProps = {
   thread: IThreadRelationHasId
