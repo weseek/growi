@@ -28,6 +28,11 @@ module.exports = {
         in: 'cookie',
         name: 'connect.sid',
       },
+      transferHeaderAuth: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-growi-transfer-key',
+      },
     },
   },
   'x-tagGroups': [
