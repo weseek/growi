@@ -524,7 +524,6 @@ class OpenaiService implements IOpenaiService {
   ): Promise<mongoose.FilterQuery<PageDocument>> {
 
     const converterdPagePathPatterns = convertPathPatternsToRegExp(pagePathPatterns);
-    console.log('converterdPagePathPatterns', converterdPagePathPatterns);
 
     // Include pages in search targets when their paths with 'Anyone with the link' permission are directly specified instead of using glob pattern
     const nonGrabPagePathPatterns = pagePathPatterns.filter(pagePathPattern => !isGrobPatternPath(pagePathPattern));
