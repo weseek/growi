@@ -73,6 +73,7 @@ export interface IOpenaiService {
   // rebuildVectorStoreAll(): Promise<void>;
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
+  updateVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
@@ -413,11 +414,47 @@ class OpenaiService implements IOpenaiService {
   //   await pipeline(pagesStream, batchStrem, createVectorStoreFileStream);
   // }
 
-  // async rebuildVectorStore(page: HydratedDocument<PageDocument>) {
-  //   const vectorStore = await this.getOrCreateVectorStoreForPublicScope();
-  //   await this.deleteVectorStoreFile(vectorStore._id, page._id);
-  //   await this.createVectorStoreFile([page]);
-  // }
+  async updateVectorStore(page: HydratedDocument<PageDocument>) {
+    const pipeline = [
+      // Stage 1: Match documents with the given pageId
+      {
+        $match: {
+          page: page._id,
+        },
+      },
+      // Stage 2: Lookup VectorStore documents
+      {
+        $lookup: {
+          from: 'vectorstores',
+          localField: 'vectorStoreRelationId',
+          foreignField: '_id',
+          as: 'vectorStore',
+        },
+      },
+      // Stage 3: Unwind the vectorStore array
+      {
+        $unwind: '$vectorStore',
+      },
+      // Stage 4: Match non-deleted vector stores
+      {
+        $match: {
+          'vectorStore.isDeleted': false,
+        },
+      },
+      // Stage 5: Replace the root with vectorStore document
+      {
+        $replaceRoot: {
+          newRoot: '$vectorStore',
+        },
+      },
+    ];
+
+    const vectorStoreRelations = await VectorStoreFileRelationModel.aggregate<VectorStoreDocument>(pipeline);
+    vectorStoreRelations.forEach(async(vectorStoreRelation) => {
+      await this.deleteVectorStoreFile(vectorStoreRelation._id, page._id);
+      await this.createVectorStoreFile(vectorStoreRelation, [page]);
+    });
+  }
 
   private async createVectorStoreFileWithStream(vectorStoreRelation: VectorStoreDocument, conditions: mongoose.FilterQuery<PageDocument>): Promise<void> {
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
