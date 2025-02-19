@@ -18,28 +18,25 @@ export const useSecondaryYdocs = ({ isEnabled, pageId, useSecondary }: UseDocume
 
   const [currentPageId, setCurrentPageId] = useState(pageId);
 
-  // docs: [primaryDoc, secondaryDoc]
-  const [docs, setDocs] = useState<[Y.Doc, Y.Doc]>();
+  const [primaryDoc, setPrimaryDoc] = useState<Y.Doc>();
+  const [secondaryDoc, setSecondaryDoc] = useState<Y.Doc>();
 
-  // Setup doc
+  // Setup primaryDoc
   useEffect(() => {
 
     let _primaryDoc: Y.Doc;
-    let _secondaryDoc: Y.Doc;
 
-    setDocs((prevDocs) => {
-      // keep the current docs if the conditions are met
+    setPrimaryDoc((prevPrimaryDoc) => {
+      // keep the current ydoc if the conditions are met
       if (isEnabled
           // the given page ID is not null
           && pageId != null
           // the current page ID matches the given page ID,
           && currentPageId === pageId
           // the main document is already initialized
-          && prevDocs?.[0] != null
-          // the review mode status matches the presence of the review document
-          && useSecondary === (prevDocs?.[1] != null)) {
-
-        return prevDocs;
+          && prevPrimaryDoc != null
+      ) {
+        return prevPrimaryDoc;
       }
 
       setCurrentPageId(pageId);
@@ -49,32 +46,63 @@ export const useSecondaryYdocs = ({ isEnabled, pageId, useSecondary }: UseDocume
         return undefined;
       }
 
-      _primaryDoc = prevDocs?.[0] ?? new Y.Doc();
+      _primaryDoc = new Y.Doc();
 
-      if (useSecondary) {
-        _secondaryDoc = prevDocs?.[1] ?? new Y.Doc();
-
-        const text = _primaryDoc.getText('codemirror');
-
-        // initialize secondaryDoc with primaryDoc state
-        Y.applyUpdate(_secondaryDoc, Y.encodeStateAsUpdate(_primaryDoc));
-        // Setup sync from primaryDoc to secondaryDoc
-        text.observe((event) => {
-          if (event.transaction.local) return;
-          Y.applyUpdate(_secondaryDoc, Y.encodeStateAsUpdate(_primaryDoc));
-        });
-      }
-
-      return [_primaryDoc, _secondaryDoc];
+      return _primaryDoc;
     });
 
     // cleanup
     return () => {
       _primaryDoc?.destroy();
+    };
+  }, [isEnabled, currentPageId, pageId]);
+
+  // Setup secondaryDoc
+  useEffect(() => {
+
+    let _secondaryDoc: Y.Doc;
+
+    setSecondaryDoc((prevSecondaryDoc) => {
+      // keep the current ydoc if the conditions are met
+      if (isEnabled
+          // the given page ID is not null
+          && pageId != null
+          // the current page ID matches the given page ID,
+          && currentPageId === pageId
+          // the main document is already initialized
+          && prevSecondaryDoc != null
+          // the review mode status matches the presence of the review document
+          && useSecondary === (prevSecondaryDoc != null)) {
+
+        return prevSecondaryDoc;
+      }
+
+      // set undefined
+      if (!isEnabled || primaryDoc == null || !useSecondary) {
+        return undefined;
+      }
+
+      _secondaryDoc = new Y.Doc();
+
+      const text = primaryDoc.getText('codemirror');
+
+      // initialize secondaryDoc with primaryDoc state
+      Y.applyUpdate(_secondaryDoc, Y.encodeStateAsUpdate(primaryDoc));
+      // Setup sync from primaryDoc to secondaryDoc
+      text.observe((event) => {
+        if (event.transaction.local) return;
+        Y.applyUpdate(_secondaryDoc, Y.encodeStateAsUpdate(primaryDoc));
+      });
+
+      return _secondaryDoc;
+    });
+
+    // cleanup
+    return () => {
       _secondaryDoc?.destroy();
     };
 
-  }, [isEnabled, currentPageId, pageId, useSecondary]);
+  }, [isEnabled, currentPageId, pageId, primaryDoc, useSecondary]);
 
   // Handle secondaryDoc to primaryDoc sync when exiting review mode
   // useEffect(() => {
@@ -87,7 +115,6 @@ export const useSecondaryYdocs = ({ isEnabled, pageId, useSecondary }: UseDocume
   //   setsecondaryDoc(null);
   // }, [isEnabled, reviewMode, secondaryDoc, primaryDoc]);
 
-  const [primaryDoc, secondaryDoc] = docs ?? [undefined, undefined];
 
   if (primaryDoc == null || (useSecondary && secondaryDoc == null)) {
     return null;
