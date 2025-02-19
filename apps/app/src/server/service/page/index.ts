@@ -1899,14 +1899,8 @@ class PageService implements IPageService {
 
     if (isAiEnabled()) {
       const { getOpenaiService } = await import('~/features/openai/server/services/openai');
-
-      // TODO: https://redmine.weseek.co.jp/issues/160337
       const openaiService = getOpenaiService();
-      if (openaiService != null) {
-        // const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
-        // const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService.deleteVectorStoreFile(vectorStore._id, pageId));
-        // await Promise.allSettled(deleteVectorStoreFilePromises);
-      }
+      await openaiService?.deleteVectorStoreFilesByPageIds(pageIds);
     }
   }
 
