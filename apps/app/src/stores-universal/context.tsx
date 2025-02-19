@@ -10,8 +10,6 @@ import useSWRImmutable from 'swr/immutable';
 import type { SupportedActionType } from '~/interfaces/activity';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 
-import type { TargetAndAncestors } from '../interfaces/page-listing-results';
-
 import { useContextSWR } from './use-context-swr';
 
 declare global {
@@ -76,10 +74,6 @@ export const useRegistrationWhitelist = (initialData?: Nullable<string[]>): SWRR
 
 export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<Nullable<boolean>, Error> => {
   return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
-};
-
-export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResponse<TargetAndAncestors, Error> => {
-  return useContextSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData);
 };
 
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {

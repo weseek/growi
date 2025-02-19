@@ -45,7 +45,6 @@ module.exports = {
     const insertLayoutType = (theme.value === '"kibela"') ? 'kibela' : 'growi';
 
     const insertConfig = new Config({
-      ns: 'crowi',
       key: 'customize:layout',
       value: JSON.stringify(insertLayoutType),
     });

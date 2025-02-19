@@ -24,7 +24,6 @@ module.exports = {
 
     // find 'app:siteUrl'
     const siteUrlConfig = await Config.findOne({
-      ns: 'crowi',
       key: 'app:siteUrl',
     });
     // exit if exists
@@ -35,7 +34,6 @@ module.exports = {
 
     // find all callbackUrls
     const configs = await Config.find({
-      ns: 'crowi',
       $or: [
         { key: 'security:passport-github:callbackUrl' },
         { key: 'security:passport-google:callbackUrl' },
@@ -63,11 +61,10 @@ module.exports = {
     }
 
     if (siteUrl != null) {
-      const ns = 'crowi';
       const key = 'app:siteUrl';
       await Config.findOneAndUpdate(
-        { ns, key },
-        { ns, key, value: JSON.stringify(siteUrl) },
+        { key },
+        { key, value: JSON.stringify(siteUrl) },
         { upsert: true },
       );
       logger.info('Migration has successfully applied');
@@ -80,7 +77,6 @@ module.exports = {
 
     // remote 'app:siteUrl'
     await Config.findOneAndDelete({
-      ns: 'crowi',
       key: 'app:siteUrl',
     });
 

@@ -132,6 +132,7 @@ const {
  *            description: temporary URL cached
  *            example: "https://example.com/attachment/5e0734e072560e001761fa67"
  */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -199,7 +200,7 @@ module.exports = (crowi) => {
    */
   router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
 
-    const limit = req.query.limit || await crowi.configManager.getConfig('crowi', 'customize:showPageLimitationS') || 10;
+    const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
     const pageNumber = req.query.pageNumber || 1;
     const offset = (pageNumber - 1) * limit;
 

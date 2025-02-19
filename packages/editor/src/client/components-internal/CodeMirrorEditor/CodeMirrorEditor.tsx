@@ -23,6 +23,13 @@ import { Toolbar } from './Toolbar';
 
 import style from './CodeMirrorEditor.module.scss';
 
+
+// Fix IME cursor position issue by EditContext
+// ref: https://github.com/weseek/growi/pull/9267
+// ref: https://discuss.codemirror.net/t/issue-with-google-japanese-ime-cursor-position-in-v6/8810/3
+(EditorView as unknown as { EDIT_CONTEXT: boolean }).EDIT_CONTEXT = false;
+
+
 const CodeMirrorEditorContainer = forwardRef<HTMLDivElement, DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>(
   (props, ref) => {
     const { className = '', ...rest } = props;

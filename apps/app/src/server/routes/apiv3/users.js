@@ -16,6 +16,7 @@ import ExternalAccount from '~/server/models/external-account';
 import { serializePageSecurely } from '~/server/models/serializers';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
+import { growiInfoService } from '~/server/service/growi-info';
 import { deleteCompletelyUserHomeBySystem } from '~/server/service/page/delete-completely-user-home-by-system';
 import loggerFactory from '~/utils/logger';
 
@@ -74,6 +75,7 @@ const validator = {};
  *            example: 2010-01-01T00:00:00.000Z
  */
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -146,7 +148,7 @@ module.exports = (crowi) => {
   const sendEmailByUserList = async(userList) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
-    const locale = configManager.getConfig('crowi', 'app:globalLang');
+    const locale = configManager.getConfig('app:globalLang');
     const failedToSendEmailList = [];
 
     for (const user of userList) {
@@ -159,7 +161,7 @@ module.exports = (crowi) => {
           vars: {
             email: user.email,
             password: user.password,
-            url: crowi.appService.getSiteUrl(),
+            url: growiInfoService.getSiteUrl(),
             appTitle,
           },
         });
@@ -181,7 +183,7 @@ module.exports = (crowi) => {
   const sendEmailByUser = async(user) => {
     const { appService, mailService } = crowi;
     const appTitle = appService.getAppTitle();
-    const locale = configManager.getConfig('crowi', 'app:globalLang');
+    const locale = configManager.getConfig('app:globalLang');
 
     await mailService.send({
       to: user.email,
@@ -190,7 +192,7 @@ module.exports = (crowi) => {
       vars: {
         email: user.email,
         password: user.password,
-        url: crowi.appService.getSiteUrl(),
+        url: growiInfoService.getSiteUrl(),
         appTitle,
       },
     });
@@ -366,7 +368,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('find-user-is-not-found'));
     }
 
-    const limit = parseInt(req.query.limit) || await configManager.getConfig('crowi', 'customize:showPageLimitationM') || 30;
+    const limit = parseInt(req.query.limit) || await configManager.getConfig('customize:showPageLimitationM') || 30;
     const page = req.query.page;
     const offset = (page - 1) * limit;
     const queryOptions = { offset, limit };
@@ -793,8 +795,8 @@ module.exports = (crowi) => {
    */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
-    const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-    const isForceDeleteUserHomepageOnUserDeletion = configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion');
+    const isUsersHomepageDeletionEnabled = configManager.getConfig('security:user-homepage-deletion:isEnabled');
+    const isForceDeleteUserHomepageOnUserDeletion = configManager.getConfig('security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion');
 
     try {
       const user = await User.findById(id);
@@ -1127,10 +1129,10 @@ module.exports = (crowi) => {
    *              $ref: '#/components/responses/500'
    */
   router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
-    const userIds = req.query.userIds || null;
+    const userIds = req.query.userIds ?? null;
 
     let userFetcher;
-    if (userIds !== null && userIds.split(',').length > 0) {
+    if (userIds != null && userIds.split(',').length > 0) {
       userFetcher = User.findUsersByIds(userIds.split(','));
     }
     else {

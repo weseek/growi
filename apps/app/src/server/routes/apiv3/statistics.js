@@ -16,7 +16,7 @@ const USER_STATUS_MASTER = {
   5: 'invited',
 };
 
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
 
   const models = crowi.models;

@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "7.1.9",
+  "version": "7.2.0-RC.0",
   "description": "Team collaboration software using markdown",
   "license": "MIT",
   "private": "true",
@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/weseek/growi/issues"
   },
-  "packageManager": "pnpm@9.4.0",
+  "packageManager": "pnpm@10.4.1",
   "scripts": {
     "bootstrap": "pnpm install",
     "start": "pnpm run app:server",
@@ -114,7 +114,6 @@
     }
   },
   "engines": {
-    "node": "^18 || ^20",
-    "pnpm": ">=9.4 <10"
+    "node": "^18 || ^20"
   }
 }

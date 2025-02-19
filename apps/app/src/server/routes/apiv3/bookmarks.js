@@ -67,7 +67,7 @@ const router = express.Router();
  *            type: boolean
  *            description: Whether the request user bookmarked (will be returned if the user is included in the request)
  */
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);

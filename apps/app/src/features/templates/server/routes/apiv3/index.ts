@@ -8,6 +8,7 @@ import { param, query } from 'express-validator';
 
 import { PLUGIN_STORING_PATH } from '~/features/growi-plugin/server/consts';
 import { GrowiPlugin } from '~/features/growi-plugin/server/models';
+import type Crowi from '~/server/crowi';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
@@ -32,7 +33,7 @@ const validator = {
 let presetTemplateSummaries: TemplateSummary[];
 
 
-module.exports = (crowi) => {
+module.exports = (crowi: Crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   router.get('/', loginRequiredStrictly, validator.list, apiV3FormValidator, async(req, res: ApiV3Response) => {
