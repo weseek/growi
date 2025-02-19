@@ -191,22 +191,18 @@ class SecuritySetting extends React.Component {
     return;
   }
 
-  setDisplayState(displayType) {
+  setDisplayState() {
     const { adminGeneralSecurityContainer } = this.props;
 
-    if (adminGeneralSecurityContainer.state.isShowRestrictedByOwner === true) {
-      this.displayType(true);
-    }
-    else {
-      this.displayType(false);
-    }
+    if (adminGeneralSecurityContainer.state.isShowRestrictedByOwner === true);
 
-    if (adminGeneralSecurityContainer.state.isShowRestrictedByGroup === true) {
-      this.displayType(true);
-    }
-    else {
-      this.displayType(false);
-    }
+    if (adminGeneralSecurityContainer.state.isShowRestrictedByGroup === true);
+  }
+
+  setNotDisplayState() {
+    const { adminGeneralSecurityContainer } = this.props;
+    if (!adminGeneralSecurityContainer.state.isShowRestrictedByOwner);
+    if (!adminGeneralSecurityContainer.state.isShowRestrictedByGroup);
   }
 
 
@@ -222,8 +218,7 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span> {t(getDisplayValue)}
-          </span>
+          <span> {t(getDisplayValue)} </span>
         </button>
         <div
           className="dropdown-menu"
@@ -239,7 +234,7 @@ class SecuritySetting extends React.Component {
           <button
             className="dropdown-item"
             type="button"
-            onClick={() => this.setDisplayState(setState, displayType)}
+            onClick={() => this.setNotDisplayState(setState, displayType)}
           >
             {t('security_settings.not_displayed')}
           </button>
