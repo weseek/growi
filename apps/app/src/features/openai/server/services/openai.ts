@@ -69,7 +69,7 @@ export interface IOpenaiService {
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   // rebuildVectorStoreAll(): Promise<void>;
-  rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
+  updateVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
@@ -396,7 +396,7 @@ class OpenaiService implements IOpenaiService {
   //   await pipeline(pagesStream, batchStrem, createVectorStoreFileStream);
   // }
 
-  async rebuildVectorStore(page: HydratedDocument<PageDocument>) {
+  async updateVectorStore(page: HydratedDocument<PageDocument>) {
     const pipeline = [
       // Stage 1: Match documents with the given pageId
       {
