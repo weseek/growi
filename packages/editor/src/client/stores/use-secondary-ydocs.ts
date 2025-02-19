@@ -18,62 +18,45 @@ type YDocsState = StoredYDocs & {
   activeDoc: Y.Doc,
 }
 
-const docsCache = new Map<string, StoredYDocs>();
-
 export const useSecondaryYdocs = (isEnabled: boolean, configuration?: Configuration): YDocsState | null => {
   const { pageId, useSecondary = false } = configuration ?? {};
-
-  const cacheKey = `ydocs:${pageId}`;
+  const cacheKey = `swr-ydocs:${pageId}`;
 
   const { data: docs, mutate } = useSWRImmutable<StoredYDocs>(
     isEnabled && pageId ? cacheKey : null,
     () => {
-      // Return cached docs if they exist
-      const cached = docsCache.get(cacheKey);
-      if (cached) {
-        return cached;
-      }
-
-      // Create new docs
       const primaryDoc = new Y.Doc();
-      const storedYdocs: StoredYDocs = { primaryDoc, secondaryDoc: undefined };
-      docsCache.set(cacheKey, storedYdocs);
-      return storedYdocs;
+      return { primaryDoc, secondaryDoc: undefined };
     },
   );
 
-  // Setup or cleanup secondaryDoc based on useSecondary flag
   useEffect(() => {
-    if (!docs) return;
+    if (docs == null) return;
 
-    // Create secondaryDoc
+    // create secondaryDoc if needed
     if (useSecondary && docs.secondaryDoc == null) {
       const secondaryDoc = new Y.Doc();
-      docsCache.set(cacheKey, { ...docs, secondaryDoc });
       mutate({ ...docs, secondaryDoc }, false);
 
-      // initialize secondaryDoc with primaryDoc state
+      // apply primaryDoc state to secondaryDoc
       Y.applyUpdate(secondaryDoc, Y.encodeStateAsUpdate(docs.primaryDoc));
     }
-    // Cleanup secondaryDoc
+    // destroy secondaryDoc
     else if (!useSecondary && docs.secondaryDoc != null) {
       docs.secondaryDoc.destroy();
-      docsCache.set(cacheKey, { ...docs, secondaryDoc: undefined });
       mutate({ ...docs, secondaryDoc: undefined }, false);
     }
 
-    // Cleanup on unmount or when isEnabled becomes false
+    // cleanup
     return () => {
-      if (!isEnabled && docsCache.has(cacheKey)) {
-        const state = docsCache.get(cacheKey);
-        state?.primaryDoc.destroy();
-        state?.secondaryDoc?.destroy();
-        docsCache.delete(cacheKey);
+      if (!isEnabled) {
+        docs.primaryDoc.destroy();
+        docs.secondaryDoc?.destroy();
       }
     };
-  }, [cacheKey, docs, isEnabled, useSecondary, mutate]);
+  }, [docs, isEnabled, useSecondary, mutate]);
 
-  if (!docs?.primaryDoc || (useSecondary && !docs?.secondaryDoc)) {
+  if (docs?.primaryDoc == null || (useSecondary && docs?.secondaryDoc == null)) {
     return null;
   }
 
