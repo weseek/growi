@@ -439,41 +439,7 @@ class OpenaiService implements IOpenaiService {
   // }
 
   async updateVectorStore(page: HydratedDocument<PageDocument>) {
-    const pipeline = [
-      // Stage 1: Match documents with the given pageId
-      {
-        $match: {
-          page: page._id,
-        },
-      },
-      // Stage 2: Lookup VectorStore documents
-      {
-        $lookup: {
-          from: 'vectorstores',
-          localField: 'vectorStoreRelationId',
-          foreignField: '_id',
-          as: 'vectorStore',
-        },
-      },
-      // Stage 3: Unwind the vectorStore array
-      {
-        $unwind: '$vectorStore',
-      },
-      // Stage 4: Match non-deleted vector stores
-      {
-        $match: {
-          'vectorStore.isDeleted': false,
-        },
-      },
-      // Stage 5: Replace the root with vectorStore document
-      {
-        $replaceRoot: {
-          newRoot: '$vectorStore',
-        },
-      },
-    ];
-
-    const vectorStoreRelations = await VectorStoreFileRelationModel.aggregate<VectorStoreDocument>(pipeline);
+    const vectorStoreRelations = await this.getVectorStoreRelationsByPageIds([page._id]);
     vectorStoreRelations.forEach(async(vectorStoreRelation) => {
       await this.deleteVectorStoreFile(vectorStoreRelation._id, page._id);
       await this.createVectorStoreFile(vectorStoreRelation, [page]);
