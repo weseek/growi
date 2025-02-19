@@ -1,5 +1,5 @@
 import { GroupType } from '@growi/core';
-import { isGrobPatternPath, isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
+import { isGlobPatternPath, isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import { type ValidationChain, body } from 'express-validator';
 
 import { AiAssistantShareScope, AiAssistantAccessScope } from '../../../interfaces/ai-assistant';
@@ -41,7 +41,7 @@ export const upsertAiAssistantValidator: ValidationChain[] = [
 
       // check if the value is a grob pattern path
       if (value.includes('*')) {
-        return isGrobPatternPath(value) && isCreatablePage(value.replace('*', ''));
+        return isGlobPatternPath(value) && isCreatablePage(value.replace('*', ''));
       }
 
       return isCreatablePage(value);

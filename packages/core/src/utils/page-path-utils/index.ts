@@ -293,7 +293,7 @@ export const getUsernameByPath = (path: string): string | null => {
   return username;
 };
 
-export const isGrobPatternPath = (path: string): boolean => {
+export const isGlobPatternPath = (path: string): boolean => {
   // https://regex101.com/r/IBy7HS/1
   const globPattern = /^(?:\/[^/*?[\]{}]+)*\/\*$/;
   return globPattern.test(path);

@@ -6,7 +6,7 @@ import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
 import { deepEquals } from '@growi/core/dist/utils';
-import { isGrobPatternPath } from '@growi/core/dist/utils/page-path-utils';
+import { isGlobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import createError from 'http-errors';
 import mongoose, { type HydratedDocument, type Types } from 'mongoose';
@@ -49,12 +49,12 @@ type VectorStoreFileRelationsMap = Map<string, VectorStoreFileRelation>
 
 const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string | RegExp> => {
   return pagePathPatterns.map((pagePathPattern) => {
-    if (isGrobPatternPath(pagePathPattern)) {
+    if (isGlobPatternPath(pagePathPattern)) {
       const trimedPagePathPattern = pagePathPattern.replace('/*', '');
       const escapedPagePathPattern = escapeStringRegexp(trimedPagePathPattern);
-      return new RegExp(`^${escapedPagePathPattern}`);
+      // https://regex101.com/r/x5KIZL/1
+      return new RegExp(`^${escapedPagePathPattern}($|/)`);
     }
-
     return pagePathPattern;
   });
 };
@@ -523,10 +523,10 @@ class OpenaiService implements IOpenaiService {
       pagePathPatterns: AiAssistant['pagePathPatterns'],
   ): Promise<mongoose.FilterQuery<PageDocument>> {
 
-    const converterdPagePathPatterns = convertPathPatternsToRegExp(pagePathPatterns);
+    const convertedPagePathPatterns = convertPathPatternsToRegExp(pagePathPatterns);
 
     // Include pages in search targets when their paths with 'Anyone with the link' permission are directly specified instead of using glob pattern
-    const nonGrabPagePathPatterns = pagePathPatterns.filter(pagePathPattern => !isGrobPatternPath(pagePathPattern));
+    const nonGrabPagePathPatterns = pagePathPatterns.filter(pagePathPattern => !isGlobPatternPath(pagePathPattern));
     const baseCondition: mongoose.FilterQuery<PageDocument> = {
       grant: PageGrant.GRANT_RESTRICTED,
       path: { $in: nonGrabPagePathPatterns },
@@ -538,7 +538,7 @@ class OpenaiService implements IOpenaiService {
           baseCondition,
           {
             grant: PageGrant.GRANT_PUBLIC,
-            path: { $in: converterdPagePathPatterns },
+            path: { $in: convertedPagePathPatterns },
           },
         ],
       };
@@ -556,7 +556,7 @@ class OpenaiService implements IOpenaiService {
           baseCondition,
           {
             grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP] },
-            path: { $in: converterdPagePathPatterns },
+            path: { $in: convertedPagePathPatterns },
             $or: [
               { 'grantedGroups.item': { $in: extractedGrantedGroupIdsForAccessScope } },
               { grant: PageGrant.GRANT_PUBLIC },
@@ -577,7 +577,7 @@ class OpenaiService implements IOpenaiService {
           baseCondition,
           {
             grant: { $in: [PageGrant.GRANT_PUBLIC, PageGrant.GRANT_USER_GROUP, PageGrant.GRANT_OWNER] },
-            path: { $in: converterdPagePathPatterns },
+            path: { $in: convertedPagePathPatterns },
             $or: [
               { 'grantedGroups.item': { $in: ownerUserGroups } },
               { grantedUsers: { $in: [getIdForRef(owner)] } },
