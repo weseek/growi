@@ -47,7 +47,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     reviewMode: enableUnifiedMergeView,
   });
 
-  useUnifiedMergeView(enableUnifiedMergeView, codeMirrorEditor);
+  useUnifiedMergeView(enableUnifiedMergeView, codeMirrorEditor, { pageId });
 
   // setup additional extensions
   useEffect(() => {

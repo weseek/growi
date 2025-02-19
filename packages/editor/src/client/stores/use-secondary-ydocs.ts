@@ -1,129 +1,85 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
+import useSWRImmutable from 'swr/immutable';
 import * as Y from 'yjs';
 
-type UseDocumentStateProps = {
-  isEnabled: boolean;
+type Configuration = {
   pageId?: string;
   useSecondary?: boolean;
 }
 
-type DocumentState = {
-  activeDoc: Y.Doc,
-  primaryDoc: Y.Doc,
-  secondaryDoc?: Y.Doc,
+
+type StoredYDocs = {
+  primaryDoc: Y.Doc;
+  secondaryDoc: Y.Doc | undefined;
 }
 
-export const useSecondaryYdocs = ({ isEnabled, pageId, useSecondary }: UseDocumentStateProps): DocumentState | null => {
+type YDocsState = StoredYDocs & {
+  activeDoc: Y.Doc,
+}
 
-  const [currentPageId, setCurrentPageId] = useState(pageId);
+const docsCache = new Map<string, StoredYDocs>();
 
-  const [primaryDoc, setPrimaryDoc] = useState<Y.Doc>();
-  const [secondaryDoc, setSecondaryDoc] = useState<Y.Doc>();
+export const useSecondaryYdocs = (isEnabled: boolean, configuration?: Configuration): YDocsState | null => {
+  const { pageId, useSecondary = false } = configuration ?? {};
 
-  // Setup primaryDoc
+  const cacheKey = `ydocs:${pageId}`;
+
+  const { data: docs, mutate } = useSWRImmutable<StoredYDocs>(
+    isEnabled && pageId ? cacheKey : null,
+    () => {
+      // Return cached docs if they exist
+      const cached = docsCache.get(cacheKey);
+      if (cached) {
+        return cached;
+      }
+
+      // Create new docs
+      const primaryDoc = new Y.Doc();
+      const storedYdocs: StoredYDocs = { primaryDoc, secondaryDoc: undefined };
+      docsCache.set(cacheKey, storedYdocs);
+      return storedYdocs;
+    },
+  );
+
+  // Setup or cleanup secondaryDoc based on useSecondary flag
   useEffect(() => {
+    if (!docs) return;
 
-    let _primaryDoc: Y.Doc;
-
-    setPrimaryDoc((prevPrimaryDoc) => {
-      // keep the current ydoc if the conditions are met
-      if (isEnabled
-          // the given page ID is not null
-          && pageId != null
-          // the current page ID matches the given page ID,
-          && currentPageId === pageId
-          // the main document is already initialized
-          && prevPrimaryDoc != null
-      ) {
-        return prevPrimaryDoc;
-      }
-
-      setCurrentPageId(pageId);
-
-      // set undefined
-      if (!isEnabled) {
-        return undefined;
-      }
-
-      _primaryDoc = new Y.Doc();
-
-      return _primaryDoc;
-    });
-
-    // cleanup
-    return () => {
-      _primaryDoc?.destroy();
-    };
-  }, [isEnabled, currentPageId, pageId]);
-
-  // Setup secondaryDoc
-  useEffect(() => {
-
-    let _secondaryDoc: Y.Doc;
-
-    setSecondaryDoc((prevSecondaryDoc) => {
-      // keep the current ydoc if the conditions are met
-      if (isEnabled
-          // the given page ID is not null
-          && pageId != null
-          // the current page ID matches the given page ID,
-          && currentPageId === pageId
-          // the main document is already initialized
-          && prevSecondaryDoc != null
-          // the review mode status matches the presence of the review document
-          && useSecondary === (prevSecondaryDoc != null)) {
-
-        return prevSecondaryDoc;
-      }
-
-      // set undefined
-      if (!isEnabled || primaryDoc == null || !useSecondary) {
-        return undefined;
-      }
-
-      _secondaryDoc = new Y.Doc();
-
-      const text = primaryDoc.getText('codemirror');
+    // Create secondaryDoc
+    if (useSecondary && docs.secondaryDoc == null) {
+      const secondaryDoc = new Y.Doc();
+      docsCache.set(cacheKey, { ...docs, secondaryDoc });
+      mutate({ ...docs, secondaryDoc }, false);
 
       // initialize secondaryDoc with primaryDoc state
-      Y.applyUpdate(_secondaryDoc, Y.encodeStateAsUpdate(primaryDoc));
-      // Setup sync from primaryDoc to secondaryDoc
-      text.observe((event) => {
-        if (event.transaction.local) return;
-        Y.applyUpdate(_secondaryDoc, Y.encodeStateAsUpdate(primaryDoc));
-      });
+      Y.applyUpdate(secondaryDoc, Y.encodeStateAsUpdate(docs.primaryDoc));
+    }
+    // Cleanup secondaryDoc
+    else if (!useSecondary && docs.secondaryDoc != null) {
+      docs.secondaryDoc.destroy();
+      docsCache.set(cacheKey, { ...docs, secondaryDoc: undefined });
+      mutate({ ...docs, secondaryDoc: undefined }, false);
+    }
 
-      return _secondaryDoc;
-    });
-
-    // cleanup
+    // Cleanup on unmount or when isEnabled becomes false
     return () => {
-      _secondaryDoc?.destroy();
+      if (!isEnabled && docsCache.has(cacheKey)) {
+        const state = docsCache.get(cacheKey);
+        state?.primaryDoc.destroy();
+        state?.secondaryDoc?.destroy();
+        docsCache.delete(cacheKey);
+      }
     };
+  }, [cacheKey, docs, isEnabled, useSecondary, mutate]);
 
-  }, [isEnabled, currentPageId, pageId, primaryDoc, useSecondary]);
-
-  // Handle secondaryDoc to primaryDoc sync when exiting review mode
-  // useEffect(() => {
-  //   if (!isEnabled || reviewMode || !secondaryDoc || !primaryDoc) {
-  //     return;
-  //   }
-
-  //   Y.applyUpdate(primaryDoc, Y.encodeStateAsUpdate(secondaryDoc));
-  //   secondaryDoc.destroy();
-  //   setsecondaryDoc(null);
-  // }, [isEnabled, reviewMode, secondaryDoc, primaryDoc]);
-
-
-  if (primaryDoc == null || (useSecondary && secondaryDoc == null)) {
+  if (!docs?.primaryDoc || (useSecondary && !docs?.secondaryDoc)) {
     return null;
   }
 
   return {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    activeDoc: useSecondary ? secondaryDoc! : primaryDoc,
-    primaryDoc,
-    secondaryDoc,
+    activeDoc: docs.secondaryDoc ?? docs.primaryDoc,
+    primaryDoc: docs.primaryDoc,
+    secondaryDoc: docs.secondaryDoc,
   };
 };

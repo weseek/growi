@@ -7,7 +7,6 @@ import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
 
 import { userColor } from '../../consts';
-// import { CollaborativeChange } from '../../consts/collaborative-change';
 import type { EditingClient } from '../../interfaces';
 import type { UseCodeMirrorEditor } from '../services';
 
@@ -30,8 +29,7 @@ export const useCollaborativeEditorMode = (
     user, pageId, onEditorsUpdated, reviewMode,
   } = configuration ?? {};
 
-  const { primaryDoc, activeDoc } = useSecondaryYdocs({
-    isEnabled,
+  const { primaryDoc, activeDoc } = useSecondaryYdocs(isEnabled, {
     pageId,
     useSecondary: reviewMode,
   }) ?? {};
@@ -124,14 +122,6 @@ export const useCollaborativeEditorMode = (
     }
 
     const activeText = activeDoc.getText('codemirror');
-
-    // setup observer to mark collaborative changes
-    // primaryDoc.getText('codemirror').observe((event) => {
-    //   if (event.transaction.local) return;
-    //   codeMirrorEditor.view?.dispatch({
-    //     effects: CollaborativeChange.of(event.delta),
-    //   });
-    // });
 
     const undoManager = new Y.UndoManager(activeText);
 

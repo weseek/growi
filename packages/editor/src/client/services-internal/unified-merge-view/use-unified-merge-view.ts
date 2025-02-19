@@ -2,15 +2,13 @@ import { useEffect } from 'react';
 
 import {
   unifiedMergeView,
-  // originalDocChangeEffect,
-  // getOriginalDoc,
+  originalDocChangeEffect,
+  getOriginalDoc,
 } from '@codemirror/merge';
-// import { StateField, ChangeSet } from '@codemirror/state';
-
+import { ChangeSet } from '@codemirror/state';
 import * as Y from 'yjs';
 
-// import { CollaborativeChange } from '../../../consts/collaborative-change';
-// import { deltaToChangeSpecs } from '../../../utils/delta-to-changespecs';
+import { deltaToChangeSpecs } from '../../../utils/delta-to-changespecs';
 import type { UseCodeMirrorEditor } from '../../services';
 import { useSecondaryYdocs } from '../../stores/use-secondary-ydocs';
 
@@ -20,62 +18,74 @@ type Configuration = {
 }
 
 export const useUnifiedMergeView = (
-    isEnabled = false,
+    isEnabled: boolean,
     codeMirrorEditor?: UseCodeMirrorEditor,
     configuration?: Configuration,
 ): void => {
 
-  // const { pageId } = configuration ?? {};
+  const { pageId } = configuration ?? {};
 
-  // const { primaryDoc, secondaryDoc } = useSecondaryYdocs({
-  //   isEnabled,
-  //   pageId,
-  //   useSecondary: isEnabled,
-  // }) ?? {};
+  const { primaryDoc, secondaryDoc } = useSecondaryYdocs(isEnabled, {
+    pageId,
+    useSecondary: isEnabled,
+  }) ?? {};
 
   // setup unifiedMergeView
-  // useEffect(() => {
-  //   if (!isEnabled || primaryDoc == null || secondaryDoc == null || codeMirrorEditor == null) {
-  //     return;
-  //   }
+  useEffect(() => {
+    if (!isEnabled || primaryDoc == null || secondaryDoc == null || codeMirrorEditor == null) {
+      return;
+    }
 
-  //   const extension = isEnabled ? [
-  //     unifiedMergeView({
-  //       original: primaryDoc.getText('codemirror').toString(),
-  //     }),
-  //   ] : [];
+    const extension = isEnabled ? [
+      unifiedMergeView({
+        original: codeMirrorEditor.getDoc(),
+      }),
+    ] : [];
 
-  //   const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
-  //   return cleanupFunction;
-  // }, [isEnabled, pageId, codeMirrorEditor, primaryDoc, secondaryDoc]);
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+  }, [isEnabled, pageId, codeMirrorEditor, primaryDoc, secondaryDoc]);
 
-  // effect for updating orignal document by collaborative changes
-  // useEffect(() => {
-  //   if (!isEnabled || codeMirrorEditor == null) {
-  //     return;
-  //   }
+  // Setup sync from primaryDoc to secondaryDoc
+  useEffect(() => {
+    if (!isEnabled || primaryDoc == null || secondaryDoc == null || codeMirrorEditor == null) {
+      return;
+    }
 
-  //   const extension = StateField.define({
-  //     create: () => null,
-  //     update(value, tr) {
-  //       for (const e of tr.effects) {
-  //         if (e.is(CollaborativeChange)) {
-  //           const changeSpecs = deltaToChangeSpecs(e.value);
-  //           const changeSet = ChangeSet.of(changeSpecs, getOriginalDoc(tr.state).length);
-  //           const effect = originalDocChangeEffect(tr.state, changeSet);
-  //           setTimeout(() => {
-  //             codeMirrorEditor.view?.dispatch({
-  //               effects: effect,
-  //             });
-  //           }, 0);
-  //         }
-  //       }
+    const primaryYText = primaryDoc.getText('codemirror');
 
-  //       return value;
-  //     },
-  //   });
+    const sync = (event: Y.YTextEvent) => {
+      if (event.transaction.local) return;
 
-  //   const cleanupFunction = codeMirrorEditor.appendExtensions(extension);
-  //   return cleanupFunction;
-  // }, [codeMirrorEditor, isEnabled]);
+      if (codeMirrorEditor?.view?.state == null) {
+        return;
+      }
+
+      // sync from primaryDoc to secondaryDoc
+      Y.applyUpdate(secondaryDoc, Y.encodeStateAsUpdate(primaryDoc));
+
+      // sync from primaryDoc to original document
+      if (codeMirrorEditor?.view?.state != null) {
+        const changeSpecs = deltaToChangeSpecs(event.delta);
+        const originalDoc = getOriginalDoc(codeMirrorEditor.view.state);
+        const changeSet = ChangeSet.of(changeSpecs, originalDoc.length);
+        const effect = originalDocChangeEffect(codeMirrorEditor.view.state, changeSet);
+
+        // Dispatch in next tick to ensure state is updated
+        setTimeout(() => {
+          codeMirrorEditor.view?.dispatch({
+            effects: effect,
+          });
+        }, 0);
+      }
+    };
+
+    primaryYText.observe(sync);
+
+    // cleanup
+    return () => {
+      primaryYText.unobserve(sync);
+    };
+  }, [codeMirrorEditor, isEnabled, primaryDoc, secondaryDoc]);
+
 };
