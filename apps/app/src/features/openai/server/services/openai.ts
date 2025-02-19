@@ -209,6 +209,19 @@ class OpenaiService implements IOpenaiService {
           newRoot: '$vectorStore',
         },
       },
+      // Stage 6: Group by _id to remove duplicates
+      {
+        $group: {
+          _id: '$_id',
+          doc: { $first: '$$ROOT' },
+        },
+      },
+      // Stage 7: Restore the document structure
+      {
+        $replaceRoot: {
+          newRoot: '$doc',
+        },
+      },
     ];
 
     const vectorStoreRelations = await VectorStoreFileRelationModel.aggregate<VectorStoreDocument>(pipeline);
@@ -395,8 +408,7 @@ class OpenaiService implements IOpenaiService {
     const vectorStoreRelations = await this.getVectorStoreRelationsByPageIds(pageIds);
     if (vectorStoreRelations != null && vectorStoreRelations.length !== 0) {
       for await (const pageId of pageIds) {
-        const deleteVectorStoreFilePromises = vectorStoreRelations
-          .map(vectorStoreRelation => this.deleteVectorStoreFile(vectorStoreRelation._id, pageId));
+        const deleteVectorStoreFilePromises = vectorStoreRelations.map(vectorStoreRelation => this.deleteVectorStoreFile(vectorStoreRelation._id, pageId));
         await Promise.allSettled(deleteVectorStoreFilePromises);
       }
     }
@@ -452,6 +464,7 @@ class OpenaiService implements IOpenaiService {
 
   async updateVectorStore(page: HydratedDocument<PageDocument>) {
     const vectorStoreRelations = await this.getVectorStoreRelationsByPageIds([page._id]);
+    console.log('vectorStoreRelations', vectorStoreRelations);
     vectorStoreRelations.forEach(async(vectorStoreRelation) => {
       await this.deleteVectorStoreFile(vectorStoreRelation._id, page._id);
       await this.createVectorStoreFile(vectorStoreRelation, [page]);
