@@ -65,6 +65,7 @@ export interface IOpenaiService {
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
+  getVectorStoreRelationsByPageIds(pageId: Types.ObjectId[]): Promise<VectorStoreDocument[]>;
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -171,6 +172,47 @@ class OpenaiService implements IOpenaiService {
 
   //   return newVectorStoreDocument;
   // }
+
+  async getVectorStoreRelationsByPageIds(pageIds: Types.ObjectId[]): Promise<VectorStoreDocument[]> {
+    const pipeline = [
+      // Stage 1: Match documents with the given pageId
+      {
+        $match: {
+          page: {
+            $in: pageIds,
+          },
+        },
+      },
+      // Stage 2: Lookup VectorStore documents
+      {
+        $lookup: {
+          from: 'vectorstores',
+          localField: 'vectorStoreRelationId',
+          foreignField: '_id',
+          as: 'vectorStore',
+        },
+      },
+      // Stage 3: Unwind the vectorStore array
+      {
+        $unwind: '$vectorStore',
+      },
+      // Stage 4: Match non-deleted vector stores
+      {
+        $match: {
+          'vectorStore.isDeleted': false,
+        },
+      },
+      // Stage 5: Replace the root with vectorStore document
+      {
+        $replaceRoot: {
+          newRoot: '$vectorStore',
+        },
+      },
+    ];
+
+    const vectorStoreRelations = await VectorStoreFileRelationModel.aggregate<VectorStoreDocument>(pipeline);
+    return vectorStoreRelations;
+  }
 
   private async createVectorStore(name: string): Promise<VectorStoreDocument> {
     try {
