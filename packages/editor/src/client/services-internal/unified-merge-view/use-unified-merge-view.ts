@@ -16,6 +16,10 @@ import type { UseCodeMirrorEditor } from '../../services';
 import { useSecondaryYdocs } from '../../stores/use-secondary-ydocs';
 
 
+// for avoiding apply update from primaryDoc to secondaryDoc twice
+const SYNC_BY_ACCEPT_CHUNK = 'synkByAcceptChunk';
+
+
 type Configuration = {
   pageId?: string,
 }
@@ -60,6 +64,9 @@ export const useUnifiedMergeView = (
     const sync = (event: Y.YTextEvent) => {
       if (event.transaction.local) return;
 
+      // avoid apply update from primaryDoc to secondaryDoc twice
+      if (event.transaction.origin === SYNC_BY_ACCEPT_CHUNK) return;
+
       if (codeMirrorEditor?.view?.state == null) {
         return;
       }
@@ -97,7 +104,6 @@ export const useUnifiedMergeView = (
       return;
     }
 
-    // EditorView.updateListener を使用
     const extension = EditorView.updateListener.of((update) => {
       // handle only when the transaction has `userEvent: 'accept'` annotation
       // ref: https://github.com/codemirror/merge/blob/6.8.0/src/unified.ts#L220
@@ -107,7 +113,8 @@ export const useUnifiedMergeView = (
       });
 
       if (shouldSync) {
-        Y.applyUpdate(primaryDoc, Y.encodeStateAsUpdate(secondaryDoc));
+        // sync from secondaryDoc to primaryDoc with specifying origin
+        Y.applyUpdate(primaryDoc, Y.encodeStateAsUpdate(secondaryDoc), SYNC_BY_ACCEPT_CHUNK);
       }
     });
 
