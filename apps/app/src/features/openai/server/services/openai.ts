@@ -5,7 +5,7 @@ import { pipeline } from 'stream/promises';
 import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
-import { deepEquals } from '@growi/core/dist/utils';
+import { deepEquals, pathUtils } from '@growi/core/dist/utils';
 import { isGlobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import createError from 'http-errors';
@@ -59,6 +59,32 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
   });
 };
 
+/**
+* @example
+* // Input: '/Sandbox/Bootstrap5/'
+* // Output: ['/Sandbox/*', '/Sandbox/Bootstrap5/*']
+*
+* // Input: '/user/admin/memo/'
+* // Output: ['/user/*', '/user/admin/*', '/user/admin/memo/*']
+*/
+const generateGlobPatterns = (path: string) => {
+  // Remove trailing slash if exists
+  const normalizedPath = pathUtils.removeTrailingSlash(path);
+
+  // Split path into segments
+  const segments = normalizedPath.split('/').filter(Boolean);
+
+  // Generate patterns
+  const patterns: string[] = [];
+  let currentPath = '';
+
+  for (let i = 0; i < segments.length; i++) {
+    currentPath += `/${segments[i]}`;
+    patterns.push(`${currentPath}/*`);
+  }
+
+  return patterns;
+};
 
 export interface IOpenaiService {
   getOrCreateThread(userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
@@ -360,6 +386,21 @@ class OpenaiService implements IOpenaiService {
       }
     }
 
+  }
+
+  async findAiAssistantsByPagePath(pages: Array<HydratedDocument<PageDocument>>): Promise<AiAssistantDocument[]> {
+    const pagePaths = pages.map(page => page.path);
+    const pagePathsWithGlobPattern = pagePaths.map(pagePath => generateGlobPatterns(pagePath)).flat();
+    const assistants = await AiAssistantModel.find({
+      $or: [
+        // Case 1: Exact match
+        { pagePathPatterns: { $in: pagePaths } },
+        // Case 2: Glob pattern match
+        { pagePathPatterns: { $in: pagePathsWithGlobPattern } },
+      ],
+    });
+
+    return assistants;
   }
 
   // Deletes all VectorStore documents that are marked as deleted (isDeleted: true) and have no associated VectorStoreFileRelation documents
