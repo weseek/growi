@@ -68,6 +68,7 @@ export interface IOpenaiService {
   getVectorStoreRelationsByPageIds(pageId: Types.ObjectId[]): Promise<VectorStoreDocument[]>;
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
+  deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   // rebuildVectorStoreAll(): Promise<void>;
   updateVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
@@ -388,6 +389,17 @@ class OpenaiService implements IOpenaiService {
 
     vectorStoreFileRelation.fileIds = undeletedFileIds;
     await vectorStoreFileRelation.save();
+  }
+
+  async deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void> {
+    const vectorStoreRelations = await this.getVectorStoreRelationsByPageIds(pageIds);
+    if (vectorStoreRelations != null && vectorStoreRelations.length !== 0) {
+      for await (const pageId of pageIds) {
+        const deleteVectorStoreFilePromises = vectorStoreRelations
+          .map(vectorStoreRelation => this.deleteVectorStoreFile(vectorStoreRelation._id, pageId));
+        await Promise.allSettled(deleteVectorStoreFilePromises);
+      }
+    }
   }
 
   async deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void> {
