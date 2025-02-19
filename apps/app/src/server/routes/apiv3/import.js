@@ -319,7 +319,7 @@ export default function route(crowi) {
    *                      type: object
    *                      description: the property of each extracted file
    */
-  router.post('/upload', uploads.single('file'), accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.post('/upload', accessTokenParser, loginRequired, adminRequired, uploads.single('file'), addActivity, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
     let data = null;
