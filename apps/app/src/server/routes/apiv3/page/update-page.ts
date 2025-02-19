@@ -121,9 +121,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     if (isAiEnabled()) {
       const { getOpenaiService } = await import('~/features/openai/server/services/openai');
       try {
-        // TODO: https://redmine.weseek.co.jp/issues/160335
         const openaiService = getOpenaiService();
-        // await openaiService?.rebuildVectorStore(updatedPage);
+        await openaiService?.updateVectorStore(updatedPage);
       }
       catch (err) {
         logger.error('Rebuild vector store failed', err);
