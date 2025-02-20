@@ -28,6 +28,7 @@ const PageTags = dynamic(() => import('../PageTags').then(mod => mod.PageTags), 
   loading: PageTagsSkeleton,
 });
 
+const AuthorInfo = dynamic(() => import('~/client/components/AuthorInfo').then(mod => mod.AuthorInfo), { ssr: false });
 
 type TagsProps = {
   pageId: string,
@@ -85,6 +86,10 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
   const { data: pageInfo } = useSWRxPageInfo(page._id);
 
+  const {
+    creator, lastUpdateUser, createdAt, updatedAt,
+  } = page;
+
   const pagePath = page.path;
   const isTopPagePath = isTopPage(pagePath);
   const isUsersHomepagePath = isUsersHomepage(pagePath);
@@ -92,6 +97,11 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
   return (
     <>
+      {/* AuthorInfo */}
+      <div className="page-meta border-bottom pb-2 mb-3">
+        <AuthorInfo user={creator} date={createdAt} mode="create" locate="pageSide" />
+        <AuthorInfo user={lastUpdateUser} date={updatedAt} mode="update" locate="pageSide" />
+      </div>
       {/* Tags */}
       { page.revision != null && (
         <div ref={tagsRef}>

@@ -28,20 +28,20 @@ type AuthorInfoProps = {
   date: Date,
   user?: IUserHasId | Ref<IUser>,
   mode: 'create' | 'update',
-  locate: 'subnav' | 'footer',
+  locate: 'pageSide' | 'footer',
 }
 
 export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   const { t } = useTranslation();
   const {
-    date, user, mode = 'create', locate = 'subnav',
+    date, user, mode = 'create', locate = 'pageSide',
   } = props;
 
   const formatType = 'yyyy/MM/dd HH:mm';
 
-  const infoLabelForSubNav = mode === 'create'
-    ? 'Created by'
-    : 'Updated by';
+  const infoLabelForPageSide = mode === 'create'
+    ? t('author_info.created_at')
+    : t('author_info.last_revision_posted_at');
   const nullinfoLabelForFooter = mode === 'create'
     ? 'Created by'
     : 'Updated by';
@@ -80,9 +80,9 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
       <div className="me-2">
         <UserPicture user={user} size="sm" />
       </div>
-      <div>
-        <div>{infoLabelForSubNav} {userLabel}</div>
-        <div className="text-muted text-date" data-vrt-blackout-datetime>
+      <div className="mb-2">
+        <div className="text-secondary mb-1">{infoLabelForPageSide} by {userLabel}</div>
+        <div className="text-secondary text-date" data-vrt-blackout-datetime>
           {renderParsedDate()}
         </div>
       </div>
