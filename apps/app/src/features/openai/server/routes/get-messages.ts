@@ -56,7 +56,7 @@ export const getMessagesFactory: GetMessagesFactory = (crowi) => {
       }
       catch (err) {
         logger.error(err);
-        return res.apiv3Err(new ErrorV3('Failed to get threads'));
+        return res.apiv3Err(new ErrorV3('Failed to get messages'));
       }
     },
   ];
