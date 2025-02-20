@@ -70,13 +70,14 @@ export interface IOpenaiService {
   getVectorStoreRelationsByPageIds(pageId: Types.ObjectId[]): Promise<VectorStoreDocument[]>;
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
+  updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   // rebuildVectorStoreAll(): Promise<void>;
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
-  updateVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
+  // updateVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
@@ -539,17 +540,34 @@ class OpenaiService implements IOpenaiService {
       logger.debug('VectorStoreFile pagePath to be created: ', pagesToVectorize.map(page => page.path));
       logger.debug('-----------------------------------------------------');
 
-
       await this.createVectorStoreFile(vectorStoreRelation as VectorStoreDocument, pagesToVectorize);
     }
   }
 
-  async updateVectorStore(page: HydratedDocument<PageDocument>) {
-    const vectorStoreRelations = await this.getVectorStoreRelationsByPageIds([page._id]);
-    vectorStoreRelations.forEach(async(vectorStoreRelation) => {
-      await this.deleteVectorStoreFile(vectorStoreRelation._id, page._id);
-      await this.createVectorStoreFile(vectorStoreRelation, [page]);
-    });
+  async updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>) {
+    const aiAssistants = await AiAssistantModel.findByPagePaths([page.path]);
+
+    if (aiAssistants.length === 0) {
+      return;
+    }
+
+    for await (const aiAssistant of aiAssistants) {
+      const pagesToVectorize = await this.filterPagesByAccessScope(aiAssistant, [page]);
+      const vectorStoreRelation = aiAssistant.vectorStore;
+      if (vectorStoreRelation == null || !isPopulated(vectorStoreRelation)) {
+        continue;
+      }
+
+      logger.debug('---------- updateVectorStoreOnPageUpdate ------------');
+      logger.debug('AccessScopeType of aiAssistant: ', aiAssistant.accessScope);
+      logger.debug('PagePath of VectorStoreFile to be deleted: ', page.path);
+      logger.debug('pagePath of VectorStoreFile to be created: ', pagesToVectorize.map(page => page.path));
+      logger.debug('-----------------------------------------------------');
+
+      // Do not create a new VectorStoreFile if page is changed to a permission that AiAssistant does not have access to
+      await this.createVectorStoreFile(vectorStoreRelation as VectorStoreDocument, pagesToVectorize);
+      await this.deleteVectorStoreFile((vectorStoreRelation as VectorStoreDocument)._id, page._id);
+    }
   }
 
   private async createVectorStoreFileWithStream(vectorStoreRelation: VectorStoreDocument, conditions: mongoose.FilterQuery<PageDocument>): Promise<void> {
