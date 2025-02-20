@@ -60,33 +60,6 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
   });
 };
 
-/**
-* @example
-* // Input: '/Sandbox/Bootstrap5/'
-* // Output: ['/Sandbox/*', '/Sandbox/Bootstrap5/*']
-*
-* // Input: '/user/admin/memo/'
-* // Output: ['/user/*', '/user/admin/*', '/user/admin/memo/*']
-*/
-const generateGlobPatterns = (path: string) => {
-  // Remove trailing slash if exists
-  const normalizedPath = pathUtils.removeTrailingSlash(path);
-
-  // Split path into segments
-  const segments = normalizedPath.split('/').filter(Boolean);
-
-  // Generate patterns
-  const patterns: string[] = [];
-  let currentPath = '';
-
-  for (let i = 0; i < segments.length; i++) {
-    currentPath += `/${segments[i]}`;
-    patterns.push(`${currentPath}/*`);
-  }
-
-  return patterns;
-};
-
 export interface IOpenaiService {
   getOrCreateThread(userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
   getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
@@ -573,7 +546,6 @@ class OpenaiService implements IOpenaiService {
 
   async updateVectorStore(page: HydratedDocument<PageDocument>) {
     const vectorStoreRelations = await this.getVectorStoreRelationsByPageIds([page._id]);
-    console.log('vectorStoreRelations', vectorStoreRelations);
     vectorStoreRelations.forEach(async(vectorStoreRelation) => {
       await this.deleteVectorStoreFile(vectorStoreRelation._id, page._id);
       await this.createVectorStoreFile(vectorStoreRelation, [page]);
