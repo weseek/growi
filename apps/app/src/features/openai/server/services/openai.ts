@@ -77,7 +77,6 @@ export interface IOpenaiService {
   // rebuildVectorStoreAll(): Promise<void>;
   // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
-  // updateVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
