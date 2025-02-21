@@ -135,7 +135,9 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       const response = await fetch('/_api/v3/openai/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userMessage: data.input, threadId: currentThreadId, summaryMode: data.summaryMode }),
+        body: JSON.stringify({
+          userMessage: data.input, threadId: currentThreadId, summaryMode: data.summaryMode, aiAssistantId,
+        }),
       });
 
       if (!response.ok) {
