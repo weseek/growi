@@ -40,8 +40,8 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   const formatType = 'yyyy/MM/dd HH:mm';
 
   const infoLabelForPageSide = mode === 'create'
-    ? t('author_info.created_at')
-    : t('author_info.last_revision_posted_at');
+    ? t('author_info.created_by')
+    : t('author_info.updated_by');
   const nullinfoLabelForFooter = mode === 'create'
     ? 'Created by'
     : 'Updated by';
@@ -76,12 +76,12 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   };
 
   return (
-    <div className={`grw-author-info ${styles['grw-author-info']} d-flex align-items-center`}>
+    <div className={`grw-author-info ${styles['grw-author-info']} d-flex align-items-center mb-2 ms-3`}>
       <div className="me-2">
         <UserPicture user={user} size="sm" />
       </div>
-      <div className="mb-2">
-        <div className="text-secondary mb-1">{infoLabelForPageSide} by {userLabel}</div>
+      <div>
+        <div className="text-secondary mb-1">{infoLabelForPageSide} {userLabel}</div>
         <div className="text-secondary text-date" data-vrt-blackout-datetime>
           {renderParsedDate()}
         </div>
