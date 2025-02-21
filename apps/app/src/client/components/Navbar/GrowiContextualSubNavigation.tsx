@@ -119,6 +119,14 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         {t('sync-latest-revision-body.menuitem')}
       </DropdownItem>
 
+      {/* Announce */}
+      <DropdownItem
+        className="grw-page-control-dropdown-item"
+      >
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">campaign</span>
+        {t('Announce')}
+      </DropdownItem>
+
       {/* Presentation */}
       <DropdownItem
         onClick={() => openPresentationModal()}
