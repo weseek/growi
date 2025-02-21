@@ -1,10 +1,10 @@
 import { type IGrantedGroup, GroupType } from '@growi/core';
-import { pathUtils } from '@growi/core/dist/utils';
 import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 import { type AiAssistant, AiAssistantShareScope, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
+import { generateGlobPatterns } from '../utils/generate-glob-patterns';
 
 export interface AiAssistantDocument extends AiAssistant, Document {}
 
@@ -107,33 +107,6 @@ const schema = new Schema<AiAssistantDocument>(
 
 
 schema.statics.findByPagePaths = async function(pagePaths: string[]): Promise<AiAssistantDocument[]> {
-  /**
-  * @example
-  * // Input: '/Sandbox/Bootstrap5/'
-  * // Output: ['/Sandbox/*', '/Sandbox/Bootstrap5/*']
-  *
-  * // Input: '/user/admin/memo/'
-  * // Output: ['/user/*', '/user/admin/*', '/user/admin/memo/*']
-  */
-  const generateGlobPatterns = (path: string) => {
-  // Remove trailing slash if exists
-    const normalizedPath = pathUtils.removeTrailingSlash(path);
-
-    // Split path into segments
-    const segments = normalizedPath.split('/').filter(Boolean);
-
-    // Generate patterns
-    const patterns: string[] = [];
-    let currentPath = '';
-
-    for (let i = 0; i < segments.length; i++) {
-      currentPath += `/${segments[i]}`;
-      patterns.push(`${currentPath}/*`);
-    }
-
-    return patterns;
-  };
-
   const pagePathsWithGlobPattern = pagePaths.map(pagePath => generateGlobPatterns(pagePath)).flat();
   const assistants = await this.find({
     $or: [
