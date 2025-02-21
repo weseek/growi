@@ -22,17 +22,19 @@ const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 */
 type ThreadItemProps = {
   thread: IThreadRelationHasId
+  aiAssistantData: AiAssistantHasId;
+  onThreadClick?: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
 };
 
-const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
+const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThreadClick }) => {
 
   const deleteThreadHandler = useCallback(() => {
     // TODO: https://redmine.weseek.co.jp/issues/161490
   }, []);
 
   const openChatHandler = useCallback(() => {
-    // TODO: https://redmine.weseek.co.jp/issues/159530
-  }, []);
+    onThreadClick?.(aiAssistantData, thread.threadId);
+  }, [aiAssistantData, onThreadClick, thread.threadId]);
 
   return (
     <li
@@ -66,11 +68,12 @@ const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
 *  ThreadItems
 */
 type ThreadItemsProps = {
-  aiAssistantId: string;
+  aiAssistantData: AiAssistantHasId;
+  onThreadClick?: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
 };
 
-const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantId }) => {
-  const { data: threads } = useSWRxThreads(aiAssistantId);
+const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClick }) => {
+  const { data: threads } = useSWRxThreads(aiAssistantData._id);
 
   if (threads == null || threads.length === 0) {
     return <p className="text-secondary ms-5">スレッドが存在しません</p>;
@@ -82,6 +85,8 @@ const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantId }) => {
         <ThreadItem
           key={thread._id}
           thread={thread}
+          aiAssistantData={aiAssistantData}
+          onThreadClick={onThreadClick}
         />
       ))}
     </div>
@@ -108,7 +113,7 @@ type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
   onEditClicked?: (aiAssistantData: AiAssistantHasId) => void;
-  onItemClicked?: (aiAssistantData: AiAssistantHasId) => void;
+  onItemClicked?: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
   onDeleted?: () => void;
 };
 
@@ -207,7 +212,10 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
       </li>
 
       { isThreadsOpened && (
-        <ThreadItems aiAssistantId={aiAssistant._id} />
+        <ThreadItems
+          aiAssistantData={aiAssistant}
+          onThreadClick={onItemClicked}
+        />
       ) }
     </>
   );
