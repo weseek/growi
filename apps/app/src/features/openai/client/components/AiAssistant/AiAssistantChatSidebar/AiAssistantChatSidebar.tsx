@@ -41,7 +41,6 @@ type FormData = {
   summaryMode?: boolean;
 };
 
-
 type AiAssistantChatSidebarSubstanceProps = {
   aiAssistantData?: AiAssistantHasId;
   messageData?: OpenAI.Beta.Threads.Messages.MessagesPage;
@@ -117,7 +116,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     // create thread
     let currentThreadId = threadId;
     const aiAssistantId = aiAssistantData?._id;
-    if (threadId == null && aiAssistantId) {
+    if (threadId == null && aiAssistantId != null) {
       try {
         const res = await apiv3Post('/openai/thread', { aiAssistantId });
         const thread = res.data.thread;
