@@ -3,6 +3,7 @@ import {
   type FC, memo, useRef, useEffect, useState, useCallback,
 } from 'react';
 
+import type OpenAI from 'openai';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
@@ -16,6 +17,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
+import { useSWRxMessages } from '../../../stores/message';
 
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -42,13 +44,17 @@ type FormData = {
 
 type AiAssistantChatSidebarSubstanceProps = {
   aiAssistantData?: AiAssistantHasId;
+  messageData?: OpenAI.Beta.Threads.Messages.MessagesPage;
+  threadId_?: string
   closeAiAssistantChatSidebar: () => void
 }
 
 const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
   const { t } = useTranslation();
 
-  const { aiAssistantData, closeAiAssistantChatSidebar } = props;
+  const {
+    aiAssistantData, messageData, threadId_, closeAiAssistantChatSidebar,
+  } = props;
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -57,7 +63,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     },
   });
 
-  const [threadId, setThreadId] = useState<string | undefined>();
+  const [threadId, setThreadId] = useState<string | undefined>(threadId_);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
@@ -66,6 +72,23 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
   const { data: growiCloudUri } = useGrowiCloudUri();
 
   const isGenerating = generatingAnswerMessage != null;
+
+  useEffect(() => {
+    if (messageData != null) {
+      const reversedMessageData = messageData.data.slice().reverse();
+
+      setMessageLogs(() => {
+        return reversedMessageData.map((message, index) => (
+          {
+            id: index.toString(),
+            content: message.content[0].type === 'text' ? message.content[0].text.value : '',
+            isUserMessage: message.role === 'user',
+          }
+        ));
+      });
+    }
+
+  }, [messageData]);
 
   const submit = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
@@ -191,7 +214,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
+  }, [aiAssistantData?._id, form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -373,6 +396,9 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
   const { data: aiAssistantChatSidebarData, close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+  const { data: messages } = useSWRxMessages(aiAssistantChatSidebarData?.aiAssistantData?._id, aiAssistantChatSidebarData?.threadId);
+
+  const threadId = aiAssistantChatSidebarData?.threadId;
   const isOpened = aiAssistantChatSidebarData?.isOpened ?? false;
 
   useEffect(() => {
@@ -404,6 +430,8 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
           >
             <AiAssistantChatSidebarSubstance
               aiAssistantData={aiAssistantChatSidebarData?.aiAssistantData}
+              messageData={messages}
+              threadId_={threadId}
               closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
             />
           </SimpleBar>
