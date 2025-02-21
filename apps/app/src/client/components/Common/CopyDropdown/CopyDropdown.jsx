@@ -195,8 +195,7 @@ export const CopyDropdown = (props) => {
                 <DropdownItemContents
                   title={t('copy_to_clipboard.Page path and permanent link')}
                   contents={<>{pagePathWithParams}<br />{permalink}</>}
-                  className="text-truncate"
-                  style={{ direction: 'rtl' }}
+                  className="text-truncate d-block"
                 />
               </DropdownItem>
             </CopyToClipboard>

@@ -6,6 +6,8 @@ on:
       - release/**
       - rc/**
       - changeset-release/**
+      - mergify/merge-queue/**
+      - tmp-mergify/merge-queue/**
     paths:
       - .github/mergify.yml
       - .github/workflows/ci-app.yml

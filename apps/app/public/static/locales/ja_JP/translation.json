@@ -117,7 +117,7 @@
   "Create under": "ページを以下に作成",
   "V5 Page Migration": "V5 互換形式 への変換",
   "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
-  "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><span className='growi-custom-icons'>external_link</span>を参照ください。",
+  "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><span class='growi-custom-icons'>external_link</span>を参照ください。",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
   "Basic Settings": "基本設定",
@@ -159,7 +159,7 @@
   "duplicated_path": "重複したパス",
   "Link sharing is disabled": "リンクのシェアは無効化されています",
   "successfully_saved_the_page": "ページが正常に保存されました",
-  "you_can_not_create_page_with_this_name": "この名前でページを作成することはできません",
+  "you_can_not_create_page_with_this_name_or_hierarchy": "この名前、または階層でページを作成することはできません",
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
@@ -488,7 +488,7 @@
   "modal_shortcuts": {
     "global": {
       "title": "グローバルショートカット",
-      "Open/Close shortcut help": "ショートカットヘルプ<br>の表示/非表示",
+      "Open/Close shortcut help": "ショートカットヘルプの<br>表示/非表示",
       "Edit Page": "ページ編集",
       "Create Page": "ページ作成",
       "Search": "検索",
@@ -502,11 +502,14 @@
       "Indent": "インデント",
       "Outdent": "左インデント",
       "Save Page": "保存",
-      "Delete Line": "行削除"
-    },
-    "commentform": {
-      "title": "コメントフォームショートカット",
-      "Post": "投稿"
+      "Only Editor": "(エディターのみ)",
+      "Delete Line": "行削除",
+      "Search in Editor": "エディター内検索",
+      "Move Line": "行の移動",
+      "Copy Line": "行のコピー",
+      "Toggle Line": "行の非表示化",
+      "Insert Line": "行を挿入",
+      "Post Comment": "(コメント投稿)"
     }
   },
   "modal_resolve_conflict": {
@@ -648,7 +651,7 @@
     "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
     "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
     "nopages_desc1": "今あなたが管理可能なページはすべて v5 互換形式になっているようです。",
-    "detail_info": "詳しくは <a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>GROWI v5.0.x へのアップグレード <span className='growi-custom-icons'>external_link</span></a> を参照ください。",
+    "detail_info": "詳しくは <a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>GROWI v5.0.x へのアップグレード <span class='growi-custom-icons'>external_link</span></a> を参照ください。",
     "modal": {
       "title": "新しい v5 互換形式への変換",
       "converting_pages": "以下のページを変換します",
@@ -776,7 +779,8 @@
   "pagetree": {
     "cannot_rename_a_title_that_contains_slash": "`/` が含まれているタイトルにリネームできません",
     "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
-    "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"
+    "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました",
+    "error_retrieving_the_pagetree": "ページツリーの取得中にエラーが発生しました"
   },
   "duplicated_page_alert": {
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",

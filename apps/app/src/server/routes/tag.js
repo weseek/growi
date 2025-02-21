@@ -34,6 +34,7 @@ import ApiResponse from '../util/apiResponse';
  *            description: Count of tagged pages
  *            example: 3
  */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = function(crowi, app) {
 
   const activityEvent = crowi.event('activity');

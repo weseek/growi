@@ -12,7 +12,7 @@ const logger = loggerFactory('growi:routes:apiv3:user-ui-settings');
 
 const router = express.Router();
 
-module.exports = (crowi) => {
+module.exports = () => {
 
   const validatorForPut = [
     body('settings').exists().withMessage('The body param \'settings\' is required'),
