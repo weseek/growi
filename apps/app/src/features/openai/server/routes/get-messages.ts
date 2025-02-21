@@ -1,7 +1,7 @@
 import { type IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
-import { type ValidationChain, body } from 'express-validator';
+import { type ValidationChain, param } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -17,12 +17,12 @@ const logger = loggerFactory('growi:routes:apiv3:openai:get-message');
 
 type GetMessagesFactory = (crowi: Crowi) => RequestHandler[];
 
-type ReqBody = {
+type ReqParam = {
   threadId: string,
   aiAssistantId: string,
 }
 
-type Req = Request<undefined, Response, ReqBody> & {
+type Req = Request<ReqParam, Response, undefined> & {
   user: IUserHasId,
 }
 
@@ -30,8 +30,8 @@ export const getMessagesFactory: GetMessagesFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
-    body('threadId').isString().withMessage('threadId must be string'),
-    body('aiAssistantId').isMongoId().withMessage('aiAssistantId must be string'),
+    param('threadId').isString().withMessage('threadId must be string'),
+    param('aiAssistantId').isMongoId().withMessage('aiAssistantId must be string'),
   ];
 
   return [
@@ -43,16 +43,16 @@ export const getMessagesFactory: GetMessagesFactory = (crowi) => {
       }
 
       try {
-        const { aiAssistantId } = req.body;
+        const { threadId, aiAssistantId } = req.params;
 
         const isAiAssistantUsable = openaiService.isAiAssistantUsable(aiAssistantId, req.user);
         if (!isAiAssistantUsable) {
           return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
         }
 
-        // TODO: Implement getMessages
+        const messages = await openaiService.getMessageData(threadId, req.user.lang);
 
-        return res.apiv3({});
+        return res.apiv3({ messages });
       }
       catch (err) {
         logger.error(err);
