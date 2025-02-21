@@ -5,6 +5,7 @@ export interface IOpenaiClientDelegator {
   createThread(vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread>
   retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread>
   deleteThread(threadId: string): Promise<OpenAI.Beta.Threads.ThreadDeleted>
+  getMessages(threadId: string): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>
   retrieveVectorStore(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.VectorStore>
   createVectorStore(name: string): Promise<OpenAI.Beta.VectorStores.VectorStore>
   deleteVectorStore(vectorStoreId: string): Promise<OpenAI.Beta.VectorStores.VectorStoreDeleted>
