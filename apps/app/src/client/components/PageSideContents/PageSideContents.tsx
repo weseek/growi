@@ -98,7 +98,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   return (
     <>
       {/* AuthorInfo */}
-      <div className="page-meta border-bottom pb-2 mb-3">
+      <div className=" d-none d-md-block page-meta border-bottom pb-2 ms-lg-3 mb-3">
         <AuthorInfo user={creator} date={createdAt} mode="create" locate="pageSide" />
         <AuthorInfo user={lastUpdateUser} date={updatedAt} mode="update" locate="pageSide" />
       </div>

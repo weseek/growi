@@ -76,12 +76,12 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
   };
 
   return (
-    <div className={`grw-author-info ${styles['grw-author-info']} d-flex align-items-center mb-2 ms-3`}>
-      <div className="me-2">
+    <div className={`grw-author-info ${styles['grw-author-info']} d-flex align-items-center mb-2`}>
+      <div className="me-2 d-none d-lg-block">
         <UserPicture user={user} size="sm" />
       </div>
       <div>
-        <div className="text-secondary mb-1">{infoLabelForPageSide} {userLabel}</div>
+        <div className="text-secondary mb-1">{infoLabelForPageSide} <br className="d-lg-none" />{userLabel}</div>
         <div className="text-secondary text-date" data-vrt-blackout-datetime>
           {renderParsedDate()}
         </div>
