@@ -50,18 +50,9 @@ type AiAssistantChatSidebarSubstanceProps = {
 }
 
 const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
-  const { t } = useTranslation();
-
   const {
     aiAssistantData, messageData, threadId_, closeAiAssistantChatSidebar,
   } = props;
-
-  const form = useForm<FormData>({
-    defaultValues: {
-      input: '',
-      summaryMode: true,
-    },
-  });
 
   const [threadId, setThreadId] = useState<string | undefined>(threadId_);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
@@ -69,7 +60,15 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
 
+  const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
+
+  const form = useForm<FormData>({
+    defaultValues: {
+      input: '',
+      summaryMode: true,
+    },
+  });
 
   const isGenerating = generatingAnswerMessage != null;
 
