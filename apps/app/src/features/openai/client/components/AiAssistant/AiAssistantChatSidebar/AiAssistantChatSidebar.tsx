@@ -16,7 +16,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
-import { useSWRxMessages } from '../../../stores/message';
+import { useSWRMUTxMessages } from '../../../stores/message';
 
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -59,7 +59,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
-  const { data: messageData } = useSWRxMessages(aiAssistantData._id, threadId);
+  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData._id, threadId);
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -71,20 +71,26 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
   const isGenerating = generatingAnswerMessage != null;
 
   useEffect(() => {
-    if (messageData != null) {
-      const reversedMessageData = messageData.data.slice().reverse();
+    const getMessageData = async() => {
+      const messageData = await mutateMessageData();
+      if (messageData != null) {
+        const reversedMessageData = messageData.data.slice().reverse();
+        setMessageLogs(() => {
+          return reversedMessageData.map((message, index) => (
+            {
+              id: index.toString(),
+              content: message.content[0].type === 'text' ? message.content[0].text.value : '',
+              isUserMessage: message.role === 'user',
+            }
+          ));
+        });
+      }
+    };
 
-      setMessageLogs(() => {
-        return reversedMessageData.map((message, index) => (
-          {
-            id: index.toString(),
-            content: message.content[0].type === 'text' ? message.content[0].text.value : '',
-            isUserMessage: message.role === 'user',
-          }
-        ));
-      });
+    if (threadId != null) {
+      getMessageData();
     }
-  }, [messageData]);
+  }, [mutateMessageData, threadId]);
 
   const submit = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
