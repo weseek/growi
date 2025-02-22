@@ -418,25 +418,23 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   }
 
   return (
-    <>
-      <div
-        ref={sidebarRef}
-        className={`position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm ${moduleClass}`}
-        style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
-        data-testid="grw-right-sidebar"
+    <div
+      ref={sidebarRef}
+      className={`position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm ${moduleClass}`}
+      style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
+      data-testid="grw-right-sidebar"
+    >
+      <SimpleBar
+        scrollableNodeProps={{ ref: sidebarScrollerRef }}
+        className="h-100 position-relative"
+        autoHide
       >
-        <SimpleBar
-          scrollableNodeProps={{ ref: sidebarScrollerRef }}
-          className="h-100 position-relative"
-          autoHide
-        >
-          <AiAssistantChatSidebarSubstance
-            threadId_={threadId}
-            aiAssistantData={aiAssistantData}
-            closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
-          />
-        </SimpleBar>
-      </div>
-    </>
+        <AiAssistantChatSidebarSubstance
+          threadId_={threadId}
+          aiAssistantData={aiAssistantData}
+          closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
+        />
+      </SimpleBar>
+    </div>
   );
 });
