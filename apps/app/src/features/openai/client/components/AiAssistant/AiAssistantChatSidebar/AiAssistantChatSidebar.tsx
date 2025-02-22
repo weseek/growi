@@ -118,10 +118,9 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
     // create thread
     let currentThreadId_ = currentThreadId;
-    const aiAssistantId = aiAssistantData._id;
     if (threadId == null) {
       try {
-        const res = await apiv3Post('/openai/thread', { aiAssistantId });
+        const res = await apiv3Post('/openai/thread', { aiAssistantId: aiAssistantData._id });
         const thread = res.data.thread;
 
         setCurrentThreadId(thread.id);
@@ -139,7 +138,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userMessage: data.input, threadId: currentThreadId_, summaryMode: data.summaryMode, aiAssistantId,
+          userMessage: data.input, threadId: currentThreadId_, summaryMode: data.summaryMode, aiAssistantId: aiAssistantData._id,
         }),
       });
 
