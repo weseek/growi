@@ -23,7 +23,7 @@ const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 type ThreadItemProps = {
   thread: IThreadRelationHasId
   aiAssistantData: AiAssistantHasId;
-  onThreadClick?: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
 };
 
 const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThreadClick }) => {
@@ -33,7 +33,7 @@ const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThre
   }, []);
 
   const openChatHandler = useCallback(() => {
-    onThreadClick?.(aiAssistantData, thread.threadId);
+    onThreadClick(aiAssistantData, thread.threadId);
   }, [aiAssistantData, onThreadClick, thread.threadId]);
 
   return (
@@ -69,7 +69,7 @@ const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThre
 */
 type ThreadItemsProps = {
   aiAssistantData: AiAssistantHasId;
-  onThreadClick?: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
 };
 
 const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClick }) => {
@@ -112,28 +112,27 @@ const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAss
 type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
-  onEditClicked?: (aiAssistantData: AiAssistantHasId) => void;
-  onItemClicked?: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
+  onEditClick: (aiAssistantData: AiAssistantHasId) => void;
+  onItemClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
   onDeleted?: () => void;
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   currentUserId,
   aiAssistant,
-  onEditClicked,
-  onItemClicked,
+  onEditClick,
+  onItemClick,
   onDeleted,
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
   const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
-    onEditClicked?.(aiAssistantData);
-  }, [onEditClicked]);
+    onEditClick(aiAssistantData);
+  }, [onEditClick]);
 
   const openChatHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
-    onItemClicked?.(aiAssistantData);
-  }, [onItemClicked]);
-
+    onItemClick(aiAssistantData);
+  }, [onItemClick]);
 
   const openThreadsHandler = useCallback(() => {
     setIsThreadsOpened(toggle => !toggle);
@@ -214,7 +213,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
       { isThreadsOpened && (
         <ThreadItems
           aiAssistantData={aiAssistant}
-          onThreadClick={onItemClicked}
+          onThreadClick={onItemClick}
         />
       ) }
     </>
@@ -242,8 +241,8 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           key={assistant._id}
           currentUserId={currentUser?._id}
           aiAssistant={assistant}
-          onEditClicked={openAiAssistantManagementModal}
-          onItemClicked={openAiAssistantChatSidebar}
+          onEditClick={openAiAssistantManagementModal}
+          onItemClick={openAiAssistantChatSidebar}
           onDeleted={onDeleted}
         />
       ))}

@@ -68,8 +68,6 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     },
   });
 
-  const isGenerating = generatingAnswerMessage != null;
-
   useEffect(() => {
     const getMessageData = async() => {
       const messageData = await mutateMessageData();
@@ -92,6 +90,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     }
   }, [mutateMessageData, threadId]);
 
+  const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
     if (isGenerating) {
