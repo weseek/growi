@@ -3,7 +3,6 @@ import {
   type FC, memo, useRef, useEffect, useState, useCallback,
 } from 'react';
 
-import type OpenAI from 'openai';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
@@ -42,15 +41,14 @@ type FormData = {
 };
 
 type AiAssistantChatSidebarSubstanceProps = {
-  aiAssistantData?: AiAssistantHasId;
-  messageData?: OpenAI.Beta.Threads.Messages.MessagesPage;
+  aiAssistantData: AiAssistantHasId;
   threadId_?: string
   closeAiAssistantChatSidebar: () => void
 }
 
 const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
   const {
-    aiAssistantData, messageData, threadId_, closeAiAssistantChatSidebar,
+    threadId_, aiAssistantData, closeAiAssistantChatSidebar,
   } = props;
 
   const [threadId, setThreadId] = useState<string | undefined>(threadId_);
@@ -61,6 +59,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
+  const { data: messageData } = useSWRxMessages(aiAssistantData._id, threadId);
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -115,8 +114,8 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
     // create thread
     let currentThreadId = threadId;
-    const aiAssistantId = aiAssistantData?._id;
-    if (threadId == null && aiAssistantId != null) {
+    const aiAssistantId = aiAssistantData._id;
+    if (threadId == null) {
       try {
         const res = await apiv3Post('/openai/thread', { aiAssistantId });
         const thread = res.data.thread;
@@ -214,7 +213,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [aiAssistantData?._id, form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
+  }, [aiAssistantData._id, form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -228,7 +227,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       <div className="d-flex flex-column vh-100">
         <div className="d-flex align-items-center p-3 border-bottom">
           <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
-          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{aiAssistantData?.name}</h5>
+          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{aiAssistantData.name}</h5>
           <button
             type="button"
             className="btn btn-link p-0 border-0"
@@ -261,7 +260,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
             : (
               <>
                 <p className="fs-6 text-secondary mb-0">
-                  {aiAssistantData?.description}
+                  {aiAssistantData.description}
                 </p>
 
                 <div>
@@ -269,7 +268,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                   <div className="card bg-light border-0">
                     <div className="card-body p-3">
                       <p className="fs-6 text-secondary mb-0">
-                        {aiAssistantData?.additionalInstruction}
+                        {aiAssistantData.additionalInstruction}
                       </p>
                     </div>
                   </div>
@@ -280,7 +279,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                     <p className="text-secondary mb-0">参照するページ</p>
                   </div>
                   <div className="d-flex flex-column gap-1">
-                    { aiAssistantData?.pagePathPatterns.map(pagePathPattern => (
+                    { aiAssistantData.pagePathPatterns.map(pagePathPattern => (
                       <a
                         key={pagePathPattern}
                         href="#"
@@ -396,10 +395,10 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
   const { data: aiAssistantChatSidebarData, close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
-  const { data: messages } = useSWRxMessages(aiAssistantChatSidebarData?.aiAssistantData?._id, aiAssistantChatSidebarData?.threadId);
 
+  const aiAssistantData = aiAssistantChatSidebarData?.aiAssistantData;
   const threadId = aiAssistantChatSidebarData?.threadId;
-  const isOpened = aiAssistantChatSidebarData?.isOpened ?? false;
+  const isOpened = aiAssistantChatSidebarData?.isOpened && aiAssistantData != null;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -414,29 +413,30 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
     };
   }, [closeAiAssistantChatSidebar, isOpened]);
 
+  if (!isOpened) {
+    return <></>;
+  }
+
   return (
     <>
-      {isOpened && (
-        <div
-          ref={sidebarRef}
-          className={`position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm ${moduleClass}`}
-          style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
-          data-testid="grw-right-sidebar"
+      <div
+        ref={sidebarRef}
+        className={`position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm ${moduleClass}`}
+        style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
+        data-testid="grw-right-sidebar"
+      >
+        <SimpleBar
+          scrollableNodeProps={{ ref: sidebarScrollerRef }}
+          className="h-100 position-relative"
+          autoHide
         >
-          <SimpleBar
-            scrollableNodeProps={{ ref: sidebarScrollerRef }}
-            className="h-100 position-relative"
-            autoHide
-          >
-            <AiAssistantChatSidebarSubstance
-              aiAssistantData={aiAssistantChatSidebarData?.aiAssistantData}
-              messageData={messages}
-              threadId_={threadId}
-              closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
-            />
-          </SimpleBar>
-        </div>
-      )}
+          <AiAssistantChatSidebarSubstance
+            threadId_={threadId}
+            aiAssistantData={aiAssistantData}
+            closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
+          />
+        </SimpleBar>
+      </div>
     </>
   );
 });
