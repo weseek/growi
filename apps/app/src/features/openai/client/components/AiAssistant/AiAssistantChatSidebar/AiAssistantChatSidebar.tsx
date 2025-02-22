@@ -42,16 +42,16 @@ type FormData = {
 
 type AiAssistantChatSidebarSubstanceProps = {
   aiAssistantData: AiAssistantHasId;
-  threadId_?: string
+  threadId?: string;
   closeAiAssistantChatSidebar: () => void
 }
 
 const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
   const {
-    threadId_, aiAssistantData, closeAiAssistantChatSidebar,
+    threadId, aiAssistantData, closeAiAssistantChatSidebar,
   } = props;
 
-  const [threadId, setThreadId] = useState<string | undefined>(threadId_);
+  const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadId);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
@@ -84,7 +84,6 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
         ));
       });
     }
-
   }, [messageData]);
 
   const submit = useCallback(async(data: FormData) => {
@@ -113,15 +112,15 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     setGeneratingAnswerMessage(newAnswerMessage);
 
     // create thread
-    let currentThreadId = threadId;
+    let currentThreadId_ = currentThreadId;
     const aiAssistantId = aiAssistantData._id;
     if (threadId == null) {
       try {
         const res = await apiv3Post('/openai/thread', { aiAssistantId });
         const thread = res.data.thread;
 
-        setThreadId(thread.id);
-        currentThreadId = thread.id;
+        setCurrentThreadId(thread.id);
+        currentThreadId_ = thread.id;
       }
       catch (err) {
         logger.error(err.toString());
@@ -135,7 +134,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userMessage: data.input, threadId: currentThreadId, summaryMode: data.summaryMode, aiAssistantId,
+          userMessage: data.input, threadId: currentThreadId_, summaryMode: data.summaryMode, aiAssistantId,
         }),
       });
 
@@ -213,14 +212,13 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [aiAssistantData._id, form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
+  }, [aiAssistantData._id, currentThreadId, form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
       form.handleSubmit(submit)();
     }
   };
-
 
   return (
     <>
@@ -239,7 +237,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
         <div className="p-4 d-flex flex-column gap-4 vh-100">
 
 
-          { threadId != null
+          { currentThreadId != null
             ? (
               <div className="vstack gap-4 pb-2">
                 { messageLogs.map(message => (
@@ -430,7 +428,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
         autoHide
       >
         <AiAssistantChatSidebarSubstance
-          threadId_={threadId}
+          threadId={threadId}
           aiAssistantData={aiAssistantData}
           closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
         />
