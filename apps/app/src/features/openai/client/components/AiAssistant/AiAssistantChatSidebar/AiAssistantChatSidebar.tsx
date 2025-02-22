@@ -17,6 +17,7 @@ import loggerFactory from '~/utils/logger';
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../../../stores/message';
+import { useSWRMUTxThreads } from '../../../stores/thread';
 
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -59,6 +60,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData._id);
   const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData._id, threadId);
 
   const form = useForm<FormData>({
@@ -118,13 +120,16 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
     // create thread
     let currentThreadId_ = currentThreadId;
-    if (threadId == null) {
+    if (currentThreadId_ == null) {
       try {
         const res = await apiv3Post('/openai/thread', { aiAssistantId: aiAssistantData._id });
         const thread = res.data.thread;
 
         setCurrentThreadId(thread.id);
         currentThreadId_ = thread.id;
+
+        // No need to await because data is not used
+        mutateThreadData();
       }
       catch (err) {
         logger.error(err.toString());
@@ -216,7 +221,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [aiAssistantData._id, currentThreadId, form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
+  }, [aiAssistantData._id, currentThreadId, form, growiCloudUri, isGenerating, messageLogs, mutateThreadData, t]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {

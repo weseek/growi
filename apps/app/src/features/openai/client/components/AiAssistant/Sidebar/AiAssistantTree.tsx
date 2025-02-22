@@ -10,7 +10,7 @@ import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
 import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
-import { useSWRxThreads } from '../../../stores/thread';
+import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 
 import styles from './AiAssistantTree.module.scss';
 
@@ -126,6 +126,8 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistant._id);
+
   const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
     onEditClick(aiAssistantData);
   }, [onEditClick]);
@@ -134,9 +136,10 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     onItemClick(aiAssistantData);
   }, [onItemClick]);
 
-  const openThreadsHandler = useCallback(() => {
+  const openThreadsHandler = useCallback(async() => {
+    mutateThreadData();
     setIsThreadsOpened(toggle => !toggle);
-  }, []);
+  }, [mutateThreadData]);
 
   const deleteAiAssistantHandler = useCallback(async() => {
     try {
