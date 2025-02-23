@@ -5,6 +5,7 @@ import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns/subDays';
 import type { Types, FilterQuery, UpdateQuery } from 'mongoose';
 
+import type { IPageBulkExportJob } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { AllEssentialActions } from '~/interfaces/activity';
 import type { PaginateResult } from '~/interfaces/in-app-notification';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
@@ -51,7 +52,7 @@ export default class InAppNotificationService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IUser | IPage, preNotify: PreNotify) => {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IUser | IPage | IPageBulkExportJob, preNotify: PreNotify) => {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
@@ -119,21 +120,26 @@ export default class InAppNotificationService {
     const { limit, offset, status } = queryOptions;
 
     try {
-      const pagenateOptions = { user: userId };
+      const paginateOptions = { user: userId };
       if (status != null) {
-        Object.assign(pagenateOptions, { status });
+        Object.assign(paginateOptions, { status });
       }
       // TODO: import @types/mongoose-paginate-v2 and use PaginateResult as a type after upgrading mongoose v6.0.0
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const paginationResult = await (InAppNotification as any).paginate(
-        pagenateOptions,
+        paginateOptions,
         {
           sort: { createdAt: -1 },
           limit,
           offset,
           populate: [
             { path: 'user' },
-            { path: 'target' },
+            {
+              path: 'target',
+              populate: [
+                { path: 'attachment', strictPopulate: false },
+              ],
+            },
             { path: 'activities', populate: { path: 'user' } },
           ],
         },
@@ -191,13 +197,13 @@ export default class InAppNotificationService {
     return;
   };
 
-  createInAppNotification = async function(activity: ActivityDocument, target: IUser | IPage, preNotify: PreNotify): Promise<void> {
+  createInAppNotification = async function(activity: ActivityDocument, target: IUser | IPage | IPageBulkExportJob, preNotify: PreNotify): Promise<void> {
 
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
 
     const targetModel = activity.targetModel;
 
-    const snapshot = generateSnapshot(targetModel, target);
+    const snapshot = await generateSnapshot(targetModel, target);
 
     if (shouldNotification) {
       const props = preNotifyService.generateInitialPreNotifyProps();
