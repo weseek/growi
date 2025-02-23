@@ -32,7 +32,7 @@ jobs:
 
     - name: Login to docker.io registry
       run: |
-        echo ${{ secrets.DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
+        echo ${{ secrets.DOCKER_REGISTRY_PASSWORD_GROWIMOOGLE }} | docker login --username growimoogle --password-stdin
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
