@@ -1,4 +1,3 @@
-import type { Ref, IUser } from '@growi/core';
 import type {
   Types, Document, Model, SortOrder,
 } from 'mongoose';
@@ -22,7 +21,7 @@ const logger = loggerFactory('growi:models:activity');
 
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
-  user: Ref<IUser>
+  user: Types.ObjectId
   ip: string
   endpoint: string
   targetModel: SupportedTargetModelType

@@ -1,4 +1,4 @@
-import type { Readable } from 'stream';
+import type { ReadStream } from 'fs';
 
 import type { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
@@ -10,8 +10,6 @@ import { Attachment, type IAttachmentDocument } from '~/server/models/attachment
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
-
-import type { MultipartUploader } from './multipart-uploader';
 
 const logger = loggerFactory('growi:service:fileUploader');
 
@@ -40,12 +38,10 @@ export interface FileUploader {
   getTotalFileSize(): Promise<number>,
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<ICheckLimitResult>,
   determineResponseMode(): ResponseMode,
-  uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void>,
+  uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>,
   respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
   generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
-  createMultipartUploader: (uploadKey: string, maxPartSize: number) => MultipartUploader,
-  abortPreviousMultipartUpload: (uploadKey: string, uploadId: string) => Promise<void>
 }
 
 export abstract class AbstractFileUploader implements FileUploader {
@@ -158,21 +154,7 @@ export abstract class AbstractFileUploader implements FileUploader {
     return ResponseMode.RELAY;
   }
 
-  /**
-   * Create a multipart uploader for cloud storage
-   */
-  createMultipartUploader(uploadKey: string, maxPartSize: number): MultipartUploader {
-    throw new Error('Multipart upload not available for file upload type');
-  }
-
-  abstract uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void>;
-
-  /**
-   * Abort an existing multipart upload without creating a MultipartUploader instance
-   */
-  abortPreviousMultipartUpload(uploadKey: string, uploadId: string): Promise<void> {
-    throw new Error('Multipart upload not available for file upload type');
-  }
+ abstract uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>;
 
   /**
    * Respond to the HTTP request.

@@ -59,9 +59,4 @@ export type IResAppSettings = {
   isAppSiteUrlHashed: boolean,
 
   isMaintenanceMode: boolean,
-
-  isBulkExportPagesEnabled: boolean,
-  envIsBulkExportPagesEnabled: boolean,
-  bulkExportDownloadExpirationSeconds: number,
-  useOnlyEnvVarsForIsBulkExportPagesEnabled: boolean,
 }
