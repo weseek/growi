@@ -56,7 +56,7 @@ importers:
         version: 5.59.7(eslint@8.41.0)(typescript@5.0.4)
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0))
+        version: 4.3.1(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0))
       '@vitest/coverage-v8':
         specifier: ^2.1.1
         version: 2.1.1(vitest@2.1.1)
@@ -173,16 +173,16 @@ importers:
         version: 3.4.7(typescript@5.0.4)
       vite:
         specifier: ^5.4.12
-        version: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)
+        version: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)
       vite-plugin-dts:
         specifier: ^3.9.1
-        version: 3.9.1(@types/node@20.14.0)(rollup@4.22.4)(typescript@5.0.4)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0))
+        version: 3.9.1(@types/node@20.14.0)(rollup@4.22.4)(typescript@5.0.4)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0))
       vite-tsconfig-paths:
         specifier: ^5.0.1
-        version: 5.0.1(typescript@5.0.4)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0))
+        version: 5.0.1(typescript@5.0.4)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0))
       vitest:
         specifier: ^2.1.1
-        version: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.37.0)
+        version: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.39.0)
       vitest-mock-extended:
         specifier: ^2.0.2
         version: 2.0.2(typescript@5.0.4)(vitest@2.1.1)
@@ -484,17 +484,17 @@ importers:
         specifier: ^4.17.2
         version: 4.17.2(@aws-sdk/client-sso-oidc@3.600.0)
       mongoose:
-        specifier: ^6.13.6
-        version: 6.13.8(@aws-sdk/client-sso-oidc@3.600.0)
+        specifier: ^8.10.1
+        version: 8.10.1(socks@2.8.3)
       mongoose-gridfs:
         specifier: ^1.2.42
-        version: 1.2.42(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0))
+        version: 1.2.42(mongoose@8.10.1(socks@2.8.3))
       mongoose-paginate-v2:
         specifier: ^1.3.9
         version: 1.8.2
       mongoose-unique-validator:
         specifier: ^2.0.3
-        version: 2.0.3(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0))
+        version: 2.0.3(mongoose@8.10.1(socks@2.8.3))
       multer:
         specifier: ~1.4.0
         version: 1.4.4
@@ -734,7 +734,7 @@ importers:
         version: 1.0.15
       y-mongodb-provider:
         specifier: ^0.2.0
-        version: 0.2.0(@aws-sdk/credential-providers@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))(socks@2.8.3)(yjs@13.6.19)
+        version: 0.2.0(socks@2.8.3)(yjs@13.6.19)
       y-socket.io:
         specifier: ^1.1.3
         version: 1.1.3(yjs@13.6.19)
@@ -903,7 +903,7 @@ importers:
         version: 3.0.1
       mongodb-memory-server-core:
         specifier: ^9.1.1
-        version: 9.4.0(@aws-sdk/credential-providers@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
+        version: 9.4.0
       morgan:
         specifier: ^1.10.0
         version: 1.10.0
@@ -1084,8 +1084,8 @@ importers:
         version: 4.0.0
     devDependencies:
       mongoose:
-        specifier: ^6.13.6
-        version: 6.13.8(@aws-sdk/client-sso-oidc@3.600.0)
+        specifier: ^8.10.1
+        version: 8.10.1(socks@2.8.3)
       socket.io-client:
         specifier: ^4.7.5
         version: 4.8.1
@@ -1385,8 +1385,8 @@ importers:
         specifier: ^6.0.2
         version: 6.0.2
       mongoose:
-        specifier: ^6.13.6
-        version: 6.13.8(@aws-sdk/client-sso-oidc@3.600.0)
+        specifier: ^8.10.1
+        version: 8.10.1(socks@2.8.3)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -1559,8 +1559,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0
       mongoose:
-        specifier: ^6.13.6
-        version: 6.13.8(@aws-sdk/client-sso-oidc@3.600.0)
+        specifier: ^8.10.1
+        version: 8.10.1(socks@2.8.3)
       next:
         specifier: ^14
         version: 14.2.22(@babel/core@7.24.6)(@opentelemetry/api@1.9.0)(@playwright/test@1.49.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(sass@1.77.6)
@@ -2465,6 +2465,9 @@ packages:
   '@codemirror/view@6.36.2':
     resolution: {integrity: sha512-DZ6ONbs8qdJK0fdN7AB82CgI6tYXf4HWk1wSVa0+9bhVznCuuvhQtX8bFBoy3dv8rZSQqUd8GvhVAcielcidrA==}
 
+  '@codemirror/view@6.36.3':
+    resolution: {integrity: sha512-N2bilM47QWC8Hnx0rMdDxO2x2ImJ1FvZWXubwKgjeoOrWwEiFrtpA7SFHcuZ+o2Ze2VzbkgbzWVj4+V18LVkeg==}
+
   '@colors/colors@1.5.0':
     resolution: {integrity: sha512-ooWCrlZP11i8GImSjTHYHLkvFDP48nS4+204nGb1RiX/WXYHmJA2III9/e2DWVabCESdW7hBAEzHRqUn9OUVvQ==}
     engines: {node: '>=0.1.90'}
@@ -3028,6 +3031,9 @@ packages:
 
   '@mongodb-js/saslprep@1.1.7':
     resolution: {integrity: sha512-dCHW/oEX0KJ4NjDULBo3JiOaK5+6axtpBbS+ao2ZInoAL9/YRQLhXzSNAFz7hP4nzLkIqsfYAK/PDE3+XHny0Q==}
+
+  '@mongodb-js/saslprep@1.2.0':
+    resolution: {integrity: sha512-+ywrb0AqkfaYuhHs6LxKWgqbh3I72EpEgESCw37o+9qPx9WTCkgDm2B+eMrwehGtHBWHFU4GXvnSCNiFhhausg==}
 
   '@napi-rs/wasm-runtime@0.2.4':
     resolution: {integrity: sha512-9zESzOO5aDByvhIAsOy9TbpZ0Ur2AJbUI7UT73kcUTS2mxAMHOBaa1st/jAymNoCtvrit99kkzT1FZuXVcgfIQ==}
@@ -4722,6 +4728,9 @@ packages:
   '@types/webidl-conversions@6.1.1':
     resolution: {integrity: sha512-XAahCdThVuCFDQLT7R7Pk/vqeObFNL3YqRyFZg+AqAP/W1/w3xHaIxuW7WszQqTbIBOPRcItYJIou3i/mppu3Q==}
 
+  '@types/webidl-conversions@7.0.3':
+    resolution: {integrity: sha512-CiJJvcRtIgzadHCYXw7dqEnMNRjhGZlYK05Mj9OyktqV8uVT8fD2BFOB7S1uwBE3Kj2Z+4UyPmFw/Ixgw/LAlA==}
+
   '@types/whatwg-url@11.0.5':
     resolution: {integrity: sha512-coYR071JRaHa+xoEvvYqvnIHaVqaYrLPbsufM9BF63HkwI5Lgmy2QR8Q5K/lYDYo5AK82wOvSOS0UsLTpTG7uQ==}
 
@@ -5504,8 +5513,8 @@ packages:
     resolution: {integrity: sha512-ix0EwukN2EpC0SRWIj/7B5+A6uQMQy6KMREI9qQqvgpkV2frH63T0UDVd1SYedL6dNCmDBYB3QtXi4ISk9YT+g==}
     engines: {node: '>=14.20.1'}
 
-  bson@6.7.0:
-    resolution: {integrity: sha512-w2IquM5mYzYZv6rs3uN2DZTOBe2a0zXLj53TGDqwF4l6Sz/XsISrisXOJihArF9+BZ6Cq/GjVht7Sjfmri7ytQ==}
+  bson@6.10.3:
+    resolution: {integrity: sha512-MTxGsqgYTwfshYWTRdmZRC+M7FnG1b4y7RO7p2k3X24Wq0yv1m77Wsj0BzlPzd/IowgESfsruQCUToa7vbOpPQ==}
     engines: {node: '>=16.20.1'}
 
   buffer-crc32@0.2.13:
@@ -6905,6 +6914,10 @@ packages:
 
   enhanced-resolve@5.18.0:
     resolution: {integrity: sha512-0/r0MySGYG8YqlayBZ6MuCfECmHFdJ5qyPh8s8wa5Hnm6SaFLSK1VYCbj+NKp090Nm1caZhD+QTnmxO7esYGyQ==}
+    engines: {node: '>=10.13.0'}
+
+  enhanced-resolve@5.18.1:
+    resolution: {integrity: sha512-ZSW3ma5GkcQBIpwZTSRAI8N71Uuwgs93IezB7mf7R60tC8ZbJideoDNKjHn2O9KIlx6rkGTTEk1xUCK2E1Y2Yg==}
     engines: {node: '>=10.13.0'}
 
   enquirer@2.4.1:
@@ -8692,8 +8705,8 @@ packages:
   jws@4.0.0:
     resolution: {integrity: sha512-KDncfTmOZoOMTFG4mBlG0qUIOlc03fmzH+ru6RgYVZhPkyiy/92Owlt/8UEN+a4TXR1FQetfIpJE8ApdvdVxTg==}
 
-  kareem@2.5.1:
-    resolution: {integrity: sha512-7jFxRVm+jD+rkq3kY0iZDJfsO2/t4BBPeEb2qKn2lR/9KhuksYk5hxzfRYWMPV8P/x2d0kHD306YyWLzjjH+uA==}
+  kareem@2.6.3:
+    resolution: {integrity: sha512-C3iHfuGUXK2u8/ipq9LfjFfXFxAZMQJJq7vLS45r3D9Y2xQ/m4S8zaR4zMLFWh9AsNPXmcFfUDhTEO8UIC/V6Q==}
     engines: {node: '>=12.0.0'}
 
   katex@0.16.21:
@@ -9468,6 +9481,9 @@ packages:
   mongodb-connection-string-url@3.0.1:
     resolution: {integrity: sha512-XqMGwRX0Lgn05TDB4PyG2h2kKO/FfWJyCzYQbIhXUxz7ETt0I/FqHjUeqj37irJ+Dl1ZtU82uYyj14u2XsZKfg==}
 
+  mongodb-connection-string-url@3.0.2:
+    resolution: {integrity: sha512-rMO7CGo/9BFwyZABcKAWL8UJwH/Kc2x0g72uhDWzG48URRax5TCIcJ7Rc3RZqffZzO/Gwff/jyKwCU9TN8gehA==}
+
   mongodb-memory-server-core@9.4.0:
     resolution: {integrity: sha512-irqdj/RPHJ2M9lgtxrvhXUbqFv/DfmUG+wvcAqtgtBJ8qVq1VGBD5rkKkLP5b3g8OoadP3OzsXTGCi1P2dDBQQ==}
     engines: {node: '>=14.20.1'}
@@ -9495,6 +9511,33 @@ packages:
       mongodb-client-encryption:
         optional: true
       snappy:
+        optional: true
+
+  mongodb@6.13.1:
+    resolution: {integrity: sha512-gdq40tX8StmhP6akMp1pPoEVv+9jTYFSrga/g23JxajPAQhH39ysZrHGzQCSd9PEOnuEQEdjIWqxO7ZSwC0w7Q==}
+    engines: {node: '>=16.20.1'}
+    peerDependencies:
+      '@aws-sdk/credential-providers': ^3.632.0
+      '@mongodb-js/zstd': ^1.1.0 || ^2.0.0
+      gcp-metadata: ^5.2.0
+      kerberos: ^2.0.1
+      mongodb-client-encryption: '>=6.0.0 <7'
+      snappy: ^7.2.2
+      socks: ^2.7.1
+    peerDependenciesMeta:
+      '@aws-sdk/credential-providers':
+        optional: true
+      '@mongodb-js/zstd':
+        optional: true
+      gcp-metadata:
+        optional: true
+      kerberos:
+        optional: true
+      mongodb-client-encryption:
+        optional: true
+      snappy:
+        optional: true
+      socks:
         optional: true
 
   mongodb@6.8.0:
@@ -9549,9 +9592,9 @@ packages:
     peerDependencies:
       mongoose: '>=5.9.15'
 
-  mongoose@6.13.8:
-    resolution: {integrity: sha512-JHKco/533CyVrqCbyQsnqMpLn8ZCiKrPDTd2mvo2W7ygIvhygWjX2wj+RPjn6upZZgw0jC6U51RD7kUsyK8NBg==}
-    engines: {node: '>=12.0.0'}
+  mongoose@8.10.1:
+    resolution: {integrity: sha512-5beTeBZnJNndRXU9rxPol0JmTWZMAtgkPbooROkGilswvrZALDERY4cJrGZmgGwDS9dl0mxiB7si+Mv9Yms2fg==}
+    engines: {node: '>=16.20.1'}
 
   morgan@1.10.0:
     resolution: {integrity: sha512-AbegBVI4sh6El+1gNwvD5YIck7nSA36weD7xvIxG4in80j/UoK8AEGaWnnz8v1GxonMCltmlNs5ZKbGvl9b1XQ==}
@@ -9565,9 +9608,9 @@ packages:
     resolution: {integrity: sha512-ikJRQTk8hw5DEoFVxHG1Gn9T/xcjtdnOKIU1JTmGjZZlg9LST2mBLmcX3/ICIbgJydT2GOc15RnNy5mHmzfSew==}
     engines: {node: '>=4.0.0'}
 
-  mquery@4.0.3:
-    resolution: {integrity: sha512-J5heI+P08I6VJ2Ky3+33IpCdAvlYGTSUjwTPxkAr8i8EoduPMBX2OY/wa3IKZIQl7MU4SbFk8ndgSKyB/cl1zA==}
-    engines: {node: '>=12.0.0'}
+  mquery@5.0.0:
+    resolution: {integrity: sha512-iQMncpmEK8R8ncT8HJGsGc9Dsp8xcgYMVSbs5jgnm1lFHTZqMJTUWTDx1LBO8+mK3tPNZWFLBghQEIOULSTHZg==}
+    engines: {node: '>=14.0.0'}
 
   mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
@@ -11247,8 +11290,8 @@ packages:
     resolution: {integrity: sha512-fDW/EZ6Q9RiO8eFG8Hj+7u/oW+XrPTIChwCOM2+th2A6OblDtYYIpve9m+KvI9Z4C9qSEXlaGR6bTEYHReuglA==}
     engines: {node: '>= 0.4'}
 
-  sift@16.0.1:
-    resolution: {integrity: sha512-Wv6BjQ5zbhW7VFefWusVP33T/EM0vYikCaQ2qR8yULbsilAT8/wQaXvuQ3ptGLpoKx+lihJE3y2UTgKDyyNHZQ==}
+  sift@17.1.3:
+    resolution: {integrity: sha512-Rtlj66/b0ICeFzYTuNvX/EF1igRbbnGSvEyT79McoZa/DeGhMyC5pWKOEsZKnpkqtSeovd5FL/bjHWC3CIIvCQ==}
 
   siginfo@2.0.0:
     resolution: {integrity: sha512-ybx0WO1/8bSBLEWXZvEd7gMW3Sn3JFlW3TvX1nREbDLRNQNaeNN8WK0meBwPdAaOI7TtRRRJn/Es1zhrrCHu7g==}
@@ -11789,8 +11832,8 @@ packages:
       uglify-js:
         optional: true
 
-  terser@5.37.0:
-    resolution: {integrity: sha512-B8wRRkmre4ERucLM/uXx4MOV5cbnOlVAqUst+1+iLKPI0dOgFO28f84ptoQt9HEI537PMzfYa/d+GEPKTRXmYA==}
+  terser@5.39.0:
+    resolution: {integrity: sha512-LBAhFyLho16harJoWMg/nZsQYgTrg5jXOn2nCYjRUcZZEdE3qa2zb8QEDRUGVZBW4rlazf2fxkg8tztybTaqWw==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -11911,6 +11954,10 @@ packages:
   tr46@4.1.1:
     resolution: {integrity: sha512-2lv/66T7e5yNyhAAC4NaKe5nVavzuGJQVVtRYLyQ2OI8tsJ61PMLlelehb0wi2Hx6+hT/OJUWZcw8MjlSRnxvw==}
     engines: {node: '>=14'}
+
+  tr46@5.0.0:
+    resolution: {integrity: sha512-tk2G5R2KRwBd+ZN0zaEXpmzdKyOYksXwywulIX95MBODjSzMIuQnQ3m8JxgbhnL1LeVo7lqQKsYa1O3Htl7K5g==}
+    engines: {node: '>=18'}
 
   traverse@0.3.9:
     resolution: {integrity: sha512-iawgk0hLP3SxGKDfnDJf8wTz4p2qImnyihM5Hh/sGvQ3K37dPi/w8sRhdNIxYA1TwFwc5mDhIJq+O0RsvXBKdQ==}
@@ -12632,6 +12679,10 @@ packages:
   whatwg-url@13.0.0:
     resolution: {integrity: sha512-9WWbymnqj57+XEuqADHrCJ2eSXzn8WXIW/YSGaZtb2WKAInQ6CHfaUUcTyyver0p8BDg5StLQq8h1vtZuwmOig==}
     engines: {node: '>=16'}
+
+  whatwg-url@14.1.1:
+    resolution: {integrity: sha512-mDGf9diDad/giZ/Sm9Xi2YcyzaFpbdLpJPr+E9fSkyQ7KpQD4SdFcugkRQYzhmfI4KeV4Qpnn2sKPdo+kmsgRQ==}
+    engines: {node: '>=18'}
 
   whatwg-url@5.0.0:
     resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
@@ -14672,10 +14723,16 @@ snapshots:
     dependencies:
       '@codemirror/language': 6.10.8
       '@codemirror/state': 6.5.2
-      '@codemirror/view': 6.36.2
+      '@codemirror/view': 6.36.3
       '@lezer/highlight': 1.2.1
 
   '@codemirror/view@6.36.2':
+    dependencies:
+      '@codemirror/state': 6.5.2
+      style-mod: 4.1.2
+      w3c-keyname: 2.2.8
+
+  '@codemirror/view@6.36.3':
     dependencies:
       '@codemirror/state': 6.5.2
       style-mod: 4.1.2
@@ -15334,15 +15391,15 @@ snapshots:
       rc: 1.2.8
       semver: 7.6.3
 
-  '@lykmapipo/mongoose-common@0.35.0(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0))':
+  '@lykmapipo/mongoose-common@0.35.0(mongoose@8.10.1(socks@2.8.3))':
     dependencies:
       '@lykmapipo/common': 0.34.3
       '@lykmapipo/env': 0.17.8
       async: 3.2.4
       lodash: 4.17.21
-      mongoose: 6.13.8(@aws-sdk/client-sso-oidc@3.600.0)
-      mongoose-schema-jsonschema: 2.0.1(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0))
-      mongoose-valid8: 1.6.18(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0))
+      mongoose: 8.10.1(socks@2.8.3)
+      mongoose-schema-jsonschema: 2.0.1(mongoose@8.10.1(socks@2.8.3))
+      mongoose-valid8: 1.6.18(mongoose@8.10.1(socks@2.8.3))
 
   '@lykmapipo/phone@0.6.5':
     dependencies:
@@ -15434,6 +15491,10 @@ snapshots:
   '@microsoft/tsdoc@0.14.2': {}
 
   '@mongodb-js/saslprep@1.1.7':
+    dependencies:
+      sparse-bitfield: 3.0.3
+
+  '@mongodb-js/saslprep@1.2.0':
     dependencies:
       sparse-bitfield: 3.0.3
 
@@ -17689,9 +17750,11 @@ snapshots:
 
   '@types/webidl-conversions@6.1.1': {}
 
+  '@types/webidl-conversions@7.0.3': {}
+
   '@types/whatwg-url@11.0.5':
     dependencies:
-      '@types/webidl-conversions': 6.1.1
+      '@types/webidl-conversions': 7.0.3
 
   '@types/whatwg-url@8.2.1':
     dependencies:
@@ -17918,14 +17981,14 @@ snapshots:
 
   '@unts/get-tsconfig@4.1.1': {}
 
-  '@vitejs/plugin-react@4.3.1(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0))':
+  '@vitejs/plugin-react@4.3.1(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0))':
     dependencies:
       '@babel/core': 7.24.6
       '@babel/plugin-transform-react-jsx-self': 7.24.6(@babel/core@7.24.6)
       '@babel/plugin-transform-react-jsx-source': 7.24.6(@babel/core@7.24.6)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)
+      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -17943,7 +18006,7 @@ snapshots:
       std-env: 3.7.0
       test-exclude: 7.0.1
       tinyrainbow: 1.2.0
-      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.37.0)
+      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.39.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -17954,13 +18017,13 @@ snapshots:
       chai: 5.1.1
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.1(@vitest/spy@2.1.1)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0))':
+  '@vitest/mocker@2.1.1(@vitest/spy@2.1.1)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0))':
     dependencies:
       '@vitest/spy': 2.1.1
       estree-walker: 3.0.3
       magic-string: 0.30.11
     optionalDependencies:
-      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)
+      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)
 
   '@vitest/pretty-format@2.1.1':
     dependencies:
@@ -17990,7 +18053,7 @@ snapshots:
       sirv: 2.0.4
       tinyglobby: 0.2.6
       tinyrainbow: 1.2.0
-      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.37.0)
+      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.39.0)
 
   '@vitest/utils@2.1.1':
     dependencies:
@@ -18788,7 +18851,7 @@ snapshots:
 
   bson@5.5.1: {}
 
-  bson@6.7.0: {}
+  bson@6.10.3: {}
 
   buffer-crc32@0.2.13: {}
 
@@ -20100,6 +20163,11 @@ snapshots:
       - utf-8-validate
 
   enhanced-resolve@5.18.0:
+    dependencies:
+      graceful-fs: 4.2.11
+      tapable: 2.2.1
+
+  enhanced-resolve@5.18.1:
     dependencies:
       graceful-fs: 4.2.11
       tapable: 2.2.1
@@ -22462,7 +22530,7 @@ snapshots:
       jwa: 2.0.0
       safe-buffer: 5.2.1
 
-  kareem@2.5.1: {}
+  kareem@2.6.3: {}
 
   katex@0.16.21:
     dependencies:
@@ -23544,7 +23612,12 @@ snapshots:
       '@types/whatwg-url': 11.0.5
       whatwg-url: 13.0.0
 
-  mongodb-memory-server-core@9.4.0(@aws-sdk/credential-providers@3.600.0(@aws-sdk/client-sso-oidc@3.600.0)):
+  mongodb-connection-string-url@3.0.2:
+    dependencies:
+      '@types/whatwg-url': 11.0.5
+      whatwg-url: 14.1.1
+
+  mongodb-memory-server-core@9.4.0:
     dependencies:
       async-mutex: 0.4.1
       camelcase: 6.3.0
@@ -23552,7 +23625,7 @@ snapshots:
       find-cache-dir: 3.3.2
       follow-redirects: 1.15.9(debug@4.4.0)
       https-proxy-agent: 7.0.5
-      mongodb: 5.9.2(@aws-sdk/credential-providers@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))
+      mongodb: 5.9.2
       new-find-package-json: 2.0.0
       semver: 7.6.3
       tar-stream: 3.1.7
@@ -23578,64 +23651,75 @@ snapshots:
       - '@aws-sdk/client-sso-oidc'
       - aws-crt
 
-  mongodb@5.9.2(@aws-sdk/credential-providers@3.600.0(@aws-sdk/client-sso-oidc@3.600.0)):
+  mongodb@5.9.2:
     dependencies:
       bson: 5.5.1
       mongodb-connection-string-url: 2.6.0
       socks: 2.8.3
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
       '@mongodb-js/saslprep': 1.1.7
 
-  mongodb@6.8.0(@aws-sdk/credential-providers@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))(socks@2.8.3):
+  mongodb@6.13.1(socks@2.8.3):
     dependencies:
-      '@mongodb-js/saslprep': 1.1.7
-      bson: 6.7.0
-      mongodb-connection-string-url: 3.0.1
+      '@mongodb-js/saslprep': 1.2.0
+      bson: 6.10.3
+      mongodb-connection-string-url: 3.0.2
     optionalDependencies:
-      '@aws-sdk/credential-providers': 3.600.0(@aws-sdk/client-sso-oidc@3.600.0)
       socks: 2.8.3
 
-  mongoose-gridfs@1.2.42(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0)):
+  mongodb@6.8.0(socks@2.8.3):
     dependencies:
-      '@lykmapipo/mongoose-common': 0.35.0(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0))
+      '@mongodb-js/saslprep': 1.1.7
+      bson: 6.10.3
+      mongodb-connection-string-url: 3.0.1
+    optionalDependencies:
+      socks: 2.8.3
+
+  mongoose-gridfs@1.2.42(mongoose@8.10.1(socks@2.8.3)):
+    dependencies:
+      '@lykmapipo/mongoose-common': 0.35.0(mongoose@8.10.1(socks@2.8.3))
       lodash: 4.17.21
-      mongoose: 6.13.8(@aws-sdk/client-sso-oidc@3.600.0)
+      mongoose: 8.10.1(socks@2.8.3)
       stream-read: 1.1.2
 
   mongoose-paginate-v2@1.8.2: {}
 
-  mongoose-schema-jsonschema@2.0.1(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0)):
+  mongoose-schema-jsonschema@2.0.1(mongoose@8.10.1(socks@2.8.3)):
     dependencies:
-      mongoose: 6.13.8(@aws-sdk/client-sso-oidc@3.600.0)
+      mongoose: 8.10.1(socks@2.8.3)
       pluralize: 8.0.0
 
-  mongoose-unique-validator@2.0.3(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0)):
+  mongoose-unique-validator@2.0.3(mongoose@8.10.1(socks@2.8.3)):
     dependencies:
       lodash.foreach: 4.5.0
       lodash.get: 4.4.2
-      mongoose: 6.13.8(@aws-sdk/client-sso-oidc@3.600.0)
+      mongoose: 8.10.1(socks@2.8.3)
 
-  mongoose-valid8@1.6.18(mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0)):
+  mongoose-valid8@1.6.18(mongoose@8.10.1(socks@2.8.3)):
     dependencies:
       '@lykmapipo/env': 0.17.8
       '@lykmapipo/phone': 0.6.5
       lodash: 4.17.21
-      mongoose: 6.13.8(@aws-sdk/client-sso-oidc@3.600.0)
+      mongoose: 8.10.1(socks@2.8.3)
       validator: 13.12.0
 
-  mongoose@6.13.8(@aws-sdk/client-sso-oidc@3.600.0):
+  mongoose@8.10.1(socks@2.8.3):
     dependencies:
-      bson: 4.7.2
-      kareem: 2.5.1
-      mongodb: 4.17.2(@aws-sdk/client-sso-oidc@3.600.0)
+      bson: 6.10.3
+      kareem: 2.6.3
+      mongodb: 6.13.1(socks@2.8.3)
       mpath: 0.9.0
-      mquery: 4.0.3
+      mquery: 5.0.0
       ms: 2.1.3
-      sift: 16.0.1
+      sift: 17.1.3
     transitivePeerDependencies:
-      - '@aws-sdk/client-sso-oidc'
-      - aws-crt
+      - '@aws-sdk/credential-providers'
+      - '@mongodb-js/zstd'
+      - gcp-metadata
+      - kerberos
+      - mongodb-client-encryption
+      - snappy
+      - socks
       - supports-color
 
   morgan@1.10.0:
@@ -23654,7 +23738,7 @@ snapshots:
 
   mpath@0.9.0: {}
 
-  mquery@4.0.3:
+  mquery@5.0.0:
     dependencies:
       debug: 4.4.0(supports-color@5.5.0)
     transitivePeerDependencies:
@@ -25655,7 +25739,7 @@ snapshots:
       get-intrinsic: 1.2.4
       object-inspect: 1.13.1
 
-  sift@16.0.1: {}
+  sift@17.1.3: {}
 
   siginfo@2.0.0: {}
 
@@ -26330,12 +26414,12 @@ snapshots:
       jest-worker: 27.5.1
       schema-utils: 4.3.0
       serialize-javascript: 6.0.2
-      terser: 5.37.0
+      terser: 5.39.0
       webpack: 5.92.1(@swc/core@1.5.25(@swc/helpers@0.5.11))
     optionalDependencies:
       '@swc/core': 1.5.25(@swc/helpers@0.5.11)
 
-  terser@5.37.0:
+  terser@5.39.0:
     dependencies:
       '@jridgewell/source-map': 0.3.6
       acorn: 8.14.0
@@ -26450,6 +26534,10 @@ snapshots:
       punycode: 2.3.1
 
   tr46@4.1.1:
+    dependencies:
+      punycode: 2.3.1
+
+  tr46@5.0.0:
     dependencies:
       punycode: 2.3.1
 
@@ -27012,12 +27100,12 @@ snapshots:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
 
-  vite-node@2.1.1(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0):
+  vite-node@2.1.1(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0):
     dependencies:
       cac: 6.7.14
       debug: 4.4.0(supports-color@5.5.0)
       pathe: 1.1.2
-      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)
+      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -27029,7 +27117,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@3.9.1(@types/node@20.14.0)(rollup@4.22.4)(typescript@5.0.4)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)):
+  vite-plugin-dts@3.9.1(@types/node@20.14.0)(rollup@4.22.4)(typescript@5.0.4)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@20.14.0)
       '@rollup/pluginutils': 5.1.0(rollup@4.22.4)
@@ -27040,24 +27128,24 @@ snapshots:
       typescript: 5.0.4
       vue-tsc: 1.8.27(typescript@5.0.4)
     optionalDependencies:
-      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)
+      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite-tsconfig-paths@5.0.1(typescript@5.0.4)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)):
+  vite-tsconfig-paths@5.0.1(typescript@5.0.4)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)):
     dependencies:
       debug: 4.4.0(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.0.3(typescript@5.0.4)
     optionalDependencies:
-      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)
+      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0):
+  vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0):
     dependencies:
       esbuild: 0.21.5
       postcss: 8.4.47
@@ -27066,18 +27154,18 @@ snapshots:
       '@types/node': 20.14.0
       fsevents: 2.3.3
       sass: 1.77.6
-      terser: 5.37.0
+      terser: 5.39.0
 
   vitest-mock-extended@2.0.2(typescript@5.0.4)(vitest@2.1.1):
     dependencies:
       ts-essentials: 10.0.2(typescript@5.0.4)
       typescript: 5.0.4
-      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.37.0)
+      vitest: 2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.39.0)
 
-  vitest@2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.37.0):
+  vitest@2.1.1(@types/node@20.14.0)(@vitest/ui@2.1.1)(happy-dom@15.7.4)(sass@1.77.6)(terser@5.39.0):
     dependencies:
       '@vitest/expect': 2.1.1
-      '@vitest/mocker': 2.1.1(@vitest/spy@2.1.1)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0))
+      '@vitest/mocker': 2.1.1(@vitest/spy@2.1.1)(vite@5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0))
       '@vitest/pretty-format': 2.1.1
       '@vitest/runner': 2.1.1
       '@vitest/snapshot': 2.1.1
@@ -27092,8 +27180,8 @@ snapshots:
       tinyexec: 0.3.0
       tinypool: 1.0.1
       tinyrainbow: 1.2.0
-      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)
-      vite-node: 2.1.1(@types/node@20.14.0)(sass@1.77.6)(terser@5.37.0)
+      vite: 5.4.14(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)
+      vite-node: 2.1.1(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 20.14.0
@@ -27220,7 +27308,7 @@ snapshots:
       acorn-import-attributes: 1.9.5(acorn@8.14.0)
       browserslist: 4.24.4
       chrome-trace-event: 1.0.4
-      enhanced-resolve: 5.18.0
+      enhanced-resolve: 5.18.1
       es-module-lexer: 1.6.0
       eslint-scope: 5.1.1
       events: 3.3.0
@@ -27250,6 +27338,11 @@ snapshots:
   whatwg-url@13.0.0:
     dependencies:
       tr46: 4.1.1
+      webidl-conversions: 7.0.0
+
+  whatwg-url@14.1.1:
+    dependencies:
+      tr46: 5.0.0
       webidl-conversions: 7.0.0
 
   whatwg-url@5.0.0:
@@ -27403,10 +27496,10 @@ snapshots:
       lib0: 0.2.94
       yjs: 13.6.19
 
-  y-mongodb-provider@0.2.0(@aws-sdk/credential-providers@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))(socks@2.8.3)(yjs@13.6.19):
+  y-mongodb-provider@0.2.0(socks@2.8.3)(yjs@13.6.19):
     dependencies:
       lib0: 0.2.94
-      mongodb: 6.8.0(@aws-sdk/credential-providers@3.600.0(@aws-sdk/client-sso-oidc@3.600.0))(socks@2.8.3)
+      mongodb: 6.8.0(socks@2.8.3)
       yjs: 13.6.19
     transitivePeerDependencies:
       - '@aws-sdk/credential-providers'
