@@ -17,6 +17,7 @@ import { ImportMode } from '~/models/admin/import-mode';
 import type Crowi from '~/server/crowi';
 import { setupIndependentModels } from '~/server/crowi/setup-models';
 import type CollectionProgress from '~/server/models/vo/collection-progress';
+import { getGrowiVersion } from '~/utils/growi-version';
 import loggerFactory from '~/utils/logger';
 
 import CollectionProgressingStatus from '../../models/vo/collection-progressing-status';
@@ -166,7 +167,7 @@ export class ImportService {
 
     await configManager.loadConfigs();
 
-    const currentIsV5Compatible = configManager.getConfig('crowi', 'app:isV5Compatible');
+    const currentIsV5Compatible = configManager.getConfig('app:isV5Compatible');
     const isImportPagesCollection = collections.includes('pages');
     const shouldNormalizePages = currentIsV5Compatible && isImportPagesCollection;
 
@@ -463,7 +464,7 @@ export class ImportService {
    * @param {object} meta meta data from meta.json
    */
   validate(meta) {
-    if (meta.version !== this.crowi.version) {
+    if (meta.version !== getGrowiVersion()) {
       throw new Error('The version of this GROWI and the uploaded GROWI data are not the same');
     }
 
