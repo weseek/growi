@@ -68,7 +68,9 @@ export interface IOpenaiService {
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
-  getMessageData(threadId: string, lang?: Lang): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
+  getMessageData(
+    threadId: string, lang?: Lang, options?: { before?: string, after?: string, limit?: number }
+  ): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
   getVectorStoreRelation(aiAssistantId: string): Promise<VectorStoreDocument>
   getVectorStoreRelationsByPageIds(pageId: Types.ObjectId[]): Promise<VectorStoreDocument[]>;
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
@@ -153,8 +155,10 @@ class OpenaiService implements IOpenaiService {
     await ThreadRelationModel.deleteMany({ threadId: { $in: deletedThreadIds } });
   }
 
-  async getMessageData(threadId: string, lang?: Lang): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
-    const messages = await this.client.getMessages(threadId);
+  async getMessageData(
+      threadId: string, lang?: Lang, options?: { limit: number, before: string, after: string },
+  ): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
+    const messages = await this.client.getMessages(threadId, options);
 
     for await (const message of messages.data) {
       for await (const content of message.content) {

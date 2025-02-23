@@ -41,8 +41,12 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.threads.del(threadId);
   }
 
-  async getMessages(threadId: string): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
-    return this.client.beta.threads.messages.list(threadId);
+  async getMessages(threadId: string, options?: { before?: string, after?: string, limit?: number }): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
+    return this.client.beta.threads.messages.list(threadId, {
+      limit: options?.limit,
+      before: options?.before,
+      after: options?.after,
+    });
   }
 
   async createVectorStore(name: string): Promise<OpenAI.Beta.VectorStores.VectorStore> {

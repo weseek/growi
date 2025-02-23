@@ -20,6 +20,9 @@ type GetMessagesFactory = (crowi: Crowi) => RequestHandler[];
 type ReqParam = {
   threadId: string,
   aiAssistantId: string,
+  before?: string,
+  after?: string,
+  limit?: number,
 }
 
 type Req = Request<ReqParam, Response, undefined> & {
@@ -32,6 +35,9 @@ export const getMessagesFactory: GetMessagesFactory = (crowi) => {
   const validator: ValidationChain[] = [
     param('threadId').isString().withMessage('threadId must be string'),
     param('aiAssistantId').isMongoId().withMessage('aiAssistantId must be string'),
+    param('limit').optional().isInt().withMessage('limit must be integer'),
+    param('before').optional().isString().withMessage('before must be string'),
+    param('after').optional().isString().withMessage('after must be string'),
   ];
 
   return [
@@ -43,14 +49,17 @@ export const getMessagesFactory: GetMessagesFactory = (crowi) => {
       }
 
       try {
-        const { threadId, aiAssistantId } = req.params;
+        const {
+          threadId, aiAssistantId, limit, before, after,
+        } = req.params;
 
         const isAiAssistantUsable = openaiService.isAiAssistantUsable(aiAssistantId, req.user);
         if (!isAiAssistantUsable) {
           return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
         }
 
-        const messages = await openaiService.getMessageData(threadId, req.user.lang);
+        const options = { limit, before, after };
+        const messages = await openaiService.getMessageData(threadId, req.user.lang, options);
 
         return res.apiv3({ messages });
       }
