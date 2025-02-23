@@ -32,9 +32,7 @@ export interface IAttachmentDocument extends IAttachment, Document {
   cashTemporaryUrlByProvideSec: CashTemporaryUrlByProvideSec,
 }
 export interface IAttachmentModel extends Model<IAttachmentDocument> {
-  createWithoutSave: (
-    pageId, user, originalName: string, fileFormat: string, fileSize: number, attachmentType: AttachmentType,
-  ) => IAttachmentDocument;
+  createWithoutSave
 }
 
 const attachmentSchema = new Schema({
@@ -71,9 +69,7 @@ attachmentSchema.set('toObject', { virtuals: true });
 attachmentSchema.set('toJSON', { virtuals: true });
 
 
-attachmentSchema.statics.createWithoutSave = function(
-    pageId, user, originalName: string, fileFormat: string, fileSize: number, attachmentType: AttachmentType,
-) {
+attachmentSchema.statics.createWithoutSave = function(pageId, user, fileStream, originalName, fileFormat, fileSize, attachmentType) {
   // eslint-disable-next-line @typescript-eslint/no-this-alias
   const Attachment = this;
 

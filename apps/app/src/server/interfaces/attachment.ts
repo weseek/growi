@@ -2,7 +2,6 @@ export const AttachmentType = {
   BRAND_LOGO: 'BRAND_LOGO',
   WIKI_PAGE: 'WIKI_PAGE',
   PROFILE_IMAGE: 'PROFILE_IMAGE',
-  PAGE_BULK_EXPORT: 'PAGE_BULK_EXPORT',
 } as const;
 
 export type AttachmentType = typeof AttachmentType[keyof typeof AttachmentType];
@@ -30,9 +29,3 @@ export const ResponseMode = {
   DELEGATE: 'delegate',
 } as const;
 export type ResponseMode = typeof ResponseMode[keyof typeof ResponseMode];
-
-export const FilePathOnStoragePrefix = {
-  attachment: 'attachment',
-  user: 'user',
-  pageBulkExport: 'page-bulk-export',
-} as const;
