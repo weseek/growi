@@ -1235,6 +1235,12 @@ importers:
       simplebar-react:
         specifier: ^2.3.6
         version: 2.4.3(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      socket.io:
+        specifier: ^4.7.5
+        version: 4.8.1
+      socket.io-client:
+        specifier: ^4.7.5
+        version: 4.8.1
       string-width:
         specifier: '=4.2.2'
         version: 4.2.2
