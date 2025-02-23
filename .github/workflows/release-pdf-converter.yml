@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - release/pdf-converter/**
-    types: [closed]
+    types: [opened]
 
 jobs:
   build-and-push-image:
@@ -48,11 +48,6 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         tags: ${{ steps.meta.outputs.tags }}
-
-    - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Add tag
       uses: anothrNick/github-tag-action@v1
