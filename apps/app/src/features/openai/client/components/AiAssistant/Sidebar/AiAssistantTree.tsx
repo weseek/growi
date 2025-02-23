@@ -10,7 +10,7 @@ import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
 import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
-import { useSWRxThreads } from '../../../stores/thread';
+import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 
 import styles from './AiAssistantTree.module.scss';
 
@@ -22,17 +22,19 @@ const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 */
 type ThreadItemProps = {
   thread: IThreadRelationHasId
+  aiAssistantData: AiAssistantHasId;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
 };
 
-const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
+const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThreadClick }) => {
 
   const deleteThreadHandler = useCallback(() => {
     // TODO: https://redmine.weseek.co.jp/issues/161490
   }, []);
 
   const openChatHandler = useCallback(() => {
-    // TODO: https://redmine.weseek.co.jp/issues/159530
-  }, []);
+    onThreadClick(aiAssistantData, thread.threadId);
+  }, [aiAssistantData, onThreadClick, thread.threadId]);
 
   return (
     <li
@@ -66,11 +68,12 @@ const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
 *  ThreadItems
 */
 type ThreadItemsProps = {
-  aiAssistantId: string;
+  aiAssistantData: AiAssistantHasId;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
 };
 
-const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantId }) => {
-  const { data: threads } = useSWRxThreads(aiAssistantId);
+const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClick }) => {
+  const { data: threads } = useSWRxThreads(aiAssistantData._id);
 
   if (threads == null || threads.length === 0) {
     return <p className="text-secondary ms-5">スレッドが存在しません</p>;
@@ -82,6 +85,8 @@ const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantId }) => {
         <ThreadItem
           key={thread._id}
           thread={thread}
+          aiAssistantData={aiAssistantData}
+          onThreadClick={onThreadClick}
         />
       ))}
     </div>
@@ -107,32 +112,34 @@ const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAss
 type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
-  onEditClicked?: (aiAssistantData: AiAssistantHasId) => void;
-  onItemClicked?: (aiAssistantData: AiAssistantHasId) => void;
+  onEditClick: (aiAssistantData: AiAssistantHasId) => void;
+  onItemClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
   onDeleted?: () => void;
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   currentUserId,
   aiAssistant,
-  onEditClicked,
-  onItemClicked,
+  onEditClick,
+  onItemClick,
   onDeleted,
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistant._id);
+
   const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
-    onEditClicked?.(aiAssistantData);
-  }, [onEditClicked]);
+    onEditClick(aiAssistantData);
+  }, [onEditClick]);
 
   const openChatHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
-    onItemClicked?.(aiAssistantData);
-  }, [onItemClicked]);
+    onItemClick(aiAssistantData);
+  }, [onItemClick]);
 
-
-  const openThreadsHandler = useCallback(() => {
+  const openThreadsHandler = useCallback(async() => {
+    mutateThreadData();
     setIsThreadsOpened(toggle => !toggle);
-  }, []);
+  }, [mutateThreadData]);
 
   const deleteAiAssistantHandler = useCallback(async() => {
     try {
@@ -207,7 +214,10 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
       </li>
 
       { isThreadsOpened && (
-        <ThreadItems aiAssistantId={aiAssistant._id} />
+        <ThreadItems
+          aiAssistantData={aiAssistant}
+          onThreadClick={onItemClick}
+        />
       ) }
     </>
   );
@@ -234,8 +244,8 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           key={assistant._id}
           currentUserId={currentUser?._id}
           aiAssistant={assistant}
-          onEditClicked={openAiAssistantManagementModal}
-          onItemClicked={openAiAssistantChatSidebar}
+          onEditClick={openAiAssistantManagementModal}
+          onItemClick={openAiAssistantChatSidebar}
           onDeleted={onDeleted}
         />
       ))}

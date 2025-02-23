@@ -16,6 +16,7 @@ import loggerFactory from '~/utils/logger';
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import { openaiClient } from '../services/client';
 import { getStreamErrorCode } from '../services/getStreamErrorCode';
+import { getOpenaiService } from '../services/openai';
 import { replaceAnnotationWithPageLink } from '../services/replace-annotation-with-page-link';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -25,6 +26,7 @@ const logger = loggerFactory('growi:routes:apiv3:openai:message');
 
 type ReqBody = {
   userMessage: string,
+  aiAssistantId: string,
   threadId?: string,
   summaryMode?: boolean,
 }
@@ -44,17 +46,27 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       .withMessage('userMessage must be string')
       .notEmpty()
       .withMessage('userMessage must be set'),
+    body('aiAssistantId').isMongoId().withMessage('aiAssistantId must be string'),
     body('threadId').optional().isString().withMessage('threadId must be string'),
   ];
 
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
-
-      const threadId = req.body.threadId;
+      const { aiAssistantId, threadId } = req.body;
 
       if (threadId == null) {
         return res.apiv3Err(new ErrorV3('threadId is not set', MessageErrorCode.THREAD_ID_IS_NOT_SET), 400);
+      }
+
+      const openaiService = getOpenaiService();
+      if (openaiService == null) {
+        return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
+      }
+
+      const isAiAssistantUsable = await openaiService.isAiAssistantUsable(aiAssistantId, req.user);
+      if (!isAiAssistantUsable) {
+        return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
       }
 
       let stream: AssistantStream;
