@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - release/pdf-converter/**
-    types: [opened]
+    types: [opened, synchronize]
 
 jobs:
   build-and-push-image:
@@ -59,8 +59,8 @@ jobs:
     - name: Update Docker Hub Description
       uses: peter-evans/dockerhub-description@v3
       with:
-        username: wsmoogle
-        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
+        username: growimoogle
+        password: ${{ secrets.DOCKER_REGISTRY_PASSWORD_GROWIMOOGLE }}
         repository: growilabs/pdf-converter
         readme-filepath: ./apps/pdf-converter/docker/README.md
 
