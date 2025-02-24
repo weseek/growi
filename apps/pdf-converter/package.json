@@ -1,6 +1,6 @@
 {
   "name": "@growi/pdf-converter",
-  "version": "1.0.0-pdf-converter.0",
+  "version": "1.0.0-RC.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
@@ -14,8 +14,8 @@
     "lint": "pnpm eslint **/*.{js,ts}",
     "gen:swagger-spec": "SWAGGER_GENERATION=true node --import @swc-node/register/esm-register src/bin/index.ts generate-swagger --output ./specs",
     "build": "pnpm tsc -p tsconfig.build.json",
-    "version:prerelease": "pnpm version prerelease --preid=pdf-converter",
-    "version:prepatch": "pnpm version prepatch --preid=pdf-converter"
+    "version:prerelease": "pnpm version prerelease --preid=RC",
+    "version:prepatch": "pnpm version prepatch --preid=RC"
   },
   "dependencies": {
     "@godaddy/terminus": "^4.12.1",
