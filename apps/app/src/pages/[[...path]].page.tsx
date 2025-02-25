@@ -592,8 +592,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isUploadAllFileAllowed = fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = fileUploadService.getIsUploadable();
   props.isBulkExportPagesEnabled = configManager.getConfig('app:isBulkExportPagesEnabled');
-  console.log('ここ');
-  console.log(configManager.getConfig('app:pageBulkExportPdfConverterUri'));
   props.isPdfBulkExportEnabled = configManager.getConfig('app:pageBulkExportPdfConverterUri') != null;
 
   props.isLocalAccountRegistrationEnabled = passportService.isLocalStrategySetup
