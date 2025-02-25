@@ -122,7 +122,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     let currentThreadId_ = currentThreadId;
     if (currentThreadId_ == null) {
       try {
-        const res = await apiv3Post('/openai/thread', { aiAssistantId: aiAssistantData._id });
+        const res = await apiv3Post('/openai/thread', { aiAssistantId: aiAssistantData._id, initialUserMessage: newUserMessage.content });
         const thread = res.data.thread;
 
         setCurrentThreadId(thread.id);

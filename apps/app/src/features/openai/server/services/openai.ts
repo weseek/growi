@@ -63,7 +63,9 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 
 
 export interface IOpenaiService {
-  getOrCreateThread(userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string): Promise<OpenAI.Beta.Threads.Thread | undefined>;
+  getOrCreateThread(
+    userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string, initialUserMessage?: string
+  ): Promise<OpenAI.Beta.Threads.Thread | undefined>;
   getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -93,11 +95,53 @@ class OpenaiService implements IOpenaiService {
     return getClient({ openaiServiceType });
   }
 
-  public async getOrCreateThread(userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string): Promise<OpenAI.Beta.Threads.Thread> {
+  async generateThreadTitle(message: string): Promise<string | null> {
+    const systemMessage = [
+      'Create a brief title (max 5 words) from your message.',
+      'Response should only contain the title.',
+    ].join('');
+
+    const threadTitleCompletion = await this.client.chatCompletion({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: systemMessage,
+        },
+        {
+          role: 'user',
+          content: message,
+        },
+      ],
+    });
+
+    const threadTitle = threadTitleCompletion.choices[0].message.content;
+    return threadTitle;
+  }
+
+  async getOrCreateThread(
+      userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string, initialUserMessage?: string,
+  ): Promise<OpenAI.Beta.Threads.Thread> {
     if (threadId == null) {
+      let threadTitle: string | null = null;
+      if (initialUserMessage != null) {
+        try {
+          threadTitle = await this.generateThreadTitle(initialUserMessage);
+        }
+        catch (err) {
+          logger.error(err);
+        }
+      }
+
       try {
         const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
-        await ThreadRelationModel.create({ userId, threadId: thread.id, vectorStore: vectorStoreRelation._id });
+        await ThreadRelationModel.create({
+          userId,
+          threadId: thread.id,
+          vectorStore: vectorStoreRelation._id,
+          title: threadTitle,
+        });
+
         return thread;
       }
       catch (err) {
