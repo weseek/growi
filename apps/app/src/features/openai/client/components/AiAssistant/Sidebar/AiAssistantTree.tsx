@@ -47,7 +47,7 @@ const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThre
       </div>
 
       <div className="grw-ai-assistant-title-anchor ps-1">
-        <p className="text-truncate m-auto">{thread?.title ?? 'Untitled Thread'}</p>
+        <p className="text-truncate m-auto">{thread?.title ?? 'Untitled thread'}</p>
       </div>
 
       <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
