@@ -53,6 +53,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     aiAssistantData, threadData, closeAiAssistantChatSidebar,
   } = props;
 
+  const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
   const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
@@ -123,11 +124,12 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     let currentThreadId_ = currentThreadId;
     if (currentThreadId_ == null) {
       try {
-        const res = await apiv3Post('/openai/thread', { aiAssistantId: aiAssistantData._id, initialUserMessage: newUserMessage.content });
-        const thread = res.data.thread;
+        const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', { aiAssistantId: aiAssistantData._id, initialUserMessage: newUserMessage.content });
+        const thread = res.data;
 
-        setCurrentThreadId(thread.id);
-        currentThreadId_ = thread.id;
+        setCurrentThreadId(thread.threadId);
+        setCurrentThreadTitle(thread.title);
+        currentThreadId_ = thread.threadId;
 
         // No need to await because data is not used
         mutateThreadData();
@@ -222,7 +224,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [aiAssistantData._id, currentThreadId, form, growiCloudUri, isGenerating, messageLogs, mutateThreadData, t]);
+  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData._id, mutateThreadData, t, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -235,7 +237,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       <div className="d-flex flex-column vh-100">
         <div className="d-flex align-items-center p-3 border-bottom">
           <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
-          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{threadData?.title ?? aiAssistantData.name}</h5>
+          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{currentThreadTitle ?? 'Untitled thread'}</h5>
           <button
             type="button"
             className="btn btn-link p-0 border-0"
