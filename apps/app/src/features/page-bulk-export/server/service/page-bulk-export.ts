@@ -46,9 +46,9 @@ class PageBulkExportService implements IPageBulkExportService {
     }
 
     const duplicatePageBulkExportJobInProgress: HydratedDocument<PageBulkExportJobDocument> | null = await PageBulkExportJob.findOne({
-      user: currentUser,
+      user: { $eq: currentUser },
       page: basePage,
-      format,
+      format: { $eq: format },
       $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
     });
     if (duplicatePageBulkExportJobInProgress != null) {
