@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
 import { useDrawerOpened } from '~/stores/ui';
@@ -11,6 +12,7 @@ const OptionsSelector = dynamic(() => import('~/client/components/PageEditor/Opt
 
 const EditorNavbarBottom = (): JSX.Element => {
 
+  const { t } = useTranslation();
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
 
   return (
@@ -23,8 +25,17 @@ const EditorNavbarBottom = (): JSX.Element => {
         >
           <span className="material-symbols-outlined fs-2">reorder</span>
         </a>
-        <form className="me-auto">
+        <form className="me-auto d-flex gap-2">
           <OptionsSelector />
+          <button
+            type="button"
+            className="btn btn-sm btn-outline-neutral-secondary py-0"
+          >
+            <span className="d-flex align-items-center">
+              <span className="growi-custom-icons py-0 fs-6">ai_assistant</span>
+              <span className="ms-1 me-1">{t('page_edit.editor_assistant')}</span>
+            </span>
+          </button>
         </form>
         <form>
           <SavePageControls />

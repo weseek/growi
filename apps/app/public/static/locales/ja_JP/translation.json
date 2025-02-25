@@ -374,7 +374,8 @@
       "text": "テキストのみ",
       "file": "ファイルのみ"
     },
-    "editor_config": "エディタ設定",
+    "editor_config": "エディター設定",
+    "editor_assistant": "エディターアシスタント",
     "Show active line": "アクティブ行をハイライト",
     "auto_format_table": "表の自動整形",
     "overwrite_scopes": "{{operation}}と同時に全ての配下ページのスコープを上書き",
