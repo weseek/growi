@@ -20,6 +20,7 @@ const logger = loggerFactory('growi:routes:apiv3:openai:thread');
 type ReqBody = {
   aiAssistantId: string,
   threadId?: string,
+  initialUserMessage?: string,
 }
 
 type CreateThreadReq = Request<undefined, ApiV3Response, ReqBody> & { user: IUserHasId };
@@ -32,6 +33,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   const validator: ValidationChain[] = [
     body('aiAssistantId').isMongoId().withMessage('aiAssistantId must be string'),
     body('threadId').optional().isString().withMessage('threadId must be string'),
+    body('initialUserMessage').optional().isString().withMessage('initialUserMessage must be string'),
   ];
 
   return [
@@ -44,7 +46,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
       }
 
       try {
-        const { aiAssistantId, threadId } = req.body;
+        const { aiAssistantId, threadId, initialUserMessage } = req.body;
 
         const isAiAssistantUsable = await openaiService.isAiAssistantUsable(aiAssistantId, req.user);
         if (!isAiAssistantUsable) {
@@ -54,8 +56,8 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
         const filteredThreadId = threadId != null ? filterXSS(threadId) : undefined;
         const vectorStoreRelation = await openaiService.getVectorStoreRelation(aiAssistantId);
 
-        const thread = await openaiService.getOrCreateThread(req.user._id, vectorStoreRelation, filteredThreadId);
-        return res.apiv3({ thread });
+        const thread = await openaiService.getOrCreateThread(req.user._id, vectorStoreRelation, filteredThreadId, initialUserMessage);
+        return res.apiv3(thread);
       }
       catch (err) {
         logger.error(err);
