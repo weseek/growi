@@ -20,7 +20,7 @@
   "bugs": {
     "url": "https://github.com/weseek/growi/issues"
   },
-  "packageManager": "pnpm@10.3.0",
+  "packageManager": "pnpm@10.4.1",
   "scripts": {
     "bootstrap": "pnpm install",
     "start": "pnpm run app:server",
@@ -114,7 +114,6 @@
     }
   },
   "engines": {
-    "node": "^18 || ^20",
-    "pnpm": ">=10"
+    "node": "^18 || ^20"
   }
 }

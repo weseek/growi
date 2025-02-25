@@ -9,7 +9,6 @@ sudo apt-get clean -y
 # Setup pnpm
 SHELL=bash pnpm setup
 eval "$(cat /home/vscode/.bashrc)"
-source /home/vscode/.bashrc
 
 # Install turbo
 pnpm install turbo --global
