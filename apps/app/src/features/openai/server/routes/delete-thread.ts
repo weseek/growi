@@ -22,7 +22,7 @@ type DeleteThreadFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqParams = {
   aiAssistantId: string,
-  threadId: string,
+  threadRelationId: string,
 }
 
 type Req = Request<ReqParams, Response, undefined> & {
@@ -34,13 +34,13 @@ export const deleteThreadFactory: DeleteThreadFactory = (crowi) => {
 
   const validator: ValidationChain[] = [
     param('aiAssistantId').isMongoId().withMessage('threadId is required'),
-    param('threadId').isMongoId().withMessage('threadId is required'),
+    param('threadRelationId').isMongoId().withMessage('threadRelationId is required'),
   ];
 
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
-      const { aiAssistantId, threadId } = req.params;
+      const { aiAssistantId, threadRelationId } = req.params;
       const { user } = req;
 
       const openaiService = getOpenaiService();
@@ -54,7 +54,7 @@ export const deleteThreadFactory: DeleteThreadFactory = (crowi) => {
       }
 
       try {
-        const deletedThreadRelation = await openaiService.deleteThread(threadId);
+        const deletedThreadRelation = await openaiService.deleteThread(threadRelationId);
         return res.apiv3({ deletedThreadRelation });
       }
       catch (err) {
