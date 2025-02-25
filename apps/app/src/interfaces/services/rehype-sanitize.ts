@@ -15,3 +15,10 @@ export type RehypeSanitizeConfiguration = {
   customTagWhitelist?: Array<string> | null,
   customAttrWhitelist?: Attributes | null,
 }
+
+export const defaultRehypeSanitizeConfig: RehypeSanitizeConfiguration = {
+  isEnabledXssPrevention: true,
+  sanitizeType: 'Recommended',
+  customTagWhitelist: null,
+  customAttrWhitelist: null,
+};

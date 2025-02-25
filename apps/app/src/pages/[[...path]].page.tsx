@@ -235,7 +235,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useDefaultIndentSize(props.adminPreferredIndentSize);
   useIsIndentSizeForced(props.isIndentSizeForced);
   useDisableLinkSharing(props.disableLinkSharing);
-  useRendererConfig(props.rendererConfig);
+  // useRendererConfig(props.rendererConfig);
   useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
@@ -382,7 +382,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     </>
   );
 };
-
 
 const BasicLayoutWithEditor = ({ children }: { children?: ReactNode }): JSX.Element => {
   const editorModeClassName = useEditorModeClassName();

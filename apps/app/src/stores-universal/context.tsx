@@ -3,11 +3,13 @@ import type EventEmitter from 'events';
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
+import { defaultSchema } from 'hast-util-sanitize';
 import type { SWRResponse } from 'swr';
 import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import type { SupportedActionType } from '~/interfaces/activity';
+import type { RehypeSanitizeConfiguration } from '~/interfaces/services/rehype-sanitize';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 
 import { useContextSWR } from './use-context-swr';
@@ -140,8 +142,33 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
   return useContextSWR('isEnabledStaleNotification', initialData);
 };
 
+export const defaultRehypeSanitizeConfig: RehypeSanitizeConfiguration = {
+  isEnabledXssPrevention: true,
+  sanitizeType: 'Recommended',
+  customTagWhitelist: null,
+  customAttrWhitelist: null,
+};
+
+export const defaultRendererConfig: RendererConfig = {
+  isSharedPage: false,
+  isEnabledLinebreaks: false,
+  isEnabledLinebreaksInComments: true,
+  adminPreferredIndentSize: 4,
+  isIndentSizeForced: false,
+  highlightJsStyleBorder: false,
+  isEnabledMarp: false,
+
+  drawioUri: 'https://embed.diagrams.net/',
+  plantumlUri: 'https://www.plantuml.com/plantuml',
+
+  ...defaultRehypeSanitizeConfig,
+};
+
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
-  return useContextSWR('growiRendererConfig', initialData);
+  if (!initialData) {
+    console.log('RndererConfig is `undefined`. Use default value');
+  }
+  return useContextSWR('growiRendererConfig', { ...defaultRendererConfig, ...initialData });
 };
 
 export const useIsAllReplyShown = (initialData?: boolean): SWRResponse<boolean, Error> => {
