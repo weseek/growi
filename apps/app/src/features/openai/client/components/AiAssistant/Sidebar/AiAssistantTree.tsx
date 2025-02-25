@@ -37,7 +37,7 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
 
   const deleteThreadHandler = useCallback(async() => {
     try {
-      await deleteThread(aiAssistantData._id, threadData._id);
+      await deleteThread({ aiAssistantId: aiAssistantData._id, threadRelationId: threadData._id });
       toastSuccess('スレッドを削除しました');
       onThreadDelete();
     }

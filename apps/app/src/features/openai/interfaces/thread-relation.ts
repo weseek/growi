@@ -11,3 +11,8 @@ export interface IThreadRelation {
 }
 
 export type IThreadRelationHasId = IThreadRelation & HasObjectId;
+
+export type IApiv3DeleteThreadParams = {
+  aiAssistantId: string
+  threadRelationId: string;
+}
