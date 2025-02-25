@@ -324,7 +324,7 @@ export const CONFIG_KEYS = [
   'app:checkPageBulkExportJobInProgressCronSchedule',
   'app:pageBulkExportJobCleanUpCronSchedule',
   'app:pageBulkExportParallelExecLimit',
-  'app:pageBulkExportPdfConverterUrl',
+  'app:pageBulkExportPdfConverterUri',
   'app:isBulkExportPagesEnabled',
   'env:useOnlyEnvVars:app:isBulkExportPagesEnabled',
 
@@ -1315,9 +1315,9 @@ Guideline as a RAG:
     envVarName: 'BULK_EXPORT_PARALLEL_EXEC_LIMIT',
     defaultValue: 5,
   }),
-  'app:pageBulkExportPdfConverterUrl': defineConfig<string>({
-    envVarName: 'BULK_EXPORT_PDF_CONVERTER_URL',
-    defaultValue: 'http://pdf-converter:3010',
+  'app:pageBulkExportPdfConverterUri': defineConfig<string | undefined>({
+    envVarName: 'BULK_EXPORT_PDF_CONVERTER_URI',
+    defaultValue: undefined,
   }),
   'app:isBulkExportPagesEnabled': defineConfig<boolean>({
     envVarName: 'BULK_EXPORT_PAGES_ENABLED',

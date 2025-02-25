@@ -47,6 +47,7 @@ import {
   useIsLocalAccountRegistrationEnabled,
   useIsRomUserAllowedToComment,
   useIsAiEnabled,
+  useIsPdfBulkExportEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -181,6 +182,7 @@ type Props = CommonProps & {
   isUploadEnabled: boolean,
   isUploadAllFileAllowed: boolean,
   isBulkExportPagesEnabled: boolean,
+  isPdfBulkExportEnabled: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
@@ -245,6 +247,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
   useIsBulkExportPagesEnabled(props.isBulkExportPagesEnabled);
+  useIsPdfBulkExportEnabled(props.isPdfBulkExportEnabled);
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
   useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
@@ -589,6 +592,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isUploadAllFileAllowed = fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = fileUploadService.getIsUploadable();
   props.isBulkExportPagesEnabled = configManager.getConfig('app:isBulkExportPagesEnabled');
+  console.log('ここ');
+  console.log(configManager.getConfig('app:pageBulkExportPdfConverterUri'));
+  props.isPdfBulkExportEnabled = configManager.getConfig('app:pageBulkExportPdfConverterUri') != null;
 
   props.isLocalAccountRegistrationEnabled = passportService.isLocalStrategySetup
   && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;
