@@ -77,4 +77,8 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.vectorStores.fileBatches.uploadAndPoll(vectorStoreId, { files });
   }
 
+  async chatCompletion(body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+    return this.client.chat.completions.create(body);
+  }
+
 }

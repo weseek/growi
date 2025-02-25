@@ -35,6 +35,9 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
     required: true,
     unique: true,
   },
+  title: {
+    type: String,
+  },
   expiredAt: {
     type: Date,
     default: generateExpirationDate,

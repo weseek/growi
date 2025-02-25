@@ -11,6 +11,7 @@ import SimpleBar from 'simplebar-react';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { MessageErrorCode, StreamErrorCode } from '~/features/openai/interfaces/message-error';
+import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
 import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
@@ -43,16 +44,17 @@ type FormData = {
 
 type AiAssistantChatSidebarSubstanceProps = {
   aiAssistantData: AiAssistantHasId;
-  threadId?: string;
+  threadData?: IThreadRelationHasId;
   closeAiAssistantChatSidebar: () => void
 }
 
 const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
   const {
-    threadId, aiAssistantData, closeAiAssistantChatSidebar,
+    aiAssistantData, threadData, closeAiAssistantChatSidebar,
   } = props;
 
-  const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadId);
+  const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
+  const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
@@ -61,7 +63,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData._id);
-  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData._id, threadId);
+  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData._id, threadData?.threadId);
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -87,10 +89,10 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       }
     };
 
-    if (threadId != null) {
+    if (threadData != null) {
       getMessageData();
     }
-  }, [mutateMessageData, threadId]);
+  }, [mutateMessageData, threadData]);
 
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
@@ -122,11 +124,12 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     let currentThreadId_ = currentThreadId;
     if (currentThreadId_ == null) {
       try {
-        const res = await apiv3Post('/openai/thread', { aiAssistantId: aiAssistantData._id });
-        const thread = res.data.thread;
+        const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', { aiAssistantId: aiAssistantData._id, initialUserMessage: newUserMessage.content });
+        const thread = res.data;
 
-        setCurrentThreadId(thread.id);
-        currentThreadId_ = thread.id;
+        setCurrentThreadId(thread.threadId);
+        setCurrentThreadTitle(thread.title);
+        currentThreadId_ = thread.threadId;
 
         // No need to await because data is not used
         mutateThreadData();
@@ -221,7 +224,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [aiAssistantData._id, currentThreadId, form, growiCloudUri, isGenerating, messageLogs, mutateThreadData, t]);
+  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData._id, mutateThreadData, t, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -234,7 +237,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       <div className="d-flex flex-column vh-100">
         <div className="d-flex align-items-center p-3 border-bottom">
           <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
-          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{aiAssistantData.name}</h5>
+          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{currentThreadTitle ?? aiAssistantData.name}</h5>
           <button
             type="button"
             className="btn btn-link p-0 border-0"
@@ -404,7 +407,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   const { data: aiAssistantChatSidebarData, close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
 
   const aiAssistantData = aiAssistantChatSidebarData?.aiAssistantData;
-  const threadId = aiAssistantChatSidebarData?.threadId;
+  const threadData = aiAssistantChatSidebarData?.threadData;
   const isOpened = aiAssistantChatSidebarData?.isOpened && aiAssistantData != null;
 
   useEffect(() => {
@@ -437,7 +440,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
         autoHide
       >
         <AiAssistantChatSidebarSubstance
-          threadId={threadId}
+          threadData={threadData}
           aiAssistantData={aiAssistantData}
           closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
         />
