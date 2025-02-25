@@ -96,13 +96,14 @@ class OpenaiService implements IOpenaiService {
   }
 
   async generateThreadTitle(message: string): Promise<string | null> {
+    const model = configManager.getConfig('openai:assistantModel:chat');
     const systemMessage = [
       'Create a brief title (max 5 words) from your message.',
       'Response should only contain the title.',
     ].join('');
 
     const threadTitleCompletion = await this.client.chatCompletion({
-      model: 'gpt-4o-mini',
+      model,
       messages: [
         {
           role: 'system',
