@@ -32,9 +32,9 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
   thread, aiAssistantData, onThreadClick, onThreadDelete,
 }) => {
 
-  const deleteThreadHandler = useCallback(() => {
+  const deleteThreadHandler = useCallback(async() => {
     try {
-      deleteThread(aiAssistantData._id, thread._id);
+      await deleteThread(aiAssistantData._id, thread._id);
       toastSuccess('スレッドを削除しました');
       onThreadDelete();
     }
@@ -51,7 +51,10 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
     <li
       role="button"
       className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1 ps-5"
-      onClick={openChatHandler}
+      onClick={(e) => {
+        e.stopPropagation();
+        openChatHandler();
+      }}
     >
       <div>
         <span className="material-symbols-outlined fs-5">chat</span>
@@ -65,7 +68,10 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
         <button
           type="button"
           className="btn btn-link text-secondary p-0"
-          onClick={deleteThreadHandler}
+          onClick={(e) => {
+            e.stopPropagation();
+            deleteThreadHandler();
+          }}
         >
           <span className="material-symbols-outlined fs-5">delete</span>
         </button>
