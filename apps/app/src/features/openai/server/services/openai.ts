@@ -2,11 +2,11 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import type { IUser, Ref } from '@growi/core';
+import type { IUser, Ref, Lang } from '@growi/core';
 import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
-import { deepEquals, pathUtils } from '@growi/core/dist/utils';
+import { deepEquals } from '@growi/core/dist/utils';
 import { isGlobPatternPath } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import createError from 'http-errors';
@@ -36,6 +36,7 @@ import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 import { getClient } from './client-delegator';
 // import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
 import { openaiApiErrorHandler } from './openai-api-error-handler';
+import { replaceAnnotationWithPageLink } from './replace-annotation-with-page-link';
 
 const { isDeepEquals } = deepEquals;
 
@@ -66,6 +67,9 @@ export interface IOpenaiService {
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
+  getMessageData(
+    threadId: string, lang?: Lang, options?: { before?: string, after?: string, limit?: number }
+  ): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
   getVectorStoreRelation(aiAssistantId: string): Promise<VectorStoreDocument>
   getVectorStoreRelationsByPageIds(pageId: Types.ObjectId[]): Promise<VectorStoreDocument[]>;
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
@@ -149,6 +153,22 @@ class OpenaiService implements IOpenaiService {
     }
 
     await ThreadRelationModel.deleteMany({ threadId: { $in: deletedThreadIds } });
+  }
+
+  async getMessageData(
+      threadId: string, lang?: Lang, options?: { limit: number, before: string, after: string },
+  ): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
+    const messages = await this.client.getMessages(threadId, options);
+
+    for await (const message of messages.data) {
+      for await (const content of message.content) {
+        if (content.type === 'text') {
+          await replaceAnnotationWithPageLink(content, lang);
+        }
+      }
+    }
+
+    return messages;
   }
 
   // TODO: https://redmine.weseek.co.jp/issues/160332

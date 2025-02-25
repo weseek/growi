@@ -16,6 +16,8 @@ import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
+import { useSWRMUTxMessages } from '../../../stores/message';
+import { useSWRMUTxThreads } from '../../../stores/thread';
 
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -39,16 +41,27 @@ type FormData = {
   summaryMode?: boolean;
 };
 
-
 type AiAssistantChatSidebarSubstanceProps = {
-  aiAssistantData?: AiAssistantHasId;
+  aiAssistantData: AiAssistantHasId;
+  threadId?: string;
   closeAiAssistantChatSidebar: () => void
 }
 
 const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
-  const { t } = useTranslation();
+  const {
+    threadId, aiAssistantData, closeAiAssistantChatSidebar,
+  } = props;
 
-  const { aiAssistantData, closeAiAssistantChatSidebar } = props;
+  const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadId);
+  const [messageLogs, setMessageLogs] = useState<Message[]>([]);
+  const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
+  const [errorMessage, setErrorMessage] = useState<string | undefined>();
+  const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
+
+  const { t } = useTranslation();
+  const { data: growiCloudUri } = useGrowiCloudUri();
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData._id);
+  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData._id, threadId);
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -57,16 +70,29 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     },
   });
 
-  const [threadId, setThreadId] = useState<string | undefined>();
-  const [messageLogs, setMessageLogs] = useState<Message[]>([]);
-  const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
-  const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
+  useEffect(() => {
+    const getMessageData = async() => {
+      const messageData = await mutateMessageData();
+      if (messageData != null) {
+        const reversedMessageData = messageData.data.slice().reverse();
+        setMessageLogs(() => {
+          return reversedMessageData.map((message, index) => (
+            {
+              id: index.toString(),
+              content: message.content[0].type === 'text' ? message.content[0].text.value : '',
+              isUserMessage: message.role === 'user',
+            }
+          ));
+        });
+      }
+    };
 
-  const { data: growiCloudUri } = useGrowiCloudUri();
+    if (threadId != null) {
+      getMessageData();
+    }
+  }, [mutateMessageData, threadId]);
 
   const isGenerating = generatingAnswerMessage != null;
-
   const submit = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
     if (isGenerating) {
@@ -93,15 +119,17 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     setGeneratingAnswerMessage(newAnswerMessage);
 
     // create thread
-    let currentThreadId = threadId;
-    const aiAssistantId = aiAssistantData?._id;
-    if (threadId == null && aiAssistantId) {
+    let currentThreadId_ = currentThreadId;
+    if (currentThreadId_ == null) {
       try {
-        const res = await apiv3Post('/openai/thread', { aiAssistantId });
+        const res = await apiv3Post('/openai/thread', { aiAssistantId: aiAssistantData._id });
         const thread = res.data.thread;
 
-        setThreadId(thread.id);
-        currentThreadId = thread.id;
+        setCurrentThreadId(thread.id);
+        currentThreadId_ = thread.id;
+
+        // No need to await because data is not used
+        mutateThreadData();
       }
       catch (err) {
         logger.error(err.toString());
@@ -114,7 +142,9 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       const response = await fetch('/_api/v3/openai/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userMessage: data.input, threadId: currentThreadId, summaryMode: data.summaryMode }),
+        body: JSON.stringify({
+          userMessage: data.input, threadId: currentThreadId_, summaryMode: data.summaryMode, aiAssistantId: aiAssistantData._id,
+        }),
       });
 
       if (!response.ok) {
@@ -191,7 +221,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [form, growiCloudUri, isGenerating, messageLogs, t, threadId]);
+  }, [aiAssistantData._id, currentThreadId, form, growiCloudUri, isGenerating, messageLogs, mutateThreadData, t]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -199,13 +229,12 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     }
   };
 
-
   return (
     <>
       <div className="d-flex flex-column vh-100">
         <div className="d-flex align-items-center p-3 border-bottom">
           <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
-          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{aiAssistantData?.name}</h5>
+          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{aiAssistantData.name}</h5>
           <button
             type="button"
             className="btn btn-link p-0 border-0"
@@ -217,7 +246,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
         <div className="p-4 d-flex flex-column gap-4 vh-100">
 
 
-          { threadId != null
+          { currentThreadId != null
             ? (
               <div className="vstack gap-4 pb-2">
                 { messageLogs.map(message => (
@@ -238,7 +267,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
             : (
               <>
                 <p className="fs-6 text-secondary mb-0">
-                  {aiAssistantData?.description}
+                  {aiAssistantData.description}
                 </p>
 
                 <div>
@@ -246,7 +275,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                   <div className="card bg-light border-0">
                     <div className="card-body p-3">
                       <p className="fs-6 text-secondary mb-0">
-                        {aiAssistantData?.additionalInstruction}
+                        {aiAssistantData.additionalInstruction}
                       </p>
                     </div>
                   </div>
@@ -257,7 +286,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                     <p className="text-secondary mb-0">参照するページ</p>
                   </div>
                   <div className="d-flex flex-column gap-1">
-                    { aiAssistantData?.pagePathPatterns.map(pagePathPattern => (
+                    { aiAssistantData.pagePathPatterns.map(pagePathPattern => (
                       <a
                         key={pagePathPattern}
                         href="#"
@@ -373,7 +402,10 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
   const { data: aiAssistantChatSidebarData, close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
-  const isOpened = aiAssistantChatSidebarData?.isOpened ?? false;
+
+  const aiAssistantData = aiAssistantChatSidebarData?.aiAssistantData;
+  const threadId = aiAssistantChatSidebarData?.threadId;
+  const isOpened = aiAssistantChatSidebarData?.isOpened && aiAssistantData != null;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -388,27 +420,28 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
     };
   }, [closeAiAssistantChatSidebar, isOpened]);
 
+  if (!isOpened) {
+    return <></>;
+  }
+
   return (
-    <>
-      {isOpened && (
-        <div
-          ref={sidebarRef}
-          className={`position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm ${moduleClass}`}
-          style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
-          data-testid="grw-right-sidebar"
-        >
-          <SimpleBar
-            scrollableNodeProps={{ ref: sidebarScrollerRef }}
-            className="h-100 position-relative"
-            autoHide
-          >
-            <AiAssistantChatSidebarSubstance
-              aiAssistantData={aiAssistantChatSidebarData?.aiAssistantData}
-              closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
-            />
-          </SimpleBar>
-        </div>
-      )}
-    </>
+    <div
+      ref={sidebarRef}
+      className={`position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm ${moduleClass}`}
+      style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
+      data-testid="grw-right-sidebar"
+    >
+      <SimpleBar
+        scrollableNodeProps={{ ref: sidebarScrollerRef }}
+        className="h-100 position-relative"
+        autoHide
+      >
+        <AiAssistantChatSidebarSubstance
+          threadId={threadId}
+          aiAssistantData={aiAssistantData}
+          closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
+        />
+      </SimpleBar>
+    </div>
   );
 });
