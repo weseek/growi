@@ -23,7 +23,7 @@ const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 type ThreadItemProps = {
   thread: IThreadRelationHasId
   aiAssistantData: AiAssistantHasId;
-  onThreadClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
 };
 
 const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThreadClick }) => {
@@ -33,8 +33,8 @@ const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThre
   }, []);
 
   const openChatHandler = useCallback(() => {
-    onThreadClick(aiAssistantData, thread.threadId);
-  }, [aiAssistantData, onThreadClick, thread.threadId]);
+    onThreadClick(aiAssistantData, thread);
+  }, [aiAssistantData, onThreadClick, thread]);
 
   return (
     <li
@@ -69,7 +69,7 @@ const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThre
 */
 type ThreadItemsProps = {
   aiAssistantData: AiAssistantHasId;
-  onThreadClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
 };
 
 const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClick }) => {
@@ -113,7 +113,7 @@ type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
   onEditClick: (aiAssistantData: AiAssistantHasId) => void;
-  onItemClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
+  onItemClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
   onDeleted?: () => void;
 };
 
