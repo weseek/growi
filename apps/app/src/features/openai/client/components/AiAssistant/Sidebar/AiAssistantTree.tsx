@@ -22,30 +22,30 @@ const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 *  ThreadItem
 */
 type ThreadItemProps = {
-  thread: IThreadRelationHasId
+  threadData: IThreadRelationHasId
   aiAssistantData: AiAssistantHasId;
   onThreadClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
   onThreadDelete: () => void;
 };
 
 const ThreadItem: React.FC<ThreadItemProps> = ({
-  thread, aiAssistantData, onThreadClick, onThreadDelete,
+  threadData, aiAssistantData, onThreadClick, onThreadDelete,
 }) => {
 
   const deleteThreadHandler = useCallback(async() => {
     try {
-      await deleteThread(aiAssistantData._id, thread._id);
+      await deleteThread(aiAssistantData._id, threadData._id);
       toastSuccess('スレッドを削除しました');
       onThreadDelete();
     }
     catch (err) {
       toastError('スレッドの削除に失敗しました');
     }
-  }, [aiAssistantData._id, onThreadDelete, thread._id]);
+  }, [aiAssistantData._id, onThreadDelete, threadData._id]);
 
   const openChatHandler = useCallback(() => {
-    onThreadClick(aiAssistantData, thread);
-  }, [aiAssistantData, onThreadClick, thread]);
+    onThreadClick(aiAssistantData, threadData);
+  }, [aiAssistantData, onThreadClick, threadData]);
 
   return (
     <li
@@ -61,7 +61,7 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
       </div>
 
       <div className="grw-ai-assistant-title-anchor ps-1">
-        <p className="text-truncate m-auto">{thread?.title ?? 'Untitled thread'}</p>
+        <p className="text-truncate m-auto">{threadData?.title ?? 'Untitled thread'}</p>
       </div>
 
       <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
@@ -102,7 +102,7 @@ const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClic
       {threads.map(thread => (
         <ThreadItem
           key={thread._id}
-          thread={thread}
+          threadData={thread}
           aiAssistantData={aiAssistantData}
           onThreadClick={onThreadClick}
           onThreadDelete={onThreadDelete}
