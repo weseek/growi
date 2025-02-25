@@ -11,6 +11,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import type { IApiv3DeleteThreadParams } from '../../interfaces/thread-relation';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -19,10 +20,7 @@ const logger = loggerFactory('growi:routes:apiv3:openai:delete-thread');
 
 type DeleteThreadFactory = (crowi: Crowi) => RequestHandler[];
 
-type ReqParams = {
-  aiAssistantId: string,
-  threadRelationId: string,
-}
+type ReqParams = IApiv3DeleteThreadParams;
 
 type Req = Request<ReqParams, Response, undefined> & {
   user: IUserHasId,
