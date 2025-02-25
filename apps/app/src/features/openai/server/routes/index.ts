@@ -32,7 +32,7 @@ export const factory = (crowi: Crowi): express.Router => {
     });
 
     import('./delete-thread').then(({ deleteThreadFactory }) => {
-      router.delete('/thread/:aiAssistantId/:threadId', deleteThreadFactory(crowi));
+      router.delete('/thread/:aiAssistantId/:threadRelationId', deleteThreadFactory(crowi));
     });
 
     import('./message').then(({ postMessageHandlersFactory }) => {
