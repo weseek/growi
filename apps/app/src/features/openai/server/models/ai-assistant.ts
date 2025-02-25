@@ -4,11 +4,13 @@ import { type Model, type Document, Schema } from 'mongoose';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 import { type AiAssistant, AiAssistantShareScope, AiAssistantAccessScope } from '../../interfaces/ai-assistant';
+import { generateGlobPatterns } from '../utils/generate-glob-patterns';
 
 export interface AiAssistantDocument extends AiAssistant, Document {}
 
-type AiAssistantModel = Model<AiAssistantDocument>
-
+interface AiAssistantModel extends Model<AiAssistantDocument> {
+  findByPagePaths(pagePaths: string[]): Promise<AiAssistantDocument[]>;
+}
 
 /*
  * Schema Definition
@@ -102,5 +104,20 @@ const schema = new Schema<AiAssistantDocument>(
     timestamps: true,
   },
 );
+
+
+schema.statics.findByPagePaths = async function(pagePaths: string[]): Promise<AiAssistantDocument[]> {
+  const pagePathsWithGlobPattern = pagePaths.map(pagePath => generateGlobPatterns(pagePath)).flat();
+  const assistants = await this.find({
+    $or: [
+      // Case 1: Exact match
+      { pagePathPatterns: { $in: pagePaths } },
+      // Case 2: Glob pattern match
+      { pagePathPatterns: { $in: pagePathsWithGlobPattern } },
+    ],
+  }).populate('vectorStore');
+
+  return assistants;
+};
 
 export default getOrCreateModel<AiAssistantDocument, AiAssistantModel>('AiAssistant', schema);

@@ -2,6 +2,17 @@
 @use '@growi/core-styles/scss/variables/growi-official-colors';
 @use '@growi/ui/scss/atoms/btn-muted';
 
+.grw-ai-assistant-chat-sidebar :global {
+
+  .textarea-ask {
+    max-height: 30vh;
+  }
+
+  .btn-submit {
+    font-size: 1.1em;
+  }
+}
+
 // == Colors
 .grw-ai-assistant-chat-sidebar :global {
   .growi-ai-chat-icon {

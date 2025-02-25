@@ -521,9 +521,7 @@
     "latest_revision": "最新の本文",
     "selected_editable_revision": "保存するページ本文(編集可能)"
   },
-  "modal_aichat": {
-    "title": "ナレッジアシスタント",
-    "title_beta_label": "(ベータ)",
+  "sidebar_aichat": {
     "placeholder": "ききたいことを入力してください",
     "summary_mode_label": "要約モード",
     "summary_mode_help": "2～3文以内の簡潔な回答",

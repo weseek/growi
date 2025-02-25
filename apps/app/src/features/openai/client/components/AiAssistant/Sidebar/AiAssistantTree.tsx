@@ -3,43 +3,38 @@ import React, { useCallback, useState } from 'react';
 import { getIdStringForRef } from '@growi/core';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
 import { useCurrentUser } from '~/stores-universal/context';
 
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
 import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
+import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 
 import styles from './AiAssistantTree.module.scss';
 
 const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 
-type Thread = {
-  _id: string;
-  name: string;
-}
 
-const dummyThreads: Thread[] = [
-  { _id: '1', name: 'thread1' },
-  { _id: '2', name: 'thread2' },
-  { _id: '3', name: 'thread3' },
-];
-
+/*
+*  ThreadItem
+*/
 type ThreadItemProps = {
-  thread: Thread;
+  thread: IThreadRelationHasId
+  aiAssistantData: AiAssistantHasId;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
 };
 
-const ThreadItem: React.FC<ThreadItemProps> = ({
-  thread,
-}) => {
+const ThreadItem: React.FC<ThreadItemProps> = ({ thread, aiAssistantData, onThreadClick }) => {
 
   const deleteThreadHandler = useCallback(() => {
     // TODO: https://redmine.weseek.co.jp/issues/161490
   }, []);
 
   const openChatHandler = useCallback(() => {
-    // TODO: https://redmine.weseek.co.jp/issues/159530
-  }, []);
+    onThreadClick(aiAssistantData, thread.threadId);
+  }, [aiAssistantData, onThreadClick, thread.threadId]);
 
   return (
     <li
@@ -52,7 +47,7 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
       </div>
 
       <div className="grw-ai-assistant-title-anchor ps-1">
-        <p className="text-truncate m-auto">{thread.name}</p>
+        <p className="text-truncate m-auto">{thread.threadId}</p>
       </div>
 
       <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
@@ -69,6 +64,39 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
 };
 
 
+/*
+*  ThreadItems
+*/
+type ThreadItemsProps = {
+  aiAssistantData: AiAssistantHasId;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
+};
+
+const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClick }) => {
+  const { data: threads } = useSWRxThreads(aiAssistantData._id);
+
+  if (threads == null || threads.length === 0) {
+    return <p className="text-secondary ms-5">スレッドが存在しません</p>;
+  }
+
+  return (
+    <div className="grw-ai-assistant-item-children">
+      {threads.map(thread => (
+        <ThreadItem
+          key={thread._id}
+          thread={thread}
+          aiAssistantData={aiAssistantData}
+          onThreadClick={onThreadClick}
+        />
+      ))}
+    </div>
+  );
+};
+
+
+/*
+*  AiAssistantItem
+*/
 const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAssistantAccessScope): string => {
   const determinedSharedScope = shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE ? accessScope : shareScope;
   switch (determinedSharedScope) {
@@ -84,34 +112,34 @@ const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAss
 type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
-  threads: Thread[];
-  onEditClicked?: (aiAssistantData: AiAssistantHasId) => void;
-  onItemClicked?: (aiAssistantData: AiAssistantHasId) => void;
+  onEditClick: (aiAssistantData: AiAssistantHasId) => void;
+  onItemClick: (aiAssistantData: AiAssistantHasId, threadId?: string) => void;
   onDeleted?: () => void;
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   currentUserId,
   aiAssistant,
-  threads,
-  onEditClicked,
-  onItemClicked,
+  onEditClick,
+  onItemClick,
   onDeleted,
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistant._id);
+
   const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
-    onEditClicked?.(aiAssistantData);
-  }, [onEditClicked]);
+    onEditClick(aiAssistantData);
+  }, [onEditClick]);
 
   const openChatHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
-    onItemClicked?.(aiAssistantData);
-  }, [onItemClicked]);
+    onItemClick(aiAssistantData);
+  }, [onItemClick]);
 
-
-  const openThreadsHandler = useCallback(() => {
+  const openThreadsHandler = useCallback(async() => {
+    mutateThreadData();
     setIsThreadsOpened(toggle => !toggle);
-  }, []);
+  }, [mutateThreadData]);
 
   const deleteAiAssistantHandler = useCallback(async() => {
     try {
@@ -185,20 +213,20 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         )}
       </li>
 
-      {isThreadsOpened && threads.length > 0 && (
-        <div className="grw-ai-assistant-item-children">
-          {threads.map(thread => (
-            <ThreadItem
-              key={thread._id}
-              thread={thread}
-            />
-          ))}
-        </div>
-      )}
+      { isThreadsOpened && (
+        <ThreadItems
+          aiAssistantData={aiAssistant}
+          onThreadClick={onItemClick}
+        />
+      ) }
     </>
   );
 };
 
+
+/*
+*  AiAssistantTree
+*/
 type AiAssistantTreeProps = {
   aiAssistants: AiAssistantHasId[];
   onDeleted?: () => void;
@@ -216,9 +244,8 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           key={assistant._id}
           currentUserId={currentUser?._id}
           aiAssistant={assistant}
-          threads={dummyThreads}
-          onEditClicked={openAiAssistantManagementModal}
-          onItemClicked={openAiAssistantChatSidebar}
+          onEditClick={openAiAssistantManagementModal}
+          onItemClick={openAiAssistantChatSidebar}
           onDeleted={onDeleted}
         />
       ))}
