@@ -65,7 +65,7 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 export interface IOpenaiService {
   getOrCreateThread(
     userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string, initialUserMessage?: string
-  ): Promise<OpenAI.Beta.Threads.Thread | undefined>;
+  ): Promise<ThreadRelationDocument>;
   getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -123,7 +123,7 @@ class OpenaiService implements IOpenaiService {
 
   async getOrCreateThread(
       userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string, initialUserMessage?: string,
-  ): Promise<OpenAI.Beta.Threads.Thread> {
+  ): Promise<ThreadRelationDocument> {
     if (threadId == null) {
       let threadTitle: string | null = null;
       if (initialUserMessage != null) {
@@ -137,14 +137,13 @@ class OpenaiService implements IOpenaiService {
 
       try {
         const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
-        await ThreadRelationModel.create({
+        const threadRelation = await ThreadRelationModel.create({
           userId,
           threadId: thread.id,
           vectorStore: vectorStoreRelation._id,
           title: threadTitle,
         });
-
-        return thread;
+        return threadRelation;
       }
       catch (err) {
         throw new Error(err);
@@ -164,7 +163,7 @@ class OpenaiService implements IOpenaiService {
       // Update expiration date if thread entity exists
       await threadRelation.updateThreadExpiration();
 
-      return thread;
+      return threadRelation;
     }
     catch (err) {
       await openaiApiErrorHandler(err, { notFoundError: async() => { await threadRelation.remove() } });

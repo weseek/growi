@@ -57,7 +57,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
         const vectorStoreRelation = await openaiService.getVectorStoreRelation(aiAssistantId);
 
         const thread = await openaiService.getOrCreateThread(req.user._id, vectorStoreRelation, filteredThreadId, initialUserMessage);
-        return res.apiv3({ thread });
+        return res.apiv3(thread);
       }
       catch (err) {
         logger.error(err);
