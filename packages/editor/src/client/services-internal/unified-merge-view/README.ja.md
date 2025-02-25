@@ -67,11 +67,32 @@
 
 2. 解決方法
    - YJS の transaction に origin を付与して変更の出所を追跡
-   - Accept 時: `Y.applyUpdate(primaryDoc, Y.encodeStateAsUpdate(secondaryDoc), 'accept')`
-   - 同期時: `if (event.transaction.origin === 'accept') return`
+   - Accept 時: `primaryDoc.transact(() => {...}, SYNC_BY_ACCEPT_CHUNK)`
+   - 同期時: `if (event.transaction.origin === SYNC_BY_ACCEPT_CHUNK) return`
 
 3. 変更の流れ
    1. Editor1 で Accept が実行される
    2. Accept で primaryDoc に同期する際に origin: 'accept' を指定
    3. primaryDoc の変更が Editor1 に戻ってきても origin をチェックしスキップ
    4. 結果として二重適用を防止
+
+### 個別の chunk の Accept 処理
+
+1. `@codemirror/merge` の仕組み:
+   - chunk の accept 時に `updateOriginalDoc` effect が発行される
+   - effect の value に accept された変更内容が ChangeSet として含まれる
+   - ChangeSet には変更範囲（fromA, toA）と新しい内容（inserted）が含まれる
+
+2. YJS への反映:
+   - ChangeSet の変更内容を primaryDoc の YText に適用する
+   - 処理は transact でラップし、「Accept による変更の二重適用問題」の通り origin を指定して二重適用を防止
+   - `iterChanges` で得られた位置情報をそのまま使用（絶対位置）
+   - delete と insert を順番に適用して変更を反映
+
+3. 変更の流れ:
+   1. Editor1 で chunk の Accept ボタンがクリックされる
+   2. `@codemirror/merge` が `updateOriginalDoc` effect を発行
+   3. effect から変更内容を取得し、YText の操作に変換
+   4. primaryDoc に変更を適用し、他のエディタに伝播
+
+この実装により、個々の chunk の Accept が正しく機能し、他の chunk には影響を与えません。

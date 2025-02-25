@@ -4,9 +4,11 @@ import {
   unifiedMergeView,
   originalDocChangeEffect,
   getOriginalDoc,
+  updateOriginalDoc,
 } from '@codemirror/merge';
+import type { StateEffect, Transaction } from '@codemirror/state';
 import {
-  ChangeSet, Transaction,
+  ChangeSet,
 } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import * as Y from 'yjs';
@@ -105,16 +107,23 @@ export const useUnifiedMergeView = (
     }
 
     const extension = EditorView.updateListener.of((update) => {
-      // handle only when the transaction has `userEvent: 'accept'` annotation
-      // ref: https://github.com/codemirror/merge/blob/6.8.0/src/unified.ts#L220
-      const shouldSync = update.transactions.some((tr) => {
-        const userEventAnnotation = tr.annotation(Transaction.userEvent);
-        return userEventAnnotation === 'accept';
-      });
+      // Find updateOriginalDoc effect which is dispatched when a chunk is accepted
+      const updateOrigEffect = update.transactions
+        .flatMap<StateEffect<Transaction>>(tr => tr.effects)
+        .find(e => e.is(updateOriginalDoc));
 
-      if (shouldSync) {
-        // sync from secondaryDoc to primaryDoc with specifying origin
-        Y.applyUpdate(primaryDoc, Y.encodeStateAsUpdate(secondaryDoc), SYNC_BY_ACCEPT_CHUNK);
+      if (updateOrigEffect != null) {
+        const primaryYText = primaryDoc.getText('codemirror');
+
+        primaryDoc.transact(() => {
+          // fromA/toA positions are absolute document positions
+          updateOrigEffect.value.changes.iterChanges((fromA, toA, _fromB, _toB, inserted) => {
+            primaryYText.delete(fromA, toA - fromA);
+            if (inserted.length > 0) {
+              primaryYText.insert(fromA, inserted.toString());
+            }
+          });
+        }, SYNC_BY_ACCEPT_CHUNK);
       }
     });
 
