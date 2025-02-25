@@ -489,7 +489,7 @@
   "modal_shortcuts": {
     "global": {
       "title": "グローバルショートカット",
-      "Open/Close shortcut help": "ショートカットヘルプ<br>の表示/非表示",
+      "Open/Close shortcut help": "ショートカットヘルプの<br>表示/非表示",
       "Edit Page": "ページ編集",
       "Create Page": "ページ作成",
       "Search": "検索",
@@ -503,11 +503,14 @@
       "Indent": "インデント",
       "Outdent": "左インデント",
       "Save Page": "保存",
-      "Delete Line": "行削除"
-    },
-    "commentform": {
-      "title": "コメントフォームショートカット",
-      "Post": "投稿"
+      "Only Editor": "(エディターのみ)",
+      "Delete Line": "行削除",
+      "Search in Editor": "エディター内検索",
+      "Move Line": "行の移動",
+      "Copy Line": "行のコピー",
+      "Toggle Line": "行の非表示化",
+      "Insert Line": "行を挿入",
+      "Post Comment": "(コメント投稿)"
     }
   },
   "modal_resolve_conflict": {
