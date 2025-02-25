@@ -5,6 +5,7 @@ import { getIdStringForRef } from '@growi/core';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
 import { useCurrentUser } from '~/stores-universal/context';
+import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
@@ -14,6 +15,8 @@ import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../
 import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 
 import styles from './AiAssistantTree.module.scss';
+
+const logger = loggerFactory('growi:openai:client:components:AiAssistantTree');
 
 const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 
@@ -39,6 +42,7 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
       onThreadDelete();
     }
     catch (err) {
+      logger.error(err);
       toastError('スレッドの削除に失敗しました');
     }
   }, [aiAssistantData._id, onThreadDelete, threadData._id]);
@@ -167,6 +171,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
       toastSuccess('アシスタントを削除しました');
     }
     catch (err) {
+      logger.error(err);
       toastError('アシスタントの削除に失敗しました');
     }
   }, [aiAssistant._id, onDeleted]);
