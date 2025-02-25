@@ -99,6 +99,7 @@ class OpenaiService implements IOpenaiService {
     const model = configManager.getConfig('openai:assistantModel:chat');
     const systemMessage = [
       'Create a brief title (max 5 words) from your message.',
+      'Respond in the same language the user uses in their input.',
       'Response should only contain the title.',
     ].join('');
 
