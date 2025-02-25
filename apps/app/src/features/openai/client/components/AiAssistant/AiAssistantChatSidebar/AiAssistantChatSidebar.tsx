@@ -237,7 +237,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       <div className="d-flex flex-column vh-100">
         <div className="d-flex align-items-center p-3 border-bottom">
           <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
-          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{currentThreadTitle ?? 'Untitled thread'}</h5>
+          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{currentThreadTitle ?? aiAssistantData.name}</h5>
           <button
             type="button"
             className="btn btn-link p-0 border-0"
