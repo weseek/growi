@@ -6,6 +6,7 @@ export interface IThreadRelation {
   userId: Ref<IUser>
   vectorStore: Ref<IVectorStore>
   threadId: string;
+  title?: string;
   expiredAt: Date;
 }
 
