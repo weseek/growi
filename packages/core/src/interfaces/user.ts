@@ -1,3 +1,4 @@
+import type { IAccessToken } from './access-token';
 import type { IAttachment } from './attachment';
 import type { Ref } from './common';
 import type { HasObjectId } from './has-object-id';
@@ -15,6 +16,7 @@ export type IUser = {
   admin: boolean,
   readOnly: boolean,
   apiToken?: string,
+  accessToken?: Ref<IAccessToken>,
   isEmailPublished: boolean,
   isInvitationEmailSended: boolean,
   lang: Lang,

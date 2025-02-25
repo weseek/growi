@@ -69,6 +69,7 @@ const factory = (crowi) => {
     introduction: String,
     password: String,
     apiToken: { type: String, index: true },
+    accessTokens: { type: mongoose.Schema.Types.ObjectId, ref: 'AccessToken' },
     lang: {
       type: String,
       enum: i18n.locales,
