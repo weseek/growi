@@ -15,8 +15,7 @@ import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:delete-ai-assistants');
-
+const logger = loggerFactory('growi:routes:apiv3:openai:delete-thread');
 
 type DeleteThreadFactory = (crowi: Crowi) => RequestHandler[];
 
@@ -64,7 +63,7 @@ export const deleteThreadFactory: DeleteThreadFactory = (crowi) => {
           return res.apiv3Err(new ErrorV3(err.message), err.status);
         }
 
-        return res.apiv3Err(new ErrorV3('Failed to delete AiAssistants'));
+        return res.apiv3Err(new ErrorV3('Failed to delete thread'));
       }
     },
   ];
