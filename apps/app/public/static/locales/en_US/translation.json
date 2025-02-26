@@ -117,7 +117,7 @@
   "Create under": "Create page under below:",
   "V5 Page Migration": "Convert To V5 Compatibility",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
-  "See_more_detail_on_new_schema": "See more detail on <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'>{{title}}</a> <span className='growi-custom-icons'>external_link</span> ",
+  "See_more_detail_on_new_schema": "See more detail on <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'>{{title}}</a> <span class='growi-custom-icons'>external_link</span> ",
   "external_account_management": "External Account Management",
   "UserGroup": "UserGroup",
   "Basic Settings": "Basic Settings",
@@ -157,7 +157,7 @@
   "duplicated_path": "Duplicated path",
   "Link sharing is disabled": "Link sharing is disabled",
   "successfully_saved_the_page": "Successfully saved the page",
-  "you_can_not_create_page_with_this_name": "You can not create page with this name",
+  "you_can_not_create_page_with_this_name_or_hierarchy": "You can not create page with this name or page hierarchy",
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
@@ -454,7 +454,7 @@
   "modal_shortcuts": {
     "global": {
       "title": "Global shortcuts",
-      "Open/Close shortcut help": "Open/Close<br>shortcut help",
+      "Open/Close shortcut help": "Open/Close Shortcut Help",
       "Edit Page": "Edit Page",
       "Create Page": "Create Page",
       "Search": "Search",
@@ -468,11 +468,14 @@
       "Indent": "Indent",
       "Outdent": "Outdent",
       "Save Page": "Save Page",
-      "Delete Line": "Delete Line"
-    },
-    "commentform": {
-      "title": "Comment Form shortcuts",
-      "Post": "Post"
+      "Only Editor": "(Editor Only)",
+      "Delete Line": "Delete Line",
+      "Search in Editor": "Search in Editor",
+      "Move Line": "Move Line",
+      "Copy Line": "Copy Line",
+      "Toggle Line": "Toggle Line Comment",
+      "Insert Line": "Insert Line",
+      "Post Comment": "(Post Comment)"
     }
   },
   "modal_resolve_conflict": {
@@ -615,7 +618,7 @@
     "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
     "nopages_title": "Congratulations. Ready to use GROWI v5!",
     "nopages_desc1": "Now all the pages you can manage seem to be in v5 compatible format.",
-    "detail_info": "See the detail information from <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Upgrading GROWI to v5.0.x <span className='growi-custom-icons'>external_link</span></a>.",
+    "detail_info": "See the detail information from <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Upgrading GROWI to v5.0.x <span class='growi-custom-icons'>external_link</span></a>.",
     "modal": {
       "title": "Convert to new v5 compatible format",
       "converting_pages": "Converting pages",
@@ -743,7 +746,8 @@
   "pagetree": {
     "cannot_rename_a_title_that_contains_slash": "Cannot rename a title that contains '/'",
     "you_cannot_move_this_page_now": "You cannot move this page now",
-    "something_went_wrong_with_moving_page": "Something went wrong with moving page"
+    "something_went_wrong_with_moving_page": "Something went wrong with moving page",
+    "error_retrieving_the_pagetree": "Error occurred while retrieving the PageTree"
   },
   "duplicated_page_alert": {
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",
