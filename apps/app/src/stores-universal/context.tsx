@@ -164,6 +164,10 @@ export const useIsBulkExportPagesEnabled = (initialData?: boolean): SWRResponse<
   return useContextSWR('isBulkExportPagesEnabled', initialData);
 };
 
+export const useIsPdfBulkExportEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isPdfBulkExportEnabled', initialData);
+};
+
 export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
   return useContextSWR('showPageLimitationL', initialData);
 };

@@ -8,12 +8,14 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import { PageBulkExportFormat } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import { useIsPdfBulkExportEnabled } from '~/stores-universal/context';
 import { useCurrentPagePath } from '~/stores/page';
 
 const PageBulkExportSelectModal = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: status, close } = usePageBulkExportSelectModal();
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isPdfBulkExportEnabled } = useIsPdfBulkExportEnabled();
 
   const [isRestartModalOpened, setIsRestartModalOpened] = useState(false);
   const [formatMemoForRestart, setFormatMemoForRestart] = useState<PageBulkExportFormat | undefined>(undefined);
@@ -72,7 +74,11 @@ const PageBulkExportSelectModal = (): JSX.Element => {
               <button className="btn btn-primary" type="button" onClick={() => startBulkExport(PageBulkExportFormat.md)}>
                 {t('page_export.markdown')}
               </button>
-              <button className="btn btn-primary ms-2" type="button" onClick={() => startBulkExport(PageBulkExportFormat.pdf)}>PDF</button>
+              {isPdfBulkExportEnabled && (
+                <button className="btn btn-primary ms-2" type="button" onClick={() => startBulkExport(PageBulkExportFormat.pdf)}>
+                  PDF
+                </button>
+              )}
             </div>
           </ModalBody>
         </Modal>
