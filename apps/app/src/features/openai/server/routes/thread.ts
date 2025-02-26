@@ -11,7 +11,6 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import AiAssistantModel from '../models/ai-assistant';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -54,17 +53,10 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
           return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
         }
 
-        const aiAssistant = await AiAssistantModel.findById(aiAssistantId);
-        if (aiAssistant == null) {
-          return res.apiv3Err(new ErrorV3('AI assistant not found'), 404);
-        }
-
-        const additionalInstruction = aiAssistant.additionalInstruction;
-
         const filteredThreadId = threadId != null ? filterXSS(threadId) : undefined;
         const vectorStoreRelation = await openaiService.getVectorStoreRelation(aiAssistantId);
 
-        const thread = await openaiService.getOrCreateThread(req.user._id, vectorStoreRelation, filteredThreadId, initialUserMessage, additionalInstruction);
+        const thread = await openaiService.getOrCreateThread(req.user._id, vectorStoreRelation, filteredThreadId, initialUserMessage);
         return res.apiv3(thread);
       }
       catch (err) {
