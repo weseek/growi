@@ -7,3 +7,5 @@ export type MessageWithCustomMetaData = Omit<OpenAI.Beta.Threads.Messages.Messag
     }
   }>;
 };
+
+export type MessageListParams = OpenAI.Beta.Threads.Messages.MessageListParams;
