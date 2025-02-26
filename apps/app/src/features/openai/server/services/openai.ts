@@ -63,7 +63,11 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 
 export interface IOpenaiService {
   getOrCreateThread(
-    userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string, initialUserMessage?: string
+    userId: string,
+    vectorStoreRelation: VectorStoreDocument,
+    threadId?: string,
+    initialUserMessage?: string,
+    additionalInstruction?: string,
   ): Promise<ThreadRelationDocument>;
   getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
@@ -122,7 +126,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async getOrCreateThread(
-      userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string, initialUserMessage?: string,
+      userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string, initialUserMessage?: string, additionalInstruction?: string,
   ): Promise<ThreadRelationDocument> {
     if (threadId == null) {
       let threadTitle: string | null = null;
@@ -136,7 +140,7 @@ class OpenaiService implements IOpenaiService {
       }
 
       try {
-        const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
+        const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId, additionalInstruction);
         const threadRelation = await ThreadRelationModel.create({
           userId,
           threadId: thread.id,

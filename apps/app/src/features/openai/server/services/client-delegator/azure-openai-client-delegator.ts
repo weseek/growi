@@ -20,8 +20,11 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     // TODO: initialize openaiVectorStoreId property
   }
 
-  async createThread(vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread> {
+  async createThread(vectorStoreId: string, additionalInstruction?: string): Promise<OpenAI.Beta.Threads.Thread> {
     return this.client.beta.threads.create({
+      messages: additionalInstruction != null
+        ? [{ role: 'assistant', content: additionalInstruction }]
+        : [],
       tool_resources: {
         file_search: {
           vector_store_ids: [vectorStoreId],

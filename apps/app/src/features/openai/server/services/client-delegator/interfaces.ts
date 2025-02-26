@@ -2,7 +2,7 @@ import type OpenAI from 'openai';
 import type { Uploadable } from 'openai/uploads';
 
 export interface IOpenaiClientDelegator {
-  createThread(vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread>
+  createThread(vectorStoreId: string, additionalInstruction?: string): Promise<OpenAI.Beta.Threads.Thread>
   retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread>
   deleteThread(threadId: string): Promise<OpenAI.Beta.Threads.ThreadDeleted>
   getMessages(threadId: string, options?: { limit: number, before: string, after: string }): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>
