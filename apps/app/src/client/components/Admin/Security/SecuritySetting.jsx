@@ -206,7 +206,7 @@ class SecuritySetting extends React.Component {
   }
 
 
-  securitySettingDropdown = (setState, displayType) => {
+  securitySettingDropdown = (setState, currentState, displayType) => {
     const { t } = this.props;
     return (
       <div className="dropdown">
@@ -218,7 +218,7 @@ class SecuritySetting extends React.Component {
           aria-haspopup="true"
           aria-expanded="false"
         >
-          <span> {t(getDisplayValue)} </span>
+          <span> {t(getDisplayValue(currentState))} </span>
         </button>
         <div
           className="dropdown-menu"
