@@ -187,6 +187,15 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           </DropdownItem>
         ) }
 
+        {/* Announce */}
+        <DropdownItem
+          className="grw-page-control-dropdown-item"
+        >
+          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">campaign</span>
+          {t('Announce')}
+        </DropdownItem>
+        <DropdownItem divider />
+
         {/* Duplicate */}
         { !forceHideMenuItems?.includes(MenuItemType.DUPLICATE) && isEnableActions && !isReadOnlyUser && (
           <DropdownItem
