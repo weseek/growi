@@ -206,7 +206,7 @@ class SecuritySetting extends React.Component {
   }
 
 
-  securitySettingDropdown = (setState, currentState, displayType) => {
+  securitySettingDropdown = (currentState, setState, displayType) => {
     const { t } = this.props;
     return (
       <div className="dropdown">
