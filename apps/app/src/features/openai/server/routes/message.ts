@@ -89,6 +89,9 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
               content: req.body.summaryMode
                 ? 'Turn on summary mode: I will try to answer concisely, aiming for 1-3 sentences.'
                 : 'I will turn off summary mode and answer.',
+              metadata: {
+                shouldHideMessage: 'true',
+              },
             },
             { role: 'user', content: req.body.userMessage },
           ],

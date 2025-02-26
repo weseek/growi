@@ -73,12 +73,16 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
   });
 
   useEffect(() => {
-    const getMessageData = async() => {
+    const fetchAndSetMessageData = async() => {
       const messageData = await mutateMessageData();
       if (messageData != null) {
-        const reversedMessageData = messageData.data.slice().reverse();
+        const normalizedMessageData = messageData.data
+          .slice()
+          .reverse()
+          .filter(message => message.metadata?.shouldHideMessage !== 'true');
+
         setMessageLogs(() => {
-          return reversedMessageData.map((message, index) => (
+          return normalizedMessageData.map((message, index) => (
             {
               id: index.toString(),
               content: message.content[0].type === 'text' ? message.content[0].text.value : '',
@@ -90,7 +94,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     };
 
     if (threadData != null) {
-      getMessageData();
+      fetchAndSetMessageData();
     }
   }, [mutateMessageData, threadData]);
 

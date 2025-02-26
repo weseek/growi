@@ -1,9 +1,10 @@
-import type OpenAI from 'openai';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-export const useSWRMUTxMessages = (aiAssistantId: string, threadId?: string): SWRMutationResponse<OpenAI.Beta.Threads.Messages.MessagesPage | null> => {
+import type { MessageWithCustomMetaData } from '../../interfaces/message';
+
+export const useSWRMUTxMessages = (aiAssistantId: string, threadId?: string): SWRMutationResponse<MessageWithCustomMetaData | null> => {
   const key = threadId != null ? [`/openai/messages/${aiAssistantId}/${threadId}`] : null;
   return useSWRMutation(
     key,
