@@ -14,6 +14,7 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import loggerFactory from '~/utils/logger';
 
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
+import AiAssistantModel from '../models/ai-assistant';
 import { openaiClient } from '../services/client';
 import { getStreamErrorCode } from '../services/getStreamErrorCode';
 import { getOpenaiService } from '../services/openai';
@@ -69,13 +70,17 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
       }
 
+      const aiAssistant = await AiAssistantModel.findById(aiAssistantId);
+      if (aiAssistant == null) {
+        return res.apiv3Err(new ErrorV3('AI assistant not found'), 404);
+      }
+
       let stream: AssistantStream;
 
       try {
         const assistant = await getOrCreateChatAssistant();
 
         const thread = await openaiClient.beta.threads.retrieve(threadId);
-
         stream = openaiClient.beta.threads.runs.stream(thread.id, {
           assistant_id: assistant.id,
           additional_messages: [
@@ -87,6 +92,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
             },
             { role: 'user', content: req.body.userMessage },
           ],
+          additional_instructions: aiAssistant.additionalInstruction,
         });
 
       }
