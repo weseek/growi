@@ -240,6 +240,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             name={name}
             description={description}
             shareScope={selectedShareScope}
+            accessScope={selectedAccessScope}
             instruction={instruction}
             selectedPages={selectedPages}
             onNameChange={changeNameHandler}

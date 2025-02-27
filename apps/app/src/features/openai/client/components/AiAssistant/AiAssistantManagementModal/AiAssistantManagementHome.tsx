@@ -6,10 +6,12 @@ import {
   ModalHeader, ModalBody, ModalFooter, Input,
 } from 'reactstrap';
 
+import type { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import { AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import { useCurrentUser } from '~/stores-universal/context';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
+import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 import { ShareScopeWarningModal } from './ShareScopeWarningModal';
@@ -20,6 +22,7 @@ type Props = {
   description: string;
   instruction: string;
   shareScope: AiAssistantShareScope,
+  accessScope: AiAssistantAccessScope,
   selectedPages: SelectedPage[];
   onNameChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
@@ -33,6 +36,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     description,
     instruction,
     shareScope,
+    accessScope,
     selectedPages,
     onNameChange,
     onDescriptionChange,
@@ -69,13 +73,13 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   }, [currentUser?.username, t]);
 
   const upsertAiAssistantHandler = useCallback(async() => {
-    if (grantedPages.length !== 0) {
+    if (determineShareScope(shareScope, accessScope) !== AiAssistantShareScope.OWNER && grantedPages.length !== 0) {
       setIsShareScopeWarningModalOpen(true);
       return;
     }
 
     await onUpsertAiAssistant();
-  }, [grantedPages.length, onUpsertAiAssistant]);
+  }, [accessScope, grantedPages.length, onUpsertAiAssistant, shareScope]);
 
   return (
     <>
@@ -179,7 +183,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
         isOpen={isShareScopeWarningModalOpen}
         grantedPages={grantedPages}
         closeModal={() => setIsShareScopeWarningModalOpen(false)}
-        onSubmit={upsertAiAssistantHandler}
+        onSubmit={onUpsertAiAssistant}
       />
     </>
   );
