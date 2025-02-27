@@ -156,7 +156,14 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
         </ModalBody>
 
         <ModalFooter>
-          <button type="button" className="btn btn-outline-secondary" onClick={closeAiAssistantManagementModal}>キャンセル</button>
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={closeAiAssistantManagementModal}
+          >
+            キャンセル
+          </button>
+
           <button
             type="button"
             disabled={!canUpsert}
