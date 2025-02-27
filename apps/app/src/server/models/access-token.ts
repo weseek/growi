@@ -30,7 +30,7 @@ export interface IAccessTokenModel extends Model<IAccessTokenDocument> {
   generateToken: (user: IUserHasId, expiredAt: Date, scope: string[], description?: string,) => Promise<string>
   deleteToken: (token: string) => Promise<void>
   deleteTokenById: (tokenId: Types.ObjectId) => Promise<void>
-  deleteAllTokensByUserId: (user: IUserHasId) => Promise<void>
+  deleteAllTokensByUser: (user: IUserHasId) => Promise<void>
   deleteExpiredToken: () => Promise<void>
   findUserByToken: (token: string) => Promise<IUserHasId>
   findTokenByUser: (user: IUserHasId) => Promise<IAccessTokenDocument[]>
@@ -80,7 +80,7 @@ accessTokenSchema.statics.deleteTokenById = async function(tokenId: Types.Object
   return this.deleteOne({ _id: tokenId });
 };
 
-accessTokenSchema.statics.deleteAllTokensByUserId = async function(user: IUserHasId) {
+accessTokenSchema.statics.deleteAllTokensByUser = async function(user: IUserHasId) {
   return this.deleteMany({ user: user._id });
 };
 
