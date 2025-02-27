@@ -584,7 +584,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   // props.highlightJsStyle = configManager.getConfig('customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('customize:isAllReplyShown');
   props.showPageSideAuthors = configManager.getConfig('customize:showPageSideAuthors');
-
   props.isContainerFluid = configManager.getConfig('customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('customize:isEnabledStaleNotification');
   props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');
