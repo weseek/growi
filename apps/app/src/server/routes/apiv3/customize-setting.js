@@ -284,6 +284,7 @@ module.exports = (crowi) => {
       pageLimitationXL: await configManager.getConfig('customize:showPageLimitationXL'),
       isEnabledStaleNotification: await configManager.getConfig('customize:isEnabledStaleNotification'),
       isAllReplyShown: await configManager.getConfig('customize:isAllReplyShown'),
+      showPageSideAuthors: await configManager.getConfig('customize:showPageSideAuthors'),
       isSearchScopeChildrenAsDefault: await configManager.getConfig('customize:isSearchScopeChildrenAsDefault'),
       isEnabledMarp: await configManager.getConfig('customize:isEnabledMarp'),
       styleName: await configManager.getConfig('customize:highlightJsStyle'),

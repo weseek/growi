@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { scroller } from 'react-scroll';
 
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
+import { useIsGuestUser, useIsReadOnlyUser, useShowPageSideAuthors } from '~/stores-universal/context'; // useShowPageSideAuthors を追加
 import { useDescendantsPageListModal, useTagEditModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
@@ -85,6 +85,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const tagsRef = useRef<HTMLDivElement>(null);
 
   const { data: pageInfo } = useSWRxPageInfo(page._id);
+  const { data: showPageSideAuthors } = useShowPageSideAuthors();
 
   const {
     creator, lastUpdateUser, createdAt, updatedAt,
@@ -98,10 +99,13 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   return (
     <>
       {/* AuthorInfo */}
-      <div className=" d-none d-md-block page-meta border-bottom pb-2 ms-lg-3 mb-3">
-        <AuthorInfo user={creator} date={createdAt} mode="create" locate="pageSide" />
-        <AuthorInfo user={lastUpdateUser} date={updatedAt} mode="update" locate="pageSide" />
-      </div>
+      {showPageSideAuthors && (
+        <div className="d-none d-md-block page-meta border-bottom pb-2 ms-lg-3 mb-3">
+          <AuthorInfo user={creator} date={createdAt} mode="create" locate="pageSide" />
+          <AuthorInfo user={lastUpdateUser} date={updatedAt} mode="update" locate="pageSide" />
+        </div>
+      )}
+
       {/* Tags */}
       { page.revision != null && (
         <div ref={tagsRef}>
