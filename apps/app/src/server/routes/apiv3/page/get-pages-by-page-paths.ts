@@ -31,7 +31,6 @@ export const getPagesByPagePaths: GetPageByPagePaths = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
-  // define validators for req.params
   const validator: ValidationChain[] = [
     query('paths').isArray().withMessage('paths must be an array of strings'),
     query('paths.*') // each item of paths
