@@ -68,6 +68,7 @@ export interface IOpenaiService {
   ): Promise<ThreadRelationDocument>;
   getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
+  deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
   getMessageData(threadId: string, lang?: Lang, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
@@ -173,6 +174,24 @@ class OpenaiService implements IOpenaiService {
   async getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]> {
     const threadRelations = await ThreadRelationModel.find({ vectorStore: vectorStoreRelationId });
     return threadRelations;
+  }
+
+  async deleteThread(threadRelationId: string): Promise<ThreadRelationDocument> {
+    const threadRelation = await ThreadRelationModel.findById(threadRelationId);
+    if (threadRelation == null) {
+      throw createError(404, 'ThreadRelation document does not exist');
+    }
+
+    try {
+      const deletedThreadResponse = await this.client.deleteThread(threadRelation.threadId);
+      logger.debug('Delete thread', deletedThreadResponse);
+      await threadRelation.remove();
+    }
+    catch (err) {
+      throw err;
+    }
+
+    return threadRelation;
   }
 
   public async deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void> {
