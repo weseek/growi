@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import type { SelectedPage } from '../../../interfaces/selected-page';
+import type { SelectedPage } from '../../../../interfaces/selected-page';
 
 type SelectedPageListProps = {
   selectedPages: SelectedPage[];
