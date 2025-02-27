@@ -117,12 +117,12 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   *  For AiAssistantManagementHome methods
   */
   const totalSelectedPageCount = useMemo(() => {
-    return selectedPages.reduce((prev, current) => {
-      const descendantCount = current.isIncludeSubPage
-        ? current.page.descendantCount ?? 0
+    return selectedPages.reduce((total, selectedPage) => {
+      const descendantCount = selectedPage.isIncludeSubPage
+        ? selectedPage.page.descendantCount ?? 0
         : 0;
       const pageCountWithDescendants = descendantCount + 1;
-      return prev + pageCountWithDescendants;
+      return total + pageCountWithDescendants;
     }, 0);
   }, [selectedPages]);
 
