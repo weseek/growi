@@ -23,7 +23,7 @@ type Props = {
   selectedPages: SelectedPage[];
   onNameChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
-  onCreateAiAssistant: () => Promise<void>
+  onUpsertAiAssistant: () => Promise<void>
 }
 
 export const AiAssistantManagementHome = (props: Props): JSX.Element => {
@@ -36,7 +36,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     selectedPages,
     onNameChange,
     onDescriptionChange,
-    onCreateAiAssistant,
+    onUpsertAiAssistant,
   } = props;
 
   const { t } = useTranslation();
@@ -68,14 +68,14 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
       : t(baseLabel);
   }, [currentUser?.username, t]);
 
-  const createAiAssistantHandler = useCallback(async() => {
+  const upsertAiAssistantHandler = useCallback(async() => {
     if (grantedPages.length !== 0) {
       setIsShareScopeWarningModalOpen(true);
       return;
     }
 
-    await onCreateAiAssistant();
-  }, [grantedPages.length, onCreateAiAssistant]);
+    await onUpsertAiAssistant();
+  }, [grantedPages.length, onUpsertAiAssistant]);
 
   return (
     <>
@@ -161,7 +161,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
             type="button"
             disabled={!canUpsert}
             className="btn btn-primary"
-            onClick={createAiAssistantHandler}
+            onClick={upsertAiAssistantHandler}
           >
             {t(shouldEdit ? 'アシスタントを更新する' : 'アシスタントを作成する')}
           </button>
@@ -172,7 +172,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
         isOpen={isShareScopeWarningModalOpen}
         grantedPages={grantedPages}
         closeModal={() => setIsShareScopeWarningModalOpen(false)}
-        onSubmit={onCreateAiAssistant}
+        onSubmit={upsertAiAssistantHandler}
       />
     </>
   );

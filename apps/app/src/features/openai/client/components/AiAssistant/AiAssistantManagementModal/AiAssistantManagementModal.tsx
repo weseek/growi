@@ -125,7 +125,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
     setDescription(value);
   }, []);
 
-  const createAiAssistantHandler = useCallback(async() => {
+  const upsertAiAssistantHandler = useCallback(async() => {
     try {
       const pagePathPatterns = selectedPages
         .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
@@ -244,7 +244,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             selectedPages={selectedPages}
             onNameChange={changeNameHandler}
             onDescriptionChange={changeDescriptionHandler}
-            onCreateAiAssistant={createAiAssistantHandler}
+            onUpsertAiAssistant={upsertAiAssistantHandler}
           />
         </TabPane>
 
