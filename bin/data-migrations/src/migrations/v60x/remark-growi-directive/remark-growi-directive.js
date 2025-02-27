@@ -17,14 +17,17 @@ module.exports = [
         const prevLine = i > 0 ? lines[i - 1] : '';
         const nextLine = i < lines.length - 1 ? lines[i + 1] : '';
 
+        // Always remove indentation from directive line
         lines[i] = currentLine.trimStart();
 
-        if (prevLine.includes('>') && prevLine.trim() !== '') {
+        // Insert empty line if previous line ends with HTML tag
+        if (prevLine.match(/>[^\n]*$/) && prevLine.trim() !== '') {
           lines.splice(i, 0, '');
           i++;
         }
 
-        if (nextLine.includes('</')) {
+        // Handle next line if it's a closing tag
+        if (nextLine.match(/^\s*<\//)) {
           lines[i + 1] = nextLine.trimStart();
         }
       }
@@ -38,10 +41,21 @@ module.exports = [
    * @type {MigrationModule}
    */
   (body) => {
-    return body.replace(/\$[\w-]+\([^)]*\)/g, (match) => {
-      return match
-        .replace(/filter=\(([^)]+)\)/g, 'filter=$1')
-        .replace(/except=\(([^)]+)\)/g, 'except=$1');
-    });
+    // Split text into lines for more reliable processing
+    const lines = body.split('\n');
+
+    for (let i = 0; i < lines.length; i++) {
+      // Find lines containing directives
+      if (lines[i].match(/\$[\w-]+\(/)) {
+        // Process parameters directly with string operations
+        lines[i] = lines[i]
+          // Replace filter=(value) with filter=value
+          .replace(/filter=\(([^)]+)\)/g, 'filter=$1')
+          // Replace except=(value) with except=value
+          .replace(/except=\(([^)]+)\)/g, 'except=$1');
+      }
+    }
+
+    return lines.join('\n');
   },
 ];
