@@ -29,6 +29,18 @@ export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHa
   );
 };
 
+export const useSWRxPagesByPaths = (
+    paths?: string[], userGroups?: string[], isIncludeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
+): SWRResponse<IPageHasId[], Error> => {
+  return useSWR(
+    (paths != null && paths.length !== 0) ? ['/page/pages', paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink] : null,
+    ([endpoint, paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink]) => apiv3Get(
+      endpoint, {
+        paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink,
+      },
+    ).then(result => result.data.pages),
+  );
+};
 
 type RecentApiResult = {
   pages: IPageHasId[],
