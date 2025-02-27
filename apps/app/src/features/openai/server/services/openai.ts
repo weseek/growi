@@ -30,6 +30,7 @@ import { OpenaiServiceTypes } from '../../interfaces/ai';
 import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
+import type { MessageListParams } from '../../interfaces/message';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 
@@ -69,9 +70,7 @@ export interface IOpenaiService {
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
-  getMessageData(
-    threadId: string, lang?: Lang, options?: { before?: string, after?: string, limit?: number }
-  ): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
+  getMessageData(threadId: string, lang?: Lang, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
   getVectorStoreRelation(aiAssistantId: string): Promise<VectorStoreDocument>
   getVectorStoreRelationsByPageIds(pageId: Types.ObjectId[]): Promise<VectorStoreDocument[]>;
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
@@ -200,9 +199,7 @@ class OpenaiService implements IOpenaiService {
     await ThreadRelationModel.deleteMany({ threadId: { $in: deletedThreadIds } });
   }
 
-  async getMessageData(
-      threadId: string, lang?: Lang, options?: { limit: number, before: string, after: string },
-  ): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
+  async getMessageData(threadId: string, lang?: Lang, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
     const messages = await this.client.getMessages(threadId, options);
 
     for await (const message of messages.data) {

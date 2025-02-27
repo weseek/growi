@@ -3,8 +3,9 @@ import { type Uploadable } from 'openai/uploads';
 
 import { configManager } from '~/server/service/config-manager';
 
-import type { IOpenaiClientDelegator } from './interfaces';
+import type { MessageListParams } from '../../../interfaces/message';
 
+import type { IOpenaiClientDelegator } from './interfaces';
 
 export class OpenaiClientDelegator implements IOpenaiClientDelegator {
 
@@ -41,8 +42,9 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.threads.del(threadId);
   }
 
-  async getMessages(threadId: string, options?: { before?: string, after?: string, limit?: number }): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
+  async getMessages(threadId: string, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
     return this.client.beta.threads.messages.list(threadId, {
+      order: options?.order,
       limit: options?.limit,
       before: options?.before,
       after: options?.after,
