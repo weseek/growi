@@ -55,8 +55,6 @@ module.exports = (crowi) => {
    *    /slack-integration-legacy-setting/:
    *      get:
    *        tags: [SlackIntegrationLegacySetting]
-   *        security:
-   *          - cookieAuth: []
    *        description: Get slack configuration setting
    *        responses:
    *          200:
@@ -65,22 +63,9 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    slackIntegrationParams:
+   *                    notificationParams:
    *                      type: object
    *                      description: slack configuration setting params
-   *                      properties:
-   *                        isSlackbotConfigured:
-   *                          type: boolean
-   *                          description: whether slackbot is configured or not
-   *                        webhookUrl:
-   *                          type: string
-   *                          description: incoming webhooks url
-   *                        isIncomingWebhookPrioritized:
-   *                          type: boolean
-   *                          description: use incoming webhooks even if Slack App settings are enabled
-   *                        slackToken:
-   *                          type: string
-   *                          description: OAuth access token
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
@@ -99,8 +84,6 @@ module.exports = (crowi) => {
    *    /slack-integration-legacy-setting/:
    *      put:
    *        tags: [SlackIntegrationLegacySetting]
-   *        security:
-   *          - cookieAuth: []
    *        description: Update slack configuration setting
    *        requestBody:
    *          required: true
