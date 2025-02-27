@@ -1,6 +1,5 @@
 import crypto from 'crypto';
 
-import type { IAccessToken } from '@growi/core';
 import type { Document, Model, Types } from 'mongoose';
 import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -11,6 +10,16 @@ import loggerFactory from '~/utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 const logger = loggerFactory('growi:models:comment');
+
+const generateTokenHash = (token: string) => crypto.createHash('sha256').update(token).digest('hex');
+
+export type IAccessToken = {
+  userId: Types.ObjectId,
+  tokenHash: string,
+  expiredAt: Date,
+  scope: string[],
+  description: string,
+}
 
 export interface IAccessTokenDocument extends IAccessToken, Document {
   userId: Types.ObjectId,
@@ -25,8 +34,11 @@ export interface IAccessTokenDocument extends IAccessToken, Document {
 export interface IAccessTokenModel extends Model<IAccessTokenDocument> {
   generateToken: (userId: Types.ObjectId, expiredAt: Date, scope: string[], description?: string,) => Promise<string>
   deleteToken: (model: IAccessTokenModel) => Promise<void>
+  deleteAllTokensByUserId: (userId: Types.ObjectId) => Promise<void>
+  deleteExpiredToken: () => Promise<void>
   findUserIdByToken: (token: string) => Promise<IAccessTokenDocument>
   findTokenByUserId: (userId: Types.ObjectId) => Promise<IAccessTokenDocument[]>
+  validateTokenScopes: (token: string, requiredScope: string[]) => Promise<boolean>
 }
 
 const IAccessTokenSchema = new Schema<IAccessTokenDocument, IAccessTokenModel>({
@@ -45,7 +57,7 @@ IAccessTokenSchema.plugin(uniqueValidator);
 IAccessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId, expiredAt: Date, scope?: string[], description?: string) {
 
   const token = crypto.randomBytes(32).toString('hex');
-  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const tokenHash = generateTokenHash(token);
 
   // TODO: scope validation
   try {
@@ -63,7 +75,7 @@ IAccessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId
 };
 
 IAccessTokenSchema.statics.deleteToken = async function(token: string) {
-  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const tokenHash = generateTokenHash(token);
   return this.deleteOne({ tokenHash });
 };
 
@@ -77,7 +89,7 @@ IAccessTokenSchema.statics.deleteExpiredToken = async function() {
 };
 
 IAccessTokenSchema.statics.findUserIdByToken = async function(token: string) {
-  const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+  const tokenHash = generateTokenHash(token);
   const now = new Date();
   return this.findOne({ tokenHash, expiredAt: { $gt: now } }).select('userId');
 };
@@ -87,9 +99,17 @@ IAccessTokenSchema.statics.findTokenByUserId = async function(userId: Types.Obje
   return this.find({ userId, expiredAt: { $gt: now } }).select('expiredAt scope description');
 };
 
+// check token's scope is satisfied
+IAccessTokenSchema.statics.validateTokenScopes = async function(token: string, requiredScopes: string[]) {
+  const tokenHash = generateTokenHash(token);
+  const now = new Date();
+  // TODO: scope validation
+  const tokenData = await this.findOne({ tokenHash, expiredAt: { $gt: now }, scope: { $all: requiredScopes } });
+  return tokenData != null;
+};
+
 IAccessTokenSchema.methods.isExpired = function() {
   return this.expiredAt < new Date();
 };
-
 
 export const AccessToken = getOrCreateModel<IAccessTokenDocument, IAccessToken>('AccessToken', IAccessTokenSchema);
