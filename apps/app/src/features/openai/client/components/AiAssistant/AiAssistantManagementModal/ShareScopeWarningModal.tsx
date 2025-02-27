@@ -4,8 +4,11 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import type { SelectedPage } from '../../../../interfaces/selected-page';
+
 type Props = {
   isOpen: boolean,
+  grantedPages: SelectedPage[],
   closeModal: () => void,
   onSubmit: () => Promise<void>,
 }
@@ -13,6 +16,7 @@ type Props = {
 export const ShareScopeWarningModal = (props: Props): JSX.Element => {
   const {
     isOpen,
+    grantedPages,
     closeModal,
     onSubmit,
   } = props;
@@ -39,9 +43,11 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
 
         <div className="mb-4">
           <p className="mb-2 text-secondary">含まれる限定公開ページ</p>
-          <code>
-            /Project/GROWI/新機能/GROWI AI
-          </code>
+          {grantedPages.map(grantedPage => (
+            <code>
+              {grantedPage.page?.path}
+            </code>
+          ))}
         </div>
 
         <p>

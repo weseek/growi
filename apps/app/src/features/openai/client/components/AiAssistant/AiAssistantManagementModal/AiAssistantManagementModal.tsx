@@ -2,8 +2,9 @@ import React, {
   useCallback, useState, useEffect, useMemo,
 } from 'react';
 
-import type { IPageHasId } from '@growi/core';
-import { type IGrantedGroup, isPopulated } from '@growi/core';
+import {
+  type IGrantedGroup, type IPageHasId, isPopulated, PageGrant,
+} from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
@@ -116,6 +117,11 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementHome methods
   */
+
+  const grantedPages = useMemo(() => {
+    return selectedPages.filter(selectedPage => selectedPage.page.grant !== PageGrant.GRANT_PUBLIC);
+  }, [selectedPages]);
+
   const totalSelectedPageCount = useMemo(() => {
     return selectedPages.reduce((total, selectedPage) => {
       const descendantCount = selectedPage.isIncludeSubPage
@@ -250,6 +256,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             description={description}
             shareScope={selectedShareScope}
             instruction={instruction}
+            grantedPages={grantedPages}
             totalSelectedPageCount={totalSelectedPageCount}
             onNameChange={changeNameHandler}
             onDescriptionChange={changeDescriptionHandler}

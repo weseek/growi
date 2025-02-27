@@ -8,6 +8,7 @@ import {
 import { AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import { useCurrentUser } from '~/stores-universal/context';
 
+import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 import { ShareScopeWarningModal } from './ShareScopeWarningModal';
@@ -18,6 +19,7 @@ type Props = {
   description: string;
   instruction: string;
   shareScope: AiAssistantShareScope
+  grantedPages: SelectedPage[]
   totalSelectedPageCount: number;
   onNameChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
@@ -31,6 +33,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     description,
     instruction,
     shareScope,
+    grantedPages,
     totalSelectedPageCount,
     onNameChange,
     onDescriptionChange,
@@ -51,15 +54,13 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   }, [currentUser?.username, t]);
 
   const createAiAssistantHandler = useCallback(async() => {
-    // TODO: Implement the logic to check if the assistant has a share scope that includes private pages
-    // task: https://redmine.weseek.co.jp/issues/161341
-    if (true) {
+    if (grantedPages.length !== 0) {
       setIsShareScopeWarningModalOpen(true);
       return;
     }
 
     await onCreateAiAssistant();
-  }, [onCreateAiAssistant]);
+  }, [grantedPages.length, onCreateAiAssistant]);
 
   return (
     <>
@@ -147,6 +148,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
       <ShareScopeWarningModal
         isOpen={isShareScopeWarningModalOpen}
+        grantedPages={grantedPages}
         closeModal={() => setIsShareScopeWarningModalOpen(false)}
         onSubmit={onCreateAiAssistant}
       />
