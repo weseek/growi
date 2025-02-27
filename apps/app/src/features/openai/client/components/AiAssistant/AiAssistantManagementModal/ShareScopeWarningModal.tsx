@@ -21,7 +21,7 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
     onSubmit,
   } = props;
 
-  const createAiAssistantHandler = useCallback(() => {
+  const upsertAiAssistantHandler = useCallback(() => {
     closeModal();
     onSubmit();
   }, [closeModal, onSubmit]);
@@ -67,7 +67,7 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
         <button
           type="button"
           className="btn btn-warning"
-          onClick={createAiAssistantHandler}
+          onClick={upsertAiAssistantHandler}
         >
           理解して続行する
         </button>
