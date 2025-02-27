@@ -33,7 +33,8 @@ export interface IAccessTokenDocument extends IAccessToken, Document {
 
 export interface IAccessTokenModel extends Model<IAccessTokenDocument> {
   generateToken: (userId: Types.ObjectId, expiredAt: Date, scope: string[], description?: string,) => Promise<string>
-  deleteToken: (model: IAccessTokenModel) => Promise<void>
+  deleteToken: (token: string) => Promise<void>
+  deleteTokenById: (tokenId: Types.ObjectId) => Promise<void>
   deleteAllTokensByUserId: (userId: Types.ObjectId) => Promise<void>
   deleteExpiredToken: () => Promise<void>
   findUserIdByToken: (token: string) => Promise<IAccessTokenDocument>
@@ -60,12 +61,14 @@ IAccessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId
   const tokenHash = generateTokenHash(token);
 
   try {
-    await this.create({
+    const { _id } = await this.create({
       userId, tokenHash, expiredAt, scope, description,
     });
 
     logger.debug('Token generated');
-    return token;
+    return {
+      token, _id, expiredAt, scope, description,
+    };
   }
   catch (err) {
     logger.debug('Failed to generate token');
@@ -73,9 +76,13 @@ IAccessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId
   }
 };
 
-IAccessTokenSchema.statics.deleteToken = async function(userId: Types.ObjectId, token: string) {
+IAccessTokenSchema.statics.deleteToken = async function(token: string) {
   const tokenHash = generateTokenHash(token);
-  return this.deleteOne({ userId, tokenHash });
+  return this.deleteOne({ tokenHash });
+};
+
+IAccessTokenSchema.statics.deleteTokenById = async function(tokenId: Types.ObjectId) {
+  return this.deleteOne({ _id: tokenId });
 };
 
 IAccessTokenSchema.statics.deleteAllTokensByUserId = async function(userId: Types.ObjectId) {
@@ -95,7 +102,7 @@ IAccessTokenSchema.statics.findUserIdByToken = async function(token: string) {
 
 IAccessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId) {
   const now = new Date();
-  return this.find({ userId, expiredAt: { $gt: now } }).select('expiredAt scope description');
+  return this.find({ userId, expiredAt: { $gt: now } }).select('_id expiredAt scope description');
 };
 
 IAccessTokenSchema.statics.validateTokenScopes = async function(token: string, requiredScopes: string[]) {
