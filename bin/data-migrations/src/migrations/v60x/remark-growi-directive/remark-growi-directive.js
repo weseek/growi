@@ -9,7 +9,7 @@ module.exports = [
    */
   (body) => {
     const lines = body.split('\n');
-    const directivePattern = /\$[\w-]+\([^)]*\)/;
+    const directivePattern = /\$[\w\-_]+\([^)]*\)/;
     let lastDirectiveLineIndex = -1;
 
     for (let i = 0; i < lines.length; i++) {
@@ -51,21 +51,15 @@ module.exports = [
    * @type {MigrationModule}
    */
   (body) => {
-    // Split text into lines for more reliable processing
-    const lines = body.split('\n');
+    // Detect and process directive-containing lines in multiline mode
+    return body.replace(/^.*\$[\w\-_]+\([^)]*\).*$/gm, (line) => {
+      // Convert filter=(value) to filter=value
+      let processedLine = line.replace(/filter=\(([^)]+)\)/g, 'filter=$1');
 
-    for (let i = 0; i < lines.length; i++) {
-      // Find lines containing directives
-      if (lines[i].match(/\$[\w-]+\(/)) {
-        // Process parameters directly with string operations
-        lines[i] = lines[i]
-          // Replace filter=(value) with filter=value
-          .replace(/filter=\(([^)]+)\)/g, 'filter=$1')
-          // Replace except=(value) with except=value
-          .replace(/except=\(([^)]+)\)/g, 'except=$1');
-      }
-    }
+      // Convert except=(value) to except=value
+      processedLine = processedLine.replace(/except=\(([^)]+)\)/g, 'except=$1');
 
-    return lines.join('\n');
+      return processedLine;
+    });
   },
 ];
