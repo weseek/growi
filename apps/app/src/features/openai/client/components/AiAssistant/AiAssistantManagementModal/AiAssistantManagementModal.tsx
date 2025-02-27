@@ -1,9 +1,9 @@
 import React, {
-  useCallback, useState, useEffect, useMemo,
+  useCallback, useState, useEffect,
 } from 'react';
 
 import {
-  type IGrantedGroup, type IPageHasId, isPopulated, PageGrant,
+  type IGrantedGroup, type IPageHasId, isPopulated,
 } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
@@ -117,21 +117,6 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   /*
   *  For AiAssistantManagementHome methods
   */
-
-  const grantedPages = useMemo(() => {
-    return selectedPages.filter(selectedPage => selectedPage.page.grant !== PageGrant.GRANT_PUBLIC);
-  }, [selectedPages]);
-
-  const totalSelectedPageCount = useMemo(() => {
-    return selectedPages.reduce((total, selectedPage) => {
-      const descendantCount = selectedPage.isIncludeSubPage
-        ? selectedPage.page.descendantCount ?? 0
-        : 0;
-      const pageCountWithDescendants = descendantCount + 1;
-      return total + pageCountWithDescendants;
-    }, 0);
-  }, [selectedPages]);
-
   const changeNameHandler = useCallback((value: string) => {
     setName(value);
   }, []);
@@ -256,8 +241,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             description={description}
             shareScope={selectedShareScope}
             instruction={instruction}
-            grantedPages={grantedPages}
-            totalSelectedPageCount={totalSelectedPageCount}
+            selectedPages={selectedPages}
             onNameChange={changeNameHandler}
             onDescriptionChange={changeDescriptionHandler}
             onCreateAiAssistant={createAiAssistantHandler}

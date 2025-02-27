@@ -1,5 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 
+import { PageGrant } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import {
   ModalHeader, ModalBody, ModalFooter, Input,
@@ -18,9 +19,8 @@ type Props = {
   name: string;
   description: string;
   instruction: string;
-  shareScope: AiAssistantShareScope
-  grantedPages: SelectedPage[]
-  totalSelectedPageCount: number;
+  shareScope: AiAssistantShareScope,
+  selectedPages: SelectedPage[];
   onNameChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onCreateAiAssistant: () => Promise<void>
@@ -33,8 +33,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     description,
     instruction,
     shareScope,
-    grantedPages,
-    totalSelectedPageCount,
+    selectedPages,
     onNameChange,
     onDescriptionChange,
     onCreateAiAssistant,
@@ -45,6 +44,20 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   const { close: closeAiAssistantManagementModal, changePageMode } = useAiAssistantManagementModal();
 
   const [isShareScopeWarningModalOpen, setIsShareScopeWarningModalOpen] = useState(false);
+
+  const grantedPages = useMemo(() => {
+    return selectedPages.filter(selectedPage => selectedPage.page.grant !== PageGrant.GRANT_PUBLIC);
+  }, [selectedPages]);
+
+  const totalSelectedPageCount = useMemo(() => {
+    return selectedPages.reduce((total, selectedPage) => {
+      const descendantCount = selectedPage.isIncludeSubPage
+        ? selectedPage.page.descendantCount ?? 0
+        : 0;
+      const pageCountWithDescendants = descendantCount + 1;
+      return total + pageCountWithDescendants;
+    }, 0);
+  }, [selectedPages]);
 
   const getShareScopeLabel = useCallback((shareScope: AiAssistantShareScope) => {
     const baseLabel = `modal_ai_assistant.share_scope.${shareScope}.label`;
