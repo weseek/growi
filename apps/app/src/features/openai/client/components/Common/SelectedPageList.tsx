@@ -4,7 +4,7 @@ import type { SelectedPage } from '../../../interfaces/selected-page';
 
 type SelectedPageListProps = {
   selectedPages: SelectedPage[];
-  onRemove?: (pageId?: string) => void;
+  onRemove?: (pagePath?: string) => void;
 };
 
 const SelectedPageListBase: React.FC<SelectedPageListProps> = ({ selectedPages, onRemove }: SelectedPageListProps) => {
@@ -25,11 +25,11 @@ const SelectedPageListBase: React.FC<SelectedPageListProps> = ({ selectedPages, 
               : <>{page.path}</>
             }
           </div>
-          {onRemove != null && page._id != null && page._id && (
+          {onRemove != null && page.path != null && (
             <button
               type="button"
               className="btn p-0 ms-3 text-secondary"
-              onClick={() => onRemove(page._id)}
+              onClick={() => onRemove(page.path)}
             >
               <span className="material-symbols-outlined fs-4">delete</span>
             </button>

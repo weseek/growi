@@ -199,8 +199,8 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
     }
   }, [selectedPages]);
 
-  const removePageHandler = useCallback((pageId: string) => {
-    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
+  const removePageHandler = useCallback((pagePath: string) => {
+    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page.path !== pagePath));
   }, [selectedPages]);
 
 
