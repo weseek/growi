@@ -59,7 +59,6 @@ IAccessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId
   const token = crypto.randomBytes(32).toString('hex');
   const tokenHash = generateTokenHash(token);
 
-  // TODO: scope validation
   try {
     await this.create({
       userId, tokenHash, expiredAt, scope, description,
@@ -74,9 +73,9 @@ IAccessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId
   }
 };
 
-IAccessTokenSchema.statics.deleteToken = async function(token: string) {
+IAccessTokenSchema.statics.deleteToken = async function(userId: Types.ObjectId, token: string) {
   const tokenHash = generateTokenHash(token);
-  return this.deleteOne({ tokenHash });
+  return this.deleteOne({ userId, tokenHash });
 };
 
 IAccessTokenSchema.statics.deleteAllTokensByUserId = async function(userId: Types.ObjectId) {
@@ -99,11 +98,9 @@ IAccessTokenSchema.statics.findTokenByUserId = async function(userId: Types.Obje
   return this.find({ userId, expiredAt: { $gt: now } }).select('expiredAt scope description');
 };
 
-// check token's scope is satisfied
 IAccessTokenSchema.statics.validateTokenScopes = async function(token: string, requiredScopes: string[]) {
   const tokenHash = generateTokenHash(token);
   const now = new Date();
-  // TODO: scope validation
   const tokenData = await this.findOne({ tokenHash, expiredAt: { $gt: now }, scope: { $all: requiredScopes } });
   return tokenData != null;
 };
