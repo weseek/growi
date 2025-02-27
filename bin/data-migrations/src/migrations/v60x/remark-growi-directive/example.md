@@ -1,4 +1,8 @@
-# Header
+# Should not be replaced
+
+filter=(FOO), except=(word1|word2|word3)
+
+# Should be replaced
 
 <div class="container-fluid">
     <div class="row">
