@@ -19,6 +19,9 @@ type GetPageByPagePaths = (crowi: Crowi) => RequestHandler[];
 
 type ReqQuery = {
   paths: string[],
+  userGroups?: string[],
+  isIncludeEmpty?: boolean,
+  includeAnyoneWithTheLink?: boolean,
 }
 
 interface Req extends Request<undefined, ApiV3Response, undefined, ReqQuery> {
@@ -34,15 +37,23 @@ export const getPagesByPagePaths: GetPageByPagePaths = (crowi) => {
     query('paths.*') // each item of paths
       .isString()
       .withMessage('paths must be an array of strings'),
+    query('userGroups').optional().isArray().withMessage('userGroups must be an array of strings'),
+    query('userGroups.*') // each item of userGroups
+      .isMongoId()
+      .withMessage('userGroups must be an array of strings'),
+    query('isIncludeEmpty').optional().isBoolean().withMessage('isIncludeEmpty must be a boolean'),
+    query('includeAnyoneWithTheLink').optional().isBoolean().withMessage('includeAnyoneWithTheLink must be a boolean'),
   ];
 
   return [
     accessTokenParser, loginRequiredStrictly,
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
-      const { paths } = req.query;
+      const {
+        paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink,
+      } = req.query;
       try {
-        const pages = await Page.findByPathsAndViewer(paths, req.user, null, true);
+        const pages = await Page.findByPathsAndViewer(paths, req.user, userGroups, isIncludeEmpty, includeAnyoneWithTheLink);
         return res.apiv3({ pages });
       }
       catch (err) {
