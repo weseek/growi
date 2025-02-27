@@ -45,6 +45,8 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
   const [isShareScopeWarningModalOpen, setIsShareScopeWarningModalOpen] = useState(false);
 
+  const canUpsert = name !== '' && selectedPages.length !== 0;
+
   const grantedPages = useMemo(() => {
     return selectedPages.filter(selectedPage => selectedPage.page.grant !== PageGrant.GRANT_PUBLIC);
   }, [selectedPages]);
@@ -155,7 +157,14 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
         <ModalFooter>
           <button type="button" className="btn btn-outline-secondary" onClick={closeAiAssistantManagementModal}>キャンセル</button>
-          <button type="button" className="btn btn-primary" onClick={createAiAssistantHandler}>{t(shouldEdit ? 'アシスタントを更新する' : 'アシスタントを作成する')}</button>
+          <button
+            type="button"
+            disabled={!canUpsert}
+            className="btn btn-primary"
+            onClick={createAiAssistantHandler}
+          >
+            {t(shouldEdit ? 'アシスタントを更新する' : 'アシスタントを作成する')}
+          </button>
         </ModalFooter>
       </div>
 
