@@ -10,6 +10,7 @@ module.exports = [
   (body) => {
     const lines = body.split('\n');
     const directivePattern = /\$[\w-]+\([^)]*\)/;
+    let lastDirectiveLineIndex = -1;
 
     for (let i = 0; i < lines.length; i++) {
       if (directivePattern.test(lines[i])) {
@@ -20,11 +21,20 @@ module.exports = [
         // Always remove indentation from directive line
         lines[i] = currentLine.trimStart();
 
-        // Insert empty line if previous line ends with HTML tag
-        if (prevLine.match(/>[^\n]*$/) && prevLine.trim() !== '') {
+        // Insert empty line only if:
+        // 1. Previous line contains an HTML tag (ends with >)
+        // 2. Previous line is not empty
+        // 3. Previous line is not a directive line
+        const isPrevLineHtmlTag = prevLine.match(/>[^\n]*$/) && !prevLine.match(directivePattern);
+        const isNotAfterDirective = i - 1 !== lastDirectiveLineIndex;
+
+        if (isPrevLineHtmlTag && prevLine.trim() !== '' && isNotAfterDirective) {
           lines.splice(i, 0, '');
           i++;
         }
+
+        // Update the last directive line index
+        lastDirectiveLineIndex = i;
 
         // Handle next line if it's a closing tag
         if (nextLine.match(/^\s*<\//)) {
