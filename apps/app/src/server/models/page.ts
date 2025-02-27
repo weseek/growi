@@ -89,7 +89,7 @@ export interface PageModel extends Model<PageDocument> {
     pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
   ): Promise<HydratedDocument<PageDocument>[]>
   findByPathsAndViewer(
-    paths: string[], user, userGroups?: null, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
+    paths: string[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
   ): Promise<HydratedDocument<PageDocument>[]>
   findByPath(path: string, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
@@ -679,7 +679,7 @@ schema.statics.findByPathAndViewer = async function(
 schema.statics.findByPathsAndViewer = async function(
     paths: string[], user, userGroups = null, includeEmpty = false, includeAnyoneWithTheLink = false,
 ): Promise<PageDocument[]> {
-  if (paths == null || paths.length === 0) {
+  if (paths.length === 0) {
     throw new Error('paths are required.');
   }
 
