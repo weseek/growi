@@ -1,4 +1,6 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, {
+  useCallback, useState, useEffect, useMemo,
+} from 'react';
 
 import { type IGrantedGroup, isPopulated } from '@growi/core';
 import { useTranslation } from 'react-i18next';
@@ -70,6 +72,16 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const [selectedUserGroupsForShareScope, setSelectedUserGroupsForShareScope] = useState<PopulatedGrantedGroup[]>([]);
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
+
+  const totalSelectedPageCount = useMemo(() => {
+    return selectedPages.reduce((prev, current) => {
+      const descendantCount = current.isIncludeSubPage
+        ? current.page.descendantCount ?? 0
+        : 0;
+      const pageCountWithDescendants = descendantCount + 1;
+      return prev + pageCountWithDescendants;
+    }, 0);
+  }, [selectedPages]);
 
   // Effects
   useEffect(() => {
@@ -213,6 +225,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             description={description}
             shareScope={selectedShareScope}
             instruction={instruction}
+            totalSelectedPageCount={totalSelectedPageCount}
             onNameChange={changeNameHandler}
             onDescriptionChange={changeDescriptionHandler}
             onCreateAiAssistant={createAiAssistantHandler}

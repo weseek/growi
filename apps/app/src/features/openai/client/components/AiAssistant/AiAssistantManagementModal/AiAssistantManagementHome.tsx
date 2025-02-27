@@ -18,6 +18,7 @@ type Props = {
   description: string;
   instruction: string;
   shareScope: AiAssistantShareScope
+  totalSelectedPageCount: number;
   onNameChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onCreateAiAssistant: () => Promise<void>
@@ -30,6 +31,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     description,
     instruction,
     shareScope,
+    totalSelectedPageCount,
     onNameChange,
     onDescriptionChange,
     onCreateAiAssistant,
@@ -116,7 +118,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.pages')}</span>
               <div className="d-flex align-items-center text-secondary">
-                <span>3ページ</span>
+                <span>{`${totalSelectedPageCount} ページ`}</span>
                 <span className="material-symbols-outlined ms-2 align-middle">chevron_right</span>
               </div>
             </button>
