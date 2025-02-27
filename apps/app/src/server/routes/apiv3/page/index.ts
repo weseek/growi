@@ -1138,8 +1138,78 @@ module.exports = (crowi) => {
    */
   router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
 
+  /**
+   * @swagger
+   *   /:pageId/yjs-data:
+   *     get:
+   *       tags: [Page]
+   *       summary: Get Yjs data
+   *       description: Retrieve Yjs data for a specific page
+   *       parameters:
+   *         - name: pageId
+   *           in: path
+   *           description: ID of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       responses:
+   *         200:
+   *           description: Successfully retrieved Yjs data.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   yjsData:
+   *                     type: object
+   *                     description: Yjs data
+   *                     properties:
+   *                       hasYdocsNewerThanLatestRevision:
+   *                         type: boolean
+   *                         description: Whether Yjs documents are newer than the latest revision
+   *                       awarenessStateSize:
+   *                         type: number
+   *                         description: Size of the awareness state
+   */
   router.get('/:pageId/yjs-data', getYjsDataHandlerFactory(crowi));
 
+  /**
+   * @swagger
+   *   /:pageId/sync-latest-revision-body-to-yjs-draft:
+   *     put:
+   *       tags: [Page]
+   *       summary: Sync latest revision body to Yjs draft
+   *       description: Sync the latest revision body to the Yjs draft for a specific page
+   *       parameters:
+   *         - name: pageId
+   *           in: path
+   *           description: ID of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       requestBody:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               properties:
+   *                 editingMarkdownLength:
+   *                   type: integer
+   *                   description: Length of the editing markdown
+   *       responses:
+   *         200:
+   *           description: Successfully synced the latest revision body to Yjs draft.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   synced:
+   *                     type: boolean
+   *                     description: Whether the latest revision body is synced to the Yjs draft
+   *                   isYjsDataBroken:
+   *                     type: boolean
+   *                     description: Whether Yjs data is broken
+   */
   router.put('/:pageId/sync-latest-revision-body-to-yjs-draft', syncLatestRevisionBodyToYjsDraftHandlerFactory(crowi));
 
   return router;
