@@ -4,6 +4,7 @@ import type { NextFunction, Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import type { IAccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 
 import type { AccessTokenParserReq } from './interfaces';
@@ -18,11 +19,13 @@ export const accessTokenParser = async(req: AccessTokenParserReq, res: Response,
     return next();
   }
 
-  const User = mongoose.model<HydratedDocument<IUser>, { findUserByApiToken }>('User');
+  const User = mongoose.model<HydratedDocument<IUser>, { findUserByIds }>('User');
+  const AccessToken = mongoose.model<HydratedDocument<IAccessToken>, { findUserIdByToken }>('AccessToken');
 
   logger.debug('accessToken is', accessToken);
 
-  const user: IUserHasId = await User.findUserByApiToken(accessToken);
+  const userId = await AccessToken.findUserIdByToken(accessToken);
+  const user: IUserHasId = await User.findUserByIds(userId);
 
   if (user == null) {
     logger.debug('The access token is invalid');
