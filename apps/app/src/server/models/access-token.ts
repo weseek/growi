@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import type { Ref, IUser, IUserHasId } from '@growi/core/dist/interfaces';
+import type { Ref, IUserHasId } from '@growi/core/dist/interfaces';
 import type { Document, Model, Types } from 'mongoose';
 import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
@@ -15,7 +15,7 @@ const logger = loggerFactory('growi:models:access-token');
 const generateTokenHash = (token: string) => crypto.createHash('sha256').update(token).digest('hex');
 
 export type IAccessToken = {
-  user: Ref<IUser>,
+  user: Ref<IUserHasId>,
   tokenHash: string,
   expiredAt: Date,
   scope?: string[],
