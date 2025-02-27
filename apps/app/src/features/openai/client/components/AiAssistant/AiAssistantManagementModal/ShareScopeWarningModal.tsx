@@ -44,7 +44,7 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
         <div className="mb-4">
           <p className="mb-2 text-secondary">含まれる限定公開ページ</p>
           {grantedPages.map(grantedPage => (
-            <code>
+            <code key={grantedPage.page._id}>
               {grantedPage.page?.path}
             </code>
           ))}
