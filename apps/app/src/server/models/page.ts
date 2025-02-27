@@ -88,6 +88,9 @@ export interface PageModel extends Model<PageDocument> {
   findByIdsAndViewer(
     pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
   ): Promise<HydratedDocument<PageDocument>[]>
+  findByPathsAndViewer(
+    paths: string[], user, userGroups?: null, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
+  ): Promise<HydratedDocument<PageDocument>[]>
   findByPath(path: string, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument>[]>
@@ -663,6 +666,24 @@ schema.statics.findByPathAndViewer = async function(
 
   const baseQuery = useFindOne ? this.findOne({ path }) : this.find({ path });
   const includeAnyoneWithTheLink = useFindOne;
+  const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
+  await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);
+
+  return queryBuilder.query.exec();
+};
+
+/*
+ * Find pages by paths and viewer.
+ */
+schema.statics.findByPathsAndViewer = async function(
+    paths: string[], user, userGroups = null, includeEmpty = false, includeAnyoneWithTheLink = false,
+): Promise<PageDocument[]> {
+  if (paths == null || paths.length === 0) {
+    throw new Error('paths are required.');
+  }
+
+  const baseQuery = this.find({ path: { $in: paths } });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
   await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);

@@ -35,6 +35,7 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
+import { getPagesByPagePaths } from './get-pages-by-page-paths';
 import { getYjsDataHandlerFactory } from './get-yjs-data';
 import { publishPageHandlersFactory } from './publish-page';
 import { syncLatestRevisionBodyToYjsDraftHandlerFactory } from './sync-latest-revision-body-to-yjs-draft';
@@ -265,6 +266,8 @@ module.exports = (crowi) => {
 
     return res.apiv3({ page, pages });
   });
+
+  router.get('/pages', getPagesByPagePaths(crowi));
 
   router.get('/exist', checkPageExistenceHandlersFactory(crowi));
 
