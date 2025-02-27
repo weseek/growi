@@ -33,9 +33,7 @@ describe('remark-growi-directive migrations', () => {
 <div>
 
 $foo(filter=AAA)
-
 $bar-2(except=BBB)
-
 $baz_3(filter=CCC, except=DDD)
 </div>`;
 

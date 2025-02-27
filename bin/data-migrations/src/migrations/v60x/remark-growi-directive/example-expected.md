@@ -5,7 +5,7 @@
         <div class="col-md-4">
             <div class="lsxContainerTitle">FOO</div>
 
-$foo(depth=2, filter=(FOO))
+$foo(depth=2, filter=FOO)
         </div>
         <div class="col-md-4">
             <div class="lsxContainerTitle">BAR</div>
@@ -15,7 +15,7 @@ $bar(depth=2, filter=BAR)
         <div class="col-md-4">
             <div class="lsxContainerTitle">BAZ</div>
 
-$baz(depth=2, filter=baz)
+$baz(depth=2, filter=BAZ)
 </div>
     </div>
     <hr>
@@ -23,17 +23,17 @@ $baz(depth=2, filter=baz)
         <div class="col-md-4">
             <div class="lsxContainerTitle">FOO</div>
 
-$foo-2(depth=2, depth=1, except=(word1|word2|word3))
+$foo(depth=2, filter=FOO, except=word1|word2|word3)
 </div>
         <div class="col-md-4">
             <div class="lsxContainerTitle">BAR</div>
 
-$bar-2(depth=2, depth=1, except=(word1|word2|word3))
+$bar(depth=2, filter=BAR, except=word1|word2|word3)
 </div>
         <div class="col-md-4">
                 <div class="lsxContainerTitle">BAZ</div>
 
-$baz-2(depth=2, depth=1, except=(word1|word2|word3))
+$baz(depth=2, filter=BAZ, except=word1|word2|word3)
 </div>
     </div>
 </div>
