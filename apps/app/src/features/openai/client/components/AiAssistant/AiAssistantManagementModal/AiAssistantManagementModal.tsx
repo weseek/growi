@@ -70,7 +70,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const { mutate: mutateAiAssistants } = useSWRxAiAssistants();
   const { data: aiAssistantManagementModalData, close: closeAiAssistantManagementModal } = useAiAssistantManagementModal();
   const { data: fetchedPageData } = useSWRxPagesByPaths(
-    removeGlobPath(aiAssistantManagementModalData?.aiAssistantData?.pagePathPatterns) ?? [],
+    removeGlobPath(aiAssistantManagementModalData?.aiAssistantData?.pagePathPatterns) ?? null,
     undefined,
     true,
     true,
