@@ -13,6 +13,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import { shouldHideMessageKey } from '../../interfaces/message';
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import AiAssistantModel from '../models/ai-assistant';
 import { openaiClient } from '../services/client';
@@ -90,7 +91,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
                 ? 'Turn on summary mode: I will try to answer concisely, aiming for 1-3 sentences.'
                 : 'I will turn off summary mode and answer.',
               metadata: {
-                shouldHideMessage: 'true',
+                [shouldHideMessageKey]: 'true',
               },
             },
             { role: 'user', content: req.body.userMessage },
