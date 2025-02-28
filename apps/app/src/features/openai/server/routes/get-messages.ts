@@ -58,8 +58,9 @@ export const getMessagesFactory: GetMessagesFactory = (crowi) => {
           return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
         }
 
-        const options = { limit, before, after };
-        const messages = await openaiService.getMessageData(threadId, req.user.lang, options);
+        const messages = await openaiService.getMessageData(threadId, req.user.lang, {
+          limit, before, after, order: 'asc',
+        });
 
         return res.apiv3({ messages });
       }

@@ -73,12 +73,13 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
   });
 
   useEffect(() => {
-    const getMessageData = async() => {
+    const fetchAndSetMessageData = async() => {
       const messageData = await mutateMessageData();
       if (messageData != null) {
-        const reversedMessageData = messageData.data.slice().reverse();
+        const normalizedMessageData = messageData.data.filter(message => message.metadata?.shouldHideMessage !== 'true');
+
         setMessageLogs(() => {
-          return reversedMessageData.map((message, index) => (
+          return normalizedMessageData.map((message, index) => (
             {
               id: index.toString(),
               content: message.content[0].type === 'text' ? message.content[0].text.value : '',
@@ -90,7 +91,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     };
 
     if (threadData != null) {
-      getMessageData();
+      fetchAndSetMessageData();
     }
   }, [mutateMessageData, threadData]);
 
@@ -269,15 +270,15 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
             )
             : (
               <>
-                <p className="fs-6 text-secondary mb-0">
+                <p className="fs-6 text-body-secondary mb-0">
                   {aiAssistantData.description}
                 </p>
 
                 <div>
-                  <p className="text-secondary">アシスタントへの指示</p>
-                  <div className="card bg-light border-0">
+                  <p className="text-body-secondary">アシスタントへの指示</p>
+                  <div className="card bg-body-tertiary border-0">
                     <div className="card-body p-3">
-                      <p className="fs-6 text-secondary mb-0">
+                      <p className="fs-6 text-body-secondary mb-0">
                         {aiAssistantData.additionalInstruction}
                       </p>
                     </div>
@@ -286,14 +287,14 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
                 <div>
                   <div className="d-flex align-items-center">
-                    <p className="text-secondary mb-0">参照するページ</p>
+                    <p className="text-body-secondary mb-0">参照するページ</p>
                   </div>
                   <div className="d-flex flex-column gap-1">
                     { aiAssistantData.pagePathPatterns.map(pagePathPattern => (
                       <a
                         key={pagePathPattern}
                         href="#"
-                        className="fs-6 text-secondary text-decoration-none"
+                        className="fs-6 text-body-secondary text-decoration-none"
                       >
                         {pagePathPattern}
                       </a>
@@ -370,7 +371,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
                 <button
                   type="button"
-                  className="btn btn-link text-secondary p-0"
+                  className="btn btn-link text-body-secondary p-0"
                   aria-expanded={isErrorDetailCollapsed}
                   onClick={() => setIsErrorDetailCollapsed(!isErrorDetailCollapsed)}
                 >
@@ -383,7 +384,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                 <Collapse isOpen={isErrorDetailCollapsed}>
                   <div className="ms-2">
                     <div className="">
-                      <div className="text-secondary small">
+                      <div className="text-body-secondary small">
                         {form.formState.errors.input?.message}
                       </div>
                     </div>
@@ -430,7 +431,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   return (
     <div
       ref={sidebarRef}
-      className={`position-fixed top-0 end-0 h-100 border-start bg-white shadow-sm ${moduleClass}`}
+      className={`position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm ${moduleClass}`}
       style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
       data-testid="grw-right-sidebar"
     >

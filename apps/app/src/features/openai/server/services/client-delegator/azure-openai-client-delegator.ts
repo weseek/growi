@@ -3,6 +3,9 @@ import type OpenAI from 'openai';
 import { AzureOpenAI } from 'openai';
 import { type Uploadable } from 'openai/uploads';
 
+import type { MessageListParams } from '../../../interfaces/message';
+
+
 import type { IOpenaiClientDelegator } from './interfaces';
 
 
@@ -38,8 +41,9 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.threads.del(threadId);
   }
 
-  async getMessages(threadId: string, options?: { before: string, after: string, limit: number }): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
+  async getMessages(threadId: string, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
     return this.client.beta.threads.messages.list(threadId, {
+      order: options?.order,
       limit: options?.limit,
       before: options?.before,
       after: options?.after,
