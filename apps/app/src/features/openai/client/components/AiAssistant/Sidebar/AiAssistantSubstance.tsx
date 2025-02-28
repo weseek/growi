@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { useTranslation } from 'react-i18next';
+
 import { useAiAssistantManagementModal, useSWRxAiAssistants } from '../../../stores/ai-assistant';
 
 import { AiAssistantTree } from './AiAssistantTree';
@@ -9,6 +11,7 @@ import styles from './AiAssistantSubstance.module.scss';
 const moduleClass = styles['grw-ai-assistant-substance'] ?? '';
 
 export const AiAssistantContent = (): JSX.Element => {
+  const { t } = useTranslation();
   const { open } = useAiAssistantManagementModal();
   const { data: aiAssistants, mutate: mutateAiAssistants } = useSWRxAiAssistants();
 
@@ -20,13 +23,13 @@ export const AiAssistantContent = (): JSX.Element => {
         onClick={() => open()}
       >
         <span className="material-symbols-outlined fs-5 me-2">add</span>
-        <span className="fw-normal">アシスタントを追加する</span>
+        <span className="fw-normal">{t('ai_assistant_tree.add_assistant')}</span>
       </button>
 
       <div className="d-flex flex-column gap-4">
         <div>
           <h3 className="fw-bold grw-ai-assistant-substance-header">
-            マイアシスタント
+            {t('ai_assistant_tree.my_assistants')}
           </h3>
           {aiAssistants?.myAiAssistants != null && aiAssistants.myAiAssistants.length !== 0 && (
             <AiAssistantTree
@@ -38,7 +41,7 @@ export const AiAssistantContent = (): JSX.Element => {
 
         <div>
           <h3 className="fw-bold grw-ai-assistant-substance-header">
-            チームアシスタント
+            {t('ai_assistant_tree.team_assistants')}
           </h3>
           {aiAssistants?.teamAiAssistants != null && aiAssistants.teamAiAssistants.length !== 0 && (
             <AiAssistantTree

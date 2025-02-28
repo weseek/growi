@@ -566,6 +566,18 @@
       }
     }
   },
+  "ai_assistant_tree": {
+    "add_assistant": "アシスタントを追加する",
+    "my_assistants": "マイアシスタント",
+    "team_assistants": "チームアシスタント",
+    "thread_does_not_exist": "スレッドが存在しません",
+    "toaster": {
+      "ai_assistant_deleted_success": "アシスタントを削除しました",
+      "ai_assistant_deleted_failed": "アシスタントの削除に失敗しました",
+      "thread_deleted_success": "スレッドを削除しました",
+      "thread_deleted_failed": "スレッドの削除に失敗しました"
+    }
+  },
   "link_edit": {
     "edit_link": "リンク編集",
     "set_link_and_label": "リンク情報",
