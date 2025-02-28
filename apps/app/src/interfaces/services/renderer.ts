@@ -23,8 +23,8 @@ export const defaultRendererConfig: RendererConfig = {
   highlightJsStyleBorder: false,
   isEnabledMarp: false,
 
-  drawioUri: 'https://embed.diagrams.net/',
-  plantumlUri: 'https://www.plantuml.com/plantuml',
+  drawioUri: 'app:drawioUri',
+  plantumlUri: 'app:plantumlUri',
 
   ...defaultRehypeSanitizeConfig,
 };
