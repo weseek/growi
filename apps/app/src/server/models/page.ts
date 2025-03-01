@@ -23,7 +23,7 @@ import uniqueValidator from 'mongoose-unique-validator';
 
 import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import type { IOptionsForCreate } from '~/interfaces/page';
+import type { IOptionsForCreate, IPagePathWithDescendantCount } from '~/interfaces/page';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
@@ -94,7 +94,10 @@ export interface PageModel extends Model<PageDocument> {
   findByPath(path: string, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument>[]>
-  countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
+  descendantCountByPaths(
+    paths: string[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean
+  ): Promise<IPagePathWithDescendantCount[]>
+  // countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
   findParentByPath(path: string | null): Promise<HydratedDocument<PageDocument> | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option: FindRecentUpdatedPagesOption, includeEmpty?: boolean): Promise<PaginatedPages>
@@ -186,7 +189,7 @@ schema.plugin(uniqueValidator);
 
 export class PageQueryBuilder {
 
-  query: any;
+  query: mongoose.FilterQuery<PageDocument>;
 
   constructor(query, includeEmpty = false) {
     this.query = query;
@@ -678,7 +681,7 @@ schema.statics.findByPathAndViewer = async function(
  */
 schema.statics.findByPathsAndViewer = async function(
     paths: string[], user, userGroups = null, includeEmpty = false, includeAnyoneWithTheLink = false,
-): Promise<PageDocument[]> {
+): Promise<{path: string, descendantCount: number}[]> {
   if (paths.length === 0) {
     throw new Error('paths are required.');
   }
@@ -689,6 +692,54 @@ schema.statics.findByPathsAndViewer = async function(
   await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);
 
   return queryBuilder.query.exec();
+};
+
+schema.statics.descendantCountByPaths = async function(
+    paths: string[],
+    user,
+    userGroups = null,
+    includeEmpty = false,
+    includeAnyoneWithTheLink = false,
+): Promise<IPagePathWithDescendantCount[]> {
+  if (paths.length === 0) {
+    throw new Error('paths are required');
+  }
+
+  const baseQuery = this.find({ path: { $in: paths } });
+  const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
+  await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);
+
+  const conditions = queryBuilder.query._conditions;
+
+  const aggregationPipeline = [
+    {
+      $match: conditions,
+    },
+    {
+      $project: {
+        _id: 0,
+        path: 1,
+        descendantCount: 1,
+      },
+    },
+    {
+      $group: {
+        _id: '$path',
+        descendantCount: { $first: '$descendantCount' },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        path: '$_id',
+        descendantCount: 1,
+      },
+    },
+  ];
+
+  const pages = await this.aggregate<IPagePathWithDescendantCount>(aggregationPipeline);
+  return pages;
 };
 
 schema.statics.countByPathAndViewer = async function(path: string | null, user, userGroups = null, includeEmpty = false): Promise<number> {

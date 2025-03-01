@@ -3,16 +3,16 @@ import React, {
 } from 'react';
 
 import {
-  type IGrantedGroup, type IPageHasId, isPopulated,
+  type IGrantedGroup, isPopulated,
 } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
-import type { IPageForItem } from '~/interfaces/page';
+import type { IPagePathWithDescendantCount, IPageForItem } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
-import { useSWRxPagesByPaths } from '~/stores/page-listing';
+import { useSWRxPagePathsWithDescendantCount } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
@@ -44,11 +44,11 @@ const convertToPopulatedGrantedGroups = (selectedGroups: IGrantedGroup[]): Popul
   return populatedGrantedGroups;
 };
 
-const convertToSelectedPages = (pagePathPatterns: string[], fetchedPageData: IPageHasId[]): SelectedPage[] => {
+const convertToSelectedPages = (pagePathPatterns: string[], pagePathsWithDescendantCount: IPagePathWithDescendantCount[]): SelectedPage[] => {
   return pagePathPatterns.map((pagePathPattern) => {
     const isIncludeSubPage = pagePathPattern.endsWith('/*');
     const path = isIncludeSubPage ? pagePathPattern.slice(0, -2) : pagePathPattern;
-    const page = fetchedPageData.find(page => page.path === path);
+    const page = pagePathsWithDescendantCount.find(page => page.path === path);
     return {
       page: page ?? { path },
       isIncludeSubPage,
@@ -70,7 +70,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const { t } = useTranslation();
   const { mutate: mutateAiAssistants } = useSWRxAiAssistants();
   const { data: aiAssistantManagementModalData, close: closeAiAssistantManagementModal } = useAiAssistantManagementModal();
-  const { data: fetchedPageData } = useSWRxPagesByPaths(
+  const { data: pagePathsWithDescendantCount } = useSWRxPagePathsWithDescendantCount(
     removeGlobPath(aiAssistantManagementModalData?.aiAssistantData?.pagePathPatterns) ?? null,
     undefined,
     true,
@@ -108,10 +108,10 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   }, [aiAssistant?.accessScope, aiAssistant?.additionalInstruction, aiAssistant?.description, aiAssistant?.grantedGroupsForAccessScope, aiAssistant?.grantedGroupsForShareScope, aiAssistant?.name, aiAssistant?.pagePathPatterns, aiAssistant?.shareScope, shouldEdit]);
 
   useEffect(() => {
-    if (shouldEdit && fetchedPageData != null) {
-      setSelectedPages(convertToSelectedPages(aiAssistant.pagePathPatterns, fetchedPageData));
+    if (shouldEdit && pagePathsWithDescendantCount != null) {
+      setSelectedPages(convertToSelectedPages(aiAssistant.pagePathPatterns, pagePathsWithDescendantCount));
     }
-  }, [aiAssistant?.pagePathPatterns, fetchedPageData, shouldEdit]);
+  }, [aiAssistant?.pagePathPatterns, pagePathsWithDescendantCount, shouldEdit]);
 
 
   /*

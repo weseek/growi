@@ -15,7 +15,7 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:page:get-pages-by-page-paths');
 
-type GetPageByPagePaths = (crowi: Crowi) => RequestHandler[];
+type GetPagePathsWithDescendantCountFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqQuery = {
   paths: string[],
@@ -27,7 +27,7 @@ type ReqQuery = {
 interface Req extends Request<undefined, ApiV3Response, undefined, ReqQuery> {
   user: IUserHasId,
 }
-export const getPagesByPagePaths: GetPageByPagePaths = (crowi) => {
+export const getPagePathsWithDescendantCountFactory: GetPagePathsWithDescendantCountFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
@@ -52,8 +52,8 @@ export const getPagesByPagePaths: GetPageByPagePaths = (crowi) => {
         paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink,
       } = req.query;
       try {
-        const pages = await Page.findByPathsAndViewer(paths, req.user, userGroups, isIncludeEmpty, includeAnyoneWithTheLink);
-        return res.apiv3({ pages });
+        const pagePathsWithDescendantCount = await Page.descendantCountByPaths(paths, req.user, userGroups, isIncludeEmpty, includeAnyoneWithTheLink);
+        return res.apiv3({ pagePathsWithDescendantCount });
       }
       catch (err) {
         logger.error(err);
