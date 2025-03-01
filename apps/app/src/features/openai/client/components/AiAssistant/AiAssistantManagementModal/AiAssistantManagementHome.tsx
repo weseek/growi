@@ -6,8 +6,8 @@ import {
   ModalHeader, ModalBody, ModalFooter, Input,
 } from 'reactstrap';
 
-import type { AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
-import { AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores-universal/context';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
@@ -24,6 +24,8 @@ type Props = {
   shareScope: AiAssistantShareScope,
   accessScope: AiAssistantAccessScope,
   selectedPages: SelectedPage[];
+  selectedUserGroupsForAccessScope: PopulatedGrantedGroup[],
+  selectedUserGroupsForShareScope: PopulatedGrantedGroup[],
   onNameChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
   onUpsertAiAssistant: () => Promise<void>
@@ -38,6 +40,8 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     shareScope,
     accessScope,
     selectedPages,
+    selectedUserGroupsForAccessScope,
+    selectedUserGroupsForShareScope,
     onNameChange,
     onDescriptionChange,
     onUpsertAiAssistant,
@@ -73,13 +77,44 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   }, [currentUser?.username, t]);
 
   const upsertAiAssistantHandler = useCallback(async() => {
-    if (determineShareScope(shareScope, accessScope) !== AiAssistantShareScope.OWNER && grantedPages.length !== 0) {
+    const shouldWarning = () => {
+      const isDifferentUserGroup = () => {
+        const selectedShareScopeUserGroupIds = selectedUserGroupsForShareScope.map(userGroup => userGroup.item._id);
+        const selectedAccessScopeUserGroupIds = selectedUserGroupsForAccessScope.map(userGroup => userGroup.item._id);
+        if (selectedShareScopeUserGroupIds.length !== selectedAccessScopeUserGroupIds.length) {
+          return false;
+        }
+        return selectedShareScopeUserGroupIds.every((val, index) => val === selectedAccessScopeUserGroupIds[index]);
+      };
+
+      const determinedShareScope = determineShareScope(shareScope, accessScope);
+
+      if (determinedShareScope === AiAssistantShareScope.PUBLIC_ONLY && accessScope !== AiAssistantAccessScope.PUBLIC_ONLY) {
+        return true;
+      }
+
+      if (determinedShareScope === AiAssistantShareScope.OWNER && accessScope !== AiAssistantAccessScope.OWNER) {
+        return true;
+      }
+
+      if (determinedShareScope === AiAssistantShareScope.GROUPS && accessScope === AiAssistantAccessScope.OWNER) {
+        return true;
+      }
+
+      if (determinedShareScope === AiAssistantShareScope.GROUPS && accessScope === AiAssistantAccessScope.GROUPS && !isDifferentUserGroup()) {
+        return true;
+      }
+
+      return false;
+    };
+
+    if (shouldWarning()) {
       setIsShareScopeWarningModalOpen(true);
       return;
     }
 
     await onUpsertAiAssistant();
-  }, [accessScope, grantedPages.length, onUpsertAiAssistant, shareScope]);
+  }, [accessScope, onUpsertAiAssistant, selectedUserGroupsForAccessScope, selectedUserGroupsForShareScope, shareScope]);
 
   return (
     <>

@@ -243,6 +243,8 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             accessScope={selectedAccessScope}
             instruction={instruction}
             selectedPages={selectedPages}
+            selectedUserGroupsForShareScope={selectedUserGroupsForShareScope}
+            selectedUserGroupsForAccessScope={selectedUserGroupsForAccessScope}
             onNameChange={changeNameHandler}
             onDescriptionChange={changeDescriptionHandler}
             onUpsertAiAssistant={upsertAiAssistantHandler}
