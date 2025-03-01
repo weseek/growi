@@ -47,7 +47,9 @@ export const getPagePathsWithDescendantCountFactory: GetPagePathsWithDescendantC
       .isMongoId()
       .withMessage('userGroups must be an array of strings'),
     query('isIncludeEmpty').optional().isBoolean().withMessage('isIncludeEmpty must be a boolean'),
+    query('isIncludeEmpty').toBoolean(),
     query('includeAnyoneWithTheLink').optional().isBoolean().withMessage('includeAnyoneWithTheLink must be a boolean'),
+    query('includeAnyoneWithTheLink').toBoolean(),
   ];
 
   return [
@@ -57,6 +59,7 @@ export const getPagePathsWithDescendantCountFactory: GetPagePathsWithDescendantC
       const {
         paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink,
       } = req.query;
+
       try {
         const pagePathsWithDescendantCount = await Page.descendantCountByPaths(paths, req.user, userGroups, isIncludeEmpty, includeAnyoneWithTheLink);
         return res.apiv3({ pagePathsWithDescendantCount });
