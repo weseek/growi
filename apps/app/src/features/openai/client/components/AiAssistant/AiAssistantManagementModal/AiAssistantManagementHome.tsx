@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useMemo } from 'react';
 
-import { PageGrant } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import {
   ModalHeader, ModalBody, ModalFooter, Input,
