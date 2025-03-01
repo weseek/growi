@@ -675,7 +675,7 @@ schema.statics.findByPathAndViewer = async function(
 schema.statics.descendantCountByPaths = async function(
     paths: string[],
     user: IUserHasId,
-    userGroup = null,
+    userGroups = null,
     includeEmpty = false,
     includeAnyoneWithTheLink = false,
 ): Promise<IPagePathWithDescendantCount[]> {
@@ -686,7 +686,7 @@ schema.statics.descendantCountByPaths = async function(
   const baseQuery = this.find({ path: { $in: paths } });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await queryBuilder.addViewerCondition(user, userGroup, includeAnyoneWithTheLink);
+  await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);
 
   const conditions = queryBuilder.query._conditions;
 
