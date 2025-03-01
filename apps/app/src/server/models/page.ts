@@ -7,7 +7,7 @@ import {
   type IPage,
   GroupType, type HasObjectId,
 } from '@growi/core';
-import type { IPagePopulatedToShowRevision } from '@growi/core/dist/interfaces';
+import type { IPagePopulatedToShowRevision, IUserHasId } from '@growi/core/dist/interfaces';
 import { getIdForRef, isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -92,7 +92,7 @@ export interface PageModel extends Model<PageDocument> {
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument> | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<HydratedDocument<PageDocument>[]>
   descendantCountByPaths(
-    paths: string[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean
+    paths: string[], user: IUserHasId, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean
   ): Promise<IPagePathWithDescendantCount[]>
   findParentByPath(path: string | null): Promise<HydratedDocument<PageDocument> | null>
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
@@ -674,8 +674,8 @@ schema.statics.findByPathAndViewer = async function(
 
 schema.statics.descendantCountByPaths = async function(
     paths: string[],
-    user,
-    userGroups = null,
+    user: IUserHasId,
+    userGroup = null,
     includeEmpty = false,
     includeAnyoneWithTheLink = false,
 ): Promise<IPagePathWithDescendantCount[]> {
@@ -686,7 +686,7 @@ schema.statics.descendantCountByPaths = async function(
   const baseQuery = this.find({ path: { $in: paths } });
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
 
-  await queryBuilder.addViewerCondition(user, userGroups, includeAnyoneWithTheLink);
+  await queryBuilder.addViewerCondition(user, userGroup, includeAnyoneWithTheLink);
 
   const conditions = queryBuilder.query._conditions;
 
