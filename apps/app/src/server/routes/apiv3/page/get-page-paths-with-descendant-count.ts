@@ -42,12 +42,15 @@ export const getPagePathsWithDescendantCountFactory: GetPagePathsWithDescendantC
     query('paths.*') // each item of paths
       .isString()
       .withMessage('paths must be an array of strings'),
+
     query('userGroups').optional().isArray().withMessage('userGroups must be an array of strings'),
     query('userGroups.*') // each item of userGroups
       .isMongoId()
       .withMessage('userGroups must be an array of strings'),
+
     query('isIncludeEmpty').optional().isBoolean().withMessage('isIncludeEmpty must be a boolean'),
     query('isIncludeEmpty').toBoolean(),
+
     query('includeAnyoneWithTheLink').optional().isBoolean().withMessage('includeAnyoneWithTheLink must be a boolean'),
     query('includeAnyoneWithTheLink').toBoolean(),
   ];
