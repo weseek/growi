@@ -185,7 +185,7 @@ schema.plugin(uniqueValidator);
 
 export class PageQueryBuilder {
 
-  query: mongoose.FilterQuery<PageDocument>;
+  query: any;
 
   constructor(query, includeEmpty = false) {
     this.query = query;
