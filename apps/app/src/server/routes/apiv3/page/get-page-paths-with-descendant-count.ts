@@ -33,6 +33,12 @@ export const getPagePathsWithDescendantCountFactory: GetPagePathsWithDescendantC
 
   const validator: ValidationChain[] = [
     query('paths').isArray().withMessage('paths must be an array of strings'),
+    query('paths').custom((paths: string[]) => {
+      if (paths.length > 300) {
+        throw new Error('paths must be an array of strings with a maximum length of 300');
+      }
+      return true;
+    }),
     query('paths.*') // each item of paths
       .isString()
       .withMessage('paths must be an array of strings'),
