@@ -16,7 +16,7 @@ const SelectedPageListBase: React.FC<SelectedPageListProps> = ({ selectedPages, 
     <div className="mb-3">
       {selectedPages.map(({ page, isIncludeSubPage }) => (
         <div
-          key={page._id}
+          key={page.path}
           className="mb-2 d-flex justify-content-between align-items-center bg-light rounded py-2 px-3"
         >
           <div className="d-flex align-items-center overflow-hidden">

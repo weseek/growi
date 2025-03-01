@@ -209,8 +209,8 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   *  For AiAssistantManagementEditPages methods
   */
   const selectPageHandler = useCallback((page: IPageForItem, isIncludeSubPage: boolean) => {
-    const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
-    if (page._id != null && !selectedPageIds.includes(page._id)) {
+    const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page.path);
+    if (page.path != null && !selectedPageIds.includes(page.path)) {
       setSelectedPages([...selectedPages, { page, isIncludeSubPage }]);
     }
   }, [selectedPages]);
