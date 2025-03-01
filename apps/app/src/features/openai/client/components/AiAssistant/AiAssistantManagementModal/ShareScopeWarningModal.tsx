@@ -8,7 +8,7 @@ import type { SelectedPage } from '../../../../interfaces/selected-page';
 
 type Props = {
   isOpen: boolean,
-  grantedPages: SelectedPage[],
+  selectedPages: SelectedPage[],
   closeModal: () => void,
   onSubmit: () => Promise<void>,
 }
@@ -16,7 +16,7 @@ type Props = {
 export const ShareScopeWarningModal = (props: Props): JSX.Element => {
   const {
     isOpen,
-    grantedPages,
+    selectedPages,
     closeModal,
     onSubmit,
   } = props;
@@ -42,8 +42,8 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
         </p>
 
         <div className="mb-4">
-          <p className="mb-2 text-secondary">含まれる限定公開ページ</p>
-          {grantedPages.map(grantedPage => (
+          <p className="mb-2 text-secondary">選択されているページパス</p>
+          {selectedPages.map(grantedPage => (
             <code key={grantedPage.page._id}>
               {grantedPage.page?.path}
             </code>

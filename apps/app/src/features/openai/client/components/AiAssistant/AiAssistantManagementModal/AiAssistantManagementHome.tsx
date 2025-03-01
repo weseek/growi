@@ -55,10 +55,6 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
   const canUpsert = name !== '' && selectedPages.length !== 0;
 
-  const grantedPages = useMemo(() => {
-    return selectedPages.filter(selectedPage => selectedPage.page.grant !== PageGrant.GRANT_PUBLIC);
-  }, [selectedPages]);
-
   const totalSelectedPageCount = useMemo(() => {
     return selectedPages.reduce((total, selectedPage) => {
       const descendantCount = selectedPage.isIncludeSubPage
@@ -216,7 +212,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
       <ShareScopeWarningModal
         isOpen={isShareScopeWarningModalOpen}
-        grantedPages={grantedPages}
+        selectedPages={selectedPages}
         closeModal={() => setIsShareScopeWarningModalOpen(false)}
         onSubmit={onUpsertAiAssistant}
       />
