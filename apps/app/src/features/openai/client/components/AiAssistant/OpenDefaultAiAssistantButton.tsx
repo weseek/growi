@@ -18,7 +18,8 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
       return null;
     }
 
-    return [...aiAssistantData.myAiAssistants, ...aiAssistantData.teamAiAssistants].find(aiAssistant => aiAssistant.isDefault);
+    const allAiAssistants = [...aiAssistantData.myAiAssistants, ...aiAssistantData.teamAiAssistants];
+    return allAiAssistants.find(aiAssistant => aiAssistant.isDefault);
   }, [aiAssistantData]);
 
   const openDefaultAiAssistantButtonClickHandler = useCallback(() => {
