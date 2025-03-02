@@ -3,7 +3,7 @@ import React, { useCallback } from 'react';
 import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
 import { useIsAiEnabled } from '~/stores-universal/context';
 
-import { useRagSearchModal } from '../stores/rag-search';
+import { useRagSearchModal } from '../../stores/rag-search';
 
 import styles from './RagSearchButton.module.scss';
 
