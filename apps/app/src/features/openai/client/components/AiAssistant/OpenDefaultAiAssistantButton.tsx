@@ -41,7 +41,6 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
           type="button"
           className={`btn btn-search ${styles['btn-open-default-ai-assistant']}`}
           onClick={openDefaultAiAssistantButtonClickHandler}
-          data-testid="open-default-ai-assistant-button"
           id="open-default-ai-assistant-button"
           disabled={defaultAiAssistant == null}
         >
