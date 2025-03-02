@@ -3,16 +3,12 @@ import React, { useCallback } from 'react';
 import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
 import { useIsAiEnabled } from '~/stores-universal/context';
 
-// import { useRagSearchModal } from '../../stores/rag-search';
-
 import styles from './OpenDefaultAiAssistantButton.module.scss';
 
 const OpenDefaultAiAssistantButton = (): JSX.Element => {
   const { data: isAiEnabled } = useIsAiEnabled();
-  // const { open: openRagSearchModal } = useRagSearchModal();
 
   const openDefaultAiAssistantButtonClickHandler = useCallback(() => {
-    // openRagSearchModal();
   }, []);
 
   if (!isAiEnabled) {
