@@ -1,4 +1,4 @@
-import type { ReadStream } from 'fs';
+import type { Readable } from 'stream';
 
 import type { TokenCredential } from '@azure/identity';
 import { ClientSecretCredential } from '@azure/identity';
@@ -19,7 +19,7 @@ import {
 } from '@azure/storage-blob';
 
 import type Crowi from '~/server/crowi';
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import { FilePathOnStoragePrefix, ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
@@ -77,8 +77,8 @@ async function getContainerClient(): Promise<ContainerClient> {
   return blobServiceClient.getContainerClient(containerName);
 }
 
-function getFilePathOnStorage(attachment) {
-  const dirName = (attachment.page != null) ? 'attachment' : 'user';
+function getFilePathOnStorage(attachment: IAttachmentDocument) {
+  const dirName = (attachment.page != null) ? FilePathOnStoragePrefix.attachment : FilePathOnStoragePrefix.user;
   return urljoin(dirName, attachment.fileName);
 }
 
@@ -122,7 +122,7 @@ class AzureFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     if (!this.getIsUploadable()) {
       throw new Error('Azure is not configured.');
     }
@@ -133,7 +133,7 @@ class AzureFileUploader extends AbstractFileUploader {
     const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
     const contentHeaders = new ContentHeaders(attachment);
 
-    await blockBlobClient.uploadStream(readStream, undefined, undefined, {
+    await blockBlobClient.uploadStream(readable, undefined, undefined, {
       blobHTTPHeaders: {
         // put type and the file name for reference information when uploading
         blobContentType: contentHeaders.contentType?.value.toString(),
