@@ -148,6 +148,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         accessScope: selectedAccessScope,
         grantedGroupsForShareScope,
         grantedGroupsForAccessScope,
+        isDefault: shouldEdit ? aiAssistant.isDefault : false,
       };
 
       if (shouldEdit) {
