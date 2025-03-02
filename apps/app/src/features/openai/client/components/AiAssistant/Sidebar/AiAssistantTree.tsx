@@ -9,6 +9,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
+import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
 import { deleteThread } from '../../../services/thread';
 import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
@@ -121,7 +122,7 @@ const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClic
 *  AiAssistantItem
 */
 const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAssistantAccessScope): string => {
-  const determinedSharedScope = shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE ? accessScope : shareScope;
+  const determinedSharedScope = determineShareScope(shareScope, accessScope);
   switch (determinedSharedScope) {
     case AiAssistantShareScope.OWNER:
       return 'lock';
@@ -129,6 +130,8 @@ const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAss
       return 'account_tree';
     case AiAssistantShareScope.PUBLIC_ONLY:
       return 'group';
+    case AiAssistantShareScope.SAME_AS_ACCESS_SCOPE:
+      return '';
   }
 };
 

@@ -106,7 +106,6 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
             id="shareAssistantSwitch"
             className="form-check-input"
             checked={isShared}
-            defaultChecked={isShared}
             onChange={changeShareToggleHandler}
           />
           <Label className="form-check-label" for="shareAssistantSwitch">
