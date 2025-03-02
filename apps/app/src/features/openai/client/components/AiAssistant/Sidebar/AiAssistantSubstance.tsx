@@ -43,6 +43,7 @@ export const AiAssistantContent = (): JSX.Element => {
           </h3>
           {aiAssistants?.teamAiAssistants != null && aiAssistants.teamAiAssistants.length !== 0 && (
             <AiAssistantTree
+              onUpdated={mutateAiAssistants}
               aiAssistants={aiAssistants.teamAiAssistants}
             />
           )}
