@@ -167,7 +167,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       logger.error(err);
     }
   // eslint-disable-next-line max-len
-  }, [selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope, selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, mutateAiAssistants, closeAiAssistantManagementModal, aiAssistant?._id]);
+  }, [selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope, selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, aiAssistant?.isDefault, aiAssistant?._id, mutateAiAssistants, closeAiAssistantManagementModal]);
 
 
   /*
