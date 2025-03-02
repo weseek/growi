@@ -10,6 +10,10 @@ export const updateAiAssistant = async(id: string, body: UpsertAiAssistantData):
   await apiv3Put(`/openai/ai-assistant/${id}`, body);
 };
 
+export const toggleDefaultAiAssistant = async(id: string, isDefault: boolean): Promise<void> => {
+  await apiv3Put(`/openai/ai-assistant/${id}/toggle-default`, { isDefault });
+};
+
 export const deleteAiAssistant = async(id: string): Promise<void> => {
   await apiv3Delete(`/openai/ai-assistant/${id}`);
 };

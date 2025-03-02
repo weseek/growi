@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import type { IUserHasId } from '@growi/core';
 import { getIdStringForRef } from '@growi/core';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
@@ -10,7 +11,7 @@ import loggerFactory from '~/utils/logger';
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
-import { deleteAiAssistant } from '../../../services/ai-assistant';
+import { deleteAiAssistant, toggleDefaultAiAssistant } from '../../../services/ai-assistant';
 import { deleteThread } from '../../../services/thread';
 import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
@@ -136,18 +137,20 @@ const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAss
 };
 
 type AiAssistantItemProps = {
-  currentUserId?: string;
+  currentUser?: IUserHasId | null;
   aiAssistant: AiAssistantHasId;
   onEditClick: (aiAssistantData: AiAssistantHasId) => void;
   onItemClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
+  onUpdated?: () => void;
   onDeleted?: () => void;
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
-  currentUserId,
+  currentUser,
   aiAssistant,
   onEditClick,
   onItemClick,
+  onUpdated,
   onDeleted,
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
@@ -167,6 +170,18 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     setIsThreadsOpened(toggle => !toggle);
   }, [mutateThreadData]);
 
+  const toggleDefaultAiAssistantHandler = useCallback(async() => {
+    try {
+      await toggleDefaultAiAssistant(aiAssistant._id, !aiAssistant.isDefault);
+      onUpdated?.();
+      toastSuccess('デフォルトアシスタントを切り替えました');
+    }
+    catch (err) {
+      logger.error(err);
+      toastError('デフォルトアシスタントの切り替えに失敗しました');
+    }
+  }, [aiAssistant._id, aiAssistant.isDefault, onUpdated]);
+
   const deleteAiAssistantHandler = useCallback(async() => {
     try {
       await deleteAiAssistant(aiAssistant._id);
@@ -179,7 +194,9 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     }
   }, [aiAssistant._id, onDeleted]);
 
-  const isOperable = currentUserId != null && getIdStringForRef(aiAssistant.owner) === currentUserId;
+  const isOperable = currentUser?._id != null && getIdStringForRef(aiAssistant.owner) === currentUser._id;
+  const isPublicAiAssistantOperable = currentUser?.admin
+    && determineShareScope(aiAssistant.shareScope, aiAssistant.accessScope) === AiAssistantShareScope.PUBLIC_ONLY;
 
   return (
     <>
@@ -214,30 +231,44 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
           <p className="text-truncate m-auto">{aiAssistant.name}</p>
         </div>
 
-        { isOperable && (
-          <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
-            <button
-              type="button"
-              className="btn btn-link text-secondary p-0 ms-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                openManagementModalHandler(aiAssistant);
-              }}
-            >
-              <span className="material-symbols-outlined fs-5">edit</span>
-            </button>
+        <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
+          {isPublicAiAssistantOperable && (
             <button
               type="button"
               className="btn btn-link text-secondary p-0"
               onClick={(e) => {
                 e.stopPropagation();
-                deleteAiAssistantHandler();
+                toggleDefaultAiAssistantHandler();
               }}
             >
-              <span className="material-symbols-outlined fs-5">delete</span>
+              <span className={`material-symbols-outlined fs-5 ${aiAssistant.isDefault ? 'fill' : ''}`}>star</span>
             </button>
-          </div>
-        )}
+          )}
+          {isOperable && (
+            <>
+              <button
+                type="button"
+                className="btn btn-link text-secondary p-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openManagementModalHandler(aiAssistant);
+                }}
+              >
+                <span className="material-symbols-outlined fs-5">edit</span>
+              </button>
+              <button
+                type="button"
+                className="btn btn-link text-secondary p-0"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteAiAssistantHandler();
+                }}
+              >
+                <span className="material-symbols-outlined fs-5">delete</span>
+              </button>
+            </>
+          )}
+        </div>
       </li>
 
       { isThreadsOpened && (
@@ -257,10 +288,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
 */
 type AiAssistantTreeProps = {
   aiAssistants: AiAssistantHasId[];
+  onUpdated?: () => void;
   onDeleted?: () => void;
 };
 
-export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onDeleted }) => {
+export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onUpdated, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
   const { open: openAiAssistantChatSidebar } = useAiAssistantChatSidebar();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
@@ -270,10 +302,11 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
       {aiAssistants.map(assistant => (
         <AiAssistantItem
           key={assistant._id}
-          currentUserId={currentUser?._id}
+          currentUser={currentUser}
           aiAssistant={assistant}
           onEditClick={openAiAssistantManagementModal}
           onItemClick={openAiAssistantChatSidebar}
+          onUpdated={onUpdated}
           onDeleted={onDeleted}
         />
       ))}
