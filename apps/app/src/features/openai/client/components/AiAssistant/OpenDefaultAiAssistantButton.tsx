@@ -36,7 +36,7 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
 
   return (
     <NotAvailableForGuest>
-      <NotAvailable isDisabled={defaultAiAssistant == null} title="デフォルトのAIアシスタントが設定されていません">
+      <NotAvailable isDisabled={defaultAiAssistant == null} title="デフォルトアシスタントが設定されていません">
         <button
           type="button"
           className={`btn btn-search ${styles['btn-open-default-ai-assistant']}`}
