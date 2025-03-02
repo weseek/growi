@@ -3,17 +3,17 @@ import React, { useCallback } from 'react';
 import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
 import { useIsAiEnabled } from '~/stores-universal/context';
 
-import { useRagSearchModal } from '../../stores/rag-search';
+// import { useRagSearchModal } from '../../stores/rag-search';
 
-import styles from './RagSearchButton.module.scss';
+import styles from './OpenDefaultAiAssistantButton.module.scss';
 
-const RagSearchButton = (): JSX.Element => {
+const OpenDefaultAiAssistantButton = (): JSX.Element => {
   const { data: isAiEnabled } = useIsAiEnabled();
-  const { open: openRagSearchModal } = useRagSearchModal();
+  // const { open: openRagSearchModal } = useRagSearchModal();
 
-  const ragSearchButtonClickHandler = useCallback(() => {
-    openRagSearchModal();
-  }, [openRagSearchModal]);
+  const openDefaultAiAssistantButtonClickHandler = useCallback(() => {
+    // openRagSearchModal();
+  }, []);
 
   if (!isAiEnabled) {
     return <></>;
@@ -23,8 +23,8 @@ const RagSearchButton = (): JSX.Element => {
     <NotAvailableForGuest>
       <button
         type="button"
-        className={`btn btn-search ${styles['btn-rag-search']}`}
-        onClick={ragSearchButtonClickHandler}
+        className={`btn btn-search ${styles['btn-open-default-ai-assistant']}`}
+        onClick={openDefaultAiAssistantButtonClickHandler}
         data-testid="open-search-modal-button"
       >
         <span className="growi-custom-icons fs-4 align-middle lh-1">ai_assistant</span>
@@ -33,4 +33,4 @@ const RagSearchButton = (): JSX.Element => {
   );
 };
 
-export default RagSearchButton;
+export default OpenDefaultAiAssistantButton;
