@@ -41,7 +41,6 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
           type="button"
           className={`btn btn-search ${styles['btn-open-default-ai-assistant']}`}
           onClick={openDefaultAiAssistantButtonClickHandler}
-          id="open-default-ai-assistant-button"
         >
           <span className="growi-custom-icons fs-4 align-middle lh-1">ai_assistant</span>
         </button>
