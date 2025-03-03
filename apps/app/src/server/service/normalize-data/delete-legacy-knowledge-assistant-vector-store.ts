@@ -8,12 +8,16 @@ export const deleteLegacyKnowledgeAssistantVectorStore = async(): Promise<void> 
     return;
   }
 
+  // Identify VectorStoreRelation documents not related to existing aiAssistant documents as those used by old knowledge assistant
+  // Retrieve these VectorStoreRelation documents used by old knowledge assistant
+  // Only one active ({isDeleted: false}) VectorStoreRelation document should exist for old knowledge assistant, so only one should be returned
   const aiAssistantVectorStoreIds = await AiAssistantModel.distinct('vectorStore');
   const nonDeletedLegacyKnowledgeAssistantVectorStoreRelations = await VectorStoreRelationModel.find({
     _id: { $nin: aiAssistantVectorStoreIds },
     isDeleted: false,
   });
 
+  // Logically delete only the VectorStore entities, leaving related documents to be automatically deleted by cron job
   const openaiService = getOpenaiService();
   for await (const vectorStoreRelation of nonDeletedLegacyKnowledgeAssistantVectorStoreRelations) {
     const vectorStoreFileRelationId = vectorStoreRelation._id;
