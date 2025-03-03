@@ -218,6 +218,7 @@ export const CONFIG_KEYS = [
   'customize:isEnabledStaleNotification',
   'customize:isAllReplyShown',
   'customize:isSearchScopeChildrenAsDefault',
+  'customize:showPageSideAuthors',
   'customize:isEnabledMarp',
   'customize:isSidebarCollapsedMode',
   'customize:isSidebarClosedAtDockMode',
@@ -968,6 +969,9 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: false,
   }),
   'customize:isSearchScopeChildrenAsDefault': defineConfig<boolean>({
+    defaultValue: false,
+  }),
+  'customize:showPageSideAuthors': defineConfig<boolean>({
     defaultValue: false,
   }),
   'customize:isEnabledMarp': defineConfig<boolean>({
