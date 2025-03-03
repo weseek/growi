@@ -71,6 +71,7 @@ export interface IOpenaiService {
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
+  deleteVectorStore(vectorStoreRelationId: string): Promise<void>;
   getMessageData(threadId: string, lang?: Lang, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
   getVectorStoreRelation(aiAssistantId: string): Promise<VectorStoreDocument>
   getVectorStoreRelationsByPageIds(pageId: Types.ObjectId[]): Promise<VectorStoreDocument[]>;
@@ -366,14 +367,15 @@ class OpenaiService implements IOpenaiService {
     return uploadedFile;
   }
 
-  private async deleteVectorStore(vectorStoreRelationId: string): Promise<void> {
+  async deleteVectorStore(vectorStoreRelationId: string): Promise<void> {
     const vectorStoreDocument: VectorStoreDocument | null = await VectorStoreModel.findOne({ _id: vectorStoreRelationId, isDeleted: false });
     if (vectorStoreDocument == null) {
       return;
     }
 
     try {
-      await this.client.deleteVectorStore(vectorStoreDocument.vectorStoreId);
+      const deleteVectorStoreResponse = await this.client.deleteVectorStore(vectorStoreDocument.vectorStoreId);
+      logger.debug('Delete vector store', deleteVectorStoreResponse);
       await vectorStoreDocument.markAsDeleted();
     }
     catch (err) {
