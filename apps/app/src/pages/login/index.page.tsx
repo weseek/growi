@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { pagePathUtils } from '@growi/core/dist/utils';
 import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -23,6 +24,8 @@ import {
 
 import styles from './index.module.scss';
 
+
+const { isPermalink, isUserPage, isUsersTopPage } = pagePathUtils;
 
 const LoginForm = dynamic(() => import('~/client/components/LoginForm').then(mod => mod.LoginForm), { ssr: false });
 
@@ -126,6 +129,15 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
+
+
+  // redirect to the page the user was on before moving to the Login Page
+  if (context.req.headers.referer != null) {
+    const urlBeforeLogin = new URL(context.req.headers.referer);
+    if (isPermalink(urlBeforeLogin.pathname) || isUserPage(urlBeforeLogin.pathname) || isUsersTopPage(urlBeforeLogin.pathname)) {
+      (context.req as CrowiRequest).session.redirectTo = urlBeforeLogin.href;
+    }
+  }
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862

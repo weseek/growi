@@ -451,6 +451,7 @@
       "Create Page": "创建页面",
       "Search": "搜索",
       "Show Contributors": "显示参与者",
+      "MirrorMode": "镜像模式",
       "Konami Code": "Konami Code",
       "konami_code_url": "https://en.wikipedia.org/wiki/Konami_Code"
     },
@@ -459,11 +460,14 @@
       "Indent": "缩进",
       "Outdent": "回退缩进",
       "Save Page": "保存页面",
-      "Delete Line": "删除行"
-    },
-    "commentform": {
-      "title": "注释窗体快捷方式",
-      "Post": "提交"
+      "Only Editor": "(仅编辑器)",
+      "Delete Line": "删除行",
+      "Search in Editor": "编辑器内搜索",
+      "Move Line": "移动行",
+      "Copy Line": "复制行",
+      "Toggle Line": "注释/取消注释行",
+      "Insert Line": "插入行",
+      "Post Comment": "(发表评论)"
     }
   },
   "modal_resolve_conflict": {
@@ -477,9 +481,7 @@
     "latest_revision": "最新页面正文",
     "selected_editable_revision": "选定的可编辑页面正文"
   },
-  "modal_aichat": {
-    "title": "知识助手",
-    "title_beta_label": "(测试版)",
+  "sidebar_aichat": {
     "placeholder": "问我任何问题。",
     "summary_mode_label": "摘要模式",
     "summary_mode_help": "简洁回答在2-3句话内",

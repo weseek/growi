@@ -1,10 +1,10 @@
 import { memo } from 'react';
 
-import type { SelectedPage } from '../../../interfaces/selected-page';
+import type { SelectedPage } from '../../../../interfaces/selected-page';
 
 type SelectedPageListProps = {
   selectedPages: SelectedPage[];
-  onRemove?: (pageId?: string) => void;
+  onRemove?: (pagePath?: string) => void;
 };
 
 const SelectedPageListBase: React.FC<SelectedPageListProps> = ({ selectedPages, onRemove }: SelectedPageListProps) => {
@@ -16,7 +16,7 @@ const SelectedPageListBase: React.FC<SelectedPageListProps> = ({ selectedPages, 
     <div className="mb-3">
       {selectedPages.map(({ page, isIncludeSubPage }) => (
         <div
-          key={page._id}
+          key={page.path}
           className="mb-2 d-flex justify-content-between align-items-center bg-light rounded py-2 px-3"
         >
           <div className="d-flex align-items-center overflow-hidden">
@@ -25,11 +25,11 @@ const SelectedPageListBase: React.FC<SelectedPageListProps> = ({ selectedPages, 
               : <>{page.path}</>
             }
           </div>
-          {onRemove != null && page._id != null && page._id && (
+          {onRemove != null && page.path != null && (
             <button
               type="button"
               className="btn p-0 ms-3 text-secondary"
-              onClick={() => onRemove(page._id)}
+              onClick={() => onRemove(page.path)}
             >
               <span className="material-symbols-outlined fs-4">delete</span>
             </button>

@@ -2,16 +2,13 @@ import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-export interface VectorStore {
-  vectorStoreId: string
-  isDeleted: boolean
-}
+import type { IVectorStore } from '../../interfaces/vector-store';
 
-export interface VectorStoreDocument extends VectorStore, Document {
+export interface VectorStoreDocument extends IVectorStore, Document {
   markAsDeleted(): Promise<void>
 }
 
-type VectorStoreModel = Model<VectorStore>
+type VectorStoreModel = Model<VectorStoreDocument>;
 
 const schema = new Schema<VectorStoreDocument, VectorStoreModel>({
   vectorStoreId: {

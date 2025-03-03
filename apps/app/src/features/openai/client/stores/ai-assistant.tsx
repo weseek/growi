@@ -6,7 +6,8 @@ import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
-import { type AccessibleAiAssistantsHasId } from '../../interfaces/ai-assistant';
+import { type AccessibleAiAssistantsHasId, type AiAssistantHasId } from '../../interfaces/ai-assistant';
+import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 
 export const AiAssistantManagementModalPageMode = {
   HOME: 'home',
@@ -20,10 +21,11 @@ type AiAssistantManagementModalPageMode = typeof AiAssistantManagementModalPageM
 type AiAssistantManagementModalStatus = {
   isOpened: boolean,
   pageMode?: AiAssistantManagementModalPageMode,
+  aiAssistantData?: AiAssistantHasId;
 }
 
 type AiAssistantManagementModalUtils = {
-  open(): void
+  open(aiAssistantData?: AiAssistantHasId): void
   close(): void
   changePageMode(pageType: AiAssistantManagementModalPageMode): void
 }
@@ -36,10 +38,10 @@ export const useAiAssistantManagementModal = (
 
   return {
     ...swrResponse,
-    open: useCallback(() => { swrResponse.mutate({ isOpened: true }) }, [swrResponse]),
-    close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
+    open: useCallback((aiAssistantData) => { swrResponse.mutate({ isOpened: true, aiAssistantData }) }, [swrResponse]),
+    close: useCallback(() => swrResponse.mutate({ isOpened: false, aiAssistantData: undefined }), [swrResponse]),
     changePageMode: useCallback((pageMode: AiAssistantManagementModalPageMode) => {
-      swrResponse.mutate({ isOpened: swrResponse.data?.isOpened ?? false, pageMode });
+      swrResponse.mutate({ isOpened: swrResponse.data?.isOpened ?? false, pageMode, aiAssistantData: swrResponse.data?.aiAssistantData });
     }, [swrResponse]),
   };
 };
@@ -50,4 +52,36 @@ export const useSWRxAiAssistants = (): SWRResponse<AccessibleAiAssistantsHasId, 
     ['/openai/ai-assistants'],
     ([endpoint]) => apiv3Get(endpoint).then(response => response.data.accessibleAiAssistants),
   );
+};
+
+
+type AiAssistantChatSidebarStatus = {
+  isOpened: boolean,
+  aiAssistantData?: AiAssistantHasId,
+  threadData?: IThreadRelationHasId,
+}
+
+type AiAssistantChatSidebarUtils = {
+  open(
+    aiAssistantData: AiAssistantHasId,
+    threadData?: IThreadRelationHasId,
+  ): void
+  close(): void
+}
+
+export const useAiAssistantChatSidebar = (
+    status?: AiAssistantChatSidebarStatus,
+): SWRResponse<AiAssistantChatSidebarStatus, Error> & AiAssistantChatSidebarUtils => {
+  const initialStatus = { isOpened: false };
+  const swrResponse = useSWRStatic<AiAssistantChatSidebarStatus, Error>('AiAssistantChatSidebar', status, { fallbackData: initialStatus });
+
+  return {
+    ...swrResponse,
+    open: useCallback(
+      (aiAssistantData: AiAssistantHasId, threadData: IThreadRelationHasId) => {
+        swrResponse.mutate({ isOpened: true, aiAssistantData, threadData });
+      }, [swrResponse],
+    ),
+    close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
+  };
 };

@@ -3,62 +3,80 @@ import React, { useCallback, useState } from 'react';
 import { getIdStringForRef } from '@growi/core';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
 import { useCurrentUser } from '~/stores-universal/context';
+import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
+import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { deleteAiAssistant } from '../../../services/ai-assistant';
+import { deleteThread } from '../../../services/thread';
+import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
+import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 
 import styles from './AiAssistantTree.module.scss';
 
+const logger = loggerFactory('growi:openai:client:components:AiAssistantTree');
+
 const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 
-type Thread = {
-  _id: string;
-  name: string;
-}
 
-const dummyThreads: Thread[] = [
-  { _id: '1', name: 'thread1' },
-  { _id: '2', name: 'thread2' },
-  { _id: '3', name: 'thread3' },
-];
-
+/*
+*  ThreadItem
+*/
 type ThreadItemProps = {
-  thread: Thread;
+  threadData: IThreadRelationHasId
+  aiAssistantData: AiAssistantHasId;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
+  onThreadDelete: () => void;
 };
 
 const ThreadItem: React.FC<ThreadItemProps> = ({
-  thread,
+  threadData, aiAssistantData, onThreadClick, onThreadDelete,
 }) => {
 
-  const deleteThreadHandler = useCallback(() => {
-    // TODO: https://redmine.weseek.co.jp/issues/161490
-  }, []);
+  const deleteThreadHandler = useCallback(async() => {
+    try {
+      await deleteThread({ aiAssistantId: aiAssistantData._id, threadRelationId: threadData._id });
+      toastSuccess('スレッドを削除しました');
+      onThreadDelete();
+    }
+    catch (err) {
+      logger.error(err);
+      toastError('スレッドの削除に失敗しました');
+    }
+  }, [aiAssistantData._id, onThreadDelete, threadData._id]);
 
   const openChatHandler = useCallback(() => {
-    // TODO: https://redmine.weseek.co.jp/issues/159530
-  }, []);
+    onThreadClick(aiAssistantData, threadData);
+  }, [aiAssistantData, onThreadClick, threadData]);
 
   return (
     <li
       role="button"
       className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1 ps-5"
-      onClick={openChatHandler}
+      onClick={(e) => {
+        e.stopPropagation();
+        openChatHandler();
+      }}
     >
       <div>
         <span className="material-symbols-outlined fs-5">chat</span>
       </div>
 
       <div className="grw-ai-assistant-title-anchor ps-1">
-        <p className="text-truncate m-auto">{thread.name}</p>
+        <p className="text-truncate m-auto">{threadData?.title ?? 'Untitled thread'}</p>
       </div>
 
       <div className="grw-ai-assistant-actions opacity-0 d-flex justify-content-center ">
         <button
           type="button"
           className="btn btn-link text-secondary p-0"
-          onClick={deleteThreadHandler}
+          onClick={(e) => {
+            e.stopPropagation();
+            deleteThreadHandler();
+          }}
         >
           <span className="material-symbols-outlined fs-5">delete</span>
         </button>
@@ -68,8 +86,43 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
 };
 
 
+/*
+*  ThreadItems
+*/
+type ThreadItemsProps = {
+  aiAssistantData: AiAssistantHasId;
+  onThreadClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
+  onThreadDelete: () => void;
+};
+
+const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClick, onThreadDelete }) => {
+  const { data: threads } = useSWRxThreads(aiAssistantData._id);
+
+  if (threads == null || threads.length === 0) {
+    return <p className="text-secondary ms-5">スレッドが存在しません</p>;
+  }
+
+  return (
+    <div className="grw-ai-assistant-item-children">
+      {threads.map(thread => (
+        <ThreadItem
+          key={thread._id}
+          threadData={thread}
+          aiAssistantData={aiAssistantData}
+          onThreadClick={onThreadClick}
+          onThreadDelete={onThreadDelete}
+        />
+      ))}
+    </div>
+  );
+};
+
+
+/*
+*  AiAssistantItem
+*/
 const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAssistantAccessScope): string => {
-  const determinedSharedScope = shareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE ? accessScope : shareScope;
+  const determinedSharedScope = determineShareScope(shareScope, accessScope);
   switch (determinedSharedScope) {
     case AiAssistantShareScope.OWNER:
       return 'lock';
@@ -77,31 +130,42 @@ const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAss
       return 'account_tree';
     case AiAssistantShareScope.PUBLIC_ONLY:
       return 'group';
+    case AiAssistantShareScope.SAME_AS_ACCESS_SCOPE:
+      return '';
   }
 };
 
 type AiAssistantItemProps = {
   currentUserId?: string;
   aiAssistant: AiAssistantHasId;
-  threads: Thread[];
+  onEditClick: (aiAssistantData: AiAssistantHasId) => void;
+  onItemClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
   onDeleted?: () => void;
 };
 
 const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   currentUserId,
   aiAssistant,
-  threads,
+  onEditClick,
+  onItemClick,
   onDeleted,
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
-  const openChatHandler = useCallback(() => {
-    // TODO: https://redmine.weseek.co.jp/issues/159530
-  }, []);
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistant._id);
 
-  const openThreadsHandler = useCallback(() => {
+  const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
+    onEditClick(aiAssistantData);
+  }, [onEditClick]);
+
+  const openChatHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
+    onItemClick(aiAssistantData);
+  }, [onItemClick]);
+
+  const openThreadsHandler = useCallback(async() => {
+    mutateThreadData();
     setIsThreadsOpened(toggle => !toggle);
-  }, []);
+  }, [mutateThreadData]);
 
   const deleteAiAssistantHandler = useCallback(async() => {
     try {
@@ -110,6 +174,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
       toastSuccess('アシスタントを削除しました');
     }
     catch (err) {
+      logger.error(err);
       toastError('アシスタントの削除に失敗しました');
     }
   }, [aiAssistant._id, onDeleted]);
@@ -119,14 +184,20 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
   return (
     <>
       <li
-        onClick={openChatHandler}
+        onClick={(e) => {
+          e.stopPropagation();
+          openChatHandler(aiAssistant);
+        }}
         role="button"
         className="list-group-item list-group-item-action border-0 d-flex align-items-center rounded-1"
       >
         <div className="d-flex justify-content-center">
           <button
             type="button"
-            onClick={openThreadsHandler}
+            onClick={(e) => {
+              e.stopPropagation();
+              openThreadsHandler();
+            }}
             className={`grw-ai-assistant-triangle-btn btn px-0 ${isThreadsOpened ? 'grw-ai-assistant-open' : ''}`}
           >
             <div className="d-flex justify-content-center">
@@ -148,13 +219,20 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
             <button
               type="button"
               className="btn btn-link text-secondary p-0 ms-2"
+              onClick={(e) => {
+                e.stopPropagation();
+                openManagementModalHandler(aiAssistant);
+              }}
             >
               <span className="material-symbols-outlined fs-5">edit</span>
             </button>
             <button
               type="button"
               className="btn btn-link text-secondary p-0"
-              onClick={deleteAiAssistantHandler}
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteAiAssistantHandler();
+              }}
             >
               <span className="material-symbols-outlined fs-5">delete</span>
             </button>
@@ -162,20 +240,21 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         )}
       </li>
 
-      {isThreadsOpened && threads.length > 0 && (
-        <div className="grw-ai-assistant-item-children">
-          {threads.map(thread => (
-            <ThreadItem
-              key={thread._id}
-              thread={thread}
-            />
-          ))}
-        </div>
-      )}
+      { isThreadsOpened && (
+        <ThreadItems
+          aiAssistantData={aiAssistant}
+          onThreadClick={onItemClick}
+          onThreadDelete={mutateThreadData}
+        />
+      ) }
     </>
   );
 };
 
+
+/*
+*  AiAssistantTree
+*/
 type AiAssistantTreeProps = {
   aiAssistants: AiAssistantHasId[];
   onDeleted?: () => void;
@@ -183,6 +262,9 @@ type AiAssistantTreeProps = {
 
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
+  const { open: openAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+  const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
+
   return (
     <ul className={`list-group ${moduleClass}`}>
       {aiAssistants.map(assistant => (
@@ -190,7 +272,8 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           key={assistant._id}
           currentUserId={currentUser?._id}
           aiAssistant={assistant}
-          threads={dummyThreads}
+          onEditClick={openAiAssistantManagementModal}
+          onItemClick={openAiAssistantChatSidebar}
           onDeleted={onDeleted}
         />
       ))}

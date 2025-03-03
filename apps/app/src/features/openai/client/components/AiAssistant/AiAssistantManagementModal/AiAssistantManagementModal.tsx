@@ -1,17 +1,22 @@
-import React, { useCallback, useState } from 'react';
+import React, {
+  useCallback, useState, useEffect,
+} from 'react';
 
-import type { IGrantedGroup } from '@growi/core';
+import {
+  type IGrantedGroup, isPopulated,
+} from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
-import type { IPageForItem } from '~/interfaces/page';
+import type { IPagePathWithDescendantCount, IPageForItem } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
+import { useSWRxPagePathsWithDescendantCount } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
-import { createAiAssistant } from '../../../services/ai-assistant';
+import { createAiAssistant, updateAiAssistant } from '../../../services/ai-assistant';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode, useSWRxAiAssistants } from '../../../stores/ai-assistant';
 
 import { AiAssistantManagementEditInstruction } from './AiAssistantManagementEditInstruction';
@@ -33,13 +38,49 @@ const convertToGrantedGroups = (selectedGroups: PopulatedGrantedGroup[]): IGrant
   }));
 };
 
+// IGrantedGroup[] -> PopulatedGrantedGroup[]
+const convertToPopulatedGrantedGroups = (selectedGroups: IGrantedGroup[]): PopulatedGrantedGroup[] => {
+  const populatedGrantedGroups = selectedGroups.filter(group => isPopulated(group.item)) as PopulatedGrantedGroup[];
+  return populatedGrantedGroups;
+};
+
+const convertToSelectedPages = (pagePathPatterns: string[], pagePathsWithDescendantCount: IPagePathWithDescendantCount[]): SelectedPage[] => {
+  return pagePathPatterns.map((pagePathPattern) => {
+    const isIncludeSubPage = pagePathPattern.endsWith('/*');
+    const path = isIncludeSubPage ? pagePathPattern.slice(0, -2) : pagePathPattern;
+    const page = pagePathsWithDescendantCount.find(page => page.path === path);
+    return {
+      page: page ?? { path },
+      isIncludeSubPage,
+    };
+  });
+};
+
+const removeGlobPath = (pagePathPattens?: string[]): string[] => {
+  if (pagePathPattens == null) {
+    return [];
+  }
+  return pagePathPattens.map((pagePathPattern) => {
+    return pagePathPattern.endsWith('/*') ? pagePathPattern.slice(0, -2) : pagePathPattern;
+  });
+};
+
 const AiAssistantManagementModalSubstance = (): JSX.Element => {
   // Hooks
   const { t } = useTranslation();
   const { mutate: mutateAiAssistants } = useSWRxAiAssistants();
   const { data: aiAssistantManagementModalData, close: closeAiAssistantManagementModal } = useAiAssistantManagementModal();
+  const { data: pagePathsWithDescendantCount } = useSWRxPagePathsWithDescendantCount(
+    removeGlobPath(aiAssistantManagementModalData?.aiAssistantData?.pagePathPatterns) ?? null,
+    undefined,
+    true,
+    true,
+  );
 
+  const aiAssistant = aiAssistantManagementModalData?.aiAssistantData;
+  const shouldEdit = aiAssistant != null;
   const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
+
 
   // States
   const [name, setName] = useState<string>('');
@@ -50,6 +91,27 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const [selectedUserGroupsForShareScope, setSelectedUserGroupsForShareScope] = useState<PopulatedGrantedGroup[]>([]);
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
+
+
+  // Effects
+  useEffect(() => {
+    if (shouldEdit) {
+      setName(aiAssistant.name);
+      setDescription(aiAssistant.description);
+      setInstruction(aiAssistant.additionalInstruction);
+      setSelectedShareScope(aiAssistant.shareScope);
+      setSelectedAccessScope(aiAssistant.accessScope);
+      setSelectedUserGroupsForShareScope(convertToPopulatedGrantedGroups(aiAssistant.grantedGroupsForShareScope ?? []));
+      setSelectedUserGroupsForAccessScope(convertToPopulatedGrantedGroups(aiAssistant.grantedGroupsForAccessScope ?? []));
+    }
+  // eslint-disable-next-line max-len
+  }, [aiAssistant?.accessScope, aiAssistant?.additionalInstruction, aiAssistant?.description, aiAssistant?.grantedGroupsForAccessScope, aiAssistant?.grantedGroupsForShareScope, aiAssistant?.name, aiAssistant?.pagePathPatterns, aiAssistant?.shareScope, shouldEdit]);
+
+  useEffect(() => {
+    if (shouldEdit && pagePathsWithDescendantCount != null) {
+      setSelectedPages(convertToSelectedPages(aiAssistant.pagePathPatterns, pagePathsWithDescendantCount));
+    }
+  }, [aiAssistant?.pagePathPatterns, pagePathsWithDescendantCount, shouldEdit]);
 
 
   /*
@@ -63,46 +125,48 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
     setDescription(value);
   }, []);
 
-  const createAiAssistantHandler = useCallback(async() => {
+  const upsertAiAssistantHandler = useCallback(async() => {
     try {
       const pagePathPatterns = selectedPages
         .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
         .filter((path): path is string => path !== undefined && path !== null);
 
-      const grantedGroupsForShareScope = convertToGrantedGroups(selectedUserGroupsForShareScope);
-      const grantedGroupsForAccessScope = convertToGrantedGroups(selectedUserGroupsForAccessScope);
+      const grantedGroupsForShareScope = selectedShareScope === AiAssistantShareScope.GROUPS
+        ? convertToGrantedGroups(selectedUserGroupsForShareScope)
+        : undefined;
 
-      await createAiAssistant({
+      const grantedGroupsForAccessScope = selectedAccessScope === AiAssistantAccessScope.GROUPS
+        ? convertToGrantedGroups(selectedUserGroupsForAccessScope)
+        : undefined;
+
+      const reqBody = {
         name,
         description,
         additionalInstruction: instruction,
         pagePathPatterns,
         shareScope: selectedShareScope,
         accessScope: selectedAccessScope,
-        grantedGroupsForShareScope: selectedShareScope === AiAssistantShareScope.GROUPS ? grantedGroupsForShareScope : undefined,
-        grantedGroupsForAccessScope: selectedAccessScope === AiAssistantAccessScope.GROUPS ? grantedGroupsForAccessScope : undefined,
-      });
+        grantedGroupsForShareScope,
+        grantedGroupsForAccessScope,
+      };
 
-      toastSuccess('アシスタントを作成しました');
+      if (shouldEdit) {
+        await updateAiAssistant(aiAssistant._id, reqBody);
+      }
+      else {
+        await createAiAssistant(reqBody);
+      }
+
+      toastSuccess(shouldEdit ? 'アシスタントが更新されました' : 'アシスタントが作成されました');
       mutateAiAssistants();
       closeAiAssistantManagementModal();
     }
     catch (err) {
-      toastError('アシスタントの作成に失敗しました');
+      toastError(shouldEdit ? 'アシスタントの更新に失敗しました' : 'アシスタントの作成に失敗しました');
       logger.error(err);
     }
-  }, [
-    mutateAiAssistants,
-    closeAiAssistantManagementModal,
-    description,
-    instruction,
-    name,
-    selectedAccessScope,
-    selectedPages,
-    selectedShareScope,
-    selectedUserGroupsForAccessScope,
-    selectedUserGroupsForShareScope,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope, selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, mutateAiAssistants, closeAiAssistantManagementModal, aiAssistant?._id]);
 
 
   /*
@@ -145,14 +209,14 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   *  For AiAssistantManagementEditPages methods
   */
   const selectPageHandler = useCallback((page: IPageForItem, isIncludeSubPage: boolean) => {
-    const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
-    if (page._id != null && !selectedPageIds.includes(page._id)) {
+    const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page.path);
+    if (page.path != null && !selectedPageIds.includes(page.path)) {
       setSelectedPages([...selectedPages, { page, isIncludeSubPage }]);
     }
   }, [selectedPages]);
 
-  const removePageHandler = useCallback((pageId: string) => {
-    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
+  const removePageHandler = useCallback((pagePath: string) => {
+    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page.path !== pagePath));
   }, [selectedPages]);
 
 
@@ -172,13 +236,18 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       <TabContent activeTab={pageMode}>
         <TabPane tabId={AiAssistantManagementModalPageMode.HOME}>
           <AiAssistantManagementHome
+            shouldEdit={shouldEdit}
             name={name}
             description={description}
             shareScope={selectedShareScope}
+            accessScope={selectedAccessScope}
             instruction={instruction}
+            selectedPages={selectedPages}
+            selectedUserGroupsForShareScope={selectedUserGroupsForShareScope}
+            selectedUserGroupsForAccessScope={selectedUserGroupsForAccessScope}
             onNameChange={changeNameHandler}
             onDescriptionChange={changeDescriptionHandler}
-            onCreateAiAssistant={createAiAssistantHandler}
+            onUpsertAiAssistant={upsertAiAssistantHandler}
           />
         </TabPane>
 

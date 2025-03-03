@@ -1,4 +1,6 @@
-import React, { useCallback, useState } from 'react';
+import React, {
+  useCallback, useState, useEffect,
+} from 'react';
 
 import {
   ModalBody, Input, Label,
@@ -49,6 +51,15 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
   const [isShared, setIsShared] = useState(false);
   const [isSelectUserGroupModalOpen, setIsSelectUserGroupModalOpen] = useState(false);
   const [selectedUserGroupType, setSelectedUserGroupType] = useState<ScopeType>(ScopeType.ACCESS);
+
+  useEffect(() => {
+    setIsShared(() => {
+      if (selectedShareScope !== AiAssistantShareScope.SAME_AS_ACCESS_SCOPE) {
+        return true;
+      }
+      return selectedShareScope === AiAssistantShareScope.SAME_AS_ACCESS_SCOPE && selectedAccessScope !== AiAssistantAccessScope.OWNER;
+    });
+  }, [isShared, selectedAccessScope, selectedShareScope]);
 
   const changeShareToggleHandler = useCallback(() => {
     setIsShared((prev) => {

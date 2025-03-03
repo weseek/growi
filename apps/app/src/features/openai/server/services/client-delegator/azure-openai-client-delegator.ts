@@ -3,6 +3,9 @@ import type OpenAI from 'openai';
 import { AzureOpenAI } from 'openai';
 import { type Uploadable } from 'openai/uploads';
 
+import type { MessageListParams } from '../../../interfaces/message';
+
+
 import type { IOpenaiClientDelegator } from './interfaces';
 
 
@@ -38,6 +41,15 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.threads.del(threadId);
   }
 
+  async getMessages(threadId: string, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage> {
+    return this.client.beta.threads.messages.list(threadId, {
+      order: options?.order,
+      limit: options?.limit,
+      before: options?.before,
+      after: options?.after,
+    });
+  }
+
   async createVectorStore(name: string): Promise<OpenAI.Beta.VectorStores.VectorStore> {
     return this.client.beta.vectorStores.create({ name: `growi-vector-store-for-${name}` });
   }
@@ -64,6 +76,10 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
 
   async uploadAndPoll(vectorStoreId: string, files: Uploadable[]): Promise<OpenAI.Beta.VectorStores.FileBatches.VectorStoreFileBatch> {
     return this.client.beta.vectorStores.fileBatches.uploadAndPoll(vectorStoreId, { files });
+  }
+
+  async chatCompletion(body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming): Promise<OpenAI.Chat.Completions.ChatCompletion> {
+    return this.client.chat.completions.create(body);
   }
 
 }
