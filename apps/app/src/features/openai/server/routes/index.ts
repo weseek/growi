@@ -55,8 +55,8 @@ export const factory = (crowi: Crowi): express.Router => {
       router.put('/ai-assistant/:id', updateAiAssistantsFactory(crowi));
     });
 
-    import('./toggle-default-ai-assistant').then(({ toggleDefaultAiAssistantFactory }) => {
-      router.put('/ai-assistant/:id/toggle-default', toggleDefaultAiAssistantFactory(crowi));
+    import('./set-default-ai-assistant').then(({ setDefaultAiAssistantFactory }) => {
+      router.put('/ai-assistant/:id/set-default', setDefaultAiAssistantFactory(crowi));
     });
 
     import('./delete-ai-assistant').then(({ deleteAiAssistantsFactory }) => {

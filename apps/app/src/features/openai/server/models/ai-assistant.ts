@@ -11,7 +11,7 @@ export interface AiAssistantDocument extends AiAssistant, Document {}
 
 interface AiAssistantModel extends Model<AiAssistantDocument> {
   findByPagePaths(pagePaths: string[]): Promise<AiAssistantDocument[]>;
-  toggleDefault(id: string, isDefault: boolean): Promise<AiAssistantDocument>;
+  setDefault(id: string, isDefault: boolean): Promise<AiAssistantDocument>;
 }
 
 /*
@@ -127,7 +127,7 @@ schema.statics.findByPagePaths = async function(pagePaths: string[]): Promise<Ai
   return assistants;
 };
 
-schema.statics.toggleDefault = async function(id: string, isDefault: boolean): Promise<AiAssistantDocument> {
+schema.statics.setDefault = async function(id: string, isDefault: boolean): Promise<AiAssistantDocument> {
   const aiAssistant = await this.findOne({ _id: id, shareScope: AiAssistantAccessScope.PUBLIC_ONLY });
   if (aiAssistant == null) {
     throw createError(404, 'AiAssistant document does not exist');

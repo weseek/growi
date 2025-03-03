@@ -11,7 +11,7 @@ import loggerFactory from '~/utils/logger';
 import type { AiAssistantAccessScope } from '../../../../interfaces/ai-assistant';
 import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
-import { deleteAiAssistant, toggleDefaultAiAssistant } from '../../../services/ai-assistant';
+import { deleteAiAssistant, setDefaultAiAssistant } from '../../../services/ai-assistant';
 import { deleteThread } from '../../../services/thread';
 import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
@@ -170,9 +170,9 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     setIsThreadsOpened(toggle => !toggle);
   }, [mutateThreadData]);
 
-  const toggleDefaultAiAssistantHandler = useCallback(async() => {
+  const setDefaultAiAssistantHandler = useCallback(async() => {
     try {
-      await toggleDefaultAiAssistant(aiAssistant._id, !aiAssistant.isDefault);
+      await setDefaultAiAssistant(aiAssistant._id, !aiAssistant.isDefault);
       onUpdated?.();
       toastSuccess('デフォルトアシスタントを切り替えました');
     }
@@ -238,7 +238,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
               className="btn btn-link text-secondary p-0"
               onClick={(e) => {
                 e.stopPropagation();
-                toggleDefaultAiAssistantHandler();
+                setDefaultAiAssistantHandler();
               }}
             >
               <span className={`material-symbols-outlined fs-5 ${aiAssistant.isDefault ? 'fill' : ''}`}>star</span>

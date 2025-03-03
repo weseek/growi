@@ -14,9 +14,9 @@ import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
-const logger = loggerFactory('growi:routes:apiv3:openai:toggle-default-ai-assistants');
+const logger = loggerFactory('growi:routes:apiv3:openai:set-default-ai-assistants');
 
-type ToggleDefaultAiAssistantFactory = (crowi: Crowi) => RequestHandler[];
+type setDefaultAiAssistantFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqParams = {
   id: string,
@@ -28,7 +28,7 @@ type ReqBody = {
 
 type Req = Request<ReqParams, Response, ReqBody>
 
-export const toggleDefaultAiAssistantFactory: ToggleDefaultAiAssistantFactory = (crowi) => {
+export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi) => {
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
@@ -49,7 +49,7 @@ export const toggleDefaultAiAssistantFactory: ToggleDefaultAiAssistantFactory = 
         const { id } = req.params;
         const { isDefault } = req.body;
 
-        const updatedAiAssistant = await AiAssistantModel.toggleDefault(id, isDefault);
+        const updatedAiAssistant = await AiAssistantModel.setDefault(id, isDefault);
         return res.apiv3({ updatedAiAssistant });
       }
       catch (err) {
