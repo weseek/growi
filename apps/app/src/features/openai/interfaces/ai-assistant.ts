@@ -37,6 +37,7 @@ export interface AiAssistant {
   grantedGroupsForAccessScope?: IGrantedGroup[]
   shareScope: AiAssistantShareScope
   accessScope: AiAssistantAccessScope
+  isDefault: boolean
 }
 
 export type AiAssistantHasId = AiAssistant & HasObjectId
