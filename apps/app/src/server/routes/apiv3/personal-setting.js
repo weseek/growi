@@ -435,16 +435,76 @@ module.exports = (crowi) => {
     const { expiredAt, description, scope } = body;
 
     try {
-      const token = await AccessToken.generateToken(user, expiredAt, description, scope);
+      const token = await AccessToken.generateToken(user, expiredAt, scope, description);
 
       const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_CREATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.apiv3({ token });
+      return res.apiv3(token);
     }
     catch (err) {
       logger.error(err);
       return res.apiv3Err('generate-access-token-failed');
+    }
+  });
+
+  /**
+   * @swagger
+   *   /personal-setting/access-token/:
+   *     delete:
+   *     tags: [GeneralSetting]
+   *     operationId: deleteAccessToken
+   *     summary: /personal-setting/access-token
+   *     description: Delete access token
+   *     responses:
+   *       200:
+   *         description: succeded to delete access token
+   *
+   */
+  router.delete('/access-token', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
+    const { body } = req;
+    const { tokenId } = body;
+
+    try {
+      await AccessToken.deleteTokenById(tokenId);
+
+      const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
+      return res.apiv3({});
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('delete-access-token-failed');
+    }
+  });
+
+  /**
+   * @swagger
+   *   /personal-setting/access-token/all:
+   *     delete:
+   *       tags: [GeneralSetting]
+   *       operationId: deleteAllAccessToken
+   *       summary: /personal-setting/access-token/all
+   *       description: Delete all access tokens
+   *       responses:
+   *         200:
+   *           description: succeded to delete all access tokens
+   */
+  router.delete('/access-token/all', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
+    const { user } = req;
+
+    try {
+      await AccessToken.deleteAllTokensByUserId(user._id);
+
+      const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
+      return res.apiv3({});
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('delete-all-access-token-failed');
     }
   });
 
