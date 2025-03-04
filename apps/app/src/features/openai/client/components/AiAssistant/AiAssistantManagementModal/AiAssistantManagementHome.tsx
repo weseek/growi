@@ -11,7 +11,7 @@ import { useCurrentUser } from '~/stores-universal/context';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
-import { isLearnablePageLimitReached } from '../../../../utils/is-learnable-page-limit-reached';
+import { isLearnablePageLimitExceeded } from '../../../../utils/is-learnable-page-limit-exceeded';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 import { ShareScopeWarningModal } from './ShareScopeWarningModal';
@@ -70,7 +70,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
       : t(baseLabel);
   }, [currentUser?.username, t]);
 
-  const canUpsert = name !== '' && selectedPages.length !== 0 && !isLearnablePageLimitReached(totalSelectedPageCount);
+  const canUpsert = name !== '' && selectedPages.length !== 0 && !isLearnablePageLimitExceeded(totalSelectedPageCount);
 
   const upsertAiAssistantHandler = useCallback(async() => {
     const shouldWarning = () => {
