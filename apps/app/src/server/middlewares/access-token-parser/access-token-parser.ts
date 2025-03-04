@@ -4,7 +4,7 @@ import type { NextFunction, Response } from 'express';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
-import type { IAccessToken } from '~/server/models/access-token';
+import type { IAccessTokenDocument } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 
 import type { AccessTokenParserReq } from './interfaces';
@@ -19,7 +19,7 @@ export const accessTokenParser = async(req: AccessTokenParserReq, res: Response,
     return next();
   }
 
-  const AccessToken = mongoose.model<HydratedDocument<IAccessToken>, { findUserIdByToken }>('AccessToken');
+  const AccessToken = mongoose.model<HydratedDocument<IAccessTokenDocument>, { findUserIdByToken }>('AccessToken');
 
   logger.debug('accessToken is', accessToken);
 
