@@ -208,6 +208,10 @@ export const useIsAiEnabled = (initialData?: boolean): SWRResponse<boolean, Erro
   return useContextSWR('isAiEnabled', initialData);
 };
 
+export const useLimitLearnablePageCount = (initialData?: number): SWRResponse<number, Error> => {
+  return useContextSWR('limitLearnablePageCount', initialData);
+};
+
 /** **********************************************************
  *                     Computed contexts
  *********************************************************** */

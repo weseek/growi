@@ -1,5 +1,5 @@
 import type {
-  IGrantedGroup, IUser, Ref, HasObjectId,
+  IGrantedGroup, IUserHasId, Ref, HasObjectId,
 } from '@growi/core';
 
 import type { IVectorStore } from './vector-store';
@@ -32,7 +32,7 @@ export interface AiAssistant {
   additionalInstruction: string
   pagePathPatterns: string[],
   vectorStore: Ref<IVectorStore>
-  owner: Ref<IUser>
+  owner: Ref<IUserHasId>
   grantedGroupsForShareScope?: IGrantedGroup[]
   grantedGroupsForAccessScope?: IGrantedGroup[]
   shareScope: AiAssistantShareScope

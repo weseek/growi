@@ -1,6 +1,5 @@
 import { GroupType } from '@growi/core';
 import { isGlobPatternPath, isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
-import escapeStringRegexp from 'escape-string-regexp';
 import { type ValidationChain, body } from 'express-validator';
 
 import { AiAssistantShareScope, AiAssistantAccessScope } from '../../../interfaces/ai-assistant';
@@ -31,7 +30,14 @@ export const upsertAiAssistantValidator: ValidationChain[] = [
     .withMessage('pagePathPatterns must be an array of strings')
     .not()
     .isEmpty()
-    .withMessage('pagePathPatterns must not be empty'),
+    .withMessage('pagePathPatterns must not be empty')
+    .custom((pagePathPattens: string[]) => {
+      if (pagePathPattens.length > 300) {
+        throw new Error('pagePathPattens must be an array of strings with a maximum length of 300');
+      }
+
+      return true;
+    }),
 
   body('pagePathPatterns.*') // each item of pagePathPatterns
     .isString()

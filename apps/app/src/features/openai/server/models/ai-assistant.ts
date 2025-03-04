@@ -10,7 +10,7 @@ import { generateGlobPatterns } from '../utils/generate-glob-patterns';
 export interface AiAssistantDocument extends AiAssistant, Document {}
 
 interface AiAssistantModel extends Model<AiAssistantDocument> {
-  findByPagePaths(pagePaths: string[]): Promise<AiAssistantDocument[]>;
+  findByPagePaths(pagePaths: string[], options?: {shouldPopulateOwner?: boolean, shouldPopulateVectorStore?: boolean}): Promise<AiAssistantDocument[]>;
   setDefault(id: string, isDefault: boolean): Promise<AiAssistantDocument>;
 }
 
@@ -113,7 +113,9 @@ const schema = new Schema<AiAssistantDocument>(
 );
 
 
-schema.statics.findByPagePaths = async function(pagePaths: string[]): Promise<AiAssistantDocument[]> {
+schema.statics.findByPagePaths = async function(
+    pagePaths: string[], options?: {shouldPopulateOwner?: boolean, shouldPopulateVectorStore?: boolean},
+): Promise<AiAssistantDocument[]> {
   const pagePathsWithGlobPattern = pagePaths.map(pagePath => generateGlobPatterns(pagePath)).flat();
   const assistants = await this.find({
     $or: [
@@ -122,7 +124,9 @@ schema.statics.findByPagePaths = async function(pagePaths: string[]): Promise<Ai
       // Case 2: Glob pattern match
       { pagePathPatterns: { $in: pagePathsWithGlobPattern } },
     ],
-  }).populate('vectorStore');
+  })
+    .populate(options?.shouldPopulateOwner ? 'owner' : undefined)
+    .populate(options?.shouldPopulateVectorStore ? 'vectorStore' : undefined);
 
   return assistants;
 };

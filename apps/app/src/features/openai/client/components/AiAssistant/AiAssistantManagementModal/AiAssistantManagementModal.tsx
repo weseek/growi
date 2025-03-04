@@ -16,6 +16,7 @@ import { useSWRxPagePathsWithDescendantCount } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
+import { removeGlobPath } from '../../../../utils/remove-glob-path';
 import { createAiAssistant, updateAiAssistant } from '../../../services/ai-assistant';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode, useSWRxAiAssistants } from '../../../stores/ai-assistant';
 
@@ -53,15 +54,6 @@ const convertToSelectedPages = (pagePathPatterns: string[], pagePathsWithDescend
       page: page ?? { path },
       isIncludeSubPage,
     };
-  });
-};
-
-const removeGlobPath = (pagePathPattens?: string[]): string[] => {
-  if (pagePathPattens == null) {
-    return [];
-  }
-  return pagePathPattens.map((pagePathPattern) => {
-    return pagePathPattern.endsWith('/*') ? pagePathPattern.slice(0, -2) : pagePathPattern;
   });
 };
 
