@@ -38,8 +38,8 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
       try {
         const aiAssistantData = { ...req.body, owner: req.user._id };
 
-        const isLearnablePageLimitReached = await openaiService.isLearnablePageLimitReached(req.user, aiAssistantData.pagePathPatterns);
-        if (isLearnablePageLimitReached) {
+        const isLearnablePageLimitExceeded = await openaiService.isLearnablePageLimitExceeded(req.user, aiAssistantData.pagePathPatterns);
+        if (isLearnablePageLimitExceeded) {
           return res.apiv3Err(new ErrorV3('The number of learnable pages exceeds the limit'), 400);
         }
 

@@ -33,7 +33,7 @@ import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
 import type { MessageListParams } from '../../interfaces/message';
-import { isLearnablePageLimitReached as _isLearnablePageLimitReached } from '../../utils/is-learnable-page-limit-reached';
+import { isLearnablePageLimitExceeded as _isLearnablePageLimitExceeded } from '../../utils/is-learnable-page-limit-exceeded';
 import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
@@ -92,7 +92,7 @@ export interface IOpenaiService {
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
   deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument>
-  isLearnablePageLimitReached(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean>;
+  isLearnablePageLimitExceeded(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean>;
 }
 class OpenaiService implements IOpenaiService {
 
@@ -967,7 +967,7 @@ class OpenaiService implements IOpenaiService {
     return deletedAiAssistant;
   }
 
-  async isLearnablePageLimitReached(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean> {
+  async isLearnablePageLimitExceeded(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean> {
     const normalizedPagePathPatterns = removeGlobPath(pagePathPatterns);
 
     const PageModel = mongoose.model<IPage, PageModel>('Page');
@@ -984,7 +984,7 @@ class OpenaiService implements IOpenaiService {
 
     logger.debug('TotalPageCount: ', totalPageCount);
 
-    return _isLearnablePageLimitReached(totalPageCount);
+    return _isLearnablePageLimitExceeded(totalPageCount);
   }
 
 }
