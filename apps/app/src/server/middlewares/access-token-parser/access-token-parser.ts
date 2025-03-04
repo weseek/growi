@@ -1,9 +1,8 @@
-import type { IUser, IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import type { NextFunction, Response } from 'express';
-import type { HydratedDocument } from 'mongoose';
-import mongoose from 'mongoose';
 
+import { AccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 
 import type { AccessTokenParserReq } from './interfaces';
@@ -18,14 +17,19 @@ export const accessTokenParser = async(req: AccessTokenParserReq, res: Response,
     return next();
   }
 
-  const User = mongoose.model<HydratedDocument<IUser>, { findUserByApiToken }>('User');
-
   logger.debug('accessToken is', accessToken);
 
-  const user: IUserHasId = await User.findUserByApiToken(accessToken);
-
-  if (user == null) {
+  // check the access token is valid
+  const userId = await AccessToken.findUserIdByToken(accessToken);
+  if (userId == null) {
     logger.debug('The access token is invalid');
+    return next();
+  }
+
+  // check the user is valid
+  const { user }: {user: IUserHasId} = await userId.populate('user');
+  if (user == null) {
+    logger.debug('The access token\'s associated user is invalid');
     return next();
   }
 

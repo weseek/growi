@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 import { isPopulated, isRef, type Ref } from '../../interfaces/common';
 import type { IUser } from '../../interfaces/user';
 
-export type IUserSerializedSecurely<U extends IUser> = Omit<U, 'password' | 'apiToken' | 'email'> & { email?: string };
+export type IUserSerializedSecurely<U extends IUser> = Omit<U, 'password' | 'email'> & { email?: string };
 
 export const omitInsecureAttributes = <U extends IUser>(user: U): IUserSerializedSecurely<U> => {
 
@@ -13,7 +13,7 @@ export const omitInsecureAttributes = <U extends IUser>(user: U): IUserSerialize
 
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    password, apiToken, email, ...rest
+    password, email, ...rest
   } = leanDoc;
 
   const secureUser: IUserSerializedSecurely<U> = rest;

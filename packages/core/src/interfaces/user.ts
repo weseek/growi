@@ -14,7 +14,6 @@ export type IUser = {
   isGravatarEnabled: boolean,
   admin: boolean,
   readOnly: boolean,
-  apiToken?: string,
   isEmailPublished: boolean,
   isInvitationEmailSended: boolean,
   lang: Lang,
