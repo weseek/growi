@@ -49,7 +49,9 @@ export class EditorStreamProcessor {
   // 送信済みの差分キー
   private sentDiffKeys = new Set<string>();
 
-  constructor(private sseHelper: SseHelper) {}
+  constructor(private sseHelper: SseHelper) {
+    this.sseHelper = sseHelper;
+  }
 
   /**
    * JSONデータを処理する

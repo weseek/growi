@@ -28,7 +28,9 @@ export interface ISseHelper {
  */
 export class SseHelper implements ISseHelper {
 
-  constructor(private res: Response) {}
+  constructor(private res: Response) {
+    this.res = res;
+  }
 
   /**
    * SSEフォーマットでデータを送信する
