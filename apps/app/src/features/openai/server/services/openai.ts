@@ -2,7 +2,9 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import type { IUser, Ref, Lang } from '@growi/core';
+import type {
+  IUser, Ref, Lang, IPage,
+} from '@growi/core';
 import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
@@ -31,6 +33,8 @@ import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
 import type { MessageListParams } from '../../interfaces/message';
+import { isLearnablePageLimitReached as _isLearnablePageLimitReached } from '../../utils/is-learnable-page-limit-reached';
+import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
 
@@ -88,6 +92,7 @@ export interface IOpenaiService {
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
   deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument>
+  isLearnablePageLimitReached(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean>;
 }
 class OpenaiService implements IOpenaiService {
 
@@ -960,6 +965,26 @@ class OpenaiService implements IOpenaiService {
 
     const deletedAiAssistant = await aiAssistant.remove();
     return deletedAiAssistant;
+  }
+
+  async isLearnablePageLimitReached(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean> {
+    const normalizedPagePathPatterns = removeGlobPath(pagePathPatterns);
+
+    const PageModel = mongoose.model<IPage, PageModel>('Page');
+    const pagePathsWithDescendantCount = await PageModel.descendantCountByPaths(normalizedPagePathPatterns, user, null, true, true);
+
+    const totalPageCount = pagePathsWithDescendantCount.reduce((total, pagePathWithDescendantCount) => {
+      const descendantCount = pagePathPatterns.includes(pagePathWithDescendantCount.path)
+        ? 0 // Treat as single page when included in "pagePathPatterns"
+        : pagePathWithDescendantCount.descendantCount;
+
+      const pageCount = descendantCount + 1;
+      return total + pageCount;
+    }, 0);
+
+    logger.debug('TotalPageCount: ', totalPageCount);
+
+    return _isLearnablePageLimitReached(totalPageCount);
   }
 
 }
