@@ -5,7 +5,7 @@ import { mock } from 'vitest-mock-extended';
 
 import type Crowi from '~/server/crowi';
 import type UserEvent from '~/server/events/user';
-
+import { AccessToken } from '~/server/models/access-token';
 
 import type { AccessTokenParserReq } from './interfaces';
 
@@ -88,11 +88,11 @@ describe('access-token-parser middleware', () => {
       username: faker.string.uuid(),
       password: faker.internet.password(),
       lang: 'en_US',
-      apiToken: faker.internet.password(),
     });
 
     // act
-    reqMock.query.access_token = targetUser.apiToken;
+    const { token } = await AccessToken.generateToken(targetUser._id, new Date(Date.now() + 1000 * 60 * 60 * 24), []);
+    reqMock.query.access_token = token;
     await accessTokenParser(reqMock, resMock, nextMock);
 
     // assert
@@ -118,11 +118,11 @@ describe('access-token-parser middleware', () => {
       username: faker.string.uuid(),
       password: faker.internet.password(),
       lang: 'en_US',
-      apiToken: faker.internet.password(),
     });
 
     // act
-    reqMock.body.access_token = targetUser.apiToken;
+    const { token } = await AccessToken.generateToken(targetUser._id, new Date(Date.now() + 1000 * 60 * 60 * 24), []);
+    reqMock.query.access_token = token;
     await accessTokenParser(reqMock, resMock, nextMock);
 
     // assert
