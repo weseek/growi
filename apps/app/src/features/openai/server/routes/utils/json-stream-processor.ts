@@ -91,6 +91,7 @@ export class JsonStreamProcessor implements IJsonStreamProcessor {
 
     // データハンドラ
     this.jsonValueStream.on('data', ({ value }) => {
+      console.log({ value });
       if (!value) return;
       this.notifyHandlers(value);
     });
@@ -126,6 +127,8 @@ export class JsonStreamProcessor implements IJsonStreamProcessor {
    * JSON文字列を処理する
    */
   process(jsonString: string): void {
+    console.log({ jsonString });
+
     try {
       // パーサーに直接データを書き込む
       this.jsonParser.write(jsonString);
