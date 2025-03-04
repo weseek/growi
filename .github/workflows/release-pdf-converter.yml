@@ -45,10 +45,8 @@ jobs:
         platforms: linux/amd64,linux/arm64
         push: true
         builder: ${{ steps.buildx.outputs.name }}
-        # cache-from: type=gha
-        # cache-to: type=gha,mode=max
-        cache-from: []
-        cache-to: []
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
         tags: ${{ steps.meta.outputs.tags }}
 
     # - name: Add tag
