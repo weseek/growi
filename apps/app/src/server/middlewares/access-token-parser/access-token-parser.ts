@@ -1,10 +1,8 @@
 import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import type { NextFunction, Response } from 'express';
-import type { HydratedDocument } from 'mongoose';
-import mongoose from 'mongoose';
 
-import type { IAccessTokenDocument } from '~/server/models/access-token';
+import { AccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 
 import type { AccessTokenParserReq } from './interfaces';
@@ -18,8 +16,6 @@ export const accessTokenParser = async(req: AccessTokenParserReq, res: Response,
   if (accessToken == null || typeof accessToken !== 'string') {
     return next();
   }
-
-  const AccessToken = mongoose.model<HydratedDocument<IAccessTokenDocument>, { findUserIdByToken }>('AccessToken');
 
   logger.debug('accessToken is', accessToken);
 

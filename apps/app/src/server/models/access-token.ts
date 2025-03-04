@@ -1,7 +1,9 @@
 import crypto from 'crypto';
 
 import type { Ref, IUserHasId } from '@growi/core/dist/interfaces';
-import type { Document, Model, Types } from 'mongoose';
+import type {
+  Document, Model, Types, HydratedDocument,
+} from 'mongoose';
 import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -13,6 +15,14 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 const logger = loggerFactory('growi:models:access-token');
 
 const generateTokenHash = (token: string) => crypto.createHash('sha256').update(token).digest('hex');
+
+type GenerateTokenResult = {
+  token: string,
+  _id: Types.ObjectId,
+  expiredAt: Date,
+  scope?: string[],
+  description?: string,
+}
 
 export type IAccessToken = {
   user: Ref<IUserHasId>,
@@ -27,13 +37,13 @@ export interface IAccessTokenDocument extends IAccessToken, Document {
 }
 
 export interface IAccessTokenModel extends Model<IAccessTokenDocument> {
-  generateToken: (userId: Types.ObjectId, expiredAt: Date, scope: string[], description?: string,) => Promise<string>
+  generateToken: (userId: Types.ObjectId, expiredAt: Date, scope: string[], description?: string,) => Promise<GenerateTokenResult>
   deleteToken: (token: string) => Promise<void>
   deleteTokenById: (tokenId: Types.ObjectId) => Promise<void>
   deleteAllTokensByUserId: (userId: Types.ObjectId) => Promise<void>
   deleteExpiredToken: () => Promise<void>
-  findUserIdByToken: (token: string) => Promise<Types.ObjectId>
-  findTokenByUserId: (userId: Types.ObjectId) => Promise<IAccessTokenDocument[]>
+  findUserIdByToken: (token: string) => Promise<HydratedDocument<IAccessTokenDocument> | null>
+  findTokenByUserId: (userId: Types.ObjectId) => Promise<HydratedDocument<IAccessTokenDocument>[]>
   validateTokenScopes: (token: string, requiredScope: string[]) => Promise<boolean>
 }
 
@@ -73,20 +83,20 @@ accessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId,
 
 accessTokenSchema.statics.deleteToken = async function(token: string) {
   const tokenHash = generateTokenHash(token);
-  return this.deleteOne({ tokenHash });
+  await this.deleteOne({ tokenHash });
 };
 
 accessTokenSchema.statics.deleteTokenById = async function(tokenId: Types.ObjectId) {
-  return this.deleteOne({ _id: tokenId });
+  await this.deleteOne({ _id: tokenId });
 };
 
 accessTokenSchema.statics.deleteAllTokensByUserId = async function(userId: Types.ObjectId) {
-  return this.deleteMany({ user: userId });
+  await this.deleteMany({ user: userId });
 };
 
 accessTokenSchema.statics.deleteExpiredToken = async function() {
   const now = new Date();
-  return this.deleteMany({ expiredAt: { $lte: now } });
+  await this.deleteMany({ expiredAt: { $lte: now } });
 };
 
 accessTokenSchema.statics.findUserIdByToken = async function(token: string) {
