@@ -1,8 +1,9 @@
-import { Model, Schema, Document } from 'mongoose';
+import type { Model, Document } from 'mongoose';
+import { Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
+import type { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
 
 import conditionSchema from './schema/condition';
 import questionSchema from './schema/question';

@@ -9,6 +9,9 @@ services:
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
       - ../../share:/workspace/share:delegated
     tty: true
+    networks:
+    - default
+    - opentelemetry-collector-dev-setup_default
 
   mongo:
     image: mongo:6.0
@@ -45,3 +48,8 @@ volumes:
   pnpm-store:
   node_modules:
   buildcache_app:
+
+networks:
+  default:
+  opentelemetry-collector-dev-setup_default:
+    external: ${OPENTELEMETRY_COLLECTOR_DEV_ENABLED:-false}

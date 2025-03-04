@@ -2,6 +2,7 @@ import ExternalUserGroupRelation from '~/features/external-user-group/server/mod
 import { SupportedAction } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import type Crowi from '../crowi';
 import UserGroupRelation from '../models/user-group-relation';
 import { isSearchError } from '../models/vo/search-error';
 
@@ -34,7 +35,7 @@ const logger = loggerFactory('growi:routes:search');
  *                 example: 2
  *
  */
-module.exports = function(crowi, app) {
+module.exports = function(crowi: Crowi, app) {
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
 
