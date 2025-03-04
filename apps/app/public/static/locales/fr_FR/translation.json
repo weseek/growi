@@ -343,6 +343,7 @@
       "file": "Fichier seulement"
     },
     "editor_config": "Préférences de l'éditeur",
+    "editor_assistant": "Assistant d'édition",
     "Show active line": "Surligner la ligne active",
     "auto_format_table": "Formatter les tableaux",
     "overwrite_scopes": "{{operation}} et écraser les scopes des pages enfants",
