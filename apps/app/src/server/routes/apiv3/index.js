@@ -12,6 +12,7 @@ import g2gTransfer from './g2g-transfer';
 import importRoute from './import';
 import pageListing from './page-listing';
 import securitySettings from './security-settings';
+import { factory as userRouteFactory } from './user';
 import * as userActivation from './user-activation';
 
 const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-unused-vars
@@ -126,6 +127,8 @@ module.exports = (crowi, app) => {
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
 
   router.use('/openai', openaiRouteFactory(crowi));
+
+  router.use('/user', userRouteFactory(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };
