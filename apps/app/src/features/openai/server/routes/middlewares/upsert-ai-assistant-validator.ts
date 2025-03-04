@@ -35,6 +35,8 @@ export const upsertAiAssistantValidator: ValidationChain[] = [
       if (pagePathPattens.length > 300) {
         throw new Error('pagePathPattens must be an array of strings with a maximum length of 300');
       }
+
+      return true;
     }),
 
   body('pagePathPatterns.*') // each item of pagePathPatterns
