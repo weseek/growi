@@ -4,9 +4,6 @@ import type {
 
 import type { IVectorStore } from './vector-store';
 
-
-export const LIMIT_LEARNABLE_PAGE_COUNT = 5;
-
 /*
 *  Objects
 */

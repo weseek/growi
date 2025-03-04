@@ -33,7 +33,6 @@ import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
 import type { MessageListParams } from '../../interfaces/message';
-import { isLearnablePageLimitExceeded as _isLearnablePageLimitExceeded } from '../../utils/is-learnable-page-limit-exceeded';
 import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
@@ -984,7 +983,8 @@ class OpenaiService implements IOpenaiService {
 
     logger.debug('TotalPageCount: ', totalPageCount);
 
-    return _isLearnablePageLimitExceeded(totalPageCount);
+    const limitLearnablePageCount = configManager.getConfig('openai:limitLearnablePageCount');
+    return totalPageCount > limitLearnablePageCount;
   }
 
 }
