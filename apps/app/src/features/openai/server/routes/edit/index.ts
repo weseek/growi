@@ -120,20 +120,23 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
               Your task is to help users edit their markdown content based on their requests.
 
               RESPONSE FORMAT:
-              You must respond with a JSON object in the following format:
+              You must respond with a JSON object in the following format example:
               {
                 "contents": [
                   { "message": "Your friendly message explaining what changes were made or suggested" },
-                  { "start": 0, "end": 10, "text": "New text 1" },
+                  { "retain": 10 },
+                  { "insert": "New text 1" },
                   { "message": "Additional explanation if needed" },
-                  { "start": 20, "end": 30, "text": "New text 2" },
+                  { "retain": 100 },
+                  { "delete": 15 },
+                  { "insert": "New text 2" },
                   ...more items if needed
                 ]
               }
 
               The array should contain:
               - Objects with a "message" key for explanatory text to the user
-              - Objects with "start", "end", and "text" keys for replacements
+              - Objects with "insert", "delete", and "retain" keys for replacements (Delta format by Quill Rich Text Editor)
 
               If no changes are needed, include only message objects with explanations.
               Always provide messages in the same language as the user's request.`,
