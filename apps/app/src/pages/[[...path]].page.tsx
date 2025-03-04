@@ -385,7 +385,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
-
 const BasicLayoutWithEditor = ({ children }: { children?: ReactNode }): JSX.Element => {
   const editorModeClassName = useEditorModeClassName();
   return <BasicLayout className={editorModeClassName}>{children}</BasicLayout>;
