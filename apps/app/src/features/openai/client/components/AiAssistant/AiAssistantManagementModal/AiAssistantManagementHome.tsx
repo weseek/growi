@@ -5,7 +5,7 @@ import {
   ModalHeader, ModalBody, ModalFooter, Input,
 } from 'reactstrap';
 
-import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantShareScope, AiAssistantAccessScope, LIMIT_LEARNABLE_PAGE_COUNT } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores-universal/context';
 
@@ -52,8 +52,6 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
   const [isShareScopeWarningModalOpen, setIsShareScopeWarningModalOpen] = useState(false);
 
-  const canUpsert = name !== '' && selectedPages.length !== 0;
-
   const totalSelectedPageCount = useMemo(() => {
     return selectedPages.reduce((total, selectedPage) => {
       const descendantCount = selectedPage.isIncludeSubPage
@@ -70,6 +68,8 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
       ? t(baseLabel, { username: currentUser?.username })
       : t(baseLabel);
   }, [currentUser?.username, t]);
+
+  const canUpsert = name !== '' && selectedPages.length !== 0 && totalSelectedPageCount <= LIMIT_LEARNABLE_PAGE_COUNT;
 
   const upsertAiAssistantHandler = useCallback(async() => {
     const shouldWarning = () => {
