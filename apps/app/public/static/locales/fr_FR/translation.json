@@ -528,6 +528,18 @@
       }
     }
   },
+ "ai_assistant_tree": {
+    "add_assistant": "Ajouter un assistant",
+    "my_assistants": "Mes assistants",
+    "team_assistants": "Assistants d'équipe",
+    "thread_does_not_exist": "Aucune discussion",
+    "toaster": {
+      "ai_assistant_deleted_success": "Assistant supprimé",
+      "ai_assistant_deleted_failed": "Échec de la suppression de l'assistant",
+      "thread_deleted_success": "Discussion supprimée",
+      "thread_deleted_failed": "Échec de la suppression de la discussion"
+    }
+  },
   "link_edit": {
     "edit_link": "Modifier lien",
     "set_link_and_label": "Ajouter lien et étiquette",
