@@ -826,6 +826,9 @@ importers:
       '@types/react-stickynode':
         specifier: ^4.0.3
         version: 4.0.3
+      '@types/stream-json':
+        specifier: ^1.7.8
+        version: 1.7.8
       '@types/testing-library__dom':
         specifier: ^7.5.0
         version: 7.5.0
@@ -4702,6 +4705,12 @@ packages:
 
   '@types/stack-utils@2.0.3':
     resolution: {integrity: sha512-9aEbYZ3TbYMznPdcdr3SmIrLXwC/AKZXQeCf9Pgao5CKb8CyHuEX5jzWPTkvregvhRJHcpRO6BFoGW9ycaOkYw==}
+
+  '@types/stream-chain@2.1.0':
+    resolution: {integrity: sha512-guDyAl6s/CAzXUOWpGK2bHvdiopLIwpGu8v10+lb9hnQOyo4oj/ZUQFOvqFjKGsE3wJP1fpIesCcMvbXuWsqOg==}
+
+  '@types/stream-json@1.7.8':
+    resolution: {integrity: sha512-MU1OB1eFLcYWd1LjwKXrxdoPtXSRzRmAnnxs4Js/ayB5O/NvHraWwuOaqMWIebpYwM6khFlsJOHEhI9xK/ab4Q==}
 
   '@types/tedious@4.0.14':
     resolution: {integrity: sha512-KHPsfX/FoVbUGbyYvk1q9MMQHLPeRZhRJZdO45Q4YjvFkv4hMNghCWTvy7rdKessBsmtz4euWCWAB6/tVpI1Iw==}
@@ -17683,6 +17692,15 @@ snapshots:
   '@types/shimmer@1.2.0': {}
 
   '@types/stack-utils@2.0.3': {}
+
+  '@types/stream-chain@2.1.0':
+    dependencies:
+      '@types/node': 20.14.0
+
+  '@types/stream-json@1.7.8':
+    dependencies:
+      '@types/node': 20.14.0
+      '@types/stream-chain': 2.1.0
 
   '@types/tedious@4.0.14':
     dependencies:

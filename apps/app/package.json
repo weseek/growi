@@ -279,6 +279,7 @@
     "@types/react-input-autosize": "^2.2.4",
     "@types/react-scroll": "^1.8.4",
     "@types/react-stickynode": "^4.0.3",
+    "@types/stream-json": "^1.7.8",
     "@types/testing-library__dom": "^7.5.0",
     "@types/throttle-debounce": "^5.0.1",
     "@types/unist": "^3.0.3",
