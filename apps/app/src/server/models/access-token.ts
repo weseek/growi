@@ -111,4 +111,4 @@ accessTokenSchema.methods.isExpired = function() {
   return this.expiredAt < new Date();
 };
 
-export const AccessToken = getOrCreateModel<IAccessTokenDocument, IAccessToken>('AccessToken', accessTokenSchema);
+export const AccessToken = getOrCreateModel<IAccessTokenDocument, IAccessTokenModel>('AccessToken', accessTokenSchema);
