@@ -5,7 +5,7 @@ import {
   ModalHeader, ModalBody, ModalFooter, Input,
 } from 'reactstrap';
 
-import { AiAssistantShareScope, AiAssistantAccessScope, LIMIT_LEARNABLE_PAGE_COUNT } from '~/features/openai/interfaces/ai-assistant';
+import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores-universal/context';
 
