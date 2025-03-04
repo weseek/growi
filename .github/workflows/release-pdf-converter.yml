@@ -47,6 +47,8 @@ jobs:
         builder: ${{ steps.buildx.outputs.name }}
         # cache-from: type=gha
         # cache-to: type=gha,mode=max
+        cache-from: []
+        cache-to: []
         tags: ${{ steps.meta.outputs.tags }}
 
     # - name: Add tag
