@@ -392,9 +392,9 @@ module.exports = (crowi) => {
    *           application/json:
    *             schema:
    *               properties:
-   *                 accessToken:
+   *                 accessTokens:
    *                   type: objet
-   *                   description: expiredAt, description, scopes of access token
+   *                   description: array of access tokens
    */
   router.get('/access-token', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
     const { user } = req;
@@ -425,9 +425,21 @@ module.exports = (crowi) => {
    *             application/json:
    *               schema:
    *                 properties:
+   *                   _id:
+   *                     type: string
+   *                     description: id of access token
    *                   token:
    *                     type: string
    *                     description: access token
+   *                   expiredAt:
+   *                     type: Date
+   *                     description: expired date
+   *                   description:
+   *                     type: string
+   *                     description: description of access token
+   *                   scope:
+   *                     type: string[]
+   *                     description: scope of access token
    */
   router.post('/access-token', loginRequiredStrictly, addActivity, async(req, res) => {
 
@@ -435,12 +447,12 @@ module.exports = (crowi) => {
     const { expiredAt, description, scope } = body;
 
     try {
-      const token = await AccessToken.generateToken(user, expiredAt, scope, description);
+      const tokenData = await AccessToken.generateToken(user, expiredAt, scope, description);
 
       const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_CREATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.apiv3(token);
+      return res.apiv3(tokenData);
     }
     catch (err) {
       logger.error(err);
