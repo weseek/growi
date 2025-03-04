@@ -1,6 +1,6 @@
 {
   "name": "@growi/pdf-converter",
-  "version": "1.0.0-pdf-converter.0",
+  "version": "1.0.0-RC.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
