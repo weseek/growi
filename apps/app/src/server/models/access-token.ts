@@ -43,7 +43,7 @@ export interface IAccessTokenModel extends Model<IAccessTokenDocument> {
   deleteAllTokensByUserId: (userId: Types.ObjectId) => Promise<void>
   deleteExpiredToken: () => Promise<void>
   findUserIdByToken: (token: string) => Promise<HydratedDocument<IAccessTokenDocument> | null>
-  findTokenByUserId: (userId: Types.ObjectId) => Promise<HydratedDocument<IAccessTokenDocument>[]>
+  findTokenByUserId: (userId: Types.ObjectId) => Promise<HydratedDocument<IAccessTokenDocument>[] | null>
   validateTokenScopes: (token: string, requiredScope: string[]) => Promise<boolean>
 }
 
