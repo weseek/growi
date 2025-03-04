@@ -42,7 +42,7 @@ export async function requestPdfConverter(pageBulkExportJob: PageBulkExportJobDo
 
     const res = await pdfCtrlSyncJobStatus({
       jobId: pageBulkExportJob._id.toString(), expirationDate: bulkExportJobExpirationDate.toISOString(), status: pdfConvertStatus,
-    }, { baseURL: configManager.getConfig('app:pageBulkExportPdfConverterUrl') });
+    }, { baseURL: configManager.getConfig('app:pageBulkExportPdfConverterUri') });
 
     if (res.data.status === PdfCtrlSyncJobStatus202Status.PDF_EXPORT_DONE) {
       pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
