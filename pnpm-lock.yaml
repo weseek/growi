@@ -533,7 +533,7 @@ importers:
         version: 1.5.1
       openai:
         specifier: ^4.56.0
-        version: 4.56.0(encoding@0.1.13)
+        version: 4.56.0(encoding@0.1.13)(zod@3.24.2)
       openid-client:
         specifier: ^5.4.0
         version: 5.6.5
@@ -672,6 +672,9 @@ importers:
       socket.io:
         specifier: ^4.7.5
         version: 4.8.1
+      stream-json:
+        specifier: ^1.9.1
+        version: 1.9.1
       string-width:
         specifier: '=4.2.2'
         version: 4.2.2
@@ -741,6 +744,9 @@ importers:
       yjs:
         specifier: ^13.6.18
         version: 13.6.19
+      zod:
+        specifier: ^3.24.2
+        version: 3.24.2
     devDependencies:
       '@emoji-mart/data':
         specifier: ^1.2.1
@@ -11451,8 +11457,14 @@ packages:
     resolution: {integrity: sha512-ZRpmWyuCdg0TtNKk8bEqvm13oQvXMmzXDsfD4cBgcx5LouborvU5pm3JMkdTP3HcszyUI08AM1dHMXA5r2g6Sg==}
     engines: {node: '>= 0.3.0'}
 
+  stream-chain@2.2.5:
+    resolution: {integrity: sha512-1TJmBx6aSWqZ4tx7aTpBDXK0/e2hhcNSTV8+CbFJtDjbb+I1mZ8lHit0Grw9GRT+6JbIrrDd8esncgBi8aBXGA==}
+
   stream-events@1.0.5:
     resolution: {integrity: sha512-E1GUzBSgvct8Jsb3v2X15pjzN1tYebtbLaMg+eBOUOAxgbLoSbT2NS91ckc5lJD1KfLjId+jXJRgo0qnV5Nerg==}
+
+  stream-json@1.9.1:
+    resolution: {integrity: sha512-uWkjJ+2Nt/LO9Z/JyKZbMusL8Dkh97uUBTv3AJQ74y07lVahLY4eEFsPsE97pxYBwr8nnjMAIch5eqI0gPShyw==}
 
   stream-read@1.1.2:
     resolution: {integrity: sha512-YFn8e0y1XQW9nD1BPD1zCHbrUGTWdrCWoKc9W+6M9lMNBHWTdEJl676WowDpfIAo8EXU+kzWSIwhhbl/B9rm1w==}
@@ -12913,6 +12925,9 @@ packages:
   zip-stream@4.1.1:
     resolution: {integrity: sha512-9qv4rlDiopXg4E69k+vMHjNN63YFMe9sZMrdlvKnCjlCRWeCBswPPMPUfx+ipsAWq1LXHe70RcbaHdJJpS6hyQ==}
     engines: {node: '>= 10'}
+
+  zod@3.24.2:
+    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
   zwitch@1.0.5:
     resolution: {integrity: sha512-V50KMwwzqJV0NpZIZFwfOD5/lyny3WlSzRiXgA0G7VUnRlqttta1L6UQIHzd6EuBY/cHGfwTIck7w1yH6Q5zUw==}
@@ -24065,7 +24080,7 @@ snapshots:
       is-docker: 2.2.1
       is-wsl: 2.2.0
 
-  openai@4.56.0(encoding@0.1.13):
+  openai@4.56.0(encoding@0.1.13)(zod@3.24.2):
     dependencies:
       '@types/node': 18.19.46
       '@types/node-fetch': 2.6.11
@@ -24074,6 +24089,8 @@ snapshots:
       form-data-encoder: 1.7.2
       formdata-node: 4.4.1
       node-fetch: 2.7.0(encoding@0.1.13)
+    optionalDependencies:
+      zod: 3.24.2
     transitivePeerDependencies:
       - encoding
 
@@ -25889,9 +25906,15 @@ snapshots:
 
   stream-buffers@0.2.6: {}
 
+  stream-chain@2.2.5: {}
+
   stream-events@1.0.5:
     dependencies:
       stubs: 3.0.0
+
+  stream-json@1.9.1:
+    dependencies:
+      stream-chain: 2.2.5
 
   stream-read@1.1.2:
     dependencies:
@@ -27551,6 +27574,8 @@ snapshots:
       archiver-utils: 3.0.4
       compress-commons: 4.1.2
       readable-stream: 3.6.0
+
+  zod@3.24.2: {}
 
   zwitch@1.0.5: {}
 
