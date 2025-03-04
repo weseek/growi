@@ -608,13 +608,22 @@ class OpenaiService implements IOpenaiService {
 
   async createVectorStoreFileOnPageCreate(pages: HydratedDocument<PageDocument>[]): Promise<void> {
     const pagePaths = pages.map(page => page.path);
-    const aiAssistants = await AiAssistantModel.findByPagePaths(pagePaths);
+    const aiAssistants = await AiAssistantModel.findByPagePaths(pagePaths, { shouldPopulateOwner: true, shouldPopulateVectorStore: true });
 
     if (aiAssistants.length === 0) {
       return;
     }
 
     for await (const aiAssistant of aiAssistants) {
+      if (!isPopulated(aiAssistant.owner)) {
+        continue;
+      }
+
+      const isLearnablePageLimitExceeded = await this.isLearnablePageLimitExceeded(aiAssistant.owner, aiAssistant.pagePathPatterns);
+      if (isLearnablePageLimitExceeded) {
+        continue;
+      }
+
       const pagesToVectorize = await this.filterPagesByAccessScope(aiAssistant, pages);
       const vectorStoreRelation = aiAssistant.vectorStore;
       if (vectorStoreRelation == null || !isPopulated(vectorStoreRelation)) {
@@ -631,7 +640,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>) {
-    const aiAssistants = await AiAssistantModel.findByPagePaths([page.path]);
+    const aiAssistants = await AiAssistantModel.findByPagePaths([page.path], { shouldPopulateVectorStore: true });
 
     if (aiAssistants.length === 0) {
       return;
