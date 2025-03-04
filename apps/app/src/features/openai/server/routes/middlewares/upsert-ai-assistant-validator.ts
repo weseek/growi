@@ -1,6 +1,5 @@
 import { GroupType } from '@growi/core';
 import { isGlobPatternPath, isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
-import escapeStringRegexp from 'escape-string-regexp';
 import { type ValidationChain, body } from 'express-validator';
 
 import { AiAssistantShareScope, AiAssistantAccessScope } from '../../../interfaces/ai-assistant';
