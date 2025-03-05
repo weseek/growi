@@ -77,12 +77,12 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         return res.apiv3Err(new ErrorV3('AI assistant not found'), 404);
       }
 
-      const thread = await ThreadRelationModel.findOne({ threadId });
-      if (thread == null) {
-        return res.apiv3Err(new ErrorV3('Thread not found'), 404);
+      const threadRelation = await ThreadRelationModel.findOne({ threadId });
+      if (threadRelation == null) {
+        return res.apiv3Err(new ErrorV3('ThreadRelation not found'), 404);
       }
 
-      thread.updateThreadExpiration();
+      threadRelation.updateThreadExpiration();
 
       let stream: AssistantStream;
 
