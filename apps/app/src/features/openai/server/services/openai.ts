@@ -189,6 +189,7 @@ class OpenaiService implements IOpenaiService {
       await threadRelation.remove();
     }
     catch (err) {
+      await openaiApiErrorHandler(err, { notFoundError: async() => { await threadRelation.remove() } });
       throw err;
     }
 
