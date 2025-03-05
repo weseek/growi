@@ -7,7 +7,7 @@ import { zodResponseFormat } from 'openai/helpers/zod';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 import { z } from 'zod';
 
-// 必要なインポート
+// Necessary imports
 import { getOrCreateEditorAssistant } from '~/features/openai/server/services/assistant';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
@@ -29,7 +29,7 @@ import { EditorAssistantDiffSchema, EditorAssistantMessageSchema } from './schem
 const logger = loggerFactory('growi:routes:apiv3:openai:message');
 
 // -----------------------------------------------------------------------------
-// 型定義
+// Type definitions
 // -----------------------------------------------------------------------------
 
 const EditorAssistantResponseSchema = z.object({
@@ -50,18 +50,18 @@ type Req = Request<undefined, Response, ReqBody> & {
 
 
 // -----------------------------------------------------------------------------
-// エンドポイントハンドラーファクトリ
+// Endpoint handler factory
 // -----------------------------------------------------------------------------
 
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
 /**
- * エディタアシスタントのエンドポイントハンドラを作成する
+ * Create endpoint handlers for editor assistant
  */
 export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
-  // バリデータ設定
+  // Validator setup
   const validator: ValidationChain[] = [
     body('userMessage')
       .isString()
@@ -82,23 +82,23 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
     async(req: Req, res: ApiV3Response) => {
       const { userMessage, markdown, threadId } = req.body;
 
-      // パラメータチェック
+      // Parameter check
       if (threadId == null) {
         return res.apiv3Err(new ErrorV3('threadId is not set', MessageErrorCode.THREAD_ID_IS_NOT_SET), 400);
       }
 
-      // サービスチェック
+      // Service check
       const openaiService = getOpenaiService();
       if (openaiService == null) {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
       }
 
-      // SSEヘルパーとストリームプロセッサの初期化
+      // Initialize SSE helper and stream processor
       const sseHelper = new SseHelper(res);
       const streamProcessor = new EditorStreamProcessor(sseHelper);
 
       try {
-        // レスポンスヘッダー設定
+        // Set response headers
         res.writeHead(200, {
           'Content-Type': 'text/event-stream;charset=utf-8',
           'Cache-Control': 'no-cache, no-transform',
@@ -106,11 +106,11 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
 
         let rawBuffer = '';
 
-        // アシスタント取得とスレッド処理
+        // Get assistant and process thread
         const assistant = await getOrCreateEditorAssistant();
         const thread = await openaiClient.beta.threads.retrieve(threadId);
 
-        // ストリーム作成
+        // Create stream
         const stream = openaiClient.beta.threads.runs.stream(thread.id, {
           assistant_id: assistant.id,
           additional_messages: [
@@ -149,24 +149,24 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
           response_format: zodResponseFormat(EditorAssistantResponseSchema, 'editor_assistant_response'),
         });
 
-        // メッセージデルタハンドラ
+        // Message delta handler
         const messageDeltaHandler = async(delta: MessageDelta) => {
           const content = delta.content?.[0];
 
-          // アノテーション処理
+          // Process annotations
           if (content?.type === 'text' && content?.text?.annotations != null) {
             await replaceAnnotationWithPageLink(content, req.user.lang);
           }
 
-          // テキスト処理
+          // Process text
           if (content?.type === 'text' && content.text?.value) {
             const chunk = content.text.value;
             rawBuffer += chunk;
 
-            // JSONプロセッサでデータを処理
+            // Process data with JSON processor
             streamProcessor.process(rawBuffer);
 
-            // 元のデルタも送信
+            // Also send original delta
             sseHelper.writeData(delta);
           }
           else {
@@ -174,10 +174,10 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
           }
         };
 
-        // イベントハンドラ登録
+        // Register event handlers
         stream.on('messageDelta', messageDeltaHandler);
 
-        // Runエラーハンドラ
+        // Run error handler
         stream.on('event', (delta) => {
           if (delta.event === 'thread.run.failed') {
             const errorMessage = delta.data.last_error?.message;
@@ -188,29 +188,29 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
           }
         });
 
-        // 完了ハンドラ
+        // Completion handler
         stream.once('messageDone', () => {
-          // 最終結果を処理して送信
+          // Process and send final result
           streamProcessor.sendFinalResult(rawBuffer);
 
-          // ストリームのクリーンアップ
+          // Clean up stream
           streamProcessor.destroy();
           stream.off('messageDelta', messageDeltaHandler);
           sseHelper.end();
         });
 
-        // エラーハンドラ
+        // Error handler
         stream.once('error', (err) => {
           logger.error('Stream error:', err);
 
-          // クリーンアップ
+          // Clean up
           streamProcessor.destroy();
           stream.off('messageDelta', messageDeltaHandler);
           sseHelper.writeError('An error occurred while processing your request');
           sseHelper.end();
         });
 
-        // クライアント切断時のクリーンアップ
+        // Clean up on client disconnect
         req.on('close', () => {
           streamProcessor.destroy();
 
@@ -223,7 +223,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
         });
       }
       catch (err) {
-        // エラー発生時のクリーンアップと応答
+        // Clean up and respond on error
         logger.error('Error in edit handler:', err);
         streamProcessor.destroy();
         return res.status(500).send(err.message);

@@ -1,10 +1,10 @@
 import { z } from 'zod';
 
 // -----------------------------------------------------------------------------
-// 型定義
+// Type definitions
 // -----------------------------------------------------------------------------
 
-// スキーマ定義
+// Schema definitions
 export const EditorAssistantMessageSchema = z.object({
   message: z.string().describe('A friendly message explaining what changes were made or suggested'),
 });
