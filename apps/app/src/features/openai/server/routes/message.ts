@@ -16,6 +16,7 @@ import loggerFactory from '~/utils/logger';
 import { shouldHideMessageKey } from '../../interfaces/message';
 import { MessageErrorCode, type StreamErrorCode } from '../../interfaces/message-error';
 import AiAssistantModel from '../models/ai-assistant';
+import ThreadRelationModel from '../models/thread-relation';
 import { openaiClient } from '../services/client';
 import { getStreamErrorCode } from '../services/getStreamErrorCode';
 import { getOpenaiService } from '../services/openai';
@@ -75,6 +76,13 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
       if (aiAssistant == null) {
         return res.apiv3Err(new ErrorV3('AI assistant not found'), 404);
       }
+
+      const thread = await ThreadRelationModel.findOne({ threadId });
+      if (thread == null) {
+        return res.apiv3Err(new ErrorV3('Thread not found'), 404);
+      }
+
+      thread.updateThreadExpiration();
 
       let stream: AssistantStream;
 

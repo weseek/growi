@@ -63,8 +63,8 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 };
 
 export interface IOpenaiService {
-  getOrCreateThread(
-    userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string, initialUserMessage?: string
+  createThread(
+    userId: string, vectorStoreRelation: VectorStoreDocument, initialUserMessage: string
   ): Promise<ThreadRelationDocument>;
   getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
   // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
@@ -122,53 +122,29 @@ class OpenaiService implements IOpenaiService {
     return threadTitle;
   }
 
-  async getOrCreateThread(
-      userId: string, vectorStoreRelation: VectorStoreDocument, threadId?: string, initialUserMessage?: string,
-  ): Promise<ThreadRelationDocument> {
-    if (threadId == null) {
-      let threadTitle: string | null = null;
-      if (initialUserMessage != null) {
-        try {
-          threadTitle = await this.generateThreadTitle(initialUserMessage);
-        }
-        catch (err) {
-          logger.error(err);
-        }
-      }
-
+  async createThread(userId: string, vectorStoreRelation: VectorStoreDocument, initialUserMessage: string): Promise<ThreadRelationDocument> {
+    let threadTitle: string | null = null;
+    if (initialUserMessage != null) {
       try {
-        const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
-        const threadRelation = await ThreadRelationModel.create({
-          userId,
-          threadId: thread.id,
-          vectorStore: vectorStoreRelation._id,
-          title: threadTitle,
-        });
-        return threadRelation;
+        threadTitle = await this.generateThreadTitle(initialUserMessage);
       }
       catch (err) {
-        throw new Error(err);
+        logger.error(err);
       }
     }
 
-    const threadRelation = await ThreadRelationModel.findOne({ threadId });
-    if (threadRelation == null) {
-      throw new Error('ThreadRelation document is not exists');
-    }
-
-    // Check if a thread entity exists
-    // If the thread entity does not exist, the thread-relation document is deleted
     try {
-      await this.client.retrieveThread(threadRelation.threadId);
-
-      // Update expiration date if thread entity exists
-      await threadRelation.updateThreadExpiration();
-
+      const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
+      const threadRelation = await ThreadRelationModel.create({
+        userId,
+        threadId: thread.id,
+        vectorStore: vectorStoreRelation._id,
+        title: threadTitle,
+      });
       return threadRelation;
     }
     catch (err) {
-      await openaiApiErrorHandler(err, { notFoundError: async() => { await threadRelation.remove() } });
-      throw new Error(err);
+      throw err;
     }
   }
 
