@@ -315,8 +315,16 @@ export class GrowiPluginService implements IGrowiPluginService {
       throw new Error('No plugin found for this ID.');
     }
 
+    let growiPluginsPath: fs.PathLike | undefined;
     try {
-      const growiPluginsPath = path.join(PLUGIN_STORING_PATH, growiPlugins.installedPath);
+      growiPluginsPath = this.joinAndValidatePath(PLUGIN_STORING_PATH, growiPlugins.installedPath);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to constract plugin path');
+    }
+
+    try {
       await deleteFolder(growiPluginsPath);
     }
     catch (err) {
