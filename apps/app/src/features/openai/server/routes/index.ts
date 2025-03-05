@@ -19,10 +19,6 @@ export const factory = (crowi: Crowi): express.Router => {
   }
   // enabled
   else {
-    import('./rebuild-vector-store').then(({ rebuildVectorStoreHandlersFactory }) => {
-      router.post('/rebuild-vector-store', rebuildVectorStoreHandlersFactory(crowi));
-    });
-
     import('./thread').then(({ createThreadHandlersFactory }) => {
       router.post('/thread', createThreadHandlersFactory(crowi));
     });
