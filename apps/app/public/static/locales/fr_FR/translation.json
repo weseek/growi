@@ -869,8 +869,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "Voir brouillon",
-    "size_s": "Taille: P",
-    "size_l": "Taille: G"
+    "compact_view": "Vue compacte"
   },
   "sync-latest-revision-body": {
     "menuitem": "Synchroniser avec la dernière révision",

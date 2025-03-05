@@ -875,8 +875,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "Show WIP",
-    "size_s": "Size: S",
-    "size_l": "Size: L"
+    "compact_view": "Compact View"
   },
   "create_page": {
     "untitled": "Untitled"

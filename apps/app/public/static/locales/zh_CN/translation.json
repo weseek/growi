@@ -878,8 +878,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "显示 WIP",
-    "size_s": "尺寸: S",
-    "size_l": "尺寸: L"
+    "compact_view": "紧凑视图"
   },
   "create_page": {
     "untitled": "Untitled"
