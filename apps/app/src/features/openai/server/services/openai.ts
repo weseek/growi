@@ -67,7 +67,6 @@ export interface IOpenaiService {
     userId: string, vectorStoreRelation: VectorStoreDocument, initialUserMessage: string
   ): Promise<ThreadRelationDocument>;
   getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
-  // getOrCreateVectorStoreForPublicScope(): Promise<VectorStoreDocument>;
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
@@ -81,8 +80,6 @@ export interface IOpenaiService {
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
-  // rebuildVectorStoreAll(): Promise<void>;
-  // rebuildVectorStore(page: HydratedDocument<PageDocument>): Promise<void>;
   isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
