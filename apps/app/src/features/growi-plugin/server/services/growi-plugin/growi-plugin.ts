@@ -72,8 +72,23 @@ export class GrowiPluginService implements IGrowiPluginService {
 
       // if not exists repository in file system, download latest plugin repository
       for await (const growiPlugin of growiPlugins) {
-        const pluginPath = path.join(PLUGIN_STORING_PATH, growiPlugin.installedPath);
-        const organizationName = path.join(PLUGIN_STORING_PATH, growiPlugin.organizationName);
+        let pluginPath :fs.PathLike|undefined;
+        let organizationName :fs.PathLike|undefined;
+        try {
+          pluginPath = this.joinAndValidatePath(PLUGIN_STORING_PATH, growiPlugin.installedPath);
+          organizationName = this.joinAndValidatePath(PLUGIN_STORING_PATH, growiPlugin.organizationName);
+        }
+        catch (err) {
+          logger.error(err);
+          try {
+            await GrowiPlugin.deleteOne({ _id: growiPlugin.id });
+          }
+          catch (deleteErr) {
+            logger.error(deleteErr);
+            throw new Error(`Failed to delete plugin from GrowiPlugin documents. Original error: ${deleteErr.message}`);
+          }
+          throw new Error('Failed to construct plugin path. The plugin document is also deleted.');
+        }
         if (fs.existsSync(pluginPath)) {
           continue;
         }
@@ -300,8 +315,16 @@ export class GrowiPluginService implements IGrowiPluginService {
       throw new Error('No plugin found for this ID.');
     }
 
+    let growiPluginsPath: fs.PathLike | undefined;
     try {
-      const growiPluginsPath = path.join(PLUGIN_STORING_PATH, growiPlugins.installedPath);
+      growiPluginsPath = this.joinAndValidatePath(PLUGIN_STORING_PATH, growiPlugins.installedPath);
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to constract plugin path');
+    }
+
+    try {
       await deleteFolder(growiPluginsPath);
     }
     catch (err) {
@@ -400,6 +423,14 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
 
     return entries;
+  }
+
+  private joinAndValidatePath(baseDir: string, ...paths: string[]):fs.PathLike {
+    const joinedPath = path.join(baseDir, ...paths);
+    if (!joinedPath.startsWith(baseDir)) {
+      throw new Error(`Invalid path: Outside of allowed directory - ${joinedPath}`);
+    }
+    return joinedPath;
   }
 
 }
