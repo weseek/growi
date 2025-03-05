@@ -36,6 +36,7 @@ import type { MessageListParams } from '../../interfaces/message';
 import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
+import { generateGlobPatterns } from '../utils/generate-glob-patterns';
 
 import { getClient } from './client-delegator';
 // import { splitMarkdownIntoChunks } from './markdown-splitter/markdown-token-splitter';
@@ -608,7 +609,8 @@ class OpenaiService implements IOpenaiService {
 
   async createVectorStoreFileOnPageCreate(pages: HydratedDocument<PageDocument>[]): Promise<void> {
     const pagePaths = pages.map(page => page.path);
-    const aiAssistants = await AiAssistantModel.findByPagePaths(pagePaths, { shouldPopulateOwner: true, shouldPopulateVectorStore: true });
+    const aiAssistants = await this.findAiAssistantByPagePath(pagePaths, { shouldPopulateOwner: true, shouldPopulateVectorStore: true });
+    console.log('aiAssistants', aiAssistants);
 
     if (aiAssistants.length === 0) {
       return;
@@ -640,7 +642,8 @@ class OpenaiService implements IOpenaiService {
   }
 
   async updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>) {
-    const aiAssistants = await AiAssistantModel.findByPagePaths([page.path], { shouldPopulateVectorStore: true });
+    const aiAssistants = await this.findAiAssistantByPagePath([page.path], { shouldPopulateVectorStore: true });
+    console.log('aiAssistants', aiAssistants);
 
     if (aiAssistants.length === 0) {
       return;
@@ -994,6 +997,33 @@ class OpenaiService implements IOpenaiService {
 
     const limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
     return totalPageCount > limitLearnablePageCountPerAssistant;
+  }
+
+  async findAiAssistantByPagePath(
+      pagePaths: string[], options?: { shouldPopulateOwner?: boolean, shouldPopulateVectorStore?: boolean },
+  ): Promise<AiAssistantDocument[]> {
+
+    const pagePathsWithGlobPattern = pagePaths.map(pagePath => generateGlobPatterns(pagePath)).flat();
+
+    const query = AiAssistantModel.find({
+      $or: [
+        // Case 1: Exact match
+        { pagePathPatterns: { $in: pagePaths } },
+        // Case 2: Glob pattern match
+        { pagePathPatterns: { $in: pagePathsWithGlobPattern } },
+      ],
+    });
+
+    if (options?.shouldPopulateOwner) {
+      query.populate('owner');
+    }
+
+    if (options?.shouldPopulateVectorStore) {
+      query.populate('vectorStore');
+    }
+
+    const aiAssistants = await query.exec();
+    return aiAssistants;
   }
 
 }
