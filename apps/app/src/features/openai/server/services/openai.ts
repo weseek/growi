@@ -2,7 +2,9 @@ import assert from 'node:assert';
 import { Readable, Transform } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import type { IUser, Ref, Lang } from '@growi/core';
+import type {
+  IUser, Ref, Lang, IPage,
+} from '@growi/core';
 import {
   PageGrant, getIdForRef, getIdStringForRef, isPopulated, type IUserHasId,
 } from '@growi/core';
@@ -31,8 +33,10 @@ import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
 import type { MessageListParams } from '../../interfaces/message';
+import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
+import { generateGlobPatterns } from '../utils/generate-glob-patterns';
 
 import { getClient } from './client-delegator';
 import { openaiApiErrorHandler } from './openai-api-error-handler';
@@ -86,6 +90,7 @@ export interface IOpenaiService {
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
   deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument>
+  isLearnablePageLimitExceeded(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean>;
 }
 class OpenaiService implements IOpenaiService {
 
@@ -532,13 +537,22 @@ class OpenaiService implements IOpenaiService {
 
   async createVectorStoreFileOnPageCreate(pages: HydratedDocument<PageDocument>[]): Promise<void> {
     const pagePaths = pages.map(page => page.path);
-    const aiAssistants = await AiAssistantModel.findByPagePaths(pagePaths);
+    const aiAssistants = await this.findAiAssistantByPagePath(pagePaths, { shouldPopulateOwner: true, shouldPopulateVectorStore: true });
 
     if (aiAssistants.length === 0) {
       return;
     }
 
     for await (const aiAssistant of aiAssistants) {
+      if (!isPopulated(aiAssistant.owner)) {
+        continue;
+      }
+
+      const isLearnablePageLimitExceeded = await this.isLearnablePageLimitExceeded(aiAssistant.owner, aiAssistant.pagePathPatterns);
+      if (isLearnablePageLimitExceeded) {
+        continue;
+      }
+
       const pagesToVectorize = await this.filterPagesByAccessScope(aiAssistant, pages);
       const vectorStoreRelation = aiAssistant.vectorStore;
       if (vectorStoreRelation == null || !isPopulated(vectorStoreRelation)) {
@@ -555,7 +569,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>) {
-    const aiAssistants = await AiAssistantModel.findByPagePaths([page.path]);
+    const aiAssistants = await this.findAiAssistantByPagePath([page.path], { shouldPopulateVectorStore: true });
 
     if (aiAssistants.length === 0) {
       return;
@@ -888,6 +902,54 @@ class OpenaiService implements IOpenaiService {
 
     const deletedAiAssistant = await aiAssistant.remove();
     return deletedAiAssistant;
+  }
+
+  async isLearnablePageLimitExceeded(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean> {
+    const normalizedPagePathPatterns = removeGlobPath(pagePathPatterns);
+
+    const PageModel = mongoose.model<IPage, PageModel>('Page');
+    const pagePathsWithDescendantCount = await PageModel.descendantCountByPaths(normalizedPagePathPatterns, user, null, true, true);
+
+    const totalPageCount = pagePathsWithDescendantCount.reduce((total, pagePathWithDescendantCount) => {
+      const descendantCount = pagePathPatterns.includes(pagePathWithDescendantCount.path)
+        ? 0 // Treat as single page when included in "pagePathPatterns"
+        : pagePathWithDescendantCount.descendantCount;
+
+      const pageCount = descendantCount + 1;
+      return total + pageCount;
+    }, 0);
+
+    logger.debug('TotalPageCount: ', totalPageCount);
+
+    const limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
+    return totalPageCount > limitLearnablePageCountPerAssistant;
+  }
+
+  async findAiAssistantByPagePath(
+      pagePaths: string[], options?: { shouldPopulateOwner?: boolean, shouldPopulateVectorStore?: boolean },
+  ): Promise<AiAssistantDocument[]> {
+
+    const pagePathsWithGlobPattern = pagePaths.map(pagePath => generateGlobPatterns(pagePath)).flat();
+
+    const query = AiAssistantModel.find({
+      $or: [
+        // Case 1: Exact match
+        { pagePathPatterns: { $in: pagePaths } },
+        // Case 2: Glob pattern match
+        { pagePathPatterns: { $in: pagePathsWithGlobPattern } },
+      ],
+    });
+
+    if (options?.shouldPopulateOwner) {
+      query.populate('owner');
+    }
+
+    if (options?.shouldPopulateVectorStore) {
+      query.populate('vectorStore');
+    }
+
+    const aiAssistants = await query.exec();
+    return aiAssistants;
   }
 
 }

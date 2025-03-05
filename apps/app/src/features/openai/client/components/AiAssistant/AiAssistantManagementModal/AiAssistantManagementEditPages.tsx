@@ -1,8 +1,10 @@
 import React, { useCallback } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { ModalBody } from 'reactstrap';
 
 import type { IPageForItem } from '~/interfaces/page';
+import { useLimitLearnablePageCountPerAssistant } from '~/stores-universal/context';
 import { usePageSelectModal } from '~/stores/modal';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
@@ -18,6 +20,9 @@ type Props = {
 }
 
 export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
+  const { t } = useTranslation();
+  const { data: limitLearnablePageCountPerAssistant } = useLimitLearnablePageCountPerAssistant();
+
   const { selectedPages, onSelect, onRemove } = props;
 
   const { open: openPageSelectModal } = usePageSelectModal();
@@ -31,10 +36,11 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
       <AiAssistantManagementHeader />
 
       <ModalBody className="px-4">
-        <p className="text-secondary py-1">
-          アシスタントが参照するページを編集します。<br />
-          参照できるページは配下ページも含めて200ページまでです。
-        </p>
+        <p
+          className="text-secondary py-1"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('modal_ai_assistant.edit_page_description', { limitLearnablePageCountPerAssistant }) }}
+        />
 
         <button
           type="button"
