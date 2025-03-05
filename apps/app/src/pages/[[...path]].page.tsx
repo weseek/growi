@@ -46,7 +46,7 @@ import {
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
   useIsRomUserAllowedToComment,
-  useIsAiEnabled, useLimitLearnablePageCount,
+  useIsAiEnabled, useLimitLearnablePageCountPerAssistant,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -195,7 +195,7 @@ type Props = CommonProps & {
   rendererConfig: RendererConfig,
 
   aiEnabled: boolean,
-  limitLearnablePageCount: number,
+  limitLearnablePageCountPerAssistant: number,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -249,7 +249,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
 
   useIsAiEnabled(props.aiEnabled);
-  useLimitLearnablePageCount(props.limitLearnablePageCount);
+  useLimitLearnablePageCountPerAssistant(props.limitLearnablePageCountPerAssistant);
 
   const { pageWithMeta } = props;
 
@@ -568,7 +568,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   } = crowi;
 
   props.aiEnabled = configManager.getConfig('app:aiEnabled');
-  props.limitLearnablePageCount = configManager.getConfig('openai:limitLearnablePageCount');
+  props.limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;

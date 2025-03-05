@@ -992,8 +992,8 @@ class OpenaiService implements IOpenaiService {
 
     logger.debug('TotalPageCount: ', totalPageCount);
 
-    const limitLearnablePageCount = configManager.getConfig('openai:limitLearnablePageCount');
-    return totalPageCount > limitLearnablePageCount;
+    const limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
+    return totalPageCount > limitLearnablePageCountPerAssistant;
   }
 
 }

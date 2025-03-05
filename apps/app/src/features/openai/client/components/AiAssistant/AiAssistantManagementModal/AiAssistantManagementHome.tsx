@@ -7,7 +7,7 @@ import {
 
 import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
-import { useCurrentUser, useLimitLearnablePageCount } from '~/stores-universal/context';
+import { useCurrentUser, useLimitLearnablePageCountPerAssistant } from '~/stores-universal/context';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { determineShareScope } from '../../../../utils/determine-share-scope';
@@ -48,7 +48,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
-  const { data: limitLearnablePageCount } = useLimitLearnablePageCount();
+  const { data: limitLearnablePageCountPerAssistant } = useLimitLearnablePageCountPerAssistant();
   const { close: closeAiAssistantManagementModal, changePageMode } = useAiAssistantManagementModal();
 
   const [isShareScopeWarningModalOpen, setIsShareScopeWarningModalOpen] = useState(false);
@@ -70,7 +70,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
       : t(baseLabel);
   }, [currentUser?.username, t]);
 
-  const canUpsert = name !== '' && selectedPages.length !== 0 && (limitLearnablePageCount ?? 3000) >= totalSelectedPageCount;
+  const canUpsert = name !== '' && selectedPages.length !== 0 && (limitLearnablePageCountPerAssistant ?? 3000) >= totalSelectedPageCount;
 
   const upsertAiAssistantHandler = useCallback(async() => {
     const shouldWarning = () => {

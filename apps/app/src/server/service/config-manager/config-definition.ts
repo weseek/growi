@@ -260,7 +260,7 @@ export const CONFIG_KEYS = [
   'openai:vectorStoreFileDeletionCronExpression',
   'openai:vectorStoreFileDeletionBarchSize',
   'openai:vectorStoreFileDeletionApiCallInterval',
-  'openai:limitLearnablePageCount',
+  'openai:limitLearnablePageCountPerAssistant',
 
   // OpenTelemetry Settings
   'otel:enabled',
@@ -1126,8 +1126,8 @@ Guideline as a RAG:
     envVarName: 'OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS',
     defaultValue: '',
   }),
-  'openai:limitLearnablePageCount': defineConfig<number>({
-    envVarName: 'OPENAI_LIMIT_LEARNABLE_PAGE_COUNT',
+  'openai:limitLearnablePageCountPerAssistant': defineConfig<number>({
+    envVarName: 'OPENAI_LIMIT_LEARNABLE_PAGE_COUNT_PER_ASSISTANT',
     defaultValue: 3000,
   }),
 
