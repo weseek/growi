@@ -402,6 +402,14 @@ export class GrowiPluginService implements IGrowiPluginService {
     return entries;
   }
 
+  private joinAndValidatePath(baseDir: string, ...paths: string[]):fs.PathLike {
+    const joinedPath = path.join(baseDir, ...paths);
+    if (!joinedPath.startsWith(baseDir)) {
+      throw new Error(`Invalid path: Outside of allowed directory - ${joinedPath}`);
+    }
+    return joinedPath;
+  }
+
 }
 
 
