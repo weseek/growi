@@ -72,8 +72,23 @@ export class GrowiPluginService implements IGrowiPluginService {
 
       // if not exists repository in file system, download latest plugin repository
       for await (const growiPlugin of growiPlugins) {
-        const pluginPath = path.join(PLUGIN_STORING_PATH, growiPlugin.installedPath);
-        const organizationName = path.join(PLUGIN_STORING_PATH, growiPlugin.organizationName);
+        let pluginPath :fs.PathLike|undefined;
+        let organizationName :fs.PathLike|undefined;
+        try {
+          pluginPath = this.joinAndValidatePath(PLUGIN_STORING_PATH, growiPlugin.installedPath);
+          organizationName = this.joinAndValidatePath(PLUGIN_STORING_PATH, growiPlugin.organizationName);
+        }
+        catch (err) {
+          logger.error(err);
+          try {
+            await GrowiPlugin.deleteOne({ _id: growiPlugin.id });
+          }
+          catch (deleteErr) {
+            logger.error(deleteErr);
+            throw new Error(`Failed to delete plugin from GrowiPlugin documents. Original error: ${deleteErr.message}`);
+          }
+          throw new Error('Failed to construct plugin path. The plugin document is also deleted.');
+        }
         if (fs.existsSync(pluginPath)) {
           continue;
         }
