@@ -159,7 +159,7 @@ class OpenaiService implements IOpenaiService {
     // Check if a thread entity exists
     // If the thread entity does not exist, the thread-relation document is deleted
     try {
-      const thread = await this.client.retrieveThread(threadRelation.threadId);
+      await this.client.retrieveThread(threadRelation.threadId);
 
       // Update expiration date if thread entity exists
       await threadRelation.updateThreadExpiration();

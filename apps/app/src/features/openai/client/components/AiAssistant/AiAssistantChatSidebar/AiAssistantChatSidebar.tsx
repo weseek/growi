@@ -53,6 +53,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     aiAssistantData, threadData, closeAiAssistantChatSidebar,
   } = props;
 
+  const [isThreadVerified, setIsThreadVerified] = useState<boolean>(false);
   const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
   const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
@@ -123,13 +124,20 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
     // create thread
     let currentThreadId_ = currentThreadId;
-    if (currentThreadId_ == null) {
+    if (!isThreadVerified || currentThreadId_ == null) {
       try {
-        const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', { aiAssistantId: aiAssistantData._id, initialUserMessage: newUserMessage.content });
+        const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
+          threadId: currentThreadId_,
+          aiAssistantId: aiAssistantData._id,
+          initialUserMessage: newUserMessage.content,
+        });
+
         const thread = res.data;
 
+        setIsThreadVerified(true);
         setCurrentThreadId(thread.threadId);
         setCurrentThreadTitle(thread.title);
+
         currentThreadId_ = thread.threadId;
 
         // No need to await because data is not used
@@ -225,7 +233,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData._id, mutateThreadData, t, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, isThreadVerified, aiAssistantData._id, mutateThreadData, t, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
