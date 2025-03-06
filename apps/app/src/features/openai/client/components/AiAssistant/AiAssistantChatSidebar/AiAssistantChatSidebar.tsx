@@ -148,21 +148,11 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
     // post message
     try {
-      const response = await fetch('/_api/v3/openai/edit', {
+      const response = await fetch('/_api/v3/openai/message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          userMessage: data.input,
-          threadId: currentThreadId_,
-          summaryMode: data.summaryMode,
-          aiAssistantId: aiAssistantData._id,
-          markdown: `# :tada: Welcome to GROWI
-
-GROWI is an internal wiki & knowledge base tool for corporations and individuals.
-With GROWI, members can easily share and edit information in a company, university seminar, or circle.
-
-Casually writing down the information you know and editing it together can **reduce tacit knowledge within the team**.
-Let's increase the amount of information shared on a daily base!`,
+          userMessage: data.input, threadId: currentThreadId_, summaryMode: data.summaryMode, aiAssistantId: aiAssistantData._id,
         }),
       });
 
