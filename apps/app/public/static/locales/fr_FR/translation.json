@@ -187,7 +187,9 @@
   },
   "author_info": {
     "created_at": "Crée le",
-    "last_revision_posted_at": "Dernière révision le"
+    "created_by": "Créé par",
+    "last_revision_posted_at": "Dernière révision le",
+    "updated_by": "Mis à jour par"
   },
   "installer": {
     "tab": "Créer compte",

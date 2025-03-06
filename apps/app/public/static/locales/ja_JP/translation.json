@@ -187,7 +187,9 @@
   },
   "author_info": {
     "created_at": "作成日",
-    "last_revision_posted_at": "最終更新日"
+    "created_by": "作成者:",
+    "last_revision_posted_at": "最終更新日",
+    "updated_by": "最終更新者:"
   },
   "installer": {
     "tab": "アカウント作成",
