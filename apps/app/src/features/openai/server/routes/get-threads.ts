@@ -48,7 +48,7 @@ export const getThreadsFactory: GetThreadsFactory = (crowi) => {
           return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
         }
 
-        const threads = await openaiService.getThreadsByAiAssistant(aiAssistantId);
+        const threads = await openaiService.getThreadsByAiAssistantId(aiAssistantId);
 
         return res.apiv3({ threads });
       }
