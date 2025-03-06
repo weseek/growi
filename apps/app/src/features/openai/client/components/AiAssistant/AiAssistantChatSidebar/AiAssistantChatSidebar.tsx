@@ -215,7 +215,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
             }
 
             handleIfSuccessfullyParsed(data, SseMessageSchema, (data) => {
-              console.log('sse message', { data });
+              textValues.push(data.appendedMessage);
             });
             handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data) => {
               console.log('sse diff', { data });
