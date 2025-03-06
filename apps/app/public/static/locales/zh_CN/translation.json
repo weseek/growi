@@ -496,6 +496,22 @@
     "show_error_detail": "显示详情"
   },
   "modal_ai_assistant": {
+    "header": {
+      "update_assistant": "更新助手",
+      "add_new_assistant": "添加新助手"
+    },
+    "assistant_name_placeholder": "输入助手名称",
+    "page_count": "{{count}} 页",
+    "memo": {
+      "title": "助手备忘录",
+      "optional": "可选",
+      "placeholder": "您可以显示关于内容和用途的备注",
+      "description": "备忘录的内容不会影响助手的处理。"
+    },
+    "submit_button": {
+      "update_assistant": "更新助手",
+      "create_assistant": "创建助手"
+    },
     "edit_page_description": "编辑助手可以参考的页面。<br> 助手可以参考最多 {{limitLearnablePageCountPerAssistant}} 个页面，包括子页面。",
     "default_instruction": "您是这个Wiki的知识助手。请按照以下方针提供支持：\n\n- 分析文档相关性并连接信息\n- 提出新的观点\n- 理解问题意图并提供准确信息\n必要时我会以结构化的形式提供信息。",
     "page_mode_title": {

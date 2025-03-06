@@ -506,6 +506,22 @@
     "show_error_detail": "Show error details"
   },
   "modal_ai_assistant": {
+    "header": {
+      "update_assistant": "Update Assistant",
+      "add_new_assistant": "Add New Assistant"
+    },
+    "assistant_name_placeholder": "Enter assistant name",
+    "page_count": "{{count}} pages",
+    "memo": {
+      "title": "Assistant memo",
+      "optional": "Optional",
+      "placeholder": "You can display notes about content and usage",
+      "description": "The contents of the memo do not affect the assistant's processing."
+    },
+    "submit_button": {
+      "update_assistant": "Update Assistant",
+      "create_assistant": "Create Assistant"
+    },
     "edit_page_description": "Edit pages that the assistant can reference.<br> The assistant can reference up to {{limitLearnablePageCountPerAssistant}} pages including child pages.",
     "default_instruction": "You are the knowledge assistant for this Wiki. Please provide support according to the following guidelines:\n\n- Analyze document relevance and connect information\n- Suggest new perspectives\n- Provide accurate information based on understanding the intent of questions\nI will provide information in a structured format when necessary.",
     "page_mode_title": {

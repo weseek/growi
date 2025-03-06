@@ -489,6 +489,22 @@
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
   "sidebar_aichat": {
+    "header": {
+      "update_assistant": "Mettre à jour l'assistant",
+      "add_new_assistant": "Ajouter un nouvel assistant"
+    },
+    "assistant_name_placeholder": "Entrer le nom de l'assistant",
+    "page_count": "{{count}} pages",
+    "memo": {
+      "title": "Note sur l'assistant",
+      "optional": "Optionnel",
+      "placeholder": "Vous pouvez afficher des notes sur le contenu et l'utilisation",
+      "description": "Le contenu de la note n'affecte pas le traitement de l'assistant."
+    },
+    "submit_button": {
+      "update_assistant": "Mettre à jour l'assistant",
+      "create_assistant": "Créer l'assistant"
+    },
     "placeholder": "Demandez-moi n'importe quoi.",
     "summary_mode_label": "Mode résumé",
     "summary_mode_help": "Réponse concise en 2-3 phrases",
