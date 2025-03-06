@@ -71,7 +71,7 @@ export interface IOpenaiService {
   getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
-  deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
+  deleteObsoletedVectorStoreRelations(): Promise<void> // for CronJob
   deleteVectorStore(vectorStoreRelationId: string): Promise<void>;
   getMessageData(threadId: string, lang?: Lang, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
   getVectorStoreRelation(aiAssistantId: string): Promise<VectorStoreDocument>
@@ -376,7 +376,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   // Deletes all VectorStore documents that are marked as deleted (isDeleted: true) and have no associated VectorStoreFileRelation documents
-  async deleteObsolatedVectorStoreRelations(): Promise<void> {
+  async deleteObsoletedVectorStoreRelations(): Promise<void> {
     const deletedVectorStoreRelations = await VectorStoreModel.find({ isDeleted: true });
     if (deletedVectorStoreRelations.length === 0) {
       return;
