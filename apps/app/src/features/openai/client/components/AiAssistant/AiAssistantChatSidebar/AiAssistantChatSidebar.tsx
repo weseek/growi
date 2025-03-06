@@ -7,15 +7,17 @@ import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
+import type { z } from 'zod';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { MessageErrorCode, StreamErrorCode } from '~/features/openai/interfaces/message-error';
-import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
 import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
+import { SseMessageSchema, SseDetectedDiffSchema, SseFinalizedSchema } from '../../../../interfaces/editor-assistant/sse-schemas';
+import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
+import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
 import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../../../stores/message';
 import { useSWRMUTxThreads } from '../../../stores/thread';
@@ -30,6 +32,16 @@ const logger = loggerFactory('growi:openai:client:components:AiAssistantChatSide
 const moduleClass = styles['grw-ai-assistant-chat-sidebar'] ?? '';
 
 const RIGHT_SIDEBAR_WIDTH = 500;
+
+
+const handleIfSuccessfullyParsed = <T, >(data: T, zSchema: z.ZodSchema<T>,
+  callback: (data: T) => void,
+): void => {
+  const parsed = zSchema.safeParse(data);
+  if (parsed.success) {
+    callback(data);
+  }
+};
 
 type Message = {
   id: string,
@@ -201,9 +213,16 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
             if (data.content != null) {
               textValues.push(data.content[0].text.value);
             }
-            if (data.editorResponse != null) {
-              console.log('replace editor', { editorResponse: data.editorResponse });
-            }
+
+            handleIfSuccessfullyParsed(data, SseMessageSchema, (data) => {
+              console.log('sse message', { data });
+            });
+            handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data) => {
+              console.log('sse diff', { data });
+            });
+            handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data) => {
+              console.log('sse finalized', { data });
+            });
           }
           else if (trimedLine.startsWith('error:')) {
             const error = JSON.parse(line.replace('error: ', ''));
