@@ -810,7 +810,7 @@ module.exports = (crowi) => {
       await user.statusDelete();
       await ExternalAccount.remove({ user });
 
-      await deleteAiAssistantOnOwnerDeleted(user);
+      deleteAiAssistantOnOwnerDeleted(user);
 
       const serializedUser = serializeUserSecurely(user);
 
