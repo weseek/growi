@@ -2,22 +2,25 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Put } from '~/client/util/apiv3-client';
+import { apiv3Delete, apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useSWRxPersonalSettings, usePersonalSettings } from '~/stores/personal-settings';
 
 
+/**
+ * TODO: support managing multiple access tokens.
+ */
 const ApiSettings = React.memo((): JSX.Element => {
 
   const { t } = useTranslation();
-  const { mutate: mutateDatabaseData } = useSWRxPersonalSettings();
-  const { data: personalSettingsData } = usePersonalSettings();
+  const [accessToken, setAccessToken] = React.useState<string | null>(null);
 
   const submitHandler = useCallback(async() => {
 
     try {
-      await apiv3Put('/personal-setting/api-token');
-      mutateDatabaseData();
+      await apiv3Delete('/personal-setting/access-token/all');
+      const expiredAt = new Date('2099-12-31T23:59:59.999Z');
+      const result = await apiv3Post('/personal-setting/access-token', { expiredAt });
+      setAccessToken(result.data.token);
 
       toastSuccess(t('toaster.update_successed', { target: t('page_me_apitoken.api_token'), ns: 'commons' }));
     }
@@ -25,7 +28,21 @@ const ApiSettings = React.memo((): JSX.Element => {
       toastError(err);
     }
 
-  }, [mutateDatabaseData, t]);
+  }, [t]);
+
+  React.useEffect(() => {
+    const fetchData = async() => {
+      try {
+        const result = await apiv3Get('/personal-setting/access-token');
+        setAccessToken(result.data.accessTokens.length > 0 ? '*******************' : null);
+      }
+      catch (err) {
+        toastError(err);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <>
@@ -35,7 +52,7 @@ const ApiSettings = React.memo((): JSX.Element => {
       <div className="row mb-3">
         <label htmlFor="apiToken" className="col-md-3 text-md-end col-form-label">{t('Current API Token')}</label>
         <div className="col-md-6">
-          {personalSettingsData?.apiToken != null
+          {accessToken != null
             ? (
               <input
                 data-testid="grw-api-settings-input"
@@ -43,7 +60,7 @@ const ApiSettings = React.memo((): JSX.Element => {
                 className="form-control"
                 type="text"
                 name="apiToken"
-                value={personalSettingsData.apiToken}
+                value={accessToken}
                 readOnly
               />
             )

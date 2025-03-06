@@ -6,6 +6,7 @@ import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { AccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -378,40 +379,145 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *
-   *    /personal-setting/api-token:
-   *      put:
-   *        tags: [GeneralSetting]
-   *        operationId: putUserApiToken
-   *        summary: /personal-setting/api-token
-   *        description: Update user api token
-   *        responses:
-   *          200:
-   *            description: succeded to update user api token
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    userData:
-   *                      type: object
-   *                      description: user data
+   *   /personal-setting/access-token:
+   *     get:
+   *       tags: [GeneralSetting]
+   *       operationId: getAccessToken
+   *       summary: /personal-setting/access-token
+   *       description: Get access token
+   *       responses:
+   *         200:
+   *           description: succded to get access token
+   *           content:
+   *           application/json:
+   *             schema:
+   *               properties:
+   *                 accessTokens:
+   *                   type: objet
+   *                   description: array of access tokens
    */
-  router.put('/api-token', loginRequiredStrictly, addActivity, async(req, res) => {
+  router.get('/access-token', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
     const { user } = req;
 
     try {
-      const userData = await user.updateApiToken();
-
-      const parameters = { action: SupportedAction.ACTION_USER_API_TOKEN_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return res.apiv3({ userData });
+      const accessTokens = await AccessToken.findTokenByUserId(user._id);
+      return res.apiv3({ accessTokens });
     }
     catch (err) {
       logger.error(err);
-      return res.apiv3Err('update-api-token-failed');
+      return res.apiv3Err('get-access-token-failed');
     }
+  });
 
+
+  /**
+   * @swagger
+   *   /personal-setting/access-token:
+   *     post:
+   *       tags: [GeneralSetting]
+   *       operationId: generateccessToken
+   *       summary: /personal-setting/access-token
+   *       description: Generate access token
+   *       responses:
+   *         200:
+   *           description: succeded to create access token
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 properties:
+   *                   _id:
+   *                     type: string
+   *                     description: id of access token
+   *                   token:
+   *                     type: string
+   *                     description: access token
+   *                   expiredAt:
+   *                     type: Date
+   *                     description: expired date
+   *                   description:
+   *                     type: string
+   *                     description: description of access token
+   *                   scope:
+   *                     type: string[]
+   *                     description: scope of access token
+   */
+  router.post('/access-token', loginRequiredStrictly, addActivity, async(req, res) => {
+
+    const { user, body } = req;
+    const { expiredAt, description, scope } = body;
+
+    try {
+      const tokenData = await AccessToken.generateToken(user, expiredAt, scope, description);
+
+      const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_CREATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
+      return res.apiv3(tokenData);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('generate-access-token-failed');
+    }
+  });
+
+  /**
+   * @swagger
+   *   /personal-setting/access-token/:
+   *     delete:
+   *     tags: [GeneralSetting]
+   *     operationId: deleteAccessToken
+   *     summary: /personal-setting/access-token
+   *     description: Delete access token
+   *     responses:
+   *       200:
+   *         description: succeded to delete access token
+   *
+   */
+  router.delete('/access-token', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
+    const { body } = req;
+    const { tokenId } = body;
+
+    try {
+      await AccessToken.deleteTokenById(tokenId);
+
+      const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
+      return res.apiv3({});
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('delete-access-token-failed');
+    }
+  });
+
+  /**
+   * @swagger
+   *   /personal-setting/access-token/all:
+   *     delete:
+   *       tags: [GeneralSetting]
+   *       operationId: deleteAllAccessToken
+   *       summary: /personal-setting/access-token/all
+   *       description: Delete all access tokens
+   *       responses:
+   *         200:
+   *           description: succeded to delete all access tokens
+   */
+  router.delete('/access-token/all', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
+    const { user } = req;
+
+    try {
+      await AccessToken.deleteAllTokensByUserId(user._id);
+
+      const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_DELETE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
+      return res.apiv3({});
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('delete-all-access-token-failed');
+    }
   });
 
   /**
