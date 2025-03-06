@@ -30,6 +30,9 @@ jobs:
           type=raw,value=latest
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}
 
+    - name: Debug Dockerfile
+      run: cat ./apps/pdf-converter/docker/Dockerfile
+
     - name: Login to docker.io registry
       run: |
         echo ${{ secrets.DOCKER_REGISTRY_PASSWORD_GROWIMOOGLE }} | docker login --username growimoogle --password-stdin
