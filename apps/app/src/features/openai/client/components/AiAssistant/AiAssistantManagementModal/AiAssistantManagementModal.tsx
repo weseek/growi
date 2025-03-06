@@ -150,12 +150,12 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         await createAiAssistant(reqBody);
       }
 
-      toastSuccess(shouldEdit ? 'アシスタントが更新されました' : 'アシスタントが作成されました');
+      toastSuccess(shouldEdit ? t('modal_ai_assistant.toaster.update_success') : t('modal_ai_assistant.toaster.create_success'));
       mutateAiAssistants();
       closeAiAssistantManagementModal();
     }
     catch (err) {
-      toastError(shouldEdit ? 'アシスタントの更新に失敗しました' : 'アシスタントの作成に失敗しました');
+      toastError(shouldEdit ? t('modal_ai_assistant.toaster.update_failed') : t('modal_ai_assistant.toaster.create_failed'));
       logger.error(err);
     }
   // eslint-disable-next-line max-len

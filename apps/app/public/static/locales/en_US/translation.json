@@ -522,6 +522,12 @@
       "update_assistant": "Update Assistant",
       "create_assistant": "Create Assistant"
     },
+    "toaster": {
+      "create_success": "Assistant has been created",
+      "update_success": "Assistant has been updated",
+      "create_failed": "Failed to create assistant",
+      "update_failed": "Failed to update assistant"
+    },
     "edit_page_description": "Edit pages that the assistant can reference.<br> The assistant can reference up to {{limitLearnablePageCountPerAssistant}} pages including child pages.",
     "default_instruction": "You are the knowledge assistant for this Wiki. Please provide support according to the following guidelines:\n\n- Analyze document relevance and connect information\n- Suggest new perspectives\n- Provide accurate information based on understanding the intent of questions\nI will provide information in a structured format when necessary.",
     "page_mode_title": {
