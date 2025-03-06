@@ -530,6 +530,10 @@
         "label": "Même portée que l'accès à la page",
         "desc": "Partagé avec la même portée que l'accès à la page"
       }
+    },
+    "instructions": {
+      "description": "Vous pouvez définir des instructions qui déterminent le comportement de l'assistant.<br />L'assistant répondra et analysera en fonction de ces instructions.",
+      "reset_to_default": "Réinitialiser par défaut"
     }
   },
  "ai_assistant_tree": {

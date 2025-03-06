@@ -525,6 +525,10 @@
         "label": "与页面访问范围相同",
         "desc": "与页面访问范围相同的范围共享"
       }
+    },
+    "instructions": {
+      "description": "您可以设置决定助手行为的指令。<br />助手将根据这些指令进行回答和分析。",
+      "reset_to_default": "恢复默认设置"
     }
   },
   "ai_assistant_tree": {

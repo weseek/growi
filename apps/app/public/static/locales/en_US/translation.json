@@ -535,6 +535,10 @@
         "label": "Same as page access scope",
         "desc": "Shared with the same scope as page access"
       }
+    },
+    "instructions": {
+      "description": "You can set instructions that determine how the assistant behaves.<br />The assistant will answer and analyze based on these instructions.",
+      "reset_to_default": "Reset to default"
     }
   },
   "ai_assistant_tree": {
