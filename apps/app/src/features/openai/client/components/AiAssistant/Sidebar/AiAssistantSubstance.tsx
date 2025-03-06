@@ -33,6 +33,7 @@ export const AiAssistantContent = (): JSX.Element => {
           </h3>
           {aiAssistants?.myAiAssistants != null && aiAssistants.myAiAssistants.length !== 0 && (
             <AiAssistantTree
+              onUpdated={mutateAiAssistants}
               onDeleted={mutateAiAssistants}
               aiAssistants={aiAssistants.myAiAssistants}
             />
@@ -45,6 +46,7 @@ export const AiAssistantContent = (): JSX.Element => {
           </h3>
           {aiAssistants?.teamAiAssistants != null && aiAssistants.teamAiAssistants.length !== 0 && (
             <AiAssistantTree
+              onUpdated={mutateAiAssistants}
               aiAssistants={aiAssistants.teamAiAssistants}
             />
           )}

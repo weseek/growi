@@ -502,8 +502,9 @@
       "show_all_reply_comments": "返信コメントを全て表示する",
       "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。",
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
-      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
-
+      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。",
+      "show_page_side_authors": "作成者・更新者を目次上部に常時表示する",
+      "show_page_side_authors_desc": "ページサイドバーの目次上部に作成者と最終更新者の情報を表示します。"
     },
     "presentation":"プレゼンテーション",
     "presentation_options":{
@@ -1149,12 +1150,6 @@
   "ai_integration": {
     "ai_integration": "AI 連携",
     "disable_mode_explanation": "現在、AI 連携は無効になっています。有効にする場合は環境変数 <code>AI_ENABLED</code> の他、必要な環境変数を設定してください。<br><br>詳細は<a target='blank' rel='noopener noreferrer' href={{documentationUrl}}ja/guide/features/ai-knowledge-assistant.html>ドキュメント</a>を参照してください。",
-    "ai_search_management": "AI 検索管理",
-    "rebuild_vector_store": "Vector Store のリビルド",
-    "rebuild_vector_store_label": "リビルド",
-    "rebuild_vector_store_explanation1": "既存の Vector Store を削除し、公開ページの Vector Store を再作成します。",
-    "rebuild_vector_store_explanation2": "この作業には数分かかる可能性があります。",
-    "rebuild_vector_store_requested": "Vector Store のリビルドを受け付けました",
-    "rebuild_vector_store_failed": "Vector Store のリビルドに失敗しました"
+    "ai_search_management": "AI 検索管理"
   }
 }

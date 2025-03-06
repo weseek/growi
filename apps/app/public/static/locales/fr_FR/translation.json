@@ -187,7 +187,9 @@
   },
   "author_info": {
     "created_at": "Crée le",
-    "last_revision_posted_at": "Dernière révision le"
+    "created_by": "Créé par",
+    "last_revision_posted_at": "Dernière révision le",
+    "updated_by": "Mis à jour par"
   },
   "installer": {
     "tab": "Créer compte",
@@ -499,6 +501,7 @@
     "show_error_detail": "Détails de l'exposition"
   },
   "modal_ai_assistant": {
+    "edit_page_description": "Modifier les pages que l'assistant peut référencer.<br> L'assistant peut référencer jusqu'à {{limitLearnablePageCountPerAssistant}} pages, y compris les pages enfants.",
     "default_instruction": "Vous êtes l'assistant de connaissances pour ce Wiki. Veuillez fournir un support selon les directives suivantes :\n\n- Analyser la pertinence des documents et relier les informations\n- Proposer de nouvelles perspectives\n- Fournir des informations précises en comprenant l'intention des questions\nJe fournirai les informations sous forme structurée si nécessaire.",
     "page_mode_title": {
       "share": "Partage de l'assistant",

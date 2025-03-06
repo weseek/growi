@@ -30,7 +30,14 @@ export const upsertAiAssistantValidator: ValidationChain[] = [
     .withMessage('pagePathPatterns must be an array of strings')
     .not()
     .isEmpty()
-    .withMessage('pagePathPatterns must not be empty'),
+    .withMessage('pagePathPatterns must not be empty')
+    .custom((pagePathPattens: string[]) => {
+      if (pagePathPattens.length > 300) {
+        throw new Error('pagePathPattens must be an array of strings with a maximum length of 300');
+      }
+
+      return true;
+    }),
 
   body('pagePathPatterns.*') // each item of pagePathPatterns
     .isString()
@@ -38,10 +45,9 @@ export const upsertAiAssistantValidator: ValidationChain[] = [
     .notEmpty()
     .withMessage('pagePathPatterns must not be empty')
     .custom((value: string) => {
-
-      // check if the value is a grob pattern path
+      // check if the value is a glob pattern path
       if (value.includes('*')) {
-        return isGlobPatternPath(value) && isCreatablePage(value.replace('*', ''));
+        return isGlobPatternPath(value) && isCreatablePage(value.replaceAll('*', ''));
       }
 
       return isCreatablePage(value);

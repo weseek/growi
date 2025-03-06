@@ -125,11 +125,16 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     let currentThreadId_ = currentThreadId;
     if (currentThreadId_ == null) {
       try {
-        const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', { aiAssistantId: aiAssistantData._id, initialUserMessage: newUserMessage.content });
+        const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
+          aiAssistantId: aiAssistantData._id,
+          initialUserMessage: newUserMessage.content,
+        });
+
         const thread = res.data;
 
         setCurrentThreadId(thread.threadId);
         setCurrentThreadTitle(thread.title);
+
         currentThreadId_ = thread.threadId;
 
         // No need to await because data is not used
