@@ -68,6 +68,7 @@ const factory = (crowi) => {
     // email: { type: String, required: true, unique: true },
     introduction: String,
     password: String,
+    apiToken: { type: String, index: true },
     lang: {
       type: String,
       enum: i18n.locales,
@@ -146,6 +147,12 @@ const factory = (crowi) => {
     return hasher.digest('hex');
   }
 
+  function generateApiToken(user) {
+    const hasher = crypto.createHash('sha256');
+    hasher.update((new Date()).getTime() + user._id);
+
+    return hasher.digest('base64');
+  }
 
   userSchema.methods.isUniqueEmail = async function() {
     const query = this.model('User').find();
@@ -203,6 +210,14 @@ const factory = (crowi) => {
   userSchema.methods.updatePassword = async function(password) {
     this.setPassword(password);
     const userData = await this.save();
+    return userData;
+  };
+
+  userSchema.methods.updateApiToken = async function() {
+    const self = this;
+
+    self.apiToken = generateApiToken(this);
+    const userData = await self.save();
     return userData;
   };
 
@@ -429,6 +444,13 @@ const factory = (crowi) => {
       return Promise.resolve(null);
     }
     return this.findOne({ username });
+  };
+
+  userSchema.statics.findUserByApiToken = function(apiToken) {
+    if (apiToken == null) {
+      return Promise.resolve(null);
+    }
+    return this.findOne({ apiToken }).lean();
   };
 
   userSchema.statics.findUserByGoogleId = function(googleId, callback) {
