@@ -66,9 +66,9 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 
 export interface IOpenaiService {
   createThread(
-    userId: string, vectorStoreRelation: VectorStoreDocument, initialUserMessage: string
+    userId: string, aiAssistantId: string, vectorStoreRelation: VectorStoreDocument, initialUserMessage: string
   ): Promise<ThreadRelationDocument>;
-  getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
+  getThreadsByAiAssistant(aiAssistantId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
@@ -122,7 +122,9 @@ class OpenaiService implements IOpenaiService {
     return threadTitle;
   }
 
-  async createThread(userId: string, vectorStoreRelation: VectorStoreDocument, initialUserMessage: string): Promise<ThreadRelationDocument> {
+  async createThread(
+      userId: string, aiAssistantId: string, vectorStoreRelation: VectorStoreDocument, initialUserMessage: string,
+  ): Promise<ThreadRelationDocument> {
     let threadTitle: string | null = null;
     if (initialUserMessage != null) {
       try {
@@ -137,6 +139,7 @@ class OpenaiService implements IOpenaiService {
       const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
       const threadRelation = await ThreadRelationModel.create({
         userId,
+        aiAssistant: aiAssistantId,
         threadId: thread.id,
         vectorStore: vectorStoreRelation._id,
         title: threadTitle,
@@ -148,8 +151,28 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]> {
-    const threadRelations = await ThreadRelationModel.find({ vectorStore: vectorStoreRelationId });
+  async updateThreads(aiAssistantId: string, vectorStoreId: string, vectorStoreRelationId: string): Promise<void> {
+    const threadRelations = await this.getThreadsByAiAssistant(aiAssistantId);
+    const updatedThreadRelationIds: string[] = [];
+    for await (const threadRelation of threadRelations) {
+      try {
+        const updatedThreadResponse = await this.client.updateThread(threadRelation.threadId, vectorStoreId);
+        logger.debug('Update thread', updatedThreadResponse);
+        updatedThreadRelationIds.push(threadRelation._id);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    }
+
+    await ThreadRelationModel.updateMany(
+      { _id: { $in: updatedThreadRelationIds } },
+      { vectorStore: vectorStoreRelationId },
+    );
+  }
+
+  async getThreadsByAiAssistant(aiAssistantId: string): Promise<ThreadRelationDocument[]> {
+    const threadRelations = await ThreadRelationModel.find({ aiAssistant: aiAssistantId });
     return threadRelations;
   }
 
@@ -811,6 +834,8 @@ class OpenaiService implements IOpenaiService {
       await this.deleteVectorStore(obsoletedVectorStoreRelationId);
 
       newVectorStoreRelation = await this.createVectorStore(data.name);
+
+      this.updateThreads(aiAssistantId, newVectorStoreRelation.vectorStoreId, newVectorStoreRelation._id);
 
       // VectorStore creation process does not await
       this.createVectorStoreFileWithStream(newVectorStoreRelation, conditions);
