@@ -37,13 +37,13 @@ export interface IAccessTokenDocument extends IAccessToken, Document {
 }
 
 export interface IAccessTokenModel extends Model<IAccessTokenDocument> {
-  generateToken: (userId: Types.ObjectId, expiredAt: Date, scope: string[], description?: string,) => Promise<GenerateTokenResult>
+  generateToken: (userId: Types.ObjectId | string, expiredAt: Date, scope?: string[], description?: string,) => Promise<GenerateTokenResult>
   deleteToken: (token: string) => Promise<void>
-  deleteTokenById: (tokenId: Types.ObjectId) => Promise<void>
-  deleteAllTokensByUserId: (userId: Types.ObjectId) => Promise<void>
+  deleteTokenById: (tokenId: Types.ObjectId | string) => Promise<void>
+  deleteAllTokensByUserId: (userId: Types.ObjectId | string) => Promise<void>
   deleteExpiredToken: () => Promise<void>
   findUserIdByToken: (token: string) => Promise<HydratedDocument<IAccessTokenDocument> | null>
-  findTokenByUserId: (userId: Types.ObjectId) => Promise<HydratedDocument<IAccessTokenDocument>[] | null>
+  findTokenByUserId: (userId: Types.ObjectId | string) => Promise<HydratedDocument<IAccessTokenDocument>[] | null>
   validateTokenScopes: (token: string, requiredScope: string[]) => Promise<boolean>
 }
 
@@ -60,7 +60,7 @@ const accessTokenSchema = new Schema<IAccessTokenDocument, IAccessTokenModel>({
 accessTokenSchema.plugin(mongoosePaginate);
 accessTokenSchema.plugin(uniqueValidator);
 
-accessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId, expiredAt: Date, scope?: string[], description?: string) {
+accessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId | string, expiredAt: Date, scope?: string[], description?: string) {
 
   const token = crypto.randomBytes(32).toString('hex');
   const tokenHash = generateTokenHash(token);
@@ -86,11 +86,11 @@ accessTokenSchema.statics.deleteToken = async function(token: string) {
   await this.deleteOne({ tokenHash });
 };
 
-accessTokenSchema.statics.deleteTokenById = async function(tokenId: Types.ObjectId) {
+accessTokenSchema.statics.deleteTokenById = async function(tokenId: Types.ObjectId | string) {
   await this.deleteOne({ _id: tokenId });
 };
 
-accessTokenSchema.statics.deleteAllTokensByUserId = async function(userId: Types.ObjectId) {
+accessTokenSchema.statics.deleteAllTokensByUserId = async function(userId: Types.ObjectId | string) {
   await this.deleteMany({ user: userId });
 };
 
@@ -105,7 +105,7 @@ accessTokenSchema.statics.findUserIdByToken = async function(token: string) {
   return this.findOne({ tokenHash, expiredAt: { $gt: now } }).select('user');
 };
 
-accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId) {
+accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId | string) {
   const now = new Date();
   return this.find({ user: userId, expiredAt: { $gt: now } }).select('_id expiredAt scope description');
 };

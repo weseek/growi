@@ -1,19 +1,22 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { body } from 'express-validator';
 
-
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
-import { AccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
 
-import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import EditorSettings from '../../models/editor-settings';
-import ExternalAccount from '../../models/external-account';
-import InAppNotificationSettings from '../../models/in-app-notification-settings';
+import { generateAddActivityMiddleware } from '../../../middlewares/add-activity';
+import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
+import EditorSettings from '../../../models/editor-settings';
+import ExternalAccount from '../../../models/external-account';
+import InAppNotificationSettings from '../../../models/in-app-notification-settings';
+
+import { deleteAccessTokenHandlersFactory } from './delete-access-token';
+import { deleteAllAccessTokensHandlersFactory } from './delete-all-access-tokens';
+import { generateAccessTokenHandlerFactory } from './generate-access-token';
+import { getAccessTokenHandlerFactory } from './get-access-tokens';
 
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
@@ -69,7 +72,7 @@ const router = express.Router();
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const { User } = crowi.models;
@@ -377,6 +380,45 @@ module.exports = (crowi) => {
 
   });
 
+
+  /**
+   * @swagger
+   *
+   *    /personal-setting/api-token:
+   *      put:
+   *        tags: [GeneralSetting]
+   *        operationId: putUserApiToken
+   *        summary: /personal-setting/api-token
+   *        description: Update user api token
+   *        responses:
+   *          200:
+   *            description: succeded to update user api token
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    userData:
+   *                      type: object
+   *                      description: user data
+   */
+  router.put('/api-token', loginRequiredStrictly, addActivity, async(req, res) => {
+    const { user } = req;
+
+    try {
+      const userData = await user.updateApiToken();
+
+      const parameters = { action: SupportedAction.ACTION_USER_API_TOKEN_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+
+      return res.apiv3({ userData });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err('update-api-token-failed');
+    }
+
+  });
+
   /**
    * @swagger
    *   /personal-setting/access-token:
@@ -396,19 +438,7 @@ module.exports = (crowi) => {
    *                   type: objet
    *                   description: array of access tokens
    */
-  router.get('/access-token', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
-    const { user } = req;
-
-    try {
-      const accessTokens = await AccessToken.findTokenByUserId(user._id);
-      return res.apiv3({ accessTokens });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('get-access-token-failed');
-    }
-  });
-
+  router.get('/access-token', getAccessTokenHandlerFactory(crowi));
 
   /**
    * @swagger
@@ -441,24 +471,7 @@ module.exports = (crowi) => {
    *                     type: string[]
    *                     description: scope of access token
    */
-  router.post('/access-token', loginRequiredStrictly, addActivity, async(req, res) => {
-
-    const { user, body } = req;
-    const { expiredAt, description, scope } = body;
-
-    try {
-      const tokenData = await AccessToken.generateToken(user, expiredAt, scope, description);
-
-      const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_CREATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return res.apiv3(tokenData);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('generate-access-token-failed');
-    }
-  });
+  router.post('/access-token', generateAccessTokenHandlerFactory(crowi));
 
   /**
    * @swagger
@@ -473,23 +486,7 @@ module.exports = (crowi) => {
    *         description: succeded to delete access token
    *
    */
-  router.delete('/access-token', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
-    const { body } = req;
-    const { tokenId } = body;
-
-    try {
-      await AccessToken.deleteTokenById(tokenId);
-
-      const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_DELETE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return res.apiv3({});
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('delete-access-token-failed');
-    }
-  });
+  router.delete('/access-token', deleteAccessTokenHandlersFactory(crowi));
 
   /**
    * @swagger
@@ -503,22 +500,7 @@ module.exports = (crowi) => {
    *         200:
    *           description: succeded to delete all access tokens
    */
-  router.delete('/access-token/all', accessTokenParser, loginRequiredStrictly, addActivity, async(req, res) => {
-    const { user } = req;
-
-    try {
-      await AccessToken.deleteAllTokensByUserId(user._id);
-
-      const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_DELETE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return res.apiv3({});
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('delete-all-access-token-failed');
-    }
-  });
+  router.delete('/access-token/all', deleteAllAccessTokensHandlersFactory(crowi));
 
   /**
    * @swagger
