@@ -33,6 +33,16 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
     });
   }
 
+  async updateThread(threadId: string, vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.update(threadId, {
+      tool_resources: {
+        file_search: {
+          vector_store_ids: [vectorStoreId],
+        },
+      },
+    });
+  }
+
   async retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread> {
     return this.client.beta.threads.retrieve(threadId);
   }

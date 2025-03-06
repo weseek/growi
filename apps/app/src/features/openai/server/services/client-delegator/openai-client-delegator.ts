@@ -38,6 +38,16 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     return this.client.beta.threads.retrieve(threadId);
   }
 
+  async updateThread(threadId: string, vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.update(threadId, {
+      tool_resources: {
+        file_search: {
+          vector_store_ids: [vectorStoreId],
+        },
+      },
+    });
+  }
+
   async deleteThread(threadId: string): Promise<OpenAI.Beta.Threads.ThreadDeleted> {
     return this.client.beta.threads.del(threadId);
   }
