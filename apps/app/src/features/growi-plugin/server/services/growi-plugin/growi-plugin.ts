@@ -326,12 +326,17 @@ export class GrowiPluginService implements IGrowiPluginService {
       return growiPlugins.meta.name;
     }
 
-    try {
-      await deleteFolder(growiPluginsPath);
+    if (growiPluginsPath && fs.existsSync(growiPluginsPath)) {
+      try {
+        await deleteFolder(growiPluginsPath);
+      }
+      catch (err) {
+        logger.error(err);
+        throw new Error('Failed to delete plugin repository.');
+      }
     }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to delete plugin repository.');
+    else {
+      logger.warn(`Plugin path does not exist : ${growiPluginsPath}`);
     }
 
     try {
