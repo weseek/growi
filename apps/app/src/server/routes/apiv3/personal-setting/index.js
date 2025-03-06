@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { body } from 'express-validator';
 
+
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
@@ -379,7 +380,6 @@ module.exports = (crowi) => {
     }
 
   });
-
 
   /**
    * @swagger
