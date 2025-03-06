@@ -4,8 +4,11 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import type { SelectedPage } from '../../../../interfaces/selected-page';
+
 type Props = {
   isOpen: boolean,
+  selectedPages: SelectedPage[],
   closeModal: () => void,
   onSubmit: () => Promise<void>,
 }
@@ -13,11 +16,12 @@ type Props = {
 export const ShareScopeWarningModal = (props: Props): JSX.Element => {
   const {
     isOpen,
+    selectedPages,
     closeModal,
     onSubmit,
   } = props;
 
-  const createAiAssistantHandler = useCallback(() => {
+  const upsertAiAssistantHandler = useCallback(() => {
     closeModal();
     onSubmit();
   }, [closeModal, onSubmit]);
@@ -38,10 +42,12 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
         </p>
 
         <div className="mb-4">
-          <p className="mb-2 text-secondary">含まれる限定公開ページ</p>
-          <code>
-            /Project/GROWI/新機能/GROWI AI
-          </code>
+          <p className="mb-2 text-secondary">選択されているページパス</p>
+          {selectedPages.map(selectedPage => (
+            <code key={selectedPage.page.path}>
+              {selectedPage.page.path}
+            </code>
+          ))}
         </div>
 
         <p>
@@ -61,7 +67,7 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
         <button
           type="button"
           className="btn btn-warning"
-          onClick={createAiAssistantHandler}
+          onClick={upsertAiAssistantHandler}
         >
           理解して続行する
         </button>

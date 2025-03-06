@@ -218,6 +218,7 @@ export const CONFIG_KEYS = [
   'customize:isEnabledStaleNotification',
   'customize:isAllReplyShown',
   'customize:isSearchScopeChildrenAsDefault',
+  'customize:showPageSideAuthors',
   'customize:isEnabledMarp',
   'customize:isSidebarCollapsedMode',
   'customize:isSidebarClosedAtDockMode',
@@ -260,6 +261,7 @@ export const CONFIG_KEYS = [
   'openai:vectorStoreFileDeletionCronExpression',
   'openai:vectorStoreFileDeletionBarchSize',
   'openai:vectorStoreFileDeletionApiCallInterval',
+  'openai:limitLearnablePageCountPerAssistant',
 
   // OpenTelemetry Settings
   'otel:enabled',
@@ -970,6 +972,9 @@ export const CONFIG_DEFINITIONS = {
   'customize:isSearchScopeChildrenAsDefault': defineConfig<boolean>({
     defaultValue: false,
   }),
+  'customize:showPageSideAuthors': defineConfig<boolean>({
+    defaultValue: false,
+  }),
   'customize:isEnabledMarp': defineConfig<boolean>({
     defaultValue: false,
   }),
@@ -1124,6 +1129,10 @@ Guideline as a RAG:
   'openai:searchAssistantInstructions': defineConfig<string>({
     envVarName: 'OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS',
     defaultValue: '',
+  }),
+  'openai:limitLearnablePageCountPerAssistant': defineConfig<number>({
+    envVarName: 'OPENAI_LIMIT_LEARNABLE_PAGE_COUNT_PER_ASSISTANT',
+    defaultValue: 3000,
   }),
 
   // OpenTelemetry Settings

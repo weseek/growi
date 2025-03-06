@@ -41,12 +41,12 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
+  useIsAllReplyShown, useShowPageSideAuthors, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
   useIsRomUserAllowedToComment,
-  useIsAiEnabled,
+  useIsAiEnabled, useLimitLearnablePageCountPerAssistant,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -177,6 +177,7 @@ type Props = CommonProps & {
   drawioUri: string | null,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
+  showPageSideAuthors: boolean,
   isContainerFluid: boolean,
   isUploadEnabled: boolean,
   isUploadAllFileAllowed: boolean,
@@ -195,6 +196,7 @@ type Props = CommonProps & {
   rendererConfig: RendererConfig,
 
   aiEnabled: boolean,
+  limitLearnablePageCountPerAssistant: number,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -240,6 +242,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
+  useShowPageSideAuthors(props.showPageSideAuthors);
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
@@ -248,6 +251,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
 
   useIsAiEnabled(props.aiEnabled);
+  useLimitLearnablePageCountPerAssistant(props.limitLearnablePageCountPerAssistant);
 
   const { pageWithMeta } = props;
 
@@ -566,6 +570,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   } = crowi;
 
   props.aiEnabled = configManager.getConfig('app:aiEnabled');
+  props.limitLearnablePageCountPerAssistant = configManager.getConfig('openai:limitLearnablePageCountPerAssistant');
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -581,6 +586,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.drawioUri = configManager.getConfig('app:drawioUri');
   // props.highlightJsStyle = configManager.getConfig('customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('customize:isAllReplyShown');
+  props.showPageSideAuthors = configManager.getConfig('customize:showPageSideAuthors');
   props.isContainerFluid = configManager.getConfig('customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('customize:isEnabledStaleNotification');
   props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');

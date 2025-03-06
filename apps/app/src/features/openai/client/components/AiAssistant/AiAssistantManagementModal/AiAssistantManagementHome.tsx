@@ -1,13 +1,16 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
   ModalHeader, ModalBody, ModalFooter, Input,
 } from 'reactstrap';
 
-import { AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
-import { useCurrentUser } from '~/stores-universal/context';
+import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
+import { useCurrentUser, useLimitLearnablePageCountPerAssistant } from '~/stores-universal/context';
 
+import type { SelectedPage } from '../../../../interfaces/selected-page';
+import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
 import { ShareScopeWarningModal } from './ShareScopeWarningModal';
@@ -17,10 +20,14 @@ type Props = {
   name: string;
   description: string;
   instruction: string;
-  shareScope: AiAssistantShareScope
+  shareScope: AiAssistantShareScope,
+  accessScope: AiAssistantAccessScope,
+  selectedPages: SelectedPage[];
+  selectedUserGroupsForAccessScope: PopulatedGrantedGroup[],
+  selectedUserGroupsForShareScope: PopulatedGrantedGroup[],
   onNameChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
-  onCreateAiAssistant: () => Promise<void>
+  onUpsertAiAssistant: () => Promise<void>
 }
 
 export const AiAssistantManagementHome = (props: Props): JSX.Element => {
@@ -30,16 +37,31 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
     description,
     instruction,
     shareScope,
+    accessScope,
+    selectedPages,
+    selectedUserGroupsForAccessScope,
+    selectedUserGroupsForShareScope,
     onNameChange,
     onDescriptionChange,
-    onCreateAiAssistant,
+    onUpsertAiAssistant,
   } = props;
 
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
+  const { data: limitLearnablePageCountPerAssistant } = useLimitLearnablePageCountPerAssistant();
   const { close: closeAiAssistantManagementModal, changePageMode } = useAiAssistantManagementModal();
 
   const [isShareScopeWarningModalOpen, setIsShareScopeWarningModalOpen] = useState(false);
+
+  const totalSelectedPageCount = useMemo(() => {
+    return selectedPages.reduce((total, selectedPage) => {
+      const descendantCount = selectedPage.isIncludeSubPage
+        ? selectedPage.page.descendantCount ?? 0
+        : 0;
+      const pageCountWithDescendants = descendantCount + 1;
+      return total + pageCountWithDescendants;
+    }, 0);
+  }, [selectedPages]);
 
   const getShareScopeLabel = useCallback((shareScope: AiAssistantShareScope) => {
     const baseLabel = `modal_ai_assistant.share_scope.${shareScope}.label`;
@@ -48,16 +70,47 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
       : t(baseLabel);
   }, [currentUser?.username, t]);
 
-  const createAiAssistantHandler = useCallback(async() => {
-    // TODO: Implement the logic to check if the assistant has a share scope that includes private pages
-    // task: https://redmine.weseek.co.jp/issues/161341
-    if (true) {
+  const canUpsert = name !== '' && selectedPages.length !== 0 && (limitLearnablePageCountPerAssistant ?? 3000) >= totalSelectedPageCount;
+
+  const upsertAiAssistantHandler = useCallback(async() => {
+    const shouldWarning = () => {
+      const isDifferentUserGroup = () => {
+        const selectedShareScopeUserGroupIds = selectedUserGroupsForShareScope.map(userGroup => userGroup.item._id);
+        const selectedAccessScopeUserGroupIds = selectedUserGroupsForAccessScope.map(userGroup => userGroup.item._id);
+        if (selectedShareScopeUserGroupIds.length !== selectedAccessScopeUserGroupIds.length) {
+          return false;
+        }
+        return selectedShareScopeUserGroupIds.every((val, index) => val === selectedAccessScopeUserGroupIds[index]);
+      };
+
+      const determinedShareScope = determineShareScope(shareScope, accessScope);
+
+      if (determinedShareScope === AiAssistantShareScope.PUBLIC_ONLY && accessScope !== AiAssistantAccessScope.PUBLIC_ONLY) {
+        return true;
+      }
+
+      if (determinedShareScope === AiAssistantShareScope.OWNER && accessScope !== AiAssistantAccessScope.OWNER) {
+        return true;
+      }
+
+      if (determinedShareScope === AiAssistantShareScope.GROUPS && accessScope === AiAssistantAccessScope.OWNER) {
+        return true;
+      }
+
+      if (determinedShareScope === AiAssistantShareScope.GROUPS && accessScope === AiAssistantAccessScope.GROUPS && !isDifferentUserGroup()) {
+        return true;
+      }
+
+      return false;
+    };
+
+    if (shouldWarning()) {
       setIsShareScopeWarningModalOpen(true);
       return;
     }
 
-    await onCreateAiAssistant();
-  }, [onCreateAiAssistant]);
+    await onUpsertAiAssistant();
+  }, [accessScope, onUpsertAiAssistant, selectedUserGroupsForAccessScope, selectedUserGroupsForShareScope, shareScope]);
 
   return (
     <>
@@ -116,7 +169,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.pages')}</span>
               <div className="d-flex align-items-center text-secondary">
-                <span>3ページ</span>
+                <span>{`${totalSelectedPageCount} ページ`}</span>
                 <span className="material-symbols-outlined ms-2 align-middle">chevron_right</span>
               </div>
             </button>
@@ -138,15 +191,30 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
         </ModalBody>
 
         <ModalFooter>
-          <button type="button" className="btn btn-outline-secondary" onClick={closeAiAssistantManagementModal}>キャンセル</button>
-          <button type="button" className="btn btn-primary" onClick={createAiAssistantHandler}>{t(shouldEdit ? 'アシスタントを更新する' : 'アシスタントを作成する')}</button>
+          <button
+            type="button"
+            className="btn btn-outline-secondary"
+            onClick={closeAiAssistantManagementModal}
+          >
+            キャンセル
+          </button>
+
+          <button
+            type="button"
+            disabled={!canUpsert}
+            className="btn btn-primary"
+            onClick={upsertAiAssistantHandler}
+          >
+            {t(shouldEdit ? 'アシスタントを更新する' : 'アシスタントを作成する')}
+          </button>
         </ModalFooter>
       </div>
 
       <ShareScopeWarningModal
         isOpen={isShareScopeWarningModalOpen}
+        selectedPages={selectedPages}
         closeModal={() => setIsShareScopeWarningModalOpen(false)}
-        onSubmit={onCreateAiAssistant}
+        onSubmit={onUpsertAiAssistant}
       />
     </>
   );

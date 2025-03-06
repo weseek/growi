@@ -1,16 +1,22 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, {
+  useCallback, useState, useEffect,
+} from 'react';
 
-import { type IGrantedGroup, isPopulated } from '@growi/core';
+import {
+  type IGrantedGroup, isPopulated,
+} from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
-import type { IPageForItem } from '~/interfaces/page';
+import type { IPagePathWithDescendantCount, IPageForItem } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
+import { useSWRxPagePathsWithDescendantCount } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
+import { removeGlobPath } from '../../../../utils/remove-glob-path';
 import { createAiAssistant, updateAiAssistant } from '../../../services/ai-assistant';
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode, useSWRxAiAssistants } from '../../../stores/ai-assistant';
 
@@ -39,13 +45,13 @@ const convertToPopulatedGrantedGroups = (selectedGroups: IGrantedGroup[]): Popul
   return populatedGrantedGroups;
 };
 
-// string[] -> SelectedPage[]
-const convertToSelectedPages = (pagePathPatterns: string[]): SelectedPage[] => {
+const convertToSelectedPages = (pagePathPatterns: string[], pagePathsWithDescendantCount: IPagePathWithDescendantCount[]): SelectedPage[] => {
   return pagePathPatterns.map((pagePathPattern) => {
     const isIncludeSubPage = pagePathPattern.endsWith('/*');
     const path = isIncludeSubPage ? pagePathPattern.slice(0, -2) : pagePathPattern;
+    const page = pagePathsWithDescendantCount.find(page => page.path === path);
     return {
-      page: { path },
+      page: page ?? { path },
       isIncludeSubPage,
     };
   });
@@ -56,10 +62,17 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const { t } = useTranslation();
   const { mutate: mutateAiAssistants } = useSWRxAiAssistants();
   const { data: aiAssistantManagementModalData, close: closeAiAssistantManagementModal } = useAiAssistantManagementModal();
+  const { data: pagePathsWithDescendantCount } = useSWRxPagePathsWithDescendantCount(
+    removeGlobPath(aiAssistantManagementModalData?.aiAssistantData?.pagePathPatterns) ?? null,
+    undefined,
+    true,
+    true,
+  );
 
   const aiAssistant = aiAssistantManagementModalData?.aiAssistantData;
   const shouldEdit = aiAssistant != null;
   const pageMode = aiAssistantManagementModalData?.pageMode ?? AiAssistantManagementModalPageMode.HOME;
+
 
   // States
   const [name, setName] = useState<string>('');
@@ -71,13 +84,13 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   const [selectedPages, setSelectedPages] = useState<SelectedPage[]>([]);
   const [instruction, setInstruction] = useState<string>(t('modal_ai_assistant.default_instruction'));
 
+
   // Effects
   useEffect(() => {
     if (shouldEdit) {
       setName(aiAssistant.name);
       setDescription(aiAssistant.description);
       setInstruction(aiAssistant.additionalInstruction);
-      setSelectedPages(convertToSelectedPages(aiAssistant.pagePathPatterns));
       setSelectedShareScope(aiAssistant.shareScope);
       setSelectedAccessScope(aiAssistant.accessScope);
       setSelectedUserGroupsForShareScope(convertToPopulatedGrantedGroups(aiAssistant.grantedGroupsForShareScope ?? []));
@@ -85,6 +98,13 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
     }
   // eslint-disable-next-line max-len
   }, [aiAssistant?.accessScope, aiAssistant?.additionalInstruction, aiAssistant?.description, aiAssistant?.grantedGroupsForAccessScope, aiAssistant?.grantedGroupsForShareScope, aiAssistant?.name, aiAssistant?.pagePathPatterns, aiAssistant?.shareScope, shouldEdit]);
+
+  useEffect(() => {
+    if (shouldEdit && pagePathsWithDescendantCount != null) {
+      setSelectedPages(convertToSelectedPages(aiAssistant.pagePathPatterns, pagePathsWithDescendantCount));
+    }
+  }, [aiAssistant?.pagePathPatterns, pagePathsWithDescendantCount, shouldEdit]);
+
 
   /*
   *  For AiAssistantManagementHome methods
@@ -97,7 +117,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
     setDescription(value);
   }, []);
 
-  const createAiAssistantHandler = useCallback(async() => {
+  const upsertAiAssistantHandler = useCallback(async() => {
     try {
       const pagePathPatterns = selectedPages
         .map(selectedPage => (selectedPage.isIncludeSubPage ? `${selectedPage.page.path}/*` : selectedPage.page.path))
@@ -120,6 +140,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         accessScope: selectedAccessScope,
         grantedGroupsForShareScope,
         grantedGroupsForAccessScope,
+        isDefault: shouldEdit ? aiAssistant.isDefault : false,
       };
 
       if (shouldEdit) {
@@ -138,7 +159,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       logger.error(err);
     }
   // eslint-disable-next-line max-len
-  }, [selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope, selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, mutateAiAssistants, closeAiAssistantManagementModal, aiAssistant?._id]);
+  }, [selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope, selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, aiAssistant?.isDefault, aiAssistant?._id, mutateAiAssistants, closeAiAssistantManagementModal]);
 
 
   /*
@@ -181,14 +202,14 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
   *  For AiAssistantManagementEditPages methods
   */
   const selectPageHandler = useCallback((page: IPageForItem, isIncludeSubPage: boolean) => {
-    const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page._id);
-    if (page._id != null && !selectedPageIds.includes(page._id)) {
+    const selectedPageIds = selectedPages.map(selectedPage => selectedPage.page.path);
+    if (page.path != null && !selectedPageIds.includes(page.path)) {
       setSelectedPages([...selectedPages, { page, isIncludeSubPage }]);
     }
   }, [selectedPages]);
 
-  const removePageHandler = useCallback((pageId: string) => {
-    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page._id !== pageId));
+  const removePageHandler = useCallback((pagePath: string) => {
+    setSelectedPages(selectedPages.filter(selectedPage => selectedPage.page.path !== pagePath));
   }, [selectedPages]);
 
 
@@ -212,10 +233,14 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
             name={name}
             description={description}
             shareScope={selectedShareScope}
+            accessScope={selectedAccessScope}
             instruction={instruction}
+            selectedPages={selectedPages}
+            selectedUserGroupsForShareScope={selectedUserGroupsForShareScope}
+            selectedUserGroupsForAccessScope={selectedUserGroupsForAccessScope}
             onNameChange={changeNameHandler}
             onDescriptionChange={changeDescriptionHandler}
-            onCreateAiAssistant={createAiAssistantHandler}
+            onUpsertAiAssistant={upsertAiAssistantHandler}
           />
         </TabPane>
 
