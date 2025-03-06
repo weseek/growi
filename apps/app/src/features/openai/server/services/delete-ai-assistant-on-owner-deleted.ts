@@ -23,6 +23,6 @@ export const deleteAiAssistantOnOwnerDeleted = async(user: IUserHasId): Promise<
   }
 
   // Cannot delete OpenAI VectorStore entities without enabling openaiService.
-  // Delete OpenAI VectorStore entities through deleteAiAssistantOnOwnerDeleted when app starts with openaiService enabled
+  // Delete OpenAI VectorStore entities through "deleteVectorStoresOrphanedFromAiAssistant" when app starts with openaiService enabled
   await AiAssistant.deleteMany({ owner: user });
 };
