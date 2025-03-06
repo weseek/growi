@@ -62,20 +62,24 @@ ENV LANG="ja_JP.UTF-8"
 ENV optDir="/opt"
 ENV appDir="${optDir}/pdf-converter"
 
-RUN apt-get update && apt-get install -y chromium fonts-lato fonts-ipafont-gothic fonts-noto-cjk \
+RUN apt-get update && apt-get install -y chromium fonts-lato fonts-ipafont-gothic fonts-noto-cjk gosu \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*;
+    && rm -rf /var/lib/apt/lists/*; \
+# verify that the binary works
+    gosu nobody true
 
 # copy artifacts
 COPY --from=builder --chown=node:node \
   ${optDir}/packages.tar.gz ${appDir}/
 
+# extract artifacts as 'node' user
 USER node
 WORKDIR ${appDir}
 RUN tar -xf packages.tar.gz && rm packages.tar.gz
 
 COPY --chown=node:node --chmod=700 apps/pdf-converter/docker/docker-entrypoint.sh /
 
+USER root
 WORKDIR ${appDir}/apps/pdf-converter
 
 EXPOSE 3010
