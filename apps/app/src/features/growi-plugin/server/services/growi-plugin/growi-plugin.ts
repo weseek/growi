@@ -435,7 +435,10 @@ export class GrowiPluginService implements IGrowiPluginService {
   private joinAndValidatePath(baseDir: string, ...paths: string[]):fs.PathLike {
     const joinedPath = path.join(baseDir, ...paths);
     if (!joinedPath.startsWith(baseDir)) {
-      throw new Error(`Invalid path: Outside of allowed directory - ${joinedPath}`);
+      throw new Error(
+        'Invalid plugin path detected! Access outside of the allowed directory is not permitted.'
+        + `\nAttempted Path: ${joinedPath}`,
+      );
     }
     return joinedPath;
   }
