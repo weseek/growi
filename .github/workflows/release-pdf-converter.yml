@@ -48,6 +48,7 @@ jobs:
         # cache-from: type=gha
         # cache-to: type=gha,mode=max
         tags: ${{ steps.meta.outputs.tags }}
+        no-cache: true
 
   #   - name: Add tag
   #     uses: anothrNick/github-tag-action@v1
