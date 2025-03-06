@@ -314,7 +314,16 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
     catch (err) {
       logger.error(err);
-      throw new Error('Failed to constract plugin path');
+
+      try {
+        await GrowiPlugin.deleteOne({ _id: pluginId });
+        logger.warn(`Deleted invalid plugin (ID: ${pluginId}) from database. Skipped directory removal.`);
+      }
+      catch (deleteErr) {
+        logger.error(deleteErr);
+        throw new Error('Failed to delete invalid plugin from GrowiPlugin documents.');
+      }
+      return growiPlugins.meta.name;
     }
 
     try {
