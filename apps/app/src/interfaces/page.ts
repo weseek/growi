@@ -76,3 +76,8 @@ export type IOptionsForCreate = {
   origin?: Origin
   wip?: boolean,
 };
+
+export type IPagePathWithDescendantCount = {
+  path: string,
+  descendantCount: number,
+};

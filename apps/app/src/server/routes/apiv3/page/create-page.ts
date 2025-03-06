@@ -206,7 +206,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       const { getOpenaiService } = await import('~/features/openai/server/services/openai');
       try {
         const openaiService = getOpenaiService();
-        await openaiService?.rebuildVectorStore(createdPage);
+        await openaiService?.createVectorStoreFileOnPageCreate([createdPage]);
       }
       catch (err) {
         logger.error('Rebuild vector store failed', err);

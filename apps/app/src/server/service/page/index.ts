@@ -1172,10 +1172,9 @@ class PageService implements IPageService {
 
       if (isAiEnabled()) {
         const { getOpenaiService } = await import('~/features/openai/server/services/openai');
-
-        // Do not await because communication with OpenAI takes time
         const openaiService = getOpenaiService();
-        openaiService?.createVectorStoreFile([duplicatedTarget]);
+        // Do not await because communication with OpenAI takes time
+        openaiService?.createVectorStoreFileOnPageCreate([duplicatedTarget]);
       }
     }
     this.pageEvent.emit('duplicate', page, user);
@@ -1408,15 +1407,14 @@ class PageService implements IPageService {
     await Revision.insertMany(newRevisions, { ordered: false });
     await this.duplicateTags(pageIdMapping);
 
-    const duplicatedPagesWithPopulatedToShowRevison = await Page
-      .find({ _id: { $in: duplicatedPageIds }, grant: PageGrant.GRANT_PUBLIC }).populate('revision') as PageDocument[];
+    const duplicatedPagesWithPopulatedToShowRevision: HydratedDocument<PageDocument>[] = await Page
+      .find({ _id: { $in: duplicatedPageIds }, grant: PageGrant.GRANT_PUBLIC }).populate('revision');
 
     if (isAiEnabled()) {
       const { getOpenaiService } = await import('~/features/openai/server/services/openai');
-
-      // Do not await because communication with OpenAI takes time
       const openaiService = getOpenaiService();
-      openaiService?.createVectorStoreFile(duplicatedPagesWithPopulatedToShowRevison);
+      // Do not await because communication with OpenAI takes time
+      openaiService?.createVectorStoreFileOnPageCreate(duplicatedPagesWithPopulatedToShowRevision);
     }
   }
 
@@ -1897,13 +1895,8 @@ class PageService implements IPageService {
 
     if (isAiEnabled()) {
       const { getOpenaiService } = await import('~/features/openai/server/services/openai');
-
       const openaiService = getOpenaiService();
-      if (openaiService != null) {
-        const vectorStore = await openaiService.getOrCreateVectorStoreForPublicScope();
-        const deleteVectorStoreFilePromises = pageIds.map(pageId => openaiService.deleteVectorStoreFile(vectorStore._id, pageId));
-        await Promise.allSettled(deleteVectorStoreFilePromises);
-      }
+      await openaiService?.deleteVectorStoreFilesByPageIds(pageIds);
     }
   }
 
