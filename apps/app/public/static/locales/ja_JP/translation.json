@@ -546,6 +546,7 @@
       "pages": "参照ページ",
       "instruction": "アシスタントへの指示"
     },
+    "page_access_permission": "ページのアクセス権限",
     "access_scope": {
       "owner": "{{username}} がアクセス可能な全てのページ",
       "groups": "グループを指定",

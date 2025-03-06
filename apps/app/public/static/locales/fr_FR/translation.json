@@ -508,6 +508,7 @@
       "pages": "Pages de référence",
       "instruction": "Instructions de l'assistant"
     },
+    "page_access_permission": "Autorisation d'accès à la page",
     "access_scope": {
       "owner": "Toutes les pages accessibles par {{username}}",
       "groups": "Spécifier les groupes",
