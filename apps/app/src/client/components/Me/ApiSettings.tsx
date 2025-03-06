@@ -27,7 +27,9 @@ const ApiTokenSettings = React.memo((): JSX.Element => {
       toastError(err);
     }
 
-  }, [mutateDatabaseData, t]); return (
+  }, [mutateDatabaseData, t]);
+
+  return (
     <>
       <div className="row mb-3">
         <label htmlFor="apiToken" className="col-md-3 text-md-end col-form-label">{t('Current API Token')}</label>
