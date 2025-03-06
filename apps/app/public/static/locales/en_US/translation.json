@@ -538,7 +538,7 @@
       }
     },
     "instructions": {
-      "description": "You can set instructions that determine how the assistant behaves.<br />The assistant will answer and analyze based on these instructions.",
+      "description": "You can set instructions that determine how the assistant behaves.<br>The assistant will answer and analyze based on these instructions.",
       "reset_to_default": "Reset to default"
     }
   },

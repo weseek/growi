@@ -533,7 +533,7 @@
       }
     },
     "instructions": {
-      "description": "Vous pouvez définir des instructions qui déterminent le comportement de l'assistant.<br />L'assistant répondra et analysera en fonction de ces instructions.",
+      "description": "Vous pouvez définir des instructions qui déterminent le comportement de l'assistant.<br>L'assistant répondra et analysera en fonction de ces instructions.",
       "reset_to_default": "Réinitialiser par défaut"
     }
   },
