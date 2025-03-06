@@ -211,14 +211,14 @@ export class LlmResponseStreamProcessor {
       }
 
       // Final notification
-      const fullMessage = Array.from(this.processedMessages.values()).join('\n\n');
+      const fullMessage = Array.from(this.processedMessages.values()).join('');
       this.options?.dataFinalizedCallback?.(fullMessage, this.replacements);
     }
     catch (e) {
       logger.debug('Failed to parse final JSON response:', e);
 
       // Send final notification even on error
-      const fullMessage = Array.from(this.processedMessages.values()).join('\n\n');
+      const fullMessage = Array.from(this.processedMessages.values()).join('');
       this.options?.dataFinalizedCallback?.(fullMessage, this.replacements);
     }
   }

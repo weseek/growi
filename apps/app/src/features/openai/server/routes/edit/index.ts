@@ -134,7 +134,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
               You must respond with a JSON object in the following format example:
               {
                 "contents": [
-                  { "message": "Your friendly message explaining what changes were made or suggested" },
+                  { "message": "Your brief message about the upcoming change or proposal.\n\n" },
                   { "retain": 10 },
                   { "insert": "New text 1" },
                   { "message": "Additional explanation if needed" },
@@ -142,12 +142,15 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
                   { "delete": 15 },
                   { "insert": "New text 2" },
                   ...more items if needed
+                  { "message": "Your friendly message explaining what changes were made or suggested." }
                 ]
               }
 
               The array should contain:
-              - Objects with a "message" key for explanatory text to the user
+              - [At the begining of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
+              - Objects with a "message" key for explanatory text to the user if needed.
               - Objects with "insert", "delete", and "retain" keys for replacements (Delta format by Quill Rich Text Editor)
+              - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
 
               If no changes are needed, include only message objects with explanations.
               Always provide messages in the same language as the user's request.`,
@@ -177,9 +180,6 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
             streamProcessor.process(rawBuffer, chunk);
 
             rawBuffer += chunk;
-
-            // Also send original delta
-            sseHelper.writeData(delta);
           }
           else {
             sseHelper.writeData(delta);
