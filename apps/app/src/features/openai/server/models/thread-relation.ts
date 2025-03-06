@@ -30,11 +30,6 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
     ref: 'AiAssistant',
     required: true,
   },
-  vectorStore: {
-    type: Schema.Types.ObjectId,
-    ref: 'VectorStore',
-    required: true,
-  },
   threadId: {
     type: String,
     required: true,
