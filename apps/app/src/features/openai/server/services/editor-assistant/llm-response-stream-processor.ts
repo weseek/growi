@@ -50,6 +50,12 @@ export class LlmResponseStreamProcessor {
   // Set of sent diff keys
   private sentDiffKeys = new Set<string>();
 
+  // Map to store previous messages by index
+  private processedMessages: Map<number, string> = new Map();
+
+  // Last processed content length - to optimize processing
+  private lastProcessedContentLength = 0;
+
   constructor(
       private options?: Options,
   ) {
@@ -74,18 +80,48 @@ export class LlmResponseStreamProcessor {
         // Index of the last element in current content
         const currentContentIndex = contents.length - 1;
 
-        // Process message
-        let messageUpdated = false;
-        for (let i = contents.length - 1; i >= 0; i--) {
+        // Process messages - only process elements that might have changed
+        // Start from the last processed length to avoid re-processing
+        const startProcessingIndex = Math.min(this.lastProcessedContentLength, contents.length);
+
+        // Process newly added elements and last element from previous batch (which might have changed)
+        const processStartIndex = Math.max(0, startProcessingIndex - 1);
+
+        for (let i = processStartIndex; i < contents.length; i++) {
           const item = contents[i];
           if (isMessageItem(item)) {
-            if (this.message !== item.message) {
-              this.message = item.message;
-              messageUpdated = true;
+            const currentMessage = item.message;
+            const previousMessage = this.processedMessages.get(i);
+
+            // Only process if the message is new or changed
+            if (previousMessage !== currentMessage) {
+              let appendedContent: string;
+
+              if (previousMessage == null) {
+                // First occurrence of this message element - send the entire message
+                appendedContent = currentMessage;
+              }
+              else {
+                // Calculate the appended content since last update
+                appendedContent = this.getAppendedContent(previousMessage, currentMessage);
+              }
+
+              // Update the stored message for this index
+              this.processedMessages.set(i, currentMessage);
+
+              // Update final message (for backward compatibility)
+              this.message = currentMessage;
+
+              // Only send if there's something to append
+              if (appendedContent) {
+                this.options?.messageCallback?.(appendedContent);
+              }
             }
-            break;
           }
         }
+
+        // Update last processed content length for next iteration
+        this.lastProcessedContentLength = contents.length;
 
         // Process diffs
         let diffUpdated = false;
@@ -118,13 +154,6 @@ export class LlmResponseStreamProcessor {
         // Update last index
         this.lastContentIndex = currentContentIndex;
 
-        // Send notifications
-        // TODO: Invoke callback with only appended strings
-        if (messageUpdated && this.message != null) {
-          // Notify immediately if message is updated
-          this.options?.messageCallback?.(this.message);
-        }
-
         if (diffUpdated && processedDiffIndex > this.lastSentDiffIndex) {
           // For diffs, only notify if a new index diff is confirmed
           this.lastSentDiffIndex = processedDiffIndex;
@@ -136,6 +165,22 @@ export class LlmResponseStreamProcessor {
       // Ignore parse errors (expected for incomplete JSON)
       logger.debug('JSON parsing error (expected for partial data):', e);
     }
+  }
+
+  /**
+   * Calculate the appended content between previous and current message
+   * @param previousMessage The previous complete message
+   * @param currentMessage The current complete message
+   * @returns The appended content (difference)
+   */
+  private getAppendedContent(previousMessage: string, currentMessage: string): string {
+    // If current message is shorter, return empty string (shouldn't happen in normal flow)
+    if (currentMessage.length <= previousMessage.length) {
+      return '';
+    }
+
+    // Return the appended part
+    return currentMessage.slice(previousMessage.length);
   }
 
   /**
@@ -161,14 +206,15 @@ export class LlmResponseStreamProcessor {
         const contents = parsedJson.contents;
 
         // Add any unsent diffs
-        for (const [index, item] of contents) {
+        for (let i = 0; i < contents.length; i++) {
+          const item = contents[i];
           if (!isDiffItem(item)) continue;
 
           const validDiff = LlmEditorAssistantDiffSchema.safeParse(item);
           if (!validDiff.success) continue;
 
           const diff = validDiff.data;
-          const key = this.getDiffKey(diff, index);
+          const key = this.getDiffKey(diff, i);
 
           // Add any diffs that haven't been sent yet
           if (!this.sentDiffKeys.has(key)) {
@@ -194,10 +240,12 @@ export class LlmResponseStreamProcessor {
    */
   destroy(): void {
     this.message = null;
+    this.processedMessages.clear();
     this.replacements = [];
     this.sentDiffKeys.clear();
     this.lastContentIndex = -1;
     this.lastSentDiffIndex = -1;
+    this.lastProcessedContentLength = 0;
   }
 
 }
