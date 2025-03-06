@@ -80,14 +80,7 @@ export class GrowiPluginService implements IGrowiPluginService {
         }
         catch (err) {
           logger.error(err);
-          try {
-            await GrowiPlugin.deleteOne({ _id: growiPlugin.id });
-          }
-          catch (deleteErr) {
-            logger.error(deleteErr);
-            throw new Error(`Failed to delete plugin from GrowiPlugin documents. Original error: ${deleteErr.message}`);
-          }
-          throw new Error('Failed to construct plugin path. The plugin document is also deleted.');
+          continue;
         }
         if (fs.existsSync(pluginPath)) {
           continue;
