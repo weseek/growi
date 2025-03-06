@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: ${{ github.event.pull_request.base.ref }}
+        ref: ${{ github.event.pull_request.head.ref }}
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@2.0.1
