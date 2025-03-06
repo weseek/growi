@@ -1,6 +1,8 @@
-import type { IUserHasId } from '@growi/core/dist/interfaces';
+import type { IUser, IUserHasId } from '@growi/core/dist/interfaces';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import type { NextFunction, Response } from 'express';
+import type { HydratedDocument } from 'mongoose';
+import mongoose from 'mongoose';
 
 import { AccessToken } from '~/server/models/access-token';
 import loggerFactory from '~/utils/logger';
@@ -18,6 +20,15 @@ export const accessTokenParser = async(req: AccessTokenParserReq, res: Response,
   }
 
   logger.debug('accessToken is', accessToken);
+
+  // check the api token is valid
+  const User = mongoose.model<HydratedDocument<IUser>, { findUserByApiToken }>('User');
+  const userByApiToken: IUserHasId = await User.findUserByApiToken(accessToken);
+  if (userByApiToken != null) {
+    req.user = serializeUserSecurely(userByApiToken);
+    logger.debug('API token parsed.');
+    return next();
+  }
 
   // check the access token is valid
   const userId = await AccessToken.findUserIdByToken(accessToken);

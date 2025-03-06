@@ -72,6 +72,66 @@ describe('access-token-parser middleware', () => {
     expect(nextMock).toHaveBeenCalled();
   });
 
+  it('should set req.user with a valid api token in query', async() => {
+    // arrange
+    const reqMock = mock<AccessTokenParserReq>({
+      user: undefined,
+    });
+    const resMock = mock<Response>();
+    const nextMock = vi.fn();
+
+    expect(reqMock.user).toBeUndefined();
+
+    // prepare a user with an access token
+    const targetUser = await User.create({
+      name: faker.person.fullName(),
+      username: faker.string.uuid(),
+      password: faker.internet.password(),
+      lang: 'en_US',
+      apiToken: faker.internet.password(),
+    });
+
+    // act
+    reqMock.query.access_token = targetUser.apiToken;
+    await accessTokenParser(reqMock, resMock, nextMock);
+
+    // assert
+    expect(reqMock.user).toBeDefined();
+    expect(reqMock.user?._id).toStrictEqual(targetUser._id);
+    expect(serializeUserSecurely).toHaveBeenCalledOnce();
+    expect(nextMock).toHaveBeenCalled();
+  });
+
+  it('should set req.user with a valid api token in body', async() => {
+    // arrange
+    const reqMock = mock<AccessTokenParserReq>({
+      user: undefined,
+    });
+    const resMock = mock<Response>();
+    const nextMock = vi.fn();
+
+    expect(reqMock.user).toBeUndefined();
+
+    // prepare a user with an access token
+    const targetUser = await User.create({
+      name: faker.person.fullName(),
+      username: faker.string.uuid(),
+      password: faker.internet.password(),
+      lang: 'en_US',
+      apiToken: faker.internet.password(),
+    });
+
+    // act
+    reqMock.body.access_token = targetUser.apiToken;
+    await accessTokenParser(reqMock, resMock, nextMock);
+
+    // assert
+    expect(reqMock.user).toBeDefined();
+    expect(reqMock.user?._id).toStrictEqual(targetUser._id);
+    expect(serializeUserSecurely).toHaveBeenCalledOnce();
+    expect(nextMock).toHaveBeenCalled();
+  });
+
   it('should set req.user with a valid access token in query', async() => {
     // arrange
     const reqMock = mock<AccessTokenParserReq>({
