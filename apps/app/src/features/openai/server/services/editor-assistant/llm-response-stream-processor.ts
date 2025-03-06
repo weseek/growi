@@ -3,42 +3,43 @@ import type { z } from 'zod';
 
 import loggerFactory from '~/utils/logger';
 
-import type { SseHelper } from '../utils/sse-helper';
-
-import type { EditorAssistantMessageSchema } from './schema';
-import { EditorAssistantDiffSchema } from './schema';
+import {
+  type LlmEditorAssistantMessage,
+  LlmEditorAssistantDiffSchema, type LlmEditorAssistantDiff,
+} from '../../../interfaces/editor-assistant/llm-response-schemas';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:edit:editor-stream-processor');
-
-// Type definitions
-type EditorAssistantMessage = z.infer<typeof EditorAssistantMessageSchema>;
-type EditorAssistantDiff = z.infer<typeof EditorAssistantDiffSchema>;
 
 /**
  * Type guard: Check if item is a message type
  */
-const isMessageItem = (item: unknown): item is EditorAssistantMessage => {
+const isMessageItem = (item: unknown): item is LlmEditorAssistantMessage => {
   return typeof item === 'object' && item !== null && 'message' in item;
 };
 
 /**
  * Type guard: Check if item is a diff type
  */
-const isDiffItem = (item: unknown): item is EditorAssistantDiff => {
+const isDiffItem = (item: unknown): item is LlmEditorAssistantDiff => {
   return typeof item === 'object' && item !== null
     && ('insert' in item || 'delete' in item || 'retain' in item);
 };
 
+type Options = {
+  messageCallback?: (appendedMessage: string) => void,
+  diffDetectedCallback?: (detected: LlmEditorAssistantDiff) => void,
+  dataFinalizedCallback?: (message: string | null, replacements: LlmEditorAssistantDiff[]) => void,
+}
 /**
- * Editor Stream Processor
+ * AI response stream processor for Editor Assisntant
  * Extracts messages and diffs from JSON stream for editor
  */
-export class EditorStreamProcessor {
+export class LlmResponseStreamProcessor {
 
   // Final response data
   private message: string | null = null;
 
-  private replacements: EditorAssistantDiff[] = [];
+  private replacements: LlmEditorAssistantDiff[] = [];
 
   // Index of the last element in previous content
   private lastContentIndex = -1;
@@ -49,15 +50,20 @@ export class EditorStreamProcessor {
   // Set of sent diff keys
   private sentDiffKeys = new Set<string>();
 
-  constructor(private sseHelper: SseHelper) {
-    this.sseHelper = sseHelper;
+  constructor(
+      private options?: Options,
+  ) {
+    this.options = options;
   }
 
   /**
    * Process JSON data
-   * @param jsonString JSON string
+   * @param prevJsonString Previous JSON string
+   * @param chunk New chunk of JSON string
    */
-  process(jsonString: string): void {
+  process(prevJsonString: string, chunk: string): void {
+    const jsonString = prevJsonString + chunk;
+
     try {
       const repairedJson = jsonrepair(jsonString);
       const parsedJson = JSON.parse(repairedJson);
@@ -90,11 +96,11 @@ export class EditorStreamProcessor {
           const item = contents[i];
           if (!isDiffItem(item)) continue;
 
-          const validDiff = EditorAssistantDiffSchema.safeParse(item);
+          const validDiff = LlmEditorAssistantDiffSchema.safeParse(item);
           if (!validDiff.success) continue;
 
           const diff = validDiff.data;
-          const key = this.getDiffKey(diff);
+          const key = this.getDiffKey(diff, i);
 
           // Check if this diff has already been sent
           if (this.sentDiffKeys.has(key)) continue;
@@ -113,14 +119,16 @@ export class EditorStreamProcessor {
         this.lastContentIndex = currentContentIndex;
 
         // Send notifications
-        if (messageUpdated) {
+        // TODO: Invoke callback with only appended strings
+        if (messageUpdated && this.message != null) {
           // Notify immediately if message is updated
-          this.notifyClient();
+          this.options?.messageCallback?.(this.message);
         }
-        else if (diffUpdated && processedDiffIndex > this.lastSentDiffIndex) {
+
+        if (diffUpdated && processedDiffIndex > this.lastSentDiffIndex) {
           // For diffs, only notify if a new index diff is confirmed
           this.lastSentDiffIndex = processedDiffIndex;
-          this.notifyClient();
+          this.options?.diffDetectedCallback?.(this.replacements[this.replacements.length - 1]);
         }
       }
     }
@@ -133,23 +141,11 @@ export class EditorStreamProcessor {
   /**
    * Generate unique key for a diff
    */
-  private getDiffKey(diff: EditorAssistantDiff): string {
-    if ('insert' in diff) return `insert-${diff.insert}`;
-    if ('delete' in diff) return `delete-${diff.delete}`;
-    if ('retain' in diff) return `retain-${diff.retain}`;
+  private getDiffKey(diff: LlmEditorAssistantDiff, index: number): string {
+    if ('insert' in diff) return `insert-${index}`;
+    if ('delete' in diff) return `delete-${index}`;
+    if ('retain' in diff) return `retain-${index}`;
     return '';
-  }
-
-  /**
-   * Notify the client
-   */
-  private notifyClient(): void {
-    this.sseHelper.writeData({
-      editorResponse: {
-        message: this.message || '',
-        replacements: this.replacements,
-      },
-    });
   }
 
   /**
@@ -165,14 +161,14 @@ export class EditorStreamProcessor {
         const contents = parsedJson.contents;
 
         // Add any unsent diffs
-        for (const item of contents) {
+        for (const [index, item] of contents) {
           if (!isDiffItem(item)) continue;
 
-          const validDiff = EditorAssistantDiffSchema.safeParse(item);
+          const validDiff = LlmEditorAssistantDiffSchema.safeParse(item);
           if (!validDiff.success) continue;
 
           const diff = validDiff.data;
-          const key = this.getDiffKey(diff);
+          const key = this.getDiffKey(diff, index);
 
           // Add any diffs that haven't been sent yet
           if (!this.sentDiffKeys.has(key)) {
@@ -182,26 +178,14 @@ export class EditorStreamProcessor {
         }
       }
 
-      // Final notification (with isDone flag)
-      this.sseHelper.writeData({
-        editorResponse: {
-          message: this.message || '',
-          replacements: this.replacements,
-        },
-        isDone: true,
-      });
+      // Final notification
+      this.options?.dataFinalizedCallback?.(this.message, this.replacements);
     }
     catch (e) {
       logger.debug('Failed to parse final JSON response:', e);
 
       // Send final notification even on error
-      this.sseHelper.writeData({
-        editorResponse: {
-          message: this.message || '',
-          replacements: this.replacements,
-        },
-        isDone: true,
-      });
+      this.options?.dataFinalizedCallback?.(this.message, this.replacements);
     }
   }
 

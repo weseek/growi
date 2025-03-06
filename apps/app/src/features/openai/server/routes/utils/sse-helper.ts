@@ -9,7 +9,7 @@ export interface ISseHelper {
   /**
    * Send data in SSE format
    */
-  writeData(data: unknown): void;
+  writeData<T extends object>(data: T): void;
 
   /**
    * Send error in SSE format
@@ -35,7 +35,7 @@ export class SseHelper implements ISseHelper {
   /**
    * Send data in SSE format
    */
-  writeData(data: unknown): void {
+  writeData<T extends object>(data: T): void {
     this.res.write(`data: ${JSON.stringify(data)}\n\n`);
   }
 

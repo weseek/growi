@@ -5,11 +5,11 @@ import { z } from 'zod';
 // -----------------------------------------------------------------------------
 
 // Schema definitions
-export const EditorAssistantMessageSchema = z.object({
+export const LlmEditorAssistantMessageSchema = z.object({
   message: z.string().describe('A friendly message explaining what changes were made or suggested'),
 });
 
-export const EditorAssistantDiffSchema = z
+export const LlmEditorAssistantDiffSchema = z
   .object({
     insert: z.string().describe('The text that should insert the content in the current position'),
   })
@@ -23,3 +23,7 @@ export const EditorAssistantDiffSchema = z
       retain: z.number().int().describe('The number of characters that should be retained in the current position'),
     }),
   );
+
+// Type definitions
+export type LlmEditorAssistantMessage = z.infer<typeof LlmEditorAssistantMessageSchema>;
+export type LlmEditorAssistantDiff = z.infer<typeof LlmEditorAssistantDiffSchema>;

@@ -8,23 +8,24 @@ import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 import { z } from 'zod';
 
 // Necessary imports
-import { getOrCreateEditorAssistant } from '~/features/openai/server/services/assistant';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import { LlmEditorAssistantDiffSchema, LlmEditorAssistantMessageSchema } from '../../../interfaces/editor-assistant/llm-response-schemas';
+import type { SseDetectedDiff, SseFinalized, SseMessage } from '../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode } from '../../../interfaces/message-error';
+import { getOrCreateEditorAssistant } from '../../services/assistant';
 import { openaiClient } from '../../services/client';
+import { LlmResponseStreamProcessor } from '../../services/editor-assistant';
 import { getStreamErrorCode } from '../../services/getStreamErrorCode';
 import { getOpenaiService } from '../../services/openai';
 import { replaceAnnotationWithPageLink } from '../../services/replace-annotation-with-page-link';
 import { certifyAiService } from '../middlewares/certify-ai-service';
 import { SseHelper } from '../utils/sse-helper';
 
-import { EditorStreamProcessor } from './editor-stream-processor';
-import { EditorAssistantDiffSchema, EditorAssistantMessageSchema } from './schema';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:message');
 
@@ -32,8 +33,8 @@ const logger = loggerFactory('growi:routes:apiv3:openai:message');
 // Type definitions
 // -----------------------------------------------------------------------------
 
-const EditorAssistantResponseSchema = z.object({
-  contents: z.array(z.union([EditorAssistantMessageSchema, EditorAssistantDiffSchema])),
+const LlmEditorAssistantResponseSchema = z.object({
+  contents: z.array(z.union([LlmEditorAssistantMessageSchema, LlmEditorAssistantDiffSchema])),
 }).describe('The response format for the editor assistant');
 
 
@@ -95,7 +96,17 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
 
       // Initialize SSE helper and stream processor
       const sseHelper = new SseHelper(res);
-      const streamProcessor = new EditorStreamProcessor(sseHelper);
+      const streamProcessor = new LlmResponseStreamProcessor({
+        messageCallback: (appendedMessage) => {
+          sseHelper.writeData<SseMessage>({ appendedMessage });
+        },
+        diffDetectedCallback: (detected) => {
+          sseHelper.writeData<SseDetectedDiff>({ diff: detected });
+        },
+        dataFinalizedCallback: (message, replacements) => {
+          sseHelper.writeData<SseFinalized>({ finalized: { message: message ?? '', replacements } });
+        },
+      });
 
       try {
         // Set response headers
@@ -146,7 +157,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
               content: `Current markdown content:\n\`\`\`markdown\n${markdown}\n\`\`\`\n\nUser request: ${userMessage}`,
             },
           ],
-          response_format: zodResponseFormat(EditorAssistantResponseSchema, 'editor_assistant_response'),
+          response_format: zodResponseFormat(LlmEditorAssistantResponseSchema, 'editor_assistant_response'),
         });
 
         // Message delta handler
@@ -161,10 +172,11 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
           // Process text
           if (content?.type === 'text' && content.text?.value) {
             const chunk = content.text.value;
-            rawBuffer += chunk;
 
             // Process data with JSON processor
-            streamProcessor.process(rawBuffer);
+            streamProcessor.process(rawBuffer, chunk);
+
+            rawBuffer += chunk;
 
             // Also send original delta
             sseHelper.writeData(delta);
