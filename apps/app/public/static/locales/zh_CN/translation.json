@@ -503,6 +503,7 @@
       "pages": "参考页面",
       "instruction": "助理指示"
     },
+    "share_assistant": "共享助手",
     "page_access_permission": "页面访问权限",
     "access_scope": {
       "owner": "{{username}} 可访问的所有页面",

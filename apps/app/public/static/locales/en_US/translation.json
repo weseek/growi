@@ -513,6 +513,7 @@
       "pages": "Reference Pages",
       "instruction": "Assistant Instructions"
     },
+    "share_assistant": "Share assistant",
     "page_access_permission": "Page access permission",
     "access_scope": {
       "owner": "All pages accessible by {{username}}",
