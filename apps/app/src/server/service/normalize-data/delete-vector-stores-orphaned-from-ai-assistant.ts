@@ -3,7 +3,7 @@ import VectorStoreRelationModel from '~/features/openai/server/models/vector-sto
 import { isAiEnabled } from '~/features/openai/server/services/is-ai-enabled';
 import { getOpenaiService } from '~/features/openai/server/services/openai';
 
-export const deleteLegacyKnowledgeAssistantVectorStore = async(): Promise<void> => {
+export const deleteVectorStoresOrphanedFromAiAssistant = async(): Promise<void> => {
   if (!isAiEnabled()) {
     return;
   }
