@@ -9,8 +9,8 @@ Editor Assistant API は、OpenAI AssistantAPI を使用して、マークダウ
    - JSON データを適切なタイミングで解析し、クライアントに送信
 
 2. **データ形式**：
-   - 応答は `EditorAssistantResponseSchema` に準拠した JSON 形式
-   - `contents` 配列内に `{ message: "..." }` と delta 形式の差分情報（`insert`, `delete`, `retain`）を含む
+   - SSE による応答は `SseMessageSchema`, `SseDetectedDiffSchema`, `SseFinalizedSchema` に準拠した JSON 形式
+   - `{ message: "..." }` と delta 形式の差分情報（`insert`, `delete`, `retain`）を含む
 
 3. **エラーハンドリング**：
    - 不完全な JSON データの処理時のエラーを適切に処理
