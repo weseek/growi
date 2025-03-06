@@ -2,6 +2,7 @@ import React, { useCallback, useState } from 'react';
 
 import type { IUserHasId } from '@growi/core';
 import { getIdStringForRef } from '@growi/core';
+import { useTranslation } from 'react-i18next';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
@@ -36,16 +37,17 @@ type ThreadItemProps = {
 const ThreadItem: React.FC<ThreadItemProps> = ({
   threadData, aiAssistantData, onThreadClick, onThreadDelete,
 }) => {
+  const { t } = useTranslation();
 
   const deleteThreadHandler = useCallback(async() => {
     try {
       await deleteThread({ aiAssistantId: aiAssistantData._id, threadRelationId: threadData._id });
-      toastSuccess('スレッドを削除しました');
+      toastSuccess('ai_assistant_tree.toaster.thread_deleted_success');
       onThreadDelete();
     }
     catch (err) {
       logger.error(err);
-      toastError('スレッドの削除に失敗しました');
+      toastError('ai_assistant_tree.toaster.thread_deleted_failed');
     }
   }, [aiAssistantData._id, onThreadDelete, threadData._id]);
 
@@ -97,10 +99,11 @@ type ThreadItemsProps = {
 };
 
 const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClick, onThreadDelete }) => {
+  const { t } = useTranslation();
   const { data: threads } = useSWRxThreads(aiAssistantData._id);
 
   if (threads == null || threads.length === 0) {
-    return <p className="text-secondary ms-5">スレッドが存在しません</p>;
+    return <p className="text-secondary ms-5">{t('ai_assistant_tree.thread_does_not_exist')}</p>;
   }
 
   return (
@@ -155,6 +158,7 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
 }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
+  const { t } = useTranslation();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistant._id);
 
   const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
@@ -186,11 +190,11 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     try {
       await deleteAiAssistant(aiAssistant._id);
       onDeleted?.();
-      toastSuccess('アシスタントを削除しました');
+      toastSuccess('ai_assistant_tree.toaster.assistant_deleted_success');
     }
     catch (err) {
       logger.error(err);
-      toastError('アシスタントの削除に失敗しました');
+      toastError('ai_assistant_tree.toaster.assistant_deleted');
     }
   }, [aiAssistant._id, onDeleted]);
 
