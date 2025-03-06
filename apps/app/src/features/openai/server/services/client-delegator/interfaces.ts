@@ -5,6 +5,7 @@ import type { MessageListParams } from '../../../interfaces/message';
 
 export interface IOpenaiClientDelegator {
   createThread(vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread>
+  updateThread(threadId: string, vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread>
   retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread>
   deleteThread(threadId: string): Promise<OpenAI.Beta.Threads.ThreadDeleted>
   getMessages(threadId: string, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>
