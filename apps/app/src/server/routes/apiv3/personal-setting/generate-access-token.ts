@@ -62,6 +62,7 @@ const validator = [
     .withMessage('scope must be an array')
     .custom(() => {
       // TODO: Check if all values are valid
+      return true;
     }),
 ];
 
