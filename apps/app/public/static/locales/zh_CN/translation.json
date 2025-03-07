@@ -533,6 +533,7 @@
       "publicOnly": "仅公开页面"
     },
     "share_scope": {
+      "title": "助手共享范围",
       "owner": {
         "label": "仅 {{ username }}"
       },

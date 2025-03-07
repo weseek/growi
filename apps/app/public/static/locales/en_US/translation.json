@@ -543,6 +543,7 @@
       "publicOnly": "Public pages only"
     },
     "share_scope": {
+      "title": "Assistant sharing scope",
       "owner": {
         "label": "{{username}} only"
       },

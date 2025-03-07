@@ -538,6 +538,7 @@
       "publicOnly": "Pages publiques uniquement"
     },
     "share_scope": {
+      "title": "Portée de partage de l'assistant",
       "owner": {
         "label": "Seulement {{username}}"
       },

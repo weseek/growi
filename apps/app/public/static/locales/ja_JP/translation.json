@@ -576,6 +576,7 @@
       "publicOnly": "公開ページのみ"
     },
     "share_scope": {
+      "title": "アシスタントの共有範囲",
       "owner": {
         "label": "{{username}} のみ"
       },
