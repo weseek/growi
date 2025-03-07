@@ -10,20 +10,17 @@ export const upsertAiAssistantValidator: ValidationChain[] = [
     .withMessage('name must be a string')
     .not()
     .isEmpty()
-    .withMessage('name is required')
-    .escape(),
+    .withMessage('name is required'),
 
   body('description')
     .optional()
     .isString()
-    .withMessage('description must be a string')
-    .escape(),
+    .withMessage('description must be a string'),
 
   body('additionalInstruction')
     .optional()
     .isString()
-    .withMessage('additionalInstruction must be a string')
-    .escape(),
+    .withMessage('additionalInstruction must be a string'),
 
   body('pagePathPatterns')
     .isArray()

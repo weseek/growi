@@ -25,9 +25,9 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
     ref: 'User',
     required: true,
   },
-  vectorStore: {
+  aiAssistant: {
     type: Schema.Types.ObjectId,
-    ref: 'VectorStore',
+    ref: 'AiAssistant',
     required: true,
   },
   threadId: {

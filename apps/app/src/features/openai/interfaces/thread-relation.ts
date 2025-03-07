@@ -1,10 +1,10 @@
 import type { IUser, Ref, HasObjectId } from '@growi/core';
 
-import type { IVectorStore } from './vector-store';
+import type { AiAssistant } from './ai-assistant';
 
 export interface IThreadRelation {
   userId: Ref<IUser>
-  vectorStore: Ref<IVectorStore>
+  aiAssistant: Ref<AiAssistant>
   threadId: string;
   title?: string;
   expiredAt: Date;
