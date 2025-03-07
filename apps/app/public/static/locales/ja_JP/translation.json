@@ -527,6 +527,8 @@
     "selected_editable_revision": "保存するページ本文(編集可能)"
   },
   "sidebar_aichat": {
+    "instruction_label": "アシスタントへの指示",
+    "reference_pages_label": "参照するページ",
     "placeholder": "ききたいことを入力してください",
     "summary_mode_label": "要約モード",
     "summary_mode_help": "2～3文以内の簡潔な回答",

@@ -494,6 +494,8 @@
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
   "sidebar_aichat": {
+    "instruction_label": "Assistant instructions",
+    "reference_pages_label": "Reference pages",
     "placeholder": "Ask me anything.",
     "summary_mode_label": "Summary mode",
     "summary_mode_help": "Concise answer within 2-3 sentences",

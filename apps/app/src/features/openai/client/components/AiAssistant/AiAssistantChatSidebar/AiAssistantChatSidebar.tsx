@@ -280,7 +280,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                 </p>
 
                 <div>
-                  <p className="text-body-secondary">アシスタントへの指示</p>
+                  <p className="text-body-secondary">{t('sidebar_aichat.instruction_label')}</p>
                   <div className="card bg-body-tertiary border-0">
                     <div className="card-body p-3">
                       <p className="fs-6 text-body-secondary mb-0">
@@ -292,7 +292,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
                 <div>
                   <div className="d-flex align-items-center">
-                    <p className="text-body-secondary mb-0">参照するページ</p>
+                    <p className="text-body-secondary mb-0">{t('sidebar_aichat.reference_pages_label')}</p>
                   </div>
                   <div className="d-flex flex-column gap-1">
                     { aiAssistantData.pagePathPatterns.map(pagePathPattern => (

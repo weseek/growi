@@ -489,6 +489,8 @@
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
   "sidebar_aichat": {
+    "instruction_label": "Instructions pour l'assistant",
+    "reference_pages_label": "Pages de référence",
     "placeholder": "Demandez-moi n'importe quoi.",
     "summary_mode_label": "Mode résumé",
     "summary_mode_help": "Réponse concise en 2-3 phrases",

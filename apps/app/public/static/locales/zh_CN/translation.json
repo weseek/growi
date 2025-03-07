@@ -484,6 +484,8 @@
     "selected_editable_revision": "选定的可编辑页面正文"
   },
   "sidebar_aichat": {
+    "instruction_label": "助手指令",
+    "reference_pages_label": "参考页面",
     "placeholder": "问我任何问题。",
     "summary_mode_label": "摘要模式",
     "summary_mode_help": "简洁回答在2-3句话内",
