@@ -41,7 +41,7 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
+  useIsAllReplyShown, useShowPageSideAuthors, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled, useIsBulkExportPagesEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
@@ -178,6 +178,7 @@ type Props = CommonProps & {
   drawioUri: string | null,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
+  showPageSideAuthors: boolean,
   isContainerFluid: boolean,
   isUploadEnabled: boolean,
   isUploadAllFileAllowed: boolean,
@@ -243,6 +244,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
+  useShowPageSideAuthors(props.showPageSideAuthors);
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
@@ -586,6 +588,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.drawioUri = configManager.getConfig('app:drawioUri');
   // props.highlightJsStyle = configManager.getConfig('customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('customize:isAllReplyShown');
+  props.showPageSideAuthors = configManager.getConfig('customize:showPageSideAuthors');
   props.isContainerFluid = configManager.getConfig('customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('customize:isEnabledStaleNotification');
   props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');
