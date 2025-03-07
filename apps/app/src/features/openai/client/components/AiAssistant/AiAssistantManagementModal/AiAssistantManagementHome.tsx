@@ -115,7 +115,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   return (
     <>
       <ModalHeader tag="h4" toggle={closeAiAssistantManagementModal} className="pe-4">
-        <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">ai_assistant</span>
+        <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">growi_ai</span>
         <span className="fw-bold">{t(shouldEdit ? 'アシスタントの更新' : '新規アシスタントの追加')}</span> {/* TODO i18n */}
       </ModalHeader>
 
