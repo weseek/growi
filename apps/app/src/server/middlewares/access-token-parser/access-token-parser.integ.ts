@@ -5,7 +5,7 @@ import { mock } from 'vitest-mock-extended';
 
 import type Crowi from '~/server/crowi';
 import type UserEvent from '~/server/events/user';
-
+import { AccessToken } from '~/server/models/access-token';
 
 import type { AccessTokenParserReq } from './interfaces';
 
@@ -72,7 +72,7 @@ describe('access-token-parser middleware', () => {
     expect(nextMock).toHaveBeenCalled();
   });
 
-  it('should set req.user with a valid access token in query', async() => {
+  it('should set req.user with a valid api token in query', async() => {
     // arrange
     const reqMock = mock<AccessTokenParserReq>({
       user: undefined,
@@ -102,7 +102,7 @@ describe('access-token-parser middleware', () => {
     expect(nextMock).toHaveBeenCalled();
   });
 
-  it('should set req.user with a valid access token in body', async() => {
+  it('should set req.user with a valid api token in body', async() => {
     // arrange
     const reqMock = mock<AccessTokenParserReq>({
       user: undefined,
@@ -123,6 +123,66 @@ describe('access-token-parser middleware', () => {
 
     // act
     reqMock.body.access_token = targetUser.apiToken;
+    await accessTokenParser(reqMock, resMock, nextMock);
+
+    // assert
+    expect(reqMock.user).toBeDefined();
+    expect(reqMock.user?._id).toStrictEqual(targetUser._id);
+    expect(serializeUserSecurely).toHaveBeenCalledOnce();
+    expect(nextMock).toHaveBeenCalled();
+  });
+
+  it('should set req.user with a valid access token in query', async() => {
+    // arrange
+    const reqMock = mock<AccessTokenParserReq>({
+      user: undefined,
+    });
+    const resMock = mock<Response>();
+    const nextMock = vi.fn();
+
+    expect(reqMock.user).toBeUndefined();
+
+    // prepare a user with an access token
+    const targetUser = await User.create({
+      name: faker.person.fullName(),
+      username: faker.string.uuid(),
+      password: faker.internet.password(),
+      lang: 'en_US',
+    });
+
+    // act
+    const { token } = await AccessToken.generateToken(targetUser._id, new Date(Date.now() + 1000 * 60 * 60 * 24), []);
+    reqMock.query.access_token = token;
+    await accessTokenParser(reqMock, resMock, nextMock);
+
+    // assert
+    expect(reqMock.user).toBeDefined();
+    expect(reqMock.user?._id).toStrictEqual(targetUser._id);
+    expect(serializeUserSecurely).toHaveBeenCalledOnce();
+    expect(nextMock).toHaveBeenCalled();
+  });
+
+  it('should set req.user with a valid access token in body', async() => {
+    // arrange
+    const reqMock = mock<AccessTokenParserReq>({
+      user: undefined,
+    });
+    const resMock = mock<Response>();
+    const nextMock = vi.fn();
+
+    expect(reqMock.user).toBeUndefined();
+
+    // prepare a user with an access token
+    const targetUser = await User.create({
+      name: faker.person.fullName(),
+      username: faker.string.uuid(),
+      password: faker.internet.password(),
+      lang: 'en_US',
+    });
+
+    // act
+    const { token } = await AccessToken.generateToken(targetUser._id, new Date(Date.now() + 1000 * 60 * 60 * 24), []);
+    reqMock.query.access_token = token;
     await accessTokenParser(reqMock, resMock, nextMock);
 
     // assert

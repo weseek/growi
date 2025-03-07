@@ -8,11 +8,16 @@ import { SupportedAction } from '~/interfaces/activity';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
 
-import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import EditorSettings from '../../models/editor-settings';
-import ExternalAccount from '../../models/external-account';
-import InAppNotificationSettings from '../../models/in-app-notification-settings';
+import { generateAddActivityMiddleware } from '../../../middlewares/add-activity';
+import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
+import EditorSettings from '../../../models/editor-settings';
+import ExternalAccount from '../../../models/external-account';
+import InAppNotificationSettings from '../../../models/in-app-notification-settings';
+
+import { deleteAccessTokenHandlersFactory } from './delete-access-token';
+import { deleteAllAccessTokensHandlersFactory } from './delete-all-access-tokens';
+import { generateAccessTokenHandlerFactory } from './generate-access-token';
+import { getAccessTokenHandlerFactory } from './get-access-tokens';
 
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
@@ -68,7 +73,7 @@ const router = express.Router();
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const { User } = crowi.models;
@@ -413,6 +418,89 @@ module.exports = (crowi) => {
     }
 
   });
+
+  /**
+   * @swagger
+   *   /personal-setting/access-token:
+   *     get:
+   *       tags: [GeneralSetting]
+   *       operationId: getAccessToken
+   *       summary: /personal-setting/access-token
+   *       description: Get access token
+   *       responses:
+   *         200:
+   *           description: succded to get access token
+   *           content:
+   *           application/json:
+   *             schema:
+   *               properties:
+   *                 accessTokens:
+   *                   type: objet
+   *                   description: array of access tokens
+   */
+  router.get('/access-token', getAccessTokenHandlerFactory(crowi));
+
+  /**
+   * @swagger
+   *   /personal-setting/access-token:
+   *     post:
+   *       tags: [GeneralSetting]
+   *       operationId: generateccessToken
+   *       summary: /personal-setting/access-token
+   *       description: Generate access token
+   *       responses:
+   *         200:
+   *           description: succeded to create access token
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 properties:
+   *                   _id:
+   *                     type: string
+   *                     description: id of access token
+   *                   token:
+   *                     type: string
+   *                     description: access token
+   *                   expiredAt:
+   *                     type: Date
+   *                     description: expired date
+   *                   description:
+   *                     type: string
+   *                     description: description of access token
+   *                   scope:
+   *                     type: string[]
+   *                     description: scope of access token
+   */
+  router.post('/access-token', generateAccessTokenHandlerFactory(crowi));
+
+  /**
+   * @swagger
+   *   /personal-setting/access-token/:
+   *     delete:
+   *     tags: [GeneralSetting]
+   *     operationId: deleteAccessToken
+   *     summary: /personal-setting/access-token
+   *     description: Delete access token
+   *     responses:
+   *       200:
+   *         description: succeded to delete access token
+   *
+   */
+  router.delete('/access-token', deleteAccessTokenHandlersFactory(crowi));
+
+  /**
+   * @swagger
+   *   /personal-setting/access-token/all:
+   *     delete:
+   *       tags: [GeneralSetting]
+   *       operationId: deleteAllAccessToken
+   *       summary: /personal-setting/access-token/all
+   *       description: Delete all access tokens
+   *       responses:
+   *         200:
+   *           description: succeded to delete all access tokens
+   */
+  router.delete('/access-token/all', deleteAllAccessTokensHandlersFactory(crowi));
 
   /**
    * @swagger

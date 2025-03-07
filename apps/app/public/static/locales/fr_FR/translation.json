@@ -227,6 +227,15 @@
     },
     "form_help": {}
   },
+  "page_me_access_token": {
+    "access_token": "Jeton Access",
+    "notice": {
+      "access_token_issued": "Aucun jeton d'Access existant.",
+      "update_token1": "Un nouveau jeton peut être généré.",
+      "update_token2": "Modifiez le jeton aux endroits où celui-ci est utilisé."
+    },
+    "form_help": {}
+  },
   "Password": "Mot de passe",
   "Password Settings": "Sécurité",
   "personal_settings": {
@@ -260,6 +269,9 @@
   "API Token Settings": "Jetons d'API",
   "Current API Token": "Mon jeton d'API",
   "Update API Token": "Regénérer",
+  "Access Token Settings": "Jetons d'Access",
+  "Current Access Token": "Mon jeton d'Access",
+  "Update Access Token": "Regénérer",
   "in_app_notification_settings": {
     "in_app_notification_settings": "Notifications",
     "subscribe_settings": "Paramètres d'abonnement automatique aux notifications de pages",
