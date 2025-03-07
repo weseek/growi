@@ -575,6 +575,9 @@
       "proceed": "Understand and proceed"
     }
   },
+  "default_ai_assistant": {
+    "not_set": "Default assistant is not set"
+  },
   "ai_assistant_tree": {
     "add_assistant": "Add Assistant",
     "my_assistants": "My Assistants",

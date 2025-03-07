@@ -565,6 +565,9 @@
       "proceed": "了解并继续"
     }
   },
+  "default_ai_assistant": {
+    "not_set": "未设置默认助手"
+  },
   "ai_assistant_tree": {
     "add_assistant": "添加助手",
     "my_assistants": "我的助手",

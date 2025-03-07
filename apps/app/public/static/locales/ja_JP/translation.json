@@ -608,6 +608,9 @@
       "proceed": "理解して続行する"
     }
   },
+  "default_ai_assistant": {
+    "not_set": "デフォルトアシスタントが設定されていません"
+  },
   "ai_assistant_tree": {
     "add_assistant": "アシスタントを追加する",
     "my_assistants": "マイアシスタント",

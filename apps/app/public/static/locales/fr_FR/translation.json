@@ -570,6 +570,9 @@
       "proceed": "Comprendre et continuer"
     }
   },
+  "default_ai_assistant": {
+    "not_set": "L'assistant par défaut n'est pas configuré"
+  },
  "ai_assistant_tree": {
     "add_assistant": "Ajouter un assistant",
     "my_assistants": "Mes assistants",
