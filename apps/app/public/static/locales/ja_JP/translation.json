@@ -598,6 +598,16 @@
       "reset_to_default": "デフォルトに戻す"
     }
   },
+  "share_scope_warning_modal": {
+    "header_title": "共有範囲の確認",
+    "warning_message": "このアシスタントには限定公開されているページが含まれています。<br />現在の設定では、アシスタントを通じてこれらのページの情報が、本来のアクセス権限を超えて共有される可能性があります。",
+    "selected_pages_label": "選択されているページパス",
+    "confirmation_message": "続行する場合、これらのページの内容がアシスタントの公開範囲内で共有される可能性があることを確認してください。",
+    "button": {
+      "review": "設定を見直す",
+      "proceed": "理解して続行する"
+    }
+  },
   "ai_assistant_tree": {
     "add_assistant": "アシスタントを追加する",
     "my_assistants": "マイアシスタント",

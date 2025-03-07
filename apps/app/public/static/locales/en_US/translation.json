@@ -565,6 +565,16 @@
       "reset_to_default": "Reset to default"
     }
   },
+  "share_scope_warning_modal": {
+    "header_title": "Confirm Sharing Scope",
+    "warning_message": "This assistant includes pages with limited access.<br>With the current settings, information from these pages may be shared beyond their original access permissions through the assistant.",
+    "selected_pages_label": "Selected page paths",
+    "confirmation_message": "Please confirm that you understand the content of these pages may be shared within the assistant's public scope if you proceed.",
+    "button": {
+      "review": "Review settings",
+      "proceed": "Understand and proceed"
+    }
+  },
   "ai_assistant_tree": {
     "add_assistant": "Add Assistant",
     "my_assistants": "My Assistants",

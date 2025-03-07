@@ -560,6 +560,16 @@
       "reset_to_default": "Réinitialiser par défaut"
     }
   },
+  "share_scope_warning_modal": {
+    "header_title": "Confirmation de la portée de partage",
+    "warning_message": "Cet assistant comprend des pages à accès limité.<br>Avec les paramètres actuels, les informations de ces pages peuvent être partagées au-delà de leurs autorisations d'accès d'origine via l'assistant.",
+    "selected_pages_label": "Chemins de pages sélectionnés",
+    "confirmation_message": "Veuillez confirmer que vous comprenez que le contenu de ces pages peut être partagé dans la portée publique de l'assistant si vous continuez.",
+    "button": {
+      "review": "Réviser les paramètres",
+      "proceed": "Comprendre et continuer"
+    }
+  },
  "ai_assistant_tree": {
     "add_assistant": "Ajouter un assistant",
     "my_assistants": "Mes assistants",

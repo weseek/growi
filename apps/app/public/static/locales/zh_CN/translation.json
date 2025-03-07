@@ -555,6 +555,16 @@
       "reset_to_default": "恢复默认设置"
     }
   },
+  "share_scope_warning_modal": {
+    "header_title": "确认共享范围",
+    "warning_message": "此助手包含访问受限的页面。<br>使用当前设置，这些页面的信息可能通过助手超出其原始访问权限范围进行共享。",
+    "selected_pages_label": "已选择的页面路径",
+    "confirmation_message": "如果继续，请确认您了解这些页面的内容可能会在助手的公开范围内共享。",
+    "button": {
+      "review": "重新检查设置",
+      "proceed": "了解并继续"
+    }
+  },
   "ai_assistant_tree": {
     "add_assistant": "添加助手",
     "my_assistants": "我的助手",
