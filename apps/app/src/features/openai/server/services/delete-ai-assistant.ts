@@ -33,7 +33,7 @@ export const deleteAiAssistant = async(ownerId: string, aiAssistantId: string): 
 };
 
 export const deleteUserAiAssistant = async(user: IUserHasId): Promise<void> => {
-  if (!isAiEnabled()) {
+  if (isAiEnabled()) {
     const aiAssistants = await AiAssistantModel.find({ owner: user });
     for await (const aiAssistant of aiAssistants) {
       try {
