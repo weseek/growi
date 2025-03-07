@@ -76,7 +76,9 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     const fetchAndSetMessageData = async() => {
       const messageData = await mutateMessageData();
       if (messageData != null) {
-        const normalizedMessageData = messageData.data.filter(message => message.metadata?.shouldHideMessage !== 'true');
+        const normalizedMessageData = messageData.data
+          .reverse()
+          .filter(message => message.metadata?.shouldHideMessage !== 'true');
 
         setMessageLogs(() => {
           return normalizedMessageData.map((message, index) => (
