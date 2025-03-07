@@ -1,6 +1,6 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
-import { body } from 'express-validator';
+import { query } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
 import type Crowi from '~/server/crowi';
@@ -14,16 +14,16 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting:generate-access-tokens');
 
-type ReqBody = {
+type ReqQuery = {
   tokenId: string,
 }
 
-type DeleteAccessTokenRequest = Request<undefined, ApiV3Response, ReqBody>;
+type DeleteAccessTokenRequest = Request<undefined, ApiV3Response, undefined, ReqQuery>;
 
 type DeleteAccessTokenHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
 const validator = [
-  body('tokenId')
+  query('tokenId')
     .exists()
     .withMessage('tokenId is required')
     .isString()
@@ -43,8 +43,8 @@ export const deleteAccessTokenHandlersFactory: DeleteAccessTokenHandlersFactory 
     validator,
     apiV3FormValidator,
     async(req: DeleteAccessTokenRequest, res: ApiV3Response) => {
-      const { body } = req;
-      const { tokenId } = body;
+      const { query } = req;
+      const { tokenId } = query;
 
       try {
         await AccessToken.deleteTokenById(tokenId);
