@@ -40,7 +40,7 @@ export const AccessScopeDropdown: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="mb-4">
-      <Label className="text-secondary mb-2">ページのアクセス権限</Label>
+      <Label className="text-secondary mb-2">{t('modal_ai_assistant.page_access_permission')}</Label>
       <UncontrolledDropdown>
         <DropdownToggle
           disabled={isDisabled}

@@ -2,6 +2,7 @@ import React, {
   useCallback, useState, useEffect,
 } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import {
   ModalBody, Input, Label,
 } from 'reactstrap';
@@ -45,6 +46,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
     onSelectAccessScopeUserGroups,
   } = props;
 
+  const { t } = useTranslation();
   const { data: userRelatedGroups } = useSWRxUserRelatedGroups();
   const hasNoRelatedGroups = userRelatedGroups == null || userRelatedGroups.relatedGroups.length === 0;
 
@@ -109,7 +111,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
             onChange={changeShareToggleHandler}
           />
           <Label className="form-check-label" for="shareAssistantSwitch">
-            アシスタントを共有する
+            {t('modal_ai_assistant.share_assistant')}
           </Label>
         </div>
 
