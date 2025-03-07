@@ -26,7 +26,7 @@ export const ShareScopeSwitch: React.FC<Props> = (props: Props) => {
 
   return (
     <div className="mb-4">
-      <Label className="text-secondary mb-3">アシスタントの共有範囲</Label>
+      <Label className="text-secondary mb-3">{t('modal_ai_assistant.share_scope.title')}</Label>
       <div className="d-flex flex-column gap-3">
 
         {[AiAssistantShareScope.PUBLIC_ONLY, AiAssistantShareScope.GROUPS, AiAssistantShareScope.SAME_AS_ACCESS_SCOPE].map(shareScope => (

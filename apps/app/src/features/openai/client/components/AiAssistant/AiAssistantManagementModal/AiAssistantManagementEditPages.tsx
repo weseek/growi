@@ -48,7 +48,7 @@ export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
           className="btn btn-outline-primary w-100 mb-3 d-flex align-items-center justify-content-center"
         >
           <span className="material-symbols-outlined me-2">add</span>
-          ページを追加する
+          {t('modal_ai_assistant.add_page_button')}
         </button>
 
         <SelectedPageList selectedPages={selectedPages} onRemove={onRemove} />
