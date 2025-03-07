@@ -17,7 +17,7 @@ const logger = loggerFactory('growi:service:openai:delete-ai-assistant');
 export const deleteAiAssistant = async(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument> => {
   const openaiService = getOpenaiService();
   if (openaiService == null) {
-    throw createError('openaiService is not initialized', 500);
+    throw createError(500, 'openaiService is not initialized');
   }
 
   const aiAssistant = await AiAssistantModel.findOne({ owner: ownerId, _id: aiAssistantId });
