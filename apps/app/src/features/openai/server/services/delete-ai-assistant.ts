@@ -8,6 +8,7 @@ import loggerFactory from '~/utils/logger';
 import type { AiAssistantDocument } from '../models/ai-assistant';
 import AiAssistantModel from '../models/ai-assistant';
 
+import { isAiEnabled } from './is-ai-enabled';
 import { getOpenaiService } from './openai';
 
 const logger = loggerFactory('growi:service:openai:delete-ai-assistant');
@@ -32,8 +33,7 @@ export const deleteAiAssistant = async(ownerId: string, aiAssistantId: string): 
 };
 
 export const deleteUserAiAssistant = async(user: IUserHasId): Promise<void> => {
-  const openaiService = getOpenaiService();
-  if (openaiService != null) {
+  if (!isAiEnabled()) {
     const aiAssistants = await AiAssistantModel.find({ owner: user });
     for await (const aiAssistant of aiAssistants) {
       try {
