@@ -9,7 +9,7 @@ import { body, query } from 'express-validator';
 import { isEmail } from 'validator';
 
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import { deleteAiAssistantOnOwnerDeleted } from '~/features/openai/server/services/delete-ai-assistant-on-owner-deleted';
+import { deleteUserAiAssistant } from '~/features/openai/server/services/delete-ai-assistant';
 import { SupportedAction } from '~/interfaces/activity';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import Activity from '~/server/models/activity';
@@ -810,7 +810,7 @@ module.exports = (crowi) => {
       await user.statusDelete();
       await ExternalAccount.remove({ user });
 
-      deleteAiAssistantOnOwnerDeleted(user);
+      deleteUserAiAssistant(user);
 
       const serializedUser = serializeUserSecurely(user);
 
