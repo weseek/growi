@@ -29,8 +29,6 @@ const logger = loggerFactory('growi:openai:client:components:AiAssistantChatSide
 
 const moduleClass = styles['grw-ai-assistant-chat-sidebar'] ?? '';
 
-const RIGHT_SIDEBAR_WIDTH = 500;
-
 type Message = {
   id: string,
   content: string,
@@ -438,8 +436,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   return (
     <div
       ref={sidebarRef}
-      className={`position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm ${moduleClass}`}
-      style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
+      className={`position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm overflow-hidden ${moduleClass}`}
       data-testid="grw-right-sidebar"
     >
       <SimpleBar
