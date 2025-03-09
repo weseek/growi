@@ -178,13 +178,13 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
     try {
       await setDefaultAiAssistant(aiAssistant._id, !aiAssistant.isDefault);
       onUpdated?.();
-      toastSuccess('デフォルトアシスタントを切り替えました');
+      toastSuccess(t('ai_assistant_tree.toaster.ai_assistant_set_default_success'));
     }
     catch (err) {
       logger.error(err);
-      toastError('デフォルトアシスタントの切り替えに失敗しました');
+      toastError(t('ai_assistant_tree.toaster.ai_assistant_set_default_failed'));
     }
-  }, [aiAssistant._id, aiAssistant.isDefault, onUpdated]);
+  }, [aiAssistant._id, aiAssistant.isDefault, onUpdated, t]);
 
   const deleteAiAssistantHandler = useCallback(async() => {
     try {
