@@ -590,7 +590,9 @@
       "ai_assistant_deleted_success": "Assistant deleted",
       "ai_assistant_deleted_failed": "Failed to delete assistant",
       "thread_deleted_success": "Thread deleted",
-      "thread_deleted_failed": "Failed to delete thread"
+      "thread_deleted_failed": "Failed to delete thread",
+      "ai_assistant_set_default_success": "Default assistant set successfully",
+      "ai_assistant_set_default_failed": "Failed to set default assistant"
     }
   },
   "link_edit": {
