@@ -42,14 +42,14 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
   const deleteThreadHandler = useCallback(async() => {
     try {
       await deleteThread({ aiAssistantId: aiAssistantData._id, threadRelationId: threadData._id });
-      toastSuccess('ai_assistant_tree.toaster.thread_deleted_success');
+      toastSuccess(t('ai_assistant_tree.toaster.thread_deleted_success'));
       onThreadDelete();
     }
     catch (err) {
       logger.error(err);
-      toastError('ai_assistant_tree.toaster.thread_deleted_failed');
+      toastError(t('ai_assistant_tree.toaster.thread_deleted_failed'));
     }
-  }, [aiAssistantData._id, onThreadDelete, threadData._id]);
+  }, [aiAssistantData._id, onThreadDelete, t, threadData._id]);
 
   const openChatHandler = useCallback(() => {
     onThreadClick(aiAssistantData, threadData);
