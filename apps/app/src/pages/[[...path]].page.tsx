@@ -42,11 +42,12 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useShowPageSideAuthors, useIsContainerFluid, useIsNotCreatable,
-  useIsUploadAllFileAllowed, useIsUploadEnabled,
+  useIsUploadAllFileAllowed, useIsUploadEnabled, useIsBulkExportPagesEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
   useIsRomUserAllowedToComment,
   useIsAiEnabled,
+  useIsPdfBulkExportEnabled,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -181,6 +182,8 @@ type Props = CommonProps & {
   isContainerFluid: boolean,
   isUploadEnabled: boolean,
   isUploadAllFileAllowed: boolean,
+  isBulkExportPagesEnabled: boolean,
+  isPdfBulkExportEnabled: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
@@ -245,6 +248,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
+  useIsBulkExportPagesEnabled(props.isBulkExportPagesEnabled);
+  useIsPdfBulkExportEnabled(props.isPdfBulkExportEnabled);
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
   useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
@@ -589,6 +594,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');
   props.isUploadAllFileAllowed = fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = fileUploadService.getIsUploadable();
+  props.isBulkExportPagesEnabled = configManager.getConfig('app:isBulkExportPagesEnabled');
+  props.isPdfBulkExportEnabled = configManager.getConfig('app:pageBulkExportPdfConverterUri') != null;
 
   props.isLocalAccountRegistrationEnabled = passportService.isLocalStrategySetup
   && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;

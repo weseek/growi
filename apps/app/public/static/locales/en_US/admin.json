@@ -10,6 +10,7 @@
   "only_me": "Only me",
   "only_inside_the_group": "Only inside the group",
   "optional": "Optional",
+  "days": "days",
   "security_settings": {
     "security_settings": "Security Settings",
     "scope_of_page_disclosure": "Scope of page disclosure",
@@ -359,6 +360,11 @@
     "file_uploading": "File uploading",
     "enable_files_except_image": "Enabling this option will allow upload of any file type. Without this option, only image file upload is supported.",
     "attach_enable": "You can attach files other than image files if you enable this option.",
+    "page_bulk_export_settings": "Page Bulk Export Settings",
+    "enable_page_bulk_export": "Enable bulk export",
+    "page_bulk_export_explanation": "Enables a feature that allows all users to export a page and all it's child pages at once from the menu. Exported data will be automatically deleted after the storage period has passed.",
+    "page_bulk_export_warning": "The bulk page export feature is available to all users. In order to maintain system resources, we ask for your cooperation in using the minimum amount necessary. If you are an administrator, please inform all users of this.",
+    "page_bulk_export_storage_period": "Storage period",
     "update": "Update",
     "mail_settings": "E-mail Settings",
     "mailer_is_not_set_up": "E-mail setting is not set up.",
@@ -382,7 +388,7 @@
     "file_delivery_method_relay":"Internal System Relay",
     "file_delivery_method_redirect_info":"Redirect: It redirects to a signed URL without GROWI server, it gives excellent performance.",
     "file_delivery_method_relay_info":"Internal System Relay: The GROWI server delivers to clients, it provides complete security.",
-    "fixed_by_env_var": "This is fixed by the env var <code>FILE_UPLOAD={{fileUploadType}}</code>.",
+    "fixed_by_env_var": "This is fixed by the env var <code>{{envKey}}={{envVar}}</code>.",
     "gcs_label": "GCP(GCS)",
     "aws_label": "AWS(S3)",
     "local_label": "Local",
@@ -1062,7 +1068,8 @@
     "ADMIN_USER_GROUP_ADD_USER": "Add User to User Group",
     "ADMIN_SEARCH_CONNECTION": "Attempting to reconnect to Elasticsearch",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Normalize of Elasticsearch indexes",
-    "ADMIN_SEARCH_INDICES_REBUILD": "Rebuild Elasticsearch indexes"
+    "ADMIN_SEARCH_INDICES_REBUILD": "Rebuild Elasticsearch indexes",
+    "ADMIN_PAGE_BULK_EXPORT_SETTINGS_UPDATE": "Update Page Bulk Export Settings"
   },
   "g2g": {
     "transfer_success": "Completed GROWI to GROWI transfer successfully",
