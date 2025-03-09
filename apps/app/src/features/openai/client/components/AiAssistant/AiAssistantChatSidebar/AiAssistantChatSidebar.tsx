@@ -13,7 +13,6 @@ import { toastError } from '~/client/util/toastr';
 import { MessageErrorCode, StreamErrorCode } from '~/features/openai/interfaces/message-error';
 import type { IThreadRelationHasId } from '~/features/openai/interfaces/thread-relation';
 import { useGrowiCloudUri } from '~/stores-universal/context';
-import { useIsMobile } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
@@ -29,8 +28,6 @@ import styles from './AiAssistantChatSidebar.module.scss';
 const logger = loggerFactory('growi:openai:client:components:AiAssistantChatSidebar');
 
 const moduleClass = styles['grw-ai-assistant-chat-sidebar'] ?? '';
-
-const RIGHT_SIDEBAR_WIDTH = 500;
 
 type Message = {
   id: string,
@@ -412,7 +409,6 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
   const { data: aiAssistantChatSidebarData, close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
-  const { data: isMobile } = useIsMobile();
 
   const aiAssistantData = aiAssistantChatSidebarData?.aiAssistantData;
   const threadData = aiAssistantChatSidebarData?.threadData;
@@ -438,12 +434,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   return (
     <div
       ref={sidebarRef}
-      className={`position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm ${moduleClass}`}
-      style={{
-        zIndex: 1500,
-        width: isMobile ? '100%' : `${RIGHT_SIDEBAR_WIDTH}px`,
-        overflow: 'hidden',
-      }}
+      className={`position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm overflow-hidden ${moduleClass}`}
       data-testid="grw-right-sidebar"
     >
       <SimpleBar
