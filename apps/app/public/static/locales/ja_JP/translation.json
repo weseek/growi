@@ -995,8 +995,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "WIP を表示",
-    "size_s": "サイズ: S",
-    "size_l": "サイズ: L"
+    "compact_view": "コンパクト表示"
   },
   "create_page": {
     "untitled": "無題のページ"
