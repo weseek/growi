@@ -365,11 +365,9 @@ export const CONFIG_DEFINITIONS = {
   }),
   'app:isV5Compatible': defineConfig<boolean>({
     defaultValue: false,
-    envVarName: 'IS_V5_COMPATIBLE',
   }),
   'app:isMaintenanceMode': defineConfig<boolean>({
     defaultValue: false,
-    envVarName: 'IS_MAINTENANCE_MODE',
   }),
   'app:confidential': defineConfig<string | undefined>({
     defaultValue: undefined,
@@ -388,7 +386,6 @@ export const CONFIG_DEFINITIONS = {
   }),
   'app:fileUploadDisabled': defineConfig<boolean>({
     defaultValue: false,
-    envVarName: 'FILE_UPLOAD_DISABLED',
   }),
   'app:fileUploadType': defineConfig<AttachmentMethodType>({
     envVarName: 'FILE_UPLOAD',
@@ -630,7 +627,6 @@ export const CONFIG_DEFINITIONS = {
   }),
   'security:disableLinkSharing': defineConfig<boolean>({
     defaultValue: false,
-    envVarName: 'DISABLE_LINK_SHARING',
   }),
   'security:restrictGuestMode': defineConfig<string>({
     defaultValue: 'Deny',
