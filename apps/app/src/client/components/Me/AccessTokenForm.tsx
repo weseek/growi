@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-const MAX_DESCRIPTION_LENGTH = 250;
+const MAX_DESCRIPTION_LENGTH = 200;
 
 type AccessTokenFormProps = {
   submitHandler: (info: {
@@ -37,11 +37,11 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
 
   return (
     <div className="card mt-3 mb-4">
-      <div className="card-header">{t('Create New Access Token')}</div>
+      <div className="card-header">{t('page_me_access_token.form.title')}</div>
       <div className="card-body">
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="expiredAt" className="form-label">{t('Expiration Date')}</label>
+            <label htmlFor="expiredAt" className="form-label">{t('page_me_access_token.expiredAt')}</label>
             <div className="row">
               <div className="col-16 col-sm-4 col-md-4 col-lg-3">
                 <div className="input-group">
@@ -56,11 +56,11 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
                 </div>
               </div>
             </div>
-            <div className="form-text">{t('Select when this access token should expire')}</div>
+            <div className="form-text">{t('page_me_access_token.form.expiredAt_desc')}</div>
           </div>
 
           <div className="mb-3">
-            <label htmlFor="description" className="form-label">{t('Description')}</label>
+            <label htmlFor="description" className="form-label">{t('page_me_access_token.description')}</label>
             <textarea
               className="form-control"
               name="description"
@@ -69,23 +69,13 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
               required
               defaultValue=""
             />
-            <div className="form-text">{t('Provide a description to help you identify this token later')}</div>
+            <div className="form-text">{t('page_me_access_token.form.description_desc')}</div>
           </div>
 
           <div className="mb-3">
-            <label htmlFor="scope" className="form-label">{t('Scope')}</label>
-            <div className="form-text mb-2">(TODO: Implement scope selection)</div>
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                name="readScope"
-                disabled
-              />
-              <label className="form-check-label" htmlFor="readScope">
-                {t('Read')}
-              </label>
-            </div>
+            <label htmlFor="scope" className="form-label">{t('page_me_access_token.scope')}</label>
+            <div className="form-text mb-2">{t('page_me_access_token.form.scope_desc')}</div>
+            <div className="form-text mb-2">(TBD)</div>
           </div>
 
           <button
@@ -93,7 +83,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
             className="btn btn-primary"
             data-testid="create-access-token-button"
           >
-            {t('Create Token')}
+            {t('page_me_access_token.create_token')}
           </button>
         </form>
       </div>

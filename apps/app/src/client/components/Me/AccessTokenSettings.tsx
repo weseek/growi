@@ -15,7 +15,7 @@ const NewTokenDisplay = React.memo(({ newToken, closeNewTokenDisplay }: { newTok
 
   // Handle successful copy
   const handleCopySuccess = useCallback(() => {
-    toastSuccess(t('Copied to clipboard'));
+    toastSuccess(t('page_me_access_token.new_token.copy_to_clipboard'));
   }, [t]);
 
   if (newToken == null) {
@@ -26,7 +26,7 @@ const NewTokenDisplay = React.memo(({ newToken, closeNewTokenDisplay }: { newTok
     <div className="alert alert-success mb-4" role="alert">
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h5 className="mb-0">
-          {t('New Access Token')}
+          {t('page_me_access_token.new_token.title')}
         </h5>
         <button
           type="button"
@@ -37,7 +37,7 @@ const NewTokenDisplay = React.memo(({ newToken, closeNewTokenDisplay }: { newTok
         </button>
       </div>
 
-      <p className="fw-bold mb-2">{t('This token will only be displayed once. Please save it securely.')}</p>
+      <p className="fw-bold mb-2">{t('page_me_access_token.new_token.message')}</p>
 
       <div className="input-group mb-2">
         <input

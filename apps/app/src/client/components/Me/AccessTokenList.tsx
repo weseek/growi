@@ -33,14 +33,14 @@ export const AccessTokenList = React.memo((props: AccessTokenListProps): JSX.Ele
 
   return (
     <>
-      <div className="table-responsive">
+      <div className="table">
         <table className="table table-bordered">
           <thead>
             <tr>
-              <th>description</th>
-              <th>expiredAt</th>
-              <th>scope</th>
-              <th>action</th>
+              <th>{t('page_me_access_token.description')}</th>
+              <th>{t('page_me_access_token.expiredAt')}</th>
+              <th>{t('page_me_access_token.scope')}</th>
+              <th>{t('page_me_access_token.action')}</th>
             </tr>
           </thead>
           <tbody>
@@ -48,7 +48,7 @@ export const AccessTokenList = React.memo((props: AccessTokenListProps): JSX.Ele
               ? (
                 <tr>
                   <td colSpan={4} className="text-center">
-                    {t('No access tokens found')}
+                    {t('page_me_access_token.no_tokens_found')}
                   </td>
                 </tr>
               )
@@ -56,7 +56,7 @@ export const AccessTokenList = React.memo((props: AccessTokenListProps): JSX.Ele
                 <>{
                   accessTokens.map(token => (
                     <tr key={token._id}>
-                      <td>{token.description}</td>
+                      <td className="text-break">{token.description}</td>
                       <td>{token.expiredAt.toString()}</td>
                       <td>{token.scope.join(', ')}</td>
                       <td>
@@ -92,7 +92,7 @@ export const AccessTokenList = React.memo((props: AccessTokenListProps): JSX.Ele
             {t('Cancel')}
           </Button>
           <Button color="danger" onClick={handleConfirmDelete}>
-            {t('page_me_access_token.delete_token')}
+            {t('page_me_access_token.modal.delete_token')}
           </Button>
         </ModalFooter>
       </Modal>
