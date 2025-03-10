@@ -11,7 +11,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { getOpenaiService } from '../services/openai';
+import { deleteAiAssistant } from '../services/delete-ai-assistant';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -41,13 +41,8 @@ export const deleteAiAssistantsFactory: DeleteAiAssistantsFactory = (crowi) => {
       const { id } = req.params;
       const { user } = req;
 
-      const openaiService = getOpenaiService();
-      if (openaiService == null) {
-        return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
-      }
-
       try {
-        const deletedAiAssistant = await openaiService.deleteAiAssistant(user._id, id);
+        const deletedAiAssistant = await deleteAiAssistant(user._id, id);
         return res.apiv3({ deletedAiAssistant });
       }
       catch (err) {

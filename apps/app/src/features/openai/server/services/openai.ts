@@ -65,17 +65,13 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 };
 
 export interface IOpenaiService {
-  createThread(
-    userId: string, vectorStoreRelation: VectorStoreDocument, initialUserMessage: string
-  ): Promise<ThreadRelationDocument>;
-  getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]>
+  createThread(userId: string, aiAssistantId: string, initialUserMessage: string): Promise<ThreadRelationDocument>;
+  getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
-  deleteObsolatedVectorStoreRelations(): Promise<void> // for CronJob
+  deleteObsoletedVectorStoreRelations(): Promise<void> // for CronJob
   deleteVectorStore(vectorStoreRelationId: string): Promise<void>;
   getMessageData(threadId: string, lang?: Lang, options?: MessageListParams): Promise<OpenAI.Beta.Threads.Messages.MessagesPage>;
-  getVectorStoreRelation(aiAssistantId: string): Promise<VectorStoreDocument>
-  getVectorStoreRelationsByPageIds(pageId: Types.ObjectId[]): Promise<VectorStoreDocument[]>;
   createVectorStoreFile(vectorStoreRelation: VectorStoreDocument, pages: PageDocument[]): Promise<void>;
   createVectorStoreFileOnPageCreate(pages: PageDocument[]): Promise<void>;
   updateVectorStoreFileOnPageUpdate(page: HydratedDocument<PageDocument>): Promise<void>;
@@ -86,7 +82,6 @@ export interface IOpenaiService {
   createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
-  deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument>
   isLearnablePageLimitExceeded(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean>;
 }
 class OpenaiService implements IOpenaiService {
@@ -122,7 +117,9 @@ class OpenaiService implements IOpenaiService {
     return threadTitle;
   }
 
-  async createThread(userId: string, vectorStoreRelation: VectorStoreDocument, initialUserMessage: string): Promise<ThreadRelationDocument> {
+  async createThread(userId: string, aiAssistantId: string, initialUserMessage: string): Promise<ThreadRelationDocument> {
+    const vectorStoreRelation = await this.getVectorStoreRelationByAiAssistantId(aiAssistantId);
+
     let threadTitle: string | null = null;
     if (initialUserMessage != null) {
       try {
@@ -137,8 +134,8 @@ class OpenaiService implements IOpenaiService {
       const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
       const threadRelation = await ThreadRelationModel.create({
         userId,
+        aiAssistant: aiAssistantId,
         threadId: thread.id,
-        vectorStore: vectorStoreRelation._id,
         title: threadTitle,
       });
       return threadRelation;
@@ -148,8 +145,21 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async getThreads(vectorStoreRelationId: string): Promise<ThreadRelationDocument[]> {
-    const threadRelations = await ThreadRelationModel.find({ vectorStore: vectorStoreRelationId });
+  async updateThreads(aiAssistantId: string, vectorStoreId: string): Promise<void> {
+    const threadRelations = await this.getThreadsByAiAssistantId(aiAssistantId);
+    for await (const threadRelation of threadRelations) {
+      try {
+        const updatedThreadResponse = await this.client.updateThread(threadRelation.threadId, vectorStoreId);
+        logger.debug('Update thread', updatedThreadResponse);
+      }
+      catch (err) {
+        logger.error(err);
+      }
+    }
+  }
+
+  async getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]> {
+    const threadRelations = await ThreadRelationModel.find({ aiAssistant: aiAssistantId });
     return threadRelations;
   }
 
@@ -211,7 +221,7 @@ class OpenaiService implements IOpenaiService {
   }
 
 
-  async getVectorStoreRelation(aiAssistantId: string): Promise<VectorStoreDocument> {
+  async getVectorStoreRelationByAiAssistantId(aiAssistantId: string): Promise<VectorStoreDocument> {
     const aiAssistant = await AiAssistantModel.findById({ _id: aiAssistantId }).populate('vectorStore');
     if (aiAssistant == null) {
       throw createError(404, 'AiAssistant document does not exist');
@@ -376,7 +386,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   // Deletes all VectorStore documents that are marked as deleted (isDeleted: true) and have no associated VectorStoreFileRelation documents
-  async deleteObsolatedVectorStoreRelations(): Promise<void> {
+  async deleteObsoletedVectorStoreRelations(): Promise<void> {
     const deletedVectorStoreRelations = await VectorStoreModel.find({ isDeleted: true });
     if (deletedVectorStoreRelations.length === 0) {
       return;
@@ -812,6 +822,8 @@ class OpenaiService implements IOpenaiService {
 
       newVectorStoreRelation = await this.createVectorStore(data.name);
 
+      this.updateThreads(aiAssistantId, newVectorStoreRelation.vectorStoreId);
+
       // VectorStore creation process does not await
       this.createVectorStoreFileWithStream(newVectorStoreRelation, conditions);
     }
@@ -863,19 +875,6 @@ class OpenaiService implements IOpenaiService {
       myAiAssistants: assistants.filter(assistant => assistant.owner.toString() === user._id.toString()) ?? [],
       teamAiAssistants: assistants.filter(assistant => assistant.owner.toString() !== user._id.toString()) ?? [],
     };
-  }
-
-  async deleteAiAssistant(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument> {
-    const aiAssistant = await AiAssistantModel.findOne({ owner: ownerId, _id: aiAssistantId });
-    if (aiAssistant == null) {
-      throw createError(404, 'AiAssistant document does not exist');
-    }
-
-    const vectorStoreRelationId = getIdStringForRef(aiAssistant.vectorStore);
-    await this.deleteVectorStore(vectorStoreRelationId);
-
-    const deletedAiAssistant = await aiAssistant.remove();
-    return deletedAiAssistant;
   }
 
   async isLearnablePageLimitExceeded(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean> {

@@ -115,8 +115,8 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   return (
     <>
       <ModalHeader tag="h4" toggle={closeAiAssistantManagementModal} className="pe-4">
-        <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">ai_assistant</span>
-        <span className="fw-bold">{t(shouldEdit ? 'アシスタントの更新' : '新規アシスタントの追加')}</span> {/* TODO i18n */}
+        <span className="growi-custom-icons growi-ai-assistant-icon me-3 fs-4">growi_ai</span>
+        <span className="fw-bold">{t(shouldEdit ? 'modal_ai_assistant.header.update_assistant' : 'modal_ai_assistant.header.add_new_assistant')}</span>
       </ModalHeader>
 
       <div className="px-4">
@@ -124,7 +124,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
           <div className="mb-4 growi-ai-assistant-name">
             <Input
               type="text"
-              placeholder="アシスタント名を入力"
+              placeholder={t('modal_ai_assistant.assistant_name_placeholder')}
               bsSize="lg"
               className="border-0 border-bottom border-2 px-0 rounded-0"
               value={name}
@@ -134,18 +134,18 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
           <div className="mb-4">
             <div className="d-flex align-items-center mb-2">
-              <span className="text-secondary">アシスタントのメモ</span>
-              <span className="badge text-bg-secondary ms-2">任意</span>
+              <span className="text-secondary">{t('modal_ai_assistant.memo.title')}</span>
+              <span className="badge text-bg-secondary ms-2">{t('modal_ai_assistant.memo.optional')}</span>
             </div>
             <Input
               type="textarea"
-              placeholder="内容や用途のメモを表示させることができます"
+              placeholder={t('modal_ai_assistant.memo.placeholder')}
               rows="4"
               value={description}
               onChange={e => onDescriptionChange(e.target.value)}
             />
             <small className="text-secondary d-block mt-2">
-              メモの内容はアシスタントの処理に影響しません。
+              {t('modal_ai_assistant.memo.description')}
             </small>
           </div>
 
@@ -169,7 +169,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.pages')}</span>
               <div className="d-flex align-items-center text-secondary">
-                <span>{`${totalSelectedPageCount} ページ`}</span>
+                <span>{t('modal_ai_assistant.page_count', { count: totalSelectedPageCount })}</span>
                 <span className="material-symbols-outlined ms-2 align-middle">chevron_right</span>
               </div>
             </button>
@@ -196,7 +196,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
             className="btn btn-outline-secondary"
             onClick={closeAiAssistantManagementModal}
           >
-            キャンセル
+            {t('Cancel')}
           </button>
 
           <button
@@ -205,7 +205,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
             className="btn btn-primary"
             onClick={upsertAiAssistantHandler}
           >
-            {t(shouldEdit ? 'アシスタントを更新する' : 'アシスタントを作成する')}
+            {t(shouldEdit ? 'modal_ai_assistant.submit_button.update_assistant' : 'modal_ai_assistant.submit_button.create_assistant')}
           </button>
         </ModalFooter>
       </div>

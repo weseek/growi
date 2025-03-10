@@ -31,9 +31,6 @@ const logger = loggerFactory('growi:openai:client:components:AiAssistantChatSide
 
 const moduleClass = styles['grw-ai-assistant-chat-sidebar'] ?? '';
 
-const RIGHT_SIDEBAR_WIDTH = 500;
-
-
 const handleIfSuccessfullyParsed = <T, >(data: T, zSchema: z.ZodSchema<T>,
   callback: (data: T) => void,
 ): void => {
@@ -88,7 +85,9 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     const fetchAndSetMessageData = async() => {
       const messageData = await mutateMessageData();
       if (messageData != null) {
-        const normalizedMessageData = messageData.data.filter(message => message.metadata?.shouldHideMessage !== 'true');
+        const normalizedMessageData = messageData.data
+          .reverse()
+          .filter(message => message.metadata?.shouldHideMessage !== 'true');
 
         setMessageLogs(() => {
           return normalizedMessageData.map((message, index) => (
@@ -265,7 +264,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
   return (
     <>
       <div className="d-flex flex-column vh-100">
-        <div className="d-flex align-items-center p-3 border-bottom">
+        <div className="d-flex align-items-center p-3 border-bottom position-sticky top-0 bg-body z-1">
           <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
           <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{currentThreadTitle ?? aiAssistantData.name}</h5>
           <button
@@ -304,7 +303,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                 </p>
 
                 <div>
-                  <p className="text-body-secondary">アシスタントへの指示</p>
+                  <p className="text-body-secondary">{t('sidebar_aichat.instruction_label')}</p>
                   <div className="card bg-body-tertiary border-0">
                     <div className="card-body p-3">
                       <p className="fs-6 text-body-secondary mb-0">
@@ -316,7 +315,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
                 <div>
                   <div className="d-flex align-items-center">
-                    <p className="text-body-secondary mb-0">参照するページ</p>
+                    <p className="text-body-secondary mb-0">{t('sidebar_aichat.reference_pages_label')}</p>
                   </div>
                   <div className="d-flex flex-column gap-1">
                     { aiAssistantData.pagePathPatterns.map(pagePathPattern => (
@@ -460,8 +459,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
   return (
     <div
       ref={sidebarRef}
-      className={`position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm ${moduleClass}`}
-      style={{ zIndex: 1500, width: `${RIGHT_SIDEBAR_WIDTH}px` }}
+      className={`position-fixed top-0 end-0 h-100 border-start bg-body shadow-sm overflow-hidden ${moduleClass}`}
       data-testid="grw-right-sidebar"
     >
       <SimpleBar

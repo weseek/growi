@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
@@ -21,6 +22,8 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
     onSubmit,
   } = props;
 
+  const { t } = useTranslation();
+
   const upsertAiAssistantHandler = useCallback(() => {
     closeModal();
     onSubmit();
@@ -31,18 +34,19 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
       <ModalHeader toggle={closeModal}>
         <div className="d-flex align-items-center">
           <span className="material-symbols-outlined text-warning me-2 fs-4">warning</span>
-          <span className="text-warning fw-bold">共有範囲の確認</span>
+          <span className="text-warning fw-bold">{t('share_scope_warning_modal.header_title')}</span>
         </div>
       </ModalHeader>
 
       <ModalBody className="py-4 px-4">
-        <p className="mb-4">
-          このアシスタントには限定公開されているページが含まれています。<br />
-          現在の設定では、アシスタントを通じてこれらのページの情報が、本来のアクセス権限を超えて共有される可能性があります。
-        </p>
+        <p
+          className="mb-4"
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{ __html: t('share_scope_warning_modal.warning_message') }}
+        />
 
         <div className="mb-4">
-          <p className="mb-2 text-secondary">選択されているページパス</p>
+          <p className="mb-2 text-secondary">{t('share_scope_warning_modal.selected_pages_label')}</p>
           {selectedPages.map(selectedPage => (
             <code key={selectedPage.page.path}>
               {selectedPage.page.path}
@@ -51,7 +55,7 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
         </div>
 
         <p>
-          続行する場合、これらのページの内容がアシスタントの公開範囲内で共有される可能性があることを確認してください。
+          {t('share_scope_warning_modal.confirmation_message')}
         </p>
       </ModalBody>
 
@@ -61,7 +65,7 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
           className="btn btn-outline-secondary"
           onClick={closeModal}
         >
-          設定を見直す
+          {t('share_scope_warning_modal.button.review')}
         </button>
 
         <button
@@ -69,7 +73,7 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
           className="btn btn-warning"
           onClick={upsertAiAssistantHandler}
         >
-          理解して続行する
+          {t('share_scope_warning_modal.button.proceed')}
         </button>
       </ModalFooter>
     </Modal>

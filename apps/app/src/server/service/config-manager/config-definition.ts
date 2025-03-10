@@ -599,15 +599,15 @@ export const CONFIG_DEFINITIONS = {
     defaultValue: undefined,
   }),
   'security:passport-saml:entryPoint': defineConfig<string | undefined>({
-    envVarName: 'SECURITY_PASSPORT_SAML_ENTRY_POINT',
+    envVarName: 'SAML_ENTRY_POINT',
     defaultValue: undefined,
   }),
   'security:passport-saml:issuer': defineConfig<string | undefined>({
-    envVarName: 'SECURITY_PASSPORT_SAML_ISSUER',
+    envVarName: 'SAML_ISSUER',
     defaultValue: undefined,
   }),
   'security:passport-saml:cert': defineConfig<string | undefined>({
-    envVarName: 'SECURITY_PASSPORT_SAML_CERT',
+    envVarName: 'SAML_CERT',
     defaultValue: undefined,
   }),
   'security:passport-oidc:timeoutMultiplier': defineConfig<number>({
