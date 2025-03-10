@@ -189,10 +189,12 @@
   "custom_navigation": {
     "no_pages_under_this_page": "There are no pages under this page."
   },
-  "author_info": {
-    "created_at": "Created at",
-    "last_revision_posted_at": "Last revision posted at"
-  },
+"author_info": {
+  "created_at": "创建日期",
+  "created_by": "创建者:",
+  "last_revision_posted_at": "最后更新日期",
+  "updated_by": "更新者:"
+},
   "installer": {
     "tab": "创建账户",
     "title": "安装",
@@ -889,8 +891,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "显示 WIP",
-    "size_s": "尺寸: S",
-    "size_l": "尺寸: L"
+    "compact_view": "紧凑视图"
   },
   "create_page": {
     "untitled": "Untitled"
