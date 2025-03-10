@@ -231,7 +231,17 @@
       "apitoken_issued": "API token 未发布。",
       "update_token1": "您可以更新以生成新的API令牌。",
       "update_token2": "您需要更新任何现有进程中的API令牌。"
-    }
+    },
+    "form_help": {}
+  },
+  "page_me_access_token": {
+    "access_token": "Access token",
+    "notice": {
+      "access_token_issued": "Access token 未发布。",
+      "update_token1": "您可以更新以生成新的API令牌。",
+      "update_token2": "您需要更新任何现有进程中的API令牌。"
+    },
+    "form_help": {}
   },
   "Password": "密码",
   "Password Settings": "密码设置",
@@ -250,6 +260,9 @@
   "API Token Settings": "API token 设置",
   "Current API Token": "当前 API token",
   "Update API Token": "更新 API token",
+  "Access Token Settings": "Access token 设置",
+  "Current Access Token": "当前 Access token",
+  "Update Access Token": "更新 Access token",
   "in_app_notification_settings": {
     "in_app_notification_settings": "在应用程序通知设置",
     "subscribe_settings": "自动订阅（接收通知）页面的设置",

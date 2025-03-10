@@ -227,6 +227,15 @@
     },
     "form_help": {}
   },
+  "page_me_access_token": {
+    "access_token": "Access token",
+    "notice": {
+      "access_token_issued": "Access token が設定されていません。",
+      "update_token1": "Access token を更新すると、自動的に新しい Token が生成されます。",
+      "update_token2": "現在の Token を利用している処理は動かなくなります。"
+    },
+    "form_help": {}
+  },
   "Password": "パスワード",
   "Password Settings": "パスワード設定",
   "personal_settings": {
@@ -260,6 +269,9 @@
   "API Token Settings": "API Token設定",
   "Current API Token": "現在のAPI Token",
   "Update API Token": "API Tokenを更新",
+  "Access Token Settings": "Access token 設定",
+  "Current Access Token": "現在のAccess token",
+  "Update Access Token": "Access tokenを更新",
   "in_app_notification_settings": {
     "in_app_notification_settings": "アプリ内通知設定",
     "subscribe_settings": "自動でページをサブスクライブする（通知を受け取る）設定",
