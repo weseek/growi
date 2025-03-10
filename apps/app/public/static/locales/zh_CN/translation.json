@@ -580,7 +580,9 @@
       "ai_assistant_deleted_success": "已删除助手",
       "ai_assistant_deleted_failed": "删除助手失败",
       "thread_deleted_success": "已删除会话",
-      "thread_deleted_failed": "删除会话失败"
+      "thread_deleted_failed": "删除会话失败",
+      "ai_assistant_set_default_success": "已成功设置默认助手",
+      "ai_assistant_set_default_failed": "设置默认助手失败"
     }
   },
   "link_edit": {

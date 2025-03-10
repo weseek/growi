@@ -585,7 +585,9 @@
       "ai_assistant_deleted_success": "Assistant supprimé",
       "ai_assistant_deleted_failed": "Échec de la suppression de l'assistant",
       "thread_deleted_success": "Discussion supprimée",
-      "thread_deleted_failed": "Échec de la suppression de la discussion"
+      "thread_deleted_failed": "Échec de la suppression de la discussion",
+      "ai_assistant_set_default_success": "Assistant par défaut défini avec succès",
+      "ai_assistant_set_default_failed": "Échec de la définition de l'assistant par défaut"
     }
   },
   "link_edit": {
