@@ -18,7 +18,7 @@ import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { SseMessageSchema, SseDetectedDiffSchema, SseFinalizedSchema } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
-import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
+import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../../../stores/message';
 import { useSWRMUTxThreads } from '../../../stores/thread';
 
@@ -54,12 +54,12 @@ type FormData = {
 type AiAssistantChatSidebarSubstanceProps = {
   aiAssistantData: AiAssistantHasId;
   threadData?: IThreadRelationHasId;
-  closeAiAssistantChatSidebar: () => void
+  closeAiAssistantSidebar: () => void
 }
 
 const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
   const {
-    aiAssistantData, threadData, closeAiAssistantChatSidebar,
+    aiAssistantData, threadData, closeAiAssistantSidebar,
   } = props;
 
   const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
@@ -270,7 +270,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
           <button
             type="button"
             className="btn btn-link p-0 border-0"
-            onClick={closeAiAssistantChatSidebar}
+            onClick={closeAiAssistantSidebar}
           >
             <span className="material-symbols-outlined">close</span>
           </button>
@@ -433,16 +433,16 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
-  const { data: aiAssistantChatSidebarData, close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+  const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
 
-  const aiAssistantData = aiAssistantChatSidebarData?.aiAssistantData;
-  const threadData = aiAssistantChatSidebarData?.threadData;
-  const isOpened = aiAssistantChatSidebarData?.isOpened && aiAssistantData != null;
+  const aiAssistantData = aiAssistantSidebarData?.aiAssistantData;
+  const threadData = aiAssistantSidebarData?.threadData;
+  const isOpened = aiAssistantSidebarData?.isOpened && aiAssistantData != null;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isOpened && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        closeAiAssistantChatSidebar();
+        closeAiAssistantSidebar();
       }
     };
 
@@ -450,7 +450,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [closeAiAssistantChatSidebar, isOpened]);
+  }, [closeAiAssistantSidebar, isOpened]);
 
   if (!isOpened) {
     return <></>;
@@ -470,7 +470,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
         <AiAssistantChatSidebarSubstance
           threadData={threadData}
           aiAssistantData={aiAssistantData}
-          closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
+          closeAiAssistantSidebar={closeAiAssistantSidebar}
         />
       </SimpleBar>
     </div>

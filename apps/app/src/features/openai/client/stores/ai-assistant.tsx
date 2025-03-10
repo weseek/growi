@@ -55,13 +55,13 @@ export const useSWRxAiAssistants = (): SWRResponse<AccessibleAiAssistantsHasId, 
 };
 
 
-type AiAssistantChatSidebarStatus = {
+type AiAssistantSidebarStatus = {
   isOpened: boolean,
   aiAssistantData?: AiAssistantHasId,
   threadData?: IThreadRelationHasId,
 }
 
-type AiAssistantChatSidebarUtils = {
+type AiAssistantSidebarUtils = {
   open(
     aiAssistantData: AiAssistantHasId,
     threadData?: IThreadRelationHasId,
@@ -69,11 +69,11 @@ type AiAssistantChatSidebarUtils = {
   close(): void
 }
 
-export const useAiAssistantChatSidebar = (
-    status?: AiAssistantChatSidebarStatus,
-): SWRResponse<AiAssistantChatSidebarStatus, Error> & AiAssistantChatSidebarUtils => {
+export const useAiAssistantSidebar = (
+    status?: AiAssistantSidebarStatus,
+): SWRResponse<AiAssistantSidebarStatus, Error> & AiAssistantSidebarUtils => {
   const initialStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<AiAssistantChatSidebarStatus, Error>('AiAssistantChatSidebar', status, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<AiAssistantSidebarStatus, Error>('AiAssistantSidebar', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
