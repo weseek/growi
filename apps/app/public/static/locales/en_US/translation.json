@@ -228,6 +228,15 @@
     },
     "form_help": {}
   },
+  "page_me_access_token": {
+    "access_token": "Access token",
+    "notice": {
+      "access_token_issued": "Access token is not issued.",
+      "update_token1": "You can update to generate a new Access token.",
+      "update_token2": "You will need to update the Access token in any existing processes."
+    },
+    "form_help": {}
+  },
   "Password": "Password",
   "Password Settings": "Password settings",
   "personal_settings": {
@@ -261,6 +270,9 @@
   "API Token Settings": "API token settings",
   "Current API Token": "Current API token",
   "Update API Token": "Update API token",
+  "Access Token Settings": "Access token settings",
+  "Current Access Token": "Current Access token",
+  "Update Access Token": "Update Access token",
   "in_app_notification_settings": {
     "in_app_notification_settings": "In-App Notification Settings",
     "subscribe_settings": "Settings to automatically subscribe (Receive notifications) to pages",
