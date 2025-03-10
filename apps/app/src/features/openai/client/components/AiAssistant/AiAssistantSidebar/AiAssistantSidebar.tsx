@@ -25,11 +25,11 @@ import { useSWRMUTxThreads } from '../../../stores/thread';
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
 
-import styles from './AiAssistantChatSidebar.module.scss';
+import styles from './AiAssistantSidebar.module.scss';
 
-const logger = loggerFactory('growi:openai:client:components:AiAssistantChatSidebar');
+const logger = loggerFactory('growi:openai:client:components:AiAssistantSidebar');
 
-const moduleClass = styles['grw-ai-assistant-chat-sidebar'] ?? '';
+const moduleClass = styles['grw-ai-assistant-sidebar'] ?? '';
 
 const handleIfSuccessfullyParsed = <T, >(data: T, zSchema: z.ZodSchema<T>,
   callback: (data: T) => void,
@@ -429,7 +429,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 };
 
 
-export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
+export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
