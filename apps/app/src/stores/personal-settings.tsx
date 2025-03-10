@@ -3,6 +3,9 @@ import { useTranslation } from 'next-i18next';
 import type { SWRConfiguration, SWRResponse } from 'swr';
 import useSWR from 'swr';
 
+import type {
+  IResGenerateAccessToken, IResGetAccessToken, IAccessTokenInfo,
+} from '~/interfaces/access-token';
 import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 import { useIsGuestUser } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
@@ -114,28 +117,15 @@ export const useSWRxPersonalExternalAccounts = (): SWRResponse<(IExternalAccount
 };
 
 
-type AccessTokenInfo = {
-  expiredAt: Date,
-  scope: string[],
-  description: string,
-}
-
-type AccessTokenResult = AccessTokenInfo & {
-  _id: string,
-}
-
-type GeneratedAccessToken = AccessTokenResult &{
-  token: string,
-}
 interface IAccessTokenOption {
-  generateAccessToken: (info: AccessTokenInfo) => Promise<GeneratedAccessToken>,
+  generateAccessToken: (info: IAccessTokenInfo) => Promise<IResGenerateAccessToken>,
   deleteAccessToken: (tokenId: string) => Promise<void>,
   deleteAllAccessTokens: (userId: string) => Promise<void>,
 }
 
-export const useSWRxAccessToken = (): SWRResponse< AccessTokenResult[] | null, Error> & IAccessTokenOption => {
+export const useSWRxAccessToken = (): SWRResponse< IResGetAccessToken[] | null, Error> & IAccessTokenOption => {
   const generateAccessToken = async(info) => {
-    const res = await apiv3Post('/personal-setting/access-token', info);
+    const res = await apiv3Post<IResGenerateAccessToken>('/personal-setting/access-token', info);
     return res.data;
   };
   const deleteAccessToken = async(tokenId: string) => {

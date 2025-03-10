@@ -4,10 +4,12 @@ import { useTranslation } from 'next-i18next';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import type { IAccessTokenInfo } from '~/interfaces/access-token';
 import { useSWRxAccessToken } from '~/stores/personal-settings';
 
 import { AccessTokenForm } from './AccessTokenForm';
 import { AccessTokenList } from './AccessTokenList';
+
 
 const NewTokenDisplay = React.memo(({ newToken, closeNewTokenDisplay }: { newToken?: string, closeNewTokenDisplay: () => void }): JSX.Element => {
 
@@ -79,14 +81,7 @@ export const AccessTokenSettings = React.memo((): JSX.Element => {
     setNewToken(undefined);
   }, []);
 
-
-  // TODO: model で共通化
-  type GenerateAccessTokenInfo = {
-    expiredAt: Date,
-    scope: string[],
-    description: string,
-  }
-  const submitHandler = useCallback(async(info: GenerateAccessTokenInfo) => {
+  const submitHandler = useCallback(async(info: IAccessTokenInfo) => {
     try {
       const result = await generateAccessToken(info);
       mutate();

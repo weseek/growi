@@ -5,12 +5,14 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
 } from 'reactstrap';
 
-// TODO: add types for accessTokens
+import type { IResGetAccessToken } from '~/interfaces/access-token';
+
 type AccessTokenListProps = {
-  accessTokens: any[];
+  accessTokens: IResGetAccessToken[];
   deleteHandler?: (tokenId: string) => void;
 }
 export const AccessTokenList = React.memo((props: AccessTokenListProps): JSX.Element => {
+
 
   const { t } = useTranslation();
   const { accessTokens, deleteHandler } = props;
@@ -57,7 +59,7 @@ export const AccessTokenList = React.memo((props: AccessTokenListProps): JSX.Ele
                   accessTokens.map(token => (
                     <tr key={token._id}>
                       <td className="text-break">{token.description}</td>
-                      <td>{token.expiredAt.toString()}</td>
+                      <td>{token.expiredAt.toString().split('T')[0]}</td>
                       <td>{token.scope.join(', ')}</td>
                       <td>
                         <button
