@@ -132,6 +132,27 @@ describe('access-token-parser middleware', () => {
     expect(nextMock).toHaveBeenCalled();
   });
 
+});
+
+
+describe('access-token-parser middleware for access token', () => {
+
+  let User;
+
+  beforeAll(async() => {
+    const crowiMock = mock<Crowi>({
+      event: vi.fn().mockImplementation((eventName) => {
+        if (eventName === 'user') {
+          return mock<UserEvent>({
+            on: vi.fn(),
+          });
+        }
+      }),
+    });
+    const userModelFactory = (await import('../../models/user')).default;
+    User = userModelFactory(crowiMock);
+  });
+
   it('should set req.user with a valid access token in query', async() => {
     // arrange
     const reqMock = mock<AccessTokenParserReq>({
