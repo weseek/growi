@@ -122,6 +122,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
         const thread = await openaiClient.beta.threads.retrieve(threadId);
 
         // Create stream
+        /* eslint-disable max-len */
         const stream = openaiClient.beta.threads.runs.stream(thread.id, {
           assistant_id: assistant.id,
           additional_messages: [
@@ -162,6 +163,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
           ],
           response_format: zodResponseFormat(LlmEditorAssistantResponseSchema, 'editor_assistant_response'),
         });
+        /* eslint-disable max-len */
 
         // Message delta handler
         const messageDeltaHandler = async(delta: MessageDelta) => {
