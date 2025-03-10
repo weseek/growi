@@ -133,7 +133,7 @@ const AccessTokenSettings = React.memo((): JSX.Element => {
           {accessToken != null
             ? (
               <input
-                data-testid="grw-api-settings-input"
+                // data-testid="grw-api-settings-input"
                 data-vrt-blackout
                 className="form-control"
                 type="text"
@@ -165,7 +165,7 @@ const AccessTokenSettings = React.memo((): JSX.Element => {
       <div className="row my-3">
         <div className="offset-4 col-5">
           <button
-            data-testid="grw-api-settings-update-button"
+            // data-testid="grw-api-settings-update-button"
             type="button"
             className="btn btn-primary text-nowrap"
             onClick={submitHandler}
