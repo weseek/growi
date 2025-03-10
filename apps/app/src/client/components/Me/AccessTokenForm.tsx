@@ -3,14 +3,12 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import type { IAccessTokenInfo } from '~/interfaces/access-token';
+
 const MAX_DESCRIPTION_LENGTH = 200;
 
 type AccessTokenFormProps = {
-  submitHandler: (info: {
-    expiredAt: Date,
-    scope: string[],
-    description: string,
-  }) => Promise<void>;
+  submitHandler: (info: IAccessTokenInfo) => Promise<void>;
 }
 
 // TODO: Implement scope selection
@@ -26,7 +24,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
     const form = new FormData(e.currentTarget);
     const expiredAtDate = new Date(form.get('expiredAt') as string);
     const description = form.get('description') as string;
-    const scope = []; // form.getAll('scope') as string[];
+    const scope = []; // TODO: Implement scope selection
 
     submitHandler({
       expiredAt: expiredAtDate,
