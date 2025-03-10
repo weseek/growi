@@ -2,11 +2,11 @@ import { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useAiAssistantChatSidebar } from '~/features/openai/client/stores/ai-assistant';
+import { useAiAssistantSidebar } from '~/features/openai/client/stores/ai-assistant';
 
 export const EditorAssistantToggleButton = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data, close } = useAiAssistantChatSidebar();
+  const { data, close } = useAiAssistantSidebar();
   const { isOpened } = data ?? {};
 
   const toggle = useCallback(() => {
