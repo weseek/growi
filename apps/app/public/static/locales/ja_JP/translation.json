@@ -893,6 +893,50 @@
   "rich_attachment": {
     "attachment_not_be_found": "アタッチメントが見つかりません"
   },
+  "approval_workflow": {
+    "approval_workflow": "ワークフロー",
+    "name": "ワークフロー名",
+    "description": "説明",
+    "back": "戻る",
+    "status": "進行状況",
+    "application": "申請",
+    "applicant": "申請者",
+    "list": "ワークフロー一覧",
+    "list_not_found": "このページにはワークフローがありません。",
+    "create": "ワークフローを作成",
+    "create_new": "ワークフロー新規作成",
+    "delete": "削除",
+    "delete_button_tooltip": "ワークフローの作成者、承認者または管理者のみが削除できます",
+    "edit": "編集",
+    "edit_workflow": "ワークフロー編集",
+    "show_detail": "詳細を見る",
+    "cancel": "キャンセル",
+    "completion": "完了",
+    "add_flow": "フローの追加",
+    "completion_conditions": "完了条件",
+    "cannot_change_approval_type": "承認者が1人の時は変更できません",
+    "description_for_new_creation": "最後のフローが完了するとワークフローは完了になります",
+    "detail_modal_content_message": {
+      "INPROGRESS": "最後のフローが完了するとワークフローは完了になります",
+      "APPROVE": "ワークフローが完了しました"
+    },
+    "approval_type": {
+      "AND": "全員が承認",
+      "OR": "1人が承認"
+    },
+    "workflow_status": {
+      "INPROGRESS": "進行中",
+      "APPROVE": "承認",
+      "REJECT": "却下",
+      "CANCEL": "キャンセル"
+    },
+    "approver_status": {
+      "NONE": "未承認",
+      "APPROVE": "承認",
+      "REMAND": "差し戻し",
+      "DELEGATE": "委譲"
+    }
+  },
   "page_select_modal": {
     "select_page_location": "ページの場所を選択"
   },

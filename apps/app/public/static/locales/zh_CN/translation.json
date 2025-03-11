@@ -864,6 +864,50 @@
   "rich_attachment": {
     "attachment_not_be_found": "没有找到附件"
   },
+  "approval_workflow": {
+    "approval_workflow": "工作流程",
+    "name": "工作流程名称",
+    "description": "描述",
+    "back": "返回",
+    "status": "进展情况",
+    "application": "应用",
+    "applicant": "申请人",
+    "list": "工作流程列表",
+    "list_not_found": "本页没有工作流程。",
+    "create": "创建工作流程",
+    "create_new": "创建新工作流程",
+    "delete": "删除",
+    "delete_button_tooltip": "只有工作流程创建者、审批者或管理员可以删除",
+    "show_detail": "显示详情",
+    "edit": "编辑",
+    "edit_workflow": "编辑工作流程",
+    "cancel": "取消",
+    "completion": "完成",
+    "add_flow": "额外流量",
+    "completion_conditions": "完工条件",
+    "cannot_change_approval_type": "如果只有一个审批人，则无法更改",
+    "description_for_new_creation": "当最终流程完成时，工作流程被标记为已完成",
+    "detail_modal_content_message": {
+      "INPROGRESS": "当最后一个流程完成时，工作流程完成",
+      "APPROVE": "工作流程已完成"
+    },
+    "approval_type": {
+      "AND": "大家的认可",
+      "OR": "一个人的认可"
+    },
+    "workflow_status": {
+      "INPROGRESS": "进行中",
+      "APPROVE": "批准",
+      "REJECT": "拒绝",
+      "CANCEL": "取消"
+    },
+    "approver_status": {
+      "NONE": "未经批准",
+      "APPROVE": "批准",
+      "REMAND": "还押",
+      "DELEGATE": "代表们"
+    }
+  },
   "page_select_modal": {
     "select_page_location": "选择页面位置"
   },
