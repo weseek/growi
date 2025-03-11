@@ -25,7 +25,7 @@ const NewTokenDisplay = React.memo(({ newToken, closeNewTokenDisplay }: { newTok
   }
 
   return (
-    <div className="alert alert-success mb-4" role="alert">
+    <div className="alert alert-success mb-4" role="alert" data-testid="grw-accesstoken-new-token-display">
       <div className="d-flex justify-content-between align-items-center mb-2">
         <h5 className="mb-0">
           {t('page_me_access_token.new_token.title')}

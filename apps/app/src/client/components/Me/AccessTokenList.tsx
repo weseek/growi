@@ -66,6 +66,7 @@ export const AccessTokenList = React.memo((props: AccessTokenListProps): JSX.Ele
                           className="btn btn-danger"
                           type="button"
                           onClick={() => handleDeleteClick(token._id)}
+                          data-testid="grw-accesstoken-delete-button"
                         >
                           {t('Delete')}
                         </button>
@@ -90,10 +91,10 @@ export const AccessTokenList = React.memo((props: AccessTokenListProps): JSX.Ele
           <p className="text-danger fw-bold">{t('page_me_access_token.modal.alert')}</p>
         </ModalBody>
         <ModalFooter>
-          <Button color="secondary" onClick={toggleModal}>
+          <Button color="secondary" onClick={toggleModal} data-testid="grw-accesstoken-cancel-button-in-modal">
             {t('Cancel')}
           </Button>
-          <Button color="danger" onClick={handleConfirmDelete}>
+          <Button color="danger" onClick={handleConfirmDelete} data-testid="grw-accesstoken-delete-button-in-modal">
             {t('page_me_access_token.modal.delete_token')}
           </Button>
         </ModalFooter>

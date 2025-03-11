@@ -46,6 +46,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
                   <input
                     type="date"
                     className="form-control"
+                    data-testid="grw-accesstoken-input-expiredAt"
                     name="expiredAt"
                     min={new Date().toISOString().split('T')[0]}
                     required
@@ -66,6 +67,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
               rows={3}
               required
               defaultValue=""
+              data-testid="grw-accesstoken-textarea-description"
             />
             <div className="form-text">{t('page_me_access_token.form.description_desc')}</div>
           </div>
@@ -79,7 +81,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
           <button
             type="submit"
             className="btn btn-primary"
-            data-testid="create-access-token-button"
+            data-testid="grw-accesstoken-create-button"
           >
             {t('page_me_access_token.create_token')}
           </button>
