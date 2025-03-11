@@ -55,16 +55,23 @@ export const useSWRxAiAssistants = (): SWRResponse<AccessibleAiAssistantsHasId, 
 };
 
 
+/*
+*  useAiAssistantSidebar
+*/
 type AiAssistantSidebarStatus = {
   isOpened: boolean,
+  isEditorAssistant?: boolean,
   aiAssistantData?: AiAssistantHasId,
   threadData?: IThreadRelationHasId,
 }
 
 type AiAssistantSidebarUtils = {
-  open(
+  openChat(
     aiAssistantData: AiAssistantHasId,
     threadData?: IThreadRelationHasId,
+  ): void
+  openEditor(
+    aiAssistantData?: AiAssistantHasId,
   ): void
   close(): void
 }
@@ -77,9 +84,14 @@ export const useAiAssistantSidebar = (
 
   return {
     ...swrResponse,
-    open: useCallback(
+    openChat: useCallback(
       (aiAssistantData: AiAssistantHasId, threadData: IThreadRelationHasId) => {
         swrResponse.mutate({ isOpened: true, aiAssistantData, threadData });
+      }, [swrResponse],
+    ),
+    openEditor: useCallback(
+      (aiAssistantData: AiAssistantHasId) => {
+        swrResponse.mutate({ isOpened: true, isEditorAssistant: true, aiAssistantData });
       }, [swrResponse],
     ),
     close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),

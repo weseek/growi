@@ -298,7 +298,7 @@ type AiAssistantTreeProps = {
 
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onUpdated, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
-  const { open: openAiAssistantSidebar } = useAiAssistantSidebar();
+  const { openChat } = useAiAssistantSidebar();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   return (
@@ -309,7 +309,7 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           currentUser={currentUser}
           aiAssistant={assistant}
           onEditClick={openAiAssistantManagementModal}
-          onItemClick={openAiAssistantSidebar}
+          onItemClick={openChat}
           onUpdated={onUpdated}
           onDeleted={onDeleted}
         />

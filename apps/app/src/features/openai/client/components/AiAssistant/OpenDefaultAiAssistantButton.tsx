@@ -14,7 +14,7 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isAiEnabled } = useIsAiEnabled();
   const { data: aiAssistantData } = useSWRxAiAssistants();
-  const { open: openAiAssistantSidebar } = useAiAssistantSidebar();
+  const { openChat } = useAiAssistantSidebar();
 
   const defaultAiAssistant = useMemo(() => {
     if (aiAssistantData == null) {
@@ -30,8 +30,8 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
       return;
     }
 
-    openAiAssistantSidebar(defaultAiAssistant);
-  }, [defaultAiAssistant, openAiAssistantSidebar]);
+    openChat(defaultAiAssistant);
+  }, [defaultAiAssistant, openChat]);
 
   if (!isAiEnabled) {
     return <></>;
