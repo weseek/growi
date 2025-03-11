@@ -76,7 +76,8 @@ module.exports = (crowi) => {
    *
    *  /healthcheck:
    *    get:
-   *      tags: [Healthcheck]
+   *      tags: [SecuritySetting]
+   *      security: []
    *      operationId: getHealthcheck
    *      summary: /healthcheck
    *      description: Check whether the server is healthy or not
@@ -103,8 +104,9 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  info:
-   *                    $ref: '#/components/schemas/HealthcheckInfo'
+   *                  status:
+   *                    type: string
+   *                    description: Status
    *        503:
    *          description: Unhealthy
    *          content:
