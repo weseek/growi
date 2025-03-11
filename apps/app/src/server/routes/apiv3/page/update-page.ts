@@ -122,7 +122,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       const { getOpenaiService } = await import('~/features/openai/server/services/openai');
       try {
         const openaiService = getOpenaiService();
-        await openaiService?.rebuildVectorStore(updatedPage);
+        await openaiService?.updateVectorStoreFileOnPageUpdate(updatedPage);
       }
       catch (err) {
         logger.error('Rebuild vector store failed', err);
@@ -130,7 +130,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     }
   }
 
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   return [
     accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,

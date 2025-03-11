@@ -1,5 +1,6 @@
 import growiPlugin from '~/features/growi-plugin/server/routes/apiv3/admin';
 import { factory as openaiRouteFactory } from '~/features/openai/server/routes';
+import { allreadyInstalledMiddleware } from '~/server/middlewares/application-not-installed';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -11,6 +12,7 @@ import g2gTransfer from './g2g-transfer';
 import importRoute from './import';
 import pageListing from './page-listing';
 import securitySettings from './security-settings';
+import { factory as userRouteFactory } from './user';
 import * as userActivation from './user-activation';
 
 const logger = loggerFactory('growi:routes:apiv3'); // eslint-disable-line no-unused-vars
@@ -21,9 +23,10 @@ const router = express.Router();
 const routerForAdmin = express.Router();
 const routerForAuth = express.Router();
 
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi, app) => {
-  const isInstalled = crowi.configManager.getConfig('crowi', 'app:installed');
-  const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+  const isInstalled = crowi.configManager.getConfig('app:installed');
+  const minPasswordLength = crowi.configManager.getConfig('app:minPasswordLength');
 
   // add custom functions to express response
   require('./response')(express, crowi);
@@ -70,8 +73,11 @@ module.exports = (crowi, app) => {
     userActivation.validateRegisterForm, userActivation.registerAction(crowi));
 
   // installer
+  routerForAdmin.use('/installer', isInstalled
+    ? allreadyInstalledMiddleware
+    : require('./installer')(crowi));
+
   if (!isInstalled) {
-    routerForAdmin.use('/installer', require('./installer')(crowi));
     return [router, routerForAdmin, routerForAuth];
   }
 
@@ -121,6 +127,8 @@ module.exports = (crowi, app) => {
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
 
   router.use('/openai', openaiRouteFactory(crowi));
+
+  router.use('/user', userRouteFactory(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };

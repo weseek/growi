@@ -18,6 +18,7 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
+import type { IPagePathWithDescendantCount } from '~/interfaces/page';
 import type { IRecordApplicableGrant, IResCurrentGrantData } from '~/interfaces/page-grant';
 import {
   useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
@@ -360,5 +361,19 @@ export const useIsRevisionOutdated = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     currentRevisionId != null && remoteRevisionId != null ? ['useIsRevisionOutdated', currentRevisionId, remoteRevisionId] : null,
     ([, remoteRevisionId, currentRevisionId]) => { return remoteRevisionId !== currentRevisionId },
+  );
+};
+
+
+export const useSWRxPagePathsWithDescendantCount = (
+    paths?: string[], userGroups?: string[], isIncludeEmpty?: boolean, includeAnyoneWithTheLink?: boolean,
+): SWRResponse<IPagePathWithDescendantCount[], Error> => {
+  return useSWR(
+    (paths != null && paths.length !== 0) ? ['/page/page-paths-with-descendant-count', paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink] : null,
+    ([endpoint, paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink]) => apiv3Get(
+      endpoint, {
+        paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink,
+      },
+    ).then(result => result.data.pagePathsWithDescendantCount),
   );
 };

@@ -29,7 +29,6 @@ export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHa
   );
 };
 
-
 type RecentApiResult = {
   pages: IPageHasId[],
   totalCount: number,
@@ -185,32 +184,6 @@ export const mutatePageTree = async(): Promise<undefined[]> => {
   return mutate(keyMatcherForPageTree);
 };
 
-export const useSWRxPageAncestorsChildren = (
-    path: string | null,
-    config?: SWRConfiguration,
-): SWRResponse<AncestorsChildrenResult, Error> => {
-  const key = path ? [MUTATION_ID_FOR_PAGETREE, '/page-listing/ancestors-children', path] : null;
-
-  // take care of the degration
-  // see: https://github.com/weseek/growi/pull/7038
-
-  if (key != null) {
-    assert(keyMatcherForPageTree(key));
-  }
-
-  return useSWRImmutable(
-    key,
-    ([, endpoint, path]) => apiv3Get(endpoint, { path }).then((response) => {
-      return {
-        ancestorsChildren: response.data.ancestorsChildren,
-      };
-    }),
-    {
-      ...config,
-      keepPreviousData: true,
-    },
-  );
-};
 
 export const useSWRxPageChildren = (
     id?: string | null,

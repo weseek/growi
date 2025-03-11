@@ -3,6 +3,7 @@ import { memo } from 'react';
 import dynamic from 'next/dynamic';
 
 import { SidebarContentsType } from '~/interfaces/ui';
+import { useIsAiEnabled } from '~/stores-universal/context';
 import { useSidebarMode } from '~/stores/ui';
 
 import { PrimaryItem } from './PrimaryItem';
@@ -22,6 +23,7 @@ export const PrimaryItems = memo((props: Props) => {
   const { onItemHover } = props;
 
   const { data: sidebarMode } = useSidebarMode();
+  const { data: isAiEnabled } = useIsAiEnabled();
 
   if (sidebarMode == null) {
     return <></>;
@@ -35,6 +37,16 @@ export const PrimaryItems = memo((props: Props) => {
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmarks" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onHover={onItemHover} />
       <PrimaryItemForNotification sidebarMode={sidebarMode} onHover={onItemHover} />
+      {isAiEnabled && (
+        <PrimaryItem
+          sidebarMode={sidebarMode}
+          contents={SidebarContentsType.AI_ASSISTANT}
+          label="AI Assistant"
+          iconName="growi_ai"
+          isCustomIcon
+          onHover={onItemHover}
+        />
+      )}
     </div>
   );
 });
