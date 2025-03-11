@@ -92,7 +92,7 @@ export const AccessTokenSettings = React.memo((): JSX.Element => {
         setNewToken(result.token);
       }
 
-      toastSuccess(t('toaster.update_successed', { target: t('page_me_access_token.access_token'), ns: 'commons' }));
+      toastSuccess(t('toaster.add_succeeded', { target: t('page_me_access_token.access_token'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
@@ -103,7 +103,7 @@ export const AccessTokenSettings = React.memo((): JSX.Element => {
     try {
       await deleteAccessToken(tokenId);
       mutate();
-      toastSuccess(t('toaster.remove_access_token_success', { ns: 'commons' }));
+      toastSuccess(t('toaster.delete_succeeded', { target: t('page_me_access_token.access_token'), ns: 'commons' }));
     }
     catch (err) {
       toastError(err);
