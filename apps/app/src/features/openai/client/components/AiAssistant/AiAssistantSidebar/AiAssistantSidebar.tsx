@@ -153,7 +153,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       }
       catch (err) {
         logger.error(err.toString());
-        toastError(t('sidebar_aichat.failed_to_create_or_retrieve_thread'));
+        toastError(t('sidebar_ai_assistant.failed_to_create_or_retrieve_thread'));
       }
     }
 
@@ -176,7 +176,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
           const hasThreadIdNotSetError = resJson.errors.some(err => err.code === MessageErrorCode.THREAD_ID_IS_NOT_SET);
           if (hasThreadIdNotSetError) {
-            toastError(t('sidebar_aichat.failed_to_create_or_retrieve_thread'));
+            toastError(t('sidebar_ai_assistant.failed_to_create_or_retrieve_thread'));
           }
         }
         setGeneratingAnswerMessage(undefined);
@@ -229,7 +229,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             form.setError('input', { type: 'manual', message: error.message });
 
             if (error.code === StreamErrorCode.BUDGET_EXCEEDED) {
-              setErrorMessage(growiCloudUri != null ? 'sidebar_aichat.budget_exceeded_for_growi_cloud' : 'sidebar_aichat.budget_exceeded');
+              setErrorMessage(growiCloudUri != null ? 'sidebar_ai_assistant.budget_exceeded_for_growi_cloud' : 'sidebar_ai_assistant.budget_exceeded');
             }
           }
         });
@@ -290,7 +290,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 { messageLogs.length > 0 && (
                   <div className="d-flex justify-content-center">
                     <span className="bg-body-tertiary text-body-secondary rounded-pill px-3 py-1" style={{ fontSize: 'smaller' }}>
-                      {t('sidebar_aichat.caution_against_hallucination')}
+                      {t('sidebar_ai_assistant.caution_against_hallucination')}
                     </span>
                   </div>
                 )}
@@ -303,7 +303,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 </p>
 
                 <div>
-                  <p className="text-body-secondary">{t('sidebar_aichat.instruction_label')}</p>
+                  <p className="text-body-secondary">{t('sidebar_ai_assistant.instruction_label')}</p>
                   <div className="card bg-body-tertiary border-0">
                     <div className="card-body p-3">
                       <p className="fs-6 text-body-secondary mb-0">
@@ -315,7 +315,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
                 <div>
                   <div className="d-flex align-items-center">
-                    <p className="text-body-secondary mb-0">{t('sidebar_aichat.reference_pages_label')}</p>
+                    <p className="text-body-secondary mb-0">{t('sidebar_ai_assistant.reference_pages_label')}</p>
                   </div>
                   <div className="d-flex flex-column gap-1">
                     { aiAssistantData.pagePathPatterns.map(pagePathPattern => (
@@ -347,7 +347,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                       className="form-control textarea-ask"
                       style={{ resize: 'none' }}
                       rows={1}
-                      placeholder={!form.formState.isSubmitting ? t('sidebar_aichat.placeholder') : ''}
+                      placeholder={!form.formState.isSubmitting ? t('sidebar_ai_assistant.placeholder') : ''}
                       onKeyDown={keyDownHandler}
                       disabled={form.formState.isSubmitting}
                     />
@@ -371,7 +371,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                   disabled={form.formState.isSubmitting || isGenerating}
                 />
                 <label className="form-check-label" htmlFor="swSummaryMode">
-                  {t('sidebar_aichat.summary_mode_label')}
+                  {t('sidebar_ai_assistant.summary_mode_label')}
                 </label>
 
                 {/* Help */}
@@ -385,7 +385,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 <UncontrolledTooltip
                   target="tooltipForHelpOfSummaryMode"
                 >
-                  {t('sidebar_aichat.summary_mode_help')}
+                  {t('sidebar_ai_assistant.summary_mode_help')}
                 </UncontrolledTooltip>
               </div>
             </form>
@@ -394,7 +394,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               <div className="mt-4 bg-danger bg-opacity-10 rounded-3 p-2 w-100">
                 <div>
                   <span className="material-symbols-outlined text-danger me-2">error</span>
-                  <span className="text-danger">{ errorMessage != null ? t(errorMessage) : t('sidebar_aichat.error_message') }</span>
+                  <span className="text-danger">{ errorMessage != null ? t(errorMessage) : t('sidebar_ai_assistant.error_message') }</span>
                 </div>
 
                 <button
@@ -406,7 +406,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                   <span className={`material-symbols-outlined mt-2 me-1 ${isErrorDetailCollapsed ? 'rotate-90' : ''}`}>
                     chevron_right
                   </span>
-                  <span className="small">{t('sidebar_aichat.show_error_detail')}</span>
+                  <span className="small">{t('sidebar_ai_assistant.show_error_detail')}</span>
                 </button>
 
                 <Collapse isOpen={isErrorDetailCollapsed}>

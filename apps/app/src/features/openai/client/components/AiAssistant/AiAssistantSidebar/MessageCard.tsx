@@ -55,7 +55,7 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
             )
             : (
               <span className="text-thinking">
-                {t('sidebar_aichat.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
+                {t('sidebar_ai_assistant.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
               </span>
             )
           }

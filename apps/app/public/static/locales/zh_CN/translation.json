@@ -484,7 +484,7 @@
     "latest_revision": "最新页面正文",
     "selected_editable_revision": "选定的可编辑页面正文"
   },
-  "sidebar_aichat": {
+  "sidebar_ai_assistant": {
     "instruction_label": "助手指令",
     "reference_pages_label": "参考页面",
     "placeholder": "问我任何问题。",

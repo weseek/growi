@@ -494,7 +494,7 @@
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
-  "sidebar_aichat": {
+  "sidebar_ai_assistant": {
     "instruction_label": "Assistant instructions",
     "reference_pages_label": "Reference pages",
     "placeholder": "Ask me anything.",
