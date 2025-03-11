@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@tsed/di';
+import { Injectable } from '@tsed/di';
 import { Logger } from '@tsed/logger';
 
 import PdfConvertService from '../service/pdf-convert.js';
@@ -6,10 +6,7 @@ import PdfConvertService from '../service/pdf-convert.js';
 @Injectable()
 class TerminusCtrl {
 
-  @Inject()
-    logger: Logger;
-
-  constructor(private readonly pdfConvertService: PdfConvertService) {}
+  constructor(private readonly pdfConvertService: PdfConvertService, private readonly logger: Logger) {}
 
   async $onSignal(): Promise<void> {
     this.logger.info('Server is starting cleanup');

@@ -499,7 +499,9 @@
       "show_all_reply_comments": "Afficher tout les commentaires",
       "show_all_reply_comments_desc": "Lorsque désactivé, seul les deux commentaires les plus récents sont affichés",
       "select_search_scope_children_as_default": "'Seulement enfant de ce chemin' lors de la recherche",
-      "select_search_scope_children_as_default_desc": "Lorsque désactivé, utilise 'Toutes les pages' en portée de recherche."
+      "select_search_scope_children_as_default_desc": "Lorsque désactivé, utilise 'Toutes les pages' en portée de recherche.",
+      "show_page_side_authors": "Toujours afficher les créateurs et les modificateurs au-dessus de la table des matières",
+      "show_page_side_authors_desc": "Affiche les informations sur le créateur et le dernier modificateur au-dessus de la table des matières dans la barre latérale de la page."
     },
     "presentation": "Présentation",
     "presentation_options": {

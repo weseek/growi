@@ -184,7 +184,9 @@
   },
   "author_info": {
     "created_at": "Created at",
-    "last_revision_posted_at": "Last revision posted at"
+    "created_by": "Created by",
+    "last_revision_posted_at": "Last revision posted at",
+    "updated_by": "Updated by"
   },
   "installer": {
     "tab": "Create account",
@@ -888,8 +890,7 @@
   },
   "sidebar_header": {
     "show_wip_page": "Show WIP",
-    "size_s": "Size: S",
-    "size_l": "Size: L"
+    "compact_view": "Compact View"
   },
   "create_page": {
     "untitled": "Untitled"

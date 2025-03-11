@@ -1,7 +1,7 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 $author-font-size: 12px;
-$date-font-size: 11px;
+$date-font-size: 12px;
 
 .grw-author-info :global {
   font-size: $author-font-size;

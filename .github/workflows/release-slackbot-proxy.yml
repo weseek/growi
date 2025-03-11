@@ -62,11 +62,6 @@ jobs:
         cache-to: type=gha,mode=max
         tags: ${{ steps.meta.outputs.tags }}
 
-    - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-
     - name: Add tag
       uses: anothrNick/github-tag-action@v1
       env:

@@ -201,7 +201,7 @@ export const RecentChangesHeader = ({
                 onChange={() => {}}
               />
               <label className="form-check-label pe-none" aria-disabled="true">
-                {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
+                {t('sidebar_header.compact_view')}
               </label>
             </div>
           </li>
