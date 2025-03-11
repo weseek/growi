@@ -308,22 +308,21 @@ export class GrowiPluginService implements IGrowiPluginService {
       throw new Error('No plugin found for this ID.');
     }
 
+    try {
+      await GrowiPlugin.deleteOne({ _id: pluginId });
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error('Failed to delete plugin from GrowiPlugin documents.');
+    }
+
     let growiPluginsPath: fs.PathLike | undefined;
     try {
       growiPluginsPath = this.joinAndValidatePath(PLUGIN_STORING_PATH, growiPlugins.installedPath);
     }
     catch (err) {
       logger.error(err);
-
-      try {
-        await GrowiPlugin.deleteOne({ _id: pluginId });
-        logger.warn(`Deleted invalid plugin (ID: ${pluginId}) from database. Skipped directory removal.`);
-      }
-      catch (deleteErr) {
-        logger.error(deleteErr);
-        throw new Error('Failed to delete invalid plugin from GrowiPlugin documents.');
-      }
-      return growiPlugins.meta.name;
+      throw new Error('The installedPath for the plugin is invalid, and the plugin has already been removed.');
     }
 
     if (growiPluginsPath && fs.existsSync(growiPluginsPath)) {
@@ -338,15 +337,6 @@ export class GrowiPluginService implements IGrowiPluginService {
     else {
       logger.warn(`Plugin path does not exist : ${growiPluginsPath}`);
     }
-
-    try {
-      await GrowiPlugin.deleteOne({ _id: pluginId });
-    }
-    catch (err) {
-      logger.error(err);
-      throw new Error('Failed to delete plugin from GrowiPlugin documents.');
-    }
-
     return growiPlugins.meta.name;
   }
 
