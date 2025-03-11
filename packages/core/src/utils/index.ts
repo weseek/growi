@@ -9,6 +9,7 @@ export * as objectIdUtils from './objectid-utils';
 export * as pagePathUtils from './page-path-utils';
 export * as pathUtils from './path-utils';
 export * as pageUtils from './page-utils';
+export * as deepEquals from './is-deep-equals';
 
 export * from './browser-utils';
 export * from './growi-theme-metadata';
