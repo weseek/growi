@@ -133,6 +133,20 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
             </div>
           </div>
 
+          <div className="row">
+            <div className="offset-md-2 col-md-7 text-start">
+              <CustomizeFunctionOption
+                optionId="showPageSideAuthors"
+                label={t('admin:customize_settings.function_options.show_page_side_authors')}
+                isChecked={adminCustomizeContainer.state.showPageSideAuthors}
+                onChecked={() => { adminCustomizeContainer.switchShowPageSideAuthors() }}
+              >
+                <p className="form-text text-muted">
+                  {t('admin:customize_settings.function_options.show_page_side_authors_desc')}
+                </p>
+              </CustomizeFunctionOption>
+            </div>
+          </div>
 
           <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />
         </div>

@@ -1,5 +1,5 @@
 import { BodyParams } from '@tsed/common';
-import { Controller, Inject } from '@tsed/di';
+import { Controller } from '@tsed/di';
 import { InternalServerError } from '@tsed/exceptions';
 import { Logger } from '@tsed/logger';
 import {
@@ -11,10 +11,7 @@ import PdfConvertService, { JobStatusSharedWithGrowi, JobStatus } from '../servi
 @Controller('/pdf')
 class PdfCtrl {
 
-  @Inject()
-    logger: Logger;
-
-  constructor(private readonly pdfConvertService: PdfConvertService) {}
+  constructor(private readonly pdfConvertService: PdfConvertService, private readonly logger: Logger) {}
 
   @Post('/sync-job')
   @(Returns(202).ContentType('application/json').Schema({
