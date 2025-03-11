@@ -207,7 +207,6 @@ export const CONFIG_KEYS = [
   'customize:highlightJsStyle',
   'customize:highlightJsStyleBorder',
   'customize:theme',
-  'customize:theme:forcedColorScheme',
   'customize:isContainerFluid',
   'customize:isEnabledTimeline',
   'customize:isEnabledAttachTitleHeader',
