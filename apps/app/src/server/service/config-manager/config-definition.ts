@@ -938,9 +938,6 @@ export const CONFIG_DEFINITIONS = {
   'customize:theme': defineConfig<string>({
     defaultValue: 'default',
   }),
-  'customize:theme:forcedColorScheme': defineConfig<string | null>({
-    defaultValue: null,
-  }),
   'customize:isContainerFluid': defineConfig<boolean>({
     defaultValue: false,
   }),
