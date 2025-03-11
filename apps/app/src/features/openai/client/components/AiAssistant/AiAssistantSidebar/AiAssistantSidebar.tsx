@@ -51,13 +51,13 @@ type FormData = {
   summaryMode?: boolean;
 };
 
-type AiAssistantChatSidebarSubstanceProps = {
+type AiAssistantSidebarSubstanceProps = {
   aiAssistantData: AiAssistantHasId;
   threadData?: IThreadRelationHasId;
   closeAiAssistantSidebar: () => void
 }
 
-const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
+const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = (props: AiAssistantSidebarSubstanceProps) => {
   const {
     aiAssistantData, threadData, closeAiAssistantSidebar,
   } = props;
@@ -438,6 +438,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const aiAssistantData = aiAssistantSidebarData?.aiAssistantData;
   const threadData = aiAssistantSidebarData?.threadData;
   const isOpened = aiAssistantSidebarData?.isOpened && aiAssistantData != null;
+  const isEditorAssistant = aiAssistantSidebarData?.isEditorAssistant ?? false;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -467,7 +468,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
         className="h-100 position-relative"
         autoHide
       >
-        <AiAssistantChatSidebarSubstance
+        <AiAssistantSidebarSubstance
           threadData={threadData}
           aiAssistantData={aiAssistantData}
           closeAiAssistantSidebar={closeAiAssistantSidebar}
