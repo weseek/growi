@@ -70,9 +70,7 @@ type AiAssistantSidebarUtils = {
     aiAssistantData: AiAssistantHasId,
     threadData?: IThreadRelationHasId,
   ): void
-  openEditor(
-    aiAssistantData?: AiAssistantHasId,
-  ): void
+  openEditor(): void
   close(): void
 }
 
@@ -90,8 +88,8 @@ export const useAiAssistantSidebar = (
       }, [swrResponse],
     ),
     openEditor: useCallback(
-      (aiAssistantData: AiAssistantHasId) => {
-        swrResponse.mutate({ isOpened: true, isEditorAssistant: true, aiAssistantData });
+      () => {
+        swrResponse.mutate({ isOpened: true, isEditorAssistant: true });
       }, [swrResponse],
     ),
     close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
