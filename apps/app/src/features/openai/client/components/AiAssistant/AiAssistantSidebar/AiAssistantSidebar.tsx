@@ -76,8 +76,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
-  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id ?? '');
-  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id ?? '', threadData?.threadId);
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
+  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id, threadData?.threadId);
 
   const form = useForm<FormData>({
     defaultValues: {
