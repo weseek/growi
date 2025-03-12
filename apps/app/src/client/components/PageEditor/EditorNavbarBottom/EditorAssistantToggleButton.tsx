@@ -6,14 +6,17 @@ import { useAiAssistantSidebar } from '~/features/openai/client/stores/ai-assist
 
 export const EditorAssistantToggleButton = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data, close } = useAiAssistantSidebar();
+  const { data, close, openEditor } = useAiAssistantSidebar();
   const { isOpened } = data ?? {};
 
   const toggle = useCallback(() => {
     if (isOpened) {
       close();
+      return;
     }
-  }, [isOpened, close]);
+
+    openEditor();
+  }, [isOpened, openEditor, close]);
 
   return (
     <button
