@@ -144,7 +144,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       try {
         const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
           aiAssistantId: aiAssistantData?._id,
-          initialUserMessage: newUserMessage.content,
+          initialUserMessage: isEditorAssistant ? undefined : newUserMessage.content,
         });
 
         const thread = res.data;
@@ -155,7 +155,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
         currentThreadId_ = thread.threadId;
 
         // No need to await because data is not used
-        mutateThreadData();
+        if (!isEditorAssistant) {
+          mutateThreadData();
+        }
       }
       catch (err) {
         logger.error(err.toString());
