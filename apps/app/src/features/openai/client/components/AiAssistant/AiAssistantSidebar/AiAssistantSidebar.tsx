@@ -18,6 +18,7 @@ import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { SseMessageSchema, SseDetectedDiffSchema, SseFinalizedSchema } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
+import { postMessageForKnowledgeAssistant, postMessageForEditorAssistant } from '../../../services/ai-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../../../stores/message';
 import { useSWRMUTxThreads } from '../../../stores/thread';
@@ -53,7 +54,7 @@ type FormData = {
 
 type AiAssistantSidebarSubstanceProps = {
   isEditorAssistant?: boolean;
-  aiAssistantData: AiAssistantHasId;
+  aiAssistantData?: AiAssistantHasId;
   threadData?: IThreadRelationHasId;
   closeAiAssistantSidebar: () => void
 }
@@ -75,8 +76,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
-  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData._id);
-  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData._id, threadData?.threadId);
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id ?? '');
+  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id ?? '', threadData?.threadId);
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -141,7 +142,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     if (currentThreadId_ == null) {
       try {
         const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
-          aiAssistantId: aiAssistantData._id,
+          aiAssistantId: aiAssistantData?._id,
           initialUserMessage: newUserMessage.content,
         });
 
@@ -163,13 +164,22 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     // post message
     try {
-      const response = await fetch('/_api/v3/openai/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userMessage: data.input, threadId: currentThreadId_, summaryMode: data.summaryMode, aiAssistantId: aiAssistantData._id,
-        }),
-      });
+      if (currentThreadId_ == null) {
+        return;
+      }
+
+      const response = await (async() => {
+        if (isEditorAssistant) {
+          return postMessageForEditorAssistant(currentThreadId_, data.input, '# markdown');
+        }
+        if (aiAssistantData?._id != null) {
+          return postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId_, data.input, data.summaryMode);
+        }
+      })();
+
+      if (response == null) {
+        return;
+      }
 
       if (!response.ok) {
         const resJson = await response.json();
@@ -257,7 +267,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData._id, mutateThreadData, t, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData?._id, mutateThreadData, t, isEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -276,7 +286,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">
             {isEditorAssistant
               ? <>{t('Editor Assistant')}</>
-              : <>{currentThreadTitle ?? aiAssistantData.name}</>
+              : <>{currentThreadTitle ?? aiAssistantData?.name}</>
             }
           </h5>
           <button
@@ -310,7 +320,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             : (
               <>
                 <p className="fs-6 text-body-secondary mb-0">
-                  {aiAssistantData.description}
+                  {aiAssistantData?.description}
                 </p>
 
                 <div>
@@ -318,7 +328,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                   <div className="card bg-body-tertiary border-0">
                     <div className="card-body p-3">
                       <p className="fs-6 text-body-secondary mb-0">
-                        {aiAssistantData.additionalInstruction}
+                        {aiAssistantData?.additionalInstruction}
                       </p>
                     </div>
                   </div>
@@ -329,7 +339,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                     <p className="text-body-secondary mb-0">{t('sidebar_ai_assistant.reference_pages_label')}</p>
                   </div>
                   <div className="d-flex flex-column gap-1">
-                    { aiAssistantData.pagePathPatterns.map(pagePathPattern => (
+                    { aiAssistantData?.pagePathPatterns.map(pagePathPattern => (
                       <a
                         key={pagePathPattern}
                         href="#"
@@ -448,7 +458,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
 
   const aiAssistantData = aiAssistantSidebarData?.aiAssistantData;
   const threadData = aiAssistantSidebarData?.threadData;
-  const isOpened = aiAssistantSidebarData?.isOpened && aiAssistantData != null;
+  const isOpened = aiAssistantSidebarData?.isOpened;
   const isEditorAssistant = aiAssistantSidebarData?.isEditorAssistant ?? false;
 
   useEffect(() => {
@@ -480,6 +490,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
         autoHide
       >
         <AiAssistantSidebarSubstance
+          isEditorAssistant={isEditorAssistant}
           threadData={threadData}
           aiAssistantData={aiAssistantData}
           closeAiAssistantSidebar={closeAiAssistantSidebar}
