@@ -23,6 +23,7 @@ import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../../../stores/message';
 import { useSWRMUTxThreads } from '../../../stores/thread';
 
+import { AiAssistantChatInitialView } from './AiAssistantChatInitialView';
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
 
@@ -318,39 +319,15 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               </div>
             )
             : (
-              <>
-                <p className="fs-6 text-body-secondary mb-0">
-                  {aiAssistantData?.description}
-                </p>
-
-                <div>
-                  <p className="text-body-secondary">{t('sidebar_ai_assistant.instruction_label')}</p>
-                  <div className="card bg-body-tertiary border-0">
-                    <div className="card-body p-3">
-                      <p className="fs-6 text-body-secondary mb-0">
-                        {aiAssistantData?.additionalInstruction}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="d-flex align-items-center">
-                    <p className="text-body-secondary mb-0">{t('sidebar_ai_assistant.reference_pages_label')}</p>
-                  </div>
-                  <div className="d-flex flex-column gap-1">
-                    { aiAssistantData?.pagePathPatterns.map(pagePathPattern => (
-                      <a
-                        key={pagePathPattern}
-                        href="#"
-                        className="fs-6 text-body-secondary text-decoration-none"
-                      >
-                        {pagePathPattern}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
+              <>{isEditorAssistant
+                ? <></> // TODO https://redmine.weseek.co.jp/issues/163079
+                : (
+                  <AiAssistantChatInitialView
+                    description={aiAssistantData?.description ?? ''}
+                    additionalInstruction={aiAssistantData?.additionalInstruction ?? ''}
+                    pagePathPatterns={aiAssistantData?.pagePathPatterns ?? []}
+                  />
+                )}
               </>
             )
           }
