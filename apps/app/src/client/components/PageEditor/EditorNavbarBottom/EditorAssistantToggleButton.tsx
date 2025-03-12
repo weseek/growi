@@ -22,7 +22,7 @@ export const EditorAssistantToggleButton = (): JSX.Element => {
       onClick={toggle}
     >
       <span className="d-flex align-items-center">
-        <span className="growi-custom-icons py-0 fs-6">ai_assistant</span>
+        <span className="material-symbols-outlined">support_agent</span>
         <span className="ms-1 me-1">{t('page_edit.editor_assistant')}</span>
       </span>
     </button>
