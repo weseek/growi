@@ -52,6 +52,7 @@ type FormData = {
 };
 
 type AiAssistantSidebarSubstanceProps = {
+  isEditorAssistant?: boolean;
   aiAssistantData: AiAssistantHasId;
   threadData?: IThreadRelationHasId;
   closeAiAssistantSidebar: () => void
@@ -59,7 +60,10 @@ type AiAssistantSidebarSubstanceProps = {
 
 const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = (props: AiAssistantSidebarSubstanceProps) => {
   const {
-    aiAssistantData, threadData, closeAiAssistantSidebar,
+    isEditorAssistant,
+    aiAssistantData,
+    threadData,
+    closeAiAssistantSidebar,
   } = props;
 
   const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
@@ -265,8 +269,16 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     <>
       <div className="d-flex flex-column vh-100">
         <div className="d-flex align-items-center p-3 border-bottom position-sticky top-0 bg-body z-1">
-          <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
-          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{currentThreadTitle ?? aiAssistantData.name}</h5>
+          {isEditorAssistant
+            ? <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>
+            : <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
+          }
+          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">
+            {isEditorAssistant
+              ? <>{t('Editor Assistant')}</>
+              : <>{currentThreadTitle ?? aiAssistantData.name}</>
+            }
+          </h5>
           <button
             type="button"
             className="btn btn-link p-0 border-0"
@@ -276,7 +288,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           </button>
         </div>
         <div className="p-4 d-flex flex-column gap-4 vh-100">
-
 
           { currentThreadId != null
             ? (
