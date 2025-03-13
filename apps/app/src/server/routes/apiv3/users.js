@@ -234,6 +234,11 @@ module.exports = (crowi) => {
    *            description: sorting column
    *            schema:
    *              type: string
+   *          - name: forceIncludeAttributes
+   *            in: query
+   *            description: force include attributes
+   *            schema:
+   *              type: string
    *        responses:
    *          200:
    *            description: users are fetched
@@ -405,6 +410,8 @@ module.exports = (crowi) => {
    *    /users/invite:
    *      post:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: inviteUser
    *        summary: /users/invite
    *        description: Create new users and send Emails
@@ -427,14 +434,23 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    createdUserList:
-   *                      type: object
+   *                      $ref: '#/components/schemas/User'
    *                      description: Users successfully created
    *                    existingEmailList:
-   *                      type: object
+   *                      type: array
    *                      description: Users email that already exists
+   *                      items:
+   *                        type: string
    *                    failedEmailList:
    *                      type: object
    *                      description: Users email that failed to create or send email
+   *                      properties:
+   *                        email:
+   *                          type: string
+   *                          description: email address
+   *                        reason:
+   *                          type: string
+   *                          description: reason for failure
    */
   router.post('/invite', loginRequiredStrictly, adminRequired, addActivity, validator.inviteEmail, apiV3FormValidator, async(req, res) => {
 
@@ -473,6 +489,8 @@ module.exports = (crowi) => {
    *    /users/{id}/grant-admin:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: grantAdminUser
    *        summary: /users/{id}/grant-admin
    *        description: Grant user admin
@@ -491,7 +509,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    userData:
-   *                      type: object
+   *                      $ref: '#/components/schemas/User'
    *                      description: data of admin user
    */
   router.put('/:id/grant-admin', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
@@ -520,6 +538,8 @@ module.exports = (crowi) => {
    *    /users/{id}/revoke-admin:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: revokeAdminUser
    *        summary: /users/{id}/revoke-admin
    *        description: Revoke user admin
@@ -567,6 +587,8 @@ module.exports = (crowi) => {
    *    /users/{id}/grant-read-only:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: ReadOnly
    *        summary: /users/{id}/grant-read-only
    *        description: Grant user read only access
@@ -585,8 +607,8 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    userData:
-   *                      type: object
-   *                      description: data of read only
+   *                      $ref: '#/components/schemas/User'
+   *                      description: data of grant read only
    */
   router.put('/:id/grant-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.params;
@@ -619,6 +641,8 @@ module.exports = (crowi) => {
    *    /users/{id}/revoke-read-only:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: revokeReadOnly
    *        summary: /users/{id}/revoke-read-only
    *        description: Revoke user read only access
@@ -637,7 +661,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    userData:
-   *                      type: object
+   *                      $ref: '#/components/schemas/User'
    *                      description: data of revoke read only
    */
   router.put('/:id/revoke-read-only', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
@@ -671,6 +695,8 @@ module.exports = (crowi) => {
    *    /users/{id}/activate:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: activateUser
    *        summary: /users/{id}/activate
    *        description: Activate user
@@ -689,7 +715,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    userData:
-   *                      type: object
+   *                      $ref: '#/components/schemas/User'
    *                      description: data of activate user
    */
   router.put('/:id/activate', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
@@ -725,6 +751,8 @@ module.exports = (crowi) => {
    *    /users/{id}/deactivate:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: deactivateUser
    *        summary: /users/{id}/deactivate
    *        description: Deactivate user
@@ -743,7 +771,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    userData:
-   *                      type: object
+   *                      $ref: '#/components/schemas/User'
    *                      description: data of deactivate user
    */
   router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
@@ -772,6 +800,8 @@ module.exports = (crowi) => {
    *    /users/{id}/remove:
    *      delete:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: removeUser
    *        summary: /users/{id}/remove
    *        description: Delete user
@@ -790,7 +820,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  properties:
    *                    user:
-   *                      type: object
+   *                      $ref: '#/components/schemas/User'
    *                      description: data of deleted user
    */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
@@ -832,9 +862,17 @@ module.exports = (crowi) => {
    *    /users/external-accounts:
    *      get:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: listExternalAccountsUsers
    *        summary: /users/external-accounts
    *        description: Get external-account
+   *        parameters:
+   *          - name: page
+   *            in: query
+   *            description: page number
+   *            schema:
+   *              type: number
    *        responses:
    *          200:
    *            description: external-account are fetched
@@ -865,6 +903,8 @@ module.exports = (crowi) => {
    *    /users/external-accounts/{id}/remove:
    *      delete:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: removeExternalAccountUser
    *        summary: /users/external-accounts/{id}/remove
    *        description: Delete ExternalAccount
@@ -908,25 +948,29 @@ module.exports = (crowi) => {
    *    /users/update.imageUrlCache:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: update.imageUrlCache
    *        summary: /users/update.imageUrlCache
    *        description: update imageUrlCache
-   *        parameters:
-   *          - name:  userIds
-   *            in: query
-   *            description: user id list
+   *        requestBody:
+   *          content:
+   *           application/json:
    *            schema:
-   *              type: string
+   *             properties:
+   *              userIds:
+   *                type: array
+   *                description: user id list
+   *                items:
+   *                  type: string
    *        responses:
    *          200:
    *            description: success creating imageUrlCached
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    userData:
-   *                      type: object
-   *                      description: users updated with imageUrlCached
+   *                  type: object
+   *                  description: success creating imageUrlCached
    */
   router.put('/update.imageUrlCache', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
@@ -960,6 +1004,8 @@ module.exports = (crowi) => {
    *    /users/reset-password:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: resetPassword
    *        summary: /users/reset-password
    *        description: update imageUrlCache
@@ -968,14 +1014,21 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  newPassword:
-   *                    type: string
-   *                  user:
+   *                  id:
    *                    type: string
    *                    description: user id for reset password
    *        responses:
    *          200:
    *            description: success reset password
+   *            content:
+   *              application/json:
+   *                schema:
+   *                 properties:
+   *                  newPassword:
+   *                    type: string
+   *                    description: new password
+   *                  user:
+   *                    $ref: '#/components/schemas/User'
    */
   router.put('/reset-password', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
@@ -1001,6 +1054,8 @@ module.exports = (crowi) => {
    *    /users/reset-password-email:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: resetPasswordEmail
    *        summary: /users/reset-password-email
    *        description: send new password email
@@ -1009,11 +1064,11 @@ module.exports = (crowi) => {
    *            application/json:
    *              schema:
    *                properties:
-   *                  newPassword:
-   *                    type: string
-   *                  user:
+   *                  id:
    *                    type: string
    *                    description: user id for send new password email
+   *                  newPassword:
+   *                    type: string
    *        responses:
    *          200:
    *            description: success send new password email
@@ -1048,6 +1103,8 @@ module.exports = (crowi) => {
    *    /users/send-invitation-email:
    *      put:
    *        tags: [Users Management]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: sendInvitationEmail
    *        summary: /users/send-invitation-email
    *        description: send invitation email
@@ -1069,6 +1126,11 @@ module.exports = (crowi) => {
    *                    failedToSendEmail:
    *                      type: object
    *                      description: email and reasons for email sending failure
+   *                      properties:
+   *                        email:
+   *                          type: string
+   *                        reason:
+   *                          type: string
    */
   router.put('/send-invitation-email', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { id } = req.body;
@@ -1157,6 +1219,81 @@ module.exports = (crowi) => {
     return res.apiv3(data);
   });
 
+  /**
+    * @swagger
+    *
+    *    paths:
+    *      /users/usernames:
+    *        get:
+    *          tags: [Users]
+    *          summary: /users/usernames
+    *          operationId: getUsernames
+    *          description: Get list of usernames
+    *          parameters:
+    *            - in: query
+    *              name: q
+    *              schema:
+    *                type: string
+    *                description: query string to search usernames
+    *                example: alice
+    *            - in: query
+    *              name: offset
+    *              schema:
+    *                type: integer
+    *                description: offset for pagination
+    *                example: 0
+    *            - in: query
+    *              name: limit
+    *              schema:
+    *                type: integer
+    *                description: limit for pagination
+    *                example: 10
+    *            - in: query
+    *              name: options
+    *              schema:
+    *                type: string
+    *                description: options for including different types of users
+    *                example: '{"isIncludeActiveUser": true, "isIncludeInactiveUser": true,
+    *                          "isIncludeActivitySnapshotUser": true, "isIncludeMixedUsernames": true}'
+    *          responses:
+    *            200:
+    *              description: Succeeded to get list of usernames.
+    *              content:
+    *                application/json:
+    *                  schema:
+    *                    properties:
+    *                      activeUser:
+    *                        type: object
+    *                        properties:
+    *                          usernames:
+    *                            type: array
+    *                            items:
+    *                              type: string
+    *                          totalCount:
+    *                            type: integer
+    *                      inactiveUser:
+    *                        type: object
+    *                        properties:
+    *                          usernames:
+    *                            type: array
+    *                            items:
+    *                              type: string
+    *                          totalCount:
+    *                            type: integer
+    *                      activitySnapshotUser:
+    *                        type: object
+    *                        properties:
+    *                          usernames:
+    *                            type: array
+    *                            items:
+    *                              type: string
+    *                          totalCount:
+    *                            type: integer
+    *                      mixedUsernames:
+    *                        type: array
+    *                        items:
+    *                          type: string
+    */
   router.get('/usernames', accessTokenParser, loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
     const q = req.query.q;
     const offset = +req.query.offset || 0;
