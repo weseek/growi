@@ -89,9 +89,15 @@ export const useAiAssistantSidebar = (
     ),
     openEditor: useCallback(
       () => {
-        swrResponse.mutate({ isOpened: true, isEditorAssistant: true });
+        swrResponse.mutate({
+          isOpened: true, isEditorAssistant: true, aiAssistantData: undefined, threadData: undefined,
+        });
       }, [swrResponse],
     ),
-    close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
+    close: useCallback(
+      () => swrResponse.mutate({
+        isOpened: false, isEditorAssistant: false, aiAssistantData: undefined, threadData: undefined,
+      }), [swrResponse],
+    ),
   };
 };
