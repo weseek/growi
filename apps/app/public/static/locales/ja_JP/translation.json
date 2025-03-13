@@ -256,6 +256,7 @@
       "title": "アクセストークンを作成",
       "expiredAt_desc": "アクセストークンの有効期限を選択します。",
       "description_desc": "このトークンを後で識別するための説明を入力します。",
+      "description_max_length": "{{length}}文字以内で入力してください。",
       "scope_desc": "スコープによって、このトークンで行える操作を制限します。"
     },
     "copy_to_clipboard": "Copy to clipboard"

@@ -263,6 +263,7 @@
       "title": "创建新访问令牌",
       "expiredAt_desc": "选择此访问令牌的过期时间。",
       "description_desc": "提供描述以帮助您稍后识别此令牌。",
+      "description_max_length": "请输入最多 {{length}} 个字符",
       "scope_desc": "选择访问令牌的范围。"
     },
     "copy_to_clipboard": "复制到剪贴板"

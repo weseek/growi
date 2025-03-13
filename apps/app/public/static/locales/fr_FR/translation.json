@@ -256,6 +256,7 @@
       "title": "Créer un nouveau jeton d'accès",
       "expiredAt_desc": "Sélectionnez la date d'expiration de ce jeton d'accès.",
       "description_desc": "Fournissez une description pour vous aider à identifier ce jeton ultérieurement.",
+      "description_max_length": "Veuillez saisir jusqu'à {{length}} caractères."
       "scope_desc": "Sélectionnez la portée du jeton d'accès."
     },
     "copy_to_clipboard": "Copier dans le presse-papiers"

@@ -255,6 +255,7 @@
       "title": "Create New Access Token",
       "expiredAt_desc": "Select when this access token should expire.",
       "description_desc": "Provide a description to help you identify this token later",
+      "description_max_length": "Description must be less than {{length}} characters",
       "scope_desc": "Select the scope of the access token."
     },
     "copy_to_clipboard": "Copy to clipboard"
