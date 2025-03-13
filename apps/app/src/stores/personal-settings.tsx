@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import type { HasObjectId, IExternalAccount, IUser } from '@growi/core/dist/interfaces';
 import { useTranslation } from 'next-i18next';
 import type { SWRConfiguration, SWRResponse } from 'swr';
@@ -124,16 +126,16 @@ interface IAccessTokenOption {
 }
 
 export const useSWRxAccessToken = (): SWRResponse< IResGetAccessToken[] | null, Error> & IAccessTokenOption => {
-  const generateAccessToken = async(info) => {
+  const generateAccessToken = useCallback(async(info) => {
     const res = await apiv3Post<IResGenerateAccessToken>('/personal-setting/access-token', info);
     return res.data;
-  };
-  const deleteAccessToken = async(tokenId: string) => {
+  }, []);
+  const deleteAccessToken = useCallback(async(tokenId: string) => {
     await apiv3Delete('/personal-setting/access-token', { tokenId });
-  };
-  const deleteAllAccessTokens = async() => {
+  }, []);
+  const deleteAllAccessTokens = useCallback(async() => {
     await apiv3Delete('/personal-setting/access-token/all');
-  };
+  }, []);
 
   const swrResult = useSWR(
     '/personal-setting/access-token',
