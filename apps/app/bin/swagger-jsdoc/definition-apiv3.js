@@ -65,6 +65,7 @@ module.exports = {
         'Home',
         'AdminHome',
         'AppSettings',
+        'ExternalUserGroups',
         'SecuritySetting',
         'MarkDownSetting',
         'CustomizeSetting',
