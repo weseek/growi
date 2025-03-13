@@ -120,26 +120,26 @@ module.exports = function(crowi, app) {
 
   const apiV1Router = express.Router();
 
-  apiV1Router.get('/search'                        , accessTokenParser , loginRequired , search.api.search);
+  apiV1Router.get('/search'                        , accessTokenParser() , loginRequired , search.api.search);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
-  apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
+  apiV1Router.get('/pages.updatePost'    , accessTokenParser(), loginRequired, page.api.getUpdatePost);
+  apiV1Router.get('/pages.getPageTag'    , accessTokenParser() , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
   apiV1Router.post('/pages.remove'       , loginRequiredStrictly , excludeReadOnlyUser, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
   apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , excludeReadOnlyUser, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , excludeReadOnlyUser, page.api.unlink); // (Avoid from API Token)
-  apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
-  apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
-  apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, tag.api.update);
-  apiV1Router.get('/comments.get'        , accessTokenParser , loginRequired , comment.api.get);
-  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.add);
-  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.update);
-  apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.remove);
+  apiV1Router.get('/tags.list'           , accessTokenParser(), loginRequired, tag.api.list);
+  apiV1Router.get('/tags.search'         , accessTokenParser(), loginRequired, tag.api.search);
+  apiV1Router.post('/tags.update'        , accessTokenParser(), loginRequiredStrictly, excludeReadOnlyUser, addActivity, tag.api.update);
+  apiV1Router.get('/comments.get'        , accessTokenParser() , loginRequired , comment.api.get);
+  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.add);
+  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.update);
+  apiV1Router.post('/comments.remove'    , accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.remove);
 
-  apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
-  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);
-  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.removeProfileImage);
+  apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser(), loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
+  apiV1Router.post('/attachments.remove'               , accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);
+  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.removeProfileImage);
 
   // API v1
   app.use('/_api', unavailableWhenMaintenanceModeForApi, apiV1Router);

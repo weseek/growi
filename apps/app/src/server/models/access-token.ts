@@ -43,9 +43,9 @@ export interface IAccessTokenModel extends Model<IAccessTokenDocument> {
   deleteTokenById: (tokenId: Types.ObjectId | string) => Promise<void>
   deleteAllTokensByUserId: (userId: Types.ObjectId | string) => Promise<void>
   deleteExpiredToken: () => Promise<void>
-  findUserIdByToken: (token: string) => Promise<HydratedDocument<IAccessTokenDocument> | null>
+  findUserIdByToken: (token: string, requiredScopes?: Scope[]) => Promise<HydratedDocument<IAccessTokenDocument> | null>
   findTokenByUserId: (userId: Types.ObjectId | string) => Promise<HydratedDocument<IAccessTokenDocument>[] | null>
-  validateTokenScopes: (token: string, requiredScope: Scope[]) => Promise<boolean>
+  validateTokenScopes: (token: string, requiredScopes: Scope[]) => Promise<boolean>
 }
 
 const accessTokenSchema = new Schema<IAccessTokenDocument, IAccessTokenModel>({
@@ -100,10 +100,10 @@ accessTokenSchema.statics.deleteExpiredToken = async function() {
   await this.deleteMany({ expiredAt: { $lte: now } });
 };
 
-accessTokenSchema.statics.findUserIdByToken = async function(token: string) {
+accessTokenSchema.statics.findUserIdByToken = async function(token: string, requiredScopes?: Scope[]) {
   const tokenHash = generateTokenHash(token);
   const now = new Date();
-  return this.findOne({ tokenHash, expiredAt: { $gt: now } }).select('user');
+  return this.findOne({ tokenHash, expiredAt: { $gt: now }, scope: { $all: requiredScopes ?? [] } }).select('user');
 };
 
 accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId | string) {

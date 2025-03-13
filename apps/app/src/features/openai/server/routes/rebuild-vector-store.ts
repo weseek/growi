@@ -25,7 +25,7 @@ export const rebuildVectorStoreHandlersFactory: RebuildVectorStoreFactory = (cro
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser(), loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
     async(req: Request, res: ApiV3Response) => {
 
       try {

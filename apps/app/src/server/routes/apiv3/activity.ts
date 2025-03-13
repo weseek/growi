@@ -34,7 +34,7 @@ module.exports = (crowi: Crowi): Router => {
   const router = express.Router();
 
   // eslint-disable-next-line max-len
-  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+  router.get('/', accessTokenParser(), loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
     const auditLogEnabled = configManager.getConfig('app:auditLogEnabled');
     if (!auditLogEnabled) {
       const msg = 'AuditLog is not enabled';

@@ -28,7 +28,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser(), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: CreateThreadReq, res: ApiV3Response) => {
       try {
         const openaiService = getOpenaiService();

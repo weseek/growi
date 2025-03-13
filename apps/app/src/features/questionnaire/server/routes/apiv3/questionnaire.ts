@@ -61,7 +61,7 @@ module.exports = (crowi: Crowi): Router => {
     return 404;
   };
 
-  router.get('/orders', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/orders', accessTokenParser(), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const growiInfo = await growiInfoService.getGrowiInfo(true);
     const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
@@ -76,12 +76,12 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.get('/is-enabled', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/is-enabled', accessTokenParser(), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
     return res.apiv3({ isEnabled });
   });
 
-  router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.post('/proactive/answer', accessTokenParser(), loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async() => {
       const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
       const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
@@ -130,7 +130,7 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/answer', accessTokenParser(), loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
       const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
       const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
@@ -177,7 +177,7 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.put('/skip', accessTokenParser, loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/skip', accessTokenParser(), loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -193,7 +193,7 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.put('/deny', accessTokenParser, loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/deny', accessTokenParser(), loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });

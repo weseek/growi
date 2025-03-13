@@ -217,7 +217,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
   const addActivity = generateAddActivityMiddleware();
 
   return [
-    accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,
+    accessTokenParser(), loginRequiredStrictly, excludeReadOnlyUser, addActivity,
     validator, apiV3FormValidator,
     async(req: CreatePageRequest, res: ApiV3Response) => {
       const {

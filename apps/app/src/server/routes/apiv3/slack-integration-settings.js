@@ -169,7 +169,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Succeeded to get info.
    */
-  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser(), loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const { configManager, slackIntegrationService } = crowi;
     const currentBotType = configManager.getConfig('slackbot:currentBotType');
@@ -305,7 +305,7 @@ module.exports = (crowi) => {
    *             description: Succeeded to put botType setting.
    */
   // eslint-disable-next-line max-len
-  router.put('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, addActivity, validator.botType, apiV3FormValidator, async(req, res) => {
+  router.put('/bot-type', accessTokenParser(), loginRequiredStrictly, adminRequired, addActivity, validator.botType, apiV3FormValidator, async(req, res) => {
     const { currentBotType } = req.body;
 
     if (currentBotType == null) {
@@ -342,7 +342,7 @@ module.exports = (crowi) => {
    *           200:
    *             description: Succeeded to delete botType setting.
    */
-  router.delete('/bot-type', accessTokenParser, loginRequiredStrictly, adminRequired, addActivity, apiV3FormValidator, async(req, res) => {
+  router.delete('/bot-type', accessTokenParser(), loginRequiredStrictly, adminRequired, addActivity, apiV3FormValidator, async(req, res) => {
     try {
       await handleBotTypeChanging(req, res, null);
 

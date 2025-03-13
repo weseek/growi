@@ -37,7 +37,7 @@ export const deleteAccessTokenHandlersFactory: DeleteAccessTokenHandlersFactory 
   const activityEvent = crowi.event('activity');
 
   return [
-    accessTokenParser,
+    accessTokenParser(),
     loginRequiredStrictly,
     addActivity,
     validator,

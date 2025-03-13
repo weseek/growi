@@ -26,7 +26,7 @@ export const deleteAllAccessTokensHandlersFactory: DeleteAllAccessTokensHandlers
   const activityEvent = crowi.event('activity');
 
   return [
-    accessTokenParser, loginRequiredStrictly,
+    accessTokenParser(), loginRequiredStrictly,
     addActivity,
     async(req: DeleteAllAccessTokensRequest, res: ApiV3Response) => {
       const { user } = req;
