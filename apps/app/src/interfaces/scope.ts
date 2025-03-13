@@ -1,9 +1,4 @@
-// If you want to add a new scope, you only need to add a new key to the SCOPE object.
-export const ACTION = {
-  READ: 'read',
-  WRITE: 'write',
-} as const;
-
+// If you want to add a new scope, you only need to add a new key to the ORIGINAL_SCOPE object.
 export const ORIGINAL_SCOPE = {
   admin: {
     top: {},
@@ -39,6 +34,10 @@ export const ORIGINAL_SCOPE = {
   },
 } as const;
 
+export const ACTION = {
+  READ: 'read',
+  WRITE: 'write',
+} as const;
 
 type ACTION_TYPE = typeof ACTION[keyof typeof ACTION];
 export const ALL_SCOPE = '*';
