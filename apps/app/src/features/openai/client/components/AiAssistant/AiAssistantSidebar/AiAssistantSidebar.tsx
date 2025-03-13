@@ -7,7 +7,6 @@ import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
-import type { z } from 'zod';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
@@ -15,10 +14,16 @@ import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
-import { SseMessageSchema, SseDetectedDiffSchema, SseFinalizedSchema } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
-import { postMessageForKnowledgeAssistant, postMessageForEditorAssistant } from '../../../services/ai-assistant';
+import {
+  postMessage as postMessageForEditorAssistant,
+  processMessage as processMessageForEditorAssistant,
+} from '../../../services/editor-assistant';
+import {
+  postMessage as postMessageForKnowledgeAssistant,
+  processMessage as processMessageForKnowledgeAssistant,
+} from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../../../stores/message';
 import { useSWRMUTxThreads } from '../../../stores/thread';
@@ -32,15 +37,6 @@ import styles from './AiAssistantSidebar.module.scss';
 const logger = loggerFactory('growi:openai:client:components:AiAssistantSidebar');
 
 const moduleClass = styles['grw-ai-assistant-sidebar'] ?? '';
-
-const handleIfSuccessfullyParsed = <T, >(data: T, zSchema: z.ZodSchema<T>,
-  callback: (data: T) => void,
-): void => {
-  const parsed = zSchema.safeParse(data);
-  if (parsed.success) {
-    callback(data);
-  }
-};
 
 type Message = {
   id: string,
@@ -226,18 +222,23 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           const trimmedLine = line.trim();
           if (trimmedLine.startsWith('data:')) {
             const data = JSON.parse(line.replace('data: ', ''));
-            if (data.content != null) {
-              textValues.push(data.content[0].text.value);
-            }
 
-            handleIfSuccessfullyParsed(data, SseMessageSchema, (data) => {
-              textValues.push(data.appendedMessage);
+            processMessageForKnowledgeAssistant(data, {
+              onMessage: (data) => {
+                textValues.push(data.content[0].text.value);
+              },
             });
-            handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data) => {
-              console.log('sse diff', { data });
-            });
-            handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data) => {
-              console.log('sse finalized', { data });
+
+            processMessageForEditorAssistant(data, {
+              onMessage: (data) => {
+                textValues.push(data.appendedMessage);
+              },
+              onDetectedDiff: (data) => {
+                console.log('sse diff', { data });
+              },
+              onFinalized: (data) => {
+                console.log('sse finalized', { data });
+              },
             });
           }
           else if (trimmedLine.startsWith('error:')) {

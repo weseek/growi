@@ -17,34 +17,3 @@ export const setDefaultAiAssistant = async(id: string, isDefault: boolean): Prom
 export const deleteAiAssistant = async(id: string): Promise<void> => {
   await apiv3Delete(`/openai/ai-assistant/${id}`);
 };
-
-export const postMessageForKnowledgeAssistant = async(
-    aiAssistantId: string, threadId: string, userMessage: string, summaryMode?: boolean,
-): Promise<Response> => {
-  const response = await fetch('/_api/v3/openai/message', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      aiAssistantId,
-      threadId,
-      userMessage,
-      summaryMode,
-    }),
-  });
-  return response;
-};
-
-export const postMessageForEditorAssistant = async(threadId: string, userMessage: string, markdown: string, aiAssistantId?: string): Promise<Response> => {
-  const response = await fetch('/_api/v3/openai/edit', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      aiAssistantId,
-      threadId,
-      userMessage,
-      markdown,
-    }),
-  });
-
-  return response;
-};
