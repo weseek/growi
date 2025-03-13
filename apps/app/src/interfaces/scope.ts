@@ -40,7 +40,7 @@ export const ACTION = {
 } as const;
 
 type ACTION_TYPE = typeof ACTION[keyof typeof ACTION];
-export const ALL_SCOPE = '*';
+export const ALL_SIGN = '*';
 
 export const ORIGINAL_SCOPE_WITH_ACTION = Object.values(ACTION).reduce(
   (acc, action) => {
@@ -60,7 +60,7 @@ type FlattenObject<T> = {
 
 type AddAllToScope<S extends string> =
   S extends `${infer X}:${infer Y}`
-    ? `${X}:${typeof ALL_SCOPE}` | `${X}:${AddAllToScope<Y>}` | S
+    ? `${X}:${typeof ALL_SIGN}` | `${X}:${AddAllToScope<Y>}` | S
     : S;
 
 type ScopeOnly = FlattenObject<typeof ORIGINAL_SCOPE_WITH_ACTION>;
@@ -83,11 +83,10 @@ type ScopeConstantType = {
     ScopeConstantNode<typeof ORIGINAL_SCOPE> & { ALL: Scope }
 };
 
-
-function buildScopeConstants(): ScopeConstantType {
+const buildScopeConstants = (): ScopeConstantType => {
   const result = {} as Partial<ScopeConstantType>;
 
-  function processObject(obj: Record<string, any>, path: string[] = [], resultObj: Record<string, any>) {
+  const processObject = (obj: Record<string, any>, path: string[] = [], resultObj: Record<string, any>) => {
     Object.entries(obj).forEach(([key, value]) => {
       const upperKey = key.toUpperCase();
       const currentPath = [...path, key];
@@ -102,16 +101,75 @@ function buildScopeConstants(): ScopeConstantType {
       }
       else if (typeof value === 'object') {
         resultObj[upperKey] = {
-          ALL: `${scopePath}:${ALL_SCOPE}` as Scope,
+          ALL: `${scopePath}:${ALL_SIGN}` as Scope,
         };
 
         processObject(value, currentPath, resultObj[upperKey]);
       }
     });
-  }
+  };
   processObject(ORIGINAL_SCOPE_WITH_ACTION, [], result);
 
   return result as ScopeConstantType;
-}
+};
 
 export const SCOPE = buildScopeConstants();
+
+
+export const isValidScope = (scope: string): boolean => {
+  const scopeParts = scope.split(':').map(x => (x === '*' ? 'ALL' : x.toUpperCase()));
+  let obj: any = SCOPE;
+  scopeParts.forEach((part) => {
+    if (obj[part] == null) {
+      return false;
+    }
+    obj = obj[part];
+  });
+  return obj === scope;
+};
+
+export const isAllScope = (scope: string): scope is Scope => {
+  return scope.endsWith(`:${ALL_SIGN}`);
+};
+
+const getAllScopeValues = (scopeObj: any): Scope[] => {
+  const result: Scope[] = [];
+
+  const traverse = (current: any): void => {
+    if (typeof current !== 'object' || current === null) {
+      if (typeof current === 'string') {
+        result.push(current as Scope);
+      }
+      return;
+    }
+    Object.values(current).forEach((value) => {
+      traverse(value);
+    });
+  };
+  traverse(scopeObj);
+  return result;
+};
+
+export const extractScopes = (scopes?: Scope[]): Scope[] => {
+  if (scopes == null) {
+    return [];
+  }
+  const result = new Set<Scope>(scopes);
+  scopes.forEach((scope) => {
+    if (!isAllScope(scope)) {
+      return;
+    }
+    const scopeParts = scope.split(':').map(x => (x.toUpperCase()));
+    let obj: any = SCOPE;
+    scopeParts.forEach((part) => {
+      if (part === ALL_SIGN) {
+        return;
+      }
+      obj = obj[part];
+    });
+    getAllScopeValues(obj).forEach((value) => {
+      result.add(value);
+    });
+  });
+  return Array.from(result.values());
+};
