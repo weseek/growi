@@ -223,8 +223,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
         const textValues: string[] = [];
         const lines = chunk.split('\n\n');
         lines.forEach((line) => {
-          const trimedLine = line.trim();
-          if (trimedLine.startsWith('data:')) {
+          const trimmedLine = line.trim();
+          if (trimmedLine.startsWith('data:')) {
             const data = JSON.parse(line.replace('data: ', ''));
             if (data.content != null) {
               textValues.push(data.content[0].text.value);
@@ -240,7 +240,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               console.log('sse finalized', { data });
             });
           }
-          else if (trimedLine.startsWith('error:')) {
+          else if (trimmedLine.startsWith('error:')) {
             const error = JSON.parse(line.replace('error: ', ''));
             logger.error(error.errorMessage);
             form.setError('input', { type: 'manual', message: error.message });
