@@ -488,7 +488,8 @@
   "sidebar_ai_assistant": {
     "instruction_label": "助手指令",
     "reference_pages_label": "参考页面",
-    "placeholder": "问我任何问题。",
+    "knowledge_assistant_placeholder": "问我任何问题。",
+    "editor_assistant_placeholder": "有什么需要帮忙的吗？",
     "summary_mode_label": "摘要模式",
     "summary_mode_help": "简洁回答在2-3句话内",
     "caution_against_hallucination": "请核实信息并检查来源。",

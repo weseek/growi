@@ -493,7 +493,8 @@
   "sidebar_ai_assistant": {
     "instruction_label": "Instructions pour l'assistant",
     "reference_pages_label": "Pages de référence",
-    "placeholder": "Demandez-moi n'importe quoi.",
+    "knowledge_assistant_placeholder": "Demandez-moi n'importe quoi.",
+    "editor_assistant_placeholder": "Puis-je vous aider ?",
     "summary_mode_label": "Mode résumé",
     "summary_mode_help": "Réponse concise en 2-3 phrases",
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",

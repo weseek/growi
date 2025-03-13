@@ -531,7 +531,8 @@
   "sidebar_ai_assistant": {
     "instruction_label": "アシスタントへの指示",
     "reference_pages_label": "参照するページ",
-    "placeholder": "ききたいことを入力してください",
+    "knowledge_assistant_placeholder": "ききたいことを入力してください",
+    "editor_assistant_placeholder": "お手伝いできることはありますか？",
     "summary_mode_label": "要約モード",
     "summary_mode_help": "2～3文以内の簡潔な回答",
     "caution_against_hallucination": "情報が正しいか出典を確認しましょう",

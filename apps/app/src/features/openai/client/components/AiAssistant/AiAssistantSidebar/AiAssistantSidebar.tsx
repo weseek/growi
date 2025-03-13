@@ -1,6 +1,6 @@
 import type { KeyboardEvent } from 'react';
 import {
-  type FC, memo, useRef, useEffect, useState, useCallback,
+  type FC, memo, useRef, useEffect, useState, useCallback, useMemo,
 } from 'react';
 
 import { useForm, Controller } from 'react-hook-form';
@@ -107,6 +107,27 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       fetchAndSetMessageData();
     }
   }, [mutateMessageData, threadData]);
+
+  const headerIcon = useMemo(() => {
+    return isEditorAssistant
+      ? <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>
+      : <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>;
+  }, [isEditorAssistant]);
+
+  const headerText = useMemo(() => {
+    return isEditorAssistant
+      ? <>{t('Editor Assistant')}</>
+      : <>{currentThreadTitle ?? aiAssistantData?.name}</>;
+  }, [isEditorAssistant, currentThreadTitle, aiAssistantData?.name, t]);
+
+  const placeHolder = useMemo(() => {
+    if (form.formState.isSubmitting) {
+      return '';
+    }
+    return t(isEditorAssistant
+      ? 'sidebar_ai_assistant.editor_assistant_placeholder'
+      : 'sidebar_ai_assistant.knowledge_assistant_placeholder');
+  }, [form.formState.isSubmitting, isEditorAssistant, t]);
 
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
@@ -283,15 +304,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     <>
       <div className="d-flex flex-column vh-100">
         <div className="d-flex align-items-center p-3 border-bottom position-sticky top-0 bg-body z-1">
-          {isEditorAssistant
-            ? <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>
-            : <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
-          }
+          {headerIcon}
           <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">
-            {isEditorAssistant
-              ? <>{t('Editor Assistant')}</>
-              : <>{currentThreadTitle ?? aiAssistantData?.name}</>
-            }
+            {headerText}
           </h5>
           <button
             type="button"
@@ -348,7 +363,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                       className="form-control textarea-ask"
                       style={{ resize: 'none' }}
                       rows={1}
-                      placeholder={!form.formState.isSubmitting ? t('sidebar_ai_assistant.placeholder') : ''}
+                      placeholder={placeHolder}
                       onKeyDown={keyDownHandler}
                       disabled={form.formState.isSubmitting}
                     />
