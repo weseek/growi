@@ -398,6 +398,8 @@ module.exports = (crowi) => {
    *    /personal-setting/api-token:
    *      put:
    *        tags: [GeneralSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: putUserApiToken
    *        summary: /personal-setting/api-token
    *        description: Update user api token
