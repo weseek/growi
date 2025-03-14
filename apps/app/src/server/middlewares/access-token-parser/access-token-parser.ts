@@ -33,7 +33,7 @@ export const accessTokenParser = (scopes?: Scope[]) => {
     }
 
     // check the access token is valid
-    const userId = await AccessToken.findUserIdByToken(accessToken);
+    const userId = await AccessToken.findUserIdByToken(accessToken, scopes);
     if (userId == null) {
       logger.debug('The access token is invalid');
       return next();
