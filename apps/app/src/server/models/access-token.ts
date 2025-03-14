@@ -12,6 +12,7 @@ import type { Scope } from '~/interfaces/scope';
 import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
+import { extractScopes } from '../util/scope-utils';
 
 const logger = loggerFactory('growi:models:access-token');
 
@@ -63,17 +64,18 @@ accessTokenSchema.plugin(uniqueValidator);
 
 accessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId | string, expiredAt: Date, scope?: Scope[], description?: string) {
 
+  const extractedScopes = extractScopes(scope ?? []);
   const token = crypto.randomBytes(32).toString('hex');
   const tokenHash = generateTokenHash(token);
 
   try {
     const { _id } = await this.create({
-      user: userId, tokenHash, expiredAt, scope, description,
+      user: userId, tokenHash, expiredAt, scope: extractedScopes, description,
     });
 
     logger.debug('Token generated');
     return {
-      token, _id, expiredAt, scope, description,
+      token, _id, expiredAt, scope: extractedScopes, description,
     };
   }
   catch (err) {
@@ -103,7 +105,10 @@ accessTokenSchema.statics.deleteExpiredToken = async function() {
 accessTokenSchema.statics.findUserIdByToken = async function(token: string, requiredScopes?: Scope[]) {
   const tokenHash = generateTokenHash(token);
   const now = new Date();
-  return this.findOne({ tokenHash, expiredAt: { $gt: now }, scope: { $all: requiredScopes ?? [] } }).select('user');
+  if (requiredScopes != null && requiredScopes.length > 0) {
+    return this.findOne({ tokenHash, expiredAt: { $gt: now }, scope: { $all: requiredScopes } }).select('user');
+  }
+  return this.findOne({ tokenHash, expiredAt: { $gt: now } }).select('user');
 };
 
 accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId | string) {

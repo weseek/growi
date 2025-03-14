@@ -25,7 +25,7 @@ export const accessTokenParser = (scopes?: Scope[]) => {
 
     // check the api token is valid
     const User = mongoose.model<HydratedDocument<IUser>, { findUserByApiToken }>('User');
-    const userByApiToken: IUserHasId = await User.findUserByApiToken(accessToken, scopes);
+    const userByApiToken: IUserHasId = await User.findUserByApiToken(accessToken);
     if (userByApiToken != null) {
       req.user = serializeUserSecurely(userByApiToken);
       logger.debug('API token parsed.');

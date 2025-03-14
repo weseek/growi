@@ -25,7 +25,7 @@ export const getAccessTokenHandlerFactory: GetAccessTokenHandlerFactory = (crowi
   const addActivity = generateAddActivityMiddleware();
 
   return [
-    accessTokenParser([SCOPE.READ.USER.API.ACCESS_TOKEN]),
+    accessTokenParser(),
     loginRequiredStrictly,
     addActivity,
     async(req: GetAccessTokenRequest, res: ApiV3Response) => {

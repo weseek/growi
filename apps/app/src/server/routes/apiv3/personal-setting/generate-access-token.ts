@@ -10,7 +10,7 @@ import type { Scope } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { AccessToken } from '~/server/models/access-token';
-import { extractScopes, isValidScope } from '~/server/util/scope-utils';
+import { isValidScope } from '~/server/util/scope-utils';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -91,7 +91,7 @@ export const generateAccessTokenHandlerFactory: GenerateAccessTokenHandlerFactor
       const { expiredAt, description, scope } = body;
 
       try {
-        const tokenData = await AccessToken.generateToken(user._id, expiredAt, extractScopes(scope), description);
+        const tokenData = await AccessToken.generateToken(user._id, expiredAt, scope, description);
 
         const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_CREATE };
         activityEvent.emit('update', res.locals.activity._id, parameters);

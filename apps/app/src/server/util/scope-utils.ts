@@ -45,7 +45,7 @@ const getAllScopeValues = (scopeObj: any): Scope[] => {
  * For example, WRITE permission implies READ permission
  */
 const getImpliedScopes = (scope: Scope): Scope[] => {
-  const scopeParts = scope.split(':').map(x => (x.toUpperCase()));
+  const scopeParts = scope.split(':');
   if (scopeParts[0] === ACTION.READ) {
     return [scope];
   }
