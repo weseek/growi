@@ -43,7 +43,7 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
           return res.apiv3Err(new ErrorV3('The number of learnable pages exceeds the limit'), 400);
         }
 
-        const aiAssistant = await openaiService.createAiAssistant(aiAssistantData);
+        const aiAssistant = await openaiService.createAiAssistant(req.body, req.user);
 
         return res.apiv3({ aiAssistant });
       }

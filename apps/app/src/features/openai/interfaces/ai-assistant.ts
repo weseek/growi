@@ -42,7 +42,7 @@ export interface AiAssistant {
 
 export type AiAssistantHasId = AiAssistant & HasObjectId
 
-export type UpsertAiAssistantData = Omit<AiAssistant, 'owner' | 'vectorStore'>
+export type UpsertAiAssistantData = Omit<AiAssistant, 'owner' | 'vectorStore' | 'isDefault'>
 
 export type AccessibleAiAssistants = {
   myAiAssistants: AiAssistant[],
