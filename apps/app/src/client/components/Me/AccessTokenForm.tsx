@@ -5,6 +5,8 @@ import { useForm } from 'react-hook-form';
 
 
 import type { IAccessTokenInfo } from '~/interfaces/access-token';
+import type { Scope } from '~/interfaces/scope';
+import { SCOPE } from '~/interfaces/scope';
 
 const MAX_DESCRIPTION_LENGTH = 200;
 
@@ -16,7 +18,7 @@ type FormInputs = {
   expiredAt: string;
   description: string;
   // TODO: Implement scope selection
-  // scopes: string[];
+  scopes: Scope[];
 }
 
 // TODO: Implement scope selection
@@ -42,7 +44,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
 
   const onSubmit = (data: FormInputs) => {
     const expiredAtDate = new Date(data.expiredAt);
-    const scope = []; // TODO: Implement scope selection
+    const scope: Scope[] = data.scopes ? data.scopes : [];
 
     submitHandler({
       expiredAt: expiredAtDate,
@@ -111,7 +113,24 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
           <div className="mb-3">
             <label htmlFor="scope" className="form-label">{t('page_me_access_token.scope')}</label>
             <div className="form-text mb-2">{t('page_me_access_token.form.scope_desc')}</div>
-            <div className="form-text mb-2">(TBD)</div>
+            <div className="form-text mb-2">
+              <input
+                type="checkbox"
+                id="scope-read-user"
+                value={SCOPE.READ.USER.ALL}
+                {...register('scopes')}
+              />
+              <label htmlFor="scope-read-user" className="ms-2">Read User</label>
+            </div>
+            <div className="form-text mb-2">
+              <input
+                type="checkbox"
+                id="scope-write-user"
+                value={SCOPE.WRITE.USER.ALL}
+                {...register('scopes')}
+              />
+              <label htmlFor="scope-write-user" className="ms-2">Write User</label>
+            </div>
           </div>
 
           <button
