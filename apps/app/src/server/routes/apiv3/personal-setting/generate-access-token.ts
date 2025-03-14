@@ -7,10 +7,10 @@ import { body } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
 import type { Scope } from '~/interfaces/scope';
-import { extractScopes, isValidScope } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { AccessToken } from '~/server/models/access-token';
+import { extractScopes, isValidScope } from '~/server/util/scope-utils';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -65,10 +65,12 @@ const validator = [
     .custom((value: Scope[]) => {
       value.forEach((scope) => {
         if (!isValidScope(scope)) {
-          throw new Error('Invalid scope');
+          throw new Error(`Invalid scope: ${scope}}`);
         }
       });
-    }),
+      return true;
+    })
+    .withMessage('Invalid scope'),
 ];
 
 export const generateAccessTokenHandlerFactory: GenerateAccessTokenHandlerFactory = (crowi) => {

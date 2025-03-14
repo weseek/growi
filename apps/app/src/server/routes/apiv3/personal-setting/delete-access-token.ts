@@ -3,6 +3,7 @@ import type { Request, RequestHandler } from 'express';
 import { query } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { SCOPE } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -37,7 +38,7 @@ export const deleteAccessTokenHandlersFactory: DeleteAccessTokenHandlersFactory 
   const activityEvent = crowi.event('activity');
 
   return [
-    accessTokenParser(),
+    accessTokenParser([SCOPE.WRITE.USER.API.ACCESS_TOKEN]),
     loginRequiredStrictly,
     addActivity,
     validator,
