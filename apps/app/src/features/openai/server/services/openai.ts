@@ -29,6 +29,7 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { OpenaiServiceTypes } from '../../interfaces/ai';
+import type { UpsertAiAssistantData } from '../../interfaces/ai-assistant';
 import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
@@ -79,8 +80,8 @@ export interface IOpenaiService {
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
   isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
-  createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
-  updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument>;
+  createAiAssistant(data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
+  updateAiAssistant(aiAssistantId: string, data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
   isLearnablePageLimitExceeded(user: IUserHasId, pagePathPatterns: string[]): Promise<boolean>;
 }
@@ -758,9 +759,9 @@ class OpenaiService implements IOpenaiService {
     return false;
   }
 
-  async createAiAssistant(data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
+  async createAiAssistant(data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument> {
     await this.validateGrantedUserGroupsForAiAssistant(
-      data.owner,
+      user,
       data.shareScope,
       data.accessScope,
       data.grantedGroupsForShareScope,
@@ -768,7 +769,7 @@ class OpenaiService implements IOpenaiService {
     );
 
     const conditions = await this.createConditionForCreateVectorStoreFile(
-      data.owner,
+      user,
       data.accessScope,
       data.grantedGroupsForAccessScope,
       data.pagePathPatterns,
@@ -776,7 +777,7 @@ class OpenaiService implements IOpenaiService {
 
     const vectorStoreRelation = await this.createVectorStore(data.name);
     const aiAssistant = await AiAssistantModel.create({
-      ...data, vectorStore: vectorStoreRelation,
+      ...data, owner: user, vectorStore: vectorStoreRelation,
     });
 
     // VectorStore creation process does not await
@@ -785,14 +786,14 @@ class OpenaiService implements IOpenaiService {
     return aiAssistant;
   }
 
-  async updateAiAssistant(aiAssistantId: string, data: Omit<AiAssistant, 'vectorStore'>): Promise<AiAssistantDocument> {
-    const aiAssistant = await AiAssistantModel.findOne({ owner: data.owner, _id: aiAssistantId });
+  async updateAiAssistant(aiAssistantId: string, data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument> {
+    const aiAssistant = await AiAssistantModel.findOne({ owner: user, _id: aiAssistantId });
     if (aiAssistant == null) {
       throw createError(404, 'AiAssistant document does not exist');
     }
 
     await this.validateGrantedUserGroupsForAiAssistant(
-      data.owner,
+      user,
       data.shareScope,
       data.accessScope,
       data.grantedGroupsForShareScope,
@@ -810,7 +811,7 @@ class OpenaiService implements IOpenaiService {
     let newVectorStoreRelation: VectorStoreDocument | undefined;
     if (shouldRebuildVectorStore) {
       const conditions = await this.createConditionForCreateVectorStoreFile(
-        data.owner,
+        user,
         data.accessScope,
         data.grantedGroupsForAccessScope,
         data.pagePathPatterns,
@@ -831,6 +832,7 @@ class OpenaiService implements IOpenaiService {
     const newData = {
       ...data,
       vectorStore: newVectorStoreRelation ?? aiAssistant.vectorStore,
+      isDefault: data.shareScope !== AiAssistantShareScope.PUBLIC_ONLY ? false : aiAssistant.isDefault,
     };
 
     aiAssistant.set({ ...newData });
