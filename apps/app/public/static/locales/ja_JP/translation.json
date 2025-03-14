@@ -155,6 +155,7 @@
   "In-App Notification": "通知",
   "AI Assistant": "AI アシスタント",
   "Knowledge Assistant": "ナレッジアシスタント (ベータ版)",
+  "Editor Assistant": "エディターアシスタント (ベータ版)",
   "original_path": "元のパス",
   "new_path": "新しいパス",
   "duplicated_path": "重複したパス",
@@ -527,10 +528,11 @@
     "latest_revision": "最新の本文",
     "selected_editable_revision": "保存するページ本文(編集可能)"
   },
-  "sidebar_aichat": {
+  "sidebar_ai_assistant": {
     "instruction_label": "アシスタントへの指示",
     "reference_pages_label": "参照するページ",
-    "placeholder": "ききたいことを入力してください",
+    "knowledge_assistant_placeholder": "ききたいことを入力してください",
+    "editor_assistant_placeholder": "お手伝いできることはありますか？",
     "summary_mode_label": "要約モード",
     "summary_mode_help": "2～3文以内の簡潔な回答",
     "caution_against_hallucination": "情報が正しいか出典を確認しましょう",

@@ -1,13 +1,12 @@
 import type { KeyboardEvent } from 'react';
 import {
-  type FC, memo, useRef, useEffect, useState, useCallback,
+  type FC, memo, useRef, useEffect, useState, useCallback, useMemo,
 } from 'react';
 
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
-import type { z } from 'zod';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
@@ -15,30 +14,23 @@ import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
-import { SseMessageSchema, SseDetectedDiffSchema, SseFinalizedSchema } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
-import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
+import { useEditorAssistant } from '../../../services/editor-assistant';
+import { useKnowledgeAssistant } from '../../../services/knowledge-assistant';
+import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../../../stores/message';
 import { useSWRMUTxThreads } from '../../../stores/thread';
 
+import { AiAssistantChatInitialView } from './AiAssistantChatInitialView';
 import { MessageCard } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
 
-import styles from './AiAssistantChatSidebar.module.scss';
+import styles from './AiAssistantSidebar.module.scss';
 
-const logger = loggerFactory('growi:openai:client:components:AiAssistantChatSidebar');
+const logger = loggerFactory('growi:openai:client:components:AiAssistantSidebar');
 
-const moduleClass = styles['grw-ai-assistant-chat-sidebar'] ?? '';
-
-const handleIfSuccessfullyParsed = <T, >(data: T, zSchema: z.ZodSchema<T>,
-  callback: (data: T) => void,
-): void => {
-  const parsed = zSchema.safeParse(data);
-  if (parsed.success) {
-    callback(data);
-  }
-};
+const moduleClass = styles['grw-ai-assistant-sidebar'] ?? '';
 
 type Message = {
   id: string,
@@ -51,15 +43,19 @@ type FormData = {
   summaryMode?: boolean;
 };
 
-type AiAssistantChatSidebarSubstanceProps = {
-  aiAssistantData: AiAssistantHasId;
+type AiAssistantSidebarSubstanceProps = {
+  isEditorAssistant?: boolean;
+  aiAssistantData?: AiAssistantHasId;
   threadData?: IThreadRelationHasId;
-  closeAiAssistantChatSidebar: () => void
+  closeAiAssistantSidebar: () => void
 }
 
-const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceProps> = (props: AiAssistantChatSidebarSubstanceProps) => {
+const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = (props: AiAssistantSidebarSubstanceProps) => {
   const {
-    aiAssistantData, threadData, closeAiAssistantChatSidebar,
+    isEditorAssistant,
+    aiAssistantData,
+    threadData,
+    closeAiAssistantSidebar,
   } = props;
 
   const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
@@ -71,8 +67,11 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
-  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData._id);
-  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData._id, threadData?.threadId);
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
+  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id, threadData?.threadId);
+
+  const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
+  const { postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant } = useEditorAssistant();
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -106,6 +105,27 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     }
   }, [mutateMessageData, threadData]);
 
+  const headerIcon = useMemo(() => {
+    return isEditorAssistant
+      ? <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>
+      : <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>;
+  }, [isEditorAssistant]);
+
+  const headerText = useMemo(() => {
+    return isEditorAssistant
+      ? <>{t('Editor Assistant')}</>
+      : <>{currentThreadTitle ?? aiAssistantData?.name}</>;
+  }, [isEditorAssistant, currentThreadTitle, aiAssistantData?.name, t]);
+
+  const placeHolder = useMemo(() => {
+    if (form.formState.isSubmitting) {
+      return '';
+    }
+    return t(isEditorAssistant
+      ? 'sidebar_ai_assistant.editor_assistant_placeholder'
+      : 'sidebar_ai_assistant.knowledge_assistant_placeholder');
+  }, [form.formState.isSubmitting, isEditorAssistant, t]);
+
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
@@ -137,8 +157,8 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     if (currentThreadId_ == null) {
       try {
         const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
-          aiAssistantId: aiAssistantData._id,
-          initialUserMessage: newUserMessage.content,
+          aiAssistantId: aiAssistantData?._id,
+          initialUserMessage: isEditorAssistant ? undefined : newUserMessage.content,
         });
 
         const thread = res.data;
@@ -149,23 +169,34 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
         currentThreadId_ = thread.threadId;
 
         // No need to await because data is not used
-        mutateThreadData();
+        if (!isEditorAssistant) {
+          mutateThreadData();
+        }
       }
       catch (err) {
         logger.error(err.toString());
-        toastError(t('sidebar_aichat.failed_to_create_or_retrieve_thread'));
+        toastError(t('sidebar_ai_assistant.failed_to_create_or_retrieve_thread'));
       }
     }
 
     // post message
     try {
-      const response = await fetch('/_api/v3/openai/message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userMessage: data.input, threadId: currentThreadId_, summaryMode: data.summaryMode, aiAssistantId: aiAssistantData._id,
-        }),
-      });
+      if (currentThreadId_ == null) {
+        return;
+      }
+
+      const response = await (async() => {
+        if (isEditorAssistant) {
+          return postMessageForEditorAssistant(currentThreadId_, data.input, '# markdown');
+        }
+        if (aiAssistantData?._id != null) {
+          return postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId_, data.input, data.summaryMode);
+        }
+      })();
+
+      if (response == null) {
+        return;
+      }
 
       if (!response.ok) {
         const resJson = await response.json();
@@ -176,7 +207,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
           const hasThreadIdNotSetError = resJson.errors.some(err => err.code === MessageErrorCode.THREAD_ID_IS_NOT_SET);
           if (hasThreadIdNotSetError) {
-            toastError(t('sidebar_aichat.failed_to_create_or_retrieve_thread'));
+            toastError(t('sidebar_ai_assistant.failed_to_create_or_retrieve_thread'));
           }
         }
         setGeneratingAnswerMessage(undefined);
@@ -206,30 +237,35 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
         const textValues: string[] = [];
         const lines = chunk.split('\n\n');
         lines.forEach((line) => {
-          const trimedLine = line.trim();
-          if (trimedLine.startsWith('data:')) {
+          const trimmedLine = line.trim();
+          if (trimmedLine.startsWith('data:')) {
             const data = JSON.parse(line.replace('data: ', ''));
-            if (data.content != null) {
-              textValues.push(data.content[0].text.value);
-            }
 
-            handleIfSuccessfullyParsed(data, SseMessageSchema, (data) => {
-              textValues.push(data.appendedMessage);
+            processMessageForKnowledgeAssistant(data, {
+              onMessage: (data) => {
+                textValues.push(data.content[0].text.value);
+              },
             });
-            handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data) => {
-              console.log('sse diff', { data });
-            });
-            handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data) => {
-              console.log('sse finalized', { data });
+
+            processMessageForEditorAssistant(data, {
+              onMessage: (data) => {
+                textValues.push(data.appendedMessage);
+              },
+              onDetectedDiff: (data) => {
+                console.log('sse diff', { data });
+              },
+              onFinalized: (data) => {
+                console.log('sse finalized', { data });
+              },
             });
           }
-          else if (trimedLine.startsWith('error:')) {
+          else if (trimmedLine.startsWith('error:')) {
             const error = JSON.parse(line.replace('error: ', ''));
             logger.error(error.errorMessage);
             form.setError('input', { type: 'manual', message: error.message });
 
             if (error.code === StreamErrorCode.BUDGET_EXCEEDED) {
-              setErrorMessage(growiCloudUri != null ? 'sidebar_aichat.budget_exceeded_for_growi_cloud' : 'sidebar_aichat.budget_exceeded');
+              setErrorMessage(growiCloudUri != null ? 'sidebar_ai_assistant.budget_exceeded_for_growi_cloud' : 'sidebar_ai_assistant.budget_exceeded');
             }
           }
         });
@@ -253,7 +289,8 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData._id, mutateThreadData, t, growiCloudUri]);
+  // eslint-disable-next-line max-len
+  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData?._id, isEditorAssistant, mutateThreadData, t, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -265,18 +302,19 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
     <>
       <div className="d-flex flex-column vh-100">
         <div className="d-flex align-items-center p-3 border-bottom position-sticky top-0 bg-body z-1">
-          <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>
-          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">{currentThreadTitle ?? aiAssistantData.name}</h5>
+          {headerIcon}
+          <h5 className="mb-0 fw-bold flex-grow-1 text-truncate">
+            {headerText}
+          </h5>
           <button
             type="button"
             className="btn btn-link p-0 border-0"
-            onClick={closeAiAssistantChatSidebar}
+            onClick={closeAiAssistantSidebar}
           >
             <span className="material-symbols-outlined">close</span>
           </button>
         </div>
         <div className="p-4 d-flex flex-column gap-4 vh-100">
-
 
           { currentThreadId != null
             ? (
@@ -290,46 +328,22 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                 { messageLogs.length > 0 && (
                   <div className="d-flex justify-content-center">
                     <span className="bg-body-tertiary text-body-secondary rounded-pill px-3 py-1" style={{ fontSize: 'smaller' }}>
-                      {t('sidebar_aichat.caution_against_hallucination')}
+                      {t('sidebar_ai_assistant.caution_against_hallucination')}
                     </span>
                   </div>
                 )}
               </div>
             )
             : (
-              <>
-                <p className="fs-6 text-body-secondary mb-0">
-                  {aiAssistantData.description}
-                </p>
-
-                <div>
-                  <p className="text-body-secondary">{t('sidebar_aichat.instruction_label')}</p>
-                  <div className="card bg-body-tertiary border-0">
-                    <div className="card-body p-3">
-                      <p className="fs-6 text-body-secondary mb-0">
-                        {aiAssistantData.additionalInstruction}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <div className="d-flex align-items-center">
-                    <p className="text-body-secondary mb-0">{t('sidebar_aichat.reference_pages_label')}</p>
-                  </div>
-                  <div className="d-flex flex-column gap-1">
-                    { aiAssistantData.pagePathPatterns.map(pagePathPattern => (
-                      <a
-                        key={pagePathPattern}
-                        href="#"
-                        className="fs-6 text-body-secondary text-decoration-none"
-                      >
-                        {pagePathPattern}
-                      </a>
-                    ))}
-                  </div>
-                </div>
-
+              <>{isEditorAssistant
+                ? <></> // TODO https://redmine.weseek.co.jp/issues/163079
+                : (
+                  <AiAssistantChatInitialView
+                    description={aiAssistantData?.description ?? ''}
+                    additionalInstruction={aiAssistantData?.additionalInstruction ?? ''}
+                    pagePathPatterns={aiAssistantData?.pagePathPatterns ?? []}
+                  />
+                )}
               </>
             )
           }
@@ -347,7 +361,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                       className="form-control textarea-ask"
                       style={{ resize: 'none' }}
                       rows={1}
-                      placeholder={!form.formState.isSubmitting ? t('sidebar_aichat.placeholder') : ''}
+                      placeholder={placeHolder}
                       onKeyDown={keyDownHandler}
                       disabled={form.formState.isSubmitting}
                     />
@@ -371,7 +385,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                   disabled={form.formState.isSubmitting || isGenerating}
                 />
                 <label className="form-check-label" htmlFor="swSummaryMode">
-                  {t('sidebar_aichat.summary_mode_label')}
+                  {t('sidebar_ai_assistant.summary_mode_label')}
                 </label>
 
                 {/* Help */}
@@ -385,7 +399,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                 <UncontrolledTooltip
                   target="tooltipForHelpOfSummaryMode"
                 >
-                  {t('sidebar_aichat.summary_mode_help')}
+                  {t('sidebar_ai_assistant.summary_mode_help')}
                 </UncontrolledTooltip>
               </div>
             </form>
@@ -394,7 +408,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
               <div className="mt-4 bg-danger bg-opacity-10 rounded-3 p-2 w-100">
                 <div>
                   <span className="material-symbols-outlined text-danger me-2">error</span>
-                  <span className="text-danger">{ errorMessage != null ? t(errorMessage) : t('sidebar_aichat.error_message') }</span>
+                  <span className="text-danger">{ errorMessage != null ? t(errorMessage) : t('sidebar_ai_assistant.error_message') }</span>
                 </div>
 
                 <button
@@ -406,7 +420,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
                   <span className={`material-symbols-outlined mt-2 me-1 ${isErrorDetailCollapsed ? 'rotate-90' : ''}`}>
                     chevron_right
                   </span>
-                  <span className="small">{t('sidebar_aichat.show_error_detail')}</span>
+                  <span className="small">{t('sidebar_ai_assistant.show_error_detail')}</span>
                 </button>
 
                 <Collapse isOpen={isErrorDetailCollapsed}>
@@ -429,20 +443,21 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 };
 
 
-export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
+export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
-  const { data: aiAssistantChatSidebarData, close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
+  const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
 
-  const aiAssistantData = aiAssistantChatSidebarData?.aiAssistantData;
-  const threadData = aiAssistantChatSidebarData?.threadData;
-  const isOpened = aiAssistantChatSidebarData?.isOpened && aiAssistantData != null;
+  const aiAssistantData = aiAssistantSidebarData?.aiAssistantData;
+  const threadData = aiAssistantSidebarData?.threadData;
+  const isOpened = aiAssistantSidebarData?.isOpened;
+  const isEditorAssistant = aiAssistantSidebarData?.isEditorAssistant ?? false;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isOpened && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        closeAiAssistantChatSidebar();
+        closeAiAssistantSidebar();
       }
     };
 
@@ -450,7 +465,7 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [closeAiAssistantChatSidebar, isOpened]);
+  }, [closeAiAssistantSidebar, isOpened]);
 
   if (!isOpened) {
     return <></>;
@@ -467,10 +482,11 @@ export const AiAssistantChatSidebar: FC = memo((): JSX.Element => {
         className="h-100 position-relative"
         autoHide
       >
-        <AiAssistantChatSidebarSubstance
+        <AiAssistantSidebarSubstance
+          isEditorAssistant={isEditorAssistant}
           threadData={threadData}
           aiAssistantData={aiAssistantData}
-          closeAiAssistantChatSidebar={closeAiAssistantChatSidebar}
+          closeAiAssistantSidebar={closeAiAssistantSidebar}
         />
       </SimpleBar>
     </div>

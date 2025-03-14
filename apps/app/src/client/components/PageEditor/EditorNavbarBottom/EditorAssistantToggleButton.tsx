@@ -2,18 +2,21 @@ import { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useAiAssistantChatSidebar } from '~/features/openai/client/stores/ai-assistant';
+import { useAiAssistantSidebar } from '~/features/openai/client/stores/ai-assistant';
 
 export const EditorAssistantToggleButton = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data, close } = useAiAssistantChatSidebar();
+  const { data, close, openEditor } = useAiAssistantSidebar();
   const { isOpened } = data ?? {};
 
   const toggle = useCallback(() => {
     if (isOpened) {
       close();
+      return;
     }
-  }, [isOpened, close]);
+
+    openEditor();
+  }, [isOpened, openEditor, close]);
 
   return (
     <button
@@ -22,7 +25,7 @@ export const EditorAssistantToggleButton = (): JSX.Element => {
       onClick={toggle}
     >
       <span className="d-flex align-items-center">
-        <span className="growi-custom-icons py-0 fs-6">ai_assistant</span>
+        <span className="material-symbols-outlined">support_agent</span>
         <span className="ms-1 me-1">{t('page_edit.editor_assistant')}</span>
       </span>
     </button>

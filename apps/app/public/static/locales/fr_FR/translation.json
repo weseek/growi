@@ -155,6 +155,7 @@
   "In-App Notification": "Notifications",
   "AI Assistant": "Assistant IA",
   "Knowledge Assistant": "Assistant de Connaissances (Bêta)",
+  "Editor Assistant": "Assistante de rédaction (Bêta)",
   "original_path": "Chemin originel",
   "new_path": "Nouveau chemin",
   "duplicated_path": "Chemin dupliqué",
@@ -489,10 +490,11 @@
     "latest_revision": "les autres",
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
-  "sidebar_aichat": {
+  "sidebar_ai_assistant": {
     "instruction_label": "Instructions pour l'assistant",
     "reference_pages_label": "Pages de référence",
-    "placeholder": "Demandez-moi n'importe quoi.",
+    "knowledge_assistant_placeholder": "Demandez-moi n'importe quoi.",
+    "editor_assistant_placeholder": "Puis-je vous aider ?",
     "summary_mode_label": "Mode résumé",
     "summary_mode_help": "Réponse concise en 2-3 phrases",
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
