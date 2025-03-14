@@ -16,14 +16,8 @@ import loggerFactory from '~/utils/logger';
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
-import {
-  postMessage as postMessageForEditorAssistant,
-  processMessage as processMessageForEditorAssistant,
-} from '../../../services/editor-assistant';
-import {
-  postMessage as postMessageForKnowledgeAssistant,
-  processMessage as processMessageForKnowledgeAssistant,
-} from '../../../services/knowledge-assistant';
+import { useEditorAssistant } from '../../../services/editor-assistant';
+import { useKnowledgeAssistant } from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../../../stores/message';
 import { useSWRMUTxThreads } from '../../../stores/thread';
@@ -75,6 +69,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id, threadData?.threadId);
+
+  const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
+  const { postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant } = useEditorAssistant();
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -292,7 +289,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       form.setError('input', { type: 'manual', message: err.toString() });
     }
 
-  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData?._id, mutateThreadData, t, isEditorAssistant, growiCloudUri]);
+  // eslint-disable-next-line max-len
+  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData?._id, isEditorAssistant, mutateThreadData, t, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
