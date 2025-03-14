@@ -64,7 +64,7 @@ type AddAllToScope<S extends string> =
     : S;
 
 type ScopeOnly = FlattenObject<typeof ORIGINAL_SCOPE_WITH_ACTION>;
-type ScopeWithAll = AddAllToScope<ScopeOnly> ;
+type ScopeWithAll = AddAllToScope<ScopeOnly>;
 export type Scope = ScopeOnly | ScopeWithAll;
 
 // ScopeConstantsの型定義
@@ -114,62 +114,3 @@ const buildScopeConstants = (): ScopeConstantType => {
 };
 
 export const SCOPE = buildScopeConstants();
-
-
-export const isValidScope = (scope: string): boolean => {
-  const scopeParts = scope.split(':').map(x => (x === '*' ? 'ALL' : x.toUpperCase()));
-  let obj: any = SCOPE;
-  scopeParts.forEach((part) => {
-    if (obj[part] == null) {
-      return false;
-    }
-    obj = obj[part];
-  });
-  return obj === scope;
-};
-
-export const isAllScope = (scope: string): scope is Scope => {
-  return scope.endsWith(`:${ALL_SIGN}`);
-};
-
-const getAllScopeValues = (scopeObj: any): Scope[] => {
-  const result: Scope[] = [];
-
-  const traverse = (current: any): void => {
-    if (typeof current !== 'object' || current === null) {
-      if (typeof current === 'string') {
-        result.push(current as Scope);
-      }
-      return;
-    }
-    Object.values(current).forEach((value) => {
-      traverse(value);
-    });
-  };
-  traverse(scopeObj);
-  return result;
-};
-
-export const extractScopes = (scopes?: Scope[]): Scope[] => {
-  if (scopes == null) {
-    return [];
-  }
-  const result = new Set<Scope>(scopes);
-  scopes.forEach((scope) => {
-    if (!isAllScope(scope)) {
-      return;
-    }
-    const scopeParts = scope.split(':').map(x => (x.toUpperCase()));
-    let obj: any = SCOPE;
-    scopeParts.forEach((part) => {
-      if (part === ALL_SIGN) {
-        return;
-      }
-      obj = obj[part];
-    });
-    getAllScopeValues(obj).forEach((value) => {
-      result.add(value);
-    });
-  });
-  return Array.from(result.values());
-};
