@@ -17,8 +17,8 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 const logger = loggerFactory('growi:routes:apiv3:openai:thread');
 
 type ReqBody = {
-  aiAssistantId: string,
-  initialUserMessage: string,
+  aiAssistantId?: string,
+  initialUserMessage?: string,
 }
 
 type CreateThreadReq = Request<undefined, ApiV3Response, ReqBody> & { user: IUserHasId };
@@ -29,8 +29,8 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
-    body('aiAssistantId').isMongoId().withMessage('aiAssistantId must be string'),
-    body('initialUserMessage').isString().withMessage('initialUserMessage must be string'),
+    body('aiAssistantId').optional().isMongoId().withMessage('aiAssistantId must be string'),
+    body('initialUserMessage').optional().isString().withMessage('initialUserMessage must be string'),
   ];
 
   return [
@@ -44,14 +44,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
 
       try {
         const { aiAssistantId, initialUserMessage } = req.body;
-
-        const isAiAssistantUsable = await openaiService.isAiAssistantUsable(aiAssistantId, req.user);
-        if (!isAiAssistantUsable) {
-          return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
-        }
-
         const thread = await openaiService.createThread(req.user._id, aiAssistantId, initialUserMessage);
-
         return res.apiv3(thread);
       }
       catch (err) {
