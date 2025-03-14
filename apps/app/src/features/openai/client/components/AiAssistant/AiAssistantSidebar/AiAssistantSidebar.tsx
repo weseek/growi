@@ -290,7 +290,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData?._id, isEditorAssistant, mutateThreadData, t, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData?._id, isEditorAssistant, mutateThreadData, t, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
