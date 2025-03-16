@@ -28,6 +28,7 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   aiAssistant: {
     type: Schema.Types.ObjectId,
     ref: 'AiAssistant',
+    required: true,
   },
   threadId: {
     type: String,

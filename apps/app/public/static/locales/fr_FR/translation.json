@@ -155,7 +155,6 @@
   "In-App Notification": "Notifications",
   "AI Assistant": "Assistant IA",
   "Knowledge Assistant": "Assistant de Connaissances (Bêta)",
-  "Editor Assistant": "Assistante de rédaction (Bêta)",
   "original_path": "Chemin originel",
   "new_path": "Nouveau chemin",
   "duplicated_path": "Chemin dupliqué",
@@ -346,7 +345,6 @@
       "file": "Fichier seulement"
     },
     "editor_config": "Préférences de l'éditeur",
-    "editor_assistant": "Assistant d'édition",
     "Show active line": "Surligner la ligne active",
     "auto_format_table": "Formatter les tableaux",
     "overwrite_scopes": "{{operation}} et écraser les scopes des pages enfants",
@@ -490,11 +488,10 @@
     "latest_revision": "les autres",
     "selected_editable_revision": "Corps de page sélectionné (Modifiable)"
   },
-  "sidebar_ai_assistant": {
+  "sidebar_aichat": {
     "instruction_label": "Instructions pour l'assistant",
     "reference_pages_label": "Pages de référence",
-    "knowledge_assistant_placeholder": "Demandez-moi n'importe quoi.",
-    "editor_assistant_placeholder": "Puis-je vous aider ?",
+    "placeholder": "Demandez-moi n'importe quoi.",
     "summary_mode_label": "Mode résumé",
     "summary_mode_help": "Réponse concise en 2-3 phrases",
     "caution_against_hallucination": "Veuillez vérifier les informations et consulter les sources.",
