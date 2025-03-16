@@ -828,10 +828,13 @@ class OpenaiService implements IOpenaiService {
       this.createVectorStoreFileWithStream(newVectorStoreRelation, conditions);
     }
 
+    if (data.shareScope !== AiAssistantShareScope.PUBLIC_ONLY && aiAssistant.isDefault) {
+      await AiAssistantModel.setDefault(aiAssistant._id, false);
+    }
+
     const newData = {
       ...data,
       vectorStore: newVectorStoreRelation ?? aiAssistant.vectorStore,
-      isDefault: data.shareScope !== AiAssistantShareScope.PUBLIC_ONLY ? false : aiAssistant.isDefault,
     };
 
     aiAssistant.set({ ...newData });
