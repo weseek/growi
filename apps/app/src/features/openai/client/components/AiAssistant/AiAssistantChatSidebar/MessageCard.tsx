@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 
-import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
+import { useAiAssistantChatSidebar } from '../../../stores/ai-assistant';
 
 import styles from './MessageCard.module.scss';
 
@@ -27,11 +27,11 @@ const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
 const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
 
 const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): JSX.Element => {
-  const { close: closeAiAssistantSidebar } = useAiAssistantSidebar();
+  const { close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
 
   const onClick = useCallback(() => {
-    closeAiAssistantSidebar();
-  }, [closeAiAssistantSidebar]);
+    closeAiAssistantChatSidebar();
+  }, [closeAiAssistantChatSidebar]);
 
   return (
     <NextLink href={props.href} onClick={onClick} className="link-primary">
@@ -55,7 +55,7 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
             )
             : (
               <span className="text-thinking">
-                {t('sidebar_ai_assistant.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
+                {t('sidebar_aichat.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
               </span>
             )
           }
