@@ -7,6 +7,8 @@ import type { IAccessTokenInfo } from '~/interfaces/access-token';
 import type { Scope } from '~/interfaces/scope';
 import { SCOPE } from '~/interfaces/scope';
 
+import { AccessTokenScopeSelect } from './AccessTokenScopeSelect';
+
 const MAX_DESCRIPTION_LENGTH = 200;
 
 type AccessTokenFormProps = {
@@ -16,7 +18,6 @@ type AccessTokenFormProps = {
 type FormInputs = {
   expiredAt: string;
   description: string;
-  // TODO: Implement scope selection
   scopes: Scope[];
 }
 
@@ -111,35 +112,13 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
 
           <div className="mb-3">
             <label htmlFor="scopes" className="form-label">
-              {t('page_me_access_token.scopes')}
+              {t('page_me_access_token.scope')}
             </label>
-            <div className="border container rounded py-2 px-3">
-              {[
-                { id: 'admin', label: 'admin', desc: 'Access admin data' },
-                { id: 'user', label: 'user', desc: 'Access user data' },
-              ].map(({ id, label, desc }, index, array) => (
-                <>
-                  <div className="row align-items-center" key={id}>
-                    <div className="col-md-3">
-                      <input
-                        className="form-check-input"
-                        type="checkbox"
-                        id={id}
-                        value={id}
-                        {...register('scopes')}
-                      />
-                      <label className="form-check-label fw-bold ms-2" htmlFor={id}>{label}</label>
-                    </div>
-                    <div className="col">
-                      <span className="text-muted">{desc}</span>
-                    </div>
-                  </div>
-                  {index < array.length - 1 && <hr className="my-1" />}
-                </>
-              ))}
+            <AccessTokenScopeSelect register={register('scopes')} />
+
+            <div className="form-text mb-2">
+              {t('page_me_access_token.form.scope_desc')}
             </div>
-            <div className="form-text mb-2">{t('page_me_access_token.form.scope_desc')}</div>
-            <div className="form-text mb-2">(TBD)</div>
           </div>
 
           <button
