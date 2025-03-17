@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 
 import type { IAccessTokenInfo } from '~/interfaces/access-token';
 import type { Scope } from '~/interfaces/scope';
-import { SCOPE } from '~/interfaces/scope';
 
 import { AccessTokenScopeSelect } from './AccessTokenScopeSelect';
 
@@ -44,12 +43,11 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
 
   const onSubmit = (data: FormInputs) => {
     const expiredAtDate = new Date(data.expiredAt);
-    const scope: Scope[] = data.scopes ? data.scopes : [];
 
     submitHandler({
       expiredAt: expiredAtDate,
       description: data.description,
-      scope: data.scopes, // scope の値を正しく送信
+      scope: data.scopes,
     });
   };
 
