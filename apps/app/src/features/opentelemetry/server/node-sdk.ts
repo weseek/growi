@@ -54,7 +54,7 @@ export const startInstrumentation = async(): Promise<void> => {
 
 This data is used to help improve GROWI, but you can opt-out at any time.
 
-For more information, see https://docs.growi.org/en/admin-guide/telemetry.html.
+For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/telemetry.html.
 `);
 
     // initialize global logger for development
