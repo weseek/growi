@@ -34,6 +34,10 @@ export const ORIGINAL_SCOPE_USER = {
     other: {},
   },
   base: {
+    ai_assistant: {},
+    page: {},
+    share_link: {},
+    bookmark: {},
   },
 } as const;
 

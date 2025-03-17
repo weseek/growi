@@ -7,6 +7,7 @@ import type { AssistantStream } from 'openai/lib/AssistantStream';
 import type { MessageDelta } from 'openai/resources/beta/threads/messages.mjs';
 
 import { getOrCreateChatAssistant } from '~/features/openai/server/services/assistant';
+import { SCOPE } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -54,7 +55,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
   ];
 
   return [
-    accessTokenParser(), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser([SCOPE.WRITE.BASE.AI_ASSISTANT]), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { aiAssistantId, threadId } = req.body;
 
