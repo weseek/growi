@@ -24,14 +24,16 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
     this.client = new OpenAI({ apiKey });
   }
 
-  async createThread(vectorStoreId: string): Promise<OpenAI.Beta.Threads.Thread> {
-    return this.client.beta.threads.create({
-      tool_resources: {
-        file_search: {
-          vector_store_ids: [vectorStoreId],
+  async createThread(vectorStoreId?: string): Promise<OpenAI.Beta.Threads.Thread> {
+    return this.client.beta.threads.create(vectorStoreId != null
+      ? {
+        tool_resources: {
+          file_search: {
+            vector_store_ids: [vectorStoreId],
+          },
         },
-      },
-    });
+      }
+      : undefined);
   }
 
   async retrieveThread(threadId: string): Promise<OpenAI.Beta.Threads.Thread> {
