@@ -24,6 +24,7 @@ import { useSWRMUTxThreads } from '../../../stores/thread';
 
 import { AiAssistantChatInitialView } from './AiAssistantChatInitialView';
 import { MessageCard } from './MessageCard';
+import { PresetPromptList } from './PresetPromptList';
 import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantSidebar.module.scss';
@@ -336,7 +337,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             )
             : (
               <>{isEditorAssistant
-                ? <></> // TODO https://redmine.weseek.co.jp/issues/163079
+                ? <PresetPromptList />
                 : (
                   <AiAssistantChatInitialView
                     description={aiAssistantData?.description ?? ''}
