@@ -24,7 +24,7 @@ import { useSWRMUTxThreads } from '../../../stores/thread';
 
 import { AiAssistantChatInitialView } from './AiAssistantChatInitialView';
 import { MessageCard } from './MessageCard';
-import { PresetPromptList } from './PresetPromptList';
+import { QuickMenuList } from './QuickMenuList';
 import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantSidebar.module.scss';
@@ -342,7 +342,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             : (
               <>{isEditorAssistant
                 ? (
-                  <PresetPromptList
+                  <QuickMenuList
                     onClick={clickPresetPromptHandler}
                   />
                 )

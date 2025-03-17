@@ -11,7 +11,7 @@ const presetPrompts = [
   'correct',
 ];
 
-export const PresetPromptList: React.FC<Props> = ({ onClick }) => {
+export const QuickMenuList: React.FC<Props> = ({ onClick }) => {
   const { t } = useTranslation();
 
   const clickPresetPromptHandler = useCallback((presetPrompt: string) => {
