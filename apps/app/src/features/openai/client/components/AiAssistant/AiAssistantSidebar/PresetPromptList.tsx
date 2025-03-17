@@ -14,11 +14,9 @@ const presetPrompts = [
 export const PresetPromptList: React.FC<Props> = ({ onClick }) => {
   const { t } = useTranslation();
 
-
   const clickPresetPromptHandler = useCallback((presetPrompt: string) => {
     onClick(t(`sidebar_ai_assistant.preset_prompt.${presetPrompt}.prompt`));
   }, [onClick, t]);
-
 
   return (
     <div className="container py-4">
