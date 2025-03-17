@@ -545,11 +545,11 @@
     "preset_menu": {
       "summarize": {
         "title": "この記事の要約をつくる",
-        "prompt": ""
+        "prompt": "マークダウンの内容を要約してください"
       },
       "correct": {
         "title": "文章の誤りを修正する",
-        "prompt": ""
+        "prompt": "マークダウンの内の文章の誤りを修正してください"
       }
     }
   },

@@ -513,11 +513,11 @@
     "preset_menu": {
       "summarize": {
         "title": "Summarize this article",
-        "prompt": ""
+        "prompt": "Please summarize the markdown content"
       },
       "correct": {
         "title": "Correct errors in the text",
-        "prompt": ""
+        "prompt": "Please correct the errors in the markdown text"
       }
     }
   },

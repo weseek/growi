@@ -502,11 +502,11 @@
     "preset_menu": {
       "summarize": {
         "title": "为此文章创建摘要",
-        "prompt": ""
+        "prompt": "请总结这个 markdown 内容"
       },
       "correct": {
         "title": "修正文本中的错误",
-        "prompt": ""
+        "prompt": "请修正 markdown 中的文本错误"
       }
     }
   },
