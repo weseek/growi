@@ -207,7 +207,6 @@ export const CONFIG_KEYS = [
   'customize:highlightJsStyle',
   'customize:highlightJsStyleBorder',
   'customize:theme',
-  'customize:theme:forcedColorScheme',
   'customize:isContainerFluid',
   'customize:isEnabledTimeline',
   'customize:isEnabledAttachTitleHeader',
@@ -261,6 +260,7 @@ export const CONFIG_KEYS = [
   'openai:vectorStoreFileDeletionCronExpression',
   'openai:vectorStoreFileDeletionBarchSize',
   'openai:vectorStoreFileDeletionApiCallInterval',
+  'openai:limitLearnablePageCountPerAssistant',
 
   // OpenTelemetry Settings
   'otel:enabled',
@@ -938,9 +938,6 @@ export const CONFIG_DEFINITIONS = {
   'customize:theme': defineConfig<string>({
     defaultValue: 'default',
   }),
-  'customize:theme:forcedColorScheme': defineConfig<string | null>({
-    defaultValue: null,
-  }),
   'customize:isContainerFluid': defineConfig<boolean>({
     defaultValue: false,
   }),
@@ -1128,6 +1125,10 @@ Guideline as a RAG:
   'openai:searchAssistantInstructions': defineConfig<string>({
     envVarName: 'OPENAI_SEARCH_ASSISTANT_INSTRUCTIONS',
     defaultValue: '',
+  }),
+  'openai:limitLearnablePageCountPerAssistant': defineConfig<number>({
+    envVarName: 'OPENAI_LIMIT_LEARNABLE_PAGE_COUNT_PER_ASSISTANT',
+    defaultValue: 3000,
   }),
 
   // OpenTelemetry Settings
