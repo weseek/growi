@@ -8,9 +8,11 @@ import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import type { Scope } from '~/interfaces/scope';
 import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
+import { extractScopes } from '../util/scope-utils';
 
 const logger = loggerFactory('growi:models:access-token');
 
@@ -20,7 +22,7 @@ type GenerateTokenResult = {
   token: string,
   _id: Types.ObjectId,
   expiredAt: Date,
-  scope?: string[],
+  scope?: Scope[],
   description?: string,
 }
 
@@ -28,7 +30,7 @@ export type IAccessToken = {
   user: Ref<IUserHasId>,
   tokenHash: string,
   expiredAt: Date,
-  scope?: string[],
+  scope?: Scope[],
   description?: string,
 }
 
@@ -37,14 +39,14 @@ export interface IAccessTokenDocument extends IAccessToken, Document {
 }
 
 export interface IAccessTokenModel extends Model<IAccessTokenDocument> {
-  generateToken: (userId: Types.ObjectId | string, expiredAt: Date, scope?: string[], description?: string,) => Promise<GenerateTokenResult>
+  generateToken: (userId: Types.ObjectId | string, expiredAt: Date, scope?: Scope[], description?: string,) => Promise<GenerateTokenResult>
   deleteToken: (token: string) => Promise<void>
   deleteTokenById: (tokenId: Types.ObjectId | string) => Promise<void>
   deleteAllTokensByUserId: (userId: Types.ObjectId | string) => Promise<void>
   deleteExpiredToken: () => Promise<void>
-  findUserIdByToken: (token: string) => Promise<HydratedDocument<IAccessTokenDocument> | null>
+  findUserIdByToken: (token: string, requiredScopes?: Scope[]) => Promise<HydratedDocument<IAccessTokenDocument> | null>
   findTokenByUserId: (userId: Types.ObjectId | string) => Promise<HydratedDocument<IAccessTokenDocument>[] | null>
-  validateTokenScopes: (token: string, requiredScope: string[]) => Promise<boolean>
+  validateTokenScopes: (token: string, requiredScopes: Scope[]) => Promise<boolean>
 }
 
 const accessTokenSchema = new Schema<IAccessTokenDocument, IAccessTokenModel>({
@@ -60,19 +62,20 @@ const accessTokenSchema = new Schema<IAccessTokenDocument, IAccessTokenModel>({
 accessTokenSchema.plugin(mongoosePaginate);
 accessTokenSchema.plugin(uniqueValidator);
 
-accessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId | string, expiredAt: Date, scope?: string[], description?: string) {
+accessTokenSchema.statics.generateToken = async function(userId: Types.ObjectId | string, expiredAt: Date, scope?: Scope[], description?: string) {
 
+  const extractedScopes = extractScopes(scope ?? []);
   const token = crypto.randomBytes(32).toString('hex');
   const tokenHash = generateTokenHash(token);
 
   try {
     const { _id } = await this.create({
-      user: userId, tokenHash, expiredAt, scope, description,
+      user: userId, tokenHash, expiredAt, scope: extractedScopes, description,
     });
 
     logger.debug('Token generated');
     return {
-      token, _id, expiredAt, scope, description,
+      token, _id, expiredAt, scope: extractedScopes, description,
     };
   }
   catch (err) {
@@ -99,9 +102,12 @@ accessTokenSchema.statics.deleteExpiredToken = async function() {
   await this.deleteMany({ expiredAt: { $lte: now } });
 };
 
-accessTokenSchema.statics.findUserIdByToken = async function(token: string) {
+accessTokenSchema.statics.findUserIdByToken = async function(token: string, requiredScopes?: Scope[]) {
   const tokenHash = generateTokenHash(token);
   const now = new Date();
+  if (requiredScopes != null && requiredScopes.length > 0) {
+    return this.findOne({ tokenHash, expiredAt: { $gt: now }, scope: { $all: requiredScopes } }).select('user');
+  }
   return this.findOne({ tokenHash, expiredAt: { $gt: now } }).select('user');
 };
 
@@ -110,7 +116,7 @@ accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.Objec
   return this.find({ user: userId, expiredAt: { $gt: now } }).select('_id expiredAt scope description');
 };
 
-accessTokenSchema.statics.validateTokenScopes = async function(token: string, requiredScopes: string[]) {
+accessTokenSchema.statics.validateTokenScopes = async function(token: string, requiredScopes: Scope[]) {
   const tokenHash = generateTokenHash(token);
   const now = new Date();
   const tokenData = await this.findOne({ tokenHash, expiredAt: { $gt: now }, scope: { $all: requiredScopes } });

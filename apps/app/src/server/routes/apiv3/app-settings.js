@@ -430,7 +430,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/AppSettingParams'
    */
-  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser(), loginRequiredStrictly, adminRequired, async(req, res) => {
     const appSettingsParams = {
       title: configManager.getConfig('app:title'),
       confidential: configManager.getConfig('app:confidential'),
@@ -1044,7 +1044,7 @@ module.exports = (crowi) => {
    *                      description: is V5 compatible, or not
    *                      example: true
    */
-  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.post('/v5-schema-migration', accessTokenParser(), loginRequiredStrictly, adminRequired, async(req, res) => {
     const isMaintenanceMode = crowi.appService.isMaintenanceMode();
     if (!isMaintenanceMode) {
       return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
@@ -1099,7 +1099,7 @@ module.exports = (crowi) => {
    *                      example: true
    */
   // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
+  router.post('/maintenance-mode', accessTokenParser(), loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
     const { flag } = req.body;
     const parameters = {};
     try {

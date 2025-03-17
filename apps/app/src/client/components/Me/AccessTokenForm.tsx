@@ -4,6 +4,8 @@ import { useTranslation } from 'next-i18next';
 import { useForm } from 'react-hook-form';
 
 import type { IAccessTokenInfo } from '~/interfaces/access-token';
+import type { Scope } from '~/interfaces/scope';
+import { SCOPE } from '~/interfaces/scope';
 
 const MAX_DESCRIPTION_LENGTH = 200;
 
@@ -14,7 +16,8 @@ type AccessTokenFormProps = {
 type FormInputs = {
   expiredAt: string;
   description: string;
-  scopes: string[];
+  // TODO: Implement scope selection
+  scopes: Scope[];
 }
 
 export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Element => {
@@ -40,6 +43,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
 
   const onSubmit = (data: FormInputs) => {
     const expiredAtDate = new Date(data.expiredAt);
+    const scope: Scope[] = data.scopes ? data.scopes : [];
 
     submitHandler({
       expiredAt: expiredAtDate,
@@ -135,6 +139,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
               ))}
             </div>
             <div className="form-text mb-2">{t('page_me_access_token.form.scope_desc')}</div>
+            <div className="form-text mb-2">(TBD)</div>
           </div>
 
           <button

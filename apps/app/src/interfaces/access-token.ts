@@ -1,8 +1,9 @@
+import type { Scope } from './scope';
 
 export type IAccessTokenInfo = {
   expiredAt: Date,
   description: string,
-  scope: string[],
+  scope: Scope[],
 }
 
 export type IResGenerateAccessToken = IAccessTokenInfo & {

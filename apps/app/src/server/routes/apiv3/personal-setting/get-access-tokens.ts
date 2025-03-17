@@ -2,6 +2,7 @@ import type { IUserHasId } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 
+import { SCOPE } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -24,7 +25,8 @@ export const getAccessTokenHandlerFactory: GetAccessTokenHandlerFactory = (crowi
   const addActivity = generateAddActivityMiddleware();
 
   return [
-    accessTokenParser, loginRequiredStrictly,
+    accessTokenParser(),
+    loginRequiredStrictly,
     addActivity,
     async(req: GetAccessTokenRequest, res: ApiV3Response) => {
       const { user } = req;
