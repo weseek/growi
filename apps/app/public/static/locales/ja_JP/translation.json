@@ -541,7 +541,13 @@
     "budget_exceeded": "OpenAI の API の利用上限に達しました。ナレッジアシスタントを再度利用するには OpenAI の請求ページからクレジットを追加してください。",
     "budget_exceeded_for_growi_cloud": "OpenAI の API の利用上限に達しました。ナレッジアシスタントを再度利用するには Hosted の場合は GROWI.cloud の管理画面から Owned の場合は OpenAI の請求ページからクレジットを追加してください。",
     "error_message": "エラーが発生しました",
-    "show_error_detail": "詳細を表示"
+    "show_error_detail": "詳細を表示",
+    "preset_prompt": {
+      "summarize": "この記事の要約をつくる",
+      "replace": "特定の文章を要約する",
+      "correct": "文章の誤りを修正する",
+      "create": "文章を作成する"
+    }
   },
   "modal_ai_assistant": {
     "header": {
