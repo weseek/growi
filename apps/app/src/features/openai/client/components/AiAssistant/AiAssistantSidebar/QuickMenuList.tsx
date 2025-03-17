@@ -6,31 +6,31 @@ type Props = {
   onClick: (presetPrompt: string) => void
 }
 
-const presetPrompts = [
+const presetMenus = [
   'summarize',
   'correct',
 ];
 
-export const QuickMenuList: React.FC<Props> = ({ onClick }) => {
+export const QuickMenuList: React.FC<Props> = ({ onClick }: Props) => {
   const { t } = useTranslation();
 
-  const clickPresetPromptHandler = useCallback((presetPrompt: string) => {
-    onClick(t(`sidebar_ai_assistant.preset_prompt.${presetPrompt}.prompt`));
+  const clickQuickMenuHandler = useCallback((quickMenu: string) => {
+    onClick(t(`sidebar_ai_assistant.preset_menu.${quickMenu}.prompt`));
   }, [onClick, t]);
 
   return (
     <div className="container py-4">
       <div className="d-flex flex-column gap-3">
-        {presetPrompts.map(presetPrompt => (
+        {presetMenus.map(presetMenu => (
           <button
             type="button"
-            key={presetPrompt}
-            onClick={() => clickPresetPromptHandler(presetPrompt)}
+            key={presetMenu}
+            onClick={() => clickQuickMenuHandler(presetMenu)}
             className="btn text-body-secondary p-3 rounded-3 border border-1"
           >
             <div className="d-flex align-items-center">
               <span className="material-symbols-outlined fs-5 me-3">lightbulb</span>
-              <span className="fs-6">{t(`sidebar_ai_assistant.preset_prompt.${presetPrompt}.title`)}</span>
+              <span className="fs-6">{t(`sidebar_ai_assistant.preset_menu.${presetMenu}.title`)}</span>
             </div>
           </button>
         ))}

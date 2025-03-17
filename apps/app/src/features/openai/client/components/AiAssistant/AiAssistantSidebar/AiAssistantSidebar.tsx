@@ -127,7 +127,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       : 'sidebar_ai_assistant.knowledge_assistant_placeholder');
   }, [form.formState.isSubmitting, isEditorAssistant, t]);
 
-  const clickPresetPromptHandler = useCallback((presetPrompt: string) => {
+  const clickQuickMenuHandler = useCallback((quickMenu: string) => {
     // todo: https://redmine.weseek.co.jp/issues/163264
   }, []);
 
@@ -343,7 +343,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               <>{isEditorAssistant
                 ? (
                   <QuickMenuList
-                    onClick={clickPresetPromptHandler}
+                    onClick={clickQuickMenuHandler}
                   />
                 )
                 : (
