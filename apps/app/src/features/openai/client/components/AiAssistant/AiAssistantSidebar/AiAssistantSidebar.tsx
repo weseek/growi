@@ -128,7 +128,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [form.formState.isSubmitting, isEditorAssistant, t]);
 
   const clickPresetPromptHandler = useCallback((presetPrompt: string) => {
-    console.log('presetPrompt', { presetPrompt });
     // todo: https://redmine.weseek.co.jp/issues/163264
   }, []);
 
