@@ -102,7 +102,6 @@ export const extractScopes = (scopes?: Scope[]): Scope[] => {
       result.add(extractedScope);
     });
   });
-  const resultArray = Array.from(result.values());
-  resultArray.filter(scope => !hasAllScope(scope));
+  const resultArray = Array.from(result.values()).filter(scope => !hasAllScope(scope));
   return resultArray;
 };
