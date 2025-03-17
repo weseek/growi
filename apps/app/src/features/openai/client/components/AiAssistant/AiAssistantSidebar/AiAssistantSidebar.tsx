@@ -24,6 +24,7 @@ import { useSWRMUTxThreads } from '../../../stores/thread';
 
 import { AiAssistantChatInitialView } from './AiAssistantChatInitialView';
 import { MessageCard } from './MessageCard';
+import { QuickMenuList } from './QuickMenuList';
 import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantSidebar.module.scss';
@@ -125,6 +126,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       ? 'sidebar_ai_assistant.editor_assistant_placeholder'
       : 'sidebar_ai_assistant.knowledge_assistant_placeholder');
   }, [form.formState.isSubmitting, isEditorAssistant, t]);
+
+  const clickQuickMenuHandler = useCallback((quickMenu: string) => {
+    // todo: https://redmine.weseek.co.jp/issues/163264
+  }, []);
 
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
@@ -336,7 +341,11 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             )
             : (
               <>{isEditorAssistant
-                ? <></> // TODO https://redmine.weseek.co.jp/issues/163079
+                ? (
+                  <QuickMenuList
+                    onClick={clickQuickMenuHandler}
+                  />
+                )
                 : (
                   <AiAssistantChatInitialView
                     description={aiAssistantData?.description ?? ''}
