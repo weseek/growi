@@ -543,10 +543,14 @@
     "error_message": "エラーが発生しました",
     "show_error_detail": "詳細を表示",
     "preset_prompt": {
-      "summarize": "この記事の要約をつくる",
-      "replace": "特定の文章を要約する",
-      "correct": "文章の誤りを修正する",
-      "create": "文章を作成する"
+      "summarize": {
+        "title": "この記事の要約をつくる",
+        "prompt": ""
+      },
+      "correct": {
+        "title": "文章の誤りを修正する",
+        "prompt": ""
+      }
     }
   },
   "modal_ai_assistant": {

@@ -511,10 +511,14 @@
     "error_message": "An error has occurred",
     "show_error_detail": "Show error details",
     "preset_prompt": {
-      "summarize": "Summarize this article",
-      "replace": "Replace specific text",
-      "correct": "Correct errors in the text",
-      "create": "Create text"
+      "summarize": {
+        "title": "Summarize this article",
+        "prompt": ""
+      },
+      "correct": {
+        "title": "Correct errors in the text",
+        "prompt": ""
+      }
     }
   },
   "modal_ai_assistant": {

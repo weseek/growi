@@ -505,10 +505,14 @@
     "error_message": "Erreur",
     "show_error_detail": "Détails de l'exposition",
     "preset_prompt": {
-      "summarize": "Résumer cet article'",
-      "replace": "Remplacer un texte spécifique",
-      "correct": "Corriger les erreurs du texte",
-      "create": "Créer un texte"
+      "summarize": {
+        "title": "Résumer cet article'",
+        "prompt": ""
+      },
+      "correct": {
+        "title": "Corriger les erreurs du texte",
+        "prompt": ""
+      }
     }
   },
   "modal_ai_assistant": {

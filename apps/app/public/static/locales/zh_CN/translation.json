@@ -500,10 +500,14 @@
     "error_message": "错误",
     "show_error_detail": "显示详情",
     "preset_prompt": {
-      "summarize": "为此文章创建摘要",
-      "replace": "替换特定文本",
-      "correct": "修正文本中的错误",
-      "create": "创建文本"
+      "summarize": {
+        "title": "为此文章创建摘要",
+        "prompt": ""
+      },
+      "correct": {
+        "title": "修正文本中的错误",
+        "prompt": ""
+      }
     }
   },
   "modal_ai_assistant": {
