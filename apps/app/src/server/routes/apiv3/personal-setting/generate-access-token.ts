@@ -21,7 +21,7 @@ const logger = loggerFactory('growi:routes:apiv3:personal-setting:generate-acces
 type ReqBody = {
   expiredAt: Date,
   description?: string,
-  scope?: Scope[],
+  scopes?: Scope[],
 }
 
 interface GenerateAccessTokenRequest extends Request<undefined, ApiV3Response, ReqBody> {
@@ -58,12 +58,12 @@ const validator = [
     .isLength({ max: 200 })
     .withMessage('description must be less than or equal to 200 characters'),
 
-  body('scope')
+  body('scopes')
     .optional()
     .isArray()
     .withMessage('scope must be an array')
-    .custom((value: Scope[]) => {
-      value.forEach((scope) => {
+    .custom((scopes: Scope[]) => {
+      scopes.forEach((scope) => {
         if (!isValidScope(scope)) {
           throw new Error(`Invalid scope: ${scope}}`);
         }
@@ -88,10 +88,10 @@ export const generateAccessTokenHandlerFactory: GenerateAccessTokenHandlerFactor
     async(req: GenerateAccessTokenRequest, res: ApiV3Response) => {
 
       const { user, body } = req;
-      const { expiredAt, description, scope } = body;
+      const { expiredAt, description, scopes } = body;
 
       try {
-        const tokenData = await AccessToken.generateToken(user._id, expiredAt, scope, description);
+        const tokenData = await AccessToken.generateToken(user._id, expiredAt, scopes, description);
 
         const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_CREATE };
         activityEvent.emit('update', res.locals.activity._id, parameters);

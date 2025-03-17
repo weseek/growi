@@ -3,7 +3,7 @@ import {
 } from '../../interfaces/scope';
 
 export const isValidScope = (scope: Scope): boolean => {
-  const scopeParts = scope.split(':').map(x => (x === '*' ? 'ALL' : x.toUpperCase()));
+  const scopeParts = scope.split(':').map(x => (x === ALL_SIGN ? 'ALL' : x.toUpperCase()));
   let obj: any = SCOPE;
   scopeParts.forEach((part) => {
     if (obj[part] == null) {
@@ -22,7 +22,7 @@ export const hasAllScope = (scope: Scope): scope is Scope => {
  * Returns all values of the scope object
  * For example, SCOPE.READ.USER.API.ALL returns ['read:user:api:access_token', 'read:user:api:api_token']
  */
-const getAllScopeValues = (scopeObj: any): Scope[] => {
+const getAllScopeValuesFromObj = (scopeObj: any): Scope[] => {
   const result: Scope[] = [];
 
   const traverse = (current: any): void => {
@@ -55,42 +55,51 @@ const getImpliedScopes = (scope: Scope): Scope[] => {
   return [];
 };
 
+export const extractAllScope = (scope: Scope): Scope[] => {
+  if (!hasAllScope(scope)) {
+    return [scope];
+  }
+  const result = [] as Scope[];
+  const scopeParts = scope.split(':').map(x => (x.toUpperCase()));
+  let obj: any = SCOPE;
+  scopeParts.forEach((part) => {
+    if (part === ALL_SIGN) {
+      return;
+    }
+    obj = obj[part];
+  });
+  getAllScopeValuesFromObj(obj).forEach((value) => {
+    result.push(value);
+  });
+  return result;
+};
+
 
 /**
- * Extracts all scopes from a given array of scopes
+ * Extracts scopes from a given array of scopes
  * And delete all scopes
- * For example, ['write:user:api:all']
+ * For example, [SCOPE.WRITE.USER.API.ALL] === ['write:user:api:all']
  * returns ['read:user:api:access_token',
  *          'read:user:api:api_token'
  *          'write:user:api:access_token',
- *        'write:user:api:api_token']
+ *          'write:user:api:api_token']
  */
 export const extractScopes = (scopes?: Scope[]): Scope[] => {
   if (scopes == null) {
     return [];
   }
+
   const result = new Set<Scope>(); // remove duplicates
   const impliedScopes = new Set<Scope>();
+
   scopes.forEach((scope) => {
     getImpliedScopes(scope).forEach((impliedScope) => {
       impliedScopes.add(impliedScope);
     });
   });
   impliedScopes.forEach((scope) => {
-    if (!hasAllScope(scope)) {
-      result.add(scope);
-      return;
-    }
-    const scopeParts = scope.split(':').map(x => (x.toUpperCase()));
-    let obj: any = SCOPE;
-    scopeParts.forEach((part) => {
-      if (part === ALL_SIGN) {
-        return;
-      }
-      obj = obj[part];
-    });
-    getAllScopeValues(obj).forEach((value) => {
-      result.add(value);
+    extractAllScope(scope).forEach((extractedScope) => {
+      result.add(extractedScope);
     });
   });
   const resultArray = Array.from(result.values());
