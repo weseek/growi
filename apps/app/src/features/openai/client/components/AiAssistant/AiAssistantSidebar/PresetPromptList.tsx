@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type Props = {
-  //
+  onClick: (presetPrompt: string) => void
 }
 
 const presetPrompts = [
@@ -11,8 +11,14 @@ const presetPrompts = [
   'correct',
 ];
 
-export const PresetPromptList: React.FC<Props> = () => {
+export const PresetPromptList: React.FC<Props> = ({ onClick }) => {
   const { t } = useTranslation();
+
+
+  const clickPresetPromptHandler = useCallback((presetPrompt: string) => {
+    onClick(t(`sidebar_ai_assistant.preset_prompt.${presetPrompt}.prompt`));
+  }, [onClick, t]);
+
 
   return (
     <div className="container py-4">
@@ -21,6 +27,7 @@ export const PresetPromptList: React.FC<Props> = () => {
           <button
             type="button"
             key={presetPrompt}
+            onClick={() => clickPresetPromptHandler(presetPrompt)}
             className="btn text-body-secondary p-3 rounded-3 border border-1"
           >
             <div className="d-flex align-items-center">
