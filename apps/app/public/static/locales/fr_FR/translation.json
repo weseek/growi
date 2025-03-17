@@ -507,11 +507,11 @@
     "preset_menu": {
       "summarize": {
         "title": "Résumer cet article'",
-        "prompt": ""
+        "prompt": "Veuillez résumer le contenu markdown"
       },
       "correct": {
         "title": "Corriger les erreurs du texte",
-        "prompt": ""
+        "prompt": "Veuillez corriger les erreurs dans le texte markdown"
       }
     }
   },

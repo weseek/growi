@@ -127,10 +127,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       : 'sidebar_ai_assistant.knowledge_assistant_placeholder');
   }, [form.formState.isSubmitting, isEditorAssistant, t]);
 
-  const clickQuickMenuHandler = useCallback((quickMenu: string) => {
-    // todo: https://redmine.weseek.co.jp/issues/163264
-  }, []);
-
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
@@ -302,6 +298,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       form.handleSubmit(submit)();
     }
   };
+
+  const clickQuickMenuHandler = useCallback(async(quickMenu: string) => {
+    await submit({ input: quickMenu });
+  }, [submit]);
 
   return (
     <>
