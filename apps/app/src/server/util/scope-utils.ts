@@ -55,6 +55,16 @@ const getImpliedScopes = (scope: Scope): Scope[] => {
   return [];
 };
 
+
+/**
+ * Extracts all scopes from a given array of scopes
+ * And delete all scopes
+ * For example, ['write:user:api:all']
+ * returns ['read:user:api:access_token',
+ *          'read:user:api:api_token'
+ *          'write:user:api:access_token',
+ *        'write:user:api:api_token']
+ */
 export const extractScopes = (scopes?: Scope[]): Scope[] => {
   if (scopes == null) {
     return [];
@@ -83,5 +93,7 @@ export const extractScopes = (scopes?: Scope[]): Scope[] => {
       result.add(value);
     });
   });
-  return Array.from(result.values());
+  const resultArray = Array.from(result.values());
+  resultArray.filter(scope => !hasAllScope(scope));
+  return resultArray;
 };
