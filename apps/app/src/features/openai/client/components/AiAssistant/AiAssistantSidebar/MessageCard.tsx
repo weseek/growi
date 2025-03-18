@@ -39,6 +39,7 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
     </NextLink>
   );
 };
+
 const AssistantMessageCard = ({ children }: { children: string }): JSX.Element => {
   const { t } = useTranslation();
 
@@ -51,7 +52,23 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
         <div>
           { children.length > 0
             ? (
-              <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
+              <>
+                <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
+                <div className="d-flex mt-2 justify-content-start">
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary me-2"
+                  >
+                    破棄
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary"
+                  >
+                    採用
+                  </button>
+                </div>
+              </>
             )
             : (
               <span className="text-thinking">
