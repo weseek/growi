@@ -42,6 +42,7 @@ import { generateGlobPatterns } from '../utils/generate-glob-patterns';
 import { getClient } from './client-delegator';
 import { openaiApiErrorHandler } from './openai-api-error-handler';
 import { replaceAnnotationWithPageLink } from './replace-annotation-with-page-link';
+import { setDefaultAiAssistant } from './set-default-ai-assistant';
 
 const { isDeepEquals } = deepEquals;
 
@@ -829,17 +830,17 @@ class OpenaiService implements IOpenaiService {
       this.createVectorStoreFileWithStream(newVectorStoreRelation, conditions);
     }
 
-    if (data.shareScope !== AiAssistantShareScope.PUBLIC_ONLY && aiAssistant.isDefault) {
-      await AiAssistantModel.setDefault(aiAssistant._id, false);
-    }
-
     const newData = {
       ...data,
       vectorStore: newVectorStoreRelation ?? aiAssistant.vectorStore,
     };
 
     aiAssistant.set({ ...newData });
-    const updatedAiAssistant = await aiAssistant.save();
+
+    let updatedAiAssistant: AiAssistantDocument = await aiAssistant.save();
+    if (data.shareScope !== AiAssistantShareScope.PUBLIC_ONLY && aiAssistant.isDefault) {
+      updatedAiAssistant = await setDefaultAiAssistant(aiAssistant._id, false);
+    }
 
     return updatedAiAssistant;
   }
