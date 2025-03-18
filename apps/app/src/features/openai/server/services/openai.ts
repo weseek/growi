@@ -829,10 +829,6 @@ class OpenaiService implements IOpenaiService {
       this.createVectorStoreFileWithStream(newVectorStoreRelation, conditions);
     }
 
-    if (data.shareScope !== AiAssistantShareScope.PUBLIC_ONLY && aiAssistant.isDefault) {
-      await AiAssistantModel.setDefault(aiAssistant._id, false);
-    }
-
     const newData = {
       ...data,
       vectorStore: newVectorStoreRelation ?? aiAssistant.vectorStore,
@@ -840,6 +836,10 @@ class OpenaiService implements IOpenaiService {
 
     aiAssistant.set({ ...newData });
     const updatedAiAssistant = await aiAssistant.save();
+
+    if (data.shareScope !== AiAssistantShareScope.PUBLIC_ONLY && aiAssistant.isDefault) {
+      await AiAssistantModel.setDefault(aiAssistant._id, false);
+    }
 
     return updatedAiAssistant;
   }
