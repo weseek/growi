@@ -12,7 +12,7 @@ import type { Scope } from '~/interfaces/scope';
 import loggerFactory from '~/utils/logger';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
-import { extractAllScope, extractScopes } from '../util/scope-utils';
+import { extractScopes } from '../util/scope-utils';
 
 const logger = loggerFactory('growi:models:access-token');
 
@@ -108,7 +108,7 @@ accessTokenSchema.statics.findUserIdByToken = async function(token: string, requ
   if (requiredScopes.length === 0) {
     return;
   }
-  const extractedScopes = requiredScopes.map(scope => extractAllScope(scope)).flat();
+  const extractedScopes = extractScopes(requiredScopes);
   return this.findOne({ tokenHash, expiredAt: { $gt: now }, scopes: { $all: extractedScopes } }).select('user');
 };
 
