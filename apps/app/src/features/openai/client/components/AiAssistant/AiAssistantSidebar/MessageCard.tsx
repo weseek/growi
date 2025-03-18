@@ -40,7 +40,7 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
   );
 };
 
-const AssistantMessageCard = ({ children }: { children: string }): JSX.Element => {
+const AssistantMessageCard = ({ children, showActionButtons }: { children: string, showActionButtons?: boolean }): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -54,20 +54,23 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
             ? (
               <>
                 <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
-                <div className="d-flex mt-2 justify-content-start">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary me-2"
-                  >
-                    破棄
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                  >
-                    採用
-                  </button>
-                </div>
+
+                {showActionButtons && (
+                  <div className="d-flex mt-2 justify-content-start">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary me-2"
+                    >
+                      破棄
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                    >
+                      採用
+                    </button>
+                  </div>
+                )}
               </>
             )
             : (
@@ -85,12 +88,13 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
 type Props = {
   role: 'user' | 'assistant',
   children: string,
+  showActionButtons?: boolean,
 }
 
 export const MessageCard = (props: Props): JSX.Element => {
-  const { role, children } = props;
+  const { role, children, showActionButtons } = props;
 
   return role === 'user'
     ? <UserMessageCard>{children}</UserMessageCard>
-    : <AssistantMessageCard>{children}</AssistantMessageCard>;
+    : <AssistantMessageCard showActionButtons={showActionButtons}>{children}</AssistantMessageCard>;
 };
