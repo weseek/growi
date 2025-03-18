@@ -2,6 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 
+import { SCOPE } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
@@ -20,7 +21,7 @@ export const getRelatedGroupsHandlerFactory: GetRelatedGroupsHandlerFactory = (c
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   return [
-    accessTokenParser, loginRequiredStrictly,
+    accessTokenParser([SCOPE.READ.USER.INFO]), loginRequiredStrictly,
     async(req: Req, res: ApiV3Response) => {
       try {
         const relatedGroups = await crowi.pageGrantService?.getUserRelatedGroups(req.user);

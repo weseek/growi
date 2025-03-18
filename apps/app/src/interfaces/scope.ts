@@ -39,6 +39,7 @@ export const ORIGINAL_SCOPE_USER = {
     share_link: {},
     bookmark: {},
     questionnaire: {},
+    attachment: {},
   },
 } as const;
 

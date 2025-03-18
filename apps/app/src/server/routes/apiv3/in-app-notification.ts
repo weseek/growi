@@ -3,6 +3,7 @@ import express from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { SCOPE } from '~/interfaces/scope';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 
@@ -24,7 +25,7 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  router.get('/list', accessTokenParser(), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.get('/list', accessTokenParser([SCOPE.READ.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;
@@ -79,7 +80,7 @@ module.exports = (crowi) => {
     return res.apiv3(serializedPaginationResult);
   });
 
-  router.get('/status', accessTokenParser(), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.get('/status', accessTokenParser([SCOPE.READ.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;
@@ -93,7 +94,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/open', accessTokenParser(), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.post('/open', accessTokenParser([SCOPE.WRITE.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;
@@ -110,22 +111,23 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/all-statuses-open', accessTokenParser(), loginRequiredStrictly, addActivity, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.put('/all-statuses-open', accessTokenParser([SCOPE.WRITE.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, addActivity,
+    async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const user = req.user!;
+      const user = req.user!;
 
-    try {
-      await inAppNotificationService.updateAllNotificationsAsOpened(user);
+      try {
+        await inAppNotificationService.updateAllNotificationsAsOpened(user);
 
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_IN_APP_NOTIFICATION_ALL_STATUSES_OPEN });
+        activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_IN_APP_NOTIFICATION_ALL_STATUSES_OPEN });
 
-      return res.apiv3();
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
+        return res.apiv3();
+      }
+      catch (err) {
+        return res.apiv3Err(err);
+      }
+    });
 
   return router;
 };
