@@ -149,7 +149,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
     // // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).toHaveBeenCalled();
+    expect(nextMock).not.toHaveBeenCalled();
   });
 
   it('should authenticate with write scope implying read scope', async() => {
