@@ -9,8 +9,10 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import { AiAssistantAccessScope } from '../../interfaces/ai-assistant';
 import AiAssistantModel from '../models/ai-assistant';
 import { getOpenaiService } from '../services/openai';
+import { setDefaultAiAssistant } from '../services/set-default-ai-assistant';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
 
@@ -49,7 +51,12 @@ export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi
         const { id } = req.params;
         const { isDefault } = req.body;
 
-        const updatedAiAssistant = await AiAssistantModel.setDefault(id, isDefault);
+        const aiAssistant = await AiAssistantModel.findOne({ _id: id, shareScope: AiAssistantAccessScope.PUBLIC_ONLY });
+        if (aiAssistant == null) {
+          return res.apiv3Err(new ErrorV3('The AiAssistant does not exist or is not public'), 404);
+        }
+
+        const updatedAiAssistant = await setDefaultAiAssistant(id, isDefault);
         return res.apiv3({ updatedAiAssistant });
       }
       catch (err) {
