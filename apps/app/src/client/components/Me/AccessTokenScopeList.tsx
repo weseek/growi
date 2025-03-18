@@ -6,13 +6,13 @@ import type { Scope } from '../../../interfaces/scope';
 
 
 interface scopeObject {
-  [key: string]: string | scopeObject;
+  [key: string]: Scope | scopeObject;
 }
 
 interface AccessTokenScopeListProps {
   scopeObject: scopeObject;
   register: UseFormRegisterReturn<'scopes'>;
-  disabledScopes: Scope[]
+  disabledScopes: Set<Scope>
   level?: number;
 }
 
@@ -33,13 +33,12 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
   return (
     <>
       {entries.map(([scopeKey, scopeValue], idx) => {
-        const isNestedObject = typeof scopeValue === 'object' && !Array.isArray(scopeValue);
         // Indent according to the level
         const indentationStyle = { marginLeft: `${(level + 1) * 20}px` };
         // Example: Insert <hr> only for levels 0 or 1, except for the first item
         const showHr = (level === 0 || level === 1) && idx !== 0;
 
-        if (isNestedObject) {
+        if (typeof scopeValue === 'object') {
           return (
             <div key={scopeKey}>
               {showHr && <hr className="my-1" />}
@@ -60,7 +59,6 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
             </div>
           );
         }
-
         // If it's a string, render a checkbox
         return (
           <div key={scopeKey} className="row my-1">
@@ -70,7 +68,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
                 style={indentationStyle}
                 type="checkbox"
                 id={scopeValue as string}
-                disabled={disabledScopes.has(scopeValue as string)} // 無効化
+                disabled={disabledScopes.has(scopeValue)}
                 value={scopeValue as string}
                 {...register}
               />

@@ -1,7 +1,8 @@
+import type { Scope } from '~/interfaces/scope';
 
 // Data structure for the final merged scopes
 interface ScopeMap {
-  [key: string]: string | ScopeMap;
+  [key: string]: Scope | ScopeMap;
 }
 
 // Input object with arbitrary action keys (e.g., READ, WRITE)
@@ -35,7 +36,7 @@ function parseSubScope(
       for (const action of actions) {
         const val = subObjForActions[action]?.[ck];
         if (typeof val === 'string') {
-          result[`${action.toLowerCase()}:${parentKey.toLowerCase()}:all`] = val;
+          result[`${action.toLowerCase()}:${parentKey.toLowerCase()}:all`] = val as Scope;
         }
       }
       continue;
@@ -75,7 +76,7 @@ export function parseScopes({ scopes, isAdmin = false }: { scopes: ScopesInput ;
       for (const action of actions) {
         const val = scopes[action]?.[key];
         if (typeof val === 'string') {
-          allObj[`${action.toLowerCase()}:all`] = val;
+          allObj[`${action.toLowerCase()}:all`] = val as Scope;
         }
       }
       result.ALL = allObj;
