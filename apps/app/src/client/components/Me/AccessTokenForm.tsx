@@ -112,7 +112,16 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
             <label htmlFor="scopes" className="form-label">
               {t('page_me_access_token.scope')}
             </label>
-            <AccessTokenScopeSelect register={register('scopes')} />
+            <AccessTokenScopeSelect
+              register={register('scopes', {
+                required: 'Please select at least one scope',
+              })}
+            />
+            {errors.scopes && (
+              <div className="invalid-feedback">
+                {errors.scopes.message}
+              </div>
+            )}
 
             <div className="form-text mb-2">
               {t('page_me_access_token.form.scope_desc')}
