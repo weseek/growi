@@ -65,7 +65,7 @@ export const AccessTokenScopeSelect: React.FC<AccessTokenScopeSelectProps> = ({ 
     });
 
     setDisabledScopes(disabledSet);
-  }, [watch, Scopes]);
+  }, [watch]);
 
   return (
     <div className="border rounded">
