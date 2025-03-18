@@ -22,7 +22,7 @@ type AccessTokenScopeSelectProps = {
 export const AccessTokenScopeSelect: React.FC<AccessTokenScopeSelectProps> = ({ register }) => {
   return (
     <div className="border rounded">
-      <AccessTokenScopeList scopeObject={parseScopes(SCOPE)} register={register} />
+      <AccessTokenScopeList scopeObject={parseScopes({ scopes: SCOPE, isAdmin: true })} register={register} />
     </div>
   );
 };

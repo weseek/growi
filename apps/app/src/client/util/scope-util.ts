@@ -53,7 +53,7 @@ function parseSubScope(
   return result;
 }
 
-export function parseScopes(scopes: ScopesInput): ScopeMap {
+export function parseScopes({ scopes, isAdmin = false }: { scopes: ScopesInput ; isAdmin?: boolean }): ScopeMap {
   const actions = Object.keys(scopes);
   const topKeys = new Set<string>();
 
@@ -65,6 +65,11 @@ export function parseScopes(scopes: ScopesInput): ScopeMap {
   const result: ScopeMap = {};
 
   for (const key of topKeys) {
+    // Skip 'ADMIN' key if isAdmin is true
+    if (!isAdmin && key === 'ADMIN') {
+      continue;
+    }
+
     if (key === 'ALL') {
       const allObj: ScopeMap = {};
       for (const action of actions) {
