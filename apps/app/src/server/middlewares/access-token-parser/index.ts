@@ -6,13 +6,11 @@ import { parserForAccessToken } from './access-token';
 import { parserForApiToken } from './api-token';
 import type { AccessTokenParserReq } from './interfaces';
 
-export const accessTokenParser = (scopes?: Scope[]) => {
+export const accessTokenParser = (scopes: Scope[]) => {
   return async(req: AccessTokenParserReq, res: Response, next: NextFunction): Promise<void> => {
     // TODO: comply HTTP header of RFC6750 / Authorization: Bearer
 
-    if (scopes != null) {
-      parserForAccessToken(scopes)(req, res, next);
-    }
+    parserForAccessToken(scopes)(req, res, next);
     parserForApiToken(req, res, next);
 
     return next();
