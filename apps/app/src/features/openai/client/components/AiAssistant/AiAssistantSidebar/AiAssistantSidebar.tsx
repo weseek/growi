@@ -303,6 +303,14 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     await submit({ input: quickMenu });
   }, [submit]);
 
+  const clickAdoptHandler = useCallback(() => {
+    console.log('clickAdoptHandler');
+  }, []);
+
+  const clickDiscardHandler = useCallback(() => {
+    console.log('clickDiscardHandler');
+  }, []);
+
   return (
     <>
       <div className="d-flex flex-column vh-100">
@@ -329,6 +337,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                     key={message.id}
                     role={message.isUserMessage ? 'user' : 'assistant'}
                     showActionButtons={isEditorAssistant}
+                    onAdopt={clickAdoptHandler}
+                    onDiscard={clickDiscardHandler}
                   >
                     {message.content}
                   </MessageCard>

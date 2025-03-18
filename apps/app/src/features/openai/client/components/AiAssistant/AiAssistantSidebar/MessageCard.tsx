@@ -40,7 +40,14 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
   );
 };
 
-const AssistantMessageCard = ({ children, showActionButtons }: { children: string, showActionButtons?: boolean }): JSX.Element => {
+const AssistantMessageCard = ({
+  children, showActionButtons, onAdopt, onDiscard,
+}: {
+  children: string,
+  showActionButtons?: boolean
+  onAdopt?: () => void,
+  onDiscard?: () => void,
+}): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -60,12 +67,14 @@ const AssistantMessageCard = ({ children, showActionButtons }: { children: strin
                     <button
                       type="button"
                       className="btn btn-outline-secondary me-2"
+                      onClick={onDiscard}
                     >
                       破棄
                     </button>
                     <button
                       type="button"
                       className="btn btn-outline-secondary"
+                      onClick={onAdopt}
                     >
                       採用
                     </button>
@@ -89,12 +98,23 @@ type Props = {
   role: 'user' | 'assistant',
   children: string,
   showActionButtons?: boolean,
+  onDiscard?: () => void,
+  onAdopt?: () => void,
 }
 
 export const MessageCard = (props: Props): JSX.Element => {
-  const { role, children, showActionButtons } = props;
+  const {
+    role, children, showActionButtons, onAdopt, onDiscard,
+  } = props;
 
   return role === 'user'
     ? <UserMessageCard>{children}</UserMessageCard>
-    : <AssistantMessageCard showActionButtons={showActionButtons}>{children}</AssistantMessageCard>;
+    : (
+      <AssistantMessageCard
+        showActionButtons={showActionButtons}
+        onAdopt={onAdopt}
+        onDiscard={onDiscard}
+      >{children}
+      </AssistantMessageCard>
+    );
 };
