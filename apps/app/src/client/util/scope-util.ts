@@ -17,7 +17,7 @@ function parseSubScope(
 
   for (const action of actions) {
     if (typeof subObjForActions[action] === 'string') {
-      result[`${action.toLowerCase()}:${parentKey.toLowerCase()}:all`] = subObjForActions[action];
+      result[`${action.toLowerCase()}:${parentKey.toLowerCase()}`] = subObjForActions[action];
       subObjForActions[action] = undefined;
     }
   }
