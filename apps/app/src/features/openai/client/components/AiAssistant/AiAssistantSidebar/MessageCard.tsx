@@ -69,14 +69,14 @@ const AssistantMessageCard = ({
                       className="btn btn-outline-secondary me-2"
                       onClick={onDiscard}
                     >
-                      破棄
+                      {t('sidebar_ai_assistant.discard')}
                     </button>
                     <button
                       type="button"
                       className="btn btn-outline-secondary"
                       onClick={onAdopt}
                     >
-                      採用
+                      {t('sidebar_ai_assistant.adopt')}
                     </button>
                   </div>
                 )}
