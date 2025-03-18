@@ -189,7 +189,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
     expect(nextMock).toHaveBeenCalled();
   });
 
-  it('should authenticate with no scopes', async() => {
+  it('should authenticate with specific scope', async() => {
     // arrange
     const reqMock = mock<AccessTokenParserReq>({
       user: undefined,
@@ -255,7 +255,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
     reqMock.query.access_token = token;
     await accessTokenParser([SCOPE.WRITE.USER.INFO])(reqMock, resMock, nextMock);
 
-    // assert
+    // // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
     expect(nextMock).toHaveBeenCalled();
@@ -322,7 +322,7 @@ describe('access-token-parser middleware for access token with scopes', () => {
 
     // act - try to access with read:user:info scope
     reqMock.query.access_token = token;
-    await accessTokenParser([SCOPE.READ.USER.INFO])(reqMock, resMock, nextMock);
+    await accessTokenParser([SCOPE.READ.USER.INFO, SCOPE.READ.USER.API.ACCESS_TOKEN])(reqMock, resMock, nextMock);
 
     // assert
     expect(reqMock.user).toBeDefined();

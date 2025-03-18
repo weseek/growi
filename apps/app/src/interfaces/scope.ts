@@ -1,5 +1,5 @@
 // If you want to add a new scope, you only need to add a new key to the ORIGINAL_SCOPE object.
-export const ORIGINAL_SCOPE = {
+export const ORIGINAL_SCOPE_ADMIN = {
   admin: {
     top: {},
     app: {},
@@ -19,6 +19,9 @@ export const ORIGINAL_SCOPE = {
     ai_integration: {},
     full_text_search: {},
   },
+} as const;
+
+export const ORIGINAL_SCOPE_USER = {
   user: {
     info: {},
     external_account: {},
@@ -32,6 +35,11 @@ export const ORIGINAL_SCOPE = {
   },
   base: {
   },
+} as const;
+
+export const ORIGINAL_SCOPE = {
+  ...ORIGINAL_SCOPE_ADMIN,
+  ...ORIGINAL_SCOPE_USER,
 } as const;
 
 export const ACTION = {
