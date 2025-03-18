@@ -304,11 +304,11 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [submit]);
 
   const clickAdoptHandler = useCallback(() => {
-    console.log('clickAdoptHandler');
+    // todo: implement
   }, []);
 
   const clickDiscardHandler = useCallback(() => {
-    console.log('clickDiscardHandler');
+    // todo: implement
   }, []);
 
   return (
