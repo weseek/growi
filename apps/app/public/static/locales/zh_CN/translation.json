@@ -499,6 +499,8 @@
     "budget_exceeded_for_growi_cloud": "您已达到 OpenAI API 使用上限。如需再次使用知识助手，请从GROWI.cloud管理页面为托管用户添加点数，或从OpenAI计费页面为自有用户添加点数。",
     "error_message": "错误",
     "show_error_detail": "显示详情",
+    "discard": "丢弃",
+    "adopt": "采纳",
     "preset_menu": {
       "summarize": {
         "title": "为此文章创建摘要",

@@ -303,6 +303,14 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     await submit({ input: quickMenu });
   }, [submit]);
 
+  const clickAdoptHandler = useCallback(() => {
+    // todo: implement
+  }, []);
+
+  const clickDiscardHandler = useCallback(() => {
+    // todo: implement
+  }, []);
+
   return (
     <>
       <div className="d-flex flex-column vh-100">
@@ -325,7 +333,15 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             ? (
               <div className="vstack gap-4 pb-2">
                 { messageLogs.map(message => (
-                  <MessageCard key={message.id} role={message.isUserMessage ? 'user' : 'assistant'}>{message.content}</MessageCard>
+                  <MessageCard
+                    key={message.id}
+                    role={message.isUserMessage ? 'user' : 'assistant'}
+                    showActionButtons={isEditorAssistant}
+                    onAdopt={clickAdoptHandler}
+                    onDiscard={clickDiscardHandler}
+                  >
+                    {message.content}
+                  </MessageCard>
                 )) }
                 { generatingAnswerMessage != null && (
                   <MessageCard role="assistant">{generatingAnswerMessage.content}</MessageCard>
