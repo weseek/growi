@@ -33,6 +33,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
     register,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm<FormInputs>({
     defaultValues: {
       expiredAt: defaultExpiredAtStr,
@@ -113,6 +114,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
               {t('page_me_access_token.scope')}
             </label>
             <AccessTokenScopeSelect
+              watch={watch('scopes')}
               register={register('scopes', {
                 required: 'Please select at least one scope',
               })}

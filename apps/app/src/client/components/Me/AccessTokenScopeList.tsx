@@ -2,6 +2,9 @@ import React from 'react';
 
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
+import type { Scope } from '../../../interfaces/scope';
+
+
 interface scopeObject {
   [key: string]: string | scopeObject;
 }
@@ -9,6 +12,7 @@ interface scopeObject {
 interface AccessTokenScopeListProps {
   scopeObject: scopeObject;
   register: UseFormRegisterReturn<'scopes'>;
+  disabledScopes: Scope[]
   level?: number;
 }
 
@@ -18,8 +22,11 @@ interface AccessTokenScopeListProps {
 export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
   scopeObject,
   register,
+  disabledScopes,
   level = 0,
 }) => {
+
+
   // Convert object into an array to determine "first vs. non-first" elements
   const entries = Object.entries(scopeObject);
 
@@ -48,6 +55,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
                 scopeObject={scopeValue as scopeObject}
                 register={register}
                 level={level + 1}
+                disabledScopes={disabledScopes}
               />
             </div>
           );
@@ -62,6 +70,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
                 style={indentationStyle}
                 type="checkbox"
                 id={scopeValue as string}
+                disabled={disabledScopes.has(scopeValue as string)} // 無効化
                 value={scopeValue as string}
                 {...register}
               />
