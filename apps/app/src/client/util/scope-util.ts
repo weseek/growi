@@ -66,7 +66,7 @@ export function parseScopes({ scopes, isAdmin = false }: { scopes: ScopesInput ;
 
   for (const key of topKeys) {
     // Skip 'ADMIN' key if isAdmin is true
-    if (!isAdmin && key === 'ADMIN') {
+    if (!isAdmin && (key === 'ADMIN' || key === 'ALL')) {
       continue;
     }
 
