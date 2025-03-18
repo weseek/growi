@@ -1,5 +1,4 @@
 import { type IGrantedGroup, GroupType } from '@growi/core';
-import createError from 'http-errors';
 import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
@@ -112,9 +111,9 @@ const schema = new Schema<AiAssistantDocument>(
 
 
 schema.statics.setDefault = async function(id: string, isDefault: boolean): Promise<AiAssistantDocument> {
-  const aiAssistant = await this.findOne({ _id: id, shareScope: AiAssistantAccessScope.PUBLIC_ONLY });
+  const aiAssistant = await this.findById(id);
   if (aiAssistant == null) {
-    throw createError(404, 'AiAssistant document does not exist');
+    throw new Error('AiAssistant not found');
   }
 
   await this.updateMany({ isDefault: true }, { isDefault: false });
