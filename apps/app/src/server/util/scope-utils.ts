@@ -71,7 +71,7 @@ export const extractAllScope = (scope: Scope): Scope[] => {
   getAllScopeValuesFromObj(obj).forEach((value) => {
     result.push(value);
   });
-  return result;
+  return result.filter(scope => !hasAllScope(scope));
 };
 
 
@@ -102,6 +102,5 @@ export const extractScopes = (scopes?: Scope[]): Scope[] => {
       result.add(extractedScope);
     });
   });
-  const resultArray = Array.from(result.values()).filter(scope => !hasAllScope(scope));
-  return resultArray;
+  return Array.from(result);
 };
