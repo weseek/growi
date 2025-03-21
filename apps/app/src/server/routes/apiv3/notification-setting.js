@@ -176,7 +176,7 @@ const validator = {
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
+  const Strictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
@@ -208,7 +208,7 @@ module.exports = (crowi) => {
    *                      description: notification params
    *                      $ref: '#/components/schemas/NotificationParams'
    */
-  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.EXTERNAL_NOTIFICATION]), loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.EXTERNAL_NOTIFICATION]), Strictly, adminRequired, async(req, res) => {
 
     const notificationParams = {
       // status of slack intagration
@@ -260,7 +260,7 @@ module.exports = (crowi) => {
   *                            description: user notification settings
   */
   // eslint-disable-next-line max-len
-  router.post('/user-notification', accessTokenParser([SCOPE.WRITE.ADMIN.EXTERNAL_NOTIFICATION]), loginRequiredStrictly, adminRequired, addActivity, validator.userNotification, apiV3FormValidator, async(req, res) => {
+  router.post('/user-notification', accessTokenParser([SCOPE.WRITE.ADMIN.EXTERNAL_NOTIFICATION]), Strictly, adminRequired, addActivity, validator.userNotification, apiV3FormValidator, async(req, res) => {
     const { pathPattern, channel } = req.body;
 
     try {
@@ -309,7 +309,7 @@ module.exports = (crowi) => {
    */
   router.delete('/user-notification/:id',
     accessTokenParser([SCOPE.WRITE.ADMIN.EXTERNAL_NOTIFICATION]),
-    loginRequiredStrictly,
+    Strictly,
     adminRequired,
     addActivity,
     async(req, res) => {
@@ -359,7 +359,7 @@ module.exports = (crowi) => {
    */
   router.get('/global-notification/:id',
     accessTokenParser([SCOPE.READ.ADMIN.EXTERNAL_NOTIFICATION]),
-    loginRequiredStrictly,
+    Strictly,
     adminRequired,
     validator.globalNotification,
     async(req, res) => {
@@ -409,7 +409,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.post('/global-notification',
     accessTokenParser([SCOPE.WRITE.ADMIN.EXTERNAL_NOTIFICATION]),
-    loginRequiredStrictly,
+    Strictly,
     adminRequired,
     addActivity,
     validator.globalNotification,
@@ -483,7 +483,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.put('/global-notification/:id',
     accessTokenParser([SCOPE.WRITE.ADMIN.EXTERNAL_NOTIFICATION]),
-    loginRequiredStrictly,
+    Strictly,
     adminRequired,
     addActivity,
     validator.globalNotification,
@@ -568,7 +568,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.put('/notify-for-page-grant',
     accessTokenParser([SCOPE.WRITE.ADMIN.EXTERNAL_NOTIFICATION]),
-    loginRequiredStrictly,
+    Strictly,
     adminRequired,
     addActivity,
     validator.notifyForPageGrant,
@@ -640,7 +640,7 @@ module.exports = (crowi) => {
    */
   router.put('/global-notification/:id/enabled',
     accessTokenParser([SCOPE.WRITE.ADMIN.EXTERNAL_NOTIFICATION]),
-    loginRequiredStrictly,
+    Strictly,
     adminRequired,
     addActivity,
     async(req, res) => {
@@ -700,7 +700,7 @@ module.exports = (crowi) => {
   */
   router.delete('/global-notification/:id',
     accessTokenParser([SCOPE.WRITE.ADMIN.EXTERNAL_NOTIFICATION]),
-    loginRequiredStrictly,
+    Strictly,
     adminRequired,
     addActivity,
     async(req, res) => {

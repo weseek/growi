@@ -11,6 +11,8 @@ import { AttachmentType } from '../../interfaces/attachment';
 import { generateCertifyBrandLogoMiddleware } from '../../middlewares/certify-brand-logo';
 import { Attachment } from '../../models/attachment';
 import ApiResponse from '../../util/apiResponse';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import {SCOPE} from '~/interfaces/scope';
 
 import { getActionFactory } from './get';
 
@@ -25,7 +27,7 @@ export const getBrandLogoRouterFactory = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-  router.get('/brand-logo', certifyBrandLogo, loginRequired, async(req: CrowiRequest, res: Response) => {
+  router.get('/brand-logo', certifyBrandLogo, accessTokenParser([SCOPE.READ.BASE.ATTACHMENT]), loginRequired, async(req: CrowiRequest, res: Response) => {
     const brandLogoAttachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
 
     if (brandLogoAttachment == null) {

@@ -8,9 +8,7 @@ import type {
 import mongoose from 'mongoose';
 
 import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
-import { SCOPE } from '~/interfaces/scope';
 import { ResponseMode, type ExpressHttpHeader, type RespondOptions } from '~/server/interfaces/attachment';
-import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import {
   type FileUploader,
   toExpressHttpHeaders, ContentHeaders, applyHeaders,
