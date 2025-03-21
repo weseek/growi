@@ -8,7 +8,9 @@ import type {
 import mongoose from 'mongoose';
 
 import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
+import { SCOPE } from '~/interfaces/scope';
 import { ResponseMode, type ExpressHttpHeader, type RespondOptions } from '~/server/interfaces/attachment';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import {
   type FileUploader,
   toExpressHttpHeaders, ContentHeaders, applyHeaders,
@@ -174,7 +176,8 @@ export const getRouterFactory = (crowi: Crowi): Router => {
 
   // note: retrieveAttachmentFromIdParam requires `req.params.id`
   router.get<{ id: string }>('/:id([0-9a-z]{24})',
-    certifySharedPageAttachmentMiddleware, loginRequired,
+    certifySharedPageAttachmentMiddleware,
+    loginRequired,
     retrieveAttachmentFromIdParam,
 
     (req: GetRequest, res: GetResponse) => {
