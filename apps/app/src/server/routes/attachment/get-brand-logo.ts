@@ -4,6 +4,8 @@ import type {
 } from 'express';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { SCOPE } from '~/interfaces/scope';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
@@ -11,8 +13,6 @@ import { AttachmentType } from '../../interfaces/attachment';
 import { generateCertifyBrandLogoMiddleware } from '../../middlewares/certify-brand-logo';
 import { Attachment } from '../../models/attachment';
 import ApiResponse from '../../util/apiResponse';
-import { accessTokenParser } from '~/server/middlewares/access-token-parser';
-import {SCOPE} from '~/interfaces/scope';
 
 import { getActionFactory } from './get';
 

@@ -1033,28 +1033,29 @@ module.exports = (crowi) => {
    *          200:
    *            description: success send new password email
    */
-  router.put('/reset-password-email', accessTokenParser([SCOPE.WRITE.ADMIN.USER_MANAGEMENT]), loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
-    const { id } = req.body;
+  router.put('/reset-password-email', accessTokenParser([SCOPE.WRITE.ADMIN.USER_MANAGEMENT]), loginRequiredStrictly, adminRequired, addActivity,
+    async(req, res) => {
+      const { id } = req.body;
 
-    try {
-      const user = await User.findById(id);
-      if (user == null) {
-        throw new Error('User not found');
+      try {
+        const user = await User.findById(id);
+        if (user == null) {
+          throw new Error('User not found');
+        }
+        const userInfo = {
+          email: user.email,
+          password: req.body.newPassword,
+        };
+
+        await sendEmailByUser(userInfo);
+        return res.apiv3();
       }
-      const userInfo = {
-        email: user.email,
-        password: req.body.newPassword,
-      };
-
-      await sendEmailByUser(userInfo);
-      return res.apiv3();
-    }
-    catch (err) {
-      const msg = err.message;
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg));
-    }
-  });
+      catch (err) {
+        const msg = err.message;
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg));
+      }
+    });
 
   /**
    * @swagger
@@ -1085,29 +1086,30 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: email and reasons for email sending failure
    */
-  router.put('/send-invitation-email', accessTokenParser([SCOPE.WRITE.ADMIN.USER_MANAGEMENT]), loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
-    const { id } = req.body;
+  router.put('/send-invitation-email', accessTokenParser([SCOPE.WRITE.ADMIN.USER_MANAGEMENT]), loginRequiredStrictly, adminRequired, addActivity,
+    async(req, res) => {
+      const { id } = req.body;
 
-    try {
-      const user = await User.findById(id);
-      const newPassword = await User.resetPasswordByRandomString(id);
-      const userList = [{
-        email: user.email,
-        password: newPassword,
-        user: { id },
-      }];
-      const sendEmail = await sendEmailByUserList(userList);
-      // return null if absent
+      try {
+        const user = await User.findById(id);
+        const newPassword = await User.resetPasswordByRandomString(id);
+        const userList = [{
+          email: user.email,
+          password: newPassword,
+          user: { id },
+        }];
+        const sendEmail = await sendEmailByUserList(userList);
+        // return null if absent
 
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_SEND_INVITATION_EMAIL });
+        activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_SEND_INVITATION_EMAIL });
 
-      return res.apiv3({ failedToSendEmail: sendEmail.failedToSendEmailList[0] });
-    }
-    catch (err) {
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(err));
-    }
-  });
+        return res.apiv3({ failedToSendEmail: sendEmail.failedToSendEmailList[0] });
+      }
+      catch (err) {
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(err));
+      }
+    });
 
   /**
    * @swagger
