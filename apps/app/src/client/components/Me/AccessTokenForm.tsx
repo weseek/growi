@@ -115,7 +115,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
               {t('page_me_access_token.scope')}
             </label>
             <AccessTokenScopeSelect
-              watch={watch('scopes')}
+              selectedScopes={watch('scopes')}
               register={register('scopes', {
                 required: t('input_validation.message.required', { param: t('page_me_access_token.scope') }),
               })}

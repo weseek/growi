@@ -1,4 +1,5 @@
 import type { Scope } from '~/interfaces/scope';
+import { ALL_SIGN } from '~/interfaces/scope';
 
 // Data structure for the final merged scopes
 interface ScopeMap {
@@ -89,6 +90,59 @@ export function parseScopes({ scopes, isAdmin = false }: { scopes: ScopesInput ;
       result[key] = parseSubScope(key, subObjForActions, actions);
     }
   }
+
+  return result;
+}
+
+/**
+ * Determines which scopes should be disabled based on wildcard selections
+ * @param selectedScopes Array of currently selected scopes
+ * @param availableScopes Array of all available scopes
+ * @returns Set of scopes that should be disabled
+ */
+export function getDisabledScopes(selectedScopes: Scope[], availableScopes: string[]): Set<Scope> {
+  const disabledSet = new Set<Scope>();
+
+
+  // If no selected scopes, return empty set
+  if (!selectedScopes || selectedScopes.length === 0) {
+    return disabledSet;
+  }
+
+  selectedScopes.forEach((scope) => {
+    // Check if the scope is in the form `xxx:*`
+    if (scope.endsWith(`:${ALL_SIGN}`)) {
+      // Convert something like `read:*` into the prefix `read:`
+      const prefix = scope.replace(`:${ALL_SIGN}`, ':');
+
+      // Disable all scopes that start with the prefix (but are not the selected scope itself)
+      availableScopes.forEach((s: Scope) => {
+        if (s.startsWith(prefix) && s !== scope) {
+          disabledSet.add(s);
+        }
+      });
+    }
+  });
+
+  return disabledSet;
+}
+
+/**
+ * Extracts all scope strings from a nested ScopeMap object
+ * @param obj The scope object to extract from
+ * @returns Array of all scope strings
+ */
+export function extractScopes(obj: Record<string, any>): string[] {
+  let result: string[] = [];
+
+  Object.values(obj).forEach((value) => {
+    if (typeof value === 'string') {
+      result.push(value);
+    }
+    else if (typeof value === 'object' && !Array.isArray(value)) {
+      result = result.concat(extractScopes(value));
+    }
+  });
 
   return result;
 }

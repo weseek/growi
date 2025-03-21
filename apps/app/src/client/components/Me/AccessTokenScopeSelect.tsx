@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
-import { parseScopes } from '~/client/util/scope-util';
+import { extractScopes, getDisabledScopes, parseScopes } from '~/client/util/scope-util';
 import { useIsAdmin } from '~/stores-universal/context';
 
 import type { Scope } from '../../../interfaces/scope';
@@ -16,56 +16,23 @@ import { AccessTokenScopeList } from './AccessTokenScopeList';
 type AccessTokenScopeSelectProps = {
   /** React Hook Form's register function for a field named "scopes" */
   register: UseFormRegisterReturn<'scopes'>;
-  watch: string[];
+  selectedScopes: Scope[];
 };
 
 /**
  * Displays a list of permissions in a recursive, nested checkbox interface.
  */
-export const AccessTokenScopeSelect: React.FC<AccessTokenScopeSelectProps> = ({ register, watch }) => {
+export const AccessTokenScopeSelect: React.FC<AccessTokenScopeSelectProps> = ({ register, selectedScopes }) => {
   const [disabledScopes, setDisabledScopes] = useState<Set<Scope>>(new Set());
   const { data: isAdmin } = useIsAdmin();
-  const ScopesMap = parseScopes({ scopes: SCOPE, isAdmin });
 
-  const extractScopes = (obj: Record<string, any>): string[] => {
-    let result: string[] = [];
-
-    Object.values(obj).forEach((value) => {
-      if (typeof value === 'string') {
-        result.push(value);
-      }
-      else if (typeof value === 'object' && !Array.isArray(value)) {
-        result = result.concat(extractScopes(value));
-      }
-    });
-
-    return result;
-  };
-  const Scopes: string[] = extractScopes(ScopesMap);
+  const ScopesMap = useMemo(() => parseScopes({ scopes: SCOPE, isAdmin }), [isAdmin]);
+  const extractedScopes = useMemo(() => extractScopes(ScopesMap), [ScopesMap]);
 
   useEffect(() => {
-    const selectedScopes = watch || [];
-
-    // Create a set of scopes to disable based on prefixes
-    const disabledSet = new Set<Scope>();
-
-    selectedScopes.forEach((scope) => {
-      // Check if the scope is in the form `xxx:*`
-      if (scope.endsWith(':*')) {
-        // Convert something like `read:*` into the prefix `read:`
-        const prefix = scope.replace(':*', ':');
-
-        // Disable all scopes that start with the prefix (but are not the selected scope itself)
-        Scopes.forEach((s:Scope) => {
-          if (s.startsWith(prefix) && s !== scope) {
-            disabledSet.add(s);
-          }
-        });
-      }
-    });
-
+    const disabledSet = getDisabledScopes(selectedScopes, extractedScopes);
     setDisabledScopes(disabledSet);
-  }, [watch]);
+  }, [selectedScopes, extractedScopes]);
 
   return (
     <div className="border rounded">
