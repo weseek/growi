@@ -96,9 +96,6 @@ export function parseScopes({ scopes, isAdmin = false }: { scopes: ScopesInput ;
 
 /**
  * Determines which scopes should be disabled based on wildcard selections
- * @param selectedScopes Array of currently selected scopes
- * @param availableScopes Array of all available scopes
- * @returns Set of scopes that should be disabled
  */
 export function getDisabledScopes(selectedScopes: Scope[], availableScopes: string[]): Set<Scope> {
   const disabledSet = new Set<Scope>();
@@ -129,8 +126,6 @@ export function getDisabledScopes(selectedScopes: Scope[], availableScopes: stri
 
 /**
  * Extracts all scope strings from a nested ScopeMap object
- * @param obj The scope object to extract from
- * @returns Array of all scope strings
  */
 export function extractScopes(obj: Record<string, any>): string[] {
   let result: string[] = [];
