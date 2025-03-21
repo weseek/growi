@@ -318,6 +318,9 @@ export const CONFIG_KEYS = [
   'env:useOnlyEnvVars:gcs',
   'env:useOnlyEnvVars:azure',
 
+  // Access Token Settings
+  'accessToken:deletionCronExpression',
+  'accessToken:deletionCronMaxMinutesUntilRequest',
 ] as const;
 
 
@@ -325,6 +328,16 @@ export type ConfigKey = (typeof CONFIG_KEYS)[number];
 
 
 export const CONFIG_DEFINITIONS = {
+  // Access Token Settings
+  'accessToken:deletionCronExpression': defineConfig<string>({
+    envVarName: 'ACCESS_TOKEN_DELETION_CRON_EXPRESSION',
+    defaultValue: '0 15 * * *',
+  }),
+  'accessToken:deletionCronMaxMinutesUntilRequest': defineConfig<number>({
+    envVarName: 'ACCESS_TOKEN_DELETION_CRON_MAX_MINUTES_UNTIL_REQUEST',
+    defaultValue: 30,
+  }),
+
   // Auto Install Settings
   'autoInstall:adminUsername': defineConfig<string | undefined>({
     envVarName: 'AUTO_INSTALL_ADMIN_USERNAME',

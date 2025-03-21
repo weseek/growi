@@ -13,6 +13,7 @@ import { LdapUserGroupSyncService } from '~/features/external-user-group/server/
 import { startCronIfEnabled as startOpenaiCronIfEnabled } from '~/features/openai/server/services/cron';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
+import { startCron as startAccessTokenCron } from '~/server/service/access-token';
 import { getGrowiVersion } from '~/utils/growi-version';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
@@ -359,6 +360,7 @@ Crowi.prototype.setupCron = function() {
   this.questionnaireCronService.startCron();
 
   startOpenaiCronIfEnabled();
+  startAccessTokenCron();
 };
 
 Crowi.prototype.setupQuestionnaireService = function() {
