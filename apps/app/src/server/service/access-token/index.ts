@@ -1,1 +1,1 @@
-export { AccessTokenDeletionCronService, startCron } from './access-token-deletion-cron';
+export { startCron } from './access-token-deletion-cron';
