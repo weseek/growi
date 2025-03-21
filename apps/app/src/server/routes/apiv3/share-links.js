@@ -5,7 +5,7 @@ import express from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { SCOPE } from '~/interfaces/scope';
-import { accessTokenParser } from '~/server/middlewares/access-token-parser/access-token-parser';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';

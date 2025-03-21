@@ -207,7 +207,8 @@ module.exports = (crowi: Crowi): Router => {
       }
     });
 
-  router.get('/:id/external-user-group-relations', accessTokenParser([SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT]), loginRequiredStrictly, adminRequired,
+  // TODO: add accessTokenParser([SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT]) before loginRequiredStrictly
+  router.get('/:id/external-user-group-relations', loginRequiredStrictly, adminRequired,
     async(req, res: ApiV3Response) => {
       const { id } = req.params;
 

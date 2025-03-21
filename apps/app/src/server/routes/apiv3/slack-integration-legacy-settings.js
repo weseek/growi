@@ -4,7 +4,7 @@ import { body } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { SCOPE } from '~/interfaces/scope';
-import { accessTokenParser } from '~/server/middlewares/access-token-parser/access-token-parser';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
