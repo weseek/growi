@@ -1,0 +1,8 @@
+
+.indentation {
+  @for $i from 1 through 10 {
+    &-level-#{$i} {
+      margin-left: $i * 20px;
+    }
+  }
+}
