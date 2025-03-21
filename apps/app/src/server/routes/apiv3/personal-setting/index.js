@@ -5,6 +5,7 @@ import { body } from 'express-validator';
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { SCOPE } from '~/interfaces/scope';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import loggerFactory from '~/utils/logger';
 
@@ -151,7 +152,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.get('/', accessTokenParser(), loginRequiredStrictly, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.USER.INFO]), loginRequiredStrictly, async(req, res) => {
     const { username } = req.user;
     try {
       const user = await User.findUserByUsername(username);
@@ -189,7 +190,7 @@ module.exports = (crowi) => {
    *                    isPasswordSet:
    *                      type: boolean
    */
-  router.get('/is-password-set', accessTokenParser(), loginRequiredStrictly, async(req, res) => {
+  router.get('/is-password-set', accessTokenParser([SCOPE.READ.USER.PASSWORD]), loginRequiredStrictly, async(req, res) => {
     const { username } = req.user;
 
     try {
@@ -231,7 +232,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/', accessTokenParser(), loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser([SCOPE.WRITE.USER.INFO]), loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator, async(req, res) => {
 
     try {
       const user = await User.findOne({ _id: req.user.id });
@@ -282,22 +283,24 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/image-type', accessTokenParser(), loginRequiredStrictly, addActivity, validator.imageType, apiV3FormValidator, async(req, res) => {
-    const { isGravatarEnabled } = req.body;
+  router.put('/image-type', accessTokenParser([SCOPE.WRITE.USER.INFO]), loginRequiredStrictly, addActivity,
+    validator.imageType, apiV3FormValidator,
+    async(req, res) => {
+      const { isGravatarEnabled } = req.body;
 
-    try {
-      const userData = await req.user.updateIsGravatarEnabled(isGravatarEnabled);
+      try {
+        const userData = await req.user.updateIsGravatarEnabled(isGravatarEnabled);
 
-      const parameters = { action: SupportedAction.ACTION_USER_IMAGE_TYPE_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
+        const parameters = { action: SupportedAction.ACTION_USER_IMAGE_TYPE_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.apiv3({ userData });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('update-personal-settings-failed');
-    }
-  });
+        return res.apiv3({ userData });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err('update-personal-settings-failed');
+      }
+    });
 
   /**
    * @swagger
@@ -319,7 +322,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: array of external accounts
    */
-  router.get('/external-accounts', accessTokenParser(), loginRequiredStrictly, async(req, res) => {
+  router.get('/external-accounts', accessTokenParser([SCOPE.READ.USER.EXTERNAL_ACCOUNT]), loginRequiredStrictly, async(req, res) => {
     const userData = req.user;
 
     try {
@@ -359,27 +362,28 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data updated
    */
-  router.put('/password', accessTokenParser(), loginRequiredStrictly, addActivity, validator.password, apiV3FormValidator, async(req, res) => {
-    const { body, user } = req;
-    const { oldPassword, newPassword } = body;
+  router.put('/password', accessTokenParser([SCOPE.WRITE.USER.PASSWORD]), loginRequiredStrictly, addActivity, validator.password, apiV3FormValidator,
+    async(req, res) => {
+      const { body, user } = req;
+      const { oldPassword, newPassword } = body;
 
-    if (user.isPasswordSet() && !user.isPasswordValid(oldPassword)) {
-      return res.apiv3Err('wrong-current-password', 400);
-    }
-    try {
-      const userData = await user.updatePassword(newPassword);
+      if (user.isPasswordSet() && !user.isPasswordValid(oldPassword)) {
+        return res.apiv3Err('wrong-current-password', 400);
+      }
+      try {
+        const userData = await user.updatePassword(newPassword);
 
-      const parameters = { action: SupportedAction.ACTION_USER_PASSWORD_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
+        const parameters = { action: SupportedAction.ACTION_USER_PASSWORD_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.apiv3({ userData });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('update-password-failed');
-    }
+        return res.apiv3({ userData });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err('update-password-failed');
+      }
 
-  });
+    });
 
   /**
    * @swagger
@@ -401,7 +405,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/api-token', loginRequiredStrictly, addActivity, async(req, res) => {
+  router.put('/api-token', accessTokenParser([SCOPE.WRITE.USER.API.API_TOKEN]), loginRequiredStrictly, addActivity, async(req, res) => {
     const { user } = req;
 
     try {
@@ -438,7 +442,7 @@ module.exports = (crowi) => {
    *                   type: objet
    *                   description: array of access tokens
    */
-  router.get('/access-token', getAccessTokenHandlerFactory(crowi));
+  router.get('/access-token', accessTokenParser([SCOPE.READ.USER.API.ACCESS_TOKEN]), getAccessTokenHandlerFactory(crowi));
 
   /**
    * @swagger
@@ -471,7 +475,7 @@ module.exports = (crowi) => {
    *                     type: string[]
    *                     description: scope of access token
    */
-  router.post('/access-token', generateAccessTokenHandlerFactory(crowi));
+  router.post('/access-token', accessTokenParser([SCOPE.WRITE.USER.API.ACCESS_TOKEN]), generateAccessTokenHandlerFactory(crowi));
 
   /**
    * @swagger
@@ -486,7 +490,7 @@ module.exports = (crowi) => {
    *         description: succeded to delete access token
    *
    */
-  router.delete('/access-token', deleteAccessTokenHandlersFactory(crowi));
+  router.delete('/access-token', accessTokenParser([SCOPE.WRITE.USER.API.ACCESS_TOKEN]), deleteAccessTokenHandlersFactory(crowi));
 
   /**
    * @swagger
@@ -500,7 +504,7 @@ module.exports = (crowi) => {
    *         200:
    *           description: succeded to delete all access tokens
    */
-  router.delete('/access-token/all', deleteAllAccessTokensHandlersFactory(crowi));
+  router.delete('/access-token/all', accessTokenParser([SCOPE.WRITE.USER.API.ACCESS_TOKEN]), deleteAllAccessTokensHandlersFactory(crowi));
 
   /**
    * @swagger
@@ -528,31 +532,33 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Ldap account associate to me
    */
-  router.put('/associate-ldap', accessTokenParser(), loginRequiredStrictly, addActivity, validator.associateLdap, apiV3FormValidator, async(req, res) => {
-    const { passportService } = crowi;
-    const { user, body } = req;
-    const { username } = body;
+  router.put('/associate-ldap', accessTokenParser([SCOPE.WRITE.USER.EXTERNAL_ACCOUNT]), loginRequiredStrictly, addActivity,
+    validator.associateLdap, apiV3FormValidator,
+    async(req, res) => {
+      const { passportService } = crowi;
+      const { user, body } = req;
+      const { username } = body;
 
-    if (!passportService.isLdapStrategySetup) {
-      logger.error('LdapStrategy has not been set up');
-      return res.apiv3Err('associate-ldap-account-failed', 405);
-    }
+      if (!passportService.isLdapStrategySetup) {
+        logger.error('LdapStrategy has not been set up');
+        return res.apiv3Err('associate-ldap-account-failed', 405);
+      }
 
-    try {
-      await passport.authenticate('ldapauth');
-      const associateUser = await ExternalAccount.associate('ldap', username, user);
+      try {
+        await passport.authenticate('ldapauth');
+        const associateUser = await ExternalAccount.associate('ldap', username, user);
 
-      const parameters = { action: SupportedAction.ACTION_USER_LDAP_ACCOUNT_ASSOCIATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
+        const parameters = { action: SupportedAction.ACTION_USER_LDAP_ACCOUNT_ASSOCIATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.apiv3({ associateUser });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('associate-ldap-account-failed');
-    }
+        return res.apiv3({ associateUser });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err('associate-ldap-account-failed');
+      }
 
-  });
+    });
 
   /**
    * @swagger
@@ -581,29 +587,30 @@ module.exports = (crowi) => {
    *                      description: Ldap account disassociate to me
    */
   // eslint-disable-next-line max-len
-  router.put('/disassociate-ldap', accessTokenParser(), loginRequiredStrictly, addActivity, validator.disassociateLdap, apiV3FormValidator, async(req, res) => {
-    const { user, body } = req;
-    const { providerType, accountId } = body;
+  router.put('/disassociate-ldap', accessTokenParser([SCOPE.WRITE.USER.EXTERNAL_ACCOUNT]), loginRequiredStrictly, addActivity, validator.disassociateLdap, apiV3FormValidator,
+    async(req, res) => {
+      const { user, body } = req;
+      const { providerType, accountId } = body;
 
-    try {
-      const count = await ExternalAccount.count({ user });
-      // make sure password set or this user has two or more ExternalAccounts
-      if (user.password == null && count <= 1) {
+      try {
+        const count = await ExternalAccount.count({ user });
+        // make sure password set or this user has two or more ExternalAccounts
+        if (user.password == null && count <= 1) {
+          return res.apiv3Err('disassociate-ldap-account-failed');
+        }
+        const disassociateUser = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
+
+        const parameters = { action: SupportedAction.ACTION_USER_LDAP_ACCOUNT_DISCONNECT };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+
+        return res.apiv3({ disassociateUser });
+      }
+      catch (err) {
+        logger.error(err);
         return res.apiv3Err('disassociate-ldap-account-failed');
       }
-      const disassociateUser = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
 
-      const parameters = { action: SupportedAction.ACTION_USER_LDAP_ACCOUNT_DISCONNECT };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return res.apiv3({ disassociateUser });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('disassociate-ldap-account-failed');
-    }
-
-  });
+    });
 
   /**
    * @swagger
@@ -625,34 +632,35 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: editor settings
    */
-  router.put('/editor-settings', accessTokenParser(), loginRequiredStrictly, addActivity, validator.editorSettings, apiV3FormValidator, async(req, res) => {
-    const query = { userId: req.user.id };
-    const { body } = req;
+  router.put('/editor-settings', accessTokenParser([SCOPE.WRITE.USER.OTHER]), loginRequiredStrictly, addActivity, validator.editorSettings, apiV3FormValidator,
+    async(req, res) => {
+      const query = { userId: req.user.id };
+      const { body } = req;
 
-    const {
-      theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
-    } = body;
+      const {
+        theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
+      } = body;
 
-    const document = {
-      theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
-    };
+      const document = {
+        theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
+      };
 
-    // Insert if document does not exist, and return new values
-    // See: https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate
-    const options = { upsert: true, new: true };
-    try {
-      const response = await EditorSettings.findOneAndUpdate(query, { $set: document }, options);
+      // Insert if document does not exist, and return new values
+      // See: https://mongoosejs.com/docs/api.html#model_Model.findOneAndUpdate
+      const options = { upsert: true, new: true };
+      try {
+        const response = await EditorSettings.findOneAndUpdate(query, { $set: document }, options);
 
-      const parameters = { action: SupportedAction.ACTION_USER_EDITOR_SETTINGS_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
+        const parameters = { action: SupportedAction.ACTION_USER_EDITOR_SETTINGS_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.apiv3(response);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('updating-editor-settings-failed');
-    }
-  });
+        return res.apiv3(response);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err('updating-editor-settings-failed');
+      }
+    });
 
 
   /**
@@ -675,7 +683,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: editor settings
    */
-  router.get('/editor-settings', accessTokenParser(), loginRequiredStrictly, async(req, res) => {
+  router.get('/editor-settings', accessTokenParser([SCOPE.READ.USER.OTHER]), loginRequiredStrictly, async(req, res) => {
     try {
       const query = { userId: req.user.id };
       const editorSettings = await EditorSettings.findOne(query) ?? new EditorSettings();
@@ -708,7 +716,7 @@ module.exports = (crowi) => {
    *                      description: in-app-notification-settings
    */
   // eslint-disable-next-line max-len
-  router.put('/in-app-notification-settings', accessTokenParser(), loginRequiredStrictly, addActivity, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/in-app-notification-settings', accessTokenParser([SCOPE.WRITE.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, addActivity, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
     const subscribeRules = req.body.subscribeRules;
 
@@ -751,7 +759,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: InAppNotificationSettings
    */
-  router.get('/in-app-notification-settings', accessTokenParser(), loginRequiredStrictly, async(req, res) => {
+  router.get('/in-app-notification-settings', accessTokenParser([SCOPE.READ.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req, res) => {
     const query = { userId: req.user.id };
     try {
       const response = await InAppNotificationSettings.findOne(query);
@@ -764,7 +772,7 @@ module.exports = (crowi) => {
   });
 
   // eslint-disable-next-line max-len
-  router.put('/questionnaire-settings', accessTokenParser(), loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/questionnaire-settings', accessTokenParser([SCOPE.WRITE.BASE.QUESTIONNAIRE]), loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
     const { isQuestionnaireEnabled } = req.body;
     const { user } = req;
     try {

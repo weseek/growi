@@ -4,6 +4,7 @@ import type { ValidationChain } from 'express-validator';
 import { query } from 'express-validator';
 import mongoose from 'mongoose';
 
+import { SCOPE } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import type { PageModel } from '~/server/models/page';
@@ -56,7 +57,7 @@ export const getPagePathsWithDescendantCountFactory: GetPagePathsWithDescendantC
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly,
+    accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequiredStrictly,
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const {

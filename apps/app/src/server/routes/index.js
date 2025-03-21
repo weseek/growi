@@ -2,6 +2,7 @@ import csrf from 'csurf';
 import express from 'express';
 
 import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter';
+import { SCOPE } from '~/interfaces/scope';
 
 import { accessTokenParser } from '../middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
@@ -20,6 +21,7 @@ import { routesFactory as attachmentApiRoutesFactory } from './attachment/api';
 import * as forgotPassword from './forgot-password';
 import nextFactory from './next';
 import * as userActivation from './user-activation';
+
 
 const multer = require('multer');
 const autoReap = require('multer-autoreap');
@@ -69,7 +71,7 @@ module.exports = function(crowi, app) {
 
   app.get('/_next/*'                  , next.delegateToNext);
 
-  app.get('/'                         , applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, next.delegateToNext);
+  app.get('/'                         , accessTokenParser([SCOPE.READ.BASE.PAGE]), applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, next.delegateToNext);
 
   app.get('/login/error/:reason'      , applicationInstalled, next.delegateToNext);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
@@ -77,10 +79,10 @@ module.exports = function(crowi, app) {
   // app.post('/login'                   , applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation, csrfProtection,  addActivity, loginPassport.loginWithLocal, loginPassport.loginWithLdap, loginPassport.loginFailure);
 
   // NOTE: get method "/admin/export/:fileName" should be loaded before "/admin/*"
-  app.get('/admin/export/:fileName'   , loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
+  app.get('/admin/export/:fileName'   , accessTokenParser([SCOPE.READ.ADMIN.EXPORT_DATA]), loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
-  app.get('/admin/*'                  , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
-  app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
+  app.get('/admin/*'                  , accessTokenParser([SCOPE.READ.ADMIN.ALL]), applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
+  app.get('/admin'                    , accessTokenParser([SCOPE.READ.ADMIN.ALL]), applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
 
   // installer
   app.get('/installer',
@@ -101,12 +103,12 @@ module.exports = function(crowi, app) {
   app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
   // importer management for admin
-  app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
-  app.post('/_api/admin/settings/importerQiita' , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
-  app.post('/_api/admin/import/esa'             , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromEsa);
-  app.post('/_api/admin/import/testEsaAPI'      , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testEsaAPI);
-  app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromQiita);
-  app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testQiitaAPI);
+  app.post('/_api/admin/settings/importerEsa'   , accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);
+  app.post('/_api/admin/settings/importerQiita' , accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.importer.api.validators.importer.qiita(), admin.api.importerSettingQiita);
+  app.post('/_api/admin/import/esa'             , accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromEsa);
+  app.post('/_api/admin/import/testEsaAPI'      , accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testEsaAPI);
+  app.post('/_api/admin/import/qiita'           , accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromQiita);
+  app.post('/_api/admin/import/testQiitaAPI'    , accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testQiitaAPI);
 
   // brand logo
   app.use('/attachment', attachment.getBrandLogoRouterFactory(crowi));
@@ -120,39 +122,39 @@ module.exports = function(crowi, app) {
 
   const apiV1Router = express.Router();
 
-  apiV1Router.get('/search'                        , accessTokenParser() , loginRequired , search.api.search);
+  apiV1Router.get('/search'                        , accessTokenParser([SCOPE.READ.BASE.PAGE]) , loginRequired , search.api.search);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  apiV1Router.get('/pages.updatePost'    , accessTokenParser(), loginRequired, page.api.getUpdatePost);
-  apiV1Router.get('/pages.getPageTag'    , accessTokenParser() , loginRequired , page.api.getPageTag);
+  apiV1Router.get('/pages.updatePost'    , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, page.api.getUpdatePost);
+  apiV1Router.get('/pages.getPageTag'    , accessTokenParser([SCOPE.READ.BASE.PAGE]) , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  apiV1Router.post('/pages.remove'       , loginRequiredStrictly , excludeReadOnlyUser, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
-  apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , excludeReadOnlyUser, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
-  apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , excludeReadOnlyUser, page.api.unlink); // (Avoid from API Token)
-  apiV1Router.get('/tags.list'           , accessTokenParser(), loginRequired, tag.api.list);
-  apiV1Router.get('/tags.search'         , accessTokenParser(), loginRequired, tag.api.search);
-  apiV1Router.post('/tags.update'        , accessTokenParser(), loginRequiredStrictly, excludeReadOnlyUser, addActivity, tag.api.update);
-  apiV1Router.get('/comments.get'        , accessTokenParser() , loginRequired , comment.api.get);
-  apiV1Router.post('/comments.add'       , comment.api.validators.add(), accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.add);
-  apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.update);
-  apiV1Router.post('/comments.remove'    , accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.remove);
+  apiV1Router.post('/pages.remove'       , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly , excludeReadOnlyUser, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  apiV1Router.post('/pages.revertRemove' , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly , excludeReadOnlyUser, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
+  apiV1Router.post('/pages.unlink'       , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly , excludeReadOnlyUser, page.api.unlink); // (Avoid from API Token)
+  apiV1Router.get('/tags.list'           , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, tag.api.list);
+  apiV1Router.get('/tags.search'         , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, tag.api.search);
+  apiV1Router.post('/tags.update'        , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly, excludeReadOnlyUser, addActivity, tag.api.update);
+  apiV1Router.get('/comments.get'        , accessTokenParser([SCOPE.READ.BASE.PAGE]) , loginRequired , comment.api.get);
+  apiV1Router.post('/comments.add'       , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), comment.api.validators.add(), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.add);
+  apiV1Router.post('/comments.update'    , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), comment.api.validators.add(), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.update);
+  apiV1Router.post('/comments.remove'    , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.remove);
 
-  apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser(), loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
-  apiV1Router.post('/attachments.remove'               , accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);
-  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser() , loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.removeProfileImage);
+  apiV1Router.post('/attachments.uploadProfileImage'   , accessTokenParser([SCOPE.WRITE.BASE.ATTACHMENT]), uploads.single('file'), autoReap, loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
+  apiV1Router.post('/attachments.remove'               , accessTokenParser([SCOPE.WRITE.BASE.ATTACHMENT]), loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);
+  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser([SCOPE.WRITE.BASE.ATTACHMENT]), loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.removeProfileImage);
 
   // API v1
   app.use('/_api', unavailableWhenMaintenanceModeForApi, apiV1Router);
 
   app.use(unavailableWhenMaintenanceMode);
 
-  app.get('/me'                                   , loginRequiredStrictly, next.delegateToNext);
-  app.get('/me/*'                                 , loginRequiredStrictly, next.delegateToNext);
+  app.get('/me'                                   , accessTokenParser([SCOPE.READ.USER.INFO]), loginRequiredStrictly, next.delegateToNext);
+  app.get('/me/*'                                 , accessTokenParser([SCOPE.READ.USER.INFO]), loginRequiredStrictly, next.delegateToNext);
 
-  app.use('/attachment', attachment.getRouterFactory(crowi));
-  app.use('/download', attachment.downloadRouterFactory(crowi));
+  app.use('/attachment', accessTokenParser([SCOPE.READ.BASE.ATTACHMENT]), attachment.getRouterFactory(crowi));
+  app.use('/download', accessTokenParser([SCOPE.READ.BASE.ATTACHMENT]), attachment.downloadRouterFactory(crowi));
 
-  app.get('/_search'                            , loginRequired, next.delegateToNext);
+  app.get('/_search'                            , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, next.delegateToNext);
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
@@ -171,7 +173,7 @@ module.exports = function(crowi, app) {
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
-  app.get('/*/$'                   , loginRequired, next.delegateToNext);
-  app.get('/*'                     , loginRequired, autoReconnectToSearch, next.delegateToNext);
+  app.get('/*/$'                   , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, next.delegateToNext);
+  app.get('/*'                     , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, autoReconnectToSearch, next.delegateToNext);
 
 };

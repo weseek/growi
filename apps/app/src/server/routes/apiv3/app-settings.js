@@ -5,6 +5,7 @@ import { body } from 'express-validator';
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { SCOPE } from '~/interfaces/scope';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { configManager } from '~/server/service/config-manager';
 import { getTranslation } from '~/server/service/i18next';
@@ -430,7 +431,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/AppSettingParams'
    */
-  router.get('/', accessTokenParser(), loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.APP]), loginRequiredStrictly, adminRequired, async(req, res) => {
     const appSettingsParams = {
       title: configManager.getConfig('app:title'),
       confidential: configManager.getConfig('app:confidential'),
@@ -527,37 +528,39 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/AppSettingPutParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, addActivity, validator.appSetting, apiV3FormValidator, async(req, res) => {
-    const requestAppSettingParams = {
-      'app:title': req.body.title,
-      'app:confidential': req.body.confidential,
-      'app:globalLang': req.body.globalLang,
-      'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
-      'app:fileUpload': req.body.fileUpload,
-    };
-
-    try {
-      await configManager.updateConfigs(requestAppSettingParams);
-      const appSettingParams = {
-        title: configManager.getConfig('app:title'),
-        confidential: configManager.getConfig('app:confidential'),
-        globalLang: configManager.getConfig('app:globalLang'),
-        isEmailPublishedForNewUser: configManager.getConfig('customize:isEmailPublishedForNewUser'),
-        fileUpload: configManager.getConfig('app:fileUpload'),
+  router.put('/app-setting', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity,
+    validator.appSetting, apiV3FormValidator,
+    async(req, res) => {
+      const requestAppSettingParams = {
+        'app:title': req.body.title,
+        'app:confidential': req.body.confidential,
+        'app:globalLang': req.body.globalLang,
+        'customize:isEmailPublishedForNewUser': req.body.isEmailPublishedForNewUser,
+        'app:fileUpload': req.body.fileUpload,
       };
 
-      const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
+      try {
+        await configManager.updateConfigs(requestAppSettingParams);
+        const appSettingParams = {
+          title: configManager.getConfig('app:title'),
+          confidential: configManager.getConfig('app:confidential'),
+          globalLang: configManager.getConfig('app:globalLang'),
+          isEmailPublishedForNewUser: configManager.getConfig('customize:isEmailPublishedForNewUser'),
+          fileUpload: configManager.getConfig('app:fileUpload'),
+        };
 
-      return res.apiv3({ appSettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating app setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-appSetting-failed'));
-    }
+        const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
 
-  });
+        return res.apiv3({ appSettingParams });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating app setting';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-appSetting-failed'));
+      }
+
+    });
 
   /**
    * @swagger
@@ -592,36 +595,37 @@ module.exports = (crowi) => {
    *                          description: Site URL. e.g. https://example.com, https://example.com:3000
    *                          example: 'http://localhost:3000'
    */
-  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, addActivity, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/site-url-setting', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity,
+    validator.siteUrlSetting, apiV3FormValidator,
+    async(req, res) => {
+      const useOnlyEnvVars = configManager.getConfig('env:useOnlyEnvVars:app:siteUrl');
 
-    const useOnlyEnvVars = configManager.getConfig('env:useOnlyEnvVars:app:siteUrl');
+      if (useOnlyEnvVars) {
+        const msg = 'Updating the Site URL is prohibited on this system.';
+        return res.apiv3Err(new ErrorV3(msg, 'update-siteUrlSetting-prohibited'));
+      }
 
-    if (useOnlyEnvVars) {
-      const msg = 'Updating the Site URL is prohibited on this system.';
-      return res.apiv3Err(new ErrorV3(msg, 'update-siteUrlSetting-prohibited'));
-    }
-
-    const requestSiteUrlSettingParams = {
-      'app:siteUrl': pathUtils.removeTrailingSlash(req.body.siteUrl),
-    };
-
-    try {
-      await configManager.updateConfigs(requestSiteUrlSettingParams);
-      const siteUrlSettingParams = {
-        siteUrl: configManager.getConfig('app:siteUrl'),
+      const requestSiteUrlSettingParams = {
+        'app:siteUrl': pathUtils.removeTrailingSlash(req.body.siteUrl),
       };
 
-      const parameters = { action: SupportedAction.ACTION_ADMIN_SITE_URL_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ siteUrlSettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating site url setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-siteUrlSetting-failed'));
-    }
+      try {
+        await configManager.updateConfigs(requestSiteUrlSettingParams);
+        const siteUrlSettingParams = {
+          siteUrl: configManager.getConfig('app:siteUrl'),
+        };
 
-  });
+        const parameters = { action: SupportedAction.ACTION_ADMIN_SITE_URL_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+        return res.apiv3({ siteUrlSettingParams });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating site url setting';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-siteUrlSetting-failed'));
+      }
+
+    });
 
   /**
    * send mail (Promise wrapper)
@@ -739,28 +743,30 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/SmtpSettingResponseParams'
    */
-  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, addActivity, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
-    const requestMailSettingParams = {
-      'mail:from': req.body.fromAddress,
-      'mail:transmissionMethod': req.body.transmissionMethod,
-      'mail:smtpHost': req.body.smtpHost,
-      'mail:smtpPort': req.body.smtpPort,
-      'mail:smtpUser': req.body.smtpUser,
-      'mail:smtpPassword': req.body.smtpPassword,
-    };
+  router.put('/smtp-setting', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity,
+    validator.smtpSetting, apiV3FormValidator,
+    async(req, res) => {
+      const requestMailSettingParams = {
+        'mail:from': req.body.fromAddress,
+        'mail:transmissionMethod': req.body.transmissionMethod,
+        'mail:smtpHost': req.body.smtpHost,
+        'mail:smtpPort': req.body.smtpPort,
+        'mail:smtpUser': req.body.smtpUser,
+        'mail:smtpPassword': req.body.smtpPassword,
+      };
 
-    try {
-      const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
-      const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_SMTP_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ mailSettingParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating smtp setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-smtpSetting-failed'));
-    }
-  });
+      try {
+        const mailSettingParams = await updateMailSettinConfig(requestMailSettingParams);
+        const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_SMTP_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+        return res.apiv3({ mailSettingParams });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating smtp setting';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-smtpSetting-failed'));
+      }
+    });
 
   /**
    * @swagger
@@ -782,7 +788,7 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: Empty object
    */
-  router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.post('/smtp-test', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const { t } = await getTranslation({ lang: req.user.lang });
 
     try {
@@ -824,32 +830,34 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SesSettingResponseParams'
    */
-  router.put('/ses-setting', loginRequiredStrictly, adminRequired, addActivity, validator.sesSetting, apiV3FormValidator, async(req, res) => {
-    const { mailService } = crowi;
+  router.put('/ses-setting', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity,
+    validator.sesSetting, apiV3FormValidator,
+    async(req, res) => {
+      const { mailService } = crowi;
 
-    const requestSesSettingParams = {
-      'mail:from': req.body.fromAddress,
-      'mail:transmissionMethod': req.body.transmissionMethod,
-      'mail:sesAccessKeyId': req.body.sesAccessKeyId,
-      'mail:sesSecretAccessKey': req.body.sesSecretAccessKey,
-    };
+      const requestSesSettingParams = {
+        'mail:from': req.body.fromAddress,
+        'mail:transmissionMethod': req.body.transmissionMethod,
+        'mail:sesAccessKeyId': req.body.sesAccessKeyId,
+        'mail:sesSecretAccessKey': req.body.sesSecretAccessKey,
+      };
 
-    let mailSettingParams;
-    try {
-      mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating ses setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-ses-setting-failed'));
-    }
+      let mailSettingParams;
+      try {
+        mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating ses setting';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-ses-setting-failed'));
+      }
 
-    await mailService.initialize();
-    mailService.publishUpdatedMessage();
-    const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_SES_UPDATE };
-    activityEvent.emit('update', res.locals.activity._id, parameters);
-    return res.apiv3({ mailSettingParams });
-  });
+      await mailService.initialize();
+      mailService.publishUpdatedMessage();
+      const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_SES_UPDATE };
+      activityEvent.emit('update', res.locals.activity._id, parameters);
+      return res.apiv3({ mailSettingParams });
+    });
 
   /**
    * @swagger
@@ -881,7 +889,7 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/FileUploadSettingParams'
    */
   //  eslint-disable-next-line max-len
-  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/file-upload-setting', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
     const { fileUploadType } = req.body;
 
     const requestParams = {
@@ -992,7 +1000,7 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/QuestionnaireSettingParams'
    */
   // eslint-disable-next-line max-len
-  router.put('/questionnaire-settings', loginRequiredStrictly, adminRequired, addActivity, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/questionnaire-settings', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
     const { isQuestionnaireEnabled, isAppSiteUrlHashed } = req.body;
 
     const requestParams = {
@@ -1044,7 +1052,7 @@ module.exports = (crowi) => {
    *                      description: is V5 compatible, or not
    *                      example: true
    */
-  router.post('/v5-schema-migration', accessTokenParser(), loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.post('/v5-schema-migration', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, async(req, res) => {
     const isMaintenanceMode = crowi.appService.isMaintenanceMode();
     if (!isMaintenanceMode) {
       return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
@@ -1099,7 +1107,7 @@ module.exports = (crowi) => {
    *                      example: true
    */
   // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser(), loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
+  router.post('/maintenance-mode', accessTokenParser([SCOPE.WRITE.ADMIN.APP]), loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
     const { flag } = req.body;
     const parameters = {};
     try {
