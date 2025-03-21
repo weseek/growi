@@ -2,8 +2,11 @@ import React from 'react';
 
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
+import { useIsDeviceLargerThanMd } from '~/stores/ui';
+
 import type { Scope } from '../../../interfaces/scope';
 
+import styles from './AccessTokenScopeList.module.scss';
 
 interface scopeObject {
   [key: string]: Scope | scopeObject;
@@ -26,6 +29,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
   level = 0,
 }) => {
 
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
   // Convert object into an array to determine "first vs. non-first" elements
   const entries = Object.entries(scopeObject);
@@ -33,8 +37,8 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
   return (
     <>
       {entries.map(([scopeKey, scopeValue], idx) => {
-        // Indent according to the level
-        const indentationStyle = { marginLeft: `${(level + 1) * 20}px` };
+        // Get indentation class based on level
+        const indentationClass = styles[`indentation-level-${level + 1}`];
         // Example: Insert <hr> only for levels 0 or 1, except for the first item
         const showHr = (level === 0 || level === 1) && idx !== 0;
 
@@ -44,9 +48,9 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
               {showHr && <hr className="my-1" />}
               <div className="my-1 row">
                 <div className="col-md-5">
-                  <label className="form-check-label fw-bold" style={indentationStyle}>{scopeKey}</label>
+                  <label className={`form-check-label fw-bold ${indentationClass}`}>{scopeKey}</label>
                 </div>
-                <div className="col form-text fw-bold">desc for {scopeKey}</div>
+                <div className={`col form-text fw-bold ${isDeviceLargerThanMd ? '' : 'text-end'}`}>desc for {scopeKey}</div>
               </div>
 
               {/* Render recursively */}
@@ -64,8 +68,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
           <div key={scopeKey} className="row my-1">
             <div className="col-md-5">
               <input
-                className="form-check-input"
-                style={indentationStyle}
+                className={`form-check-input ${indentationClass}`}
                 type="checkbox"
                 id={scopeValue as string}
                 disabled={disabledScopes.has(scopeValue)}
@@ -76,7 +79,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
                 {scopeKey}
               </label>
             </div>
-            <div className="col form-text">desc for {scopeKey}</div>
+            <div className={`col form-text ${isDeviceLargerThanMd ? '' : 'text-end'}`}>desc for {scopeKey}</div>
           </div>
         );
       })}
