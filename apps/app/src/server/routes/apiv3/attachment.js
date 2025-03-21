@@ -198,7 +198,7 @@ module.exports = (crowi) => {
    *                  type: object
    *                  $ref: '#/components/schemas/AttachmentPaginateResult'
    */
-  router.get('/list', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
+  router.get('/list', accessTokenParser(), loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
 
     const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
     const pageNumber = req.query.pageNumber || 1;
@@ -272,7 +272,7 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.get('/limit', accessTokenParser, loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator, async(req, res) => {
+  router.get('/limit', accessTokenParser(), loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator, async(req, res) => {
     const { fileUploadService } = crowi;
     const fileSize = Number(req.query.fileSize);
     try {
@@ -339,7 +339,7 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.post('/', uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
+  router.post('/', uploads.single('file'), autoReap, accessTokenParser(), loginRequiredStrictly, excludeReadOnlyUser,
     validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
     async(req, res) => {
 
@@ -403,7 +403,7 @@ module.exports = (crowi) => {
    *            schema:
    *              type: string
    */
-  router.get('/:id', accessTokenParser, certifySharedPageAttachmentMiddleware, loginRequired, validator.retrieveAttachment, apiV3FormValidator,
+  router.get('/:id', accessTokenParser(), certifySharedPageAttachmentMiddleware, loginRequired, validator.retrieveAttachment, apiV3FormValidator,
     async(req, res) => {
       try {
         const attachmentId = req.params.id;

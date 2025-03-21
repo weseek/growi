@@ -6,9 +6,11 @@ import type { Request, RequestHandler } from 'express';
 import { body } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
+import type { Scope } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { AccessToken } from '~/server/models/access-token';
+import { isValidScope } from '~/server/util/scope-utils';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -19,7 +21,7 @@ const logger = loggerFactory('growi:routes:apiv3:personal-setting:generate-acces
 type ReqBody = {
   expiredAt: Date,
   description?: string,
-  scope?: string[],
+  scopes?: Scope[],
 }
 
 interface GenerateAccessTokenRequest extends Request<undefined, ApiV3Response, ReqBody> {
@@ -56,14 +58,19 @@ const validator = [
     .isLength({ max: 200 })
     .withMessage('description must be less than or equal to 200 characters'),
 
-  body('scope')
+  body('scopes')
     .optional()
     .isArray()
     .withMessage('scope must be an array')
-    .custom(() => {
-      // TODO: Check if all values are valid
+    .custom((scopes: Scope[]) => {
+      scopes.forEach((scope) => {
+        if (!isValidScope(scope)) {
+          throw new Error(`Invalid scope: ${scope}}`);
+        }
+      });
       return true;
-    }),
+    })
+    .withMessage('Invalid scope'),
 ];
 
 export const generateAccessTokenHandlerFactory: GenerateAccessTokenHandlerFactory = (crowi) => {
@@ -81,10 +88,10 @@ export const generateAccessTokenHandlerFactory: GenerateAccessTokenHandlerFactor
     async(req: GenerateAccessTokenRequest, res: ApiV3Response) => {
 
       const { user, body } = req;
-      const { expiredAt, description, scope } = body;
+      const { expiredAt, description, scopes } = body;
 
       try {
-        const tokenData = await AccessToken.generateToken(user._id, expiredAt, scope, description);
+        const tokenData = await AccessToken.generateToken(user._id, expiredAt, scopes, description);
 
         const parameters = { action: SupportedAction.ACTION_USER_ACCESS_TOKEN_CREATE };
         activityEvent.emit('update', res.locals.activity._id, parameters);

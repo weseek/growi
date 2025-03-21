@@ -269,7 +269,7 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   // eslint-disable-next-line max-len
-  receiveRouter.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
+  receiveRouter.post('/generate-key', accessTokenParser(), adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
     const appSiteUrl = req.body.appSiteUrl ?? configManager.getConfig('app:siteUrl');
 
     let appSiteUrlOrigin: string;
@@ -295,7 +295,7 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   // eslint-disable-next-line max-len
-  pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  pushRouter.post('/transfer', accessTokenParser(), loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { transferKey, collections, optionsMap } = req.body;
 
     // Parse transfer key

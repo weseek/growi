@@ -60,7 +60,7 @@ export const AccessTokenList = React.memo((props: AccessTokenListProps): JSX.Ele
                     <tr key={token._id}>
                       <td className="text-break">{token.description}</td>
                       <td>{token.expiredAt.toString().split('T')[0]}</td>
-                      <td>{token.scope.join(', ')}</td>
+                      <td>{token.scopes.join(', ')}</td>
                       <td>
                         <button
                           className="btn btn-danger"

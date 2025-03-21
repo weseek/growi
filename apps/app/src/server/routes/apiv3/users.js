@@ -246,7 +246,7 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/PaginateResult'
    */
 
-  router.get('/', accessTokenParser, loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
+  router.get('/', accessTokenParser(), loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
@@ -351,7 +351,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/:id/recent', accessTokenParser, loginRequired, validator.recentCreatedByUser, apiV3FormValidator, async(req, res) => {
+  router.get('/:id/recent', accessTokenParser(), loginRequired, validator.recentCreatedByUser, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
 
     let user;
@@ -1131,7 +1131,7 @@ module.exports = (crowi) => {
    *            500:
    *              $ref: '#/components/responses/500'
    */
-  router.get('/list', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/list', accessTokenParser(), loginRequired, async(req, res) => {
     const userIds = req.query.userIds ?? null;
 
     let userFetcher;
@@ -1160,7 +1160,7 @@ module.exports = (crowi) => {
     return res.apiv3(data);
   });
 
-  router.get('/usernames', accessTokenParser, loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
+  router.get('/usernames', accessTokenParser(), loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
     const q = req.query.q;
     const offset = +req.query.offset || 0;
     const limit = +req.query.limit || 10;

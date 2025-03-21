@@ -151,7 +151,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Return pages recently updated
    */
-  router.get('/recent', accessTokenParser, loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
+  router.get('/recent', accessTokenParser(), loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
@@ -270,7 +270,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.put('/rename', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, validator.renamePage, apiV3FormValidator, async(req, res) => {
+  router.put('/rename', accessTokenParser(), loginRequiredStrictly, excludeReadOnlyUser, validator.renamePage, apiV3FormValidator, async(req, res) => {
     const { pageId, revisionId } = req.body;
 
     let newPagePath = normalizePath(req.body.newPagePath);
@@ -370,7 +370,7 @@ module.exports = (crowi) => {
     *            content:
     *              description: Empty response
     */
-  router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, validator.resumeRenamePage, apiV3FormValidator,
+  router.post('/resume-rename', accessTokenParser(), loginRequiredStrictly, validator.resumeRenamePage, apiV3FormValidator,
     async(req, res) => {
 
       const { pageId } = req.body;
@@ -420,7 +420,7 @@ module.exports = (crowi) => {
    *                      items:
    *                        $ref: '#/components/schemas/Page'
    */
-  router.delete('/empty-trash', accessTokenParser, loginRequired, excludeReadOnlyUser, addActivity, apiV3FormValidator, async(req, res) => {
+  router.delete('/empty-trash', accessTokenParser(), loginRequired, excludeReadOnlyUser, addActivity, apiV3FormValidator, async(req, res) => {
     const options = {};
 
     const pagesInTrash = await crowi.pageService.findAllTrashPages(req.user);
@@ -526,7 +526,7 @@ module.exports = (crowi) => {
     *                              lastUpdateUser:
     *                                $ref: '#/components/schemas/User'
     */
-  router.get('/list', accessTokenParser, loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
+  router.get('/list', accessTokenParser(), loginRequired, validator.displayList, apiV3FormValidator, async(req, res) => {
 
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
@@ -603,7 +603,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.post('/duplicate', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.duplicatePage, apiV3FormValidator,
+  router.post('/duplicate', accessTokenParser(), loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.duplicatePage, apiV3FormValidator,
     async(req, res) => {
       const { pageId, isRecursively, onlyDuplicateUserRelatedResources } = req.body;
 
@@ -700,7 +700,7 @@ module.exports = (crowi) => {
    *                      items:
    *                        $ref: '#/components/schemas/Page'
    */
-  router.get('/subordinated-list', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/subordinated-list', accessTokenParser(), loginRequired, async(req, res) => {
     const { path } = req.query;
     const limit = parseInt(req.query.limit) || LIMIT_FOR_LIST;
 
@@ -760,7 +760,7 @@ module.exports = (crowi) => {
     *                      type: boolean
     *                      description: Whether pages were deleted completely
     */
-  router.post('/delete', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, validator.deletePages, apiV3FormValidator, async(req, res) => {
+  router.post('/delete', accessTokenParser(), loginRequiredStrictly, excludeReadOnlyUser, validator.deletePages, apiV3FormValidator, async(req, res) => {
     const {
       pageIdToRevisionIdMap, isCompletely, isRecursively, isAnyoneWithTheLink,
     } = req.body;
@@ -841,7 +841,7 @@ module.exports = (crowi) => {
    *                  description: Empty object
    */
   // eslint-disable-next-line max-len
-  router.post('/convert-pages-by-path', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, adminRequired, validator.convertPagesByPath, apiV3FormValidator, async(req, res) => {
+  router.post('/convert-pages-by-path', accessTokenParser(), loginRequiredStrictly, excludeReadOnlyUser, adminRequired, validator.convertPagesByPath, apiV3FormValidator, async(req, res) => {
     const { convertPath } = req.body;
 
     // Convert by path
@@ -893,7 +893,7 @@ module.exports = (crowi) => {
    *                  description: Empty object
   */
   // eslint-disable-next-line max-len
-  router.post('/legacy-pages-migration', accessTokenParser, loginRequired, excludeReadOnlyUser, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
+  router.post('/legacy-pages-migration', accessTokenParser(), loginRequired, excludeReadOnlyUser, validator.legacyPagesMigration, apiV3FormValidator, async(req, res) => {
     const { pageIds: _pageIds, isRecursively } = req.body;
 
     // Convert by pageIds
@@ -942,7 +942,7 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: Number of pages that can be migrated
    */
-  router.get('/v5-migration-status', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/v5-migration-status', accessTokenParser(), loginRequired, async(req, res) => {
     try {
       const isV5Compatible = crowi.configManager.getConfig('app:isV5Compatible');
       const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly

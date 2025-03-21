@@ -156,7 +156,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.post('/', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, apiV3FormValidator, async(req, res) => {
+  router.post('/', accessTokenParser(), loginRequiredStrictly, validator.bookmarkFolder, apiV3FormValidator, async(req, res) => {
     const owner = req.user?._id;
     const { name, parent } = req.body;
     const params = {
@@ -208,7 +208,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                        $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.get('/list/:userId', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/list/:userId', accessTokenParser(), loginRequiredStrictly, async(req, res) => {
     const { userId } = req.params;
 
     const getBookmarkFolders = async(
@@ -296,7 +296,7 @@ module.exports = (crowi) => {
    *                      description: Number of deleted folders
    *                      example: 1
    */
-  router.delete('/:id', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.delete('/:id', accessTokenParser(), loginRequiredStrictly, async(req, res) => {
     const { id } = req.params;
     try {
       const result = await BookmarkFolder.deleteFolderAndChildren(id);
@@ -352,7 +352,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.put('/', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, async(req, res) => {
+  router.put('/', accessTokenParser(), loginRequiredStrictly, validator.bookmarkFolder, async(req, res) => {
     const {
       bookmarkFolderId, name, parent, childFolder,
     } = req.body;
@@ -401,7 +401,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.post('/add-bookmark-to-folder', accessTokenParser, loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator, async(req, res) => {
+  router.post('/add-bookmark-to-folder', accessTokenParser(), loginRequiredStrictly, validator.bookmarkPage, apiV3FormValidator, async(req, res) => {
     const userId = req.user?._id;
     const { pageId, folderId } = req.body;
 
@@ -450,7 +450,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/BookmarkFolder'
    */
-  router.put('/update-bookmark', accessTokenParser, loginRequiredStrictly, validator.bookmark, async(req, res) => {
+  router.put('/update-bookmark', accessTokenParser(), loginRequiredStrictly, validator.bookmark, async(req, res) => {
     const { pageId, status } = req.body;
     const userId = req.user?._id;
     try {

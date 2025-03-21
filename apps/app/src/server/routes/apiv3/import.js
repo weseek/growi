@@ -115,7 +115,7 @@ export default function route(crowi) {
    *                    type: object
    *                    description: import settings params
    */
-  router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser(), loginRequired, adminRequired, async(req, res) => {
     try {
       const importSettingsParams = {
         esaTeamName: await crowi.configManager.getConfig('importer:esa:team_name'),
@@ -151,7 +151,7 @@ export default function route(crowi) {
    *                  status:
    *                    $ref: '#/components/schemas/ImportStatus'
    */
-  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/status', accessTokenParser(), loginRequired, adminRequired, async(req, res) => {
     try {
       const status = await importService.getStatus();
       return res.apiv3(status);
@@ -196,7 +196,7 @@ export default function route(crowi) {
    *        200:
    *          description: Import process has requested
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.post('/', accessTokenParser(), loginRequired, adminRequired, addActivity, async(req, res) => {
     // TODO: add express validator
     const { fileName, collections, options } = req.body;
 
@@ -319,7 +319,7 @@ export default function route(crowi) {
    *                      type: object
    *                      description: the property of each extracted file
    */
-  router.post('/upload', accessTokenParser, loginRequired, adminRequired, uploads.single('file'), addActivity, async(req, res) => {
+  router.post('/upload', accessTokenParser(), loginRequired, adminRequired, uploads.single('file'), addActivity, async(req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
     let data = null;
@@ -361,7 +361,7 @@ export default function route(crowi) {
    *        200:
    *          description: all files are deleted
    */
-  router.delete('/all', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.delete('/all', accessTokenParser(), loginRequired, adminRequired, async(req, res) => {
     try {
       importService.deleteAllZipFiles();
 
