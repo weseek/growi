@@ -22,7 +22,7 @@ This app (PDF-Converter) is necessary to convert markdown pages to PDF during th
 ## Requesting PDF-Converter from GROWI (both running in a devcontainer)
 1. Open VSCode and open GROWI devcontainer
     - Choose `GROWI-Dev` for the container to open
-1. Add `BULK_EXPORT_PDF_CONVERTER_URI=http://pdf-converter:3010` to `apps/app/.env.development`
+1. Add `BULK_EXPORT_PDF_CONVERTER_URI=http://pdf-converter:3010` to `apps/app/.env.development.local`
 1. Open a new VSCode window and open PDF-Converter devcontainer
     - Follow [Developing inside a devcontainer](#developing-inside-a-devcontainer)
 1. Start both apps
