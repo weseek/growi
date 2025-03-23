@@ -45,16 +45,6 @@ services:
       - /usr/share/elasticsearch/data
       - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
-  pdf-converter:
-    # enabling devcontainer 'features' was not working for secondary devcontainer (https://github.com/devcontainers/features/issues/1175)
-    image: mcr.microsoft.com/vscode/devcontainers/javascript-node:1-20
-    volumes:
-      - ..:/workspace/growi:delegated
-      - pnpm-store:/workspace/growi/.pnpm-store
-      - node_modules:/workspace/growi/node_modules
-      - page_bulk_export_tmp:/tmp/page-bulk-export
-    tty: true
-
 volumes:
   pnpm-store:
   node_modules:

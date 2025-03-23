@@ -10,6 +10,7 @@ GROWI には、ページを PDF 形式で一括エクスポートする機能が
 
 ## Devcontainer 内での開発
 1. VSCode を開く
+1. `.devcontainer/compose.extend.template.yml` と同様の内容で `.devcontainer/compose.extend.yml` を作成
 1. コマンドパレットを開く（Windows: `Ctrl + Shift + P`、Mac: `Cmd + Shift + P`）
 1. `Dev Containers: Open folder in Container...` を選択
 1. [https://github.com/weseek/growi](https://github.com/weseek/growi) からクローンした GROWI のルートディレクトリを選択
@@ -21,6 +22,7 @@ GROWI には、ページを PDF 形式で一括エクスポートする機能が
 ## GROWI から PDF-Converter へのリクエストを実行（両方とも devcontainer 内で起動）
 1. VSCode を開き、GROWI の devcontainer を開く
    - `GROWI-Dev` をコンテナとして選択
+1. apps/app/.env.development に `BULK_EXPORT_PDF_CONVERTER_URI=http://pdf-converter:3010` を追記
 1. 新しい VSCode ウィンドウを開き、PDF-Converter の devcontainer を開く
    - [Devcontainer 内での開発](#devcontainer-内での開発) の手順に従う
 1. 両方のアプリを起動
@@ -28,7 +30,7 @@ GROWI には、ページを PDF 形式で一括エクスポートする機能が
    - GROWI の設定によっては、処理に数分かかる場合があります
 
 ### 備考
-二つのコンテナを初めて作成する時や、コンテナを rebuild する時、**必ず GROWI-Dev を先に選択して作成してください**。  
+二つのコンテナを初めて作成する時や、コンテナを rebuild する時、**必ず GROWI-Dev を先に選択して作成してください**。
 GROWI-Dev は devcontainer features を使用して node を有効化していますが、[features は最初に作成したコンテナにしか有効になりません](https://github.com/devcontainers/spec/issues/546)。
 
 ## PDF-Converter クライアントライブラリ
