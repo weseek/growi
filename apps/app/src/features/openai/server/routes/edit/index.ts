@@ -81,7 +81,9 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
   return [
     accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
-      const { userMessage, markdown, threadId } = req.body;
+      const {
+        userMessage, markdown, threadId, aiAssistantId,
+      } = req.body;
 
       // Parameter check
       if (threadId == null) {
@@ -92,6 +94,14 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
       const openaiService = getOpenaiService();
       if (openaiService == null) {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
+      }
+
+      // AiAssistant check
+      if (aiAssistantId != null) {
+        const isAiAssistantUsable = await openaiService.isAiAssistantUsable(aiAssistantId, req.user);
+        if (!isAiAssistantUsable) {
+          return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
+        }
       }
 
       // Initialize SSE helper and stream processor
