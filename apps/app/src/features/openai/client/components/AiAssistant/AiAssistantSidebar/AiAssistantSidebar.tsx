@@ -360,12 +360,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               <>{isEditorAssistant
                 ? (
                   <>
-                    <AiAssistantDropdown />
+                    <div className="py-2">
+                      <AiAssistantDropdown />
+                    </div>
                     <QuickMenuList
                       onClick={clickQuickMenuHandler}
                     />
                   </>
-
                 )
                 : (
                   <AiAssistantChatInitialView

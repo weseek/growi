@@ -19,7 +19,7 @@ export const QuickMenuList: React.FC<Props> = ({ onClick }: Props) => {
   }, [onClick, t]);
 
   return (
-    <div className="container py-4">
+    <div className="container">
       <div className="d-flex flex-column gap-3">
         {presetMenus.map(presetMenu => (
           <button
