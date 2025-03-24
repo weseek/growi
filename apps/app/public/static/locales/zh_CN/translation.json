@@ -500,7 +500,7 @@
     "error_message": "错误",
     "show_error_detail": "显示详情",
     "discard": "丢弃",
-    "adopt": "采纳",
+    "accept": "接受",
     "preset_menu": {
       "summarize": {
         "title": "为此文章创建摘要",

@@ -543,7 +543,7 @@
     "error_message": "エラーが発生しました",
     "show_error_detail": "詳細を表示",
     "discard": "破棄",
-    "adopt": "採用",
+    "accept": "採用",
     "preset_menu": {
       "summarize": {
         "title": "この記事の要約をつくる",

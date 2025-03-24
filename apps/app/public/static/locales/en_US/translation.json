@@ -511,7 +511,7 @@
     "error_message": "An error has occurred",
     "show_error_detail": "Show error details",
     "discard": "Discard",
-    "adopt": "Adopt",
+    "accept": "Accept",
     "preset_menu": {
       "summarize": {
         "title": "Summarize this article",

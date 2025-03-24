@@ -303,7 +303,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     await submit({ input: quickMenu });
   }, [submit]);
 
-  const clickAdoptHandler = useCallback(() => {
+  const clickAcceptHandler = useCallback(() => {
     // todo: implement
   }, []);
 
@@ -337,7 +337,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                     key={message.id}
                     role={message.isUserMessage ? 'user' : 'assistant'}
                     showActionButtons={isEditorAssistant}
-                    onAdopt={clickAdoptHandler}
+                    onAccept={clickAcceptHandler}
                     onDiscard={clickDiscardHandler}
                   >
                     {message.content}

@@ -41,11 +41,11 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
 };
 
 const AssistantMessageCard = ({
-  children, showActionButtons, onAdopt, onDiscard,
+  children, showActionButtons, onAccept, onDiscard,
 }: {
   children: string,
   showActionButtons?: boolean
-  onAdopt?: () => void,
+  onAccept?: () => void,
   onDiscard?: () => void,
 }): JSX.Element => {
   const { t } = useTranslation();
@@ -74,9 +74,9 @@ const AssistantMessageCard = ({
                     <button
                       type="button"
                       className="btn btn-outline-secondary"
-                      onClick={onAdopt}
+                      onClick={onAccept}
                     >
-                      {t('sidebar_ai_assistant.adopt')}
+                      {t('sidebar_ai_assistant.accept')}
                     </button>
                   </div>
                 )}
@@ -99,12 +99,12 @@ type Props = {
   children: string,
   showActionButtons?: boolean,
   onDiscard?: () => void,
-  onAdopt?: () => void,
+  onAccept?: () => void,
 }
 
 export const MessageCard = (props: Props): JSX.Element => {
   const {
-    role, children, showActionButtons, onAdopt, onDiscard,
+    role, children, showActionButtons, onAccept, onDiscard,
   } = props;
 
   return role === 'user'
@@ -112,7 +112,7 @@ export const MessageCard = (props: Props): JSX.Element => {
     : (
       <AssistantMessageCard
         showActionButtons={showActionButtons}
-        onAdopt={onAdopt}
+        onAccept={onAccept}
         onDiscard={onDiscard}
       >{children}
       </AssistantMessageCard>
