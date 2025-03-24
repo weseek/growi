@@ -18,7 +18,7 @@ const router = express.Router();
  * @swagger
  * components:
  *   schemas:
- *     DocumentResponse:
+ *     InAppNotificationListResponse:
  *       type: object
  *       properties:
  *         docs:
@@ -129,7 +129,7 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/DocumentResponse'
+   *                $ref: '#/components/schemas/InAppNotificationListResponse'
    */
   router.get('/list', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
