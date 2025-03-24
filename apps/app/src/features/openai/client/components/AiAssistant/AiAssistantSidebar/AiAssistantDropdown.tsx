@@ -8,12 +8,10 @@ import {
   DropdownMenu,
   DropdownItem,
 } from 'reactstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { useSWRxAiAssistants } from '../../../stores/ai-assistant';
 import { getShareScopeIcon } from '../../../utils/get-share-scope-Icon';
-
 
 type Props = {
   //
