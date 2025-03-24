@@ -1,4 +1,5 @@
 import { type IGrantedGroup, GroupType } from '@growi/core';
+import type mongoose from 'mongoose';
 import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
@@ -8,7 +9,7 @@ import { type AiAssistant, AiAssistantShareScope, AiAssistantAccessScope } from 
 export interface AiAssistantDocument extends AiAssistant, Document {}
 
 interface AiAssistantModel extends Model<AiAssistantDocument> {
-  setDefault(id: string, isDefault: boolean): Promise<AiAssistantDocument>;
+  setDefault(id: string, isDefault: boolean, ignoreShareScope?: boolean): Promise<AiAssistantDocument>;
 }
 
 /*
@@ -110,17 +111,46 @@ const schema = new Schema<AiAssistantDocument>(
 );
 
 
-schema.statics.setDefault = async function(id: string, isDefault: boolean): Promise<AiAssistantDocument> {
-  const aiAssistant = await this.findById(id);
+schema.statics.setDefault = async function(id: string, isDefault: boolean, ignoreShareScope = false): Promise<AiAssistantDocument> {
+  const query: mongoose.FilterQuery<AiAssistant> = {
+    _id: id,
+  };
+
+  if (!ignoreShareScope) {
+    query.shareScope = AiAssistantShareScope.PUBLIC_ONLY;
+  }
+
+  const aiAssistant = await this.findOne(query);
   if (aiAssistant == null) {
     throw new Error('AiAssistant not found');
   }
 
-  await this.updateMany({ isDefault: true }, { isDefault: false });
+  if (isDefault) {
+    await this.bulkWrite([
+      {
+        updateOne: {
+          filter: { _id: id },
+          update: { $set: { isDefault: true } },
+        },
+      },
+      {
+        updateMany: {
+          filter: {
+            _id: { $ne: id },
+            isDefault: true,
+          },
+          update: { $set: { isDefault: false } },
+        },
+      },
+    ]);
+  }
 
-  aiAssistant.isDefault = isDefault;
-  const updatedAiAssistant = await aiAssistant.save();
+  else {
+    aiAssistant.isDefault = false;
+    await aiAssistant.save();
+  }
 
+  const updatedAiAssistant = await this.findById(id);
   return updatedAiAssistant;
 };
 
