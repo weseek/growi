@@ -3,7 +3,6 @@ import {
 } from 'react';
 
 import { AcceptedUploadFileType } from '@growi/core';
-import { GLOBAL_SOCKET_KEY, GLOBAL_SOCKET_NS, useSWRStatic } from '@growi/core/dist/swr';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { toast } from 'react-toastify';
 
@@ -23,12 +22,17 @@ export const Playground = (): JSX.Element => {
   const [editorTheme, setEditorTheme] = useState<EditorTheme>('defaultlight');
   const [editorKeymap, setEditorKeymap] = useState<KeyMapMode>('default');
   const [editorPaste, setEditorPaste] = useState<PasteMode>('both');
-  const [enableUnifiedMergeView, setUnifiedMergeViewEnabled] = useState(false);
   const [editorSettings, setEditorSettings] = useState<EditorSettings>();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  const { mutate } = useSWRStatic(GLOBAL_SOCKET_KEY);
+  const initialValue = '# header\n';
+
+  // initialize
+  useEffect(() => {
+    codeMirrorEditor?.initDoc(initialValue);
+    setMarkdownToPreview(initialValue);
+  }, [codeMirrorEditor, initialValue]);
 
   // initial caret line
   useEffect(() => {
@@ -44,26 +48,6 @@ export const Playground = (): JSX.Element => {
       pasteMode: editorPaste,
     });
   }, [setEditorSettings, editorKeymap, editorTheme, editorPaste]);
-
-  // initialize global socket
-  useEffect(() => {
-    const setUpSocket = async() => {
-      const { io } = await import('socket.io-client');
-      const socket = io(GLOBAL_SOCKET_NS, {
-        transports: ['websocket'],
-      });
-
-      // eslint-disable-next-line no-console
-      socket.on('error', (err) => { console.error(err) });
-      // eslint-disable-next-line no-console
-      socket.on('connect_error', (err) => { console.error('Failed to connect with websocket.', err) });
-
-      mutate(socket);
-    };
-
-    setUpSocket();
-
-  }, [mutate]);
 
   // set handler to save with shortcut key
   const saveHandler = useCallback(() => {
@@ -95,9 +79,7 @@ export const Playground = (): JSX.Element => {
       <div className="flex-expand-horiz">
         <div className="flex-expand-vert">
           <CodeMirrorEditorMain
-            enableCollaboration
-            enableUnifiedMergeView={enableUnifiedMergeView}
-            pageId="pageId-for-playground"
+            isEditorMode
             onSave={saveHandler}
             onUpload={uploadHandler}
             indentSize={4}
@@ -108,13 +90,7 @@ export const Playground = (): JSX.Element => {
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
           <Preview markdown={markdownToPreview} />
-          <hr />
-          <PlaygroundController
-            setEditorTheme={setEditorTheme}
-            setEditorKeymap={setEditorKeymap}
-            setEditorPaste={setEditorPaste}
-            setUnifiedMergeView={setUnifiedMergeViewEnabled}
-          />
+          <PlaygroundController setEditorTheme={setEditorTheme} setEditorKeymap={setEditorKeymap} setEditorPaste={setEditorPaste} />
         </div>
       </div>
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '50px' }}>

@@ -14,7 +14,7 @@ import { AiAssistantShareScope, type AiAssistantHasId } from '../../../../interf
 import { determineShareScope } from '../../../../utils/determine-share-scope';
 import { deleteAiAssistant, setDefaultAiAssistant } from '../../../services/ai-assistant';
 import { deleteThread } from '../../../services/thread';
-import { useAiAssistantSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
+import { useAiAssistantChatSidebar, useAiAssistantManagementModal } from '../../../stores/ai-assistant';
 import { useSWRMUTxThreads, useSWRxThreads } from '../../../stores/thread';
 
 import styles from './AiAssistantTree.module.scss';
@@ -298,7 +298,7 @@ type AiAssistantTreeProps = {
 
 export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, onUpdated, onDeleted }) => {
   const { data: currentUser } = useCurrentUser();
-  const { openChat } = useAiAssistantSidebar();
+  const { open: openAiAssistantChatSidebar } = useAiAssistantChatSidebar();
   const { open: openAiAssistantManagementModal } = useAiAssistantManagementModal();
 
   return (
@@ -309,7 +309,7 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
           currentUser={currentUser}
           aiAssistant={assistant}
           onEditClick={openAiAssistantManagementModal}
-          onItemClick={openChat}
+          onItemClick={openAiAssistantChatSidebar}
           onUpdated={onUpdated}
           onDeleted={onDeleted}
         />

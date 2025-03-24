@@ -6,7 +6,7 @@ import { NotAvailable } from '~/client/components/NotAvailable';
 import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
 import { useIsAiEnabled } from '~/stores-universal/context';
 
-import { useAiAssistantSidebar, useSWRxAiAssistants } from '../../stores/ai-assistant';
+import { useAiAssistantChatSidebar, useSWRxAiAssistants } from '../../stores/ai-assistant';
 
 import styles from './OpenDefaultAiAssistantButton.module.scss';
 
@@ -14,7 +14,7 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isAiEnabled } = useIsAiEnabled();
   const { data: aiAssistantData } = useSWRxAiAssistants();
-  const { openChat } = useAiAssistantSidebar();
+  const { open: openAiAssistantChatSidebar } = useAiAssistantChatSidebar();
 
   const defaultAiAssistant = useMemo(() => {
     if (aiAssistantData == null) {
@@ -30,8 +30,8 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
       return;
     }
 
-    openChat(defaultAiAssistant);
-  }, [defaultAiAssistant, openChat]);
+    openAiAssistantChatSidebar(defaultAiAssistant);
+  }, [defaultAiAssistant, openAiAssistantChatSidebar]);
 
   if (!isAiEnabled) {
     return <></>;
