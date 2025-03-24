@@ -39,7 +39,15 @@ const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): J
     </NextLink>
   );
 };
-const AssistantMessageCard = ({ children }: { children: string }): JSX.Element => {
+
+const AssistantMessageCard = ({
+  children, showActionButtons, onAccept, onDiscard,
+}: {
+  children: string,
+  showActionButtons?: boolean
+  onAccept?: () => void,
+  onDiscard?: () => void,
+}): JSX.Element => {
   const { t } = useTranslation();
 
   return (
@@ -51,7 +59,28 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
         <div>
           { children.length > 0
             ? (
-              <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
+              <>
+                <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
+
+                {showActionButtons && (
+                  <div className="d-flex mt-2 justify-content-start">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary me-2"
+                      onClick={onDiscard}
+                    >
+                      {t('sidebar_ai_assistant.discard')}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-success"
+                      onClick={onAccept}
+                    >
+                      {t('sidebar_ai_assistant.accept')}
+                    </button>
+                  </div>
+                )}
+              </>
             )
             : (
               <span className="text-thinking">
@@ -68,12 +97,24 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
 type Props = {
   role: 'user' | 'assistant',
   children: string,
+  showActionButtons?: boolean,
+  onDiscard?: () => void,
+  onAccept?: () => void,
 }
 
 export const MessageCard = (props: Props): JSX.Element => {
-  const { role, children } = props;
+  const {
+    role, children, showActionButtons, onAccept, onDiscard,
+  } = props;
 
   return role === 'user'
     ? <UserMessageCard>{children}</UserMessageCard>
-    : <AssistantMessageCard>{children}</AssistantMessageCard>;
+    : (
+      <AssistantMessageCard
+        showActionButtons={showActionButtons}
+        onAccept={onAccept}
+        onDiscard={onDiscard}
+      >{children}
+      </AssistantMessageCard>
+    );
 };

@@ -510,6 +510,8 @@
     "budget_exceeded_for_growi_cloud": "You have reached your OpenAI API usage limit. To use the Knowledge Assistant again, please add credits from the GROWI.cloud admin page for Hosted users or from the OpenAI billing page for Owned users.",
     "error_message": "An error has occurred",
     "show_error_detail": "Show error details",
+    "discard": "Discard",
+    "accept": "Accept",
     "preset_menu": {
       "summarize": {
         "title": "Summarize this article",
