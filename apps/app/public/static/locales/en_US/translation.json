@@ -513,6 +513,7 @@
     "discard": "Discard",
     "accept": "Accept",
     "use_assistant": "Use Assistant",
+    "remove_assistant": "Deselect the selected assistant",
     "preset_menu": {
       "summarize": {
         "title": "Summarize this article",

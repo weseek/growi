@@ -502,6 +502,7 @@
     "discard": "丢弃",
     "accept": "接受",
     "use_assistant": "使用助手",
+    "remove_assistant": "取消选定的助手",
     "preset_menu": {
       "summarize": {
         "title": "为此文章创建摘要",

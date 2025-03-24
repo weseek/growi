@@ -43,6 +43,10 @@ export const AiAssistantDropdown = (props: Props): JSX.Element => {
     );
   }, []);
 
+  const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
+    setSelectedAiAssistant(aiAssistant);
+  }, []);
+
   return (
     <UncontrolledDropdown>
       <DropdownToggle className="btn btn-outline-secondary" disabled={allAiAssistants.length === 0}>
@@ -57,12 +61,16 @@ export const AiAssistantDropdown = (props: Props): JSX.Element => {
             <DropdownItem
               key={aiAssistant._id}
               active={selectedAiAssistant?._id === aiAssistant._id}
-              onClick={() => setSelectedAiAssistant(aiAssistant)}
+              onClick={() => selectAiAssistantHandler(aiAssistant)}
             >
               {getAiAssistantLabel(aiAssistant)}
             </DropdownItem>
           );
         })}
+        <DropdownItem divider />
+        <DropdownItem onClick={() => selectAiAssistantHandler()}>
+          {t('sidebar_ai_assistant.remove_assistant')}
+        </DropdownItem>
       </DropdownMenu>
     </UncontrolledDropdown>
   );

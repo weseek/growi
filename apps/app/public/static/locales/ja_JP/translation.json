@@ -545,6 +545,7 @@
     "discard": "破棄",
     "accept": "採用",
     "use_assistant": "アシスタントを使用する",
+    "remove_assistant": "選択されているアシスタントの解除",
     "preset_menu": {
       "summarize": {
         "title": "この記事の要約をつくる",
