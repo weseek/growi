@@ -1,5 +1,5 @@
 # A template of the file for extending the primary docker compose configuration.
-# To actually use this file, create a `compose.override.yml` file and copy the contents of this file into it.
+# To actually use this file, create a `compose.extend.yml` file and copy the contents of this file into it.
 services:
   pdf-converter:
     # enabling devcontainer 'features' was not working for secondary devcontainer (https://github.com/devcontainers/features/issues/1175)
