@@ -6,9 +6,9 @@ import { apiv3Get } from '~/client/util/apiv3-client';
 
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 
-const getKey = (aiAssistantId: string) => [`/openai/threads/${aiAssistantId}`];
+const getKey = (aiAssistantId?: string) => (aiAssistantId != null ? [`/openai/threads/${aiAssistantId}`] : null);
 
-export const useSWRxThreads = (aiAssistantId: string): SWRResponse<IThreadRelationHasId[], Error> => {
+export const useSWRxThreads = (aiAssistantId?: string): SWRResponse<IThreadRelationHasId[], Error> => {
   const key = getKey(aiAssistantId);
   return useSWRImmutable<IThreadRelationHasId[]>(
     key,
@@ -17,7 +17,7 @@ export const useSWRxThreads = (aiAssistantId: string): SWRResponse<IThreadRelati
 };
 
 
-export const useSWRMUTxThreads = (aiAssistantId: string): SWRMutationResponse<IThreadRelationHasId[], Error> => {
+export const useSWRMUTxThreads = (aiAssistantId?: string): SWRMutationResponse<IThreadRelationHasId[], Error> => {
   const key = getKey(aiAssistantId);
   return useSWRMutation(
     key,

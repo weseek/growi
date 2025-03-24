@@ -66,7 +66,7 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 };
 
 export interface IOpenaiService {
-  createThread(userId: string, aiAssistantId: string, initialUserMessage: string): Promise<ThreadRelationDocument>;
+  createThread(userId: string, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument>;
   getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -118,9 +118,7 @@ class OpenaiService implements IOpenaiService {
     return threadTitle;
   }
 
-  async createThread(userId: string, aiAssistantId: string, initialUserMessage: string): Promise<ThreadRelationDocument> {
-    const vectorStoreRelation = await this.getVectorStoreRelationByAiAssistantId(aiAssistantId);
-
+  async createThread(userId: string, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument> {
     let threadTitle: string | null = null;
     if (initialUserMessage != null) {
       try {
@@ -132,7 +130,8 @@ class OpenaiService implements IOpenaiService {
     }
 
     try {
-      const thread = await this.client.createThread(vectorStoreRelation.vectorStoreId);
+      const vectorStoreRelation = aiAssistantId != null ? await this.getVectorStoreRelationByAiAssistantId(aiAssistantId) : null;
+      const thread = await this.client.createThread(vectorStoreRelation?.vectorStoreId);
       const threadRelation = await ThreadRelationModel.create({
         userId,
         aiAssistant: aiAssistantId,
