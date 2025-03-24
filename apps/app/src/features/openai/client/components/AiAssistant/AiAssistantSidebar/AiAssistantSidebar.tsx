@@ -66,6 +66,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
+  const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
@@ -189,7 +190,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
       const response = await (async() => {
         if (isEditorAssistant) {
-          return postMessageForEditorAssistant(currentThreadId_, data.input, '# markdown');
+          return postMessageForEditorAssistant(currentThreadId_, data.input, '# markdown', selectedAiAssistant?._id);
         }
         if (aiAssistantData?._id != null) {
           return postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId_, data.input, data.summaryMode);
@@ -312,6 +313,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     // todo: implement
   }, []);
 
+  const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
+    setSelectedAiAssistant(aiAssistant);
+  }, []);
+
   return (
     <>
       <div className="d-flex flex-column vh-100">
@@ -361,7 +366,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 ? (
                   <>
                     <div className="py-2">
-                      <AiAssistantDropdown />
+                      <AiAssistantDropdown
+                        selectedAiAssistant={selectedAiAssistant}
+                        onSelect={selectAiAssistantHandler}
+                      />
                     </div>
                     <QuickMenuList
                       onClick={clickQuickMenuHandler}
