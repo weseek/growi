@@ -501,6 +501,7 @@
     "show_error_detail": "显示详情",
     "discard": "丢弃",
     "accept": "接受",
+    "use_assistant": "使用助手",
     "preset_menu": {
       "summarize": {
         "title": "为此文章创建摘要",

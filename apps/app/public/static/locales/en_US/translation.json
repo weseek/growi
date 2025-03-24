@@ -512,6 +512,7 @@
     "show_error_detail": "Show error details",
     "discard": "Discard",
     "accept": "Accept",
+    "use_assistant": "Use Assistant",
     "preset_menu": {
       "summarize": {
         "title": "Summarize this article",

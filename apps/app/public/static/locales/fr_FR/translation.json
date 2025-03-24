@@ -506,6 +506,7 @@
     "show_error_detail": "Détails de l'exposition",
     "discard": "Annuler",
     "accept": "Accepter",
+    "use_assistant": "Utiliser l'assistant",
     "preset_menu": {
       "summarize": {
         "title": "Résumer cet article'",

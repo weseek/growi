@@ -23,6 +23,7 @@ import { useSWRMUTxMessages } from '../../../stores/message';
 import { useSWRMUTxThreads } from '../../../stores/thread';
 
 import { AiAssistantChatInitialView } from './AiAssistantChatInitialView';
+import { AiAssistantDropdown } from './AiAssistantDropdown';
 import { MessageCard } from './MessageCard';
 import { QuickMenuList } from './QuickMenuList';
 import { ResizableTextarea } from './ResizableTextArea';
@@ -358,9 +359,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             : (
               <>{isEditorAssistant
                 ? (
-                  <QuickMenuList
-                    onClick={clickQuickMenuHandler}
-                  />
+                  <>
+                    <AiAssistantDropdown />
+                    <QuickMenuList
+                      onClick={clickQuickMenuHandler}
+                    />
+                  </>
+
                 )
                 : (
                   <AiAssistantChatInitialView
