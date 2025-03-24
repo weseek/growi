@@ -9,7 +9,6 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { AiAssistantShareScope } from '../../interfaces/ai-assistant';
 import AiAssistantModel from '../models/ai-assistant';
 import { getOpenaiService } from '../services/openai';
 
@@ -49,11 +48,6 @@ export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi
       try {
         const { id } = req.params;
         const { isDefault } = req.body;
-
-        const aiAssistant = await AiAssistantModel.findOne({ _id: id, shareScope: AiAssistantShareScope.PUBLIC_ONLY });
-        if (aiAssistant == null) {
-          return res.apiv3Err(new ErrorV3('AiAssistant not found or not public'), 404);
-        }
 
         const updatedAiAssistant = await AiAssistantModel.setDefault(id, isDefault);
         return res.apiv3({ updatedAiAssistant });

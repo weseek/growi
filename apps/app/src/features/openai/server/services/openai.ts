@@ -838,7 +838,7 @@ class OpenaiService implements IOpenaiService {
     let updatedAiAssistant: AiAssistantDocument = await aiAssistant.save();
 
     if (data.shareScope !== AiAssistantShareScope.PUBLIC_ONLY && aiAssistant.isDefault) {
-      updatedAiAssistant = await AiAssistantModel.setDefault(aiAssistant._id, false);
+      updatedAiAssistant = await AiAssistantModel.setDefault(aiAssistant._id, false, true);
     }
 
     return updatedAiAssistant;
