@@ -1,5 +1,4 @@
 import { type IGrantedGroup, GroupType } from '@growi/core';
-import type mongoose from 'mongoose';
 import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
@@ -9,7 +8,7 @@ import { type AiAssistant, AiAssistantShareScope, AiAssistantAccessScope } from 
 export interface AiAssistantDocument extends AiAssistant, Document {}
 
 interface AiAssistantModel extends Model<AiAssistantDocument> {
-  setDefault(id: string, isDefault: boolean, ignoreShareScope?: boolean): Promise<AiAssistantDocument>;
+  setDefault(id: string, isDefault: boolean): Promise<AiAssistantDocument>;
 }
 
 /*
@@ -111,25 +110,15 @@ const schema = new Schema<AiAssistantDocument>(
 );
 
 
-schema.statics.setDefault = async function(id: string, isDefault: boolean, ignoreShareScope = false): Promise<AiAssistantDocument> {
-  const query: mongoose.FilterQuery<AiAssistant> = {
-    _id: id,
-  };
-
-  if (!ignoreShareScope) {
-    query.shareScope = AiAssistantShareScope.PUBLIC_ONLY;
-  }
-
-  const aiAssistant = await this.findOne(query);
-  if (aiAssistant == null) {
-    throw new Error('AiAssistant not found');
-  }
-
+schema.statics.setDefault = async function(id: string, isDefault: boolean): Promise<AiAssistantDocument> {
   if (isDefault) {
     await this.bulkWrite([
       {
         updateOne: {
-          filter: { _id: id },
+          filter: {
+            _id: id,
+            shareScope:  AiAssistantShareScope.PUBLIC_ONLY,
+          },
           update: { $set: { isDefault: true } },
         },
       },
@@ -144,10 +133,8 @@ schema.statics.setDefault = async function(id: string, isDefault: boolean, ignor
       },
     ]);
   }
-
   else {
-    aiAssistant.isDefault = false;
-    await aiAssistant.save();
+    await this.findByIdAndUpdate(id, { isDefault: false });
   }
 
   const updatedAiAssistant = await this.findById(id);
