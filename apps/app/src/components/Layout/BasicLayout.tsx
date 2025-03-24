@@ -8,6 +8,12 @@ import { RawLayout } from './RawLayout';
 
 import styles from './BasicLayout.module.scss';
 
+const AiAssistantChatSidebar = dynamic(
+  () => import('~/features/openai/client/components/AiAssistant/AiAssistantChatSidebar/AiAssistantChatSidebar')
+    .then(mod => mod.AiAssistantChatSidebar), { ssr: false },
+);
+
+
 const moduleClass = styles['grw-basic-layout'] ?? '';
 
 
@@ -36,7 +42,11 @@ const DeleteBookmarkFolderModal = dynamic(
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
 const PageBulkExportSelectModal = dynamic(() => import('../../features/page-bulk-export/client/components/PageBulkExportSelectModal'), { ssr: false });
 
-const AiChatModal = dynamic(() => import('~/features/openai/chat/components/AiChatModal').then(mod => mod.AiChatModal), { ssr: false });
+const AiAssistantManagementModal = dynamic(
+  () => import('~/features/openai/client/components/AiAssistant/AiAssistantManagementModal/AiAssistantManagementModal')
+    .then(mod => mod.AiAssistantManagementModal), { ssr: false },
+);
+const PageSelectModal = dynamic(() => import('~/client/components/PageSelectModal/PageSelectModal').then(mod => mod.PageSelectModal), { ssr: false });
 
 type Props = {
   children?: ReactNode
@@ -56,6 +66,8 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
           <AlertSiteUrlUndefined />
           {children}
         </div>
+
+        <AiAssistantChatSidebar />
       </div>
 
       <GrowiNavbarBottom />
@@ -68,8 +80,9 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <DeleteAttachmentModal />
       <DeleteBookmarkFolderModal />
       <PutbackPageModal />
+      <PageSelectModal />
       <SearchModal />
-      <AiChatModal />
+      <AiAssistantManagementModal />
 
       <PagePresentationModal />
       <HotkeysManager />

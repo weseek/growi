@@ -1148,12 +1148,6 @@
   "ai_integration": {
     "ai_integration": "AI Integration",
     "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, configure the <code>AI_ENABLED</code> environment variable along with the required additional variables.<br><br>For details, please refer to the <a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>documentation</a>.",
-    "ai_search_management": "AI search management",
-    "rebuild_vector_store": "Rebuild Vector Store",
-    "rebuild_vector_store_label": "Rebuild",
-    "rebuild_vector_store_explanation1": "Delete the existing Vector Store and recreate the Vector Store on the public page.",
-    "rebuild_vector_store_explanation2": "This process may take several minutes.",
-    "rebuild_vector_store_requested": "Vector Store rebuild has been requested",
-    "rebuild_vector_store_failed": "Vector Store rebuild failed"
+    "ai_search_management": "AI search management"
   }
 }

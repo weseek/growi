@@ -152,6 +152,8 @@
   "Page Tree": "Page Tree",
   "Bookmarks": "Bookmarks",
   "In-App Notification": "Notifications",
+  "AI Assistant": "AI Assistant",
+  "Knowledge Assistant": "Knowledge Assistant (Beta)",
   "original_path": "Original path",
   "new_path": "New path",
   "duplicated_path": "Duplicated path",
@@ -491,9 +493,9 @@
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
-  "modal_aichat": {
-    "title": "Knowledge Assistant",
-    "title_beta_label": "(Beta)",
+  "sidebar_aichat": {
+    "instruction_label": "Assistant instructions",
+    "reference_pages_label": "Reference pages",
     "placeholder": "Ask me anything.",
     "summary_mode_label": "Summary mode",
     "summary_mode_help": "Concise answer within 2-3 sentences",
@@ -504,7 +506,94 @@
     "budget_exceeded_for_growi_cloud": "You have reached your OpenAI API usage limit. To use the Knowledge Assistant again, please add credits from the GROWI.cloud admin page for Hosted users or from the OpenAI billing page for Owned users.",
     "error_message": "An error has occurred",
     "show_error_detail": "Show error details"
-
+  },
+  "modal_ai_assistant": {
+    "header": {
+      "update_assistant": "Update Assistant",
+      "add_new_assistant": "Add New Assistant"
+    },
+    "assistant_name_placeholder": "Enter assistant name",
+    "page_count": "{{count}} pages",
+    "memo": {
+      "title": "Assistant memo",
+      "optional": "Optional",
+      "placeholder": "You can display notes about content and usage",
+      "description": "The contents of the memo do not affect the assistant's processing."
+    },
+    "submit_button": {
+      "update_assistant": "Update Assistant",
+      "create_assistant": "Create Assistant"
+    },
+    "toaster": {
+      "create_success": "Assistant has been created",
+      "update_success": "Assistant has been updated",
+      "create_failed": "Failed to create assistant",
+      "update_failed": "Failed to update assistant"
+    },
+    "edit_page_description": "Edit pages that the assistant can reference.<br> The assistant can reference up to {{limitLearnablePageCountPerAssistant}} pages including child pages.",
+    "default_instruction": "You are the knowledge assistant for this Wiki. Please provide support according to the following guidelines:\n\n- Analyze document relevance and connect information\n- Suggest new perspectives\n- Provide accurate information based on understanding the intent of questions\nI will provide information in a structured format when necessary.",
+    "add_page_button": "Add page",
+    "page_mode_title": {
+      "share": "Assistant Sharing",
+      "pages": "Reference Pages",
+      "instruction": "Assistant Instructions"
+    },
+    "share_assistant": "Share assistant",
+    "page_access_permission": "Page access permission",
+    "access_scope": {
+      "owner": "All pages accessible by {{username}}",
+      "groups": "Specify groups",
+      "publicOnly": "Public pages only"
+    },
+    "share_scope": {
+      "title": "Assistant sharing scope",
+      "owner": {
+        "label": "{{username}} only"
+      },
+      "publicOnly": {
+        "label": "Public",
+        "desc": "Shared with all users"
+      },
+      "groups": {
+        "label": "Specify groups",
+        "desc": "Shared only with members of selected groups"
+      },
+      "sameAsAccessScope": {
+        "label": "Same as page access scope",
+        "desc": "Shared with the same scope as page access"
+      }
+    },
+    "instructions": {
+      "description": "You can set instructions that determine how the assistant behaves.<br>The assistant will answer and analyze based on these instructions.",
+      "reset_to_default": "Reset to default"
+    }
+  },
+  "share_scope_warning_modal": {
+    "header_title": "Confirm Sharing Scope",
+    "warning_message": "This assistant includes pages with limited access.<br>With the current settings, information from these pages may be shared beyond their original access permissions through the assistant.",
+    "selected_pages_label": "Selected page paths",
+    "confirmation_message": "Please confirm that you understand the content of these pages may be shared within the assistant's public scope if you proceed.",
+    "button": {
+      "review": "Review settings",
+      "proceed": "Understand and proceed"
+    }
+  },
+  "default_ai_assistant": {
+    "not_set": "Default assistant is not set"
+  },
+  "ai_assistant_tree": {
+    "add_assistant": "Add Assistant",
+    "my_assistants": "My Assistants",
+    "team_assistants": "Team Assistants",
+    "thread_does_not_exist": "No threads exist",
+    "toaster": {
+      "ai_assistant_deleted_success": "Assistant deleted",
+      "ai_assistant_deleted_failed": "Failed to delete assistant",
+      "thread_deleted_success": "Thread deleted",
+      "thread_deleted_failed": "Failed to delete thread",
+      "ai_assistant_set_default_success": "Default assistant set successfully",
+      "ai_assistant_set_default_failed": "Failed to set default assistant"
+    }
   },
   "link_edit": {
     "edit_link": "Edit Link",

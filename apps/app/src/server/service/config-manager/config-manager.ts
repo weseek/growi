@@ -81,7 +81,7 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     return (
       this.shouldUseEnvOnly(key)
         ? this.envConfig[key]?.value
-        : (this.dbConfig[key] ?? this.envConfig[key])?.value
+        : this.dbConfig[key]?.value ?? this.envConfig[key]?.value
     ) as ConfigValues[K];
   }
 
