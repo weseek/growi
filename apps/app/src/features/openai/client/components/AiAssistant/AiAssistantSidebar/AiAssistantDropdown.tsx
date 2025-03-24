@@ -45,7 +45,7 @@ export const AiAssistantDropdown = (props: Props): JSX.Element => {
 
   return (
     <UncontrolledDropdown>
-      <DropdownToggle className="btn btn-outline-secondary">
+      <DropdownToggle className="btn btn-outline-secondary" disabled={allAiAssistants.length === 0}>
         {selectedAiAssistant != null
           ? getAiAssistantLabel(selectedAiAssistant)
           : <><span className="material-symbols-outlined fs-5">Add</span>{t('sidebar_ai_assistant.use_assistant')}</>
