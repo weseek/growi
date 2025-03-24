@@ -752,11 +752,26 @@
     "discription_heading": "创建账户",
     "discription": "用被邀请的电子邮件地址创建一个你的账户"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "导出失败",
     "failed_to_count_pages": "页面计数失败",
     "export_page_markdown": "以Markdown格式导出页面",
-    "export_page_pdf": "以PDF格式导出页面"
+    "export_page_pdf": "以PDF格式导出页面",
+    "bulk_export": "导出页面及其下的所有页面",
+    "bulk_export_download_explanation": "导出完成后将发送通知。要下载导出的文件，请单击通知。",
+    "bulk_export_exec_time_warning": "如果页数较多，导出可能需要一段时间",
+    "large_bulk_export_warning": "为了节省系统资源，请避免连续导出大量页面",
+    "markdown": "Markdown",
+    "choose_export_format": "选择导出格式",
+    "bulk_export_started": "目前我们正在准备...",
+    "bulk_export_download_expired": "下载期限已过",
+    "bulk_export_job_expired": "由于导出时间太长，处理被中断",
+    "export_in_progress": "导出正在进行中",
+    "export_in_progress_explanation": "已在进行相同格式的导出。您要重新启动以导出最新的页面内容吗？",
+    "export_cancel_warning": "以下正在进行的导出将被取消",
+    "restart": "重新开始",
+    "format": "格式",
+    "started_on": "开始于"
   },
   "message": {
     "successfully_connected": "连接成功！",
