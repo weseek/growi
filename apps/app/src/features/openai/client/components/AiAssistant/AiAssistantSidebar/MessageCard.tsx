@@ -73,7 +73,7 @@ const AssistantMessageCard = ({
                     </button>
                     <button
                       type="button"
-                      className="btn btn-outline-secondary"
+                      className="btn btn-outline-success"
                       onClick={onAccept}
                     >
                       {t('sidebar_ai_assistant.accept')}
