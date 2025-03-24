@@ -13,7 +13,6 @@ import type { ApiV3Response } from './interfaces/apiv3-response';
 
 const router = express.Router();
 
-
 /**
  * @swagger
  * components:
@@ -86,9 +85,10 @@ const router = express.Router();
  *           items:
  *             $ref: '#/components/schemas/User'
  */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   const inAppNotificationService = crowi.inAppNotificationService;
 

@@ -15,6 +15,7 @@ describe('normalizeExpiredAtForThreadRelations', () => {
     const threadRelation = new ThreadRelation({
       userId: new Types.ObjectId(),
       threadId: 'test-thread',
+      aiAssistant: new Types.ObjectId(),
       expiredAt: expiredDate,
     });
     await threadRelation.save();
@@ -36,6 +37,7 @@ describe('normalizeExpiredAtForThreadRelations', () => {
     const threadRelation = new ThreadRelation({
       userId: new Types.ObjectId(),
       threadId: 'test-thread-2',
+      aiAssistant: new Types.ObjectId(),
       expiredAt: nonExpiredDate,
     });
     await threadRelation.save();
@@ -55,6 +57,7 @@ describe('normalizeExpiredAtForThreadRelations', () => {
     const threadRelation = new ThreadRelation({
       userId: new Types.ObjectId(),
       threadId: 'test-thread-3',
+      aiAssistant: new Types.ObjectId(),
       expiredAt: nonExpiredDate,
     });
     await threadRelation.save();

@@ -1,14 +1,17 @@
-import type { ReadStream } from 'fs';
+import type { Readable } from 'stream';
 
 import type { Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
 import type { ICheckLimitResult } from '~/interfaces/attachment';
+import type Crowi from '~/server/crowi';
 import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachment';
 import { Attachment, type IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
+
+import type { MultipartUploader } from './multipart-uploader';
 
 const logger = loggerFactory('growi:service:fileUploader');
 
@@ -37,22 +40,24 @@ export interface FileUploader {
   getTotalFileSize(): Promise<number>,
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<ICheckLimitResult>,
   determineResponseMode(): ResponseMode,
-  uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>,
+  uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void>,
   respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
   generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
+  createMultipartUploader: (uploadKey: string, maxPartSize: number) => MultipartUploader,
+  abortPreviousMultipartUpload: (uploadKey: string, uploadId: string) => Promise<void>
 }
 
 export abstract class AbstractFileUploader implements FileUploader {
 
-  private crowi;
+  private crowi: Crowi;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
   }
 
   getIsUploadable() {
-    return !configManager.getConfig('crowi', 'app:fileUploadDisabled') && this.isValidUploadSettings();
+    return !configManager.getConfig('app:fileUploadDisabled') && this.isValidUploadSettings();
   }
 
   /**
@@ -91,7 +96,7 @@ export abstract class AbstractFileUploader implements FileUploader {
       return false;
     }
 
-    return !!configManager.getConfig('crowi', 'app:fileUpload');
+    return !!configManager.getConfig('app:fileUpload');
   }
 
   abstract listFiles();
@@ -107,10 +112,10 @@ export abstract class AbstractFileUploader implements FileUploader {
    * @returns file upload total limit in bytes
    */
   getFileUploadTotalLimit() {
-    const fileUploadTotalLimit = configManager.getConfig('crowi', 'app:fileUploadType') === 'mongodb'
+    const fileUploadTotalLimit = configManager.getConfig('app:fileUploadType') === 'mongodb'
       // Use app:fileUploadTotalLimit if gridfs:totalLimit is null (default for gridfs:totalLimit is null)
-      ? configManager.getConfig('crowi', 'gridfs:totalLimit') ?? configManager.getConfig('crowi', 'app:fileUploadTotalLimit')
-      : configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
+      ? configManager.getConfig('app:fileUploadTotalLimit')
+      : configManager.getConfig('app:fileUploadTotalLimit');
     return fileUploadTotalLimit;
   }
 
@@ -153,7 +158,21 @@ export abstract class AbstractFileUploader implements FileUploader {
     return ResponseMode.RELAY;
   }
 
- abstract uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void>;
+  /**
+   * Create a multipart uploader for cloud storage
+   */
+  createMultipartUploader(uploadKey: string, maxPartSize: number): MultipartUploader {
+    throw new Error('Multipart upload not available for file upload type');
+  }
+
+  abstract uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void>;
+
+  /**
+   * Abort an existing multipart upload without creating a MultipartUploader instance
+   */
+  abortPreviousMultipartUpload(uploadKey: string, uploadId: string): Promise<void> {
+    throw new Error('Multipart upload not available for file upload type');
+  }
 
   /**
    * Respond to the HTTP request.

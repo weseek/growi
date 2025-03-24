@@ -22,21 +22,21 @@ type TreeItemLayoutProps = TreeItemProps & {
   indentSize?: number,
 }
 
-export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
+export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
   const {
     className, itemClassName,
     indentSize = 10,
     itemLevel: baseItemLevel = 1,
-    itemNode, targetPathOrId, isOpen: _isOpen = false,
+    itemNode, targetPath, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, onWheelClick,
     isEnableActions, isReadOnlyUser, isWipPageShown = true,
     itemRef, itemClass,
     showAlternativeContent,
   } = props;
 
-  const { page, children } = itemNode;
+  const { page } = itemNode;
 
-  const [currentChildren, setCurrentChildren] = useState<ItemNode[]>(children);
+  const [currentChildren, setCurrentChildren] = useState<ItemNode[]>([]);
   const [isOpen, setIsOpen] = useState(_isOpen);
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
@@ -84,8 +84,9 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   // didMount
   useEffect(() => {
-    if (hasChildren()) setIsOpen(true);
-  }, [hasChildren]);
+    const isPathToTarget = page.path != null && targetPath.startsWith(page.path) && targetPath !== page.path; // Target Page does not need to be opened
+    if (isPathToTarget) setIsOpen(true);
+  }, [targetPath, page.path]);
 
   /*
    * When swr fetch succeeded
@@ -108,6 +109,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     isReadOnlyUser,
     isOpen: false,
     isWipPageShown,
+    targetPath,
     targetPathOrId,
     onRenamed,
     onClickDuplicateMenuItem,

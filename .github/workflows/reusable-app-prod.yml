@@ -50,18 +50,6 @@ jobs:
       run: |
         pnpm install --frozen-lockfile
 
-    - name: Cache/Restore dist
-      uses: actions/cache@v4
-      with:
-        path: |
-          **/.turbo
-          **/dist
-          **/node_modules/.cache/turbo
-          ${{ github.workspace }}/apps/app/.next
-        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.sha }}
-        restore-keys: |
-          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
-
     - name: Build
       working-directory: ./apps/app
       run: |
@@ -181,7 +169,7 @@ jobs:
     container:
       # Match the Playwright version
       # https://github.com/microsoft/playwright/issues/20010
-      image: mcr.microsoft.com/playwright:v1.46.0-jammy
+      image: mcr.microsoft.com/playwright:v1.49.1-jammy
 
     strategy:
       fail-fast: false
@@ -315,7 +303,9 @@ jobs:
         pnpm install --frozen-lockfile
 
     - name: Merge into HTML Report
-      run: pnpm playwright merge-reports --reporter html ./all-blob-reports
+      run: |
+        mkdir -p all-blob-reports
+        pnpm playwright merge-reports --reporter html ./all-blob-reports
 
     - name: Upload HTML report
       uses: actions/upload-artifact@v4

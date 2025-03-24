@@ -65,6 +65,7 @@ module.exports = {
         'Home',
         'AdminHome',
         'AppSettings',
+        'ExternalUserGroups',
         'SecuritySetting',
         'MarkDownSetting',
         'CustomizeSetting',
@@ -72,6 +73,7 @@ module.exports = {
         'Export',
         'MongoDB',
         'NotificationSetting',
+        'QuestionnaireSetting',
         'SlackIntegrationSettings',
         'SlackIntegrationSettings (with proxy)',
         'SlackIntegrationSettings (without proxy)',
@@ -81,6 +83,7 @@ module.exports = {
         'UserGroups',
         'Users Management',
         'FullTextSearch Management',
+        'Install',
       ],
     },
     {

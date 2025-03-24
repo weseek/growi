@@ -10,6 +10,7 @@ import multer from 'multer';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
 import { configManager } from '~/server/service/config-manager';
+import { exportService } from '~/server/service/export';
 import type { IDataGROWIInfo } from '~/server/service/g2g-transfer';
 import { X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import { getImportService } from '~/server/service/import';
@@ -41,7 +42,7 @@ const validator = {
  */
 module.exports = (crowi: Crowi): Router => {
   const {
-    g2gTransferPusherService, g2gTransferReceiverService, exportService,
+    g2gTransferPusherService, g2gTransferReceiverService,
     growiBridgeService,
   } = crowi;
 
@@ -82,7 +83,7 @@ module.exports = (crowi: Crowi): Router => {
     }),
   });
 
-  const isInstalled = crowi.configManager?.getConfig('crowi', 'app:installed');
+  const isInstalled = configManager.getConfig('app:installed');
 
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
@@ -104,7 +105,7 @@ module.exports = (crowi: Crowi): Router => {
       return;
     }
 
-    if (crowi.configManager?.getConfig('crowi', 'app:siteUrl') != null || req.body.appSiteUrl != null) {
+    if (configManager.getConfig('app:siteUrl') != null || req.body.appSiteUrl != null) {
       next();
       return;
     }
@@ -172,9 +173,9 @@ module.exports = (crowi: Crowi): Router => {
       const zipFile = importService.getFile(file.filename);
       await importService.unzip(zipFile);
 
-      const { meta: parsedMeta, innerFileStats: _innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
-      innerFileStats = _innerFileStats;
-      meta = parsedMeta;
+      const zipFileStat = await growiBridgeService.parseZipFile(zipFile);
+      innerFileStats = zipFileStat?.innerFileStats;
+      meta = zipFileStat?.meta;
     }
     catch (err) {
       logger.error(err);
@@ -270,7 +271,7 @@ module.exports = (crowi: Crowi): Router => {
 
   // eslint-disable-next-line max-len
   receiveRouter.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
-    const appSiteUrl = req.body.appSiteUrl ?? crowi.configManager?.getConfig('crowi', 'app:siteUrl');
+    const appSiteUrl = req.body.appSiteUrl ?? configManager.getConfig('app:siteUrl');
 
     let appSiteUrlOrigin: string;
     try {

@@ -1,5 +1,6 @@
 import React, { memo, useMemo } from 'react';
 
+import { AiAssistant } from '~/features/openai/client/components/AiAssistant/Sidebar/AiAssistant';
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
@@ -32,6 +33,8 @@ export const SidebarContents = memo(() => {
         return Bookmarks;
       case SidebarContentsType.NOTIFICATION:
         return InAppNotification;
+      case SidebarContentsType.AI_ASSISTANT:
+        return AiAssistant;
       default:
         return PageTree;
     }

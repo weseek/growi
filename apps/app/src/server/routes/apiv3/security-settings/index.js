@@ -1,3 +1,4 @@
+import { ConfigSource } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import xss from 'xss';
 
@@ -121,6 +122,18 @@ const validator = {
  *          restrictGuestMode:
  *            type: string
  *            description: type of restrictGuestMode
+ *          pageDeletionAuthority:
+ *            type: string
+ *            description: type of pageDeletionAuthority
+ *          pageRecursiveDeletionAuthority:
+ *            type: string
+ *            description: type of pageRecursiveDeletionAuthority
+ *          pageRecursiveCompleteDeletionAuthority:
+ *            type: string
+ *            description: type of pageRecursiveCompleteDeletionAuthority
+ *          isAllGroupMembershipRequiredForPageCompleteDeletion:
+ *            type: boolean
+ *            description: enable all group membership required for page complete deletion
  *          pageCompleteDeletionAuthority:
  *            type: string
  *            description: type of pageDeletionAuthority
@@ -130,6 +143,21 @@ const validator = {
  *          hideRestrictedByGroup:
  *            type: boolean
  *            description: enable hide by group
+ *          isUsersHomepageDeletionEnabled:
+ *            type: boolean
+ *            description: enable user homepage deletion
+ *          isForceDeleteUserHomepageOnUserDeletion:
+ *            type: boolean
+ *            description: enable force delete user homepage on user deletion
+ *          isRomUserAllowedToComment:
+ *            type: boolean
+ *            description: enable rom user allowed to comment
+ *          wikiMode:
+ *            type: string
+ *            description: type of wikiMode
+ *          sessionMaxAge:
+ *            type: integer
+ *            description: max age of session
  *      ShareLinkSetting:
  *        type: object
  *        properties:
@@ -139,6 +167,15 @@ const validator = {
  *      LocalSetting:
  *        type: object
  *        properties:
+ *          useOnlyEnvVarsForSomeOptions:
+ *            type: boolean
+ *            description: use only env vars for some options
+ *          isPasswordResetEnabled:
+ *            type: boolean
+ *            description: enable password reset
+ *          isEmailAuthenticationEnabled:
+ *            type: boolean
+ *            description: enable email authentication
  *          isLocalEnabled:
  *            type: boolean
  *            description: local setting mode
@@ -151,6 +188,27 @@ const validator = {
  *            items:
  *              type: string
  *              description: registration whitelist
+ *      GeneralAuthSetting:
+ *        type: object
+ *        properties:
+ *          isLocalEnabled:
+ *            type: boolean
+ *            description: local setting mode
+ *          isLdapEnabled:
+ *            type: boolean
+ *            description: ldap setting mode
+ *          isSamlEnabled:
+ *            type: boolean
+ *            description: saml setting mode
+ *          isOidcEnabled:
+ *            type: boolean
+ *            description: oidc setting mode
+ *          isGoogleEnabled:
+ *            type: boolean
+ *            description: google setting mode
+ *          isGitHubEnabled:
+ *            type: boolean
+ *            description: github setting mode
  *      LdapAuthSetting:
  *        type: object
  *        properties:
@@ -193,15 +251,30 @@ const validator = {
  *      SamlAuthSetting:
  *        type: object
  *        properties:
+ *          missingMandatoryConfigKeys:
+ *            type: array
+ *            description: array of missing mandatory config keys
+ *            items:
+ *              type: string
+ *              description: missing mandatory config key
+ *          useOnlyEnvVarsForSomeOptions:
+ *            type: boolean
+ *            description: use only env vars for some options
  *          samlEntryPoint:
  *            type: string
  *            description: entry point for saml
  *          samlIssuer:
  *            type: string
  *            description: issuer for saml
+ *          samlEnvVarIssuer:
+ *            type: string
+ *            description: issuer for saml
  *          samlCert:
  *            type: string
  *            description: certificate for saml
+ *          samlEnvVarCert:
+ *            type: string
+ *            desription: certificate for saml
  *          samlAttrMapId:
  *            type: string
  *            description: attribute mapping id for saml
@@ -211,10 +284,25 @@ const validator = {
  *          samlAttrMapMail:
  *            type: string
  *            description: attribute mapping mail for saml
+ *          samlEnvVarAttrMapId:
+ *            type: string
+ *            description: attribute mapping id for saml
+ *          samlEnvVarAttrMapUserName:
+ *            type: string
+ *            description: attribute mapping user name for saml
+ *          samlEnvVarAttrMapMail:
+ *            type: string
+ *            description: attribute mapping mail for saml
  *          samlAttrMapFirstName:
  *            type: string
  *            description: attribute mapping first name for saml
  *          samlAttrMapLastName:
+ *            type: string
+ *            description: attribute mapping last name for saml
+ *          samlEnvVarAttrMapFirstName:
+ *            type: string
+ *            description: attribute mapping first name for saml
+ *          samlEnvVarAttrMapLastName:
  *            type: string
  *            description: attribute mapping last name for saml
  *          isSameUsernameTreatedAsIdenticalUser:
@@ -224,6 +312,9 @@ const validator = {
  *            type: boolean
  *            description: local account automatically linked the email matched
  *          samlABLCRule:
+ *            type: string
+ *            description: ABLCRule for saml
+ *          samlEnvVarABLCRule:
  *            type: string
  *            description: ABLCRule for saml
  *      OidcAuthSetting:
@@ -308,6 +399,7 @@ const validator = {
  *            type: boolean
  *            description: local account automatically linked the email matched
  */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
@@ -319,7 +411,7 @@ module.exports = (crowi) => {
     const { passportService } = crowi;
 
     // update config without publishing S2sMessage
-    await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+    await configManager.updateConfigs(params, { skipPubsub: true });
 
     await passportService.setupStrategyById(authId);
     passportService.publishUpdatedMessage(authId);
@@ -342,112 +434,131 @@ module.exports = (crowi) => {
    *                    securityParams:
    *                      type: object
    *                      description: security params
+   *                      properties:
+   *                        generalSetting:
+   *                          $ref: '#/components/schemas/GeneralSetting'
+   *                        shareLinkSetting:
+   *                          $ref: '#/components/schemas/ShareLinkSetting'
+   *                        localSetting:
+   *                          $ref: '#/components/schemas/LocalSetting'
+   *                        generalAuth:
+   *                          $ref: '#/components/schemas/GeneralAuthSetting'
+   *                        ldapAuth:
+   *                          $ref: '#/components/schemas/LdapAuthSetting'
+   *                        samlAuth:
+   *                          $ref: '#/components/schemas/SamlAuthSetting'
+   *                        oidcAuth:
+   *                          $ref: '#/components/schemas/OidcAuthSetting'
+   *                        googleOAuth:
+   *                          $ref: '#/components/schemas/GoogleOAuthSetting'
+   *                        githubOAuth:
+   *                          $ref: '#/components/schemas/GitHubOAuth
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const securityParams = {
       generalSetting: {
         restrictGuestMode: crowi.aclService.getGuestModeValue(),
-        pageDeletionAuthority: await configManager.getConfig('crowi', 'security:pageDeletionAuthority'),
-        pageCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
-        pageRecursiveDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),
-        pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
+        pageDeletionAuthority: await configManager.getConfig('security:pageDeletionAuthority'),
+        pageCompleteDeletionAuthority: await configManager.getConfig('security:pageCompleteDeletionAuthority'),
+        pageRecursiveDeletionAuthority: await configManager.getConfig('security:pageRecursiveDeletionAuthority'),
+        pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('security:pageRecursiveCompleteDeletionAuthority'),
         isAllGroupMembershipRequiredForPageCompleteDeletion:
-        await configManager.getConfig('crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
-        hideRestrictedByOwner: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
-        hideRestrictedByGroup: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
-        isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),
+        await configManager.getConfig('security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
+        hideRestrictedByOwner: await configManager.getConfig('security:list-policy:hideRestrictedByOwner'),
+        hideRestrictedByGroup: await configManager.getConfig('security:list-policy:hideRestrictedByGroup'),
+        isUsersHomepageDeletionEnabled: await configManager.getConfig('security:user-homepage-deletion:isEnabled'),
         isForceDeleteUserHomepageOnUserDeletion:
-        await configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
-        isRomUserAllowedToComment: await configManager.getConfig('crowi', 'security:isRomUserAllowedToComment'),
-        wikiMode: await configManager.getConfig('crowi', 'security:wikiMode'),
-        sessionMaxAge: await configManager.getConfig('crowi', 'security:sessionMaxAge'),
+        await configManager.getConfig('security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
+        isRomUserAllowedToComment: await configManager.getConfig('security:isRomUserAllowedToComment'),
+        wikiMode: await configManager.getConfig('security:wikiMode'),
+        sessionMaxAge: await configManager.getConfig('security:sessionMaxAge'),
       },
       shareLinkSetting: {
-        disableLinkSharing: await configManager.getConfig('crowi', 'security:disableLinkSharing'),
+        disableLinkSharing: await configManager.getConfig('security:disableLinkSharing'),
       },
       localSetting: {
-        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('crowi', 'security:passport-local:useOnlyEnvVarsForSomeOptions'),
-        registrationMode: await configManager.getConfig('crowi', 'security:registrationMode'),
-        registrationWhitelist: await configManager.getConfig('crowi', 'security:registrationWhitelist'),
-        isPasswordResetEnabled: await configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled'),
-        isEmailAuthenticationEnabled: await configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled'),
+        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('env:useOnlyEnvVars:security:passport-local'),
+        registrationMode: await configManager.getConfig('security:registrationMode'),
+        registrationWhitelist: await configManager.getConfig('security:registrationWhitelist'),
+        isPasswordResetEnabled: await configManager.getConfig('security:passport-local:isPasswordResetEnabled'),
+        isEmailAuthenticationEnabled: await configManager.getConfig('security:passport-local:isEmailAuthenticationEnabled'),
       },
       generalAuth: {
-        isLocalEnabled: await configManager.getConfig('crowi', 'security:passport-local:isEnabled'),
-        isLdapEnabled: await configManager.getConfig('crowi', 'security:passport-ldap:isEnabled'),
-        isSamlEnabled: await configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
-        isOidcEnabled: await configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
-        isGoogleEnabled: await configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
-        isGitHubEnabled: await configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
+        isLocalEnabled: await configManager.getConfig('security:passport-local:isEnabled'),
+        isLdapEnabled: await configManager.getConfig('security:passport-ldap:isEnabled'),
+        isSamlEnabled: await configManager.getConfig('security:passport-saml:isEnabled'),
+        isOidcEnabled: await configManager.getConfig('security:passport-oidc:isEnabled'),
+        isGoogleEnabled: await configManager.getConfig('security:passport-google:isEnabled'),
+        isGitHubEnabled: await configManager.getConfig('security:passport-github:isEnabled'),
       },
       ldapAuth: {
-        serverUrl: await configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
-        isUserBind: await configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
-        ldapBindDN: await configManager.getConfig('crowi', 'security:passport-ldap:bindDN'),
-        ldapBindDNPassword: await configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
-        ldapSearchFilter: await configManager.getConfig('crowi', 'security:passport-ldap:searchFilter'),
-        ldapAttrMapUsername: await configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername'),
-        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
-        ldapAttrMapMail: await configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail'),
-        ldapAttrMapName: await configManager.getConfig('crowi', 'security:passport-ldap:attrMapName'),
-        ldapGroupSearchBase: await configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase'),
-        ldapGroupSearchFilter: await configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter'),
-        ldapGroupDnProperty: await configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
+        serverUrl: await configManager.getConfig('security:passport-ldap:serverUrl'),
+        isUserBind: await configManager.getConfig('security:passport-ldap:isUserBind'),
+        ldapBindDN: await configManager.getConfig('security:passport-ldap:bindDN'),
+        ldapBindDNPassword: await configManager.getConfig('security:passport-ldap:bindDNPassword'),
+        ldapSearchFilter: await configManager.getConfig('security:passport-ldap:searchFilter'),
+        ldapAttrMapUsername: await configManager.getConfig('security:passport-ldap:attrMapUsername'),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
+        ldapAttrMapMail: await configManager.getConfig('security:passport-ldap:attrMapMail'),
+        ldapAttrMapName: await configManager.getConfig('security:passport-ldap:attrMapName'),
+        ldapGroupSearchBase: await configManager.getConfig('security:passport-ldap:groupSearchBase'),
+        ldapGroupSearchFilter: await configManager.getConfig('security:passport-ldap:groupSearchFilter'),
+        ldapGroupDnProperty: await configManager.getConfig('security:passport-ldap:groupDnProperty'),
       },
       samlAuth: {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
-        useOnlyEnvVarsForSomeOptions: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:useOnlyEnvVarsForSomeOptions'),
-        samlEntryPoint: await configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
-        samlEnvVarEntryPoint: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:entryPoint'),
-        samlIssuer: await configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
-        samlEnvVarIssuer: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:issuer'),
-        samlCert: await configManager.getConfigFromDB('crowi', 'security:passport-saml:cert'),
-        samlEnvVarCert: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:cert'),
-        samlAttrMapId: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapId'),
-        samlEnvVarAttrMapId: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapId'),
-        samlAttrMapUsername: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername'),
-        samlEnvVarAttrMapUsername: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapUsername'),
-        samlAttrMapMail: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapMail'),
-        samlEnvVarAttrMapMail: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapMail'),
-        samlAttrMapFirstName: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName'),
-        samlEnvVarAttrMapFirstName: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapFirstName'),
-        samlAttrMapLastName: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName'),
-        samlEnvVarAttrMapLastName: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:attrMapLastName'),
-        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
-        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
-        samlABLCRule: await configManager.getConfigFromDB('crowi', 'security:passport-saml:ABLCRule'),
-        samlEnvVarABLCRule: await configManager.getConfigFromEnvVars('crowi', 'security:passport-saml:ABLCRule'),
+        useOnlyEnvVarsForSomeOptions: await configManager.getConfig('env:useOnlyEnvVars:security:passport-saml', ConfigSource.env),
+        samlEntryPoint: await configManager.getConfig('security:passport-saml:entryPoint', ConfigSource.db),
+        samlEnvVarEntryPoint: await configManager.getConfig('security:passport-saml:entryPoint', ConfigSource.env),
+        samlIssuer: await configManager.getConfig('security:passport-saml:issuer', ConfigSource.db),
+        samlEnvVarIssuer: await configManager.getConfig('security:passport-saml:issuer', ConfigSource.env),
+        samlCert: await configManager.getConfig('security:passport-saml:cert', ConfigSource.db),
+        samlEnvVarCert: await configManager.getConfig('security:passport-saml:cert', ConfigSource.env),
+        samlAttrMapId: await configManager.getConfig('security:passport-saml:attrMapId', ConfigSource.db),
+        samlEnvVarAttrMapId: await configManager.getConfig('security:passport-saml:attrMapId', ConfigSource.env),
+        samlAttrMapUsername: await configManager.getConfig('security:passport-saml:attrMapUsername', ConfigSource.db),
+        samlEnvVarAttrMapUsername: await configManager.getConfig('security:passport-saml:attrMapUsername', ConfigSource.env),
+        samlAttrMapMail: await configManager.getConfig('security:passport-saml:attrMapMail', ConfigSource.db),
+        samlEnvVarAttrMapMail: await configManager.getConfig('security:passport-saml:attrMapMail', ConfigSource.env),
+        samlAttrMapFirstName: await configManager.getConfig('security:passport-saml:attrMapFirstName', ConfigSource.db),
+        samlEnvVarAttrMapFirstName: await configManager.getConfig('security:passport-saml:attrMapFirstName', ConfigSource.env),
+        samlAttrMapLastName: await configManager.getConfig('security:passport-saml:attrMapLastName', ConfigSource.db),
+        samlEnvVarAttrMapLastName: await configManager.getConfig('security:passport-saml:attrMapLastName', ConfigSource.env),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
+        samlABLCRule: await configManager.getConfig('security:passport-saml:ABLCRule', ConfigSource.db),
+        samlEnvVarABLCRule: await configManager.getConfig('security:passport-saml:ABLCRule', ConfigSource.env),
       },
       oidcAuth: {
-        oidcProviderName: await configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
-        oidcIssuerHost: await configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
-        oidcAuthorizationEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint'),
-        oidcTokenEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:tokenEndpoint'),
-        oidcRevocationEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:revocationEndpoint'),
-        oidcIntrospectionEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:introspectionEndpoint'),
-        oidcUserInfoEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:userInfoEndpoint'),
-        oidcEndSessionEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:endSessionEndpoint'),
-        oidcRegistrationEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:registrationEndpoint'),
-        oidcJWKSUri: await configManager.getConfig('crowi', 'security:passport-oidc:jwksUri'),
-        oidcClientId: await configManager.getConfig('crowi', 'security:passport-oidc:clientId'),
-        oidcClientSecret: await configManager.getConfig('crowi', 'security:passport-oidc:clientSecret'),
-        oidcAttrMapId: await configManager.getConfig('crowi', 'security:passport-oidc:attrMapId'),
-        oidcAttrMapUserName: await configManager.getConfig('crowi', 'security:passport-oidc:attrMapUserName'),
-        oidcAttrMapName: await configManager.getConfig('crowi', 'security:passport-oidc:attrMapName'),
-        oidcAttrMapEmail: await configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail'),
-        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
-        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
+        oidcProviderName: await configManager.getConfig('security:passport-oidc:providerName'),
+        oidcIssuerHost: await configManager.getConfig('security:passport-oidc:issuerHost'),
+        oidcAuthorizationEndpoint: await configManager.getConfig('security:passport-oidc:authorizationEndpoint'),
+        oidcTokenEndpoint: await configManager.getConfig('security:passport-oidc:tokenEndpoint'),
+        oidcRevocationEndpoint: await configManager.getConfig('security:passport-oidc:revocationEndpoint'),
+        oidcIntrospectionEndpoint: await configManager.getConfig('security:passport-oidc:introspectionEndpoint'),
+        oidcUserInfoEndpoint: await configManager.getConfig('security:passport-oidc:userInfoEndpoint'),
+        oidcEndSessionEndpoint: await configManager.getConfig('security:passport-oidc:endSessionEndpoint'),
+        oidcRegistrationEndpoint: await configManager.getConfig('security:passport-oidc:registrationEndpoint'),
+        oidcJWKSUri: await configManager.getConfig('security:passport-oidc:jwksUri'),
+        oidcClientId: await configManager.getConfig('security:passport-oidc:clientId'),
+        oidcClientSecret: await configManager.getConfig('security:passport-oidc:clientSecret'),
+        oidcAttrMapId: await configManager.getConfig('security:passport-oidc:attrMapId'),
+        oidcAttrMapUserName: await configManager.getConfig('security:passport-oidc:attrMapUserName'),
+        oidcAttrMapName: await configManager.getConfig('security:passport-oidc:attrMapName'),
+        oidcAttrMapEmail: await configManager.getConfig('security:passport-oidc:attrMapMail'),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
       },
       googleOAuth: {
-        googleClientId: await configManager.getConfig('crowi', 'security:passport-google:clientId'),
-        googleClientSecret: await configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
-        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-google:isSameEmailTreatedAsIdenticalUser'),
+        googleClientId: await configManager.getConfig('security:passport-google:clientId'),
+        googleClientSecret: await configManager.getConfig('security:passport-google:clientSecret'),
+        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('security:passport-google:isSameEmailTreatedAsIdenticalUser'),
       },
       githubOAuth: {
-        githubClientId: await configManager.getConfig('crowi', 'security:passport-github:clientId'),
-        githubClientSecret: await configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
+        githubClientId: await configManager.getConfig('security:passport-github:clientId'),
+        githubClientSecret: await configManager.getConfig('security:passport-github:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       },
     };
     return res.apiv3({ securityParams });
@@ -469,7 +580,7 @@ module.exports = (crowi) => {
    *                properties:
    *                  isEnabled:
    *                    type: boolean
-   *                  target:
+   *                  authId:
    *                    type: string
    *        responses:
    *          200:
@@ -510,7 +621,7 @@ module.exports = (crowi) => {
       await updateAndReloadStrategySettings(authId, enableParams);
 
       const responseParams = {
-        [`security:passport-${authId}:isEnabled`]: await configManager.getConfig('crowi', `security:passport-${authId}:isEnabled`),
+        [`security:passport-${authId}:isEnabled`]: await configManager.getConfig(`security:passport-${authId}:isEnabled`),
       };
       switch (authId) {
         case 'local':
@@ -574,6 +685,9 @@ module.exports = (crowi) => {
    *    /security-setting/authentication:
    *      get:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/authentication
    *        description: Get setup strategies for passport
    *        responses:
    *          200:
@@ -602,6 +716,9 @@ module.exports = (crowi) => {
    *    /security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/general-setting
    *        description: Update GeneralSetting
    *        requestBody:
    *          required: true
@@ -646,28 +763,28 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Delete config values are not correct.', 'delete_config_not_normalized'));
     }
 
-    const wikiMode = await configManager.getConfig('crowi', 'security:wikiMode');
+    const wikiMode = await configManager.getConfig('security:wikiMode');
     if (wikiMode === 'private' || wikiMode === 'public') {
       logger.debug('security:restrictGuestMode will not be changed because wiki mode is forced to set');
       delete updateData['security:restrictGuestMode'];
     }
     try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', updateData);
+      await configManager.updateConfigs(updateData);
       const securitySettingParams = {
-        sessionMaxAge: await configManager.getConfig('crowi', 'security:sessionMaxAge'),
-        restrictGuestMode: await configManager.getConfig('crowi', 'security:restrictGuestMode'),
-        pageDeletionAuthority: await configManager.getConfig('crowi', 'security:pageDeletionAuthority'),
-        pageCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
-        pageRecursiveDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),
-        pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
+        sessionMaxAge: await configManager.getConfig('security:sessionMaxAge'),
+        restrictGuestMode: await configManager.getConfig('security:restrictGuestMode'),
+        pageDeletionAuthority: await configManager.getConfig('security:pageDeletionAuthority'),
+        pageCompleteDeletionAuthority: await configManager.getConfig('security:pageCompleteDeletionAuthority'),
+        pageRecursiveDeletionAuthority: await configManager.getConfig('security:pageRecursiveDeletionAuthority'),
+        pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('security:pageRecursiveCompleteDeletionAuthority'),
         isAllGroupMembershipRequiredForPageCompleteDeletion:
-        await configManager.getConfig('crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
-        hideRestrictedByOwner: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
-        hideRestrictedByGroup: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
-        isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),
+        await configManager.getConfig('security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
+        hideRestrictedByOwner: await configManager.getConfig('security:list-policy:hideRestrictedByOwner'),
+        hideRestrictedByGroup: await configManager.getConfig('security:list-policy:hideRestrictedByGroup'),
+        isUsersHomepageDeletionEnabled: await configManager.getConfig('security:user-homepage-deletion:isEnabled'),
         isForceDeleteUserHomepageOnUserDeletion:
-        await configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
-        isRomUserAllowedToComment: await configManager.getConfig('crowi', 'security:isRomUserAllowedToComment'),
+        await configManager.getConfig('security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
+        isRomUserAllowedToComment: await configManager.getConfig('security:isRomUserAllowedToComment'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_SECURITY_SETTINGS_UPDATE };
@@ -688,6 +805,9 @@ module.exports = (crowi) => {
    *    /security-setting/share-link-setting:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/share-link-setting
    *        description: Update ShareLink Setting
    *        requestBody:
    *          required: true
@@ -701,16 +821,18 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/ShareLinkSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/ShareLinkSetting'
    */
   router.put('/share-link-setting', loginRequiredStrictly, adminRequired, addActivity, validator.generalSetting, apiV3FormValidator, async(req, res) => {
     const updateData = {
       'security:disableLinkSharing': req.body.disableLinkSharing,
     };
     try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', updateData);
+      await configManager.updateConfigs(updateData);
       const securitySettingParams = {
-        disableLinkSharing: configManager.getConfig('crowi', 'security:disableLinkSharing'),
+        disableLinkSharing: configManager.getConfig('security:disableLinkSharing'),
       };
       // eslint-disable-next-line max-len
       const parameters = { action: updateData['security:disableLinkSharing'] ? SupportedAction.ACTION_ADMIN_REJECT_SHARE_LINK : SupportedAction.ACTION_ADMIN_PERMIT_SHARE_LINK };
@@ -731,6 +853,9 @@ module.exports = (crowi) => {
    *    /security-setting/all-share-links:
    *      get:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/all-share-links
    *        description: Get All ShareLinks at Share Link Setting
    *        responses:
    *          200:
@@ -774,12 +899,21 @@ module.exports = (crowi) => {
    *    /security-setting/all-share-links:
    *      delete:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/all-share-links
    *        description: Delete All ShareLinks at Share Link Setting
    *        responses:
    *          200:
    *            description: succeed to delete all share links
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    removeTotal:
+   *                      type: number
+   *                      description: total number of removed share links
    */
-
   router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
       const removedAct = await ShareLink.remove({});
@@ -799,6 +933,9 @@ module.exports = (crowi) => {
    *    /security-setting/local-setting:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/local-setting
    *        description: Update LocalSetting
    *        requestBody:
    *          required: true
@@ -812,7 +949,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/LocalSetting'
+   *                  properties:
+   *                    localSettingParams:
+   *                      $ref: '#/components/schemas/LocalSetting'
    */
   router.put('/local-setting', loginRequiredStrictly, adminRequired, addActivity, validator.localSetting, apiV3FormValidator, async(req, res) => {
     try {
@@ -829,10 +968,10 @@ module.exports = (crowi) => {
       await updateAndReloadStrategySettings('local', requestParams);
 
       const localSettingParams = {
-        registrationMode: await configManager.getConfig('crowi', 'security:registrationMode'),
-        registrationWhitelist: await configManager.getConfig('crowi', 'security:registrationWhitelist'),
-        isPasswordResetEnabled: await configManager.getConfig('crowi', 'security:passport-local:isPasswordResetEnabled'),
-        isEmailAuthenticationEnabled: await configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled'),
+        registrationMode: await configManager.getConfig('security:registrationMode'),
+        registrationWhitelist: await configManager.getConfig('security:registrationWhitelist'),
+        isPasswordResetEnabled: await configManager.getConfig('security:passport-local:isPasswordResetEnabled'),
+        isEmailAuthenticationEnabled: await configManager.getConfig('security:passport-local:isEmailAuthenticationEnabled'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -851,6 +990,9 @@ module.exports = (crowi) => {
    *    /security-setting/ldap:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/ldap
    *        description: Update LDAP setting
    *        requestBody:
    *          required: true
@@ -864,7 +1006,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/LdapAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/LdapAuthSetting'
    */
   router.put('/ldap', loginRequiredStrictly, adminRequired, addActivity, validator.ldapAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -886,18 +1030,18 @@ module.exports = (crowi) => {
       await updateAndReloadStrategySettings('ldap', requestParams);
 
       const securitySettingParams = {
-        serverUrl: await configManager.getConfig('crowi', 'security:passport-ldap:serverUrl'),
-        isUserBind: await configManager.getConfig('crowi', 'security:passport-ldap:isUserBind'),
-        ldapBindDN: await configManager.getConfig('crowi', 'security:passport-ldap:bindDN'),
-        ldapBindDNPassword: await configManager.getConfig('crowi', 'security:passport-ldap:bindDNPassword'),
-        ldapSearchFilter: await configManager.getConfig('crowi', 'security:passport-ldap:searchFilter'),
-        ldapAttrMapUsername: await configManager.getConfig('crowi', 'security:passport-ldap:attrMapUsername'),
-        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
-        ldapAttrMapMail: await configManager.getConfig('crowi', 'security:passport-ldap:attrMapMail'),
-        ldapAttrMapName: await configManager.getConfig('crowi', 'security:passport-ldap:attrMapName'),
-        ldapGroupSearchBase: await configManager.getConfig('crowi', 'security:passport-ldap:groupSearchBase'),
-        ldapGroupSearchFilter: await configManager.getConfig('crowi', 'security:passport-ldap:groupSearchFilter'),
-        ldapGroupDnProperty: await configManager.getConfig('crowi', 'security:passport-ldap:groupDnProperty'),
+        serverUrl: await configManager.getConfig('security:passport-ldap:serverUrl'),
+        isUserBind: await configManager.getConfig('security:passport-ldap:isUserBind'),
+        ldapBindDN: await configManager.getConfig('security:passport-ldap:bindDN'),
+        ldapBindDNPassword: await configManager.getConfig('security:passport-ldap:bindDNPassword'),
+        ldapSearchFilter: await configManager.getConfig('security:passport-ldap:searchFilter'),
+        ldapAttrMapUsername: await configManager.getConfig('security:passport-ldap:attrMapUsername'),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('security:passport-ldap:isSameUsernameTreatedAsIdenticalUser'),
+        ldapAttrMapMail: await configManager.getConfig('security:passport-ldap:attrMapMail'),
+        ldapAttrMapName: await configManager.getConfig('security:passport-ldap:attrMapName'),
+        ldapGroupSearchBase: await configManager.getConfig('security:passport-ldap:groupSearchBase'),
+        ldapGroupSearchFilter: await configManager.getConfig('security:passport-ldap:groupSearchFilter'),
+        ldapGroupDnProperty: await configManager.getConfig('security:passport-ldap:groupDnProperty'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_LDAP_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -916,6 +1060,9 @@ module.exports = (crowi) => {
    *    /security-setting/saml:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/saml
    *        description: Update SAML setting
    *        requestBody:
    *          required: true
@@ -929,7 +1076,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SamlAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/SamlAuthSetting'
    */
   router.put('/saml', loginRequiredStrictly, adminRequired, addActivity, validator.samlAuth, apiV3FormValidator, async(req, res) => {
     const { t } = await getTranslation({ lang: req.user.lang, ns: ['translation', 'admin'] });
@@ -941,7 +1090,7 @@ module.exports = (crowi) => {
     for (const configKey of crowi.passportService.mandatoryConfigKeysForSaml) {
       const key = configKey.replace('security:passport-saml:', '');
       const formValue = req.body[key];
-      if (configManager.getConfigFromEnvVars('crowi', configKey) === null && formValue == null) {
+      if (configManager.getConfig(configKey, ConfigSource.env) == null && formValue == null) {
         const formItemName = t(`security_settings.form_item_name.${key}`);
         invalidValues.push(t('input_validation.message.required', { param: formItemName }));
       }
@@ -981,17 +1130,17 @@ module.exports = (crowi) => {
 
       const securitySettingParams = {
         missingMandatoryConfigKeys: await crowi.passportService.getSamlMissingMandatoryConfigKeys(),
-        samlEntryPoint: await configManager.getConfigFromDB('crowi', 'security:passport-saml:entryPoint'),
-        samlIssuer: await configManager.getConfigFromDB('crowi', 'security:passport-saml:issuer'),
-        samlCert: await configManager.getConfigFromDB('crowi', 'security:passport-saml:cert'),
-        samlAttrMapId: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapId'),
-        samlAttrMapUsername: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapUsername'),
-        samlAttrMapMail: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapMail'),
-        samlAttrMapFirstName: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapFirstName'),
-        samlAttrMapLastName: await configManager.getConfigFromDB('crowi', 'security:passport-saml:attrMapLastName'),
-        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
-        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
-        samlABLCRule: await configManager.getConfig('crowi', 'security:passport-saml:ABLCRule'),
+        samlEntryPoint: await configManager.getConfig('security:passport-saml:entryPoint', ConfigSource.db),
+        samlIssuer: await configManager.getConfig('security:passport-saml:issuer', ConfigSource.db),
+        samlCert: await configManager.getConfig('security:passport-saml:cert', ConfigSource.db),
+        samlAttrMapId: await configManager.getConfig('security:passport-saml:attrMapId', ConfigSource.db),
+        samlAttrMapUsername: await configManager.getConfig('security:passport-saml:attrMapUsername', ConfigSource.db),
+        samlAttrMapMail: await configManager.getConfig('security:passport-saml:attrMapMail', ConfigSource.db),
+        samlAttrMapFirstName: await configManager.getConfig('security:passport-saml:attrMapFirstName', ConfigSource.db),
+        samlAttrMapLastName: await configManager.getConfig('security:passport-saml:attrMapLastName', ConfigSource.db),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('security:passport-saml:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('security:passport-saml:isSameEmailTreatedAsIdenticalUser'),
+        samlABLCRule: await configManager.getConfig('security:passport-saml:ABLCRule'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_SAML_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -1010,6 +1159,9 @@ module.exports = (crowi) => {
    *    /security-setting/oidc:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/oidc
    *        description: Update OpenID Connect setting
    *        requestBody:
    *          required: true
@@ -1023,7 +1175,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/OidcAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/OidcAuthSetting'
    */
   router.put('/oidc', loginRequiredStrictly, adminRequired, addActivity, validator.oidcAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -1051,24 +1205,24 @@ module.exports = (crowi) => {
       await updateAndReloadStrategySettings('oidc', requestParams);
 
       const securitySettingParams = {
-        oidcProviderName: await configManager.getConfig('crowi', 'security:passport-oidc:providerName'),
-        oidcIssuerHost: await configManager.getConfig('crowi', 'security:passport-oidc:issuerHost'),
-        oidcAuthorizationEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:authorizationEndpoint'),
-        oidcTokenEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:tokenEndpoint'),
-        oidcRevocationEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:revocationEndpoint'),
-        oidcIntrospectionEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:introspectionEndpoint'),
-        oidcUserInfoEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:userInfoEndpoint'),
-        oidcEndSessionEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:endSessionEndpoint'),
-        oidcRegistrationEndpoint: await configManager.getConfig('crowi', 'security:passport-oidc:registrationEndpoint'),
-        oidcJWKSUri: await configManager.getConfig('crowi', 'security:passport-oidc:jwksUri'),
-        oidcClientId: await configManager.getConfig('crowi', 'security:passport-oidc:clientId'),
-        oidcClientSecret: await configManager.getConfig('crowi', 'security:passport-oidc:clientSecret'),
-        oidcAttrMapId: await configManager.getConfig('crowi', 'security:passport-oidc:attrMapId'),
-        oidcAttrMapUserName: await configManager.getConfig('crowi', 'security:passport-oidc:attrMapUserName'),
-        oidcAttrMapName: await configManager.getConfig('crowi', 'security:passport-oidc:attrMapName'),
-        oidcAttrMapEmail: await configManager.getConfig('crowi', 'security:passport-oidc:attrMapMail'),
-        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
-        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
+        oidcProviderName: await configManager.getConfig('security:passport-oidc:providerName'),
+        oidcIssuerHost: await configManager.getConfig('security:passport-oidc:issuerHost'),
+        oidcAuthorizationEndpoint: await configManager.getConfig('security:passport-oidc:authorizationEndpoint'),
+        oidcTokenEndpoint: await configManager.getConfig('security:passport-oidc:tokenEndpoint'),
+        oidcRevocationEndpoint: await configManager.getConfig('security:passport-oidc:revocationEndpoint'),
+        oidcIntrospectionEndpoint: await configManager.getConfig('security:passport-oidc:introspectionEndpoint'),
+        oidcUserInfoEndpoint: await configManager.getConfig('security:passport-oidc:userInfoEndpoint'),
+        oidcEndSessionEndpoint: await configManager.getConfig('security:passport-oidc:endSessionEndpoint'),
+        oidcRegistrationEndpoint: await configManager.getConfig('security:passport-oidc:registrationEndpoint'),
+        oidcJWKSUri: await configManager.getConfig('security:passport-oidc:jwksUri'),
+        oidcClientId: await configManager.getConfig('security:passport-oidc:clientId'),
+        oidcClientSecret: await configManager.getConfig('security:passport-oidc:clientSecret'),
+        oidcAttrMapId: await configManager.getConfig('security:passport-oidc:attrMapId'),
+        oidcAttrMapUserName: await configManager.getConfig('security:passport-oidc:attrMapUserName'),
+        oidcAttrMapName: await configManager.getConfig('security:passport-oidc:attrMapName'),
+        oidcAttrMapEmail: await configManager.getConfig('security:passport-oidc:attrMapMail'),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('security:passport-oidc:isSameUsernameTreatedAsIdenticalUser'),
+        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('security:passport-oidc:isSameEmailTreatedAsIdenticalUser'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_OIDC_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -1087,6 +1241,9 @@ module.exports = (crowi) => {
    *    /security-setting/google-oauth:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/google-oauth
    *        description: Update google OAuth
    *        requestBody:
    *          required: true
@@ -1100,7 +1257,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/GoogleOAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/GoogleOAuthSetting'
    */
   router.put('/google-oauth', loginRequiredStrictly, adminRequired, addActivity, validator.googleOAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -1114,9 +1273,9 @@ module.exports = (crowi) => {
       await updateAndReloadStrategySettings('google', requestParams);
 
       const securitySettingParams = {
-        googleClientId: await configManager.getConfig('crowi', 'security:passport-google:clientId'),
-        googleClientSecret: await configManager.getConfig('crowi', 'security:passport-google:clientSecret'),
-        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-google:isSameEmailTreatedAsIdenticalUser'),
+        googleClientId: await configManager.getConfig('security:passport-google:clientId'),
+        googleClientSecret: await configManager.getConfig('security:passport-google:clientSecret'),
+        isSameEmailTreatedAsIdenticalUser: await configManager.getConfig('security:passport-google:isSameEmailTreatedAsIdenticalUser'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -1135,6 +1294,9 @@ module.exports = (crowi) => {
    *    /security-setting/github-oauth:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/github-oauth
    *        description: Update github OAuth
    *        requestBody:
    *          required: true
@@ -1148,7 +1310,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/GitHubOAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/GitHubOAuthSetting'
    */
   router.put('/github-oauth', loginRequiredStrictly, adminRequired, addActivity, validator.githubOAuth, apiV3FormValidator, async(req, res) => {
     const requestParams = {
@@ -1161,9 +1325,9 @@ module.exports = (crowi) => {
       await updateAndReloadStrategySettings('github', requestParams);
 
       const securitySettingParams = {
-        githubClientId: await configManager.getConfig('crowi', 'security:passport-github:clientId'),
-        githubClientSecret: await configManager.getConfig('crowi', 'security:passport-github:clientSecret'),
-        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('crowi', 'security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
+        githubClientId: await configManager.getConfig('security:passport-github:clientId'),
+        githubClientSecret: await configManager.getConfig('security:passport-github:clientSecret'),
+        isSameUsernameTreatedAsIdenticalUser: await configManager.getConfig('security:passport-github:isSameUsernameTreatedAsIdenticalUser'),
       };
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GITHUB_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
