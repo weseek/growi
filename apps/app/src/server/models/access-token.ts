@@ -96,24 +96,24 @@ accessTokenSchema.statics.deleteAllTokensByUserId = async function(userId: Types
 
 accessTokenSchema.statics.deleteExpiredToken = async function() {
   const now = new Date();
-  await this.deleteMany({ expiredAt: { $lte: now } });
+  await this.deleteMany({ expiredAt: { $lt: now } });
 };
 
 accessTokenSchema.statics.findUserIdByToken = async function(token: string) {
   const tokenHash = generateTokenHash(token);
   const now = new Date();
-  return this.findOne({ tokenHash, expiredAt: { $gt: now } }).select('user');
+  return this.findOne({ tokenHash, expiredAt: { $gte: now } }).select('user');
 };
 
 accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId | string) {
   const now = new Date();
-  return this.find({ user: userId, expiredAt: { $gt: now } }).select('_id expiredAt scope description');
+  return this.find({ user: userId, expiredAt: { $gte: now } }).select('_id expiredAt scope description');
 };
 
 accessTokenSchema.statics.validateTokenScopes = async function(token: string, requiredScopes: string[]) {
   const tokenHash = generateTokenHash(token);
   const now = new Date();
-  const tokenData = await this.findOne({ tokenHash, expiredAt: { $gt: now }, scope: { $all: requiredScopes } });
+  const tokenData = await this.findOne({ tokenHash, expiredAt: { $gte: now }, scope: { $all: requiredScopes } });
   return tokenData != null;
 };
 
