@@ -444,51 +444,52 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, addActivity, validator.likes, apiV3FormValidator, async(req, res) => {
-    const { pageId, bool: isLiked } = req.body;
+  router.put('/likes', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, addActivity,
+    validator.likes, apiV3FormValidator, async(req, res) => {
+      const { pageId, bool: isLiked } = req.body;
 
-    let page;
-    try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
-      if (page == null) {
-        return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
-      }
-
-      if (isLiked) {
-        page = await page.like(req.user);
-      }
-      else {
-        page = await page.unlike(req.user);
-      }
-    }
-    catch (err) {
-      logger.error('update-like-failed', err);
-      return res.apiv3Err(err, 500);
-    }
-
-    const result = { page, seenUser: page.seenUsers };
-
-    const parameters = {
-      targetModel: SupportedTargetModel.MODEL_PAGE,
-      target: page,
-      action: isLiked ? SupportedAction.ACTION_PAGE_LIKE : SupportedAction.ACTION_PAGE_UNLIKE,
-    };
-
-    activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify);
-
-
-    res.apiv3({ result });
-
-    if (isLiked) {
+      let page;
       try {
-        // global notification
-        await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_LIKE, page, req.user);
+        page = await Page.findByIdAndViewer(pageId, req.user);
+        if (page == null) {
+          return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
+        }
+
+        if (isLiked) {
+          page = await page.like(req.user);
+        }
+        else {
+          page = await page.unlike(req.user);
+        }
       }
       catch (err) {
-        logger.error('Like notification failed', err);
+        logger.error('update-like-failed', err);
+        return res.apiv3Err(err, 500);
       }
-    }
-  });
+
+      const result = { page, seenUser: page.seenUsers };
+
+      const parameters = {
+        targetModel: SupportedTargetModel.MODEL_PAGE,
+        target: page,
+        action: isLiked ? SupportedAction.ACTION_PAGE_LIKE : SupportedAction.ACTION_PAGE_UNLIKE,
+      };
+
+      activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify);
+
+
+      res.apiv3({ result });
+
+      if (isLiked) {
+        try {
+        // global notification
+          await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_LIKE, page, req.user);
+        }
+        catch (err) {
+          logger.error('Like notification failed', err);
+        }
+      }
+    });
 
   /**
    * @swagger
@@ -564,74 +565,75 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/grant-data', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly, validator.getGrantData, apiV3FormValidator, async(req, res) => {
-    const { pageId } = req.query;
+  router.get('/grant-data', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly,
+    validator.getGrantData, apiV3FormValidator, async(req, res) => {
+      const { pageId } = req.query;
 
-    const Page = mongoose.model<IPage, PageModel>('Page');
-    const pageGrantService = crowi.pageGrantService as IPageGrantService;
+      const Page = mongoose.model<IPage, PageModel>('Page');
+      const pageGrantService = crowi.pageGrantService as IPageGrantService;
 
-    const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
+      const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
 
-    if (page == null) {
+      if (page == null) {
       // Empty page should not be related to grant API
-      return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
-    }
+        return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+      }
 
-    const {
-      path, grant, grantedUsers, grantedGroups,
-    } = page;
-    let isGrantNormalized = false;
-    try {
-      const grantedUsersId = grantedUsers.map(ref => getIdForRef(ref));
-      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsersId, grantedGroups, false, false);
-    }
-    catch (err) {
-      logger.error('Error occurred while processing isGrantNormalized.', err);
-      return res.apiv3Err(err, 500);
-    }
+      const {
+        path, grant, grantedUsers, grantedGroups,
+      } = page;
+      let isGrantNormalized = false;
+      try {
+        const grantedUsersId = grantedUsers.map(ref => getIdForRef(ref));
+        isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsersId, grantedGroups, false, false);
+      }
+      catch (err) {
+        logger.error('Error occurred while processing isGrantNormalized.', err);
+        return res.apiv3Err(err, 500);
+      }
 
-    const currentPageGroupGrantData = await pageGrantService.getPageGroupGrantData(page, req.user);
-    const currentPageGrant: IPageGrantData = {
-      grant: page.grant,
-      groupGrantData: currentPageGroupGrantData,
-    };
+      const currentPageGroupGrantData = await pageGrantService.getPageGroupGrantData(page, req.user);
+      const currentPageGrant: IPageGrantData = {
+        grant: page.grant,
+        groupGrantData: currentPageGroupGrantData,
+      };
 
-    // page doesn't have parent page
-    if (page.parent == null) {
+      // page doesn't have parent page
+      if (page.parent == null) {
+        const grantData = {
+          isForbidden: false,
+          currentPageGrant,
+          parentPageGrant: null,
+        };
+        return res.apiv3({ isGrantNormalized, grantData });
+      }
+
+      const parentPage = await Page.findByIdAndViewer(getIdForRef(page.parent), req.user, null, false);
+
+      // user isn't allowed to see parent's grant
+      if (parentPage == null) {
+        const grantData = {
+          isForbidden: true,
+          currentPageGrant,
+          parentPageGrant: null,
+        };
+        return res.apiv3({ isGrantNormalized, grantData });
+      }
+
+      const parentPageGroupGrantData = await pageGrantService.getPageGroupGrantData(parentPage, req.user);
+      const parentPageGrant: IPageGrantData = {
+        grant,
+        groupGrantData: parentPageGroupGrantData,
+      };
+
       const grantData = {
         isForbidden: false,
         currentPageGrant,
-        parentPageGrant: null,
+        parentPageGrant,
       };
+
       return res.apiv3({ isGrantNormalized, grantData });
-    }
-
-    const parentPage = await Page.findByIdAndViewer(getIdForRef(page.parent), req.user, null, false);
-
-    // user isn't allowed to see parent's grant
-    if (parentPage == null) {
-      const grantData = {
-        isForbidden: true,
-        currentPageGrant,
-        parentPageGrant: null,
-      };
-      return res.apiv3({ isGrantNormalized, grantData });
-    }
-
-    const parentPageGroupGrantData = await pageGrantService.getPageGroupGrantData(parentPage, req.user);
-    const parentPageGrant: IPageGrantData = {
-      grant,
-      groupGrantData: parentPageGroupGrantData,
-    };
-
-    const grantData = {
-      isForbidden: false,
-      currentPageGrant,
-      parentPageGrant,
-    };
-
-    return res.apiv3({ isGrantNormalized, grantData });
-  });
+    });
 
   // Check if non user related groups are granted page access.
   // If specified page does not exist, check the closest ancestor.
