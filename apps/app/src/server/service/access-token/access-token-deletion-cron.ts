@@ -10,7 +10,7 @@ export class AccessTokenDeletionCronService {
 
   cronJob: nodeCron.ScheduledTask;
 
-  // デフォルトで毎日深夜0時に実行 (UTC で 15:00)
+  // Default execution at midnight
   accessTokenDeletionCronExpression = '0 15 * * *';
 
   startCron(): void {
