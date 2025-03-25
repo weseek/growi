@@ -199,45 +199,46 @@ module.exports = (crowi) => {
    *                  type: object
    *                  $ref: '#/components/schemas/AttachmentPaginateResult'
    */
-  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
+  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), loginRequired, validator.retrieveAttachments, apiV3FormValidator,
+    async(req, res) => {
 
-    const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
-    const pageNumber = req.query.pageNumber || 1;
-    const offset = (pageNumber - 1) * limit;
+      const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
+      const pageNumber = req.query.pageNumber || 1;
+      const offset = (pageNumber - 1) * limit;
 
-    try {
-      const pageId = req.query.pageId;
-      // check whether accessible
-      const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
-      if (!isAccessible) {
-        const msg = 'Current user is not accessible to this page.';
-        return res.apiv3Err(new ErrorV3(msg, 'attachment-list-failed'), 403);
-      }
-
-      // directly get paging-size from db. not to delivery from client side.
-
-      const paginateResult = await Attachment.paginate(
-        { page: pageId },
-        {
-          limit,
-          offset,
-          populate: 'creator',
-        },
-      );
-
-      paginateResult.docs.forEach((doc) => {
-        if (doc.creator != null && doc.creator instanceof User) {
-          doc.creator = serializeUserSecurely(doc.creator);
+      try {
+        const pageId = req.query.pageId;
+        // check whether accessible
+        const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
+        if (!isAccessible) {
+          const msg = 'Current user is not accessible to this page.';
+          return res.apiv3Err(new ErrorV3(msg, 'attachment-list-failed'), 403);
         }
-      });
 
-      return res.apiv3({ paginateResult });
-    }
-    catch (err) {
-      logger.error('Attachment not found', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+        // directly get paging-size from db. not to delivery from client side.
+
+        const paginateResult = await Attachment.paginate(
+          { page: pageId },
+          {
+            limit,
+            offset,
+            populate: 'creator',
+          },
+        );
+
+        paginateResult.docs.forEach((doc) => {
+          if (doc.creator != null && doc.creator instanceof User) {
+            doc.creator = serializeUserSecurely(doc.creator);
+          }
+        });
+
+        return res.apiv3({ paginateResult });
+      }
+      catch (err) {
+        logger.error('Attachment not found', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
 
   /**

@@ -238,36 +238,37 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO]), loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.INFO]), loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator,
+    async(req, res) => {
 
-    try {
-      const user = await User.findOne({ _id: req.user.id });
-      user.name = req.body.name;
-      user.email = req.body.email;
-      user.lang = req.body.lang;
-      user.isEmailPublished = req.body.isEmailPublished;
-      user.slackMemberId = req.body.slackMemberId;
+      try {
+        const user = await User.findOne({ _id: req.user.id });
+        user.name = req.body.name;
+        user.email = req.body.email;
+        user.lang = req.body.lang;
+        user.isEmailPublished = req.body.isEmailPublished;
+        user.slackMemberId = req.body.slackMemberId;
 
-      const isUniqueEmail = await user.isUniqueEmail();
+        const isUniqueEmail = await user.isUniqueEmail();
 
-      if (!isUniqueEmail) {
-        logger.error('email-is-not-unique');
-        return res.apiv3Err(new ErrorV3('The email is already in use', 'email-is-already-in-use'));
+        if (!isUniqueEmail) {
+          logger.error('email-is-not-unique');
+          return res.apiv3Err(new ErrorV3('The email is already in use', 'email-is-already-in-use'));
+        }
+
+        const updatedUser = await user.save();
+
+        const parameters = { action: SupportedAction.ACTION_USER_PERSONAL_SETTINGS_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+
+        return res.apiv3({ updatedUser });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err('update-personal-settings-failed');
       }
 
-      const updatedUser = await user.save();
-
-      const parameters = { action: SupportedAction.ACTION_USER_PERSONAL_SETTINGS_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-
-      return res.apiv3({ updatedUser });
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('update-personal-settings-failed');
-    }
-
-  });
+    });
 
   /**
    * @swagger
@@ -664,7 +665,8 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: editor settings
    */
-  router.put('/editor-settings', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.OTHER]), loginRequiredStrictly, addActivity, validator.editorSettings, apiV3FormValidator,
+  router.put('/editor-settings', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.OTHER]), loginRequiredStrictly,
+    addActivity, validator.editorSettings, apiV3FormValidator,
     async(req, res) => {
       const query = { userId: req.user.id };
       const { body } = req;

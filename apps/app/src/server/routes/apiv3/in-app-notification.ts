@@ -25,91 +25,94 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  router.get('/list', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.get('/list', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly,
+    async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const user = req.user!;
+      const user = req.user!;
 
-    const limit = req.query.limit != null
-      ? parseInt(req.query.limit.toString()) || 10
-      : 10;
+      const limit = req.query.limit != null
+        ? parseInt(req.query.limit.toString()) || 10
+        : 10;
 
-    let offset = 0;
-    if (req.query.offset != null) {
-      offset = parseInt(req.query.offset.toString(), 10);
-    }
-
-    const queryOptions = {
-      offset,
-      limit,
-    };
-
-    // set in-app-notification status to categorize
-    if (req.query.status != null) {
-      Object.assign(queryOptions, { status: req.query.status });
-    }
-
-    const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, queryOptions);
-
-
-    const getActionUsersFromActivities = function(activities) {
-      return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
-    };
-
-    const serializedDocs: Array<IInAppNotification> = paginationResult.docs.map((doc) => {
-      if (doc.user != null && doc.user instanceof User) {
-        doc.user = serializeUserSecurely(doc.user);
+      let offset = 0;
+      if (req.query.offset != null) {
+        offset = parseInt(req.query.offset.toString(), 10);
       }
-      // To add a new property into mongoose doc, need to change the format of doc to an object
-      const docObj: IInAppNotification = doc.toObject();
-      const actionUsersNew = getActionUsersFromActivities(doc.activities);
 
-      const serializedActionUsers = actionUsersNew.map((actionUser) => {
-        return serializeUserSecurely(actionUser);
+      const queryOptions = {
+        offset,
+        limit,
+      };
+
+      // set in-app-notification status to categorize
+      if (req.query.status != null) {
+        Object.assign(queryOptions, { status: req.query.status });
+      }
+
+      const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, queryOptions);
+
+
+      const getActionUsersFromActivities = function(activities) {
+        return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
+      };
+
+      const serializedDocs: Array<IInAppNotification> = paginationResult.docs.map((doc) => {
+        if (doc.user != null && doc.user instanceof User) {
+          doc.user = serializeUserSecurely(doc.user);
+        }
+        // To add a new property into mongoose doc, need to change the format of doc to an object
+        const docObj: IInAppNotification = doc.toObject();
+        const actionUsersNew = getActionUsersFromActivities(doc.activities);
+
+        const serializedActionUsers = actionUsersNew.map((actionUser) => {
+          return serializeUserSecurely(actionUser);
+        });
+
+        docObj.actionUsers = serializedActionUsers;
+        return docObj;
       });
 
-      docObj.actionUsers = serializedActionUsers;
-      return docObj;
+      const serializedPaginationResult = {
+        ...paginationResult,
+        docs: serializedDocs,
+      };
+
+      return res.apiv3(serializedPaginationResult);
     });
 
-    const serializedPaginationResult = {
-      ...paginationResult,
-      docs: serializedDocs,
-    };
-
-    return res.apiv3(serializedPaginationResult);
-  });
-
-  router.get('/status', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.get('/status', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly,
+    async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const user = req.user!;
+      const user = req.user!;
 
-    try {
-      const count = await inAppNotificationService.getUnreadCountByUser(user._id);
-      return res.apiv3({ count });
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
+      try {
+        const count = await inAppNotificationService.getUnreadCountByUser(user._id);
+        return res.apiv3({ count });
+      }
+      catch (err) {
+        return res.apiv3Err(err);
+      }
+    });
 
-  router.post('/open', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.post('/open', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly,
+    async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const user = req.user!;
+      const user = req.user!;
 
-    const id = req.body.id;
+      const id = req.body.id;
 
-    try {
-      const notification = await inAppNotificationService.open(user, id);
-      const result = { notification };
-      return res.apiv3(result);
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
+      try {
+        const notification = await inAppNotificationService.open(user, id);
+        const result = { notification };
+        return res.apiv3(result);
+      }
+      catch (err) {
+        return res.apiv3Err(err);
+      }
+    });
 
   router.put('/all-statuses-open', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, addActivity,
     async(req: CrowiRequest, res: ApiV3Response) => {
