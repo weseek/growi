@@ -66,6 +66,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
+  const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
@@ -159,7 +160,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     if (currentThreadId_ == null) {
       try {
         const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
-          aiAssistantId: aiAssistantData?._id,
+          aiAssistantId: isEditorAssistant ? selectedAiAssistant?._id : aiAssistantData?._id,
           initialUserMessage: isEditorAssistant ? undefined : newUserMessage.content,
         });
 
@@ -292,7 +293,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData?._id, isEditorAssistant, mutateThreadData, t, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData?._id, isEditorAssistant, mutateThreadData, t, postMessageForEditorAssistant, selectedAiAssistant?._id, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -310,6 +311,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   const clickDiscardHandler = useCallback(() => {
     // todo: implement
+  }, []);
+
+  const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
+    setSelectedAiAssistant(aiAssistant);
   }, []);
 
   return (
@@ -361,7 +366,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 ? (
                   <>
                     <div className="py-2">
-                      <AiAssistantDropdown />
+                      <AiAssistantDropdown
+                        selectedAiAssistant={selectedAiAssistant}
+                        onSelect={selectAiAssistantHandler}
+                      />
                     </div>
                     <QuickMenuList
                       onClick={clickQuickMenuHandler}

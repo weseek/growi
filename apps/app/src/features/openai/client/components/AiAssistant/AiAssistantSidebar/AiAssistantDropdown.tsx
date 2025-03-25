@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {
@@ -14,12 +14,11 @@ import { useSWRxAiAssistants } from '../../../stores/ai-assistant';
 import { getShareScopeIcon } from '../../../utils/get-share-scope-Icon';
 
 type Props = {
-  //
+  selectedAiAssistant?: AiAssistantHasId;
+  onSelect(aiAssistant?: AiAssistantHasId): void
 }
 
-export const AiAssistantDropdown = (props: Props): JSX.Element => {
-  const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
-
+export const AiAssistantDropdown = ({ selectedAiAssistant, onSelect }: Props): JSX.Element => {
   const { t } = useTranslation();
   const { data: aiAssistantData } = useSWRxAiAssistants();
 
@@ -42,8 +41,8 @@ export const AiAssistantDropdown = (props: Props): JSX.Element => {
   }, []);
 
   const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
-    setSelectedAiAssistant(aiAssistant);
-  }, []);
+    onSelect(aiAssistant);
+  }, [onSelect]);
 
   return (
     <UncontrolledDropdown>
