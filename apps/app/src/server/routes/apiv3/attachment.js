@@ -339,8 +339,8 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.post('/', uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
-    validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
+  router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
+    validator.retrieveAddAttachment, apiV3FormValidator, addActivity, uploads.single('file'), autoReap,
     async(req, res) => {
 
       const pageId = req.body.page_id;
