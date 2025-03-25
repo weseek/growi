@@ -26,6 +26,7 @@ type Req = Request<undefined, Response, ReqBody> & {
 
 /**
  * @swagger
+ *
  * /openai/ai-assistant:
  *   post:
  *     tags: [OpenAI]
@@ -71,7 +72,7 @@ type Req = Request<undefined, Response, ReqBody> & {
  *               type: object
  *               properties:
  *                 aiAssistant:
- *                   $ref: '#/components/schemas/AIAssistant'
+ *                   $ref: '#/components/schemas/OpenAIAssistant'
  */
 export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);

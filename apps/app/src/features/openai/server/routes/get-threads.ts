@@ -27,6 +27,7 @@ type Req = Request<ReqParams, Response, undefined> & {
 
 /**
  * @swagger
+ *
  * /openai/threads/{aiAssistantId}:
  *   get:
  *     tags: [OpenAI]

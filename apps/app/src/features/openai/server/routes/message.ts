@@ -42,6 +42,7 @@ type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
 /**
  * @swagger
+ *
  * /openai/message:
  *   post:
  *     tags: [OpenAI]

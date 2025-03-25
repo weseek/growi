@@ -27,6 +27,7 @@ type CreateThreadFactory = (crowi: Crowi) => RequestHandler[];
 
 /**
  * @swagger
+ *
  * /openai/thread:
  *   post:
  *     tags: [OpenAI]

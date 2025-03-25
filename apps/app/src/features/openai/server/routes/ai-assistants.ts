@@ -38,7 +38,7 @@ type Req = Request<undefined, Response, undefined> & {
  *             schema:
  *               type: array
  *               items:
- *                 $ref: '#/components/schemas/AIAssistant'
+ *                 $ref: '#/components/schemas/OpenAIAssistant'
  */
 export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
 

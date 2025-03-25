@@ -30,6 +30,7 @@ type Req = Request<ReqParams, Response, ReqBody>
 
 /**
  * @swagger
+ *
  * /openai/ai-assistant/{id}/set-default:
  *   put:
  *     tags: [OpenAI]
@@ -60,7 +61,7 @@ type Req = Request<ReqParams, Response, ReqBody>
  *               type: object
  *               properties:
  *                 updatedAiAssistant:
- *                   $ref: '#/components/schemas/AIAssistant'
+ *                   $ref: '#/components/schemas/OpenAIAssistant'
  */
 export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi) => {
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);

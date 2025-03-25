@@ -28,6 +28,7 @@ type Req = Request<ReqParams, Response, undefined> & {
 
 /**
  * @swagger
+ *
  * /openai/thread/{aiAssistantId}/{threadRelationId}:
  *   delete:
  *     tags: [OpenAI]

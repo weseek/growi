@@ -32,6 +32,7 @@ type Req = Request<ReqParams, Response, ReqBody> & {
 
 /**
  * @swagger
+ *
  * /openai/ai-assistant/{id}:
  *   put:
  *     tags: [OpenAI]
@@ -52,7 +53,7 @@ type Req = Request<ReqParams, Response, ReqBody> & {
  *             type: object
  *             properties:
  *               upsertAiAssistantData:
- *                 $ref: '#/components/schemas/UpdateAIAssistantParams'
+ *                 $ref: '#/components/schemas/UpdateOpenAIAssistantParams'
  *     responses:
  *       200:
  *         description: OK
@@ -62,7 +63,7 @@ type Req = Request<ReqParams, Response, ReqBody> & {
  *               type: object
  *               properties:
  *                 updatedAiAssistant:
- *                   $ref: '#/components/schemas/AIAssistant'
+ *                   $ref: '#/components/schemas/OpenAIAssistant'
  */
 export const updateAiAssistantsFactory: UpdateAiAssistantsFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);

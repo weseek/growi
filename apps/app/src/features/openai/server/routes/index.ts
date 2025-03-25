@@ -117,7 +117,7 @@ const router = express.Router();
  *                 type: array
  *                 items:
  *                   type: object
- *       AIAssistant:
+ *       OpenAIAssistant:
  *         type: object
  *         properties:
  *           name:
@@ -165,7 +165,7 @@ const router = express.Router();
  *             type: string
  *           __v:
  *             type: integer
- *       UpdateAIAssistantParams:
+ *       UpdateOpenAIAssistantParams:
  *         type: object
  *         properties:
  *           name:
