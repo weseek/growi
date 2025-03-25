@@ -1,6 +1,8 @@
-// If you want to add a new scope, you only need to add a new key to the SCOPE_SEED object.
+// SCOPE_SEED defines the basic scope structure.
+// When you need to set different permissions for Admin and User
+// on specific endpoints (like /me), use SCOPE rather than modifying SCOPE_SEED.
 
-// admin と user で分けたいとき = /me で管理者とユーザーで扱えるスコープが違う
+// If you want to add a new scope, you only need to add a new key to the SCOPE_SEED object.
 
 const SCOPE_SEED_ADMIN = {
   admin: {
@@ -46,7 +48,7 @@ const SCOPE_SEED_USER = {
   },
 } as const;
 
-export const SCOPE_SEED = {
+const SCOPE_SEED = {
   ...SCOPE_SEED_ADMIN,
   ...SCOPE_SEED_USER,
 } as const;
@@ -59,7 +61,7 @@ export const ACTION = {
 type ACTION_TYPE = typeof ACTION[keyof typeof ACTION];
 export const ALL_SIGN = '*';
 
-export const SCOPE_SEED_WITH_ACTION = Object.values(ACTION).reduce(
+const SCOPE_SEED_WITH_ACTION = Object.values(ACTION).reduce(
   (acc, action) => {
     acc[action] = SCOPE_SEED;
     return acc;
@@ -84,7 +86,7 @@ type ScopeOnly = FlattenObject<typeof SCOPE_SEED_WITH_ACTION>;
 type ScopeWithAll = AddAllToScope<ScopeOnly>;
 export type Scope = ScopeOnly | ScopeWithAll;
 
-// ScopeConstantsの型定義
+// ScopeConstants type definition
 type ScopeConstantLeaf = Scope;
 
 type ScopeConstantNode<T> = {
