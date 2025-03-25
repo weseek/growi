@@ -11,7 +11,7 @@ import {
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
 
 interface PostMessage {
-  (threadId: string, userMessage: string, markdown: string, aiAssistantId?: string): Promise<Response>;
+  (threadId: string, userMessage: string, markdown: string): Promise<Response>;
 }
 interface ProcessMessage {
   (data: unknown, handler: {
@@ -22,12 +22,11 @@ interface ProcessMessage {
 }
 
 export const useEditorAssistant = (): { postMessage: PostMessage, processMessage: ProcessMessage } => {
-  const postMessage: PostMessage = useCallback(async(threadId, userMessage, markdown, aiAssistantId) => {
+  const postMessage: PostMessage = useCallback(async(threadId, userMessage, markdown) => {
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        aiAssistantId,
         threadId,
         userMessage,
         markdown,

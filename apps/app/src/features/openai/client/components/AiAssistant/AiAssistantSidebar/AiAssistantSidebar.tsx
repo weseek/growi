@@ -190,7 +190,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
       const response = await (async() => {
         if (isEditorAssistant) {
-          return postMessageForEditorAssistant(currentThreadId_, data.input, '# markdown', selectedAiAssistant?._id);
+          return postMessageForEditorAssistant(currentThreadId_, data.input, '# markdown');
         }
         if (aiAssistantData?._id != null) {
           return postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId_, data.input, data.summaryMode);
