@@ -71,7 +71,10 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
                       validate: (value) => {
                         const date = new Date(value);
                         const now = new Date();
-                        return date > now || 'Expiration date must be in the future';
+                        // Reset time portions to compare dates only
+                        date.setHours(0, 0, 0, 0);
+                        now.setHours(0, 0, 0, 0);
+                        return date >= now || 'Expiration date must be in the future';
                       },
                     })}
                   />

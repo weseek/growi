@@ -15,6 +15,11 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 const logger = loggerFactory('growi:models:access-token');
 
 const generateTokenHash = (token: string) => crypto.createHash('sha256').update(token).digest('hex');
+const getNowDate = () => {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  return now;
+};
 
 type GenerateTokenResult = {
   token: string,
@@ -95,24 +100,24 @@ accessTokenSchema.statics.deleteAllTokensByUserId = async function(userId: Types
 };
 
 accessTokenSchema.statics.deleteExpiredToken = async function() {
-  const now = new Date();
+  const now = getNowDate();
   await this.deleteMany({ expiredAt: { $lt: now } });
 };
 
 accessTokenSchema.statics.findUserIdByToken = async function(token: string) {
   const tokenHash = generateTokenHash(token);
-  const now = new Date();
+  const now = getNowDate();
   return this.findOne({ tokenHash, expiredAt: { $gte: now } }).select('user');
 };
 
 accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId | string) {
-  const now = new Date();
+  const now = getNowDate();
   return this.find({ user: userId, expiredAt: { $gte: now } }).select('_id expiredAt scope description');
 };
 
 accessTokenSchema.statics.validateTokenScopes = async function(token: string, requiredScopes: string[]) {
   const tokenHash = generateTokenHash(token);
-  const now = new Date();
+  const now = getNowDate();
   const tokenData = await this.findOne({ tokenHash, expiredAt: { $gte: now }, scope: { $all: requiredScopes } });
   return tokenData != null;
 };

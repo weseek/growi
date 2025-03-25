@@ -36,13 +36,16 @@ const validator = [
       const expiredAt = new Date(value);
       const now = new Date();
 
+      expiredAt.setHours(0, 0, 0, 0);
+      now.setHours(0, 0, 0, 0);
+
       // Check if date is valid
       if (Number.isNaN(expiredAt.getTime())) {
         throw new Error('Invalid date format');
       }
 
       // Check if date is in the future
-      if (expiredAt <= now) {
+      if (expiredAt < now) {
         throw new Error('Expiration date must be in the future');
       }
 
