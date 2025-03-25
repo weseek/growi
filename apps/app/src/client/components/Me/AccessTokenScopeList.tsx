@@ -8,6 +8,8 @@ import type { Scope } from '../../../interfaces/scope';
 
 import styles from './AccessTokenScopeList.module.scss';
 
+const moduleClass = styles['access-token-scope-list'] ?? '';
+
 interface scopeObject {
   [key: string]: Scope | scopeObject;
 }
@@ -38,17 +40,16 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
     <>
       {entries.map(([scopeKey, scopeValue], idx) => {
         // Get indentation class based on level
-        const indentationClass = styles[`indentation-level-${level + 1}`];
         // Example: Insert <hr> only for levels 0 or 1, except for the first item
         const showHr = (level === 0 || level === 1) && idx !== 0;
 
         if (typeof scopeValue === 'object') {
           return (
-            <div key={scopeKey}>
+            <div key={scopeKey} className={moduleClass}>
               {showHr && <hr className="my-1" />}
               <div className="my-1 row">
-                <div className="col-md-5">
-                  <label className={`form-check-label fw-bold ${indentationClass}`}>{scopeKey}</label>
+                <div className="col-md-5 ">
+                  <label className={`form-check-label fw-bold indentation indentation-level-${level}`}>{scopeKey}</label>
                 </div>
                 <div className={`col form-text fw-bold ${isDeviceLargerThanMd ? '' : 'text-end'}`}>desc for {scopeKey}</div>
               </div>
@@ -65,10 +66,10 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
         }
         // If it's a string, render a checkbox
         return (
-          <div key={scopeKey} className="row my-1">
-            <div className="col-md-5">
+          <div key={scopeKey} className={`row my-1 ${moduleClass}`}>
+            <div className="col-md-5 indentation">
               <input
-                className={`form-check-input ${indentationClass}`}
+                className={`form-check-input indentation indentation-level-${level}`}
                 type="checkbox"
                 id={scopeValue as string}
                 disabled={disabledScopes.has(scopeValue)}
