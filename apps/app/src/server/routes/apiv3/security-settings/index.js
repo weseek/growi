@@ -125,6 +125,18 @@ const validator = {
  *          restrictGuestMode:
  *            type: string
  *            description: type of restrictGuestMode
+ *          pageDeletionAuthority:
+ *            type: string
+ *            description: type of pageDeletionAuthority
+ *          pageRecursiveDeletionAuthority:
+ *            type: string
+ *            description: type of pageRecursiveDeletionAuthority
+ *          pageRecursiveCompleteDeletionAuthority:
+ *            type: string
+ *            description: type of pageRecursiveCompleteDeletionAuthority
+ *          isAllGroupMembershipRequiredForPageCompleteDeletion:
+ *            type: boolean
+ *            description: enable all group membership required for page complete deletion
  *          pageCompleteDeletionAuthority:
  *            type: string
  *            description: type of pageDeletionAuthority
@@ -134,6 +146,21 @@ const validator = {
  *          hideRestrictedByGroup:
  *            type: boolean
  *            description: enable hide by group
+ *          isUsersHomepageDeletionEnabled:
+ *            type: boolean
+ *            description: enable user homepage deletion
+ *          isForceDeleteUserHomepageOnUserDeletion:
+ *            type: boolean
+ *            description: enable force delete user homepage on user deletion
+ *          isRomUserAllowedToComment:
+ *            type: boolean
+ *            description: enable rom user allowed to comment
+ *          wikiMode:
+ *            type: string
+ *            description: type of wikiMode
+ *          sessionMaxAge:
+ *            type: integer
+ *            description: max age of session
  *      ShareLinkSetting:
  *        type: object
  *        properties:
@@ -143,6 +170,15 @@ const validator = {
  *      LocalSetting:
  *        type: object
  *        properties:
+ *          useOnlyEnvVarsForSomeOptions:
+ *            type: boolean
+ *            description: use only env vars for some options
+ *          isPasswordResetEnabled:
+ *            type: boolean
+ *            description: enable password reset
+ *          isEmailAuthenticationEnabled:
+ *            type: boolean
+ *            description: enable email authentication
  *          isLocalEnabled:
  *            type: boolean
  *            description: local setting mode
@@ -155,6 +191,27 @@ const validator = {
  *            items:
  *              type: string
  *              description: registration whitelist
+ *      GeneralAuthSetting:
+ *        type: object
+ *        properties:
+ *          isLocalEnabled:
+ *            type: boolean
+ *            description: local setting mode
+ *          isLdapEnabled:
+ *            type: boolean
+ *            description: ldap setting mode
+ *          isSamlEnabled:
+ *            type: boolean
+ *            description: saml setting mode
+ *          isOidcEnabled:
+ *            type: boolean
+ *            description: oidc setting mode
+ *          isGoogleEnabled:
+ *            type: boolean
+ *            description: google setting mode
+ *          isGitHubEnabled:
+ *            type: boolean
+ *            description: github setting mode
  *      LdapAuthSetting:
  *        type: object
  *        properties:
@@ -197,15 +254,30 @@ const validator = {
  *      SamlAuthSetting:
  *        type: object
  *        properties:
+ *          missingMandatoryConfigKeys:
+ *            type: array
+ *            description: array of missing mandatory config keys
+ *            items:
+ *              type: string
+ *              description: missing mandatory config key
+ *          useOnlyEnvVarsForSomeOptions:
+ *            type: boolean
+ *            description: use only env vars for some options
  *          samlEntryPoint:
  *            type: string
  *            description: entry point for saml
  *          samlIssuer:
  *            type: string
  *            description: issuer for saml
+ *          samlEnvVarIssuer:
+ *            type: string
+ *            description: issuer for saml
  *          samlCert:
  *            type: string
  *            description: certificate for saml
+ *          samlEnvVarCert:
+ *            type: string
+ *            desription: certificate for saml
  *          samlAttrMapId:
  *            type: string
  *            description: attribute mapping id for saml
@@ -215,10 +287,25 @@ const validator = {
  *          samlAttrMapMail:
  *            type: string
  *            description: attribute mapping mail for saml
+ *          samlEnvVarAttrMapId:
+ *            type: string
+ *            description: attribute mapping id for saml
+ *          samlEnvVarAttrMapUserName:
+ *            type: string
+ *            description: attribute mapping user name for saml
+ *          samlEnvVarAttrMapMail:
+ *            type: string
+ *            description: attribute mapping mail for saml
  *          samlAttrMapFirstName:
  *            type: string
  *            description: attribute mapping first name for saml
  *          samlAttrMapLastName:
+ *            type: string
+ *            description: attribute mapping last name for saml
+ *          samlEnvVarAttrMapFirstName:
+ *            type: string
+ *            description: attribute mapping first name for saml
+ *          samlEnvVarAttrMapLastName:
  *            type: string
  *            description: attribute mapping last name for saml
  *          isSameUsernameTreatedAsIdenticalUser:
@@ -228,6 +315,9 @@ const validator = {
  *            type: boolean
  *            description: local account automatically linked the email matched
  *          samlABLCRule:
+ *            type: string
+ *            description: ABLCRule for saml
+ *          samlEnvVarABLCRule:
  *            type: string
  *            description: ABLCRule for saml
  *      OidcAuthSetting:
@@ -347,6 +437,25 @@ module.exports = (crowi) => {
    *                    securityParams:
    *                      type: object
    *                      description: security params
+   *                      properties:
+   *                        generalSetting:
+   *                          $ref: '#/components/schemas/GeneralSetting'
+   *                        shareLinkSetting:
+   *                          $ref: '#/components/schemas/ShareLinkSetting'
+   *                        localSetting:
+   *                          $ref: '#/components/schemas/LocalSetting'
+   *                        generalAuth:
+   *                          $ref: '#/components/schemas/GeneralAuthSetting'
+   *                        ldapAuth:
+   *                          $ref: '#/components/schemas/LdapAuthSetting'
+   *                        samlAuth:
+   *                          $ref: '#/components/schemas/SamlAuthSetting'
+   *                        oidcAuth:
+   *                          $ref: '#/components/schemas/OidcAuthSetting'
+   *                        googleOAuth:
+   *                          $ref: '#/components/schemas/GoogleOAuthSetting'
+   *                        githubOAuth:
+   *                          $ref: '#/components/schemas/GitHubOAuth
    */
   router.get('/', accessTokenParser([SCOPE.READ.ADMIN.SECURITY]), loginRequiredStrictly, adminRequired, async(req, res) => {
 
@@ -474,7 +583,7 @@ module.exports = (crowi) => {
    *                properties:
    *                  isEnabled:
    *                    type: boolean
-   *                  target:
+   *                  authId:
    *                    type: string
    *        responses:
    *          200:
@@ -579,6 +688,9 @@ module.exports = (crowi) => {
    *    /security-setting/authentication:
    *      get:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/authentication
    *        description: Get setup strategies for passport
    *        responses:
    *          200:
@@ -607,6 +719,9 @@ module.exports = (crowi) => {
    *    /security-setting/general-setting:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/general-setting
    *        description: Update GeneralSetting
    *        requestBody:
    *          required: true
@@ -695,6 +810,9 @@ module.exports = (crowi) => {
    *    /security-setting/share-link-setting:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/share-link-setting
    *        description: Update ShareLink Setting
    *        requestBody:
    *          required: true
@@ -708,7 +826,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/ShareLinkSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/ShareLinkSetting'
    */
   router.put('/share-link-setting', accessTokenParser([SCOPE.WRITE.ADMIN.SECURITY]), loginRequiredStrictly, adminRequired, addActivity,
     validator.generalSetting, apiV3FormValidator,
@@ -740,6 +860,9 @@ module.exports = (crowi) => {
    *    /security-setting/all-share-links:
    *      get:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/all-share-links
    *        description: Get All ShareLinks at Share Link Setting
    *        responses:
    *          200:
@@ -783,12 +906,21 @@ module.exports = (crowi) => {
    *    /security-setting/all-share-links:
    *      delete:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/all-share-links
    *        description: Delete All ShareLinks at Share Link Setting
    *        responses:
    *          200:
    *            description: succeed to delete all share links
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    removeTotal:
+   *                      type: number
+   *                      description: total number of removed share links
    */
-
   router.delete('/all-share-links/', accessTokenParser([SCOPE.WRITE.ADMIN.SECURITY]), loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
       const removedAct = await ShareLink.remove({});
@@ -808,6 +940,9 @@ module.exports = (crowi) => {
    *    /security-setting/local-setting:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/local-setting
    *        description: Update LocalSetting
    *        requestBody:
    *          required: true
@@ -821,7 +956,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/LocalSetting'
+   *                  properties:
+   *                    localSettingParams:
+   *                      $ref: '#/components/schemas/LocalSetting'
    */
   router.put('/local-setting', accessTokenParser([SCOPE.WRITE.ADMIN.SECURITY]), loginRequiredStrictly, adminRequired, addActivity,
     validator.localSetting, apiV3FormValidator,
@@ -862,6 +999,9 @@ module.exports = (crowi) => {
    *    /security-setting/ldap:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/ldap
    *        description: Update LDAP setting
    *        requestBody:
    *          required: true
@@ -875,7 +1015,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/LdapAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/LdapAuthSetting'
    */
   router.put('/ldap', accessTokenParser([SCOPE.WRITE.ADMIN.SECURITY]), loginRequiredStrictly, adminRequired, addActivity,
     validator.ldapAuth, apiV3FormValidator,
@@ -929,6 +1071,9 @@ module.exports = (crowi) => {
    *    /security-setting/saml:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/saml
    *        description: Update SAML setting
    *        requestBody:
    *          required: true
@@ -942,7 +1087,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/SamlAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/SamlAuthSetting'
    */
   router.put('/saml', accessTokenParser([SCOPE.WRITE.ADMIN.SECURITY]), loginRequiredStrictly, adminRequired, addActivity,
     validator.samlAuth, apiV3FormValidator,
@@ -1025,6 +1172,9 @@ module.exports = (crowi) => {
    *    /security-setting/oidc:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/oidc
    *        description: Update OpenID Connect setting
    *        requestBody:
    *          required: true
@@ -1038,7 +1188,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/OidcAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/OidcAuthSetting'
    */
   router.put('/oidc', accessTokenParser([SCOPE.WRITE.ADMIN.SECURITY]), loginRequiredStrictly, adminRequired, addActivity,
     validator.oidcAuth, apiV3FormValidator,
@@ -1104,6 +1256,9 @@ module.exports = (crowi) => {
    *    /security-setting/google-oauth:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/google-oauth
    *        description: Update google OAuth
    *        requestBody:
    *          required: true
@@ -1117,7 +1272,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/GoogleOAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/GoogleOAuthSetting'
    */
   router.put('/google-oauth', accessTokenParser([SCOPE.WRITE.ADMIN.SECURITY]), loginRequiredStrictly, adminRequired, addActivity,
     validator.googleOAuth, apiV3FormValidator,
@@ -1154,6 +1311,9 @@ module.exports = (crowi) => {
    *    /security-setting/github-oauth:
    *      put:
    *        tags: [SecuritySetting]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: /security-setting/github-oauth
    *        description: Update github OAuth
    *        requestBody:
    *          required: true
@@ -1167,7 +1327,9 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  $ref: '#/components/schemas/GitHubOAuthSetting'
+   *                  properties:
+   *                    securitySettingParams:
+   *                      $ref: '#/components/schemas/GitHubOAuthSetting'
    */
   router.put('/github-oauth', accessTokenParser([SCOPE.WRITE.ADMIN.SECURITY]), loginRequiredStrictly, adminRequired, addActivity,
     validator.githubOAuth, apiV3FormValidator,

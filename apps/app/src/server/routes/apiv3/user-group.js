@@ -91,9 +91,36 @@ module.exports = (crowi) => {
    *    /user-groups:
    *      get:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getUserGroup
    *        summary: /user-groups
    *        description: Get usergroups
+   *        parameters:
+   *          - name: page
+   *            in: query
+   *            required: false
+   *            description: page number
+   *            schema:
+   *              type: number
+   *          - name: limit
+   *            in: query
+   *            required: false
+   *            description: number of items per page
+   *            schema:
+   *              type: number
+   *          - name: offset
+   *            in: query
+   *            required: false
+   *            description: offset
+   *            schema:
+   *              type: number
+   *          - name: pagination
+   *            in: query
+   *            required: false
+   *            description: whether to paginate
+   *            schema:
+   *              type: boolean
    *        responses:
    *          200:
    *            description: usergroups are fetched
@@ -104,6 +131,12 @@ module.exports = (crowi) => {
    *                    userGroups:
    *                      type: object
    *                      description: a result of `UserGroup.find`
+   *                    totalUserGroups:
+   *                      type: number
+   *                      description: the number of userGroups
+   *                    pagingLimit:
+   *                      type: number
+   *                      description: the number of items per page
    */
   router.get('/', accessTokenParser([SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT]), loginRequiredStrictly, adminRequired, async(req, res) => {
     const { query } = req;
@@ -131,11 +164,13 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /ancestors:
+   *    /user-groups/ancestors:
    *      get:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getAncestorUserGroups
-   *        summary: /ancestors
+   *        summary: /user-groups/ancestors
    *        description: Get ancestor user groups.
    *        parameters:
    *          - name: groupId
@@ -151,7 +186,7 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    userGroups:
+   *                    ancestorUserGroups:
    *                      type: array
    *                      items:
    *                        type: object
@@ -175,6 +210,50 @@ module.exports = (crowi) => {
       }
     });
 
+  /**
+   * @swagger
+   *    paths:
+   *      /user-groups/children:
+   *        get:
+   *          tags: [UserGroups]
+   *          security:
+   *            - cookieAuth: []
+   *          operationId: getUserGroupChildren
+   *          summary: /user-groups/children
+   *          description: Get child user groups
+   *          parameters:
+   *            - name: parentIds
+   *              in: query
+   *              required: false
+   *              description: IDs of parent user groups
+   *              schema:
+   *                type: array
+   *                items:
+   *                  type: string
+   *            - name: includeGrandChildren
+   *              in: query
+   *              required: false
+   *              description: Whether to include grandchild user groups
+   *              schema:
+   *                type: boolean
+   *          responses:
+   *            200:
+   *              description: Child user groups are fetched
+   *              content:
+   *                application/json:
+   *                  schema:
+   *                    properties:
+   *                      childUserGroups:
+   *                        type: array
+   *                        items:
+   *                          type: object
+   *                        description: Child user group objects
+   *                      grandChildUserGroups:
+   *                        type: array
+   *                        items:
+   *                          type: object
+   *                        description: Grandchild user group objects
+   */
   router.get('/children',
     accessTokenParser([SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT]), loginRequiredStrictly, adminRequired,
     validator.listChildren,
@@ -203,6 +282,8 @@ module.exports = (crowi) => {
    *    /user-groups:
    *      post:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: createUserGroup
    *        summary: /user-groups
    *        description: Adds userGroup
@@ -215,6 +296,12 @@ module.exports = (crowi) => {
    *                  name:
    *                    type: string
    *                    description: name of the userGroup trying to be added
+   *                  description:
+   *                    type: string
+   *                    description: description of the userGroup trying to be added
+   *                  parentId:
+   *                    type: string
+   *                    description: parentId of the userGroup trying to be added
    *        responses:
    *          200:
    *            description: userGroup is added
@@ -256,6 +343,8 @@ module.exports = (crowi) => {
    *    /selectable-parent-groups:
    *      get:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getSelectableParentGroups
    *        summary: /selectable-parent-groups
    *        description: Get selectable parent UserGroups
@@ -273,7 +362,7 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    userGroups:
+   *                    selectableParentGroups:
    *                      type: array
    *                      items:
    *                        type: object
@@ -308,6 +397,8 @@ module.exports = (crowi) => {
    *    /selectable-child-groups:
    *      get:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getSelectableChildGroups
    *        summary: /selectable-child-groups
    *        description: Get selectable child UserGroups
@@ -325,7 +416,7 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    userGroups:
+   *                    selectableChildGroups:
    *                      type: array
    *                      items:
    *                        type: object
@@ -363,6 +454,8 @@ module.exports = (crowi) => {
    *    /user-groups/{id}:
    *      get:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getUserGroupFromGroupId
    *        summary: /user-groups/{id}
    *        description: Get UserGroup from Group ID
@@ -408,6 +501,8 @@ module.exports = (crowi) => {
    *    /user-groups/{id}:
    *      delete:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: deleteUserGroup
    *        summary: /user-groups/{id}
    *        description: Deletes userGroup
@@ -426,6 +521,11 @@ module.exports = (crowi) => {
    *          - name: transferToUserGroupId
    *            in: query
    *            description: userGroup id that will be transferred to
+   *            schema:
+   *              type: string
+   *          - name: transferToUserGroupType
+   *            in: query
+   *            description: userGroup type that will be transferred to
    *            schema:
    *              type: string
    *        responses:
@@ -475,6 +575,8 @@ module.exports = (crowi) => {
    *    /user-groups/{id}:
    *      put:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: updateUserGroups
    *        summary: /user-groups/{id}
    *        description: Update userGroup
@@ -485,6 +587,24 @@ module.exports = (crowi) => {
    *            description: id of userGroup
    *            schema:
    *              type: string
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  name:
+   *                    type: string
+   *                    description: name of the userGroup trying to be updated
+   *                  description:
+   *                    type: string
+   *                    description: description of the userGroup trying to be updated
+   *                  parentId:
+   *                    type: string
+   *                    description: parentId of the userGroup trying to be updated
+   *                  forceUpdateParents:
+   *                    type: boolean
+   *                    description: whether to update parent groups
    *        responses:
    *          200:
    *            description: userGroup is updated
@@ -528,6 +648,8 @@ module.exports = (crowi) => {
    *    /user-groups/{id}/users:
    *      get:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getUsersUserGroups
    *        summary: /user-groups/{id}/users
    *        description: Get users related to the userGroup
@@ -548,7 +670,7 @@ module.exports = (crowi) => {
    *                    users:
    *                      type: array
    *                      items:
-   *                        type: object
+   *                        $ref: '#/components/schemas/User'
    *                      description: user objects
    */
   router.get('/:id/users',
@@ -581,6 +703,8 @@ module.exports = (crowi) => {
    *    /user-groups/{id}/unrelated-users:
    *      get:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getUnrelatedUsersUserGroups
    *        summary: /user-groups/{id}/unrelated-users
    *        description: Get users unrelated to the userGroup
@@ -591,6 +715,26 @@ module.exports = (crowi) => {
    *            description: id of userGroup
    *            schema:
    *              type: string
+   *          - name: searchWord
+   *            in: query
+   *            description: search word
+   *            schema:
+   *              type: string
+   *          - name: searchType
+   *            in: query
+   *            description: search type
+   *            schema:
+   *              type: string
+   *          - name: isAlsoNameSearched
+   *            in: query
+   *            description: whether name is also searched
+   *            schema:
+   *              type: boolean
+   *          - name: isAlsoMailSearched
+   *            in: query
+   *            description: whether mail is also searched
+   *            schema:
+   *              type: boolean
    *        responses:
    *          200:
    *            description: users are fetched
@@ -601,7 +745,7 @@ module.exports = (crowi) => {
    *                    users:
    *                      type: array
    *                      items:
-   *                        type: object
+   *                        $ref: '#/components/schemas/User'
    *                      description: user objects
    */
   router.get('/:id/unrelated-users',
@@ -641,17 +785,25 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /user-groups/{id}/users:
+   *    /user-groups/{id}/users/{username}:
    *      post:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: addUserUserGroups
-   *        summary: /user-groups/{id}/users
+   *        summary: /user-groups/{id}/users/{username}
    *        description: Add a user to the userGroup
    *        parameters:
    *          - name: id
    *            in: path
    *            required: true
    *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *          - name: username
+   *            in: path
+   *            required: true
+   *            description: username of the user
    *            schema:
    *              type: string
    *        responses:
@@ -663,14 +815,11 @@ module.exports = (crowi) => {
    *                  type: object
    *                  properties:
    *                    user:
-   *                      type: object
+   *                      $ref: '#/components/schemas/User'
    *                      description: the user added to the group
-   *                    userGroup:
-   *                      type: object
-   *                      description: the group to which a user was added
-   *                    userGroupRelation:
-   *                      type: object
-   *                      description: the associative entity between user and userGroup
+   *                    createdRelationCount:
+   *                      type: number
+   *                      description: the number of relations created
    */
   router.post('/:id/users/:username',
     accessTokenParser([SCOPE.WRITE.ADMIN.USER_GROUP_MANAGEMENT]), loginRequiredStrictly, adminRequired,
@@ -711,17 +860,25 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  paths:
-   *    /user-groups/{id}/users:
+   *    /user-groups/{id}/users/{username}:
    *      delete:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: deleteUsersUserGroups
-   *        summary: /user-groups/{id}/users
+   *        summary: /user-groups/{id}/users/{username}
    *        description: remove a user from the userGroup
    *        parameters:
    *          - name: id
    *            in: path
    *            required: true
    *            description: id of userGroup
+   *            schema:
+   *              type: string
+   *          - name: username
+   *            in: path
+   *            required: true
+   *            description: username of the user
    *            schema:
    *              type: string
    *        responses:
@@ -734,13 +891,11 @@ module.exports = (crowi) => {
    *                  properties:
    *                    user:
    *                      type: object
+   *                      $ref: '#/components/schemas/User'
    *                      description: the user removed from the group
-   *                    userGroup:
-   *                      type: object
-   *                      description: the group from which a user was removed
-   *                    userGroupRelation:
-   *                      type: object
-   *                      description: the associative entity between user and userGroup
+   *                    deletedGroupsCount:
+   *                      type: number
+   *                      description: the number of groups from which the user was removed
    */
   router.delete('/:id/users/:username',
     accessTokenParser([SCOPE.WRITE.ADMIN.USER_GROUP_MANAGEMENT]), loginRequiredStrictly, adminRequired,
@@ -769,6 +924,8 @@ module.exports = (crowi) => {
    *    /user-groups/{id}/user-group-relations:
    *      get:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getUserGroupRelationsUserGroups
    *        summary: /user-groups/{id}/user-group-relations
    *        description: Get the user group relations for the userGroup
@@ -818,6 +975,8 @@ module.exports = (crowi) => {
    *    /user-groups/{id}/pages:
    *      get:
    *        tags: [UserGroups]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: getPagesUserGroups
    *        summary: /user-groups/{id}/pages
    *        description: Get closed pages for the userGroup

@@ -1,6 +1,7 @@
 import { SupportedAction } from '~/interfaces/activity';
 import { SCOPE } from '~/interfaces/scope';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { exportService } from '~/server/service/export';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -122,7 +123,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
-  const { exportService, socketIoService } = crowi;
+  const { socketIoService } = crowi;
 
   const activityEvent = crowi.event('activity');
   const adminEvent = crowi.event('admin');
