@@ -499,7 +499,9 @@
       "show_all_reply_comments": "Afficher tout les commentaires",
       "show_all_reply_comments_desc": "Lorsque désactivé, seul les deux commentaires les plus récents sont affichés",
       "select_search_scope_children_as_default": "'Seulement enfant de ce chemin' lors de la recherche",
-      "select_search_scope_children_as_default_desc": "Lorsque désactivé, utilise 'Toutes les pages' en portée de recherche."
+      "select_search_scope_children_as_default_desc": "Lorsque désactivé, utilise 'Toutes les pages' en portée de recherche.",
+      "show_page_side_authors": "Toujours afficher les créateurs et les modificateurs au-dessus de la table des matières",
+      "show_page_side_authors_desc": "Affiche les informations sur le créateur et le dernier modificateur au-dessus de la table des matières dans la barre latérale de la page."
     },
     "presentation": "Présentation",
     "presentation_options": {
@@ -1145,12 +1147,6 @@
   "ai_integration": {
     "ai_integration": "Intégration de l'IA",
     "disable_mode_explanation": "Actuellement, l'intégration AI est désactivée. Pour l'activer, configurez la variable d'environnement <code>AI_ENABLED</code> ainsi que les autres variables nécessaires.<br><br>Pour plus de détails, veuillez consulter la <a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>documentation</a>.",
-    "ai_search_management": "Gestion de la recherche par l'IA",
-    "rebuild_vector_store": "Reconstruire le magasin Vector",
-    "rebuild_vector_store_label": "Reconstruire",
-    "rebuild_vector_store_explanation1": "Supprimez le Vector Store existant et recréez le Vector Store sur la page publique.",
-    "rebuild_vector_store_explanation2": "Ce processus peut prendre plusieurs minutes.",
-    "rebuild_vector_store_requested": "La reconstruction du magasin Vector a été demandée",
-    "rebuild_vector_store_failed": "Échec de la reconstruction du magasin de vecteurs"
+    "ai_search_management": "Gestion de la recherche par l'IA"
   }
 }

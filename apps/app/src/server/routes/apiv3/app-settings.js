@@ -441,7 +441,7 @@ module.exports = (crowi) => {
       globalLang: configManager.getConfig('app:globalLang'),
       isEmailPublishedForNewUser: configManager.getConfig('customize:isEmailPublishedForNewUser'),
       fileUpload: configManager.getConfig('app:fileUpload'),
-      useOnlyEnvVarsForIsBulkExportPagesEnabled: crowi.configManager.getConfig('env:useOnlyEnvVars:app:isBulkExportPagesEnabled'),
+      useOnlyEnvVarsForIsBulkExportPagesEnabled: configManager.getConfig('env:useOnlyEnvVars:app:isBulkExportPagesEnabled'),
       isV5Compatible: configManager.getConfig('app:isV5Compatible'),
       siteUrl: configManager.getConfig('app:siteUrl'),
       siteUrlUseOnlyEnvVars: configManager.getConfig('env:useOnlyEnvVars:app:siteUrl'),
@@ -498,9 +498,11 @@ module.exports = (crowi) => {
 
       isMaintenanceMode: configManager.getConfig('app:isMaintenanceMode'),
 
-      isBulkExportPagesEnabled: crowi.configManager.getConfig('app:isBulkExportPagesEnabled'),
-      envIsBulkExportPagesEnabled: crowi.configManager.getConfig('app:isBulkExportPagesEnabled'),
-      bulkExportDownloadExpirationSeconds: crowi.configManager.getConfig('app:bulkExportDownloadExpirationSeconds'),
+      isBulkExportPagesEnabled: configManager.getConfig('app:isBulkExportPagesEnabled'),
+      envIsBulkExportPagesEnabled: configManager.getConfig('app:isBulkExportPagesEnabled'),
+      bulkExportDownloadExpirationSeconds: configManager.getConfig('app:bulkExportDownloadExpirationSeconds'),
+      // TODO: remove this property when bulk export can be relased for cloud (https://redmine.weseek.co.jp/issues/163220)
+      isBulkExportDisabledForCloud: configManager.getConfig('app:growiCloudUri') != null,
     };
     return res.apiv3({ appSettingsParams });
 
@@ -1036,10 +1038,10 @@ module.exports = (crowi) => {
       };
 
       try {
-        await crowi.configManager.updateConfigs(requestParams, { skipPubsub: true });
+        await configManager.updateConfigs(requestParams, { skipPubsub: true });
         const responseParams = {
-          isBulkExportPagesEnabled: crowi.configManager.getConfig('app:isBulkExportPagesEnabled'),
-          bulkExportDownloadExpirationSeconds: crowi.configManager.getConfig('app:bulkExportDownloadExpirationSeconds'),
+          isBulkExportPagesEnabled: configManager.getConfig('app:isBulkExportPagesEnabled'),
+          bulkExportDownloadExpirationSeconds: configManager.getConfig('app:bulkExportDownloadExpirationSeconds'),
         };
 
         const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };

@@ -2,7 +2,7 @@
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
   "name": "GROWI-Dev",
-  "dockerComposeFile": "../compose.yml",
+  "dockerComposeFile": ["../compose.yml", "../compose.extend.yml"],
   "service": "app",
   "workspaceFolder": "/workspace/growi",
 
@@ -15,6 +15,7 @@
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   // "forwardPorts": [],
 
+  "initializeCommand": "/bin/bash .devcontainer/pdf-converter/initializeCommand.sh",
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "/bin/bash ./.devcontainer/app/postCreateCommand.sh",
 

@@ -36,6 +36,7 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
+import { getPagePathsWithDescendantCountFactory } from './get-page-paths-with-descendant-count';
 import { getYjsDataHandlerFactory } from './get-yjs-data';
 import { publishPageHandlersFactory } from './publish-page';
 import { syncLatestRevisionBodyToYjsDraftHandlerFactory } from './sync-latest-revision-body-to-yjs-draft';
@@ -190,7 +191,7 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [Page]
    *        operationId: getPage
-   *        summary: /page
+   *        summary: Get page
    *        description: get page by pagePath or pageId
    *        parameters:
    *          - name: pageId
@@ -267,6 +268,33 @@ module.exports = (crowi) => {
     return res.apiv3({ page, pages });
   });
 
+  router.get('/page-paths-with-descendant-count', getPagePathsWithDescendantCountFactory(crowi));
+
+  /**
+   * @swagger
+   *   /page/exist:
+   *     get:
+   *       tags: [Page]
+   *       summary: Check if page exists
+   *       description: Check if a page exists at the specified path
+   *       parameters:
+   *         - name: path
+   *           in: query
+   *           description: The path to check for existence
+   *           required: true
+   *           schema:
+   *             type: string
+   *       responses:
+   *         200:
+   *           description: Successfully checked page existence.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   isExist:
+   *                     type: boolean
+   */
   router.get('/exist', checkPageExistenceHandlersFactory(crowi));
 
   /**
@@ -275,6 +303,7 @@ module.exports = (crowi) => {
    *    /page:
    *      post:
    *        tags: [Page]
+   *        summary: Create page
    *        operationId: createPage
    *        description: Create page
    *        requestBody:
@@ -398,7 +427,7 @@ module.exports = (crowi) => {
    *    /page/likes:
    *      put:
    *        tags: [Page]
-   *        summary: /page/likes
+   *        summary: Get page likes
    *        description: Update liked status
    *        operationId: updateLikedStatus
    *        requestBody:
@@ -466,7 +495,7 @@ module.exports = (crowi) => {
    *    /page/info:
    *      get:
    *        tags: [Page]
-   *        summary: /page/info
+   *        summary: Get page info
    *        description: Retrieve current page info
    *        operationId: getPageInfo
    *        requestBody:
@@ -510,7 +539,7 @@ module.exports = (crowi) => {
    *    /page/grant-data:
    *      get:
    *        tags: [Page]
-   *        summary: /page/info
+   *        summary: Get page grant data
    *        description: Retrieve current page's grant data
    *        operationId: getPageGrantData
    *        parameters:
@@ -605,6 +634,37 @@ module.exports = (crowi) => {
 
   // Check if non user related groups are granted page access.
   // If specified page does not exist, check the closest ancestor.
+  /**
+   * @swagger
+   *   /page/non-user-related-groups-granted:
+   *     get:
+   *       tags: [Page]
+   *       security:
+   *         - cookieAuth: []
+   *       summary: Check if non-user related groups are granted page access
+   *       description: Check if non-user related groups are granted access to a specific page or its closest ancestor
+   *       parameters:
+   *         - name: path
+   *           in: query
+   *           description: Path of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       responses:
+   *         200:
+   *           description: Successfully checked non-user related groups access.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   isNonUserRelatedGroupsGranted:
+   *                     type: boolean
+   *         403:
+   *           description: Forbidden. Cannot access page or ancestor.
+   *         500:
+   *           description: Internal server error.
+   */
   router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator,
     async(req, res: ApiV3Response) => {
       const { user } = req;
@@ -636,7 +696,45 @@ module.exports = (crowi) => {
         return res.apiv3Err(err, 500);
       }
     });
-
+  /**
+   * @swagger
+   *   /page/applicable-grant:
+   *     get:
+   *       tags: [Page]
+   *       security:
+   *         - cookieAuth: []
+   *       summary: Get applicable grant data
+   *       description: Retrieve applicable grant data for a specific page
+   *       parameters:
+   *         - name: pageId
+   *           in: query
+   *           description: ID of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       responses:
+   *         200:
+   *           description: Successfully retrieved applicable grant data.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   grant:
+   *                     type: number
+   *                   grantedUsers:
+   *                     type: array
+   *                     items:
+   *                       type: string
+   *                   grantedGroups:
+   *                     type: array
+   *                     items:
+   *                       type: string
+   *         400:
+   *           description: Bad request. Page is unreachable or empty.
+   *         500:
+   *           description: Internal server error.
+   */
   router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
@@ -660,6 +758,43 @@ module.exports = (crowi) => {
     return res.apiv3(data);
   });
 
+  /**
+   * @swagger
+   *   /:pageId/grant:
+   *     put:
+   *       tags: [Page]
+   *       security:
+   *         - cookieAuth: []
+   *       summary: Update page grant
+   *       description: Update the grant of a specific page
+   *       parameters:
+   *         - name: pageId
+   *           in: path
+   *           description: ID of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       requestBody:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               properties:
+   *                 grant:
+   *                   type: number
+   *                   description: Grant level
+   *                 userRelatedGrantedGroups:
+   *                   type: array
+   *                   items:
+   *                     type: string
+   *                   description: Array of user-related granted group IDs
+   *       responses:
+   *         200:
+   *           description: Successfully updated page grant.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 $ref: '#/components/schemas/Page'
+   */
   router.put('/:pageId/grant', loginRequiredStrictly, excludeReadOnlyUser, validator.updateGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.params;
     const { grant, userRelatedGrantedGroups } = req.body;
@@ -693,6 +828,8 @@ module.exports = (crowi) => {
   *    /page/export:
   *      get:
   *        tags: [Page]
+  *        security:
+  *          - cookieAuth: []
   *        description: return page's markdown
   *        responses:
   *          200:
@@ -796,7 +933,9 @@ module.exports = (crowi) => {
    *    /page/exist-paths:
    *      get:
    *        tags: [Page]
-   *        summary: /page/exist-paths
+   *        security:
+   *          - cookieAuth: []
+   *        summary: Get already exist paths
    *        description: Get already exist paths
    *        operationId: getAlreadyExistPaths
    *        parameters:
@@ -857,7 +996,7 @@ module.exports = (crowi) => {
    *    /page/subscribe:
    *      put:
    *        tags: [Page]
-   *        summary: /page/subscribe
+   *        summary: Update subscription status
    *        description: Update subscription status
    *        operationId: updateSubscriptionStatus
    *        requestBody:
@@ -904,6 +1043,39 @@ module.exports = (crowi) => {
   });
 
 
+  /**
+   * @swagger
+   *
+   *   /:pageId/content-width:
+   *     put:
+   *       tags: [Page]
+   *       summary: Update content width
+   *       description: Update the content width setting for a specific page
+   *       parameters:
+   *         - name: pageId
+   *           in: path
+   *           description: ID of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       requestBody:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               properties:
+   *                 expandContentWidth:
+   *                   type: boolean
+   *                   description: Whether to expand the content width
+   *       responses:
+   *         200:
+   *           description: Successfully updated content width.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 properties:
+   *                   page:
+   *                     $ref: '#/components/schemas/Page'
+   */
   router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
     validator.contentWidth, apiV3FormValidator, async(req, res) => {
       const { pageId } = req.params;
@@ -925,13 +1097,126 @@ module.exports = (crowi) => {
       }
     });
 
-
+  /**
+   * @swagger
+   *   /:pageId/publish:
+   *     put:
+   *       tags: [Page]
+   *       summary: Publish page
+   *       description: Publish a specific page
+   *       parameters:
+   *         - name: pageId
+   *           in: path
+   *           description: ID of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       responses:
+   *         200:
+   *           description: Successfully published the page.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 $ref: '#/components/schemas/Page'
+   */
   router.put('/:pageId/publish', publishPageHandlersFactory(crowi));
 
+  /**
+   * @swagger
+   *   /:pageId/unpublish:
+   *     put:
+   *       tags: [Page]
+   *       summary: Unpublish page
+   *       description: Unpublish a specific page
+   *       parameters:
+   *         - name: pageId
+   *           in: path
+   *           description: ID of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       responses:
+   *         200:
+   *           description: Successfully unpublished the page.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 $ref: '#/components/schemas/Page'
+   */
   router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
 
+  /**
+   * @swagger
+   *   /:pageId/yjs-data:
+   *     get:
+   *       tags: [Page]
+   *       summary: Get Yjs data
+   *       description: Retrieve Yjs data for a specific page
+   *       parameters:
+   *         - name: pageId
+   *           in: path
+   *           description: ID of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       responses:
+   *         200:
+   *           description: Successfully retrieved Yjs data.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   yjsData:
+   *                     type: object
+   *                     description: Yjs data
+   *                     properties:
+   *                       hasYdocsNewerThanLatestRevision:
+   *                         type: boolean
+   *                         description: Whether Yjs documents are newer than the latest revision
+   *                       awarenessStateSize:
+   *                         type: number
+   *                         description: Size of the awareness state
+   */
   router.get('/:pageId/yjs-data', getYjsDataHandlerFactory(crowi));
 
+  /**
+   * @swagger
+   *   /:pageId/sync-latest-revision-body-to-yjs-draft:
+   *     put:
+   *       tags: [Page]
+   *       summary: Sync latest revision body to Yjs draft
+   *       description: Sync the latest revision body to the Yjs draft for a specific page
+   *       parameters:
+   *         - name: pageId
+   *           in: path
+   *           description: ID of the page
+   *           required: true
+   *           schema:
+   *             type: string
+   *       requestBody:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               properties:
+   *                 editingMarkdownLength:
+   *                   type: integer
+   *                   description: Length of the editing markdown
+   *       responses:
+   *         200:
+   *           description: Successfully synced the latest revision body to Yjs draft.
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   synced:
+   *                     type: boolean
+   *                     description: Whether the latest revision body is synced to the Yjs draft
+   *                   isYjsDataBroken:
+   *                     type: boolean
+   *                     description: Whether Yjs data is broken
+   */
   router.put('/:pageId/sync-latest-revision-body-to-yjs-draft', syncLatestRevisionBodyToYjsDraftHandlerFactory(crowi));
 
   return router;

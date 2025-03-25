@@ -29,7 +29,6 @@ export const useSWRxPagesByPath = (path?: Nullable<string>): SWRResponse<IPageHa
   );
 };
 
-
 type RecentApiResult = {
   pages: IPageHasId[],
   totalCount: number,

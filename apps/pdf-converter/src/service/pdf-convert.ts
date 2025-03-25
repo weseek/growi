@@ -4,7 +4,7 @@ import { Readable, Writable } from 'stream';
 import { pipeline as pipelinePromise } from 'stream/promises';
 
 import { OnInit } from '@tsed/common';
-import { Inject, Service } from '@tsed/di';
+import { Service } from '@tsed/di';
 import { Logger } from '@tsed/logger';
 import { Cluster } from 'puppeteer-cluster';
 
@@ -50,8 +50,7 @@ class PdfConvertService implements OnInit {
     [key: string]: JobInfo;
   } = {};
 
-  @Inject()
-    logger: Logger;
+  constructor(private readonly logger: Logger) {}
 
   async $onInit(): Promise<void> {
     await this.initPuppeteerCluster();

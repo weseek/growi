@@ -100,6 +100,10 @@ export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRRe
   return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
 };
 
+export const useShowPageSideAuthors = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('showPageSideAuthors', initialData, { fallbackData: false });
+};
+
 export const useIsEnabledMarp = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isEnabledMarp', initialData, { fallbackData: false });
 };
@@ -164,6 +168,10 @@ export const useIsBulkExportPagesEnabled = (initialData?: boolean): SWRResponse<
   return useContextSWR('isBulkExportPagesEnabled', initialData);
 };
 
+export const useIsPdfBulkExportEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isPdfBulkExportEnabled', initialData);
+};
+
 export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
   return useContextSWR('showPageLimitationL', initialData);
 };
@@ -210,6 +218,10 @@ export const useIsRomUserAllowedToComment = (initialData?: boolean): SWRResponse
 
 export const useIsAiEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR('isAiEnabled', initialData);
+};
+
+export const useLimitLearnablePageCountPerAssistant = (initialData?: number): SWRResponse<number, Error> => {
+  return useContextSWR('limitLearnablePageCountPerAssistant', initialData);
 };
 
 /** **********************************************************

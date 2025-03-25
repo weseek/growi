@@ -499,7 +499,9 @@
       "show_all_reply_comments": "Show all reply comments",
       "show_all_reply_comments_desc": "When the setting value is off, comments other than the latest two are omitted.",
       "select_search_scope_children_as_default": "Select 'Only children of this tree' as default value of search range",
-      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range."
+      "select_search_scope_children_as_default_desc": "When the setting value is off, 'All pages' is used as default value of search range.",
+      "show_page_side_authors": "Always display creators and updaters above the table of contents",
+      "show_page_side_authors_desc": "Displays information about the creator and the last updater above the table of contents in the page sidebar."
     },
       "presentation": "Presentation",
     "presentation_options": {
@@ -1146,12 +1148,6 @@
   "ai_integration": {
     "ai_integration": "AI Integration",
     "disable_mode_explanation": "Currently, AI integration is disabled. To enable it, configure the <code>AI_ENABLED</code> environment variable along with the required additional variables.<br><br>For details, please refer to the <a target='blank' rel='noopener noreferrer' href={{documentationUrl}}en/guide/features/ai-knowledge-assistant.html>documentation</a>.",
-    "ai_search_management": "AI search management",
-    "rebuild_vector_store": "Rebuild Vector Store",
-    "rebuild_vector_store_label": "Rebuild",
-    "rebuild_vector_store_explanation1": "Delete the existing Vector Store and recreate the Vector Store on the public page.",
-    "rebuild_vector_store_explanation2": "This process may take several minutes.",
-    "rebuild_vector_store_requested": "Vector Store rebuild has been requested",
-    "rebuild_vector_store_failed": "Vector Store rebuild failed"
+    "ai_search_management": "AI search management"
   }
 }
