@@ -5,7 +5,10 @@ import { finished } from 'stream/promises';
 
 import unzipStream, { type Entry } from 'unzip-stream';
 
+import type Crowi from '~/server/crowi';
 import loggerFactory from '~/utils/logger';
+
+import type { ZipFileStat } from '../interfaces/export';
 
 import { tapStreamDataByPromise } from './unzip-stream-utils';
 
@@ -18,27 +21,25 @@ const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-dis
  */
 class GrowiBridgeService {
 
-  crowi: any;
+  crowi: Crowi;
 
-  encoding: string;
+  encoding: BufferEncoding = 'utf-8';
 
-  metaFileName: string;
+  metaFileName = 'meta.json';
 
-  baseDir: null;
+  baseDir: string | undefined;
 
-  constructor(crowi) {
+  constructor(crowi: Crowi) {
     this.crowi = crowi;
-    this.encoding = 'utf-8';
-    this.metaFileName = 'meta.json';
   }
 
   /**
    * getter for encoding
    *
    * @memberOf GrowiBridgeService
-   * @return {string} encoding
+   * @return {BufferEncoding} encoding
    */
-  getEncoding() {
+  getEncoding(): BufferEncoding {
     return this.encoding;
   }
 
@@ -48,7 +49,7 @@ class GrowiBridgeService {
    * @memberOf GrowiBridgeService
    * @return {string} base name of meta file
    */
-  getMetaFileName() {
+  getMetaFileName(): string {
     return this.metaFileName;
   }
 
@@ -73,7 +74,7 @@ class GrowiBridgeService {
    * @param {string} zipFile path to zip file
    * @return {object} meta{object} and files{Array.<object>}
    */
-  async parseZipFile(zipFile) {
+  async parseZipFile(zipFile: string): Promise<ZipFileStat | null> {
     const fileStat = fs.statSync(zipFile);
     const innerFileStats: Array<{ fileName: string, collectionName: string, size: number }> = [];
     let meta = {};
@@ -123,4 +124,4 @@ class GrowiBridgeService {
 
 }
 
-module.exports = GrowiBridgeService;
+export default GrowiBridgeService;

@@ -1,3 +1,4 @@
+import { ConfigSource } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import {
   SlackbotType, REQUEST_TIMEOUT_FOR_GTOP,
@@ -44,7 +45,7 @@ const router = express.Router();
  *            type: string
  */
 
-
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -99,7 +100,7 @@ module.exports = (crowi) => {
   async function updateSlackBotSettings(params) {
     const { configManager } = crowi;
     // update config without publishing S2sMessage
-    return configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+    return configManager.updateConfigs(params, { skipPubsub: true });
   }
 
   async function resetAllBotSettings(initializedType) {
@@ -162,26 +163,54 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [SlackIntegrationSettings]
    *        operationId: getSlackBotSettingParams
-   *        summary: /slack-integration
+   *        summary: /slack-integration-settings
    *        description: Get current settings and connection statuses.
    *        responses:
    *          200:
    *            description: Succeeded to get info.
+   *            content:
+   *              application/json:
+   *                properties:
+   *                  currentBotType:
+   *                    type: string
+   *                  settings:
+   *                    type: object
+   *                    properties:
+   *                      slackSigningSecretEnvVars:
+   *                        type: string
+   *                      slackBotTokenEnvVars:
+   *                        type: string
+   *                      slackSigningSecret:
+   *                        type: string
+   *                      slackBotToken:
+   *                        type: string
+   *                      commandPermission:
+   *                        type: object
+   *                      eventActionsPermission:
+   *                        type: object
+   *                      proxyServerUri:
+   *                        type: string
+   *                  connectionStatuses:
+   *                    type: object
+   *                  errorMsg:
+   *                    type: string
+   *                  errorCode:
+   *                    type: string
    */
   router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const { configManager, slackIntegrationService } = crowi;
-    const currentBotType = configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = configManager.getConfig('slackbot:currentBotType');
 
     // retrieve settings
     const settings = {};
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
-      settings.slackSigningSecretEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:signingSecret');
-      settings.slackBotTokenEnvVars = configManager.getConfigFromEnvVars('crowi', 'slackbot:withoutProxy:botToken');
-      settings.slackSigningSecret = configManager.getConfig('crowi', 'slackbot:withoutProxy:signingSecret');
-      settings.slackBotToken = configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
-      settings.commandPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:commandPermission');
-      settings.eventActionsPermission = configManager.getConfig('crowi', 'slackbot:withoutProxy:eventActionsPermission');
+      settings.slackSigningSecretEnvVars = configManager.getConfig('slackbot:withoutProxy:signingSecret', ConfigSource.env);
+      settings.slackBotTokenEnvVars = configManager.getConfig('slackbot:withoutProxy:botToken', ConfigSource.env);
+      settings.slackSigningSecret = configManager.getConfig('slackbot:withoutProxy:signingSecret');
+      settings.slackBotToken = configManager.getConfig('slackbot:withoutProxy:botToken');
+      settings.commandPermission = configManager.getConfig('slackbot:withoutProxy:commandPermission');
+      settings.eventActionsPermission = configManager.getConfig('slackbot:withoutProxy:eventActionsPermission');
     }
     else {
       settings.proxyServerUri = slackIntegrationService.proxyUriForCurrentType;
@@ -280,7 +309,7 @@ module.exports = (crowi) => {
     }
 
     // TODO Impl to delete AccessToken both of Proxy and GROWI when botType changes.
-    const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('crowi', 'slackbot:currentBotType') };
+    const slackBotTypeParam = { slackBotType: crowi.configManager.getConfig('slackbot:currentBotType') };
     return res.apiv3({ slackBotTypeParam });
   };
 
@@ -360,15 +389,27 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/without-proxy/update-settings/:
    *      put:
    *        tags: [SlackIntegrationSettings (without proxy)]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: putWithoutProxySettings
-   *        summary: update customBotWithoutProxy settings
+   *        summary: /slack-integration-settings/without-proxy/update-settings
    *        description: Update customBotWithoutProxy setting.
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  slackSigningSecret:
+   *                    type: string
+   *                  slackBotToken:
+   *                    type: string
    *        responses:
    *           200:
    *             description: Succeeded to put CustomBotWithoutProxy setting.
    */
   router.put('/without-proxy/update-settings', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
-    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = crowi.configManager.getConfig('slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
       return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
@@ -400,16 +441,28 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/without-proxy/update-permissions/:
    *      put:
    *        tags: [SlackIntegrationSettings (without proxy)]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: putWithoutProxyPermissions
-   *        summary: update customBotWithoutProxy permissions
+   *        summary: /slack-integration-settings/without-proxy/update-permissions
    *        description: Update customBotWithoutProxy permissions.
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  commandPermission:
+   *                    type: object
+   *                  eventActionsPermission:
+   *                    type: object
    *        responses:
    *           200:
    *             description: Succeeded to put CustomBotWithoutProxy permissions.
    */
   // eslint-disable-next-line max-len
   router.put('/without-proxy/update-permissions', loginRequiredStrictly, adminRequired, addActivity, validator.updatePermissionsWithoutProxy, async(req, res) => {
-    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = crowi.configManager.getConfig('slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not CustomBotWithoutProxy';
       return res.apiv3Err(new ErrorV3(msg, 'not-customBotWithoutProxy'), 400);
@@ -443,12 +496,29 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/slack-app-integrations:
    *      post:
    *        tags: [SlackIntegrationSettings (with proxy)]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: putSlackAppIntegrations
-   *        summary: /slack-integration
+   *        summary: /slack-integration-settings/slack-app-integrations
    *        description: Generate SlackAppIntegrations
    *        responses:
    *          200:
    *            description: Succeeded to create slack app integration
+   *            content:
+   *              application/json:
+   *                properties:
+   *                  tokenGtoP:
+   *                    type: string
+   *                  tokenPtoG:
+   *                    type: string
+   *                  permissionsForBroadcastUseCommands:
+   *                    type: object
+   *                  permissionsForSingleUseCommands:
+   *                    type: object
+   *                  permissionsForSlackEvents:
+   *                    type: object
+   *                  isPrimary:
+   *                    type: boolean
    */
   router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
@@ -493,12 +563,25 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/slack-app-integrations/:id:
    *      delete:
    *        tags: [SlackIntegrationSettings (with proxy)]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: deleteAccessTokens
-   *        summary: delete accessTokens
+   *        summary: /slack-integration-settings/slack-app-integrations/:id
    *        description: Delete accessTokens
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            schema:
+   *              type: string
    *        responses:
    *          200:
    *            description: Succeeded to delete access tokens for slack
+   *            content:
+   *              application/json:
+   *                properties:
+   *                  response:
+   *                    type: object
    */
   router.delete('/slack-app-integrations/:id', loginRequiredStrictly, adminRequired, validator.deleteIntegration, apiV3FormValidator, addActivity,
     async(req, res) => {
@@ -524,6 +607,32 @@ module.exports = (crowi) => {
       }
     });
 
+  /**
+   * @swagger
+   *   /slack-integration-settings/proxy-uri:
+   *     put:
+   *       tags: [SlackIntegrationSettings (with proxy)]
+   *       security:
+   *         - cookieAuth: []
+   *       operationId: putProxyUri
+   *       summary: /slack-integration-settings/proxy-uri
+   *       description: Update proxy uri
+   *       requestBody:
+   *         required: true
+   *         content:
+   *           application/json:
+   *             schema:
+   *               properties:
+   *                 proxyUri:
+   *                   type: string
+   *       responses:
+   *         200:
+   *           description: Succeeded to update proxy uri
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   */
   router.put('/proxy-uri', loginRequiredStrictly, adminRequired, addActivity, validator.proxyUri, apiV3FormValidator, async(req, res) => {
     const { proxyUri } = req.body;
 
@@ -551,9 +660,17 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/slack-app-integrations/:id/makeprimary:
    *      put:
    *        tags: [SlackIntegrationSettings (with proxy)]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: makePrimary
-   *        summary: /slack-integration
+   *        summary: /slack-integration-settings/slack-app-integrations/:id/makeprimary
    *        description: Make SlackAppTokens primary
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            schema:
+   *              type: string
    *        responses:
    *          200:
    *            description: Succeeded to make it primary
@@ -598,12 +715,24 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/slack-app-integrations/:id/regenerate-tokens:
    *      put:
    *        tags: [SlackIntegrationSettings (with proxy)]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: putRegenerateTokens
-   *        summary: /slack-integration
+   *        summary: /slack-integration-settings/slack-app-integrations/:id/regenerate-tokens
    *        description: Regenerate SlackAppTokens
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            schema:
+   *              type: string
    *        responses:
    *          200:
    *            description: Succeeded to regenerate slack app tokens
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
    */
   // eslint-disable-next-line max-len
   router.put('/slack-app-integrations/:id/regenerate-tokens', loginRequiredStrictly, adminRequired, addActivity, validator.regenerateTokens, apiV3FormValidator, async(req, res) => {
@@ -631,12 +760,36 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/slack-app-integrations/:id/permissions:
    *      put:
    *        tags: [SlackIntegrationSettings (with proxy)]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: putSupportedCommands
-   *        summary: /slack-integration-settings/:id/permissions
+   *        summary: /slack-integration-settings/slack-app-integrations/:id/permissions
    *        description: update supported commands
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            schema:
+   *              type: string
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  permissionsForBroadcastUseCommands:
+   *                    type: object
+   *                  permissionsForSingleUseCommands:
+   *                    type: object
+   *                  permissionsForSlackEventActions:
+   *                    type: object
    *        responses:
    *          200:
    *            description: Succeeded to update supported commands
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  type: object
    */
   // eslint-disable-next-line max-len
   router.put('/slack-app-integrations/:id/permissions', loginRequiredStrictly, adminRequired, addActivity, validator.updatePermissionsWithProxy, apiV3FormValidator, async(req, res) => {
@@ -690,16 +843,32 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/slack-app-integrations/:id/relation-test:
    *      post:
    *        tags: [SlackIntegrationSettings (with proxy)]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: postRelationTest
-   *        summary: Test relation
+   *        summary: /slack-integration-settings/slack-app-integrations/:id/relation-test
    *        description: Delete botType setting.
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            schema:
+   *              type: string
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  channel:
+   *                    type: string
    *        responses:
    *           200:
    *             description: Succeeded to delete botType setting.
    */
   // eslint-disable-next-line max-len
   router.post('/slack-app-integrations/:id/relation-test', loginRequiredStrictly, adminRequired, addActivity, validator.relationTest, apiV3FormValidator, async(req, res) => {
-    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = crowi.configManager.getConfig('slackbot:currentBotType');
     if (currentBotType === SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Not Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'not-proxy-type'), 400);
@@ -741,7 +910,7 @@ module.exports = (crowi) => {
     }
 
     const { channel } = req.body;
-    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    const appSiteURL = crowi.configManager.getConfig('app:siteUrl');
     try {
       await sendSuccessMessage(slackBotToken, channel, appSiteURL);
     }
@@ -761,35 +930,37 @@ module.exports = (crowi) => {
    *    /slack-integration-settings/without-proxy/test:
    *      post:
    *        tags: [SlackIntegrationSettings (without proxy)]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: postTest
-   *        summary: test the connection
+   *        summary: /slack-integration-settings/without-proxy/test
    *        description: Test the connection with slack work space.
    *        requestBody:
    *          content:
    *            application/json:
    *              schema:
    *                properties:
-   *                  testChannel:
+   *                  channel:
    *                    type: string
    *        responses:
    *           200:
    *             description: Succeeded to connect to slack work space.
    */
   router.post('/without-proxy/test', loginRequiredStrictly, adminRequired, addActivity, validator.slackChannel, apiV3FormValidator, async(req, res) => {
-    const currentBotType = crowi.configManager.getConfig('crowi', 'slackbot:currentBotType');
+    const currentBotType = crowi.configManager.getConfig('slackbot:currentBotType');
     if (currentBotType !== SlackbotType.CUSTOM_WITHOUT_PROXY) {
       const msg = 'Select Without Proxy Type';
       return res.apiv3Err(new ErrorV3(msg, 'select-not-proxy-type'), 400);
     }
 
-    const slackBotToken = crowi.configManager.getConfig('crowi', 'slackbot:withoutProxy:botToken');
+    const slackBotToken = crowi.configManager.getConfig('slackbot:withoutProxy:botToken');
     const status = await getConnectionStatus(slackBotToken);
     if (status.error != null) {
       return res.apiv3Err(new ErrorV3(`Error occured while getting connection. ${status.error}`, 'send-message-failed'));
     }
 
     const { channel } = req.body;
-    const appSiteURL = crowi.configManager.getConfig('crowi', 'app:siteUrl');
+    const appSiteURL = crowi.configManager.getConfig('app:siteUrl');
     try {
       await sendSuccessMessage(slackBotToken, channel, appSiteURL);
     }

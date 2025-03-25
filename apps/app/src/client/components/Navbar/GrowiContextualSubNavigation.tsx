@@ -9,24 +9,19 @@ import type {
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { auto } from '@popperjs/core';
-import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { useTranslation } from 'next-i18next';
 import Sticky from 'react-stickynode';
-import { DropdownItem, UncontrolledTooltip } from 'reactstrap';
+import { Tooltip, DropdownItem, UncontrolledTooltip } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
+import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
-import {
-  useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
-} from '~/stores-universal/context';
-import { useEditorMode } from '~/stores-universal/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
@@ -40,6 +35,11 @@ import {
   useIsAbleToChangeEditorMode,
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
+import {
+  useCurrentPathname,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsBulkExportPagesEnabled, useIsLocalAccountRegistrationEnabled, useIsSharedUser, useShareLinkId,
+} from '~/stores-universal/context';
+import { useEditorMode } from '~/stores-universal/ui';
 
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
@@ -76,9 +76,11 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: isBulkExportPagesEnabled } = useIsBulkExportPagesEnabled();
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
+  const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModal();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
@@ -135,8 +137,21 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         className="grw-page-control-dropdown-item"
       >
         <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
-        {t('export_bulk.export_page_markdown')}
+        {t('page_export.export_page_markdown')}
       </DropdownItem>
+
+      {/* Bulk export */}
+      {isBulkExportPagesEnabled && (
+        <span id="bulkExportDropdownItem">
+          <DropdownItem
+            onClick={openPageBulkExportSelectModal}
+            className="grw-page-control-dropdown-item"
+          >
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
+            {t('page_export.bulk_export')}
+          </DropdownItem>
+        </span>
+      )}
 
       <DropdownItem divider />
 

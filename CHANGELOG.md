@@ -1,8 +1,106 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.1.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.0](https://github.com/weseek/growi/compare/v7.1.9...v7.2.0) - 2025-03-11
+
+### 💎 Features
+
+* feat: GROWI AI Next Gen (#9492) @miya
+* feat: Support OpenTelemetry (#8810) @yuki-takei
+* feat: Add AuthorInfo display setting to PageSideContents (#9689) @satof3
+* feat: Expose React Insance to window via GrowiFacade (#9729) @NaokiHigashi28
+* feat: Normalize remark growi directives for v6.0.x or above (#9690) @yuki-takei
+
+### 🚀 Improvement
+
+* imprv: Fix RecentChanges dropdown label (#9711) @satof3
+* imprv: Border color for dark mode (#9695) @satof3
+* imprv: Update shortcut key modal (#9651) @satof3
+* imprv: Suppresses unnecessary re-rendering within PageEditor (#9629) @reiji-h
+
+### 🐛 Bug Fixes
+
+* fix: Redirection after login does not work on systems with guest mode enabled (#9653) @reiji-h
+* fix: Data migration script for CSV and TSV (#9641) @miya
+* fix: Authenticate before uploading at /_api/v3/import/upload endpoint (#9647) @NaokiHigashi28
+* fix: Add XSS filter to remark-attachment-refs /refs endpoint (#9631) @NaokiHigashi28
+* fix: PageTree auto-scrolling sometimges not woking (#9544) @reiji-h
+* fix: Middlewares about installation (#9616) @yuki-takei
+* fix: Typo for bookmark API (#9613) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Upgrade runtime versions (#9655) @yuki-takei
+* support: Display brand logo when editor mode (#9632) @satof3
+* support: Upgrade CodeMirror (#9633) @yuki-takei
+* ci(deps): bump docker/login-action from 2 to 3 (#8208) @dependabot
+* ci(deps): bump google-github-actions/auth from 1 to 2 (#9557) @dependabot
+* ci(deps): bump myrotvorets/info-from-package-json-action from 2.0.1 to 2.0.2 (#9558) @dependabot
+* support: Remove legacy ConfigManager (#9624) @yuki-takei
+
+## [v7.1.9](https://github.com/weseek/growi/compare/v7.1.8...v7.1.9) - 2025-02-03
+
+### 💎 Features
+
+* feat: Add error handling for data migration (#9582) @miya
+
+### 🚀 Improvement
+
+* imprv: Data migration script performance (#9599) @miya
+* imprv: Initialization for Passport strategies (#9353) @yuki-takei
+* imprv: Make data migration type safe (#9590) @miya
+* imprv: Printing styles (#9576) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Serializing page data for share link (#9602) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps-dev): bump vite from 5.4.6 to 5.4.12 (#9574) @dependabot
+* ci(deps): bump mongoose from 6.13.0 to 6.13.6 (#9570) @dependabot
+* ci(deps): bump katex from 0.16.11 to 0.16.21 (#9564) @dependabot
+
+## [v7.1.8](https://github.com/weseek/growi/compare/v7.1.7...v7.1.8) - 2025-01-21
+
+### 🐛 Bug Fixes
+
+* fix: Escape page path when generating RegExp to find ancestors children (#9550) @yuki-takei
+
+## [v7.1.7](https://github.com/weseek/growi/compare/v7.1.6...v7.1.7) - 2025-01-16
+
+### 🐛 Bug Fixes
+
+* fix: Unable to select group viewing permissions (#9541) @miya
+* fix: Fix i18n of oidc settings (#9536) @ryu-sato
+
+### 🧰 Maintenance
+
+* support: Update Swagger documentation for the PUT endpoint to update a page (#9529) @tkfm1991
+* ci(deps): bump docker/metadata-action from 4 to 5 (#9181) @dependabot
+* ci(deps): bump github/codeql-action from 2 to 3 (#9180) @dependabot
+* ci(deps): bump next from 14.2.15 to 14.2.21 (#9538) @dependabot
+* ci(deps-dev): bump @marp-team/marp-core from 3.9.0 to 3.9.1 (#9530) @dependabot
+
+## [v7.1.6](https://github.com/weseek/growi/compare/v7.1.5...v7.1.6) - 2024-12-26
+
+### 💎 Features
+
+* feat(ai): Save file to VectorStore in HTML format   (#9462) @miya
+
+### 🐛 Bug Fixes
+
+* fix: remark-lsx pagination (#9513) @miya
+* fix: Spelling miss of external_link in i18n (#9456) @reiji-h
+* fix: Wider copy to clipboard area (#9450) @Ryosei-Fukushima
+* fix: Error when creating pages with deep hierarchy (#9487) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump next from 14.2.13 to 14.2.15 (#9501) @dependabot
 
 ## [v7.1.5](https://github.com/weseek/growi/compare/v7.1.4...v7.1.5) - 2024-12-13
 

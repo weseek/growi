@@ -20,6 +20,66 @@ const validator = {};
 
 const today = new Date();
 
+/**
+ * @swagger
+ *
+ * components:
+ *   schemas:
+ *     ShareLink:
+ *       type: object
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: The unique identifier of the share link
+ *         relatedPage:
+ *           type: object
+ *           properties:
+ *             _id:
+ *               type: string
+ *               description: The unique identifier of the related page
+ *             path:
+ *               type: string
+ *               description: The path of the related page
+ *         expiredAt:
+ *           type: string
+ *           format: date-time
+ *           description: The expiration date of the share link
+ *         description:
+ *           type: string
+ *           description: The description of the share link
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: The creation date of the share link
+ *         __v:
+ *           type: integer
+ *           description: The version key
+ *     ShareLinkSimple:
+ *       type: object
+ *       properties:
+ *         relatedPage:
+ *           type: string
+ *           description: The unique identifier of the related page
+ *         expiredAt:
+ *           type: string
+ *           format: date-time
+ *           description: The expiration date of the share link
+ *         description:
+ *           type: string
+ *           description: The description of the share link
+ *         createdAt:
+ *           type: string
+ *           format: date-time
+ *           description: The creation date of the share link
+ *         __v:
+ *           type: integer
+ *           description: The version key
+ *         _id:
+ *           type: string
+ *           description: The unique identifier of the share link
+ */
+
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -33,7 +93,7 @@ module.exports = (crowi) => {
    * middleware to limit link sharing
    */
   const linkSharingRequired = (req, res, next) => {
-    const isLinkSharingDisabled = crowi.configManager.getConfig('crowi', 'security:disableLinkSharing');
+    const isLinkSharingDisabled = crowi.configManager.getConfig('security:disableLinkSharing');
     logger.debug(`isLinkSharingDisabled: ${isLinkSharingDisabled}`);
 
     if (isLinkSharingDisabled) {
@@ -53,7 +113,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /share-links/:
    *      get:
-   *        tags: [ShareLink]
+   *        tags: [ShareLinks]
+   *        security:
+   *          - cookieAuth: []
    *        description: get share links
    *        parameters:
    *          - name: relatedPage
@@ -65,6 +127,14 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: Succeeded to get share links
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    shareLinksResult:
+   *                      type: array
+   *                      items:
+   *                        $ref: '#/components/schemas/ShareLink'
    */
   router.get('/', loginRequired, linkSharingRequired, validator.getShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
@@ -103,7 +173,9 @@ module.exports = (crowi) => {
    *  paths:
    *    /share-links/:
    *      post:
-   *        tags: [ShareLink]
+   *        tags: [ShareLinks]
+   *        security:
+   *          - cookieAuth: []
    *        description: Create new share link
    *        parameters:
    *          - name: relatedPage
@@ -125,8 +197,11 @@ module.exports = (crowi) => {
    *        responses:
    *          200:
    *            description: Succeeded to create one share link
+   *            content:
+   *              application/json:
+   *                schema:
+   *                 $ref: '#/components/schemas/ShareLinkSimple'
    */
-
   router.post('/', loginRequired, excludeReadOnlyUser, linkSharingRequired, addActivity, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
 
@@ -164,7 +239,9 @@ module.exports = (crowi) => {
   *    /share-links/:
   *      delete:
   *        tags: [ShareLinks]
-  *        summary: /share-links/
+  *        security:
+  *          - cookieAuth: []
+  *        summary: delete all share links related one page
   *        description: delete all share links related one page
   *        parameters:
   *          - name: relatedPage
@@ -176,6 +253,10 @@ module.exports = (crowi) => {
   *        responses:
   *          200:
   *            description: Succeeded to delete o all share links related one page
+  *            content:
+  *              application/json:
+  *                schema:
+  *                 $ref: '#/components/schemas/ShareLinkSimple'
   */
   router.delete('/', loginRequired, excludeReadOnlyUser, addActivity, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
     const { relatedPage } = req.query;
@@ -207,10 +288,20 @@ module.exports = (crowi) => {
   *    /share-links/all:
   *      delete:
   *        tags: [ShareLink Management]
+  *        security:
+  *         - cookieAuth: []
+  *        summary: delete all share links
   *        description: delete all share links
   *        responses:
   *          200:
   *            description: Succeeded to remove all share links
+  *            content:
+  *              application/json:
+  *                schema:
+  *                  properties:
+  *                    deletedCount:
+  *                      type: integer
+  *                      description: The number of share links deleted
   */
   router.delete('/all', loginRequired, adminRequired, addActivity, async(req, res) => {
 
@@ -239,6 +330,8 @@ module.exports = (crowi) => {
   *    /share-links/{id}:
   *      delete:
   *        tags: [ShareLinks]
+  *        security:
+  *          - cookieAuth: []
   *        description: delete one share link related one page
   *        parameters:
   *          - name: id

@@ -27,10 +27,25 @@ interface AuthorizedRequest extends Request {
   user?: any
 }
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      SyncStatus:
+ *        type: object
+ *        properties:
+ *          isExecutingSync:
+ *            type: boolean
+ *          totalCount:
+ *            type: number
+ *          count:
+ *            type: number
+ */
 module.exports = (crowi: Crowi): Router => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   const activityEvent = crowi.event('activity');
 
@@ -79,6 +94,54 @@ module.exports = (crowi: Crowi): Router => {
     ],
   };
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups:
+   *       get:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: listExternalUserGroups
+   *         summary: /external-user-groups
+   *         parameters:
+   *           - name: page
+   *             in: query
+   *             schema:
+   *               type: integer
+   *             description: Page number for pagination
+   *           - name: limit
+   *             in: query
+   *             schema:
+   *               type: integer
+   *             description: Number of items per page
+   *           - name: offset
+   *             in: query
+   *             schema:
+   *               type: integer
+   *             description: Offset for pagination
+   *           - name: pagination
+   *             in: query
+   *             schema:
+   *               type: boolean
+   *             description: Whether to enable pagination
+   *         responses:
+   *           200:
+   *             description: Successfully retrieved external user groups
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   *                   properties:
+   *                     userGroups:
+   *                       type: array
+   *                       items:
+   *                         type: object
+   *                     totalUserGroups:
+   *                       type: integer
+   *                     pagingLimit:
+   *                       type: integer
+   */
   router.get('/', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { query } = req;
 
@@ -101,6 +164,36 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/ancestors:
+   *       get:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: getAncestors
+   *         summary: /external-user-groups/ancestors
+   *         parameters:
+   *           - name: groupId
+   *             in: query
+   *             required: true
+   *             schema:
+   *               type: string
+   *             description: The ID of the user group to get ancestors for
+   *         responses:
+   *           200:
+   *             description: Successfully retrieved ancestor user groups
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   *                   properties:
+   *                     ancestorUserGroups:
+   *                       type: array
+   *                       items:
+   *                         type: object
+   */
   router.get('/ancestors', loginRequiredStrictly, adminRequired, validators.ancestorGroup, apiV3FormValidator, async(req, res: ApiV3Response) => {
     const { groupId } = req.query;
 
@@ -116,6 +209,46 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/children:
+   *       get:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: listChildren
+   *         summary: /external-user-groups/children
+   *         parameters:
+   *           - name: parentIds
+   *             in: query
+   *             schema:
+   *               type: array
+   *               items:
+   *                 type: string
+   *             description: The IDs of the parent user groups
+   *           - name: includeGrandChildren
+   *             in: query
+   *             schema:
+   *               type: boolean
+   *             description: Whether to include grandchild user groups
+   *         responses:
+   *           200:
+   *             description: Successfully retrieved child user groups
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   *                   properties:
+   *                     childUserGroups:
+   *                       type: array
+   *                       items:
+   *                         type: object
+   *                     grandChildUserGroups:
+   *                       type: array
+   *                       items:
+   *                         type: object
+   */
   router.get('/children', loginRequiredStrictly, adminRequired, validators.listChildren, async(req, res) => {
     try {
       const { parentIds, includeGrandChildren = false } = req.query;
@@ -133,6 +266,34 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/{id}:
+   *       get:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: getExternalUserGroup
+   *         summary: /external-user-groups/{id}
+   *         parameters:
+   *           - name: id
+   *             in: path
+   *             required: true
+   *             schema:
+   *               type: string
+   *             description: The ID of the external user group
+   *         responses:
+   *           200:
+   *             description: Successfully retrieved external user group details
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   *                   properties:
+   *                     userGroup:
+   *                       type: object
+   */
   router.get('/:id', loginRequiredStrictly, adminRequired, validators.detail, async(req, res: ApiV3Response) => {
     const { id } = req.params;
 
@@ -147,6 +308,52 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/{id}:
+   *       delete:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: deleteExternalUserGroup
+   *         summary: /external-user-groups/{id}
+   *         parameters:
+   *           - name: id
+   *             in: path
+   *             required: true
+   *             schema:
+   *               type: string
+   *             description: The ID of the external user group
+   *           - name: actionName
+   *             in: query
+   *             required: true
+   *             schema:
+   *               type: string
+   *             description: The action to perform on group delete
+   *           - name: transferToUserGroupId
+   *             in: query
+   *             schema:
+   *               type: string
+   *             description: The ID of the user group to transfer to
+   *           - name: transferToUserGroupType
+   *             in: query
+   *             schema:
+   *               type: string
+   *             description: The type of the user group to transfer to
+   *         responses:
+   *           200:
+   *             description: Successfully deleted the external user group
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   *                   properties:
+   *                     userGroups:
+   *                       type: array
+   *                       items:
+   *                         type: object
+   */
   router.delete('/:id', loginRequiredStrictly, adminRequired, validators.delete, apiV3FormValidator, addActivity,
     async(req: AuthorizedRequest, res: ApiV3Response) => {
       const { id: deleteGroupId } = req.params;
@@ -176,6 +383,43 @@ module.exports = (crowi: Crowi): Router => {
       }
     });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/{id}:
+   *       put:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: updateExternalUserGroup
+   *         summary: /external-user-groups/{id}
+   *         parameters:
+   *           - name: id
+   *             in: path
+   *             required: true
+   *             schema:
+   *               type: string
+   *             description: The ID of the external user group
+   *         requestBody:
+   *           required: true
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   description:
+   *                     type: string
+   *         responses:
+   *           200:
+   *             description: Successfully updated the external user group
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   *                   properties:
+   *                     userGroup:
+   *                       type: object
+   */
   router.put('/:id', loginRequiredStrictly, adminRequired, validators.update, apiV3FormValidator, addActivity, async(req, res: ApiV3Response) => {
     const { id } = req.params;
     const {
@@ -197,6 +441,36 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/:id/external-user-group-relations:
+   *       get:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: getExternalUserGroupRelations
+   *         summary: /external-user-groups/:id/external-user-group-relations
+   *         parameters:
+   *           - name: id
+   *             in: path
+   *             required: true
+   *             schema:
+   *               type: string
+   *             description: The ID of the external user group
+   *         responses:
+   *           200:
+   *             description: Successfully retrieved external user group relations
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   *                   properties:
+   *                     userGroupRelations:
+   *                       type: array
+   *                       items:
+   *                         type: object
+   */
   router.get('/:id/external-user-group-relations', loginRequiredStrictly, adminRequired, async(req, res: ApiV3Response) => {
     const { id } = req.params;
 
@@ -214,36 +488,147 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/ldap/sync-settings:
+   *       get:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: getLdapSyncSettings
+   *         summary: Get LDAP sync settings
+   *         responses:
+   *           200:
+   *             description: Successfully retrieved LDAP sync settings
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   *                   properties:
+   *                     ldapGroupSearchBase:
+   *                       type: string
+   *                     ldapGroupMembershipAttribute:
+   *                       type: string
+   *                     ldapGroupMembershipAttributeType:
+   *                       type: string
+   *                     ldapGroupChildGroupAttribute:
+   *                       type: string
+   *                     autoGenerateUserOnLdapGroupSync:
+   *                       type: boolean
+   *                     preserveDeletedLdapGroups:
+   *                       type: boolean
+   *                     ldapGroupNameAttribute:
+   *                       type: string
+   *                     ldapGroupDescriptionAttribute:
+   *                       type: string
+   */
   router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
     const settings = {
-      ldapGroupSearchBase: configManager?.getConfig('crowi', 'external-user-group:ldap:groupSearchBase'),
-      ldapGroupMembershipAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttribute'),
-      ldapGroupMembershipAttributeType: configManager?.getConfig('crowi', 'external-user-group:ldap:groupMembershipAttributeType'),
-      ldapGroupChildGroupAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupChildGroupAttribute'),
-      autoGenerateUserOnLdapGroupSync: configManager?.getConfig('crowi', 'external-user-group:ldap:autoGenerateUserOnGroupSync'),
-      preserveDeletedLdapGroups: configManager?.getConfig('crowi', 'external-user-group:ldap:preserveDeletedGroups'),
-      ldapGroupNameAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupNameAttribute'),
-      ldapGroupDescriptionAttribute: configManager?.getConfig('crowi', 'external-user-group:ldap:groupDescriptionAttribute'),
+      ldapGroupSearchBase: configManager.getConfig('external-user-group:ldap:groupSearchBase'),
+      ldapGroupMembershipAttribute: configManager.getConfig('external-user-group:ldap:groupMembershipAttribute'),
+      ldapGroupMembershipAttributeType: configManager.getConfig('external-user-group:ldap:groupMembershipAttributeType'),
+      ldapGroupChildGroupAttribute: configManager.getConfig('external-user-group:ldap:groupChildGroupAttribute'),
+      autoGenerateUserOnLdapGroupSync: configManager.getConfig('external-user-group:ldap:autoGenerateUserOnGroupSync'),
+      preserveDeletedLdapGroups: configManager.getConfig('external-user-group:ldap:preserveDeletedGroups'),
+      ldapGroupNameAttribute: configManager.getConfig('external-user-group:ldap:groupNameAttribute'),
+      ldapGroupDescriptionAttribute: configManager.getConfig('external-user-group:ldap:groupDescriptionAttribute'),
     };
 
     return res.apiv3(settings);
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/keycloak/sync-settings:
+   *       get:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: getKeycloakSyncSettings
+   *         summary: Get Keycloak sync settings
+   *         responses:
+   *           200:
+   *             description: Successfully retrieved Keycloak sync settings
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   *                   properties:
+   *                     keycloakHost:
+   *                       type: string
+   *                     keycloakGroupRealm:
+   *                       type: string
+   *                     keycloakGroupSyncClientRealm:
+   *                       type: string
+   *                     keycloakGroupSyncClientID:
+   *                       type: string
+   *                     keycloakGroupSyncClientSecret:
+   *                       type: string
+   *                     autoGenerateUserOnKeycloakGroupSync:
+   *                       type: boolean
+   *                     preserveDeletedKeycloakGroups:
+   *                       type: boolean
+   *                     keycloakGroupDescriptionAttribute:
+   *                       type: string
+   */
   router.get('/keycloak/sync-settings', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
     const settings = {
-      keycloakHost: configManager?.getConfig('crowi', 'external-user-group:keycloak:host'),
-      keycloakGroupRealm: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm'),
-      keycloakGroupSyncClientRealm: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm'),
-      keycloakGroupSyncClientID: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientID'),
-      keycloakGroupSyncClientSecret: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientSecret'),
-      autoGenerateUserOnKeycloakGroupSync: configManager?.getConfig('crowi', 'external-user-group:keycloak:autoGenerateUserOnGroupSync'),
-      preserveDeletedKeycloakGroups: configManager?.getConfig('crowi', 'external-user-group:keycloak:preserveDeletedGroups'),
-      keycloakGroupDescriptionAttribute: configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute'),
+      keycloakHost: configManager.getConfig('external-user-group:keycloak:host'),
+      keycloakGroupRealm: configManager.getConfig('external-user-group:keycloak:groupRealm'),
+      keycloakGroupSyncClientRealm: configManager.getConfig('external-user-group:keycloak:groupSyncClientRealm'),
+      keycloakGroupSyncClientID: configManager.getConfig('external-user-group:keycloak:groupSyncClientID'),
+      keycloakGroupSyncClientSecret: configManager.getConfig('external-user-group:keycloak:groupSyncClientSecret'),
+      autoGenerateUserOnKeycloakGroupSync: configManager.getConfig('external-user-group:keycloak:autoGenerateUserOnGroupSync'),
+      preserveDeletedKeycloakGroups: configManager.getConfig('external-user-group:keycloak:preserveDeletedGroups'),
+      keycloakGroupDescriptionAttribute: configManager.getConfig('external-user-group:keycloak:groupDescriptionAttribute'),
     };
 
     return res.apiv3(settings);
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/ldap/sync-settings:
+   *       put:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: updateLdapSyncSettings
+   *         summary: Update LDAP sync settings
+   *         requestBody:
+   *           required: true
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   ldapGroupSearchBase:
+   *                     type: string
+   *                   ldapGroupMembershipAttribute:
+   *                     type: string
+   *                   ldapGroupMembershipAttributeType:
+   *                     type: string
+   *                   ldapGroupChildGroupAttribute:
+   *                     type: string
+   *                   autoGenerateUserOnLdapGroupSync:
+   *                     type: boolean
+   *                   preserveDeletedLdapGroups:
+   *                     type: boolean
+   *                   ldapGroupNameAttribute:
+   *                     type: string
+   *                   ldapGroupDescriptionAttribute:
+   *                     type: string
+   *         responses:
+   *           204:
+   *             description: Sync settings updated successfully
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   */
   router.put('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -269,7 +654,7 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     try {
-      await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+      await configManager.updateConfigs(params, { skipPubsub: true });
       return res.apiv3({}, 204);
     }
     catch (err) {
@@ -280,6 +665,47 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/keycloak/sync-settings:
+   *       put:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: updateKeycloakSyncSettings
+   *         summary: /external-user-groups/keycloak/sync-settings
+   *         requestBody:
+   *           required: true
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 type: object
+   *                 properties:
+   *                   keycloakHost:
+   *                     type: string
+   *                   keycloakGroupRealm:
+   *                     type: string
+   *                   keycloakGroupSyncClientRealm:
+   *                     type: string
+   *                   keycloakGroupSyncClientID:
+   *                     type: string
+   *                   keycloakGroupSyncClientSecret:
+   *                     type: string
+   *                   autoGenerateUserOnKeycloakGroupSync:
+   *                     type: boolean
+   *                   preserveDeletedKeycloakGroups:
+   *                     type: boolean
+   *                   keycloakGroupDescriptionAttribute:
+   *                     type: string
+   *         responses:
+   *           204:
+   *             description: Sync settings updated successfully
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   */
   router.put('/keycloak/sync-settings', loginRequiredStrictly, adminRequired, validators.keycloakSyncSettings,
     async(req: AuthorizedRequest, res: ApiV3Response) => {
       const errors = validationResult(req);
@@ -301,7 +727,7 @@ module.exports = (crowi: Crowi): Router => {
       };
 
       try {
-        await configManager.updateConfigsInTheSameNamespace('crowi', params, true);
+        await configManager.updateConfigs(params, { skipPubsub: true });
         return res.apiv3({}, 204);
       }
       catch (err) {
@@ -312,6 +738,24 @@ module.exports = (crowi: Crowi): Router => {
       }
     });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/ldap/sync:
+   *       put:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: syncExternalUserGroupsLdap
+   *         summary: Start LDAP sync process
+   *         responses:
+   *           202:
+   *             description: Sync process started
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   type: object
+   */
   router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     if (isExecutingSync()) {
       return res.apiv3Err(
@@ -319,7 +763,7 @@ module.exports = (crowi: Crowi): Router => {
       );
     }
 
-    const isLdapEnabled = await configManager.getConfig('crowi', 'security:passport-ldap:isEnabled');
+    const isLdapEnabled = await configManager.getConfig('security:passport-ldap:isEnabled');
     if (!isLdapEnabled) {
       return res.apiv3Err(
         new ErrorV3('Authentication using ldap is not set', 'external_user_group.ldap.auth_not_set'), 422,
@@ -341,6 +785,24 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({}, 202);
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/keycloak/sync:
+   *       put:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: syncExternalUserGroupsKeycloak
+   *         summary: /external-user-groups/keycloak/sync
+   *         responses:
+   *           202:
+   *             description: Sync process started
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                 type: object
+   */
   router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     if (isExecutingSync()) {
       return res.apiv3Err(
@@ -349,25 +811,25 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     const getAuthProviderType = () => {
-      let kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
+      let kcHost = configManager.getConfig('external-user-group:keycloak:host');
       if (kcHost?.endsWith('/')) {
         kcHost = kcHost.slice(0, -1);
       }
-      const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
+      const kcGroupRealm = configManager.getConfig('external-user-group:keycloak:groupRealm');
 
       // starts with kcHost, contains kcGroupRealm in path
       // see: https://regex101.com/r/3ihDmf/1
       const regex = new RegExp(`^${kcHost}/.*/${kcGroupRealm}(/|$).*`);
 
-      const isOidcEnabled = configManager.getConfig('crowi', 'security:passport-oidc:isEnabled');
-      const oidcIssuerHost = configManager.getConfig('crowi', 'security:passport-oidc:issuerHost');
+      const isOidcEnabled = configManager.getConfig('security:passport-oidc:isEnabled');
+      const oidcIssuerHost = configManager.getConfig('security:passport-oidc:issuerHost');
 
-      if (isOidcEnabled && regex.test(oidcIssuerHost)) return 'oidc';
+      if (isOidcEnabled && oidcIssuerHost != null && regex.test(oidcIssuerHost)) return 'oidc';
 
-      const isSamlEnabled = configManager.getConfig('crowi', 'security:passport-saml:isEnabled');
-      const samlEntryPoint = configManager.getConfig('crowi', 'security:passport-saml:entryPoint');
+      const isSamlEnabled = configManager.getConfig('security:passport-saml:isEnabled');
+      const samlEntryPoint = configManager.getConfig('security:passport-saml:entryPoint');
 
-      if (isSamlEnabled && regex.test(samlEntryPoint)) return 'saml';
+      if (isSamlEnabled && samlEntryPoint != null && regex.test(samlEntryPoint)) return 'saml';
 
       return null;
     };
@@ -386,11 +848,47 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({}, 202);
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/ldap/sync-status:
+   *       get:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: getExternalUserGroupsLdapSyncStatus
+   *         summary: Get LDAP sync status
+   *         responses:
+   *           200:
+   *             description: Successfully retrieved LDAP sync status
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   $ref: '#/components/schemas/SyncStatus'
+   */
   router.get('/ldap/sync-status', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
     const syncStatus = crowi.ldapUserGroupSyncService?.syncStatus;
     return res.apiv3({ ...syncStatus });
   });
 
+  /**
+   * @swagger
+   *   paths:
+   *     /external-user-groups/ldap/sync-status:
+   *       get:
+   *         tags: [ExternalUserGroups]
+   *         security:
+   *           - cookieAuth: []
+   *         operationId: getExternalUserGroupsLdapSyncStatus
+   *         summary: /external-user-groups/ldap/sync-status
+   *         responses:
+   *           200:
+   *             description: Successfully retrieved LDAP sync status
+   *             content:
+   *               application/json:
+   *                 schema:
+   *                   $ref: '#/components/schemas/SyncStatus'
+   */
   router.get('/keycloak/sync-status', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
     const syncStatus = crowi.keycloakUserGroupSyncService?.syncStatus;
     return res.apiv3({ ...syncStatus });
