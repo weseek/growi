@@ -24,10 +24,10 @@ const router = express.Router();
  *         docs:
  *           type: array
  *           items:
- *             $ref: '#/components/schemas/Document'
+ *             $ref: '#/components/schemas/InAppNotificationDocument'
  *         totalDocs:
  *           type: integer
- *           description: Total number of documents
+ *           description: Total number of in app notification documents
  *         offset:
  *           type: integer
  *           description: Offset value
@@ -52,15 +52,15 @@ const router = express.Router();
  *         nextPage:
  *           type: string
  *           description: Next page number or null
- *     Document:
+ *     InAppNotificationDocument:
  *       type: object
  *       properties:
  *         _id:
  *           type: string
- *           description: Document ID
+ *           description: In app notification document ID
  *         action:
  *           type: string
- *           description: Action performed on the document
+ *           description: Action performed on the in app notification document
  *         snapshot:
  *           type: string
  *           description: Snapshot details in JSON format
@@ -74,13 +74,13 @@ const router = express.Router();
  *           description: Creation timestamp
  *         status:
  *           type: string
- *           description: Status of the document
+ *           description: Status of the in app notification document
  *         targetModel:
  *           type: string
  *           description: Model of the target
  *         id:
  *           type: string
- *           description: Document ID
+ *           description: In app notification document ID
  *         actionUsers:
  *           type: array
  *           items:
