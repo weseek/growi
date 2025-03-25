@@ -327,7 +327,6 @@ export type ConfigKey = (typeof CONFIG_KEYS)[number];
 
 
 export const CONFIG_DEFINITIONS = {
-
   // Auto Install Settings
   'autoInstall:adminUsername': defineConfig<string | undefined>({
     envVarName: 'AUTO_INSTALL_ADMIN_USERNAME',
