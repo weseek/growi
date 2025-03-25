@@ -34,7 +34,7 @@ export const getYjsDataHandlerFactory: GetYjsDataHandlerFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly,
+    accessTokenParser(), loginRequiredStrictly,
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { pageId } = req.params;

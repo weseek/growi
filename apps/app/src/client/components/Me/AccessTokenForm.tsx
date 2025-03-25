@@ -3,8 +3,10 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { useForm } from 'react-hook-form';
 
-
 import type { IAccessTokenInfo } from '~/interfaces/access-token';
+import type { Scope } from '~/interfaces/scope';
+
+import { AccessTokenScopeSelect } from './AccessTokenScopeSelect';
 
 const MAX_DESCRIPTION_LENGTH = 200;
 
@@ -15,11 +17,9 @@ type AccessTokenFormProps = {
 type FormInputs = {
   expiredAt: string;
   description: string;
-  // TODO: Implement scope selection
-  // scopes: string[];
+  scopes: Scope[];
 }
 
-// TODO: Implement scope selection
 export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Element => {
   const { submitHandler } = props;
   const { t } = useTranslation();
@@ -33,21 +33,23 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
     register,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm<FormInputs>({
     defaultValues: {
       expiredAt: defaultExpiredAtStr,
       description: '',
+      scopes: [],
     },
   });
 
   const onSubmit = (data: FormInputs) => {
     const expiredAtDate = new Date(data.expiredAt);
-    const scope = []; // TODO: Implement scope selection
+    const scopes: Scope[] = data.scopes ? data.scopes : [];
 
     submitHandler({
       expiredAt: expiredAtDate,
       description: data.description,
-      scope,
+      scopes,
     });
   };
 
@@ -112,9 +114,24 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
           </div>
 
           <div className="mb-3">
-            <label htmlFor="scope" className="form-label">{t('page_me_access_token.scope')}</label>
-            <div className="form-text mb-2">{t('page_me_access_token.form.scope_desc')}</div>
-            <div className="form-text mb-2">(TBD)</div>
+            <label htmlFor="scopes" className="form-label">
+              {t('page_me_access_token.scope')}
+            </label>
+            <AccessTokenScopeSelect
+              selectedScopes={watch('scopes')}
+              register={register('scopes', {
+                required: t('input_validation.message.required', { param: t('page_me_access_token.scope') }),
+              })}
+            />
+            {errors.scopes && (
+              <div className="invalid-feedback">
+                {errors.scopes.message}
+              </div>
+            )}
+
+            <div className="form-text mb-2">
+              {t('page_me_access_token.form.scope_desc')}
+            </div>
           </div>
 
           <button

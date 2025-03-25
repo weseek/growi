@@ -24,7 +24,7 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  router.get('/list', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.get('/list', accessTokenParser(), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;
@@ -79,7 +79,7 @@ module.exports = (crowi) => {
     return res.apiv3(serializedPaginationResult);
   });
 
-  router.get('/status', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.get('/status', accessTokenParser(), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;
@@ -93,7 +93,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/open', accessTokenParser, loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.post('/open', accessTokenParser(), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;
@@ -110,7 +110,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/all-statuses-open', accessTokenParser, loginRequiredStrictly, addActivity, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.put('/all-statuses-open', accessTokenParser(), loginRequiredStrictly, addActivity, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;

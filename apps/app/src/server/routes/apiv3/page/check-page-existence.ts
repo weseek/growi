@@ -39,7 +39,7 @@ export const checkPageExistenceHandlersFactory: CreatePageHandlersFactory = (cro
   ];
 
   return [
-    accessTokenParser, loginRequired,
+    accessTokenParser(), loginRequired,
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { path } = req.query;

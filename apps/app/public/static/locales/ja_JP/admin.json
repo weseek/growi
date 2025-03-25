@@ -19,6 +19,7 @@
   "only_me": "自分のみ",
   "only_inside_the_group": "特定グループのみ",
   "optional": "オプション",
+  "days": "日",
   "security_settings": {
     "security_settings": "セキュリティ設定",
     "scope_of_page_disclosure": "ページの公開範囲",
@@ -368,6 +369,11 @@
     "file_uploading": "ファイルアップロード",
     "enable_files_except_image": "画像以外のファイルアップロードを許可",
     "attach_enable": "許可をしている場合、画像以外のファイルをページに添付可能になります。",
+    "page_bulk_export_settings": "ページ一括エクスポート設定",
+    "enable_page_bulk_export": "一括エクスポートを有効にする",
+    "page_bulk_export_explanation": "すべてのユーザーが、ページメニューから選択したページとその配下ページをまとめてエクスポートできる機能を有効化します。エクスポートされたデータは保存期間経過後に自動的に削除されます。",
+    "page_bulk_export_warning": "ページ一括エクスポート機能は全ユーザーが利用可能です。システムリソースの維持のため、必要最小限の利用にご協力をお願いいたします。管理者の方は、この旨をユーザーの皆様にご周知ください。",
+    "page_bulk_export_storage_period": "保存期間",
     "update": "更新",
     "mail_settings": "メールの設定",
     "mailer_is_not_set_up": "メール設定がセットアップされていません。",
@@ -402,7 +408,7 @@
     "azure_storage_account_name": "ストレージアカウント名",
     "azure_storage_container_name": "コンテナ名",
     "azure_note_for_the_only_env_option": "現在Azure設定は環境変数の値によって制限されています<br>この設定を変更する場合は環境変数 <code>{{env}}</code> の値をfalseに変更もしくは削除してください",
-    "fixed_by_env_var": "環境変数 <code>FILE_UPLOAD={{fileUploadType}}</code> により固定されています。",
+    "fixed_by_env_var": "環境変数 <code>{{envKey}}={{envVar}}</code> により固定されています。",
     "file_upload": "ファイルをアップロードするための設定を行います。ファイルアップロードの設定を完了させると、ファイルアップロード機能、プロフィール写真機能などが有効になります。",
     "test_connection": "接続テスト",
     "change_setting": "この設定を途中で変更すると、これまでにアップロードしたファイル等へのアクセスができなくなりますのでご注意下さい。",
@@ -1071,7 +1077,8 @@
     "ADMIN_USER_GROUP_ADD_USER": "ユーザーグループにユーザーを追加",
     "ADMIN_SEARCH_CONNECTION": "Elasticsearch の再接続の試行",
     "ADMIN_SEARCH_INDICES_NORMALIZE": "Elasticsearch のインデックスの正規化",
-    "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド"
+    "ADMIN_SEARCH_INDICES_REBUILD": "Elasticsearch のインデックスのリビルド",
+    "ADMIN_PAGE_BULK_EXPORT_SETTINGS_UPDATE": "ページ一括エクスポート設定の更新"
   },
   "g2g": {
     "transfer_success": "G2G移行が完了しました",

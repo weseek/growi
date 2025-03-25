@@ -54,7 +54,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser(), loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { aiAssistantId, threadId } = req.body;
 

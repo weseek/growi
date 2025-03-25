@@ -29,7 +29,7 @@ jobs:
         uses: myrotvorets/info-from-package-json-action@v2.0.2
         id: package-json
 
-      - uses: release-drafter/release-drafter@v5
+      - uses: release-drafter/release-drafter@v6
         id: release-drafter
         with:
           config-name: release-drafter.yml
