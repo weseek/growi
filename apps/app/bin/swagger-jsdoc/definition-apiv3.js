@@ -63,6 +63,7 @@ module.exports = {
       name: 'System Management API',
       tags: [
         'Home',
+        'Activity',
         'AdminHome',
         'AppSettings',
         'ExternalUserGroups',
