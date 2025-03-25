@@ -39,6 +39,7 @@ module.exports = {
         'BookmarkFolders',
         'Page',
         'Pages',
+        'PageListing',
         'Revisions',
         'ShareLinks',
         'Users',
