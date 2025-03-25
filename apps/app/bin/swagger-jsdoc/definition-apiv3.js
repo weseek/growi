@@ -73,6 +73,7 @@ module.exports = {
         'Export',
         'MongoDB',
         'NotificationSetting',
+        'Plugins',
         'QuestionnaireSetting',
         'SlackIntegrationSettings',
         'SlackIntegrationSettings (with proxy)',
