@@ -21,7 +21,10 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "@growi/core": "^1.4.0",
+    "@growi/core": "^1.5.0",
     "extensible-custom-error": "^0.0.7"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.14"
   }
 }
