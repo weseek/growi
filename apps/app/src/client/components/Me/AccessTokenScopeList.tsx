@@ -28,7 +28,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
   scopeObject,
   register,
   disabledScopes,
-  level = 0,
+  level = 1,
 }) => {
 
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
@@ -39,9 +39,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
   return (
     <>
       {entries.map(([scopeKey, scopeValue], idx) => {
-        // Get indentation class based on level
-        // Example: Insert <hr> only for levels 0 or 1, except for the first item
-        const showHr = (level === 0 || level === 1) && idx !== 0;
+        const showHr = (level === 1 || level === 2) && idx !== 0;
 
         if (typeof scopeValue === 'object') {
           return (
