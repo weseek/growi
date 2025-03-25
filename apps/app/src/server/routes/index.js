@@ -71,7 +71,7 @@ module.exports = function(crowi, app) {
 
   app.get('/_next/*'                  , next.delegateToNext);
 
-  app.get('/'                         , accessTokenParser([SCOPE.READ.BASE.PAGE]), applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, next.delegateToNext);
+  app.get('/'                         , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, next.delegateToNext);
 
   app.get('/login/error/:reason'      , applicationInstalled, next.delegateToNext);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
@@ -122,39 +122,39 @@ module.exports = function(crowi, app) {
 
   const apiV1Router = express.Router();
 
-  apiV1Router.get('/search'                        , accessTokenParser([SCOPE.READ.BASE.PAGE]) , loginRequired , search.api.search);
+  apiV1Router.get('/search'                        , accessTokenParser([SCOPE.READ.FEATURES.PAGE]) , loginRequired , search.api.search);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  apiV1Router.get('/pages.updatePost'    , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, page.api.getUpdatePost);
-  apiV1Router.get('/pages.getPageTag'    , accessTokenParser([SCOPE.READ.BASE.PAGE]) , loginRequired , page.api.getPageTag);
+  apiV1Router.get('/pages.updatePost'    , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, page.api.getUpdatePost);
+  apiV1Router.get('/pages.getPageTag'    , accessTokenParser([SCOPE.READ.FEATURES.PAGE]) , loginRequired , page.api.getPageTag);
   // allow posting to guests because the client doesn't know whether the user logged in
-  apiV1Router.post('/pages.remove'       , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly , excludeReadOnlyUser, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
-  apiV1Router.post('/pages.revertRemove' , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly , excludeReadOnlyUser, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
-  apiV1Router.post('/pages.unlink'       , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly , excludeReadOnlyUser, page.api.unlink); // (Avoid from API Token)
-  apiV1Router.get('/tags.list'           , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, tag.api.list);
-  apiV1Router.get('/tags.search'         , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, tag.api.search);
-  apiV1Router.post('/tags.update'        , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly, excludeReadOnlyUser, addActivity, tag.api.update);
-  apiV1Router.get('/comments.get'        , accessTokenParser([SCOPE.READ.BASE.PAGE]) , loginRequired , comment.api.get);
-  apiV1Router.post('/comments.add'       , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), comment.api.validators.add(), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.add);
-  apiV1Router.post('/comments.update'    , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), comment.api.validators.add(), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.update);
-  apiV1Router.post('/comments.remove'    , accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.remove);
+  apiV1Router.post('/pages.remove'       , accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly , excludeReadOnlyUser, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
+  apiV1Router.post('/pages.revertRemove' , accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly , excludeReadOnlyUser, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
+  apiV1Router.post('/pages.unlink'       , accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly , excludeReadOnlyUser, page.api.unlink); // (Avoid from API Token)
+  apiV1Router.get('/tags.list'           , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, tag.api.list);
+  apiV1Router.get('/tags.search'         , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, tag.api.search);
+  apiV1Router.post('/tags.update'        , accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, excludeReadOnlyUser, addActivity, tag.api.update);
+  apiV1Router.get('/comments.get'        , accessTokenParser([SCOPE.READ.FEATURES.PAGE]) , loginRequired , comment.api.get);
+  apiV1Router.post('/comments.add'       , accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), comment.api.validators.add(), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.add);
+  apiV1Router.post('/comments.update'    , accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), comment.api.validators.add(), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.update);
+  apiV1Router.post('/comments.remove'    , accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.remove);
 
-  apiV1Router.post('/attachments.uploadProfileImage'   , accessTokenParser([SCOPE.WRITE.BASE.ATTACHMENT]), uploads.single('file'), autoReap, loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
-  apiV1Router.post('/attachments.remove'               , accessTokenParser([SCOPE.WRITE.BASE.ATTACHMENT]), loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);
-  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser([SCOPE.WRITE.BASE.ATTACHMENT]), loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.removeProfileImage);
+  apiV1Router.post('/attachments.uploadProfileImage'   , accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT]), uploads.single('file'), autoReap, loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
+  apiV1Router.post('/attachments.remove'               , accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT]), loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);
+  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT]), loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.removeProfileImage);
 
   // API v1
   app.use('/_api', unavailableWhenMaintenanceModeForApi, apiV1Router);
 
   app.use(unavailableWhenMaintenanceMode);
 
-  app.get('/me'                                   , accessTokenParser([SCOPE.READ.USER.INFO]), loginRequiredStrictly, next.delegateToNext);
-  app.get('/me/*'                                 , accessTokenParser([SCOPE.READ.USER.INFO]), loginRequiredStrictly, next.delegateToNext);
+  app.get('/me'                                   , accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequiredStrictly, next.delegateToNext);
+  app.get('/me/*'                                 , accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequiredStrictly, next.delegateToNext);
 
-  app.use('/attachment', accessTokenParser([SCOPE.READ.BASE.ATTACHMENT]), attachment.getRouterFactory(crowi));
-  app.use('/download', accessTokenParser([SCOPE.READ.BASE.ATTACHMENT]), attachment.downloadRouterFactory(crowi));
+  app.use('/attachment', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), attachment.getRouterFactory(crowi));
+  app.use('/download', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), attachment.downloadRouterFactory(crowi));
 
-  app.get('/_search'                            , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, next.delegateToNext);
+  app.get('/_search'                            , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, next.delegateToNext);
 
   app.use('/forgot-password', express.Router()
     .use(forgotPassword.checkForgotPasswordEnabledMiddlewareFactory(crowi))
@@ -173,7 +173,7 @@ module.exports = function(crowi, app) {
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));
 
-  app.get('/*/$'                   , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, next.delegateToNext);
-  app.get('/*'                     , accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, autoReconnectToSearch, next.delegateToNext);
+  app.get('/*/$'                   , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, next.delegateToNext);
+  app.get('/*'                     , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, autoReconnectToSearch, next.delegateToNext);
 
 };

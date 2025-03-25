@@ -102,12 +102,12 @@ describe('access-token-parser middleware for access token with scopes', () => {
     const { token } = await AccessToken.generateToken(
       targetUser._id,
       new Date(Date.now() + 1000 * 60 * 60 * 24),
-      [SCOPE.READ.USER.INFO],
+      [SCOPE.READ.USER_SETTINGS.INFO],
     );
 
     // act
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.READ.USER.INFO])(reqMock, resMock, nextMock);
+    await parserForAccessToken([SCOPE.READ.USER_SETTINGS.INFO])(reqMock, resMock, nextMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -139,12 +139,12 @@ describe('access-token-parser middleware for access token with scopes', () => {
     const { token } = await AccessToken.generateToken(
       targetUser._id,
       new Date(Date.now() + 1000 * 60 * 60 * 24),
-      [SCOPE.READ.USER.INFO],
+      [SCOPE.READ.USER_SETTINGS.INFO],
     );
 
     // act - try to access with write:user:info scope
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.WRITE.USER.INFO])(reqMock, resMock, nextMock);
+    await parserForAccessToken([SCOPE.WRITE.USER_SETTINGS.INFO])(reqMock, resMock, nextMock);
 
     // // assert
     expect(reqMock.user).toBeUndefined();
@@ -174,12 +174,12 @@ describe('access-token-parser middleware for access token with scopes', () => {
     const { token } = await AccessToken.generateToken(
       targetUser._id,
       new Date(Date.now() + 1000 * 60 * 60 * 24),
-      [SCOPE.WRITE.USER.INFO],
+      [SCOPE.WRITE.USER_SETTINGS.INFO],
     );
 
     // act - try to access with read:user:info scope
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.READ.USER.INFO])(reqMock, resMock, nextMock);
+    await parserForAccessToken([SCOPE.READ.USER_SETTINGS.INFO])(reqMock, resMock, nextMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
@@ -208,12 +208,12 @@ describe('access-token-parser middleware for access token with scopes', () => {
     const { token } = await AccessToken.generateToken(
       targetUser._id,
       new Date(Date.now() + 1000 * 60 * 60 * 24),
-      [SCOPE.READ.USER.ALL],
+      [SCOPE.READ.USER_SETTINGS.ALL],
     );
 
     // act - try to access with read:user:info scope
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.READ.USER.INFO, SCOPE.READ.USER.API.ACCESS_TOKEN])(reqMock, resMock, nextMock);
+    await parserForAccessToken([SCOPE.READ.USER_SETTINGS.INFO, SCOPE.READ.USER_SETTINGS.API.ACCESS_TOKEN])(reqMock, resMock, nextMock);
 
     // assert
     expect(reqMock.user).toBeDefined();

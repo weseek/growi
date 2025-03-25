@@ -152,7 +152,7 @@ module.exports = (crowi) => {
    *          200:
    *            description: Return pages recently updated
    */
-  router.get('/recent', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
+  router.get('/recent', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = parseInt(req.query.offset) || 0;
     const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
@@ -273,7 +273,7 @@ module.exports = (crowi) => {
    */
   router.put(
     '/rename',
-    accessTokenParser([SCOPE.WRITE.BASE.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     validator.renamePage,
@@ -381,7 +381,7 @@ module.exports = (crowi) => {
     */
   router.post(
     '/resume-rename',
-    accessTokenParser([SCOPE.WRITE.BASE.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
     loginRequiredStrictly,
     validator.resumeRenamePage,
     apiV3FormValidator,
@@ -437,7 +437,7 @@ module.exports = (crowi) => {
    */
   router.delete(
     '/empty-trash',
-    accessTokenParser([SCOPE.WRITE.BASE.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
     loginRequired,
     excludeReadOnlyUser,
     addActivity,
@@ -551,7 +551,7 @@ module.exports = (crowi) => {
     */
   router.get(
     '/list',
-    accessTokenParser([SCOPE.READ.BASE.PAGE]),
+    accessTokenParser([SCOPE.READ.FEATURES.PAGE]),
     loginRequired,
     validator.displayList,
     apiV3FormValidator,
@@ -634,7 +634,7 @@ module.exports = (crowi) => {
    */
   router.post(
     '/duplicate',
-    accessTokenParser([SCOPE.WRITE.BASE.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     addActivity,
@@ -739,7 +739,7 @@ module.exports = (crowi) => {
    */
   router.get(
     '/subordinated-list',
-    accessTokenParser([SCOPE.READ.BASE.PAGE]),
+    accessTokenParser([SCOPE.READ.FEATURES.PAGE]),
     loginRequired,
     async(req, res) => {
       const { path } = req.query;
@@ -803,7 +803,7 @@ module.exports = (crowi) => {
     */
   router.post(
     '/delete',
-    accessTokenParser([SCOPE.WRITE.BASE.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     validator.deletePages,
@@ -892,7 +892,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.post(
     '/convert-pages-by-path',
-    accessTokenParser([SCOPE.WRITE.BASE.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
     loginRequiredStrictly,
     excludeReadOnlyUser,
     adminRequired,
@@ -953,7 +953,7 @@ module.exports = (crowi) => {
   // eslint-disable-next-line max-len
   router.post(
     '/legacy-pages-migration',
-    accessTokenParser([SCOPE.WRITE.BASE.PAGE]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]),
     loginRequired,
     excludeReadOnlyUser,
     validator.legacyPagesMigration,
@@ -1010,7 +1010,7 @@ module.exports = (crowi) => {
    */
   router.get(
     '/v5-migration-status',
-    accessTokenParser([SCOPE.READ.BASE.PAGE]),
+    accessTokenParser([SCOPE.READ.FEATURES.PAGE]),
     loginRequired,
     async(req, res) => {
       try {

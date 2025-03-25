@@ -67,7 +67,7 @@ const routerFactory = (crowi: Crowi): Router => {
   const router = express.Router();
 
 
-  router.get('/root', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/root', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const Page = mongoose.model<IPage, PageModel>('Page');
 
     let rootPage;
@@ -82,7 +82,7 @@ const routerFactory = (crowi: Crowi): Router => {
   });
 
   // eslint-disable-next-line max-len
-  router.get('/ancestors-children', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
+  router.get('/ancestors-children', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
     const pageService = crowi.pageService;
@@ -101,7 +101,7 @@ const routerFactory = (crowi: Crowi): Router => {
    * In most cases, using id should be prioritized
    */
   // eslint-disable-next-line max-len
-  router.get('/children', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/children', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
     const pageService = crowi.pageService;
@@ -122,7 +122,7 @@ const routerFactory = (crowi: Crowi): Router => {
   });
 
   // eslint-disable-next-line max-len
-  router.get('/info', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/info', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const {
       pageIds, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
     } = req.query;

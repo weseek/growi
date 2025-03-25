@@ -38,7 +38,7 @@ let presetTemplateSummaries: TemplateSummary[];
 module.exports = (crowi: Crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
-  router.get('/', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequiredStrictly, validator.list, apiV3FormValidator, async(req, res: ApiV3Response) => {
+  router.get('/', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly, validator.list, apiV3FormValidator, async(req, res: ApiV3Response) => {
     const { includeInvalidTemplates } = req.query;
 
     // scan preset templates
@@ -74,7 +74,7 @@ module.exports = (crowi: Crowi) => {
     });
   });
 
-  router.get('/preset-templates/:templateId/:locale', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequiredStrictly,
+  router.get('/preset-templates/:templateId/:locale', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly,
     validator.get, apiV3FormValidator,
     async(req, res: ApiV3Response) => {
       const {
@@ -92,7 +92,7 @@ module.exports = (crowi: Crowi) => {
       }
     });
 
-  router.get('/plugin-templates/:organizationId/:reposId/:templateId/:locale', accessTokenParser([SCOPE.READ.BASE.PAGE]),
+  router.get('/plugin-templates/:organizationId/:reposId/:templateId/:locale', accessTokenParser([SCOPE.READ.FEATURES.PAGE]),
     loginRequiredStrictly, validator.get, apiV3FormValidator, async(
         req, res: ApiV3Response,
     ) => {

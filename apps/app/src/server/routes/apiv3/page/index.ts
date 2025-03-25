@@ -212,7 +212,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.get('/', accessTokenParser([SCOPE.READ.BASE.PAGE]), certifySharedPage, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), certifySharedPage, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
     const { user, isSharedPage } = req;
     const {
       pageId, path, findAll, revisionId, shareLinkId, includeEmpty,
@@ -443,7 +443,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly, addActivity, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, addActivity, validator.likes, apiV3FormValidator, async(req, res) => {
     const { pageId, bool: isLiked } = req.body;
 
     let page;
@@ -513,7 +513,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/info', accessTokenParser([SCOPE.READ.BASE.PAGE]), certifySharedPage, loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
+  router.get('/info', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), certifySharedPage, loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
     const { user, isSharedPage } = req;
     const { pageId } = req.query;
 
@@ -563,7 +563,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/grant-data', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequiredStrictly, validator.getGrantData, apiV3FormValidator, async(req, res) => {
+  router.get('/grant-data', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly, validator.getGrantData, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
     const Page = mongoose.model<IPage, PageModel>('Page');
@@ -665,7 +665,7 @@ module.exports = (crowi) => {
    *         500:
    *           description: Internal server error.
    */
-  router.get('/non-user-related-groups-granted', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequiredStrictly,
+  router.get('/non-user-related-groups-granted', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly,
     validator.nonUserRelatedGroupsGranted, apiV3FormValidator,
     async(req, res: ApiV3Response) => {
       const { user } = req;
@@ -736,7 +736,7 @@ module.exports = (crowi) => {
    *         500:
    *           description: Internal server error.
    */
-  router.get('/applicable-grant', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator,
+  router.get('/applicable-grant', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator,
     async(req, res) => {
       const { pageId } = req.query;
 
@@ -797,7 +797,7 @@ module.exports = (crowi) => {
    *               schema:
    *                 $ref: '#/components/schemas/Page'
    */
-  router.put('/:pageId/grant', accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly, excludeReadOnlyUser,
+  router.put('/:pageId/grant', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, excludeReadOnlyUser,
     validator.updateGrant, apiV3FormValidator,
     async(req, res) => {
       const { pageId } = req.params;
@@ -839,7 +839,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Return page's markdown
   */
-  router.get('/export/:pageId', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequiredStrictly, validator.export, async(req, res) => {
+  router.get('/export/:pageId', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequiredStrictly, validator.export, async(req, res) => {
     const pageId: string = req.params.pageId;
     const { format, revisionId = null } = req.query;
     let revision;
@@ -963,7 +963,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/exist-paths', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
+  router.get('/exist-paths', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
     const { fromPath, toPath } = req.query;
 
     try {
@@ -1017,7 +1017,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly, addActivity,
+  router.put('/subscribe', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, addActivity,
     validator.subscribe, apiV3FormValidator,
     async(req, res) => {
       const { pageId, status } = req.body;
@@ -1079,7 +1079,7 @@ module.exports = (crowi) => {
    *                   page:
    *                     $ref: '#/components/schemas/Page'
    */
-  router.put('/:pageId/content-width', accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly, excludeReadOnlyUser,
+  router.put('/:pageId/content-width', accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly, excludeReadOnlyUser,
     validator.contentWidth, apiV3FormValidator, async(req, res) => {
       const { pageId } = req.params;
       const { expandContentWidth } = req.body;

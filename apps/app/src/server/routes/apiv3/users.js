@@ -246,7 +246,7 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/PaginateResult'
    */
 
-  router.get('/', accessTokenParser([SCOPE.READ.USER.INFO]), loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
     // status
@@ -351,7 +351,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/:id/recent', accessTokenParser([SCOPE.READ.BASE.PAGE]), loginRequired, validator.recentCreatedByUser, apiV3FormValidator, async(req, res) => {
+  router.get('/:id/recent', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.recentCreatedByUser, apiV3FormValidator, async(req, res) => {
     const { id } = req.params;
 
     let user;
@@ -858,7 +858,7 @@ module.exports = (crowi) => {
    *                    paginateResult:
    *                      $ref: '#/components/schemas/PaginateResult'
    */
-  router.get('/external-accounts/', accessTokenParser([SCOPE.READ.USER.EXTERNAL_ACCOUNT]), loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/external-accounts/', accessTokenParser([SCOPE.READ.USER_SETTINGS.EXTERNAL_ACCOUNT]), loginRequiredStrictly, adminRequired, async(req, res) => {
     const page = parseInt(req.query.page) || 1;
     try {
       const paginateResult = await ExternalAccount.findAllWithPagination({ page });
@@ -899,7 +899,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `ExtenralAccount.findByIdAndRemove`
    */
-  router.delete('/external-accounts/:id/remove', accessTokenParser([SCOPE.WRITE.USER.EXTERNAL_ACCOUNT]),
+  router.delete('/external-accounts/:id/remove', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.EXTERNAL_ACCOUNT]),
     loginRequiredStrictly, adminRequired, apiV3FormValidator,
     async(req, res) => {
       const { id } = req.params;
@@ -1145,7 +1145,7 @@ module.exports = (crowi) => {
    *            500:
    *              $ref: '#/components/responses/500'
    */
-  router.get('/list', accessTokenParser([SCOPE.READ.USER.INFO]), loginRequired, async(req, res) => {
+  router.get('/list', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequired, async(req, res) => {
     const userIds = req.query.userIds ?? null;
 
     let userFetcher;
@@ -1174,7 +1174,7 @@ module.exports = (crowi) => {
     return res.apiv3(data);
   });
 
-  router.get('/usernames', accessTokenParser([SCOPE.READ.USER.INFO]), loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
+  router.get('/usernames', accessTokenParser([SCOPE.READ.USER_SETTINGS.INFO]), loginRequired, validator.usernames, apiV3FormValidator, async(req, res) => {
     const q = req.query.q;
     const offset = +req.query.offset || 0;
     const limit = +req.query.limit || 10;

@@ -139,7 +139,7 @@ module.exports = (crowi) => {
    *                        $ref: '#/components/schemas/ShareLink'
    */
   router.get('/',
-    accessTokenParser([SCOPE.READ.BASE.SHARE_LINK]),
+    accessTokenParser([SCOPE.READ.FEATURES.SHARE_LINK]),
     loginRequired,
     linkSharingRequired,
     validator.getShareLinks,
@@ -211,7 +211,7 @@ module.exports = (crowi) => {
    *                 $ref: '#/components/schemas/ShareLinkSimple'
    */
   router.post('/',
-    accessTokenParser([SCOPE.WRITE.BASE.SHARE_LINK]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.SHARE_LINK]),
     loginRequired,
     excludeReadOnlyUser,
     linkSharingRequired,
@@ -275,7 +275,7 @@ module.exports = (crowi) => {
   *                 $ref: '#/components/schemas/ShareLinkSimple'
   */
   router.delete('/',
-    accessTokenParser([SCOPE.WRITE.BASE.SHARE_LINK]),
+    accessTokenParser([SCOPE.WRITE.FEATURES.SHARE_LINK]),
     loginRequired,
     excludeReadOnlyUser,
     addActivity,
@@ -326,7 +326,7 @@ module.exports = (crowi) => {
   *                      type: integer
   *                      description: The number of share links deleted
   */
-  router.delete('/all', accessTokenParser([SCOPE.WRITE.BASE.SHARE_LINK]), loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.delete('/all', accessTokenParser([SCOPE.WRITE.FEATURES.SHARE_LINK]), loginRequired, adminRequired, addActivity, async(req, res) => {
 
     try {
       const deletedShareLink = await ShareLink.deleteMany({});
@@ -367,7 +367,7 @@ module.exports = (crowi) => {
   *          200:
   *            description: Succeeded to delete one share link
   */
-  router.delete('/:id', accessTokenParser([SCOPE.WRITE.BASE.SHARE_LINK]), loginRequired, excludeReadOnlyUser, addActivity,
+  router.delete('/:id', accessTokenParser([SCOPE.WRITE.FEATURES.SHARE_LINK]), loginRequired, excludeReadOnlyUser, addActivity,
     validator.deleteShareLink, apiV3FormValidator,
     async(req, res) => {
       const { id } = req.params;

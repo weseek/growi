@@ -62,7 +62,7 @@ module.exports = (crowi: Crowi): Router => {
     return 404;
   };
 
-  router.get('/orders', accessTokenParser([SCOPE.READ.BASE.QUESTIONNAIRE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/orders', accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const growiInfo = await growiInfoService.getGrowiInfo(true);
     const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
@@ -77,12 +77,12 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.get('/is-enabled', accessTokenParser([SCOPE.READ.BASE.QUESTIONNAIRE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/is-enabled', accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
     return res.apiv3({ isEnabled });
   });
 
-  router.post('/proactive/answer', accessTokenParser([SCOPE.WRITE.BASE.QUESTIONNAIRE]), loginRequired,
+  router.post('/proactive/answer', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
     validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const sendQuestionnaireAnswer = async() => {
         const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
@@ -132,7 +132,7 @@ module.exports = (crowi: Crowi): Router => {
       }
     });
 
-  router.put('/answer', accessTokenParser([SCOPE.WRITE.BASE.QUESTIONNAIRE]), loginRequired,
+  router.put('/answer', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
     validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
         const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
@@ -180,7 +180,7 @@ module.exports = (crowi: Crowi): Router => {
       }
     });
 
-  router.put('/skip', accessTokenParser([SCOPE.WRITE.BASE.QUESTIONNAIRE]), loginRequired,
+  router.put('/skip', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
     validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
@@ -197,7 +197,7 @@ module.exports = (crowi: Crowi): Router => {
       }
     });
 
-  router.put('/deny', accessTokenParser([SCOPE.WRITE.BASE.QUESTIONNAIRE]), loginRequired,
+  router.put('/deny', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
     validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {

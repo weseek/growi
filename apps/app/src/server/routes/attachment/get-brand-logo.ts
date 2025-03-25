@@ -27,7 +27,7 @@ export const getBrandLogoRouterFactory = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-  router.get('/brand-logo', certifyBrandLogo, accessTokenParser([SCOPE.READ.BASE.ATTACHMENT]), loginRequired, async(req: CrowiRequest, res: Response) => {
+  router.get('/brand-logo', certifyBrandLogo, accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), loginRequired, async(req: CrowiRequest, res: Response) => {
     const brandLogoAttachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
 
     if (brandLogoAttachment == null) {

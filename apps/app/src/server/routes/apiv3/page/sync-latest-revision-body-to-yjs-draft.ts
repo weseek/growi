@@ -40,7 +40,7 @@ export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionB
   ];
 
   return [
-    accessTokenParser([SCOPE.WRITE.BASE.PAGE]), loginRequiredStrictly,
+    accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly,
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { pageId } = req.params;

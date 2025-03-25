@@ -199,7 +199,7 @@ module.exports = (crowi) => {
    *                  type: object
    *                  $ref: '#/components/schemas/AttachmentPaginateResult'
    */
-  router.get('/list', accessTokenParser([SCOPE.READ.BASE.ATTACHMENT]), loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
+  router.get('/list', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
 
     const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
     const pageNumber = req.query.pageNumber || 1;
@@ -273,7 +273,7 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.get('/limit', accessTokenParser([SCOPE.READ.BASE.ATTACHMENT]), loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator,
+  router.get('/limit', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator,
     async(req, res) => {
       const { fileUploadService } = crowi;
       const fileSize = Number(req.query.fileSize);
@@ -341,7 +341,7 @@ module.exports = (crowi) => {
    *          500:
    *            $ref: '#/components/responses/500'
    */
-  router.post('/', uploads.single('file'), autoReap, accessTokenParser([SCOPE.WRITE.BASE.ATTACHMENT]), loginRequiredStrictly, excludeReadOnlyUser,
+  router.post('/', uploads.single('file'), autoReap, accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT]), loginRequiredStrictly, excludeReadOnlyUser,
     validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
     async(req, res) => {
 
@@ -405,7 +405,7 @@ module.exports = (crowi) => {
    *            schema:
    *              type: string
    */
-  router.get('/:id', accessTokenParser([SCOPE.READ.BASE.ATTACHMENT]), certifySharedPageAttachmentMiddleware, loginRequired,
+  router.get('/:id', accessTokenParser([SCOPE.READ.FEATURES.ATTACHMENT]), certifySharedPageAttachmentMiddleware, loginRequired,
     validator.retrieveAttachment, apiV3FormValidator,
     async(req, res) => {
       try {

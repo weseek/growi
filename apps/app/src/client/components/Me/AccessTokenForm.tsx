@@ -117,7 +117,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
               <input
                 type="checkbox"
                 id="scope-read-user"
-                value={SCOPE.READ.USER.ALL}
+                value={SCOPE.READ.USER_SETTINGS.ALL}
                 {...register('scopes')}
               />
               <label htmlFor="scope-read-user" className="ms-2">Read User</label>
@@ -126,7 +126,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
               <input
                 type="checkbox"
                 id="scope-write-user"
-                value={SCOPE.WRITE.USER.ALL}
+                value={SCOPE.WRITE.USER_SETTINGS.ALL}
                 {...register('scopes')}
               />
               <label htmlFor="scope-write-user" className="ms-2">Write User</label>

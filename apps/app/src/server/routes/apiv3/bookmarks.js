@@ -111,7 +111,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/BookmarkInfo'
    */
-  router.get('/info', accessTokenParser([SCOPE.READ.BASE.BOOKMARK]), loginRequired, validator.bookmarkInfo, apiV3FormValidator, async(req, res) => {
+  router.get('/info', accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK]), loginRequired, validator.bookmarkInfo, apiV3FormValidator, async(req, res) => {
     const { user } = req;
     const { pageId } = req.query;
 
@@ -193,7 +193,7 @@ module.exports = (crowi) => {
     param('userId').isMongoId().withMessage('userId is required'),
   ];
 
-  router.get('/:userId', accessTokenParser([SCOPE.READ.BASE.BOOKMARK]), loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK]), loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
 
     if (userId == null) {
@@ -247,7 +247,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser([SCOPE.WRITE.BASE.BOOKMARK]), loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator,
+  router.put('/', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK]), loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator,
     async(req, res) => {
       const { pageId, bool } = req.body;
       const userId = req.user?._id;

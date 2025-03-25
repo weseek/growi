@@ -135,7 +135,7 @@ module.exports = (crowi) => {
    *                    type: number
    *                    description: offset of the revisions
    */
-  router.get('/list', certifySharedPage, accessTokenParser(SCOPE.READ.BASE.PAGE), loginRequired, validator.retrieveRevisions, apiV3FormValidator,
+  router.get('/list', certifySharedPage, accessTokenParser(SCOPE.READ.FEATURES.PAGE), loginRequired, validator.retrieveRevisions, apiV3FormValidator,
     async(req, res) => {
       const pageId = req.query.pageId;
       const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
@@ -235,7 +235,7 @@ module.exports = (crowi) => {
    *                    revision:
    *                      $ref: '#/components/schemas/Revision'
    */
-  router.get('/:id', certifySharedPage, accessTokenParser(SCOPE.READ.BASE.PAGE), loginRequired, validator.retrieveRevisionById, apiV3FormValidator,
+  router.get('/:id', certifySharedPage, accessTokenParser(SCOPE.READ.FEATURES.PAGE), loginRequired, validator.retrieveRevisionById, apiV3FormValidator,
     async(req, res) => {
       const revisionId = req.params.id;
       const pageId = req.query.pageId;

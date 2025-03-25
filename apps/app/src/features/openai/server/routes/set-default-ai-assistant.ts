@@ -39,7 +39,7 @@ export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi
   ];
 
   return [
-    accessTokenParser([SCOPE.WRITE.BASE.AI_ASSISTANT]), loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
+    accessTokenParser([SCOPE.WRITE.FEATURES.AI_ASSISTANT]), loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {

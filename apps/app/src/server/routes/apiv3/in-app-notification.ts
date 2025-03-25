@@ -25,7 +25,7 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  router.get('/list', accessTokenParser([SCOPE.READ.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.get('/list', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;
@@ -80,7 +80,7 @@ module.exports = (crowi) => {
     return res.apiv3(serializedPaginationResult);
   });
 
-  router.get('/status', accessTokenParser([SCOPE.READ.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.get('/status', accessTokenParser([SCOPE.READ.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;
@@ -94,7 +94,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.post('/open', accessTokenParser([SCOPE.WRITE.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
+  router.post('/open', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const user = req.user!;
@@ -111,7 +111,7 @@ module.exports = (crowi) => {
     }
   });
 
-  router.put('/all-statuses-open', accessTokenParser([SCOPE.WRITE.USER.IN_APP_NOTIFICATION]), loginRequiredStrictly, addActivity,
+  router.put('/all-statuses-open', accessTokenParser([SCOPE.WRITE.USER_SETTINGS.IN_APP_NOTIFICATION]), loginRequiredStrictly, addActivity,
     async(req: CrowiRequest, res: ApiV3Response) => {
     // user must be set by loginRequiredStrictly
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
