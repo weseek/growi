@@ -69,6 +69,10 @@ const validator = {
  *                 type: string
  *               uploadNamespace:
  *                 type: string
+ *               accountName:
+ *                 type: string
+ *               containerName:
+ *                 type: string
 */
 /*
  * Routes
