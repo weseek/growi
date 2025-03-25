@@ -307,6 +307,8 @@ module.exports = (crowi) => {
    * /slack-integration/commands:
    *   post:
    *     tags: [SlackIntegration]
+   *     security:
+   *       - cookieAuth: []
    *     summary: /slack-integration/commands
    *     description: Handle Slack commands
    *     requestBody:
@@ -345,6 +347,8 @@ module.exports = (crowi) => {
    * /slack-integration/proxied/verify:
    *   post:
    *     tags: [SlackIntegration]
+   *     security:
+   *       - cookieAuth: []
    *     summary: /slack-integration/proxied/verify
    *     description: Verify the access token
    *     requestBody:
@@ -383,6 +387,8 @@ module.exports = (crowi) => {
    * /slack-integration/proxied/commands:
    *   post:
    *     tags: [SlackIntegration]
+   *     security:
+   *       - cookieAuth: []
    *     summary: /slack-integration/proxied/commands
    *     description: Handle Slack commands
    *     requestBody:
@@ -446,6 +452,8 @@ module.exports = (crowi) => {
    * /slack-integration/interactions:
    *   post:
    *     tags: [SlackIntegration]
+   *     security:
+   *       - cookieAuth: []
    *     summary: /slack-integration/interactions
    *     description: Handle Slack interactions
    *     requestBody:
@@ -469,6 +477,8 @@ module.exports = (crowi) => {
    * /slack-integration/proxied/interactions:
    *   post:
    *     tags: [SlackIntegration]
+   *     security:
+   *       - cookieAuth: []
    *     summary: /slack-integration/proxied/interactions
    *     description: Handle Slack interactions
    *     requestBody:
@@ -493,6 +503,8 @@ module.exports = (crowi) => {
    * /slack-integration/supported-commands:
    *   get:
    *     tags: [SlackIntegration]
+   *     security:
+   *       - cookieAuth: []
    *     summary: /slack-integration/supported-commands
    *     description: Get supported commands
    *     responses:
@@ -526,6 +538,8 @@ module.exports = (crowi) => {
    * /slack-integration/events:
    *   post:
    *     tags: [SlackIntegration]
+   *     security:
+   *       - cookieAuth: []
    *     summary: /slack-integration/events
    *     description: Handle Slack events
    *     requestBody:
@@ -579,6 +593,8 @@ module.exports = (crowi) => {
    * /slack-integration/proxied/events:
    *   post:
    *     tags: [SlackIntegration]
+   *     security:
+   *       - cookieAuth: []
    *     summary: /slack-integration/proxied/events
    *     description: Handle Slack events
    *     requestBody:
