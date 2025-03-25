@@ -24,6 +24,18 @@ module.exports = {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
+    // remove unnecessary data
+    // see: https://redmine.weseek.co.jp/issues/163527
+    await db.collection('configs').deleteMany({
+      ns: 'crowi',
+      key: {
+        $in: [
+          'notification:owner-page:isEnabled',
+          'notification:group-page:isEnabled',
+        ],
+      },
+    });
+
     // drop index
     await dropIndexIfExists(db, 'configs', 'ns_1_key_1');
 
