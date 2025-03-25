@@ -71,7 +71,7 @@ module.exports = function(crowi, app) {
 
   app.get('/_next/*'                  , next.delegateToNext);
 
-  app.get('/'                         , accessTokenParser([SCOPE.READ.FEATURES.PAGE]), applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, next.delegateToNext);
+  app.get('/'                         ,  applicationInstalled, unavailableWhenMaintenanceMode, loginRequired, autoReconnectToSearch, next.delegateToNext);
 
   app.get('/login/error/:reason'      , applicationInstalled, next.delegateToNext);
   app.get('/login'                    , applicationInstalled, login.preLogin, next.delegateToNext);
@@ -81,8 +81,9 @@ module.exports = function(crowi, app) {
   // NOTE: get method "/admin/export/:fileName" should be loaded before "/admin/*"
   app.get('/admin/export/:fileName'   , accessTokenParser([SCOPE.READ.ADMIN.EXPORT_DATA]), loginRequiredStrictly , adminRequired ,admin.export.api.validators.export.download(), admin.export.download);
 
-  app.get('/admin/*'                  , accessTokenParser([SCOPE.READ.ADMIN.ALL]), applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
-  app.get('/admin'                    , accessTokenParser([SCOPE.READ.ADMIN.ALL]), applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
+  // TODO: If you want to use accessTokenParser, you need to add scope ANY e.g. accessTokenParser([SCOPE.READ.ADMIN.ANY])
+  app.get('/admin/*'                  , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
+  app.get('/admin'                    , applicationInstalled, loginRequiredStrictly , adminRequired , next.delegateToNext);
 
   // installer
   app.get('/installer',

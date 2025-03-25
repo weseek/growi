@@ -45,7 +45,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: contains arrays user objects related
    */
-  router.get('/', accessTokenParser[SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT], loginRequiredStrictly, adminRequired, validator.list, async(req, res) => {
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.USER_GROUP_MANAGEMENT]), loginRequiredStrictly, adminRequired, validator.list, async(req, res) => {
     const { query } = req;
 
     try {
