@@ -160,7 +160,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     if (currentThreadId_ == null) {
       try {
         const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
-          aiAssistantId: aiAssistantData?._id,
+          aiAssistantId: isEditorAssistant ? selectedAiAssistant?._id : aiAssistantData?._id,
           initialUserMessage: isEditorAssistant ? undefined : newUserMessage.content,
         });
 
