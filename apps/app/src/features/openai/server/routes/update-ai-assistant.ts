@@ -30,6 +30,40 @@ type Req = Request<ReqParams, Response, ReqBody> & {
   user: IUserHasId,
 }
 
+/**
+ * @swagger
+ * /openai/ai-assistant/{id}:
+ *   put:
+ *     tags: [OpenAI]
+ *     security:
+ *       - api_key: []
+ *     summary: /openai/ai-assistant/{id}
+ *     description: Update an AI assistant
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               upsertAiAssistantData:
+ *                 $ref: '#/components/schemas/UpdateAIAssistantParams'
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 updatedAiAssistant:
+ *                   $ref: '#/components/schemas/AIAssistant'
+ */
 export const updateAiAssistantsFactory: UpdateAiAssistantsFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 

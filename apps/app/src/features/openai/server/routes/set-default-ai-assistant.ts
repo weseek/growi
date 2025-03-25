@@ -28,6 +28,40 @@ type ReqBody = {
 
 type Req = Request<ReqParams, Response, ReqBody>
 
+/**
+ * @swagger
+ * /openai/ai-assistant/{id}/set-default:
+ *   put:
+ *     tags: [OpenAI]
+ *     security:
+ *       - api_key: []
+ *     summary: /openai/ai-assistant/{id}/set-default
+ *     description: Set the AI assistant as the default
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               isDefault:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 updatedAiAssistant:
+ *                   $ref: '#/components/schemas/AIAssistant'
+ */
 export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi) => {
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);

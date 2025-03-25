@@ -25,6 +25,34 @@ type CreateThreadReq = Request<undefined, ApiV3Response, ReqBody> & { user: IUse
 
 type CreateThreadFactory = (crowi: Crowi) => RequestHandler[];
 
+/**
+ * @swagger
+ * /openai/thread:
+ *   post:
+ *     tags: [OpenAI]
+ *     summary: /openai/thread
+ *     security:
+ *       - api_key: []
+ *     description: Create a new thread
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               aiAssistantId:
+ *                 type: string
+ *               initialUserMessage:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/OpenAIThread'
+ */
 export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 

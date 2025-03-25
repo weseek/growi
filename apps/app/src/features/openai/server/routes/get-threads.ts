@@ -25,6 +25,33 @@ type Req = Request<ReqParams, Response, undefined> & {
   user: IUserHasId,
 }
 
+/**
+ * @swagger
+ * /openai/threads/{aiAssistantId}:
+ *   get:
+ *     tags: [OpenAI]
+ *     summary: /openai/threads/{aiAssistantId}
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - name: aiAssistantId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 threads:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/OpenAIThread'
+ */
 export const getThreadsFactory: GetThreadsFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 

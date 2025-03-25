@@ -8,7 +8,183 @@ import { isAiEnabled } from '../services';
 
 const router = express.Router();
 
-
+/**
+ * @swagger
+ *   components:
+ *     schemas:
+ *       OpenAIThread:
+ *         type: object
+ *         properties:
+ *           userId:
+ *             type: string
+ *           aiAssistant:
+ *             type: string
+ *           threadId:
+ *             type: string
+ *           title:
+ *             type: string
+ *           _id:
+ *             type: string
+ *           expiredAt:
+ *             type: string
+ *           __v:
+ *             type: number
+ *       OpenAIMessagesResponse:
+ *         type: object
+ *         properties:
+ *           messages:
+ *             type: object
+ *             properties:
+ *               options:
+ *                 type: object
+ *                 properties:
+ *                   method:
+ *                     type: string
+ *                   path:
+ *                     type: string
+ *                   query:
+ *                     type: object
+ *                     properties:
+ *                       order:
+ *                         type: string
+ *                   headers:
+ *                     type: object
+ *                     properties:
+ *                       OpenAI-Beta:
+ *                         type: string
+ *           response:
+ *             type: object
+ *             properties:
+ *               size:
+ *                 type: integer
+ *               timeout:
+ *                 type: integer
+ *           body:
+ *             type: object
+ *             properties:
+ *               object:
+ *                 type: string
+ *               data:
+ *                 type: array
+ *                 items:
+ *                   $ref: '#/components/schemas/OpenAIMessage'
+ *               first_id:
+ *                 type: string
+ *               last_id:
+ *                 type: string
+ *               has_more:
+ *                 type: boolean
+ *       OpenAIMessage:
+ *         type: object
+ *         properties:
+ *           id:
+ *             type: string
+ *           object:
+ *             type: string
+ *           created_at:
+ *             type: integer
+ *           assistant_id:
+ *             type: string
+ *             nullable: true
+ *           thread_id:
+ *             type: string
+ *           run_id:
+ *             type: string
+ *             nullable: true
+ *           role:
+ *             type: string
+ *           content:
+ *             type: array
+ *             items:
+ *               $ref: '#/components/schemas/OpenAIMessageContent'
+ *           attachments:
+ *             type: array
+ *             items:
+ *               type: object
+ *           metadata:
+ *             type: object
+ *       OpenAIMessageContent:
+ *         type: object
+ *         properties:
+ *           type:
+ *             type: string
+ *           text:
+ *             type: object
+ *             properties:
+ *               value:
+ *                 type: string
+ *               annotations:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *       AIAssistant:
+ *         type: object
+ *         properties:
+ *           name:
+ *             type: string
+ *           description:
+ *             type: string
+ *           additionalInstruction:
+ *             type: string
+ *           pagePathPatterns:
+ *             type: array
+ *             items:
+ *               type: string
+ *           vectorStore:
+ *             type: object
+ *             properties:
+ *               vectorStoreId:
+ *                 type: string
+ *               isDeleted:
+ *                 type: boolean
+ *               _id:
+ *                 type: string
+ *               __v:
+ *                 type: integer
+ *           owner:
+ *             type: string
+ *           shareScope:
+ *             type: string
+ *           accessScope:
+ *             type: string
+ *           isDefault:
+ *             type: boolean
+ *           _id:
+ *             type: string
+ *           grantedGroupsForShareScope:
+ *             type: array
+ *             items:
+ *               type: string
+ *           grantedGroupsForAccessScope:
+ *             type: array
+ *             items:
+ *               type: string
+ *           createdAt:
+ *             type: string
+ *           updatedAt:
+ *             type: string
+ *           __v:
+ *             type: integer
+ *       UpdateAIAssistantParams:
+ *         type: object
+ *         properties:
+ *           name:
+ *             type: string
+ *           description:
+ *             type: string
+ *           additionalInstruction:
+ *             type: string
+ *           pagePathPatterns:
+ *             type: array
+ *             items:
+ *               type: string
+ *           shareScope:
+ *             type: string
+ *           accessScope:
+ *             type: string
+ *           isDefault:
+ *             type: boolean
+ */
 export const factory = (crowi: Crowi): express.Router => {
 
   // disable all routes if AI is not enabled

@@ -26,6 +26,36 @@ type Req = Request<ReqParams, Response, undefined> & {
   user: IUserHasId,
 }
 
+/**
+ * @swagger
+ * /openai/thread/{aiAssistantId}/{threadRelationId}:
+ *   delete:
+ *     tags: [OpenAI]
+ *     summary: /openai/thread/{aiAssistantId}/{threadRelationId}
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - name: aiAssistantId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: threadRelationId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 deletedThreadRelation:
+ *                   $ref: '#/components/schemas/OpenAIThread'
+ */
 export const deleteThreadFactory: DeleteThreadFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 

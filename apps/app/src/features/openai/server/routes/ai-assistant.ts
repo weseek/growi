@@ -24,6 +24,55 @@ type Req = Request<undefined, Response, ReqBody> & {
   user: IUserHasId,
 }
 
+/**
+ * @swagger
+ * /openai/ai-assistant:
+ *   post:
+ *     tags: [OpenAI]
+ *     security:
+ *       - api_key: []
+ *     summary: /openai/ai-assistant
+ *     description: Creates a new AI assistant with the given parameters
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               additionalInstruction:
+ *                 type: string
+ *               pagePathPatterns:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               grantedGroupsForShareScope:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               grantedGroupsForAccessScope:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *               shareScope:
+ *                 type: string
+ *               accessScope:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 aiAssistant:
+ *                   $ref: '#/components/schemas/AIAssistant'
+ */
 export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
