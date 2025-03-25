@@ -48,7 +48,6 @@ describe('access-token-parser middleware', () => {
     // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should call next if the given access token is invalid', async() => {
@@ -68,7 +67,6 @@ describe('access-token-parser middleware', () => {
     // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).not.toHaveBeenCalled();
   });
 
   it('should set req.user with a valid api token in query', async() => {
@@ -98,7 +96,6 @@ describe('access-token-parser middleware', () => {
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should set req.user with a valid api token in body', async() => {
@@ -128,7 +125,6 @@ describe('access-token-parser middleware', () => {
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
 });

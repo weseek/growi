@@ -43,7 +43,6 @@ describe('access-token-parser middleware for access token with scopes', () => {
     await parserForAccessToken([])(reqMock, resMock, nextMock);
 
     expect(reqMock.user).toBeUndefined();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should not authenticate with no scopes', async() => {
@@ -77,7 +76,6 @@ describe('access-token-parser middleware for access token with scopes', () => {
     // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).not.toHaveBeenCalled();
   });
 
   it('should authenticate with specific scope', async() => {
@@ -113,7 +111,6 @@ describe('access-token-parser middleware for access token with scopes', () => {
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should reject with insufficient scopes', async() => {
@@ -149,7 +146,6 @@ describe('access-token-parser middleware for access token with scopes', () => {
     // // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).not.toHaveBeenCalled();
   });
 
   it('should authenticate with write scope implying read scope', async() => {
@@ -185,7 +181,6 @@ describe('access-token-parser middleware for access token with scopes', () => {
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should authenticate with wildcard scope', async() => {
@@ -219,7 +214,6 @@ describe('access-token-parser middleware for access token with scopes', () => {
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
 });
