@@ -174,7 +174,7 @@ module.exports = (crowi: Crowi): Router => {
    *  /g2g-transfer/files:
    *    get:
    *      summary: /g2g-transfer/files
-   *      tags: [Export]
+   *      tags: [GROWI to GROWI Transfer]
    *      security:
    *        - transferHeaderAuth: []
    *      responses:
@@ -209,7 +209,7 @@ module.exports = (crowi: Crowi): Router => {
    *  /g2g-transfer:
    *    post:
    *      summary: /g2g-transfer
-   *      tags: [Export]
+   *      tags: [GROWI to GROWI Transfer]
    *      security:
    *        - transferHeaderAuth: []
    *      requestBody:
@@ -338,7 +338,7 @@ module.exports = (crowi: Crowi): Router => {
    *  /g2g-transfer/attachment:
    *    post:
    *      summary: /g2g-transfer/attachment
-   *      tags: [Export]
+   *      tags: [GROWI to GROWI Transfer]
    *      security:
    *        - transferHeaderAuth: []
    *      requestBody:
@@ -401,7 +401,7 @@ module.exports = (crowi: Crowi): Router => {
    *  /g2g-transfer/growi-info:
    *    get:
    *      summary: /g2g-transfer/growi-info
-   *      tags: [Export]
+   *      tags: [GROWI to GROWI Transfer]
    *      security:
    *        - transferHeaderAuth: []
    *      responses:
@@ -439,7 +439,7 @@ module.exports = (crowi: Crowi): Router => {
    *  /g2g-transfer/generate-key:
    *    post:
    *      summary: /g2g-transfer/generate-key
-   *      tags: [Export]
+   *      tags: [GROWI to GROWI Transfer]
    *      security:
    *        - api_key: []
    *      requestBody:
@@ -496,7 +496,7 @@ module.exports = (crowi: Crowi): Router => {
    *  /g2g-transfer/transfer:
    *    post:
    *      summary: /g2g-transfer/transfer
-   *      tags: [Export]
+   *      tags: [GROWI to GROWI Transfer]
    *      security:
    *        - api_key: []
    *      requestBody:

@@ -76,6 +76,7 @@ module.exports = {
         'CustomizeSetting',
         'Import',
         'Export',
+        'GROWI to GROWI Transfer',
         'MongoDB',
         'NotificationSetting',
         'QuestionnaireSetting',
