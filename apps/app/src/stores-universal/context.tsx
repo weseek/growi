@@ -10,8 +10,6 @@ import useSWRImmutable from 'swr/immutable';
 import type { SupportedActionType } from '~/interfaces/activity';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 
-import type { TargetAndAncestors } from '../interfaces/page-listing-results';
-
 import { useContextSWR } from './use-context-swr';
 
 declare global {
@@ -78,10 +76,6 @@ export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<N
   return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
 
-export const useTargetAndAncestors = (initialData?: TargetAndAncestors): SWRResponse<TargetAndAncestors, Error> => {
-  return useContextSWR<TargetAndAncestors, Error>('targetAndAncestors', initialData);
-};
-
 export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isAclEnabled', initialData);
 };
@@ -104,6 +98,10 @@ export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, an
 
 export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
+};
+
+export const useShowPageSideAuthors = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('showPageSideAuthors', initialData, { fallbackData: false });
 };
 
 export const useIsEnabledMarp = (initialData?: boolean) : SWRResponse<boolean, Error> => {
@@ -166,6 +164,14 @@ export const useIsUploadAllFileAllowed = (initialData?: boolean): SWRResponse<bo
   return useContextSWR('isUploadAllFileAllowed', initialData);
 };
 
+export const useIsBulkExportPagesEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isBulkExportPagesEnabled', initialData);
+};
+
+export const useIsPdfBulkExportEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isPdfBulkExportEnabled', initialData);
+};
+
 export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
   return useContextSWR('showPageLimitationL', initialData);
 };
@@ -212,6 +218,10 @@ export const useIsRomUserAllowedToComment = (initialData?: boolean): SWRResponse
 
 export const useIsAiEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR('isAiEnabled', initialData);
+};
+
+export const useLimitLearnablePageCountPerAssistant = (initialData?: number): SWRResponse<number, Error> => {
+  return useContextSWR('limitLearnablePageCountPerAssistant', initialData);
 };
 
 /** **********************************************************

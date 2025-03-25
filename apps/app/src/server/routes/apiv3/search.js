@@ -17,6 +17,88 @@ const router = express.Router();
 
 const noCache = require('nocache');
 
+/**
+ * @swagger
+ *
+ * components:
+ *   schemas:
+ *     Indices:
+ *       type: object
+ *       properties:
+ *         growi:
+ *           type: object
+ *           properties:
+ *             uuid:
+ *               type: string
+ *             health:
+ *               type: string
+ *             status:
+ *               type: string
+ *             primaries:
+ *               type: object
+ *               $ref: '#/components/schemas/SearchIndex'
+ *             total:
+ *               type: object
+ *               $ref: '#/components/schemas/SearchIndex'
+ *         aliases:
+ *           type: object
+ *           properties:
+ *             growi:
+ *               type: object
+ *               properties:
+ *                 aliases:
+ *                   type: object
+ *                   properties:
+ *                     growi-alias:
+ *                       type: object
+ *         isNormalized:
+ *           type: boolean
+ *     SearchIndex:
+ *       type: object
+ *       properties:
+ *         docs:
+ *           type: object
+ *           properties:
+ *             count:
+ *               type: integer
+ *             deleted:
+ *               type: integer
+ *         store:
+ *           type: object
+ *           properties:
+ *             size_in_bytes:
+ *               type: integer
+ *             total_data_set_size_in_bytes:
+ *               type: integer
+ *             reserved_in_bytes:
+ *               type: integer
+ *         indexing:
+ *           type: object
+ *           properties:
+ *             index_total:
+ *               type: integer
+ *             index_time_in_millis:
+ *               type: integer
+ *             index_current:
+ *               type: integer
+ *             index_failed:
+ *               type: integer
+ *             delete_total:
+ *               type: integer
+ *             delete_time_in_millis:
+ *               type: integer
+ *             delete_current:
+ *               type: integer
+ *             noop_update_total:
+ *               type: integer
+ *             is_throttled:
+ *               type: boolean
+ *             throttle_time_in_millis:
+ *               type: integer
+ *             write_load:
+ *               type: number
+ */
+/** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
@@ -41,6 +123,8 @@ module.exports = (crowi) => {
    *                properties:
    *                  info:
    *                    type: object
+   *                    description: Status of indices
+   *                    $ref: '#/components/schemas/Indices'
    */
   router.get('/indices', noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
     const { searchService } = crowi;
@@ -62,7 +146,7 @@ module.exports = (crowi) => {
    * @swagger
    *
    *  /search/connection:
-   *    get:
+   *    post:
    *      tags: [FullTextSearch Management]
    *      summary: /search/connection
    *      description: Reconnect to Elasticsearch
@@ -116,6 +200,13 @@ module.exports = (crowi) => {
    *      responses:
    *        200:
    *          description: Return 200
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  message:
+   *                    type: string
+   *                    description: Operation is successfully processed, or requested
    */
   router.put('/indices', accessTokenParser, loginRequired, adminRequired, addActivity, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
     const operation = req.body.operation;

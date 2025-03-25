@@ -40,7 +40,7 @@ jobs:
         sh ./apps/app/bin/github-actions/update-readme.sh
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@2.0.1
+      uses: myrotvorets/info-from-package-json-action@v2.0.2
       id: package-json
 
     - name: Update Changelog
@@ -86,11 +86,11 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@2.0.1
+      uses: myrotvorets/info-from-package-json-action@v2.0.2
       id: package-json
 
     - name: Docker meta for docker.io
-      uses: docker/metadata-action@v4
+      uses: docker/metadata-action@v5
       id: meta
       with:
         images: docker.io/weseek/growi
@@ -179,7 +179,7 @@ jobs:
         turbo run version:prepatch --filter=@growi/slackbot-proxy
 
     - name: Retrieve information from package.json
-      uses: myrotvorets/info-from-package-json-action@2.0.1
+      uses: myrotvorets/info-from-package-json-action@v2.0.2
       id: package-json
 
     - name: Commit

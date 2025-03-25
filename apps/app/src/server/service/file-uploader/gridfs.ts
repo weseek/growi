@@ -1,10 +1,10 @@
-import type { ReadStream } from 'fs';
 import { Readable } from 'stream';
 import util from 'util';
 
 import mongoose from 'mongoose';
 import { createModel } from 'mongoose-gridfs';
 
+import type Crowi from '~/server/crowi';
 import type { RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
@@ -62,7 +62,7 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readStream: ReadStream, attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     const contentHeaders = new ContentHeaders(attachment);
@@ -73,7 +73,7 @@ class GridfsFileUploader extends AbstractFileUploader {
         filename: attachment.fileName,
         contentType: contentHeaders.contentType?.value.toString(),
       },
-      readStream,
+      readable,
     );
   }
 
@@ -101,7 +101,7 @@ class GridfsFileUploader extends AbstractFileUploader {
 }
 
 
-module.exports = function(crowi) {
+module.exports = function(crowi: Crowi) {
   const lib = new GridfsFileUploader(crowi);
 
   // get Collection instance of chunk
@@ -166,7 +166,7 @@ module.exports = function(crowi) {
    * - mongodb(gridfs) size limit (specified by MONGO_GRIDFS_TOTAL_LIMIT)
    */
   (lib as any).checkLimit = async function(uploadFileSize) {
-    const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
+    const maxFileSize = configManager.getConfig('app:maxFileSize');
     const totalLimit = lib.getFileUploadTotalLimit();
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };

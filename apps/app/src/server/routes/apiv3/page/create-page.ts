@@ -135,7 +135,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     let tags: string[] = _tags ?? [];
 
     if (_body == null) {
-      const isEnabledAttachTitleHeader = await configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+      const isEnabledAttachTitleHeader = await configManager.getConfig('customize:isEnabledAttachTitleHeader');
       if (isEnabledAttachTitleHeader) {
         body += `${attachTitleHeader(path)}\n`;
       }
@@ -206,7 +206,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       const { getOpenaiService } = await import('~/features/openai/server/services/openai');
       try {
         const openaiService = getOpenaiService();
-        await openaiService?.rebuildVectorStore(createdPage);
+        await openaiService?.createVectorStoreFileOnPageCreate([createdPage]);
       }
       catch (err) {
         logger.error('Rebuild vector store failed', err);
@@ -214,7 +214,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     }
   }
 
-  const addActivity = generateAddActivityMiddleware(crowi);
+  const addActivity = generateAddActivityMiddleware();
 
   return [
     accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,

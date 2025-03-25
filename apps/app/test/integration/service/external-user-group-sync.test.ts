@@ -9,7 +9,7 @@ import ExternalUserGroupRelation from '../../../src/features/external-user-group
 import ExternalUserGroupSyncService from '../../../src/features/external-user-group/server/service/external-user-group-sync';
 import ExternalAccount from '../../../src/server/models/external-account';
 import { configManager } from '../../../src/server/service/config-manager';
-import { instanciate } from '../../../src/server/service/external-account';
+import instanciateExternalAccountService from '../../../src/server/service/external-account';
 import PassportService from '../../../src/server/service/passport';
 import { getInstance } from '../setup-crowi';
 
@@ -182,9 +182,9 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
-    await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
+    await configManager.updateConfig('app:isV5Compatible', true);
     const passportService = new PassportService(crowi);
-    instanciate(passportService);
+    instanciateExternalAccountService(passportService);
   });
 
   beforeEach(async() => {
@@ -218,7 +218,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
     };
 
     beforeAll(async() => {
-      await configManager.updateConfigsInTheSameNamespace('crowi', configParams);
+      await configManager.updateConfigs(configParams);
     });
 
     // eslint-disable-next-line jest/expect-expect
@@ -235,7 +235,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
     };
 
     beforeAll(async() => {
-      await configManager.updateConfigsInTheSameNamespace('crowi', configParams);
+      await configManager.updateConfigs(configParams);
     });
 
     // eslint-disable-next-line jest/expect-expect
@@ -252,7 +252,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
     };
 
     beforeAll(async() => {
-      await configManager.updateConfigsInTheSameNamespace('crowi', configParams);
+      await configManager.updateConfigs(configParams);
 
       const groupId = new Types.ObjectId();
       const userId = new Types.ObjectId();

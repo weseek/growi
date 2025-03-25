@@ -15,6 +15,10 @@ const logger = loggerFactory('growi:service:AttachmentService');
  */
 class AttachmentService {
 
+  /** @type {import('~/server/crowi').default} Crowi instance */
+  crowi;
+
+  /** @param {import('~/server/crowi').default} crowi Crowi instance */
   constructor(crowi) {
     this.crowi = crowi;
   }
@@ -35,7 +39,7 @@ class AttachmentService {
     // create an Attachment document and upload file
     let attachment;
     try {
-      attachment = Attachment.createWithoutSave(pageId, user, fileStream, file.originalname, file.mimetype, file.size, attachmentType);
+      attachment = Attachment.createWithoutSave(pageId, user, file.originalname, file.mimetype, file.size, attachmentType);
       await fileUploadService.uploadAttachment(fileStream, attachment);
       await attachment.save();
     }
