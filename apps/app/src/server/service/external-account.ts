@@ -71,6 +71,6 @@ class ExternalAccountService {
 
 // eslint-disable-next-line import/no-mutable-exports
 export let externalAccountService: ExternalAccountService | undefined; // singleton instance
-export function instanciate(passportService: PassportService): void {
+export default function instanciate(passportService: PassportService): void {
   externalAccountService = new ExternalAccountService(passportService);
 }

@@ -26,6 +26,7 @@ import { Attachment } from '../models/attachment';
 import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfer-error';
 
 import { configManager } from './config-manager';
+import { exportService } from './export';
 import type { ConfigKey } from './config-manager/config-definition';
 import { generateOverwriteParams } from './import/overwrite-params';
 
@@ -444,8 +445,10 @@ export class G2GTransferPusherService implements Pusher {
 
     let zipFileStream: ReadStream;
     try {
-      const zipFileStat = await this.crowi.exportService.export(collections);
-      const zipFilePath = zipFileStat.zipFilePath;
+      const zipFileStat = await exportService?.export(collections);
+      const zipFilePath = zipFileStat?.zipFilePath;
+
+      if (zipFilePath == null) throw new Error('Failed to generate zip file');
 
       zipFileStream = createReadStream(zipFilePath);
     }
