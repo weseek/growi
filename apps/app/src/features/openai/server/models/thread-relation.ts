@@ -37,7 +37,7 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   title: {
     type: String,
   },
-  threadType: {
+  type: {
     type: String,
     enum: Object.values(ThreadType),
     required: true,

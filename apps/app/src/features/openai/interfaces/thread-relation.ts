@@ -14,7 +14,7 @@ export interface IThreadRelation {
   aiAssistant: Ref<AiAssistant>
   threadId: string;
   title?: string;
-  threadType: ThreadType;
+  type: ThreadType;
   expiredAt: Date;
 }
 
