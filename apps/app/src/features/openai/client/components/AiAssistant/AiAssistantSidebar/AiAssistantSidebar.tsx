@@ -46,7 +46,7 @@ type FormData = {
 };
 
 type AiAssistantSidebarSubstanceProps = {
-  isEditorAssistant?: boolean;
+  isEditorAssistant: boolean;
   aiAssistantData?: AiAssistantHasId;
   threadData?: IThreadRelationHasId;
   closeAiAssistantSidebar: () => void
@@ -160,6 +160,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     if (currentThreadId_ == null) {
       try {
         const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
+          isEditorAssistant,
           aiAssistantId: isEditorAssistant ? selectedAiAssistant?._id : aiAssistantData?._id,
           initialUserMessage: isEditorAssistant ? undefined : newUserMessage.content,
         });

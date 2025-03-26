@@ -37,6 +37,10 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   title: {
     type: String,
   },
+  isEditorAssistant: {
+    type: Boolean,
+    required: true,
+  },
   expiredAt: {
     type: Date,
     default: generateExpirationDate,

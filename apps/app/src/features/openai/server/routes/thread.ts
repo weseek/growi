@@ -17,6 +17,7 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 const logger = loggerFactory('growi:routes:apiv3:openai:thread');
 
 type ReqBody = {
+  isEditorAssistant: boolean,
   aiAssistantId?: string,
   initialUserMessage?: string,
 }
@@ -43,8 +44,8 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
       }
 
       try {
-        const { aiAssistantId, initialUserMessage } = req.body;
-        const thread = await openaiService.createThread(req.user._id, aiAssistantId, initialUserMessage);
+        const { aiAssistantId, initialUserMessage, isEditorAssistant } = req.body;
+        const thread = await openaiService.createThread(req.user._id, isEditorAssistant, aiAssistantId, initialUserMessage);
         return res.apiv3(thread);
       }
       catch (err) {

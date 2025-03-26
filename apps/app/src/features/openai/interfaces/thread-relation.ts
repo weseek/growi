@@ -7,6 +7,7 @@ export interface IThreadRelation {
   aiAssistant: Ref<AiAssistant>
   threadId: string;
   title?: string;
+  isEditorAssistant: boolean;
   expiredAt: Date;
 }
 
