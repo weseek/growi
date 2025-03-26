@@ -9,6 +9,7 @@ export const ThreadType = {
 } as const;
 
 export type ThreadType = typeof ThreadType[keyof typeof ThreadType];
+
 export interface IThreadRelation {
   userId: Ref<IUser>
   aiAssistant: Ref<AiAssistant>
