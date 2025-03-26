@@ -2,9 +2,11 @@ import { faker } from '@faker-js/faker';
 import { addDays, subDays } from 'date-fns';
 import { Types } from 'mongoose';
 
+import { ThreadType } from '../../../../interfaces/thread-relation';
 import ThreadRelation from '../../../models/thread-relation';
 
 import { MAX_DAYS_UNTIL_EXPIRATION, normalizeExpiredAtForThreadRelations } from './normalize-thread-relation-expired-at';
+
 
 describe('normalizeExpiredAtForThreadRelations', () => {
 
@@ -17,7 +19,7 @@ describe('normalizeExpiredAtForThreadRelations', () => {
       threadId: 'test-thread',
       aiAssistant: new Types.ObjectId(),
       expiredAt: expiredDate,
-      isEditorAssistant: false,
+      threadType: ThreadType.KNOWLEDGE,
     });
     await threadRelation.save();
 
@@ -40,7 +42,7 @@ describe('normalizeExpiredAtForThreadRelations', () => {
       threadId: 'test-thread-2',
       aiAssistant: new Types.ObjectId(),
       expiredAt: nonExpiredDate,
-      isEditorAssistant: false,
+      threadType: ThreadType.KNOWLEDGE,
     });
     await threadRelation.save();
 
@@ -61,7 +63,7 @@ describe('normalizeExpiredAtForThreadRelations', () => {
       threadId: 'test-thread-3',
       aiAssistant: new Types.ObjectId(),
       expiredAt: nonExpiredDate,
-      isEditorAssistant: false,
+      threadType: ThreadType.KNOWLEDGE,
     });
     await threadRelation.save();
 
