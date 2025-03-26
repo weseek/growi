@@ -15,6 +15,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
+import { ThreadType } from '../../../../interfaces/thread-relation';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
 import { useEditorAssistant } from '../../../services/editor-assistant';
 import { useKnowledgeAssistant } from '../../../services/knowledge-assistant';
@@ -160,7 +161,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     if (currentThreadId_ == null) {
       try {
         const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
-          isEditorAssistant,
+          threadType: isEditorAssistant ? ThreadType.EDITOR : ThreadType.KNOWLEDGE,
           aiAssistantId: isEditorAssistant ? selectedAiAssistant?._id : aiAssistantData?._id,
           initialUserMessage: isEditorAssistant ? undefined : newUserMessage.content,
         });

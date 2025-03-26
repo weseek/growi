@@ -3,7 +3,7 @@ import { type Model, type Document, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import type { IThreadRelation } from '../../interfaces/thread-relation';
+import { type IThreadRelation, ThreadType } from '../../interfaces/thread-relation';
 
 const DAYS_UNTIL_EXPIRATION = 3;
 
@@ -37,8 +37,9 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   title: {
     type: String,
   },
-  isEditorAssistant: {
-    type: Boolean,
+  threadType: {
+    type: String,
+    enum: Object.values(ThreadType),
     required: true,
   },
   expiredAt: {

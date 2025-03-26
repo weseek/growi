@@ -10,6 +10,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
+import { ThreadType } from '../../interfaces/thread-relation';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';
@@ -17,7 +18,7 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 const logger = loggerFactory('growi:routes:apiv3:openai:thread');
 
 type ReqBody = {
-  isEditorAssistant: boolean,
+  threadType: ThreadType,
   aiAssistantId?: string,
   initialUserMessage?: string,
 }
@@ -30,6 +31,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
+    body('threadType').isIn(Object.values(ThreadType)).withMessage('threadType must be one of "editor" or "knowledge"'),
     body('aiAssistantId').optional().isMongoId().withMessage('aiAssistantId must be string'),
     body('initialUserMessage').optional().isString().withMessage('initialUserMessage must be string'),
   ];
@@ -44,8 +46,8 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
       }
 
       try {
-        const { aiAssistantId, initialUserMessage, isEditorAssistant } = req.body;
-        const thread = await openaiService.createThread(req.user._id, isEditorAssistant, aiAssistantId, initialUserMessage);
+        const { threadType, aiAssistantId, initialUserMessage } = req.body;
+        const thread = await openaiService.createThread(req.user._id, threadType, aiAssistantId, initialUserMessage);
         return res.apiv3(thread);
       }
       catch (err) {
