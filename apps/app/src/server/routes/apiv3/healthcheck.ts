@@ -103,11 +103,19 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                properties:
-   *                  info:
-   *                    $ref: '#/components/schemas/HealthcheckInfo'
+   *                oneOf:
+   *                  - type: object
+   *                    description: "Don't select checkServices"
+   *                    properties:
+   *                      status:
+   *                        type: string
+   *                  - type: object
+   *                    description: "Select checkServices"
+   *                    properties:
+   *                      info:
+   *                        $ref: '#/components/schemas/HealthcheckInfo'
    *        503:
-   *          description: Unhealthy
+   *          description: "errors occurs when using checkServicesStrictly"
    *          content:
    *            application/json:
    *              schema:
