@@ -3,6 +3,8 @@ import {
   type FC, memo, useRef, useEffect, useState, useCallback, useMemo,
 } from 'react';
 
+import { GlobalCodeMirrorEditorKey } from '@growi/editor';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useIsEnableUnifiedMergeView } from '@growi/editor/src/client/stores/use-is-enable-unified-merge-view';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -68,11 +70,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
   const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
+  const [detectedDiff, setDetectedDiff] = useState<string | undefined>();
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id, threadData?.threadId);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
   const { postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant } = useEditorAssistant();
@@ -191,7 +195,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
       const response = await (async() => {
         if (isEditorAssistant) {
-          return postMessageForEditorAssistant(currentThreadId_, data.input, '# markdown');
+          const markdown = codeMirrorEditor?.getDoc();
+          return postMessageForEditorAssistant(currentThreadId_, data.input, markdown ?? '');
         }
         if (aiAssistantData?._id != null) {
           return postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId_, data.input, data.summaryMode);
@@ -256,7 +261,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 textValues.push(data.appendedMessage);
               },
               onDetectedDiff: (data) => {
-                console.log('sse diff', { data });
+                const typeGuard = (diff): diff is { insert: string } => {
+                  return 'insert' in diff;
+                };
+
+                if (typeGuard(data.diff)) {
+                  setDetectedDiff(data.diff.insert);
+                }
               },
               onFinalized: (data) => {
                 console.log('sse finalized', { data });
@@ -294,7 +305,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, form, currentThreadId, aiAssistantData?._id, isEditorAssistant, mutateThreadData, t, postMessageForEditorAssistant, selectedAiAssistant?._id, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, isEditorAssistant, selectedAiAssistant?._id, aiAssistantData?._id, mutateThreadData, t, codeMirrorEditor, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -307,8 +318,12 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [submit]);
 
   const clickAcceptHandler = useCallback(() => {
-    // todo: implement
-  }, []);
+    if (detectedDiff == null) {
+      return;
+    }
+
+    codeMirrorEditor?.insertText(detectedDiff);
+  }, [codeMirrorEditor, detectedDiff]);
 
   const clickDiscardHandler = useCallback(() => {
     // todo: implement
@@ -518,6 +533,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
       mutateIsEnableUnifiedMergeView(false);
     }
   }, [isEditorAssistant, isEnableUnifiedMergeView, isOpened, mutateIsEnableUnifiedMergeView]);
+
 
   if (!isOpened) {
     return <></>;
