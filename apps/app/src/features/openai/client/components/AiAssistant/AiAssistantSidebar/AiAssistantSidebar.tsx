@@ -3,6 +3,7 @@ import {
   type FC, memo, useRef, useEffect, useState, useCallback, useMemo,
 } from 'react';
 
+import { useIsEnableUnifiedMergeView } from '@growi/editor/src/client/stores/use-is-enable-unified-merge-view';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
@@ -489,6 +490,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
   const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
+  const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const aiAssistantData = aiAssistantSidebarData?.aiAssistantData;
   const threadData = aiAssistantSidebarData?.threadData;
@@ -507,6 +509,17 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [closeAiAssistantSidebar, isOpened]);
+
+  useEffect(() => {
+    if (isOpened && isEditorAssistant) {
+      mutateIsEnableUnifiedMergeView(true);
+      return;
+    }
+
+    if (!isOpened) {
+      mutateIsEnableUnifiedMergeView(false);
+    }
+  }, [isEditorAssistant, isEnableUnifiedMergeView, isOpened, mutateIsEnableUnifiedMergeView]);
 
   if (!isOpened) {
     return <></>;
