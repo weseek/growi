@@ -13,6 +13,7 @@ import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { CodeMirrorEditorMain } from '@growi/editor/dist/client/components/CodeMirrorEditorMain';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
+import { useIsEnableUnifiedMergeView } from '@growi/editor/src/client/stores/use-is-enable-unified-merge-view';
 import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
@@ -111,6 +112,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const { mutate: mutateEditingUsers } = useEditingClients();
   const onConflict = useConflictResolver();
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
+  const { data: isEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -365,6 +367,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
     <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-expand-vert border-end">
         <CodeMirrorEditorMain
+          enableUnifiedMergeView={isEnableUnifiedMergeView}
           enableCollaboration={editorMode === EditorMode.Editor}
           onSave={saveWithShortcut}
           onUpload={uploadHandler}
