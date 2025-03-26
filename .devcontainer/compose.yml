@@ -1,5 +1,5 @@
 services:
-  node:
+  app:
     image: mcr.microsoft.com/devcontainers/base:ubuntu
     volumes:
       - ..:/workspace/growi:delegated
@@ -8,6 +8,7 @@ services:
       - buildcache_app:/workspace/growi/apps/app/.next
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
       - ../../share:/workspace/share:delegated
+      - page_bulk_export_tmp:/tmp/page-bulk-export
     tty: true
     networks:
     - default
@@ -48,6 +49,7 @@ volumes:
   pnpm-store:
   node_modules:
   buildcache_app:
+  page_bulk_export_tmp:
 
 networks:
   default:

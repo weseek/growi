@@ -125,6 +125,7 @@ module.exports = (crowi, app) => {
   router.use('/bookmark-folder', require('./bookmark-folder')(crowi));
   router.use('/questionnaire', require('~/features/questionnaire/server/routes/apiv3/questionnaire')(crowi));
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
+  router.use('/page-bulk-export', require('~/features/page-bulk-export/server/routes/apiv3/page-bulk-export')(crowi));
 
   router.use('/openai', openaiRouteFactory(crowi));
 
