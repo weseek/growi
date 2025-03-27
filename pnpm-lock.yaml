@@ -1376,11 +1376,15 @@ importers:
   packages/pluginkit:
     dependencies:
       '@growi/core':
-        specifier: ^1.4.0
-        version: 1.4.0
+        specifier: ^1.5.0
+        version: 1.5.0
       extensible-custom-error:
         specifier: ^0.0.7
         version: 0.0.7
+    devDependencies:
+      '@types/react':
+        specifier: ^18.2.14
+        version: 18.3.3
 
   packages/presentation:
     dependencies:
@@ -3000,8 +3004,8 @@ packages:
     resolution: {integrity: sha512-lOs/dCyveVF8TkVFnFSF7IGd0CJrTm91qiK6JLu+Z8qiT+7Ag0RyVhxZIWkhiACqwABo7kSHDm8FdH8p2wxSSw==}
     engines: {node: '>=10'}
 
-  '@growi/core@1.4.0':
-    resolution: {integrity: sha512-Jg6T5zYWyD07NOsYGcDyZrrEEAI59CiyFiJwsaIUi5Tadc6lh8QUAIpu+iLTbqxJ81yzNIzq5nkj4EyMhRZylw==}
+  '@growi/core@1.5.0':
+    resolution: {integrity: sha512-c1Rrui9efxX/7f1r0brb8IVjsY45tGUnuJNbXHWCR5hVkDkXuz63MJ3CgLco8x0A744Vn7W67a/FKgAEvPts1A==}
 
   '@grpc/grpc-js@1.12.2':
     resolution: {integrity: sha512-bgxdZmgTrJZX50OjyVwz3+mNEnCTNkh3cIqGPWVNeW9jX6bn1ZkU80uPd+67/ZpIJIjRQ9qaHCjhavyoWYxumg==}
@@ -5379,6 +5383,9 @@ packages:
 
   '@types/eslint@8.37.0':
     resolution: {integrity: sha512-Piet7dG2JBuDIfohBngQ3rCt7MgO9xCO4xIMKxBThCq5PNRB91IjlJ10eJVwfoNtvTErmxLzwBZ7rHZtbOMmFQ==}
+
+  '@types/eslint@9.6.1':
+    resolution: {integrity: sha512-FXx2pKgId/WyYo2jXw63kk7/+TY7u7AziEJxJAnSFzHlqTAS3Ync6SvgYAN/k4/PQpnnVuzoMuVnByKK2qp0ag==}
 
   '@types/estree-jsx@1.0.5':
     resolution: {integrity: sha512-52CcUVNFyfb1A2ALocQw/Dd1BQFNmSdkuC3BkZ6iqhdMfQz7JWOFRuJFloOzjk+6WijU56m9oKXFAXc7o3Towg==}
@@ -16902,7 +16909,7 @@ snapshots:
       - encoding
       - supports-color
 
-  '@growi/core@1.4.0':
+  '@growi/core@1.5.0':
     dependencies:
       bson-objectid: 2.0.4
       escape-string-regexp: 4.0.0
@@ -20313,12 +20320,17 @@ snapshots:
 
   '@types/eslint-scope@3.7.7':
     dependencies:
-      '@types/eslint': 8.37.0
+      '@types/eslint': 9.6.1
       '@types/estree': 1.0.7
 
   '@types/eslint@8.37.0':
     dependencies:
       '@types/estree': 1.0.6
+      '@types/json-schema': 7.0.15
+
+  '@types/eslint@9.6.1':
+    dependencies:
+      '@types/estree': 1.0.7
       '@types/json-schema': 7.0.15
 
   '@types/estree-jsx@1.0.5':
@@ -24790,7 +24802,7 @@ snapshots:
       depd: 1.1.2
       inherits: 2.0.3
       setprototypeof: 1.1.0
-      statuses: 1.5.0
+      statuses: 1.4.0
 
   http-errors@1.7.3:
     dependencies:
@@ -30361,7 +30373,8 @@ snapshots:
 
   tslib@2.8.0: {}
 
-  tslib@2.8.1: {}
+  tslib@2.8.1:
+    optional: true
 
   tspc@1.1.2: {}
 
