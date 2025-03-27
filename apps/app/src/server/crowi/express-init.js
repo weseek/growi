@@ -85,11 +85,15 @@ module.exports = function(crowi, app) {
 
   app.set('port', crowi.port);
 
-  const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
+  // prevents reading `/public/uploads`, which is allowed by express.static afterwards
+  // ref: https://github.com/weseek/growi/pull/9804
   app.use(path.join('/uploads', FilePathOnStoragePrefix.attachment), (req, res) => {
     res.status(403).send('Access Forbidden');
   });
+  
+  const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
+  
   app.use('/static/preset-themes', express.static(
     resolveFromRoot(`node_modules/@growi/preset-themes/${presetThemesRootPath}`),
   ));
