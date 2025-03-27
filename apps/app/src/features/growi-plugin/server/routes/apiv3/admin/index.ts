@@ -1,9 +1,10 @@
-import express, { Request, Router } from 'express';
+import type { Request, Router } from 'express';
+import express from 'express';
 import { body, query } from 'express-validator';
 import mongoose from 'mongoose';
 
-import Crowi from '~/server/crowi';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import type Crowi from '~/server/crowi';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 
 import { GrowiPlugin } from '../../../models';
 import { growiPluginService } from '../../../services';
