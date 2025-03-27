@@ -77,6 +77,7 @@ module.exports = (crowi) => {
    *  /healthcheck:
    *    get:
    *      tags: [Healthcheck]
+   *      security: []
    *      operationId: getHealthcheck
    *      summary: /healthcheck
    *      description: Check whether the server is healthy or not
@@ -116,8 +117,6 @@ module.exports = (crowi) => {
    *                    description: Errors
    *                    items:
    *                      $ref: '#/components/schemas/ErrorV3'
-   *                  info:
-   *                    $ref: '#/components/schemas/HealthcheckInfo'
    */
   router.get('/', nocache(), async(req, res: ApiV3Response) => {
     let checkServices = (() => {
