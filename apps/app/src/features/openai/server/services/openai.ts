@@ -34,6 +34,7 @@ import {
   type AccessibleAiAssistants, type AiAssistant, AiAssistantAccessScope, AiAssistantShareScope,
 } from '../../interfaces/ai-assistant';
 import type { MessageListParams } from '../../interfaces/message';
+import { ThreadType } from '../../interfaces/thread-relation';
 import { removeGlobPath } from '../../utils/remove-glob-path';
 import AiAssistantModel, { type AiAssistantDocument } from '../models/ai-assistant';
 import { convertMarkdownToHtml } from '../utils/convert-markdown-to-html';
@@ -66,7 +67,7 @@ const convertPathPatternsToRegExp = (pagePathPatterns: string[]): Array<string |
 };
 
 export interface IOpenaiService {
-  createThread(userId: string, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument>;
+  createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument>;
   getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]>
   deleteThread(threadRelationId: string): Promise<ThreadRelationDocument>;
   deleteExpiredThreads(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
@@ -118,7 +119,7 @@ class OpenaiService implements IOpenaiService {
     return threadTitle;
   }
 
-  async createThread(userId: string, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument> {
+  async createThread(userId: string, type: ThreadType, aiAssistantId?: string, initialUserMessage?: string): Promise<ThreadRelationDocument> {
     let threadTitle: string | null = null;
     if (initialUserMessage != null) {
       try {
@@ -134,6 +135,7 @@ class OpenaiService implements IOpenaiService {
       const thread = await this.client.createThread(vectorStoreRelation?.vectorStoreId);
       const threadRelation = await ThreadRelationModel.create({
         userId,
+        type,
         aiAssistant: aiAssistantId,
         threadId: thread.id,
         title: threadTitle,
@@ -158,8 +160,8 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async getThreadsByAiAssistantId(aiAssistantId: string): Promise<ThreadRelationDocument[]> {
-    const threadRelations = await ThreadRelationModel.find({ aiAssistant: aiAssistantId });
+  async getThreadsByAiAssistantId(aiAssistantId: string, type: ThreadType = ThreadType.KNOWLEDGE): Promise<ThreadRelationDocument[]> {
+    const threadRelations = await ThreadRelationModel.find({ aiAssistant: aiAssistantId, type });
     return threadRelations;
   }
 
