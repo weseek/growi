@@ -1022,7 +1022,7 @@ module.exports = (crowi) => {
    *                            temporaryUrlCached: {}
    */
   router.post('/upload-brand-logo', loginRequiredStrictly, adminRequired,
-    validator.logo, apiV3FormValidator, uploads.single('file'), async(req, res) => {
+    uploads.single('file'), validator.logo, apiV3FormValidator, async(req, res) => {
 
       if (req.file == null) {
         return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));
