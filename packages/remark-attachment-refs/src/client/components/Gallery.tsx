@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 
-import { RefsImgSubstance, Props } from './RefsImg';
+import type { Props } from './RefsImg';
+import { RefsImgSubstance } from './RefsImg';
 
 const gridDefault = 'col-4';
 const gridGapDefault = '1px';
