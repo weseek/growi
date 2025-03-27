@@ -117,6 +117,7 @@ const restrictedPatternsToCreate: Array<RegExp> = [
   /\\/, // see: https://github.com/weseek/growi/issues/7241
   /^\/(_search|_private-legacy-pages)(\/.*|$)/,
   /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share|attachment)(\/.*|$)/,
+  /^\/uploads\/attachment(\/.*|$)/,
   /^\/user(?:\/[^/]+)?$/, // https://regex101.com/r/9Eh2S1/1
   /^(\/.+){130,}$/, // avoid deep layer path. see: https://regex101.com/r/L0kzOD/1
 ];
