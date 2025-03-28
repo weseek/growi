@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useMemo, useRef, useState,
+  useEffect, useMemo, useRef, useState, type JSX,
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';

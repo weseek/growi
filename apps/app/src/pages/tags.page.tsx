@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React, { useState, useCallback } from 'react';
 
 import type { IUser } from '@growi/core';

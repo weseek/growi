@@ -1,4 +1,4 @@
-import { type ReactNode, memo } from 'react';
+import { type ReactNode, memo, type JSX } from 'react';
 
 import CountBadge from '../Common/CountBadge';
 
