@@ -40,6 +40,45 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /plugins:
+   *   post:
+   *     tags: [Plugins]
+   *     security:
+   *       - cookieAuth: []
+   *     summary: /plugins
+   *     description: Install a plugin
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               pluginInstallerForm:
+   *                 type: object
+   *                 properties:
+   *                   url:
+   *                     type: string
+   *                   ghBranch:
+   *                     type: string
+   *                   ghTag:
+   *                     type: string
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 pluginName:
+   *                   type: string
+   *                   description: The name of the installed plugin
+   *
+   */
   router.post('/', loginRequiredStrictly, adminRequired, validator.pluginFormValueisRequired, async(req: Request, res: ApiV3Response) => {
     const { pluginInstallerForm: formValue } = req.body;
 
@@ -52,6 +91,33 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /plugins/{id}/activate:
+   *   put:
+   *     tags: [Plugins]
+   *     security:
+   *       - cookieAuth: []
+   *     summary: /plugins/{id}/activate
+   *     description: Activate a plugin
+   *     parameters:
+   *       - name: id
+   *         in: path
+   *         required: true
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 pluginName:
+   *                   type: string
+   *                   description: The name of the activated plugin
+   */
   router.put('/:id/activate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     const { id } = req.params;
     const pluginId = new ObjectID(id);
@@ -78,6 +144,33 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /plugins/{id}/remove:
+   *   delete:
+   *     tags: [Plugins]
+   *     security:
+   *       - cookieAuth: []
+   *     summary: /plugins/{id}/remove
+   *     description: Remove a plugin
+   *     parameters:
+   *       - name: id
+   *         in: path
+   *         required: true
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 pluginName:
+   *                   type: string
+   *                   description: The name of the removed plugin
+   */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
     const { id } = req.params;
     const pluginId = new ObjectID(id);
