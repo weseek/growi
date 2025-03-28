@@ -125,7 +125,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
    *
    */
   const DELAY_FOR_SUBMISSION = 100;
-  const timeoutIdRef = useRef<NodeJS.Timeout>(undefined);
+  const timeoutIdRef = useRef<NodeJS.Timeout>();
 
   const changeHandler = useCallback((selectedItems: IPageWithSearchMeta[]) => {
     // cancel schedule to submit
