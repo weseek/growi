@@ -75,6 +75,6 @@
   "devDependencies": {
     "mongoose": "^6.13.6",
     "socket.io-client": "^4.7.5",
-    "swr": "^2.3.2"
+    "swr": "^2.3.3"
   }
 }
