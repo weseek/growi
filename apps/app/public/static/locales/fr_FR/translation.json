@@ -743,11 +743,26 @@
     "discription_heading": "Créer un compte",
     "discription": "Créer un compte avec votre adresse courriel invitée"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "Échec de l'export",
     "failed_to_count_pages": "Échec du compte des pages",
     "export_page_markdown": "Exporter la page en Markdown",
-    "export_page_pdf": "Exporter la page en PDF"
+    "export_page_pdf": "Exporter la page en PDF",
+    "bulk_export": "Exporter la page et toutes les pages enfants",
+    "bulk_export_download_explanation": "Une notification sera envoyée lorsque l’exportation sera terminée. Pour télécharger le fichier exporté, cliquez sur la notification.",
+    "bulk_export_exec_time_warning": "Si le nombre de pages est important, l'exportation peut prendre un certain temps.",
+    "large_bulk_export_warning": "Pour préserver les ressources du système, veuillez éviter d'exporter un grand nombre de pages consécutivement",
+    "markdown": "Markdown",
+    "choose_export_format": "Sélectionnez le format d'exportation",
+    "bulk_export_started": "Patientez s'il-vous-plait...",
+    "bulk_export_download_expired": "La période de téléchargement a expiré",
+    "bulk_export_job_expired": "Le traitement a été interrompu car le temps d'exportation était trop long",
+    "export_in_progress": "Exportation en cours",
+    "export_in_progress_explanation": "L'exportation avec le même format est déjà en cours. Souhaitez-vous redémarrer pour exporter le dernier contenu de la page ?",
+    "export_cancel_warning": "Les exportations suivantes en cours seront annulées",
+    "restart": "Redémarrage",
+    "format": "Format",
+    "started_on": "Commencé le"
   },
   "message": {
     "successfully_connected": "Connecté!",

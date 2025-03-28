@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 import type { Nullable } from '@growi/core';
 
 import type { IPageForItem } from '~/interfaces/page';

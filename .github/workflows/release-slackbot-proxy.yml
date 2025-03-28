@@ -51,7 +51,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
 
     - name: Build and push
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v6
       with:
         context: .
         file: ./apps/slackbot-proxy/docker/Dockerfile
@@ -61,11 +61,6 @@ jobs:
         cache-from: type=gha
         cache-to: type=gha,mode=max
         tags: ${{ steps.meta.outputs.tags }}
-
-    - name: Move cache
-      run: |
-        rm -rf /tmp/.buildx-cache
-        mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
     - name: Add tag
       uses: anothrNick/github-tag-action@v1

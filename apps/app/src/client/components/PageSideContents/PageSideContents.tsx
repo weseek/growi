@@ -1,4 +1,6 @@
-import React, { Suspense, useCallback, useRef } from 'react';
+import React, {
+  Suspense, useCallback, useRef, type JSX,
+} from 'react';
 
 import type { IPagePopulatedToShowRevision, IPageInfoForOperation } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';

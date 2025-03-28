@@ -29,6 +29,8 @@ module.exports = (crowi) => {
    *    /user-group-relations:
    *      get:
    *        tags: [UserGroupRelations]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: listUserGroupRelations
    *        summary: /user-group-relations
    *        description: Gets the user group relations
@@ -42,6 +44,15 @@ module.exports = (crowi) => {
    *                    userGroupRelations:
    *                      type: object
    *                      description: contains arrays user objects related
+   *                      properties:
+   *                        userGroupRelations:
+   *                          type: array
+   *                          items:
+   *                            type: object
+   *                        relationsOfChildGroups:
+   *                          type: array
+   *                          items:
+   *                            type: object
    */
   router.get('/', loginRequiredStrictly, adminRequired, validator.list, async(req, res) => {
     const { query } = req;

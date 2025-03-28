@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useCallback,
+  useState, useEffect, useCallback, type JSX,
 } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';

@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 

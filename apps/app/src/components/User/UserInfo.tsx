@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 
 import type { IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';

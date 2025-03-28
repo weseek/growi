@@ -1,3 +1,4 @@
+import type { JSX } from 'react';
 
 import { PageHeader } from '~/client/components/PageHeader';
 import { useEditingUsers } from '~/stores/use-editing-users';

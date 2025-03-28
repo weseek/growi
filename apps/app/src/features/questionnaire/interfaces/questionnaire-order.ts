@@ -1,7 +1,7 @@
 import type { HasObjectId } from '@growi/core';
 
-import { ICondition, IConditionHasId } from './condition';
-import { IQuestion, IQuestionHasId } from './question';
+import type { ICondition, IConditionHasId } from './condition';
+import type { IQuestion, IQuestionHasId } from './question';
 
 export interface IQuestionnaireOrder<TQUESTION = IQuestion, TCONDITION = ICondition> {
   shortTitle: {
