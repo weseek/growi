@@ -17,7 +17,7 @@
     svg {
       width: $width;
       height: $height;
-      padding: (($height - $logomark-height) / 2) (($width - $logomark-width) / 2);
+      padding: (($height - $logomark-height) * 0.5) (($width - $logomark-width) * 0.5);
     }
   }
 
