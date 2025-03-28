@@ -44,7 +44,7 @@
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "date-fns": "^3.6.0",
-    "reactstrap": "^9.2.2"
+    "reactstrap": "^9.2.3"
   },
   "peerDependencies": {
     "next": "^15",

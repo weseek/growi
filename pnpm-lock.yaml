@@ -56,7 +56,7 @@ importers:
         specifier: ^5.59.7
         version: 5.59.7(eslint@8.41.0)(typescript@5.0.4)
       '@vitejs/plugin-react':
-        specifier: ^4.3.1
+        specifier: ^4.3.4
         version: 4.3.4(vite@5.4.15(@types/node@20.14.0)(sass@1.77.6)(terser@5.39.0))
       '@vitest/coverage-v8':
         specifier: ^2.1.1
@@ -623,7 +623,7 @@ importers:
         specifier: ^1.5.2
         version: 1.5.2(react@19.0.0)
       reactstrap:
-        specifier: ^9.2.2
+        specifier: ^9.2.3
         version: 9.2.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       reconnecting-websocket:
         specifier: ^4.4.0
@@ -1812,7 +1812,7 @@ importers:
         specifier: ^3.6.0
         version: 3.6.0
       reactstrap:
-        specifier: ^9.2.2
+        specifier: ^9.2.3
         version: 9.2.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
 
 packages:
