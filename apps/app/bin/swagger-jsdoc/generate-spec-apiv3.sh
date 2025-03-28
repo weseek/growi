@@ -12,5 +12,6 @@ swagger-jsdoc \
   -d "${APP_PATH}/bin/swagger-jsdoc/definition-apiv3.js" \
   "${APP_PATH}/src/features/external-user-group/server/routes/apiv3/*.ts" \
   "${APP_PATH}/src/features/templates/server/routes/apiv3/*.ts" \
+  "${APP_PATH}/src/features/growi-plugin/server/routes/apiv3/**/*.ts" \
   "${APP_PATH}/src/server/routes/apiv3/**/*.{js,ts}" \
   "${APP_PATH}/src/server/models/openapi/**/*.{js,ts}"
