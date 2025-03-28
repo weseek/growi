@@ -83,6 +83,7 @@ module.exports = {
         'NotificationSetting',
         'Plugins',
         'QuestionnaireSetting',
+        'SlackIntegration',
         'SlackIntegrationSettings',
         'SlackIntegrationSettings (with proxy)',
         'SlackIntegrationSettings (without proxy)',
