@@ -13,4 +13,5 @@ swagger-jsdoc \
   "${APP_PATH}/src/features/external-user-group/server/routes/apiv3/*.ts" \
   "${APP_PATH}/src/features/growi-plugin/server/routes/apiv3/**/*.ts" \
   "${APP_PATH}/src/server/routes/apiv3/**/*.{js,ts}" \
+  "${APP_PATH}/src/server/routes/login.js" \
   "${APP_PATH}/src/server/models/openapi/**/*.{js,ts}"
