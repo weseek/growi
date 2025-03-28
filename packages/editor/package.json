@@ -20,8 +20,8 @@
   "dependencies": {
     "lib0": "^0.2.94",
     "markdown-table": "^3.0.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "// comments for devDependencies": {
     "string-width": "5.0.0 or above exports only ESM."
@@ -44,8 +44,8 @@
     "@replit/codemirror-emacs": "^6.1.0",
     "@replit/codemirror-vim": "^6.2.1",
     "@replit/codemirror-vscode-keymap": "^6.0.2",
-    "@types/react": "^19.0.12",
-    "@types/react-dom": "^19.0.4",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "@uiw/codemirror-theme-eclipse": "^4.23.8",
     "@uiw/codemirror-theme-kimbie": "^4.23.8",
     "@uiw/codemirror-themes": "^4.23.8",
@@ -67,7 +67,7 @@
     "reactstrap": "^9.2.2",
     "string-width": "=4.2.2",
     "simplebar-react": "^2.3.6",
-    "swr": "^2.3.3",
+    "swr": "^2.3.2",
     "ts-deepmerge": "^6.2.0",
     "y-codemirror.next": "^0.3.5",
     "y-socket.io": "^1.1.3",

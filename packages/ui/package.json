@@ -41,14 +41,14 @@
   "devDependencies": {
     "@growi/core": "workspace:^",
     "@growi/core-styles": "workspace:^",
-    "@types/react": "^19.0.12",
-    "@types/react-dom": "^19.0.4",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "date-fns": "^3.6.0",
     "reactstrap": "^9.2.3"
   },
   "peerDependencies": {
-    "next": "^15",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "next": "^14",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   }
 }
