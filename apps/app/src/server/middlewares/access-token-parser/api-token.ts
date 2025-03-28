@@ -13,7 +13,7 @@ const logger = loggerFactory('growi:middleware:access-token-parser:api-token');
 export const parserForApiToken = async(req: AccessTokenParserReq, res: Response, next: NextFunction): Promise<void> => {
   const accessToken = req.query.access_token ?? req.body.access_token;
   if (accessToken == null || typeof accessToken !== 'string') {
-    return next();
+    return;
   }
 
   logger.debug('accessToken is', accessToken);
@@ -31,5 +31,5 @@ export const parserForApiToken = async(req: AccessTokenParserReq, res: Response,
   }
 
   logger.debug('Access token parsed.');
-  return next();
+  return;
 };

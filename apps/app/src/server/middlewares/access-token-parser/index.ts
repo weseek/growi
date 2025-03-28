@@ -11,9 +11,9 @@ export const accessTokenParser = (scopes?: Scope[]) => {
     // TODO: comply HTTP header of RFC6750 / Authorization: Bearer
 
     if (scopes != null) {
-      parserForAccessToken(scopes)(req, res, next);
+      await parserForAccessToken(scopes)(req, res, next);
     }
-    parserForApiToken(req, res, next);
+    await parserForApiToken(req, res, next);
 
     return next();
   };

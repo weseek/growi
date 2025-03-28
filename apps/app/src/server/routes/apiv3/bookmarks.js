@@ -1,6 +1,7 @@
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import { SCOPE } from '~/interfaces/scope';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
@@ -110,7 +111,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/BookmarkInfo'
    */
-  router.get('/info', accessTokenParser(), loginRequired, validator.bookmarkInfo, apiV3FormValidator, async(req, res) => {
+  router.get('/info', accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK]), loginRequired, validator.bookmarkInfo, apiV3FormValidator, async(req, res) => {
     const { user } = req;
     const { pageId } = req.query;
 
@@ -192,7 +193,7 @@ module.exports = (crowi) => {
     param('userId').isMongoId().withMessage('userId is required'),
   ];
 
-  router.get('/:userId', accessTokenParser(), loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', accessTokenParser([SCOPE.READ.FEATURES.BOOKMARK]), loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
     const { userId } = req.params;
 
     if (userId == null) {
@@ -246,62 +247,63 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser(), loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator, async(req, res) => {
-    const { pageId, bool } = req.body;
-    const userId = req.user?._id;
+  router.put('/', accessTokenParser([SCOPE.WRITE.FEATURES.BOOKMARK]), loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator,
+    async(req, res) => {
+      const { pageId, bool } = req.body;
+      const userId = req.user?._id;
 
-    if (userId == null) {
-      return res.apiv3Err('A logged in user is required.');
-    }
-
-    let page;
-    let bookmark;
-    try {
-      page = await Page.findByIdAndViewer(pageId, req.user);
-      if (page == null) {
-        return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
+      if (userId == null) {
+        return res.apiv3Err('A logged in user is required.');
       }
 
-      bookmark = await Bookmark.findByPageIdAndUserId(page._id, req.user._id);
+      let page;
+      let bookmark;
+      try {
+        page = await Page.findByIdAndViewer(pageId, req.user);
+        if (page == null) {
+          return res.apiv3Err(`Page '${pageId}' is not found or forbidden`);
+        }
 
-      if (bookmark == null) {
-        if (bool) {
-          bookmark = await Bookmark.add(page, req.user);
+        bookmark = await Bookmark.findByPageIdAndUserId(page._id, req.user._id);
+
+        if (bookmark == null) {
+          if (bool) {
+            bookmark = await Bookmark.add(page, req.user);
+          }
+          else {
+            logger.warn(`Removing the bookmark for ${page._id} by ${req.user._id} failed because the bookmark does not exist.`);
+          }
         }
         else {
-          logger.warn(`Removing the bookmark for ${page._id} by ${req.user._id} failed because the bookmark does not exist.`);
-        }
-      }
-      else {
         // eslint-disable-next-line no-lonely-if
-        if (bool) {
-          logger.warn(`Adding the bookmark for ${page._id} by ${req.user._id} failed because the bookmark has already exist.`);
-        }
-        else {
-          bookmark = await Bookmark.removeBookmark(page, req.user);
+          if (bool) {
+            logger.warn(`Adding the bookmark for ${page._id} by ${req.user._id} failed because the bookmark has already exist.`);
+          }
+          else {
+            bookmark = await Bookmark.removeBookmark(page, req.user);
+          }
         }
       }
-    }
-    catch (err) {
-      logger.error('update-bookmark-failed', err);
-      return res.apiv3Err(err, 500);
-    }
+      catch (err) {
+        logger.error('update-bookmark-failed', err);
+        return res.apiv3Err(err, 500);
+      }
 
-    if (bookmark != null) {
-      bookmark.depopulate('page');
-      bookmark.depopulate('user');
-    }
+      if (bookmark != null) {
+        bookmark.depopulate('page');
+        bookmark.depopulate('user');
+      }
 
-    const parameters = {
-      targetModel: SupportedTargetModel.MODEL_PAGE,
-      target: page,
-      action: bool ? SupportedAction.ACTION_PAGE_BOOKMARK : SupportedAction.ACTION_PAGE_UNBOOKMARK,
-    };
+      const parameters = {
+        targetModel: SupportedTargetModel.MODEL_PAGE,
+        target: page,
+        action: bool ? SupportedAction.ACTION_PAGE_BOOKMARK : SupportedAction.ACTION_PAGE_UNBOOKMARK,
+      };
 
-    activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify);
+      activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify);
 
-    return res.apiv3({ bookmark });
-  });
+      return res.apiv3({ bookmark });
+    });
 
   return router;
 };

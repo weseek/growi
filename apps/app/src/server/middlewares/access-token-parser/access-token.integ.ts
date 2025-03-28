@@ -43,7 +43,6 @@ describe('access-token-parser middleware for access token with scopes', () => {
     await parserForAccessToken([])(reqMock, resMock, nextMock);
 
     expect(reqMock.user).toBeUndefined();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should not authenticate with no scopes', async() => {
@@ -77,7 +76,6 @@ describe('access-token-parser middleware for access token with scopes', () => {
     // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).not.toHaveBeenCalled();
   });
 
   it('should authenticate with specific scope', async() => {
@@ -102,18 +100,17 @@ describe('access-token-parser middleware for access token with scopes', () => {
     const { token } = await AccessToken.generateToken(
       targetUser._id,
       new Date(Date.now() + 1000 * 60 * 60 * 24),
-      [SCOPE.READ.USER.INFO],
+      [SCOPE.READ.USER_SETTINGS.INFO],
     );
 
     // act
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.READ.USER.INFO])(reqMock, resMock, nextMock);
+    await parserForAccessToken([SCOPE.READ.USER_SETTINGS.INFO])(reqMock, resMock, nextMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should reject with insufficient scopes', async() => {
@@ -139,17 +136,16 @@ describe('access-token-parser middleware for access token with scopes', () => {
     const { token } = await AccessToken.generateToken(
       targetUser._id,
       new Date(Date.now() + 1000 * 60 * 60 * 24),
-      [SCOPE.READ.USER.INFO],
+      [SCOPE.READ.USER_SETTINGS.INFO],
     );
 
     // act - try to access with write:user:info scope
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.WRITE.USER.INFO])(reqMock, resMock, nextMock);
+    await parserForAccessToken([SCOPE.WRITE.USER_SETTINGS.INFO])(reqMock, resMock, nextMock);
 
     // // assert
     expect(reqMock.user).toBeUndefined();
     expect(serializeUserSecurely).not.toHaveBeenCalled();
-    expect(nextMock).not.toHaveBeenCalled();
   });
 
   it('should authenticate with write scope implying read scope', async() => {
@@ -174,18 +170,17 @@ describe('access-token-parser middleware for access token with scopes', () => {
     const { token } = await AccessToken.generateToken(
       targetUser._id,
       new Date(Date.now() + 1000 * 60 * 60 * 24),
-      [SCOPE.WRITE.USER.INFO],
+      [SCOPE.WRITE.USER_SETTINGS.INFO],
     );
 
     // act - try to access with read:user:info scope
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.READ.USER.INFO])(reqMock, resMock, nextMock);
+    await parserForAccessToken([SCOPE.READ.USER_SETTINGS.INFO])(reqMock, resMock, nextMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
   it('should authenticate with wildcard scope', async() => {
@@ -208,18 +203,17 @@ describe('access-token-parser middleware for access token with scopes', () => {
     const { token } = await AccessToken.generateToken(
       targetUser._id,
       new Date(Date.now() + 1000 * 60 * 60 * 24),
-      [SCOPE.READ.USER.ALL],
+      [SCOPE.READ.USER_SETTINGS.ALL],
     );
 
     // act - try to access with read:user:info scope
     reqMock.query.access_token = token;
-    await parserForAccessToken([SCOPE.READ.USER.INFO, SCOPE.READ.USER.API.ACCESS_TOKEN])(reqMock, resMock, nextMock);
+    await parserForAccessToken([SCOPE.READ.USER_SETTINGS.INFO, SCOPE.READ.USER_SETTINGS.API.ACCESS_TOKEN])(reqMock, resMock, nextMock);
 
     // assert
     expect(reqMock.user).toBeDefined();
     expect(reqMock.user?._id).toStrictEqual(targetUser._id);
     expect(serializeUserSecurely).toHaveBeenCalledOnce();
-    expect(nextMock).toHaveBeenCalled();
   });
 
 });

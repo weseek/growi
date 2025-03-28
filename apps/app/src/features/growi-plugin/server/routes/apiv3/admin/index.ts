@@ -1,9 +1,12 @@
-import express, { Request, Router } from 'express';
+import type { Request, Router } from 'express';
+import express from 'express';
 import { body, query } from 'express-validator';
 import mongoose from 'mongoose';
 
-import Crowi from '~/server/crowi';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import { SCOPE } from '~/interfaces/scope';
+import type Crowi from '~/server/crowi';
+import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 
 import { GrowiPlugin } from '../../../models';
 import { growiPluginService } from '../../../services';
@@ -29,7 +32,7 @@ module.exports = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-  router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.PLUGIN]), loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
     try {
       const data = await GrowiPlugin.find({});
       return res.apiv3({ plugins: data });
@@ -39,56 +42,60 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.post('/', loginRequiredStrictly, adminRequired, validator.pluginFormValueisRequired, async(req: Request, res: ApiV3Response) => {
-    const { pluginInstallerForm: formValue } = req.body;
+  router.post('/', accessTokenParser([SCOPE.WRITE.ADMIN.PLUGIN]), loginRequiredStrictly, adminRequired, validator.pluginFormValueisRequired,
+    async(req: Request, res: ApiV3Response) => {
+      const { pluginInstallerForm: formValue } = req.body;
 
-    try {
-      const pluginName = await growiPluginService.install(formValue);
-      return res.apiv3({ pluginName });
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
+      try {
+        const pluginName = await growiPluginService.install(formValue);
+        return res.apiv3({ pluginName });
+      }
+      catch (err) {
+        return res.apiv3Err(err);
+      }
+    });
 
-  router.put('/:id/activate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
-    const { id } = req.params;
-    const pluginId = new ObjectID(id);
+  router.put('/:id/activate', accessTokenParser([SCOPE.WRITE.ADMIN.PLUGIN]), loginRequiredStrictly, adminRequired, validator.pluginIdisRequired,
+    async(req: Request, res: ApiV3Response) => {
+      const { id } = req.params;
+      const pluginId = new ObjectID(id);
 
-    try {
-      const pluginName = await GrowiPlugin.activatePlugin(pluginId);
-      return res.apiv3({ pluginName });
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
+      try {
+        const pluginName = await GrowiPlugin.activatePlugin(pluginId);
+        return res.apiv3({ pluginName });
+      }
+      catch (err) {
+        return res.apiv3Err(err);
+      }
+    });
 
-  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
-    const { id } = req.params;
-    const pluginId = new ObjectID(id);
+  router.put('/:id/deactivate', accessTokenParser([SCOPE.WRITE.ADMIN.PLUGIN]), loginRequiredStrictly, adminRequired, validator.pluginIdisRequired,
+    async(req: Request, res: ApiV3Response) => {
+      const { id } = req.params;
+      const pluginId = new ObjectID(id);
 
-    try {
-      const pluginName = await GrowiPlugin.deactivatePlugin(pluginId);
-      return res.apiv3({ pluginName });
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
+      try {
+        const pluginName = await GrowiPlugin.deactivatePlugin(pluginId);
+        return res.apiv3({ pluginName });
+      }
+      catch (err) {
+        return res.apiv3Err(err);
+      }
+    });
 
-  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
-    const { id } = req.params;
-    const pluginId = new ObjectID(id);
+  router.delete('/:id/remove', accessTokenParser([SCOPE.WRITE.ADMIN.PLUGIN]), loginRequiredStrictly, adminRequired, validator.pluginIdisRequired,
+    async(req: Request, res: ApiV3Response) => {
+      const { id } = req.params;
+      const pluginId = new ObjectID(id);
 
-    try {
-      const pluginName = await growiPluginService.deletePlugin(pluginId);
-      return res.apiv3({ pluginName });
-    }
-    catch (err) {
-      return res.apiv3Err(err);
-    }
-  });
+      try {
+        const pluginName = await growiPluginService.deletePlugin(pluginId);
+        return res.apiv3({ pluginName });
+      }
+      catch (err) {
+        return res.apiv3Err(err);
+      }
+    });
 
   return router;
 };
