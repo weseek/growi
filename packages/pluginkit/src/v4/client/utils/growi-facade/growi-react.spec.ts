@@ -8,16 +8,16 @@ describe('growiReact()', () => {
 
   afterEach(() => {
     process.env.NODE_ENV = originalNodeEnv;
-    delete (global as any).window.GrowiFacade;
+    delete (global as any).window.growiFacade;
   });
 
-  it('returns window.GrowiFacade.react in production mode', () => {
+  it('returns window.growiFacade.react in production mode', () => {
     // given
     process.env.NODE_ENV = 'production';
     const mockProductionReact = { useEffect: () => {} } as unknown as typeof React;
 
     (global as any).window = {
-      GrowiFacade: {
+      growiFacade: {
         react: mockProductionReact,
       },
     };

@@ -5,14 +5,14 @@ import type { GrowiFacade } from '@growi/core';
 
 declare global {
   interface Window {
-    GrowiFacade: GrowiFacade
+    growiFacade: GrowiFacade
   }
 }
 
 /**
  * Retrieves the React instance that this package should use.
  *
- * - **Production Mode**: Returns the React instance from `window.GrowiFacade.react`
+ * - **Production Mode**: Returns the React instance from `window.growiFacade.react`
  *   to ensure a single shared React instance across the app.
  * - **Development Mode**: Returns the React instance passed as an argument,
  *   which allows local development and hot reload without issues.
@@ -28,7 +28,7 @@ declare global {
  */
 export const growiReact = (react: typeof React): typeof React => {
   if (process.env.NODE_ENV === 'production') {
-    return window.GrowiFacade.react as typeof React;
+    return window.growiFacade.react as typeof React;
   }
   return react as typeof React;
 };
