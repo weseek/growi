@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, JSX } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';

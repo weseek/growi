@@ -1,4 +1,4 @@
-import type { ChangeEvent } from 'react';
+import type { ChangeEvent, JSX } from 'react';
 import { useState, useCallback, useEffect } from 'react';
 
 import nodePath from 'path';

@@ -1,10 +1,11 @@
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
 
 import { forgotPasswordErrorCode } from '~/interfaces/errors/forgot-password';
 import loggerFactory from '~/utils/logger';
 
-import PasswordResetOrder, { IPasswordResetOrder } from '../models/password-reset-order';
+import type { IPasswordResetOrder } from '../models/password-reset-order';
+import PasswordResetOrder from '../models/password-reset-order';
 
 const logger = loggerFactory('growi:routes:forgot-password');
 

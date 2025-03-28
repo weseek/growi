@@ -1,4 +1,6 @@
-import type { ChangeEventHandler, DetailedHTMLProps, TextareaHTMLAttributes } from 'react';
+import type {
+  ChangeEventHandler, DetailedHTMLProps, TextareaHTMLAttributes, JSX,
+} from 'react';
 import { useCallback } from 'react';
 
 type Props = DetailedHTMLProps<TextareaHTMLAttributes<HTMLTextAreaElement>, HTMLTextAreaElement>;

@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo, type JSX } from 'react';
 
 import Link from 'next/link';
 import { UncontrolledTooltip } from 'reactstrap';
