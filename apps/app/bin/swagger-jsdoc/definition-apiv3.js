@@ -89,6 +89,7 @@ module.exports = {
         'SlackIntegrationSettings (without proxy)',
         'SlackIntegrationLegacySetting',
         'ShareLink Management',
+        'Templates',
         'Staff',
         'UserGroupRelations',
         'UserGroups',
