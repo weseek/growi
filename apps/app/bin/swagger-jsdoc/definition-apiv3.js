@@ -42,6 +42,7 @@ module.exports = {
         'Attachment',
         'Bookmarks',
         'BookmarkFolders',
+        'OpenAI',
         'Page',
         'Pages',
         'PageListing',

@@ -28,6 +28,32 @@ type Req = Request<ReqParams, Response, undefined> & {
   user: IUserHasId,
 }
 
+/**
+ * @swagger
+ *
+ * /openai/ai-assistant/{id}:
+ *   delete:
+ *     tags: [OpenAI]
+ *     security:
+ *       - api_key: []
+ *     summary: /openai/ai-assistant/{id}
+ *     description: Delete an AI assistant
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 deletedAiAssistant:
+ *                   $ref: '#/components/schemas/OpenAIAssistant'
+ */
 export const deleteAiAssistantsFactory: DeleteAiAssistantsFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 

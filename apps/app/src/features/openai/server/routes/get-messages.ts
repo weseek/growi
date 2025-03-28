@@ -29,6 +29,49 @@ type Req = Request<ReqParam, Response, undefined> & {
   user: IUserHasId,
 }
 
+/**
+ * @swagger
+ *
+ * /openai/messages/{aiAssistantId}/{threadId}:
+ *   get:
+ *     tags: [OpenAI]
+ *     security:
+ *       - api_key: []
+ *     parameters:
+ *       - name: threadId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: aiAssistantId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: limit
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: number
+ *       - name: before
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *       - name: after
+ *         in: query
+ *         required: false
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               $ref: '#/components/schemas/OpenAIMessagesResponse'
+ */
 export const getMessagesFactory: GetMessagesFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 

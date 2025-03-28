@@ -40,6 +40,38 @@ type Req = Request<undefined, Response, ReqBody> & {
 
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
+/**
+ * @swagger
+ *
+ * /openai/message:
+ *   post:
+ *     tags: [OpenAI]
+ *     summary: /openai/message
+ *     security:
+ *       - api_key: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userMessage:
+ *                 type: string
+ *               aiAssistantId:
+ *                 type: string
+ *               threadId:
+ *                 type: string
+ *               summaryMode:
+ *                 type: boolean
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           text/event-stream:
+ *             schema:
+ *               type: string
+ */
 export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 

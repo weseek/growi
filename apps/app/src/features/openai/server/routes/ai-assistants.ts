@@ -20,6 +20,26 @@ type Req = Request<undefined, Response, undefined> & {
   user: IUserHasId,
 }
 
+/**
+ * @swagger
+ *
+ * /openai/ai-assistants:
+ *   get:
+ *     tags: [OpenAI]
+ *     security:
+ *       - api_key: []
+ *     summary: /openai/ai-assistants
+ *     description: Get all AI assistants
+ *     responses:
+ *       200:
+ *         description: OK
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/OpenAIAssistant'
+ */
 export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
 
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
