@@ -47,7 +47,7 @@ module.exports = {
         'Revisions',
         'ShareLinks',
         'Users',
-        '',
+        'UserUISettings',
         '',
       ],
     },
