@@ -28,6 +28,11 @@ module.exports = {
         in: 'cookie',
         name: 'connect.sid',
       },
+      transferHeaderAuth: {
+        type: 'apiKey',
+        in: 'header',
+        name: 'x-growi-transfer-key',
+      },
     },
   },
   'x-tagGroups': [
@@ -71,6 +76,7 @@ module.exports = {
         'CustomizeSetting',
         'Import',
         'Export',
+        'GROWI to GROWI Transfer',
         'MongoDB',
         'NotificationSetting',
         'QuestionnaireSetting',
@@ -79,6 +85,7 @@ module.exports = {
         'SlackIntegrationSettings (without proxy)',
         'SlackIntegrationLegacySetting',
         'ShareLink Management',
+        'Staff',
         'UserGroupRelations',
         'UserGroups',
         'Users Management',
