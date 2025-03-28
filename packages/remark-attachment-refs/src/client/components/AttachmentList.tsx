@@ -1,10 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, type JSX } from 'react';
 
 import type { IAttachmentHasId } from '@growi/core';
 import { Attachment, LoadingSpinner } from '@growi/ui/dist/components';
 
 import { ExtractedAttachments } from './ExtractedAttachments';
-import { RefsContext } from './util/refs-context';
+import type { RefsContext } from './util/refs-context';
 
 
 import styles from './AttachmentList.module.scss';

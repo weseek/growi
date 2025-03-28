@@ -1,4 +1,6 @@
-import React, { useCallback, useState, useMemo } from 'react';
+import React, {
+  useCallback, useState, useMemo, type JSX,
+} from 'react';
 
 import { useTranslation } from 'react-i18next';
 import {

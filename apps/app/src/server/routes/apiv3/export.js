@@ -1,6 +1,6 @@
 import { SupportedAction } from '~/interfaces/activity';
-import { exportService } from '~/server/service/export';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { exportService } from '~/server/service/export';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, type JSX } from 'react';
 
 import type { LinkProps } from 'next/link';
 import { useTranslation } from 'react-i18next';
