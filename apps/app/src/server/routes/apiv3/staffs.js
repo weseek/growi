@@ -21,66 +21,9 @@ const compareFunction = function(a, b) {
   return a.order - b.order;
 };
 
-/**
- * @swagger
- *
- * components:
- *   schemas:
- *     Staff:
- *       type: object
- *       properties:
- *         order:
- *           type: integer
- *           example: 1
- *         sectionName:
- *           type: string
- *           example: GROWI VILLAGE
- *         additionalClass:
- *           type: string
- *           example: ""
- *         memberGroups:
- *           type: array
- *           items:
- *             type: object
- *             properties:
- *               additionalClass:
- *                 type: string
- *                 example: col-md-12 my-4
- *               members:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     position:
- *                       type: string
- *                       example: Founder
- *                     name:
- *                       type: string
- *                       example: yuki-takei
- */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
-  /**
-   * @swagger
-   *
-   * /staffs:
-   *   get:
-   *     summary: Get staffs
-   *     security: []
-   *     tags: [Staff]
-   *     responses:
-   *       200:
-   *         description: Staffs fetched successfully
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 contributors:
-   *                   type: array
-   *                   items:
-   *                     $ref: '#/components/schemas/Staff'
-   */
+
   router.get('/', async(req, res) => {
     const now = new Date();
     const growiCloudUri = await crowi.configManager.getConfig('app:growiCloudUri');
