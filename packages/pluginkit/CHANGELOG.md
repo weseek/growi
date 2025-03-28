@@ -1,5 +1,11 @@
 # @growi/pluginkit
 
+## 1.1.1
+
+### Patch Changes
+
+- [#9812](https://github.com/weseek/growi/pull/9812) [`fdde5ad`](https://github.com/weseek/growi/commit/fdde5ad90f8324ae5fd6b3ca127b46f1dd8453e0) Thanks [@NaokiHigashi28](https://github.com/NaokiHigashi28)! - Fix growifacade typo
+
 ## 1.1.0
 
 ### Minor Changes
