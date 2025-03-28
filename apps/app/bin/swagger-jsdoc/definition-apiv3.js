@@ -81,6 +81,7 @@ module.exports = {
         'GROWI to GROWI Transfer',
         'MongoDB',
         'NotificationSetting',
+        'Plugins',
         'QuestionnaireSetting',
         'SlackIntegrationSettings',
         'SlackIntegrationSettings (with proxy)',
