@@ -17,11 +17,6 @@ import { extractScopes } from '../util/scope-utils';
 const logger = loggerFactory('growi:models:access-token');
 
 const generateTokenHash = (token: string) => crypto.createHash('sha256').update(token).digest('hex');
-const getNowDate = () => {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  return now;
-};
 
 type GenerateTokenResult = {
   token: string,
@@ -103,13 +98,13 @@ accessTokenSchema.statics.deleteAllTokensByUserId = async function(userId: Types
 };
 
 accessTokenSchema.statics.deleteExpiredToken = async function() {
-  const now = getNowDate();
+  const now = new Date();
   await this.deleteMany({ expiredAt: { $lt: now } });
 };
 
 accessTokenSchema.statics.findUserIdByToken = async function(token: string, requiredScopes: Scope[]) {
   const tokenHash = generateTokenHash(token);
-  const now = getNowDate();
+  const now = new Date();
   if (requiredScopes.length === 0) {
     return;
   }
@@ -118,7 +113,7 @@ accessTokenSchema.statics.findUserIdByToken = async function(token: string, requ
 };
 
 accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId | string) {
-  const now = getNowDate();
+  const now = new Date();
   return this.find({ user: userId, expiredAt: { $gte: now } }).select('_id expiredAt scopes description');
 };
 
