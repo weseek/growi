@@ -119,7 +119,7 @@ accessTokenSchema.statics.findUserIdByToken = async function(token: string, requ
 
 accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId | string) {
   const now = getNowDate();
-  return this.find({ user: userId, expiredAt: { $gte: now } }).select('_id expiredAt scope description');
+  return this.find({ user: userId, expiredAt: { $gte: now } }).select('_id expiredAt scopes description');
 };
 
 accessTokenSchema.statics.validateTokenScopes = async function(token: string, requiredScopes: Scope[]) {
