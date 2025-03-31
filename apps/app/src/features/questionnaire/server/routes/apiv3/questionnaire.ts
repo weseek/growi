@@ -3,6 +3,7 @@ import type { Request } from 'express';
 import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
+import { SCOPE } from '~/interfaces/scope';
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
@@ -61,7 +62,30 @@ module.exports = (crowi: Crowi): Router => {
     return 404;
   };
 
-  router.get('/orders', accessTokenParser(), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  /**
+   * @swagger
+   *
+   * /questionnaire/orders:
+   *   get:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - api_key: []
+   *     summary: /questionnaire/orders
+   *     description: Get questionnaire orders
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 questionnaireOrders:
+   *                   type: array
+   *                   items:
+   *                     type: object
+   */
+  router.get('/orders', accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const growiInfo = await growiInfoService.getGrowiInfo(true);
     const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
@@ -76,139 +100,286 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.get('/is-enabled', accessTokenParser(), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  /**
+   * @swagger
+   *
+   * /questionnaire/is-enabled:
+   *   get:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - api_key: []
+   *     summary: /questionnaire/is-enabled
+   *     description: Get questionnaire is enabled
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 isEnabled:
+   *                   type: boolean
+   */
+  router.get('/is-enabled', accessTokenParser([SCOPE.READ.FEATURES.QUESTIONNAIRE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
     return res.apiv3({ isEnabled });
   });
 
-  router.post('/proactive/answer', accessTokenParser(), loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const sendQuestionnaireAnswer = async() => {
-      const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
-      const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
-      const growiInfo = await growiInfoService.getGrowiInfo(true);
-      const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
-      const proactiveQuestionnaireAnswer: IProactiveQuestionnaireAnswer = {
-        satisfaction: req.body.satisfaction,
-        lengthOfExperience: req.body.lengthOfExperience,
-        position: req.body.position,
-        occupation: req.body.occupation,
-        commentText: req.body.commentText,
-        growiInfo,
-        userInfo,
-        answeredAt: new Date(),
+  /**
+   * @swagger
+   *
+   * /questionnaire/proactive/answer:
+   *   post:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - api_key: []
+   *     summary: /questionnaire/proactive/answer
+   *     description: Post proactive questionnaire answer
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       200:
+   *         description: Success
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   */
+  router.post('/proactive/answer', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
+    validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const sendQuestionnaireAnswer = async() => {
+        const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
+        const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
+        const growiInfo = await growiInfoService.getGrowiInfo(true);
+        const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
+
+
+        const proactiveQuestionnaireAnswer: IProactiveQuestionnaireAnswer = {
+          satisfaction: req.body.satisfaction,
+          lengthOfExperience: req.body.lengthOfExperience,
+          position: req.body.position,
+          occupation: req.body.occupation,
+          commentText: req.body.commentText,
+          growiInfo,
+          userInfo,
+          answeredAt: new Date(),
+        };
+
+        const proactiveQuestionnaireAnswerLegacy = convertToLegacyFormat(proactiveQuestionnaireAnswer, isAppSiteUrlHashed);
+
+        try {
+          await axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswerLegacy);
+        }
+        catch (err) {
+          if (err.request != null) {
+          // when failed to send, save to resend in cronjob
+            await ProactiveQuestionnaireAnswer.create(proactiveQuestionnaireAnswer);
+          }
+          else {
+            throw err;
+          }
+        }
       };
 
-      const proactiveQuestionnaireAnswerLegacy = convertToLegacyFormat(proactiveQuestionnaireAnswer, isAppSiteUrlHashed);
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
       try {
-        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswerLegacy);
+        await sendQuestionnaireAnswer();
+        return res.apiv3({});
       }
       catch (err) {
-        if (err.request != null) {
-          // when failed to send, save to resend in cronjob
-          await ProactiveQuestionnaireAnswer.create(proactiveQuestionnaireAnswer);
-        }
-        else {
-          throw err;
-        }
+        logger.error(err);
+        return res.apiv3Err(err, 500);
       }
-    };
+    });
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  /**
+   * @swagger
+   *
+   * /questionnaire/answer:
+   *   put:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - api_key: []
+   *     summary: /questionnaire/answer
+   *     description: Post questionnaire answer
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       201:
+   *         description: Created
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       204:
+   *         description: No Content
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       404:
+   *         description: Not Found
+   */
+  router.put('/answer', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
+    validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
+        const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
+        const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
+        const growiInfo = await growiInfoService.getGrowiInfo(true);
+        const userInfo = crowi.questionnaireService.getUserInfo(user, getSiteUrlHashed(growiInfo.appSiteUrl));
 
-    try {
-      await sendQuestionnaireAnswer();
-      return res.apiv3({});
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+        const questionnaireAnswer: IQuestionnaireAnswer = {
+          growiInfo,
+          userInfo,
+          answers,
+          answeredAt: new Date(),
+          questionnaireOrder: req.body.questionnaireOrderId,
+        };
 
-  router.put('/answer', accessTokenParser(), loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
-      const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
-      const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
-      const growiInfo = await growiInfoService.getGrowiInfo(true);
-      const userInfo = crowi.questionnaireService.getUserInfo(user, getSiteUrlHashed(growiInfo.appSiteUrl));
+        const questionnaireAnswerLegacy = convertToLegacyFormat(questionnaireAnswer, isAppSiteUrlHashed);
 
-      const questionnaireAnswer: IQuestionnaireAnswer = {
-        growiInfo,
-        userInfo,
-        answers,
-        answeredAt: new Date(),
-        questionnaireOrder: req.body.questionnaireOrderId,
+        try {
+          await axios.post(`${questionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswerLegacy);
+        }
+        catch (err) {
+          if (err.request != null) {
+          // when failed to send, save to resend in cronjob
+            await QuestionnaireAnswer.create(questionnaireAnswer);
+          }
+          else {
+            throw err;
+          }
+        }
       };
 
-      const questionnaireAnswerLegacy = convertToLegacyFormat(questionnaireAnswer, isAppSiteUrlHashed);
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
       try {
-        await axios.post(`${questionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswerLegacy);
+        await sendQuestionnaireAnswer(req.user ?? null, req.body.answers);
+        const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.answered);
+        return res.apiv3({}, status);
       }
       catch (err) {
-        if (err.request != null) {
-          // when failed to send, save to resend in cronjob
-          await QuestionnaireAnswer.create(questionnaireAnswer);
-        }
-        else {
-          throw err;
-        }
+        logger.error(err);
+        return res.apiv3Err(err, 500);
       }
-    };
+    });
 
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
 
-    try {
-      await sendQuestionnaireAnswer(req.user ?? null, req.body.answers);
-      const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.answered);
-      return res.apiv3({}, status);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+  /**
+   * @swagger
+   *
+   * /questionnaire/skip:
+   *   put:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - api_key: []
+   *     summary: /questionnaire/skip
+   *     description: Skip questionnaire
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       201:
+   *         description: Created
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       204:
+   *         description: No Content
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       404:
+   *         description: Not Found
+   */
+  router.put('/skip', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
+    validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-  router.put('/skip', accessTokenParser(), loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+      try {
+        const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.skipped);
+        return res.apiv3({}, status);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
-    try {
-      const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.skipped);
-      return res.apiv3({}, status);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+  /**
+   * @swagger
+   *
+   * /questionnaire/deny:
+   *   put:
+   *     tags: [Questionnaire]
+   *     security:
+   *       - api_key: []
+   *     summary: /questionnaire/deny
+   *     description: Deny questionnaire
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *     responses:
+   *       201:
+   *         description: Created
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       204:
+   *         description: No Content
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *       404:
+   *         description: Not Found
+   */
+  router.put('/deny', accessTokenParser([SCOPE.WRITE.FEATURES.QUESTIONNAIRE]), loginRequired,
+    validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+      }
 
-  router.put('/deny', accessTokenParser(), loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.denied);
-      return res.apiv3({}, status);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+      try {
+        const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.denied);
+        return res.apiv3({}, status);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   return router;
-
 };

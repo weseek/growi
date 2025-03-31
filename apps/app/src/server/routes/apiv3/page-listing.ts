@@ -9,6 +9,7 @@ import { query, oneOf } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
 
+import { SCOPE } from '~/interfaces/scope';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
@@ -66,7 +67,28 @@ const routerFactory = (crowi: Crowi): Router => {
   const router = express.Router();
 
 
-  router.get('/root', accessTokenParser(), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  /**
+   * @swagger
+   *
+   * /page-listing/root:
+   *   get:
+   *     tags: [PageListing]
+   *     security:
+   *       - api_key: []
+   *     summary: /page-listing/root
+   *     description: Get the root page
+   *     responses:
+   *       200:
+   *         description: Success
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 rootPage:
+   *                   $ref: '#/components/schemas/Page'
+   */
+  router.get('/root', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const Page = mongoose.model<IPage, PageModel>('Page');
 
     let rootPage;
@@ -80,8 +102,56 @@ const routerFactory = (crowi: Crowi): Router => {
     return res.apiv3({ rootPage });
   });
 
+  /**
+   * @swagger
+   *
+   * /page-listing/ancestors-children:
+   *   get:
+   *     tags: [PageListing]
+   *     security:
+   *       - api_key: []
+   *     summary: /page-listing/ancestors-children
+   *     description: Get the ancestors and children of a page
+   *     parameters:
+   *       - name: path
+   *         in: query
+   *         required: true
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: Get the ancestors and children of a page
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 ancestorsChildren:
+   *                   type: object
+   *                   additionalProperties:
+   *                     type: object
+   *                     properties:
+   *                       _id:
+   *                         type: string
+   *                         description: Document ID
+   *                       descendantCount:
+   *                         type: integer
+   *                         description: Number of descendants
+   *                       isEmpty:
+   *                         type: boolean
+   *                         description: Indicates if the node is empty
+   *                       grant:
+   *                         type: integer
+   *                         description: Access level
+   *                       path:
+   *                         type: string
+   *                         description: Path string
+   *                       revision:
+   *                         type: string
+   *                         nullable: true
+   *                         description: Revision ID (nullable)
+   */
   // eslint-disable-next-line max-len
-  router.get('/ancestors-children', accessTokenParser(), loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
+  router.get('/ancestors-children', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
     const pageService = crowi.pageService;
@@ -96,11 +166,41 @@ const routerFactory = (crowi: Crowi): Router => {
 
   });
 
+  /**
+   * @swagger
+   *
+   * /page-listing/children:
+   *   get:
+   *     tags: [PageListing]
+   *     security:
+   *       - api_key: []
+   *     summary: /page-listing/children
+   *     description: Get the children of a page
+   *     parameters:
+   *       - name: id
+   *         in: query
+   *         type: string
+   *       - name: path
+   *         in: query
+   *         type: string
+   *     responses:
+   *       200:
+   *         description: Get the children of a page
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 children:
+   *                   type: array
+   *                   items:
+   *                     $ref: '#/components/schemas/Page'
+   */
   /*
    * In most cases, using id should be prioritized
    */
   // eslint-disable-next-line max-len
-  router.get('/children', accessTokenParser(), loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/children', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
     const pageService = crowi.pageService;
@@ -120,8 +220,75 @@ const routerFactory = (crowi: Crowi): Router => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /page-listing/info:
+   *   get:
+   *     tags: [PageListing]
+   *     security:
+   *       - api_key: []
+   *     summary: /page-listing/info
+   *     description: Get the information of a page
+   *     parameters:
+   *       - name: pageIds
+   *         in: query
+   *         type: array
+   *       - name: path
+   *         in: query
+   *         type: string
+   *       - name: attachBookmarkCount
+   *         in: query
+   *         type: boolean
+   *       - name: attachShortBody
+   *         in: query
+   *         type: boolean
+   *     responses:
+   *       200:
+   *         description: Get the information of a page
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 idToPageInfoMap:
+   *                   type: object
+   *                   additionalProperties:
+   *                     type: object
+   *                     properties:
+   *                       commentCount:
+   *                         type: integer
+   *                       contentAge:
+   *                         type: integer
+   *                       descendantCount:
+   *                         type: integer
+   *                       isAbleToDeleteCompletely:
+   *                         type: boolean
+   *                       isDeletable:
+   *                         type: boolean
+   *                       isEmpty:
+   *                         type: boolean
+   *                       isMovable:
+   *                         type: boolean
+   *                       isRevertible:
+   *                         type: boolean
+   *                       isV5Compatible:
+   *                         type: boolean
+   *                       likerIds:
+   *                         type: array
+   *                         items:
+   *                           type: string
+   *                       seenUserIds:
+   *                         type: array
+   *                         items:
+   *                           type: string
+   *                       sumOfLikers:
+   *                         type: integer
+   *                       sumOfSeenUsers:
+   *                         type: integer
+   */
   // eslint-disable-next-line max-len
-  router.get('/info', accessTokenParser(), loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/info', accessTokenParser([SCOPE.READ.FEATURES.PAGE]), loginRequired, validator.pageIdsOrPathRequired, validator.infoParams, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const {
       pageIds, path, attachBookmarkCount: attachBookmarkCountParam, attachShortBody: attachShortBodyParam,
     } = req.query;

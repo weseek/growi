@@ -15,7 +15,7 @@ export const parserForAccessToken = (scopes: Scope[]) => {
 
     const accessToken = req.query.access_token ?? req.body.access_token;
     if (accessToken == null || typeof accessToken !== 'string') {
-      return next();
+      return;
     }
     if (scopes == null || scopes.length === 0) {
       logger.debug('scopes is empty');
@@ -43,7 +43,7 @@ export const parserForAccessToken = (scopes: Scope[]) => {
     }
 
     logger.debug('Access token parsed.');
-    return next();
+    return;
 
   };
 };

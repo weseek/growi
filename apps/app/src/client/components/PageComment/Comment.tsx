@@ -1,4 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, {
+  useEffect, useMemo, useState, type JSX,
+} from 'react';
 
 import { isPopulated, type IUser } from '@growi/core';
 import * as pathUtils from '@growi/core/dist/utils/path-utils';

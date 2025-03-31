@@ -20,7 +20,7 @@ export const hasAllScope = (scope: Scope): scope is Scope => {
 
 /**
  * Returns all values of the scope object
- * For example, SCOPE.READ.USER.API.ALL returns ['read:user:api:access_token', 'read:user:api:api_token']
+ * For example, SCOPE.READ.USER_SETTINGS.API.ALL returns ['read:user:api:access_token', 'read:user:api:api_token']
  */
 const getAllScopeValuesFromObj = (scopeObj: any): Scope[] => {
   const result: Scope[] = [];
@@ -78,7 +78,7 @@ export const extractAllScope = (scope: Scope): Scope[] => {
 /**
  * Extracts scopes from a given array of scopes
  * And delete all scopes
- * For example, [SCOPE.WRITE.USER.API.ALL] === ['write:user:api:all']
+ * For example, [SCOPE.WRITE.USER_SETTINGS.API.ALL] === ['write:user:api:all']
  * returns ['read:user:api:access_token',
  *          'read:user:api:api_token'
  *          'write:user:api:access_token',

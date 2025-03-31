@@ -1,5 +1,10 @@
-// If you want to add a new scope, you only need to add a new key to the ORIGINAL_SCOPE object.
-export const ORIGINAL_SCOPE_ADMIN = {
+// SCOPE_SEED defines the basic scope structure.
+// When you need to set different permissions for Admin and User
+// on specific endpoints (like /me), use SCOPE rather than modifying SCOPE_SEED.
+
+// If you want to add a new scope, you only need to add a new key to the SCOPE_SEED object.
+
+const SCOPE_SEED_ADMIN = {
   admin: {
     top: {},
     app: {},
@@ -21,8 +26,8 @@ export const ORIGINAL_SCOPE_ADMIN = {
   },
 } as const;
 
-export const ORIGINAL_SCOPE_USER = {
-  user: {
+const SCOPE_SEED_USER = {
+  user_settings: {
     info: {},
     external_account: {},
     password: {},
@@ -33,13 +38,19 @@ export const ORIGINAL_SCOPE_USER = {
     in_app_notification: {},
     other: {},
   },
-  base: {
+  features: {
+    ai_assistant: {},
+    page: {},
+    share_link: {},
+    bookmark: {},
+    questionnaire: {},
+    attachment: {},
   },
 } as const;
 
-export const ORIGINAL_SCOPE = {
-  ...ORIGINAL_SCOPE_ADMIN,
-  ...ORIGINAL_SCOPE_USER,
+const SCOPE_SEED = {
+  ...SCOPE_SEED_ADMIN,
+  ...SCOPE_SEED_USER,
 } as const;
 
 export const ACTION = {
@@ -50,12 +61,12 @@ export const ACTION = {
 type ACTION_TYPE = typeof ACTION[keyof typeof ACTION];
 export const ALL_SIGN = '*';
 
-export const ORIGINAL_SCOPE_WITH_ACTION = Object.values(ACTION).reduce(
+const SCOPE_SEED_WITH_ACTION = Object.values(ACTION).reduce(
   (acc, action) => {
-    acc[action] = ORIGINAL_SCOPE;
+    acc[action] = SCOPE_SEED;
     return acc;
   },
-  {} as Record<ACTION_TYPE, typeof ORIGINAL_SCOPE>,
+  {} as Record<ACTION_TYPE, typeof SCOPE_SEED>,
 );
 
 type FlattenObject<T> = {
@@ -71,11 +82,11 @@ type AddAllToScope<S extends string> =
     ? `${X}:${typeof ALL_SIGN}` | `${X}:${AddAllToScope<Y>}` | S
     : S;
 
-type ScopeOnly = FlattenObject<typeof ORIGINAL_SCOPE_WITH_ACTION>;
+type ScopeOnly = FlattenObject<typeof SCOPE_SEED_WITH_ACTION>;
 type ScopeWithAll = AddAllToScope<ScopeOnly>;
 export type Scope = ScopeOnly | ScopeWithAll;
 
-// ScopeConstantsの型定義
+// ScopeConstants type definition
 type ScopeConstantLeaf = Scope;
 
 type ScopeConstantNode<T> = {
@@ -87,8 +98,8 @@ type ScopeConstantNode<T> = {
 };
 
 type ScopeConstantType = {
-  [A in keyof typeof ORIGINAL_SCOPE_WITH_ACTION as Uppercase<string & A>]:
-    ScopeConstantNode<typeof ORIGINAL_SCOPE> & { ALL: Scope }
+  [A in keyof typeof SCOPE_SEED_WITH_ACTION as Uppercase<string & A>]:
+    ScopeConstantNode<typeof SCOPE_SEED> & { ALL: Scope }
 };
 
 const buildScopeConstants = (): ScopeConstantType => {
@@ -116,7 +127,7 @@ const buildScopeConstants = (): ScopeConstantType => {
       }
     });
   };
-  processObject(ORIGINAL_SCOPE_WITH_ACTION, [], result);
+  processObject(SCOPE_SEED_WITH_ACTION, [], result);
 
   return result as ScopeConstantType;
 };

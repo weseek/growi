@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import type { UseFormRegisterReturn } from 'react-hook-form';
 
 import { useIsDeviceLargerThanMd } from '~/stores/ui';
@@ -28,20 +29,19 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
   scopeObject,
   register,
   disabledScopes,
-  level = 0,
+  level = 1,
 }) => {
 
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
   // Convert object into an array to determine "first vs. non-first" elements
   const entries = Object.entries(scopeObject);
+  const { t } = useTranslation('commons');
 
   return (
     <>
       {entries.map(([scopeKey, scopeValue], idx) => {
-        // Get indentation class based on level
-        // Example: Insert <hr> only for levels 0 or 1, except for the first item
-        const showHr = (level === 0 || level === 1) && idx !== 0;
+        const showHr = (level === 1 || level === 2) && idx !== 0;
 
         if (typeof scopeValue === 'object') {
           return (
@@ -51,7 +51,6 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
                 <div className="col-md-5 ">
                   <label className={`form-check-label fw-bold indentation indentation-level-${level}`}>{scopeKey}</label>
                 </div>
-                <div className={`col form-text fw-bold ${isDeviceLargerThanMd ? '' : 'text-end'}`}>desc for {scopeKey}</div>
               </div>
 
               {/* Render recursively */}
@@ -80,7 +79,7 @@ export const AccessTokenScopeList: React.FC<AccessTokenScopeListProps> = ({
                 {scopeKey}
               </label>
             </div>
-            <div className={`col form-text ${isDeviceLargerThanMd ? '' : 'text-end'}`}>desc for {scopeKey}</div>
+            <div className={`col form-text ${isDeviceLargerThanMd ? '' : 'text-end'}`}>{t(`accesstoken_scopes_desc.${scopeKey.replace(/:/g, '.')}`)}</div>
           </div>
         );
       })}
