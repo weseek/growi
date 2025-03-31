@@ -38,9 +38,6 @@ const validator = [
       const expiredAt = new Date(value);
       const now = new Date();
 
-      expiredAt.setHours(0, 0, 0, 0);
-      now.setHours(0, 0, 0, 0);
-
       // Check if date is valid
       if (Number.isNaN(expiredAt.getTime())) {
         throw new Error('Invalid date format');
