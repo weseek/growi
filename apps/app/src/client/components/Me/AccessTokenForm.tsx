@@ -44,6 +44,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
 
   const onSubmit = (data: FormInputs) => {
     const expiredAtDate = new Date(data.expiredAt);
+    expiredAtDate.setHours(23, 59, 59, 999);
     const scopes: Scope[] = data.scopes ? data.scopes : [];
 
     submitHandler({
