@@ -71,6 +71,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
                     min={todayStr}
                     {...register('expiredAt', {
                       required: t('input_validation.message.required', { param: t('page_me_access_token.expiredAt') }),
+                      // Validate only dates
                       validate: (value) => {
                         const date = new Date(value);
                         const now = new Date();
