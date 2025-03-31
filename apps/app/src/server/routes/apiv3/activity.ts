@@ -5,6 +5,7 @@ import express from 'express';
 import { query } from 'express-validator';
 
 import type { IActivity, ISearchFilter } from '~/interfaces/activity';
+import { SCOPE } from '~/interfaces/scope';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import Activity from '~/server/models/activity';
 import { configManager } from '~/server/service/config-manager';
@@ -207,7 +208,8 @@ module.exports = (crowi: Crowi): Router => {
    *             schema:
    *               $ref: '#/components/schemas/ActivityResponse'
    */
-  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+  // eslint-disable-next-line max-len
+  router.get('/', accessTokenParser([SCOPE.READ.ADMIN.AUDIT_LOG]), loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
     const auditLogEnabled = configManager.getConfig('app:auditLogEnabled');
     if (!auditLogEnabled) {
       const msg = 'AuditLog is not enabled';
