@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalBody } from 'reactstrap';

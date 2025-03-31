@@ -140,7 +140,7 @@ module.exports = function(crowi, app) {
   apiV1Router.post('/comments.update'    , accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), comment.api.validators.add(), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.update);
   apiV1Router.post('/comments.remove'    , accessTokenParser([SCOPE.WRITE.FEATURES.PAGE]), loginRequiredStrictly , excludeReadOnlyUserIfCommentNotAllowed, addActivity, comment.api.remove);
 
-  apiV1Router.post('/attachments.uploadProfileImage'   , accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT]), uploads.single('file'), autoReap, loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
+  apiV1Router.post('/attachments.uploadProfileImage'   , accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT]), uploads.single('file'), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, uploads.single('file'), autoReap, attachmentApi.uploadProfileImage);
   apiV1Router.post('/attachments.remove'               , accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT]), loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);
   apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser([SCOPE.WRITE.FEATURES.ATTACHMENT]), loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.removeProfileImage);
 

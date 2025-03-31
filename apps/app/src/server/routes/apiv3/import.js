@@ -32,17 +32,13 @@ const router = express.Router();
  *            description: Import mode
  *            type: string
  *            enum: [insert, upsert, flushAndInsert]
- */
-
-/**
- * @swagger
- *
- *  components:
- *    schemas:
  *      ImportStatus:
  *        description: ImportStatus
  *        type: object
  *        properties:
+ *          isTheSameVersion:
+ *            type: boolean
+ *            description: whether the version of the uploaded data is the same as the current GROWI version
  *          zipFileStat:
  *            type: object
  *            description: the property object
@@ -54,6 +50,77 @@ const router = express.Router();
  *          isImporting:
  *            type: boolean
  *            description: whether the current importing job exists or not
+ *      FileImportResponse:
+ *        type: object
+ *        properties:
+ *          meta:
+ *            type: object
+ *            properties:
+ *              version:
+ *                type: string
+ *              url:
+ *                type: string
+ *              passwordSeed:
+ *                type: string
+ *              exportedAt:
+ *                type: string
+ *                format: date-time
+ *              envVars:
+ *                type: object
+ *                properties:
+ *                  ELASTICSEARCH_URI:
+ *                    type: string
+ *          fileName:
+ *            type: string
+ *          zipFilePath:
+ *            type: string
+ *          fileStat:
+ *            type: object
+ *            properties:
+ *              dev:
+ *                type: integer
+ *              mode:
+ *                type: integer
+ *              nlink:
+ *                type: integer
+ *              uid:
+ *                type: integer
+ *              gid:
+ *                type: integer
+ *              rdev:
+ *                type: integer
+ *              blksize:
+ *                type: integer
+ *              ino:
+ *                type: integer
+ *              size:
+ *                type: integer
+ *              blocks:
+ *                type: integer
+ *              atime:
+ *                type: string
+ *                format: date-time
+ *              mtime:
+ *                type: string
+ *                format: date-time
+ *              ctime:
+ *                type: string
+ *                format: date-time
+ *              birthtime:
+ *                type: string
+ *                format: date-time
+ *          innerFileStats:
+ *            type: array
+ *            items:
+ *              type: object
+ *              properties:
+ *                fileName:
+ *                  type: string
+ *                collectionName:
+ *                  type: string
+ *                size:
+ *                  type: integer
+ *                  nullable: true
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 export default function route(crowi) {
@@ -102,6 +169,8 @@ export default function route(crowi) {
    *  /import:
    *    get:
    *      tags: [Import]
+   *      security:
+   *        - api_key: []
    *      operationId: getImportSettingsParams
    *      summary: /import
    *      description: Get import settings params
@@ -115,6 +184,19 @@ export default function route(crowi) {
    *                  importSettingsParams:
    *                    type: object
    *                    description: import settings params
+   *                    properties:
+   *                      esaTeamName:
+   *                        type: string
+   *                        description: the team name of esa.io
+   *                      esaAccessToken:
+   *                        type: string
+   *                        description: the access token of esa.io
+   *                      qiitaTeamName:
+   *                        type: string
+   *                        description: the team name of qiita.com
+   *                      qiitaAccessToken:
+   *                        type: string
+   *                        description: the access token of qiita.com
    */
   router.get('/', accessTokenParser([SCOPE.READ.ADMIN.IMPORT_DATA]), loginRequired, adminRequired, async(req, res) => {
     try {
@@ -139,6 +221,8 @@ export default function route(crowi) {
    *  /import/status:
    *    get:
    *      tags: [Import]
+   *      security:
+   *        - api_key: []
    *      operationId: getImportStatus
    *      summary: /import/status
    *      description: Get properties of stored zip files for import
@@ -168,6 +252,8 @@ export default function route(crowi) {
    *  /import:
    *    post:
    *      tags: [Import]
+   *      security:
+   *        - api_key: []
    *      operationId: executeImport
    *      summary: /import
    *      description: import a collection from a zipped json
@@ -298,27 +384,26 @@ export default function route(crowi) {
    *  /import/upload:
    *    post:
    *      tags: [Import]
+   *      security:
+   *        - api_key: []
    *      operationId: uploadImport
    *      summary: /import/upload
    *      description: upload a zip file
+   *      requestBody:
+   *        content:
+   *          multipart/form-data:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                file:
+   *                  format: binary
    *      responses:
    *        200:
    *          description: the file is uploaded
    *          content:
    *            application/json:
    *              schema:
-   *                properties:
-   *                  meta:
-   *                    type: object
-   *                    description: the meta data of the uploaded file
-   *                  fileName:
-   *                    type: string
-   *                    description: the base name of the uploaded file
-   *                  fileStats:
-   *                    type: array
-   *                    items:
-   *                      type: object
-   *                      description: the property of each extracted file
+   *                $ref: '#/components/schemas/FileImportResponse'
    */
   router.post('/upload', accessTokenParser([SCOPE.WRITE.ADMIN.IMPORT_DATA]), loginRequired, adminRequired, uploads.single('file'), addActivity,
     async(req, res) => {
@@ -356,6 +441,8 @@ export default function route(crowi) {
    *  /import/all:
    *    delete:
    *      tags: [Import]
+   *      security:
+   *        - api_key: []
    *      operationId: deleteImportAll
    *      summary: /import/all
    *      description: Delete all zip files
