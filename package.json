@@ -104,13 +104,15 @@
     "vue-tsc": "^2.1.10"
   },
   "// comments for pnpm.overrides": {
+    "@lykmapipo/common>flat": "flat v6 is provided only by ESM, but @lykmapipo/common requires CommonJS version",
     "@lykmapipo/common>mime": "mime v4 is provided only by ESM, but @lykmapipo/common requires CommonJS version",
-    "@lykmapipo/common>flat": "flat v6 is provided only by ESM, but @lykmapipo/common requires CommonJS version"
+    "@lykmapipo/common>parse-json": "parse-json v6 is provided only by ESM, but @lykmapipo/common requires CommonJS version"
   },
   "pnpm": {
     "overrides": {
+      "@lykmapipo/common>flat": "5.0.2",
       "@lykmapipo/common>mime": "3.0.0",
-      "@lykmapipo/common>flat": "5.0.2"
+      "@lykmapipo/common>parse-json": "5.2.0"
     }
   },
   "engines": {
