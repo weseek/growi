@@ -4,6 +4,7 @@ import {
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
+import { acceptChange, rejectChange } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useUnifiedMergeViewConfig } from '@growi/editor/dist/client/stores/use-unified-merge-view-config';
 import { useForm, Controller } from 'react-hook-form';
@@ -319,12 +320,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [submit]);
 
   const clickAcceptHandler = useCallback(() => {
-    // todo: implement
-  }, []);
+    acceptChange(codeMirrorEditor?.view);
+    mutateUnifiedMergeViewConfig({ isEnabled: false });
+  }, [codeMirrorEditor?.view, mutateUnifiedMergeViewConfig]);
 
   const clickDiscardHandler = useCallback(() => {
-    // todo: implement
-  }, []);
+    rejectChange(codeMirrorEditor?.view);
+  }, [codeMirrorEditor?.view]);
 
   const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
     setSelectedAiAssistant(aiAssistant);
