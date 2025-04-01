@@ -27,6 +27,7 @@ type Props = CodeMirrorEditorProps & {
   initialValue?: string,
   enableCollaboration?: boolean,
   enableUnifiedMergeView?: boolean,
+  insertText?: string,
   onEditorsUpdated?: (clientList: EditingClient[]) => void,
 }
 
@@ -34,7 +35,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
     user, pageId,
     enableCollaboration = false, enableUnifiedMergeView = false,
-    cmProps,
+    cmProps, insertText,
     onSave, onEditorsUpdated, ...otherProps
   } = props;
 
@@ -47,7 +48,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     reviewMode: enableUnifiedMergeView,
   });
 
-  useUnifiedMergeView(enableUnifiedMergeView, codeMirrorEditor, { pageId });
+  useUnifiedMergeView(enableUnifiedMergeView, codeMirrorEditor, { pageId, insertText });
 
   // setup additional extensions
   useEffect(() => {

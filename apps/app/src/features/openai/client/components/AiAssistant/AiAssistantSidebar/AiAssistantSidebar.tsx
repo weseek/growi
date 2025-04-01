@@ -5,7 +5,7 @@ import {
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { useIsEnableUnifiedMergeView } from '@growi/editor/src/client/stores/use-is-enable-unified-merge-view';
+import { useUnifiedMergeViewConfig } from '@growi/editor/dist/client/stores/use-unified-merge-view-config';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
@@ -70,13 +70,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
   const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
-  const [detectedDiff, setDetectedDiff] = useState<string | undefined>();
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id, threadData?.threadId);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+  const { mutate: mutateUnifiedMergeViewConfig } = useUnifiedMergeViewConfig();
 
   const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
   const { postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant } = useEditorAssistant();
@@ -266,7 +266,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 };
 
                 if (typeGuard(data.diff)) {
-                  setDetectedDiff(data.diff.insert);
+                  console.log('detected diff (insert) ', { data });
+                  mutateUnifiedMergeViewConfig({ isEnabled: true, insertText: data.diff.insert });
                 }
               },
               onFinalized: (data) => {
@@ -305,7 +306,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, form, currentThreadId, isEditorAssistant, selectedAiAssistant?._id, aiAssistantData?._id, mutateThreadData, t, codeMirrorEditor, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, isEditorAssistant, selectedAiAssistant?._id, aiAssistantData?._id, mutateThreadData, t, codeMirrorEditor, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, mutateUnifiedMergeViewConfig, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -318,12 +319,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [submit]);
 
   const clickAcceptHandler = useCallback(() => {
-    if (detectedDiff == null) {
-      return;
-    }
-
-    codeMirrorEditor?.insertText(detectedDiff);
-  }, [codeMirrorEditor, detectedDiff]);
+    // todo: implement
+  }, []);
 
   const clickDiscardHandler = useCallback(() => {
     // todo: implement
@@ -503,7 +500,6 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
   const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
-  const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const aiAssistantData = aiAssistantSidebarData?.aiAssistantData;
   const threadData = aiAssistantSidebarData?.threadData;
@@ -523,16 +519,16 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
     };
   }, [closeAiAssistantSidebar, isOpened]);
 
-  useEffect(() => {
-    if (isOpened && isEditorAssistant) {
-      mutateIsEnableUnifiedMergeView(true);
-      return;
-    }
+  // useEffect(() => {
+  //   if (isOpened && isEditorAssistant) {
+  //     mutateIsEnableUnifiedMergeView(true);
+  //     return;
+  //   }
 
-    if (!isOpened) {
-      mutateIsEnableUnifiedMergeView(false);
-    }
-  }, [isEditorAssistant, isEnableUnifiedMergeView, isOpened, mutateIsEnableUnifiedMergeView]);
+  //   if (!isOpened) {
+  //     mutateIsEnableUnifiedMergeView(false);
+  //   }
+  // }, [isEditorAssistant, isEnableUnifiedMergeView, isOpened, mutateIsEnableUnifiedMergeView]);
 
 
   if (!isOpened) {

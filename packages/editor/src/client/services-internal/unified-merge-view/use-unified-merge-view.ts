@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 import {
   unifiedMergeView,
@@ -24,6 +24,7 @@ const SYNC_BY_ACCEPT_CHUNK = 'synkByAcceptChunk';
 
 type Configuration = {
   pageId?: string,
+  insertText?: string,
 }
 
 export const useUnifiedMergeView = (
@@ -32,7 +33,11 @@ export const useUnifiedMergeView = (
     configuration?: Configuration,
 ): void => {
 
-  const { pageId } = configuration ?? {};
+  const { pageId, insertText } = configuration ?? {};
+
+  const [setupMergeViewEffectExecuted, setSetupMergeViewEffectExecuted] = useState(false);
+  const [setupSyncFromPrimaryDocToSecondaryDocEffectExecuted, setSetupSyncFromPrimaryDocToSecondaryDocEffectExecuted] = useState(false);
+  const [setupSyncFromSecondaryDocToPrimaryDocEffectExecuted, setSetupSyncFromSecondaryDocToPrimaryDocEffectExecuted] = useState(false);
 
   const { primaryDoc, secondaryDoc } = useSecondaryYdocs(isEnabled, {
     pageId,
@@ -52,7 +57,13 @@ export const useUnifiedMergeView = (
     ] : [];
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
-    return cleanupFunction;
+
+    setSetupMergeViewEffectExecuted(true);
+
+    return () => {
+      cleanupFunction?.();
+      setSetupMergeViewEffectExecuted(false);
+    };
   }, [isEnabled, pageId, codeMirrorEditor, primaryDoc, secondaryDoc]);
 
   // Setup sync from primaryDoc to secondaryDoc
@@ -94,9 +105,12 @@ export const useUnifiedMergeView = (
 
     primaryYText.observe(sync);
 
+    setSetupSyncFromPrimaryDocToSecondaryDocEffectExecuted(true);
+
     // cleanup
     return () => {
       primaryYText.unobserve(sync);
+      setSetupSyncFromPrimaryDocToSecondaryDocEffectExecuted(false);
     };
   }, [codeMirrorEditor, isEnabled, primaryDoc, secondaryDoc]);
 
@@ -128,10 +142,20 @@ export const useUnifiedMergeView = (
     });
 
     const cleanup = codeMirrorEditor?.appendExtensions([extension]);
+    setSetupSyncFromSecondaryDocToPrimaryDocEffectExecuted(true);
 
     return () => {
       cleanup?.();
+      setSetupSyncFromSecondaryDocToPrimaryDocEffectExecuted(false);
     };
   }, [codeMirrorEditor, isEnabled, primaryDoc, secondaryDoc]);
 
+
+  useEffect(() => {
+    // eslint-disable-next-line max-len
+    if (setupMergeViewEffectExecuted && setupSyncFromPrimaryDocToSecondaryDocEffectExecuted && setupSyncFromSecondaryDocToPrimaryDocEffectExecuted && insertText != null) {
+      codeMirrorEditor?.insertText(insertText);
+    }
+  // eslint-disable-next-line max-len
+  }, [codeMirrorEditor, insertText, setupMergeViewEffectExecuted, setupSyncFromPrimaryDocToSecondaryDocEffectExecuted, setupSyncFromSecondaryDocToPrimaryDocEffectExecuted]);
 };
