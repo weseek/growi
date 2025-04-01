@@ -99,7 +99,7 @@ accessTokenSchema.statics.deleteAllTokensByUserId = async function(userId: Types
 
 accessTokenSchema.statics.deleteExpiredToken = async function() {
   const now = new Date();
-  await this.deleteMany({ expiredAt: { $lte: now } });
+  await this.deleteMany({ expiredAt: { $lt: now } });
 };
 
 accessTokenSchema.statics.findUserIdByToken = async function(token: string, requiredScopes: Scope[]) {
@@ -109,12 +109,12 @@ accessTokenSchema.statics.findUserIdByToken = async function(token: string, requ
     return;
   }
   const extractedScopes = extractScopes(requiredScopes);
-  return this.findOne({ tokenHash, expiredAt: { $gt: now }, scopes: { $all: extractedScopes } }).select('user');
+  return this.findOne({ tokenHash, expiredAt: { $gte: now }, scopes: { $all: extractedScopes } }).select('user');
 };
 
 accessTokenSchema.statics.findTokenByUserId = async function(userId: Types.ObjectId | string) {
   const now = new Date();
-  return this.find({ user: userId, expiredAt: { $gt: now } }).select('_id expiredAt scopes description');
+  return this.find({ user: userId, expiredAt: { $gte: now } }).select('_id expiredAt scopes description');
 };
 
 accessTokenSchema.statics.validateTokenScopes = async function(token: string, requiredScopes: Scope[]) {

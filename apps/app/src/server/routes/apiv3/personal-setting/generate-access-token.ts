@@ -44,7 +44,7 @@ const validator = [
       }
 
       // Check if date is in the future
-      if (expiredAt <= now) {
+      if (expiredAt < now) {
         throw new Error('Expiration date must be in the future');
       }
 

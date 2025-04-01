@@ -44,6 +44,7 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
 
   const onSubmit = (data: FormInputs) => {
     const expiredAtDate = new Date(data.expiredAt);
+    expiredAtDate.setHours(23, 59, 59, 999);
     const scopes: Scope[] = data.scopes ? data.scopes : [];
 
     submitHandler({
@@ -70,11 +71,6 @@ export const AccessTokenForm = React.memo((props: AccessTokenFormProps): JSX.Ele
                     min={todayStr}
                     {...register('expiredAt', {
                       required: t('input_validation.message.required', { param: t('page_me_access_token.expiredAt') }),
-                      validate: (value) => {
-                        const date = new Date(value);
-                        const now = new Date();
-                        return date > now || 'Expiration date must be in the future';
-                      },
                     })}
                   />
                 </div>
