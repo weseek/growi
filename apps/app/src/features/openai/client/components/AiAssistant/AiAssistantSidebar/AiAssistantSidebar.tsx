@@ -519,18 +519,6 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
     };
   }, [closeAiAssistantSidebar, isOpened]);
 
-  // useEffect(() => {
-  //   if (isOpened && isEditorAssistant) {
-  //     mutateIsEnableUnifiedMergeView(true);
-  //     return;
-  //   }
-
-  //   if (!isOpened) {
-  //     mutateIsEnableUnifiedMergeView(false);
-  //   }
-  // }, [isEditorAssistant, isEnableUnifiedMergeView, isOpened, mutateIsEnableUnifiedMergeView]);
-
-
   if (!isOpened) {
     return <></>;
   }
