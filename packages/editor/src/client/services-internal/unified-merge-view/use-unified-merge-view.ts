@@ -16,6 +16,7 @@ import * as Y from 'yjs';
 import { deltaToChangeSpecs } from '../../../utils/delta-to-changespecs';
 import type { UseCodeMirrorEditor } from '../../services';
 import { useSecondaryYdocs } from '../../stores/use-secondary-ydocs';
+import { type DetectedDiff } from '../../stores/use-unified-merge-view-config';
 
 
 // for avoiding apply update from primaryDoc to secondaryDoc twice
@@ -24,8 +25,7 @@ const SYNC_BY_ACCEPT_CHUNK = 'synkByAcceptChunk';
 
 type Configuration = {
   pageId?: string,
-  insertText?: string,
-}
+} & { detectedDiff?: DetectedDiff };
 
 export const useUnifiedMergeView = (
     isEnabled: boolean,
@@ -33,7 +33,7 @@ export const useUnifiedMergeView = (
     configuration?: Configuration,
 ): void => {
 
-  const { pageId, insertText } = configuration ?? {};
+  const { pageId, detectedDiff } = configuration ?? {};
 
   const [setupMergeViewEffectExecuted, setSetupMergeViewEffectExecuted] = useState(false);
   const [setupSyncFromPrimaryDocToSecondaryDocEffectExecuted, setSetupSyncFromPrimaryDocToSecondaryDocEffectExecuted] = useState(false);
@@ -152,10 +152,13 @@ export const useUnifiedMergeView = (
 
 
   useEffect(() => {
-    // eslint-disable-next-line max-len
-    if (setupMergeViewEffectExecuted && setupSyncFromPrimaryDocToSecondaryDocEffectExecuted && setupSyncFromSecondaryDocToPrimaryDocEffectExecuted && insertText != null) {
-      codeMirrorEditor?.insertText(insertText);
+    if (setupMergeViewEffectExecuted
+      && setupSyncFromPrimaryDocToSecondaryDocEffectExecuted
+      && setupSyncFromSecondaryDocToPrimaryDocEffectExecuted
+      && detectedDiff?.insert != null
+    ) {
+      codeMirrorEditor?.insertText(detectedDiff.insert);
     }
   // eslint-disable-next-line max-len
-  }, [codeMirrorEditor, insertText, setupMergeViewEffectExecuted, setupSyncFromPrimaryDocToSecondaryDocEffectExecuted, setupSyncFromSecondaryDocToPrimaryDocEffectExecuted]);
+  }, [codeMirrorEditor, detectedDiff?.insert, setupMergeViewEffectExecuted, setupSyncFromPrimaryDocToSecondaryDocEffectExecuted, setupSyncFromSecondaryDocToPrimaryDocEffectExecuted]);
 };

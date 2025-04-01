@@ -265,7 +265,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               onDetectedDiff: (data) => {
                 if (isInsertDiff(data)) {
                   console.log('detected diff (insert) ', { data });
-                  mutateUnifiedMergeViewConfig({ isEnabled: true, insertText: data.diff.insert });
+                  mutateUnifiedMergeViewConfig({ isEnabled: true, detectedDiff: { insert: data.diff.insert } });
                 }
               },
               onFinalized: (data) => {
@@ -323,7 +323,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   const clickDiscardHandler = useCallback(() => {
     rejectChange(codeMirrorEditor?.view);
-  }, [codeMirrorEditor?.view]);
+    mutateUnifiedMergeViewConfig({ isEnabled: false });
+  }, [codeMirrorEditor?.view, mutateUnifiedMergeViewConfig]);
 
   const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
     setSelectedAiAssistant(aiAssistant);

@@ -367,7 +367,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
     <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-expand-vert border-end">
         <CodeMirrorEditorMain
-          insertText={unifiedMergeViewConfig?.insertText}
+          unifiedMergeViewConfig={unifiedMergeViewConfig?.detectedDiff}
           enableUnifiedMergeView={unifiedMergeViewConfig?.isEnabled}
           enableCollaboration={editorMode === EditorMode.Editor}
           onSave={saveWithShortcut}

@@ -12,6 +12,7 @@ import { CodeMirrorEditor, type CodeMirrorEditorProps } from '../components-inte
 import { setDataLine, useUnifiedMergeView } from '../services-internal';
 import { useCodeMirrorEditorIsolated } from '../stores/codemirror-editor';
 import { useCollaborativeEditorMode } from '../stores/use-collaborative-editor-mode';
+import { type DetectedDiff } from '../stores/use-unified-merge-view-config';
 
 
 const additionalExtensions: Extension[] = [
@@ -27,7 +28,7 @@ type Props = CodeMirrorEditorProps & {
   initialValue?: string,
   enableCollaboration?: boolean,
   enableUnifiedMergeView?: boolean,
-  insertText?: string,
+  unifiedMergeViewConfig?: DetectedDiff,
   onEditorsUpdated?: (clientList: EditingClient[]) => void,
 }
 
@@ -35,7 +36,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
     user, pageId,
     enableCollaboration = false, enableUnifiedMergeView = false,
-    cmProps, insertText,
+    cmProps, unifiedMergeViewConfig,
     onSave, onEditorsUpdated, ...otherProps
   } = props;
 
@@ -48,7 +49,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     reviewMode: enableUnifiedMergeView,
   });
 
-  useUnifiedMergeView(enableUnifiedMergeView, codeMirrorEditor, { pageId, insertText });
+  useUnifiedMergeView(enableUnifiedMergeView, codeMirrorEditor, { pageId, detectedDiff: unifiedMergeViewConfig });
 
   // setup additional extensions
   useEffect(() => {
