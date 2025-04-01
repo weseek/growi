@@ -18,6 +18,7 @@ import { useGrowiCloudUri } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
+import { isInsertDiff } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
 import { useEditorAssistant } from '../../../services/editor-assistant';
@@ -262,11 +263,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 textValues.push(data.appendedMessage);
               },
               onDetectedDiff: (data) => {
-                const typeGuard = (diff): diff is { insert: string } => {
-                  return 'insert' in diff;
-                };
-
-                if (typeGuard(data.diff)) {
+                if (isInsertDiff(data)) {
                   console.log('detected diff (insert) ', { data });
                   mutateUnifiedMergeViewConfig({ isEnabled: true, insertText: data.diff.insert });
                 }
