@@ -158,7 +158,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       });
 
       // Set detectedDiff to undefined after applying all detectedDiff to secondaryDoc
-      if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === true).length === 0) {
+      if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === false).length === 0) {
         setDetectedDiff(undefined);
       }
     }
