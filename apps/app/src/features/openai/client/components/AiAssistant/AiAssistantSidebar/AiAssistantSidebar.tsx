@@ -5,6 +5,7 @@ import {
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
 import { useIsEnableUnifiedMergeView } from '@growi/editor/src/client/stores/use-is-enable-unified-merge-view';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +15,7 @@ import SimpleBar from 'simplebar-react';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useGrowiCloudUri } from '~/stores-universal/context';
+import { useCurrentPageId } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
@@ -64,6 +66,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     closeAiAssistantSidebar,
   } = props;
 
+  const [detectedDiff, setDetectedDiff] = useState<string | undefined>(undefined);
   const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
   const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
@@ -77,7 +80,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id, threadData?.threadId);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
-  const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
+  const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
+  const { data: currentPageId } = useCurrentPageId();
+  const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
+
 
   const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
   const { postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant } = useEditorAssistant();
@@ -113,6 +119,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       fetchAndSetMessageData();
     }
   }, [mutateMessageData, threadData]);
+
+  useEffect(() => {
+    if (ydocs?.secondaryDoc != null && detectedDiff != null) {
+      const ytext = ydocs.secondaryDoc.getText('codemirror');
+      ytext.insert(0, detectedDiff);
+    }
+  }, [detectedDiff, ydocs?.secondaryDoc]);
 
   const headerIcon = useMemo(() => {
     return isEditorAssistant
@@ -267,7 +280,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
                 if (data.diff.insert != null) {
                   mutateIsEnableUnifiedMergeView(true);
-                  console.log('hello', data.diff.insert);
+                  setDetectedDiff(data.diff.insert);
                 }
               },
               onFinalized: (data) => {
