@@ -266,6 +266,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 console.log('sse diff', { data });
 
                 if (data.diff.insert != null) {
+                  mutateIsEnableUnifiedMergeView(true);
                   console.log('hello', data.diff.insert);
                 }
               },
