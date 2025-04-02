@@ -67,7 +67,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     closeAiAssistantSidebar,
   } = props;
 
-  const [detectedDiff, setDetectedDiff] = useState<string | undefined>(undefined);
+  const [detectedDiff, setDetectedDiff] = useState<string>();
   const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
   const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
@@ -278,7 +278,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               },
               onDetectedDiff: (data) => {
                 if (isInsertDiff(data)) {
-                  console.log('detected diff (insert)');
+                  console.log('detected diff (insert)', data.diff.insert);
                   mutateIsEnableUnifiedMergeView(true);
                   setDetectedDiff(data.diff.insert);
                 }
