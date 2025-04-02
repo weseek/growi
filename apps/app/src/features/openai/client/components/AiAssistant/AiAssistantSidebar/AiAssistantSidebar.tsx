@@ -20,6 +20,7 @@ import { useCurrentPageId } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
+import type { SseDetectedDiff } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { isInsertDiff } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import { ThreadType } from '../../../../interfaces/thread-relation';
@@ -60,6 +61,12 @@ type AiAssistantSidebarSubstanceProps = {
   closeAiAssistantSidebar: () => void
 }
 
+type DetectedDiff = Array<{
+  data: SseDetectedDiff,
+  applied: boolean,
+  id: string,
+}>
+
 const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = (props: AiAssistantSidebarSubstanceProps) => {
   const {
     isEditorAssistant,
@@ -68,7 +75,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     closeAiAssistantSidebar,
   } = props;
 
-  const [detectedDiff, setDetectedDiff] = useState<string>();
+  const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
   const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
@@ -122,9 +129,32 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [mutateMessageData, threadData]);
 
   useEffect(() => {
-    if (ydocs?.secondaryDoc != null && detectedDiff != null) {
+    const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
+    if (ydocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
+
+      // Apply detectedDiffs to secondaryDoc
       const ytext = ydocs.secondaryDoc.getText('codemirror');
-      ytext.insert(0, detectedDiff);
+      pendingDetectedDiff.forEach((detectedDiff) => {
+        if (isInsertDiff(detectedDiff.data)) {
+          ytext.insert(0, detectedDiff.data.diff.insert);
+        }
+      });
+
+      // Mark as applied: true after applying to secondaryDoc
+      setDetectedDiff((prev) => {
+        const pendingDetectedDiffIds = pendingDetectedDiff.map(diff => diff.id);
+        prev?.forEach((diff) => {
+          if (pendingDetectedDiffIds.includes(diff.id)) {
+            diff.applied = true;
+          }
+        });
+        return prev;
+      });
+
+      // Set detectedDiff to undefined after applying all detectedDiff to secondaryDoc
+      if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === true).length === 0) {
+        setDetectedDiff(undefined);
+      }
     }
   }, [detectedDiff, ydocs?.secondaryDoc]);
 
@@ -277,13 +307,18 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 textValues.push(data.appendedMessage);
               },
               onDetectedDiff: (data) => {
-                if (isInsertDiff(data)) {
-                  console.log('detected diff (insert)', data.diff.insert);
-                  mutateIsEnableUnifiedMergeView(true);
-                  setDetectedDiff(data.diff.insert);
-                }
+                mutateIsEnableUnifiedMergeView(true);
+                setDetectedDiff((prev) => {
+                  const newData = { data, applied: false, id: crypto.randomUUID() };
+                  if (prev == null) {
+                    return [newData];
+                  }
+                  return [...prev, newData];
+                });
+                console.log('sse detected diff', { data });
               },
               onFinalized: (data) => {
+                setDetectedDiff(undefined);
                 console.log('sse finalized', { data });
               },
             });
