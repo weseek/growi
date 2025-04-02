@@ -19,6 +19,7 @@ import { useCurrentPageId } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
+import { isInsertDiff } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import { ThreadType } from '../../../../interfaces/thread-relation';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
@@ -276,9 +277,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 textValues.push(data.appendedMessage);
               },
               onDetectedDiff: (data) => {
-                console.log('sse diff', { data });
-
-                if (data.diff.insert != null) {
+                if (isInsertDiff(data)) {
+                  console.log('detected diff (insert)');
                   mutateIsEnableUnifiedMergeView(true);
                   setDetectedDiff(data.diff.insert);
                 }
