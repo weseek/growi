@@ -7,7 +7,6 @@ import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { acceptChange, rejectChange } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
-import { useIsEnableUnifiedMergeView } from '@growi/editor/src/client/stores/use-is-enable-unified-merge-view';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
@@ -15,7 +14,7 @@ import SimpleBar from 'simplebar-react';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { useGrowiCloudUri } from '~/stores-universal/context';
+import { useGrowiCloudUri, useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
