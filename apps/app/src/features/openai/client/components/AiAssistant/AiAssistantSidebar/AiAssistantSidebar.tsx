@@ -21,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import type { SseDetectedDiff } from '../../../../interfaces/editor-assistant/sse-schemas';
-import { isInsertDiff } from '../../../../interfaces/editor-assistant/sse-schemas';
+import { isInsertDiff, isDeleteDiff, isRetainDiff } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import { ThreadType } from '../../../../interfaces/thread-relation';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
@@ -137,6 +137,12 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       pendingDetectedDiff.forEach((detectedDiff) => {
         if (isInsertDiff(detectedDiff.data)) {
           ytext.insert(0, detectedDiff.data.diff.insert);
+        }
+        if (isDeleteDiff(detectedDiff.data)) {
+          // TODO: https://redmine.weseek.co.jp/issues/163945
+        }
+        if (isRetainDiff(detectedDiff.data)) {
+          // TODO: https://redmine.weseek.co.jp/issues/163945
         }
       });
 
