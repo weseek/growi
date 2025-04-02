@@ -74,6 +74,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id, threadData?.threadId);
+  const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
   const { postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant } = useEditorAssistant();
@@ -259,6 +260,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               },
               onDetectedDiff: (data) => {
                 console.log('sse diff', { data });
+
+                if (data.diff.insert != null) {
+                  console.log('hello', data.diff.insert);
+                }
               },
               onFinalized: (data) => {
                 console.log('sse finalized', { data });
@@ -490,7 +495,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
   const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
-  const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
+  const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const aiAssistantData = aiAssistantSidebarData?.aiAssistantData;
   const threadData = aiAssistantSidebarData?.threadData;
@@ -511,15 +516,10 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   }, [closeAiAssistantSidebar, isOpened]);
 
   useEffect(() => {
-    if (isOpened && isEditorAssistant) {
-      mutateIsEnableUnifiedMergeView(true);
-      return;
-    }
-
     if (!isOpened) {
       mutateIsEnableUnifiedMergeView(false);
     }
-  }, [isEditorAssistant, isEnableUnifiedMergeView, isOpened, mutateIsEnableUnifiedMergeView]);
+  }, [isEditorAssistant, isOpened, mutateIsEnableUnifiedMergeView]);
 
   if (!isOpened) {
     return <></>;
