@@ -4,6 +4,7 @@ import {
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
+import { acceptChange, rejectChange } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
 import { useIsEnableUnifiedMergeView } from '@growi/editor/src/client/stores/use-is-enable-unified-merge-view';
@@ -84,7 +85,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const { data: currentPageId } = useCurrentPageId();
   const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
-
 
   const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
   const { postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant } = useEditorAssistant();
@@ -332,12 +332,14 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [submit]);
 
   const clickAcceptHandler = useCallback(() => {
-    // todo: implement
-  }, []);
+    acceptChange(codeMirrorEditor?.view);
+    mutateIsEnableUnifiedMergeView(false);
+  }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
   const clickDiscardHandler = useCallback(() => {
-    // todo: implement
-  }, []);
+    rejectChange(codeMirrorEditor?.view);
+    mutateIsEnableUnifiedMergeView(false);
+  }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
   const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
     setSelectedAiAssistant(aiAssistant);
