@@ -17,8 +17,6 @@ import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-su
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
 
-import { useAiAssistantSidebar } from '../stores/ai-assistant';
-
 interface PostMessage {
   (threadId: string, userMessage: string, markdown: string): Promise<Response>;
 }
@@ -40,7 +38,6 @@ export const useEditorAssistant = (): { postMessage: PostMessage, processMessage
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
 
   const { data: currentPageId } = useCurrentPageId();
-  const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
 
@@ -112,12 +109,6 @@ export const useEditorAssistant = (): { postMessage: PostMessage, processMessage
       }
     }
   }, [detectedDiff, ydocs?.secondaryDoc]);
-
-  useEffect(() => {
-    if (!aiAssistantSidebarData?.isOpened) {
-      mutateIsEnableUnifiedMergeView(false);
-    }
-  }, [aiAssistantSidebarData?.isOpened, mutateIsEnableUnifiedMergeView]);
 
   return {
     postMessage,
