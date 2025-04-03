@@ -59,8 +59,8 @@ export const useEditorAssistant = (): { postMessage: PostMessage, processMessage
       handler.onMessage(data);
     });
     handleIfSuccessfullyParsed(data, SseDetectedDiffSchema, (data: SseDetectedDiff) => {
+      mutateIsEnableUnifiedMergeView(true);
       setDetectedDiff((prev) => {
-        mutateIsEnableUnifiedMergeView(true);
         const newData = { data, applied: false, id: crypto.randomUUID() };
         if (prev == null) {
           return [newData];
