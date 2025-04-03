@@ -263,7 +263,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 textValues.push(data.appendedMessage);
               },
               onDetectedDiff: (data) => {
-                console.log('sse detected diff', { data });
+                console.log('sse diff', { data });
               },
               onFinalized: (data) => {
                 console.log('sse finalized', { data });
