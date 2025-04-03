@@ -27,7 +27,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType,
+  useAcceptedUploadFileType, useIsEnableUnifiedMergeView,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
@@ -111,6 +111,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const { mutate: mutateEditingUsers } = useEditingClients();
   const onConflict = useConflictResolver();
   const { data: reservedNextCaretLine, mutate: mutateReservedNextCaretLine } = useReservedNextCaretLine();
+  const { data: isEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -365,6 +366,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
     <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-expand-vert border-end">
         <CodeMirrorEditorMain
+          enableUnifiedMergeView={isEnableUnifiedMergeView}
           enableCollaboration={editorMode === EditorMode.Editor}
           onSave={saveWithShortcut}
           onUpload={uploadHandler}
