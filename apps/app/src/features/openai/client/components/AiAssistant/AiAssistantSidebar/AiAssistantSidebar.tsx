@@ -6,7 +6,6 @@ import {
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { acceptChange, rejectChange } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
@@ -15,12 +14,9 @@ import SimpleBar from 'simplebar-react';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useGrowiCloudUri, useIsEnableUnifiedMergeView } from '~/stores-universal/context';
-import { useCurrentPageId } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
-import type { SseDetectedDiff } from '../../../../interfaces/editor-assistant/sse-schemas';
-import { isInsertDiff, isDeleteDiff, isRetainDiff } from '../../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import { ThreadType } from '../../../../interfaces/thread-relation';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
@@ -60,12 +56,6 @@ type AiAssistantSidebarSubstanceProps = {
   closeAiAssistantSidebar: () => void
 }
 
-type DetectedDiff = Array<{
-  data: SseDetectedDiff,
-  applied: boolean,
-  id: string,
-}>
-
 const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = (props: AiAssistantSidebarSubstanceProps) => {
   const {
     isEditorAssistant,
@@ -74,7 +64,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     closeAiAssistantSidebar,
   } = props;
 
-  const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
   const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
@@ -88,9 +77,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
   const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id, threadData?.threadId);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
-  const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
-  const { data: currentPageId } = useCurrentPageId();
-  const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
+  const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
   const { postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant } = useEditorAssistant();
@@ -126,42 +113,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       fetchAndSetMessageData();
     }
   }, [mutateMessageData, threadData]);
-
-  useEffect(() => {
-    const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
-    if (ydocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
-
-      // Apply detectedDiffs to secondaryDoc
-      const ytext = ydocs.secondaryDoc.getText('codemirror');
-      pendingDetectedDiff.forEach((detectedDiff) => {
-        if (isInsertDiff(detectedDiff.data)) {
-          ytext.insert(0, detectedDiff.data.diff.insert);
-        }
-        if (isDeleteDiff(detectedDiff.data)) {
-          // TODO: https://redmine.weseek.co.jp/issues/163945
-        }
-        if (isRetainDiff(detectedDiff.data)) {
-          // TODO: https://redmine.weseek.co.jp/issues/163945
-        }
-      });
-
-      // Mark as applied: true after applying to secondaryDoc
-      setDetectedDiff((prev) => {
-        const pendingDetectedDiffIds = pendingDetectedDiff.map(diff => diff.id);
-        prev?.forEach((diff) => {
-          if (pendingDetectedDiffIds.includes(diff.id)) {
-            diff.applied = true;
-          }
-        });
-        return prev;
-      });
-
-      // Set detectedDiff to undefined after applying all detectedDiff to secondaryDoc
-      if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === false).length === 0) {
-        setDetectedDiff(undefined);
-      }
-    }
-  }, [detectedDiff, ydocs?.secondaryDoc]);
 
   const headerIcon = useMemo(() => {
     return isEditorAssistant
@@ -312,18 +263,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 textValues.push(data.appendedMessage);
               },
               onDetectedDiff: (data) => {
-                mutateIsEnableUnifiedMergeView(true);
-                setDetectedDiff((prev) => {
-                  const newData = { data, applied: false, id: crypto.randomUUID() };
-                  if (prev == null) {
-                    return [newData];
-                  }
-                  return [...prev, newData];
-                });
                 console.log('sse detected diff', { data });
               },
               onFinalized: (data) => {
-                setDetectedDiff(undefined);
                 console.log('sse finalized', { data });
               },
             });
@@ -359,7 +301,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, form, currentThreadId, isEditorAssistant, selectedAiAssistant?._id, aiAssistantData?._id, mutateThreadData, t, codeMirrorEditor, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, mutateIsEnableUnifiedMergeView, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, isEditorAssistant, selectedAiAssistant?._id, aiAssistantData?._id, mutateThreadData, t, codeMirrorEditor, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -555,7 +497,6 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
   const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
-  const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const aiAssistantData = aiAssistantSidebarData?.aiAssistantData;
   const threadData = aiAssistantSidebarData?.threadData;
@@ -574,12 +515,6 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [closeAiAssistantSidebar, isOpened]);
-
-  useEffect(() => {
-    if (!isOpened) {
-      mutateIsEnableUnifiedMergeView(false);
-    }
-  }, [isEditorAssistant, isOpened, mutateIsEnableUnifiedMergeView]);
 
   if (!isOpened) {
     return <></>;
