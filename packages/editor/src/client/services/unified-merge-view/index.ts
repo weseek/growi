@@ -5,7 +5,6 @@ import {
 
 import type { EditorView } from 'src';
 
-
 export const acceptChange = (view: EditorView): boolean => {
   return acceptChunk(view);
 };

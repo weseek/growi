@@ -88,7 +88,6 @@ export const useEditorAssistant = (): {postMessage: PostMessage, processMessage:
     mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
-
   useEffect(() => {
     const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
     if (ydocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
