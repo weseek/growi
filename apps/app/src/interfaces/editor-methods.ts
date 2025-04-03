@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 export interface IEditorMethods {
   forceToFocus: () => void,
   setValue: (newValue: string) => void,

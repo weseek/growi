@@ -1,7 +1,10 @@
+import type { JSX } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { ModalBody, Input } from 'reactstrap';
 
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
+
 
 type Props = {
   instruction: string;

@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, type JSX } from 'react';
 
 import type { IGraphViewerGlobal } from '@growi/remark-drawio';
 import Head from 'next/head';

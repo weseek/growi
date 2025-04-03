@@ -5,11 +5,11 @@ import nodemailer from 'nodemailer';
 
 import loggerFactory from '~/utils/logger';
 
+import type Crowi from '../crowi';
 import S2sMessage from '../models/vo/s2s-message';
 
-import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 import type { IConfigManagerForApp } from './config-manager';
-import type Crowi from '../crowi';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:mail');
 

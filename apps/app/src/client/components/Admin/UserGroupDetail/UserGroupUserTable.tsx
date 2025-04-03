@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { type JSX } from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components';
 import { format as dateFnsFormat } from 'date-fns/format';

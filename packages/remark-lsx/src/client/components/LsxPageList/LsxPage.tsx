@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, type JSX } from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
 import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components';

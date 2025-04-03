@@ -1,5 +1,5 @@
 import {
-  type ReactNode,
+  type ReactNode, type JSX,
   memo, useCallback, useEffect, useMemo, useRef, useState,
 } from 'react';
 

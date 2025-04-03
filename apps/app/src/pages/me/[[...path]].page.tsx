@@ -1,4 +1,4 @@
-import React, { type ReactNode, useMemo } from 'react';
+import React, { type ReactNode, useMemo, type JSX } from 'react';
 
 import type {
   GetServerSideProps, GetServerSidePropsContext,

@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useState, useEffect,
+  useCallback, useState, useEffect, type JSX,
 } from 'react';
 
 import {
@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { Modal, TabContent, TabPane } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import type { UpsertAiAssistantData } from '~/features/openai/interfaces/ai-assistant';
 import { AiAssistantAccessScope, AiAssistantShareScope } from '~/features/openai/interfaces/ai-assistant';
 import type { IPagePathWithDescendantCount, IPageForItem } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
@@ -131,7 +132,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         ? convertToGrantedGroups(selectedUserGroupsForAccessScope)
         : undefined;
 
-      const reqBody = {
+      const reqBody: UpsertAiAssistantData = {
         name,
         description,
         additionalInstruction: instruction,
@@ -140,7 +141,6 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
         accessScope: selectedAccessScope,
         grantedGroupsForShareScope,
         grantedGroupsForAccessScope,
-        isDefault: shouldEdit ? aiAssistant.isDefault : false,
       };
 
       if (shouldEdit) {
@@ -159,7 +159,7 @@ const AiAssistantManagementModalSubstance = (): JSX.Element => {
       logger.error(err);
     }
   // eslint-disable-next-line max-len
-  }, [selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope, selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, aiAssistant?.isDefault, aiAssistant?._id, mutateAiAssistants, closeAiAssistantManagementModal]);
+  }, [t, selectedPages, selectedShareScope, selectedUserGroupsForShareScope, selectedAccessScope, selectedUserGroupsForAccessScope, name, description, instruction, shouldEdit, aiAssistant?._id, mutateAiAssistants, closeAiAssistantManagementModal]);
 
 
   /*

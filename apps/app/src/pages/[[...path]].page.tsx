@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
@@ -42,10 +42,11 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useShowPageSideAuthors, useIsContainerFluid, useIsNotCreatable,
-  useIsUploadAllFileAllowed, useIsUploadEnabled,
+  useIsUploadAllFileAllowed, useIsUploadEnabled, useIsBulkExportPagesEnabled,
   useElasticsearchMaxBodyLengthToIndex,
   useIsLocalAccountRegistrationEnabled,
   useIsRomUserAllowedToComment,
+  useIsPdfBulkExportEnabled,
   useIsAiEnabled, useLimitLearnablePageCountPerAssistant,
 } from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
@@ -181,6 +182,8 @@ type Props = CommonProps & {
   isContainerFluid: boolean,
   isUploadEnabled: boolean,
   isUploadAllFileAllowed: boolean,
+  isBulkExportPagesEnabled: boolean,
+  isPdfBulkExportEnabled: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
@@ -246,6 +249,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
+  useIsBulkExportPagesEnabled(props.isBulkExportPagesEnabled);
+  useIsPdfBulkExportEnabled(props.isPdfBulkExportEnabled);
 
   useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
   useIsRomUserAllowedToComment(props.isRomUserAllowedToComment);
@@ -592,6 +597,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('security:disableLinkSharing');
   props.isUploadAllFileAllowed = fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = fileUploadService.getIsUploadable();
+  // TODO: remove growiCloudUri condition when bulk export can be relased for GROWI.cloud (https://redmine.weseek.co.jp/issues/163220)
+  props.isBulkExportPagesEnabled = configManager.getConfig('app:isBulkExportPagesEnabled') && configManager.getConfig('app:growiCloudUri') == null;
+  props.isPdfBulkExportEnabled = configManager.getConfig('app:pageBulkExportPdfConverterUri') != null;
 
   props.isLocalAccountRegistrationEnabled = passportService.isLocalStrategySetup
   && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;

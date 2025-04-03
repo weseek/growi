@@ -403,6 +403,10 @@ module.exports = (crowi) => {
       body('isQuestionnaireEnabled').isBoolean(),
       body('isAppSiteUrlHashed').isBoolean(),
     ],
+    pageBulkExportSettings: [
+      body('isBulkExportPagesEnabled').isBoolean(),
+      body('bulkExportDownloadExpirationSeconds').isInt(),
+    ],
     maintenanceMode: [
       body('flag').isBoolean(),
     ],
@@ -437,6 +441,7 @@ module.exports = (crowi) => {
       globalLang: configManager.getConfig('app:globalLang'),
       isEmailPublishedForNewUser: configManager.getConfig('customize:isEmailPublishedForNewUser'),
       fileUpload: configManager.getConfig('app:fileUpload'),
+      useOnlyEnvVarsForIsBulkExportPagesEnabled: configManager.getConfig('env:useOnlyEnvVars:app:isBulkExportPagesEnabled'),
       isV5Compatible: configManager.getConfig('app:isV5Compatible'),
       siteUrl: configManager.getConfig('app:siteUrl'),
       siteUrlUseOnlyEnvVars: configManager.getConfig('env:useOnlyEnvVars:app:siteUrl'),
@@ -492,11 +497,16 @@ module.exports = (crowi) => {
       isAppSiteUrlHashed: configManager.getConfig('questionnaire:isAppSiteUrlHashed'),
 
       isMaintenanceMode: configManager.getConfig('app:isMaintenanceMode'),
+
+      isBulkExportPagesEnabled: configManager.getConfig('app:isBulkExportPagesEnabled'),
+      envIsBulkExportPagesEnabled: configManager.getConfig('app:isBulkExportPagesEnabled'),
+      bulkExportDownloadExpirationSeconds: configManager.getConfig('app:bulkExportDownloadExpirationSeconds'),
+      // TODO: remove this property when bulk export can be relased for cloud (https://redmine.weseek.co.jp/issues/163220)
+      isBulkExportDisabledForCloud: configManager.getConfig('app:growiCloudUri') != null,
     };
     return res.apiv3({ appSettingsParams });
 
   });
-
 
   /**
    * @swagger
@@ -1019,6 +1029,33 @@ module.exports = (crowi) => {
     }
 
   });
+
+  router.put('/page-bulk-export-settings', loginRequiredStrictly, adminRequired, addActivity, validator.pageBulkExportSettings, apiV3FormValidator,
+    async(req, res) => {
+      const requestParams = {
+        'app:isBulkExportPagesEnabled': req.body.isBulkExportPagesEnabled,
+        'app:bulkExportDownloadExpirationSeconds': req.body.bulkExportDownloadExpirationSeconds,
+      };
+
+      try {
+        await configManager.updateConfigs(requestParams, { skipPubsub: true });
+        const responseParams = {
+          isBulkExportPagesEnabled: configManager.getConfig('app:isBulkExportPagesEnabled'),
+          bulkExportDownloadExpirationSeconds: configManager.getConfig('app:bulkExportDownloadExpirationSeconds'),
+        };
+
+        const parameters = { action: SupportedAction.ACTION_ADMIN_APP_SETTINGS_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+
+        return res.apiv3({ responseParams });
+      }
+      catch (err) {
+        const msg = 'Error occurred in updating page bulk export settings';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-page-bulk-export-settings-failed'));
+      }
+
+    });
 
   /**
    * @swagger

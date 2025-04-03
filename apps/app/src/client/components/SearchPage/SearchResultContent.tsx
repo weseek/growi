@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, JSX } from 'react';
 import React, {
   useCallback, useEffect, useRef,
 } from 'react';
@@ -59,7 +59,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       className="grw-page-control-dropdown-item"
     >
       <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
-      {t('export_bulk.export_page_markdown')}
+      {t('page_export.export_page_markdown')}
     </DropdownItem>
   );
 };
