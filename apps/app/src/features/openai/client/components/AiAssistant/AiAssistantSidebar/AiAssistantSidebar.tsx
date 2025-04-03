@@ -4,7 +4,6 @@ import {
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { acceptChange, rejectChange } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -80,7 +79,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
   const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
-  const { postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant } = useEditorAssistant();
+  const {
+    postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant, accept, reject,
+  } = useEditorAssistant();
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -314,14 +315,12 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   }, [submit]);
 
   const clickAcceptHandler = useCallback(() => {
-    acceptChange(codeMirrorEditor?.view);
-    mutateIsEnableUnifiedMergeView(false);
-  }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+    accept();
+  }, [accept]);
 
   const clickDiscardHandler = useCallback(() => {
-    rejectChange(codeMirrorEditor?.view);
-    mutateIsEnableUnifiedMergeView(false);
-  }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+    reject();
+  }, [reject]);
 
   const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
     setSelectedAiAssistant(aiAssistant);

@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { GlobalCodeMirrorEditorKey } from '@growi/editor';
+import { acceptChange, rejectChange } from '@growi/editor/dist/client/services/unified-merge-view';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
 
 import {
@@ -34,11 +37,12 @@ type DetectedDiff = Array<{
   id: string,
 }>
 
-export const useEditorAssistant = (): { postMessage: PostMessage, processMessage: ProcessMessage } => {
+export const useEditorAssistant = (): {postMessage: PostMessage, processMessage: ProcessMessage, accept: () => void, reject: () => void } => {
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
 
   const { data: currentPageId } = useCurrentPageId();
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
 
   const postMessage: PostMessage = useCallback(async(threadId, userMessage, markdown) => {
@@ -73,6 +77,17 @@ export const useEditorAssistant = (): { postMessage: PostMessage, processMessage
       handler.onFinalized(data);
     });
   }, [mutateIsEnableUnifiedMergeView]);
+
+  const accept = useCallback(() => {
+    acceptChange(codeMirrorEditor?.view);
+    mutateIsEnableUnifiedMergeView(false);
+  }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+
+  const reject = useCallback(() => {
+    rejectChange(codeMirrorEditor?.view);
+    mutateIsEnableUnifiedMergeView(false);
+  }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+
 
   useEffect(() => {
     const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
@@ -113,5 +128,7 @@ export const useEditorAssistant = (): { postMessage: PostMessage, processMessage
   return {
     postMessage,
     processMessage,
+    accept,
+    reject,
   };
 };
