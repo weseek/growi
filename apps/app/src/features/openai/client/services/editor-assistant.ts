@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import {
+  useCallback, useEffect, useState, useRef,
+} from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { acceptChange, rejectChange } from '@growi/editor/dist/client/services/unified-merge-view';
@@ -38,6 +40,8 @@ type DetectedDiff = Array<{
 }>
 
 export const useEditorAssistant = (): {postMessage: PostMessage, processMessage: ProcessMessage, accept: () => void, reject: () => void } => {
+  const positionRef = useRef<number>(0);
+
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
 
   const { data: currentPageId } = useCurrentPageId();
@@ -89,21 +93,43 @@ export const useEditorAssistant = (): {postMessage: PostMessage, processMessage:
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
   useEffect(() => {
-    const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
-    if (ydocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
+    const markdown = codeMirrorEditor?.getDoc();
 
-      // Apply detectedDiffs to secondaryDoc
+    const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
+    if (markdown != null && ydocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
+
+      // For debug
+      // const testDetectedDiff = [
+      //   {
+      //     data: { diff: { retain: 9 } },
+      //     applied: false,
+      //     id: crypto.randomUUID(),
+      //   },
+      //   {
+      //     data: { diff: { delete: 5 } },
+      //     applied: false,
+      //     id: crypto.randomUUID(),
+      //   },
+      //   {
+      //     data: { diff: { insert: 'growi' } },
+      //     applied: false,
+      //     id: crypto.randomUUID(),
+      //   },
+      // ];
+
       const ytext = ydocs.secondaryDoc.getText('codemirror');
-      pendingDetectedDiff.forEach((detectedDiff) => {
-        if (isInsertDiff(detectedDiff.data)) {
-          ytext.insert(0, detectedDiff.data.diff.insert);
-        }
-        if (isDeleteDiff(detectedDiff.data)) {
-          // TODO: https://redmine.weseek.co.jp/issues/163945
-        }
-        if (isRetainDiff(detectedDiff.data)) {
-          // TODO: https://redmine.weseek.co.jp/issues/163945
-        }
+      ydocs.secondaryDoc.transact(() => {
+        pendingDetectedDiff.forEach((detectedDiff) => {
+          if (isInsertDiff(detectedDiff.data)) {
+            ytext.insert(positionRef.current, detectedDiff.data.diff.insert);
+          }
+          if (isDeleteDiff(detectedDiff.data)) {
+            ytext.delete(positionRef.current, detectedDiff.data.diff.delete);
+          }
+          if (isRetainDiff(detectedDiff.data)) {
+            positionRef.current += detectedDiff.data.diff.retain;
+          }
+        });
       });
 
       // Mark as applied: true after applying to secondaryDoc
@@ -120,9 +146,10 @@ export const useEditorAssistant = (): {postMessage: PostMessage, processMessage:
       // Set detectedDiff to undefined after applying all detectedDiff to secondaryDoc
       if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === false).length === 0) {
         setDetectedDiff(undefined);
+        positionRef.current = 0;
       }
     }
-  }, [detectedDiff, ydocs?.secondaryDoc]);
+  }, [codeMirrorEditor, detectedDiff, ydocs?.secondaryDoc]);
 
   return {
     postMessage,
