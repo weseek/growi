@@ -1,4 +1,7 @@
 {
+  "files": {
+    "ignore": ["node_modules/**", "dist/**", "coverage/**"]
+  },
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -10,9 +13,7 @@
         "noTemplateCurlyInString": "error",
         "useGuardForIn": "error",
         "noOctalEscape": "error",
-        "noUselessEscapeInRegex": "error",
-        "noBitwiseOperators": "error",
-        "noAwaitInLoop": "error"
+        "noUselessEscapeInRegex": "error"
       },
 			"complexity": {
 				"noBannedTypes": "error",
@@ -197,28 +198,9 @@
     "indentWidth": 2,
     "lineWidth": 160
   },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
     }
-  },
-	"overrides": [
-		{ "include": ["*.ts", "*.tsx"], "linter": { "rules": {} } },
-		{ "include": ["*.ts", "*.tsx"], "linter": { "rules": {} } },
-		{
-			"include": ["*.ts", "*.tsx", "*.mts", "*.cts"],
-			"linter": {
-				"rules": {
-					"correctness": {
-						"noSetterReturn": "off"
-					},
-					"suspicious": {
-						"noImportAssign": "off"
-					}
-				}
-			}
-		}
-	]
+  }
 }
