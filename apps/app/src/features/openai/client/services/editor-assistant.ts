@@ -45,8 +45,8 @@ export const useEditorAssistant = (): {postMessage: PostMessage, processMessage:
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
 
   const { data: currentPageId } = useCurrentPageId();
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
 
   const postMessage: PostMessage = useCallback(async(threadId, userMessage, markdown) => {
