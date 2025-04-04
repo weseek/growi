@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React, { Suspense, type JSX } from 'react';
 
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';

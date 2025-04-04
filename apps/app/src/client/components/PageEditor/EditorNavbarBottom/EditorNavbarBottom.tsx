@@ -1,3 +1,5 @@
+import type { JSX } from 'react';
+
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
@@ -6,6 +8,7 @@ import { useDrawerOpened } from '~/stores/ui';
 import { EditorAssistantToggleButton } from './EditorAssistantToggleButton';
 
 import styles from './EditorNavbarBottom.module.scss';
+
 
 const moduleClass = styles['grw-editor-navbar-bottom'];
 

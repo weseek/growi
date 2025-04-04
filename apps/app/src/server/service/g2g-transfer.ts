@@ -26,8 +26,8 @@ import { Attachment } from '../models/attachment';
 import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfer-error';
 
 import { configManager } from './config-manager';
-import { exportService } from './export';
 import type { ConfigKey } from './config-manager/config-definition';
+import { exportService } from './export';
 import { generateOverwriteParams } from './import/overwrite-params';
 
 const logger = loggerFactory('growi:service:g2g-transfer');

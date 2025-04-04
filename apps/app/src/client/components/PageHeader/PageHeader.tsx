@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useRef, useState, type JSX,
 } from 'react';
 
 import { useSWRxCurrentPage } from '~/stores/page';
