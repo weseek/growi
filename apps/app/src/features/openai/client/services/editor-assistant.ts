@@ -11,9 +11,10 @@ import {
   SseMessageSchema,
   SseDetectedDiffSchema,
   SseFinalizedSchema,
-  isInsertDiff,
-  isDeleteDiff,
-  isRetainDiff,
+  isReplaceDiff,
+  // isInsertDiff,
+  // isDeleteDiff,
+  // isRetainDiff,
   type SseMessage,
   type SseDetectedDiff,
   type SseFinalized,
@@ -93,10 +94,9 @@ export const useEditorAssistant = (): {postMessage: PostMessage, processMessage:
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
   useEffect(() => {
-    const markdown = codeMirrorEditor?.getDoc();
 
     const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
-    if (markdown != null && ydocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
+    if (ydocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
 
       // For debug
       // const testDetectedDiff = [
@@ -120,15 +120,18 @@ export const useEditorAssistant = (): {postMessage: PostMessage, processMessage:
       const ytext = ydocs.secondaryDoc.getText('codemirror');
       ydocs.secondaryDoc.transact(() => {
         pendingDetectedDiff.forEach((detectedDiff) => {
-          if (isInsertDiff(detectedDiff.data)) {
-            ytext.insert(positionRef.current, detectedDiff.data.diff.insert);
+          if (isReplaceDiff(detectedDiff.data)) {
+            // TODO: https://redmine.weseek.co.jp/issues/164330
           }
-          if (isDeleteDiff(detectedDiff.data)) {
-            ytext.delete(positionRef.current, detectedDiff.data.diff.delete);
-          }
-          if (isRetainDiff(detectedDiff.data)) {
-            positionRef.current += detectedDiff.data.diff.retain;
-          }
+          // if (isInsertDiff(detectedDiff.data)) {
+          //   ytext.insert(positionRef.current, detectedDiff.data.diff.insert);
+          // }
+          // if (isDeleteDiff(detectedDiff.data)) {
+          //   ytext.delete(positionRef.current, detectedDiff.data.diff.delete);
+          // }
+          // if (isRetainDiff(detectedDiff.data)) {
+          //   positionRef.current += detectedDiff.data.diff.retain;
+          // }
         });
       });
 

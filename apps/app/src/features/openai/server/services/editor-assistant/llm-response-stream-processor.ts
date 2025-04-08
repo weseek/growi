@@ -22,7 +22,8 @@ const isMessageItem = (item: unknown): item is LlmEditorAssistantMessage => {
  */
 const isDiffItem = (item: unknown): item is LlmEditorAssistantDiff => {
   return typeof item === 'object' && item !== null
-    && ('insert' in item || 'delete' in item || 'retain' in item);
+    // && ('insert' in item || 'delete' in item || 'retain' in item);
+    && ('replace' in item);
 };
 
 type Options = {
@@ -30,6 +31,7 @@ type Options = {
   diffDetectedCallback?: (detected: LlmEditorAssistantDiff) => void,
   dataFinalizedCallback?: (message: string | null, replacements: LlmEditorAssistantDiff[]) => void,
 }
+
 /**
  * AI response stream processor for Editor Assisntant
  * Extracts messages and diffs from JSON stream for editor
@@ -174,9 +176,10 @@ export class LlmResponseStreamProcessor {
    * Generate unique key for a diff
    */
   private getDiffKey(diff: LlmEditorAssistantDiff, index: number): string {
-    if ('insert' in diff) return `insert-${index}`;
-    if ('delete' in diff) return `delete-${index}`;
-    if ('retain' in diff) return `retain-${index}`;
+    // if ('insert' in diff) return `insert-${index}`;
+    // if ('delete' in diff) return `delete-${index}`;
+    // if ('retain' in diff) return `retain-${index}`;
+    if ('replace' in diff) return `replace-${index}`;
     return '';
   }
 

@@ -30,14 +30,18 @@ export type SseDetectedDiff = z.infer<typeof SseDetectedDiffSchema>;
 export type SseFinalized = z.infer<typeof SseFinalizedSchema>;
 
 // Type guard for SseDetectedDiff
-export const isInsertDiff = (diff: SseDetectedDiff): diff is { diff: { insert: string } } => {
-  return 'insert' in diff.diff;
-};
+// export const isInsertDiff = (diff: SseDetectedDiff): diff is { diff: { insert: string } } => {
+//   return 'insert' in diff.diff;
+// };
 
-export const isDeleteDiff = (diff: SseDetectedDiff): diff is { diff: { delete: number } } => {
-  return 'delete' in diff.diff;
-};
+// export const isDeleteDiff = (diff: SseDetectedDiff): diff is { diff: { delete: number } } => {
+//   return 'delete' in diff.diff;
+// };
 
-export const isRetainDiff = (diff: SseDetectedDiff): diff is { diff : { retain: number} } => {
-  return 'retain' in diff.diff;
+// export const isRetainDiff = (diff: SseDetectedDiff): diff is { diff : { retain: number} } => {
+//   return 'retain' in diff.diff;
+// };
+
+export const isReplaceDiff = (diff: SseDetectedDiff): diff is { diff: { replace: string } } => {
+  return 'replace' in diff.diff;
 };
