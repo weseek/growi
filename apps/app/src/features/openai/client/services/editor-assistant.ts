@@ -48,14 +48,43 @@ type UseEditorAssistant = () => {
 }
 
 export const useEditorAssistant: UseEditorAssistant = () => {
+  // Refs
   const positionRef = useRef<number>(0);
 
+  // State
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
 
+  // SWR Hooks
   const { data: currentPageId } = useCurrentPageId();
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
+
+  // Functions
+  const getSelectedText = useCallback(() => {
+    const view = codeMirrorEditor?.view;
+    if (view == null) {
+      return;
+    }
+
+    return view.state.sliceDoc(
+      view.state.selection.main.from,
+      view.state.selection.main.to,
+    );
+  }, [codeMirrorEditor?.view]);
+
+  const getSelectedTextFirstLineNumber = useCallback(() => {
+    const view = codeMirrorEditor?.view;
+    if (view == null) {
+      return;
+    }
+
+    const selectionStart = view.state.selection.main.from;
+
+    const lineInfo = view.state.doc.lineAt(selectionStart);
+
+    return lineInfo.number;
+  }, [codeMirrorEditor?.view]);
 
   const postMessage: PostMessage = useCallback(async(threadId, userMessage, markdown) => {
     const response = await fetch('/_api/v3/openai/edit', {
@@ -100,6 +129,8 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
+
+  // Effects
   useEffect(() => {
 
     const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
