@@ -52,6 +52,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const positionRef = useRef<number>(0);
 
   // State
+  const [selectedTextFirstLineNumber, setSelectedTextFirstLineNumber] = useState<number | undefined>();
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
 
   // SWR Hooks
@@ -87,6 +88,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [codeMirrorEditor?.view]);
 
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
+    setSelectedTextFirstLineNumber(getSelectedTextFirstLineNumber());
     const selectedMarkdown = getSelectedText();
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
@@ -98,7 +100,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       }),
     });
     return response;
-  }, [getSelectedText]);
+  }, [getSelectedText, getSelectedTextFirstLineNumber]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
@@ -130,6 +132,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
+  useEffect(() => {
+
+  });
 
   // Effects
   useEffect(() => {
