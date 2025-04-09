@@ -24,7 +24,7 @@ import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
 
 interface PostMessage {
-  (threadId: string, userMessage: string, markdown: string): Promise<Response>;
+  (threadId: string, userMessage: string): Promise<Response>;
 }
 interface ProcessMessage {
   (data: unknown, handler: {
@@ -86,18 +86,19 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     return lineInfo.number;
   }, [codeMirrorEditor?.view]);
 
-  const postMessage: PostMessage = useCallback(async(threadId, userMessage, markdown) => {
+  const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
+    const selectedMarkdown = getSelectedText();
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         threadId,
         userMessage,
-        markdown,
+        markdown: selectedMarkdown,
       }),
     });
     return response;
-  }, []);
+  }, [getSelectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
