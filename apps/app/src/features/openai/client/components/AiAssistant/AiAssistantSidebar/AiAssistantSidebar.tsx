@@ -76,7 +76,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
   const {
-    postMessage: postMessageForEditorAssistant, processMessage: processMessageForEditorAssistant, accept, reject,
+    postMessage: postMessageForEditorAssistant,
+    processMessage: processMessageForEditorAssistant,
+    accept,
+    reject,
   } = useEditorAssistant();
 
   const form = useForm<FormData>({
