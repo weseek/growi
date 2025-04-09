@@ -40,7 +40,7 @@
         "noGlobalObjectCalls": "error",
         "noInnerDeclarations": "error",
         "noInvalidConstructorSuper": "error",
-        "noInvalidUseBeforeDeclaration": "warn",
+        "noInvalidUseBeforeDeclaration": "error",
         "noNewSymbol": "error",
         "noNodejsModules": "off",
         "noPrecisionLoss": "error",
@@ -51,7 +51,6 @@
         "noUnreachableSuper": "error",
         "noUnsafeFinally": "error",
         "noUnusedLabels": "error",
-        "noUnusedVariables": "error",
         "useArrayLiterals": "error",
         "useIsNan": "error",
         "useValidForDirection": "error",
@@ -193,9 +192,5 @@
     },
     "ignore": ["node_modules/**", "./dist/**", "./transpiled/**", "./public/**", "./src/linter-checker/**", "./tmp/**", "./next-env.d.ts"]
   },
-  "javascript": { "formatter": { "quoteStyle": "single" } },
-  "overrides": [
-    { "include": ["*.js", "*.jsx"], "linter": { "rules": { "correctness": { "noUnusedVariables": "warn" } } } },
-    { "include": ["*.ts", "*.tsx"], "linter": { "rules": { "correctness": { "noUnusedVariables": "off" } } } }
-  ]
+  "javascript": { "formatter": { "quoteStyle": "single" } }
 }
