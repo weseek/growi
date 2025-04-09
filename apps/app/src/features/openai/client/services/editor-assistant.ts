@@ -51,7 +51,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
   const positionRef = useRef<number>(0);
 
-  // State
+  // States
   const [selectedTextFirstLineNumber, setSelectedTextFirstLineNumber] = useState<number | undefined>();
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
 
@@ -131,10 +131,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     rejectChange(codeMirrorEditor?.view);
     mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
-
-  useEffect(() => {
-
-  });
 
   // Effects
   useEffect(() => {
