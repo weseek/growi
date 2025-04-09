@@ -504,7 +504,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (isOpened && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
+      if (isOpened && sidebarRef.current && !sidebarRef.current.contains(event.target as Node) && !isEditorAssistant) {
         closeAiAssistantSidebar();
       }
     };
@@ -513,7 +513,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [closeAiAssistantSidebar, isOpened]);
+  }, [closeAiAssistantSidebar, isEditorAssistant, isOpened]);
 
   useEffect(() => {
     if (!aiAssistantSidebarData?.isOpened) {
