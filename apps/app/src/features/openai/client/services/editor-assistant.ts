@@ -40,7 +40,14 @@ type DetectedDiff = Array<{
   id: string,
 }>
 
-export const useEditorAssistant = (): {postMessage: PostMessage, processMessage: ProcessMessage, accept: () => void, reject: () => void } => {
+type UseEditorAssistant = () => {
+  postMessage: PostMessage,
+  processMessage: ProcessMessage,
+  accept: () => void,
+  reject: () => void,
+}
+
+export const useEditorAssistant: UseEditorAssistant = () => {
   const positionRef = useRef<number>(0);
 
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
