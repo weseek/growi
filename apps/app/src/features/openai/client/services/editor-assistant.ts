@@ -61,7 +61,7 @@ const insertTextAtLine = (ytext: YText, lineNumber: number, textToInsert: string
 };
 
 
-const getLineInfo = (ytext: YText, lineNumber: number): { text: string, startIndex: number, endIndex: number } | null => {
+const getLineInfo = (ytext: YText, lineNumber: number): { text: string, startIndex: number } | null => {
   // Get the entire text content
   const content = ytext.toString();
 
@@ -82,14 +82,10 @@ const getLineInfo = (ytext: YText, lineNumber: number): { text: string, startInd
     startIndex += lines[i].length + 1; // +1 for the newline character
   }
 
-  // Calculate the end index of the line (exclusive)
-  const endIndex = startIndex + text.length;
-
   // Return comprehensive line information
   return {
     text,
     startIndex,
-    endIndex,
   };
 };
 
