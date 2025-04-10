@@ -25,7 +25,7 @@ import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
 
 interface PostMessage {
-  (threadId: string, userMessage: string, markdown: string): Promise<Response>;
+  (threadId: string, userMessage: string): Promise<Response>;
 }
 interface ProcessMessage {
   (data: unknown, handler: {
@@ -41,78 +41,68 @@ type DetectedDiff = Array<{
   id: string,
 }>
 
-const insertTextAtLine = (ytext: YText, lineNumber: number, textToInsert: string): void => {
-  // Get the entire text content
-  const content = ytext.toString();
+type UseEditorAssistant = () => {
+  postMessage: PostMessage,
+  processMessage: ProcessMessage,
+  accept: () => void,
+  reject: () => void,
+}
 
-  // Split by newlines to get all lines
-  const lines = content.split('\n');
-
-  // Calculate the index position for insertion
-  let insertPosition = 0;
-
-  // Sum the length of all lines before the target line (plus newline characters)
-  for (let i = 0; i < lineNumber && i < lines.length; i++) {
-    insertPosition += lines[i].length + 1; // +1 for the newline character
-  }
-
-  // Insert the text at the calculated position
-  ytext.insert(insertPosition, textToInsert);
-};
-
-
-const getLineInfo = (ytext: YText, lineNumber: number): { text: string, startIndex: number } | null => {
-  // Get the entire text content
-  const content = ytext.toString();
-
-  // Split by newlines to get all lines
-  const lines = content.split('\n');
-
-  // Check if the requested line exists
-  if (lineNumber < 0 || lineNumber >= lines.length) {
-    return null; // Line doesn't exist
-  }
-
-  // Get the text of the specified line
-  const text = lines[lineNumber];
-
-  // Calculate the start index of the line
-  let startIndex = 0;
-  for (let i = 0; i < lineNumber; i++) {
-    startIndex += lines[i].length + 1; // +1 for the newline character
-  }
-
-  // Return comprehensive line information
-  return {
-    text,
-    startIndex,
-  };
-};
-
-
-export const useEditorAssistant = (): {postMessage: PostMessage, processMessage: ProcessMessage, accept: () => void, reject: () => void } => {
+export const useEditorAssistant: UseEditorAssistant = () => {
+  // Refs
   // const positionRef = useRef<number>(0);
   const lineRef = useRef<number>(0);
 
+  // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
 
+  // SWR Hooks
   const { data: currentPageId } = useCurrentPageId();
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
 
-  const postMessage: PostMessage = useCallback(async(threadId, userMessage, markdown) => {
+  // Functions
+  const getSelectedText = useCallback(() => {
+    const view = codeMirrorEditor?.view;
+    if (view == null) {
+      return;
+    }
+
+    return view.state.sliceDoc(
+      view.state.selection.main.from,
+      view.state.selection.main.to,
+    );
+  }, [codeMirrorEditor?.view]);
+
+  const getSelectedTextFirstLineNumber = useCallback(() => {
+    const view = codeMirrorEditor?.view;
+    if (view == null) {
+      return;
+    }
+
+    const selectionStart = view.state.selection.main.from;
+
+    const lineInfo = view.state.doc.lineAt(selectionStart);
+
+    return lineInfo.number;
+  }, [codeMirrorEditor?.view]);
+
+  const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
+    lineRef.current = getSelectedTextFirstLineNumber() ?? 0;
+
+    const selectedMarkdown = getSelectedText();
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         threadId,
         userMessage,
-        markdown,
+        markdown: selectedMarkdown,
       }),
     });
     return response;
-  }, []);
+  }, [getSelectedText, getSelectedTextFirstLineNumber]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
@@ -134,6 +124,55 @@ export const useEditorAssistant = (): {postMessage: PostMessage, processMessage:
     });
   }, [mutateIsEnableUnifiedMergeView]);
 
+  const insertTextAtLine = (ytext: YText, lineNumber: number, textToInsert: string): void => {
+    // Get the entire text content
+    const content = ytext.toString();
+
+    // Split by newlines to get all lines
+    const lines = content.split('\n');
+
+    // Calculate the index position for insertion
+    let insertPosition = 0;
+
+    // Sum the length of all lines before the target line (plus newline characters)
+    for (let i = 0; i < lineNumber && i < lines.length; i++) {
+      insertPosition += lines[i].length + 1; // +1 for the newline character
+    }
+
+    // Insert the text at the calculated position
+    ytext.insert(insertPosition, textToInsert);
+  };
+
+
+  const getLineInfo = (ytext: YText, lineNumber: number): { text: string, startIndex: number } | null => {
+    // Get the entire text content
+    const content = ytext.toString();
+
+    // Split by newlines to get all lines
+    const lines = content.split('\n');
+
+    // Check if the requested line exists
+    if (lineNumber < 0 || lineNumber >= lines.length) {
+      return null; // Line doesn't exist
+    }
+
+    // Get the text of the specified line
+    const text = lines[lineNumber];
+
+    // Calculate the start index of the line
+    let startIndex = 0;
+    for (let i = 0; i < lineNumber; i++) {
+      startIndex += lines[i].length + 1; // +1 for the newline character
+    }
+
+    // Return comprehensive line information
+    return {
+      text,
+      startIndex,
+    };
+  };
+
+
   const accept = useCallback(() => {
     acceptChange(codeMirrorEditor?.view);
     mutateIsEnableUnifiedMergeView(false);
@@ -144,6 +183,7 @@ export const useEditorAssistant = (): {postMessage: PostMessage, processMessage:
     mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
+  // Effects
   useEffect(() => {
 
     const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
