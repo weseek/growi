@@ -55,33 +55,49 @@ export const useSWRxAiAssistants = (): SWRResponse<AccessibleAiAssistantsHasId, 
 };
 
 
-type AiAssistantChatSidebarStatus = {
+/*
+*  useAiAssistantSidebar
+*/
+type AiAssistantSidebarStatus = {
   isOpened: boolean,
+  isEditorAssistant?: boolean,
   aiAssistantData?: AiAssistantHasId,
   threadData?: IThreadRelationHasId,
 }
 
-type AiAssistantChatSidebarUtils = {
-  open(
+type AiAssistantSidebarUtils = {
+  openChat(
     aiAssistantData: AiAssistantHasId,
     threadData?: IThreadRelationHasId,
   ): void
+  openEditor(): void
   close(): void
 }
 
-export const useAiAssistantChatSidebar = (
-    status?: AiAssistantChatSidebarStatus,
-): SWRResponse<AiAssistantChatSidebarStatus, Error> & AiAssistantChatSidebarUtils => {
+export const useAiAssistantSidebar = (
+    status?: AiAssistantSidebarStatus,
+): SWRResponse<AiAssistantSidebarStatus, Error> & AiAssistantSidebarUtils => {
   const initialStatus = { isOpened: false };
-  const swrResponse = useSWRStatic<AiAssistantChatSidebarStatus, Error>('AiAssistantChatSidebar', status, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<AiAssistantSidebarStatus, Error>('AiAssistantSidebar', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
-    open: useCallback(
+    openChat: useCallback(
       (aiAssistantData: AiAssistantHasId, threadData: IThreadRelationHasId) => {
         swrResponse.mutate({ isOpened: true, aiAssistantData, threadData });
       }, [swrResponse],
     ),
-    close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
+    openEditor: useCallback(
+      () => {
+        swrResponse.mutate({
+          isOpened: true, isEditorAssistant: true, aiAssistantData: undefined, threadData: undefined,
+        });
+      }, [swrResponse],
+    ),
+    close: useCallback(
+      () => swrResponse.mutate({
+        isOpened: false, isEditorAssistant: false, aiAssistantData: undefined, threadData: undefined,
+      }), [swrResponse],
+    ),
   };
 };
