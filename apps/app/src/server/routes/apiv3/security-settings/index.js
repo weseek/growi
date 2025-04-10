@@ -274,7 +274,7 @@ const validator = {
  *            description: certificate for saml
  *          samlEnvVarCert:
  *            type: string
- *            desription: certificate for saml
+ *            description: certificate for saml
  *          samlAttrMapId:
  *            type: string
  *            description: attribute mapping id for saml
