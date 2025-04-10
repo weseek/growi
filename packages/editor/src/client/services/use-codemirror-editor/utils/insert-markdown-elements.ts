@@ -2,12 +2,26 @@ import { useCallback } from 'react';
 
 import type { EditorView } from '@codemirror/view';
 
-export type InsertMarkdowElements = (
+export type InsertMarkdownElements = (
   prefix: string,
   suffix: string,
 ) => void;
 
-export const useInsertMarkdownElements = (view?: EditorView): InsertMarkdowElements => {
+const removeSymbol = (text: string, prefix: string, suffix: string): string => {
+  let result = text;
+
+  if (result.startsWith(prefix)) {
+    result = result.slice(prefix.length);
+  }
+
+  if (result.endsWith(suffix)) {
+    result = result.slice(0, -suffix.length);
+  }
+
+  return result;
+};
+
+export const useInsertMarkdownElements = (view?: EditorView): InsertMarkdownElements => {
 
   return useCallback((prefix, suffix) => {
     const selection = view?.state.sliceDoc(
@@ -15,7 +29,16 @@ export const useInsertMarkdownElements = (view?: EditorView): InsertMarkdowEleme
       view?.state.selection.main.to,
     );
     const cursorPos = view?.state.selection.main.head;
-    const insertText = view?.state.replaceSelection(prefix + selection + suffix);
+
+    let insertText;
+
+    if (selection?.startsWith(prefix) && selection?.endsWith(suffix)) {
+      const result = removeSymbol(selection, prefix, suffix);
+      insertText = view?.state.replaceSelection(result);
+    }
+    else {
+      insertText = view?.state.replaceSelection(prefix + selection + suffix);
+    }
 
     if (insertText == null || cursorPos == null) {
       return;
