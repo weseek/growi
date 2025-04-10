@@ -48,6 +48,54 @@ type UseEditorAssistant = () => {
   reject: () => void,
 }
 
+const insertTextAtLine = (ytext: YText, lineNumber: number, textToInsert: string): void => {
+  // Get the entire text content
+  const content = ytext.toString();
+
+  // Split by newlines to get all lines
+  const lines = content.split('\n');
+
+  // Calculate the index position for insertion
+  let insertPosition = 0;
+
+  // Sum the length of all lines before the target line (plus newline characters)
+  for (let i = 0; i < lineNumber && i < lines.length; i++) {
+    insertPosition += lines[i].length + 1; // +1 for the newline character
+  }
+
+  // Insert the text at the calculated position
+  ytext.insert(insertPosition, textToInsert);
+};
+
+
+const getLineInfo = (ytext: YText, lineNumber: number): { text: string, startIndex: number } | null => {
+  // Get the entire text content
+  const content = ytext.toString();
+
+  // Split by newlines to get all lines
+  const lines = content.split('\n');
+
+  // Check if the requested line exists
+  if (lineNumber < 0 || lineNumber >= lines.length) {
+    return null; // Line doesn't exist
+  }
+
+  // Get the text of the specified line
+  const text = lines[lineNumber];
+
+  // Calculate the start index of the line
+  let startIndex = 0;
+  for (let i = 0; i < lineNumber; i++) {
+    startIndex += lines[i].length + 1; // +1 for the newline character
+  }
+
+  // Return comprehensive line information
+  return {
+    text,
+    startIndex,
+  };
+};
+
 export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
   // const positionRef = useRef<number>(0);
@@ -123,55 +171,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       handler.onFinalized(data);
     });
   }, [mutateIsEnableUnifiedMergeView]);
-
-  const insertTextAtLine = (ytext: YText, lineNumber: number, textToInsert: string): void => {
-    // Get the entire text content
-    const content = ytext.toString();
-
-    // Split by newlines to get all lines
-    const lines = content.split('\n');
-
-    // Calculate the index position for insertion
-    let insertPosition = 0;
-
-    // Sum the length of all lines before the target line (plus newline characters)
-    for (let i = 0; i < lineNumber && i < lines.length; i++) {
-      insertPosition += lines[i].length + 1; // +1 for the newline character
-    }
-
-    // Insert the text at the calculated position
-    ytext.insert(insertPosition, textToInsert);
-  };
-
-
-  const getLineInfo = (ytext: YText, lineNumber: number): { text: string, startIndex: number } | null => {
-    // Get the entire text content
-    const content = ytext.toString();
-
-    // Split by newlines to get all lines
-    const lines = content.split('\n');
-
-    // Check if the requested line exists
-    if (lineNumber < 0 || lineNumber >= lines.length) {
-      return null; // Line doesn't exist
-    }
-
-    // Get the text of the specified line
-    const text = lines[lineNumber];
-
-    // Calculate the start index of the line
-    let startIndex = 0;
-    for (let i = 0; i < lineNumber; i++) {
-      startIndex += lines[i].length + 1; // +1 for the newline character
-    }
-
-    // Return comprehensive line information
-    return {
-      text,
-      startIndex,
-    };
-  };
-
 
   const accept = useCallback(() => {
     acceptChange(codeMirrorEditor?.view);
