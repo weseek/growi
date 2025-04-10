@@ -15,15 +15,16 @@ type CrowiReq = ReqWithUserRegistrationOrder & {
 /**
  * @swagger
  *
- * /user-activation/:token:
+ * /user-activation/{token}:
  *   get:
- *     summary: /user-activation/:token
+ *     summary: /user-activation/{token}
  *     tags: [Users]
  *     parameters:
  *       - name: token
  *         in: path
  *         required: true
- *         type: string
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: User activation successful

@@ -41,16 +41,18 @@ module.exports = (crowi: Crowi): Router => {
    *       - name: groupIds
    *         in: query
    *         description: The group IDs to get relations for
-   *         type: array
-   *         items:
-   *           type: string
+   *         schema:
+   *           type: array
+   *           items:
+   *             type: string
    *       - name: childGroupIds
    *         in: query
    *         description: The child group IDs to get relations for
    *         required: false
-   *         type: array
-   *         items:
-   *           type: string
+   *         schema:
+   *           type: array
+   *           items:
+   *             type: string
    *     responses:
    *       200:
    *         description: The user group relations

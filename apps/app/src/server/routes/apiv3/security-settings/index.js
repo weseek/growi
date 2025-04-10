@@ -452,7 +452,7 @@ module.exports = (crowi) => {
    *                        googleOAuth:
    *                          $ref: '#/components/schemas/GoogleOAuthSetting'
    *                        githubOAuth:
-   *                          $ref: '#/components/schemas/GitHubOAuth
+   *                          $ref: '#/components/schemas/GitHubOAuthSetting'
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
