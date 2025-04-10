@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "7.2.0",
+  "version": "7.2.1-RC.0",
   "description": "Team collaboration software using markdown",
   "license": "MIT",
   "private": "true",
@@ -47,7 +47,7 @@
     "@changesets/cli": "^2.27.3",
     "@faker-js/faker": "^9.0.1",
     "@playwright/test": "^1.49.1",
-    "@swc-node/register": "^1.9.1",
+    "@swc-node/register": "^1.10.9",
     "@swc/core": "^1.5.25",
     "@swc/helpers": "^0.5.11",
     "@types/css-modules": "^1.0.2",
@@ -96,7 +96,7 @@
     "turbo": "^2.1.3",
     "typescript": "~5.0.0",
     "typescript-transform-paths": "^3.4.7",
-    "vite": "^5.4.12",
+    "vite": "^5.4.17",
     "vite-plugin-dts": "^3.9.1",
     "vite-tsconfig-paths": "^5.0.1",
     "vitest": "^2.1.1",
@@ -104,13 +104,15 @@
     "vue-tsc": "^2.1.10"
   },
   "// comments for pnpm.overrides": {
+    "@lykmapipo/common>flat": "flat v6 is provided only by ESM, but @lykmapipo/common requires CommonJS version",
     "@lykmapipo/common>mime": "mime v4 is provided only by ESM, but @lykmapipo/common requires CommonJS version",
-    "@lykmapipo/common>flat": "flat v6 is provided only by ESM, but @lykmapipo/common requires CommonJS version"
+    "@lykmapipo/common>parse-json": "parse-json v6 is provided only by ESM, but @lykmapipo/common requires CommonJS version"
   },
   "pnpm": {
     "overrides": {
+      "@lykmapipo/common>flat": "5.0.2",
       "@lykmapipo/common>mime": "3.0.0",
-      "@lykmapipo/common>flat": "5.0.2"
+      "@lykmapipo/common>parse-json": "5.2.0"
     }
   },
   "engines": {

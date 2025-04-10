@@ -1,10 +1,10 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, type JSX } from 'react';
 
-import { IAttachmentHasId } from '@growi/core';
-import { Property } from 'csstype';
+import type { IAttachmentHasId } from '@growi/core';
+import type { Property } from 'csstype';
 // import Carousel, { Modal, ModalGateway } from 'react-images';
 
-import { RefsContext } from './util/refs-context';
+import type { RefsContext } from './util/refs-context';
 
 type Props = {
   attachments: IAttachmentHasId[],

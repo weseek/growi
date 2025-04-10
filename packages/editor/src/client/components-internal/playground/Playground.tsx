@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useMemo, useState,
+  useCallback, useEffect, useMemo, useState, type JSX,
 } from 'react';
 
 import { AcceptedUploadFileType } from '@growi/core';

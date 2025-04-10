@@ -98,7 +98,7 @@ module.exports = (crowi) => {
    *      summary: Request password reset
    *      tags: [Users]
    *      security:
-   *        -
+   *        - cookieAuth: []
    *      requestBody:
    *        required: true
    *        content:
@@ -160,7 +160,7 @@ module.exports = (crowi) => {
    *      summary: Reset password
    *      tags: [Users]
    *      security:
-   *        -
+   *        - cookieAuth: []
    *      requestBody:
    *        required: true
    *        content:

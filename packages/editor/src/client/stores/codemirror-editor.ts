@@ -19,7 +19,7 @@ export const useCodeMirrorEditorIsolated = (
     key: string | null, container?: HTMLDivElement | null, props?: ReactCodeMirrorProps,
 ): SWRResponse<UseCodeMirrorEditor> => {
 
-  const ref = useRef<UseCodeMirrorEditor>();
+  const ref = useRef<UseCodeMirrorEditor | null>(null);
   const currentData = ref.current;
 
   const swrKey = key != null ? `codeMirrorEditor_${key}` : null;

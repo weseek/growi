@@ -781,11 +781,26 @@
     "discription_heading": "アカウント作成",
     "discription": "招待を受け取ったメールアドレスでアカウントを作成します"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "ページのエクスポートに失敗しました",
     "failed_to_count_pages": "ページ数の取得に失敗しました",
     "export_page_markdown": "マークダウン形式でページをエクスポート",
-    "export_page_pdf": "PDF形式でページをエクスポート"
+    "export_page_pdf": "PDF形式でページをエクスポート",
+    "bulk_export": "ページとその配下のページを全てエクスポート",
+    "bulk_export_download_explanation": "エクスポート完了後に通知が届きます。通知をクリックし、ファイルをダウンロードしてください。",
+    "bulk_export_exec_time_warning": "ページ数が多いと、エクスポートに時間がかかる場合があります",
+    "large_bulk_export_warning": "システムリソースの維持のため、ページ数の多いエクスポートを連続して実行することはご遠慮ください",
+    "markdown": "マークダウン",
+    "choose_export_format": "エクスポート形式を選択してください",
+    "bulk_export_started": "ただいま準備中です...",
+    "bulk_export_download_expired": "ダウンロード期限が切れました",
+    "bulk_export_job_expired": "エクスポート時間が長すぎるため、処理が中断されました",
+    "export_in_progress": "エクスポート進行中",
+    "export_in_progress_explanation": "既に同じ形式でのエクスポートが進行中です。最新のページ内容でエクスポートを最初からやり直しますか？",
+    "export_cancel_warning": "進行中の以下のエクスポートはキャンセルされます",
+    "restart": "やり直す",
+    "format": "形式",
+    "started_on": "開始日時"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",

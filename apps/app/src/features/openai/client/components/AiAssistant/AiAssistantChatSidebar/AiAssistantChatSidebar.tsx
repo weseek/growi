@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from 'react';
+import type { KeyboardEvent, JSX } from 'react';
 import {
   type FC, memo, useRef, useEffect, useState, useCallback,
 } from 'react';

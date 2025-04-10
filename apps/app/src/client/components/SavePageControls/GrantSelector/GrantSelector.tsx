@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback, useEffect, useState, type JSX,
+} from 'react';
 
 import {
   PageGrant, GroupType, getIdForRef,
@@ -162,8 +164,8 @@ export const GrantSelector = (props: Props): JSX.Element => {
           <span className="material-symbols-outlined me-1">account_tree</span>
           <span className="label">
             {grantedGroupNames.length > 1
-              ? (
               // substring for group name truncate
+              ? (
                 <span>
                   {`${grantedGroupNames[0].substring(0, 30)}, ... `}
                   <span className="badge bg-primary">+{grantedGroupNames.length - 1}</span>

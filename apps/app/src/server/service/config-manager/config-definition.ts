@@ -318,6 +318,17 @@ export const CONFIG_KEYS = [
   'env:useOnlyEnvVars:gcs',
   'env:useOnlyEnvVars:azure',
 
+  // Page Bulk Export Settings
+  'app:bulkExportJobExpirationSeconds',
+  'app:bulkExportDownloadExpirationSeconds',
+  'app:pageBulkExportJobCronSchedule',
+  'app:checkPageBulkExportJobInProgressCronSchedule',
+  'app:pageBulkExportJobCleanUpCronSchedule',
+  'app:pageBulkExportParallelExecLimit',
+  'app:pageBulkExportPdfConverterUri',
+  'app:isBulkExportPagesEnabled',
+  'env:useOnlyEnvVars:app:isBulkExportPagesEnabled',
+
 ] as const;
 
 
@@ -1283,6 +1294,42 @@ Guideline as a RAG:
   }),
   'env:useOnlyEnvVars:azure': defineConfig<boolean>({
     envVarName: 'AZURE_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS',
+    defaultValue: false,
+  }),
+  'app:bulkExportJobExpirationSeconds': defineConfig<number>({
+    envVarName: 'BULK_EXPORT_JOB_EXPIRATION_SECONDS',
+    defaultValue: 86400,
+  }),
+  'app:bulkExportDownloadExpirationSeconds': defineConfig<number>({
+    envVarName: 'BULK_EXPORT_DOWNLOAD_EXPIRATION_SECONDS',
+    defaultValue: 259200,
+  }),
+  'app:pageBulkExportJobCronSchedule': defineConfig<string>({
+    envVarName: 'BULK_EXPORT_JOB_CRON_SCHEDULE',
+    defaultValue: '*/10 * * * * *',
+  }),
+  'app:checkPageBulkExportJobInProgressCronSchedule': defineConfig<string>({
+    envVarName: 'CHECK_PAGE_BULK_EXPORT_JOB_IN_PROGRESS_CRON_SCHEDULE',
+    defaultValue: '*/3 * * * *',
+  }),
+  'app:pageBulkExportJobCleanUpCronSchedule': defineConfig<string>({
+    envVarName: 'BULK_EXPORT_JOB_CLEAN_UP_CRON_SCHEDULE',
+    defaultValue: '*/10 * * * *',
+  }),
+  'app:pageBulkExportParallelExecLimit': defineConfig<number>({
+    envVarName: 'BULK_EXPORT_PARALLEL_EXEC_LIMIT',
+    defaultValue: 5,
+  }),
+  'app:pageBulkExportPdfConverterUri': defineConfig<string | undefined>({
+    envVarName: 'BULK_EXPORT_PDF_CONVERTER_URI',
+    defaultValue: undefined,
+  }),
+  'app:isBulkExportPagesEnabled': defineConfig<boolean>({
+    envVarName: 'BULK_EXPORT_PAGES_ENABLED',
+    defaultValue: true,
+  }),
+  'env:useOnlyEnvVars:app:isBulkExportPagesEnabled': defineConfig<boolean>({
+    envVarName: 'BULK_EXPORT_PAGES_ENABLED_USES_ONLY_ENV_VARS',
     defaultValue: false,
   }),
 } as const;

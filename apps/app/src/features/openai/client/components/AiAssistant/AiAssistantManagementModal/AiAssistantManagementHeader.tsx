@@ -1,7 +1,10 @@
+import type { JSX } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { ModalHeader } from 'reactstrap';
 
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
+
 
 export const AiAssistantManagementHeader = (): JSX.Element => {
   const { t } = useTranslation();

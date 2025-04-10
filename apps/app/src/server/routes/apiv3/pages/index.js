@@ -368,7 +368,9 @@ module.exports = (crowi) => {
     *          200:
     *            description: Succeeded to resume rename page operation.
     *            content:
-    *              description: Empty response
+    *              application/json:
+    *                schema:
+    *                  type: object
     */
   router.post('/resume-rename', accessTokenParser, loginRequiredStrictly, validator.resumeRenamePage, apiV3FormValidator,
     async(req, res) => {

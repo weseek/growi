@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, type JSX } from 'react';
 
 import type { IAdminExternalAccount } from '@growi/core';
 import { format as dateFnsFormat } from 'date-fns/format';

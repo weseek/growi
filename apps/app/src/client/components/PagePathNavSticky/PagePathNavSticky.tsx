@@ -1,8 +1,5 @@
 import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
+  useEffect, useMemo, useRef, useState, type JSX,
 } from 'react';
 
 import { DevidedPagePath } from '@growi/core/dist/models';
@@ -89,10 +86,10 @@ export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element =>
         {({ status }) => {
           const isCollapseParents = status === Sticky.STATUS_FIXED;
           return (
-          // Controlling pointer-events
-          //  2. enable pointer-events with 'pe-auto' only against the children
-          //      which width is minimized by 'd-inline-block'
-          //
+            // Controlling pointer-events
+            //  2. enable pointer-events with 'pe-auto' only against the children
+            //      which width is minimized by 'd-inline-block'
+            //
             <div className="d-inline-block pe-auto">
               { !isCollapseParents && <PagePathNav {...props} /> }
               { isCollapseParents && (

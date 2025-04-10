@@ -1,5 +1,5 @@
 import React, {
-  memo, useCallback, useEffect, useMemo, useRef,
+  memo, useCallback, useEffect, useMemo, useRef, type JSX,
 } from 'react';
 
 import type {
