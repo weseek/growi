@@ -54,7 +54,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const lineRef = useRef<number>(0);
 
   // States
-  const [selectedTextFirstLineNumber, setSelectedTextFirstLineNumber] = useState<number | undefined>();
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
 
   // SWR Hooks
@@ -90,7 +89,8 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [codeMirrorEditor?.view]);
 
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
-    setSelectedTextFirstLineNumber(getSelectedTextFirstLineNumber());
+    lineRef.current = getSelectedTextFirstLineNumber() ?? 0;
+
     const selectedMarkdown = getSelectedText();
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
