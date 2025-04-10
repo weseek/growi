@@ -133,7 +133,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
     const lineInfo = view.state.doc.lineAt(selectionStart);
 
-    return lineInfo.number;
+    return lineInfo.number - 1; // 0-based index
   }, [codeMirrorEditor?.view]);
 
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
@@ -173,8 +173,10 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [mutateIsEnableUnifiedMergeView]);
 
   const accept = useCallback(() => {
-    acceptChange(codeMirrorEditor?.view);
-    mutateIsEnableUnifiedMergeView(false);
+    console.log('これビュー', codeMirrorEditor?.view);
+    const res = acceptChange(codeMirrorEditor?.view);
+    console.log('res', res);
+    // mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
   const reject = useCallback(() => {
