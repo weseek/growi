@@ -48,3 +48,10 @@
     border-radius: var(--bs-border-radius);
   }
 }
+
+// remove outline
+.comment-editor-styles :global {
+  .cm-editor {
+    outline: none;
+  }
+}
