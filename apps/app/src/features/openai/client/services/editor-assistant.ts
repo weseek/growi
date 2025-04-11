@@ -171,7 +171,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
-  const selectTextHandler = useCallback((selectedText?: string, selectedTextFirstLineNumber?: number) => {
+  const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
     setSelectedText(selectedText);
     setSelectedTextFirstLineNumber(selectedTextFirstLineNumber);
   }, []);
