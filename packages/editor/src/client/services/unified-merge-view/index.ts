@@ -17,7 +17,7 @@ export const rejectChange = (view: EditorView): boolean => {
 };
 
 
-type OnSelected = (selectedText?: string, selectedTextFirstLineNumber?: number) => void
+type OnSelected = (selectedText: string, selectedTextFirstLineNumber: number) => void
 
 export const useTextSelectionEffect = (codeMirrorEditor?: UseCodeMirrorEditor, onSelected?: OnSelected): void => {
   useEffect(() => {
