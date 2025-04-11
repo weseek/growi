@@ -104,7 +104,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
-  const [selectedTextFirstLineNumber, setSelectedTextFirstLineNumber] = useState<number>();
   const [selectedText, setSelectedText] = useState<string>();
   const isTextSelected = selectedText != null && selectedText.length !== 0;
 
@@ -116,8 +115,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   // Functions
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
-    lineRef.current = selectedTextFirstLineNumber ?? 0;
-
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -131,7 +128,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     setSelectedText(undefined);
 
     return response;
-  }, [selectedText, selectedTextFirstLineNumber]);
+  }, [selectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
@@ -173,7 +170,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
     setSelectedText(selectedText);
-    setSelectedTextFirstLineNumber(selectedTextFirstLineNumber);
+    lineRef.current = selectedTextFirstLineNumber;
   }, []);
 
   // Effects
