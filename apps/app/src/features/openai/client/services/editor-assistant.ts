@@ -118,7 +118,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
     lineRef.current = selectedTextFirstLineNumber ?? 0;
 
-    // const selectedMarkdown = getSelectedText();
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
