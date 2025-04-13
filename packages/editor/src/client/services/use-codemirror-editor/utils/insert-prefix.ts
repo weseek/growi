@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import type { ChangeSpec } from '@codemirror/state';
+import type { ChangeSpec, Line, Text } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
 
 export type InsertPrefix = (prefix: string, noSpaceIfPrefixExists?: boolean) => void;
@@ -12,6 +12,33 @@ const removePrefix = (text: string, prefix: string): string => {
   return text;
 };
 
+const allLinesEmpty = (doc: Text, startLine: Line, endLine: Line) => {
+  let allLinesEmpty = true;
+  for (let i = startLine.number; i <= endLine.number; i++) {
+    const line = doc.line(i);
+    if (line.text.trim() !== '') {
+      allLinesEmpty = false;
+      break;
+    }
+  }
+
+  return allLinesEmpty;
+};
+
+const allLinesHavePrefix = (doc: Text, startLine: Line, endLine: Line, prefix: string) => {
+  let allLinesHavePrefix = true;
+  for (let i = startLine.number; i <= endLine.number; i++) {
+    const line = doc.line(i);
+    const trimmedLine = line.text.trim();
+    if (trimmedLine !== '' && !trimmedLine.startsWith(prefix)) {
+      allLinesHavePrefix = false;
+      break;
+    }
+  }
+
+  return allLinesHavePrefix;
+};
+
 export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
   return useCallback((prefix: string, noSpaceIfPrefixExists = false) => {
     if (view == null) {
@@ -19,27 +46,9 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     }
 
     const { from, to } = view.state.selection.main;
-    const startLine = view.state.doc.lineAt(from);
-    const endLine = view.state.doc.lineAt(to);
-
-    let allLinesEmpty = true;
-    for (let i = startLine.number; i <= endLine.number; i++) {
-      const line = view.state.doc.line(i);
-      if (line.text.trim() !== '') {
-        allLinesEmpty = false;
-        break;
-      }
-    }
-
-    let allLinesHavePrefix = true;
-    for (let i = startLine.number; i <= endLine.number; i++) {
-      const line = view.state.doc.line(i);
-      const trimmedLine = line.text.trim();
-      if (trimmedLine !== '' && !trimmedLine.startsWith(prefix)) {
-        allLinesHavePrefix = false;
-        break;
-      }
-    }
+    const doc = view.state.doc;
+    const startLine = doc.lineAt(from);
+    const endLine = doc.lineAt(to);
 
     const changes: ChangeSpec[] = [];
     let totalLengthChange = 0;
@@ -50,8 +59,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
       const leadingSpaces = line.text.match(/^\s*/)?.[0] || '';
       const contentTrimmed = line.text.trimStart();
 
-      if (allLinesEmpty) {
-        // Add prefix to all empty lines
+      if (allLinesEmpty(doc, startLine, endLine)) {
         const insertText = `${leadingSpaces}${prefix} `;
         changes.push({
           from: line.from,
@@ -66,7 +74,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
         continue;
       }
 
-      if (allLinesHavePrefix) {
+      if (allLinesHavePrefix(doc, startLine, endLine, prefix)) {
         const contentStartMatch = line.text.match(new RegExp(`^\\s*(${prefix}+)\\s*`));
         if (contentStartMatch) {
           if (noSpaceIfPrefixExists) {
