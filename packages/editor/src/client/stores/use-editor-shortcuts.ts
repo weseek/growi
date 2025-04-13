@@ -43,39 +43,38 @@ const generateAddMarkdownSymbolCommand = (
 
 const makeTextCodeBlock: Command = (view: EditorView) => {
   const state = view.state;
-  const dispatch = view.dispatch;
-
-  const selections = state.selection.ranges;
   const doc = state.doc;
   const changes: ChangeSpec[] = [];
-  const newSelectionRanges: SelectionRange[] = [];
+  const newSelections: SelectionRange[] = [];
 
-  selections.forEach((range) => {
+  state.selection.ranges.forEach((range) => {
     const startLine = doc.lineAt(range.from);
     const endLine = doc.lineAt(range.to);
-
     const selectedText = doc.sliceString(range.from, range.to, '');
-
     const isAlreadyWrapped = selectedText.startsWith('```') && selectedText.endsWith('```');
 
     if (isAlreadyWrapped) {
-      const textContentLength = selectedText.length - 6;
+      // Remove existing code block markers
+      const startMarkerEnd = startLine.from + 4; // '```\n' length
+      const endMarkerStart = endLine.to - 4; // '\n```' length
 
       changes.push({
         from: startLine.from,
-        to: startLine.from + 4,
+        to: startMarkerEnd,
         insert: '',
       });
 
       changes.push({
-        from: endLine.to - 4,
+        from: endMarkerStart,
         to: endLine.to,
         insert: '',
       });
 
-      newSelectionRanges.push(EditorSelection.cursor(startLine.from + textContentLength));
+      // Position cursor at the start of the unwrapped content
+      newSelections.push(EditorSelection.range(startLine.from, endMarkerStart - 4));
     }
     else {
+      // Add code block markers
       changes.push({
         from: startLine.from,
         insert: '```\n',
@@ -86,14 +85,16 @@ const makeTextCodeBlock: Command = (view: EditorView) => {
         insert: '\n```',
       });
 
-      newSelectionRanges.push(EditorSelection.cursor(endLine.to + 4));
+      // Position cursor to include the entire wrapped content with markers
+      newSelections.push(EditorSelection.range(startLine.from, endLine.to + 8));
     }
   });
 
-  dispatch(state.update({
+  // Send a single transaction with both changes and selection update
+  view.dispatch({
     changes,
-    selection: EditorSelection.create(newSelectionRanges),
-  }));
+    selection: EditorSelection.create(newSelections),
+  });
 
   return true;
 };
