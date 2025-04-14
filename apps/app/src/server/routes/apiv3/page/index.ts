@@ -880,7 +880,7 @@ module.exports = (crowi) => {
     try {
       const revisionIdForFind = revisionId ?? page.revision;
 
-      revision = await Revision.findById(revisionIdForFind);
+      revision = await Revision.findOne({ id: { $eq: revisionIdForFind } });
       pagePath = page.path;
 
       // Error if pageId and revison's pageIds do not match
