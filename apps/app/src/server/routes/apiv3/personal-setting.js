@@ -528,7 +528,11 @@ module.exports = (crowi) => {
       if (user.password == null && count <= 1) {
         return res.apiv3Err('disassociate-ldap-account-failed');
       }
-      const disassociateUser = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
+      const disassociateUser = await ExternalAccount.findOneAndRemove({
+        providerType: { $eq: providerType },
+        accountId: { $eq: accountId },
+        user,
+      });
 
       const parameters = { action: SupportedAction.ACTION_USER_LDAP_ACCOUNT_DISCONNECT };
       activityEvent.emit('update', res.locals.activity._id, parameters);
