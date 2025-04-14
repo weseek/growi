@@ -746,7 +746,7 @@ class OpenaiService implements IOpenaiService {
       throw createError(400, 'Invalid aiAssistantId format');
     }
 
-    const aiAssistant = await AiAssistantModel.findById(objectId);
+    const aiAssistant = await AiAssistantModel.findOne({ _id: { $eq: objectId } });
 
     if (aiAssistant == null) {
       throw createError(404, 'AiAssistant document does not exist');
