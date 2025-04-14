@@ -3,6 +3,7 @@ import path from 'path';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
+import escapeStringRegexp from 'escape-string-regexp';
 import express from 'express';
 import { body, query } from 'express-validator';
 import { isEmail } from 'validator';
@@ -26,7 +27,6 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:users');
 
 const router = express.Router();
-
 
 const PAGE_ITEMS = 50;
 
@@ -297,7 +297,7 @@ module.exports = (crowi) => {
 
     // Search from input
     const searchText = req.query.searchText || '';
-    const searchWord = new RegExp(`${searchText}`);
+    const searchWord = new RegExp(escapeStringRegexp(searchText));
     // Sort
     const { sort, sortOrder } = req.query;
     const sortOutput = {
