@@ -1,9 +1,9 @@
-
 import path from 'path';
 
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
+import escapeStringRegexp from 'escape-string-regexp';
 import express from 'express';
 import { body, query } from 'express-validator';
 import { isEmail } from 'validator';
@@ -27,7 +27,6 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 const logger = loggerFactory('growi:routes:apiv3:users');
 
 const router = express.Router();
-
 
 const PAGE_ITEMS = 50;
 
@@ -290,15 +289,25 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser, loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
+
+    // forceIncludeAttributes is expected to be an array by express-validator
+    if (req.query.forceIncludeAttributes != null && !Array.isArray(req.query.forceIncludeAttributes)) {
+      return res.apiv3Err(new ErrorV3('forceIncludeAttributes is not an array'), 400);
+    }
+    // selectedStatusList is expected to be an array by express-validator
+    if (req.query.selectedStatusList != null && !Array.isArray(req.query.selectedStatusList)) {
+      return res.apiv3Err(new ErrorV3('selectedStatusList is not an array'), 400);
+    }
+
     // status
-    const { forceIncludeAttributes } = req.query;
-    const selectedStatusList = req.query.selectedStatusList || ['active'];
+    const forceIncludeAttributes = req.query.forceIncludeAttributes ?? [];
+    const selectedStatusList = req.query.selectedStatusList ?? ['active'];
 
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
     const searchText = req.query.searchText || '';
-    const searchWord = new RegExp(`${searchText}`);
+    const searchWord = new RegExp(escapeStringRegexp(searchText));
     // Sort
     const { sort, sortOrder } = req.query;
     const sortOutput = {
