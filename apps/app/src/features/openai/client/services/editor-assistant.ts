@@ -8,6 +8,7 @@ import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/co
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
 import { type Text as YText } from 'yjs';
 
+
 import {
   SseMessageSchema,
   SseDetectedDiffSchema,
@@ -23,6 +24,8 @@ import {
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
+
+import type { IApiv3PostMessageParams } from '../../interfaces/apiv3/edit';
 
 interface PostMessage {
   (threadId: string, userMessage: string): Promise<Response>;
@@ -113,14 +116,19 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   // Functions
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
+    const body: IApiv3PostMessageParams = {
+      threadId,
+      userMessage,
+    };
+
+    if (selectedText != null) {
+      body.markdown = selectedText;
+    }
+
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        threadId,
-        userMessage,
-        markdown: selectedText,
-      }),
+      body: JSON.stringify(body),
     });
 
     setSelectedText(undefined);
