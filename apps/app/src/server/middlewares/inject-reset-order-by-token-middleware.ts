@@ -15,7 +15,7 @@ export type ReqWithPasswordResetOrder = Request & {
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default async(req: ReqWithPasswordResetOrder, res: Response, next: NextFunction): Promise<void> => {
-  const token = req.params.token || req.body.token;
+  const token: string = req.params.token || req.body.token;
 
   if (token == null) {
     logger.error('Token not found');
