@@ -289,9 +289,19 @@ module.exports = (crowi) => {
   router.get('/', accessTokenParser, loginRequired, validator.statusList, apiV3FormValidator, async(req, res) => {
 
     const page = parseInt(req.query.page) || 1;
+
+    // forceIncludeAttributes is expected to be an array by express-validator
+    if (req.query.forceIncludeAttributes != null && !Array.isArray(req.query.forceIncludeAttributes)) {
+      return res.apiv3Err(new ErrorV3('forceIncludeAttributes is not an array'), 400);
+    }
+    // selectedStatusList is expected to be an array by express-validator
+    if (req.query.selectedStatusList != null && !Array.isArray(req.query.selectedStatusList)) {
+      return res.apiv3Err(new ErrorV3('selectedStatusList is not an array'), 400);
+    }
+
     // status
-    const { forceIncludeAttributes } = req.query;
-    const selectedStatusList = req.query.selectedStatusList || ['active'];
+    const forceIncludeAttributes = req.query.forceIncludeAttributes ?? [];
+    const selectedStatusList = req.query.selectedStatusList ?? ['active'];
 
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
@@ -331,8 +341,7 @@ module.exports = (crowi) => {
           },
         );
       }
-      if (forceIncludeAttributes != null
-          && (Array.isArray(forceIncludeAttributes) ? forceIncludeAttributes.includes('email') : forceIncludeAttributes === 'email')) {
+      if (forceIncludeAttributes.includes('email')) {
         orConditions.push({ email: { $in: searchWord } });
       }
 
@@ -350,8 +359,7 @@ module.exports = (crowi) => {
         // return email only when specified by query
         const { email } = doc;
         const user = serializeUserSecurely(doc);
-        if (forceIncludeAttributes != null
-            && (Array.isArray(forceIncludeAttributes) ? forceIncludeAttributes.includes('email') : forceIncludeAttributes === 'email')) {
+        if (forceIncludeAttributes.includes('email')) {
           user.email = email;
         }
 
