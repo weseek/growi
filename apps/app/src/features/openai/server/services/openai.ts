@@ -223,7 +223,7 @@ class OpenaiService implements IOpenaiService {
 
 
   async getVectorStoreRelationByAiAssistantId(aiAssistantId: string): Promise<VectorStoreDocument> {
-    const aiAssistant = await AiAssistantModel.findById({ _id: aiAssistantId }).populate('vectorStore');
+    const aiAssistant = await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }).populate('vectorStore');
     if (aiAssistant == null) {
       throw createError(404, 'AiAssistant document does not exist');
     }
@@ -724,7 +724,7 @@ class OpenaiService implements IOpenaiService {
   }
 
   async isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean> {
-    const aiAssistant = await AiAssistantModel.findById(aiAssistantId);
+    const aiAssistant = await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } });
 
     if (aiAssistant == null) {
       throw createError(404, 'AiAssistant document does not exist');
