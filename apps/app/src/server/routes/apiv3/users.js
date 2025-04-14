@@ -134,15 +134,15 @@ module.exports = (crowi) => {
   };
 
   validator.statusList = [
-    query('selectedStatusList').if(value => value != null).custom((value, { req }) => {
-
-      const { user } = req;
-
-      if (user != null && user.admin) {
-        return value;
-      }
-      throw new Error('the param \'selectedStatusList\' is not allowed to use by the users except administrators');
-    }),
+    query('selectedStatusList').if(value => value != null).isArray().withMessage('selectedStatusList must be an array')
+      .custom((value, { req }) => {
+        const { user } = req;
+        if (user != null && user.admin) {
+          return value;
+        }
+        throw new Error('the param \'selectedStatusList\' is not allowed to use by the users except administrators');
+      }),
+    query('forceIncludeAttributes').if(value => value != null).isArray().withMessage('forceIncludeAttributes must be an array'),
     // validate sortOrder : asc or desc
     query('sortOrder').isIn(['asc', 'desc']),
     // validate sort : what column you will sort
@@ -290,18 +290,13 @@ module.exports = (crowi) => {
 
     const page = parseInt(req.query.page) || 1;
 
-    // forceIncludeAttributes is expected to be an array by express-validator
-    if (req.query.forceIncludeAttributes != null && !Array.isArray(req.query.forceIncludeAttributes)) {
-      return res.apiv3Err(new ErrorV3('forceIncludeAttributes is not an array'), 400);
-    }
-    // selectedStatusList is expected to be an array by express-validator
-    if (req.query.selectedStatusList != null && !Array.isArray(req.query.selectedStatusList)) {
-      return res.apiv3Err(new ErrorV3('selectedStatusList is not an array'), 400);
-    }
-
     // status
-    const forceIncludeAttributes = req.query.forceIncludeAttributes ?? [];
-    const selectedStatusList = req.query.selectedStatusList ?? ['active'];
+    const forceIncludeAttributes = Array.isArray(req.query.forceIncludeAttributes)
+      ? req.query.forceIncludeAttributes
+      : [];
+    const selectedStatusList = Array.isArray(req.query.selectedStatusList)
+      ? req.query.selectedStatusList
+      : ['active'];
 
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
