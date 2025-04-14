@@ -3,7 +3,7 @@ import {
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { acceptChange, rejectChange } from '@growi/editor/dist/client/services/unified-merge-view';
+import { acceptChange, rejectChange, useTextSelectionEffect } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
 import { type Text as YText } from 'yjs';
@@ -103,6 +103,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
+  const [selectedText, setSelectedText] = useState<string>();
 
   // SWR Hooks
   const { data: currentPageId } = useCurrentPageId();
@@ -111,46 +112,21 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
 
   // Functions
-  const getSelectedText = useCallback(() => {
-    const view = codeMirrorEditor?.view;
-    if (view == null) {
-      return;
-    }
-
-    return view.state.sliceDoc(
-      view.state.selection.main.from,
-      view.state.selection.main.to,
-    );
-  }, [codeMirrorEditor?.view]);
-
-  const getSelectedTextFirstLineNumber = useCallback(() => {
-    const view = codeMirrorEditor?.view;
-    if (view == null) {
-      return;
-    }
-
-    const selectionStart = view.state.selection.main.from;
-
-    const lineInfo = view.state.doc.lineAt(selectionStart);
-
-    return lineInfo.number;
-  }, [codeMirrorEditor?.view]);
-
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
-    lineRef.current = getSelectedTextFirstLineNumber() ?? 0;
-
-    const selectedMarkdown = getSelectedText();
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         threadId,
         userMessage,
-        markdown: selectedMarkdown,
+        markdown: selectedText,
       }),
     });
+
+    setSelectedText(undefined);
+
     return response;
-  }, [getSelectedText, getSelectedTextFirstLineNumber]);
+  }, [selectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
@@ -173,18 +149,32 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [mutateIsEnableUnifiedMergeView]);
 
   const accept = useCallback(() => {
-    acceptChange(codeMirrorEditor?.view);
+    if (codeMirrorEditor?.view == null) {
+      return;
+    }
+
+    acceptChange(codeMirrorEditor.view);
     mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
   const reject = useCallback(() => {
-    rejectChange(codeMirrorEditor?.view);
+    if (codeMirrorEditor?.view == null) {
+      return;
+    }
+
+    rejectChange(codeMirrorEditor.view);
     mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
-  // Effects
-  useEffect(() => {
+  const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
+    setSelectedText(selectedText);
+    lineRef.current = selectedTextFirstLineNumber;
+  }, []);
 
+  // Effects
+  useTextSelectionEffect(codeMirrorEditor, selectTextHandler);
+
+  useEffect(() => {
     const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
     if (ydocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
 

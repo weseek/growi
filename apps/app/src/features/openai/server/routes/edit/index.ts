@@ -42,7 +42,7 @@ const LlmEditorAssistantResponseSchema = z.object({
 
 type ReqBody = {
   userMessage: string,
-  markdown: string,
+  markdown?: string,
   threadId?: string,
 }
 
@@ -71,10 +71,9 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
       .notEmpty()
       .withMessage('userMessage must be set'),
     body('markdown')
+      .optional()
       .isString()
-      .withMessage('markdown must be string')
-      .notEmpty()
-      .withMessage('markdown must be set'),
+      .withMessage('markdown must be string'),
     body('threadId').optional().isString().withMessage('threadId must be string'),
   ];
 
