@@ -44,8 +44,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
 
       const { aiAssistantId, initialUserMessage } = req.body;
 
-      // already asserted aiAssistantId is a string by express-validator
-      assert(typeof aiAssistantId === 'string');
+      // express-validator ensures aiAssistantId is a string
 
       try {
 
