@@ -79,7 +79,7 @@ export interface IOpenaiService {
   deleteVectorStoreFile(vectorStoreRelationId: Types.ObjectId, pageId: Types.ObjectId): Promise<void>;
   deleteVectorStoreFilesByPageIds(pageIds: Types.ObjectId[]): Promise<void>;
   deleteObsoleteVectorStoreFile(limit: number, apiCallInterval: number): Promise<void>; // for CronJob
-  isAiAssistantUsable(aiAssistantId: string | mongoose.Types.ObjectId, user: IUserHasId): Promise<boolean>;
+  isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean>;
   createAiAssistant(data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
   updateAiAssistant(aiAssistantId: string, data: UpsertAiAssistantData, user: IUserHasId): Promise<AiAssistantDocument>;
   getAccessibleAiAssistants(user: IUserHasId): Promise<AccessibleAiAssistants>
@@ -222,19 +222,8 @@ class OpenaiService implements IOpenaiService {
   }
 
 
-  async getVectorStoreRelationByAiAssistantId(aiAssistantId: string | mongoose.Types.ObjectId): Promise<VectorStoreDocument> {
-    let objectId: mongoose.Types.ObjectId;
-
-    try {
-      // convert to ObjectId
-      objectId = typeof aiAssistantId === 'string' ? new mongoose.Types.ObjectId(aiAssistantId) : aiAssistantId;
-    }
-    catch (err) {
-      logger.error('Invalid ObjectId format:', err);
-      throw createError(400, 'Invalid aiAssistantId format');
-    }
-
-    const aiAssistant = await AiAssistantModel.findById(objectId).populate('vectorStore');
+  async getVectorStoreRelationByAiAssistantId(aiAssistantId: string): Promise<VectorStoreDocument> {
+    const aiAssistant = await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } }).populate('vectorStore');
     if (aiAssistant == null) {
       throw createError(404, 'AiAssistant document does not exist');
     }
@@ -734,19 +723,8 @@ class OpenaiService implements IOpenaiService {
     }
   }
 
-  async isAiAssistantUsable(aiAssistantId: string | mongoose.Types.ObjectId, user: IUserHasId): Promise<boolean> {
-    let objectId: mongoose.Types.ObjectId;
-
-    try {
-      // convert to ObjectId
-      objectId = typeof aiAssistantId === 'string' ? new mongoose.Types.ObjectId(aiAssistantId) : aiAssistantId;
-    }
-    catch (err) {
-      logger.error('Invalid ObjectId format:', err);
-      throw createError(400, 'Invalid aiAssistantId format');
-    }
-
-    const aiAssistant = await AiAssistantModel.findOne({ _id: { $eq: objectId } });
+  async isAiAssistantUsable(aiAssistantId: string, user: IUserHasId): Promise<boolean> {
+    const aiAssistant = await AiAssistantModel.findOne({ _id: { $eq: aiAssistantId } });
 
     if (aiAssistant == null) {
       throw createError(404, 'AiAssistant document does not exist');
