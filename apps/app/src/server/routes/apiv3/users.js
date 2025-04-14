@@ -1,4 +1,3 @@
-
 import path from 'path';
 
 import { ErrorV3 } from '@growi/core/dist/models';
@@ -332,7 +331,8 @@ module.exports = (crowi) => {
           },
         );
       }
-      if (forceIncludeAttributes.includes('email')) {
+      if (forceIncludeAttributes != null
+          && (Array.isArray(forceIncludeAttributes) ? forceIncludeAttributes.includes('email') : forceIncludeAttributes === 'email')) {
         orConditions.push({ email: { $in: searchWord } });
       }
 
@@ -350,7 +350,8 @@ module.exports = (crowi) => {
         // return email only when specified by query
         const { email } = doc;
         const user = serializeUserSecurely(doc);
-        if (forceIncludeAttributes.includes('email')) {
+        if (forceIncludeAttributes != null
+            && (Array.isArray(forceIncludeAttributes) ? forceIncludeAttributes.includes('email') : forceIncludeAttributes === 'email')) {
           user.email = email;
         }
 
