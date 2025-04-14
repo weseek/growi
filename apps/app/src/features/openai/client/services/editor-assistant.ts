@@ -121,6 +121,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       userMessage,
     };
 
+    // Insert selectedText into object after null check since JSON.stringify returns empty string when selectedText is undefined
     if (selectedText != null) {
       body.markdown = selectedText;
     }
