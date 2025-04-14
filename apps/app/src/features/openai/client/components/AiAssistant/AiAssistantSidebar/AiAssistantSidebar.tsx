@@ -76,20 +76,11 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
   const {
-    isTextSelected,
     postMessage: postMessageForEditorAssistant,
     processMessage: processMessageForEditorAssistant,
     accept,
     reject,
   } = useEditorAssistant();
-
-  const canPostMessageForEditorAssistant = useMemo(() => {
-    if (!isEditorAssistant) {
-      return true;
-    }
-
-    return isTextSelected;
-  }, [isEditorAssistant, isTextSelected]);
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -425,7 +416,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                 <button
                   type="submit"
                   className="btn btn-submit no-border"
-                  disabled={form.formState.isSubmitting || isGenerating || !canPostMessageForEditorAssistant}
+                  disabled={form.formState.isSubmitting || isGenerating}
                 >
                   <span className="material-symbols-outlined">send</span>
                 </button>

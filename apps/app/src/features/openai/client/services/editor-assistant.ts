@@ -42,7 +42,6 @@ type DetectedDiff = Array<{
 }>
 
 type UseEditorAssistant = () => {
-  isTextSelected: boolean,
   postMessage: PostMessage,
   processMessage: ProcessMessage,
   accept: () => void,
@@ -105,7 +104,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [selectedText, setSelectedText] = useState<string>();
-  const isTextSelected = selectedText != null && selectedText.length !== 0;
 
   // SWR Hooks
   const { data: currentPageId } = useCurrentPageId();
@@ -244,7 +242,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [codeMirrorEditor, detectedDiff, ydocs?.secondaryDoc]);
 
   return {
-    isTextSelected,
     postMessage,
     processMessage,
     accept,
