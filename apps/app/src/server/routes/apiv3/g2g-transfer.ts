@@ -10,6 +10,7 @@ import multer from 'multer';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
 import { configManager } from '~/server/service/config-manager';
+import { exportService } from '~/server/service/export';
 import type { IDataGROWIInfo } from '~/server/service/g2g-transfer';
 import { X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import { getImportService } from '~/server/service/import';
@@ -36,12 +37,49 @@ const validator = {
   ],
 };
 
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      GrowiInfo:
+ *        type: object
+ *        properties:
+ *           version:
+ *             type: string
+ *             description: The version of the GROWI
+ *           userUpperLimit:
+ *             type: number
+ *             description: The upper limit of the number of users
+ *           fileUploadDisabled:
+ *             type: boolean
+ *           fileUploadTotalLimit:
+ *             type: number
+ *             description: The total limit of the file upload size
+ *           attachmentInfo:
+ *             type: object
+ *             properties:
+ *               type:
+ *                 type: string
+ *               writable:
+ *                 type: boolean
+ *               bucket:
+ *                 type: string
+ *               customEndpoint:
+ *                 type: string
+ *               uploadNamespace:
+ *                 type: string
+ *               accountName:
+ *                 type: string
+ *               containerName:
+ *                 type: string
+*/
 /*
  * Routes
  */
 module.exports = (crowi: Crowi): Router => {
   const {
-    g2gTransferPusherService, g2gTransferReceiverService, exportService,
+    g2gTransferPusherService, g2gTransferReceiverService,
     growiBridgeService,
   } = crowi;
 
@@ -130,15 +168,88 @@ module.exports = (crowi: Crowi): Router => {
   const receiveRouter = express.Router();
   const pushRouter = express.Router();
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/files:
+   *    get:
+   *      summary: /g2g-transfer/files
+   *      tags: [GROWI to GROWI Transfer]
+   *      security:
+   *        - transferHeaderAuth: []
+   *      responses:
+   *        '200':
+   *          description: Successfully got the list of files
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  files:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        name:
+   *                          type: string
+   *                          description: The name of the file
+   *                        size:
+   *                          type: number
+   *                          description: The size of the file
+   */
   // eslint-disable-next-line max-len
   receiveRouter.get('/files', validateTransferKey, async(req: Request, res: ApiV3Response) => {
     const files = await crowi.fileUploadService.listFiles();
     return res.apiv3({ files });
   });
 
-  // Auto import
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer:
+   *    post:
+   *      summary: /g2g-transfer
+   *      tags: [GROWI to GROWI Transfer]
+   *      security:
+   *        - transferHeaderAuth: []
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          multipart/form-data:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                file:
+   *                  format: binary
+   *                  description: The zip file of the data to be transferred
+   *                collections:
+   *                  type: array
+   *                  description: The list of MongoDB collections to be transferred
+   *                  items:
+   *                    type: string
+   *                optionsMap:
+   *                  type: object
+   *                  description: The map of options for each collection
+   *                operatorUserId:
+   *                  type: string
+   *                  description: The ID of the operator user
+   *                uploadConfigs:
+   *                  type: object
+   *                  description: The map of upload configurations
+   *      responses:
+   *        '200':
+   *          description: Successfully started to receive transfer data
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  message:
+   *                    type: string
+   *                    description: The message of the result
+   */
   // eslint-disable-next-line max-len
-  receiveRouter.post('/', uploads.single('transferDataZipFile'), validateTransferKey, async(req: Request & { file: any; }, res: ApiV3Response) => {
+  receiveRouter.post('/', validateTransferKey, uploads.single('transferDataZipFile'), async(req: Request & { file: any; }, res: ApiV3Response) => {
     const { file } = req;
     const {
       collections: strCollections,
@@ -172,9 +283,9 @@ module.exports = (crowi: Crowi): Router => {
       const zipFile = importService.getFile(file.filename);
       await importService.unzip(zipFile);
 
-      const { meta: parsedMeta, innerFileStats: _innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
-      innerFileStats = _innerFileStats;
-      meta = parsedMeta;
+      const zipFileStat = await growiBridgeService.parseZipFile(zipFile);
+      innerFileStats = zipFileStat?.innerFileStats;
+      meta = zipFileStat?.meta;
     }
     catch (err) {
       logger.error(err);
@@ -221,8 +332,42 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ message: 'Successfully started to receive transfer data.' });
   });
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/attachment:
+   *    post:
+   *      summary: /g2g-transfer/attachment
+   *      tags: [GROWI to GROWI Transfer]
+   *      security:
+   *        - transferHeaderAuth: []
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          multipart/form-data:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                file:
+   *                  format: binary
+   *                  description: The zip file of the data to be transferred
+   *                attachmentMetadata:
+   *                  type: object
+   *                  description: Metadata of the attachment
+   *      responses:
+   *        '200':
+   *          description: Successfully imported attachment file
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  message:
+   *                    type: string
+   *                    description: The message of the result
+   */
   // This endpoint uses multer's MemoryStorage since the received data should be persisted directly on attachment storage.
-  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), validateTransferKey,
+  receiveRouter.post('/attachment', validateTransferKey, uploadsForAttachment.single('content'),
     async(req: Request & { file: any; }, res: ApiV3Response) => {
       const { file } = req;
       const { attachmentMetadata } = req.body;
@@ -250,6 +395,26 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3({ message: 'Successfully imported attached file.' });
     });
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/growi-info:
+   *    get:
+   *      summary: /g2g-transfer/growi-info
+   *      tags: [GROWI to GROWI Transfer]
+   *      security:
+   *        - transferHeaderAuth: []
+   *      responses:
+   *        '200':
+   *          description: Successfully got GROWI information
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  growiInfo:
+   *                    $ref: '#/components/schemas/GrowiInfo'
+   */
   receiveRouter.get('/growi-info', validateTransferKey, async(req: Request, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;
     try {
@@ -268,6 +433,37 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ growiInfo });
   });
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/generate-key:
+   *    post:
+   *      summary: /g2g-transfer/generate-key
+   *      tags: [GROWI to GROWI Transfer]
+   *      security:
+   *        - api_key: []
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                appSiteUrl:
+   *                  type: string
+   *                  description: The URL of the GROWI
+   *      responses:
+   *        '200':
+   *          description: Successfully generated transfer key
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  transferKey:
+   *                    type: string
+   *                    description: The transfer key
+   */
   // eslint-disable-next-line max-len
   receiveRouter.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
     const appSiteUrl = req.body.appSiteUrl ?? configManager.getConfig('app:siteUrl');
@@ -294,6 +490,45 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({ transferKey: transferKeyString });
   });
 
+  /**
+   * @swagger
+   *
+   *  /g2g-transfer/transfer:
+   *    post:
+   *      summary: /g2g-transfer/transfer
+   *      tags: [GROWI to GROWI Transfer]
+   *      security:
+   *        - api_key: []
+   *      requestBody:
+   *        required: true
+   *        content:
+   *          application/json:
+   *            schema:
+   *              type: object
+   *              properties:
+   *                transferKey:
+   *                  type: string
+   *                  description: The transfer key
+   *                collections:
+   *                  type: array
+   *                  description: The list of MongoDB collections to be transferred
+   *                  items:
+   *                    type: string
+   *                optionsMap:
+   *                  type: object
+   *                  description: The map of options for each collection
+   *      responses:
+   *        '200':
+   *          description: Successfully requested auto transfer
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  message:
+   *                    type: string
+   *                    description: The message of the result
+   */
   // eslint-disable-next-line max-len
   pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { transferKey, collections, optionsMap } = req.body;
