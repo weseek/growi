@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, type JSX } from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';

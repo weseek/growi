@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, JSX } from 'react';
 import React, { useState, useEffect } from 'react';
 
 import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';

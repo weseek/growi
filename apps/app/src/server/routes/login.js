@@ -82,6 +82,38 @@ module.exports = function(crowi, app) {
       return res.apiv3({});
     }
 
+    /**
+     * @swagger
+     *
+     * /login:
+     *   post:
+     *     summary: /login
+     *     tags: [Users]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             type: object
+     *             properties:
+     *               loginForm:
+     *                 type: object
+     *                 properties:
+     *                   username:
+     *                     type: string
+     *                   password:
+     *                     type: string
+     *     responses:
+     *       200:
+     *         description: Login successful
+     *         content:
+     *           application/json:
+     *             schema:
+     *               type: object
+     *               properties:
+     *                 redirectTo:
+     *                   type: string
+     */
     req.login(userData, (err) => {
       if (err) {
         logger.debug(err);
@@ -131,6 +163,42 @@ module.exports = function(crowi, app) {
     next();
   };
 
+  /**
+   * @swagger
+   *
+   * /register:
+   *   post:
+   *     summary: /register
+   *     tags: [Users]
+   *     requestBody:
+   *       required: true
+   *       content:
+   *         application/json:
+   *           schema:
+   *             type: object
+   *             properties:
+   *               registerForm:
+   *                 type: object
+   *                 properties:
+   *                   name:
+   *                     type: string
+   *                   username:
+   *                     type: string
+   *                   email:
+   *                     type: string
+   *                   password:
+   *                     type: string
+   *     responses:
+   *       200:
+   *         description: Register successful
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 redirectTo:
+   *                   type: string
+   */
   actions.register = function(req, res) {
     if (req.user != null) {
       return res.apiv3Err('message.user_already_logged_in', 403);
