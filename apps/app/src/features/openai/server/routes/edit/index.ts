@@ -99,7 +99,7 @@ const instructionWithoutMarkdown = `You are an Editor Assistant for GROWI, a mar
     {
       "contents": [
         { "message": "Your brief message about the upcoming change or proposal.\n\n" },
-        { "replace": New text 1 },
+        { "replace": "New text 1" },
         { "message": "Additional explanation if needed" },
         { "replace": "New text 2" },
         ...more items if needed
