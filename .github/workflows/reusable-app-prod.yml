@@ -263,11 +263,12 @@ jobs:
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
     - name: Upload test results
-      if: always()
       uses: actions/upload-artifact@v4
+      working-directory: ./apps/app
+      if: always()
       with:
         name: blob-report-${{ matrix.browser }}-${{ matrix.shard }}
-        path: blob-report
+        path: ./blob-report
         retention-days: 30
 
     - name: Slack Notification
