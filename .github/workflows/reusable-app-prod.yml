@@ -262,11 +262,17 @@ jobs:
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
+    - name: Generate shard ID
+      id: shard-id
+      run: |
+        SHARD_ID=$(echo "${{ matrix.shard }}" | tr '/' '-')
+        echo "shard_id=${SHARD_ID}" >> $GITHUB_OUTPUT
+
     - name: Upload test results
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: blob-report-${{ matrix.browser }}-${{ matrix.shard }}
+        name: blob-report-${{ matrix.browser }}-${{ steps.set-shard-name.outputs.shard_id }}
         path: ./apps/app/blob-report
         retention-days: 30
 
