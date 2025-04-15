@@ -15,7 +15,6 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import type { IApiv3PostMessageParams } from '../../../interfaces/apiv3/edit';
 import { LlmEditorAssistantDiffSchema, LlmEditorAssistantMessageSchema } from '../../../interfaces/editor-assistant/llm-response-schemas';
 import type { SseDetectedDiff, SseFinalized, SseMessage } from '../../../interfaces/editor-assistant/sse-schemas';
 import { MessageErrorCode } from '../../../interfaces/message-error';
@@ -41,7 +40,11 @@ const LlmEditorAssistantResponseSchema = z.object({
 }).describe('The response format for the editor assistant');
 
 
-type ReqBody = IApiv3PostMessageParams;
+type ReqBody = {
+  userMessage: string,
+  markdown?: string,
+  threadId?: string,
+}
 
 type Req = Request<undefined, Response, ReqBody> & {
   user: IUserHasId,
