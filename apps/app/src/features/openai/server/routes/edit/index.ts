@@ -90,7 +90,6 @@ const instructionWithMarkdown = `You are an Editor Assistant for GROWI, a markdo
 
 const instructionWithoutMarkdown = `You are an Editor Assistant for GROWI, a markdown wiki system.
     Your task is to help users edit their markdown content based on their requests.
-    Spaces and line breaks are also counted as individual characters.
 
     RESPONSE FORMAT:
     You must respond with a JSON object in the following format example:
@@ -108,12 +107,8 @@ const instructionWithoutMarkdown = `You are an Editor Assistant for GROWI, a mar
     The array should contain:
     - [At the beginning of the list] A "message" object that has your brief message about the upcoming change or proposal. Be sure to add two consecutive line feeds ('\n\n') at the end.
     - Objects with a "message" key for explanatory text to the user if needed.
-    - Edit markdown according to user instructions and include it line by line in the 'replace' object. Return original text for lines that do not need editing.
+    - Edit markdown according to user instructions and include it line by line in the 'replace' object.
     - [At the end of the list] A "message" object that contains your friendly message explaining that the operation was completed and what changes were made.
-
-    IMPORTANT:
-    - The text for lines that do not need correction must be returned exactly as in the original text.
-    - Include original text in the replace object even if it contains only spaces or line breaks
 
     Always provide messages in the same language as the user's request.`;
 /* eslint-disable max-len */
@@ -203,7 +198,9 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
           additional_messages: [
             {
               role: 'assistant',
-              content: markdown == null ? instructionWithoutMarkdown : instructionWithMarkdown,
+              content: markdown != null
+                ? instructionWithMarkdown
+                : instructionWithoutMarkdown,
             },
             // {
             //   role: 'assistant',
