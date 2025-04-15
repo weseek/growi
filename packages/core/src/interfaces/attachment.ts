@@ -6,12 +6,14 @@ import type { IUser } from './user';
 export type IAttachment = {
   page?: Ref<IPage>,
   creator?: Ref<IUser>,
+  filePath?: string, // DEPRECATED: remains for backward compatibility for v3.3.x or below
   fileName: string,
   fileFormat: string,
   fileSize: number,
   originalName: string,
   temporaryUrlCached?: string,
   temporaryUrlExpiredAt?: Date,
+  attachmentType: string,
 
   createdAt: Date,
 

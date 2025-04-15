@@ -266,7 +266,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: blob-report-${{ matrix.shard }}
+        name: blob-report-${{ matrix.browser }}-${{ matrix.shard }}
         path: blob-report
         retention-days: 30
 
@@ -302,10 +302,21 @@ jobs:
       run: |
         pnpm install --frozen-lockfile
 
+    - name: Download blob reports
+      uses: actions/download-artifact@v4
+      with:
+        pattern: blob-report-*
+        path: all-blob-reports
+        merge-multiple: true
+
     - name: Merge into HTML Report
       run: |
-        mkdir -p all-blob-reports
-        pnpm playwright merge-reports --reporter html ./all-blob-reports
+        mkdir -p playwright-report
+        if [ -z "$(ls all-blob-reports/*.zip all-blob-reports/*.blob 2>/dev/null || true)" ]; then
+          echo "<html><body><h1>No test results available</h1><p>This could be because tests were skipped or all artifacts were not available.</p></body></html>" > playwright-report/index.html
+        else
+          pnpm playwright merge-reports --reporter html all-blob-reports
+        fi
 
     - name: Upload HTML report
       uses: actions/upload-artifact@v4

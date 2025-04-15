@@ -24,5 +24,6 @@ module.exports = {
 
     // set 'warn' temporarily -- 2022.07.13 Yuki Takei
     '@typescript-eslint/no-explicit-any': ['warn'],
+    '@typescript-eslint/consistent-type-imports': 'off',
   },
 };
