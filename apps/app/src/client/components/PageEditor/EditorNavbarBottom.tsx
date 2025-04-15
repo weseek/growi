@@ -1,8 +1,11 @@
+import type { JSX } from 'react';
+
 import dynamic from 'next/dynamic';
 
 import { useDrawerOpened } from '~/stores/ui';
 
 import styles from './EditorNavbarBottom.module.scss';
+
 
 const moduleClass = styles['grw-editor-navbar-bottom'];
 

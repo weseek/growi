@@ -1,8 +1,9 @@
-import { Model, Schema } from 'mongoose';
+import type { Model } from 'mongoose';
+import { Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { IProactiveQuestionnaireAnswer } from '../../interfaces/proactive-questionnaire-answer';
+import type { IProactiveQuestionnaireAnswer } from '../../interfaces/proactive-questionnaire-answer';
 
 import { growiInfoSchema } from './schema/growi-info';
 import { userInfoSchema } from './schema/user-info';

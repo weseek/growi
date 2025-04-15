@@ -1,6 +1,9 @@
+import type { JSX } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
 import MaskedInput from './MaskedInput';
+
 
 export type AzureSettingMoleculeProps = {
   azureReferenceFileWithRelayMode
