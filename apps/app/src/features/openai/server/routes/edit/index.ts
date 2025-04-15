@@ -95,7 +95,7 @@ export const postMessageToEditHandlersFactory: PostMessageHandlersFactory = (cro
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
       }
 
-      const threadRelation = await ThreadRelationModel.findOne({ threadId });
+      const threadRelation = await ThreadRelationModel.findOne({ threadId: { $eq: threadId } });
       if (threadRelation == null) {
         return res.apiv3Err(new ErrorV3('ThreadRelation not found'), 404);
       }
