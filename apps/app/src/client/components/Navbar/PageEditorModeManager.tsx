@@ -1,7 +1,9 @@
-import React, { type ReactNode, useCallback, useMemo } from 'react';
+import React, {
+  type ReactNode, useCallback, useMemo, type JSX,
+} from 'react';
 
 import { Origin } from '@growi/core';
-import { normalizePath } from '@growi/core/dist/utils/path-utils';
+import { getParentPath } from '@growi/core/dist/utils/path-utils';
 import { useTranslation } from 'next-i18next';
 
 import { useCreatePage } from '~/client/services/create-page';
@@ -78,7 +80,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     }
 
     try {
-      const parentPath = path != null ? normalizePath(path.split('/').slice(0, -1).join('/')) : undefined; // does not have to exist
+      const parentPath = path != null ? getParentPath(path) : undefined; // does not have to exist
       await create(
         {
           path, parentPath, wip: shouldCreateWipPage(path), origin: Origin.View,

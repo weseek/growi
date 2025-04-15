@@ -36,6 +36,47 @@ let presetTemplateSummaries: TemplateSummary[];
 module.exports = (crowi: Crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
+  /**
+   * @swagger
+   *
+   * /templates:
+   *   get:
+   *     summary: /templates
+   *     security:
+   *       - cookieAuth: []
+   *     description: Get all templates
+   *     tags: [Templates]
+   *     parameters:
+   *       - name: includeInvalidTemplates
+   *         in: query
+   *         description: Whether to include invalid templates
+   *         required: false
+   *         schema:
+   *           type: boolean
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 summaries:
+   *                   type: object
+   *                   additionalProperties:
+   *                     type: object
+   *                     properties:
+   *                       id:
+   *                         type: string
+   *                       isDefault:
+   *                         type: boolean
+   *                       isValid:
+   *                         type: boolean
+   *                       locale:
+   *                         type: string
+   *                       title:
+   *                         type: string
+   */
   router.get('/', loginRequiredStrictly, validator.list, apiV3FormValidator, async(req, res: ApiV3Response) => {
     const { includeInvalidTemplates } = req.query;
 
@@ -72,6 +113,40 @@ module.exports = (crowi: Crowi) => {
     });
   });
 
+  /**
+   * @swagger
+   *
+   * /templates/preset-templates/{templateId}/{locale}:
+   *   get:
+   *     tags: [Templates]
+   *     summary: /templates/preset-templates/{templateId}/{locale}
+   *     security:
+   *       - cookieAuth: []
+   *     description: Get a preset template
+   *     parameters:
+   *       - name: templateId
+   *         in: path
+   *         description: The template ID
+   *         required: true
+   *         schema:
+   *           type: string
+   *       - name: locale
+   *         in: path
+   *         description: The locale
+   *         required: true
+   *         schema:
+   *           type: string
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 markdown:
+   *                   type: string
+   */
   router.get('/preset-templates/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(req, res: ApiV3Response) => {
     const {
       templateId, locale,
@@ -88,6 +163,52 @@ module.exports = (crowi: Crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   * /templates/plugin-templates/{organizationId}/{reposId}/{templateId}/{locale}:
+   *   get:
+   *     tags: [Templates]
+   *     summary: /templates/plugin-templates/{organizationId}/{reposId}/{templateId}/{locale}
+   *     security:
+   *       - cookieAuth: []
+   *     description: Get a plugin template
+   *     parameters:
+   *       - name: organizationId
+   *         in: path
+   *         description: The organization ID
+   *         required: true
+   *         schema:
+   *           type: string
+   *       - name: reposId
+   *         in: path
+   *         description: The repository ID
+   *         required: true
+   *         schema:
+   *           type: string
+   *       - name: templateId
+   *         in: path
+   *         description: The template ID
+   *         required: true
+   *         schema:
+   *           type: string
+   *       - name: locale
+   *         in: path
+   *         description: The locale
+   *         required: true
+   *         schema:
+   *           type: string
+   *     responses:
+   *       200:
+   *         description: OK
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 markdown:
+   *                   type: string
+   */
   router.get('/plugin-templates/:organizationId/:reposId/:templateId/:locale', loginRequiredStrictly, validator.get, apiV3FormValidator, async(
       req, res: ApiV3Response,
   ) => {

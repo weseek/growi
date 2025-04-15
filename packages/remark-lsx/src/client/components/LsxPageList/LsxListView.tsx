@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, type JSX } from 'react';
 
 import type { PageNode } from '../../../interfaces/page-node';
 import type { LsxContext } from '../lsx-context';

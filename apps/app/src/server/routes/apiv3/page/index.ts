@@ -26,6 +26,7 @@ import { Revision } from '~/server/models/revision';
 import ShareLink from '~/server/models/share-link';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
+import { exportService } from '~/server/service/export';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { normalizeLatestRevisionIfBroken } from '~/server/service/revision/normalize-latest-revision-if-broken';
@@ -119,7 +120,7 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const Page = mongoose.model<IPage, PageModel>('Page');
-  const { pageService, exportService } = crowi;
+  const { pageService } = crowi;
 
   const activityEvent = crowi.event('activity');
 
@@ -759,7 +760,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/grant:
+   *   /{pageId}/grant:
    *     put:
    *       tags: [Page]
    *       security:
@@ -824,12 +825,19 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /page/export:
+  *    /page/export/{pageId}:
   *      get:
   *        tags: [Page]
   *        security:
   *          - cookieAuth: []
   *        description: return page's markdown
+  *        parameters:
+  *          - name: pageId
+  *            in: path
+  *            description: ID of the page
+  *            required: true
+  *            schema:
+  *              type: string
   *        responses:
   *          200:
   *            description: Return page's markdown
@@ -872,7 +880,7 @@ module.exports = (crowi) => {
     try {
       const revisionIdForFind = revisionId ?? page.revision;
 
-      revision = await Revision.findById(revisionIdForFind);
+      revision = await Revision.findOne({ id: { $eq: revisionIdForFind } });
       pagePath = page.path;
 
       // Error if pageId and revison's pageIds do not match
@@ -898,6 +906,9 @@ module.exports = (crowi) => {
     let stream: Readable;
 
     try {
+      if (exportService == null) {
+        throw new Error('exportService is not initialized');
+      }
       stream = exportService.getReadStreamFromRevision(revision, format);
     }
     catch (err) {
@@ -1042,7 +1053,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *   /:pageId/content-width:
+   *   /{pageId}/content-width:
    *     put:
    *       tags: [Page]
    *       summary: Update content width
@@ -1095,7 +1106,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/publish:
+   *   /{pageId}/publish:
    *     put:
    *       tags: [Page]
    *       summary: Publish page
@@ -1119,7 +1130,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/unpublish:
+   *   /{pageId}/unpublish:
    *     put:
    *       tags: [Page]
    *       summary: Unpublish page
@@ -1143,7 +1154,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/yjs-data:
+   *   /{pageId}/yjs-data:
    *     get:
    *       tags: [Page]
    *       summary: Get Yjs data
@@ -1178,7 +1189,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/sync-latest-revision-body-to-yjs-draft:
+   *   /{pageId}/sync-latest-revision-body-to-yjs-draft:
    *     put:
    *       tags: [Page]
    *       summary: Sync latest revision body to Yjs draft

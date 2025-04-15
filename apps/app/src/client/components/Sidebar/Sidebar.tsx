@@ -1,7 +1,5 @@
 import {
-  type FC,
-  memo, useCallback, useEffect, useState,
-  useRef,
+  type FC, memo, useCallback, useEffect, useState, useRef, type JSX,
 } from 'react';
 
 import withLoadingProps from 'next-dynamic-loading-props';

@@ -1,5 +1,17 @@
 # @growi/pluginkit
 
+## 1.1.1
+
+### Patch Changes
+
+- [#9812](https://github.com/weseek/growi/pull/9812) [`fdde5ad`](https://github.com/weseek/growi/commit/fdde5ad90f8324ae5fd6b3ca127b46f1dd8453e0) Thanks [@NaokiHigashi28](https://github.com/NaokiHigashi28)! - Fix growifacade typo
+
+## 1.1.0
+
+### Minor Changes
+
+- [#9775](https://github.com/weseek/growi/pull/9775) [`6b9781d`](https://github.com/weseek/growi/commit/6b9781d76b7037ae1f7cb69df3fa99b3b894c83e) Thanks [@NaokiHigashi28](https://github.com/NaokiHigashi28)! - feat: Add util function to get react instance of GROWI via GrowiFacade
+
 ## 1.0.1
 
 ### Patch Changes
