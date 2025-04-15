@@ -45,8 +45,11 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
       }
 
+      const { type, aiAssistantId, initialUserMessage } = req.body;
+
+      // express-validator ensures aiAssistantId is a string
+
       try {
-        const { type, aiAssistantId, initialUserMessage } = req.body;
         const thread = await openaiService.createThread(req.user._id, type, aiAssistantId, initialUserMessage);
         return res.apiv3(thread);
       }

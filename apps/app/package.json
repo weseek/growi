@@ -31,7 +31,7 @@
     "lint:styles": "stylelint \"src/**/*.scss\"",
     "lint:swagger2openapi:apiv3": "node node_modules/swagger2openapi/oas-validate tmp/openapi-spec-apiv3.json",
     "lint:swagger2openapi:apiv1": "node node_modules/swagger2openapi/oas-validate tmp/openapi-spec-apiv1.json",
-    "lint": "run-p lint:*",
+    "lint": "run-p lint:**",
     "prelint:swagger2openapi:apiv3": "pnpm run swagger2openapi:apiv3",
     "prelint:swagger2openapi:apiv1": "pnpm run swagger2openapi:apiv1",
     "test": "run-p test:*",

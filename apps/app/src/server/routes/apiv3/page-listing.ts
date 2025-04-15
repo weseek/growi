@@ -114,7 +114,8 @@ const routerFactory = (crowi: Crowi): Router => {
    *       - name: path
    *         in: query
    *         required: true
-   *         type: string
+   *         schema:
+   *           type: string
    *     responses:
    *       200:
    *         description: Get the ancestors and children of a page
@@ -177,10 +178,12 @@ const routerFactory = (crowi: Crowi): Router => {
    *     parameters:
    *       - name: id
    *         in: query
-   *         type: string
+   *         schema:
+   *           type: string
    *       - name: path
    *         in: query
-   *         type: string
+   *         schema:
+   *           type: string
    *     responses:
    *       200:
    *         description: Get the children of a page
@@ -231,16 +234,22 @@ const routerFactory = (crowi: Crowi): Router => {
    *     parameters:
    *       - name: pageIds
    *         in: query
-   *         type: array
+   *         schema:
+   *           type: array
+   *           items:
+   *             type: string
    *       - name: path
    *         in: query
-   *         type: string
+   *         schema:
+   *           type: string
    *       - name: attachBookmarkCount
    *         in: query
-   *         type: boolean
+   *         schema:
+   *           type: boolean
    *       - name: attachShortBody
    *         in: query
-   *         type: boolean
+   *         schema:
+   *           type: boolean
    *     responses:
    *       200:
    *         description: Get the information of a page

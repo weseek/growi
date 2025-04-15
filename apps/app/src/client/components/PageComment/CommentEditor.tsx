@@ -1,6 +1,6 @@
 import type { ReactNode, JSX } from 'react';
 import React, {
-  useCallback, useState, useEffect,
+  useCallback, useState, useEffect, useLayoutEffect,
   useMemo,
 } from 'react';
 
@@ -224,6 +224,11 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     codeMirrorEditor?.initDoc(commentBody);
   }, [codeMirrorEditor, commentBody]);
 
+  // set handler to focus
+  useLayoutEffect(() => {
+    if (showPreview) return;
+    codeMirrorEditor?.focus();
+  }, [codeMirrorEditor, showPreview]);
 
   const errorMessage = useMemo(() => <span className="text-danger text-end me-2">{error}</span>, [error]);
   const cancelButton = useMemo(() => (

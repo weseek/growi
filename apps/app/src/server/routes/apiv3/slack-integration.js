@@ -320,9 +320,11 @@ module.exports = (crowi) => {
    *     responses:
    *       200:
    *         description: OK
-   *         schema:
-   *           type: string
-   *           example: "No text."
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: string
+   *               example: "No text."
    */
   router.post('/commands', addSigningSecretToReq, verifySlackRequest, checkCommandsPermission, async(req, res) => {
     const { body } = req;
@@ -365,11 +367,13 @@ module.exports = (crowi) => {
    *     responses:
    *       200:
    *         description: OK
-   *         schema:
-   *           type: object
-   *           properties:
-   *             challenge:
-   *               type: string
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 challenge:
+   *                   type: string
    */
   router.post('/proxied/verify', verifyAccessTokenFromProxy, async(req, res) => {
     const { body } = req;
@@ -400,9 +404,11 @@ module.exports = (crowi) => {
    *     responses:
    *       200:
    *         description: OK
-   *         schema:
-   *           type: string
-   *           example: "No text."
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: string
+   *               example: "No text."
    */
   router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandsPermission, async(req, res) => {
     const { body } = req;
@@ -554,8 +560,10 @@ module.exports = (crowi) => {
    *     responses:
    *       200:
    *         description: OK
-   *         schema:
-   *           type: object
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
    */
   router.post('/events', verifyUrlMiddleware, addSigningSecretToReq, verifySlackRequest, async(req, res) => {
     const { event } = req.body;

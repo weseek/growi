@@ -356,7 +356,7 @@ module.exports = (crowi: Crowi): Router => {
    *                  description: Metadata of the attachment
    *      responses:
    *        '200':
-   *          description:
+   *          description: Successfully imported attachment file
    *          content:
    *            application/json:
    *              schema:
@@ -406,7 +406,7 @@ module.exports = (crowi: Crowi): Router => {
    *        - transferHeaderAuth: []
    *      responses:
    *        '200':
-   *          description:
+   *          description: Successfully got GROWI information
    *          content:
    *            application/json:
    *              schema:
