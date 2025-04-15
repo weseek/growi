@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React from 'react';
 
 import dynamic from 'next/dynamic';
@@ -40,6 +40,8 @@ const DeleteBookmarkFolderModal = dynamic(
   () => import('~/client/components/DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false },
 );
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
+const PageBulkExportSelectModal = dynamic(() => import('../../features/page-bulk-export/client/components/PageBulkExportSelectModal'), { ssr: false });
+
 const AiAssistantManagementModal = dynamic(
   () => import('~/features/openai/client/components/AiAssistant/AiAssistantManagementModal/AiAssistantManagementModal')
     .then(mod => mod.AiAssistantManagementModal), { ssr: false },
@@ -86,6 +88,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <HotkeysManager />
 
       <ShortcutsModal />
+      <PageBulkExportSelectModal />
       <GrantedGroupsInheritanceSelectModal />
       <SystemVersion showShortcutsButton />
     </RawLayout>

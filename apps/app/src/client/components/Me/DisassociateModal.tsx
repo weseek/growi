@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, type JSX } from 'react';
 
 import type { HasObjectId, IExternalAccount } from '@growi/core';
 import { useTranslation } from 'next-i18next';

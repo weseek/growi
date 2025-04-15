@@ -1,5 +1,5 @@
 import {
-  useState, useCallback, useEffect,
+  useState, useCallback, useEffect, type JSX,
 } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
@@ -72,37 +72,51 @@ const QuestionnaireSettings = (): JSX.Element => {
 
       {!isLoading && (
         <>
-          <div className="my-4">
-            <div className="form-check form-switch form-check-info">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="isQuestionnaireEnabled"
-                checked={isQuestionnaireEnabled}
-                onChange={onChangeIsQuestionnaireEnabledHandler}
-              />
-              <label className="form-label form-check-label" htmlFor="isQuestionnaireEnabled">
-                {t('app_setting.enable_questionnaire')}
-              </label>
+          <div className="my-4 row">
+            <label
+              className="text-start text-md-end col-md-3 col-form-label"
+            >
+            </label>
+
+            <div className="col-md-6">
+              <div className="form-check form-switch form-check-info">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="isQuestionnaireEnabled"
+                  checked={isQuestionnaireEnabled}
+                  onChange={onChangeIsQuestionnaireEnabledHandler}
+                />
+                <label className="form-label form-check-label" htmlFor="isQuestionnaireEnabled">
+                  {t('app_setting.enable_questionnaire')}
+                </label>
+              </div>
             </div>
           </div>
 
-          <div className="my-4">
-            <div className="form-check form-check-info">
-              <input
-                type="checkbox"
-                className="form-check-input"
-                id="isAppSiteUrlHashed"
-                checked={isAppSiteUrlHashed}
-                onChange={onChangeisAppSiteUrlHashedHandler}
-                disabled={!isQuestionnaireEnabled}
-              />
-              <label className="form-label form-check-label" htmlFor="isAppSiteUrlHashed">
-                {t('app_setting.anonymize_app_site_url')}
-              </label>
-              <p className="form-text text-muted small">
-                {t('app_setting.url_anonymization_explanation')}
-              </p>
+          <div className="my-4 row">
+            <label
+              className="text-start text-md-end col-md-3 col-form-label"
+            >
+            </label>
+
+            <div className="col-md-6">
+              <div className="form-check form-check-info">
+                <input
+                  type="checkbox"
+                  className="form-check-input"
+                  id="isAppSiteUrlHashed"
+                  checked={isAppSiteUrlHashed}
+                  onChange={onChangeisAppSiteUrlHashedHandler}
+                  disabled={!isQuestionnaireEnabled}
+                />
+                <label className="form-label form-check-label" htmlFor="isAppSiteUrlHashed">
+                  {t('app_setting.anonymize_app_site_url')}
+                </label>
+                <p className="form-text text-muted small">
+                  {t('app_setting.url_anonymization_explanation')}
+                </p>
+              </div>
             </div>
           </div>
 

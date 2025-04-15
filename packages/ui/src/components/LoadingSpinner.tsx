@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef } from 'react';
+import type { ComponentPropsWithoutRef, JSX } from 'react';
 
 import styles from './LoadingSpinner.module.scss';
 

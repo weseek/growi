@@ -1,8 +1,22 @@
 import { test, expect, type Page } from '@playwright/test';
 
 const openPageItemControl = async(page: Page): Promise<void> => {
-  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
-  await page.getByTestId('grw-contextual-sub-nav').getByTestId('open-page-item-control-btn').click();
+  const nav = page.getByTestId('grw-contextual-sub-nav');
+  const button = nav.getByTestId('open-page-item-control-btn');
+
+  // Wait for navigation element to be visible and attached
+  await expect(nav).toBeVisible();
+  await nav.waitFor({ state: 'visible' });
+
+  // Wait for button to be visible, enabled and attached
+  await expect(button).toBeVisible();
+  await expect(button).toBeEnabled();
+  await button.waitFor({ state: 'visible' });
+
+  // Add a small delay to ensure the button is fully interactive
+  await page.waitForTimeout(100);
+
+  await button.click();
 };
 
 test('Page Deletion and PutBack is executed successfully', async({ page }) => {

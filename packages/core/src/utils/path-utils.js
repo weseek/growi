@@ -149,3 +149,14 @@ export function returnPathForURL(path, id) {
 
   return addHeadingSlash(id);
 }
+
+/**
+ * Get the parent path of the specified path.
+ *
+ * @param {string} path
+ * @returns {string}
+ * @memberof pathUtils
+ */
+export function getParentPath(path) {
+  return normalizePath(path.split('/').slice(0, -1).join('/'));
+}
