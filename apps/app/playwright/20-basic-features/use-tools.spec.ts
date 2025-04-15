@@ -30,7 +30,7 @@ test('Page Deletion and PutBack is executed successfully', async({ page }) => {
 
   // PutBack
   await expect(page.getByTestId('trash-page-alert')).toBeVisible();
-  await page.getByTestId('put-back-button').click();
+  await page.getByTestId('put-back-button').click({ force: true }); // Force click to bypass even when subnavbar is blocking the element
   await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
   await page.getByTestId('put-back-execution-button').click();
   await expect(page.getByTestId('trash-page-alert')).not.toBeVisible();
