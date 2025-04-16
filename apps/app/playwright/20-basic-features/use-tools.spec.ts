@@ -1,8 +1,39 @@
 import { test, expect, type Page } from '@playwright/test';
 
 const openPageItemControl = async(page: Page): Promise<void> => {
-  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
-  await page.getByTestId('grw-contextual-sub-nav').getByTestId('open-page-item-control-btn').click();
+  const nav = page.getByTestId('grw-contextual-sub-nav');
+  const button = nav.getByTestId('open-page-item-control-btn');
+
+  // Wait for navigation element to be visible and attached
+  await expect(nav).toBeVisible();
+  await nav.waitFor({ state: 'visible' });
+
+  // Wait for button to be visible, enabled and attached
+  await expect(button).toBeVisible();
+  await expect(button).toBeEnabled();
+  await button.waitFor({ state: 'visible' });
+
+  // Add a small delay to ensure the button is fully interactive
+  await page.waitForTimeout(100);
+
+  await button.click();
+};
+
+const openPutBackPageModal = async(page: Page): Promise<void> => {
+  const alert = page.getByTestId('trash-page-alert');
+  const button = alert.getByTestId('put-back-button');
+
+  // Wait for alert element to be visible and attached
+  await expect(alert).toBeVisible();
+  await alert.waitFor({ state: 'visible' });
+
+  // Wait for button to be visible, enabled and attached
+  await expect(button).toBeVisible();
+  await expect(button).toBeEnabled();
+  await button.waitFor({ state: 'visible' });
+
+  await button.click();
+  await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
 };
 
 test('Page Deletion and PutBack is executed successfully', async({ page }) => {
@@ -15,9 +46,7 @@ test('Page Deletion and PutBack is executed successfully', async({ page }) => {
   await page.getByTestId('delete-page-button').click();
 
   // PutBack
-  await expect(page.getByTestId('trash-page-alert')).toBeVisible();
-  await page.getByTestId('put-back-button').click();
-  await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
+  await openPutBackPageModal(page);
   await page.getByTestId('put-back-execution-button').click();
   await expect(page.getByTestId('trash-page-alert')).not.toBeVisible();
 });

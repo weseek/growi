@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import {
+  useCallback, useEffect, useState, type JSX,
+} from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';

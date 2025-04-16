@@ -748,11 +748,26 @@
     "discription_heading": "Create Account",
     "discription": "Create an your account with the invited email address"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "Failed to export",
     "failed_to_count_pages": "Failed to count pages",
     "export_page_markdown": "Export page as Markdown",
-    "export_page_pdf": "Export page as PDF"
+    "export_page_pdf": "Export page as PDF",
+    "bulk_export": "Export page and all child pages",
+    "bulk_export_download_explanation": "A notification will be sent when the export is complete. To download the exported file, click the notification.",
+    "bulk_export_exec_time_warning": "If the number of pages is large, it may take a while to export",
+    "large_bulk_export_warning": "To conserve system resources, please refrain from exporting a large number of pages consecutively",
+    "markdown": "Markdown",
+    "choose_export_format": "Select export format",
+    "bulk_export_started": "Please wait a moment...",
+    "bulk_export_download_expired": "Download period has expired",
+    "bulk_export_job_expired": "Export process was canceled because it took too long",
+    "export_in_progress": "Export in progress",
+    "export_in_progress_explanation": "Export with the same format is already in progress. Would you like to restart to export the latest page contents?",
+    "export_cancel_warning": "The following export in progress will be canceled",
+    "restart": "Restart",
+    "format": "Format",
+    "started_on": "Started on"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",
