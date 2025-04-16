@@ -262,12 +262,19 @@ jobs:
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-guest-mode
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
-    - name: Upload test results
+    - name: Generate shard ID
+      id: shard-id
       if: always()
+      run: |
+        SHARD_ID=$(echo "${{ matrix.shard }}" | tr '/' '-')
+        echo "shard_id=${SHARD_ID}" >> $GITHUB_OUTPUT
+
+    - name: Upload test results
       uses: actions/upload-artifact@v4
+      if: always()
       with:
-        name: blob-report-${{ matrix.shard }}
-        path: blob-report
+        name: blob-report-${{ matrix.browser }}-${{ steps.shard-id.outputs.shard_id }}
+        path: ./apps/app/blob-report
         retention-days: 30
 
     - name: Slack Notification
@@ -302,10 +309,21 @@ jobs:
       run: |
         pnpm install --frozen-lockfile
 
+    - name: Download blob reports
+      uses: actions/download-artifact@v4
+      with:
+        pattern: blob-report-*
+        path: all-blob-reports
+        merge-multiple: true
+
     - name: Merge into HTML Report
       run: |
-        mkdir -p all-blob-reports
-        pnpm playwright merge-reports --reporter html ./all-blob-reports
+        mkdir -p playwright-report
+        if [ -z "$(ls all-blob-reports/*.zip all-blob-reports/*.blob 2>/dev/null || true)" ]; then
+          echo "<html><body><h1>No test results available</h1><p>This could be because tests were skipped or all artifacts were not available.</p></body></html>" > playwright-report/index.html
+        else
+          pnpm playwright merge-reports --reporter html all-blob-reports
+        fi
 
     - name: Upload HTML report
       uses: actions/upload-artifact@v4

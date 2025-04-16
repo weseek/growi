@@ -1,7 +1,10 @@
+import type { JSX } from 'react';
+
 import type { IPage, IPagePopulatedToShowRevision } from '@growi/core';
 import dynamic from 'next/dynamic';
 
 import styles from './PageContentFooter.module.scss';
+
 
 const AuthorInfo = dynamic(() => import('~/client/components/AuthorInfo').then(mod => mod.AuthorInfo), { ssr: false });
 

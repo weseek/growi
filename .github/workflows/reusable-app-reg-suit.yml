@@ -1,4 +1,4 @@
-name: Reusable build app workflow for production
+name: Reusable VRT reporting workflow for production
 
 on:
   workflow_call:
