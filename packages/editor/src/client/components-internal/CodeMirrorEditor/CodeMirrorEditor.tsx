@@ -1,4 +1,4 @@
-import type { DetailedHTMLProps } from 'react';
+import type { DetailedHTMLProps, JSX } from 'react';
 import {
   forwardRef, useMemo, useRef, useEffect,
 } from 'react';

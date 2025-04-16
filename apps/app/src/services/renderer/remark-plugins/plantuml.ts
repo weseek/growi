@@ -1,5 +1,5 @@
 import plantuml from '@akebifiky/remark-simple-plantuml';
-import { Plugin } from 'unified';
+import type { Plugin } from 'unified';
 import urljoin from 'url-join';
 
 type PlantUMLPluginParams = {
