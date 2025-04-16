@@ -123,11 +123,11 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       return false;
     }
 
-    const latesAssistantMessageLogId = messageLogs
+    const latestAssistantMessageLogId = messageLogs
       .filter(message => !message.isUserMessage)
       .slice(-1)[0];
 
-    if (messageId === latesAssistantMessageLogId?.id) {
+    if (messageId === latestAssistantMessageLogId?.id) {
       return true;
     }
 
