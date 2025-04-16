@@ -32,6 +32,11 @@ const openPutBackPageModal = async(page: Page): Promise<void> => {
   await expect(button).toBeEnabled();
   await button.waitFor({ state: 'visible' });
 
+  // Scroll to the top of the page to prevent the subnav hide the button
+  await page.evaluate(() => {
+    window.scrollTo(0, 0);
+  });
+
   await button.click();
   await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
 };
