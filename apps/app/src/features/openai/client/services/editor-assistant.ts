@@ -119,7 +119,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       body: JSON.stringify({
         threadId,
         userMessage,
-        markdown: selectedText,
+        markdown: selectedText != null && selectedText.length !== 0
+          ? selectedText
+          : undefined,
       }),
     });
 
