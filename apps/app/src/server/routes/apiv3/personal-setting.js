@@ -39,6 +39,8 @@ const router = express.Router();
  *            type: string
  *          isEmailPublished:
  *            type: boolean
+ *          slackMemberId:
+ *            type: string
  *      Passwords:
  *        description: passwords for update
  *        type: object
@@ -183,6 +185,10 @@ module.exports = (crowi) => {
    *                  properties:
    *                    isPasswordSet:
    *                      type: boolean
+   *                      description: Whether a password has been set
+   *                    minPasswordLength:
+   *                      type: number
+   *                      description: Minimum password length
    */
   router.get('/is-password-set', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     const { username } = req.user;
@@ -222,7 +228,7 @@ module.exports = (crowi) => {
    *              application/json:
    *                schema:
    *                  properties:
-   *                    currentUser:
+   *                    updatedUser:
    *                      type: object
    *                      description: personal params
    */
@@ -266,6 +272,15 @@ module.exports = (crowi) => {
    *        operationId: putUserImageType
    *        summary: /personal-setting/image-type
    *        description: Update user image type
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                type: object
+   *                properties:
+   *                  isGravatarEnabled:
+   *                    type: boolean
    *        responses:
    *          200:
    *            description: succeded to update user image type
@@ -342,7 +357,12 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/Passwords'
+   *                type: object
+   *                properties:
+   *                  oldPassword:
+   *                    type: string
+   *                  newPassword:
+   *                    type: string
    *        responses:
    *          200:
    *            description: user password
@@ -382,6 +402,8 @@ module.exports = (crowi) => {
    *    /personal-setting/api-token:
    *      put:
    *        tags: [GeneralSetting]
+   *        security:
+   *          - cookieAuth: []
    *        operationId: putUserApiToken
    *        summary: /personal-setting/api-token
    *        description: Update user api token
@@ -428,7 +450,10 @@ module.exports = (crowi) => {
    *          content:
    *            application/json:
    *              schema:
-   *                $ref: '#/components/schemas/AssociateUser'
+   *                type: object
+   *                properties:
+   *                  username:
+   *                    type: string
    *        responses:
    *          200:
    *            description: succeded to associate Ldap account
@@ -503,7 +528,11 @@ module.exports = (crowi) => {
       if (user.password == null && count <= 1) {
         return res.apiv3Err('disassociate-ldap-account-failed');
       }
-      const disassociateUser = await ExternalAccount.findOneAndRemove({ providerType, accountId, user });
+      const disassociateUser = await ExternalAccount.findOneAndRemove({
+        providerType: { $eq: providerType },
+        accountId: { $eq: accountId },
+        user,
+      });
 
       const parameters = { action: SupportedAction.ACTION_USER_LDAP_ACCOUNT_DISCONNECT };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -524,18 +553,30 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [EditorSetting]
    *        operationId: putEditorSettings
-   *        summary: /editor-setting
+   *        summary: /personal-setting/editor-settings
    *        description: Put editor preferences
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  theme:
+   *                    type: string
+   *                  keymapMode:
+   *                    type: string
+   *                  styleActiveLine:
+   *                    type: boolean
+   *                  autoFormatMarkdownTable:
+   *                    type: boolean
    *        responses:
    *          200:
    *            description: params of editor settings
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    currentUser:
-   *                      type: object
-   *                      description: editor settings
+   *                  type: object
+   *                  description: editor settings
    */
   router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, addActivity, validator.editorSettings, apiV3FormValidator, async(req, res) => {
     const query = { userId: req.user.id };
@@ -574,7 +615,7 @@ module.exports = (crowi) => {
    *      get:
    *        tags: [EditorSetting]
    *        operationId: getEditorSettings
-   *        summary: /editor-setting
+   *        summary: /personal-setting/editor-settings
    *        description: Get editor preferences
    *        responses:
    *          200:
@@ -582,10 +623,8 @@ module.exports = (crowi) => {
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    currentUser:
-   *                      type: object
-   *                      description: editor settings
+   *                  type: object
+   *                  description: editor settings
    */
   router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
     try {
@@ -606,18 +645,30 @@ module.exports = (crowi) => {
    *      put:
    *        tags: [InAppNotificationSettings]
    *        operationId: putInAppNotificationSettings
-   *        summary: personal-setting/in-app-notification-settings
+   *        summary: /personal-setting/in-app-notification-settings
    *        description: Put InAppNotificationSettings
+   *        requestBody:
+   *          required: true
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  subscribeRules:
+   *                    type: array
+   *                    items:
+   *                      type: object
+   *                      properties:
+   *                        name:
+   *                          type: string
+   *                        isEnabled:
+   *                          type: boolean
    *        responses:
    *          200:
    *            description: params of InAppNotificationSettings
    *            content:
    *              application/json:
    *                schema:
-   *                  properties:
-   *                    currentUser:
-   *                      type: object
-   *                      description: in-app-notification-settings
+   *                 type: object
    */
   // eslint-disable-next-line max-len
   router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, addActivity, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
@@ -675,6 +726,34 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *   /personal-setting/questionnaire-settings:
+   *     put:
+   *       tags: [QuestionnaireSetting]
+   *       operationId: putQuestionnaireSetting
+   *       summary: /personal-setting/questionnaire-settings
+   *       description: Update the questionnaire settings for the current user
+   *       requestBody:
+   *         required: true
+   *         content:
+   *           application/json:
+   *             schema:
+   *               properties:
+   *                 isQuestionnaireEnabled:
+   *                   type: boolean
+   *       responses:
+   *         200:
+   *           description: Successfully updated questionnaire settings
+   *           content:
+   *             application/json:
+   *               schema:
+   *                 properties:
+   *                   message:
+   *                     type: string
+   *                   isQuestionnaireEnabled:
+   *                     type: boolean
+   */
   // eslint-disable-next-line max-len
   router.put('/questionnaire-settings', accessTokenParser, loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
     const { isQuestionnaireEnabled } = req.body;

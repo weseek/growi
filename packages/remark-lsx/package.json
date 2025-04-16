@@ -41,7 +41,7 @@
     "express-validator": "^6.14.0",
     "http-errors": "^2.0.0",
     "mongoose": "^6.13.6",
-    "swr": "^2.2.2",
+    "swr": "^2.3.2",
     "xss": "^1.0.15"
   },
   "devDependencies": {
