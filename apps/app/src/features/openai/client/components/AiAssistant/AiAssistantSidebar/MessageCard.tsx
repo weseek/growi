@@ -56,6 +56,7 @@ const AssistantMessageCard = ({
     setIsActionButtonClick(true);
     if (action === 'accept') {
       onAccept?.();
+      return;
     }
 
     onDiscard?.();
