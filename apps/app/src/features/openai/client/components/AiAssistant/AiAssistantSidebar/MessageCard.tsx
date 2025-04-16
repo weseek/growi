@@ -50,10 +50,10 @@ const AssistantMessageCard = ({
 }): JSX.Element => {
   const { t } = useTranslation();
 
-  const [isActionButtonClicked, setIsActionButtonClick] = useState(false);
+  const [isActionButtonClicked, setIsActionButtonClicked] = useState(false);
 
   const clickActionButtonHandler = useCallback((action: 'accept' | 'discard') => {
-    setIsActionButtonClick(true);
+    setIsActionButtonClicked(true);
     if (action === 'accept') {
       onAccept?.();
       return;
