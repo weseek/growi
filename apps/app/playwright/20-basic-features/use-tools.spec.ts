@@ -19,6 +19,23 @@ const openPageItemControl = async(page: Page): Promise<void> => {
   await button.click();
 };
 
+const openPutBackPageModal = async(page: Page): Promise<void> => {
+  const alert = page.getByTestId('trash-page-alert');
+  const button = alert.getByTestId('put-back-button');
+
+  // Wait for alert element to be visible and attached
+  await expect(alert).toBeVisible();
+  await alert.waitFor({ state: 'visible' });
+
+  // Wait for button to be visible, enabled and attached
+  await expect(button).toBeVisible();
+  await expect(button).toBeEnabled();
+  await button.waitFor({ state: 'visible' });
+
+  await button.click();
+  await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
+};
+
 test('Page Deletion and PutBack is executed successfully', async({ page }) => {
   await page.goto('/Sandbox/Bootstrap5');
 
@@ -29,9 +46,7 @@ test('Page Deletion and PutBack is executed successfully', async({ page }) => {
   await page.getByTestId('delete-page-button').click();
 
   // PutBack
-  await expect(page.getByTestId('trash-page-alert')).toBeVisible();
-  await page.getByTestId('put-back-button').click({ force: true }); // Force click to bypass even when subnavbar is blocking the element
-  await expect(page.getByTestId('put-back-page-modal')).toBeVisible();
+  await openPutBackPageModal(page);
   await page.getByTestId('put-back-execution-button').click();
   await expect(page.getByTestId('trash-page-alert')).not.toBeVisible();
 });
