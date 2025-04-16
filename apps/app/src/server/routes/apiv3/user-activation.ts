@@ -70,6 +70,46 @@ async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, tem
   });
 }
 
+/**
+ * @swagger
+ *
+ * /complete-registration:
+ *   post:
+ *     summary: /complete-registration
+ *     tags: [Users]
+ *     security: []
+ *     operationId: completeRegistration
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               registerForm:
+ *                 type: object
+ *                 properties:
+ *                   username:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   password:
+ *                     type: string
+ *                   token:
+ *                     type: string
+ *                   email:
+ *                     type: string
+ *     responses:
+ *       200:
+ *         description: User activation successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 redirectTo:
+ *                   type: string
+ */
 export const completeRegistrationAction = (crowi: Crowi) => {
   const User = mongoose.model<IUser, { isEmailValid, isRegisterable, createUserByEmailAndPassword, findAdmins }>('User');
   const activityEvent = crowi.event('activity');

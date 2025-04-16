@@ -1,5 +1,6 @@
 import { SupportedAction } from '~/interfaces/activity';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
+import { exportService } from '~/server/service/export';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -29,7 +30,8 @@ const router = express.Router();
  *          isExporting:
  *            type: boolean
  *          progressList:
- *            type: [array, null]
+ *            type: array
+ *            nullable: true
  *            items:
  *              type: string
  *      ExportZipFileStat:
@@ -106,14 +108,16 @@ const router = express.Router();
  *          collectionName:
  *            type: string
  *          meta:
- *           progressList:
- *             type: array
- *             items:
- *               type: object
- *               description: progress data for each exporting collections
- *           isExporting:
- *             type: boolean
- *             description: whether the current exporting job exists or not
+ *            type: object
+ *            properties:
+ *              progressList:
+ *                type: array
+ *                items:
+ *                  type: object
+ *                  description: progress data for each exporting collections
+ *              isExporting:
+ *                type: boolean
+ *                description: whether the current exporting job exists or not
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -121,7 +125,7 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
-  const { exportService, socketIoService } = crowi;
+  const { socketIoService } = crowi;
 
   const activityEvent = crowi.event('activity');
   const adminEvent = crowi.event('admin');
