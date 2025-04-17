@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.1...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.2](https://github.com/weseek/growi/compare/v7.2.1...v7.2.2) - 2025-04-17
+
+### 🐛 Bug Fixes
+
+* fix: Export page API is broken (#9870) @yuki-takei
 
 ## [v7.2.1](https://github.com/weseek/growi/compare/v7.2.0...v7.2.1) - 2025-04-16
 
