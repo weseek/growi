@@ -14,7 +14,9 @@ ARG PNPM_HOME
 WORKDIR $OPT_DIR
 
 # install tools
-RUN apt-get update && apt-get install -y ca-certificates wget curl --no-install-recommends
+RUN --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  apt-get update && apt-get install -y ca-certificates wget curl --no-install-recommends
 
 # install pnpm
 RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" PNPM_VERSION="10.4.1" sh -
@@ -22,7 +24,8 @@ ENV PNPM_HOME=$PNPM_HOME
 ENV PATH="$PNPM_HOME:$PATH"
 
 # install turbo
-RUN pnpm add turbo --global
+RUN --mount=type=cache,target=$PNPM_HOME/store,sharing=locked \
+  pnpm add turbo --global
 
 
 
@@ -38,8 +41,10 @@ WORKDIR $OPT_DIR
 
 COPY . .
 
-RUN pnpm add node-gyp --global
-RUN pnpm install ---frozen-lockfile
+RUN --mount=type=cache,target=$PNPM_HOME/store,sharing=locked \
+  pnpm add node-gyp --global
+RUN --mount=type=cache,target=$PNPM_HOME/store,sharing=locked \
+  pnpm install ---frozen-lockfile
 
 # build
 RUN turbo run clean
@@ -49,7 +54,7 @@ RUN turbo run build --filter @growi/app
 RUN pnpm deploy out --prod --filter @growi/app
 RUN rm -rf apps/app/node_modules && mv out/node_modules apps/app/node_modules
 RUN rm -rf apps/app/.next/cache
-RUN tar -zcf packages.tar.gz \
+RUN tar -zcf /tmp/packages.tar.gz \
   package.json \
   apps/app/.next \
   apps/app/config \
@@ -78,7 +83,9 @@ ENV appDir="$OPT_DIR/growi"
 
 # Add gosu
 # see: https://github.com/tianon/gosu/blob/1.13/INSTALL.md
-RUN set -eux; \
+RUN --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+  set -eux; \
 	apt-get update; \
 	apt-get install -y gosu; \
 	rm -rf /var/lib/apt/lists/*; \
