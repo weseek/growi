@@ -8,9 +8,11 @@ import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
+
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useGrowiCloudUri, useIsEnableUnifiedMergeView } from '~/stores-universal/context';
+import { useEditorMode, EditorMode } from '~/stores-universal/ui';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
@@ -513,6 +515,7 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
+  const { data: editorMode } = useEditorMode();
   const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
   const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
@@ -533,6 +536,12 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [closeAiAssistantSidebar, isEditorAssistant, isOpened]);
+
+  useEffect(() => {
+    if (isEditorAssistant && editorMode !== EditorMode.Editor) {
+      closeAiAssistantSidebar();
+    }
+  }, [closeAiAssistantSidebar, editorMode, isEditorAssistant]);
 
   useEffect(() => {
     if (!aiAssistantSidebarData?.isOpened) {
