@@ -878,9 +878,9 @@ module.exports = (crowi) => {
     }
 
     try {
-      const revisionIdForFind = revisionId ?? page.revision;
+      const revisionIdForFind = revisionId ?? (page.revision != null ? getIdForRef(page.revision) : undefined);
 
-      revision = await Revision.findOne({ id: { $eq: revisionIdForFind } });
+      revision = await Revision.findById(revisionIdForFind);
       pagePath = page.path;
 
       // Error if pageId and revison's pageIds do not match
