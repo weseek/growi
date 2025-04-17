@@ -63,39 +63,19 @@
       "./.next/**"
 		]
 	},
-	"overrides": [
-		{
-			"include": ["*.js", "*.jsx"],
-			"linter": { "rules": { "correctness": { "noUnusedVariables": "warn" } } }
-		},
-		{
-			"include": ["*.ts", "*.tsx"],
-			"linter": { "rules": { "correctness": { "noUnusedVariables": "off" } } }
-		},
-    {
-      "include": ["*.spec.ts", "*.test.ts"],
-      "javascript": {
-        "globals": [
-          "afterEach",
-          "afterAll",
-          "beforeEach",
-          "beforeAll",
-          "describe",
-          "expect",
-          "it",
-          "test",
-          "vi",
-          "jest"
-        ]
-      }
-    },
-    {
-      "include": ["*.jsx", "*.tsx"],
-      "javascript": {
-        "globals": [
-          "JSX"
-        ]
-      }
-    }
-	]
+  "javascript": {
+    "globals": [
+      "afterEach",
+      "afterAll",
+      "beforeEach",
+      "beforeAll",
+      "describe",
+      "expect",
+      "it",
+      "test",
+      "vi",
+      "jest",
+      "JSX"
+    ]
+  }
 }
