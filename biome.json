@@ -170,7 +170,6 @@
         "noDuplicateClassMembers": "error",
         "noDuplicateObjectKeys": "error",
         "noDuplicateParameters": "error",
-        "noEmptyBlockStatements": "error",
         "noEmptyInterface": "error",
         "noExplicitAny": "warn",
         "noExtraNonNullAssertion": "error",
