@@ -1,8 +1,43 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.2.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.2.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.2.1](https://github.com/weseek/growi/compare/v7.2.0...v7.2.1) - 2025-04-16
+
+### 💎 Features
+
+* feat: Page bulk export (pdf export included) (#9678) @arafubeatbox
+
+### 🚀 Improvement
+
+* imprv: Add util method to get react instance of growi via growifacade (#9775) @NaokiHigashi28
+* imprv: Adjust comment editor clickable area (#9840) @yuki-takei
+* imprv: Make user activation middleware securely (#9818) @yuki-takei
+* imprv: Prepare to upgrade React and Next.js (#9816) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: The order of multer middleware (#9772) @NaokiHigashi28
+* fix: growi pluginkit growifacade typo (#9812) @NaokiHigashi28
+* fix: Migration script to remove index for 'ns' from config collection (#9770) @yuki-takei
+* fix: Assistant remains default when made unpublished (#9763) @miya
+* fix: Fix layout when safari browse (#9744) @satof3
+* fix:  Prevent GrowiPlugin from being downloaded outside the plugin directory (#9712) @NaokiHigashi28
+* fix: The link for Telemetry of GROWI Docs (#9737) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps): bump next from 14.2.22 to 14.2.25 (#9761) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps-dev): bump vite from 5.4.16 to 5.4.17 (#9837) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps-dev): bump vite from 5.4.15 to 5.4.16 (#9830) @[dependabot[bot]](https://github.com/apps/dependabot)
+* support: Upgrade Next.js (#9825) @yuki-takei
+* support: Upgrade SWR (#9814) @yuki-takei
+* ci(deps-dev): bump vite from 5.4.14 to 5.4.15 (#9781) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump dependabot/fetch-metadata from 1 to 2 (#9636) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump docker/build-push-action from 4 to 6 (#9638) @[dependabot[bot]](https://github.com/apps/dependabot)
+* ci(deps): bump release-drafter/release-drafter from 5 to 6 (#9637) @[dependabot[bot]](https://github.com/apps/dependabot)
 
 ## [v7.2.0](https://github.com/weseek/growi/compare/v7.1.9...v7.2.0) - 2025-03-11
 
