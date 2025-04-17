@@ -1,4 +1,4 @@
-# syntax = docker/dockerfile:1
+# syntax = docker/dockerfile:1.4
 
 
 ##
@@ -80,13 +80,11 @@ RUN set -eux; \
 # verify that the binary works
 	gosu nobody true
 
-COPY --from=builder --chown=node:node \
-  ${optDir}/packages.tar.gz ${appDir}/
-
 # extract artifacts as 'node' user
 USER node
 WORKDIR ${appDir}
-RUN tar -zxf packages.tar.gz && rm packages.tar.gz
+RUN --mount=type=bind,from=builder,source=/tmp/packages.tar.gz,target=/tmp/packages.tar.gz \
+  tar -zxf /tmp/packages.tar.gz -C ${appDir}/
 
 COPY --chown=node:node --chmod=700 apps/app/docker/docker-entrypoint.sh /
 
