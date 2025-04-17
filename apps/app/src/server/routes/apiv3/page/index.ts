@@ -844,8 +844,8 @@ module.exports = (crowi) => {
   */
   router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
     const pageId: string = req.params.pageId;
-    const format: 'md' | 'pdf' = req.params.format ?? 'md';
-    const revisionId: string | undefined = req.params.revisionId;
+    const format: 'md' | 'pdf' = req.query.format ?? 'md';
+    const revisionId: string | undefined = req.query.revisionId;
 
     let revision: HydratedDocument<IRevision> | null;
     let pagePath;
