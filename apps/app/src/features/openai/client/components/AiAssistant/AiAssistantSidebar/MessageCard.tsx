@@ -1,4 +1,4 @@
-import { useCallback, type JSX } from 'react';
+import { useCallback, useState, type JSX } from 'react';
 
 import type { LinkProps } from 'next/link';
 import { useTranslation } from 'react-i18next';
@@ -50,6 +50,18 @@ const AssistantMessageCard = ({
 }): JSX.Element => {
   const { t } = useTranslation();
 
+  const [isActionButtonClicked, setIsActionButtonClicked] = useState(false);
+
+  const clickActionButtonHandler = useCallback((action: 'accept' | 'discard') => {
+    setIsActionButtonClicked(true);
+    if (action === 'accept') {
+      onAccept?.();
+      return;
+    }
+
+    onDiscard?.();
+  }, [onAccept, onDiscard]);
+
   return (
     <div className={`card border-0 ${moduleClass} ${assistantMessageCardModuleClass}`}>
       <div className="card-body d-flex">
@@ -62,19 +74,19 @@ const AssistantMessageCard = ({
               <>
                 <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
 
-                {showActionButtons && (
+                {showActionButtons && !isActionButtonClicked && (
                   <div className="d-flex mt-2 justify-content-start">
                     <button
                       type="button"
                       className="btn btn-outline-secondary me-2"
-                      onClick={onDiscard}
+                      onClick={() => clickActionButtonHandler('discard')}
                     >
                       {t('sidebar_ai_assistant.discard')}
                     </button>
                     <button
                       type="button"
                       className="btn btn-outline-success"
-                      onClick={onAccept}
+                      onClick={() => clickActionButtonHandler('accept')}
                     >
                       {t('sidebar_ai_assistant.accept')}
                     </button>

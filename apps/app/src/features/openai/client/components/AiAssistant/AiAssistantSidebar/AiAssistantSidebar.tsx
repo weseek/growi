@@ -114,6 +114,26 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
   }, [mutateMessageData, threadData]);
 
+  const isActionButtonShown = useCallback((messageId: string) => {
+    if (!isEditorAssistant) {
+      return false;
+    }
+
+    if (generatingAnswerMessage != null) {
+      return false;
+    }
+
+    const latestAssistantMessageLogId = messageLogs
+      .filter(message => !message.isUserMessage)
+      .slice(-1)[0];
+
+    if (messageId === latestAssistantMessageLogId?.id) {
+      return true;
+    }
+
+    return false;
+  }, [generatingAnswerMessage, isEditorAssistant, messageLogs]);
+
   const headerIcon = useMemo(() => {
     return isEditorAssistant
       ? <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>
@@ -349,7 +369,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                   <MessageCard
                     key={message.id}
                     role={message.isUserMessage ? 'user' : 'assistant'}
-                    showActionButtons={isEditorAssistant}
+                    showActionButtons={isActionButtonShown(message.id)}
                     onAccept={clickAcceptHandler}
                     onDiscard={clickDiscardHandler}
                   >
