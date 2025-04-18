@@ -160,6 +160,7 @@
   "In-App Notification": "通知",
   "AI Assistant": "AI助手",
   "Knowledge Assistant": "知识助手 (测试版)",
+  "Editor Assistant": "编辑助理 (测试版)",
   "original_path": "Original path",
   "new_path": "New path",
   "duplicated_path": "Duplicated path",
@@ -334,6 +335,7 @@
       "file": "仅文件"
     },
     "editor_config": "编辑器配置",
+    "editor_assistant": "编辑助手",
 		"Show active line": "显示活动行",
 		"auto_format_table": "自动格式化表格",
 		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
@@ -483,10 +485,11 @@
     "latest_revision": "最新页面正文",
     "selected_editable_revision": "选定的可编辑页面正文"
   },
-  "sidebar_aichat": {
+  "sidebar_ai_assistant": {
     "instruction_label": "助手指令",
     "reference_pages_label": "参考页面",
-    "placeholder": "问我任何问题。",
+    "knowledge_assistant_placeholder": "问我任何问题。",
+    "editor_assistant_placeholder": "有什么需要帮忙的吗？",
     "summary_mode_label": "摘要模式",
     "summary_mode_help": "简洁回答在2-3句话内",
     "caution_against_hallucination": "请核实信息并检查来源。",
@@ -495,7 +498,21 @@
     "budget_exceeded": "您已达到 OpenAI API 的使用上限。要再次使用知识助手，请从 OpenAI 账单页面添加点数。",
     "budget_exceeded_for_growi_cloud": "您已达到 OpenAI API 使用上限。如需再次使用知识助手，请从GROWI.cloud管理页面为托管用户添加点数，或从OpenAI计费页面为自有用户添加点数。",
     "error_message": "错误",
-    "show_error_detail": "显示详情"
+    "show_error_detail": "显示详情",
+    "discard": "丢弃",
+    "accept": "接受",
+    "use_assistant": "使用助手",
+    "remove_assistant": "取消选定的助手",
+    "preset_menu": {
+      "summarize": {
+        "title": "为此文章创建摘要",
+        "prompt": "请总结这个 markdown 内容"
+      },
+      "correct": {
+        "title": "修正文本中的错误",
+        "prompt": "请修正 markdown 中的文本错误"
+      }
+    }
   },
   "modal_ai_assistant": {
     "header": {

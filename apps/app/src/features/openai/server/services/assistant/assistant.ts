@@ -8,27 +8,30 @@ import { openaiClient } from '../client';
 const AssistantType = {
   SEARCH: 'Search',
   CHAT: 'Chat',
+  EDIT: 'Edit',
 } as const;
 
 const AssistantDefaultModelMap: Record<AssistantType, OpenAI.Chat.ChatModel> = {
   [AssistantType.SEARCH]: 'gpt-4o-mini',
   [AssistantType.CHAT]: 'gpt-4o-mini',
-};
-
-const isValidChatModel = (model: string): model is OpenAI.Chat.ChatModel => {
-  return model.startsWith('gpt-');
+  [AssistantType.EDIT]: 'gpt-4o-mini',
 };
 
 const getAssistantModelByType = (type: AssistantType): OpenAI.Chat.ChatModel => {
-  const configValue = type === AssistantType.SEARCH
-    ? undefined // TODO: add the value for 'openai:assistantModel:search' to config-definition.ts
-    : configManager.getConfig('openai:assistantModel:chat');
+  const configValue = (() => {
+    switch (type) {
+      case AssistantType.SEARCH:
+        // return configManager.getConfig('openai:assistantModel:search');
+        return undefined;
+      case AssistantType.CHAT:
+        return configManager.getConfig('openai:assistantModel:chat');
+      case AssistantType.EDIT:
+        // return configManager.getConfig('openai:assistantModel:edit');
+        return undefined;
+    }
+  })();
 
-  if (typeof configValue === 'string' && isValidChatModel(configValue)) {
-    return configValue;
-  }
-
-  return AssistantDefaultModelMap[type];
+  return configValue ?? AssistantDefaultModelMap[type];
 };
 
 type AssistantType = typeof AssistantType[keyof typeof AssistantType];
@@ -102,4 +105,14 @@ export const getOrCreateChatAssistant = async(): Promise<OpenAI.Beta.Assistant> 
 
   chatAssistant = await getOrCreateAssistant(AssistantType.CHAT);
   return chatAssistant;
+};
+
+let editorAssistant: OpenAI.Beta.Assistant | undefined;
+export const getOrCreateEditorAssistant = async(): Promise<OpenAI.Beta.Assistant> => {
+  if (editorAssistant != null) {
+    return editorAssistant;
+  }
+
+  editorAssistant = await getOrCreateAssistant(AssistantType.EDIT);
+  return editorAssistant;
 };
