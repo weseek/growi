@@ -1,4 +1,4 @@
-import { type ReactNode, type JSX } from 'react';
+import type { ReactNode, JSX } from 'react';
 
 import { useDrawerOpened } from '~/stores/ui';
 
