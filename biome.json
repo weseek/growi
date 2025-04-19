@@ -1,14 +1,5 @@
 {
   "files": { "ignore": ["node_modules/**", "dist/**", "coverage/**"] },
-  "formatter": {
-    "enabled": true,
-    "formatWithErrors": false,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 160,
-    "attributePosition": "auto",
-    "ignore": []
-  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -199,6 +190,5 @@
       "./next-env.d.ts",
       ".turbo/**"
     ]
-  },
-  "javascript": { "formatter": { "quoteStyle": "single" } }
+  }
 }
