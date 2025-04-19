@@ -1,6 +1,6 @@
 import type React from 'react';
 import {
-  useCallback, useRef, useEffect, useMemo,
+  useCallback, useRef, useEffect, useMemo, type JSX,
 } from 'react';
 
 import type { GetInputProps } from '../interfaces/downshift';

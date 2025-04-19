@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useState } from 'react';
+import { useState, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {

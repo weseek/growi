@@ -1,5 +1,6 @@
+import type { Model, Document, Types } from 'mongoose';
 import {
-  Schema, type Model, type Document, type Types,
+  Schema,
 } from 'mongoose';
 
 import { type IInAppNotificationSettings, subscribeRuleNames } from '~/interfaces/in-app-notification';

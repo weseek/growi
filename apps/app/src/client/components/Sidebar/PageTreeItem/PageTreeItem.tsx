@@ -1,6 +1,5 @@
 import React, {
-  useCallback, useState,
-  type FC,
+  useCallback, useState, type JSX,
 } from 'react';
 
 import nodePath from 'path';

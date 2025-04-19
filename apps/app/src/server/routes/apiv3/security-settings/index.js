@@ -274,7 +274,7 @@ const validator = {
  *            description: certificate for saml
  *          samlEnvVarCert:
  *            type: string
- *            desription: certificate for saml
+ *            description: certificate for saml
  *          samlAttrMapId:
  *            type: string
  *            description: attribute mapping id for saml
@@ -452,7 +452,7 @@ module.exports = (crowi) => {
    *                        googleOAuth:
    *                          $ref: '#/components/schemas/GoogleOAuthSetting'
    *                        githubOAuth:
-   *                          $ref: '#/components/schemas/GitHubOAuth
+   *                          $ref: '#/components/schemas/GitHubOAuthSetting'
    */
   router.get('/', loginRequiredStrictly, adminRequired, async(_req, res) => {
 

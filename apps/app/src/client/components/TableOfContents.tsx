@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, type JSX } from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
 import ReactMarkdown from 'react-markdown';

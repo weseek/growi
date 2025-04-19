@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React, { useEffect } from 'react';
 
 import type { Locale } from '@growi/core/dist/interfaces';
@@ -25,7 +25,7 @@ import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 // biome-ignore lint/complexity/noBannedTypes: ignore
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode,
+  getLayout?: (page: JSX.Element) => ReactNode,
 }
 
 type GrowiAppProps = AppProps & {

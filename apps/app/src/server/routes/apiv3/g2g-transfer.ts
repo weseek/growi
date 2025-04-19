@@ -249,7 +249,7 @@ module.exports = (crowi: Crowi): Router => {
    *                    description: The message of the result
    */
   // eslint-disable-next-line max-len
-  receiveRouter.post('/', uploads.single('transferDataZipFile'), validateTransferKey, async(req: Request & { file: any; }, res: ApiV3Response) => {
+  receiveRouter.post('/', validateTransferKey, uploads.single('transferDataZipFile'), async(req: Request & { file: any; }, res: ApiV3Response) => {
     const { file } = req;
     const {
       collections: strCollections,
@@ -356,7 +356,7 @@ module.exports = (crowi: Crowi): Router => {
    *                  description: Metadata of the attachment
    *      responses:
    *        '200':
-   *          description:
+   *          description: Successfully imported attachment file
    *          content:
    *            application/json:
    *              schema:
@@ -367,7 +367,7 @@ module.exports = (crowi: Crowi): Router => {
    *                    description: The message of the result
    */
   // This endpoint uses multer's MemoryStorage since the received data should be persisted directly on attachment storage.
-  receiveRouter.post('/attachment', uploadsForAttachment.single('content'), validateTransferKey,
+  receiveRouter.post('/attachment', validateTransferKey, uploadsForAttachment.single('content'),
     async(req: Request & { file: any; }, res: ApiV3Response) => {
       const { file } = req;
       const { attachmentMetadata } = req.body;
@@ -406,7 +406,7 @@ module.exports = (crowi: Crowi): Router => {
    *        - transferHeaderAuth: []
    *      responses:
    *        '200':
-   *          description:
+   *          description: Successfully got GROWI information
    *          content:
    *            application/json:
    *              schema:

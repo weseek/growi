@@ -1,4 +1,4 @@
-import type { Ref } from 'react';
+import type { Ref, JSX } from 'react';
 import type React from 'react';
 import { useEffect, useState } from 'react';
 
@@ -28,10 +28,10 @@ const useIntersection = <E extends HTMLElement>(): [boolean, Ref<E>] => {
     }
     return;
   }, [element]);
-  return [intersecting, (el) => { if (el != null) { setElement(el);  }}];
+  return [intersecting, (el) => { if (el != null) { setElement(el); } }];
 };
 
-const LoadingIndicator = (): React.ReactElement => {
+const LoadingIndicator = (): JSX.Element => {
   return (
     <div className="text-muted text-center">
       <LoadingSpinner className="me-1 fs-3" />

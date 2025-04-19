@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useCallback } from 'react';
+import { useCallback, type JSX } from 'react';
 
 import { useTranslation } from 'react-i18next';
 

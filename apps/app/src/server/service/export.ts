@@ -12,10 +12,10 @@ import type CollectionProgress from '../models/vo/collection-progress';
 import CollectionProgressingStatus from '../models/vo/collection-progressing-status';
 
 import type AppService from './app';
-import type GrowiBridgeService from './growi-bridge';
-import type { ZipFileStat } from './interfaces/export';
 import { configManager } from './config-manager';
+import type GrowiBridgeService from './growi-bridge';
 import { growiInfoService } from './growi-info';
+import type { ZipFileStat } from './interfaces/export';
 
 
 const logger = loggerFactory('growi:services:ExportService');

@@ -22,7 +22,14 @@ export default async(req: ReqWithUserRegistrationOrder, _res: Response, next: Ne
     return next(createError(400, msg, { code: UserActivationErrorCode.TOKEN_NOT_FOUND }));
   }
 
-  const userRegistrationOrder = await UserRegistrationOrder.findOne({ token });
+  if (typeof token !== 'string') {
+    const msg = 'Invalid token format';
+    logger.error(msg);
+    return next(createError(400, msg, { code: UserActivationErrorCode.INVALID_TOKEN }));
+  }
+
+  // exec query safely with $eq
+  const userRegistrationOrder = await UserRegistrationOrder.findOne({ token: { $eq: token } });
 
   // check if the token is valid
   if (userRegistrationOrder == null || userRegistrationOrder.isExpired() || userRegistrationOrder.isRevoked) {

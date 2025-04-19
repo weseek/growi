@@ -1,10 +1,10 @@
-import type { IUserHasId } from '@growi/core';
 import type { GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CommonProps } from '~/pages/utils/commons';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, type CommonProps,
+  getServerSideCommonProps, getNextI18NextConfig,
 } from '~/pages/utils/commons';
 
 

@@ -1,5 +1,5 @@
 import React, {
-  type FC, memo, useCallback, useMemo,
+  type FC, memo, useCallback, useMemo, type JSX,
 } from 'react';
 
 import { Pagination, PaginationItem, PaginationLink } from 'reactstrap';

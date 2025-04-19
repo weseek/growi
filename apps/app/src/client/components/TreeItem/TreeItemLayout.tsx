@@ -1,6 +1,12 @@
 import React, {
-  useCallback, useState, useEffect, useMemo,
-  type FC, type RefObject, type RefCallback, type MouseEvent,
+  useCallback,
+  useState,
+  useEffect,
+  useMemo,
+  type RefObject,
+  type RefCallback,
+  type MouseEvent,
+  type JSX,
 } from 'react';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
@@ -170,7 +176,7 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
           ? (
             AlternativeComponents.map((AlternativeContent, index) => (
               // biome-ignore lint/suspicious/noArrayIndexKey: ignore
-              <AlternativeContent key={index} {...toolProps} />
+              (<AlternativeContent key={index} {...toolProps} />)
             ))
           )
           : (
@@ -179,13 +185,13 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
               <div className="d-hover-none">
                 {EndComponents?.map((EndComponent, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: ignore
-                  <EndComponent key={index} {...toolProps} />
+                  (<EndComponent key={index} {...toolProps} />)
                 ))}
               </div>
               <div className="d-none d-hover-flex">
                 {HoveredEndComponents?.map((HoveredEndContent, index) => (
                   // biome-ignore lint/suspicious/noArrayIndexKey: ignore
-                  <HoveredEndContent key={index} {...toolProps} />
+                  (<HoveredEndContent key={index} {...toolProps} />)
                 ))}
               </div>
             </>
@@ -193,13 +199,12 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
         }
 
       </li>
-
       { isOpen && (
         <div className={`tree-item-layout-children level-${baseItemLevel + 1}`}>
 
           {HeadObChildrenComponents?.map((HeadObChildrenContents, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: ignore
-            <HeadObChildrenContents key={index} {...toolProps} itemLevel={baseItemLevel + 1} />
+            (<HeadObChildrenContents key={index} {...toolProps} itemLevel={baseItemLevel + 1} />)
           ))}
 
           { hasChildren() && currentChildren.map((node) => {

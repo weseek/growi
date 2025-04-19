@@ -1,5 +1,6 @@
 import type { IUserHasId } from '@growi/core';
 
+import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 import { SocketEventName } from '~/interfaces/websocket';
 import ExternalAccount from '~/server/models/external-account';
 import S2sMessage from '~/server/models/vo/s2s-message';
@@ -16,7 +17,6 @@ import type {
 } from '../../interfaces/external-user-group';
 import ExternalUserGroup from '../models/external-user-group';
 import ExternalUserGroupRelation from '../models/external-user-group-relation';
-import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 
 const logger = loggerFactory('growi:service:external-user-group-sync-service');
 

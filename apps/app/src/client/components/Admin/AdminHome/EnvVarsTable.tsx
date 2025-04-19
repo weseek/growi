@@ -1,4 +1,4 @@
-import type React from 'react';
+import React, { type JSX } from 'react';
 
 type EnvVarsTableProps = {
   envVars: Record<string, string | number | boolean>,

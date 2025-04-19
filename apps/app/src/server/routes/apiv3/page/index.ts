@@ -2,7 +2,7 @@ import path from 'path';
 import type { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
-import type { IPage } from '@growi/core';
+import type { IPage, IRevision } from '@growi/core';
 import {
   AllSubscriptionStatusType, PageGrant, SubscriptionStatusType,
   getIdForRef,
@@ -157,7 +157,7 @@ module.exports = (crowi) => {
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
-      query('revisionId').isString(),
+      query('revisionId').optional().isMongoId(),
     ],
     archive: [
       body('rootPagePath').isString(),
@@ -760,7 +760,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/grant:
+   *   /{pageId}/grant:
    *     put:
    *       tags: [Page]
    *       security:
@@ -825,20 +825,29 @@ module.exports = (crowi) => {
   /**
   * @swagger
   *
-  *    /page/export:
+  *    /page/export/{pageId}:
   *      get:
   *        tags: [Page]
   *        security:
   *          - cookieAuth: []
   *        description: return page's markdown
+  *        parameters:
+  *          - name: pageId
+  *            in: path
+  *            description: ID of the page
+  *            required: true
+  *            schema:
+  *              type: string
   *        responses:
   *          200:
   *            description: Return page's markdown
   */
   router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
     const pageId: string = req.params.pageId;
-    const { format, revisionId = null } = req.query;
-    let revision;
+    const format: 'md' | 'pdf' = req.query.format ?? 'md';
+    const revisionId: string | undefined = req.query.revisionId;
+
+    let revision: HydratedDocument<IRevision> | null;
     let pagePath;
 
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
@@ -871,9 +880,17 @@ module.exports = (crowi) => {
     }
 
     try {
-      const revisionIdForFind = revisionId ?? page.revision;
+      const targetId = revisionId ?? (page.revision != null ? getIdForRef(page.revision) : null);
+      if (targetId == null) {
+        throw new Error('revisionId is not specified');
+      }
 
+      const revisionIdForFind = new mongoose.Types.ObjectId(targetId);
       revision = await Revision.findById(revisionIdForFind);
+      if (revision == null) {
+        throw new Error('Revision is not found');
+      }
+
       pagePath = page.path;
 
       // Error if pageId and revison's pageIds do not match
@@ -1046,7 +1063,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *   /:pageId/content-width:
+   *   /{pageId}/content-width:
    *     put:
    *       tags: [Page]
    *       summary: Update content width
@@ -1099,7 +1116,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/publish:
+   *   /{pageId}/publish:
    *     put:
    *       tags: [Page]
    *       summary: Publish page
@@ -1123,7 +1140,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/unpublish:
+   *   /{pageId}/unpublish:
    *     put:
    *       tags: [Page]
    *       summary: Unpublish page
@@ -1147,7 +1164,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/yjs-data:
+   *   /{pageId}/yjs-data:
    *     get:
    *       tags: [Page]
    *       summary: Get Yjs data
@@ -1182,7 +1199,7 @@ module.exports = (crowi) => {
 
   /**
    * @swagger
-   *   /:pageId/sync-latest-revision-body-to-yjs-draft:
+   *   /{pageId}/sync-latest-revision-body-to-yjs-draft:
    *     put:
    *       tags: [Page]
    *       summary: Sync latest revision body to Yjs draft

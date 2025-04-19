@@ -1,6 +1,6 @@
 import type React from 'react';
 import {
-  memo, useCallback, useMemo, useState,
+  memo, useCallback, useMemo, useState, type JSX,
 } from 'react';
 
 import {

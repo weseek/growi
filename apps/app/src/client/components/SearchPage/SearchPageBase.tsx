@@ -1,6 +1,5 @@
-import type { ForwardRefRenderFunction } from 'react';
-import type React from 'react';
-import {
+import type { ForwardRefRenderFunction, JSX } from 'react';
+import React, {
   forwardRef, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 
@@ -45,7 +44,7 @@ type Props = {
   onSelectedPagesByCheckboxesChanged?: (selectedCount: number, totalCount: number) => void,
 
   searchControl: React.ReactNode,
-  searchResultListHead: React.ReactElement,
+  searchResultListHead: JSX.Element,
   searchPager: React.ReactNode,
 }
 

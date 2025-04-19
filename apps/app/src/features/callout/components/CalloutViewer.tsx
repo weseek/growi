@@ -1,6 +1,6 @@
 // Ref: https://github.com/Microflash/remark-callout-directives/blob/fabe4d8adc7738469f253836f0da346591ea2a2b/README.md
 
-import type { ReactNode } from 'react';
+import type { ReactNode, JSX } from 'react';
 import React from 'react';
 
 import type { Callout } from '../services/consts';

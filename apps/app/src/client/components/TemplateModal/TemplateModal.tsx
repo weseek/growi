@@ -1,6 +1,5 @@
-import type React from 'react';
-import {
-  useCallback, useEffect, useState,
+import React, {
+  useCallback, useEffect, useState, type JSX,
 } from 'react';
 
 import assert from 'assert';

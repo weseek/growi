@@ -1,6 +1,6 @@
 import type React from 'react';
 import {
-  useEffect, useCallback,
+  useEffect, useCallback, type JSX
 } from 'react';
 
 import path from 'path';

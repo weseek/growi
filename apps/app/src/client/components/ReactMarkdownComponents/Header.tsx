@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
+import {
+ useCallback, useEffect, useState, type ReactNode, type JSX
+} from 'react';
 
 import type EventEmitter from 'events';
 

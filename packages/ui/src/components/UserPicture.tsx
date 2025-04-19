@@ -1,5 +1,5 @@
 import {
-  type ReactNode,
+  type ReactNode, type JSX,
   memo, forwardRef, useCallback, useRef,
 } from 'react';
 
@@ -51,10 +51,12 @@ const withTooltip = (UserPictureSpanElm: React.ForwardRefExoticComponent<UserPic
     return (
       <>
         <UserPictureSpanElm ref={userPictureRef} user={user}>{props.children}</UserPictureSpanElm>
-        <UncontrolledTooltip placement="bottom" target={userPictureRef} delay={0} fade={false}>
-          @{user.username}<br />
-          {user.name}
-        </UncontrolledTooltip>
+        {userPictureRef.current != null && (
+          <UncontrolledTooltip placement="bottom" target={userPictureRef.current} delay={0} fade={false}>
+            @{user.username}<br />
+            {user.name}
+          </UncontrolledTooltip>
+        )}
       </>
     );
   };
