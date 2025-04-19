@@ -75,7 +75,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
       const toastSuccess = (await import('~/client/util/toastr')).toastSuccess;
       toastSuccess(t('Successfully updated'));
     }
-    catch (err) {
+    catch (_err) {
       const toastError = (await import('~/client/util/toastr')).toastError;
       toastError(t('Failed to update'));
     }
@@ -115,7 +115,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
       return t('fix_page_grant.modal.grant_label.isForbidden');
     }
 
-    throw Error('cannot get grant label'); // this error can't be throwed
+    throw new Error('cannot get grant label'); // this error can't be throwed
   }, [t]);
 
   const renderGrantDataLabel = useCallback(() => {

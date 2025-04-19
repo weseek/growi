@@ -362,7 +362,7 @@ class PassportService implements S2sMessageHandlable {
    * @returns
    * @memberof PassportService
    */
-  getLdapConfigurationFunc(config, opts) {
+  getLdapConfigurationFunc(_config, opts) {
     /* eslint-disable no-multi-spaces */
     const { configManager } = this.crowi;
 
@@ -382,7 +382,7 @@ class PassportService implements S2sMessageHandlable {
     const match = serverUrl.match(/(ldaps?:\/\/[^/]+)\/(.*)?/);
     if (match == null || match.length < 1) {
       logger.debug('LdapStrategy: serverUrl is invalid');
-      return (req, callback) => { callback({ message: 'serverUrl is invalid' }) };
+      return (_req, callback) => { callback({ message: 'serverUrl is invalid' }) };
     }
     const url = match[1];
     const searchBase = match[2] || '';
@@ -468,7 +468,7 @@ class PassportService implements S2sMessageHandlable {
             : configManager.getConfigLegacy<string>('security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
-        (accessToken, refreshToken, profile, done) => {
+        (_accessToken, _refreshToken, profile, done) => {
           if (profile) {
             return done(null, profile);
           }
@@ -515,7 +515,7 @@ class PassportService implements S2sMessageHandlable {
             : configManager.getConfigLegacy('security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
-        (accessToken, refreshToken, profile, done) => {
+        (_accessToken, _refreshToken, profile, done) => {
           if (profile) {
             return done(null, profile);
           }
@@ -628,7 +628,7 @@ class PassportService implements S2sMessageHandlable {
           client,
           params: { scope: 'openid email profile' },
         },
-        (tokenset, userinfo, done) => {
+        (_tokenset, userinfo, done) => {
           if (userinfo) {
             return done(null, userinfo);
           }
@@ -730,7 +730,7 @@ class PassportService implements S2sMessageHandlable {
     }, {
       onFailedAttempt: (error) => {
         // get current OIDCIssuer timeout options
-        OIDCIssuer[custom.http_options] = (url, options) => {
+        OIDCIssuer[custom.http_options] = (_url, options) => {
           const timeout = options.timeout
             ? options.timeout * OIDC_TIMEOUT_MULTIPLIER
             : OIDC_ISSUER_TIMEOUT_OPTION * OIDC_TIMEOUT_MULTIPLIER;
@@ -995,6 +995,7 @@ class PassportService implements S2sMessageHandlable {
       .replace(/\\\//g, '/')
       .replace(/\\:/g, ':')
       .replace(/\\"/g, '"')
+      // biome-ignore lint/nursery/noOctalEscape: ignore
       .replace(/\\0/g, '\0')
       .replace(/\\t/g, '\t')
       .replace(/\\n/g, '\n')

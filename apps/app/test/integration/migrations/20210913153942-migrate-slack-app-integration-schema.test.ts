@@ -1,4 +1,4 @@
-import { Collection } from 'mongodb';
+import type { Collection } from 'mongodb';
 import mongoose from 'mongoose';
 
 import migrate from '~/migrations/20210913153942-migrate-slack-app-integration-schema';

@@ -710,7 +710,7 @@ module.exports = (crowi) => {
 
       return res.apiv3({ subordinatedPages: result });
     }
-    catch (err) {
+    catch (_err) {
       return res.apiv3Err(new ErrorV3('Failed to update page.', 'unknown'), 500);
     }
 
@@ -948,7 +948,7 @@ module.exports = (crowi) => {
       const migratablePagesCount = req.user != null ? await crowi.pageService.countPagesCanNormalizeParentByUser(req.user) : null; // null check since not using loginRequiredStrictly
       return res.apiv3({ isV5Compatible, migratablePagesCount });
     }
-    catch (err) {
+    catch (_err) {
       return res.apiv3Err(new ErrorV3('Failed to obtain migration status'));
     }
   });

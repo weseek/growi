@@ -32,7 +32,7 @@ const awsConfigs = [
 ];
 
 module.exports = {
-  async up(db, client) {
+  async up(_db, _client) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -50,7 +50,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(db, client) {
+  async down(_db, _client) {
     logger.info('Rollback migration');
 
     await mongoose.connect(getMongoUri(), mongoOptions);

@@ -8,7 +8,7 @@ import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 
-const logger = loggerFactory('growi:routes:apiv3:search'); // eslint-disable-line no-unused-vars
+const _logger = loggerFactory('growi:routes:apiv3:search'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { body } = require('express-validator');
@@ -126,7 +126,7 @@ module.exports = (crowi) => {
    *                    description: Status of indices
    *                    $ref: '#/components/schemas/Indices'
    */
-  router.get('/indices', noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/indices', noCache(), accessTokenParser, loginRequired, adminRequired, async(_req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
@@ -154,7 +154,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Successfully connected
    */
-  router.post('/connection', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.post('/connection', accessTokenParser, loginRequired, adminRequired, addActivity, async(_req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {

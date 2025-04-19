@@ -7,7 +7,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:make-root-page-public');
 
 module.exports = {
-  async up(db) {
+  async up(_db) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -25,7 +25,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  down(db) {
+  down(_db) {
     // do not rollback
   },
 };

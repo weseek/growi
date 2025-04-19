@@ -7,7 +7,7 @@ import { parse } from 'date-fns/parse';
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:service:SlackBotService:keep');
+const _logger = loggerFactory('growi:service:SlackBotService:keep');
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -17,7 +17,7 @@ module.exports = (crowi) => {
   const handler = new BaseSlackCommandHandler();
   const { User } = crowi.models;
 
-  handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
+  handler.handleCommand = async function(_growiCommand, _client, body, respondUtil) {
     await respondUtil.respond({
       text: 'Select messages to use.',
       blocks: this.keepMessageBlocks(body.channel_name),
@@ -29,7 +29,7 @@ module.exports = (crowi) => {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.cancel = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+  handler.cancel = async(_client, _payload, _interactionPayloadAccessor, respondUtil) => {
     await respondUtil.deleteOriginal();
   };
 
@@ -50,7 +50,7 @@ module.exports = (crowi) => {
     await this.keepCreatePageAndSendPreview(client, interactionPayloadAccessor, path, user, contentsBody, respondUtil);
   };
 
-  handler.keepValidateForm = async function(client, payload, interactionPayloadAccessor) {
+  handler.keepValidateForm = async(_client, _payload, interactionPayloadAccessor) => {
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
     const path = interactionPayloadAccessor.getStateValues()?.page_path.page_path.value;
     let oldest = interactionPayloadAccessor.getStateValues()?.oldest.oldest.value;
@@ -93,7 +93,7 @@ module.exports = (crowi) => {
     });
   }
 
-  handler.keepGetMessages = async function(client, channelId, newest, oldest) {
+  handler.keepGetMessages = async(client, channelId, newest, oldest) => {
     let result;
 
     // first attempt
@@ -112,6 +112,7 @@ module.exports = (crowi) => {
       }
       else if (errorCode === 'channel_not_found') {
 
+        // biome-ignore lint/complexity/noUselessStringConcat: ignore
         const message = ':cry: GROWI Bot couldn\'t get history data because *this channel was private*.'
           + '\nPlease add GROWI bot to this channel.'
           + '\n';
@@ -146,7 +147,7 @@ module.exports = (crowi) => {
    * @param {*} messages (array of messages)
    * @returns users object with matching Slack Member ID
    */
-  handler.getGrowiUsersFromMessages = async function(messages) {
+  handler.getGrowiUsersFromMessages = async(messages) => {
     const users = messages.map((message) => {
       return message.user;
     });
@@ -199,7 +200,7 @@ module.exports = (crowi) => {
     return cleanedContents;
   };
 
-  handler.keepCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, user, contentsBody, respondUtil) {
+  handler.keepCreatePageAndSendPreview = async(_client, interactionPayloadAccessor, path, user, contentsBody, respondUtil) => {
     await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, user);
 
     // TODO: contentsBody text characters must be less than 3001
@@ -219,7 +220,7 @@ module.exports = (crowi) => {
     await respondUtil.deleteOriginal();
   };
 
-  handler.keepMessageBlocks = function(channelName) {
+  handler.keepMessageBlocks = (channelName) => {
     const tzDateSec = new Date().getTime();
     const grwTzoffset = crowi.appService.getTzoffset() * 60 * 1000;
 

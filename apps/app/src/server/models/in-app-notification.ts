@@ -82,7 +82,7 @@ inAppNotificationSchema.index({ createdAt: 1 });
 // apply plugins
 inAppNotificationSchema.plugin(mongoosePaginate);
 
-const transform = (doc, ret) => {
+const transform = (_doc, ret) => {
   delete ret.activities;
 };
 inAppNotificationSchema.set('toObject', { virtuals: true, transform });
@@ -91,12 +91,8 @@ inAppNotificationSchema.index({
   user: 1, target: 1, action: 1, createdAt: 1,
 });
 
-inAppNotificationSchema.statics.STATUS_UNOPENED = function() {
-  return STATUS_UNOPENED;
-};
-inAppNotificationSchema.statics.STATUS_OPENED = function() {
-  return STATUS_OPENED;
-};
+inAppNotificationSchema.statics.STATUS_UNOPENED = () => STATUS_UNOPENED;
+inAppNotificationSchema.statics.STATUS_OPENED = () => STATUS_OPENED;
 
 const InAppNotification = getOrCreateModel<InAppNotificationDocument, InAppNotificationModel>('InAppNotification', inAppNotificationSchema);
 

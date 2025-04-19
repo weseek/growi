@@ -41,7 +41,7 @@ schema.statics.findWithPagination = function(opts) {
   }
 
   return this.paginate(query, options)
-    .catch((err) => {
+    .catch((_err) => {
       // debug('Error on pagination:', err); TODO: add logger
     });
 };
@@ -71,7 +71,7 @@ schema.statics.createGroup = async function(name, description, parentId) {
   if (parentId != null) {
     parent = await this.findOne({ _id: parentId });
     if (parent == null) {
-      throw Error('Parent does not exist.');
+      throw new Error('Parent does not exist.');
     }
   }
 
@@ -123,7 +123,7 @@ schema.statics.findGroupsWithDescendantsRecursively = async function(
 schema.statics.findGroupsWithDescendantsById = async function(groupId) {
   const root = await this.findOne({ _id: groupId });
   if (root == null) {
-    throw Error('The root user group does not exist');
+    throw new Error('The root user group does not exist');
   }
   return this.findGroupsWithDescendantsRecursively([root]);
 };

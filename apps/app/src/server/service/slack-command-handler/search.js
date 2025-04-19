@@ -83,6 +83,7 @@ module.exports = (crowi) => {
       elements: [
         {
           type: 'mrkdwn',
+          // biome-ignore lint/complexity/noUselessStringConcat: ignore
           text: `keyword(s) : *"${keywords}"*`
           + `  |  Total ${resultsTotal} pages`
           + `  |  Current: ${offset + 1} - ${offset + pages.length}`
@@ -107,6 +108,7 @@ module.exports = (crowi) => {
           type: 'section',
           text: {
             type: 'mrkdwn',
+            // biome-ignore lint/complexity/noUselessStringConcat: ignore
             text: `${appendSpeechBaloon(`*${generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`
               + `  \`${generateLastUpdateMrkdwn(updatedAt, now)}\``,
           },
@@ -143,7 +145,7 @@ module.exports = (crowi) => {
     );
     // show "Prev" button if previous page exists
     // eslint-disable-next-line yoda
-    if (0 < offset) {
+    if (offset > 0) {
       actionBlocks.elements.push(
         {
           type: 'button',
@@ -226,7 +228,7 @@ module.exports = (crowi) => {
   }
 
 
-  handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
+  handler.handleCommand = async(growiCommand, _client, _body, respondUtil) => {
     const { growiCommandArgs } = growiCommand;
 
     const respondBody = await buildRespondBody(growiCommandArgs);
@@ -237,7 +239,7 @@ module.exports = (crowi) => {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.shareSinglePageResult = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+  handler.shareSinglePageResult = async(_client, payload, interactionPayloadAccessor, respondUtil) => {
     const { user } = payload;
 
     const appUrl = growiInfoService.getSiteUrl();
@@ -271,6 +273,7 @@ module.exports = (crowi) => {
           elements: [
             {
               type: 'mrkdwn',
+              // biome-ignore lint/complexity/noUselessStringConcat: ignore
               text: `<${decodeURI(appUrl)}|*${appTitle}*>`
                 + `  |  Last updated: \`${generateLastUpdateMrkdwn(updatedAt, now)}\``
                 + `  |  Shared by *${user.username}*`,
@@ -306,17 +309,11 @@ module.exports = (crowi) => {
     await respondUtil.replaceOriginal(buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
   }
 
-  handler.showPrevResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
-    return showPrevOrNextResults(interactionPayloadAccessor, false, respondUtil);
-  };
+  handler.showPrevResults = async(_client, _payload, interactionPayloadAccessor, respondUtil) => showPrevOrNextResults(interactionPayloadAccessor, false, respondUtil);
 
-  handler.showNextResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
-    return showPrevOrNextResults(interactionPayloadAccessor, true, respondUtil);
-  };
+  handler.showNextResults = async(_client, _payload, interactionPayloadAccessor, respondUtil) => showPrevOrNextResults(interactionPayloadAccessor, true, respondUtil);
 
-  handler.dismissSearchResults = async function(client, payload, interactionPayloadAccessor, respondUtil) {
-    return respondUtil.deleteOriginal();
-  };
+  handler.dismissSearchResults = async(_client, _payload, _interactionPayloadAccessor, respondUtil) => respondUtil.deleteOriginal();
 
   return handler;
 };

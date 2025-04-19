@@ -75,7 +75,7 @@ module.exports = (crowi) => {
    *                              type: boolean
    *                              description: whether slackbot is configured
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(_req, res) => {
 
     const slackIntegrationParams = {
       isSlackbotConfigured: crowi.slackIntegrationService.isSlackbotConfigured,

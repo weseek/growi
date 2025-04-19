@@ -1,10 +1,10 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import createError from 'http-errors';
 
 import { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import loggerFactory from '~/utils/logger';
 
-import UserRegistrationOrder, { IUserRegistrationOrder } from '../models/user-registration-order';
+import UserRegistrationOrder, { type IUserRegistrationOrder } from '../models/user-registration-order';
 
 const logger = loggerFactory('growi:routes:user-activation');
 
@@ -13,7 +13,7 @@ export type ReqWithUserRegistrationOrder = Request & {
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default async(req: ReqWithUserRegistrationOrder, res: Response, next: NextFunction): Promise<void> => {
+export default async(req: ReqWithUserRegistrationOrder, _res: Response, next: NextFunction): Promise<void> => {
   const token = req.params.token || req.body.token;
 
   if (token == null) {

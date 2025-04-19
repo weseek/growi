@@ -44,9 +44,9 @@ const GRANT_RESTRICTED = 2;
 const GRANT_SPECIFIED = 3; // DEPRECATED
 const GRANT_OWNER = 4;
 const GRANT_USER_GROUP = 5;
-const PAGE_GRANT_ERROR = 1;
+const _PAGE_GRANT_ERROR = 1;
 const STATUS_PUBLISHED = 'published';
-const STATUS_DELETED = 'deleted';
+const _STATUS_DELETED = 'deleted';
 
 export interface PageDocument extends IPage, Document<Types.ObjectId> {
   [x:string]: any // for obsolete methods
@@ -151,8 +151,8 @@ const schema = new Schema<PageDocument, PageModel>({
         index: true,
       },
     }],
-    validate: [function(arr) {
-      if (arr == null) return true;
+    validate: [(arr) => {
+      if (arr == null) { return true; }
       const uniqueItemValues = new Set(arr.map(e => e.item));
       return arr.length === uniqueItemValues.size;
     }, 'grantedGroups contains non unique item'],
@@ -249,7 +249,7 @@ export class PageQueryBuilder {
    * generate the query to find the pages '{path}/*' and '{path}' self.
    * If top page, return without doing anything.
    */
-  addConditionToListWithDescendants(path: string, option?): PageQueryBuilder {
+  addConditionToListWithDescendants(path: string, _option?): PageQueryBuilder {
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;
@@ -577,7 +577,7 @@ schema.statics.createEmptyPage = async function(
     path: string, parent: any, descendantCount = 0,
 ): Promise<HydratedDocument<PageDocument>> {
   if (parent == null) {
-    throw Error('parent must not be null');
+    throw new Error('parent must not be null');
   }
 
   const page = new this();
@@ -599,7 +599,7 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
   // find parent
   const parent = await this.findOne({ _id: exPage.parent });
   if (parent == null) {
-    throw Error('parent to update does not exist. Prepare parent first.');
+    throw new Error('parent to update does not exist. Prepare parent first.');
   }
 
   // create empty page at path
@@ -739,8 +739,6 @@ schema.statics.findRecentUpdatedPages = async function(
 
   const sortOpt = {};
   sortOpt[options.sort] = options.desc;
-
-  const Page = this;
   const User = mongoose.model('User') as any;
 
   if (path == null) {
@@ -761,7 +759,7 @@ schema.statics.findRecentUpdatedPages = async function(
   queryBuilder.addConditionToListWithDescendants(path, options);
   queryBuilder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
   await queryBuilder.addViewerCondition(user, undefined, undefined, !options.hideRestrictedByOwner, !options.hideRestrictedByGroup);
-  const pages = await Page.paginate(queryBuilder.query.clone(), {
+  const pages = await this.paginate(queryBuilder.query.clone(), {
     lean: true, sort: sortOpt, offset: options.offset, limit: options.limit,
   });
   const results = {
@@ -916,7 +914,7 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
   const self = this;
   const target = await this.findById(pageId);
   if (target == null) {
-    throw Error('Target not found');
+    throw new Error('Target not found');
   }
 
   async function findAncestorsRecursively(target, ancestors = shouldIncludeTarget ? [target] : []) {

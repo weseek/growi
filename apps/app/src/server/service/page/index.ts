@@ -223,12 +223,12 @@ class PageService implements IPageService {
       isRecursively: boolean,
       userRelatedGroups: PopulatedGrantedGroup[],
   ): boolean {
-    if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
+    if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) { return false; }
 
     const pageCompleteDeletionAuthority = configManager.getConfig('security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = configManager.getConfig('security:pageRecursiveCompleteDeletionAuthority');
 
-    if (!this.canDeleteCompletelyAsMultiGroupGrantedPage(page, creatorId, operator, userRelatedGroups)) return false;
+    if (!this.canDeleteCompletelyAsMultiGroupGrantedPage(page, creatorId, operator, userRelatedGroups)) { return false; }
 
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
 
@@ -279,7 +279,7 @@ class PageService implements IPageService {
 
   // Use getCreatorIdForCanDelete before execution of canDelete to get creatorId.
   canDelete(page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
+    if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) { return false; }
 
     const pageDeletionAuthority = configManager.getConfig('security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = configManager.getConfig('security:pageRecursiveDeletionAuthority');
@@ -364,7 +364,7 @@ class PageService implements IPageService {
   ): Promise<PageDocument[]> {
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
     const filteredPages = pages.filter(async(p) => {
-      if (p.isEmpty) return true;
+      if (p.isEmpty) { return true; }
       const canDelete = canDeleteFunction(
         p,
         p.creator == null ? null : getIdForRef(p.creator),
@@ -538,11 +538,11 @@ class PageService implements IPageService {
 
     const isExist = await Page.exists({ path: newPagePath, isEmpty: false });
     if (isExist) {
-      throw Error(`Page already exists at ${newPagePath}`);
+      throw new Error(`Page already exists at ${newPagePath}`);
     }
 
     if (isTopPage(page.path)) {
-      throw Error('It is forbidden to rename the top page');
+      throw new Error('It is forbidden to rename the top page');
     }
 
     // Separate v4 & v5 process
@@ -557,13 +557,13 @@ class PageService implements IPageService {
       const canMove = canMoveByPath(fromPath, toPath) && await Page.exists({ path: newPagePath });
 
       if (!canMove) {
-        throw Error('Cannot move to this path.');
+        throw new Error('Cannot move to this path.');
       }
     }
 
     const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, newPagePath);
     if (!canOperate) {
-      throw Error(`Cannot operate rename to path "${newPagePath}" right now.`);
+      throw new Error(`Cannot operate rename to path "${newPagePath}" right now.`);
     }
 
     /*
@@ -612,7 +612,7 @@ class PageService implements IPageService {
 
     const updateMetadata = options.updateMetadata || false;
     // sanitize path
-    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // biome-ignore lint/style/noParameterAssign: ignore
 
     // UserGroup & Owner validation
     // use the parent's grant when target page is an empty page
@@ -622,7 +622,7 @@ class PageService implements IPageService {
     if (page.isEmpty) {
       const parent = await Page.findOne({ _id: page.parent });
       if (parent == null) {
-        throw Error('parent not found');
+        throw new Error('parent not found');
       }
       grant = parent.grant;
       grantedUserIds = parent.grantedUsers;
@@ -644,7 +644,7 @@ class PageService implements IPageService {
         throw err;
       }
       if (!isGrantNormalized) {
-        throw Error(`This page cannot be renamed to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
+        throw new Error(`This page cannot be renamed to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
       }
     }
 
@@ -685,7 +685,7 @@ class PageService implements IPageService {
     // Set to Sub
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
     if (pageOp == null) {
-      throw Error('PageOperation document not found');
+      throw new Error('PageOperation document not found');
     }
 
     /*
@@ -714,7 +714,7 @@ class PageService implements IPageService {
     }
     catch (err) {
       logger.warn(err);
-      throw Error(err);
+      throw new Error(err);
     }
     finally {
       this.crowi.pageOperationService.clearAutoUpdateInterval(timerObj);
@@ -744,10 +744,10 @@ class PageService implements IPageService {
   async resumeRenameSubOperation(renamedPage: PageDocument, pageOp: PageOperationDocument, activity?): Promise<void> {
     const isProcessable = pageOp.isProcessable();
     if (!isProcessable) {
-      throw Error('This page operation is currently being processed');
+      throw new Error('This page operation is currently being processed');
     }
     if (pageOp.toPath == null) {
-      throw Error(`Property toPath is missing which is needed to resume rename operation(${pageOp._id})`);
+      throw new Error(`Property toPath is missing which is needed to resume rename operation(${pageOp._id})`);
     }
 
     const {
@@ -783,7 +783,7 @@ class PageService implements IPageService {
 
     // local util
     const collectAncestorPathsUntilFromPath = (path: string, paths: string[] = []): string[] => {
-      if (path === fromPath) return paths;
+      if (path === fromPath) { return paths; }
 
       const parentPath = pathlib.dirname(path);
       paths.push(parentPath);
@@ -793,7 +793,7 @@ class PageService implements IPageService {
     const pathsToInsert = collectAncestorPathsUntilFromPath(toPath);
     const originalParent = await Page.findById(originalPage.parent);
     if (originalParent == null) {
-      throw Error('Original parent not found');
+      throw new Error('Original parent not found');
     }
     const insertedPages = await Page.insertMany(pathsToInsert.map((path) => {
       return {
@@ -840,7 +840,7 @@ class PageService implements IPageService {
     } = options;
 
     // sanitize path
-    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // biome-ignore lint/style/noParameterAssign: ignore
 
     // create descendants first
     if (isRecursively) {
@@ -938,7 +938,7 @@ class PageService implements IPageService {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw Error(`Failed to create PageRedirect documents: ${err}`);
+        throw new Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
 
@@ -990,7 +990,7 @@ class PageService implements IPageService {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw Error(`Failed to create PageRedirect documents: ${err}`);
+        throw new Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
 
@@ -1016,7 +1016,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, encoding, callback) {
+      async write(batch, _encoding, callback) {
         try {
           count += batch.length;
           await renameDescendants(
@@ -1061,7 +1061,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, encoding, callback) {
+      async write(batch, _encoding, callback) {
         try {
           count += batch.length;
           await renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
@@ -1100,10 +1100,10 @@ class PageService implements IPageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     if (!isRecursively && page.isEmpty) {
-      throw Error('Page not found.');
+      throw new Error('Page not found.');
     }
 
-    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // biome-ignore lint/style/noParameterAssign: ignore
 
     // 1. Separate v4 & v5 process
     const isShouldUseV4Process = shouldUseV4Process(page);
@@ -1113,7 +1113,7 @@ class PageService implements IPageService {
 
     const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, newPagePath);
     if (!canOperate) {
-      throw Error(`Cannot operate duplicate to path "${newPagePath}" right now.`);
+      throw new Error(`Cannot operate duplicate to path "${newPagePath}" right now.`);
     }
 
     // 2. UserGroup & Owner validation
@@ -1125,7 +1125,7 @@ class PageService implements IPageService {
     if (page.isEmpty) {
       const parent = await Page.findOne({ _id: page.parent });
       if (parent == null) {
-        throw Error('parent not found');
+        throw new Error('parent not found');
       }
       grant = parent.grant;
       grantedUserIds = parent.grantedUsers;
@@ -1147,7 +1147,7 @@ class PageService implements IPageService {
         throw err;
       }
       if (!isGrantNormalized) {
-        throw Error(`This page cannot be duplicated to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
+        throw new Error(`This page cannot be duplicated to "${newPagePath}" since the selected grant or grantedGroup is not assignable to this page.`);
       }
     }
 
@@ -1253,7 +1253,7 @@ class PageService implements IPageService {
     // Set to Sub
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
     if (pageOp == null) {
-      throw Error('PageOperation document not found');
+      throw new Error('PageOperation document not found');
     }
 
     /*
@@ -1266,7 +1266,7 @@ class PageService implements IPageService {
     const Page = mongoose.model('Page');
     const newTarget = await Page.findOne({ path: newPagePath }); // only one page will be found since duplicating to existing path is forbidden
     if (newTarget == null) {
-      throw Error('No duplicated page found. Something might have gone wrong in duplicateRecursivelyMainOperation.');
+      throw new Error('No duplicated page found. Something might have gone wrong in duplicateRecursivelyMainOperation.');
     }
 
     await this.updateDescendantCountOfAncestors(newTarget._id, nDuplicatedPages, false);
@@ -1284,7 +1284,7 @@ class PageService implements IPageService {
     options.grantUserGroupIds = page.grantedGroups;
     options.grantedUserIds = page.grantedUsers;
 
-    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // biome-ignore lint/style/noParameterAssign: ignore
 
     const createdPage = await this.create(
       newPagePath, page.revision.body, user, options,
@@ -1481,7 +1481,7 @@ class PageService implements IPageService {
     let nNonEmptyDuplicatedPages = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, encoding, callback) {
+      async write(batch, _encoding, callback) {
         try {
           count += batch.length;
           nNonEmptyDuplicatedPages += batch.filter(page => !page.isEmpty).length;
@@ -1520,7 +1520,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, encoding, callback) {
+      async write(batch, _encoding, callback) {
         try {
           count += batch.length;
           await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, onlyDuplicateUserRelatedResources);
@@ -1562,7 +1562,7 @@ class PageService implements IPageService {
     }
     // Validate
     if (page.isEmpty && !isRecursively) {
-      throw Error('Page not found.');
+      throw new Error('Page not found.');
     }
     const isTrashed = isTrashPage(page.path);
     if (isTrashed) {
@@ -1586,7 +1586,7 @@ class PageService implements IPageService {
 
     const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, newPath);
     if (!canOperate) {
-      throw Error(`Cannot operate delete to path "${newPath}" right now.`);
+      throw new Error(`Cannot operate delete to path "${newPath}" right now.`);
     }
 
     // Replace with an empty page
@@ -1716,7 +1716,7 @@ class PageService implements IPageService {
     // no sub operation available
   }
 
-  private async deletePageV4(page: HydratedDocument<PageDocument>, user, options = {}, isRecursively = false) {
+  private async deletePageV4(page: HydratedDocument<PageDocument>, user, _options = {}, isRecursively = false) {
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const newPath = Page.getDeletedPageName(page.path);
@@ -1818,7 +1818,7 @@ class PageService implements IPageService {
     }
     catch (err) {
       if (err.code !== 11000) {
-        throw Error(`Failed to create PageRedirect documents: ${err}`);
+        throw new Error(`Failed to create PageRedirect documents: ${err}`);
       }
     }
   }
@@ -1844,7 +1844,7 @@ class PageService implements IPageService {
 
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, encoding, callback) {
+      async write(batch, _encoding, callback) {
         nDeletedNonEmptyPages += batch.filter(d => !d.isEmpty).length;
 
         try {
@@ -1920,11 +1920,11 @@ class PageService implements IPageService {
     const Page = mongoose.model('Page') as PageModel;
 
     if (isTopPage(page.path)) {
-      throw Error('It is forbidden to delete the top page');
+      throw new Error('It is forbidden to delete the top page');
     }
 
     if (page.isEmpty && !isRecursively) {
-      throw Error('Page not found.');
+      throw new Error('Page not found.');
     }
 
     // v4 compatible process
@@ -1935,7 +1935,7 @@ class PageService implements IPageService {
 
     const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, null);
     if (!canOperate) {
-      throw Error(`Cannot operate deleteCompletely from path "${page.path}" right now.`);
+      throw new Error(`Cannot operate deleteCompletely from path "${page.path}" right now.`);
     }
 
     const ids = [page._id];
@@ -2085,7 +2085,7 @@ class PageService implements IPageService {
   /**
    * Create delete completely stream
    */
-  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, _options = {}, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
     let readStream;
 
     if (shouldUseV4Process) { // pages don't have parents
@@ -2104,7 +2104,7 @@ class PageService implements IPageService {
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, encoding, callback) {
+      async write(batch, _encoding, callback) {
         nDeletedNonEmptyPages += batch.filter(d => !d.isEmpty).length;
 
         try {
@@ -2139,7 +2139,7 @@ class PageService implements IPageService {
     const { isRecursively, isCompletely } = options;
 
     if (pagesToDelete.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
-      throw Error(`The maximum number of pages is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+      throw new Error(`The maximum number of pages is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
     // omit duplicate paths if isRecursively true, omit empty pages if isRecursively false
@@ -2222,7 +2222,7 @@ class PageService implements IPageService {
 
     const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, newPath);
     if (!canOperate) {
-      throw Error(`Cannot operate revert from path "${page.path}" right now.`);
+      throw new Error(`Cannot operate revert from path "${page.path}" right now.`);
     }
 
     const includeEmpty = true;
@@ -2330,7 +2330,7 @@ class PageService implements IPageService {
     // Set to Sub
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
     if (pageOp == null) {
-      throw Error('PageOperation document not found');
+      throw new Error('PageOperation document not found');
     }
 
     /*
@@ -2345,7 +2345,7 @@ class PageService implements IPageService {
     const newTarget = await Page.findOne({ path: newPath }); // only one page will be found since duplicating to existing path is forbidden
 
     if (newTarget == null) {
-      throw Error('No reverted page found. Something might have gone wrong in revertRecursivelyMainOperation.');
+      throw new Error('No reverted page found. Something might have gone wrong in revertRecursivelyMainOperation.');
     }
 
     // update descendantCount of ancestors'
@@ -2408,7 +2408,7 @@ class PageService implements IPageService {
     const batchStream = createBatchStream(BULK_REINDEX_SIZE);
     const childPagesWritable = new Writable({
       objectMode: true,
-      write: async(batch, encoding, callback) => {
+      write: async(batch, _encoding, callback) => {
         await this.updateChildPagesGrant(batch, grant, user, userRelatedGroups, userRelatedParentGrantedGroups);
         callback();
       },
@@ -2458,7 +2458,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, encoding, callback) {
+      async write(batch, _encoding, callback) {
         try {
           count += batch.length;
           await revertDeletedDescendants(batch, user);
@@ -2486,7 +2486,7 @@ class PageService implements IPageService {
     return count;
   }
 
-  private async revertDeletedDescendantsWithStreamV4(targetPage, user, options = {}) {
+  private async revertDeletedDescendantsWithStreamV4(targetPage, user, _options = {}) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
     const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
@@ -2494,7 +2494,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, encoding, callback) {
+      async write(batch, _encoding, callback) {
         try {
           count += batch.length;
           await revertDeletedDescendants(batch, user);
@@ -2667,12 +2667,12 @@ class PageService implements IPageService {
     builder.addConditionToListWithDescendants(path);
     const nEstimatedNormalizationTarget: number = await builder.query.exec('count');
     if (nEstimatedNormalizationTarget === 0) {
-      throw Error('No page is available for conversion');
+      throw new Error('No page is available for conversion');
     }
 
     const pages = await Page.findByPathAndViewer(path, user, null, false);
     if (pages == null || !Array.isArray(pages)) {
-      throw Error('Something went wrong while converting pages.');
+      throw new Error('Something went wrong while converting pages.');
     }
 
 
@@ -2772,11 +2772,11 @@ class PageService implements IPageService {
     const pages = await Page.findByIdsAndViewer(pageIds, user, null);
 
     if (pages == null || pages.length === 0) {
-      throw Error('pageIds is null or 0 length.');
+      throw new Error('pageIds is null or 0 length.');
     }
 
     if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
-      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+      throw new Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
     await this.normalizeParentRecursivelyByPages(pages, user);
@@ -2800,7 +2800,7 @@ class PageService implements IPageService {
       try {
         const canOperate = await this.crowi.pageOperationService.canOperate(false, page.path, page.path);
         if (!canOperate) {
-          throw Error(`Cannot operate normalizeParent to path "${page.path}" right now.`);
+          throw new Error(`Cannot operate normalizeParent to path "${page.path}" right now.`);
         }
 
         const normalizedPage = await this.normalizeParentByPage(page, user);
@@ -2828,7 +2828,7 @@ class PageService implements IPageService {
     // check if any page exists at target path already
     const existingPage = await Page.findOne({ path, parent: { $ne: null } });
     if (existingPage != null && !existingPage.isEmpty) {
-      throw Error('Page already exists. Please rename the page to continue.');
+      throw new Error('Page already exists. Please rename the page to continue.');
     }
 
     /*
@@ -2846,11 +2846,11 @@ class PageService implements IPageService {
         throw err;
       }
       if (!isGrantNormalized) {
-        throw Error('This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.');
+        throw new Error('This page cannot be migrated since the selected grant or grantedGroup is not assignable to this page.');
       }
     }
     else {
-      throw Error('Restricted pages can not be migrated');
+      throw new Error('Restricted pages can not be migrated');
     }
 
     let normalizedPage;
@@ -2911,7 +2911,7 @@ class PageService implements IPageService {
       const canOperate = await this.crowi.pageOperationService.canOperate(true, page.path, page.path);
       if (!canOperate) {
         errorPagePaths.push(page.path);
-        throw Error(`Cannot operate normalizeParentRecursiively to path "${page.path}" right now.`);
+        throw new Error(`Cannot operate normalizeParentRecursiively to path "${page.path}" right now.`);
       }
 
       const Page = mongoose.model('Page') as unknown as PageModel;
@@ -2923,7 +2923,7 @@ class PageService implements IPageService {
 
       if (existingPage?.parent != null) {
         errorPagePaths.push(page.path);
-        throw Error('This page has already converted.');
+        throw new Error('This page has already converted.');
       }
 
       let pageOp;
@@ -2988,7 +2988,7 @@ class PageService implements IPageService {
     // Set to Sub
     const pageOp = await PageOperation.findByIdAndUpdatePageActionStage(pageOpId, PageActionStage.Sub);
     if (pageOp == null) {
-      throw Error('PageOperation document not found');
+      throw new Error('PageOperation document not found');
     }
 
     await this.normalizeParentRecursivelySubOperation(page, user, pageOp._id, options);
@@ -3007,7 +3007,7 @@ class PageService implements IPageService {
       // then calculate inc
       const pageAfterUpdatingDescendantCount = await Page.findByIdAndViewer(page._id, user);
       if (pageAfterUpdatingDescendantCount == null) {
-        throw Error('Page not found after updating descendantCount');
+        throw new Error('Page not found after updating descendantCount');
       }
 
       const { prevDescendantCount } = options;
@@ -3021,7 +3021,7 @@ class PageService implements IPageService {
     }
     catch (err) {
       logger.error('Failed to update descendantCount after normalizing parent:', err);
-      throw Error(`Failed to update descendantCount after normalizing parent: ${err}`);
+      throw new Error(`Failed to update descendantCount after normalizing parent: ${err}`);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
@@ -3243,7 +3243,7 @@ class PageService implements IPageService {
 
     const migratePagesStream = new Writable({
       objectMode: true,
-      async write(pages, encoding, callback) {
+      async write(pages, _encoding, callback) {
         const parentPaths = Array.from(new Set<string>(pages.map(p => pathlib.dirname(p.path))));
 
         // 1. Remove unnecessary empty pages & reset parent for pages which had had those empty pages
@@ -3338,7 +3338,7 @@ class PageService implements IPageService {
           if (res.result.writeErrors.length > 0) {
             logger.error('Failed to migrate some pages', res.result.writeErrors);
             socket?.emit(SocketEventName.PMEnded, { isSucceeded: false });
-            throw Error('Failed to migrate some pages');
+            throw new Error('Failed to migrate some pages');
           }
 
           // Finish migration if no modification occurred
@@ -3407,7 +3407,7 @@ class PageService implements IPageService {
 
   async countPagesCanNormalizeParentByUser(user): Promise<number> {
     if (user == null) {
-      throw Error('user is required');
+      throw new Error('user is required');
     }
 
     const Page = mongoose.model('Page') as unknown as PageModel;
@@ -3464,7 +3464,7 @@ class PageService implements IPageService {
     const batchStream = createBatchStream(batchSize);
     const recountWriteStream = new Writable({
       objectMode: true,
-      async write(pageDocuments, encoding, callback) {
+      async write(pageDocuments, _encoding, callback) {
         for await (const document of pageDocuments) {
           const descendantCount = await Page.recountDescendantCount(document._id);
           await Page.findByIdAndUpdate(document._id, { descendantCount });
@@ -3611,7 +3611,7 @@ class PageService implements IPageService {
     // Return the created parent
     const createdParent = await Page.findParentByPath(path);
     if (createdParent == null) {
-      throw Error('Failed to find the created parent by getParentAndFillAncestorsByUser');
+      throw new Error('Failed to find the created parent by getParentAndFillAncestorsByUser');
     }
     return createdParent;
   }
@@ -3637,7 +3637,7 @@ class PageService implements IPageService {
     // Return the created parent
     const createdParent = await Page.findParentByPath(path);
     if (createdParent == null) {
-      throw Error('Failed to find the created parent by getParentAndFillAncestorsByUser');
+      throw new Error('Failed to find the created parent by getParentAndFillAncestorsByUser');
     }
 
     return createdParent;
@@ -3729,7 +3729,7 @@ class PageService implements IPageService {
     const { grant, grantUserIds, grantUserGroupIds } = grantData;
     if (shouldValidateGrant) {
       if (user == null) {
-        throw Error('user is required to validate grant');
+        throw new Error('user is required to validate grant');
       }
 
       let isGrantNormalized = false;
@@ -3745,7 +3745,7 @@ class PageService implements IPageService {
         throw err;
       }
       if (!isGrantNormalized) {
-        throw Error('The selected grant or grantedGroup is not assignable to this page.');
+        throw new Error('The selected grant or grantedGroup is not assignable to this page.');
       }
 
       if (options?.overwriteScopesOfDescendants) {
@@ -3753,7 +3753,7 @@ class PageService implements IPageService {
         const canOverwriteDescendants = await this.pageGrantService.canOverwriteDescendants(path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
-          throw Error('Cannot overwrite scopes of descendants.');
+          throw new Error('Cannot overwrite scopes of descendants.');
         }
       }
     }
@@ -3783,7 +3783,7 @@ class PageService implements IPageService {
     const grant = options.grant ?? closestAncestor?.grant ?? PageGrant.GRANT_PUBLIC;
     const grantUserIds = grant === PageGrant.GRANT_OWNER ? [user._id] : undefined;
     const getGrantedGroupsFromClosestAncestor = async() => {
-      if (closestAncestor == null) return undefined;
+      if (closestAncestor == null) { return undefined; }
       if (options.onlyInheritUserRelatedGrantedGroups) {
         return this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user);
       }
@@ -3802,7 +3802,7 @@ class PageService implements IPageService {
     const shouldValidateGrant = !isGrantRestricted;
     const canProcessCreate = await this.canProcessCreate(path, grantData, shouldValidateGrant, user, options);
     if (!canProcessCreate) {
-      throw Error('Cannot process create');
+      throw new Error('Cannot process create');
     }
 
     // Prepare a page document
@@ -3877,7 +3877,7 @@ class PageService implements IPageService {
       await PageRedirect.deleteOne({ fromPath: page.path });
       logger.warn(`Deleted page redirect after creating a new page at path "${page.path}".`);
     }
-    catch (err) {
+    catch (_err) {
       // no throw
       logger.error('Failed to delete PageRedirect');
     }
@@ -3901,7 +3901,7 @@ class PageService implements IPageService {
     const expandContentWidth = configManager.getConfig('customize:isContainerFluid');
 
     // sanitize path
-    path = generalXssFilter.process(path); // eslint-disable-line no-param-reassign
+    path = generalXssFilter.process(path); // biome-ignore lint/style/noParameterAssign: ignore
 
     let grant = options.grant;
     // force public
@@ -3977,11 +3977,11 @@ class PageService implements IPageService {
 
     const isV5Compatible = configManager.getConfig('app:isV5Compatible');
     if (!isV5Compatible) {
-      throw Error('This method is available only when v5 compatible');
+      throw new Error('This method is available only when v5 compatible');
     }
 
     // Values
-    // eslint-disable-next-line no-param-reassign
+    // biome-ignore lint/style/noParameterAssign: ignore
     path = generalXssFilter.process(path); // sanitize path
 
     const {
@@ -4000,11 +4000,11 @@ class PageService implements IPageService {
 
     // Validate
     if (isGrantOwner && grantUserIds?.length !== 1) {
-      throw Error('grantedUser must exist when grant is GRANT_OWNER');
+      throw new Error('grantedUser must exist when grant is GRANT_OWNER');
     }
     const canProcessForceCreateBySystem = await this.canProcessForceCreateBySystem(path, grantData);
     if (!canProcessForceCreateBySystem) {
-      throw Error('Cannot process forceCreateBySystem');
+      throw new Error('Cannot process forceCreateBySystem');
     }
 
     // Prepare a page document
@@ -4179,7 +4179,7 @@ class PageService implements IPageService {
 
     const isGrantChangeable = await this.pageGrantService.validateGrantChange(user, pageData.grantedGroups, grant, grantUserGroupIds);
     if (!isGrantChangeable) {
-      throw Error('The selected grant or grantedGroup is not assignable to this page.');
+      throw new Error('The selected grant or grantedGroup is not assignable to this page.');
     }
 
     if (shouldBeOnTree) {
@@ -4194,7 +4194,7 @@ class PageService implements IPageService {
         throw err;
       }
       if (!isGrantNormalized) {
-        throw Error('The selected grant or grantedGroup is not assignable to this page.');
+        throw new Error('The selected grant or grantedGroup is not assignable to this page.');
       }
 
       if (options.overwriteScopesOfDescendants) {
@@ -4202,7 +4202,7 @@ class PageService implements IPageService {
         const canOverwriteDescendants = await this.pageGrantService.canOverwriteDescendants(clonedPageData.path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
-          throw Error('Cannot overwrite scopes of descendants.');
+          throw new Error('Cannot overwrite scopes of descendants.');
         }
       }
 

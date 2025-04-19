@@ -9,11 +9,11 @@ import type Crowi from '../../crowi';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 
 import {
-  GetRequest, GetResponse, getActionFactory, retrieveAttachmentFromIdParam,
+  type GetRequest, type GetResponse, getActionFactory, retrieveAttachmentFromIdParam,
 } from './get';
 
 
-const logger = loggerFactory('growi:routes:attachment:download');
+const _logger = loggerFactory('growi:routes:attachment:download');
 
 
 const generateActivityParameters = (req: CrowiRequest) => {

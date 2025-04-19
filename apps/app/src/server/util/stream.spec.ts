@@ -14,7 +14,7 @@ describe('stream util', () => {
       const readable = Readable.from([Buffer.from('1234567890A'), Buffer.from('BCDE'), Buffer.from('FGH'), Buffer.from('IJKL')]);
       const transform = getBufferToFixedSizeTransform(bufferSize);
       const writable = new Writable({
-        write(chunk: Buffer, encoding, callback) {
+        write(chunk: Buffer, _encoding, callback) {
           chunks.push(chunk);
           callback();
         },

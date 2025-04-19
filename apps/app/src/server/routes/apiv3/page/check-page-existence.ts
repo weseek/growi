@@ -15,7 +15,7 @@ import loggerFactory from '~/utils/logger';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 
-const logger = loggerFactory('growi:routes:apiv3:page:check-page-existence');
+const _logger = loggerFactory('growi:routes:apiv3:page:check-page-existence');
 
 
 type ReqQuery = {

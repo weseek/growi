@@ -1,4 +1,5 @@
-import React, {
+import type React from 'react';
+import {
   useEffect, useState, useRef, useCallback,
 } from 'react';
 

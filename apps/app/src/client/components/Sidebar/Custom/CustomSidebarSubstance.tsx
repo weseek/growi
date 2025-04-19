@@ -10,14 +10,14 @@ import { SidebarNotFound } from './CustomSidebarNotFound';
 import styles from './CustomSidebarSubstance.module.scss';
 
 
-const logger = loggerFactory('growi:components:CustomSidebarSubstance');
+const _logger = loggerFactory('growi:components:CustomSidebarSubstance');
 
 
 export const CustomSidebarSubstance = (): JSX.Element => {
   const { data: rendererOptions } = useCustomSidebarOptions({ suspense: true });
   const { data: page } = useSWRxPageByPath('/Sidebar', { suspense: true });
 
-  if (rendererOptions == null) return <></>;
+  if (rendererOptions == null) { return <></>; }
 
   const markdown = page?.revision?.body;
 

@@ -30,7 +30,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
   }
 
   shouldHandle(eventType: string, permission: EventActionsPermission, channel: string): boolean {
-    if (eventType !== 'link_shared') return false;
+    if (eventType !== 'link_shared') { return false; }
 
     const unfurlPermission = permission.get('unfurl');
 
@@ -101,6 +101,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
       title: body.path,
       title_link: toUrl, // permalink
       text,
+      // biome-ignore lint/complexity/noUselessStringConcat: ignore
       footer: `<${decodeURI(siteUrl)}|*${appTitle}*>`
       + `  |  Last updated: \`${generateLastUpdateMrkdwn(updatedAt, new Date())}\``,
     };
@@ -152,7 +153,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private generateDataForUnfurl(pages: any, isPermalink: boolean): DataForUnfurl[] {
-    const Page = this.crowi.model('Page');
+    const _Page = this.crowi.model('Page');
     const unfurlData: DataForUnfurl[] = [];
 
     pages.forEach((page) => {

@@ -21,8 +21,8 @@ module.exports = {
   localePath: path.resolve('./public/static/locales'),
   serializeConfig: false,
 
-  // eslint-disable-next-line no-nested-ternary
   use: isDev
+    // biome-ignore lint/nursery/noNestedTernary: ignore
     ? isServer()
       ? [new HMRPlugin({ webpack: { server: true } })]
       : [

@@ -3,6 +3,6 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:s2s-messaging:redis');
 
-module.exports = function(crowi: Crowi) {
+module.exports = (_crowi: Crowi) => {
   logger.warn('Config pub/sub with Redis has not implemented yet.');
 };

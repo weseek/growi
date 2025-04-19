@@ -145,7 +145,7 @@ class ExportService {
     let count = 0;
 
     return new Transform({
-      transform(chunk, encoding, callback) {
+      transform(chunk, _encoding, callback) {
         count++;
         logProgress(exportProgress, count);
 
@@ -166,7 +166,7 @@ class ExportService {
     let isFirst = true;
 
     const transformStream = new Transform({
-      transform(chunk, encoding, callback) {
+      transform(chunk, _encoding, callback) {
         // write beginning brace
         if (isFirst) {
           this.push('[');
@@ -289,7 +289,7 @@ class ExportService {
    * @param {number} currentCount number of items exported
    */
   logProgress(collectionProgress: CollectionProgress | undefined, currentCount: number): void {
-    if (collectionProgress == null) return;
+    if (collectionProgress == null) { return; }
 
     const output = `${collectionProgress.collectionName}: ${currentCount}/${collectionProgress.totalCount} written`;
 
@@ -356,8 +356,8 @@ class ExportService {
 
     // good practice to catch warnings (ie stat failures and other non-blocking errors)
     archive.on('warning', (err) => {
-      if (err.code === 'ENOENT') logger.error(err);
-      else throw err;
+      if (err.code === 'ENOENT') { logger.error(err); }
+      else { throw err; }
     });
 
     // good practice to catch this error explicitly
@@ -389,7 +389,7 @@ class ExportService {
     return zipFile;
   }
 
-  getReadStreamFromRevision(revision, format): Readable {
+  getReadStreamFromRevision(revision, _format): Readable {
     const data = revision.body;
 
     const readable = new Readable();

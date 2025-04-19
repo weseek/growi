@@ -66,7 +66,7 @@ class GrowiArchiveSection extends React.Component {
   }
 
 
-  handleMismatchedVersions(err) {
+  handleMismatchedVersions(_err) {
     this.setState({
       isTheSameVersion: false,
     });

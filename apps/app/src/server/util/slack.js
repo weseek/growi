@@ -10,15 +10,13 @@ const logger = loggerFactory('growi:util:slack');
 
 /* eslint-disable no-use-before-define */
 
-const convertMarkdownToMarkdown = function(body, siteUrl) {
-  return body
+const convertMarkdownToMarkdown = (body, siteUrl) => body
     .replace(/\n\*\s(.+)/g, '\n• $1')
     .replace(/#{1,}\s?(.+)/g, '\n*$1*')
     .replace(/(\[(.+)\]\((https?:\/\/.+)\))/g, '<$3|$2>')
     .replace(/(\[(.+)\]\((\/.+)\))/g, `<${siteUrl}$3|$2>`);
-};
 
-const prepareAttachmentTextForCreate = function(page, siteUrl) {
+const prepareAttachmentTextForCreate = (page, siteUrl) => {
   let body = page.revision.body;
   if (body.length > 2000) {
     body = `${body.substr(0, 2000)}...`;
@@ -33,7 +31,7 @@ const prepareAttachmentTextForCreate = function(page, siteUrl) {
  * @param {string} siteUrl
  * @param {IRevisionHasId} previousRevision
  */
-const prepareAttachmentTextForUpdate = function(page, siteUrl, previousRevision) {
+const prepareAttachmentTextForUpdate = (page, _siteUrl, previousRevision) => {
   if (previousRevision == null) {
     return;
   }
@@ -43,7 +41,7 @@ const prepareAttachmentTextForUpdate = function(page, siteUrl, previousRevision)
 
   diff.diffLines(previousRevision.body, page.revision.body).forEach((line) => {
     logger.debug('diff line', line);
-    const value = line.value.replace(/\r\n|\r/g, '\n'); // eslint-disable-line no-unused-vars
+    const _value = line.value.replace(/\r\n|\r/g, '\n'); // eslint-disable-line no-unused-vars
     if (line.added) {
       diffText += `${line.value} ... :lower_left_fountain_pen:`;
     }
@@ -64,7 +62,7 @@ const prepareAttachmentTextForUpdate = function(page, siteUrl, previousRevision)
   return diffText;
 };
 
-const prepareAttachmentTextForComment = function(comment) {
+const prepareAttachmentTextForComment = (comment) => {
   let body = comment.comment;
   if (body.length > 2000) {
     body = `${body.substr(0, 2000)}...`;
@@ -77,7 +75,7 @@ const prepareAttachmentTextForComment = function(comment) {
   return body;
 };
 
-const generateSlackMessageTextForPage = function(path, pageId, user, siteUrl, updateType) {
+const generateSlackMessageTextForPage = (path, pageId, user, siteUrl, updateType) => {
   let text;
 
   const pageUrl = `<${urljoin(siteUrl, pageId)}|${path}>`;

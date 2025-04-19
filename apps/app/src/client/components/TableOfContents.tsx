@@ -14,7 +14,7 @@ import styles from './TableOfContents.module.scss';
 const { isUsersHomepage: _isUsersHomepage } = pagePathUtils;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const logger = loggerFactory('growi:TableOfContents');
+const _logger = loggerFactory('growi:TableOfContents');
 
 type Props = {
   tagsElementHeight?: number
@@ -65,6 +65,7 @@ const TableOfContents = ({ tagsElementHeight }: Props): JSX.Element => {
           className="revision-toc-content mb-3"
         >
           {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
+          {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
           <ReactMarkdown {...rendererOptions}>{' '}</ReactMarkdown>
         </div>
       </StickyStretchableScroller>

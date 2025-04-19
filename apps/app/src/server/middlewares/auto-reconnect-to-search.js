@@ -21,7 +21,7 @@ module.exports = (crowi) => {
     return searchService.isReachable;
   };
 
-  return (req, res, next) => {
+  return (_req, _res, next) => {
     if (searchService != null && searchService.isConfigured && !searchService.isReachable) {
       // NON-BLOCKING CALL
       // for the latency of the response

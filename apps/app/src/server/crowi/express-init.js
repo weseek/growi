@@ -11,7 +11,7 @@ import registerSafeRedirectFactory from '../middlewares/safe-redirect';
 const logger = loggerFactory('growi:crowi:express-init');
 
 /** @param {import('./index').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, app) => {
   const express = require('express');
   const compression = require('compression');
   const helmet = require('helmet');
@@ -92,7 +92,7 @@ module.exports = function(crowi, app) {
   app.use(methodOverride());
 
   // inject rawBody to req
-  app.use((req, res, next) => {
+  app.use((req, _res, next) => {
     if (!req.is('multipart/form-data')) {
       req.rawBody = '';
       req.on('data', (chunk) => {

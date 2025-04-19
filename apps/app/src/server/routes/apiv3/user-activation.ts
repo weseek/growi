@@ -79,7 +79,7 @@ export const completeRegistrationAction = (crowi: Crowi) => {
     mailService,
   } = crowi;
 
-  return async function(req, res) {
+  return async (req, res) => {
     const { t } = await getTranslation();
 
     if (req.user != null) {
@@ -219,7 +219,7 @@ async function makeRegistrationEmailToken(email, crowi: Crowi) {
 
   const isMailerSetup = mailService.isMailerSetup ?? false;
   if (!isMailerSetup) {
-    throw Error('mailService is not setup');
+    throw new Error('mailService is not setup');
   }
 
   const locale = configManager.getConfig('app:globalLang');
@@ -248,7 +248,7 @@ async function makeRegistrationEmailToken(email, crowi: Crowi) {
 export const registerAction = (crowi: Crowi) => {
   const User = mongoose.model<IUser, { isRegisterableEmail, isEmailValid }>('User');
 
-  return async function(req, res) {
+  return async (req, res) => {
     const registerForm = req.body.registerForm || {};
     const email = registerForm.email;
     const isRegisterableEmail = await User.isRegisterableEmail(email);

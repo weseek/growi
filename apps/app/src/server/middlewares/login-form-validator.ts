@@ -19,7 +19,7 @@ export const loginRules = (): ValidationChain[] => {
 };
 
 // validation action
-export const loginValidation = (req, res, next): ValidationChain[] => {
+export const loginValidation = (req, _res, next): ValidationChain[] => {
   const form = req.body;
 
   const errors = validationResult(req);

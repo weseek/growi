@@ -43,7 +43,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   useEffect(() => {
     const parent = pageCommentParentRef.current;
-    if (parent == null) return;
+    if (parent == null) { return }
 
     const observer = new MutationObserver(() => {
       onLoadedDebounced();

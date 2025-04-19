@@ -1,4 +1,4 @@
-import useSWR, { SWRResponse } from 'swr';
+import useSWR, { type SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 

@@ -14,7 +14,7 @@ import styles from './StaffCredit.module.scss';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const logger = loggerFactory('growi:cli:StaffCredit');
+const _logger = loggerFactory('growi:cli:StaffCredit');
 
 
 // define fonts

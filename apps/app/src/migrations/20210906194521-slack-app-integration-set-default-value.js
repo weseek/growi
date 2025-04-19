@@ -8,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:slack-app-integration-set-default-value');
 
 module.exports = {
-  async up(db) {
+  async up(_db) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 

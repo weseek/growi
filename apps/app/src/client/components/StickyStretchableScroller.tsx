@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useCallback, useRef, useState, useMemo, RefObject,
+  useEffect, useCallback, useRef, useState, useMemo, type RefObject,
 } from 'react';
 
 import SimpleBar from 'simplebar-react';

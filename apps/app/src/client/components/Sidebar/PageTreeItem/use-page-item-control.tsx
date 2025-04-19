@@ -12,12 +12,12 @@ import { useTranslation } from 'next-i18next';
 import { DropdownToggle } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
+import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
+import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { ValidationTarget, useInputValidator, type InputValidationResult } from '~/client/util/use-input-validator';
-import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '~/client/components/Common/SubmittableInput';
-import { NotAvailableForGuest } from '~/client/components/NotAvailableForGuest';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 
@@ -64,7 +64,7 @@ export const usePageItemControl = (): UsePageItemControl => {
       const { _id: pageId, path } = page;
 
       if (pageId == null || path == null) {
-        throw Error('Any of _id and path must not be null.');
+        throw new Error('Any of _id and path must not be null.');
       }
 
       const pageToDuplicate = { pageId, path };
@@ -82,7 +82,7 @@ export const usePageItemControl = (): UsePageItemControl => {
       }
 
       if (page._id == null || page.path == null) {
-        throw Error('_id and path must not be null.');
+        throw new Error('_id and path must not be null.');
       }
 
       const pageToDelete: IPageToDeleteWithMeta = {

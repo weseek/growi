@@ -44,7 +44,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  down(db) {
+  down(_db) {
     // do not rollback
   },
 

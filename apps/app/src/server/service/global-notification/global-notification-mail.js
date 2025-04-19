@@ -4,7 +4,7 @@ import { GlobalNotificationSettingEvent, GlobalNotificationSettingType } from '~
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:service:GlobalNotificationMailService'); // eslint-disable-line no-unused-vars
+const _logger = loggerFactory('growi:service:GlobalNotificationMailService'); // eslint-disable-line no-unused-vars
 
 /**
  * sub service class of GlobalNotificationSetting

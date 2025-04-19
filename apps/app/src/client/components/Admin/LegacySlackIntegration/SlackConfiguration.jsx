@@ -140,6 +140,7 @@ class SlackConfiguration extends React.Component {
         <hr />
 
         <h3>
+          {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
           <span className="material-symbols-outlined" aria-hidden="true">help</span>{' '}
           <a href="#collapseHelpForIwh" data-bs-toggle="collapse">{t('notification_settings.how_to.header')}</a>
         </h3>

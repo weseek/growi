@@ -53,8 +53,8 @@ describe('PageGrantService', () => {
 
   let multipleGroupTreesAndUsersPage;
 
-  let pageRootPublic;
-  let pageRootGroupParent;
+  let _pageRootPublic;
+  let _pageRootGroupParent;
   const pageRootPublicPath = '/Public';
   const pageRootGroupParentPath = '/GroupParent';
   const pageMultipleGroupTreesAndUsersPath = '/MultipleGroupTreesAndUsers';
@@ -74,11 +74,11 @@ describe('PageGrantService', () => {
   const pageOnlyInsideTheGroupPublicPath = `${v4PageRootOnlyInsideTheGroupPagePath}/Public`;
   const pageOnlyInsideTheGroupOnlyMePath = `${v4PageRootOnlyInsideTheGroupPagePath}/OnlyMe`;
   const pageOnlyInsideTheGroupAnyoneWithTheLinkPath = `${v4PageRootOnlyInsideTheGroupPagePath}/AnyoneWithTheLink`;
-  let pageE1Public;
-  let pageE2User1;
-  let pageE3GroupParent;
-  let pageE3GroupChild;
-  let pageE3User1;
+  let _pageE1Public;
+  let _pageE2User1;
+  let _pageE3GroupParent;
+  let _pageE3GroupChild;
+  let _pageE3User1;
   const pageE1PublicPath = '/E1/Public';
   const pageE2User1Path = '/E2/User1';
   const pageE3GroupParentPath = '/E3/GroupParent';
@@ -375,11 +375,11 @@ describe('PageGrantService', () => {
         parent: emptyPage3._id,
       },
     ]);
-    pageE1Public = await Page.findOne({ path: pageE1PublicPath });
-    pageE2User1 = await Page.findOne({ path: pageE2User1Path });
-    pageE3GroupParent = await Page.findOne({ path: pageE3GroupParentPath });
-    pageE3GroupChild = await Page.findOne({ path: pageE3GroupChildPath });
-    pageE3User1 = await Page.findOne({ path: pageE3User1Path });
+    _pageE1Public = await Page.findOne({ path: pageE1PublicPath });
+    _pageE2User1 = await Page.findOne({ path: pageE2User1Path });
+    _pageE3GroupParent = await Page.findOne({ path: pageE3GroupParentPath });
+    _pageE3GroupChild = await Page.findOne({ path: pageE3GroupChildPath });
+    _pageE3User1 = await Page.findOne({ path: pageE3User1Path });
   };
 
   const createDocumentsToTestGetPageGroupGrantData = async() => {

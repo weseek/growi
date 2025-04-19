@@ -29,7 +29,7 @@ const csrfProtection = csrf({ cookie: false });
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, app) => {
   const autoReconnectToSearch = require('../middlewares/auto-reconnect-to-search')(crowi);
   const applicationInstalled = require('../middlewares/application-installed')(crowi);
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
@@ -166,7 +166,7 @@ module.exports = function(crowi, app) {
     .get('/:token', applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.renderUserActivationPage(crowi))
     .use(userActivation.tokenErrorHandlerMiddeware(crowi)));
 
-  app.get('/share$', (req, res) => res.redirect('/'));
+  app.get('/share$', (_req, res) => res.redirect('/'));
   app.get('/share/:linkId', next.delegateToNext);
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));

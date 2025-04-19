@@ -523,7 +523,7 @@ module.exports = (crowi: Crowi): Router => {
    *                     ldapGroupDescriptionAttribute:
    *                       type: string
    */
-  router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/ldap/sync-settings', loginRequiredStrictly, adminRequired, (_req: AuthorizedRequest, res: ApiV3Response) => {
     const settings = {
       ldapGroupSearchBase: configManager.getConfig('external-user-group:ldap:groupSearchBase'),
       ldapGroupMembershipAttribute: configManager.getConfig('external-user-group:ldap:groupMembershipAttribute'),
@@ -573,7 +573,7 @@ module.exports = (crowi: Crowi): Router => {
    *                     keycloakGroupDescriptionAttribute:
    *                       type: string
    */
-  router.get('/keycloak/sync-settings', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/keycloak/sync-settings', loginRequiredStrictly, adminRequired, (_req: AuthorizedRequest, res: ApiV3Response) => {
     const settings = {
       keycloakHost: configManager.getConfig('external-user-group:keycloak:host'),
       keycloakGroupRealm: configManager.getConfig('external-user-group:keycloak:groupRealm'),
@@ -773,7 +773,7 @@ module.exports = (crowi: Crowi): Router => {
     try {
       await crowi.ldapUserGroupSyncService?.init(req.user.name, req.body.password);
     }
-    catch (e) {
+    catch (_e) {
       return res.apiv3Err(
         new ErrorV3('LDAP group sync failed', 'external_user_group.sync_failed'), 500,
       );
@@ -803,7 +803,7 @@ module.exports = (crowi: Crowi): Router => {
    *                 schema:
    *                 type: object
    */
-  router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async(_req: AuthorizedRequest, res: ApiV3Response) => {
     if (isExecutingSync()) {
       return res.apiv3Err(
         new ErrorV3('There is an ongoing sync process', 'external_user_group.sync_being_executed'), 409,
@@ -824,12 +824,12 @@ module.exports = (crowi: Crowi): Router => {
       const isOidcEnabled = configManager.getConfig('security:passport-oidc:isEnabled');
       const oidcIssuerHost = configManager.getConfig('security:passport-oidc:issuerHost');
 
-      if (isOidcEnabled && oidcIssuerHost != null && regex.test(oidcIssuerHost)) return 'oidc';
+      if (isOidcEnabled && oidcIssuerHost != null && regex.test(oidcIssuerHost)) { return 'oidc'; }
 
       const isSamlEnabled = configManager.getConfig('security:passport-saml:isEnabled');
       const samlEntryPoint = configManager.getConfig('security:passport-saml:entryPoint');
 
-      if (isSamlEnabled && samlEntryPoint != null && regex.test(samlEntryPoint)) return 'saml';
+      if (isSamlEnabled && samlEntryPoint != null && regex.test(samlEntryPoint)) { return 'saml'; }
 
       return null;
     };
@@ -866,7 +866,7 @@ module.exports = (crowi: Crowi): Router => {
    *                 schema:
    *                   $ref: '#/components/schemas/SyncStatus'
    */
-  router.get('/ldap/sync-status', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/ldap/sync-status', loginRequiredStrictly, adminRequired, (_req: AuthorizedRequest, res: ApiV3Response) => {
     const syncStatus = crowi.ldapUserGroupSyncService?.syncStatus;
     return res.apiv3({ ...syncStatus });
   });
@@ -889,7 +889,7 @@ module.exports = (crowi: Crowi): Router => {
    *                 schema:
    *                   $ref: '#/components/schemas/SyncStatus'
    */
-  router.get('/keycloak/sync-status', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/keycloak/sync-status', loginRequiredStrictly, adminRequired, (_req: AuthorizedRequest, res: ApiV3Response) => {
     const syncStatus = crowi.keycloakUserGroupSyncService?.syncStatus;
     return res.apiv3({ ...syncStatus });
   });

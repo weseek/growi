@@ -32,7 +32,7 @@ declare global {
 }
 
 
-const logger = loggerFactory('growi:SavePageControls');
+const _logger = loggerFactory('growi:SavePageControls');
 
 
 const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean, isDeviceLargerThanMd?: boolean}) => {

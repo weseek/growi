@@ -1,8 +1,8 @@
 import type { Nullable } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import useSWR, { type SWRResponse } from 'swr';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { IResShareLinkList } from '~/interfaces/share-link';
+import type { IResShareLinkList } from '~/interfaces/share-link';
 
 const fetchShareLinks = async(endpoint, pageId) => {
   const res = await apiv3Get<IResShareLinkList>(endpoint, { relatedPage: pageId });

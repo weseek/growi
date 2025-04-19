@@ -158,7 +158,7 @@ export default class AdminCustomizeContainer extends Container {
   /**
    * Switch isEnabledMarp
    */
-  switchIsEnabledMarp(inputValue) {
+  switchIsEnabledMarp(_inputValue) {
     this.setState({ isEnabledMarp: !this.state.isEnabledMarp });
   }
 

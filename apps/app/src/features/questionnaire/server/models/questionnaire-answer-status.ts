@@ -1,8 +1,8 @@
-import { Model, Schema, Document } from 'mongoose';
+import { type Model, Schema, type Document } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { IQuestionnaireAnswerStatus, StatusType } from '../../interfaces/questionnaire-answer-status';
+import { type IQuestionnaireAnswerStatus, StatusType } from '../../interfaces/questionnaire-answer-status';
 
 export interface QuestionnaireAnswerStatusDocument extends IQuestionnaireAnswerStatus, Document {}
 

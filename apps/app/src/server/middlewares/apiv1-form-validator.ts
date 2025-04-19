@@ -1,5 +1,5 @@
 import { validationResult } from 'express-validator';
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 
 import loggerFactory from '~/utils/logger';
 import ApiResponse from '../util/apiResponse';

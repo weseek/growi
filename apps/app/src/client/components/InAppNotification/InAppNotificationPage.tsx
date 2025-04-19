@@ -15,13 +15,15 @@ import PaginationWrapper from '../PaginationWrapper';
 import InAppNotificationList from './InAppNotificationList';
 
 export const InAppNotificationPage: FC = () => {
+  // biome-ignore lint/correctness/useHookAtTopLevel: ignore
   const { t } = useTranslation('commons');
-
+  // biome-ignore lint/correctness/useHookAtTopLevel: ignore
   const { data: showPageLimitationXL } = useShowPageLimitationXL();
 
   const limit = showPageLimitationXL != null ? showPageLimitationXL : 20;
 
   const InAppNotificationCategoryByStatus = (status?: InAppNotificationStatuses) => {
+    // biome-ignore lint/correctness/useHookAtTopLevel: ignore
     const [activePage, setActivePage] = useState(1);
     const offset = (activePage - 1) * limit;
 
@@ -33,9 +35,11 @@ export const InAppNotificationPage: FC = () => {
         break;
       default:
     }
-
+    // biome-ignore lint/correctness/useHookAtTopLevel: ignore
     const { data: notificationData, mutate: mutateNotificationData } = useSWRxInAppNotifications(limit, offset, categoryStatus);
+    // biome-ignore lint/correctness/useHookAtTopLevel: ignore
     const { mutate: mutateAllNotificationData } = useSWRxInAppNotifications(limit, offset, undefined);
+    // biome-ignore lint/correctness/useHookAtTopLevel: ignore
     const { mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
 
     const setAllNotificationPageNumber = (selectedPageNumber): void => {

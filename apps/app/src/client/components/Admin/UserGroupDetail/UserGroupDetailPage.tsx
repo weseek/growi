@@ -209,7 +209,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       mutateUserGroupRelations();
       mutateUserGroupRelationList();
     }
-    catch (err) {
+    catch (_err) {
       toastError(new Error(`Unable to add "${username}" from "${currentUserGroup?.name}"`));
     }
   }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelationList, mutateUserGroupRelations]);
@@ -221,7 +221,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       toastSuccess(`Removed "${username}" from "${currentUserGroup?.name}"`);
       mutateUserGroupRelationList();
     }
-    catch (err) {
+    catch (_err) {
       toastError(new Error(`Unable to remove "${username}" from "${currentUserGroup?.name}"`));
     }
   }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelationList]);
@@ -319,7 +319,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
       toastSuccess(`Deleted ${res.data.userGroups.length} groups.`);
     }
-    catch (err) {
+    catch (_err) {
       toastError(new Error('Unable to delete the groups'));
     }
   }, [mutateChildUserGroups, setSelectedUserGroup, setDeleteModalShown, isExternalGroup]);

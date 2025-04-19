@@ -45,7 +45,7 @@
  *            example: 2010-01-01T00:00:00.000Z
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, _app) => {
   const User = crowi.model('User');
   const ApiResponse = require('../util/apiResponse');
 
@@ -56,7 +56,7 @@ module.exports = function(crowi, app) {
 
   actions.api = api;
 
-  api.checkUsername = async function(req, res) {
+  api.checkUsername = async (req, res) => {
     const username = req.query.username;
 
     let valid = false;
@@ -69,7 +69,7 @@ module.exports = function(crowi, app) {
           valid = true;
         }
       })
-      .catch((err) => {
+      .catch((_err) => {
         valid = false;
       });
     return res.json(ApiResponse.success({ valid }));

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -7,7 +7,7 @@ import { PageRevisionTable } from '../PageHistory/PageRevisionTable';
 
 import { useAutoComparingRevisionsByQueryParam } from './hooks';
 
-const logger = loggerFactory('growi:PageHistory');
+const _logger = loggerFactory('growi:PageHistory');
 
 type PageHistoryProps = {
   onClose: () => void

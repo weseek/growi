@@ -61,7 +61,7 @@ export class GitHubUrl {
         throw new Error();
       }
     }
-    catch (err) {
+    catch (_err) {
       throw new Error(`The specified URL is invalid. : url='${url}'`);
     }
 

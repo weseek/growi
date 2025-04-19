@@ -36,7 +36,7 @@ export class AwsMultipartUploader extends MultipartUploader implements IAwsMulti
       Key: this.uploadKey,
     }));
     if (response.UploadId == null) {
-      throw Error('UploadId is empty');
+      throw new Error('UploadId is empty');
     }
     this._uploadId = response.UploadId;
     this.currentStatus = UploadStatus.IN_PROGRESS;
@@ -95,7 +95,7 @@ export class AwsMultipartUploader extends MultipartUploader implements IAwsMulti
         Bucket: this.bucket,
         Key: this.uploadKey,
       }));
-      if (headData.ContentLength == null) throw Error('Could not fetch uploaded file size');
+      if (headData.ContentLength == null) { throw new Error('Could not fetch uploaded file size'); }
       this._uploadedFileSize = headData.ContentLength;
     }
     return this._uploadedFileSize;

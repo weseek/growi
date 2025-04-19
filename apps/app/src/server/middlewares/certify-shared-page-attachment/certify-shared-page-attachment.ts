@@ -14,7 +14,7 @@ export interface RequestToAllowShareLink extends Request {
   isSharedPage?: boolean,
 }
 
-export const certifySharedPageAttachmentMiddleware = async(req: RequestToAllowShareLink, res: Response, next: NextFunction): Promise<void> => {
+export const certifySharedPageAttachmentMiddleware = async(req: RequestToAllowShareLink, _res: Response, next: NextFunction): Promise<void> => {
 
   const fileId: string | undefined = req.params.id;
   const { referer } = req.headers;

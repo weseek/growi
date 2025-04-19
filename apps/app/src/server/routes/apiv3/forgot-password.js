@@ -216,7 +216,7 @@ module.exports = (crowi) => {
 
   // middleware to handle error
   router.use(httpErrorHandler);
-  router.use((error, req, res, next) => {
+  router.use((error, _req, res, next) => {
     if (error != null) {
       return res.apiv3Err(new ErrorV3(error.message, error.code));
     }

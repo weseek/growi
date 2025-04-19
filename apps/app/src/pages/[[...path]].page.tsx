@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import React, { useEffect } from 'react';
+import type React from 'react';
+import { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
@@ -96,7 +97,7 @@ const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire
 const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
 
 
-const logger = loggerFactory('growi:pages:all');
+const _logger = loggerFactory('growi:pages:all');
 
 const {
   isPermalink: _isPermalink, isCreatablePage,

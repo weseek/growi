@@ -92,7 +92,7 @@ module.exports = (crowi) => {
   /**
    * middleware to limit link sharing
    */
-  const linkSharingRequired = (req, res, next) => {
+  const linkSharingRequired = (_req, res, next) => {
     const isLinkSharingDisabled = crowi.configManager.getConfig('security:disableLinkSharing');
     logger.debug(`isLinkSharingDisabled: ${isLinkSharingDisabled}`);
 
@@ -303,7 +303,7 @@ module.exports = (crowi) => {
   *                      type: integer
   *                      description: The number of share links deleted
   */
-  router.delete('/all', loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.delete('/all', loginRequired, adminRequired, addActivity, async(_req, res) => {
 
     try {
       const deletedShareLink = await ShareLink.deleteMany({});

@@ -244,7 +244,7 @@ export const Sidebar = (): JSX.Element => {
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
-  // eslint-disable-next-line no-nested-ternary
+  // biome-ignore lint/nursery/noNestedTernary: ignore
   let modeClass;
   switch (sidebarMode) {
     case SidebarMode.DRAWER:

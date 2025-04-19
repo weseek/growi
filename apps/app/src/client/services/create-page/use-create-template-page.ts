@@ -24,7 +24,7 @@ export const useCreateTemplatePage: UseCreateTemplatePage = () => {
   const isCreatable = currentPagePath != null && isCreatablePage(normalizePath(`${currentPagePath}/_template`));
 
   const createTemplate = useCallback(async(label: LabelType) => {
-    if (isLoadingPagePath || !isCreatable) return;
+    if (isLoadingPagePath || !isCreatable) { return; }
 
     return create(
       {

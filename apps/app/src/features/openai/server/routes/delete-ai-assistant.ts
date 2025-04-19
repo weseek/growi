@@ -1,4 +1,4 @@
-import { type IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import { type ValidationChain, param } from 'express-validator';

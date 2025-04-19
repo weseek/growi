@@ -70,7 +70,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
     try {
       return format(new Date(date), formatType);
     }
-    catch (err) {
+    catch (_err) {
       return '';
     }
   };

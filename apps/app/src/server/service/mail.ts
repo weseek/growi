@@ -5,11 +5,11 @@ import nodemailer from 'nodemailer';
 
 import loggerFactory from '~/utils/logger';
 
+import type Crowi from '../crowi';
 import S2sMessage from '../models/vo/s2s-message';
 
-import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 import type { IConfigManagerForApp } from './config-manager';
-import type Crowi from '../crowi';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:mail');
 
@@ -63,7 +63,7 @@ class MailService implements S2sMessageHandlable {
   /**
    * @inheritdoc
    */
-  async handleS2sMessage(s2sMessage) {
+  async handleS2sMessage(_s2sMessage) {
     const { configManager } = this;
 
     logger.info('Initialize mail settings by pubsub notification');
@@ -130,7 +130,8 @@ class MailService implements S2sMessageHandlable {
       if (host == null || port == null) {
         return null;
       }
-      option = { // eslint-disable-line no-param-reassign
+      // biome-ignore lint/style/noParameterAssign: ignore
+      option = {
         host,
         port,
       };
@@ -163,7 +164,8 @@ class MailService implements S2sMessageHandlable {
       if (accessKeyId == null || secretAccessKey == null) {
         return null;
       }
-      option = { // eslint-disable-line no-param-reassign
+      // biome-ignore lint/style/noParameterAssign: ignore
+      option = {
         accessKeyId,
         secretAccessKey,
       };

@@ -3,7 +3,7 @@ import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:routes:apiv3:logout'); // eslint-disable-line no-unused-vars
+const _logger = loggerFactory('growi:routes:apiv3:logout'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 

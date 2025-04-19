@@ -97,7 +97,7 @@ class GcsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override saveFile(param: SaveFileParam) {
+  override saveFile(_param: SaveFileParam) {
     throw new Error('Method not implemented.');
   }
 
@@ -213,7 +213,7 @@ class GcsFileUploader extends AbstractFileUploader {
     return new GcsMultipartUploader(myBucket, uploadKey, maxPartSize);
   }
 
-  override async abortPreviousMultipartUpload(uploadKey: string, uploadId: string) {
+  override async abortPreviousMultipartUpload(_uploadKey: string, uploadId: string) {
     try {
       await axios.delete(uploadId);
     }
@@ -230,27 +230,25 @@ class GcsFileUploader extends AbstractFileUploader {
 }
 
 
-module.exports = function(crowi: Crowi) {
+module.exports = (crowi: Crowi) => {
   const lib = new GcsFileUploader(crowi);
 
-  lib.isValidUploadSettings = function() {
-    return configManager.getConfig('gcs:apiKeyJsonPath') != null
+  lib.isValidUploadSettings = () => configManager.getConfig('gcs:apiKeyJsonPath') != null
       && configManager.getConfig('gcs:bucket') != null;
-  };
 
-  (lib as any).deleteFile = function(attachment) {
+  (lib as any).deleteFile = (attachment) => {
     const filePath = getFilePathOnStorage(attachment);
     return (lib as any).deleteFilesByFilePaths([filePath]);
   };
 
-  (lib as any).deleteFiles = function(attachments) {
+  (lib as any).deleteFiles = (attachments) => {
     const filePaths = attachments.map((attachment) => {
       return getFilePathOnStorage(attachment);
     });
     return (lib as any).deleteFilesByFilePaths(filePaths);
   };
 
-  (lib as any).deleteFilesByFilePaths = function(filePaths) {
+  (lib as any).deleteFilesByFilePaths = (filePaths) => {
     if (!lib.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
@@ -267,7 +265,7 @@ module.exports = function(crowi: Crowi) {
     });
   };
 
-  lib.saveFile = async function({ filePath, contentType, data }) {
+  lib.saveFile = async ({ filePath, contentType, data }) => {
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
 
@@ -280,7 +278,7 @@ module.exports = function(crowi: Crowi) {
    * In detail, the followings are checked.
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  (lib as any).checkLimit = async function(uploadFileSize) {
+  (lib as any).checkLimit = async (uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const gcsTotalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
@@ -289,7 +287,7 @@ module.exports = function(crowi: Crowi) {
   /**
    * List files in storage
    */
-  (lib as any).listFiles = async function() {
+  (lib as any).listFiles = async () => {
     if (!lib.getIsReadable()) {
       throw new Error('GCS is not configured.');
     }

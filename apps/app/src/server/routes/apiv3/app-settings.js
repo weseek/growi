@@ -434,7 +434,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/AppSettingParams'
    */
-  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(_req, res) => {
     const appSettingsParams = {
       title: configManager.getConfig('app:title'),
       confidential: configManager.getConfig('app:confidential'),
@@ -657,12 +657,12 @@ module.exports = (crowi) => {
     const { mailService } = crowi;
 
     if (!mailService.isMailerSetup) {
-      throw Error('mailService is not setup');
+      throw new Error('mailService is not setup');
     }
 
     const fromAddress = configManager.getConfig('mail:from');
     if (fromAddress == null) {
-      throw Error('fromAddress is not setup');
+      throw new Error('fromAddress is not setup');
     }
 
     const smtpHost = configManager.getConfig('mail:smtpHost');
@@ -697,7 +697,7 @@ module.exports = (crowi) => {
     await sendMailPromiseWrapper(smtpClient, mailOptions);
   }
 
-  const updateMailSettinConfig = async function(requestMailSettingParams) {
+  const updateMailSettinConfig = async (requestMailSettingParams) => {
     const {
       mailService,
     } = crowi;
@@ -1081,7 +1081,7 @@ module.exports = (crowi) => {
    *                      description: is V5 compatible, or not
    *                      example: true
    */
-  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, async(_req, res) => {
     const isMaintenanceMode = crowi.appService.isMaintenanceMode();
     if (!isMaintenanceMode) {
       return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));

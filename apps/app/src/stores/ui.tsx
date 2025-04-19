@@ -34,7 +34,7 @@ import { useStaticSWR } from './use-static-swr';
 
 const { isTrashTopPage, isUsersTopPage } = pagePathUtils;
 
-const logger = loggerFactory('growi:stores:ui');
+const _logger = loggerFactory('growi:stores:ui');
 
 
 /** **********************************************************
@@ -313,7 +313,7 @@ export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Er
 
   const evaluate = useCallback(async(key: string, commentBody: string) => {
     const newMap = await mutate((map) => {
-      if (map == null) return new Map();
+      if (map == null) { return new Map(); }
 
       if (commentBody.length === 0) {
         map.delete(key);
@@ -328,7 +328,7 @@ export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Er
   }, [mutate]);
   const clean = useCallback(async(key: string) => {
     const newMap = await mutate((map) => {
-      if (map == null) return new Map();
+      if (map == null) { return new Map(); }
       map.delete(key);
       return map;
     });

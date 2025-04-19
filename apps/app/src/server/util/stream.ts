@@ -20,7 +20,7 @@ export const getBufferToFixedSizeTransform = (size: number): Transform => {
   let filledBufferSize = 0;
 
   return new Transform({
-    transform(chunk: Buffer, encoding, callback) {
+    transform(chunk: Buffer, _encoding, callback) {
       let offset = 0;
       while (offset < chunk.length) {
         // The data size to add to buffer.

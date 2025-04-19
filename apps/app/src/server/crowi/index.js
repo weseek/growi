@@ -238,7 +238,7 @@ Crowi.prototype.asyncAfterExpressServerReady = async function() {
 };
 
 
-Crowi.prototype.isPageId = function(pageId) {
+Crowi.prototype.isPageId = (pageId) => {
   if (!pageId) {
     return false;
   }
@@ -267,9 +267,7 @@ Crowi.prototype.getEnv = function() {
  * @param {string} modelName
  * @returns {mongoose.Model}
  */
-Crowi.prototype.model = function(modelName) {
-  return getModelSafely(modelName);
-};
+Crowi.prototype.model = (modelName) => getModelSafely(modelName);
 
 // getter/setter of event instance
 Crowi.prototype.event = function(name, event) {
@@ -280,7 +278,7 @@ Crowi.prototype.event = function(name, event) {
   return this.events[name];
 };
 
-Crowi.prototype.setupDatabase = function() {
+Crowi.prototype.setupDatabase = () => {
   mongoose.Promise = global.Promise;
 
   // mongoUri = mongodb://user:password@host/dbname
@@ -548,7 +546,7 @@ Crowi.prototype.buildServer = async function() {
   this.express = express;
 };
 
-Crowi.prototype.setupTerminus = function(server) {
+Crowi.prototype.setupTerminus = (server) => {
   createTerminus(server, {
     signals: ['SIGINT', 'SIGTERM'],
     onSignal: async() => {
@@ -592,9 +590,7 @@ Crowi.prototype.setupGlobalErrorHandlers = function() {
  *
  * @memberof Crowi
  */
-Crowi.prototype.require = function(modulePath) {
-  return require(modulePath);
-};
+Crowi.prototype.require = (modulePath) => require(modulePath);
 
 /**
  * setup GlobalNotificationService
@@ -721,7 +717,7 @@ Crowi.prototype.setupImport = async function() {
   initializeImportService(this);
 };
 
-Crowi.prototype.setupGrowiPluginService = async function() {
+Crowi.prototype.setupGrowiPluginService = async () => {
   const growiPluginService = await import('~/features/growi-plugin/server/services').then(mod => mod.growiPluginService);
 
   // download plugin repositories, if document exists but there is no repository

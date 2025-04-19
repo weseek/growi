@@ -486,12 +486,12 @@ class OpenaiService implements IOpenaiService {
     const isPublicPage = (page :HydratedDocument<PageDocument>) => page.grant === PageGrant.GRANT_PUBLIC;
 
     const isUserGroupAccessible = (page :HydratedDocument<PageDocument>, ownerUserGroupIds: string[]) => {
-      if (page.grant !== PageGrant.GRANT_USER_GROUP) return false;
+      if (page.grant !== PageGrant.GRANT_USER_GROUP) { return false; }
       return page.grantedGroups.some(group => ownerUserGroupIds.includes(getIdStringForRef(group.item)));
     };
 
     const isOwnerAccessible = (page: HydratedDocument<PageDocument>, ownerId: Ref<IUser>) => {
-      if (page.grant !== PageGrant.GRANT_OWNER) return false;
+      if (page.grant !== PageGrant.GRANT_OWNER) { return false; }
       return page.grantedUsers.some(user => getIdStringForRef(user) === getIdStringForRef(ownerId));
     };
 
@@ -590,7 +590,7 @@ class OpenaiService implements IOpenaiService {
     const createVectorStoreFile = this.createVectorStoreFile.bind(this);
     const createVectorStoreFileStream = new Transform({
       objectMode: true,
-      async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
+      async transform(chunk: HydratedDocument<PageDocument>[], _encoding, callback) {
         try {
           logger.debug('Search results of page paths', chunk.map(page => page.path));
           await createVectorStoreFile(vectorStoreRelation, chunk);

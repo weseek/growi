@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { type Uploadable } from 'openai/uploads';
+import type { Uploadable } from 'openai/uploads';
 
 import { configManager } from '~/server/service/config-manager';
 

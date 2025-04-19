@@ -15,7 +15,7 @@ import ApiResponse from '../../util/apiResponse';
 import { getActionFactory } from './get';
 
 
-const logger = loggerFactory('growi:routes:attachment:get-brand-logo');
+const _logger = loggerFactory('growi:routes:attachment:get-brand-logo');
 
 
 export const getBrandLogoRouterFactory = (crowi: Crowi): Router => {

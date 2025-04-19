@@ -16,7 +16,7 @@ import type {
 } from '../../interfaces/external-user-group';
 import ExternalUserGroup from '../models/external-user-group';
 import ExternalUserGroupRelation from '../models/external-user-group-relation';
-import { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
+import type { IExternalAuthProviderType } from '~/interfaces/external-auth-provider';
 
 const logger = loggerFactory('growi:service:external-user-group-sync-service');
 
@@ -91,8 +91,8 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
    * 3. If preserveDeletedLDAPGroups is false、delete all ExternalUserGroups that were not found during tree search
   */
   async syncExternalUserGroups(): Promise<void> {
-    if (this.authProviderType == null) throw new Error('auth provider type is not set');
-    if (this.syncStatus.isExecutingSync) throw new Error('External user group sync is already being executed');
+    if (this.authProviderType == null) { throw new Error('auth provider type is not set'); }
+    if (this.syncStatus.isExecutingSync) { throw new Error('External user group sync is already being executed'); }
 
     const preserveDeletedLdapGroups = configManager.getConfig(`external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     const existingExternalUserGroupIds: string[] = [];
@@ -182,7 +182,7 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
    */
   private async getMemberUser(userInfo: ExternalUserInfo): Promise<IUserHasId | null> {
     const authProviderType = this.authProviderType;
-    if (authProviderType == null) throw new Error('auth provider type is not set');
+    if (authProviderType == null) { throw new Error('auth provider type is not set'); }
 
     const autoGenerateUserOnGroupSync = configManager.getConfig(`external-user-group:${this.groupProviderType}:autoGenerateUserOnGroupSync`);
 
@@ -204,7 +204,7 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
   }
 
   getGroupCountOfTree(tree: ExternalUserGroupTreeNode): number {
-    if (tree.childGroupNodes.length === 0) return 1;
+    if (tree.childGroupNodes.length === 0) { return 1; }
 
     let count = 1;
     tree.childGroupNodes.forEach((childGroup) => {

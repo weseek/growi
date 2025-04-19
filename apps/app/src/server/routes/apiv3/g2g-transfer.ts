@@ -87,20 +87,20 @@ module.exports = (crowi: Crowi): Router => {
 
   if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
     || growiBridgeService == null || configManager == null) {
-    throw Error('GROWI is not ready for g2g transfer');
+    throw new Error('GROWI is not ready for g2g transfer');
   }
 
   const uploads = multer({
     storage: multer.diskStorage({
-      destination: (req, file, cb) => {
+      destination: (_req, _file, cb) => {
         cb(null, importService.baseDir);
       },
-      filename(req, file, cb) {
+      filename(_req, file, cb) {
         // to prevent hashing the file name. files with same name will be overwritten.
         cb(null, file.originalname);
       },
     }),
-    fileFilter: (req, file, cb) => {
+    fileFilter: (_req, file, cb) => {
       if (path.extname(file.originalname) === '.zip') {
         return cb(null, true);
       }
@@ -110,10 +110,10 @@ module.exports = (crowi: Crowi): Router => {
 
   const uploadsForAttachment = multer({
     storage: multer.diskStorage({
-      destination: (req, file, cb) => {
+      destination: (_req, _file, cb) => {
         cb(null, importService.baseDir);
       },
-      filename(req, file, cb) {
+      filename(_req, file, cb) {
         // to prevent hashing the file name. files with same name will be overwritten.
         cb(null, file.originalname);
       },
@@ -157,7 +157,7 @@ module.exports = (crowi: Crowi): Router => {
     try {
       await g2gTransferReceiverService.validateTransferKey(transferKey);
     }
-    catch (err) {
+    catch (_err) {
       return res.apiv3Err(new ErrorV3('Invalid transfer key', 'invalid_transfer_key'), 403);
     }
 
@@ -198,7 +198,7 @@ module.exports = (crowi: Crowi): Router => {
    *                          description: The size of the file
    */
   // eslint-disable-next-line max-len
-  receiveRouter.get('/files', validateTransferKey, async(req: Request, res: ApiV3Response) => {
+  receiveRouter.get('/files', validateTransferKey, async(_req: Request, res: ApiV3Response) => {
     const files = await crowi.fileUploadService.listFiles();
     return res.apiv3({ files });
   });
@@ -415,7 +415,7 @@ module.exports = (crowi: Crowi): Router => {
    *                  growiInfo:
    *                    $ref: '#/components/schemas/GrowiInfo'
    */
-  receiveRouter.get('/growi-info', validateTransferKey, async(req: Request, res: ApiV3Response) => {
+  receiveRouter.get('/growi-info', validateTransferKey, async(_req: Request, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;
     try {
       growiInfo = await g2gTransferReceiverService.answerGROWIInfo();

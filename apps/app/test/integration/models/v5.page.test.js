@@ -10,22 +10,22 @@ import { getInstance } from '../setup-crowi';
 
 describe('Page', () => {
   let crowi;
-  let pageGrantService;
+  let _pageGrantService;
   let pageService;
 
   let Page;
-  let Revision;
+  let _Revision;
   let User;
-  let Bookmark;
-  let Comment;
-  let ShareLink;
-  let PageRedirect;
-  let xssSpy;
+  let _Bookmark;
+  let _Comment;
+  let _ShareLink;
+  let _PageRedirect;
+  let _xssSpy;
 
   let rootPage;
   let dummyUser1;
   let pModelUser1;
-  let pModelUser2;
+  let _pModelUser2;
   let pModelUser3;
   let userGroupIdPModelIsolate;
   let userGroupIdPModelA;
@@ -40,11 +40,11 @@ describe('Page', () => {
   let upodUserA;
   let upodUserB;
   let upodUserC;
-  let upodGroupAB;
-  let upodGroupA;
-  let upodGroupAIsolated;
-  let upodGroupB;
-  let upodGroupC;
+  let _upodGroupAB;
+  let _upodGroupA;
+  let _upodGroupAIsolated;
+  let _upodGroupB;
+  let _upodGroupC;
   const upodUserGroupIdA = new mongoose.Types.ObjectId();
   const upodUserGroupIdAIsolated = new mongoose.Types.ObjectId();
   const upodUserGroupIdB = new mongoose.Types.ObjectId();
@@ -118,11 +118,11 @@ describe('Page', () => {
       },
     ]);
 
-    upodGroupAB = await UserGroup.findOne({ name: 'upodGroupAB' });
-    upodGroupA = await UserGroup.findOne({ name: 'upodGroupA' });
-    upodGroupAIsolated = await UserGroup.findOne({ name: 'upodGroupAIsolated' });
-    upodGroupB = await UserGroup.findOne({ name: 'upodGroupB' });
-    upodGroupC = await UserGroup.findOne({ name: 'upodGroupC' });
+    _upodGroupAB = await UserGroup.findOne({ name: 'upodGroupAB' });
+    _upodGroupA = await UserGroup.findOne({ name: 'upodGroupA' });
+    _upodGroupAIsolated = await UserGroup.findOne({ name: 'upodGroupAIsolated' });
+    _upodGroupB = await UserGroup.findOne({ name: 'upodGroupB' });
+    _upodGroupC = await UserGroup.findOne({ name: 'upodGroupC' });
 
     // UserGroupRelations
     await UserGroupRelation.insertMany([
@@ -478,7 +478,7 @@ describe('Page', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
-    pageGrantService = crowi.pageGrantService;
+    _pageGrantService = crowi.pageGrantService;
     pageService = crowi.pageService;
 
     await crowi.configManager.updateConfig('app:isV5Compatible', true);
@@ -486,11 +486,11 @@ describe('Page', () => {
     jest.restoreAllMocks();
     User = mongoose.model('User');
     Page = mongoose.model('Page');
-    Revision = mongoose.model('Revision');
-    Bookmark = mongoose.model('Bookmark');
-    Comment = mongoose.model('Comment');
-    ShareLink = mongoose.model('ShareLink');
-    PageRedirect = mongoose.model('PageRedirect');
+    _Revision = mongoose.model('Revision');
+    _Bookmark = mongoose.model('Bookmark');
+    _Comment = mongoose.model('Comment');
+    _ShareLink = mongoose.model('ShareLink');
+    _PageRedirect = mongoose.model('PageRedirect');
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
 
@@ -520,7 +520,7 @@ describe('Page', () => {
       },
     ]);
     pModelUser1 = await User.findOne({ _id: pModelUserId1 });
-    pModelUser2 = await User.findOne({ _id: pModelUserId2 });
+    _pModelUser2 = await User.findOne({ _id: pModelUserId2 });
     pModelUser3 = await User.findOne({ _id: pModelUserId3 });
 
 

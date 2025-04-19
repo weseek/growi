@@ -29,7 +29,7 @@ export class TransferKey {
     const splitted = keyString.split(TransferKey._internalSeperator);
 
     if (splitted.length !== 2) {
-      throw Error(generalErrorPhrase);
+      throw new Error(generalErrorPhrase);
     }
     const key = splitted[0];
     const appSiteUrl = splitted[1];
@@ -39,7 +39,7 @@ export class TransferKey {
       appSiteUrlOrigin = new URL(appSiteUrl).origin;
     }
     catch (e) {
-      throw Error(generalErrorPhrase + (e as Error));
+      throw new Error(generalErrorPhrase + (e as Error));
     }
 
     return new TransferKey(appSiteUrlOrigin, key);

@@ -1,7 +1,7 @@
 function ApiResponse() {
 }
 
-ApiResponse.error = function(err, code, data) {
+ApiResponse.error = (err, code, data) => {
   const result = {};
 
   result.ok = false;
@@ -18,7 +18,7 @@ ApiResponse.error = function(err, code, data) {
   return result;
 };
 
-ApiResponse.success = function(data) {
+ApiResponse.success = (data) => {
   const result = data || {};
 
   result.ok = true;

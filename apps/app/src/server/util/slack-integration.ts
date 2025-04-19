@@ -18,7 +18,7 @@ export const checkPermission = (
     const [command, value] = entry;
     const permission = value;
     const commandRegExp = getSupportedGrowiActionsRegExp(command);
-    if (!commandRegExp.test(commandOrActionIdOrCallbackId)) return;
+    if (!commandRegExp.test(commandOrActionIdOrCallbackId)) { return; }
 
     isPermitted = permissionParser(permission, fromChannel);
   });

@@ -6,7 +6,7 @@ import type { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interac
 import type { RespondUtil } from '@growi/slack/dist/utils/respond-util-factory';
 import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
 import type { WebClient } from '@slack/web-api';
-import { type ChatPostMessageArguments } from '@slack/web-api';
+import type { ChatPostMessageArguments } from '@slack/web-api';
 import type { IncomingWebhookSendArguments } from '@slack/webhook';
 import mongoose from 'mongoose';
 
@@ -283,7 +283,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     try {
       handler = require(modulePath)(this.crowi);
     }
-    catch (err) {
+    catch (_err) {
       throw new SlackCommandHandlerError(`No interaction.\n \`actionId: ${actionId}\``);
     }
 
@@ -304,7 +304,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     try {
       handler = require(modulePath)(this.crowi);
     }
-    catch (err) {
+    catch (_err) {
       throw new SlackCommandHandlerError(`No interaction.\n \`callbackId: ${callbackId}\``);
     }
 

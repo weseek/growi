@@ -30,11 +30,11 @@ let parentForRename4;
 let parentForRename5;
 let parentForRename6;
 let parentForRename7;
-let parentForRename8;
-let parentForRename9;
+let _parentForRename8;
+let _parentForRename9;
 
-let irrelevantPage1;
-let irrelevantPage2;
+let _irrelevantPage1;
+let _irrelevantPage2;
 
 let childForRename1;
 let childForRename2;
@@ -54,7 +54,7 @@ let parentForRevert1;
 let parentForRevert2;
 
 let childForDuplicate;
-let childForDeleteCompletely;
+let _childForDeleteCompletely;
 
 let childForRevert;
 
@@ -295,11 +295,11 @@ describe('PageService', () => {
     parentForRename5 = await Page.findOne({ path: '/parentForRename5' });
     parentForRename6 = await Page.findOne({ path: '/parentForRename6' });
     parentForRename7 = await Page.findOne({ path: '/level1/level2' });
-    parentForRename8 = await Page.findOne({ path: '/level1/level2/child' });
-    parentForRename9 = await Page.findOne({ path: '/level1/level2/level2' });
+    _parentForRename8 = await Page.findOne({ path: '/level1/level2/child' });
+    _parentForRename9 = await Page.findOne({ path: '/level1/level2/level2' });
 
-    irrelevantPage1 = await Page.findOne({ path: '/parentForRename6-2021H1' });
-    irrelevantPage2 = await Page.findOne({ path: '/level1-2021H1' });
+    _irrelevantPage1 = await Page.findOne({ path: '/parentForRename6-2021H1' });
+    _irrelevantPage2 = await Page.findOne({ path: '/level1-2021H1' });
 
     parentForDuplicate = await Page.findOne({ path: '/parentForDuplicate' });
 
@@ -317,7 +317,7 @@ describe('PageService', () => {
 
     childForDuplicate = await Page.findOne({ path: '/parentForDuplicate/child' });
     childForDelete = await Page.findOne({ path: '/parentForDelete/child' });
-    childForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely/child' });
+    _childForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely/child' });
     childForRevert = await Page.findOne({ path: '/trash/parentForRevert/child' });
 
 
@@ -912,7 +912,7 @@ describe('PageService', () => {
   describe('revert page', () => {
     let getRevertDeletedPageNameSpy;
     let findByPathSpy;
-    let findSpy;
+    let _findSpy;
     let deleteCompletelySpy;
     let revertDeletedDescendantsWithStreamSpy;
 

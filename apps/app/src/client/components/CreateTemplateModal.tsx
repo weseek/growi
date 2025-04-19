@@ -1,4 +1,5 @@
-import React, { useCallback } from 'react';
+import type React from 'react';
+import { useCallback } from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
@@ -62,7 +63,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       await createTemplate?.(label);
       onClose();
     }
-    catch (err) {
+    catch (_err) {
       toastError(t('toaster.create_failed', { target: path }));
     }
   }, [createTemplate, onClose, path, t]);

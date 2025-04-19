@@ -13,7 +13,6 @@ import { configManager } from '~/server/service/config-manager';
 import { growiInfoService } from '~/server/service/growi-info';
 import loggerFactory from '~/utils/logger';
 
-
 const express = require('express');
 const { body } = require('express-validator');
 const mongoose = require('mongoose');
@@ -49,6 +48,7 @@ module.exports = (crowi) => {
 
     if (SlackAppIntegrationCount === 0) {
       return res.status(403).send({
+        // biome-ignore lint/complexity/noUselessStringConcat: ignore
         message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`.\n'
         + 'Or did you delete registration for GROWI ? if so, the link with GROWI has been disconnected. '
         + 'Please unregister the information registered in the proxy and setup `/growi register` again.',
@@ -60,7 +60,7 @@ module.exports = (crowi) => {
 
   async function extractPermissionsCommands(tokenPtoG) {
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-    if (slackAppIntegration == null) return null;
+    if (slackAppIntegration == null) { return null; }
     const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
     const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
 
@@ -112,7 +112,7 @@ module.exports = (crowi) => {
       const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
       commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
       const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
-      if (isPermitted) return next();
+      if (isPermitted) { return next(); }
 
       return next(createError(403, `It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`));
     }
@@ -159,7 +159,7 @@ module.exports = (crowi) => {
       const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
       commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
       const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
-      if (isPermitted) return next();
+      if (isPermitted) { return next(); }
 
       return next(createError(403, `This interaction is forbidden on this GROWI: ${siteUrl}`));
     }
@@ -184,7 +184,7 @@ module.exports = (crowi) => {
     return next(new SlackCommandHandlerError('Interaction forbidden', options));
   }
 
-  const addSigningSecretToReq = (req, res, next) => {
+  const addSigningSecretToReq = (req, _res, next) => {
     req.slackSigningSecret = configManager.getConfig('slackbot:withoutProxy:signingSecret');
     return next();
   };
@@ -201,7 +201,7 @@ module.exports = (crowi) => {
     next();
   };
 
-  const parseSlackInteractionRequest = (req, res, next) => {
+  const parseSlackInteractionRequest = (req, _res, next) => {
     if (req.body.payload == null) {
       return next(new Error('The payload is not in the request from slack or proxy.'));
     }
@@ -249,7 +249,7 @@ module.exports = (crowi) => {
     return growiCommand;
   }
 
-  async function handleCommands(body, res, client, responseUrl) {
+  async function handleCommands(body, _res, client, responseUrl) {
     let growiCommand;
     let respondUtil;
     try {
@@ -345,7 +345,7 @@ module.exports = (crowi) => {
     return handleCommands(body, res, client, responseUrl);
   });
 
-  async function handleInteractionsRequest(req, res, client) {
+  async function handleInteractionsRequest(req, _res, client) {
 
     const { interactionPayload, interactionPayloadAccessor } = req;
     const { type } = interactionPayload;
@@ -445,7 +445,7 @@ module.exports = (crowi) => {
   });
 
   // error handler
-  router.use(async(err, req, res, next) => {
+  router.use(async(err, req, _res, next) => {
     const responseUrl = getResponseUrl(req);
     if (responseUrl == null) {
       // pass err to global error handler

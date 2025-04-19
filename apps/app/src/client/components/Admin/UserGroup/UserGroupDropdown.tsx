@@ -1,4 +1,4 @@
-import React, { FC, useCallback } from 'react';
+import React, { type FC, useCallback } from 'react';
 
 import type { IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';

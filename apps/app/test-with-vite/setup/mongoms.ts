@@ -19,9 +19,6 @@ beforeAll(async() => {
     },
   });
 
-  // eslint-disable-next-line no-console
-  console.log(`MongoMemoryServer is running on ${mongoServer.getUri()}`);
-
   await mongoose.connect(mongoServer.getUri(), mongoOptions);
 });
 

@@ -87,7 +87,7 @@ export class GrowiInfoService {
 
     const appInstalledConfig = await Config.findOne({ key: 'app:installed' });
     const oldestConfig = await Config.findOne().sort({ createdAt: 1 });
-    const installedAt = installedAtByOldestUser ?? appInstalledConfig?.createdAt ?? oldestConfig!.createdAt ?? null;
+    const installedAt = installedAtByOldestUser ?? appInstalledConfig?.createdAt ?? oldestConfig?.createdAt ?? null;
 
     const currentUsersCount = await User.countDocuments();
     const currentActiveUsersCount = await (User as any).countActiveUsers();

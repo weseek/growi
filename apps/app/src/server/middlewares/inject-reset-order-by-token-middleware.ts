@@ -1,10 +1,10 @@
-import { NextFunction, Request, Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import createError from 'http-errors';
 
 import { forgotPasswordErrorCode } from '~/interfaces/errors/forgot-password';
 import loggerFactory from '~/utils/logger';
 
-import PasswordResetOrder, { IPasswordResetOrder } from '../models/password-reset-order';
+import PasswordResetOrder, { type IPasswordResetOrder } from '../models/password-reset-order';
 
 const logger = loggerFactory('growi:routes:forgot-password');
 
@@ -13,7 +13,7 @@ export type ReqWithPasswordResetOrder = Request & {
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default async(req: ReqWithPasswordResetOrder, res: Response, next: NextFunction): Promise<void> => {
+export default async(req: ReqWithPasswordResetOrder, _res: Response, next: NextFunction): Promise<void> => {
   const token = req.params.token || req.body.token;
 
   if (token == null) {

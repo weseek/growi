@@ -16,7 +16,7 @@ const LIMIT = 300;
 
 module.exports = {
   // path => pageId
-  async up(db, client) {
+  async up(_db, _client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
 
@@ -62,7 +62,7 @@ module.exports = {
   },
 
   // pageId => path
-  async down(db, client) {
+  async down(_db, _client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
 

@@ -1,5 +1,5 @@
 import path from 'path';
-import { type Readable } from 'stream';
+import type { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import type { IPage } from '@growi/core';
@@ -866,7 +866,7 @@ module.exports = (crowi) => {
     try {
       await normalizeLatestRevisionIfBroken(pageId);
     }
-    catch (err) {
+    catch (_err) {
       logger.error('Error occurred in normalizing the latest revision');
     }
 

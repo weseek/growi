@@ -1,5 +1,6 @@
 import type { ForwardRefRenderFunction } from 'react';
-import React, {
+import type React from 'react';
+import {
   forwardRef, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 

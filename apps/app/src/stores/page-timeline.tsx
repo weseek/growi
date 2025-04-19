@@ -1,6 +1,6 @@
 
 import type { IPageHasId } from '@growi/core';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
+import useSWRInfinite, { type SWRInfiniteResponse } from 'swr/infinite';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
 
@@ -13,8 +13,8 @@ type PageTimelineResult = {
 export const useSWRINFxPageTimeline = (path: string | undefined, limit: number) : SWRInfiniteResponse<PageTimelineResult, Error> => {
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
-      if (previousPageData != null && previousPageData.pages.length === 0) return null;
-      if (path === undefined) return null;
+      if (previousPageData != null && previousPageData.pages.length === 0) { return null; }
+      if (path === undefined) { return null; }
 
       return ['/pages/list', path, pageIndex + 1, limit];
     },

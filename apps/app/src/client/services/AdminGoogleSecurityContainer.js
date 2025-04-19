@@ -14,7 +14,7 @@ const logger = loggerFactory('growi:security:AdminGoogleSecurityContainer');
  */
 export default class AdminGoogleSecurityContainer extends Container {
 
-  constructor(appContainer) {
+  constructor(_appContainer) {
     super();
 
     if (isServer()) {

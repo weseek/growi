@@ -41,7 +41,7 @@ import '@growi/editor/dist/style.css';
 import styles from './CommentEditor.module.scss';
 
 
-const logger = loggerFactory('growi:components:CommentEditor');
+const _logger = loggerFactory('growi:components:CommentEditor');
 
 
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });

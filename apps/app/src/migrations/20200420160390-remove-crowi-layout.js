@@ -8,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:remove-crowi-lauout');
 
 module.exports = {
-  async up(db) {
+  async up(_db) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -19,7 +19,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  down(db, next) {
+  down(_db, next) {
     // do not rollback
     next();
   },

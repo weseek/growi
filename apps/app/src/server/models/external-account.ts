@@ -104,7 +104,7 @@ schema.statics.findOrRegister = function(
             throw new DuplicatedUsernameException(`User '${usernameToBeRegistered}' already exists`, user);
           }
           if (nameToBeRegistered == null) {
-          // eslint-disable-next-line no-param-reassign
+            // biome-ignore lint/style/noParameterAssign: ignore
             nameToBeRegistered = '';
           }
 

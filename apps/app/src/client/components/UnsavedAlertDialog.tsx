@@ -27,7 +27,7 @@ const UnsavedAlertDialog = (): JSX.Element => {
       // eslint-disable-next-line no-alert
       const answer = window.confirm(t('page_edit.changes_not_saved'));
       if (!answer) {
-      // eslint-disable-next-line no-throw-literal
+      // biome-ignore lint/style/useThrowOnlyError: ignore
         throw 'Abort route';
       }
     }

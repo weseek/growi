@@ -66,7 +66,7 @@ module.exports = (crowi: Crowi): Router => {
     const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
     try {
-      const questionnaireOrders = await crowi.questionnaireService!.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
+      const questionnaireOrders = await crowi.questionnaireService?.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
 
       return res.apiv3({ questionnaireOrders });
     }
@@ -76,7 +76,7 @@ module.exports = (crowi: Crowi): Router => {
     }
   });
 
-  router.get('/is-enabled', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/is-enabled', accessTokenParser, loginRequired, async(_req: AuthorizedRequest, res: ApiV3Response) => {
     const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
     return res.apiv3({ isEnabled });
   });

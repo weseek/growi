@@ -1,9 +1,9 @@
-import express, { Request, Router } from 'express';
+import express, { type Request, type Router } from 'express';
 import { body, query } from 'express-validator';
 import mongoose from 'mongoose';
 
-import Crowi from '~/server/crowi';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import type Crowi from '~/server/crowi';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 
 import { GrowiPlugin } from '../../../models';
 import { growiPluginService } from '../../../services';
@@ -29,7 +29,7 @@ module.exports = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-  router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(_req: Request, res: ApiV3Response) => {
     try {
       const data = await GrowiPlugin.find({});
       return res.apiv3({ plugins: data });

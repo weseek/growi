@@ -14,7 +14,7 @@ const logger = loggerFactory('growi:routes:forgot-password');
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/no-explicit-any
 export const checkForgotPasswordEnabledMiddlewareFactory = (crowi: any, forApi = false) => {
 
-  return (req: Request, res: Response, next: NextFunction): void => {
+  return (_req: Request, _res: Response, next: NextFunction): void => {
     const isPasswordResetEnabled = crowi.configManager.getConfig('security:passport-local:isPasswordResetEnabled');
     const isLocalStrategySetup = crowi.passportService.isLocalStrategySetup as boolean ?? false;
 
@@ -43,7 +43,7 @@ type CrowiReq = Request & {
 }
 
 export const renderForgotPassword = (crowi: Crowi) => {
-  return (req: CrowiReq, res: Response, next: NextFunction): void => {
+  return (req: CrowiReq, res: Response, _next: NextFunction): void => {
     const { nextApp } = crowi;
     req.crowi = crowi;
     nextApp.render(req, res, '/forgot-password');
@@ -52,7 +52,7 @@ export const renderForgotPassword = (crowi: Crowi) => {
 };
 
 export const renderResetPassword = (crowi: Crowi) => {
-  return (req: CrowiReq & { passwordResetOrder: IPasswordResetOrder }, res: Response, next: NextFunction): void => {
+  return (req: CrowiReq & { passwordResetOrder: IPasswordResetOrder }, res: Response, _next: NextFunction): void => {
     const { nextApp } = crowi;
     req.crowi = crowi;
     nextApp.render(req, res, '/reset-password', { email: req.passwordResetOrder.email });

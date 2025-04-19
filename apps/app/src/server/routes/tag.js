@@ -35,7 +35,7 @@ import ApiResponse from '../util/apiResponse';
  *            example: 3
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, _app) => {
 
   const activityEvent = crowi.event('activity');
   const actions = {};
@@ -83,7 +83,7 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} q keyword
    */
-  api.search = async function(req, res) {
+  api.search = async (req, res) => {
     // https://regex101.com/r/J1cN6O/1
     // prevent from unexpecting attack doing regular expression on tag search (DoS attack)
     // Search for regular expressions as normal characters
@@ -138,7 +138,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} PageId
    * @apiParam {array} tags
    */
-  api.update = async function(req, res) {
+  api.update = async (req, res) => {
     const Page = crowi.model('Page');
     const User = crowi.model('User');
     const tagEvent = crowi.event('tag');
@@ -217,7 +217,7 @@ module.exports = function(crowi, app) {
    * @apiParam {Number} limit
    * @apiParam {Number} offset
    */
-  api.list = async function(req, res) {
+  api.list = async (req, res) => {
     const limit = +req.query.limit || 50;
     const offset = +req.query.offset || 0;
     const sortOpt = { count: -1, _id: -1 };

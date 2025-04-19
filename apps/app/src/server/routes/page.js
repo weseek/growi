@@ -64,7 +64,7 @@ import UpdatePost from '../models/update-post';
 
 /* eslint-disable no-use-before-define */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, _app) => {
   const logger = loggerFactory('growi:routes:page');
 
   const { pagePathUtils } = require('@growi/core/dist/utils');
@@ -173,7 +173,7 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} pageId
    */
-  api.getPageTag = async function(req, res) {
+  api.getPageTag = async(req, res) => {
     const result = {};
     try {
       result.tags = await PageTagRelation.listTagNamesByPage(req.query.pageId);
@@ -221,7 +221,7 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} path
    */
-  api.getUpdatePost = function(req, res) {
+  api.getUpdatePost = (req, res) => {
     const path = req.query.path;
 
     if (!path) {
@@ -230,7 +230,7 @@ module.exports = function(crowi, app) {
 
     UpdatePost.findSettingsByPath(path)
       .then((data) => {
-        // eslint-disable-next-line no-param-reassign
+        // biome-ignore lint/style/noParameterAssign: ignore
         data = data.map((e) => {
           return e.channel;
         });
@@ -261,7 +261,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id
    */
-  api.remove = async function(req, res) {
+  api.remove = async(req, res) => {
     const pageId = req.body.page_id;
     const previousRevision = req.body.revision_id || null;
 
@@ -371,7 +371,7 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.revertRemove = async function(req, res, options) {
+  api.revertRemove = async(req, res, _options) => {
     const pageId = req.body.page_id;
 
     // get recursively flag
@@ -413,7 +413,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id
    */
-  api.unlink = async function(req, res) {
+  api.unlink = async(req, res) => {
     const path = req.body.path;
 
     try {

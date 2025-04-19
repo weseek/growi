@@ -1,11 +1,11 @@
 import loggerFactory from '~/utils/logger';
 
-import S2sMessage from '~/server/models/vo/s2s-message';
+import type S2sMessage from '~/server/models/vo/s2s-message';
 
-import { S2sMessageHandlable } from './handlable';
+import type { S2sMessageHandlable } from './handlable';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const logger = loggerFactory('growi:service:s2s-messaging:base');
+const _logger = loggerFactory('growi:service:s2s-messaging:base');
 
 export interface S2sMessagingService {
 

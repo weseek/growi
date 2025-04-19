@@ -146,15 +146,15 @@ export default function route(crowi) {
 
   const uploads = multer({
     storage: multer.diskStorage({
-      destination: (req, file, cb) => {
+      destination: (_req, _file, cb) => {
         cb(null, importService.baseDir);
       },
-      filename(req, file, cb) {
+      filename(_req, file, cb) {
         // to prevent hashing the file name. files with same name will be overwritten.
         cb(null, file.originalname);
       },
     }),
-    fileFilter: (req, file, cb) => {
+    fileFilter: (_req, file, cb) => {
       if (path.extname(file.originalname) === '.zip') {
         return cb(null, true);
       }
@@ -197,7 +197,7 @@ export default function route(crowi) {
    *                        type: string
    *                        description: the access token of qiita.com
    */
-  router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, adminRequired, async(_req, res) => {
     try {
       const importSettingsParams = {
         esaTeamName: await crowi.configManager.getConfig('importer:esa:team_name'),
@@ -235,7 +235,7 @@ export default function route(crowi) {
    *                  status:
    *                    $ref: '#/components/schemas/ImportStatus'
    */
-  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(_req, res) => {
     try {
       const status = await importService.getStatus();
       return res.apiv3(status);
@@ -448,7 +448,7 @@ export default function route(crowi) {
    *        200:
    *          description: all files are deleted
    */
-  router.delete('/all', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.delete('/all', accessTokenParser, loginRequired, adminRequired, async(_req, res) => {
     try {
       importService.deleteAllZipFiles();
 

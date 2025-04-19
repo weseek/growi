@@ -57,7 +57,7 @@ class GridEditModal extends React.Component {
   //   this.setState({ gridHtml: initGridHtml });
   // }
 
-  show(gridHtml) {
+  show(_gridHtml) {
     // use when re-edit grid
     // this.init(gridHtml);
     this.setState({ show: true });
@@ -99,7 +99,7 @@ class GridEditModal extends React.Component {
             id={responsiveSizeForMap[1].displayText}
             value={responsiveSizeForMap[1].displayText}
             checked={this.state.responsiveSize === responsiveSizeForMap[0]}
-            onChange={e => this.checkResposiveSize(responsiveSizeForMap[0])}
+            onChange={_e => this.checkResposiveSize(responsiveSizeForMap[0])}
           />
           <label className="form-label form-check-label" htmlFor={responsiveSizeForMap[1].displayText}>
             {t(responsiveSizeForMap[1].displayText)}

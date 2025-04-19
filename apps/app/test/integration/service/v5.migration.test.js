@@ -1073,7 +1073,7 @@ describe('V5 page migration', () => {
       try {
         await normalizeParentByPage(page6, testUser1);
       }
-      catch (err) {
+      catch (_err) {
         isThrown = true;
       }
 

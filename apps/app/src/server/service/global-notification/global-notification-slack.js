@@ -8,7 +8,7 @@ import {
 } from '../../util/slack';
 import { growiInfoService } from '../growi-info';
 
-const logger = loggerFactory('growi:service:GlobalNotificationSlackService'); // eslint-disable-line no-unused-vars
+const _logger = loggerFactory('growi:service:GlobalNotificationSlackService'); // eslint-disable-line no-unused-vars
 const urljoin = require('url-join');
 
 const { encodeSpaces } = pagePathUtils;
@@ -123,7 +123,7 @@ class GlobalNotificationSlackService {
    *
    * @return  {string} slack attachment body
    */
-  generateAttachmentBody(event, id, path, triggeredBy, { comment, oldPath }) {
+  generateAttachmentBody(_event, _id, _path, _triggeredBy, { comment, oldPath }) {
     const attachmentBody = '';
 
     // TODO: create attachment

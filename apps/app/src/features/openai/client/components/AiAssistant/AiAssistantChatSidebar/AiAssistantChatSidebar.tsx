@@ -176,14 +176,14 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
       const decoder = new TextDecoder('utf-8');
 
       const read = async() => {
-        if (reader == null) return;
+        if (reader == null) { return; }
 
         const { done, value } = await reader.read();
 
         // add assistant message to the logs
         if (done) {
           setGeneratingAnswerMessage((generatingAnswerMessage) => {
-            if (generatingAnswerMessage == null) return;
+            if (generatingAnswerMessage == null) { return; }
             setMessageLogs(msgs => [...msgs, generatingAnswerMessage]);
             return undefined;
           });
@@ -214,7 +214,7 @@ const AiAssistantChatSidebarSubstance: React.FC<AiAssistantChatSidebarSubstanceP
 
         // append text values to the assistant message
         setGeneratingAnswerMessage((prevMessage) => {
-          if (prevMessage == null) return;
+          if (prevMessage == null) { return; }
           return {
             ...prevMessage,
             content: prevMessage.content + textValues.join(''),

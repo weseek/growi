@@ -9,7 +9,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:generate-service-instance-id');
 
 module.exports = {
-  async up(db) {
+  async up(_db) {
     logger.info('Generate serviceInstanceId for the system');
     await mongoose.connect(getMongoUri(), mongoOptions);
 

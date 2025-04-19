@@ -1,4 +1,5 @@
-import React, {
+import type React from 'react';
+import {
   useCallback, useEffect, useState,
 } from 'react';
 
@@ -35,7 +36,7 @@ import { useFormatter } from './use-formatter';
 import styles from './TemplateModal.module.scss';
 
 
-const logger = loggerFactory('growi:components:TemplateModal');
+const _logger = loggerFactory('growi:components:TemplateModal');
 
 
 function constructTemplateId(templateSummary: TemplateSummary): string {

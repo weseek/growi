@@ -22,7 +22,7 @@ class DiagLoggerBunyanAdapter implements DiagLogger {
           : message;
       }
     }
-    catch (e) {
+    catch (_e) {
       // do nothing if the message is not a JSON string
     }
 
@@ -35,7 +35,7 @@ class DiagLoggerBunyanAdapter implements DiagLogger {
             const parsed = JSON.parse(arg);
             return { ...acc, ...parsed };
           }
-          catch (e) {
+          catch (_e) {
             return { ...acc, additionalInfo: arg };
           }
         }

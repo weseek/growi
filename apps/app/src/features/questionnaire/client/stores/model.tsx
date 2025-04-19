@@ -1,4 +1,4 @@
-import { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
 
 import { useStaticSWR } from '~/stores/use-static-swr';
 import loggerFactory from '~/utils/logger';
@@ -31,7 +31,7 @@ export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRR
     close: (shouldCloseToast?: boolean) => {
       if (shouldCloseToast) {
         swrResponse.data?.closeToast?.();
-        if (swrResponse.data?.closeToast === undefined) logger.debug('Tried to run `swrResponse.data?.closeToast` but it was `undefined`');
+        if (swrResponse.data?.closeToast === undefined) { logger.debug('Tried to run `swrResponse.data?.closeToast` but it was `undefined`'); }
       }
 
       return swrResponse.mutate({ openedQuestionnaireId: null });

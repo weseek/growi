@@ -16,7 +16,7 @@ import { toastError } from '../util/toastr';
  */
 export default class AdminGeneralSecurityContainer extends Container {
 
-  constructor(appContainer) {
+  constructor(_appContainer) {
     super();
 
     if (isServer()) {

@@ -41,7 +41,7 @@ module.exports = (crowi) => {
    * Import page data from esa to GROWI
    */
   importer.importDataFromEsa = (user) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve, _reject) => {
       const firstPage = 1;
       const errors = importPostsFromEsa(firstPage, user, []);
 

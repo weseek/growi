@@ -4,11 +4,11 @@ import { getInstance } from '../setup-crowi';
 
 describe('PageRedirect', () => {
   // eslint-disable-next-line no-unused-vars
-  let crowi;
+  let _crowi;
   let PageRedirect;
 
   beforeAll(async() => {
-    crowi = await getInstance();
+    _crowi = await getInstance();
 
     PageRedirect = mongoose.model('PageRedirect');
   });

@@ -95,7 +95,7 @@ export class SocketIoService {
    * use loginRequired middleware
    */
   setupLoginRequiredMiddleware() {
-    const loginRequired = require('../../middlewares/login-required')(this.crowi, true, (req, res, next) => {
+    const loginRequired = require('../../middlewares/login-required')(this.crowi, true, (_req, _res, next) => {
       next(new Error('Login is required to connect.'));
     });
 
@@ -109,7 +109,7 @@ export class SocketIoService {
    * use adminRequired middleware
    */
   setupAdminRequiredMiddleware() {
-    const adminRequired = require('../../middlewares/admin-required')(this.crowi, (req, res, next) => {
+    const adminRequired = require('../../middlewares/admin-required')(this.crowi, (_req, _res, next) => {
       next(new Error('Admin priviledge is required to connect.'));
     });
 

@@ -2,7 +2,7 @@
 module.exports = (crowi) => {
   const { s2sMessagingService } = crowi;
 
-  return (req, res, next) => {
+  return (_req, _res, next) => {
     if (s2sMessagingService != null && s2sMessagingService.shouldResubscribe()) {
       s2sMessagingService.subscribe();
     }

@@ -454,7 +454,7 @@ module.exports = (crowi) => {
    *                        githubOAuth:
    *                          $ref: '#/components/schemas/GitHubOAuth
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(_req, res) => {
 
     const securityParams = {
       generalSetting: {
@@ -704,7 +704,7 @@ module.exports = (crowi) => {
    *                        description: setup strategie
    *                      example: ["local"]
    */
-  router.get('/authentication/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/authentication/', loginRequiredStrictly, adminRequired, async(_req, res) => {
     const setupStrategies = await crowi.passportService.getSetupStrategies();
 
     return res.apiv3({ setupStrategies });
@@ -914,7 +914,7 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: total number of removed share links
    */
-  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(_req, res) => {
     try {
       const removedAct = await ShareLink.remove({});
       const removeTotal = await removedAct.n;
@@ -1106,7 +1106,7 @@ module.exports = (crowi) => {
       try {
         crowi.passportService.parseABLCRule(rule);
       }
-      catch (err) {
+      catch (_err) {
         return res.apiv3Err(t('input_validation.message.invalid_syntax', { syntax: t('security_settings.form_item_name.ABLCRule') }), 400);
       }
     }

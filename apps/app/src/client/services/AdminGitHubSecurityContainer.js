@@ -14,7 +14,7 @@ const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
  */
 export default class AdminGitHubSecurityContainer extends Container {
 
-  constructor(appContainer) {
+  constructor(_appContainer) {
     super();
 
     if (isServer()) {

@@ -30,7 +30,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
 
   const { t } = useTranslation();
   // eslint-disable-next-line no-unused-vars
-  const [defaultOpenAccordionKeys, setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
+  const [defaultOpenAccordionKeys, _setDefaultOpenAccordionKeys] = useState(new Set([activeStep]));
   const [isLatestConnectionSuccess, setIsLatestConnectionSuccess] = useState(false);
   const [testChannel, setTestChannel] = useState('');
   const [logsValue, setLogsValue] = useState('');

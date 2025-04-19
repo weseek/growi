@@ -13,7 +13,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const logger = loggerFactory('growi:models:named-query');
+const _logger = loggerFactory('growi:models:named-query');
 
 export interface NamedQueryDocument extends INamedQuery, Document {}
 
@@ -30,7 +30,7 @@ const schema = new Schema<NamedQueryDocument, NamedQueryModel>({
 
 schema.pre('validate', async function(this, next) {
   if (this.aliasOf == null && this.delegatorName == null) {
-    throw Error('Either of aliasOf and delegatorNameName must not be null.');
+    throw new Error('Either of aliasOf and delegatorNameName must not be null.');
   }
 
   next();

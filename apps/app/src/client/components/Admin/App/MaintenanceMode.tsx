@@ -9,7 +9,7 @@ import loggerFactory from '~/utils/logger';
 
 import { ConfirmModal } from './ConfirmModal';
 
-const logger = loggerFactory('growi:maintenanceMode');
+const _logger = loggerFactory('growi:maintenanceMode');
 
 
 export const MaintenanceMode: FC = () => {
@@ -36,7 +36,7 @@ export const MaintenanceMode: FC = () => {
         startMaintenanceMode();
       }
     }
-    catch (err) {
+    catch (_err) {
       toastError(isMaintenanceMode ? t('admin:maintenance_mode.failed_to_end_maintenance_mode') : t('admin:maintenance_mode.failed_to_start_maintenance_mode'));
     }
 

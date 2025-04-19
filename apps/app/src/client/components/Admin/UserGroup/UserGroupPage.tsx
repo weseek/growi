@@ -156,7 +156,7 @@ export const UserGroupPage: FC = () => {
 
       toastSuccess(`Deleted ${selectedUserGroup?.name} group.`);
     }
-    catch (err) {
+    catch (_err) {
       toastError(new Error('Unable to delete the groups'));
     }
   }, [mutateUserGroups, selectedUserGroup]);

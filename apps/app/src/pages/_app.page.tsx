@@ -23,7 +23,7 @@ import '~/styles/prebuilt/vendor.css';
 import '~/styles/style-app.scss';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// biome-ignore lint/complexity/noBannedTypes: ignore
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode,
 }

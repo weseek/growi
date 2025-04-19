@@ -23,7 +23,7 @@ import UserTriggerNotification from './UserTriggerNotification';
 
 const logger = loggerFactory('growi:NotificationSetting');
 
-let retrieveErrors = null;
+let _retrieveErrors = null;
 
 
 // eslint-disable-next-line react/prop-types
@@ -110,7 +110,7 @@ function NotificationSetting(props) {
       const errs = toArrayIfNot(err);
       toastError(errs);
       logger.error(errs);
-      retrieveErrors = errs;
+      _retrieveErrors = errs;
     }
     finally {
       setMounted(true);

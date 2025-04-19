@@ -11,7 +11,7 @@ import { externalAccountService } from '../service/external-account';
 /* eslint-disable no-use-before-define */
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, _app) => {
   const logger = loggerFactory('growi:routes:login-passport');
   const passport = require('passport');
   const passportService = crowi.passportService;
@@ -55,7 +55,7 @@ module.exports = function(crowi, app) {
   const loginSuccessHandler = async(req, res, user, action, isExternalAccount = false) => {
 
     // update lastLoginAt
-    user.updateLastLoginAt(new Date(), (err, userData) => {
+    user.updateLastLoginAt(new Date(), (err, _userData) => {
       if (err) {
         logger.error(`updateLastLoginAt dumps error: ${err}`);
         logger.debug(`updateLastLoginAt dumps error: ${err}`);
@@ -96,7 +96,7 @@ module.exports = function(crowi, app) {
     next();
   };
 
-  const isEnableLoginWithLocalOrLdap = (req, res, next) => {
+  const isEnableLoginWithLocalOrLdap = (_req, _res, next) => {
     if (!passportService.isLocalStrategySetup && !passportService.isLdapStrategySetup) {
       logger.error('LocalStrategy and LdapStrategy has not been set up');
       const error = new ErrorV3('message.strategy_has_not_been_set_up', '', undefined, { strategy: 'LocalStrategy and LdapStrategy' });
@@ -106,7 +106,7 @@ module.exports = function(crowi, app) {
     return next();
   };
 
-  const cannotLoginErrorHadnler = (req, res, next) => {
+  const cannotLoginErrorHadnler = (_req, _res, next) => {
     // this is called when all login method is somehow failed without invoking 'return next(<any Error>)'
     const err = new ErrorV3('message.sign_in_failure');
     return next(err);
@@ -119,14 +119,14 @@ module.exports = function(crowi, app) {
    * @param {*} res
    * @param {*} next
    */
-  const loginFailure = (error, req, res, next) => {
+  const loginFailure = (error, _req, res, _next) => {
 
     const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
     return res.apiv3Err(error);
   };
 
-  const loginFailureForExternalAccount = async(error, req, res, next) => {
+  const loginFailureForExternalAccount = async(error, req, res, _next) => {
     const parameters = {
       ip:  req.ip,
       endpoint: req.originalUrl,
@@ -332,7 +332,7 @@ module.exports = function(crowi, app) {
     })(req, res, next);
   };
 
-  const loginWithGoogle = function(req, res, next) {
+  const loginWithGoogle = (req, res, next) => {
     if (!passportService.isGoogleStrategySetup) {
       logger.debug('GoogleStrategy has not been set up');
       const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'GoogleStrategy' });
@@ -402,7 +402,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const loginWithGitHub = function(req, res, next) {
+  const loginWithGitHub = (req, res, next) => {
     if (!passportService.isGitHubStrategySetup) {
       logger.debug('GitHubStrategy has not been set up');
       const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'GitHubStrategy' });
@@ -445,7 +445,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const loginWithOidc = function(req, res, next) {
+  const loginWithOidc = (req, res, next) => {
     if (!passportService.isOidcStrategySetup) {
       logger.debug('OidcStrategy has not been set up');
       const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'OidcStrategy' });
@@ -494,7 +494,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const loginWithSaml = function(req, res, next) {
+  const loginWithSaml = (req, res, next) => {
     if (!passportService.isSamlStrategySetup) {
       logger.debug('SamlStrategy has not been set up');
       const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'SamlStrategy' });

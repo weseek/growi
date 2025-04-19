@@ -60,7 +60,7 @@ class CustomizeService implements S2sMessageHandlable {
   /**
    * @inheritdoc
    */
-  async handleS2sMessage(s2sMessage) {
+  async handleS2sMessage(_s2sMessage) {
     logger.info('Reset customized value by pubsub notification');
     await configManager.loadConfigs();
     this.initCustomCss();

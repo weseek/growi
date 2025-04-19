@@ -201,7 +201,7 @@ const ManageCommandsProcessWithoutProxy = ({ commandPermission, eventActionsPerm
     setEditingEventActionsPermission(eventActionPermissionObj => ({ ...getUpdatedChannelsList(eventActionPermissionObj, actionName, value) }));
   }, []);
 
-  const updateCommandsHandler = async(e) => {
+  const updateCommandsHandler = async(_e) => {
     try {
       await apiv3Put('/slack-integration-settings/without-proxy/update-permissions', {
         commandPermission: editingCommandPermission,

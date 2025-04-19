@@ -169,7 +169,7 @@ const FileUploadSetting = (props: FileUploadSettingProps): JSX.Element => {
     }
   }, [adminAppContainer, t]);
 
-  const onChangeFileUploadTypeHandler = useCallback((e: ChangeEvent, type: string) => {
+  const onChangeFileUploadTypeHandler = useCallback((_e: ChangeEvent, type: string) => {
     adminAppContainer.changeFileUploadType(type);
   }, [adminAppContainer]);
 

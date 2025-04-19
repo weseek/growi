@@ -76,7 +76,7 @@ const MailSetting = (props: Props) => {
                   name="transmission-method"
                   id={`transmission-method-radio-${method}`}
                   checked={adminAppContainer.state.transmissionMethod === method}
-                  onChange={(e) => {
+                  onChange={(_e) => {
                     adminAppContainer.changeTransmissionMethod(method);
                   }}
                 />

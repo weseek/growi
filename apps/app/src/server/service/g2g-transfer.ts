@@ -429,7 +429,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   // eslint-disable-next-line max-len
-  public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any, destGROWIInfo: IDataGROWIInfo): Promise<void> {
+  public async startTransfer(tk: TransferKey, user: any, collections: string[], optionsMap: any, _destGROWIInfo: IDataGROWIInfo): Promise<void> {
     const socket = this.crowi.socketIoService?.getAdminSocket();
 
     socket?.emit('admin:g2gProgress', {
@@ -448,7 +448,7 @@ export class G2GTransferPusherService implements Pusher {
       const zipFileStat = await exportService?.export(collections);
       const zipFilePath = zipFileStat?.zipFilePath;
 
-      if (zipFilePath == null) throw new Error('Failed to generate zip file');
+      if (zipFilePath == null) { throw new Error('Failed to generate zip file'); }
 
       zipFileStream = createReadStream(zipFilePath);
     }

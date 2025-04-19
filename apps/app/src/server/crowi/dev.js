@@ -80,7 +80,7 @@ class CrowiDev {
   }
 
   setupNextBundleAnalyzer(app) {
-    const next = nextFactory(this.crowi);
+    const _next = nextFactory(this.crowi);
     app.use('/analyze', express.static(path.resolve(__dirname, '../../../.next/analyze')));
   }
 

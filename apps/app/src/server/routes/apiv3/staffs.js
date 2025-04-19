@@ -17,14 +17,12 @@ const contributorsCache = contributors;
 let gcContributors;
 
 // Sorting contributors by this method
-const compareFunction = function(a, b) {
-  return a.order - b.order;
-};
+const compareFunction = (a, b) => a.order - b.order;
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
 
-  router.get('/', async(req, res) => {
+  router.get('/', async(_req, res) => {
     const now = new Date();
     const growiCloudUri = await crowi.configManager.getConfig('app:growiCloudUri');
 
@@ -42,7 +40,7 @@ module.exports = (crowi) => {
         // caching 'expiredAt' for 1 hour
         expiredAt = addHours(now, 1);
       }
-      catch (err) {
+      catch (_err) {
         logger.warn('Getting GROWI.cloud staffcredit is failed');
       }
     }

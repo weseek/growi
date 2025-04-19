@@ -169,7 +169,7 @@ module.exports = (crowi) => {
    *                  status:
    *                    $ref: '#/components/schemas/ExportStatus'
    */
-  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(_req, res) => {
     const status = await exportService.getStatus();
 
     // TODO: use res.apiv3

@@ -99,9 +99,9 @@ export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
       }
       return !pagePathUtils.isUsersProtectedPages(page.path);
     },
-    end: (item, monitor) => {
+    end: (_item, monitor) => {
       // in order to set d-none to dropped Item
-      const dropResult = monitor.getDropResult();
+      const _dropResult = monitor.getDropResult();
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
@@ -148,7 +148,7 @@ export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
     () => ({
       accept: 'PAGE_TREE',
       drop: pageItemDropHandler,
-      hover: (item, monitor) => {
+      hover: (_item, monitor) => {
         // when a drag item is overlapped more than 1 sec, the drop target item will be opened.
         if (monitor.isOver()) {
           setTimeout(() => {
@@ -171,7 +171,7 @@ export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
 
   const itemRef = (c) => {
     // do not apply when RenameInput is shown
-    if (showRenameInput) return;
+    if (showRenameInput) { return; }
 
     drag(c);
     drop(c);

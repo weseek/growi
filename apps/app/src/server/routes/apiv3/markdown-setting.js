@@ -150,7 +150,7 @@ module.exports = (crowi) => {
    *                      description: markdown params
    *                      $ref: '#/components/schemas/MarkdownParams'
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(_req, res) => {
     const markdownParams = {
       isEnabledLinebreaks: await crowi.configManager.getConfig('markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown:isEnabledLinebreaksInComments'),

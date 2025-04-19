@@ -8,7 +8,7 @@ const logger = loggerFactory('growi:routes:admin');
 
 /* eslint-disable no-use-before-define */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, _app) => {
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
 
@@ -27,7 +27,7 @@ module.exports = function(crowi, app) {
   api.validators = {};
   api.validators.importer = {};
 
-  api.validators.importer.esa = function() {
+  api.validators.importer.esa = () => {
     const validator = [
       check('importer:esa:team_name').not().isEmpty().withMessage('Error. Empty esa:team_name'),
       check('importer:esa:access_token').not().isEmpty().withMessage('Error. Empty esa:access_token'),
@@ -35,7 +35,7 @@ module.exports = function(crowi, app) {
     return validator;
   };
 
-  api.validators.importer.qiita = function() {
+  api.validators.importer.qiita = () => {
     const validator = [
       check('importer:qiita:team_name').not().isEmpty().withMessage('Error. Empty qiita:team_name'),
       check('importer:qiita:access_token').not().isEmpty().withMessage('Error. Empty qiita:access_token'),
@@ -49,7 +49,7 @@ module.exports = function(crowi, app) {
   actions.export.api = api;
   api.validators.export = {};
 
-  api.validators.export.download = function() {
+  api.validators.export.download = () => {
     const validator = [
       // https://regex101.com/r/mD4eZs/6
       // prevent from pass traversal attack
@@ -189,7 +189,7 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.testEsaAPI = async(req, res) => {
+  actions.api.testEsaAPI = async(_req, res) => {
     try {
       await importer.testConnectionToEsa();
       const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_ESA_DATA };
@@ -207,7 +207,7 @@ module.exports = function(crowi, app) {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.testQiitaAPI = async(req, res) => {
+  actions.api.testQiitaAPI = async(_req, res) => {
     try {
       await importer.testConnectionToQiita();
       const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_QIITA_DATA };
@@ -220,7 +220,7 @@ module.exports = function(crowi, app) {
   };
 
 
-  actions.api.searchBuildIndex = async function(req, res) {
+  actions.api.searchBuildIndex = async (_req, res) => {
     const search = crowi.getSearcher();
     if (!search) {
       return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));

@@ -108,7 +108,7 @@ class AzureFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override saveFile(param: SaveFileParam) {
+  override saveFile(_param: SaveFileParam) {
     throw new Error('Method not implemented.');
   }
 
@@ -241,12 +241,10 @@ class AzureFileUploader extends AbstractFileUploader {
 module.exports = (crowi: Crowi) => {
   const lib = new AzureFileUploader(crowi);
 
-  lib.isValidUploadSettings = function() {
-    return configManager.getConfig('azure:storageAccountName') != null
+  lib.isValidUploadSettings = () => configManager.getConfig('azure:storageAccountName') != null
       && configManager.getConfig('azure:storageContainerName') != null;
-  };
 
-  (lib as any).deleteFile = async function(attachment) {
+  (lib as any).deleteFile = async (attachment) => {
     const filePath = getFilePathOnStorage(attachment);
     const containerClient = await getContainerClient();
     const blockBlobClient = await containerClient.getBlockBlobClient(filePath);
@@ -257,7 +255,7 @@ module.exports = (crowi: Crowi) => {
     }
   };
 
-  (lib as any).deleteFiles = async function(attachments) {
+  (lib as any).deleteFiles = async (attachments) => {
     if (!lib.getIsUploadable()) {
       throw new Error('Azure is not configured.');
     }
@@ -266,7 +264,7 @@ module.exports = (crowi: Crowi) => {
     }
   };
 
-  lib.saveFile = async function({ filePath, contentType, data }) {
+  lib.saveFile = async ({ filePath, contentType, data }) => {
     const containerClient = await getContainerClient();
     const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
     const options: BlockBlobParallelUploadOptions = {
@@ -279,13 +277,13 @@ module.exports = (crowi: Crowi) => {
     return;
   };
 
-  (lib as any).checkLimit = async function(uploadFileSize) {
+  (lib as any).checkLimit = async (uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const gcsTotalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
   };
 
-  (lib as any).listFiles = async function() {
+  (lib as any).listFiles = async () => {
     if (!lib.getIsReadable()) {
       throw new Error('Azure is not configured.');
     }

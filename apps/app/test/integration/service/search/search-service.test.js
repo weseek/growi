@@ -20,8 +20,8 @@ describe('SearchService test', () => {
 
   let dummyAliasOf;
 
-  let namedQuery1;
-  let namedQuery2;
+  let _namedQuery1;
+  let _namedQuery2;
 
   const dummyFullTextSearchDelegator = {
     search() {
@@ -44,8 +44,8 @@ describe('SearchService test', () => {
       { name: 'named_query2', aliasOf: dummyAliasOf },
     ]);
 
-    namedQuery1 = await NamedQuery.findOne({ name: 'named_query1' });
-    namedQuery2 = await NamedQuery.findOne({ name: 'named_query2' });
+    _namedQuery1 = await NamedQuery.findOne({ name: 'named_query1' });
+    _namedQuery2 = await NamedQuery.findOne({ name: 'named_query2' });
   });
 
 

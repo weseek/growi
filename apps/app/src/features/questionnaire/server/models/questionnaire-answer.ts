@@ -1,9 +1,9 @@
-import { Document, Model, Schema } from 'mongoose';
+import { type Document, type Model, Schema } from 'mongoose';
 
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { IQuestionnaireAnswer } from '../../interfaces/questionnaire-answer';
+import type { IQuestionnaireAnswer } from '../../interfaces/questionnaire-answer';
 
 import { answerSchema } from './schema/answer';
 import { growiInfoSchema } from './schema/growi-info';

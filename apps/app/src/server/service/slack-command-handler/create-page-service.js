@@ -8,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 import { growiInfoService } from '../growi-info';
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:service:CreatePageService');
+const _logger = loggerFactory('growi:service:CreatePageService');
 
 const { pathUtils } = require('@growi/core/dist/utils');
 const mongoose = require('mongoose');
@@ -23,7 +23,7 @@ class CreatePageService {
     this.crowi = crowi;
   }
 
-  async createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, user) {
+  async createPageInGrowi(_interactionPayloadAccessor, path, contentsBody, respondUtil, user) {
     const reshapedContentsBody = reshapeContentsBody(contentsBody);
 
     // sanitize path

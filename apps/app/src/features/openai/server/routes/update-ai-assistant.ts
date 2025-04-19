@@ -1,4 +1,4 @@
-import { type IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import { type ValidationChain, param } from 'express-validator';
@@ -10,7 +10,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-import { type UpsertAiAssistantData } from '../../interfaces/ai-assistant';
+import type { UpsertAiAssistantData } from '../../interfaces/ai-assistant';
 import { getOpenaiService } from '../services/openai';
 
 import { certifyAiService } from './middlewares/certify-ai-service';

@@ -8,29 +8,29 @@ import { getInstance } from '../setup-crowi';
 describe('Test page service methods', () => {
   let crowi;
   let Page;
-  let Revision;
+  let _Revision;
   let User;
-  let Tag;
-  let Bookmark;
-  let Comment;
-  let ShareLink;
-  let PageRedirect;
+  let _Tag;
+  let _Bookmark;
+  let _Comment;
+  let _ShareLink;
+  let _PageRedirect;
   let PageOperation;
 
   let rootPage;
 
   let dummyUser1;
-  let dummyUser2;
-  let globalGroupUser1;
-  let globalGroupUser2;
-  let globalGroupUser3;
+  let _dummyUser2;
+  let _globalGroupUser1;
+  let _globalGroupUser2;
+  let _globalGroupUser3;
 
   let pageOpId1;
   let pageOpId2;
   let pageOpId3;
   let pageOpId4;
-  let pageOpId5;
-  let pageOpId6;
+  let _pageOpId5;
+  let _pageOpId6;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -38,12 +38,12 @@ describe('Test page service methods', () => {
 
     User = mongoose.model('User');
     Page = mongoose.model('Page');
-    Revision = mongoose.model('Revision');
-    Tag = mongoose.model('Tag');
-    Bookmark = mongoose.model('Bookmark');
-    Comment = mongoose.model('Comment');
-    ShareLink = mongoose.model('ShareLink');
-    PageRedirect = mongoose.model('PageRedirect');
+    _Revision = mongoose.model('Revision');
+    _Tag = mongoose.model('Tag');
+    _Bookmark = mongoose.model('Bookmark');
+    _Comment = mongoose.model('Comment');
+    _ShareLink = mongoose.model('ShareLink');
+    _PageRedirect = mongoose.model('PageRedirect');
     PageOperation = mongoose.model('PageOperation');
 
     /*
@@ -55,10 +55,10 @@ describe('Test page service methods', () => {
     // ***********************************************************************************************************
     // users
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
-    dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
-    globalGroupUser1 = await User.findOne({ username: 'gGroupUser1' });
-    globalGroupUser2 = await User.findOne({ username: 'gGroupUser2' });
-    globalGroupUser3 = await User.findOne({ username: 'gGroupUser3' });
+    _dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
+    _globalGroupUser1 = await User.findOne({ username: 'gGroupUser1' });
+    _globalGroupUser2 = await User.findOne({ username: 'gGroupUser2' });
+    _globalGroupUser3 = await User.findOne({ username: 'gGroupUser3' });
     // page
     rootPage = await Page.findOne({ path: '/' });
 

@@ -175,7 +175,7 @@ export const HandsontableModal = (): JSX.Element => {
     cancel();
   };
 
-  const beforeColumnResizeHandler = (currentColumn) => {
+  const beforeColumnResizeHandler = (_currentColumn) => {
     /*
      * The following bug disturbs to use 'beforeColumnResizeHandler' to store column index -- 2018.10.23 Yuki Takei
      * https://github.com/handsontable/handsontable/issues/3328
@@ -215,7 +215,7 @@ export const HandsontableModal = (): JSX.Element => {
     return Math.max(80, Math.min(400, width));
   };
 
-  const beforeColumnMoveHandler = (columns, target) => {
+  const beforeColumnMoveHandler = (_columns, _target) => {
     // clear 'manuallyResizedColumnIndicesSet'
     manuallyResizedColumnIndicesSet.clear();
   };
@@ -364,7 +364,7 @@ export const HandsontableModal = (): JSX.Element => {
     }
 
     const selectedRange = hotTable.hotInstance.getSelectedRange();
-    if (selectedRange == null) return;
+    if (selectedRange == null) { return; }
 
     const startCol = selectedRange[0].from.col < selectedRange[0].to.col ? selectedRange[0].from.col : selectedRange[0].to.col;
     const endCol = selectedRange[0].from.col < selectedRange[0].to.col ? selectedRange[0].to.col : selectedRange[0].from.col;
@@ -414,15 +414,15 @@ export const HandsontableModal = (): JSX.Element => {
               {
                 name: 'Left',
                 key: 'align_columns:1',
-                callback: (key, selection) => { align('l', selection[0].start.col, selection[0].end.col) },
+                callback: (_key, selection) => { align('l', selection[0].start.col, selection[0].end.col) },
               }, {
                 name: 'Center',
                 key: 'align_columns:2',
-                callback: (key, selection) => { align('c', selection[0].start.col, selection[0].end.col) },
+                callback: (_key, selection) => { align('c', selection[0].start.col, selection[0].end.col) },
               }, {
                 name: 'Right',
                 key: 'align_columns:3',
-                callback: (key, selection) => { align('r', selection[0].start.col, selection[0].end.col) },
+                callback: (_key, selection) => { align('r', selection[0].start.col, selection[0].end.col) },
               },
             ],
           },

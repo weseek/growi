@@ -59,8 +59,8 @@ const schema = new Schema<AiAssistantDocument>(
           index: true,
         },
       }],
-      validate: [function(arr: IGrantedGroup[]): boolean {
-        if (arr == null) return true;
+      validate: [(arr: IGrantedGroup[]): boolean => {
+        if (arr == null) { return true; }
         const uniqueItemValues = new Set(arr.map(e => e.item));
         return arr.length === uniqueItemValues.size;
       }, 'grantedGroups contains non unique item'],
@@ -81,8 +81,8 @@ const schema = new Schema<AiAssistantDocument>(
           index: true,
         },
       }],
-      validate: [function(arr: IGrantedGroup[]): boolean {
-        if (arr == null) return true;
+      validate: [(arr: IGrantedGroup[]): boolean => {
+        if (arr == null) { return true; }
         const uniqueItemValues = new Set(arr.map(e => e.item));
         return arr.length === uniqueItemValues.size;
       }, 'grantedGroups contains non unique item'],

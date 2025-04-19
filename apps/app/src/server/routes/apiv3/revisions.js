@@ -149,7 +149,7 @@ module.exports = (crowi) => {
     try {
       await normalizeLatestRevisionIfBroken(pageId);
     }
-    catch (err) {
+    catch (_err) {
       logger.error('Error occurred in normalizing the latest revision');
     }
 

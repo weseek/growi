@@ -1,7 +1,7 @@
-import React, { FC, memo } from 'react';
+import React, { type FC, memo } from 'react';
 
 import { useKeywordManager } from '~/client/services/search-operation';
-import { IDataTagCount } from '~/interfaces/tag';
+import type { IDataTagCount } from '~/interfaces/tag';
 
 
 type Props = {

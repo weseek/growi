@@ -43,7 +43,7 @@ import '@growi/remark-lsx/dist/client/style.css';
 import '@growi/remark-attachment-refs/dist/client/style.css';
 
 
-const logger = loggerFactory('growi:cli:services:renderer');
+const _logger = loggerFactory('growi:cli:services:renderer');
 
 
 assert(isClient(), 'This module must be loaded only from client modules.');

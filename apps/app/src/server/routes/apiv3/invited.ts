@@ -94,7 +94,7 @@ module.exports = (crowi: Crowi): Router => {
       await user.activateInvitedUser(username, name, password);
       return res.apiv3({ redirectTo: '/' });
     }
-    catch (err) {
+    catch (_err) {
       return res.apiv3Err('message.failed_to_activate', 403);
     }
   });

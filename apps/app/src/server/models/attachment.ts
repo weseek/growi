@@ -14,7 +14,7 @@ import { AttachmentType } from '../interfaces/attachment';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 // eslint-disable-next-line no-unused-vars
-const logger = loggerFactory('growi:models:attachment');
+const _logger = loggerFactory('growi:models:attachment');
 
 
 function generateFileHash(fileName) {
@@ -74,8 +74,6 @@ attachmentSchema.set('toJSON', { virtuals: true });
 attachmentSchema.statics.createWithoutSave = function(
     pageId, user, originalName: string, fileFormat: string, fileSize: number, attachmentType: AttachmentType,
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const Attachment = this;
 
   const extname = path.extname(originalName);
   let fileName = generateFileHash(originalName);
@@ -83,7 +81,7 @@ attachmentSchema.statics.createWithoutSave = function(
     fileName = `${fileName}${extname}`;
   }
 
-  const attachment = new Attachment();
+  const attachment = new this();
   attachment.page = pageId;
   attachment.creator = user._id;
   attachment.originalName = originalName;

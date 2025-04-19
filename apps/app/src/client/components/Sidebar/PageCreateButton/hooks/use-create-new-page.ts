@@ -17,7 +17,7 @@ export const useCreateNewPage: UseCreateNewPage = () => {
   const { isCreating, create } = useCreatePage();
 
   const createNewPage = useCallback(async() => {
-    if (isLoadingPagePath) return;
+    if (isLoadingPagePath) { return; }
 
     return create(
       {

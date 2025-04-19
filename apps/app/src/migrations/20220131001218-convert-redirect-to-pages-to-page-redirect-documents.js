@@ -12,7 +12,7 @@ const BATCH_SIZE = 100;
 
 
 module.exports = {
-  async up(db, client) {
+  async up(db, _client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
     const pageCollection = await db.collection('pages');
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;
@@ -38,7 +38,7 @@ module.exports = {
       }
       catch (err) {
         if (err.code !== 11000) {
-          throw Error(`Failed to migrate: ${err}`);
+          throw new Error(`Failed to migrate: ${err}`);
         }
       }
     }
@@ -48,7 +48,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(db, client) {
+  async down(db, _client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
     const pageCollection = await db.collection('pages');
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;
@@ -74,7 +74,7 @@ module.exports = {
       }
       catch (err) {
         if (err.code !== 11000) {
-          throw Error(`Failed to migrate: ${err}`);
+          throw new Error(`Failed to migrate: ${err}`);
         }
       }
     }

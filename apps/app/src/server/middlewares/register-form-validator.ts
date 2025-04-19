@@ -29,7 +29,7 @@ export const registerRules = (minPasswordLength: number): ValidationChain[] => {
 };
 
 // validation action
-export const registerValidation = (req, res, next): ValidationChain[] => {
+export const registerValidation = (req, _res, next): ValidationChain[] => {
   const form = req.body;
 
   const errors = validationResult(req);

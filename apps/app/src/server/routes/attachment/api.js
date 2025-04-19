@@ -135,7 +135,7 @@ const ApiResponse = require('../../util/apiResponse');
 export const routesFactory = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+  const _GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const { attachmentService, globalNotificationService } = crowi;
 
   const activityEvent = crowi.event('activity');
@@ -235,7 +235,7 @@ export const routesFactory = (crowi) => {
    *
    * @apiParam {File} file
    */
-  api.uploadProfileImage = async function(req, res) {
+  api.uploadProfileImage = async (req, res) => {
     // check params
     if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
@@ -310,7 +310,7 @@ export const routesFactory = (crowi) => {
    *
    * @apiParam {String} attachment_id
    */
-  api.remove = async function(req, res) {
+  api.remove = async (req, res) => {
     const id = req.body.attachment_id;
 
     const attachment = await Attachment.findById(id);
@@ -373,7 +373,7 @@ export const routesFactory = (crowi) => {
    * @apiGroup Attachment
    * @apiParam {String} attachment_id
    */
-  api.removeProfileImage = async function(req, res) {
+  api.removeProfileImage = async (req, res) => {
     const user = req.user;
     const attachment = await Attachment.findById(user.imageAttachment);
 

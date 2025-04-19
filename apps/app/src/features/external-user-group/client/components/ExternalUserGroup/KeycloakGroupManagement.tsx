@@ -1,4 +1,4 @@
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';

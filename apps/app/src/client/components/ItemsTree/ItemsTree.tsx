@@ -1,4 +1,5 @@
-import React, {
+import type React from 'react';
+import {
   useEffect, useCallback,
 } from 'react';
 
@@ -32,7 +33,7 @@ import styles from './ItemsTree.module.scss';
 
 const moduleClass = styles['items-tree'] ?? '';
 
-const logger = loggerFactory('growi:cli:ItemsTree');
+const _logger = loggerFactory('growi:cli:ItemsTree');
 
 type ItemsTreeProps = {
   isEnableActions: boolean
@@ -94,7 +95,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   const onClickDuplicateMenuItem = useCallback((pageToDuplicate: IPageForPageDuplicateModal) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, _toPath) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
       mutatePageTree();
@@ -106,7 +107,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   }, [openDuplicateModal, t]);
 
   const onClickDeleteMenuItem = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
-    const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+    const onDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') {
         return;
       }

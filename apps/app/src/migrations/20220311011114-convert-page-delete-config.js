@@ -11,7 +11,7 @@ const logger = loggerFactory('growi:migrate:convert-page-delete-config');
 
 
 module.exports = {
-  async up(db, client) {
+  async up(_db, _client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isNewConfigExists = await Config.count({
@@ -57,7 +57,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(db, client) {
+  async down(_db, _client) {
     logger.info('Migration down has successfully applied');
   },
 };

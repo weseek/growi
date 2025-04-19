@@ -62,7 +62,7 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
   // create a Writable that creates a snapshot for each page
   const pageSnapshotsWritable = new Writable({
     objectMode: true,
-    write: async(page: PageDocument, encoding, callback) => {
+    write: async(page: PageDocument, _encoding, callback) => {
       try {
         if (page.revision != null) {
           revisionListHash.update(getIdStringForRef(page.revision));

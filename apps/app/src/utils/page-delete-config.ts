@@ -1,6 +1,6 @@
 import {
-  PageDeleteConfigValue as Value, IPageDeleteConfigValueToProcessValidation,
-  IPageDeleteConfigValue,
+  PageDeleteConfigValue as Value, type IPageDeleteConfigValueToProcessValidation,
+  type IPageDeleteConfigValue,
 } from '~/interfaces/page-delete-config';
 
 /**

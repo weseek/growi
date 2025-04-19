@@ -85,7 +85,7 @@ module.exports = (crowi) => {
       body('email')
         .isEmail()
         .custom((email) => {
-          if (!User.isEmailValid(email)) throw new Error('email is not included in whitelist');
+          if (!User.isEmailValid(email)) { throw new Error('email is not included in whitelist'); }
           return true;
         }),
       body('lang').isString().isIn(i18n.locales),

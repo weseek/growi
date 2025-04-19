@@ -3,7 +3,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:middleware:htto-error-handler');
 
-module.exports = async(err, req, res, next) => {
+module.exports = async(err, _req, res, next) => {
   // handle if the err is a HttpError instance
   if (isHttpError(err)) {
     const httpError = err;

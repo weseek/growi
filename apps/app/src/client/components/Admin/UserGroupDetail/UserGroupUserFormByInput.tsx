@@ -38,7 +38,7 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
       toastSuccess(`Added "${userName}" to "${userGroup.name}"`);
       setInputUser([]);
     }
-    catch (err) {
+    catch (_err) {
       toastError(new Error(`Unable to add "${userName}" to "${userGroup.name}"`));
     }
   };

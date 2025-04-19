@@ -2,7 +2,9 @@
 import React from 'react';
 
 import type { Locale } from '@growi/core/dist/interfaces';
+// biome-ignore lint/nursery/noDocumentImportInPage: ignore
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
+// biome-ignore lint/nursery/noDocumentImportInPage: ignore
 import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';
@@ -13,7 +15,7 @@ import loggerFactory from '~/utils/logger';
 
 import { getLocaleAtServerSide } from './utils/commons';
 
-const logger = loggerFactory('growi:page:_document');
+const _logger = loggerFactory('growi:page:_document');
 
 type HeadersForGrowiPluginProps = {
   pluginResourceEntries: GrowiPluginResourceEntries;

@@ -77,7 +77,7 @@ const PermissionSettingForEachPermissionTypeComponent = ({
   const hiddenClass = currentPermissionType === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
 
   const permission = permissionSettings[keyName];
-  if (permission === undefined) logger.error('Must be implemented');
+  if (permission === undefined) { logger.error('Must be implemented') }
   const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
 
 
@@ -257,7 +257,7 @@ const ManageCommandsProcess = ({
   }, []);
 
 
-  const updateSettingsHandler = async(e) => {
+  const updateSettingsHandler = async(_e) => {
     try {
       // TODO: add new attribute 78975
       await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/permissions`, {

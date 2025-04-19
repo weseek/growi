@@ -11,7 +11,7 @@ export const useToastrOnError = <P, R>(method?: (param?: P) => Promise<R|undefin
     try {
       return await method?.(param);
     }
-    catch (err) {
+    catch (_err) {
       toastError(t('toaster.create_failed', { target: 'a page' }));
     }
   }, [method, t]);

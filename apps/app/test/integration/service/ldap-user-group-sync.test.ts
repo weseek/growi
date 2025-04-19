@@ -1,4 +1,4 @@
-import ldap, { Client } from 'ldapjs';
+import ldap, { type Client } from 'ldapjs';
 
 import { LdapUserGroupSyncService } from '../../../src/features/external-user-group/server/service/ldap-user-group-sync';
 import { configManager } from '../../../src/server/service/config-manager';
@@ -42,7 +42,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   describe('When there is no circular reference in group tree', () => {
     it('creates ExternalUserGroupTrees', async() => {
       // mock search on LDAP server
-      mockLdapSearch.mockImplementation((filter, base) => {
+      mockLdapSearch.mockImplementation((_filter, base) => {
         if (base === 'ou=groups,dc=example,dc=org') {
         // search groups
           return Promise.resolve([
@@ -214,7 +214,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   describe('When there is a circular reference in group tree', () => {
     it('rejects creating ExternalUserGroupTrees', async() => {
       // mock search on LDAP server
-      mockLdapSearch.mockImplementation((filter, base) => {
+      mockLdapSearch.mockImplementation((_filter, base) => {
         if (base === 'ou=groups,dc=example,dc=org') {
         // search groups
           return Promise.resolve([

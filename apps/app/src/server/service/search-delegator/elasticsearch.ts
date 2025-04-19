@@ -423,7 +423,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return this.updateOrInsertPages(() => Page.findById(pageId));
   }
 
-  updateOrInsertDescendantsPagesById(page, user) {
+  updateOrInsertDescendantsPagesById(page, _user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
     const builder = new PageQueryBuilder(Page.find());
@@ -462,7 +462,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const appendTagNamesStream = new Transform({
       objectMode: true,
-      async transform(chunk, encoding, callback) {
+      async transform(chunk, _encoding, callback) {
         const pageIds = chunk.map(doc => doc._id);
 
         const idToTagNamesMap = await PageTagRelation.getIdToTagNamesMap(pageIds);
@@ -506,7 +506,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, encoding, callback) {
+      async write(batch, _encoding, callback) {
         const body: (BulkWriteCommand|BulkWriteBody)[] = [];
         batch.forEach((doc: AggregatedPage) => {
           body.push(...prepareBodyForCreate(doc));
@@ -639,7 +639,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     // sort by score
     // eslint-disable-next-line prefer-const
-    let query = {
+    const query = {
       index: this.aliasName,
       _source: fields,
       body: {
@@ -683,7 +683,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   appendCriteriaForQueryString(query, parsedKeywords: ESQueryTerms): void {
-    query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
+    // biome-ignore lint/style/noParameterAssign: ignore
+    query = this.initializeBoolQuery(query);
 
     if (parsedKeywords.match.length > 0) {
       const q = {
@@ -775,7 +776,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const showPagesRestrictedByOwner = !configManager.getConfig('security:list-policy:hideRestrictedByOwner');
     const showPagesRestrictedByGroup = !configManager.getConfig('security:list-policy:hideRestrictedByGroup');
 
-    query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
+    // biome-ignore lint/style/noParameterAssign: ignore
+    query = this.initializeBoolQuery(query);
 
     const Page = mongoose.model('Page') as unknown as PageModel;
     const {
@@ -918,7 +920,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const { queryString, terms } = data;
 
     if (terms == null) {
-      throw Error('Cannot process search since terms is undefined.');
+      throw new Error('Cannot process search since terms is undefined.');
     }
 
     const from = option?.offset ?? null;
@@ -961,13 +963,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       .map(([key]) => key as UnavailableTermsKey<ESTermsKey>);
   }
 
-  async syncPageUpdated(page, user) {
+  async syncPageUpdated(page, _user) {
     logger.debug('SearchClient.syncPageUpdated', page.path);
     return this.updateOrInsertPageById(page._id);
   }
 
   // remove pages whitch should nod Indexed
-  async syncPagesUpdated(pages, user) {
+  async syncPagesUpdated(_pages, _user) {
     const shoudDeletePages: any[] = [];
 
     // delete if page should not indexed
@@ -985,7 +987,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return this.updateOrInsertDescendantsPagesById(parentPage, user);
   }
 
-  async syncDescendantsPagesDeleted(pages, user) {
+  async syncDescendantsPagesDeleted(pages, _user) {
     for (let i = 0; i < pages.length; i++) {
       logger.debug('SearchClient.syncDescendantsPagesDeleted', pages[i].path);
     }
@@ -998,7 +1000,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
   }
 
-  async syncPageDeleted(page, user) {
+  async syncPageDeleted(page, _user) {
     logger.debug('SearchClient.syncPageDeleted', page.path);
 
     try {
