@@ -440,7 +440,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       {path != null && currentUser != null && !isReadOnlyUser && (
         <CreateTemplateModal
           path={path}
-          isOpen={true}
+          isOpen={isPageTemplateModalShown}
           onClose={() => setIsPageTempleteModalShown(false)}
         />
       )}
