@@ -19,6 +19,29 @@ module.exports = {
     '@typescript-eslint',
     'regex',
   ],
+  settings: {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+      },
+      node: {
+        extensions: [
+          '.mjs',
+          '.js',
+          '.json',
+        ],
+      },
+    },
+    'import/extensions': [
+      '.js',
+      '.mjs',
+      '.jsx',
+    ],
+    'import/ignore': [
+      'node_modules',
+      '\\.(coffee|scss|css|less|hbs|svg|json)$',
+    ],
+  },
   ignorePatterns: [
     'node_modules/**',
   ],
