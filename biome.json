@@ -189,7 +189,16 @@
         "useValidTypeof": "error"
       }
     },
-    "ignore": ["node_modules/**", "./dist/**", "./transpiled/**", "./public/**", "./src/linter-checker/**", "./tmp/**", "./next-env.d.ts"]
+    "ignore": [
+      "node_modules/**",
+      "./dist/**",
+      "./transpiled/**",
+      "./public/**",
+      "./src/linter-checker/**",
+      "./tmp/**",
+      "./next-env.d.ts",
+      ".turbo/**"
+    ]
   },
   "javascript": { "formatter": { "quoteStyle": "single" } }
 }
