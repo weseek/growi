@@ -220,7 +220,7 @@ module.exports = (crowi, _app) => {
   };
 
 
-  actions.api.searchBuildIndex = async (_req, res) => {
+  actions.api.searchBuildIndex = async(_req, res) => {
     const search = crowi.getSearcher();
     if (!search) {
       return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));

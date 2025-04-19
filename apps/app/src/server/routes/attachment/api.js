@@ -235,7 +235,7 @@ export const routesFactory = (crowi) => {
    *
    * @apiParam {File} file
    */
-  api.uploadProfileImage = async (req, res) => {
+  api.uploadProfileImage = async(req, res) => {
     // check params
     if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
@@ -310,7 +310,7 @@ export const routesFactory = (crowi) => {
    *
    * @apiParam {String} attachment_id
    */
-  api.remove = async (req, res) => {
+  api.remove = async(req, res) => {
     const id = req.body.attachment_id;
 
     const attachment = await Attachment.findById(id);
@@ -373,7 +373,7 @@ export const routesFactory = (crowi) => {
    * @apiGroup Attachment
    * @apiParam {String} attachment_id
    */
-  api.removeProfileImage = async (req, res) => {
+  api.removeProfileImage = async(req, res) => {
     const user = req.user;
     const attachment = await Attachment.findById(user.imageAttachment);
 

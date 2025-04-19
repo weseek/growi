@@ -68,7 +68,7 @@ module.exports = (crowi, _app) => {
     return;
   }
 
-  const registerSuccessHandler = async (req, res, userData, registrationMode) => {
+  const registerSuccessHandler = async(req, res, userData, registrationMode) => {
     const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 

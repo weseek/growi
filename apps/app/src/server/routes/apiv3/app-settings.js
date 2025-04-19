@@ -697,7 +697,7 @@ module.exports = (crowi) => {
     await sendMailPromiseWrapper(smtpClient, mailOptions);
   }
 
-  const updateMailSettinConfig = async (requestMailSettingParams) => {
+  const updateMailSettinConfig = async(requestMailSettingParams) => {
     const {
       mailService,
     } = crowi;

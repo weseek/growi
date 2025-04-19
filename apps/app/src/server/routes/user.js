@@ -56,7 +56,7 @@ module.exports = (crowi, _app) => {
 
   actions.api = api;
 
-  api.checkUsername = async (req, res) => {
+  api.checkUsername = async(req, res) => {
     const username = req.query.username;
 
     let valid = false;

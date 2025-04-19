@@ -119,7 +119,7 @@ module.exports = (crowi, _app) => {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id Revision Id.
    */
-  api.get = async (req, res) => {
+  api.get = async(req, res) => {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
 
@@ -225,7 +225,7 @@ module.exports = (crowi, _app) => {
    * @apiParam {String} comment Comment body
    * @apiParam {Number} comment_position=-1 Line number of the comment
    */
-  api.add = async (req, res) => {
+  api.add = async(req, res) => {
     const { commentForm, slackNotificationForm } = req.body;
     const { validationResult } = require('express-validator');
 
@@ -366,7 +366,7 @@ module.exports = (crowi, _app) => {
    * @apiName UpdateComment
    * @apiGroup Comment
    */
-  api.update = async (req, res) => {
+  api.update = async(req, res) => {
     const { commentForm } = req.body;
 
     const commentStr = commentForm?.comment;
@@ -459,7 +459,7 @@ module.exports = (crowi, _app) => {
    *
    * @apiParam {String} comment_id Comment Id.
    */
-  api.remove = async (req, res) => {
+  api.remove = async(req, res) => {
     const commentId = req.body.comment_id;
     if (!commentId) {
       return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));

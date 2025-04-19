@@ -267,7 +267,7 @@ Crowi.prototype.getEnv = function() {
  * @param {string} modelName
  * @returns {mongoose.Model}
  */
-Crowi.prototype.model = (modelName) => getModelSafely(modelName);
+Crowi.prototype.model = modelName => getModelSafely(modelName);
 
 // getter/setter of event instance
 Crowi.prototype.event = function(name, event) {
@@ -590,7 +590,7 @@ Crowi.prototype.setupGlobalErrorHandlers = function() {
  *
  * @memberof Crowi
  */
-Crowi.prototype.require = (modulePath) => require(modulePath);
+Crowi.prototype.require = modulePath => require(modulePath);
 
 /**
  * setup GlobalNotificationService
@@ -717,7 +717,7 @@ Crowi.prototype.setupImport = async function() {
   initializeImportService(this);
 };
 
-Crowi.prototype.setupGrowiPluginService = async () => {
+Crowi.prototype.setupGrowiPluginService = async() => {
   const growiPluginService = await import('~/features/growi-plugin/server/services').then(mod => mod.growiPluginService);
 
   // download plugin repositories, if document exists but there is no repository

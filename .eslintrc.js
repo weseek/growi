@@ -233,7 +233,7 @@ module.exports = {
     'import/no-cycle': [
       'error',
       {
-        maxDepth: null,
+        maxDepth: '∞',
         ignoreExternal: false,
       },
     ],
