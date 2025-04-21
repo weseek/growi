@@ -87,14 +87,14 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override findDeliveryFile(_attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
+  override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
     throw new Error('Method not implemented.');
   }
 
   /**
    * @inheritDoc
    */
-  override async generateTemporaryUrl(_attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
+  override async generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
     throw new Error('GridfsFileUploader does not support ResponseMode.REDIRECT.');
   }
 

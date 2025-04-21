@@ -42,7 +42,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   describe('When there is no circular reference in group tree', () => {
     it('creates ExternalUserGroupTrees', async() => {
       // mock search on LDAP server
-      mockLdapSearch.mockImplementation((_filter, base) => {
+      mockLdapSearch.mockImplementation((filter, base) => {
         if (base === 'ou=groups,dc=example,dc=org') {
         // search groups
           return Promise.resolve([
@@ -214,7 +214,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   describe('When there is a circular reference in group tree', () => {
     it('rejects creating ExternalUserGroupTrees', async() => {
       // mock search on LDAP server
-      mockLdapSearch.mockImplementation((_filter, base) => {
+      mockLdapSearch.mockImplementation((filter, base) => {
         if (base === 'ou=groups,dc=example,dc=org') {
         // search groups
           return Promise.resolve([

@@ -12,12 +12,12 @@ class BaseSlackCommandHandler {
   /**
    * Handle /commands endpoint
    */
-  handleCommand(_growiCommand, client, _body) { throw new Error('Implement this') }
+  handleCommand(growiCommand, client, body) { throw new Error('Implement this') }
 
   /**
    * Handle interactions
    */
-  handleInteractions(_client, _interactionPayload, _interactionPayloadAccessor, _handlerMethodName) { throw new Error('Implement this') }
+  handleInteractions(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) { throw new Error('Implement this') }
 
 }
 

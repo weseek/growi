@@ -4,7 +4,7 @@ class MockMultipartUploader extends MultipartUploader {
 
   async initUpload(): Promise<void> { return }
 
-  async uploadPart(_part: Buffer, _partNumber: number): Promise<void> { return }
+  async uploadPart(part: Buffer, partNumber: number): Promise<void> { return }
 
   async completeUpload(): Promise<void> { return }
 

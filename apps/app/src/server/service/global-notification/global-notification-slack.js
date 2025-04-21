@@ -123,7 +123,7 @@ class GlobalNotificationSlackService {
    *
    * @return  {string} slack attachment body
    */
-  generateAttachmentBody(_event, _id, _path, _triggeredBy, { comment, oldPath }) {
+  generateAttachmentBody(event, id, path, triggeredBy, { comment, oldPath }) {
     const attachmentBody = '';
 
     // TODO: create attachment

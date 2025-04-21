@@ -36,7 +36,7 @@ export class GcsMultipartUploader extends MultipartUploader implements IGcsMulti
     logger.info(`Multipart upload initialized. Upload key: ${this.uploadKey}`);
   }
 
-  async uploadPart(part: Buffer, _partNumber: number): Promise<void> {
+  async uploadPart(part: Buffer, partNumber: number): Promise<void> {
     this.validateUploadStatus(UploadStatus.IN_PROGRESS);
     this.validatePartSize(part.length);
 

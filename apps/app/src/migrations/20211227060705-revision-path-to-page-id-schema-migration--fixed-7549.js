@@ -25,7 +25,7 @@ module.exports = {
 
     const migratePagesStream = new Writable({
       objectMode: true,
-      async write(pages, encoding, callback) {
+      async write(pages, _encoding, callback) {
         const updateManyOperations = pages.map((page) => {
           return {
             updateMany: {
@@ -71,7 +71,7 @@ module.exports = {
 
     const migratePagesStream = new Writable({
       objectMode: true,
-      async write(pages, encoding, callback) {
+      async write(pages, _encoding, callback) {
         const updateManyOperations = pages.map((page) => {
           return {
             updateMany: {

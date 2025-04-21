@@ -20,7 +20,7 @@ module.exports = (crowi) => {
   };
   const { User } = crowi.models;
 
-  handler.handleCommand = async(_growiCommand, client, _body, respondUtil) => {
+  handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
     await respondUtil.respond({
       text: 'Take a note on GROWI',
       blocks: [
@@ -37,7 +37,7 @@ module.exports = (crowi) => {
     });
   };
 
-  handler.cancel = async(_client, _interactionPayload, _interactionPayloadAccessor, respondUtil) => {
+  handler.cancel = async(client, interactionPayload, interactionPayloadAccessor, respondUtil) => {
     await respondUtil.deleteOriginal();
   };
 
@@ -45,7 +45,7 @@ module.exports = (crowi) => {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.createPage = async(_client, interactionPayload, interactionPayloadAccessor, respondUtil) => {
+  handler.createPage = async(client, interactionPayload, interactionPayloadAccessor, respondUtil) => {
     const user = await User.findUserBySlackMemberId(interactionPayload.user.id);
     const path = interactionPayloadAccessor.getStateValues()?.path.path_input.value;
     const contentsBody = interactionPayloadAccessor.getStateValues()?.contents.contents_input.value;

@@ -18,7 +18,7 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
-  handler.handleCommand = async function(growiCommand, client, _body) {
+  handler.handleCommand = async function(growiCommand, client, body) {
     await respond(growiCommand.responseUrl, {
       text: 'Select messages to use.',
       blocks: this.togetterMessageBlocks(),
@@ -30,7 +30,7 @@ module.exports = (crowi) => {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
   };
 
-  handler.cancel = async(_client, _payload, interactionPayloadAccessor) => {
+  handler.cancel = async(client, payload, interactionPayloadAccessor) => {
     await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
       delete_original: true,
     });
@@ -53,7 +53,7 @@ module.exports = (crowi) => {
     await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody);
   };
 
-  handler.togetterValidateForm = async(_client, _payload, interactionPayloadAccessor) => {
+  handler.togetterValidateForm = async(client, payload, interactionPayloadAccessor) => {
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
     const path = interactionPayloadAccessor.getStateValues()?.page_path.page_path.value;
     let oldest = interactionPayloadAccessor.getStateValues()?.oldest.oldest.value;

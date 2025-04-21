@@ -98,7 +98,7 @@ updatePostSchema.statics.findSettingsByPath = async function(path) {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-updatePostSchema.statics.findAll = function(_offset = 0) {
+updatePostSchema.statics.findAll = function(offset = 0) {
   return this.find().sort({ createdAt: 1 }).populate('creator').exec();
 };
 

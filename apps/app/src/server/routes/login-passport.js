@@ -119,7 +119,7 @@ module.exports = (crowi, app) => {
    * @param {*} res
    * @param {*} next
    */
-  const loginFailure = (error, _req, res, next) => {
+  const loginFailure = (error, req, res, next) => {
 
     const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);

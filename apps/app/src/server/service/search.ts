@@ -405,7 +405,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   // TODO: optimize the way to check isFormattable e.g. check data schema of searchResult
   // So far, it determines by delegatorName passed by searchService.searchKeyword
-  checkIsFormattable(_searchResult, delegatorName: SearchDelegatorName): boolean {
+  checkIsFormattable(searchResult, delegatorName: SearchDelegatorName): boolean {
     return delegatorName === SearchDelegatorName.DEFAULT;
   }
 

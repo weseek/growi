@@ -362,7 +362,7 @@ class PassportService implements S2sMessageHandlable {
    * @returns
    * @memberof PassportService
    */
-  getLdapConfigurationFunc(_config, opts) {
+  getLdapConfigurationFunc(config, opts) {
     /* eslint-disable no-multi-spaces */
     const { configManager } = this.crowi;
 
@@ -468,7 +468,7 @@ class PassportService implements S2sMessageHandlable {
             : configManager.getConfigLegacy<string>('security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
-        (_accessToken, _refreshToken, profile, done) => {
+        (accessToken, refreshToken, profile, done) => {
           if (profile) {
             return done(null, profile);
           }
@@ -515,7 +515,7 @@ class PassportService implements S2sMessageHandlable {
             : configManager.getConfigLegacy('security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
-        (_accessToken, _refreshToken, profile, done) => {
+        (accessToken, refreshToken, profile, done) => {
           if (profile) {
             return done(null, profile);
           }
@@ -628,7 +628,7 @@ class PassportService implements S2sMessageHandlable {
           client,
           params: { scope: 'openid email profile' },
         },
-        (_tokenset, userinfo, done) => {
+        (tokenset, userinfo, done) => {
           if (userinfo) {
             return done(null, userinfo);
           }
@@ -730,7 +730,7 @@ class PassportService implements S2sMessageHandlable {
     }, {
       onFailedAttempt: (error) => {
         // get current OIDCIssuer timeout options
-        OIDCIssuer[custom.http_options] = (_url, options) => {
+        OIDCIssuer[custom.http_options] = (url, options) => {
           const timeout = options.timeout
             ? options.timeout * OIDC_TIMEOUT_MULTIPLIER
             : OIDC_ISSUER_TIMEOUT_OPTION * OIDC_TIMEOUT_MULTIPLIER;

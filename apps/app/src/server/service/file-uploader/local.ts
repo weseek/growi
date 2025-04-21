@@ -60,7 +60,7 @@ class LocalFileUploader extends AbstractFileUploader {
     throw new Error('Method not implemented.');
   }
 
-  deleteFileByFilePath(_filePath: string): void {
+  deleteFileByFilePath(filePath: string): void {
     throw new Error('Method not implemented.');
   }
 
@@ -76,7 +76,7 @@ class LocalFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(_readable: Readable, _attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, _attachment: IAttachmentDocument): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
@@ -90,14 +90,14 @@ class LocalFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override findDeliveryFile(_attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
+  override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
     throw new Error('Method not implemented.');
   }
 
   /**
    * @inheritDoc
    */
-  override async generateTemporaryUrl(_attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
+  override async generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
     throw new Error('LocalFileUploader does not support ResponseMode.REDIRECT.');
   }
 

@@ -170,7 +170,7 @@ export abstract class AbstractFileUploader implements FileUploader {
   /**
    * Abort an existing multipart upload without creating a MultipartUploader instance
    */
-  abortPreviousMultipartUpload(uploadKey: string, _uploadId: string): Promise<void> {
+  abortPreviousMultipartUpload(uploadKey: string, uploadId: string): Promise<void> {
     throw new Error('Multipart upload not available for file upload type');
   }
 

@@ -189,7 +189,7 @@ export const getPageSchema = (crowi) => {
     }));
   };
 
-  pageSchema.methods.unlike = function(userData, _callback) {
+  pageSchema.methods.unlike = function(userData, callback) {
 
     return new Promise(((resolve, reject) => {
       const beforeCount = this.liker.length;

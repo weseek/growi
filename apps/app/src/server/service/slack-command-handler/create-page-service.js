@@ -23,7 +23,7 @@ class CreatePageService {
     this.crowi = crowi;
   }
 
-  async createPageInGrowi(_interactionPayloadAccessor, path, contentsBody, respondUtil, user) {
+  async createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, user) {
     const reshapedContentsBody = reshapeContentsBody(contentsBody);
 
     // sanitize path

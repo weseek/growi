@@ -29,11 +29,11 @@ export const generateOverwriteParams = (operatorUserId: string, option: ImportOp
     return value;
   };
 
-  params.parent = (_value, { document, schema, propertyName }) => {
+  params.parent = (value, { document, schema, propertyName }) => {
     return null;
   };
 
-  params.descendantCount = (_value, { document, schema, propertyName }) => {
+  params.descendantCount = (value, { document, schema, propertyName }) => {
     return 0;
   };
 

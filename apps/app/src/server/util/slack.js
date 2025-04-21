@@ -31,7 +31,7 @@ const prepareAttachmentTextForCreate = (page, siteUrl) => {
  * @param {string} siteUrl
  * @param {IRevisionHasId} previousRevision
  */
-const prepareAttachmentTextForUpdate = (page, _siteUrl, previousRevision) => {
+const prepareAttachmentTextForUpdate = (page, siteUrl, previousRevision) => {
   if (previousRevision == null) {
     return;
   }
@@ -41,7 +41,7 @@ const prepareAttachmentTextForUpdate = (page, _siteUrl, previousRevision) => {
 
   diff.diffLines(previousRevision.body, page.revision.body).forEach((line) => {
     logger.debug('diff line', line);
-    const _value = line.value.replace(/\r\n|\r/g, '\n'); // eslint-disable-line no-unused-vars
+    const value = line.value.replace(/\r\n|\r/g, '\n'); // eslint-disable-line no-unused-vars
     if (line.added) {
       diffText += `${line.value} ... :lower_left_fountain_pen:`;
     }

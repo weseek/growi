@@ -383,7 +383,7 @@ const factory = (crowi) => {
     return userStatus;
   };
 
-  userSchema.statics.isEmailValid = (email, _callback) => {
+  userSchema.statics.isEmailValid = (email, callback) => {
     validateCrowi();
 
     const whitelist = configManager.getConfig('security:registrationWhitelist');

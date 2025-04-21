@@ -17,7 +17,7 @@ module.exports = (crowi) => {
   const handler = new BaseSlackCommandHandler();
   const { User } = crowi.models;
 
-  handler.handleCommand = async function(_growiCommand, client, body, respondUtil) {
+  handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
     await respondUtil.respond({
       text: 'Select messages to use.',
       blocks: this.keepMessageBlocks(body.channel_name),
@@ -29,7 +29,7 @@ module.exports = (crowi) => {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.cancel = async(_client, _payload, _interactionPayloadAccessor, respondUtil) => {
+  handler.cancel = async(client, payload, interactionPayloadAccessor, respondUtil) => {
     await respondUtil.deleteOriginal();
   };
 
@@ -50,7 +50,7 @@ module.exports = (crowi) => {
     await this.keepCreatePageAndSendPreview(client, interactionPayloadAccessor, path, user, contentsBody, respondUtil);
   };
 
-  handler.keepValidateForm = async(_client, _payload, interactionPayloadAccessor) => {
+  handler.keepValidateForm = async(client, payload, interactionPayloadAccessor) => {
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
     const path = interactionPayloadAccessor.getStateValues()?.page_path.page_path.value;
     let oldest = interactionPayloadAccessor.getStateValues()?.oldest.oldest.value;
@@ -200,7 +200,7 @@ module.exports = (crowi) => {
     return cleanedContents;
   };
 
-  handler.keepCreatePageAndSendPreview = async(_client, interactionPayloadAccessor, path, user, contentsBody, respondUtil) => {
+  handler.keepCreatePageAndSendPreview = async(client, interactionPayloadAccessor, path, user, contentsBody, respondUtil) => {
     await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, user);
 
     // TODO: contentsBody text characters must be less than 3001
