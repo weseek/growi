@@ -1,5 +1,9 @@
 {
-  "files": { "ignore": ["node_modules/**", "dist/**", "coverage/**"] },
+  "files": {
+    "ignore": [
+      "node_modules/**"
+    ]
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -179,17 +183,7 @@
         "useNamespaceKeyword": "error",
         "useValidTypeof": "error"
       }
-    },
-    "ignore": [
-      "node_modules/**",
-      "./dist/**",
-      "./transpiled/**",
-      "./public/**",
-      "./src/linter-checker/**",
-      "./tmp/**",
-      "./next-env.d.ts",
-      ".turbo/**"
-    ]
+    }
   },
   "json": {
     "parser": {
