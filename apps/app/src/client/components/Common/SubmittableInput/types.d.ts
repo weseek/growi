@@ -1,5 +1,6 @@
-export type SubmittableInputProps<T extends React.InputHTMLAttributes<HTMLInputElement> = React.InputHTMLAttributes<HTMLInputElement>> =
-  Omit<React.InputHTMLAttributes<T>, 'value' | 'onKeyDown' | 'onSubmit'>
+// biome-ignore lint/correctness/noUndeclaredVariables: ignore
+export type SubmittableInputProps<T extends InputHTMLAttributes<HTMLInputElement> = InputHTMLAttributes<HTMLInputElement>> =
+  Omit<InputHTMLAttributes<T>, 'value' | 'onKeyDown' | 'onSubmit'>
   & {
     value?: string,
     onSubmit?: (inputText: string) => void,
