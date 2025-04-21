@@ -35,7 +35,7 @@ const logger = loggerFactory('growi:routes:search');
  *                 example: 2
  *
  */
-module.exports = function(crowi: Crowi, app) {
+module.exports = (crowi: Crowi, app) => {
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
 
@@ -106,7 +106,7 @@ module.exports = function(crowi: Crowi, app) {
    * @apiParam {String} offset
    * @apiParam {String} limit
    */
-  api.search = async function(req, res) {
+  api.search = async(req, res) => {
     const user = req.user;
     const {
       q = null, nq = null, type = null, sort = null, order = null, vector = null,

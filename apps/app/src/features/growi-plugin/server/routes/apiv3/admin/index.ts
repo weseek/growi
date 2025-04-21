@@ -1,5 +1,4 @@
-import type { Request, Router } from 'express';
-import express from 'express';
+import express, { type Request, type Router } from 'express';
 import { body, query } from 'express-validator';
 import mongoose from 'mongoose';
 

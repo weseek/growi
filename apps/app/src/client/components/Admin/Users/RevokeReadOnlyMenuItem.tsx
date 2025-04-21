@@ -1,4 +1,5 @@
-import React, { useCallback, type JSX } from 'react';
+import type React from 'react';
+import { useCallback, type JSX } from 'react';
 
 import type { IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';

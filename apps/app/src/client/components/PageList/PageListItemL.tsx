@@ -238,7 +238,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                         ? (
                           <a
                             className="page-segment"
-                            // eslint-disable-next-line react/no-danger
+                            // biome-ignore lint/security/noDangerouslySetInnerHtmlWithChildren: ignore
                             dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
                           >
                           </a>

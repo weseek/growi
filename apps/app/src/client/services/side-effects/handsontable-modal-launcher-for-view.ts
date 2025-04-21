@@ -105,7 +105,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
     }
 
     const handler = (bol: number, eol: number) => {
-      if (currentPage.revision == null) return;
+      if (currentPage.revision == null) { return; }
 
       const markdown = currentPage.revision.body;
       const currentMarkdownTable = getMarkdownTableFromLine(markdown, bol, eol);

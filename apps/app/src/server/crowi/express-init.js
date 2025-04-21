@@ -11,7 +11,7 @@ import registerSafeRedirectFactory from '../middlewares/safe-redirect';
 const logger = loggerFactory('growi:crowi:express-init');
 
 /** @param {import('./index').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, app) => {
   const express = require('express');
   const compression = require('compression');
   const helmet = require('helmet');

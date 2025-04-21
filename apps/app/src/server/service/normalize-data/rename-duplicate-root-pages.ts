@@ -1,9 +1,9 @@
 // see: https://github.com/weseek/growi/issues/8337
 
-import { type IPageHasId } from '@growi/core';
+import type { IPageHasId } from '@growi/core';
 import mongoose from 'mongoose';
 
-import { type PageModel } from '~/server/models/page';
+import type { PageModel } from '~/server/models/page';
 
 export const renameDuplicateRootPages = async(): Promise<void> => {
   const Page = mongoose.model<IPageHasId, PageModel>('Page');

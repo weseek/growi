@@ -115,6 +115,7 @@ class PasswordResetModal extends React.Component {
           {t('user_management.reset_password_modal.target_user')}: <code>{userForPasswordResetModal.email}</code>
         </p>
         <p>
+          {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
           {t('user_management.reset_password_modal.new_password')}:{' '}
           <code>
             <span

@@ -7,7 +7,7 @@ import configForProd from '^/config/logger/config.prod';
 const isProduction = process.env.NODE_ENV === 'production';
 const config = (isProduction ? configForProd : configForDev) as UniversalBunyanConfig;
 
-const loggerFactory = function(name: string): Logger {
+const loggerFactory = (name: string): Logger => {
   return createLogger({
     name,
     config,

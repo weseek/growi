@@ -1,5 +1,6 @@
 
-import React, { useCallback } from 'react';
+import type React from 'react';
+import { useCallback } from 'react';
 
 import type { IPageToDeleteWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -58,7 +59,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
 
   const onClickDeleteMenuItemHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
     const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
-      if (typeof pathOrPathsToDelete !== 'string') return;
+      if (typeof pathOrPathsToDelete !== 'string') { return }
       toastSuccess(isCompletely ? t('deleted_pages_completely', { path: pathOrPathsToDelete }) : t('deleted_pages', { path: pathOrPathsToDelete }));
       bookmarkFolderTreeMutation();
       mutateAllPageInfo();

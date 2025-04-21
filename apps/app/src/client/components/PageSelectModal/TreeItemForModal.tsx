@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, Key } from 'react';
 
 import {
   TreeItemLayout, useNewPageInput, type TreeItemProps,
@@ -11,7 +11,7 @@ const moduleClass = styles['tree-item-for-modal'];
 
 
 type TreeItemForModalProps = TreeItemProps & {
-  key?: React.Key | null,
+  key?: Key | null,
 };
 
 export const TreeItemForModal: FC<TreeItemForModalProps> = (props) => {

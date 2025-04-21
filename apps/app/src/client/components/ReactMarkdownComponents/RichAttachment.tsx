@@ -62,7 +62,7 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
           <div className="ps-0">
             <div className="d-inline-block">
               {/* Since we need to include the "referer" to view the attachment on the shared page */}
-              {/* eslint-disable-next-line react/jsx-no-target-blank */}
+              {/* biome-ignore lint/a11y/noBlankTarget: ignore */}
               <a target="_blank" rel="noopener" href={filePathProxied}>
                 {attachmentName || originalName}
               </a>

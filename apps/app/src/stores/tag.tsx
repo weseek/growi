@@ -1,5 +1,4 @@
-import type { SWRResponse } from 'swr';
-import useSWR from 'swr';
+import useSWR, { type SWRResponse } from 'swr';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import type { IResTagsListApiv1, IResTagsSearchApiv1 } from '~/interfaces/tag';

@@ -113,14 +113,14 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
 };
 
 const getPageApiErrorHandler = (errs: AxiosResponse[]) => {
-  if (!Array.isArray(errs)) { throw Error('error is not array') }
+  if (!Array.isArray(errs)) { throw new Error('error is not array') }
 
   const statusCode = errs[0].status;
   if (statusCode === 403 || statusCode === 404) {
     // for NotFoundPage
     return null;
   }
-  throw Error('failed to get page');
+  throw new Error('failed to get page');
 };
 
 export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToShowRevision|null> => {
@@ -269,7 +269,7 @@ export const useSWRxInfinitePageRevisions = (
 ): SWRInfiniteResponse<SWRInfinitePageRevisionsResponse, Error> => {
   return useSWRInfinite(
     (pageIndex, previousRevisionData) => {
-      if (previousRevisionData != null && previousRevisionData.revisions.length === 0) return null;
+      if (previousRevisionData != null && previousRevisionData.revisions.length === 0) { return null; }
 
       if (pageIndex === 0 || previousRevisionData == null) {
         return ['/revisions/list', pageId, undefined, limit];

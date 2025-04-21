@@ -89,7 +89,7 @@ class YjsService implements IYjsService {
     ysocketio.on('awareness-update', async(doc: Document) => {
       const pageId = doc.name;
 
-      if (pageId == null) return;
+      if (pageId == null) { return; }
 
       const awarenessStateSize = doc.awareness.states.size;
 
@@ -115,7 +115,7 @@ class YjsService implements IYjsService {
     const persistece = createMongoDBPersistence(mdb);
 
     // foce set to private property
-    // eslint-disable-next-line dot-notation
+    // biome-ignore lint/complexity/useLiteralKeys: ignore
     ysocketio['persistence'] = persistece;
   }
 

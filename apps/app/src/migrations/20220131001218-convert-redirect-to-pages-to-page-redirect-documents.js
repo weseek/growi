@@ -38,7 +38,7 @@ module.exports = {
       }
       catch (err) {
         if (err.code !== 11000) {
-          throw Error(`Failed to migrate: ${err}`);
+          throw new Error(`Failed to migrate: ${err}`);
         }
       }
     }
@@ -74,7 +74,7 @@ module.exports = {
       }
       catch (err) {
         if (err.code !== 11000) {
-          throw Error(`Failed to migrate: ${err}`);
+          throw new Error(`Failed to migrate: ${err}`);
         }
       }
     }

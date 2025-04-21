@@ -1,5 +1,5 @@
 import path from 'path';
-import { type Readable } from 'stream';
+import type { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import type { IPage, IRevision } from '@growi/core';

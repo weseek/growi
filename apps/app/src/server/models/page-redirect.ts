@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import type { Model, Document } from 'mongoose';
-import { Schema } from 'mongoose';
+import {
+  Schema, type Model, type Document,
+} from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 

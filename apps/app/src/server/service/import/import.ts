@@ -171,7 +171,7 @@ export class ImportService {
     const isImportPagesCollection = collections.includes('pages');
     const shouldNormalizePages = currentIsV5Compatible && isImportPagesCollection;
 
-    if (shouldNormalizePages) await this.crowi.pageService.normalizeAllPublicPages();
+    if (shouldNormalizePages) { await this.crowi.pageService.normalizeAllPublicPages(); }
   }
 
   /**

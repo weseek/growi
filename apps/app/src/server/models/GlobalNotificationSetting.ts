@@ -29,7 +29,7 @@ export const GlobalNotificationSettingType = {
 };
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-const factory = function(crowi) {
+const factory = (crowi) => {
   GlobalNotificationSettingClass.crowi = crowi;
   GlobalNotificationSettingSchema.loadClass(GlobalNotificationSettingClass);
   return mongoose.model('GlobalNotificationSetting', GlobalNotificationSettingSchema);

@@ -13,11 +13,11 @@ module.exports = {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isExist = (await Config.count({ key: 'slackbot:withoutProxy:commandPermission' })) > 0;
-    if (!isExist) return;
+    if (!isExist) { return; }
 
     const commandPermissionValue = await Config.findOne({ key: 'slackbot:withoutProxy:commandPermission' });
     // do nothing if data is 'null' or null
-    if (commandPermissionValue._doc.value === 'null' || commandPermissionValue._doc.value == null) return;
+    if (commandPermissionValue._doc.value === 'null' || commandPermissionValue._doc.value == null) { return; }
 
     const commandPermission = JSON.parse(commandPermissionValue._doc.value);
 
@@ -56,11 +56,11 @@ module.exports = {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isExist = (await Config.count({ key: 'slackbot:withoutProxy:commandPermission' })) > 0;
-    if (!isExist) return next();
+    if (!isExist) { return next(); }
 
     const commandPermissionValue = await Config.findOne({ key: 'slackbot:withoutProxy:commandPermission' });
     // do nothing if data is 'null' or null
-    if (commandPermissionValue._doc.value === 'null' || commandPermissionValue._doc.value == null) return next();
+    if (commandPermissionValue._doc.value === 'null' || commandPermissionValue._doc.value == null) { return next(); }
 
     const commandPermission = JSON.parse(commandPermissionValue._doc.value);
 

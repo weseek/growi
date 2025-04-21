@@ -176,7 +176,7 @@ class NchanDelegator extends AbstractS2sMessagingService {
 
 }
 
-module.exports = function(crowi: Crowi) {
+module.exports = (crowi: Crowi) => {
   const { configManager } = crowi;
 
   const uri = configManager.getConfig('app:nchanUri');

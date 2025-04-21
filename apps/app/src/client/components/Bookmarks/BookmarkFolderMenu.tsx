@@ -121,6 +121,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
           onClick={onUnbookmarkHandler}
           className="grw-bookmark-folder-menu-item text-danger text-truncate"
         >
+          {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
           <span className="material-symbols-outlined">bookmark</span>{' '}
           <span className="mx-2">
             {t('bookmark_folder.cancel_bookmark')}

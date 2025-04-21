@@ -111,7 +111,7 @@ export default class AdminMarkDownContainer extends Container {
       JSON.parse(attrWhitelist);
     }
     catch (err) {
-      throw Error(err);
+      throw new Error(err);
     }
 
     await apiv3Put('/markdown-setting/xss', {

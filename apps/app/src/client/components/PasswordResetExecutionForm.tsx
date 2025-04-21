@@ -1,5 +1,4 @@
-import type { FC } from 'react';
-import React, { useState } from 'react';
+import React, { type FC, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';

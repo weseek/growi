@@ -162,7 +162,7 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
   }, [collections, renderCheckboxes]);
 
   useEffect(() => {
-    if (isAllChecked) checkAll();
+    if (isAllChecked) { checkAll() }
   }, [isAllChecked, checkAll]);
 
   return (

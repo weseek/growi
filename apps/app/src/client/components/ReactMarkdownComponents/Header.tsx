@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useState, type JSX,
+ useCallback, useEffect, useState, type ReactNode, type JSX
 } from 'react';
 
 import type EventEmitter from 'events';
@@ -54,7 +54,7 @@ const EditLink = (props: EditLinkProps): JSX.Element => {
 
 
 type HeaderProps = {
-  children: React.ReactNode,
+  children: ReactNode,
   node: Element,
   id?: string,
 }

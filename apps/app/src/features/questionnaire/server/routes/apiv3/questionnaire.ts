@@ -89,7 +89,7 @@ module.exports = (crowi: Crowi): Router => {
     const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
     try {
-      const questionnaireOrders = await crowi.questionnaireService!.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
+      const questionnaireOrders = await crowi.questionnaireService.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
 
       return res.apiv3({ questionnaireOrders });
     }

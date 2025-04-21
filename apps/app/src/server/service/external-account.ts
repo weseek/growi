@@ -49,7 +49,7 @@ class ExternalAccountService {
         logger.error(err.message);
         throw new ErrorV3(err.message);
       }
-      else if (err.name === 'DuplicatedUsernameException') {
+      if (err.name === 'DuplicatedUsernameException') {
         if (isSameEmailTreatedAsIdenticalUser || isSameUsernameTreatedAsIdenticalUser) {
           // associate to existing user
           logger.debug(`ExternalAccount '${userInfo.username}' will be created and bound to the exisiting User account`);
@@ -60,7 +60,7 @@ class ExternalAccountService {
         throw new ErrorV3('message.provider_duplicated_username_exception', LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION,
           undefined, { failedProviderForDuplicatedUsernameException: providerId });
       }
-      else if (err.name === 'UserUpperLimitException') {
+      if (err.name === 'UserUpperLimitException') {
         logger.error(err.message);
         throw new ErrorV3(err.message);
       }

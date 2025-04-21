@@ -77,9 +77,9 @@ export default class InAppNotificationService {
     }
   };
 
-  upsertByActivity = async function(
+  upsertByActivity = async(
       users: Types.ObjectId[], activity: ActivityDocument, snapshot: string, createdAt?: Date | null,
-  ): Promise<void> {
+  ): Promise<void> => {
     const {
       _id: activityId, targetModel, target, action,
     } = activity;
@@ -153,7 +153,7 @@ export default class InAppNotificationService {
     }
   };
 
-  open = async function(user: IUser & HasObjectId, id: Types.ObjectId): Promise<void> {
+  open = async(user: IUser & HasObjectId, id: Types.ObjectId): Promise<void> => {
     const query = { _id: id, user: user._id };
     const parameters = { status: STATUS_OPENED };
     const options = { new: true };
@@ -162,7 +162,7 @@ export default class InAppNotificationService {
     return;
   };
 
-  updateAllNotificationsAsOpened = async function(user: IUser & HasObjectId): Promise<void> {
+  updateAllNotificationsAsOpened = async(user: IUser & HasObjectId): Promise<void> => {
     const filter = { user: user._id, status: STATUS_UNOPENED };
     const options = { status: STATUS_OPENED };
 
@@ -170,7 +170,7 @@ export default class InAppNotificationService {
     return;
   };
 
-  getUnreadCountByUser = async function(user: Types.ObjectId): Promise<number| undefined> {
+  getUnreadCountByUser = async(user: Types.ObjectId): Promise<number| undefined> => {
     const query = { user, status: STATUS_UNOPENED };
 
     try {
@@ -184,7 +184,7 @@ export default class InAppNotificationService {
     }
   };
 
-  createSubscription = async function(userId: Types.ObjectId, pageId: Types.ObjectId, targetRuleName: string): Promise<void> {
+  createSubscription = async(userId: Types.ObjectId, pageId: Types.ObjectId, targetRuleName: string): Promise<void> => {
     const query = { userId };
     const inAppNotificationSettings = await InAppNotificationSettings.findOne(query);
     if (inAppNotificationSettings != null) {
@@ -214,7 +214,7 @@ export default class InAppNotificationService {
       await this.emitSocketIo(props.notificationTargetUsers);
     }
     else {
-      throw Error('no activity to notify');
+      throw new Error('no activity to notify');
     }
     return;
   };

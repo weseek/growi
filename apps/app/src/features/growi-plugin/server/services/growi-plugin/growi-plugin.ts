@@ -85,34 +85,32 @@ export class GrowiPluginService implements IGrowiPluginService {
         if (fs.existsSync(pluginPath)) {
           continue;
         }
-        else {
-          if (!fs.existsSync(organizationName)) {
-            fs.mkdirSync(organizationName);
-          }
-
-          // TODO: imprv Document version and repository version possibly different.
-          const ghUrl = new GitHubUrl(growiPlugin.origin.url, growiPlugin.origin.ghBranch);
-          const { reposName, archiveUrl, extractedArchiveDirName } = ghUrl;
-
-          const zipFilePath = path.join(PLUGIN_STORING_PATH, `${extractedArchiveDirName}.zip`);
-          const unzippedPath = PLUGIN_STORING_PATH;
-          const unzippedReposPath = path.join(PLUGIN_STORING_PATH, `${reposName}-${extractedArchiveDirName}`);
-
-          try {
-            // download github repository to local file system
-            await this.download(archiveUrl, zipFilePath);
-            await this.unzip(zipFilePath, unzippedPath);
-            fs.renameSync(unzippedReposPath, pluginPath);
-          }
-          catch (err) {
-            // clean up, documents are not operated
-            if (fs.existsSync(unzippedReposPath)) await fs.promises.rm(unzippedReposPath, { recursive: true });
-            if (fs.existsSync(pluginPath)) await fs.promises.rm(pluginPath, { recursive: true });
-            logger.error(err);
-          }
-
-          continue;
+        if (!fs.existsSync(organizationName)) {
+          fs.mkdirSync(organizationName);
         }
+
+        // TODO: imprv Document version and repository version possibly different.
+        const ghUrl = new GitHubUrl(growiPlugin.origin.url, growiPlugin.origin.ghBranch);
+        const { reposName, archiveUrl, extractedArchiveDirName } = ghUrl;
+
+        const zipFilePath = path.join(PLUGIN_STORING_PATH, `${extractedArchiveDirName}.zip`);
+        const unzippedPath = PLUGIN_STORING_PATH;
+        const unzippedReposPath = path.join(PLUGIN_STORING_PATH, `${reposName}-${extractedArchiveDirName}`);
+
+        try {
+          // download github repository to local file system
+          await this.download(archiveUrl, zipFilePath);
+          await this.unzip(zipFilePath, unzippedPath);
+          fs.renameSync(unzippedReposPath, pluginPath);
+        }
+        catch (err) {
+          // clean up, documents are not operated
+          if (fs.existsSync(unzippedReposPath)) { await fs.promises.rm(unzippedReposPath, { recursive: true }); }
+          if (fs.existsSync(pluginPath)) { await fs.promises.rm(pluginPath, { recursive: true }); }
+          logger.error(err);
+        }
+
+        continue;
       }
     }
     catch (err) {
@@ -136,7 +134,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     const temporaryReposPath = path.join(organizationPath, `${reposName}-${extractedArchiveDirName}`);
     const reposPath = path.join(organizationPath, reposName);
 
-    if (!fs.existsSync(organizationPath)) fs.mkdirSync(organizationPath);
+    if (!fs.existsSync(organizationPath)) { fs.mkdirSync(organizationPath); }
 
     let plugins: IGrowiPlugin<IGrowiPluginMeta>[];
 
@@ -149,7 +147,7 @@ export class GrowiPluginService implements IGrowiPluginService {
       plugins = await GrowiPluginService.detectPlugins(origin, organizationName, reposName, { packageRootPath: temporaryReposPath });
 
       // remove the old repository from the storing path
-      if (fs.existsSync(reposPath)) await fs.promises.rm(reposPath, { recursive: true });
+      if (fs.existsSync(reposPath)) { await fs.promises.rm(reposPath, { recursive: true }); }
 
       // move new repository from temporary path to storing path.
       fs.renameSync(temporaryReposPath, reposPath);
@@ -160,8 +158,8 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
     finally {
       // clean up
-      if (fs.existsSync(zipFilePath)) await fs.promises.rm(zipFilePath);
-      if (fs.existsSync(temporaryReposPath)) await fs.promises.rm(temporaryReposPath, { recursive: true });
+      if (fs.existsSync(zipFilePath)) { await fs.promises.rm(zipFilePath); }
+      if (fs.existsSync(temporaryReposPath)) { await fs.promises.rm(temporaryReposPath, { recursive: true }); }
     }
 
     try {
@@ -175,7 +173,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     }
     catch (err) {
       // uninstall
-      if (fs.existsSync(reposPath)) await fs.promises.rm(reposPath, { recursive: true });
+      if (fs.existsSync(reposPath)) { await fs.promises.rm(reposPath, { recursive: true }); }
       await this.deleteOldPluginDocument(installedPath);
 
       logger.error(err);
@@ -426,8 +424,7 @@ export class GrowiPluginService implements IGrowiPluginService {
     const joinedPath = path.join(baseDir, ...paths);
     if (!joinedPath.startsWith(baseDir)) {
       throw new Error(
-        'Invalid plugin path detected! Access outside of the allowed directory is not permitted.'
-        + `\nAttempted Path: ${joinedPath}`,
+        `Invalid·plugin·path·detected!·Access·outside·of·the·allowed·directory·is·not·permitted.\nAttempted·Path:·${joinedPath}`,
       );
     }
     return joinedPath;

@@ -1,5 +1,6 @@
 import type { Ref, JSX } from 'react';
-import React, { useEffect, useState } from 'react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import type { SWRInfiniteResponse } from 'swr/infinite';
@@ -27,7 +28,7 @@ const useIntersection = <E extends HTMLElement>(): [boolean, Ref<E>] => {
     }
     return;
   }, [element]);
-  return [intersecting, (el) => { if (el != null) setElement(el); }];
+  return [intersecting, (el) => { if (el != null) { setElement(el); } }];
 };
 
 const LoadingIndicator = (): JSX.Element => {

@@ -276,7 +276,7 @@ module.exports = (crowi) => {
         }
       }
       else {
-        // eslint-disable-next-line no-lonely-if
+        // biome-ignore lint/style/useCollapsedElseIf: ignore
         if (bool) {
           logger.warn(`Adding the bookmark for ${page._id} by ${req.user._id} failed because the bookmark has already exist.`);
         }

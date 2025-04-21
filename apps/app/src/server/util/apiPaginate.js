@@ -5,7 +5,7 @@ const OFFSET_DEFAULT = 0;
 
 const DEFAULT_MAX_RESULT_WINDOW = 10000;
 
-const parseIntValue = function(value, defaultValue, maxLimit) {
+const parseIntValue = (value, defaultValue, maxLimit) => {
   if (!value) {
     return defaultValue;
   }
@@ -20,7 +20,7 @@ const parseIntValue = function(value, defaultValue, maxLimit) {
 
 function ApiPaginate() {}
 
-ApiPaginate.parseOptionsForElasticSearch = function(params) {
+ApiPaginate.parseOptionsForElasticSearch = (params) => {
   const limit = parseIntValue(params.limit, LIMIT_DEFAULT, LIMIT_MAX);
   const offset = parseIntValue(params.offset, OFFSET_DEFAULT);
 
@@ -32,7 +32,7 @@ ApiPaginate.parseOptionsForElasticSearch = function(params) {
   return { limit, offset };
 };
 
-ApiPaginate.parseOptions = function(params) {
+ApiPaginate.parseOptions = (params) => {
   const limit = parseIntValue(params.limit, LIMIT_DEFAULT, LIMIT_MAX);
   const offset = parseIntValue(params.offset, OFFSET_DEFAULT);
 

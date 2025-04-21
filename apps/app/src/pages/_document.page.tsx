@@ -2,7 +2,9 @@
 import React, { type JSX } from 'react';
 
 import type { Locale } from '@growi/core/dist/interfaces';
+// biome-ignore lint/nursery/noDocumentImportInPage: ignore
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
+// biome-ignore lint/nursery/noDocumentImportInPage: ignore
 import Document, {
   Html, Head, Main, NextScript,
 } from 'next/document';

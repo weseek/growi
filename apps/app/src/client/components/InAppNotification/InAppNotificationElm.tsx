@@ -40,7 +40,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       mutateNotificationCount();
     }
 
-    if (isDisabled) return;
+    if (isDisabled) { return; }
 
     publishOpen?.();
   };

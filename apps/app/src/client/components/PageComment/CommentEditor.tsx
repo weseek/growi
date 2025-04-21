@@ -226,7 +226,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   // set handler to focus
   useLayoutEffect(() => {
-    if (showPreview) return;
+    if (showPreview) { return };
     codeMirrorEditor?.focus();
   }, [codeMirrorEditor, showPreview]);
 

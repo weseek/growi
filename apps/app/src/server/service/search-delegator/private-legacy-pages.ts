@@ -28,10 +28,10 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
     const { offset, limit } = option;
 
     if (offset == null || limit == null) {
-      throw Error('PrivateLegacyPagesDelegator requires pagination options (offset, limit).');
+      throw new Error('PrivateLegacyPagesDelegator requires pagination options (offset, limit).');
     }
     if (user == null && userGroups == null) {
-      throw Error('Either of user and userGroups must not be null.');
+      throw new Error('Either of user and userGroups must not be null.');
     }
 
     // find private legacy pages

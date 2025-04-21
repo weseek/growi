@@ -97,7 +97,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   useEffect(() => {
     const scrollElement = scrollElementRef.current;
 
-    if (scrollElement == null) return;
+    if (scrollElement == null) { return; }
 
     const observer = new MutationObserver(() => {
       scrollToFirstHighlightedKeywordDebounced(scrollElement);

@@ -40,7 +40,7 @@ export abstract class MultipartUploader implements IMultipartUploader {
   }
 
   get uploadId(): string {
-    if (this._uploadId == null) throw Error('UploadId is empty');
+    if (this._uploadId == null) { throw new Error('UploadId is empty'); }
     return this._uploadId;
   }
 
@@ -55,11 +55,11 @@ export abstract class MultipartUploader implements IMultipartUploader {
   abstract getUploadedFileSize(): Promise<number>
 
   protected validatePartSize(partSize: number): void {
-    if (partSize > this.maxPartSize) throw Error(`partSize must be less than or equal to ${this.maxPartSize}`);
+    if (partSize > this.maxPartSize) { throw new Error(`partSize must be less than or equal to ${this.maxPartSize}`); }
   }
 
   protected validateUploadStatus(desiredStatus: UploadStatus): void {
-    if (desiredStatus === this.currentStatus) return;
+    if (desiredStatus === this.currentStatus) { return; }
 
     let errMsg: string | null = null;
 
@@ -86,7 +86,7 @@ export abstract class MultipartUploader implements IMultipartUploader {
 
     if (errMsg != null) {
       logger.error(errMsg);
-      throw Error(errMsg);
+      throw new Error(errMsg);
     }
   }
 

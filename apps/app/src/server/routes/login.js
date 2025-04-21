@@ -8,7 +8,7 @@ import { growiInfoService } from '../service/growi-info';
 // because this file is a deprecated legacy of Crowi
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, app) => {
   const logger = loggerFactory('growi:routes:login');
   const path = require('path');
   const User = crowi.model('User');
@@ -68,7 +68,7 @@ module.exports = function(crowi, app) {
     return;
   }
 
-  const registerSuccessHandler = async function(req, res, userData, registrationMode) {
+  const registerSuccessHandler = async(req, res, userData, registrationMode) => {
     const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
@@ -145,7 +145,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  actions.preLogin = function(req, res, next) {
+  actions.preLogin = (req, res, next) => {
     // user has already logged in
     const { user } = req;
     if (user != null && user.status === User.STATUS_ACTIVE) {
@@ -199,7 +199,7 @@ module.exports = function(crowi, app) {
    *                 redirectTo:
    *                   type: string
    */
-  actions.register = function(req, res) {
+  actions.register = (req, res) => {
     if (req.user != null) {
       return res.apiv3Err('message.user_already_logged_in', 403);
     }

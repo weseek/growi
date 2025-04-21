@@ -1,4 +1,7 @@
-import React, { useEffect, useCallback, type JSX } from 'react';
+import type React from 'react';
+import {
+  useEffect, useCallback, type JSX
+} from 'react';
 
 import path from 'path';
 

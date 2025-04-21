@@ -130,7 +130,8 @@ class MailService implements S2sMessageHandlable {
       if (host == null || port == null) {
         return null;
       }
-      option = { // eslint-disable-line no-param-reassign
+      // biome-ignore lint/style/noParameterAssign: ignore
+      option = {
         host,
         port,
       };
@@ -163,7 +164,8 @@ class MailService implements S2sMessageHandlable {
       if (accessKeyId == null || secretAccessKey == null) {
         return null;
       }
-      option = { // eslint-disable-line no-param-reassign
+      // biome-ignore lint/style/noParameterAssign: ignore
+      option = {
         accessKeyId,
         secretAccessKey,
       };

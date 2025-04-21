@@ -125,10 +125,10 @@ class PageGrantService implements IPageGrantService {
     const { grant, grantedUserIds, grantedGroupIds } = comparable;
 
     if (grant === Page.GRANT_OWNER && (grantedUserIds == null || grantedUserIds.length !== 1)) {
-      throw Error('grantedUserIds must not be null and must have 1 length');
+      throw new Error('grantedUserIds must not be null and must have 1 length');
     }
     if (grant === Page.GRANT_USER_GROUP && grantedGroupIds == null) {
-      throw Error('grantedGroupIds is not specified');
+      throw new Error('grantedGroupIds is not specified');
     }
   }
 
@@ -168,7 +168,7 @@ class PageGrantService implements IPageGrantService {
     // GRANT_USER_GROUP
     else if (ancestor.grant === Page.GRANT_USER_GROUP) {
       if (ancestor.applicableGroupIds == null || ancestor.applicableUserIds == null) {
-        throw Error('applicableGroupIds and applicableUserIds are not specified');
+        throw new Error('applicableGroupIds and applicableUserIds are not specified');
       }
 
       if (target.grant === Page.GRANT_PUBLIC) { // public page must not exist under GRANT_USER_GROUP page
@@ -177,7 +177,7 @@ class PageGrantService implements IPageGrantService {
 
       if (target.grant === Page.GRANT_OWNER) {
         if (target.grantedUserIds?.length !== 1) {
-          throw Error('grantedUserIds must have one user');
+          throw new Error('grantedUserIds must have one user');
         }
 
         if (!includesObjectIds(ancestor.applicableUserIds, [target.grantedUserIds[0]])) { // GRANT_OWNER pages under GRAND_USER_GROUP page must be owned by the member of the grantedGroup of the GRAND_USER_GROUP page
@@ -187,7 +187,7 @@ class PageGrantService implements IPageGrantService {
 
       if (target.grant === Page.GRANT_USER_GROUP) {
         if (target.grantedGroupIds == null || target.grantedGroupIds.length === 0) {
-          throw Error('grantedGroupId must not be empty');
+          throw new Error('grantedGroupId must not be empty');
         }
         const targetGrantedGroupStrIds = target.grantedGroupIds.map(e => (typeof e.item === 'string' ? e.item : e.item._id));
         if (!includesObjectIds(ancestor.applicableGroupIds, targetGrantedGroupStrIds)) { // only child groups or the same group can exist under GRANT_USER_GROUP page
@@ -210,7 +210,7 @@ class PageGrantService implements IPageGrantService {
     // GRANT_OWNER
     else if (target.grant === Page.GRANT_OWNER) {
       if (target.grantedUserIds?.length !== 1) {
-        throw Error('grantedUserIds must have one user');
+        throw new Error('grantedUserIds must have one user');
       }
 
       if (descendants.isPublicExist) { // public page must not exist under GRANT_OWNER page
@@ -228,7 +228,7 @@ class PageGrantService implements IPageGrantService {
     // GRANT_USER_GROUP
     else if (target.grant === Page.GRANT_USER_GROUP) {
       if (target.applicableGroupIds == null || target.applicableUserIds == null) {
-        throw Error('applicableGroupIds and applicableUserIds must not be null');
+        throw new Error('applicableGroupIds and applicableUserIds must not be null');
       }
 
       if (descendants.isPublicExist) { // public page must not exist under GRANT_USER_GROUP page
@@ -302,14 +302,14 @@ class PageGrantService implements IPageGrantService {
 
     if (grant === Page.GRANT_USER_GROUP) {
       if (grantedGroupIds == null || grantedGroupIds.length === 0) {
-        throw Error('Target user group is not given');
+        throw new Error('Target user group is not given');
       }
 
       const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantedGroupIds);
       const targetUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroupIds } });
       const targetExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroupIds } });
       if (targetUserGroups.length === 0 && targetExternalUserGroups.length === 0) {
-        throw Error('Target user group does not exist');
+        throw new Error('Target user group does not exist');
       }
 
       const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
@@ -360,7 +360,7 @@ class PageGrantService implements IPageGrantService {
       .exec();
     const testAncestor = ancestors[0]; // TODO: consider when duplicate testAncestors exist
     if (testAncestor == null) {
-      throw Error('testAncestor must exist');
+      throw new Error('testAncestor must exist');
     }
 
     if (testAncestor.grant === Page.GRANT_USER_GROUP) {
@@ -533,7 +533,7 @@ class PageGrantService implements IPageGrantService {
    */
   async separateNormalizableAndNotNormalizablePages(user, pages): Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]> {
     if (pages.length > LIMIT_FOR_MULTIPLE_PAGE_OP) {
-      throw Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
+      throw new Error(`The maximum number of pageIds allowed is ${LIMIT_FOR_MULTIPLE_PAGE_OP}.`);
     }
 
     const shouldCheckDescendants = true;
@@ -593,7 +593,7 @@ class PageGrantService implements IPageGrantService {
 
     const parent = await Page.findById(page.parent);
     if (parent == null) {
-      throw Error('The page\'s parent does not exist.');
+      throw new Error('The page\'s parent does not exist.');
     }
 
     const {
@@ -619,7 +619,7 @@ class PageGrantService implements IPageGrantService {
       const targetUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroupIds } });
       const targetExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroupIds } });
       if (targetUserGroups.length === 0 && targetExternalUserGroups.length === 0) {
-        throw Error('Group not found to calculate grant data.');
+        throw new Error('Group not found to calculate grant data.');
       }
 
       const isUserExistInUserGroup = (await Promise.all(targetUserGroups.map((group) => {
@@ -790,10 +790,10 @@ class PageGrantService implements IPageGrantService {
    * Check if user is granted access to page
    */
   isUserGrantedPageAccess(page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[], allowAnyoneWithTheLink = false): boolean {
-    if (page.grant === PageGrant.GRANT_PUBLIC) return true;
-    if (page.grant === PageGrant.GRANT_RESTRICTED && allowAnyoneWithTheLink) return true;
-    if (page.grant === PageGrant.GRANT_OWNER) return page.grantedUsers?.includes(user._id.toString()) ?? false;
-    if (page.grant === PageGrant.GRANT_USER_GROUP) return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page).length > 0;
+    if (page.grant === PageGrant.GRANT_PUBLIC) { return true; }
+    if (page.grant === PageGrant.GRANT_RESTRICTED && allowAnyoneWithTheLink) { return true; }
+    if (page.grant === PageGrant.GRANT_OWNER) { return page.grantedUsers?.includes(user._id.toString()) ?? false; }
+    if (page.grant === PageGrant.GRANT_USER_GROUP) { return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page).length > 0; }
     return false;
   }
 
@@ -855,7 +855,7 @@ class PageGrantService implements IPageGrantService {
     }
     else if (updateGrant === PageGrant.GRANT_USER_GROUP) {
       if (grantGroupIds == null) {
-        throw Error('The parameter `grantGroupIds` is required.');
+        throw new Error('The parameter `grantGroupIds` is required.');
       }
       const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantGroupIds);
 
@@ -883,7 +883,7 @@ class PageGrantService implements IPageGrantService {
 
     if (updateGrantInfo == null) {
       // Neither pages with grant `GRANT_RESTRICTED` nor `GRANT_SPECIFIED` can be on a page tree.
-      throw Error('The parameter `updateGrant` must be 1, 4, or 5');
+      throw new Error('The parameter `updateGrant` must be 1, 4, or 5');
     }
 
     return updateGrantInfo;

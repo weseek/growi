@@ -1,4 +1,4 @@
-import { type RateLimiterRes } from 'rate-limiter-flexible';
+import type { RateLimiterRes } from 'rate-limiter-flexible';
 
 import { DEFAULT_MAX_REQUESTS, type IApiRateLimitConfig } from '../config';
 

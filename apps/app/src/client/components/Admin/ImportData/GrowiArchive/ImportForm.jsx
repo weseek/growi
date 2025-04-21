@@ -332,7 +332,7 @@ class ImportForm extends React.Component {
       <div key={key} className="alert alert-warning">
         <ul>
           {errors.map((error, index) => {
-            // eslint-disable-next-line react/no-array-index-key
+            // biome-ignore lint/suspicious/noArrayIndexKey: ignore
             return <li key={`${key}-${index}`}>{error}</li>;
           })}
         </ul>

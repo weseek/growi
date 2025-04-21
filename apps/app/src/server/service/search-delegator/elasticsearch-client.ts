@@ -1,15 +1,12 @@
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-confusing-arrow */
-import type {
-  ClientOptions as ES7ClientOptions,
-  ApiResponse as ES7ApiResponse,
-  RequestParams as ES7RequestParams,
-} from '@elastic/elasticsearch7';
 import {
   Client as ES7Client,
+  type ClientOptions as ES7ClientOptions,
+  type ApiResponse as ES7ApiResponse,
+  type RequestParams as ES7RequestParams,
 } from '@elastic/elasticsearch7';
-import type { ClientOptions as ES8ClientOptions, estypes } from '@elastic/elasticsearch8';
-import { Client as ES8Client } from '@elastic/elasticsearch8';
+import { type ClientOptions as ES8ClientOptions, Client as ES8Client, type estypes } from '@elastic/elasticsearch8';
 
 import type {
   BulkResponse,

@@ -1,4 +1,4 @@
-import ldap, { Client } from 'ldapjs';
+import ldap, { type Client } from 'ldapjs';
 
 import { LdapUserGroupSyncService } from '../../../src/features/external-user-group/server/service/ldap-user-group-sync';
 import { configManager } from '../../../src/server/service/config-manager';

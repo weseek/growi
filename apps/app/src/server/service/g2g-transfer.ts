@@ -448,7 +448,7 @@ export class G2GTransferPusherService implements Pusher {
       const zipFileStat = await exportService?.export(collections);
       const zipFilePath = zipFileStat?.zipFilePath;
 
-      if (zipFilePath == null) throw new Error('Failed to generate zip file');
+      if (zipFilePath == null) { throw new Error('Failed to generate zip file'); }
 
       zipFileStream = createReadStream(zipFilePath);
     }

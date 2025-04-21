@@ -170,7 +170,7 @@ export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
 
   const itemRef = (c) => {
     // do not apply when RenameInput is shown
-    if (showRenameInput) return;
+    if (showRenameInput) { return; }
 
     drag(c);
     drop(c);

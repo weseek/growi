@@ -59,7 +59,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   };
 
   const onClickMoveToRootHandler = useCallback(async() => {
-    if (bookmarkedPage == null) return;
+    if (bookmarkedPage == null) { return }
 
     try {
       await addBookmarkToFolder(bookmarkedPage._id, null);
@@ -90,7 +90,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   }, []);
 
   const rename = useCallback(async(inputText: string) => {
-    if (bookmarkedPage == null) return;
+    if (bookmarkedPage == null) { return }
 
 
     if (inputText.trim() === '') {
@@ -117,10 +117,10 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   }, [bookmarkedPage, cancel, bookmarkFolderTreeMutation, mutatePageInfo]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
-    if (bookmarkedPage == null) return;
+    if (bookmarkedPage == null) { return }
 
     if (bookmarkedPage._id == null || bookmarkedPage.path == null) {
-      throw Error('_id and path must not be null.');
+      throw new Error('_id and path must not be null.');
     }
 
     const pageToDelete: IPageToDeleteWithMeta = {
@@ -136,7 +136,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   }, [bookmarkedPage, onClickDeleteMenuItemHandler]);
 
   const putBackClickHandler = useCallback(() => {
-    if (bookmarkedPage == null) return;
+    if (bookmarkedPage == null) { return }
 
     const { _id: pageId, path } = bookmarkedPage;
     const putBackedHandler = async() => {

@@ -48,7 +48,7 @@ const schema = new Schema<PasswordResetOrderDocument, PasswordResetOrderModel>({
 });
 schema.plugin(uniqueValidator);
 
-schema.statics.generateOneTimeToken = function() {
+schema.statics.generateOneTimeToken = () => {
   const buf = crypto.randomBytes(256);
   const token = buf.toString('hex');
 

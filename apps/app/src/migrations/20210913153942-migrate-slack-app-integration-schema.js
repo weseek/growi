@@ -31,7 +31,7 @@ module.exports = {
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 
-    if (slackAppIntegrations.length === 0) return;
+    if (slackAppIntegrations.length === 0) { return; }
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {
@@ -100,7 +100,7 @@ module.exports = {
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 
-    if (slackAppIntegrations.length === 0) return next();
+    if (slackAppIntegrations.length === 0) { return next(); }
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {
