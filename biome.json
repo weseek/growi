@@ -190,5 +190,10 @@
       "./next-env.d.ts",
       ".turbo/**"
     ]
+  },
+  "json": {
+    "parser": {
+      "allowTrailingCommas": true
+    }
   }
 }
