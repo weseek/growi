@@ -739,6 +739,9 @@ schema.statics.findRecentUpdatedPages = async function(
 
   const sortOpt = {};
   sortOpt[options.sort] = options.desc;
+
+  // biome-ignore lint/complexity/noUselessThisAlias: ignore
+  const Page = this;
   const User = mongoose.model('User') as any;
 
   if (path == null) {
@@ -759,7 +762,7 @@ schema.statics.findRecentUpdatedPages = async function(
   queryBuilder.addConditionToListWithDescendants(path, options);
   queryBuilder.populateDataToList(User.USER_FIELDS_EXCEPT_CONFIDENTIAL);
   await queryBuilder.addViewerCondition(user, undefined, undefined, !options.hideRestrictedByOwner, !options.hideRestrictedByGroup);
-  const pages = await this.paginate(queryBuilder.query.clone(), {
+  const pages = await Page.paginate(queryBuilder.query.clone(), {
     lean: true, sort: sortOpt, offset: options.offset, limit: options.limit,
   });
   const results = {
