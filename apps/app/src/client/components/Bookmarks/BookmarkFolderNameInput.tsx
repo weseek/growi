@@ -28,8 +28,8 @@ export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
 
   const inputValidator = useInputValidator(ValidationTarget.FOLDER);
 
-  const changeHandler = useCallback(async(e: ChangeEvent<AutosizeInputProps>) => {
-    const validationResult = inputValidator(e.target.value?.toString());
+  const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
+    const validationResult = inputValidator(e.target.value);
     setValidationResult(validationResult ?? undefined);
   }, [inputValidator]);
   const changeHandlerDebounced = debounce(300, changeHandler);
@@ -49,8 +49,8 @@ export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
     <div ref={parentRef}>
       <AutosizeSubmittableInput
         value={value}
-        className={`form-control ${isInvalid ? 'is-invalid' : ''}`}
-        style={{ maxWidth }}
+        inputClassName={`form-control ${isInvalid ? 'is-invalid' : ''}`}
+        inputStyle={{ maxWidth }}
         placeholder={t('bookmark_folder.input_placeholder')}
         aria-describedby={isInvalid ? 'bookmark-folder-name-input-feedback' : undefined}
         autoFocus

@@ -4,7 +4,6 @@ import React, {
 } from 'react';
 
 import nodePath from 'path';
-import type { AutosizeInputProps } from 'react-input-autosize';
 
 import { Origin } from '@growi/core';
 import { pathUtils, pagePathUtils } from '@growi/core/dist/utils';
@@ -79,8 +78,8 @@ export const useNewPageInput = (): UseNewPageInput => {
 
     const inputValidator = useInputValidator(ValidationTarget.PAGE);
 
-    const changeHandler = useCallback(async(e: ChangeEvent<AutosizeInputProps>) => {
-      const validationResult = inputValidator(e.target.value?.toString());
+    const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
+      const validationResult = inputValidator(e.target.value);
       setValidationResult(validationResult ?? undefined);
     }, [inputValidator]);
     const changeHandlerDebounced = debounce(300, changeHandler);
@@ -154,8 +153,8 @@ export const useNewPageInput = (): UseNewPageInput => {
       ? (
         <div ref={parentRef} className={inputContainerClass}>
           <AutosizeSubmittableInput
-            className={`form-control ${isInvalid ? 'is-invalid' : ''}`}
-            style={{ maxWidth }}
+            inputClassName={`form-control ${isInvalid ? 'is-invalid' : ''}`}
+            inputStyle={{ maxWidth }}
             placeholder={t('Input page name')}
             aria-describedby={isInvalid ? 'new-page-input-feedback' : undefined}
             onChange={changeHandlerDebounced}
