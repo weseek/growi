@@ -247,9 +247,29 @@ export const routesFactory = (crowi) => {
     const file = req.file;
 
     // check type
-    const acceptableFileType = /image\/.+/;
-    if (!file.mimetype.match(acceptableFileType)) {
-      return res.json(ApiResponse.error('File type error. Only image files is allowed to set as user picture.'));
+    // Define explicitly allowed image types
+    // Keep supporting wide range of formats as ImageCropModal can handle them:
+    // - When cropping: converts to PNG
+    // - When not cropping: maintains original format
+    const acceptableFileTypes = [
+      'image/png', // Universal web format
+      'image/jpeg', // Universal web format
+      'image/jpg', // Universal web format
+      'image/gif', // Universal web format
+      'image/webp', // Modern efficient format
+      'image/avif', // Next-gen format
+      'image/heic', // iOS format
+      'image/heif', // iOS format
+      'image/tiff', // High quality format
+      'image/svg+xml', // Vector format
+    ];
+
+    // Security: Extract the actual content type from potentially multiple values
+    const contentType = file.mimetype.split(',').map(type => type.trim()).pop();
+
+    if (!acceptableFileTypes.includes(contentType)) {
+      const supportedFormats = 'PNG, JPEG, GIF, WebP, AVIF, HEIC/HEIF, TIFF, SVG';
+      return res.json(ApiResponse.error(`Invalid file type. Supported formats: ${supportedFormats}`));
     }
 
     let attachment;
