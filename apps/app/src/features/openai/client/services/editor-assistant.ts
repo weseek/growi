@@ -7,7 +7,7 @@ import {
   acceptAllChunks, useTextSelectionEffect,
 } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
+import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-yDocs';
 import { type Text as YText } from 'yjs';
 
 import {
@@ -50,9 +50,9 @@ type UseEditorAssistant = () => {
   reject: () => void,
 }
 
-const insertTextAtLine = (ytext: YText, lineNumber: number, textToInsert: string): void => {
+const insertTextAtLine = (yText: YText, lineNumber: number, textToInsert: string): void => {
   // Get the entire text content
-  const content = ytext.toString();
+  const content = yText.toString();
 
   // Split by newlines to get all lines
   const lines = content.split('\n');
@@ -66,7 +66,7 @@ const insertTextAtLine = (ytext: YText, lineNumber: number, textToInsert: string
   }
 
   // Insert the text at the calculated position
-  ytext.insert(insertPosition, textToInsert);
+  yText.insert(insertPosition, textToInsert);
 };
 
 const appendTextLastLine = (yText: YText, textToAppend: string) => {
@@ -99,9 +99,9 @@ const appendTextLastLine = (yText: YText, textToAppend: string) => {
   yText.insert(insertPosition, textToAppend);
 };
 
-const getLineInfo = (ytext: YText, lineNumber: number): { text: string, startIndex: number } | null => {
+const getLineInfo = (yText: YText, lineNumber: number): { text: string, startIndex: number } | null => {
   // Get the entire text content
-  const content = ytext.toString();
+  const content = yText.toString();
 
   // Split by newlines to get all lines
   const lines = content.split('\n');
@@ -140,7 +140,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const { data: currentPageId } = useCurrentPageId();
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
-  const ydocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
+  const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
 
   // Functions
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
@@ -202,7 +202,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   useEffect(() => {
     const pendingDetectedDiff: DetectedDiff | undefined = detectedDiff?.filter(diff => diff.applied === false);
-    if (ydocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
+    if (yDocs?.secondaryDoc != null && pendingDetectedDiff != null && pendingDetectedDiff.length > 0) {
 
       // For debug
       // const testDetectedDiff = [
@@ -223,29 +223,29 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       //   },
       // ];
 
-      const ytext = ydocs.secondaryDoc.getText('codemirror');
-      ydocs.secondaryDoc.transact(() => {
+      const yText = yDocs.secondaryDoc.getText('codemirror');
+      yDocs.secondaryDoc.transact(() => {
         pendingDetectedDiff.forEach((detectedDiff) => {
           if (isReplaceDiff(detectedDiff.data)) {
 
             if (selectedText != null && selectedText.length !== 0) {
-              const lineInfo = getLineInfo(ytext, lineRef.current);
+              const lineInfo = getLineInfo(yText, lineRef.current);
               if (lineInfo != null && lineInfo.text !== detectedDiff.data.diff.replace) {
-                ytext.delete(lineInfo.startIndex, lineInfo.text.length);
-                insertTextAtLine(ytext, lineRef.current, detectedDiff.data.diff.replace);
+                yText.delete(lineInfo.startIndex, lineInfo.text.length);
+                insertTextAtLine(yText, lineRef.current, detectedDiff.data.diff.replace);
               }
 
               lineRef.current += 1;
             }
             else {
-              appendTextLastLine(ytext, detectedDiff.data.diff.replace);
+              appendTextLastLine(yText, detectedDiff.data.diff.replace);
             }
           }
           // if (isInsertDiff(detectedDiff.data)) {
-          //   ytext.insert(positionRef.current, detectedDiff.data.diff.insert);
+          //   yText.insert(positionRef.current, detectedDiff.data.diff.insert);
           // }
           // if (isDeleteDiff(detectedDiff.data)) {
-          //   ytext.delete(positionRef.current, detectedDiff.data.diff.delete);
+          //   yText.delete(positionRef.current, detectedDiff.data.diff.delete);
           // }
           // if (isRetainDiff(detectedDiff.data)) {
           //   positionRef.current += detectedDiff.data.diff.retain;
@@ -272,7 +272,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         // positionRef.current = 0;
       }
     }
-  }, [codeMirrorEditor, detectedDiff, selectedText, ydocs?.secondaryDoc]);
+  }, [codeMirrorEditor, detectedDiff, selectedText, yDocs?.secondaryDoc]);
 
   return {
     postMessage,
