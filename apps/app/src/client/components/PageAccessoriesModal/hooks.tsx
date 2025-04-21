@@ -3,14 +3,13 @@ import { useEffect, useState } from 'react';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 
 function getURLQueryParamValue(key: string) {
-// window.location.href is page URL;
+  // window.location.href is page URL;
   const queryStr: URLSearchParams = new URL(window.location.href).searchParams;
   return queryStr.get(key);
 }
 
 // https://regex101.com/r/YHTDsr/1
 const queryCompareFormat = /^([0-9a-f]{24})...([0-9a-f]{24})$/i;
-
 
 export const useAutoOpenModalByQueryParam = (): void => {
   const [isArleadyMounted, setIsArleadyMounted] = useState(false);
@@ -40,13 +39,12 @@ export const useAutoOpenModalByQueryParam = (): void => {
 
     setIsArleadyMounted(true);
   }, [openPageAccessories, status, isArleadyMounted]);
-
 };
 
 type ComparingRevisionIds = {
-  sourceRevisionId: string,
-  targetRevisionId: string,
-}
+  sourceRevisionId: string;
+  targetRevisionId: string;
+};
 
 export const useAutoComparingRevisionsByQueryParam = (): ComparingRevisionIds | null => {
   const [isArleadyMounted, setIsArleadyMounted] = useState(false);
@@ -73,7 +71,5 @@ export const useAutoComparingRevisionsByQueryParam = (): ComparingRevisionIds | 
     setIsArleadyMounted(true);
   }, [isArleadyMounted]);
 
-  return sourceRevisionId != null && targetRevisionId != null
-    ? { sourceRevisionId, targetRevisionId }
-    : null;
+  return sourceRevisionId != null && targetRevisionId != null ? { sourceRevisionId, targetRevisionId } : null;
 };

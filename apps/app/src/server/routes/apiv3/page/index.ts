@@ -3,10 +3,7 @@ import type { Readable } from 'stream';
 import { pipeline } from 'stream/promises';
 
 import type { IPage, IRevision } from '@growi/core';
-import {
-  AllSubscriptionStatusType, PageGrant, SubscriptionStatusType,
-  getIdForRef,
-} from '@growi/core';
+import { AllSubscriptionStatusType, PageGrant, SubscriptionStatusType, getIdForRef } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -43,14 +40,12 @@ import { syncLatestRevisionBodyToYjsDraftHandlerFactory } from './sync-latest-re
 import { unpublishPageHandlersFactory } from './unpublish-page';
 import { updatePageHandlersFactory } from './update-page';
 
-
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { body, query, param } = require('express-validator');
 
 const router = express.Router();
-
 
 /**
  * @swagger
@@ -132,22 +127,11 @@ module.exports = (crowi) => {
       query('shareLinkId').optional().isMongoId(),
       query('includeEmpty').optional().isBoolean(),
     ],
-    likes: [
-      body('pageId').isString(),
-      body('bool').isBoolean(),
-    ],
-    info: [
-      query('pageId').isMongoId().withMessage('pageId is required'),
-    ],
-    getGrantData: [
-      query('pageId').isMongoId().withMessage('pageId is required'),
-    ],
-    nonUserRelatedGroupsGranted: [
-      query('path').isString(),
-    ],
-    applicableGrant: [
-      query('pageId').isMongoId().withMessage('pageId is required'),
-    ],
+    likes: [body('pageId').isString(), body('bool').isBoolean()],
+    info: [query('pageId').isMongoId().withMessage('pageId is required')],
+    getGrantData: [query('pageId').isMongoId().withMessage('pageId is required')],
+    nonUserRelatedGroupsGranted: [query('path').isString()],
+    applicableGrant: [query('pageId').isMongoId().withMessage('pageId is required')],
     updateGrant: [
       param('pageId').isMongoId().withMessage('pageId is required'),
       body('grant').isInt().withMessage('grant is required'),
@@ -155,10 +139,7 @@ module.exports = (crowi) => {
       body('grantedGroups.*.type').isString().withMessage('grantedGroups type is required'),
       body('grantedGroups.*.item').isMongoId().withMessage('grantedGroups item is required'),
     ],
-    export: [
-      query('format').isString().isIn(['md', 'pdf']),
-      query('revisionId').optional().isMongoId(),
-    ],
+    export: [query('format').isString().isIn(['md', 'pdf']), query('revisionId').optional().isMongoId()],
     archive: [
       body('rootPagePath').isString(),
       body('isCommentDownload').isBoolean(),
@@ -168,20 +149,10 @@ module.exports = (crowi) => {
       body('hierarchyType').isString().isIn(['allSubordinatedPage', 'decideHierarchy']),
       body('hierarchyValue').isNumeric(),
     ],
-    exist: [
-      query('fromPath').isString(),
-      query('toPath').isString(),
-    ],
-    subscribe: [
-      body('pageId').isString(),
-      body('status').isIn(AllSubscriptionStatusType),
-    ],
-    subscribeStatus: [
-      query('pageId').isString(),
-    ],
-    contentWidth: [
-      body('expandContentWidth').isBoolean(),
-    ],
+    exist: [query('fromPath').isString(), query('toPath').isString()],
+    subscribe: [body('pageId').isString(), body('status').isIn(AllSubscriptionStatusType)],
+    subscribeStatus: [query('pageId').isString()],
+    contentWidth: [body('expandContentWidth').isBoolean()],
   };
 
   /**
@@ -212,11 +183,9 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async(req, res) => {
+  router.get('/', certifySharedPage, accessTokenParser, loginRequired, validator.getPage, apiV3FormValidator, async (req, res) => {
     const { user, isSharedPage } = req;
-    const {
-      pageId, path, findAll, revisionId, shareLinkId, includeEmpty,
-    } = req.query;
+    const { pageId, path, findAll, revisionId, shareLinkId, includeEmpty } = req.query;
 
     const isValid = (shareLinkId != null && pageId != null && path == null) || (shareLinkId == null && (pageId != null || path != null));
     if (!isValid) {
@@ -232,18 +201,15 @@ module.exports = (crowi) => {
           throw new Error('ShareLink is not found');
         }
         page = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
-      }
-      else if (pageId != null) { // prioritized
+      } else if (pageId != null) {
+        // prioritized
         page = await Page.findByIdAndViewer(pageId, user);
-      }
-      else if (!findAll) {
+      } else if (!findAll) {
         page = await Page.findByPathAndViewer(path, user, null, true, false);
-      }
-      else {
+      } else {
         pages = await Page.findByPathAndViewer(path, user, null, false, includeEmpty);
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('get-page-failed', err);
       return res.apiv3Err(err, 500);
     }
@@ -258,8 +224,7 @@ module.exports = (crowi) => {
 
         // populate
         page = await page.populateDataToShowRevision();
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('populate-page-failed', err);
         return res.apiv3Err(err, 500);
       }
@@ -443,7 +408,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Page'
    */
-  router.put('/likes', accessTokenParser, loginRequiredStrictly, addActivity, validator.likes, apiV3FormValidator, async(req, res) => {
+  router.put('/likes', accessTokenParser, loginRequiredStrictly, addActivity, validator.likes, apiV3FormValidator, async (req, res) => {
     const { pageId, bool: isLiked } = req.body;
 
     let page;
@@ -455,12 +420,10 @@ module.exports = (crowi) => {
 
       if (isLiked) {
         page = await page.like(req.user);
-      }
-      else {
+      } else {
         page = await page.unlike(req.user);
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('update-like-failed', err);
       return res.apiv3Err(err, 500);
     }
@@ -475,15 +438,13 @@ module.exports = (crowi) => {
 
     activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify);
 
-
     res.apiv3({ result });
 
     if (isLiked) {
       try {
         // global notification
         await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_LIKE, page, req.user);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('Like notification failed', err);
       }
     }
@@ -513,7 +474,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/info', certifySharedPage, loginRequired, validator.info, apiV3FormValidator, async(req, res) => {
+  router.get('/info', certifySharedPage, loginRequired, validator.info, apiV3FormValidator, async (req, res) => {
     const { user, isSharedPage } = req;
     const { pageId } = req.query;
 
@@ -525,12 +486,10 @@ module.exports = (crowi) => {
       }
 
       return res.apiv3(pageWithMeta.meta);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('get-page-info', err);
       return res.apiv3Err(err, 500);
     }
-
   });
 
   /**
@@ -563,7 +522,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/grant-data', loginRequiredStrictly, validator.getGrantData, apiV3FormValidator, async(req, res) => {
+  router.get('/grant-data', loginRequiredStrictly, validator.getGrantData, apiV3FormValidator, async (req, res) => {
     const { pageId } = req.query;
 
     const Page = mongoose.model<IPage, PageModel>('Page');
@@ -576,15 +535,12 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
-    const {
-      path, grant, grantedUsers, grantedGroups,
-    } = page;
+    const { path, grant, grantedUsers, grantedGroups } = page;
     let isGrantNormalized = false;
     try {
-      const grantedUsersId = grantedUsers.map(ref => getIdForRef(ref));
+      const grantedUsersId = grantedUsers.map((ref) => getIdForRef(ref));
       isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsersId, grantedGroups, false, false);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred while processing isGrantNormalized.', err);
       return res.apiv3Err(err, 500);
     }
@@ -665,13 +621,17 @@ module.exports = (crowi) => {
    *         500:
    *           description: Internal server error.
    */
-  router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator,
-    async(req, res: ApiV3Response) => {
+  router.get(
+    '/non-user-related-groups-granted',
+    loginRequiredStrictly,
+    validator.nonUserRelatedGroupsGranted,
+    apiV3FormValidator,
+    async (req, res: ApiV3Response) => {
       const { user } = req;
       const path = normalizePath(req.query.path);
       const pageGrantService = crowi.pageGrantService as IPageGrantService;
       try {
-        const page = await Page.findByPath(path, true) ?? await Page.findNonEmptyClosestAncestor(path);
+        const page = (await Page.findByPath(path, true)) ?? (await Page.findNonEmptyClosestAncestor(path));
         if (page == null) {
           // 'page' should always be non empty, since every page stems back to root page.
           // If it is empty, there is a problem with the server logic.
@@ -690,12 +650,12 @@ module.exports = (crowi) => {
 
         const nonUserRelatedGrantedGroups = await pageGrantService.getNonUserRelatedGrantedGroups(page, user);
         return res.apiv3({ isNonUserRelatedGroupsGranted: nonUserRelatedGrantedGroups.length > 0 });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(err, 500);
       }
-    });
+    },
+  );
   /**
    * @swagger
    *   /page/applicable-grant:
@@ -735,7 +695,7 @@ module.exports = (crowi) => {
    *         500:
    *           description: Internal server error.
    */
-  router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {
+  router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async (req, res) => {
     const { pageId } = req.query;
 
     const Page = crowi.model('Page');
@@ -749,8 +709,7 @@ module.exports = (crowi) => {
     let data;
     try {
       data = await crowi.pageGrantService.calcApplicableGrantData(page, req.user);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred while processing calcApplicableGrantData.', err);
       return res.apiv3Err(err, 500);
     }
@@ -795,7 +754,7 @@ module.exports = (crowi) => {
    *               schema:
    *                 $ref: '#/components/schemas/Page'
    */
-  router.put('/:pageId/grant', loginRequiredStrictly, excludeReadOnlyUser, validator.updateGrant, apiV3FormValidator, async(req, res) => {
+  router.put('/:pageId/grant', loginRequiredStrictly, excludeReadOnlyUser, validator.updateGrant, apiV3FormValidator, async (req, res) => {
     const { pageId } = req.params;
     const { grant, userRelatedGrantedGroups } = req.body;
 
@@ -813,8 +772,7 @@ module.exports = (crowi) => {
       const shouldUseV4Process = false;
       const grantData = { grant, userRelatedGrantedGroups };
       data = await crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred while processing calcApplicableGrantData.', err);
       return res.apiv3Err(err, 500);
     }
@@ -823,26 +781,26 @@ module.exports = (crowi) => {
   });
 
   /**
-  * @swagger
-  *
-  *    /page/export/{pageId}:
-  *      get:
-  *        tags: [Page]
-  *        security:
-  *          - cookieAuth: []
-  *        description: return page's markdown
-  *        parameters:
-  *          - name: pageId
-  *            in: path
-  *            description: ID of the page
-  *            required: true
-  *            schema:
-  *              type: string
-  *        responses:
-  *          200:
-  *            description: Return page's markdown
-  */
-  router.get('/export/:pageId', loginRequiredStrictly, validator.export, async(req, res) => {
+   * @swagger
+   *
+   *    /page/export/{pageId}:
+   *      get:
+   *        tags: [Page]
+   *        security:
+   *          - cookieAuth: []
+   *        description: return page's markdown
+   *        parameters:
+   *          - name: pageId
+   *            in: path
+   *            description: ID of the page
+   *            required: true
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Return page's markdown
+   */
+  router.get('/export/:pageId', loginRequiredStrictly, validator.export, async (req, res) => {
     const pageId: string = req.params.pageId;
     const format: 'md' | 'pdf' = req.query.format ?? 'md';
     const revisionId: string | undefined = req.query.revisionId;
@@ -858,15 +816,14 @@ module.exports = (crowi) => {
       page = await Page.findByIdAndViewer(pageId, req.user);
 
       if (page == null) {
-        const isPageExist = await Page.count({ _id: pageId }) > 0;
+        const isPageExist = (await Page.count({ _id: pageId })) > 0;
         if (isPageExist) {
           // This page exists but req.user has not read permission
           return res.apiv3Err(new ErrorV3(`Haven't the right to see the page ${pageId}.`), 403);
         }
         return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to get page data', err);
       return res.apiv3Err(err, 500);
     }
@@ -874,8 +831,7 @@ module.exports = (crowi) => {
     // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
     try {
       await normalizeLatestRevisionIfBroken(pageId);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred in normalizing the latest revision');
     }
 
@@ -897,8 +853,7 @@ module.exports = (crowi) => {
       if (page._id.toString() !== revision.pageId.toString()) {
         return res.apiv3Err(new ErrorV3("Haven't the right to see the page."), 403);
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to get revision data', err);
       return res.apiv3Err(err, 500);
     }
@@ -906,7 +861,6 @@ module.exports = (crowi) => {
     // replace forbidden characters to '_'
     // refer to https://kb.acronis.com/node/56475?ckattempt=1
     let fileName = sanitize(path.basename(pagePath), { replacement: '_' });
-
 
     // replace root page name to '_top'
     if (fileName === '') {
@@ -920,8 +874,7 @@ module.exports = (crowi) => {
         throw new Error('exportService is not initialized');
       }
       stream = exportService.getReadStreamFromRevision(revision, format);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to create readStream', err);
       return res.apiv3Err(err, 500);
     }
@@ -931,7 +884,7 @@ module.exports = (crowi) => {
     });
 
     const parameters = {
-      ip:  req.ip,
+      ip: req.ip,
       endpoint: req.originalUrl,
       action: SupportedAction.ACTION_PAGE_EXPORT,
       user: req.user?._id,
@@ -979,7 +932,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async(req, res) => {
+  router.get('/exist-paths', loginRequired, validator.exist, apiV3FormValidator, async (req, res) => {
     const { fromPath, toPath } = req.query;
 
     try {
@@ -995,16 +948,13 @@ module.exports = (crowi) => {
       });
 
       const existPages = await Page.findListByPathsArray(toPathDescendantsArray);
-      const existPaths = existPages.map(page => page.path);
+      const existPaths = existPages.map((page) => page.path);
 
       return res.apiv3({ existPaths });
-
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to get exist path', err);
       return res.apiv3Err(err, 500);
     }
-
   });
 
   /**
@@ -1033,7 +983,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, addActivity, validator.subscribe, apiV3FormValidator, async(req, res) => {
+  router.put('/subscribe', accessTokenParser, loginRequiredStrictly, addActivity, validator.subscribe, apiV3FormValidator, async (req, res) => {
     const { pageId, status } = req.body;
     const userId = req.user._id;
 
@@ -1043,8 +993,7 @@ module.exports = (crowi) => {
       const parameters = {};
       if (SubscriptionStatusType.SUBSCRIBE === status) {
         Object.assign(parameters, { action: SupportedAction.ACTION_PAGE_SUBSCRIBE });
-      }
-      else if (SubscriptionStatusType.UNSUBSCRIBE === status) {
+      } else if (SubscriptionStatusType.UNSUBSCRIBE === status) {
         Object.assign(parameters, { action: SupportedAction.ACTION_PAGE_UNSUBSCRIBE });
       }
       if ('action' in parameters) {
@@ -1052,13 +1001,11 @@ module.exports = (crowi) => {
       }
 
       return res.apiv3({ subscription });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to update subscribe status', err);
       return res.apiv3Err(err, 500);
     }
   });
-
 
   /**
    * @swagger
@@ -1093,26 +1040,33 @@ module.exports = (crowi) => {
    *                   page:
    *                     $ref: '#/components/schemas/Page'
    */
-  router.put('/:pageId/content-width', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
-    validator.contentWidth, apiV3FormValidator, async(req, res) => {
+  router.put(
+    '/:pageId/content-width',
+    accessTokenParser,
+    loginRequiredStrictly,
+    excludeReadOnlyUser,
+    validator.contentWidth,
+    apiV3FormValidator,
+    async (req, res) => {
       const { pageId } = req.params;
       const { expandContentWidth } = req.body;
 
       const isContainerFluidBySystem = configManager.getConfig('customize:isContainerFluid');
 
       try {
-        const updateQuery = expandContentWidth === isContainerFluidBySystem
-          ? { $unset: { expandContentWidth } } // remove if the specified value is the same to the system's one
-          : { $set: { expandContentWidth } };
+        const updateQuery =
+          expandContentWidth === isContainerFluidBySystem
+            ? { $unset: { expandContentWidth } } // remove if the specified value is the same to the system's one
+            : { $set: { expandContentWidth } };
 
         const page = await Page.updateOne({ _id: pageId }, updateQuery);
         return res.apiv3({ page });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('update-content-width-failed', err);
         return res.apiv3Err(err, 500);
       }
-    });
+    },
+  );
 
   /**
    * @swagger

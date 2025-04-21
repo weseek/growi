@@ -18,9 +18,7 @@ import type { PageBulkExportPageSnapshotDocument } from '../../../models/page-bu
 import PageBulkExportPageSnapshot from '../../../models/page-bulk-export-page-snapshot';
 
 async function convertMdToHtml(md: string, htmlConverter: Unified.Processor<Root, undefined, undefined, Root, string>): Promise<string> {
-  const htmlString = (await htmlConverter
-    .process(md))
-    .toString();
+  const htmlString = (await htmlConverter.process(md)).toString();
 
   return htmlString;
 }
@@ -37,12 +35,10 @@ async function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExpo
   const format = pageBulkExportJob.format === PageBulkExportFormat.pdf ? 'html' : pageBulkExportJob.format;
   const outputDir = this.getTmpOutputDir(pageBulkExportJob, isHtmlPath);
   // define before the stream starts to avoid creating multiple instances
-  const htmlConverter = unified()
-    .use(remarkParse)
-    .use(remarkHtml);
+  const htmlConverter = unified().use(remarkParse).use(remarkHtml);
   return new Writable({
     objectMode: true,
-    write: async(page: PageBulkExportPageSnapshotDocument, encoding, callback) => {
+    write: async (page: PageBulkExportPageSnapshotDocument, encoding, callback) => {
       try {
         const revision = page.revision;
 
@@ -55,22 +51,20 @@ async function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExpo
           await fs.promises.mkdir(fileOutputParentPath, { recursive: true });
           if (pageBulkExportJob.format === PageBulkExportFormat.md) {
             await fs.promises.writeFile(fileOutputPath, markdownBody);
-          }
-          else {
+          } else {
             const htmlString = await convertMdToHtml(markdownBody, htmlConverter);
             await fs.promises.writeFile(fileOutputPath, htmlString);
           }
           pageBulkExportJob.lastExportedPagePath = page.path;
           await pageBulkExportJob.save();
         }
-      }
-      catch (err) {
+      } catch (err) {
         callback(err);
         return;
       }
       callback();
     },
-    final: async(callback) => {
+    final: async (callback) => {
       try {
         // If the format is md, the export process ends here.
         // If the format is pdf, pdf conversion in pdf-converter has to finish.
@@ -78,8 +72,7 @@ async function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExpo
           pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
           await pageBulkExportJob.save();
         }
-      }
-      catch (err) {
+      } catch (err) {
         callback(err);
         return;
       }
@@ -93,13 +86,17 @@ async function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExpo
  * The export will resume from the last exported page if the process was interrupted.
  */
 export async function exportPagesToFsAsync(this: IPageBulkExportJobCronService, pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
-  const findQuery = pageBulkExportJob.lastExportedPagePath != null ? {
-    pageBulkExportJob,
-    path: { $gt: pageBulkExportJob.lastExportedPagePath },
-  } : { pageBulkExportJob };
-  const pageSnapshotsReadable = PageBulkExportPageSnapshot
-    .find(findQuery)
-    .populate('revision').sort({ path: 1 }).lean()
+  const findQuery =
+    pageBulkExportJob.lastExportedPagePath != null
+      ? {
+          pageBulkExportJob,
+          path: { $gt: pageBulkExportJob.lastExportedPagePath },
+        }
+      : { pageBulkExportJob };
+  const pageSnapshotsReadable = PageBulkExportPageSnapshot.find(findQuery)
+    .populate('revision')
+    .sort({ path: 1 })
+    .lean()
     .cursor({ batchSize: this.pageBatchSize });
 
   const pagesWritable = await getPageWritable.bind(this)(pageBulkExportJob);

@@ -1,4 +1,3 @@
-
 import { getIdStringForRef } from '@growi/core';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 
@@ -14,7 +13,6 @@ import { preNotifyService } from '../service/pre-notify';
  *  tags:
  *    name: Comments
  */
-
 
 /**
  * @swagger
@@ -119,7 +117,7 @@ module.exports = (crowi, app) => {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id Revision Id.
    */
-  api.get = async(req, res) => {
+  api.get = async (req, res) => {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
 
@@ -134,12 +132,10 @@ module.exports = (crowi, app) => {
     try {
       if (revisionId) {
         query = Comment.findCommentsByRevisionId(revisionId);
-      }
-      else {
+      } else {
         query = Comment.findCommentsByPageId(pageId);
       }
-    }
-    catch (err) {
+    } catch (err) {
       return res.json(ApiResponse.error(err));
     }
 
@@ -160,12 +156,14 @@ module.exports = (crowi, app) => {
       body('commentForm.comment').exists(),
       body('commentForm.comment_position').isInt(),
       body('commentForm.is_markdown').isBoolean(),
-      body('commentForm.replyTo').exists().custom((value) => {
-        if (value === '') {
-          return undefined;
-        }
-        return ObjectId(value);
-      }),
+      body('commentForm.replyTo')
+        .exists()
+        .custom((value) => {
+          if (value === '') {
+            return undefined;
+          }
+          return ObjectId(value);
+        }),
 
       body('slackNotificationForm.isSlackEnabled').isBoolean().exists(),
     ];
@@ -225,7 +223,7 @@ module.exports = (crowi, app) => {
    * @apiParam {String} comment Comment body
    * @apiParam {Number} comment_position=-1 Line number of the comment
    */
-  api.add = async(req, res) => {
+  api.add = async (req, res) => {
     const { commentForm, slackNotificationForm } = req.body;
     const { validationResult } = require('express-validator');
 
@@ -254,8 +252,7 @@ module.exports = (crowi, app) => {
     try {
       createdComment = await Comment.add(pageId, req.user._id, revisionId, comment, position, replyTo);
       commentEvent.emit(CommentEvent.CREATE, createdComment);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.json(ApiResponse.error(err));
     }
@@ -277,7 +274,7 @@ module.exports = (crowi, app) => {
     };
 
     /** @type {import('../service/pre-notify').GetAdditionalTargetUsers} */
-    const getAdditionalTargetUsers = async(activity) => {
+    const getAdditionalTargetUsers = async (activity) => {
       const mentionedUsers = await crowi.commentService.getMentionedUsers(activity.event);
 
       return mentionedUsers;
@@ -292,8 +289,7 @@ module.exports = (crowi, app) => {
       await globalNotificationService.fire(GlobalNotificationSettingEvent.COMMENT, page, req.user, {
         comment: createdComment,
       });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Comment notification　failed', err);
     }
 
@@ -308,8 +304,7 @@ module.exports = (crowi, app) => {
             logger.error('Create user notification failed', result.reason);
           }
         });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('Create user notification failed', err);
       }
     }
@@ -366,7 +361,7 @@ module.exports = (crowi, app) => {
    * @apiName UpdateComment
    * @apiGroup Comment
    */
-  api.update = async(req, res) => {
+  api.update = async (req, res) => {
     const { commentForm } = req.body;
 
     const commentStr = commentForm?.comment;
@@ -378,7 +373,7 @@ module.exports = (crowi, app) => {
     }
 
     if (commentId == null) {
-      return res.json(ApiResponse.error('\'comment_id\' is undefined'));
+      return res.json(ApiResponse.error("'comment_id' is undefined"));
     }
 
     let updatedComment;
@@ -399,13 +394,9 @@ module.exports = (crowi, app) => {
         throw new Error('Current user is not operatable to this comment.');
       }
 
-      updatedComment = await Comment.findOneAndUpdate(
-        { _id: commentId },
-        { $set: { comment: commentStr, revision } },
-      );
+      updatedComment = await Comment.findOneAndUpdate({ _id: commentId }, { $set: { comment: commentStr, revision } });
       commentEvent.emit(CommentEvent.UPDATE, updatedComment);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.json(ApiResponse.error(err));
     }
@@ -459,10 +450,10 @@ module.exports = (crowi, app) => {
    *
    * @apiParam {String} comment_id Comment Id.
    */
-  api.remove = async(req, res) => {
+  api.remove = async (req, res) => {
     const commentId = req.body.comment_id;
     if (!commentId) {
-      return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));
+      return Promise.resolve(res.json(ApiResponse.error("'comment_id' is undefined")));
     }
 
     try {
@@ -486,8 +477,7 @@ module.exports = (crowi, app) => {
       await Comment.removeWithReplies(comment);
       await Page.updateCommentCount(comment.page);
       commentEvent.emit(CommentEvent.DELETE, comment);
-    }
-    catch (err) {
+    } catch (err) {
       return res.json(ApiResponse.error(err));
     }
 

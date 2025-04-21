@@ -3,19 +3,18 @@ import type { IncomingMessage } from 'http';
 import type { NextServer, RequestHandler } from 'next/dist/server/next';
 
 type Crowi = {
-  nextApp: NextServer,
-}
+  nextApp: NextServer;
+};
 
 type CrowiReq = IncomingMessage & {
-  crowi: Crowi,
-}
+  crowi: Crowi;
+};
 
 type NextDelegatorResult = {
-  delegateToNext: RequestHandler,
+  delegateToNext: RequestHandler;
 };
 
 const delegator = (crowi: Crowi): NextDelegatorResult => {
-
   const { nextApp } = crowi;
   const handle = nextApp.getRequestHandler();
 
@@ -27,7 +26,6 @@ const delegator = (crowi: Crowi): NextDelegatorResult => {
   return {
     delegateToNext,
   };
-
 };
 
 export default delegator;

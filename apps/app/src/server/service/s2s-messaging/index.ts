@@ -40,7 +40,6 @@ const envToModuleMappings = {
  * Instanciate server-to-server messaging service
  */
 class S2sMessagingServiceFactory {
-
   delegator!: S2sMessagingService;
 
   initializeDelegator(crowi: Crowi) {
@@ -70,7 +69,6 @@ class S2sMessagingServiceFactory {
     }
     return this.delegator;
   }
-
 }
 
 const factory = new S2sMessagingServiceFactory();

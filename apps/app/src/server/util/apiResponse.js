@@ -1,5 +1,4 @@
-function ApiResponse() {
-}
+function ApiResponse() {}
 
 ApiResponse.error = (err, code, data) => {
   const result = {};
@@ -10,8 +9,7 @@ ApiResponse.error = (err, code, data) => {
 
   if (err instanceof Error) {
     result.error = err.toString();
-  }
-  else {
+  } else {
     result.error = err;
   }
 

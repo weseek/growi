@@ -1,13 +1,9 @@
-import React, {
-  useCallback, useMemo, useRef, useState, useEffect, type JSX,
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState, useEffect, type JSX } from 'react';
 
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
-import {
-  UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -21,9 +17,7 @@ import { useIsAdmin } from '~/stores-universal/context';
 import type { ILegacyPrivatePage } from '~/stores/modal';
 import { usePrivateLegacyPagesMigrationModal } from '~/stores/modal';
 import { mutatePageTree, useSWRxV5MigrationStatus } from '~/stores/page-listing';
-import {
-  useSWRxSearch,
-} from '~/stores/search';
+import { useSWRxSearch } from '~/stores/search';
 
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import PaginationWrapper from './PaginationWrapper';
@@ -33,32 +27,27 @@ import SearchControl from './SearchPage/SearchControl';
 import type { IReturnSelectedPageIds } from './SearchPage/SearchPageBase';
 import { SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
-
 // TODO: replace with "customize:showPageLimitationS"
 const INITIAL_PAGING_SIZE = 20;
 
 const initQ = '/';
-
 
 /**
  * SearchResultListHead
  */
 
 type SearchResultListHeadProps = {
-  searchResult: IFormattedSearchResult,
-  offset: number,
-  pagingSize: number,
-  onPagingSizeChanged: (size: number) => void,
-  migrationStatus?: V5MigrationStatus,
-}
+  searchResult: IFormattedSearchResult;
+  offset: number;
+  pagingSize: number;
+  onPagingSizeChanged: (size: number) => void;
+  migrationStatus?: V5MigrationStatus;
+};
 
 const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.Element => {
   const { t } = useTranslation();
 
-  const {
-    searchResult, offset, pagingSize,
-    onPagingSizeChanged, migrationStatus,
-  } = props;
+  const { searchResult, offset, pagingSize, onPagingSizeChanged, migrationStatus } = props;
 
   if (migrationStatus == null) {
     return (
@@ -80,7 +69,8 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
         <div className="card-body">
           <h2 className="card-title text-success">{t('private_legacy_pages.nopages_title')}</h2>
           <p className="card-text">
-            {t('private_legacy_pages.nopages_desc1')}<br />
+            {t('private_legacy_pages.nopages_desc1')}
+            <br />
             {/* eslint-disable-next-line react/no-danger */}
             <span dangerouslySetInnerHTML={{ __html: t('private_legacy_pages.detail_info') }}></span>
           </p>
@@ -94,23 +84,24 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
       <div className="d-flex align-items-center justify-content-between">
         <div className="text-nowrap">
           {t('search_result.result_meta')}
-          <span className="ms-3">{`${leftNum}-${rightNum}`} / {total}</span>
-          { took != null && (
-            <span className="ms-3 text-muted">({took}ms)</span>
-          ) }
+          <span className="ms-3">
+            {`${leftNum}-${rightNum}`} / {total}
+          </span>
+          {took != null && <span className="ms-3 text-muted">({took}ms)</span>}
         </div>
         <div className="input-group flex-nowrap search-result-select-group ms-auto d-md-flex d-none">
           <div>
-            <label className="form-label input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
+            <label className="form-label input-group-text text-muted" htmlFor="inputGroupSelect01">
+              {t('search_result.number_of_list_to_display')}
+            </label>
           </div>
-          <select
-            defaultValue={pagingSize}
-            className="form-select"
-            id="inputGroupSelect01"
-            onChange={e => onPagingSizeChanged(Number(e.target.value))}
-          >
+          <select defaultValue={pagingSize} className="form-select" id="inputGroupSelect01" onChange={(e) => onPagingSizeChanged(Number(e.target.value))}>
             {[20, 50, 100, 200].map((limit) => {
-              return <option key={limit} value={limit}>{limit} {t('search_result.page_number_unit')}</option>;
+              return (
+                <option key={limit} value={limit}>
+                  {limit} {t('search_result.page_number_unit')}
+                </option>
+              );
             })}
           </select>
         </div>
@@ -119,7 +110,8 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
         <div className="card-body">
           <h2 className="card-title text-warning">{t('private_legacy_pages.alert_title')}</h2>
           <p className="card-text">
-            {t('private_legacy_pages.alert_desc1', { delete_all_selected_page: t('search_result.delete_all_selected_page') })}<br />
+            {t('private_legacy_pages.alert_desc1', { delete_all_selected_page: t('search_result.delete_all_selected_page') })}
+            <br />
             {/* eslint-disable-next-line react/no-danger */}
             <span dangerouslySetInnerHTML={{ __html: t('private_legacy_pages.detail_info') }}></span>
           </p>
@@ -135,10 +127,10 @@ SearchResultListHead.displayName = 'SearchResultListHead';
  * ConvertByPathModal
  */
 type ConvertByPathModalProps = {
-  isOpen: boolean,
-  close?: () => void,
-  onSubmit?: (convertPath: string) => Promise<void> | void,
-}
+  isOpen: boolean;
+  close?: () => void;
+  onSubmit?: (convertPath: string) => Promise<void> | void;
+};
 const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Element => {
   const { t } = useTranslation();
 
@@ -152,33 +144,27 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.close}>
       <ModalHeader tag="h4" toggle={props.close}>
-        { t('private_legacy_pages.by_path_modal.title') }
+        {t('private_legacy_pages.by_path_modal.title')}
       </ModalHeader>
       <ModalBody>
         <p>{t('private_legacy_pages.by_path_modal.description')}</p>
-        <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={e => setInput(e.target.value)} />
+        <input type="text" className="form-control" placeholder="/" value={currentInput} onChange={(e) => setInput(e.target.value)} />
         <div className="alert alert-danger mt-3" role="alert">
-          { t('private_legacy_pages.by_path_modal.alert') }
+          {t('private_legacy_pages.by_path_modal.alert')}
         </div>
       </ModalBody>
       <ModalFooter>
         <div className="form-check">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="understoodCheckbox"
-            onChange={e => setChecked(e.target.checked)}
-          />
-          <label className="form-label form-check-label" htmlFor="understoodCheckbox">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
+          <input className="form-check-input" type="checkbox" id="understoodCheckbox" onChange={(e) => setChecked(e.target.checked)} />
+          <label className="form-label form-check-label" htmlFor="understoodCheckbox">
+            {t('private_legacy_pages.by_path_modal.checkbox_label')}
+          </label>
         </div>
-        <button
-          type="button"
-          className="btn btn-primary"
-          disabled={!checked}
-          onClick={() => props.onSubmit?.(currentInput)}
-        >
-          <span className="material-symbols-outlined" aria-hidden="true">refresh</span>
-          { t('private_legacy_pages.by_path_modal.button_label') }
+        <button type="button" className="btn btn-primary" disabled={!checked} onClick={() => props.onSubmit?.(currentInput)}>
+          <span className="material-symbols-outlined" aria-hidden="true">
+            refresh
+          </span>
+          {t('private_legacy_pages.by_path_modal.button_label')}
         </button>
       </ModalFooter>
     </Modal>
@@ -203,8 +189,8 @@ const PrivateLegacyPages = (): JSX.Element => {
 
   const [isControlEnabled, setControlEnabled] = useState(false);
 
-  const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
-  const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
+  const selectAllControlRef = useRef<ISelectableAndIndeterminatable | null>(null);
+  const searchPageBaseRef = useRef<(ISelectableAll & IReturnSelectedPageIds) | null>(null);
 
   const { data, conditions, mutate } = useSWRxSearch(keyword, 'PrivateLegacyPages', {
     offset,
@@ -215,11 +201,14 @@ const PrivateLegacyPages = (): JSX.Element => {
 
   const { data: migrationStatus, mutate: mutateMigrationStatus } = useSWRxV5MigrationStatus();
 
-  const searchInvokedHandler = useCallback((_keyword: string) => {
-    mutateMigrationStatus();
-    setKeyword(_keyword);
-    setOffset(0);
-  }, [mutateMigrationStatus]);
+  const searchInvokedHandler = useCallback(
+    (_keyword: string) => {
+      mutateMigrationStatus();
+      setKeyword(_keyword);
+      setOffset(0);
+    },
+    [mutateMigrationStatus],
+  );
 
   const { open: openModal, close: closeModal } = usePrivateLegacyPagesMigrationModal();
   const { data: socket } = useGlobalSocket();
@@ -232,11 +221,8 @@ const PrivateLegacyPages = (): JSX.Element => {
     socket?.on(SocketEventName.PageMigrationError, (data?: PageMigrationErrorData) => {
       if (data == null || data.paths.length === 0) {
         toastError(t('private_legacy_pages.toaster.page_migration_failed'));
-      }
-      else {
-        const errorPaths = data.paths.length > 3
-          ? `${data.paths.slice(0, 3).join(', ')}...`
-          : data.paths.join(', ');
+      } else {
+        const errorPaths = data.paths.length > 3 ? `${data.paths.slice(0, 3).join(', ')}...` : data.paths.join(', ');
         toastError(t('private_legacy_pages.toaster.page_migration_failed_with_paths', { paths: errorPaths }));
       }
     });
@@ -257,8 +243,7 @@ const PrivateLegacyPages = (): JSX.Element => {
     if (isChecked) {
       instance.selectAll();
       setControlEnabled(true);
-    }
-    else {
+    } else {
       instance.deselectAll();
       setControlEnabled(false);
     }
@@ -274,12 +259,10 @@ const PrivateLegacyPages = (): JSX.Element => {
     if (selectedCount === 0) {
       instance.deselect();
       setControlEnabled(false);
-    }
-    else if (selectedCount === totalCount) {
+    } else if (selectedCount === totalCount) {
       instance.select();
       setControlEnabled(true);
-    }
-    else {
+    } else {
       instance.setIndeterminate();
       setControlEnabled(true);
     }
@@ -305,34 +288,39 @@ const PrivateLegacyPages = (): JSX.Element => {
     }
 
     const selectedPages = data.data
-      .filter(pageWithMeta => selectedPageIds.has(pageWithMeta.data._id))
-      .map(pageWithMeta => ({ pageId: pageWithMeta.data._id, path: pageWithMeta.data.path } as ILegacyPrivatePage));
+      .filter((pageWithMeta) => selectedPageIds.has(pageWithMeta.data._id))
+      .map((pageWithMeta) => ({ pageId: pageWithMeta.data._id, path: pageWithMeta.data.path }) as ILegacyPrivatePage);
 
-    openModal(
-      selectedPages,
-      () => {
-        toastSuccess(t('Successfully requested'));
-        closeModal();
-        mutateMigrationStatus();
-        mutate();
-        mutatePageTree();
-      },
-    );
+    openModal(selectedPages, () => {
+      toastSuccess(t('Successfully requested'));
+      closeModal();
+      mutateMigrationStatus();
+      mutate();
+      mutatePageTree();
+    });
   }, [data, openModal, t, closeModal, mutateMigrationStatus, mutate]);
 
-  const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
-    setOffset(0);
-    setLimit(pagingSize);
-    mutate();
-  }, [mutate]);
+  const pagingSizeChangedHandler = useCallback(
+    (pagingSize: number) => {
+      setOffset(0);
+      setLimit(pagingSize);
+      mutate();
+    },
+    [mutate],
+  );
 
-  const pagingNumberChangedHandler = useCallback((activePage: number) => {
-    setOffset((activePage - 1) * limit);
-    mutate();
-  }, [limit, mutate]);
+  const pagingNumberChangedHandler = useCallback(
+    (activePage: number) => {
+      setOffset((activePage - 1) * limit);
+      mutate();
+    },
+    [limit, mutate],
+  );
 
   const openConvertModalHandler = useCallback(() => {
-    if (!isAdmin) { return }
+    if (!isAdmin) {
+      return;
+    }
     setOpenConvertModal(true);
   }, [isAdmin]);
 
@@ -382,8 +370,17 @@ const PrivateLegacyPages = (): JSX.Element => {
         {isAdmin && renderOpenModalButton()}
       </div>
     );
-  // eslint-disable-next-line max-len
-  }, [convertMenuItemClickedHandler, deleteAllButtonClickedHandler, hitsCount, isAdmin, isControlEnabled, renderOpenModalButton, selectAllCheckboxChangedHandler, t]);
+    // eslint-disable-next-line max-len
+  }, [
+    convertMenuItemClickedHandler,
+    deleteAllButtonClickedHandler,
+    hitsCount,
+    isAdmin,
+    isControlEnabled,
+    renderOpenModalButton,
+    selectAllCheckboxChangedHandler,
+    t,
+  ]);
 
   const searchControl = useMemo(() => {
     return (
@@ -422,12 +419,7 @@ const PrivateLegacyPages = (): JSX.Element => {
     const { offset, limit } = conditions;
 
     return (
-      <PaginationWrapper
-        activePage={Math.floor(offset / limit) + 1}
-        totalItemsCount={total}
-        pagingLimit={limit}
-        changePage={pagingNumberChangedHandler}
-      />
+      <PaginationWrapper activePage={Math.floor(offset / limit) + 1} totalItemsCount={total} pagingLimit={limit} changePage={pagingNumberChangedHandler} />
     );
   }, [conditions, data, pagingNumberChangedHandler]);
 
@@ -437,13 +429,7 @@ const PrivateLegacyPages = (): JSX.Element => {
         ref={searchPageBaseRef}
         pages={data?.data}
         onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
-        forceHideMenuItems={[
-          MenuItemType.BOOKMARK,
-          MenuItemType.RENAME,
-          MenuItemType.DUPLICATE,
-          MenuItemType.REVERT,
-          MenuItemType.PATH_RECOVERY,
-        ]}
+        forceHideMenuItems={[MenuItemType.BOOKMARK, MenuItemType.RENAME, MenuItemType.DUPLICATE, MenuItemType.REVERT, MenuItemType.PATH_RECOVERY]}
         // Components
         searchControl={searchControl}
         searchResultListHead={searchResultListHead}
@@ -454,7 +440,7 @@ const PrivateLegacyPages = (): JSX.Element => {
       <ConvertByPathModal
         isOpen={isOpenConvertModal}
         close={() => setOpenConvertModal(false)}
-        onSubmit={async(convertPath: string) => {
+        onSubmit={async (convertPath: string) => {
           try {
             await apiv3Post<void>('/pages/convert-pages-by-path', {
               convertPath,
@@ -463,8 +449,7 @@ const PrivateLegacyPages = (): JSX.Element => {
             setOpenConvertModal(false);
             mutate();
             mutatePageTree();
-          }
-          catch (errs) {
+          } catch (errs) {
             if (errs.length === 1) {
               switch (errs[0].code) {
                 case V5ConversionErrCode.GRANT_INVALID:
@@ -479,8 +464,7 @@ const PrivateLegacyPages = (): JSX.Element => {
                 default:
                   toastError(t('private_legacy_pages.by_path_modal.error'));
               }
-            }
-            else {
+            } else {
               toastError(t('private_legacy_pages.by_path_modal.error'));
             }
           }

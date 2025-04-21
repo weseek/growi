@@ -6,4 +6,4 @@ export const IExternalAuthProviderType = {
   github: 'github',
 } as const;
 
-export type IExternalAuthProviderType = typeof IExternalAuthProviderType[keyof typeof IExternalAuthProviderType]
+export type IExternalAuthProviderType = (typeof IExternalAuthProviderType)[keyof typeof IExternalAuthProviderType];

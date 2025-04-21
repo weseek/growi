@@ -1,49 +1,44 @@
-import type {
-  HasObjectId, Ref,
-  IPageHasId,
-  IUserGroup, IUserGroupHasId, IUserGroupRelationHasId, IUserHasId,
-} from '@growi/core';
-
+import type { HasObjectId, Ref, IPageHasId, IUserGroup, IUserGroupHasId, IUserGroupRelationHasId, IUserHasId } from '@growi/core';
 
 export type UserGroupResult = {
-  userGroup: IUserGroupHasId,
-}
+  userGroup: IUserGroupHasId;
+};
 
 export type UserGroupListResult<TUSERGROUP extends IUserGroupHasId = IUserGroupHasId> = {
-  userGroups: TUSERGROUP[],
+  userGroups: TUSERGROUP[];
 };
 
 export type ChildUserGroupListResult<TUSERGROUP extends IUserGroupHasId = IUserGroupHasId> = {
-  childUserGroups: TUSERGROUP[],
-  grandChildUserGroups: TUSERGROUP[],
+  childUserGroups: TUSERGROUP[];
+  grandChildUserGroups: TUSERGROUP[];
 };
 
 export type UserGroupRelationListResult<TUSERGROUPRELATION extends IUserGroupRelationHasId = IUserGroupRelationHasId> = {
-  userGroupRelations: TUSERGROUPRELATION[],
+  userGroupRelations: TUSERGROUPRELATION[];
 };
 
 export type IUserGroupRelationHasIdPopulatedUser<TUSERGROUP extends IUserGroup = IUserGroup> = {
-  relatedGroup: Ref<TUSERGROUP>,
-  relatedUser: IUserHasId,
-  createdAt: Date,
+  relatedGroup: Ref<TUSERGROUP>;
+  relatedUser: IUserHasId;
+  createdAt: Date;
 } & HasObjectId;
 
 export type UserGroupRelationsResult = {
-  userGroupRelations: IUserGroupRelationHasIdPopulatedUser[],
+  userGroupRelations: IUserGroupRelationHasIdPopulatedUser[];
 };
 
 export type UserGroupPagesResult = {
-  pages: IPageHasId[],
-}
+  pages: IPageHasId[];
+};
 
 export type SelectableParentUserGroupsResult = {
-  selectableParentGroups: IUserGroupHasId[],
-}
+  selectableParentGroups: IUserGroupHasId[];
+};
 
 export type SelectableUserChildGroupsResult = {
-  selectableChildGroups: IUserGroupHasId[],
-}
+  selectableChildGroups: IUserGroupHasId[];
+};
 
 export type AncestorUserGroupsResult = {
-  ancestorUserGroups: IUserGroupHasId[],
-}
+  ancestorUserGroups: IUserGroupHasId[];
+};

@@ -1,31 +1,27 @@
 import { GrowiDeploymentType, GrowiServiceType } from '@growi/core/dist/consts';
 import { mock } from 'vitest-mock-extended';
 
-
 import { Config } from '../../models/config';
 import type { S2sMessagingService } from '../s2s-messaging/base';
 
 import { configManager } from './config-manager';
 
 describe('ConfigManager', () => {
-
   const s2sMessagingServiceMock = mock<S2sMessagingService>();
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     configManager.setS2sMessagingService(s2sMessagingServiceMock);
   });
 
-
   describe("getConfig('app:siteUrl')", () => {
-
-    beforeEach(async() => {
+    beforeEach(async () => {
       process.env.APP_SITE_URL = 'http://localhost:3000';
 
       // remove config from DB
       await Config.deleteOne({ key: 'app:siteUrl' }).exec();
     });
 
-    test('returns the env value"', async() => {
+    test('returns the env value"', async () => {
       // arrange
       await configManager.loadConfigs();
 
@@ -36,7 +32,7 @@ describe('ConfigManager', () => {
       expect(value).toEqual('http://localhost:3000');
     });
 
-    test('returns the db value"', async() => {
+    test('returns the db value"', async () => {
       // arrange
       await Config.create({ key: 'app:siteUrl', value: JSON.stringify('https://example.com') });
       await configManager.loadConfigs();
@@ -48,7 +44,7 @@ describe('ConfigManager', () => {
       expect(value).toStrictEqual('https://example.com');
     });
 
-    test('returns the env value when USES_ONLY_ENV_OPTION is set', async() => {
+    test('returns the env value when USES_ONLY_ENV_OPTION is set', async () => {
       // arrange
       process.env.APP_SITE_URL_USES_ONLY_ENV_VARS = 'true';
       await Config.create({ key: 'app:siteUrl', value: JSON.stringify('https://example.com') });
@@ -60,17 +56,15 @@ describe('ConfigManager', () => {
       // assert
       expect(value).toEqual('http://localhost:3000');
     });
-
   });
 
   describe("getConfig('security:passport-saml:isEnabled')", () => {
-
-    beforeEach(async() => {
+    beforeEach(async () => {
       // remove config from DB
       await Config.deleteOne({ key: 'security:passport-saml:isEnabled' }).exec();
     });
 
-    test('returns the default value"', async() => {
+    test('returns the default value"', async () => {
       // arrange
       await configManager.loadConfigs();
 
@@ -81,7 +75,7 @@ describe('ConfigManager', () => {
       expect(value).toStrictEqual(false);
     });
 
-    test('returns the env value"', async() => {
+    test('returns the env value"', async () => {
       // arrange
       process.env.SAML_ENABLED = 'true';
       await configManager.loadConfigs();
@@ -93,7 +87,7 @@ describe('ConfigManager', () => {
       expect(value).toStrictEqual(true);
     });
 
-    test('returns the preferred db value"', async() => {
+    test('returns the preferred db value"', async () => {
       // arrange
       process.env.SAML_ENABLED = 'true';
       await Config.create({ key: 'security:passport-saml:isEnabled', value: false });
@@ -108,12 +102,12 @@ describe('ConfigManager', () => {
   });
 
   describe('updateConfigs', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await Config.deleteMany({ key: /app.*/ }).exec();
       await Config.create({ key: 'app:siteUrl', value: JSON.stringify('value1') });
     });
 
-    test('updates configs in the same namespace', async() => {
+    test('updates configs in the same namespace', async () => {
       // arrange
       await configManager.loadConfigs();
       const config1 = await Config.findOne({ key: 'app:siteUrl' }).exec();
@@ -136,13 +130,13 @@ describe('ConfigManager', () => {
   });
 
   describe('removeConfigs', () => {
-    beforeEach(async() => {
+    beforeEach(async () => {
       await Config.deleteMany({ key: /app.*/ }).exec();
       await Config.create({ key: 'app:serviceType', value: JSON.stringify(GrowiServiceType.onPremise) });
       await Config.create({ key: 'app:deploymentType', value: JSON.stringify(GrowiDeploymentType.growiDockerCompose) });
     });
 
-    test('removes configs in the same namespace', async() => {
+    test('removes configs in the same namespace', async () => {
       // arrange
       await configManager.loadConfigs();
       const config3 = await Config.findOne({ key: 'app:serviceType' }).exec();
@@ -160,5 +154,4 @@ describe('ConfigManager', () => {
       expect(removedConfig4).toBeNull();
     });
   });
-
 });

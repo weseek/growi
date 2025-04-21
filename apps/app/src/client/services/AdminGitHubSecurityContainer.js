@@ -13,7 +13,6 @@ const logger = loggerFactory('growi:security:AdminGitHubSecurityContainer');
  * @extends {Container} unstated Container
  */
 export default class AdminGitHubSecurityContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -31,7 +30,6 @@ export default class AdminGitHubSecurityContainer extends Container {
       githubClientSecret: '',
       isSameUsernameTreatedAsIdenticalUser: false,
     };
-
   }
 
   /**
@@ -46,8 +44,7 @@ export default class AdminGitHubSecurityContainer extends Container {
         githubClientSecret: githubOAuth.githubClientSecret,
         isSameUsernameTreatedAsIdenticalUser: githubOAuth.isSameUsernameTreatedAsIdenticalUser,
       });
-    }
-    catch (err) {
+    } catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to fetch data');
@@ -101,5 +98,4 @@ export default class AdminGitHubSecurityContainer extends Container {
     });
     return response;
   }
-
 }

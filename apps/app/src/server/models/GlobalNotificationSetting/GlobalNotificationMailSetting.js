@@ -15,11 +15,14 @@ const factory = (crowi) => {
   const GlobalNotificationSettingModel = mongoose.model('GlobalNotificationSetting', GlobalNotificationSettingSchema);
   const GlobalNotificationMailSettingModel = GlobalNotificationSettingModel.discriminator(
     GlobalNotificationSettingType.MAIL,
-    new mongoose.Schema({
-      toEmail: String,
-    }, {
-      discriminatorKey: 'type',
-    }),
+    new mongoose.Schema(
+      {
+        toEmail: String,
+      },
+      {
+        discriminatorKey: 'type',
+      },
+    ),
   );
 
   return GlobalNotificationMailSettingModel;

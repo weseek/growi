@@ -15,7 +15,7 @@ describe('GrowiInfoService', () => {
 
   let User;
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     process.env.APP_SITE_URL = 'http://growi.test.jp';
     process.env.DEPLOYMENT_TYPE = 'growi-docker-compose';
     process.env.SAML_ENABLED = 'true';
@@ -50,8 +50,7 @@ describe('GrowiInfoService', () => {
   });
 
   describe('getGrowiInfo', () => {
-
-    test('Should get correct GROWI info', async() => {
+    test('Should get correct GROWI info', async () => {
       const growiInfo = await growiInfoService.getGrowiInfo();
 
       assert(growiInfo != null);
@@ -74,7 +73,7 @@ describe('GrowiInfoService', () => {
       });
     });
 
-    test('Should get correct GROWI info with additionalInfo', async() => {
+    test('Should get correct GROWI info with additionalInfo', async () => {
       // arrange
       await User.create({
         username: 'growiinfo test user',
@@ -112,6 +111,5 @@ describe('GrowiInfoService', () => {
         },
       });
     });
-
   });
 });

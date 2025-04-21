@@ -2,7 +2,6 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-
 import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -31,8 +30,7 @@ const ElasticsearchManagement = () => {
   const [indicesData, setIndicesData] = useState(null);
   const [aliasesData, setAliasesData] = useState(null);
 
-
-  const retrieveIndicesStatus = useCallback(async() => {
+  const retrieveIndicesStatus = useCallback(async () => {
     try {
       const { data } = await apiv3Get('/search/indices');
       const { info } = data;
@@ -43,8 +41,7 @@ const ElasticsearchManagement = () => {
       setIndicesData(info.indices);
       setAliasesData(info.aliases);
       setIsNormalized(info.isNormalized);
-    }
-    catch (errors: unknown) {
+    } catch (errors: unknown) {
       setIsConnected(false);
 
       // evaluate whether configured or not
@@ -55,24 +52,20 @@ const ElasticsearchManagement = () => {
           }
         }
         toastError(errors as Error[]);
-      }
-      else {
+      } else {
         toastError(errors as Error);
       }
-
-    }
-    finally {
+    } finally {
       setIsInitialized(true);
     }
   }, []);
 
   useEffect(() => {
-    const fetchIndicesStatusData = async() => {
+    const fetchIndicesStatusData = async () => {
       await retrieveIndicesStatus();
     };
     fetchIndicesStatusData();
   }, [retrieveIndicesStatus]);
-
 
   useEffect(() => {
     if (socket == null) {
@@ -82,7 +75,7 @@ const ElasticsearchManagement = () => {
       setIsRebuildingProcessing(true);
     });
 
-    socket.on(SocketEventName.FinishAddPage, async(data) => {
+    socket.on(SocketEventName.FinishAddPage, async (data) => {
       await retrieveIndicesStatus();
       setIsRebuildingProcessing(false);
       setIsRebuildingCompleted(true);
@@ -99,14 +92,12 @@ const ElasticsearchManagement = () => {
     };
   }, [retrieveIndicesStatus, socket]);
 
-
-  const reconnect = async() => {
+  const reconnect = async () => {
     setIsReconnectingProcessing(true);
 
     try {
       await apiv3Post('/search/connection');
-    }
-    catch (e) {
+    } catch (e) {
       toastError(e);
       return;
     }
@@ -115,12 +106,10 @@ const ElasticsearchManagement = () => {
     window.location.reload();
   };
 
-  const normalizeIndices = async() => {
-
+  const normalizeIndices = async () => {
     try {
       await apiv3Put('/search/indices', { operation: 'normalize' });
-    }
-    catch (e) {
+    } catch (e) {
       toastError(e);
     }
 
@@ -129,14 +118,13 @@ const ElasticsearchManagement = () => {
     toastSuccess('Normalizing has succeeded');
   };
 
-  const rebuildIndices = async() => {
+  const rebuildIndices = async () => {
     setIsRebuildingProcessing(true);
 
     try {
       await apiv3Put('/search/indices', { operation: 'rebuild' });
       toastSuccess('Rebuilding is requested');
-    }
-    catch (e) {
+    } catch (e) {
       toastError(e);
     }
 
@@ -167,33 +155,25 @@ const ElasticsearchManagement = () => {
 
       {/* Controls */}
       <div className="row">
-        <label className="col-md-3 col-form-label text-start text-md-end">{ t('full_text_search_management.reconnect') }</label>
+        <label className="col-md-3 col-form-label text-start text-md-end">{t('full_text_search_management.reconnect')}</label>
         <div className="col-md-6">
-          <ReconnectControls
-            isEnabled={isReconnectBtnEnabled}
-            isProcessing={isReconnectingProcessing}
-            onReconnectingRequested={reconnect}
-          />
+          <ReconnectControls isEnabled={isReconnectBtnEnabled} isProcessing={isReconnectingProcessing} onReconnectingRequested={reconnect} />
         </div>
       </div>
 
       <hr />
 
       <div className="row">
-        <label className="col-md-3 col-form-label text-start text-md-end">{ t('full_text_search_management.normalize') }</label>
+        <label className="col-md-3 col-form-label text-start text-md-end">{t('full_text_search_management.normalize')}</label>
         <div className="col-md-6">
-          <NormalizeIndicesControls
-            isRebuildingProcessing={isRebuildingProcessing}
-            isNormalized={isNormalized}
-            onNormalizingRequested={normalizeIndices}
-          />
+          <NormalizeIndicesControls isRebuildingProcessing={isRebuildingProcessing} isNormalized={isNormalized} onNormalizingRequested={normalizeIndices} />
         </div>
       </div>
 
       <hr />
 
       <div className="row">
-        <label className="col-md-3 col-form-label text-start text-md-end">{ t('full_text_search_management.rebuild') }</label>
+        <label className="col-md-3 col-form-label text-start text-md-end">{t('full_text_search_management.rebuild')}</label>
         <div className="col-md-6">
           <RebuildIndexControls
             isRebuildingProcessing={isRebuildingProcessing}
@@ -203,15 +183,10 @@ const ElasticsearchManagement = () => {
           />
         </div>
       </div>
-
     </>
   );
-
 };
 
-
-ElasticsearchManagement.propTypes = {
-
-};
+ElasticsearchManagement.propTypes = {};
 
 export default ElasticsearchManagement;

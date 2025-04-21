@@ -10,7 +10,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import UserInviteModal from './UserInviteModal';
 
 class InviteUserControl extends React.Component {
-
   render() {
     const { t, adminUsersContainer } = this.props;
 
@@ -23,7 +22,6 @@ class InviteUserControl extends React.Component {
       </Fragment>
     );
   }
-
 }
 
 InviteUserControl.propTypes = {

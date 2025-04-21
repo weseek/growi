@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
  * @see https://reactjs.org/docs/error-boundaries.html
  */
 class ErrorBoundary extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = { error: null, errorInfo: null };
@@ -26,7 +25,6 @@ class ErrorBoundary extends React.Component {
   render() {
     const { error, errorInfo } = this.state;
     if (errorInfo != null) {
-
       // split componetStack
       // see https://regex101.com/r/Uc448G/1
       const firstStack = errorInfo.componentStack.split(/\s*in\s/)[1];
@@ -47,7 +45,6 @@ class ErrorBoundary extends React.Component {
     // Normally, just render children
     return this.props.children;
   }
-
 }
 
 ErrorBoundary.propTypes = {

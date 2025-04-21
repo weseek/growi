@@ -10,7 +10,6 @@ const path = require('path');
 const { withSuperjson } = require('next-superjson');
 const { PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER } = require('next/constants');
 
-
 const getTranspilePackages = () => {
   const { listPrefixedPackages } = require('./src/utils/next.config.utils');
 
@@ -84,13 +83,11 @@ const optimizePackageImports = [
   '@growi/ui',
 ];
 
-module.exports = async(phase, { defaultConfig }) => {
-
+module.exports = async (phase, { defaultConfig }) => {
   const { i18n, localePath } = require('./config/next-i18next.config');
 
   /** @type {import('next').NextConfig} */
   const nextConfig = {
-
     reactStrictMode: true,
     poweredByHeader: false,
     pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
@@ -103,9 +100,7 @@ module.exports = async(phase, { defaultConfig }) => {
     typescript: {
       tsconfigPath: 'tsconfig.build.client.json',
     },
-    transpilePackages: phase !== PHASE_PRODUCTION_SERVER
-      ? getTranspilePackages()
-      : undefined,
+    transpilePackages: phase !== PHASE_PRODUCTION_SERVER ? getTranspilePackages() : undefined,
     experimental: {
       optimizePackageImports,
     },
@@ -150,7 +145,6 @@ module.exports = async(phase, { defaultConfig }) => {
 
       return config;
     },
-
   };
 
   // production server
@@ -159,11 +153,7 @@ module.exports = async(phase, { defaultConfig }) => {
   }
 
   const withBundleAnalyzer = require('@next/bundle-analyzer')({
-    enabled: phase === PHASE_PRODUCTION_BUILD
-      && (
-        process.env.ANALYZE === 'true'
-          || process.env.ANALYZE === '1'
-      ),
+    enabled: phase === PHASE_PRODUCTION_BUILD && (process.env.ANALYZE === 'true' || process.env.ANALYZE === '1'),
   });
 
   return withBundleAnalyzer(withSuperjson()(nextConfig));

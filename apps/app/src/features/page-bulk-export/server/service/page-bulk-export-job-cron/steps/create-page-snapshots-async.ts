@@ -51,18 +51,13 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
 
   // create a Readable for pages to be exported
   const { PageQueryBuilder } = Page;
-  const builder = await new PageQueryBuilder(Page.find())
-    .addConditionToListWithDescendants(basePage.path)
-    .addViewerCondition(user);
-  const pagesReadable = builder
-    .query
-    .lean()
-    .cursor({ batchSize: this.pageBatchSize });
+  const builder = await new PageQueryBuilder(Page.find()).addConditionToListWithDescendants(basePage.path).addViewerCondition(user);
+  const pagesReadable = builder.query.lean().cursor({ batchSize: this.pageBatchSize });
 
   // create a Writable that creates a snapshot for each page
   const pageSnapshotsWritable = new Writable({
     objectMode: true,
-    write: async(page: PageDocument, encoding, callback) => {
+    write: async (page: PageDocument, encoding, callback) => {
       try {
         if (page.revision != null) {
           revisionListHash.update(getIdStringForRef(page.revision));
@@ -72,22 +67,20 @@ export async function createPageSnapshotsAsync(this: IPageBulkExportJobCronServi
           path: page.path,
           revision: page.revision,
         });
-      }
-      catch (err) {
+      } catch (err) {
         callback(err);
         return;
       }
       callback();
     },
-    final: async(callback) => {
+    final: async (callback) => {
       try {
         pageBulkExportJob.revisionListHash = revisionListHash.digest('hex');
         pageBulkExportJob.status = PageBulkExportJobStatus.exporting;
         await pageBulkExportJob.save();
 
         await reuseDuplicateExportIfExists.bind(this)(pageBulkExportJob);
-      }
-      catch (err) {
+      } catch (err) {
         callback(err);
         return;
       }

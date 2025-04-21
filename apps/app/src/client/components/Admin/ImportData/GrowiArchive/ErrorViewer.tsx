@@ -3,10 +3,10 @@ import React, { type JSX } from 'react';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 type ErrorViewerProps = {
-  isOpen: boolean,
-  errors: any[],
-  onClose: () => void,
-}
+  isOpen: boolean;
+  errors: any[];
+  onClose: () => void;
+};
 
 const ErrorViewer = (props: ErrorViewerProps): JSX.Element => {
   const { errors } = props;

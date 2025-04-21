@@ -14,9 +14,7 @@ import { AbstractS2sMessagingService } from './base';
 
 const logger = loggerFactory('growi:service:s2s-messaging:nchan');
 
-
 class NchanDelegator extends AbstractS2sMessagingService {
-
   /**
    * A list of S2sMessageHandlable instance
    */
@@ -24,7 +22,12 @@ class NchanDelegator extends AbstractS2sMessagingService {
 
   socket: any = null;
 
-  constructor(uri, private publishPath: string, private subscribePath: string, private channelId: any) {
+  constructor(
+    uri,
+    private publishPath: string,
+    private subscribePath: string,
+    private channelId: any,
+  ) {
     super(uri);
   }
 
@@ -41,8 +44,7 @@ class NchanDelegator extends AbstractS2sMessagingService {
   subscribe(forceReconnect = false) {
     if (forceReconnect) {
       logger.info('Force reconnecting is requested. Try to reconnect...');
-    }
-    else if (this.socket != null && this.shouldResubscribe()) {
+    } else if (this.socket != null && this.shouldResubscribe()) {
       logger.info('The connection to config pubsub server is offline. Try to reconnect...');
     }
 
@@ -111,9 +113,10 @@ class NchanDelegator extends AbstractS2sMessagingService {
   }
 
   constructUrl(basepath) {
-    const pathname = this.channelId == null
-      ? basepath //                                 /pubsub
-      : path.join(basepath, this.channelId); //     /pubsub/my-channel-id
+    const pathname =
+      this.channelId == null
+        ? basepath //                                 /pubsub
+        : path.join(basepath, this.channelId); //     /pubsub/my-channel-id
 
     return new URL(pathname, this.uri);
   }
@@ -138,7 +141,7 @@ class NchanDelegator extends AbstractS2sMessagingService {
       logger.info('WebSocket client connected.');
     });
 
-    this.handlableList.forEach(handlable => this.registerMessageHandlerToSocket(handlable));
+    this.handlableList.forEach((handlable) => this.registerMessageHandlerToSocket(handlable));
 
     this.socket = socket;
   }
@@ -168,12 +171,10 @@ class NchanDelegator extends AbstractS2sMessagingService {
       if (shouldHandle) {
         handlable.handleS2sMessage(s2sMessage);
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.warn('Could not handle a message: ', err.message);
     }
   }
-
 }
 
 module.exports = (crowi: Crowi) => {

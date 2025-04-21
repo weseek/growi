@@ -13,7 +13,6 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 const logger = loggerFactory('growi:slackAppConfiguration');
 
 class SlackConfiguration extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -26,8 +25,7 @@ class SlackConfiguration extends React.Component {
     try {
       await adminSlackIntegrationLegacyContainer.updateSlackAppConfiguration();
       toastSuccess(t('notification_settings.updated_slackApp'));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -55,7 +53,9 @@ class SlackConfiguration extends React.Component {
                 <button className="dropdown-item" type="button" onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('Incoming Webhooks')}>
                   Slack Incoming Webhooks
                 </button>
-                <button className="dropdown-item" type="button" onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('App')}>Slack App</button>
+                <button className="dropdown-item" type="button" onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('App')}>
+                  Slack App
+                </button>
               </div>
             </div>
           </div>
@@ -71,7 +71,7 @@ class SlackConfiguration extends React.Component {
                   className="form-control"
                   type="text"
                   defaultValue={adminSlackIntegrationLegacyContainer.state.webhookUrl || ''}
-                  onChange={e => adminSlackIntegrationLegacyContainer.changeWebhookUrl(e.target.value)}
+                  onChange={(e) => adminSlackIntegrationLegacyContainer.changeWebhookUrl(e.target.value)}
                 />
               </div>
             </div>
@@ -84,65 +84,65 @@ class SlackConfiguration extends React.Component {
                     className="form-check-input"
                     id="cbPrioritizeIWH"
                     checked={adminSlackIntegrationLegacyContainer.state.isIncomingWebhookPrioritized || false}
-                    onChange={() => { adminSlackIntegrationLegacyContainer.switchIsIncomingWebhookPrioritized() }}
+                    onChange={() => {
+                      adminSlackIntegrationLegacyContainer.switchIsIncomingWebhookPrioritized();
+                    }}
                   />
                   <label className="form-label form-check-label" htmlFor="cbPrioritizeIWH">
                     {t('notification_settings.prioritize_webhook')}
                   </label>
                 </div>
-                <p className="form-text text-muted">
-                  {t('notification_settings.prioritize_webhook_desc')}
-                </p>
+                <p className="form-text text-muted">{t('notification_settings.prioritize_webhook_desc')}</p>
               </div>
             </div>
           </React.Fragment>
-        )
-          : (
-            <React.Fragment>
-              <h2 className="border-bottom mb-3">{t('notification_settings.slack_app_configuration')}</h2>
+        ) : (
+          <React.Fragment>
+            <h2 className="border-bottom mb-3">{t('notification_settings.slack_app_configuration')}</h2>
 
-              <div className="card custom-card bg-danger-subtle">
-                <span className="text-danger"><span className="material-symbols-outlined">error</span>NOT RECOMMENDED</span>
-                <br />
-                {/* eslint-disable-next-line react/no-danger */}
-                <span dangerouslySetInnerHTML={{ __html: t('notification_settings.slack_app_configuration_desc') }} />
-                <br />
-                <a
-                  href="#slack-incoming-webhooks"
-                  data-bs-toggle="tab"
-                  onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('Incoming Webhooks')}
-                >
-                  {t('notification_settings.use_instead')}
-                </a>
+            <div className="card custom-card bg-danger-subtle">
+              <span className="text-danger">
+                <span className="material-symbols-outlined">error</span>NOT RECOMMENDED
+              </span>
+              <br />
+              {/* eslint-disable-next-line react/no-danger */}
+              <span dangerouslySetInnerHTML={{ __html: t('notification_settings.slack_app_configuration_desc') }} />
+              <br />
+              <a
+                href="#slack-incoming-webhooks"
+                data-bs-toggle="tab"
+                onClick={() => adminSlackIntegrationLegacyContainer.switchSlackOption('Incoming Webhooks')}
+              >
+                {t('notification_settings.use_instead')}
+              </a>
+            </div>
+
+            <div className="row mb-5 mt-4">
+              <label className="form-label col-md-3 text-start text-md-end">OAuth access token</label>
+              <div className="col-md-6">
+                <input
+                  className="form-control"
+                  type="text"
+                  defaultValue={adminSlackIntegrationLegacyContainer.state.slackToken || ''}
+                  onChange={(e) => adminSlackIntegrationLegacyContainer.changeSlackToken(e.target.value)}
+                />
               </div>
+            </div>
+          </React.Fragment>
+        )}
 
-              <div className="row mb-5 mt-4">
-                <label className="form-label col-md-3 text-start text-md-end">OAuth access token</label>
-                <div className="col-md-6">
-                  <input
-                    className="form-control"
-                    type="text"
-                    defaultValue={adminSlackIntegrationLegacyContainer.state.slackToken || ''}
-                    onChange={e => adminSlackIntegrationLegacyContainer.changeSlackToken(e.target.value)}
-                  />
-                </div>
-              </div>
-
-            </React.Fragment>
-          )
-        }
-
-        <AdminUpdateButtonRow
-          onClick={this.onClickSubmit}
-          disabled={adminSlackIntegrationLegacyContainer.state.retrieveError != null}
-        />
+        <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminSlackIntegrationLegacyContainer.state.retrieveError != null} />
 
         <hr />
 
         <h3>
           {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
-          <span className="material-symbols-outlined" aria-hidden="true">help</span>{' '}
-          <a href="#collapseHelpForIwh" data-bs-toggle="collapse">{t('notification_settings.how_to.header')}</a>
+          <span className="material-symbols-outlined" aria-hidden="true">
+            help
+          </span>{' '}
+          <a href="#collapseHelpForIwh" data-bs-toggle="collapse">
+            {t('notification_settings.how_to.header')}
+          </a>
         </h3>
 
         <ol id="collapseHelpForIwh" className="collapse card custom-card bg-body-tertiary">
@@ -150,7 +150,7 @@ class SlackConfiguration extends React.Component {
             {t('notification_settings.how_to.workspace')}
             <ol>
               {/* eslint-disable-next-line react/no-danger */}
-              <li dangerouslySetInnerHTML={{ __html:  t('notification_settings.how_to.workspace_desc1') }} />
+              <li dangerouslySetInnerHTML={{ __html: t('notification_settings.how_to.workspace_desc1') }} />
               <li>{t('notification_settings.how_to.workspace_desc2')}</li>
               <li>{t('notification_settings.how_to.workspace_desc3')}</li>
             </ol>
@@ -163,18 +163,14 @@ class SlackConfiguration extends React.Component {
             </ol>
           </li>
         </ol>
-
       </React.Fragment>
     );
   }
-
 }
-
 
 SlackConfiguration.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminSlackIntegrationLegacyContainer: PropTypes.instanceOf(AdminSlackIntegrationLegacyContainer).isRequired,
-
 };
 
 const SlackConfigurationWrapperFc = (props) => {

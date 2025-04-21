@@ -11,9 +11,7 @@ import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 
 import type { ModelNotificationUtils } from '.';
 
-
 export const useUserModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
-
   const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
   const router = useRouter();
 
@@ -28,14 +26,7 @@ export const useUserModelNotification = (notification: IInAppNotification & HasO
   const actionUsers = notification.target.username;
 
   const Notification = () => {
-    return (
-      <ModelNotification
-        notification={notification}
-        actionMsg={actionMsg}
-        actionIcon={actionIcon}
-        actionUsers={actionUsers}
-      />
-    );
+    return <ModelNotification notification={notification} actionMsg={actionMsg} actionIcon={actionIcon} actionUsers={actionUsers} />;
   };
 
   const publishOpen = () => {
@@ -46,5 +37,4 @@ export const useUserModelNotification = (notification: IInAppNotification & HasO
     Notification,
     publishOpen,
   };
-
 };

@@ -45,13 +45,15 @@ const schema = new Schema<ThreadRelationDocument, ThreadRelationModel>({
   },
 });
 
-schema.statics.getExpiredThreadRelations = async function(limit?: number): Promise<ThreadRelationDocument[] | undefined> {
+schema.statics.getExpiredThreadRelations = async function (limit?: number): Promise<ThreadRelationDocument[] | undefined> {
   const currentDate = new Date();
-  const expiredThreadRelations = await this.find({ expiredAt: { $lte: currentDate } }).limit(limit ?? 100).exec();
+  const expiredThreadRelations = await this.find({ expiredAt: { $lte: currentDate } })
+    .limit(limit ?? 100)
+    .exec();
   return expiredThreadRelations;
 };
 
-schema.methods.updateThreadExpiration = async function(): Promise<void> {
+schema.methods.updateThreadExpiration = async function (): Promise<void> {
   this.expiredAt = generateExpirationDate();
   await this.save();
 };

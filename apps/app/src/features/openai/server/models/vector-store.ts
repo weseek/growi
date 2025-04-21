@@ -5,7 +5,7 @@ import { getOrCreateModel } from '~/server/util/mongoose-utils';
 import type { IVectorStore } from '../../interfaces/vector-store';
 
 export interface VectorStoreDocument extends IVectorStore, Document {
-  markAsDeleted(): Promise<void>
+  markAsDeleted(): Promise<void>;
 }
 
 type VectorStoreModel = Model<VectorStoreDocument>;
@@ -23,7 +23,7 @@ const schema = new Schema<VectorStoreDocument, VectorStoreModel>({
   },
 });
 
-schema.methods.markAsDeleted = async function(): Promise<void> {
+schema.methods.markAsDeleted = async function (): Promise<void> {
   this.isDeleted = true;
   await this.save();
 };

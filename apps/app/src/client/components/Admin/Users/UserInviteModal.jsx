@@ -4,10 +4,7 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 // import Button from 'react-bootstrap/es/Button';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
-
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
@@ -16,7 +13,6 @@ import { useIsMailerSetup } from '~/stores-universal/context';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class UserInviteModal extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -106,39 +102,24 @@ class UserInviteModal extends React.Component {
     return (
       <>
         <div className="col text-start form-check form-check-info" onChange={this.handleCheckBox}>
-          <input
-            type="checkbox"
-            id="sendEmail"
-            className="form-check-input"
-            name="sendEmail"
-            defaultChecked={this.state.sendEmail}
-            disabled={!isMailerSetup}
-          />
+          <input type="checkbox" id="sendEmail" className="form-check-input" name="sendEmail" defaultChecked={this.state.sendEmail} disabled={!isMailerSetup} />
           <label className="form-label form-check-label" htmlFor="sendEmail">
             {t('admin:user_management.invite_modal.invite_thru_email')}
           </label>
-          {isMailerSetup
+          {isMailerSetup ? (
             // eslint-disable-next-line react/no-danger
-            ? <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:user_management.invite_modal.mail_setting_link') }} />
+            <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:user_management.invite_modal.mail_setting_link') }} />
+          ) : (
             // eslint-disable-next-line react/no-danger
-            : <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
-          }
+            <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
+          )}
         </div>
         <div>
-          <button
-            type="button"
-            className="btn btn-outline-secondary me-2"
-            onClick={this.onToggleModal}
-          >
+          <button type="button" className="btn btn-outline-secondary me-2" onClick={this.onToggleModal}>
             {t('Cancel')}
           </button>
 
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={this.handleSubmit}
-            disabled={!this.validEmail() || isCreateUserButtonPushed}
-          >
+          <button type="button" className="btn btn-primary" onClick={this.handleSubmit} disabled={!this.validEmail() || isCreateUserButtonPushed}>
             {t('admin:user_management.invite_modal.issue')}
           </button>
         </div>
@@ -155,11 +136,7 @@ class UserInviteModal extends React.Component {
           <text className="text-danger">{t('admin:user_management.invite_modal.send_temporary_password')}</text>
           <text>{t('admin:user_management.invite_modal.send_email')}</text>
         </label>
-        <button
-          type="button"
-          className="btn btn-outline-secondary"
-          onClick={this.onToggleModal}
-        >
+        <button type="button" className="btn btn-outline-secondary" onClick={this.onToggleModal}>
           {t('Close')}
         </button>
       </>
@@ -194,7 +171,9 @@ class UserInviteModal extends React.Component {
         <ul>
           {emailList.map((user) => {
             return (
-              <li key={user}><strong>{user}</strong></li>
+              <li key={user}>
+                <strong>{user}</strong>
+              </li>
             );
           })}
         </ul>
@@ -212,8 +191,12 @@ class UserInviteModal extends React.Component {
     this.setState({ isCreateUserButtonPushed: true });
 
     const array = this.state.emailInputValue.split('\n');
-    const emailList = array.filter((element) => { return element.match(/.+@.+\..+/) });
-    const shapedEmailList = emailList.map((email) => { return email.trim() });
+    const emailList = array.filter((element) => {
+      return element.match(/.+@.+\..+/);
+    });
+    const shapedEmailList = emailList.map((email) => {
+      return email.trim();
+    });
 
     try {
       const emailList = await adminUsersContainer.createUserInvited(shapedEmailList, this.state.sendEmail);
@@ -221,7 +204,9 @@ class UserInviteModal extends React.Component {
       this.setState({ invitedEmailList: emailList });
 
       if (emailList.createdUserList.length > 0) {
-        const createdEmailList = emailList.createdUserList.map((user) => { return user.email });
+        const createdEmailList = emailList.createdUserList.map((user) => {
+          return user.email;
+        });
         this.showToasterByEmailList(createdEmailList, 'success');
       }
       if (emailList.existingEmailList.length > 0) {
@@ -237,11 +222,9 @@ class UserInviteModal extends React.Component {
         });
         this.showToasterByEmailList(failedEmailList, 'error');
       }
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
-    }
-    finally {
+    } finally {
       this.setState({ isCreateUserButtonPushed: false });
     }
   }
@@ -258,24 +241,16 @@ class UserInviteModal extends React.Component {
     const { t, adminUsersContainer } = this.props;
     const { invitedEmailList } = this.state;
 
-
     return (
       <Modal isOpen={adminUsersContainer.state.isUserInviteModalShown}>
         <ModalHeader tag="h4" toggle={this.onToggleModal} className="text-info">
-          {t('admin:user_management.invite_users') }
+          {t('admin:user_management.invite_users')}
         </ModalHeader>
-        <ModalBody>
-          {invitedEmailList == null ? this.renderModalBody()
-            : this.renderCreatedModalBody()}
-        </ModalBody>
-        <ModalFooter className="d-flex">
-          {invitedEmailList == null ? this.renderModalFooter()
-            : this.renderCreatedModalFooter()}
-        </ModalFooter>
+        <ModalBody>{invitedEmailList == null ? this.renderModalBody() : this.renderCreatedModalBody()}</ModalBody>
+        <ModalFooter className="d-flex">{invitedEmailList == null ? this.renderModalFooter() : this.renderCreatedModalFooter()}</ModalFooter>
       </Modal>
     );
   }
-
 }
 
 const UserInviteModalWrapperFC = (props) => {
@@ -288,7 +263,6 @@ const UserInviteModalWrapperFC = (props) => {
  * Wrapper component for using unstated
  */
 const UserInviteModalWrapper = withUnstatedContainers(UserInviteModalWrapperFC, [AdminUsersContainer]);
-
 
 UserInviteModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next

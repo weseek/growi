@@ -1,7 +1,5 @@
 import { allOrigin } from '@growi/core';
-import type {
-  IPage, IUser, IUserHasId,
-} from '@growi/core/dist/interfaces';
+import type { IPage, IUser, IUserHasId } from '@growi/core/dist/interfaces';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -31,15 +29,13 @@ import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-
 const logger = loggerFactory('growi:routes:apiv3:page:create-page');
-
 
 async function generateUntitledPath(parentPath: string, basePathname: string, index = 1): Promise<string> {
   const Page = mongoose.model<IPage>('Page');
 
   const path = normalizePath(`${normalizePath(parentPath)}/${basePathname}-${index}`);
-  if (await Page.exists({ path, isEmpty: false }) != null) {
+  if ((await Page.exists({ path, isEmpty: false })) != null) {
     return generateUntitledPath(parentPath, basePathname, index + 1);
   }
   return path;
@@ -89,11 +85,10 @@ async function determinePath(_parentPath?: string, _path?: string, optionalParen
   return generateUntitledPath('/', basePathname);
 }
 
-
-type ReqBody = IApiv3PageCreateParams
+type ReqBody = IApiv3PageCreateParams;
 
 interface CreatePageRequest extends Request<undefined, ApiV3Response, ReqBody> {
-  user: IUserHasId,
+  user: IUserHasId;
 }
 
 type CreatePageHandlersFactory = (crowi: Crowi) => RequestHandler[];
@@ -104,17 +99,12 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
 
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
-
   // define validators for req.body
   const validator: ValidationChain[] = [
-    body('path').optional().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("Empty value is not allowed for 'path'"),
-    body('parentPath').optional().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("Empty value is not allowed for 'parentPath'"),
-    body('optionalParentPath').optional().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("Empty value is not allowed for 'optionalParentPath'"),
-    body('body').optional().isString()
-      .withMessage('body must be string or undefined'),
+    body('path').optional().not().isEmpty({ ignore_whitespace: true }).withMessage("Empty value is not allowed for 'path'"),
+    body('parentPath').optional().not().isEmpty({ ignore_whitespace: true }).withMessage("Empty value is not allowed for 'parentPath'"),
+    body('optionalParentPath').optional().not().isEmpty({ ignore_whitespace: true }).withMessage("Empty value is not allowed for 'optionalParentPath'"),
+    body('body').optional().isString().withMessage('body must be string or undefined'),
     body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
     body('onlyInheritUserRelatedGrantedGroups').optional().isBoolean().withMessage('onlyInheritUserRelatedGrantedGroups must be boolean'),
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
@@ -125,12 +115,11 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
   ];
 
-
   async function determineBodyAndTags(
-      path: string,
-      _body: string | null | undefined, _tags: string[] | null | undefined,
-  ): Promise<{ body: string, tags: string[] }> {
-
+    path: string,
+    _body: string | null | undefined,
+    _tags: string[] | null | undefined,
+  ): Promise<{ body: string; tags: string[] }> {
     let body: string = _body ?? '';
     let tags: string[] = _tags ?? [];
 
@@ -152,7 +141,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     return { body, tags };
   }
 
-  async function saveTags({ createdPage, pageTags }: { createdPage: PageDocument, pageTags: string[] }) {
+  async function saveTags({ createdPage, pageTags }: { createdPage: PageDocument; pageTags: string[] }) {
     const tagEvent = crowi.event('tag');
     await PageTagRelation.updatePageTags(createdPage.id, pageTags);
     tagEvent.emit('update', createdPage, pageTags);
@@ -172,8 +161,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     // global notification
     try {
       await crowi.globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_CREATE, createdPage, req.user);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Create grobal notification failed', err);
     }
 
@@ -187,8 +175,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
             logger.error('Create user notification failed', result.reason);
           }
         });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('Create user notification failed', err);
       }
     }
@@ -196,8 +183,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     // create subscription
     try {
       await crowi.inAppNotificationService.createSubscription(req.user._id, createdPage._id, subscribeRuleNames.PAGE_CREATE);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to create subscription document', err);
     }
 
@@ -207,8 +193,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       try {
         const openaiService = getOpenaiService();
         await openaiService?.createVectorStoreFileOnPageCreate([createdPage]);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('Rebuild vector store failed', err);
       }
     }
@@ -217,19 +202,20 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
   const addActivity = generateAddActivityMiddleware();
 
   return [
-    accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,
-    validator, apiV3FormValidator,
-    async(req: CreatePageRequest, res: ApiV3Response) => {
-      const {
-        body: bodyByParam, pageTags: tagsByParam,
-      } = req.body;
+    accessTokenParser,
+    loginRequiredStrictly,
+    excludeReadOnlyUser,
+    addActivity,
+    validator,
+    apiV3FormValidator,
+    async (req: CreatePageRequest, res: ApiV3Response) => {
+      const { body: bodyByParam, pageTags: tagsByParam } = req.body;
 
       let pathToCreate: string;
       try {
         const { path, parentPath, optionalParentPath } = req.body;
         pathToCreate = await determinePath(parentPath, path, optionalParentPath);
-      }
-      catch (err) {
+      } catch (err) {
         return res.apiv3Err(new ErrorV3(err.toString(), 'could_not_create_page'));
       }
 
@@ -244,25 +230,20 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
 
       let createdPage: HydratedDocument<PageDocument>;
       try {
-        const {
-          grant, grantUserGroupIds, onlyInheritUserRelatedGrantedGroups, overwriteScopesOfDescendants, wip, origin,
-        } = req.body;
+        const { grant, grantUserGroupIds, onlyInheritUserRelatedGrantedGroups, overwriteScopesOfDescendants, wip, origin } = req.body;
 
         const options: IOptionsForCreate = {
-          onlyInheritUserRelatedGrantedGroups, overwriteScopesOfDescendants, wip, origin,
+          onlyInheritUserRelatedGrantedGroups,
+          overwriteScopesOfDescendants,
+          wip,
+          origin,
         };
         if (grant != null) {
           options.grant = grant;
           options.grantUserGroupIds = grantUserGroupIds;
         }
-        createdPage = await crowi.pageService.create(
-          pathToCreate,
-          body,
-          req.user,
-          options,
-        );
-      }
-      catch (err) {
+        createdPage = await crowi.pageService.create(pathToCreate, body, req.user, options);
+      } catch (err) {
         logger.error('Error occurred while creating a page.', err);
         return res.apiv3Err(err);
       }

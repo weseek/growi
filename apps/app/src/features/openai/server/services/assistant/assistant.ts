@@ -4,7 +4,6 @@ import { configManager } from '~/server/service/config-manager';
 
 import { openaiClient } from '../client';
 
-
 const AssistantType = {
   SEARCH: 'Search',
   CHAT: 'Chat',
@@ -20,9 +19,10 @@ const isValidChatModel = (model: string): model is OpenAI.Chat.ChatModel => {
 };
 
 const getAssistantModelByType = (type: AssistantType): OpenAI.Chat.ChatModel => {
-  const configValue = type === AssistantType.SEARCH
-    ? undefined // TODO: add the value for 'openai:assistantModel:search' to config-definition.ts
-    : configManager.getConfig('openai:assistantModel:chat');
+  const configValue =
+    type === AssistantType.SEARCH
+      ? undefined // TODO: add the value for 'openai:assistantModel:search' to config-definition.ts
+      : configManager.getConfig('openai:assistantModel:chat');
 
   if (typeof configValue === 'string' && isValidChatModel(configValue)) {
     return configValue;
@@ -31,14 +31,12 @@ const getAssistantModelByType = (type: AssistantType): OpenAI.Chat.ChatModel => 
   return AssistantDefaultModelMap[type];
 };
 
-type AssistantType = typeof AssistantType[keyof typeof AssistantType];
+type AssistantType = (typeof AssistantType)[keyof typeof AssistantType];
 
-
-const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.Assistant | undefined> => {
-
+const findAssistantByName = async (assistantName: string): Promise<OpenAI.Beta.Assistant | undefined> => {
   // declare finder
-  const findAssistant = async(assistants: OpenAI.Beta.Assistants.AssistantsPage): Promise<OpenAI.Beta.Assistant | undefined> => {
-    const found = assistants.data.find(assistant => assistant.name === assistantName);
+  const findAssistant = async (assistants: OpenAI.Beta.Assistants.AssistantsPage): Promise<OpenAI.Beta.Assistant | undefined> => {
+    const found = assistants.data.find((assistant) => assistant.name === assistantName);
 
     if (found != null) {
       return found;
@@ -55,17 +53,17 @@ const findAssistantByName = async(assistantName: string): Promise<OpenAI.Beta.As
   return findAssistant(storedAssistants);
 };
 
-const getOrCreateAssistant = async(type: AssistantType, nameSuffix?: string): Promise<OpenAI.Beta.Assistant> => {
+const getOrCreateAssistant = async (type: AssistantType, nameSuffix?: string): Promise<OpenAI.Beta.Assistant> => {
   const appSiteUrl = configManager.getConfig('app:siteUrl');
   const assistantName = `GROWI ${type} Assistant for ${appSiteUrl}${nameSuffix != null ? ` ${nameSuffix}` : ''}`;
   const assistantModel = getAssistantModelByType(type);
 
-  const assistant = await findAssistantByName(assistantName)
-    ?? (
-      await openaiClient.beta.assistants.create({
-        name: assistantName,
-        model: assistantModel,
-      }));
+  const assistant =
+    (await findAssistantByName(assistantName)) ??
+    (await openaiClient.beta.assistants.create({
+      name: assistantName,
+      model: assistantModel,
+    }));
 
   // update instructions
   const instructions = configManager.getConfig('openai:chatAssistantInstructions');
@@ -93,9 +91,8 @@ const getOrCreateAssistant = async(type: AssistantType, nameSuffix?: string): Pr
 //   return searchAssistant;
 // };
 
-
 let chatAssistant: OpenAI.Beta.Assistant | undefined;
-export const getOrCreateChatAssistant = async(): Promise<OpenAI.Beta.Assistant> => {
+export const getOrCreateChatAssistant = async (): Promise<OpenAI.Beta.Assistant> => {
   if (chatAssistant != null) {
     return chatAssistant;
   }

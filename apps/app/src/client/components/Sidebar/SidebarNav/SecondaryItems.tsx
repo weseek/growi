@@ -10,19 +10,17 @@ import { SkeletonItem } from './SkeletonItem';
 
 import styles from './SecondaryItems.module.scss';
 
-
-const PersonalDropdown = dynamic(() => import('./PersonalDropdown').then(mod => mod.PersonalDropdown), {
+const PersonalDropdown = dynamic(() => import('./PersonalDropdown').then((mod) => mod.PersonalDropdown), {
   ssr: false,
   loading: () => <SkeletonItem />,
 });
 
-
 type SecondaryItemProps = {
-  label: string,
-  href: string,
-  iconName: string,
-  isBlank?: boolean,
-}
+  label: string;
+  href: string;
+  iconName: string;
+  isBlank?: boolean;
+};
 
 const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
   const { iconName, href, isBlank } = props;
@@ -40,7 +38,6 @@ const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
 };
 
 export const SecondaryItems: FC = memo(() => {
-
   const { data: isAdmin } = useIsAdmin();
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { data: isGuestUser } = useIsGuestUser();

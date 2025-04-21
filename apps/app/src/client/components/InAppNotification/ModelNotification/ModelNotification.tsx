@@ -11,23 +11,15 @@ import FormattedDistanceDate from '../../FormattedDistanceDate';
 import styles from './ModelNotification.module.scss';
 
 type Props = {
-  notification: IInAppNotification & HasObjectId
-  actionMsg: string
-  actionIcon: string
-  actionUsers: string
-  hideActionUsers?: boolean
-  subMsg?: JSX.Element
+  notification: IInAppNotification & HasObjectId;
+  actionMsg: string;
+  actionIcon: string;
+  actionUsers: string;
+  hideActionUsers?: boolean;
+  subMsg?: JSX.Element;
 };
 
-export const ModelNotification: FC<Props> = ({
-  notification,
-  actionMsg,
-  actionIcon,
-  actionUsers,
-  hideActionUsers = false,
-  subMsg,
-}: Props) => {
-
+export const ModelNotification: FC<Props> = ({ notification, actionMsg, actionIcon, actionUsers, hideActionUsers = false, subMsg }: Props) => {
   return (
     <div className={`${styles['modal-notification']} p-2 overflow-hidden`}>
       <div className="text-truncate page-title">
@@ -35,14 +27,9 @@ export const ModelNotification: FC<Props> = ({
         {` ${actionMsg}`}
         <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
-      { subMsg }
+      {subMsg}
       <span className="material-symbols-outlined me-2">{actionIcon}</span>
-      <FormattedDistanceDate
-        id={notification._id}
-        date={notification.createdAt}
-        isShowTooltip={false}
-        differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
-      />
+      <FormattedDistanceDate id={notification._id} date={notification.createdAt} isShowTooltip={false} differenceForAvoidingFormat={Number.POSITIVE_INFINITY} />
     </div>
   );
 };

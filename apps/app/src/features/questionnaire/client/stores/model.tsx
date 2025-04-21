@@ -6,17 +6,17 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:stores:modal');
 
 /*
-* QuestionnaireModals
-*/
+ * QuestionnaireModals
+ */
 type QuestionnaireModalStatuses = {
-  openedQuestionnaireId: string | null,
-  closeToast?: () => void | Promise<void>,
-}
+  openedQuestionnaireId: string | null;
+  closeToast?: () => void | Promise<void>;
+};
 
 type QuestionnaireModalStatusUtils = {
-  open(string: string, closeToast: () => void | Promise<void>): Promise<QuestionnaireModalStatuses | undefined>
-  close(shouldCloseToast?: boolean): Promise<QuestionnaireModalStatuses | undefined>
-}
+  open(string: string, closeToast: () => void | Promise<void>): Promise<QuestionnaireModalStatuses | undefined>;
+  close(shouldCloseToast?: boolean): Promise<QuestionnaireModalStatuses | undefined>;
+};
 
 export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRResponse<QuestionnaireModalStatuses, Error> & QuestionnaireModalStatusUtils => {
   const initialData: QuestionnaireModalStatuses = { openedQuestionnaireId: null };
@@ -24,14 +24,17 @@ export const useQuestionnaireModal = (status?: QuestionnaireModalStatuses): SWRR
 
   return {
     ...swrResponse,
-    open: (questionnaireOrderId: string, closeToast: () => void | Promise<void>) => swrResponse.mutate({
-      openedQuestionnaireId: questionnaireOrderId,
-      closeToast,
-    }),
+    open: (questionnaireOrderId: string, closeToast: () => void | Promise<void>) =>
+      swrResponse.mutate({
+        openedQuestionnaireId: questionnaireOrderId,
+        closeToast,
+      }),
     close: (shouldCloseToast?: boolean) => {
       if (shouldCloseToast) {
         swrResponse.data?.closeToast?.();
-        if (swrResponse.data?.closeToast === undefined) { logger.debug('Tried to run `swrResponse.data?.closeToast` but it was `undefined`'); }
+        if (swrResponse.data?.closeToast === undefined) {
+          logger.debug('Tried to run `swrResponse.data?.closeToast` but it was `undefined`');
+        }
       }
 
       return swrResponse.mutate({ openedQuestionnaireId: null });

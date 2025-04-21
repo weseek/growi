@@ -9,12 +9,11 @@ module.exports = (crowi) => {
   const { searchService } = crowi;
   const reconnectContext = new ReconnectContext();
 
-  const reconnectHandler = async() => {
+  const reconnectHandler = async () => {
     try {
       logger.info('Auto reconnection is started.');
       await searchService.reconnectClient();
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Auto reconnection failed.', err);
     }
 

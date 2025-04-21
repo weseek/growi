@@ -1,24 +1,19 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 type DeleteSlackBotSettingsModalProps = {
-  isResetAll: boolean,
-  isOpen: boolean,
-  onClose?: () => void,
-  onClickDeleteButton?: () => void,
-}
+  isResetAll: boolean;
+  isOpen: boolean;
+  onClose?: () => void;
+  onClickDeleteButton?: () => void;
+};
 
 export const DeleteSlackBotSettingsModal = React.memo((props: DeleteSlackBotSettingsModalProps) => {
-
   const { t } = useTranslation();
 
-  const {
-    isResetAll, isOpen, onClose, onClickDeleteButton,
-  } = props;
+  const { isResetAll, isOpen, onClose, onClickDeleteButton } = props;
 
   const deleteSlackCredentialsHandler = useCallback(() => {
     onClickDeleteButton?.();
@@ -80,7 +75,6 @@ export const DeleteSlackBotSettingsModal = React.memo((props: DeleteSlackBotSett
       </ModalFooter>
     </Modal>
   );
-
 });
 
 DeleteSlackBotSettingsModal.displayName = 'DeleteSlackBotSettingsModal';

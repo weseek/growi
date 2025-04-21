@@ -12,12 +12,11 @@ import { useIsNotFound } from '~/stores/page';
 
 import { useIsEditable } from './context';
 
-
 export const EditorMode = {
   View: 'view',
   Editor: 'editor',
 } as const;
-export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
+export type EditorMode = (typeof EditorMode)[keyof typeof EditorMode];
 
 const getClassNamesByEditorMode = (editorMode: EditorMode | undefined): string[] => {
   const classNames: string[] = [];
@@ -34,7 +33,7 @@ export const EditorModeHash = {
   View: '',
   Edit: '#edit',
 } as const;
-export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
+export type EditorModeHash = (typeof EditorModeHash)[keyof typeof EditorModeHash];
 
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
   const { pathname, search } = window.location;
@@ -65,8 +64,8 @@ export const determineEditorModeByHash = (): EditorMode => {
 };
 
 type EditorModeUtils = {
-  getClassNamesByEditorMode: () => string[],
-}
+  getClassNamesByEditorMode: () => string[];
+};
 
 export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
   const { data: _isEditable } = useIsEditable();
@@ -79,21 +78,20 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
   const preventModeEditor = !isEditable || isNotFound === undefined || isNotFound === true;
   const initialData = preventModeEditor ? EditorMode.View : editorModeByHash;
 
-  const swrResponse = useSWRImmutable(
-    isLoading ? null : ['editorMode', isEditable, preventModeEditor],
-    null,
-    { fallbackData: initialData },
-  );
+  const swrResponse = useSWRImmutable(isLoading ? null : ['editorMode', isEditable, preventModeEditor], null, { fallbackData: initialData });
 
   // construct overriding mutate method
   const mutateOriginal = swrResponse.mutate;
-  const mutate = useCallback((editorMode: EditorMode, shouldRevalidate?: boolean) => {
-    if (preventModeEditor) {
-      return Promise.resolve(EditorMode.View); // fixed if not editable
-    }
-    updateHashByEditorMode(editorMode);
-    return mutateOriginal(editorMode, shouldRevalidate);
-  }, [preventModeEditor, mutateOriginal]);
+  const mutate = useCallback(
+    (editorMode: EditorMode, shouldRevalidate?: boolean) => {
+      if (preventModeEditor) {
+        return Promise.resolve(EditorMode.View); // fixed if not editable
+      }
+      updateHashByEditorMode(editorMode);
+      return mutateOriginal(editorMode, shouldRevalidate);
+    },
+    [preventModeEditor, mutateOriginal],
+  );
 
   const getClassNames = useCallback(() => {
     return getClassNamesByEditorMode(swrResponse.data);

@@ -13,7 +13,9 @@ export const AuditLogDisableMode: FC = () => {
           <div className="col-md-6 mt-5">
             <div className="text-center">
               {/* error icon large */}
-              <h1><span className="material-symbols-outlined">error</span></h1>
+              <h1>
+                <span className="material-symbols-outlined">error</span>
+              </h1>
               <h1 className="text-center">{t('audit_log_management.audit_log')}</h1>
               <h3
                 // eslint-disable-next-line react/no-danger

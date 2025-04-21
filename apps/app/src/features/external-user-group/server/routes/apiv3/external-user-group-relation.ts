@@ -8,12 +8,10 @@ import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const { query } = require('express-validator');
-
 
 const router = express.Router();
 
@@ -22,10 +20,7 @@ module.exports = (crowi: Crowi): Router => {
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
 
   const validators = {
-    list: [
-      query('groupIds').isArray(),
-      query('childGroupIds').optional().isArray(),
-    ],
+    list: [query('groupIds').isArray(), query('childGroupIds').optional().isArray()],
   };
 
   /**
@@ -70,7 +65,7 @@ module.exports = (crowi: Crowi): Router => {
    *                   items:
    *                     type: object
    */
-  router.get('/', loginRequiredStrictly, adminRequired, validators.list, async(req: Request, res: ApiV3Response) => {
+  router.get('/', loginRequiredStrictly, adminRequired, validators.list, async (req: Request, res: ApiV3Response) => {
     const { query } = req;
 
     try {
@@ -79,14 +74,13 @@ module.exports = (crowi: Crowi): Router => {
       let relationsOfChildGroups: IExternalUserGroupRelationHasId[] | null = null;
       if (Array.isArray(query.childGroupIds)) {
         const _relationsOfChildGroups = await ExternalUserGroupRelation.find({ relatedGroup: { $in: query.childGroupIds } }).populate('relatedUser');
-        relationsOfChildGroups = _relationsOfChildGroups.map(relation => serializeUserGroupRelationSecurely(relation)); // serialize
+        relationsOfChildGroups = _relationsOfChildGroups.map((relation) => serializeUserGroupRelationSecurely(relation)); // serialize
       }
 
-      const serialized = relations.map(relation => serializeUserGroupRelationSecurely(relation));
+      const serialized = relations.map((relation) => serializeUserGroupRelationSecurely(relation));
 
       return res.apiv3({ userGroupRelations: serialized, relationsOfChildGroups });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in fetching user group relations';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg));

@@ -10,7 +10,8 @@ const logger = loggerFactory('growi:util:slack');
 
 /* eslint-disable no-use-before-define */
 
-const convertMarkdownToMarkdown = (body, siteUrl) => body
+const convertMarkdownToMarkdown = (body, siteUrl) =>
+  body
     .replace(/\n\*\s(.+)/g, '\n• $1')
     .replace(/#{1,}\s?(.+)/g, '\n*$1*')
     .replace(/(\[(.+)\]\((https?:\/\/.+)\))/g, '<$3|$2>')
@@ -44,15 +45,13 @@ const prepareAttachmentTextForUpdate = (page, siteUrl, previousRevision) => {
     const value = line.value.replace(/\r\n|\r/g, '\n'); // eslint-disable-line no-unused-vars
     if (line.added) {
       diffText += `${line.value} ... :lower_left_fountain_pen:`;
-    }
-    else if (line.removed) {
+    } else if (line.removed) {
       // diffText += '-' + line.value.replace(/(.+)?\n/g, '- $1\n');
       // 1以下は無視
       if (line.count > 1) {
         diffText += `:wastebasket: ... ${line.count} lines\n`;
       }
-    }
-    else {
+    } else {
       // diffText += '...\n';
     }
   });
@@ -81,8 +80,7 @@ const generateSlackMessageTextForPage = (path, pageId, user, siteUrl, updateType
   const pageUrl = `<${urljoin(siteUrl, pageId)}|${path}>`;
   if (updateType === 'create') {
     text = `:rocket: ${user.username} created a new page! ${pageUrl}`;
-  }
-  else {
+  } else {
     text = `:heavy_check_mark: ${user.username} updated ${pageUrl}`;
   }
 
@@ -94,8 +92,7 @@ export const prepareSlackMessageForPage = (page, user, appTitle, siteUrl, channe
 
   if (updateType === 'create') {
     body = prepareAttachmentTextForCreate(page, siteUrl);
-  }
-  else {
+  } else {
     body = prepareAttachmentTextForUpdate(page, siteUrl, previousRevision);
   }
 
@@ -114,7 +111,7 @@ export const prepareSlackMessageForPage = (page, user, appTitle, siteUrl, channe
   }
 
   const message = {
-    channel: (channel != null) ? `#${channel}` : undefined,
+    channel: channel != null ? `#${channel}` : undefined,
     username: appTitle,
     text: generateSlackMessageTextForPage(page.path, page.id, user, siteUrl, updateType),
     attachments: [attachment],
@@ -142,7 +139,7 @@ export const prepareSlackMessageForComment = (comment, user, appTitle, siteUrl, 
   const text = `:speech_balloon: ${user.username} commented on ${pageUrl}`;
 
   const message = {
-    channel: (channel != null) ? `#${channel}` : undefined,
+    channel: channel != null ? `#${channel}` : undefined,
     username: appTitle,
     text,
     attachments: [attachment],
@@ -152,14 +149,13 @@ export const prepareSlackMessageForComment = (comment, user, appTitle, siteUrl, 
 };
 
 /**
-   * For GlobalNotification
-   *
-   * @param {string} messageBody
-   * @param {string} attachmentBody
-   * @param {string} slackChannel
-  */
+ * For GlobalNotification
+ *
+ * @param {string} messageBody
+ * @param {string} attachmentBody
+ * @param {string} slackChannel
+ */
 export const prepareSlackMessageForGlobalNotification = (messageBody, attachmentBody, appTitle, slackChannel) => {
-
   const attachment = {
     color: '#263a3c',
     text: attachmentBody,
@@ -167,7 +163,7 @@ export const prepareSlackMessageForGlobalNotification = (messageBody, attachment
   };
 
   const message = {
-    channel: (slackChannel != null) ? `#${slackChannel}` : undefined,
+    channel: slackChannel != null ? `#${slackChannel}` : undefined,
     username: appTitle,
     text: messageBody,
     attachments: JSON.stringify([attachment]),

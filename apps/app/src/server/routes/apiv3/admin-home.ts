@@ -83,7 +83,7 @@ module.exports = (crowi) => {
    *                    adminHomeParams:
    *                      $ref: "#/components/schemas/SystemInformationParams"
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async (req, res) => {
     const { getRuntimeVersions } = await import('~/server/util/runtime-versions');
     const runtimeVersions = await getRuntimeVersions();
 

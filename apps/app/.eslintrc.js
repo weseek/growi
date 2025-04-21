@@ -14,24 +14,14 @@ module.exports = {
     sourceType: 'module',
     allowImportExportEverywhere: true,
     babelOptions: {
-      presets: [
-        'next/babel',
-      ],
+      presets: ['next/babel'],
       caller: {
         supportsTopLevelAwait: true,
       },
     },
     ecmaVersion: 2018,
   },
-  plugins: [
-    '@typescript-eslint',
-    'regex',
-    'jsx-a11y',
-    'import',
-    '@next/next',
-    'react-hooks',
-    'react',
-  ],
+  plugins: ['@typescript-eslint', 'regex', 'jsx-a11y', 'import', '@next/next', 'react-hooks', 'react'],
   settings: {
     'import/resolver': {
       node: {
@@ -45,27 +35,12 @@ module.exports = {
       pragma: 'React',
       version: '16.0',
     },
-    propWrapperFunctions: [
-      'forbidExtraProps',
-      'exact',
-      'Object.freeze',
-    ],
+    propWrapperFunctions: ['forbidExtraProps', 'exact', 'Object.freeze'],
     'import/parsers': {
-      '@typescript-eslint/parser': [
-        '.ts',
-        '.tsx',
-        '.d.ts',
-      ],
+      '@typescript-eslint/parser': ['.ts', '.tsx', '.d.ts'],
     },
-    'import/extensions': [
-      '.js',
-      '.mjs',
-      '.jsx',
-    ],
-    'import/ignore': [
-      'node_modules',
-      '\\.(coffee|scss|css|less|hbs|svg|json)$',
-    ],
+    'import/extensions': ['.js', '.mjs', '.jsx'],
+    'import/ignore': ['node_modules', '\\.(coffee|scss|css|less|hbs|svg|json)$'],
   },
   rules: {
     'import/no-anonymous-default-export': [
@@ -79,10 +54,7 @@ module.exports = {
         allowObject: false,
       },
     ],
-    'jsx-quotes': [
-      'error',
-      'prefer-double',
-    ],
+    'jsx-quotes': ['error', 'prefer-double'],
     'react/prop-types': [
       'warn',
       {
@@ -94,10 +66,7 @@ module.exports = {
     'react/jsx-filename-extension': [
       'error',
       {
-        extensions: [
-          '.jsx',
-          '.tsx',
-        ],
+        extensions: ['.jsx', '.tsx'],
       },
     ],
     'react/jsx-boolean-value': [
@@ -107,13 +76,8 @@ module.exports = {
         always: [],
       },
     ],
-    'react/jsx-closing-bracket-location': [
-      'error',
-      'line-aligned',
-    ],
-    'react/jsx-closing-tag-location': [
-      'error',
-    ],
+    'react/jsx-closing-bracket-location': ['error', 'line-aligned'],
+    'react/jsx-closing-tag-location': ['error'],
     'react/jsx-curly-spacing': [
       'error',
       'never',
@@ -121,10 +85,7 @@ module.exports = {
         allowMultiline: true,
       },
     ],
-    'react/jsx-indent-props': [
-      'error',
-      2,
-    ],
+    'react/jsx-indent-props': ['error', 2],
     'react/jsx-max-props-per-line': [
       'error',
       {
@@ -142,9 +103,7 @@ module.exports = {
         ignoreDOMComponents: true,
       },
     ],
-    'react/jsx-no-undef': [
-      'error',
-    ],
+    'react/jsx-no-undef': ['error'],
     'react/jsx-pascal-case': [
       'error',
       {
@@ -152,43 +111,22 @@ module.exports = {
         ignore: [],
       },
     ],
-    'react/jsx-uses-react': [
-      'error',
-    ],
-    'react/jsx-uses-vars': [
-      'error',
-    ],
-    'react/no-deprecated': [
-      'error',
-    ],
-    'react/no-did-update-set-state': [
-      'error',
-    ],
-    'react/no-will-update-set-state': [
-      'error',
-    ],
-    'react/no-is-mounted': [
-      'error',
-    ],
+    'react/jsx-uses-react': ['error'],
+    'react/jsx-uses-vars': ['error'],
+    'react/no-deprecated': ['error'],
+    'react/no-did-update-set-state': ['error'],
+    'react/no-will-update-set-state': ['error'],
+    'react/no-is-mounted': ['error'],
     'react/no-multi-comp': [
       'error',
       {
         ignoreStateless: true,
       },
     ],
-    'react/no-string-refs': [
-      'error',
-    ],
-    'react/no-unknown-property': [
-      'error',
-    ],
-    'react/prefer-es6-class': [
-      'error',
-      'always',
-    ],
-    'react/require-render-return': [
-      'error',
-    ],
+    'react/no-string-refs': ['error'],
+    'react/no-unknown-property': ['error'],
+    'react/prefer-es6-class': ['error', 'always'],
+    'react/require-render-return': ['error'],
     'react/jsx-wrap-multilines': [
       'error',
       {
@@ -201,30 +139,13 @@ module.exports = {
         prop: 'parens-new-line',
       },
     ],
-    'react/jsx-first-prop-new-line': [
-      'error',
-      'multiline-multiprop',
-    ],
-    'react/jsx-equals-spacing': [
-      'error',
-      'never',
-    ],
-    'react/jsx-indent': [
-      'error',
-      2,
-    ],
-    'react/no-render-return-value': [
-      'error',
-    ],
-    'react/no-find-dom-node': [
-      'error',
-    ],
-    'react/style-prop-object': [
-      'error',
-    ],
-    'react/no-unescaped-entities': [
-      'error',
-    ],
+    'react/jsx-first-prop-new-line': ['error', 'multiline-multiprop'],
+    'react/jsx-equals-spacing': ['error', 'never'],
+    'react/jsx-indent': ['error', 2],
+    'react/no-render-return-value': ['error'],
+    'react/no-find-dom-node': ['error'],
+    'react/style-prop-object': ['error'],
+    'react/no-unescaped-entities': ['error'],
     'react/jsx-tag-spacing': [
       'error',
       {
@@ -246,65 +167,25 @@ module.exports = {
         allowRequiredDefaults: false,
       },
     ],
-    'react/no-redundant-should-component-update': [
-      'error',
-    ],
-    'react/no-unused-state': [
-      'error',
-    ],
-    'react/no-typos': [
-      'error',
-    ],
-    'react/no-this-in-sfc': [
-      'error',
-    ],
-    'react/jsx-props-no-multi-spaces': [
-      'error',
-    ],
-    '@next/next/no-sync-scripts': [
-      2,
-    ],
-    '@next/next/no-html-link-for-pages': [
-      2,
-    ],
-    '@next/next/no-css-tags': [
-      1,
-    ],
-    '@next/next/no-unwanted-polyfillio': [
-      1,
-    ],
-    '@next/next/no-page-custom-font': [
-      1,
-    ],
-    '@next/next/no-title-in-document-head': [
-      1,
-    ],
-    '@next/next/google-font-preconnect': [
-      1,
-    ],
-    '@next/next/next-script-for-ga': [
-      1,
-    ],
-    '@next/next/no-script-component-in-head': [
-      2,
-    ],
-    '@next/next/no-server-import-in-page': [
-      2,
-    ],
-    '@next/next/no-typos': [
-      1,
-    ],
-    '@next/next/no-duplicate-head': [
-      2,
-    ],
-    '@next/next/inline-script-id': [
-      2,
-    ],
-    '@next/next/no-before-interactive-script-outside-document': [
-      1,
-    ],
-    '@next/next/no-assign-module-variable': [
-      2,
-    ],
+    'react/no-redundant-should-component-update': ['error'],
+    'react/no-unused-state': ['error'],
+    'react/no-typos': ['error'],
+    'react/no-this-in-sfc': ['error'],
+    'react/jsx-props-no-multi-spaces': ['error'],
+    '@next/next/no-sync-scripts': [2],
+    '@next/next/no-html-link-for-pages': [2],
+    '@next/next/no-css-tags': [1],
+    '@next/next/no-unwanted-polyfillio': [1],
+    '@next/next/no-page-custom-font': [1],
+    '@next/next/no-title-in-document-head': [1],
+    '@next/next/google-font-preconnect': [1],
+    '@next/next/next-script-for-ga': [1],
+    '@next/next/no-script-component-in-head': [2],
+    '@next/next/no-server-import-in-page': [2],
+    '@next/next/no-typos': [1],
+    '@next/next/no-duplicate-head': [2],
+    '@next/next/inline-script-id': [2],
+    '@next/next/no-before-interactive-script-outside-document': [1],
+    '@next/next/no-assign-module-variable': [2],
   },
 };

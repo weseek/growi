@@ -7,7 +7,6 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-
 const logger = loggerFactory('growi:routes:apiv3:markdown-setting');
 
 const express = require('express');
@@ -17,21 +16,10 @@ const router = express.Router();
 const { body } = require('express-validator');
 
 const validator = {
-  lineBreak: [
-    body('isEnabledLinebreaks').isBoolean(),
-    body('isEnabledLinebreaksInComments').isBoolean(),
-  ],
-  indent: [
-    body('adminPreferredIndentSize').isIn([2, 4]),
-    body('isIndentSizeForced').isBoolean(),
-  ],
-  xssSetting: [
-    body('isEnabledXss').isBoolean(),
-    body('tagWhitelist').isArray(),
-    body('attrWhitelist').isString(),
-  ],
+  lineBreak: [body('isEnabledLinebreaks').isBoolean(), body('isEnabledLinebreaksInComments').isBoolean()],
+  indent: [body('adminPreferredIndentSize').isIn([2, 4]), body('isIndentSizeForced').isBoolean()],
+  xssSetting: [body('isEnabledXss').isBoolean(), body('tagWhitelist').isArray(), body('attrWhitelist').isString()],
 };
-
 
 /**
  * @swagger
@@ -150,7 +138,7 @@ module.exports = (crowi) => {
    *                      description: markdown params
    *                      $ref: '#/components/schemas/MarkdownParams'
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async (req, res) => {
     const markdownParams = {
       isEnabledLinebreaks: await crowi.configManager.getConfig('markdown:isEnabledLinebreaks'),
       isEnabledLinebreaksInComments: await crowi.configManager.getConfig('markdown:isEnabledLinebreaksInComments'),
@@ -193,8 +181,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/LineBreakParams'
    */
-  router.put('/lineBreak', loginRequiredStrictly, adminRequired, addActivity, validator.lineBreak, apiV3FormValidator, async(req, res) => {
-
+  router.put('/lineBreak', loginRequiredStrictly, adminRequired, addActivity, validator.lineBreak, apiV3FormValidator, async (req, res) => {
     const requestLineBreakParams = {
       'markdown:isEnabledLinebreaks': req.body.isEnabledLinebreaks,
       'markdown:isEnabledLinebreaksInComments': req.body.isEnabledLinebreaksInComments,
@@ -211,13 +198,11 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ lineBreaksParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating lineBreak';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-lineBreak-failed'));
     }
-
   });
 
   /**
@@ -249,8 +234,7 @@ module.exports = (crowi) => {
    *                      description: indent params
    *                      $ref: '#/components/schemas/IndentParams'
    */
-  router.put('/indent', loginRequiredStrictly, adminRequired, addActivity, validator.indent, apiV3FormValidator, async(req, res) => {
-
+  router.put('/indent', loginRequiredStrictly, adminRequired, addActivity, validator.indent, apiV3FormValidator, async (req, res) => {
     const requestIndentParams = {
       'markdown:adminPreferredIndentSize': req.body.adminPreferredIndentSize,
       'markdown:isIndentSizeForced': req.body.isIndentSizeForced,
@@ -267,13 +251,11 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ indentParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating indent';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-indent-failed'));
     }
-
   });
 
   /**
@@ -301,15 +283,14 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/XssParams'
    */
-  router.put('/xss', loginRequiredStrictly, adminRequired, addActivity, validator.xssSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/xss', loginRequiredStrictly, adminRequired, addActivity, validator.xssSetting, apiV3FormValidator, async (req, res) => {
     if (req.body.isEnabledXss && req.body.xssOption == null) {
       return res.apiv3Err(new ErrorV3('xss option is required'));
     }
 
     try {
       JSON.parse(req.body.attrWhitelist);
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating xss';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-xss-failed'));
@@ -335,13 +316,11 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ xssParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating xss';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-xss-failed'));
     }
-
   });
 
   return router;

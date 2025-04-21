@@ -12,8 +12,8 @@ import { SecondaryItems } from './SecondaryItems';
 import styles from './SidebarNav.module.scss';
 
 export type SidebarNavProps = {
-  onPrimaryItemHover?: (contents: SidebarContentsType) => void,
-}
+  onPrimaryItemHover?: (contents: SidebarContentsType) => void;
+};
 
 export const SidebarNav = memo((props: SidebarNavProps) => {
   const { onPrimaryItemHover } = props;
@@ -39,7 +39,6 @@ export const SidebarNav = memo((props: SidebarNavProps) => {
 
   return (
     <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
-
       {renderedPageCreateButton}
 
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>

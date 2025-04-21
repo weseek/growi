@@ -10,17 +10,16 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const RevokeReadOnlyMenuItem: React.FC<{
-  adminUsersContainer: AdminUsersContainer,
-  user: IUserHasId,
+  adminUsersContainer: AdminUsersContainer;
+  user: IUserHasId;
 }> = ({ adminUsersContainer, user }): JSX.Element => {
   const { t } = useTranslation('admin');
 
-  const clickRevokeReadOnlyBtnHandler = useCallback(async() => {
+  const clickRevokeReadOnlyBtnHandler = useCallback(async () => {
     try {
       const username = await adminUsersContainer.revokeUserReadOnly(user._id);
       toastSuccess(t('toaster.revoke_user_read_only', { username }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [adminUsersContainer, t, user._id]);
@@ -33,9 +32,12 @@ const RevokeReadOnlyMenuItem: React.FC<{
 };
 
 /**
-* Wrapper component for using unstated
-*/
+ * Wrapper component for using unstated
+ */
 // eslint-disable-next-line max-len
-const RevokeReadOnlyMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(RevokeReadOnlyMenuItem, [AdminUsersContainer]);
+const RevokeReadOnlyMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(
+  RevokeReadOnlyMenuItem,
+  [AdminUsersContainer],
+);
 
 export default RevokeReadOnlyMenuItemWrapper;

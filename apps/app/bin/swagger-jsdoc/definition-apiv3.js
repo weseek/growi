@@ -38,32 +38,11 @@ module.exports = {
   'x-tagGroups': [
     {
       name: 'User API',
-      tags: [
-        'Attachment',
-        'Bookmarks',
-        'BookmarkFolders',
-        'Page',
-        'Pages',
-        'PageListing',
-        'Revisions',
-        'ShareLinks',
-        'Users',
-        'UserUISettings',
-        '',
-      ],
+      tags: ['Attachment', 'Bookmarks', 'BookmarkFolders', 'Page', 'Pages', 'PageListing', 'Revisions', 'ShareLinks', 'Users', 'UserUISettings', ''],
     },
     {
       name: 'User Personal Settings API',
-      tags: [
-        'GeneralSetting',
-        'EditorSetting',
-        'InAppNotificationSettings',
-        '',
-        '',
-        '',
-        '',
-        '',
-      ],
+      tags: ['GeneralSetting', 'EditorSetting', 'InAppNotificationSettings', '', '', '', '', ''],
     },
     {
       name: 'System Management API',
@@ -101,16 +80,7 @@ module.exports = {
     },
     {
       name: 'Public API',
-      tags: [
-        'Healthcheck',
-        'Statistics',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-      ],
+      tags: ['Healthcheck', 'Statistics', '', '', '', '', '', ''],
     },
   ],
 };

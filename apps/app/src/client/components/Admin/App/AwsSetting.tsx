@@ -2,20 +2,19 @@ import type { JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-
 export type AwsSettingMoleculeProps = {
-  s3ReferenceFileWithRelayMode
-  s3Region
-  s3CustomEndpoint
-  s3Bucket
-  s3AccessKeyId
-  s3SecretAccessKey
-  onChangeS3ReferenceFileWithRelayMode: (val: boolean) => void
-  onChangeS3Region: (val: string) => void
-  onChangeS3CustomEndpoint: (val: string) => void
-  onChangeS3Bucket: (val: string) => void
-  onChangeS3AccessKeyId: (val: string) => void
-  onChangeS3SecretAccessKey: (val: string) => void
+  s3ReferenceFileWithRelayMode;
+  s3Region;
+  s3CustomEndpoint;
+  s3Bucket;
+  s3AccessKeyId;
+  s3SecretAccessKey;
+  onChangeS3ReferenceFileWithRelayMode: (val: boolean) => void;
+  onChangeS3Region: (val: string) => void;
+  onChangeS3CustomEndpoint: (val: string) => void;
+  onChangeS3Bucket: (val: string) => void;
+  onChangeS3AccessKeyId: (val: string) => void;
+  onChangeS3SecretAccessKey: (val: string) => void;
 };
 
 export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element => {
@@ -23,11 +22,8 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
 
   return (
     <>
-
       <div className="row my-3">
-        <label className="text-start text-md-end col-md-3 col-form-label">
-          {t('admin:app_setting.file_delivery_method')}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.file_delivery_method')}</label>
 
         <div className="col-md-6">
           <div className="dropdown">
@@ -46,16 +42,20 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { props?.onChangeS3ReferenceFileWithRelayMode(true) }}
+                onClick={() => {
+                  props?.onChangeS3ReferenceFileWithRelayMode(true);
+                }}
               >
                 {t('admin:app_setting.file_delivery_method_relay')}
               </button>
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { props?.onChangeS3ReferenceFileWithRelayMode(false) }}
+                onClick={() => {
+                  props?.onChangeS3ReferenceFileWithRelayMode(false);
+                }}
               >
-                { t('admin:app_setting.file_delivery_method_redirect')}
+                {t('admin:app_setting.file_delivery_method_redirect')}
               </button>
             </div>
 
@@ -69,9 +69,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row">
-        <label className="text-start text-md-end col-md-3 col-form-label">
-          {t('admin:app_setting.region')}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.region')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -85,9 +83,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row">
-        <label className="text-start text-md-end col-md-3 col-form-label">
-          {t('admin:app_setting.custom_endpoint')}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.custom_endpoint')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -103,9 +99,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row">
-        <label className="text-start text-md-end col-md-3 col-form-label">
-          {t('admin:app_setting.bucket_name')}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.bucket_name')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -120,9 +114,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row">
-        <label className="text-start text-md-end col-md-3 col-form-label">
-          Access key ID
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">Access key ID</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -136,9 +128,7 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
       </div>
 
       <div className="row">
-        <label className="text-start text-md-end col-md-3 col-form-label">
-          Secret access key
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">Secret access key</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -150,8 +140,6 @@ export const AwsSettingMolecule = (props: AwsSettingMoleculeProps): JSX.Element 
           <p className="form-text text-muted">{t('admin:app_setting.s3_secret_access_key_input_description')}</p>
         </div>
       </div>
-
-
     </>
   );
 };

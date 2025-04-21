@@ -13,8 +13,8 @@ const globalNotificationSettingSchema = new mongoose.Schema({
 });
 
 /*
-* e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"]
-*/
+ * e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"]
+ */
 const generatePathsOnTree = (path, pathList) => {
   pathList.push(path);
 
@@ -28,8 +28,8 @@ const generatePathsOnTree = (path, pathList) => {
 };
 
 /*
-* e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"]
-*/
+ * e.g. "/a/b/c" => ["/a/b/c", "/a/b", "/a", "/"]
+ */
 const generatePathsToMatch = (originalPath) => {
   const pathList = generatePathsOnTree(originalPath, []);
   return pathList.map((path) => {
@@ -48,7 +48,6 @@ const generatePathsToMatch = (originalPath) => {
  * @class GlobalNotificationSetting
  */
 class GlobalNotificationSetting {
-
   /** @type {import('~/server/crowi').default} Crowi instance */
   crowi;
 
@@ -105,12 +104,10 @@ class GlobalNotificationSetting {
       triggerEvents: event,
       __t: type,
       isEnabled: true,
-    })
-      .sort({ triggerPath: 1 });
+    }).sort({ triggerPath: 1 });
 
     return settings;
   }
-
 }
 
 module.exports = {

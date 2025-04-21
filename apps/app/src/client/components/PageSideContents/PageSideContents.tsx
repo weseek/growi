@@ -1,6 +1,4 @@
-import React, {
-  Suspense, useCallback, useRef, type JSX,
-} from 'react';
+import React, { Suspense, useCallback, useRef, type JSX } from 'react';
 
 import type { IPagePopulatedToShowRevision, IPageInfoForOperation } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
@@ -21,21 +19,19 @@ import { PageAccessoriesControl } from './PageAccessoriesControl';
 
 import styles from './PageSideContents.module.scss';
 
-
 const { isTopPage, isUsersHomepage, isTrashPage } = pagePathUtils;
 
-
-const PageTags = dynamic(() => import('../PageTags').then(mod => mod.PageTags), {
+const PageTags = dynamic(() => import('../PageTags').then((mod) => mod.PageTags), {
   ssr: false,
   loading: PageTagsSkeleton,
 });
 
-const AuthorInfo = dynamic(() => import('~/client/components/AuthorInfo').then(mod => mod.AuthorInfo), { ssr: false });
+const AuthorInfo = dynamic(() => import('~/client/components/AuthorInfo').then((mod) => mod.AuthorInfo), { ssr: false });
 
 type TagsProps = {
-  pageId: string,
-  revisionId: string,
-}
+  pageId: string;
+  revisionId: string;
+};
 
 const Tags = (props: TagsProps): JSX.Element => {
   const { pageId, revisionId } = props;
@@ -62,20 +58,15 @@ const Tags = (props: TagsProps): JSX.Element => {
 
   return (
     <div className="grw-tag-labels-container">
-      <PageTags
-        tags={tagsInfoData.tags}
-        isTagLabelsDisabled={isTagLabelsDisabled}
-        onClickEditTagsButton={onClickEditTagsButton}
-      />
+      <PageTags tags={tagsInfoData.tags} isTagLabelsDisabled={isTagLabelsDisabled} onClickEditTagsButton={onClickEditTagsButton} />
     </div>
   );
 };
 
-
 type PageSideContentsProps = {
-  page: IPagePopulatedToShowRevision,
-  isSharedUser?: boolean,
-}
+  page: IPagePopulatedToShowRevision;
+  isSharedUser?: boolean;
+};
 
 export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const { t } = useTranslation();
@@ -89,9 +80,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const { data: pageInfo } = useSWRxPageInfo(page._id);
   const { data: showPageSideAuthors } = useShowPageSideAuthors();
 
-  const {
-    creator, lastUpdateUser, createdAt, updatedAt,
-  } = page;
+  const { creator, lastUpdateUser, createdAt, updatedAt } = page;
 
   const pagePath = page.path;
   const isTopPagePath = isTopPage(pagePath);
@@ -109,13 +98,13 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
       )}
 
       {/* Tags */}
-      { page.revision != null && (
+      {page.revision != null && (
         <div ref={tagsRef}>
           <Suspense fallback={<PageTagsSkeleton />}>
             <Tags pageId={page._id} revisionId={page.revision._id} />
           </Suspense>
         </div>
-      ) }
+      )}
 
       <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2`}>
         {/* Page list */}

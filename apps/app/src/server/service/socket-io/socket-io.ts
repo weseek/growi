@@ -14,9 +14,7 @@ import { configManager } from '../config-manager';
 
 import { RoomPrefix, getRoomNameWithId } from './helper';
 
-
 const logger = loggerFactory('growi:service:socket-io');
-
 
 type RequestWithUser = IncomingMessage & { user: IUserHasId };
 
@@ -24,7 +22,6 @@ type RequestWithUser = IncomingMessage & { user: IUserHasId };
  * Serve socket.io for server-to-client messaging
  */
 export class SocketIoService {
-
   crowi: Crowi;
 
   guestClients: Set<string>;
@@ -33,14 +30,13 @@ export class SocketIoService {
 
   adminNamespace: Namespace;
 
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.guestClients = new Set();
   }
 
   get isInitialized(): boolean {
-    return (this.io != null);
+    return this.io != null;
   }
 
   // Since the Order is important, attachServer() should be async
@@ -175,7 +171,7 @@ export class SocketIoService {
       const clients = await this.getAdminSocket().fetchSockets();
       const clientsCount = clients.length;
 
-      logger.debug('Current count of clients for \'/admin\':', clientsCount);
+      logger.debug("Current count of clients for '/admin':", clientsCount);
 
       const limit = configManager.getConfig('s2cMessagingPubsub:connectionsLimitForAdmin');
       if (limit <= clientsCount) {
@@ -190,7 +186,6 @@ export class SocketIoService {
   }
 
   async checkConnectionLimitsForGuest(socket, next) {
-
     if (socket.request.user == null) {
       const clientsCount = this.guestClients.size;
 
@@ -221,7 +216,7 @@ export class SocketIoService {
     const clients = await this.getDefaultSocket().fetchSockets();
     const clientsCount = clients.length;
 
-    logger.debug('Current count of clients for \'/\':', clientsCount);
+    logger.debug("Current count of clients for '/':", clientsCount);
 
     const limit = configManager.getConfig('s2cMessagingPubsub:connectionsLimit');
     if (limit <= clientsCount) {
@@ -233,5 +228,4 @@ export class SocketIoService {
 
     next();
   }
-
 }

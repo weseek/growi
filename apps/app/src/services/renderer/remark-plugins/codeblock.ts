@@ -3,7 +3,6 @@ import type { InlineCode } from 'mdast';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
-
 const SUPPORTED_CODE = ['inline'];
 
 export const remarkPlugin: Plugin = () => {

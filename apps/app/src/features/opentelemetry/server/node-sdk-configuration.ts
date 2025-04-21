@@ -30,23 +30,27 @@ export const generateNodeSDKConfiguration = (serviceInstanceId?: string): Config
       metricReader: new PeriodicExportingMetricReader({
         exporter: new OTLPMetricExporter(),
       }),
-      instrumentations: [getNodeAutoInstrumentations({
-        '@opentelemetry/instrumentation-bunyan': {
-          enabled: false,
-        },
-        // disable fs instrumentation since this generates very large amount of traces
-        // see: https://opentelemetry.io/docs/languages/js/libraries/#registration
-        '@opentelemetry/instrumentation-fs': {
-          enabled: false,
-        },
-      })],
+      instrumentations: [
+        getNodeAutoInstrumentations({
+          '@opentelemetry/instrumentation-bunyan': {
+            enabled: false,
+          },
+          // disable fs instrumentation since this generates very large amount of traces
+          // see: https://opentelemetry.io/docs/languages/js/libraries/#registration
+          '@opentelemetry/instrumentation-fs': {
+            enabled: false,
+          },
+        }),
+      ],
     };
   }
 
   if (serviceInstanceId != null) {
-    configuration.resource = resource.merge(new Resource({
-      [SEMRESATTRS_SERVICE_INSTANCE_ID]: serviceInstanceId,
-    }));
+    configuration.resource = resource.merge(
+      new Resource({
+        [SEMRESATTRS_SERVICE_INSTANCE_ID]: serviceInstanceId,
+      }),
+    );
   }
 
   return configuration;

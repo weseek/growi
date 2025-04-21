@@ -84,10 +84,7 @@ const contributors = [
       },
       {
         additionalClass: 'col-md-6 my-4',
-        members: [
-          { name: 'shaminmeerankutty' },
-          { name: 'rabitarochan' },
-        ],
+        members: [{ name: 'shaminmeerankutty' }, { name: 'rabitarochan' }],
       },
       {
         additionalClass: 'col-md-4 my-4',
@@ -136,17 +133,11 @@ const contributors = [
     memberGroups: [
       {
         additionalClass: 'col-md-4 my-4',
-        members: [
-          { name: 'Crowi Team' },
-          { position: 'Ambassador', name: 'Tsuyoshi Suzuki' },
-          { name: 'JPCERT/CC' },
-        ],
+        members: [{ name: 'Crowi Team' }, { position: 'Ambassador', name: 'Tsuyoshi Suzuki' }, { name: 'JPCERT/CC' }],
       },
       {
         additionalClass: 'col-12 staff-credit-mt-10rem',
-        members: [
-          { name: 'AND YOU' },
-        ],
+        members: [{ name: 'AND YOU' }],
       },
     ],
   },

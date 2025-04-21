@@ -14,12 +14,10 @@ import { InstallerService, FailedToCreateAdminUserError } from '../../service/in
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:installer');
 
-
-type FormRequest = Request & { form: any, logIn: any };
+type FormRequest = Request & { form: any; logIn: any };
 
 module.exports = (crowi: Crowi): Router => {
   const addActivity = generateAddActivityMiddleware();
@@ -29,10 +27,7 @@ module.exports = (crowi: Crowi): Router => {
   const router = express.Router();
 
   // check application is not installed yet
-  router.use(
-    applicationNotInstalled.generateCheckerMiddleware(crowi),
-    applicationNotInstalled.handleAsApiError,
-  );
+  router.use(applicationNotInstalled.generateCheckerMiddleware(crowi), applicationNotInstalled.handleAsApiError);
 
   const minPasswordLength = configManager.getConfig('app:minPasswordLength');
 
@@ -79,8 +74,7 @@ module.exports = (crowi: Crowi): Router => {
    *                    example: Installation completed (Logged in as an admin user)
    */
   // eslint-disable-next-line max-len
-  router.post('/', registerRules(minPasswordLength), registerValidation, addActivity, async(req: FormRequest, res: ApiV3Response) => {
-
+  router.post('/', registerRules(minPasswordLength), registerValidation, addActivity, async (req: FormRequest, res: ApiV3Response) => {
     if (!req.form.isValid) {
       const errors = req.form.errors;
       return res.apiv3Err(errors, 400);
@@ -98,14 +92,16 @@ module.exports = (crowi: Crowi): Router => {
 
     let adminUser;
     try {
-      adminUser = await installerService.install({
-        name,
-        username,
-        email,
-        password,
-      }, language);
-    }
-    catch (err) {
+      adminUser = await installerService.install(
+        {
+          name,
+          username,
+          email,
+          password,
+        },
+        language,
+      );
+    } catch (err) {
       if (err instanceof FailedToCreateAdminUserError) {
         return res.apiv3Err(new ErrorV3(err.message, 'failed_to_create_admin_user'));
       }

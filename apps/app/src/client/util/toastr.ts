@@ -3,7 +3,6 @@ import { toast } from 'react-toastify';
 
 import { toArrayIfNot } from '~/utils/array-utils';
 
-
 export const toastErrorOption: ToastOptions = {
   autoClose: false,
   closeButton: true,
@@ -16,7 +15,7 @@ export const toastError = (err: string | Error | Error[], option: ToastOptions =
   }
 
   for (const err of errs) {
-    const message = (typeof err === 'string') ? err : err.message;
+    const message = typeof err === 'string' ? err : err.message;
     toast.error(message, option);
   }
 };

@@ -3,12 +3,11 @@ import mongoose from 'mongoose';
 import type { OverwriteFunction } from './overwrite-function';
 import { keepOriginal } from './overwrite-function';
 
-
 export type ConvertMap = {
   [collectionName: string]: {
-    [propertyName: string]: OverwriteFunction,
-  }
-}
+    [propertyName: string]: OverwriteFunction;
+  };
+};
 
 /**
  * Initialize convert map. set keepOriginal as default

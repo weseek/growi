@@ -6,9 +6,10 @@ import type { IQuestionnaireOrder } from '../../interfaces/questionnaire-order';
 import type { IUserInfo } from '../../interfaces/user-info';
 import { UserType } from '../../interfaces/user-info';
 
-
 const checkUserInfo = (condition: ICondition, userInfo: IUserInfo): boolean => {
-  const { user: { types, daysSinceCreation } } = condition;
+  const {
+    user: { types, daysSinceCreation },
+  } = condition;
 
   if (!types.includes(userInfo.type)) {
     return false;
@@ -43,13 +44,15 @@ const checkUserInfo = (condition: ICondition, userInfo: IUserInfo): boolean => {
 };
 
 const checkGrowiInfo = (condition: ICondition, growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>): boolean => {
-  const { growi: { types, versionRegExps } } = condition;
+  const {
+    growi: { types, versionRegExps },
+  } = condition;
 
   if (!types.includes(growiInfo.type)) {
     return false;
   }
 
-  if (!versionRegExps.some(rs => new RegExp(rs).test(growiInfo.version))) {
+  if (!versionRegExps.some((rs) => new RegExp(rs).test(growiInfo.version))) {
     return false;
   }
 

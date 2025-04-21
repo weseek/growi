@@ -14,21 +14,9 @@ module.exports = {
 
     // enable passport and delete configs for crowi classic auth
     await Promise.all([
-      Config.findOneAndUpdate(
-        { key: 'security:isEnabledPassport' },
-        { key: 'security:isEnabledPassport', value: JSON.stringify(true) },
-        { upsert: true },
-      ),
-      Config.findOneAndUpdate(
-        { key: 'google:clientId' },
-        { key: 'google:clientId', value: JSON.stringify(null) },
-        { upsert: true },
-      ),
-      Config.findOneAndUpdate(
-        { key: 'google:clientSecret' },
-        { key: 'google:clientSecret', value: JSON.stringify(null) },
-        { upsert: true },
-      ),
+      Config.findOneAndUpdate({ key: 'security:isEnabledPassport' }, { key: 'security:isEnabledPassport', value: JSON.stringify(true) }, { upsert: true }),
+      Config.findOneAndUpdate({ key: 'google:clientId' }, { key: 'google:clientId', value: JSON.stringify(null) }, { upsert: true }),
+      Config.findOneAndUpdate({ key: 'google:clientSecret' }, { key: 'google:clientSecret', value: JSON.stringify(null) }, { upsert: true }),
     ]);
 
     logger.info('Migration has successfully terminated');

@@ -10,13 +10,12 @@ import styles from './SortControl.module.scss';
 const { DESC, ASC } = SORT_ORDER;
 
 type Props = {
-  sort: SORT_AXIS,
-  order: SORT_ORDER,
-  onChange?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void,
-}
+  sort: SORT_AXIS;
+  order: SORT_ORDER;
+  onChange?: (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => void;
+};
 
-const SortControl: FC <Props> = (props: Props) => {
-
+const SortControl: FC<Props> = (props: Props) => {
   const { t } = useTranslation('');
 
   const { sort, order, onChange } = props;
@@ -26,7 +25,6 @@ const SortControl: FC <Props> = (props: Props) => {
       onChange(nextSortAxis, nextSortOrder);
     }
   };
-
 
   return (
     <>
@@ -43,13 +41,15 @@ const SortControl: FC <Props> = (props: Props) => {
         </button>
         <ul className="dropdown-menu">
           {Object.values(SORT_AXIS).map((sortAxis) => {
-            const nextOrder = (sort !== sortAxis || order === ASC) ? DESC : ASC;
+            const nextOrder = sort !== sortAxis || order === ASC ? DESC : ASC;
             return (
               <button
                 key={sortAxis}
                 className="dropdown-item"
                 type="button"
-                onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
+                onClick={() => {
+                  onClickChangeSort(sortAxis, nextOrder);
+                }}
               >
                 <span>{t(`search_result.sort_axis.${sortAxis}`)}</span>
               </button>
@@ -60,6 +60,5 @@ const SortControl: FC <Props> = (props: Props) => {
     </>
   );
 };
-
 
 export default SortControl;

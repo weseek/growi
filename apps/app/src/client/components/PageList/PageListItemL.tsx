@@ -1,11 +1,7 @@
 import type { ForwardRefRenderFunction, JSX } from 'react';
-import React, {
-  forwardRef, useState, memo, useCallback, useImperativeHandle, useRef, useEffect,
-} from 'react';
+import React, { forwardRef, useState, memo, useCallback, useImperativeHandle, useRef, useEffect } from 'react';
 
-import type {
-  IPageInfoAll, IPageWithMeta, IPageInfoForListing,
-} from '@growi/core';
+import type { IPageInfoAll, IPageWithMeta, IPageInfoForListing } from '@growi/core';
 import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
@@ -21,14 +17,10 @@ import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import type { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
 import { isIPageSearchMeta } from '~/interfaces/search';
-import type {
-  OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
-} from '~/interfaces/ui';
+import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
-import {
-  usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
-} from '~/stores/modal';
+import { usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { PagePathHierarchicalLink } from '../../../components/Common/PagePathHierarchicalLink';
@@ -37,26 +29,34 @@ import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { PageItemControl } from '../Common/Dropdown/PageItemControl';
 
 type Props = {
-  page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
-  isSelected?: boolean, // is item selected(focused)
-  isEnableActions?: boolean,
-  isReadOnlyUser: boolean,
-  forceHideMenuItems?: ForceHideMenuItems,
-  showPageUpdatedTime?: boolean, // whether to show page's updated time at the top-right corner of item
-  onCheckboxChanged?: (isChecked: boolean, pageId: string) => void,
-  onClickItem?: (pageId: string) => void,
-  onPageDuplicated?: OnDuplicatedFunction,
-  onPageRenamed?: OnRenamedFunction,
-  onPageDeleted?: OnDeletedFunction,
-  onPagePutBacked?: OnPutBackedFunction,
-}
+  page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>;
+  isSelected?: boolean; // is item selected(focused)
+  isEnableActions?: boolean;
+  isReadOnlyUser: boolean;
+  forceHideMenuItems?: ForceHideMenuItems;
+  showPageUpdatedTime?: boolean; // whether to show page's updated time at the top-right corner of item
+  onCheckboxChanged?: (isChecked: boolean, pageId: string) => void;
+  onClickItem?: (pageId: string) => void;
+  onPageDuplicated?: OnDuplicatedFunction;
+  onPageRenamed?: OnRenamedFunction;
+  onPageDeleted?: OnDeletedFunction;
+  onPagePutBacked?: OnPutBackedFunction;
+};
 
 const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (props: Props, ref): JSX.Element => {
   const {
-    page: { data: pageData, meta: pageMeta }, isSelected, isEnableActions, isReadOnlyUser,
+    page: { data: pageData, meta: pageMeta },
+    isSelected,
+    isEnableActions,
+    isReadOnlyUser,
     forceHideMenuItems,
     showPageUpdatedTime,
-    onClickItem, onCheckboxChanged, onPageDuplicated, onPageRenamed, onPageDeleted, onPagePutBacked,
+    onClickItem,
+    onCheckboxChanged,
+    onPageDuplicated,
+    onPageRenamed,
+    onPageDeleted,
+    onPagePutBacked,
   } = props;
 
   const { returnPathForURL } = pathUtils;
@@ -127,7 +127,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     }
   }, [isDeviceLargerThanLg, onClickItem, pageData._id]);
 
-  const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
+  const bookmarkMenuItemClickHandler = async (_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
     await bookmarkOperation(_pageId);
     mutateCurrentUserBookmarks();
@@ -142,28 +142,32 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openDuplicateModal(page, { onDuplicated: onPageDuplicated });
   }, [onPageDuplicated, openDuplicateModal, pageData._id, pageData.path]);
 
-  const renameMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
-    const page = { data: pageData, meta: pageInfo };
-    openRenameModal(page, { onRenamed: onPageRenamed });
-  }, [pageData, onPageRenamed, openRenameModal]);
+  const renameMenuItemClickHandler = useCallback(
+    (_id: string, pageInfo: IPageInfoAll | undefined) => {
+      const page = { data: pageData, meta: pageInfo };
+      openRenameModal(page, { onRenamed: onPageRenamed });
+    },
+    [pageData, onPageRenamed, openRenameModal],
+  );
 
+  const deleteMenuItemClickHandler = useCallback(
+    (_id: string, pageInfo: IPageInfoAll | undefined) => {
+      const pageToDelete = { data: pageData, meta: pageInfo };
 
-  const deleteMenuItemClickHandler = useCallback((_id: string, pageInfo: IPageInfoAll | undefined) => {
-    const pageToDelete = { data: pageData, meta: pageInfo };
+      // open modal
+      openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
+    },
+    [pageData, openDeleteModal, onPageDeleted],
+  );
 
-    // open modal
-    openDeleteModal([pageToDelete], { onDeleted: onPageDeleted });
-  }, [pageData, openDeleteModal, onPageDeleted]);
-
-  const revertMenuItemClickHandler = useCallback(async() => {
+  const revertMenuItemClickHandler = useCallback(async () => {
     const { _id: pageId, path } = pageData;
 
-    const putBackedHandler = async(path) => {
+    const putBackedHandler = async (path) => {
       try {
         // pageData path should be `/trash/fuga` (`/trash` should be included to the prefix)
         await unlink(pageData.path);
-      }
-      catch (err) {
+      } catch (err) {
         toastError(err);
       }
 
@@ -175,7 +179,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }, [onPagePutBacked, openPutBackPageModal, pageData]);
 
-  const styleListGroupItem = (isDeviceLargerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
+  const styleListGroupItem = isDeviceLargerThanLg && onClickItem != null ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
   const styleActive = isDeviceLargerThanLg && isSelected ? 'active' : '';
 
@@ -203,7 +207,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 id={`cbSelect-${pageData._id}`}
                 data-testid="cb-select"
                 innerRef={inputRef}
-                onChange={(e) => { onCheckboxChanged(e.target.checked, pageData._id) }}
+                onChange={(e) => {
+                  onCheckboxChanged(e.target.checked, pageData._id);
+                }}
               />
             </div>
           )}
@@ -211,13 +217,8 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
           <div className="flex-grow-1 px-2 px-md-4">
             <div className="d-flex justify-content-between">
               {/* page path */}
-              <PagePathHierarchicalLink
-                linkedPagePath={linkedPagePathFormer}
-                linkedPagePathByHtml={linkedPagePathHighlightedFormer}
-              />
-              {showPageUpdatedTime && (
-                <span className="page-list-updated-at text-muted">Last update: {lastUpdateDate}</span>
-              )}
+              <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} linkedPagePathByHtml={linkedPagePathHighlightedFormer} />
+              {showPageUpdatedTime && <span className="page-list-updated-at text-muted">Last update: {lastUpdateDate}</span>}
             </div>
             <div className="d-flex align-items-center mb-1">
               {/* Picture */}
@@ -229,22 +230,16 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
                   <span className="text-break">
-                    <Link
-                      legacyBehavior
-                      href={returnPathForURL(pageData.path, pageData._id)}
-                      prefetch={false}
-                    >
-                      {shouldDangerouslySetInnerHTMLForPaths
-                        ? (
-                          <a
-                            className="page-segment"
-                            // biome-ignore lint/security/noDangerouslySetInnerHtmlWithChildren: ignore
-                            dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
-                          >
-                          </a>
-                        )
-                        : <a className="page-segment">{linkedPagePathHighlightedLatter.pathName}</a>
-                      }
+                    <Link legacyBehavior href={returnPathForURL(pageData.path, pageData._id)} prefetch={false}>
+                      {shouldDangerouslySetInnerHTMLForPaths ? (
+                        <a
+                          className="page-segment"
+                          // biome-ignore lint/security/noDangerouslySetInnerHtmlWithChildren: ignore
+                          dangerouslySetInnerHTML={{ __html: linkedPagePathHighlightedLatter.pathName }}
+                        ></a>
+                      ) : (
+                        <a className="page-segment">{linkedPagePathHighlightedLatter.pathName}</a>
+                      )}
                     </Link>
                   </span>
                 </span>
@@ -256,43 +251,37 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </div>
 
               {/* doropdown icon includes page control buttons */}
-              {hasBrowsingRights
-                && (
-                  <div className="ms-auto">
-                    <PageItemControl
-                      alignEnd
-                      pageId={pageData._id}
-                      pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
-                      isEnableActions={isEnableActions}
-                      isReadOnlyUser={isReadOnlyUser}
-                      forceHideMenuItems={forceHideMenuItems}
-                      onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-                      onClickRenameMenuItem={renameMenuItemClickHandler}
-                      onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-                      onClickDeleteMenuItem={deleteMenuItemClickHandler}
-                      onClickRevertMenuItem={revertMenuItemClickHandler}
-                    />
-                  </div>
-                )
-              }
+              {hasBrowsingRights && (
+                <div className="ms-auto">
+                  <PageItemControl
+                    alignEnd
+                    pageId={pageData._id}
+                    pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
+                    isEnableActions={isEnableActions}
+                    isReadOnlyUser={isReadOnlyUser}
+                    forceHideMenuItems={forceHideMenuItems}
+                    onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+                    onClickRenameMenuItem={renameMenuItemClickHandler}
+                    onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+                    onClickDeleteMenuItem={deleteMenuItemClickHandler}
+                    onClickRevertMenuItem={revertMenuItemClickHandler}
+                  />
+                </div>
+              )}
             </div>
             <div className="page-list-snippet py-1">
               <Clamp lines={2}>
                 {elasticSearchResult != null && elasticSearchResult.snippet != null && (
                   // eslint-disable-next-line react/no-danger
-                  (<div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>)
+                  <div dangerouslySetInnerHTML={{ __html: elasticSearchResult.snippet }}></div>
                 )}
-                {revisionShortBody != null && (
-                  <div data-testid="revision-short-body-in-page-list-item-L">{revisionShortBody}</div>
+                {revisionShortBody != null && <div data-testid="revision-short-body-in-page-list-item-L">{revisionShortBody}</div>}
+                {!hasBrowsingRights && (
+                  <>
+                    <span className="material-symbols-outlined p-1">error</span>
+                    {t('not_allowed_to_see_this_page')}
+                  </>
                 )}
-                {
-                  !hasBrowsingRights && (
-                    <>
-                      <span className="material-symbols-outlined p-1">error</span>
-                      {t('not_allowed_to_see_this_page')}
-                    </>
-                  )
-                }
               </Clamp>
             </div>
           </div>

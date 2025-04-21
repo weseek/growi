@@ -6,16 +6,13 @@ import { retrieveValidShareLinkByReferer } from './retrieve-valid-share-link';
 import { validateAttachment } from './validate-attachment';
 import { validateReferer } from './validate-referer';
 
-
 const logger = loggerFactory('growi:middleware:certify-shared-page-attachment');
 
-
 export interface RequestToAllowShareLink extends Request {
-  isSharedPage?: boolean,
+  isSharedPage?: boolean;
 }
 
-export const certifySharedPageAttachmentMiddleware = async(req: RequestToAllowShareLink, res: Response, next: NextFunction): Promise<void> => {
-
+export const certifySharedPageAttachmentMiddleware = async (req: RequestToAllowShareLink, res: Response, next: NextFunction): Promise<void> => {
   const fileId: string | undefined = req.params.id;
   const { referer } = req.headers;
 
@@ -42,5 +39,4 @@ export const certifySharedPageAttachmentMiddleware = async(req: RequestToAllowSh
 
   req.isSharedPage = true;
   next();
-
 };

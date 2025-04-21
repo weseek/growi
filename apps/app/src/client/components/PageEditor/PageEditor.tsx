@@ -1,7 +1,5 @@
 import type { CSSProperties, JSX } from 'react';
-import React, {
-  useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
-} from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 import type EventEmitter from 'events';
 import nodePath from 'path';
@@ -24,23 +22,18 @@ import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import {
-  useDefaultIndentSize, useCurrentUser,
-  useCurrentPathname, useIsEnabledAttachTitleHeader,
-  useIsEditable, useIsIndentSizeForced,
+  useDefaultIndentSize,
+  useCurrentUser,
+  useCurrentPathname,
+  useIsEnabledAttachTitleHeader,
+  useIsEditable,
+  useIsIndentSizeForced,
   useAcceptedUploadFileType,
 } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
-import {
-  useReservedNextCaretLine,
-  useEditorSettings,
-  useCurrentIndentSize,
-  useEditingMarkdown,
-  useWaitingSaveProcessing,
-} from '~/stores/editor';
-import {
-  useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
-} from '~/stores/page';
+import { useReservedNextCaretLine, useEditorSettings, useCurrentIndentSize, useEditingMarkdown, useWaitingSaveProcessing } from '~/stores/editor';
+import { useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData } from '~/stores/page';
 import { mutatePageTree, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
@@ -55,9 +48,7 @@ import { useConflictResolver, useConflictEffect, type ConflictHandler } from './
 
 import '@growi/editor/dist/style.css';
 
-
 const logger = loggerFactory('growi:PageEditor');
-
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -65,24 +56,18 @@ declare global {
 }
 
 export type SaveOptions = {
-  wip: boolean,
-  slackChannels: string,
-  isSlackEnabled: boolean,
-  overwriteScopesOfDescendants?: boolean
-}
-export type Save = (
-  revisionId?: string,
-  requestMarkdown?: string,
-  opts?: SaveOptions,
-  onConflict?: ConflictHandler
-) => Promise<IPageHasId | null>
+  wip: boolean;
+  slackChannels: string;
+  isSlackEnabled: boolean;
+  overwriteScopesOfDescendants?: boolean;
+};
+export type Save = (revisionId?: string, requestMarkdown?: string, opts?: SaveOptions, onConflict?: ConflictHandler) => Promise<IPageHasId | null>;
 
 type Props = {
-  visibility?: boolean,
-}
+  visibility?: boolean;
+};
 
 export const PageEditorSubstance = (props: Props): JSX.Element => {
-
   const { t } = useTranslation();
 
   const previewRef = useRef<HTMLDivElement>(null);
@@ -145,7 +130,6 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
     }
 
     return initialValue;
-
   }, [isNotFound, currentPathname, editingMarkdown, isEnabledAttachTitleHeader, templateBodyData]);
 
   useEffect(() => {
@@ -156,78 +140,89 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(codeMirrorEditor?.getDoc() ?? '');
-  const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
-    setMarkdownToPreview(value);
-  })), []);
-
+  const setMarkdownPreviewWithDebounce = useMemo(
+    () =>
+      debounce(
+        100,
+        throttle(150, (value: string) => {
+          setMarkdownToPreview(value);
+        }),
+      ),
+    [],
+  );
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
-  const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
-    if (pageId == null || selectedGrant == null) {
-      logger.error('Some materials to save are invalid', {
-        pageId, selectedGrant,
-      });
-      throw new Error('Some materials to save are invalid');
-    }
-
-    try {
-      mutateWaitingSaveProcessing(true);
-
-      const { page } = await updatePage({
-        pageId,
-        revisionId,
-        wip: opts?.wip,
-        body: markdown ?? '',
-        grant: selectedGrant?.grant,
-        origin: Origin.Editor,
-        userRelatedGrantUserGroupIds: selectedGrant?.userRelatedGrantedGroups,
-        ...(opts ?? {}),
-      });
-
-      // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
-      mutatePageTree();
-
-      mutateRecentlyUpdated();
-      // sync current grant data after update
-      mutateIsGrantNormalized();
-
-      return page;
-    }
-    catch (error) {
-      logger.error('failed to save', error);
-
-      const remoteRevisionData = extractRemoteRevisionDataFromErrorObj(error);
-      if (remoteRevisionData != null) {
-        onConflict?.(remoteRevisionData, markdown ?? '', save, opts);
-        toastWarning(t('modal_resolve_conflict.conflicts_with_new_body_on_server_side'));
-        return null;
+  const save: Save = useCallback(
+    async (revisionId, markdown, opts, onConflict) => {
+      if (pageId == null || selectedGrant == null) {
+        logger.error('Some materials to save are invalid', {
+          pageId,
+          selectedGrant,
+        });
+        throw new Error('Some materials to save are invalid');
       }
 
-      toastError(error);
-      return null;
-    }
-    finally {
-      mutateWaitingSaveProcessing(false);
-    }
-  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, updatePage, mutateIsGrantNormalized, t]);
+      try {
+        mutateWaitingSaveProcessing(true);
 
-  const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
-    const markdown = codeMirrorEditor?.getDoc();
-    const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
-    const page = await save(revisionId, markdown, opts, onConflict);
-    if (page == null) {
-      return;
-    }
+        const { page } = await updatePage({
+          pageId,
+          revisionId,
+          wip: opts?.wip,
+          body: markdown ?? '',
+          grant: selectedGrant?.grant,
+          origin: Origin.Editor,
+          userRelatedGrantUserGroupIds: selectedGrant?.userRelatedGrantedGroups,
+          ...(opts ?? {}),
+        });
 
-    mutateEditorMode(EditorMode.View);
-    updateStateAfterSave?.();
-  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflict, save, updateStateAfterSave]);
+        // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
+        mutatePageTree();
 
-  const saveWithShortcut = useCallback(async() => {
+        mutateRecentlyUpdated();
+        // sync current grant data after update
+        mutateIsGrantNormalized();
+
+        return page;
+      } catch (error) {
+        logger.error('failed to save', error);
+
+        const remoteRevisionData = extractRemoteRevisionDataFromErrorObj(error);
+        if (remoteRevisionData != null) {
+          onConflict?.(remoteRevisionData, markdown ?? '', save, opts);
+          toastWarning(t('modal_resolve_conflict.conflicts_with_new_body_on_server_side'));
+          return null;
+        }
+
+        toastError(error);
+        return null;
+      } finally {
+        mutateWaitingSaveProcessing(false);
+      }
+    },
+    [pageId, selectedGrant, mutateWaitingSaveProcessing, updatePage, mutateIsGrantNormalized, t],
+  );
+
+  const saveAndReturnToViewHandler = useCallback(
+    async (opts: SaveOptions) => {
+      const markdown = codeMirrorEditor?.getDoc();
+      const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
+      const page = await save(revisionId, markdown, opts, onConflict);
+      if (page == null) {
+        return;
+      }
+
+      mutateEditorMode(EditorMode.View);
+      updateStateAfterSave?.();
+    },
+    [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflict, save, updateStateAfterSave],
+  );
+
+  const saveWithShortcut = useCallback(async () => {
     const markdown = codeMirrorEditor?.getDoc();
     const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
     const page = await save(revisionId, markdown, undefined, onConflict);
@@ -239,40 +234,43 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
     updateStateAfterSave?.();
   }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, onConflict, save, t, updateStateAfterSave]);
 
-
   // the upload event handler
-  const uploadHandler = useCallback((files: File[]) => {
-    if (pageId == null) {
-      logger.error('pageId is invalid', {
-        pageId,
+  const uploadHandler = useCallback(
+    (files: File[]) => {
+      if (pageId == null) {
+        logger.error('pageId is invalid', {
+          pageId,
+        });
+        throw new Error('pageId is invalid');
+      }
+
+      uploadAttachments(pageId, files, {
+        onUploaded: (attachment) => {
+          const fileName = attachment.originalName;
+
+          const prefix = attachment.fileFormat.startsWith('image/')
+            ? '!' // use "![fileName](url)" syntax when image
+            : '';
+          const insertText = `${prefix}[${fileName}](${attachment.filePathProxied})\n`;
+
+          codeMirrorEditor?.insertText(insertText);
+        },
+        onError: (error) => {
+          toastError(error);
+        },
       });
-      throw new Error('pageId is invalid');
-    }
-
-    uploadAttachments(pageId, files, {
-      onUploaded: (attachment) => {
-        const fileName = attachment.originalName;
-
-        const prefix = attachment.fileFormat.startsWith('image/')
-          ? '!' // use "![fileName](url)" syntax when image
-          : '';
-        const insertText = `${prefix}[${fileName}](${attachment.filePathProxied})\n`;
-
-        codeMirrorEditor?.insertText(insertText);
-      },
-      onError: (error) => {
-        toastError(error);
-      },
-    });
-  }, [codeMirrorEditor, pageId]);
-
-
-  const cmProps = useMemo(() => ({
-    onChange: (value: string) => {
-      setMarkdownPreviewWithDebounce(value);
     },
-  }), [setMarkdownPreviewWithDebounce]);
+    [codeMirrorEditor, pageId],
+  );
 
+  const cmProps = useMemo(
+    () => ({
+      onChange: (value: string) => {
+        setMarkdownPreviewWithDebounce(value);
+      },
+    }),
+    [setMarkdownPreviewWithDebounce],
+  );
 
   // set handler to save and return to View
   useEffect(() => {
@@ -307,7 +305,6 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
-
   // set caret line if the edit button next to Header is clicked.
   useEffect(() => {
     if (codeMirrorEditor?.setCaretLine == null) {
@@ -316,7 +313,6 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
     if (editorMode === EditorMode.Editor) {
       codeMirrorEditor.setCaretLine(reservedNextCaretLine ?? 0, true);
     }
-
   }, [codeMirrorEditor, editorMode, reservedNextCaretLine]);
 
   // reset caret line if returning to the View.
@@ -325,7 +321,6 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
       mutateReservedNextCaretLine(0);
     }
   }, [editorMode, mutateReservedNextCaretLine]);
-
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
@@ -379,11 +374,7 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
           cmProps={cmProps}
         />
       </div>
-      <div
-        ref={previewRef}
-        onScroll={scrollPreviewHandlerThrottle}
-        className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex"
-      >
+      <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex">
         <Preview
           rendererOptions={rendererOptions}
           markdown={markdownToPreview}
@@ -399,13 +390,11 @@ export const PageEditorSubstance = (props: Props): JSX.Element => {
 export const PageEditor = React.memo((props: Props): JSX.Element => {
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
-
       <EditorNavbar />
 
       <PageEditorSubstance visibility={props.visibility} />
 
       <EditorNavbarBottom />
-
     </div>
   );
 });

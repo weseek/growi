@@ -1,11 +1,7 @@
-import React, {
-  useCallback, useState, useEffect, type JSX,
-} from 'react';
+import React, { useCallback, useState, useEffect, type JSX } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import {
-  ModalBody, Input, Label,
-} from 'reactstrap';
+import { ModalBody, Input, Label } from 'reactstrap';
 
 import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
@@ -21,18 +17,18 @@ const ScopeType = {
   SHARE: 'Share',
 } as const;
 
-type ScopeType = typeof ScopeType[keyof typeof ScopeType];
+type ScopeType = (typeof ScopeType)[keyof typeof ScopeType];
 
 type Props = {
-  selectedShareScope: AiAssistantShareScope,
-  selectedAccessScope: AiAssistantAccessScope,
-  selectedUserGroupsForShareScope: PopulatedGrantedGroup[],
-  selectedUserGroupsForAccessScope: PopulatedGrantedGroup[],
-  onSelectShareScope: (scope: AiAssistantShareScope) => void,
-  onSelectAccessScope: (scope: AiAssistantAccessScope) => void,
-  onSelectShareScopeUserGroups: (userGroup: PopulatedGrantedGroup) => void,
-  onSelectAccessScopeUserGroups: (userGroup: PopulatedGrantedGroup) => void,
-}
+  selectedShareScope: AiAssistantShareScope;
+  selectedAccessScope: AiAssistantAccessScope;
+  selectedUserGroupsForShareScope: PopulatedGrantedGroup[];
+  selectedUserGroupsForAccessScope: PopulatedGrantedGroup[];
+  onSelectShareScope: (scope: AiAssistantShareScope) => void;
+  onSelectAccessScope: (scope: AiAssistantAccessScope) => void;
+  onSelectShareScopeUserGroups: (userGroup: PopulatedGrantedGroup) => void;
+  onSelectAccessScopeUserGroups: (userGroup: PopulatedGrantedGroup) => void;
+};
 
 export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
   const {
@@ -65,11 +61,11 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
 
   const changeShareToggleHandler = useCallback(() => {
     setIsShared((prev) => {
-      if (prev) { // if isShared === true
+      if (prev) {
+        // if isShared === true
         onSelectShareScope(AiAssistantShareScope.SAME_AS_ACCESS_SCOPE);
         onSelectAccessScope(AiAssistantAccessScope.OWNER);
-      }
-      else {
+      } else {
         onSelectShareScope(AiAssistantShareScope.PUBLIC_ONLY);
       }
       return !prev;
@@ -81,20 +77,25 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
     setIsSelectUserGroupModalOpen(true);
   }, []);
 
-  const selectShareScopeHandler = useCallback((shareScope: AiAssistantShareScope) => {
-    onSelectShareScope(shareScope);
-    if (shareScope === AiAssistantShareScope.GROUPS && !hasNoRelatedGroups) {
-      selectGroupScopeHandler(ScopeType.SHARE);
-    }
-  }, [hasNoRelatedGroups, onSelectShareScope, selectGroupScopeHandler]);
+  const selectShareScopeHandler = useCallback(
+    (shareScope: AiAssistantShareScope) => {
+      onSelectShareScope(shareScope);
+      if (shareScope === AiAssistantShareScope.GROUPS && !hasNoRelatedGroups) {
+        selectGroupScopeHandler(ScopeType.SHARE);
+      }
+    },
+    [hasNoRelatedGroups, onSelectShareScope, selectGroupScopeHandler],
+  );
 
-  const selectAccessScopeHandler = useCallback((accessScope: AiAssistantAccessScope) => {
-    onSelectAccessScope(accessScope);
-    if (accessScope === AiAssistantAccessScope.GROUPS && !hasNoRelatedGroups) {
-      selectGroupScopeHandler(ScopeType.ACCESS);
-    }
-  }, [hasNoRelatedGroups, onSelectAccessScope, selectGroupScopeHandler]);
-
+  const selectAccessScopeHandler = useCallback(
+    (accessScope: AiAssistantAccessScope) => {
+      onSelectAccessScope(accessScope);
+      if (accessScope === AiAssistantAccessScope.GROUPS && !hasNoRelatedGroups) {
+        selectGroupScopeHandler(ScopeType.ACCESS);
+      }
+    },
+    [hasNoRelatedGroups, onSelectAccessScope, selectGroupScopeHandler],
+  );
 
   return (
     <>
@@ -102,14 +103,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
 
       <ModalBody className="px-4">
         <div className="form-check form-switch mb-4">
-          <Input
-            type="switch"
-            role="switch"
-            id="shareAssistantSwitch"
-            className="form-check-input"
-            checked={isShared}
-            onChange={changeShareToggleHandler}
-          />
+          <Input type="switch" role="switch" id="shareAssistantSwitch" className="form-check-input" checked={isShared} onChange={changeShareToggleHandler} />
           <Label className="form-check-label" for="shareAssistantSwitch">
             {t('modal_ai_assistant.share_assistant')}
           </Label>
@@ -137,8 +131,7 @@ export const AiAssistantManagementEditShare = (props: Props): JSX.Element => {
           onSelect={(userGroup) => {
             if (selectedUserGroupType === ScopeType.ACCESS) {
               onSelectAccessScopeUserGroups(userGroup);
-            }
-            else {
+            } else {
               onSelectShareScopeUserGroups(userGroup);
             }
           }}

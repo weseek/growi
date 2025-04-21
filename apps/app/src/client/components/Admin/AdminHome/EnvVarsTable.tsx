@@ -2,8 +2,8 @@ import type React from 'react';
 import type { JSX } from 'react';
 
 type EnvVarsTableProps = {
-  envVars: Record<string, string | number | boolean>,
-}
+  envVars: Record<string, string | number | boolean>;
+};
 
 export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props: EnvVarsTableProps) => {
   const envVarRows: JSX.Element[] = [];
@@ -21,9 +21,7 @@ export const EnvVarsTable: React.FC<EnvVarsTableProps> = (props: EnvVarsTablePro
 
   return (
     <table className="table table-bordered">
-      <tbody>
-        {envVarRows}
-      </tbody>
+      <tbody>{envVarRows}</tbody>
     </table>
   );
 };

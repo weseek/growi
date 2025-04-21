@@ -12,11 +12,9 @@ import { PagePathNavLayout } from './PagePathNavLayout';
 
 import styles from './PagePathNav.module.scss';
 
-
 const { isTrashPage } = pagePathUtils;
 
-
-const Separator = ({ className }: {className?: string}): JSX.Element => {
+const Separator = ({ className }: { className?: string }): JSX.Element => {
   return <span className={`separator ${className ?? ''} ${styles['grw-mx-02em']}`}>/</span>;
 };
 
@@ -54,16 +52,8 @@ export const PagePathNav = (props: PagePathNavLayoutProps): JSX.Element => {
 
     // two line
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-    return (
-      <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
-    );
+    return <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />;
   }, [isInTrash, pagePath]);
 
-  return (
-    <PagePathNavLayout
-      {...props}
-      formerLink={formerLink}
-      latterLink={latterLink}
-    />
-  );
+  return <PagePathNavLayout {...props} formerLink={formerLink} latterLink={latterLink} />;
 };

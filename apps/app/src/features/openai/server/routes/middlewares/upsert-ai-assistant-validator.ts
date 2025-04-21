@@ -5,22 +5,11 @@ import { type ValidationChain, body } from 'express-validator';
 import { AiAssistantShareScope, AiAssistantAccessScope } from '../../../interfaces/ai-assistant';
 
 export const upsertAiAssistantValidator: ValidationChain[] = [
-  body('name')
-    .isString()
-    .withMessage('name must be a string')
-    .not()
-    .isEmpty()
-    .withMessage('name is required'),
+  body('name').isString().withMessage('name must be a string').not().isEmpty().withMessage('name is required'),
 
-  body('description')
-    .optional()
-    .isString()
-    .withMessage('description must be a string'),
+  body('description').optional().isString().withMessage('description must be a string'),
 
-  body('additionalInstruction')
-    .optional()
-    .isString()
-    .withMessage('additionalInstruction must be a string'),
+  body('additionalInstruction').optional().isString().withMessage('additionalInstruction must be a string'),
 
   body('pagePathPatterns')
     .isArray()
@@ -50,10 +39,7 @@ export const upsertAiAssistantValidator: ValidationChain[] = [
       return isCreatablePage(value);
     }),
 
-  body('grantedGroupsForShareScope')
-    .optional()
-    .isArray()
-    .withMessage('grantedGroupsForShareScope must be an array'),
+  body('grantedGroupsForShareScope').optional().isArray().withMessage('grantedGroupsForShareScope must be an array'),
 
   body('grantedGroupsForShareScope.*.type') // each item of grantedGroupsForShareScope
     .isIn(Object.values(GroupType))
@@ -63,10 +49,7 @@ export const upsertAiAssistantValidator: ValidationChain[] = [
     .isMongoId()
     .withMessage('Invalid grantedGroupsForShareScope item value'),
 
-  body('grantedGroupsForAccessScope')
-    .optional()
-    .isArray()
-    .withMessage('grantedGroupsForAccessScope must be an array'),
+  body('grantedGroupsForAccessScope').optional().isArray().withMessage('grantedGroupsForAccessScope must be an array'),
 
   body('grantedGroupsForAccessScope.*.type') // each item of grantedGroupsForAccessScope
     .isIn(Object.values(GroupType))
@@ -76,11 +59,7 @@ export const upsertAiAssistantValidator: ValidationChain[] = [
     .isMongoId()
     .withMessage('Invalid grantedGroupsForAccessScope item value'),
 
-  body('shareScope')
-    .isIn(Object.values(AiAssistantShareScope))
-    .withMessage('Invalid shareScope value'),
+  body('shareScope').isIn(Object.values(AiAssistantShareScope)).withMessage('Invalid shareScope value'),
 
-  body('accessScope')
-    .isIn(Object.values(AiAssistantAccessScope))
-    .withMessage('Invalid accessScope value'),
+  body('accessScope').isIn(Object.values(AiAssistantAccessScope)).withMessage('Invalid accessScope value'),
 ];

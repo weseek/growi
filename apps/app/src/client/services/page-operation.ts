@@ -6,10 +6,7 @@ import urljoin from 'url-join';
 
 import type { SyncLatestRevisionBody } from '~/interfaces/yjs';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
-import {
-  useCurrentPageId, useSWRMUTxCurrentPage, useSWRxApplicableGrant, useSWRxTagsInfo,
-  useSWRxCurrentGrantData,
-} from '~/stores/page';
+import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxApplicableGrant, useSWRxTagsInfo, useSWRxCurrentGrantData } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
@@ -19,61 +16,52 @@ import { toastError } from '../util/toastr';
 
 const logger = loggerFactory('growi:services:page-operation');
 
-
-export const toggleSubscribe = async(pageId: string, currentStatus: SubscriptionStatusType | undefined): Promise<void> => {
+export const toggleSubscribe = async (pageId: string, currentStatus: SubscriptionStatusType | undefined): Promise<void> => {
   try {
-    const newStatus = currentStatus === SubscriptionStatusType.SUBSCRIBE
-      ? SubscriptionStatusType.UNSUBSCRIBE
-      : SubscriptionStatusType.SUBSCRIBE;
+    const newStatus = currentStatus === SubscriptionStatusType.SUBSCRIBE ? SubscriptionStatusType.UNSUBSCRIBE : SubscriptionStatusType.SUBSCRIBE;
 
     await apiv3Put('/page/subscribe', { pageId, status: newStatus });
-  }
-  catch (err) {
+  } catch (err) {
     toastError(err);
   }
 };
 
-export const toggleLike = async(pageId: string, currentValue?: boolean): Promise<void> => {
+export const toggleLike = async (pageId: string, currentValue?: boolean): Promise<void> => {
   try {
     await apiv3Put('/page/likes', { pageId, bool: !currentValue });
-  }
-  catch (err) {
+  } catch (err) {
     toastError(err);
   }
 };
 
-export const toggleBookmark = async(pageId: string, currentValue?: boolean): Promise<void> => {
+export const toggleBookmark = async (pageId: string, currentValue?: boolean): Promise<void> => {
   try {
     await apiv3Put('/bookmarks', { pageId, bool: !currentValue });
-  }
-  catch (err) {
+  } catch (err) {
     toastError(err);
   }
 };
 
-export const updateContentWidth = async(pageId: string, newValue: boolean): Promise<void> => {
+export const updateContentWidth = async (pageId: string, newValue: boolean): Promise<void> => {
   try {
     await apiv3Put(`/page/${pageId}/content-width`, { expandContentWidth: newValue });
-  }
-  catch (err) {
+  } catch (err) {
     toastError(err);
   }
 };
 
-export const bookmark = async(pageId: string): Promise<void> => {
+export const bookmark = async (pageId: string): Promise<void> => {
   try {
     await apiv3Put('/bookmarks', { pageId, bool: true });
-  }
-  catch (err) {
+  } catch (err) {
     toastError(err);
   }
 };
 
-export const unbookmark = async(pageId: string): Promise<void> => {
+export const unbookmark = async (pageId: string): Promise<void> => {
   try {
     await apiv3Put('/bookmarks', { pageId, bool: false });
-  }
-  catch (err) {
+  } catch (err) {
     toastError(err);
   }
 };
@@ -88,15 +76,15 @@ export const exportAsMarkdown = (pageId: string, revisionId: string, format: str
 /**
  * send request to fix broken paths caused by unexpected events such as server shutdown while renaming page paths
  */
-export const resumeRenameOperation = async(pageId: string): Promise<void> => {
+export const resumeRenameOperation = async (pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
 };
 
 export type UpdateStateAfterSaveOption = {
-  supressEditingMarkdownMutation: boolean,
-}
+  supressEditingMarkdownMutation: boolean;
+};
 
-export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: UpdateStateAfterSaveOption): (() => Promise<void>) | undefined => {
+export const useUpdateStateAfterSave = (pageId: string | undefined | null, opts?: UpdateStateAfterSaveOption): (() => Promise<void>) | undefined => {
   const { mutate: mutateCurrentPageId } = useCurrentPageId();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
@@ -107,76 +95,92 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
   const { mutate: mutateApplicableGrant } = useSWRxApplicableGrant(pageId);
 
   // update swr 'currentPageId', 'currentPage', remote states
-  return useCallback(async() => {
-    if (pageId == null) { return }
+  return useCallback(
+    async () => {
+      if (pageId == null) {
+        return;
+      }
 
-    // update tag before page: https://github.com/weseek/growi/pull/7158
-    // !! DO NOT CHANGE THE ORDERS OF THE MUTATIONS !! -- 12.26 yuken-t
-    await mutateTagsInfo(); // get from DB
-    syncTagsInfoForEditor(); // sync global state for client
+      // update tag before page: https://github.com/weseek/growi/pull/7158
+      // !! DO NOT CHANGE THE ORDERS OF THE MUTATIONS !! -- 12.26 yuken-t
+      await mutateTagsInfo(); // get from DB
+      syncTagsInfoForEditor(); // sync global state for client
 
-    await mutateCurrentPageId(pageId);
-    const updatedPage = await mutateCurrentPage();
+      await mutateCurrentPageId(pageId);
+      const updatedPage = await mutateCurrentPage();
 
-    if (updatedPage == null || updatedPage.revision == null) { return }
+      if (updatedPage == null || updatedPage.revision == null) {
+        return;
+      }
 
-    // supress to mutate only when updated from built-in editor
-    // and see: https://github.com/weseek/growi/pull/7118
-    const supressEditingMarkdownMutation = opts?.supressEditingMarkdownMutation ?? false;
-    if (!supressEditingMarkdownMutation) {
-      mutateEditingMarkdown(updatedPage.revision.body);
-    }
+      // supress to mutate only when updated from built-in editor
+      // and see: https://github.com/weseek/growi/pull/7118
+      const supressEditingMarkdownMutation = opts?.supressEditingMarkdownMutation ?? false;
+      if (!supressEditingMarkdownMutation) {
+        mutateEditingMarkdown(updatedPage.revision.body);
+      }
 
-    mutateCurrentGrantData();
-    mutateApplicableGrant();
+      mutateCurrentGrantData();
+      mutateApplicableGrant();
 
-    const remoterevisionData = {
-      remoteRevisionId: updatedPage.revision._id,
-      remoteRevisionBody: updatedPage.revision.body,
-      remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
-      remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
-    };
+      const remoterevisionData = {
+        remoteRevisionId: updatedPage.revision._id,
+        remoteRevisionBody: updatedPage.revision.body,
+        remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
+        remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
+      };
 
-    setRemoteLatestPageData(remoterevisionData);
-  },
-  // eslint-disable-next-line max-len
-  [pageId, mutateTagsInfo, syncTagsInfoForEditor, mutateCurrentPageId, mutateCurrentPage, opts?.supressEditingMarkdownMutation, mutateCurrentGrantData, mutateApplicableGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
+      setRemoteLatestPageData(remoterevisionData);
+    },
+    // eslint-disable-next-line max-len
+    [
+      pageId,
+      mutateTagsInfo,
+      syncTagsInfoForEditor,
+      mutateCurrentPageId,
+      mutateCurrentPage,
+      opts?.supressEditingMarkdownMutation,
+      mutateCurrentGrantData,
+      mutateApplicableGrant,
+      setRemoteLatestPageData,
+      mutateEditingMarkdown,
+    ],
+  );
 };
 
-export const unlink = async(path: string): Promise<void> => {
+export const unlink = async (path: string): Promise<void> => {
   await apiPost('/pages.unlink', { path });
 };
 
-
 interface PageExistResponse {
-  isExist: boolean,
+  isExist: boolean;
 }
 
-export const exist = async(path: string): Promise<PageExistResponse> => {
+export const exist = async (path: string): Promise<PageExistResponse> => {
   const res = await apiv3Get<PageExistResponse>('/page/exist', { path });
   return res.data;
 };
 
 interface NonUserRelatedGroupsGrantedResponse {
-  isNonUserRelatedGroupsGranted: boolean,
+  isNonUserRelatedGroupsGranted: boolean;
 }
 
-export const getIsNonUserRelatedGroupsGranted = async(path: string): Promise<NonUserRelatedGroupsGrantedResponse> => {
+export const getIsNonUserRelatedGroupsGranted = async (path: string): Promise<NonUserRelatedGroupsGrantedResponse> => {
   const res = await apiv3Get<NonUserRelatedGroupsGrantedResponse>('/page/non-user-related-groups-granted', { path });
   return res.data;
 };
 
-export const publish = async(pageId: string): Promise<IPageHasId> => {
+export const publish = async (pageId: string): Promise<IPageHasId> => {
   const res = await apiv3Put(`/page/${pageId}/publish`);
   return res.data;
 };
 
-export const unpublish = async(pageId: string): Promise<IPageHasId> => {
+export const unpublish = async (pageId: string): Promise<IPageHasId> => {
   const res = await apiv3Put(`/page/${pageId}/unpublish`);
   return res.data;
 };
 
-export const syncLatestRevisionBody = async(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody> => {
+export const syncLatestRevisionBody = async (pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody> => {
   const res = await apiv3Put(`/page/${pageId}/sync-latest-revision-body-to-yjs-draft`, { editingMarkdownLength });
   return res.data;
 };

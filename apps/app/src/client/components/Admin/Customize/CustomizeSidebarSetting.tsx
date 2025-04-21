@@ -11,20 +11,17 @@ import { useSWRxSidebarConfig } from '~/stores/admin/sidebar-config';
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
 
-  const {
-    data, update, setIsSidebarCollapsedMode, setIsSidebarClosedAtDockMode,
-  } = useSWRxSidebarConfig();
+  const { data, update, setIsSidebarCollapsedMode, setIsSidebarClosedAtDockMode } = useSWRxSidebarConfig();
 
   const { resolvedTheme } = useNextThemes();
   const drawerIconFileName = `/images/customize-settings/drawer-${resolvedTheme}.svg`;
   const dockIconFileName = `/images/customize-settings/dock-${resolvedTheme}.svg`;
 
-  const onClickSubmit = useCallback(async() => {
+  const onClickSubmit = useCallback(async () => {
     try {
       await update();
       toastSuccess(t('toaster.update_successed', { target: t('customize_settings.default_sidebar_mode.title'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [t, update]);
@@ -39,13 +36,10 @@ const CustomizeSidebarsetting = (): JSX.Element => {
     <React.Fragment>
       <div className="row">
         <div className="col-12">
-
           <h2 className="admin-setting-header">{t('customize_settings.default_sidebar_mode.title')}</h2>
 
           <Card className="card custom-card bg-body-tertiary my-3">
-            <CardBody className="px-0 py-2">
-              {t('customize_settings.default_sidebar_mode.desc')}
-            </CardBody>
+            <CardBody className="px-0 py-2">{t('customize_settings.default_sidebar_mode.desc')}</CardBody>
           </Card>
 
           <div className="d-flex justify-content-around mt-5">
@@ -58,9 +52,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={drawerIconFileName} alt="Drawer Mode" />
-                  <div className="card-body text-center">
-                    Drawer Mode
-                  </div>
+                  <div className="card-body text-center">Drawer Mode</div>
                 </div>
               </div>
               <div className="col">
@@ -71,18 +63,14 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={dockIconFileName} alt="Dock Mode" />
-                  <div className="card-body  text-center">
-                    Dock Mode
-                  </div>
+                  <div className="card-body  text-center">Dock Mode</div>
                 </div>
               </div>
             </div>
           </div>
 
           <Card className="card custom-card bg-body-tertiary my-5">
-            <CardBody className="px-0 py-2">
-              {t('customize_settings.default_sidebar_mode.dock_mode_default_desc')}
-            </CardBody>
+            <CardBody className="px-0 py-2">{t('customize_settings.default_sidebar_mode.dock_mode_default_desc')}</CardBody>
           </Card>
 
           <div className="px-3">
@@ -116,10 +104,11 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
           <div className="row my-3">
             <div className="mx-auto">
-              <button type="button" onClick={onClickSubmit} className="btn btn-primary">{ t('Update') }</button>
+              <button type="button" onClick={onClickSubmit} className="btn btn-primary">
+                {t('Update')}
+              </button>
             </div>
           </div>
-
         </div>
       </div>
     </React.Fragment>

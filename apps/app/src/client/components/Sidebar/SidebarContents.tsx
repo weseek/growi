@@ -4,7 +4,6 @@ import { AiAssistant } from '~/features/openai/client/components/AiAssistant/Sid
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
-
 import { Bookmarks } from './Bookmarks';
 import { CustomSidebar } from './Custom';
 import { InAppNotification } from './InAppNotification';
@@ -13,7 +12,6 @@ import { RecentChanges } from './RecentChanges';
 import Tag from './Tag';
 
 import styles from './SidebarContents.module.scss';
-
 
 export const SidebarContents = memo(() => {
   const { isCollapsedMode } = useSidebarMode();

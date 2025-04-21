@@ -6,21 +6,18 @@ import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 type Props = {
-  userGroup: IUserGroupHasId,
-  parentUserGroup?: IUserGroupHasId,
-  selectableParentUserGroups?: IUserGroupHasId[],
+  userGroup: IUserGroupHasId;
+  parentUserGroup?: IUserGroupHasId;
+  selectableParentUserGroups?: IUserGroupHasId[];
   submitButtonLabel: string;
-  onSubmit: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void>
-  isExternalGroup?: boolean
+  onSubmit: (targetGroup: IUserGroupHasId, userGroupData: Partial<IUserGroupHasId>) => Promise<void>;
+  isExternalGroup?: boolean;
 };
 
 export const UserGroupForm: FC<Props> = (props: Props) => {
-
   const { t } = useTranslation('admin');
 
-  const {
-    userGroup, parentUserGroup, selectableParentUserGroups, submitButtonLabel, onSubmit, isExternalGroup = false,
-  } = props;
+  const { userGroup, parentUserGroup, selectableParentUserGroups, submitButtonLabel, onSubmit, isExternalGroup = false } = props;
   /*
    * State
    */
@@ -38,11 +35,14 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
     setDescription(e.target.value);
   }, []);
 
-  const onChangeParentButtonHandler = useCallback((userGroup: IUserGroupHasId) => {
-    if (userGroup._id !== selectedParent?._id) {
-      setSelectedParent(userGroup);
-    }
-  }, [selectedParent, setSelectedParent]);
+  const onChangeParentButtonHandler = useCallback(
+    (userGroup: IUserGroupHasId) => {
+      if (userGroup._id !== selectedParent?._id) {
+        setSelectedParent(userGroup);
+      }
+    },
+    [selectedParent, setSelectedParent],
+  );
 
   useEffect(() => {
     setSelectedParent(parentUserGroup);
@@ -54,32 +54,29 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
   const messageAtReleaseParentGroup = isChildUserGroup ? t('user_group_management.release_parent_group') : t('user_group_management.select_parent_group');
 
   return (
-    <form onSubmit={(e) => {
-      e.preventDefault();
-      onSubmit(props.userGroup, {
-        name: currentName,
-        description: currentDescription,
-        parent: selectedParent,
-      });
-    }}
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        onSubmit(props.userGroup, {
+          name: currentName,
+          description: currentDescription,
+          parent: selectedParent,
+        });
+      }}
     >
-
       <fieldset>
         <h2 className="admin-setting-header">{t('user_group_management.basic_info')}</h2>
-        {isExternalGroup
-        && (
+        {isExternalGroup && (
           <div className="mb-3">
             <small className="text-muted">{t('external_user_group.only_description_edit_allowed')}</small>
           </div>
         )}
-        {
-          userGroup?.createdAt != null && (
-            <div className="row mb-3">
-              <p className="col-md-2 col-form-label">{t('Created')}</p>
-              <p className="col-md-6 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
-            </div>
-          )
-        }
+        {userGroup?.createdAt != null && (
+          <div className="row mb-3">
+            <p className="col-md-2 col-form-label">{t('Created')}</p>
+            <p className="col-md-6 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
+          </div>
+        )}
 
         <div className="row mb-3">
           <label htmlFor="name" className="col-md-2 col-form-label">
@@ -123,32 +120,31 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
               {selectedParent?.name ?? messageAtReleaseParentGroup}
             </button>
             <div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              {
-                isSelectableParentUserGroups && (
-                  <>
-                    {
-                      selectableParentUserGroups.map(userGroup => (
-                        <button
-                          key={userGroup._id}
-                          type="button"
-                          className={`dropdown-item ${selectedParent?._id === userGroup._id ? 'active' : ''}`}
-                          onClick={() => onChangeParentButtonHandler(userGroup)}
-                        >
-                          {userGroup.name}
-                        </button>
-                      ))
-                    }
-                  </>
-                )
-              }
+              {isSelectableParentUserGroups && (
+                <>
+                  {selectableParentUserGroups.map((userGroup) => (
+                    <button
+                      key={userGroup._id}
+                      type="button"
+                      className={`dropdown-item ${selectedParent?._id === userGroup._id ? 'active' : ''}`}
+                      onClick={() => onChangeParentButtonHandler(userGroup)}
+                    >
+                      {userGroup.name}
+                    </button>
+                  ))}
+                </>
+              )}
 
               <div className="dropdown-divider" />
 
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { setSelectedParent(undefined) }}
-              >{t('user_group_management.release_parent_group')}
+                onClick={() => {
+                  setSelectedParent(undefined);
+                }}
+              >
+                {t('user_group_management.release_parent_group')}
               </button>
             </div>
           </div>

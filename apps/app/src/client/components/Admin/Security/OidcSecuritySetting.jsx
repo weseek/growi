@@ -13,11 +13,10 @@ import OidcSecurityManagementContents from './OidcSecuritySettingContents';
 const OidcSecurityManagement = (props) => {
   const { adminOidcSecurityContainer } = props;
 
-  const fetchOidcSecuritySettingsData = useCallback(async() => {
+  const fetchOidcSecuritySettingsData = useCallback(async () => {
     try {
       await adminOidcSecurityContainer.retrieveSecurityData();
-    }
-    catch (err) {
+    } catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
     }
@@ -34,8 +33,6 @@ OidcSecurityManagement.propTypes = {
   adminOidcSecurityContainer: PropTypes.instanceOf(AdminOidcSecurityContainer).isRequired,
 };
 
-const OidcSecurityManagementWithUnstatedContainer = withUnstatedContainers(OidcSecurityManagement, [
-  AdminOidcSecurityContainer,
-]);
+const OidcSecurityManagementWithUnstatedContainer = withUnstatedContainers(OidcSecurityManagement, [AdminOidcSecurityContainer]);
 
 export default OidcSecurityManagementWithUnstatedContainer;

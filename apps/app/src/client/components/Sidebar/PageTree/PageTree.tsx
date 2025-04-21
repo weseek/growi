@@ -9,11 +9,7 @@ import ItemsTreeContentSkeleton from '../../ItemsTree/ItemsTreeContentSkeleton';
 
 import { PageTreeHeader } from './PageTreeSubstance';
 
-const PageTreeContent = dynamic(
-  () => import('./PageTreeSubstance').then(mod => mod.PageTreeContent),
-  { ssr: false, loading: ItemsTreeContentSkeleton },
-);
-
+const PageTreeContent = dynamic(() => import('./PageTreeSubstance').then((mod) => mod.PageTreeContent), { ssr: false, loading: ItemsTreeContentSkeleton });
 
 export const PageTree = (): JSX.Element => {
   const { t } = useTranslation();
@@ -27,7 +23,9 @@ export const PageTree = (): JSX.Element => {
         <Suspense>
           <PageTreeHeader
             isWipPageShown={isWipPageShown}
-            onWipPageShownChange={() => { setIsWipPageShown(!isWipPageShown) }}
+            onWipPageShownChange={() => {
+              setIsWipPageShown(!isWipPageShown);
+            }}
           />
         </Suspense>
       </div>

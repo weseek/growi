@@ -15,8 +15,8 @@ import { GuestQuestionnaireAnswerStatusService } from '../services/guest-questio
 const logger = loggerFactory('growi:QuestionnaireToast');
 
 type QuestionnaireToastProps = {
-  questionnaireOrder: IQuestionnaireOrderHasId,
-}
+  questionnaireOrder: IQuestionnaireOrderHasId;
+};
 
 const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JSX.Element => {
   const { open: openQuestionnaireModal } = useQuestionnaireModal();
@@ -31,7 +31,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
     openQuestionnaireModal(questionnaireOrder._id, () => setIsOpen(false));
   }, [openQuestionnaireModal, questionnaireOrder._id]);
 
-  const denyBtnClickHandler = useCallback(async() => {
+  const denyBtnClickHandler = useCallback(async () => {
     // Immediately close
     setIsOpen(false);
 
@@ -43,14 +43,13 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
         GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.denied);
       }
       toastSuccess(t('questionnaire.denied'));
-    }
-    catch (e) {
+    } catch (e) {
       logger.error(e);
     }
   }, [questionnaireOrder._id, t, currentUser]);
 
   // No showing toasts since not important
-  const closeBtnClickHandler = useCallback(async() => {
+  const closeBtnClickHandler = useCallback(async () => {
     setIsOpen(false);
 
     try {
@@ -60,8 +59,7 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
       if (currentUser == null) {
         GuestQuestionnaireAnswerStatusService.setStatus(questionnaireOrder._id, StatusType.skipped);
       }
-    }
-    catch (e) {
+    } catch (e) {
       logger.error(e);
     }
   }, [questionnaireOrder._id, currentUser]);
@@ -75,8 +73,12 @@ const QuestionnaireToast = ({ questionnaireOrder }: QuestionnaireToastProps): JS
         <button type="button" className="ms-2 mb-1 btn-close" onClick={closeBtnClickHandler} aria-label="Close"></button>
       </div>
       <div className="toast-body bg-light text-dark d-flex justify-content-end">
-        <button type="button" className="btn btn-secondary me-3" onClick={answerBtnClickHandler}>{t('questionnaire.answer')}</button>
-        <button type="button" className="btn btn-secondary" onClick={denyBtnClickHandler}>{t('questionnaire.deny')}</button>
+        <button type="button" className="btn btn-secondary me-3" onClick={answerBtnClickHandler}>
+          {t('questionnaire.answer')}
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={denyBtnClickHandler}>
+          {t('questionnaire.deny')}
+        </button>
       </div>
     </div>
   );

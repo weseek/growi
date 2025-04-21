@@ -1,7 +1,5 @@
 import type { ChangeEvent, JSX } from 'react';
-import {
-  useState, useCallback, memo,
-} from 'react';
+import { useState, useCallback, memo } from 'react';
 
 import nodePath from 'path';
 
@@ -25,19 +23,16 @@ import styles from './PagePathHeader.module.scss';
 
 const moduleClass = styles['page-path-header'];
 
-
 type Props = {
-  currentPage: IPagePopulatedToShowRevision,
-  className?: string,
-  maxWidth?: number,
-  onRenameTerminated?: () => void,
-}
+  currentPage: IPagePopulatedToShowRevision;
+  className?: string;
+  maxWidth?: number;
+  onRenameTerminated?: () => void;
+};
 
 export const PagePathHeader = memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const {
-    currentPage, className, maxWidth, onRenameTerminated,
-  } = props;
+  const { currentPage, className, maxWidth, onRenameTerminated } = props;
 
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const parentPagePath = dPagePath.former;
@@ -53,12 +48,14 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
 
   const inputValidator = useInputValidator(ValidationTarget.PAGE);
 
-  const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
-    const validationResult = inputValidator(e.target.value);
-    setValidationResult(validationResult ?? undefined);
-  }, [inputValidator]);
+  const changeHandler = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const validationResult = inputValidator(e.target.value);
+      setValidationResult(validationResult ?? undefined);
+    },
+    [inputValidator],
+  );
   const changeHandlerDebounced = debounce(300, changeHandler);
-
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
@@ -77,18 +74,23 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
     openPageSelectModal({ onSelected });
   }, [currentPage?.path, openPageSelectModal, pagePathRenameHandler]);
 
-  const rename = useCallback((inputText) => {
-    const pathToRename = normalizePath(`${inputText}/${dPagePath.latter}`);
-    pagePathRenameHandler(pathToRename,
-      () => {
-        setRenameInputShown(false);
-        setValidationResult(undefined);
-        onRenameTerminated?.();
-      },
-      () => {
-        setRenameInputShown(true);
-      });
-  }, [dPagePath.latter, pagePathRenameHandler, onRenameTerminated]);
+  const rename = useCallback(
+    (inputText) => {
+      const pathToRename = normalizePath(`${inputText}/${dPagePath.latter}`);
+      pagePathRenameHandler(
+        pathToRename,
+        () => {
+          setRenameInputShown(false);
+          setValidationResult(undefined);
+          onRenameTerminated?.();
+        },
+        () => {
+          setRenameInputShown(true);
+        },
+      );
+    },
+    [dPagePath.latter, pagePathRenameHandler, onRenameTerminated],
+  );
 
   const cancel = useCallback(() => {
     // reset
@@ -105,12 +107,9 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
     return <></>;
   }
 
-
   const isInvalid = validationResult != null;
 
-  const inputMaxWidth = maxWidth != null
-    ? getAdjustedMaxWidthForAutosizeInput(maxWidth, 'sm', validationResult != null ? false : undefined) - 16
-    : undefined;
+  const inputMaxWidth = maxWidth != null ? getAdjustedMaxWidthForAutosizeInput(maxWidth, 'sm', validationResult != null ? false : undefined) - 16 : undefined;
 
   return (
     <div
@@ -119,10 +118,8 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <div
-        className="page-path-header-input d-inline-block"
-      >
-        { isRenameInputShown && (
+      <div className="page-path-header-input d-inline-block">
+        {isRenameInputShown && (
           <div className="position-relative">
             <div className="position-absolute w-100">
               <AutosizeSubmittableInput
@@ -137,22 +134,14 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
               />
             </div>
           </div>
-        ) }
+        )}
         <div className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}>
-          <PagePathHierarchicalLink
-            linkedPagePath={linkedPagePath}
-          />
+          <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
         </div>
       </div>
 
-      <div
-        className={`page-path-header-buttons d-flex align-items-center ms-2 ${isHover && !isRenameInputShown ? '' : 'invisible'}`}
-      >
-        <button
-          type="button"
-          className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center"
-          onClick={onClickEditButton}
-        >
+      <div className={`page-path-header-buttons d-flex align-items-center ms-2 ${isHover && !isRenameInputShown ? '' : 'invisible'}`}>
+        <button type="button" className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center" onClick={onClickEditButton}>
           <span className="material-symbols-outlined fs-6">edit</span>
         </button>
 

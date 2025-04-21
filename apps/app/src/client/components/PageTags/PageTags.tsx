@@ -12,20 +12,18 @@ import RenderTagLabels from './RenderTagLabels';
 import styles from './TagLabels.module.scss';
 
 type Props = {
-  tags?: string[],
-  isTagLabelsDisabled: boolean,
-  tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
-  onClickEditTagsButton: () => void,
-}
+  tags?: string[];
+  isTagLabelsDisabled: boolean;
+  tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void;
+  onClickEditTagsButton: () => void;
+};
 
 export const PageTagsSkeleton = (): JSX.Element => {
   return <Skeleton additionalClass={`${styles['grw-tag-labels-skeleton']} mb-2`} />;
 };
 
-export const PageTags:FC<Props> = (props: Props) => {
-  const {
-    tags, isTagLabelsDisabled, onClickEditTagsButton,
-  } = props;
+export const PageTags: FC<Props> = (props: Props) => {
+  const { tags, isTagLabelsDisabled, onClickEditTagsButton } = props;
   const [isHovered, setIsHovered] = useState(false);
   const { t } = useTranslation();
 
@@ -40,7 +38,6 @@ export const PageTags:FC<Props> = (props: Props) => {
 
   return (
     <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center mb-2 ${printNoneClass}`} data-testid="grw-tag-labels">
-
       {/* for mobile */}
       <div className="d-flex d-lg-none">
         <NotAvailableForGuest>
@@ -70,9 +67,7 @@ export const PageTags:FC<Props> = (props: Props) => {
           >
             <span className="material-symbols-outlined me-1">local_offer</span>
             <span className="me-2">{t('Tags')}</span>
-            {(isHovered && !isTagLabelsDisabled) && (
-              <span className="material-symbols-outlined p-0">edit</span>
-            )}
+            {isHovered && !isTagLabelsDisabled && <span className="material-symbols-outlined p-0">edit</span>}
           </button>
         </div>
         <div>

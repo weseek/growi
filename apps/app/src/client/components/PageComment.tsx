@@ -1,12 +1,8 @@
 import type { FC, JSX } from 'react';
-import React, {
-  useState, useMemo, memo, useCallback,
-} from 'react';
+import React, { useState, useMemo, memo, useCallback } from 'react';
 
 import type { IRevision, Ref } from '@growi/core';
-import {
-  isPopulated, getIdStringForRef,
-} from '@growi/core';
+import { isPopulated, getIdStringForRef } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
@@ -28,22 +24,17 @@ import { ReplyComments } from './PageComment/ReplyComments';
 
 import styles from './PageComment.module.scss';
 
-
 type PageCommentProps = {
-  rendererOptions?: RendererOptions,
-  pageId: string,
-  pagePath: string,
-  revision: Ref<IRevision>,
-  currentUser: any,
-  isReadOnly: boolean,
-}
+  rendererOptions?: RendererOptions;
+  pageId: string;
+  pagePath: string;
+  revision: Ref<IRevision>;
+  currentUser: any;
+  isReadOnly: boolean;
+};
 
 export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps): JSX.Element => {
-
-  const {
-    rendererOptions: rendererOptionsByProps,
-    pageId, pagePath, revision, currentUser, isReadOnly,
-  } = props;
+  const { rendererOptions: rendererOptionsByProps, pageId, pagePath, revision, currentUser, isReadOnly } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
   const { data: rendererOptionsForCurrentPage } = useCommentForCurrentPageOptions();
@@ -58,7 +49,8 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
 
   const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
-    () => commentsFromOldest?.filter(comment => comment.replyTo == null), [commentsFromOldest],
+    () => commentsFromOldest?.filter((comment) => comment.replyTo == null),
+    [commentsFromOldest],
   );
   const allReplies = {};
 
@@ -86,16 +78,15 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
     mutatePageInfo();
   }, [mutate, onCancelDeleteComment, mutatePageInfo]);
 
-  const onDeleteComment = useCallback(async() => {
-    if (commentToBeDeleted == null) { return; }
+  const onDeleteComment = useCallback(async () => {
+    if (commentToBeDeleted == null) {
+      return;
+    }
     try {
       await apiPost('/comments.remove', { comment_id: commentToBeDeleted._id });
       onDeleteCommentAfterOperation();
-    }
-    catch (error: unknown) {
-      const message = error instanceof Error
-        ? error.message
-        : (error as any).toString();
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : (error as any).toString();
 
       setErrorMessageOnDelete(message);
       toastError(message);
@@ -104,19 +95,22 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
 
   const removeShowEditorId = useCallback((commentId: string) => {
     setShowEditorIds((previousState) => {
-      return new Set([...previousState].filter(id => id !== commentId));
+      return new Set([...previousState].filter((id) => id !== commentId));
     });
   }, []);
 
   const onReplyButtonClickHandler = useCallback((commentId: string) => {
-    setShowEditorIds(previousState => new Set([...previousState, commentId]));
+    setShowEditorIds((previousState) => new Set([...previousState, commentId]));
   }, []);
 
-  const onCommentButtonClickHandler = useCallback((commentId: string) => {
-    removeShowEditorId(commentId);
-    mutate();
-    mutatePageInfo();
-  }, [removeShowEditorId, mutate, mutatePageInfo]);
+  const onCommentButtonClickHandler = useCallback(
+    (commentId: string) => {
+      removeShowEditorId(commentId);
+      mutate();
+      mutatePageInfo();
+    },
+    [removeShowEditorId, mutate, mutatePageInfo],
+  );
 
   if (comments?.length === 0) {
     return <></>;
@@ -129,7 +123,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   }
 
   const revisionId = getIdStringForRef(revision);
-  const revisionCreatedAt = (isPopulated(revision)) ? revision.createdAt : undefined;
+  const revisionCreatedAt = isPopulated(revision) ? revision.createdAt : undefined;
 
   const commentElement = (comment: ICommentHasId) => (
     <Comment
@@ -166,7 +160,6 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
       <div className="page-comments">
         <div className="page-comments-list mb-3" id="page-comments-list">
           {commentsExceptReply.map((comment) => {
-
             const defaultCommentThreadClasses = 'page-comment-thread mb-2';
             const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
 
@@ -180,7 +173,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                 {/* Reply comments */}
                 {hasReply && replyCommentsElement(allReplies[comment._id])}
 
-                {(!isReadOnly && !showEditorIds.has(comment._id)) && (
+                {!isReadOnly && !showEditorIds.has(comment._id) && (
                   <div className="d-flex flex-row-reverse">
                     <NotAvailableForGuest>
                       <NotAvailableIfReadOnlyUserNotAllowedToComment>
@@ -191,7 +184,8 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                           onClick={() => onReplyButtonClickHandler(comment._id)}
                         >
                           <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-2" />
-                          <span className="material-symbols-outlined me-1 fs-5 pb-1">reply</span><small>{t('page_comment.reply')}...</small>
+                          <span className="material-symbols-outlined me-1 fs-5 pb-1">reply</span>
+                          <small>{t('page_comment.reply')}...</small>
                         </button>
                       </NotAvailableIfReadOnlyUserNotAllowedToComment>
                     </NotAvailableForGuest>
@@ -199,7 +193,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                 )}
 
                 {/* Editor to reply */}
-                {(!isReadOnly && showEditorIds.has(comment._id)) && (
+                {!isReadOnly && showEditorIds.has(comment._id) && (
                   <CommentEditor
                     pageId={pageId}
                     replyTo={comment._id}
@@ -212,7 +206,6 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                 )}
               </div>
             );
-
           })}
         </div>
       </div>

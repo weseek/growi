@@ -1,7 +1,4 @@
-import {
-  type RefObject, useCallback, useEffect,
-  useLayoutEffect,
-} from 'react';
+import { type RefObject, useCallback, useEffect, useLayoutEffect } from 'react';
 
 import { PageGrant, type Nullable } from '@growi/core';
 import { type SWRResponseWithUtils, useSWRStatic, withUtils } from '@growi/core/dist/swr';
@@ -11,23 +8,16 @@ import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist
 import { useRouter } from 'next/router';
 import type { HtmlElementNode } from 'rehype-toc';
 import type { MutatorOptions } from 'swr';
-import {
-  useSWRConfig, type SWRResponse, type Key,
-} from 'swr';
+import { useSWRConfig, type SWRResponse, type Key } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 import type { IPageSelectedGrant } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
-import {
-  useIsEditable, useIsReadOnlyUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
-} from '~/stores-universal/context';
+import { useIsEditable, useIsReadOnlyUser, useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
-import {
-  useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
-} from '~/stores/page';
+import { useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
@@ -35,7 +25,6 @@ import { useStaticSWR } from './use-static-swr';
 const { isTrashTopPage, isUsersTopPage } = pagePathUtils;
 
 const logger = loggerFactory('growi:stores:ui');
-
 
 /** **********************************************************
  *                     Storing objects to ref
@@ -65,21 +54,18 @@ export const useIsMobile = (): SWRResponse<boolean, Error> => {
   };
 
   if (isClient()) {
-
     // Ref: https://developer.mozilla.org/en-US/docs/Web/HTTP/Browser_detection_using_the_user_agent#mobile_device_detection
     let hasTouchScreen = false;
-    hasTouchScreen = ('maxTouchPoints' in navigator) ? navigator?.maxTouchPoints > 0 : false;
+    hasTouchScreen = 'maxTouchPoints' in navigator ? navigator?.maxTouchPoints > 0 : false;
 
     if (!hasTouchScreen) {
       const mQ = matchMedia?.('(pointer:coarse)');
       if (mQ?.media === '(pointer:coarse)') {
         hasTouchScreen = !!mQ.matches;
-      }
-      else {
-      // Only as a last resort, fall back to user agent sniffing
+      } else {
+        // Only as a last resort, fall back to user agent sniffing
         const UA = navigator.userAgent;
-        hasTouchScreen = /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA)
-      || /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
+        hasTouchScreen = /\b(BlackBerry|webOS|iPhone|IEMobile)\b/i.test(UA) || /\b(Android|Windows Phone|iPad|iPod)\b/i.test(UA);
       }
     }
 
@@ -98,7 +84,7 @@ export const useIsDeviceLargerThanMd = (): SWRResponse<boolean, Error> => {
 
   useEffect(() => {
     if (key != null) {
-      const mdOrAvobeHandler = function(this: MediaQueryList): void {
+      const mdOrAvobeHandler = function (this: MediaQueryList): void {
         // sm -> md: matches will be true
         // md -> sm: matches will be false
         mutate(key, this.matches);
@@ -126,7 +112,7 @@ export const useIsDeviceLargerThanLg = (): SWRResponse<boolean, Error> => {
 
   useEffect(() => {
     if (key != null) {
-      const lgOrAvobeHandler = function(this: MediaQueryList): void {
+      const lgOrAvobeHandler = function (this: MediaQueryList): void {
         // md -> lg: matches will be true
         // lg -> md: matches will be false
         mutate(key, this.matches);
@@ -154,7 +140,7 @@ export const useIsDeviceLargerThanXl = (): SWRResponse<boolean, Error> => {
 
   useEffect(() => {
     if (key != null) {
-      const xlOrAvobeHandler = function(this: MediaQueryList): void {
+      const xlOrAvobeHandler = function (this: MediaQueryList): void {
         // lg -> xl: matches will be true
         // xl -> lg: matches will be false
         mutate(key, this.matches);
@@ -175,23 +161,25 @@ export const useIsDeviceLargerThanXl = (): SWRResponse<boolean, Error> => {
   return useSWRStatic(key);
 };
 
-
 type MutateAndSaveUserUISettings<Data> = (data: Data, opts?: boolean | MutatorOptions<Data>) => Promise<Data | undefined>;
 type MutateAndSaveUserUISettingsUtils<Data> = {
   mutateAndSave: MutateAndSaveUserUISettings<Data>;
-}
+};
 
 export const useCurrentSidebarContents = (
-    initialData?: SidebarContentsType,
+  initialData?: SidebarContentsType,
 ): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<SidebarContentsType>, SidebarContentsType> => {
   const swrResponse = useSWRStatic('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
 
   const { mutate } = swrResponse;
 
-  const mutateAndSave: MutateAndSaveUserUISettings<SidebarContentsType> = useCallback((data, opts?) => {
-    scheduleToPut({ currentSidebarContents: data });
-    return mutate(data, opts);
-  }, [mutate]);
+  const mutateAndSave: MutateAndSaveUserUISettings<SidebarContentsType> = useCallback(
+    (data, opts?) => {
+      scheduleToPut({ currentSidebarContents: data });
+      return mutate(data, opts);
+    },
+    [mutate],
+  );
 
   return withUtils(swrResponse, { mutateAndSave });
 };
@@ -205,10 +193,13 @@ export const useCurrentProductNavWidth = (initialData?: number): SWRResponseWith
 
   const { mutate } = swrResponse;
 
-  const mutateAndSave: MutateAndSaveUserUISettings<number> = useCallback((data, opts?) => {
-    scheduleToPut({ currentProductNavWidth: data });
-    return mutate(data, opts);
-  }, [mutate]);
+  const mutateAndSave: MutateAndSaveUserUISettings<number> = useCallback(
+    (data, opts?) => {
+      scheduleToPut({ currentProductNavWidth: data });
+      return mutate(data, opts);
+    },
+    [mutate],
+  );
 
   return withUtils(swrResponse, { mutateAndSave });
 };
@@ -218,10 +209,13 @@ export const usePreferCollapsedMode = (initialData?: boolean): SWRResponseWithUt
 
   const { mutate } = swrResponse;
 
-  const mutateAndSave: MutateAndSaveUserUISettings<boolean> = useCallback((data, opts?) => {
-    scheduleToPut({ preferCollapsedModeByUser: data });
-    return mutate(data, opts);
-  }, [mutate]);
+  const mutateAndSave: MutateAndSaveUserUISettings<boolean> = useCallback(
+    (data, opts?) => {
+      scheduleToPut({ preferCollapsedModeByUser: data });
+      return mutate(data, opts);
+    },
+    [mutate],
+  );
 
   return withUtils(swrResponse, { mutateAndSave });
 };
@@ -235,10 +229,10 @@ export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error>
 };
 
 type DetectSidebarModeUtils = {
-  isDrawerMode(): boolean
-  isCollapsedMode(): boolean
-  isDockMode(): boolean
-}
+  isDrawerMode(): boolean;
+  isCollapsedMode(): boolean;
+  isDockMode(): boolean;
+};
 
 export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, SidebarMode> => {
   const { data: isDeviceLargerThanXl } = useIsDeviceLargerThanXl();
@@ -249,14 +243,15 @@ export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, S
 
   const isEditorMode = editorMode === EditorMode.Editor;
 
-  const fetcher = useCallback((
-      [, isDeviceLargerThanXl, isEditorMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined, boolean|undefined],
-  ) => {
-    if (!isDeviceLargerThanXl) {
-      return SidebarMode.DRAWER;
-    }
-    return isEditorMode || isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
-  }, []);
+  const fetcher = useCallback(
+    ([, isDeviceLargerThanXl, isEditorMode, isCollapsedModeUnderDockMode]: [Key, boolean | undefined, boolean | undefined, boolean | undefined]) => {
+      if (!isDeviceLargerThanXl) {
+        return SidebarMode.DRAWER;
+      }
+      return isEditorMode || isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
+    },
+    [],
+  );
 
   const swrResponse = useSWRImmutable(
     condition ? ['sidebarMode', isDeviceLargerThanXl, isEditorMode, isCollapsedModeUnderDockMode] : null,
@@ -282,9 +277,9 @@ export const useSelectedGrant = (initialData?: Nullable<IPageSelectedGrant>): SW
 };
 
 type PageTreeDescCountMapUtils = {
-  update(newData?: UpdateDescCountData): Promise<UpdateDescCountData | undefined>
-  getDescCount(pageId?: string): number | null | undefined
-}
+  update(newData?: UpdateDescCountData): Promise<UpdateDescCountData | undefined>;
+  getDescCount(pageId?: string): number | null | undefined;
+};
 
 export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRResponse<UpdateDescCountData, Error> & PageTreeDescCountMapUtils => {
   const key = 'pageTreeDescCountMap';
@@ -298,11 +293,10 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
   };
 };
 
-
 type UseCommentEditorDirtyMapOperation = {
-  evaluate(key: string, commentBody: string): Promise<number>,
-  clean(key: string): Promise<number>,
-}
+  evaluate(key: string, commentBody: string): Promise<number>;
+  clean(key: string): Promise<number>;
+};
 
 export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Error> & UseCommentEditorDirtyMapOperation => {
   const router = useRouter();
@@ -311,29 +305,38 @@ export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Er
 
   const { mutate } = swrResponse;
 
-  const evaluate = useCallback(async(key: string, commentBody: string) => {
-    const newMap = await mutate((map) => {
-      if (map == null) { return new Map(); }
+  const evaluate = useCallback(
+    async (key: string, commentBody: string) => {
+      const newMap = await mutate((map) => {
+        if (map == null) {
+          return new Map();
+        }
 
-      if (commentBody.length === 0) {
+        if (commentBody.length === 0) {
+          map.delete(key);
+        } else {
+          map.set(key, true);
+        }
+
+        return map;
+      });
+      return newMap?.size ?? 0;
+    },
+    [mutate],
+  );
+  const clean = useCallback(
+    async (key: string) => {
+      const newMap = await mutate((map) => {
+        if (map == null) {
+          return new Map();
+        }
         map.delete(key);
-      }
-      else {
-        map.set(key, true);
-      }
-
-      return map;
-    });
-    return newMap?.size ?? 0;
-  }, [mutate]);
-  const clean = useCallback(async(key: string) => {
-    const newMap = await mutate((map) => {
-      if (map == null) { return new Map(); }
-      map.delete(key);
-      return map;
-    });
-    return newMap?.size ?? 0;
-  }, [mutate]);
+        return map;
+      });
+      return newMap?.size ?? 0;
+    },
+    [mutate],
+  );
 
   const reset = useCallback(() => mutate(new Map()), [mutate]);
 
@@ -350,7 +353,6 @@ export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Er
     clean,
   };
 };
-
 
 /** **********************************************************
  *                          SWR Hooks
@@ -371,7 +373,7 @@ export const useIsAbleToShowTrashPageManagementButtons = (): SWRResponse<boolean
   const isTrashPage = isPageExist && _isTrashPage === true;
   const isReadOnlyUser = isPageExist && _isReadOnlyUser === true;
 
-  const includesUndefined = [_currentUser, _currentPageId, _isNotFound, _isReadOnlyUser, _isTrashPage].some(v => v === undefined);
+  const includesUndefined = [_currentUser, _currentPageId, _isNotFound, _isReadOnlyUser, _isTrashPage].some((v) => v === undefined);
 
   return useSWRImmutable(
     includesUndefined ? null : [key, isTrashPage, isCurrentUserExist, isReadOnlyUser],
@@ -387,9 +389,9 @@ export const useIsAbleToShowPageManagement = (): SWRResponse<boolean, Error> => 
   const { data: isNotFound } = useIsNotFound();
 
   const pageId = currentPageId;
-  const includesUndefined = [pageId, _isTrashPage, _isSharedUser, isNotFound].some(v => v === undefined);
-  const isPageExist = (pageId != null) && isNotFound === false;
-  const isEmptyPage = (pageId != null) && isNotFound === true;
+  const includesUndefined = [pageId, _isTrashPage, _isSharedUser, isNotFound].some((v) => v === undefined);
+  const isPageExist = pageId != null && isNotFound === false;
+  const isEmptyPage = pageId != null && isNotFound === true;
   const isTrashPage = isPageExist && _isTrashPage === true;
   const isSharedUser = isPageExist && _isSharedUser === true;
 
@@ -408,7 +410,7 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
   const { data: editorMode } = useEditorMode();
   const { data: shareLinkId } = useShareLinkId();
 
-  const includesUndefined = [currentPagePath, isIdenticalPath, isNotFound, editorMode].some(v => v === undefined);
+  const includesUndefined = [currentPagePath, isIdenticalPath, isNotFound, editorMode].some((v) => v === undefined);
 
   const isViewMode = editorMode === EditorMode.View;
 
@@ -425,12 +427,9 @@ export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
   const { data: isEditable } = useIsEditable();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);
+  const includesUndefined = [isEditable, isSharedUser].some((v) => v === undefined);
 
-  return useSWRImmutable(
-    includesUndefined ? null : [key, isEditable, isSharedUser],
-    () => !!isEditable && !isSharedUser,
-  );
+  return useSWRImmutable(includesUndefined ? null : [key, isEditable, isSharedUser], () => !!isEditable && !isSharedUser);
 };
 
 export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
@@ -439,14 +438,11 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   const { data: pagePath } = useCurrentPagePath();
   const { data: isNotFound } = useIsNotFound();
 
-  const includesUndefined = [pageId, pagePath, isNotFound].some(v => v === undefined);
-  const isPageExist = (pageId != null) && !isNotFound;
+  const includesUndefined = [pageId, pagePath, isNotFound].some((v) => v === undefined);
+  const isPageExist = pageId != null && !isNotFound;
   const isUsersTopPagePath = pagePath != null && isUsersTopPage(pagePath);
 
-  return useSWRImmutable(
-    includesUndefined ? null : [key, pageId, pagePath, isNotFound],
-    () => isPageExist && !isUsersTopPagePath,
-  );
+  return useSWRImmutable(includesUndefined ? null : [key, pageId, pagePath, isNotFound], () => isPageExist && !isUsersTopPagePath);
 };
 
 export const useIsUntitledPage = (): SWRResponse<boolean> => {
@@ -454,10 +450,5 @@ export const useIsUntitledPage = (): SWRResponse<boolean> => {
 
   const { data: pageId } = useCurrentPageId();
 
-  return useSWRStatic(
-    pageId == null ? null : [key, pageId],
-    undefined,
-    { fallbackData: false },
-  );
-
+  return useSWRStatic(pageId == null ? null : [key, pageId], undefined, { fallbackData: false });
 };

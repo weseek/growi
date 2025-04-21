@@ -13,16 +13,14 @@ import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:mail');
 
-
 type MailConfig = {
-  to?: string,
-  from?: string,
-  text?: string,
-  subject?: string,
-}
+  to?: string;
+  from?: string;
+  text?: string;
+  subject?: string;
+};
 
 class MailService implements S2sMessageHandlable {
-
   appService!: any;
 
   configManager: IConfigManagerForApp;
@@ -79,13 +77,11 @@ class MailService implements S2sMessageHandlable {
 
       try {
         await s2sMessagingService.publish(s2sMessage);
-      }
-      catch (e) {
+      } catch (e) {
         logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
   }
-
 
   initialize() {
     const { appService, configManager } = this;
@@ -101,11 +97,9 @@ class MailService implements S2sMessageHandlable {
 
     if (transmissionMethod === 'smtp') {
       this.mailer = this.createSMTPClient();
-    }
-    else if (transmissionMethod === 'ses') {
+    } else if (transmissionMethod === 'ses') {
       this.mailer = this.createSESClient();
-    }
-    else {
+    } else {
       this.mailer = null;
     }
 
@@ -201,15 +195,11 @@ class MailService implements S2sMessageHandlable {
     const renderFilePromisified = promisify<string, ejs.Data, string>(ejs.renderFile);
 
     const templateVars = config.vars || {};
-    const output = await renderFilePromisified(
-      config.template,
-      templateVars,
-    );
+    const output = await renderFilePromisified(config.template, templateVars);
 
     config.text = output;
     return this.mailer.sendMail(this.setupMailConfig(config));
   }
-
 }
 
 module.exports = MailService;

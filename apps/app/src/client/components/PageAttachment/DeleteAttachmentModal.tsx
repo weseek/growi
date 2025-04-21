@@ -1,13 +1,9 @@
 import type React from 'react';
-import {
-  useCallback, useMemo, useState,
-} from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { UserPicture, LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
-import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useDeleteAttachmentModal } from '~/stores/modal';
@@ -39,7 +35,7 @@ export const DeleteAttachmentModal: React.FC = () => {
     setDeleteError('');
   }, [closeDeleteAttachmentModal]);
 
-  const onClickDeleteButtonHandler = useCallback(async() => {
+  const onClickDeleteButtonHandler = useCallback(async () => {
     if (remove == null || attachment == null) {
       return;
     }
@@ -51,8 +47,7 @@ export const DeleteAttachmentModal: React.FC = () => {
       setDeleting(false);
       closeDeleteAttachmentModal();
       toastSuccess(`Delete ${attachment.originalName}`);
-    }
-    catch (err) {
+    } catch (err) {
       setDeleting(false);
       setDeleteError('Attachment could not be deleted.');
       toastError(err);
@@ -65,10 +60,12 @@ export const DeleteAttachmentModal: React.FC = () => {
       return;
     }
 
-    const content = (attachment.fileFormat.match(/image\/.+/i))
+    const content = attachment.fileFormat.match(/image\/.+/i) ? (
       // eslint-disable-next-line @next/next/no-img-element
-      ? <img src={attachment.filePathProxied} alt="deleting image" />
-      : '';
+      <img src={attachment.filePathProxied} alt="deleting image" />
+    ) : (
+      ''
+    );
 
     return (
       <div className="attachment-delete-image">
@@ -104,18 +101,11 @@ export const DeleteAttachmentModal: React.FC = () => {
       <ModalHeader tag="h4" toggle={toggleHandler} className="text-danger">
         <span id="contained-modal-title-lg">{t('delete_attachment_modal.confirm_delete_attachment')}</span>
       </ModalHeader>
-      <ModalBody>
-        {attachmentFileFormat}
-      </ModalBody>
+      <ModalBody>{attachmentFileFormat}</ModalBody>
       <ModalFooter>
-        <div className="me-3 d-inline-block">
-          {deletingIndicator}
-        </div>
-        <Button
-          color="danger"
-          onClick={onClickDeleteButtonHandler}
-          disabled={deleting}
-        >{t('commons:Delete')}
+        <div className="me-3 d-inline-block">{deletingIndicator}</div>
+        <Button color="danger" onClick={onClickDeleteButtonHandler} disabled={deleting}>
+          {t('commons:Delete')}
         </Button>
       </ModalFooter>
     </Modal>

@@ -2,11 +2,9 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:search-reconnect-context:reconnect-context');
 
-
 const RECONNECT_INTERVAL_SEC = 120;
 
 class ReconnectContext {
-
   constructor() {
     this.lastEvalDate = null;
 
@@ -54,7 +52,6 @@ class ReconnectContext {
     }
     return false;
   }
-
 }
 
 async function nextTick(context, reconnectHandler) {

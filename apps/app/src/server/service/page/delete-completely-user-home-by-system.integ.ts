@@ -14,13 +14,16 @@ import type { IPageService } from './page-service';
 
 // TODO: use actual user model after ~/server/models/user.js becomes importable in vitest
 // ref: https://github.com/vitest-dev/vitest/issues/846
-const userSchema = new mongoose.Schema({
-  name: { type: String },
-  username: { type: String, required: true, unique: true },
-  email: { type: String, unique: true, sparse: true },
-}, {
-  timestamps: true,
-});
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String },
+    username: { type: String, required: true, unique: true },
+    email: { type: String, unique: true, sparse: true },
+  },
+  {
+    timestamps: true,
+  },
+);
 const User = mongoose.model('User', userSchema);
 
 describe('delete-completely-user-home-by-system test', () => {
@@ -31,7 +34,7 @@ describe('delete-completely-user-home-by-system test', () => {
   const userId1 = new mongoose.Types.ObjectId();
   const user1HomepageId = new mongoose.Types.ObjectId();
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     // setup page model
     getPageSchema(null);
     pageModel(null);
@@ -45,7 +48,10 @@ describe('delete-completely-user-home-by-system test', () => {
 
     // setup user documents
     const user1 = await User.create({
-      _id: userId1, name: 'user1', username: 'user1', email: 'user1@example.com',
+      _id: userId1,
+      name: 'user1',
+      username: 'user1',
+      email: 'user1@example.com',
     });
 
     // setup page documents
@@ -97,7 +103,7 @@ describe('delete-completely-user-home-by-system test', () => {
       deleteMultipleCompletely: mockDeleteMultipleCompletely,
     });
 
-    it('should call used page service functions', async() => {
+    it('should call used page service functions', async () => {
       // when
       const existsUserHomepagePath = '/user/user1';
       await deleteCompletelyUserHomeBySystem(existsUserHomepagePath, mockPageService);
@@ -109,7 +115,7 @@ describe('delete-completely-user-home-by-system test', () => {
       expect(mockDeleteMultipleCompletely).toHaveBeenCalled();
     });
 
-    it('should throw error if userHomepage is not exists', async() => {
+    it('should throw error if userHomepage is not exists', async () => {
       // when
       const notExistsUserHomepagePath = '/user/not_exists_user';
       const deleteUserHomepageFunction = deleteCompletelyUserHomeBySystem(notExistsUserHomepagePath, mockPageService);

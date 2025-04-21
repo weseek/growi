@@ -10,13 +10,10 @@ import { useIsLatestRevision } from '~/stores/page';
 
 import { LazyRenderer } from '../Common/LazyRenderer';
 
-
 const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
-const PageEditorReadOnly = dynamic(() => import('../PageEditor/PageEditorReadOnly').then(mod => mod.PageEditorReadOnly), { ssr: false });
-
+const PageEditorReadOnly = dynamic(() => import('../PageEditor/PageEditorReadOnly').then((mod) => mod.PageEditorReadOnly), { ssr: false });
 
 export const DisplaySwitcher = (): JSX.Element => {
-
   const { data: editorMode = EditorMode.View } = useEditorMode();
   const { data: isEditable } = useIsEditable();
   const { data: isLatestRevision } = useIsLatestRevision();
@@ -26,10 +23,7 @@ export const DisplaySwitcher = (): JSX.Element => {
 
   return (
     <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
-      { isLatestRevision
-        ? <PageEditor />
-        : <PageEditorReadOnly />
-      }
+      {isLatestRevision ? <PageEditor /> : <PageEditorReadOnly />}
     </LazyRenderer>
   );
 };

@@ -1,6 +1,4 @@
-import {
-  type FC, memo, useCallback, useEffect, useState, useRef, type JSX,
-} from 'react';
+import { type FC, memo, useCallback, useEffect, useState, useRef, type JSX } from 'react';
 
 import withLoadingProps from 'next-dynamic-loading-props';
 import dynamic from 'next/dynamic';
@@ -32,20 +30,17 @@ import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 import 'simplebar-react/dist/simplebar.min.css';
 import styles from './Sidebar.module.scss';
 
-
-const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
-const ResizableArea = withLoadingProps<ResizableAreaProps>(useLoadingProps => dynamic(
-  () => import('./ResizableArea').then(mod => mod.ResizableArea),
-  {
+const SidebarContents = dynamic(() => import('./SidebarContents').then((mod) => mod.SidebarContents), { ssr: false });
+const ResizableArea = withLoadingProps<ResizableAreaProps>((useLoadingProps) =>
+  dynamic(() => import('./ResizableArea').then((mod) => mod.ResizableArea), {
     ssr: false,
     loading: () => {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       const { children, ...rest } = useLoadingProps();
       return <ResizableAreaFallback {...rest}>{children}</ResizableAreaFallback>;
     },
-  },
-));
-
+  }),
+);
 
 const resizableAreaMinWidth = 348;
 const sidebarNavCollapsedWidth = 48;
@@ -60,13 +55,11 @@ const getWidthByMode = (isDrawerMode: boolean, isCollapsedMode: boolean, current
   return currentProductNavWidth;
 };
 
-
 type ResizableContainerProps = {
-  children?: React.ReactNode,
-}
+  children?: React.ReactNode;
+};
 
 const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element => {
-
   const { children } = props;
 
   const { isDrawerMode, isCollapsedMode, isDockMode } = useSidebarMode();
@@ -76,17 +69,18 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const [isClient, setClient] = useState(false);
-  const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(
-    getWidthByMode(isDrawerMode(), isCollapsedMode(), currentProductNavWidth),
-  );
+  const [resizableAreaWidth, setResizableAreaWidth] = useState<number | undefined>(getWidthByMode(isDrawerMode(), isCollapsedMode(), currentProductNavWidth));
 
   const resizeHandler = useCallback((newWidth: number) => {
     setResizableAreaWidth(newWidth);
   }, []);
 
-  const resizeDoneHandler = useCallback((newWidth: number) => {
-    mutateProductNavWidth(newWidth, false);
-  }, [mutateProductNavWidth]);
+  const resizeDoneHandler = useCallback(
+    (newWidth: number) => {
+      mutateProductNavWidth(newWidth, false);
+    },
+    [mutateProductNavWidth],
+  );
 
   const collapsedByResizableAreaHandler = useCallback(() => {
     mutatePreferCollapsedMode(true);
@@ -103,40 +97,32 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
     mutateDrawerOpened(false);
   }, [currentProductNavWidth, isCollapsedMode, isDrawerMode, mutateDrawerOpened]);
 
-  return !isClient
-    ? (
-      <ResizableAreaFallback
-        className="flex-expand-vert"
-        width={resizableAreaWidth}
-      >
-        {children}
-      </ResizableAreaFallback>
-    )
-    : (
-      <ResizableArea
-        className="flex-expand-vert"
-        width={resizableAreaWidth}
-        minWidth={resizableAreaMinWidth}
-        disabled={!isDockMode()}
-        onResize={resizeHandler}
-        onResizeDone={resizeDoneHandler}
-        onCollapsed={collapsedByResizableAreaHandler}
-      >
-        {children}
-      </ResizableArea>
-    );
-
+  return !isClient ? (
+    <ResizableAreaFallback className="flex-expand-vert" width={resizableAreaWidth}>
+      {children}
+    </ResizableAreaFallback>
+  ) : (
+    <ResizableArea
+      className="flex-expand-vert"
+      width={resizableAreaWidth}
+      minWidth={resizableAreaMinWidth}
+      disabled={!isDockMode()}
+      onResize={resizeHandler}
+      onResizeDone={resizeDoneHandler}
+      onCollapsed={collapsedByResizableAreaHandler}
+    >
+      {children}
+    </ResizableArea>
+  );
 });
 
-
 type CollapsibleContainerProps = {
-  Nav: FC<SidebarNavProps>,
-  className?: string,
-  children?: React.ReactNode,
-}
+  Nav: FC<SidebarNavProps>;
+  className?: string;
+  children?: React.ReactNode;
+};
 
 const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Element => {
-
   const { Nav, className, children } = props;
 
   const { isCollapsedMode } = useSidebarMode();
@@ -146,7 +132,6 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
   mutateSidebarScroller(sidebarScrollerRef);
-
 
   // open menu when collapsed mode
   const primaryItemHoverHandler = useCallback(() => {
@@ -175,35 +160,25 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div
-        className={`sidebar-contents-container flex-grow-1 overflow-hidden ${closedClass} ${openedClass}`}
-      >
-        <SimpleBar
-          scrollableNodeProps={{ ref: sidebarScrollerRef }}
-          className="simple-scrollbar h-100"
-          style={{ width: collapsibleContentsWidth }}
-          autoHide
-        >
+      <div className={`sidebar-contents-container flex-grow-1 overflow-hidden ${closedClass} ${openedClass}`}>
+        <SimpleBar scrollableNodeProps={{ ref: sidebarScrollerRef }} className="simple-scrollbar h-100" style={{ width: collapsibleContentsWidth }} autoHide>
           {children}
         </SimpleBar>
       </div>
     </div>
   );
-
 });
 
 // for data-* attributes
-type HTMLElementProps = JSX.IntrinsicElements &
-  Record<keyof JSX.IntrinsicElements, { [p: `data-${string}`]: string | number }>;
+type HTMLElementProps = JSX.IntrinsicElements & Record<keyof JSX.IntrinsicElements, { [p: `data-${string}`]: string | number }>;
 
 type DrawableContainerProps = {
-  divProps?: HTMLElementProps['div'],
-  className?: string,
-  children?: React.ReactNode,
-}
+  divProps?: HTMLElementProps['div'];
+  className?: string;
+  children?: React.ReactNode;
+};
 
 const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
-
   const { divProps, className, children } = props;
 
   const { data: isDrawerOpened, mutate } = useDrawerOpened();
@@ -215,20 +190,13 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
       <div {...divProps} className={`${className} ${openClass}`}>
         {children}
       </div>
-      { isDrawerOpened && (
-        <div className="modal-backdrop fade show" onClick={() => mutate(false)} />
-      ) }
+      {isDrawerOpened && <div className="modal-backdrop fade show" onClick={() => mutate(false)} />}
     </>
   );
 });
 
-
 export const Sidebar = (): JSX.Element => {
-
-  const {
-    data: sidebarMode,
-    isDrawerMode, isCollapsedMode, isDockMode,
-  } = useSidebarMode();
+  const { data: sidebarMode, isDrawerMode, isCollapsedMode, isDockMode } = useSidebarMode();
 
   const { data: isSearchPage } = useIsSearchPage();
   const { data: editorMode } = useEditorMode();
@@ -258,19 +226,15 @@ export const Sidebar = (): JSX.Element => {
 
   return (
     <>
-      { sidebarMode != null && isDrawerMode() && (
+      {sidebarMode != null && isDrawerMode() && (
         <DrawerToggler className="position-fixed d-none d-md-block">
           <span className="material-symbols-outlined">reorder</span>
         </DrawerToggler>
       )}
-      { sidebarMode != null && !isDockMode() && !isSearchPage && !shouldHideSubnavAppTitle && (
-        <AppTitleOnSubnavigation />
-      )}
+      {sidebarMode != null && !isDockMode() && !isSearchPage && !shouldHideSubnavAppTitle && <AppTitleOnSubnavigation />}
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} divProps={{ 'data-testid': 'grw-sidebar' }}>
         <ResizableContainer>
-          { sidebarMode != null && !isCollapsedMode() && (
-            <AppTitleOnSidebarHead hideAppTitle={shouldHideSiteName} />
-          )}
+          {sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead hideAppTitle={shouldHideSiteName} />}
           {shouldShowEditorSidebarHead ? <AppTitleOnEditorSidebarHead /> : <SidebarHead />}
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />

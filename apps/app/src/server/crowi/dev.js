@@ -8,9 +8,7 @@ import nextFactory from '../routes/next';
 
 const logger = loggerFactory('growi:crowi:dev');
 
-
 class CrowiDev {
-
   /**
    * @param {import('~/server/crowi').default} crowi Crowi instance
    *
@@ -88,7 +86,6 @@ class CrowiDev {
     const next = nextFactory(this.crowi);
     app.get('/__nextjs_original-stack-frame', next.delegateToNext);
   }
-
 }
 
 module.exports = CrowiDev;

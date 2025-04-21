@@ -2,9 +2,7 @@ import { GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request } from 'express';
 import { Router } from 'express';
-import {
-  body, param, query, validationResult,
-} from 'express-validator';
+import { body, param, query, validationResult } from 'express-validator';
 
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
@@ -24,7 +22,7 @@ const logger = loggerFactory('growi:routes:apiv3:external-user-group');
 const router = Router();
 
 interface AuthorizedRequest extends Request {
-  user?: any
+  user?: any;
 }
 
 /**
@@ -74,24 +72,11 @@ module.exports = (crowi: Crowi): Router => {
       body('preserveDeletedKeycloakGroups').exists().isBoolean(),
       body('keycloakGroupDescriptionAttribute').optional({ nullable: true }).isString(),
     ],
-    listChildren: [
-      query('parentIds').optional().isArray(),
-      query('includeGrandChildren').optional().isBoolean(),
-    ],
-    ancestorGroup: [
-      query('groupId').isString(),
-    ],
-    update: [
-      body('description').optional().isString(),
-    ],
-    delete: [
-      param('id').trim().exists({ checkFalsy: true }),
-      query('actionName').trim().exists({ checkFalsy: true }),
-      query('transferToUserGroupId').trim(),
-    ],
-    detail: [
-      param('id').isString(),
-    ],
+    listChildren: [query('parentIds').optional().isArray(), query('includeGrandChildren').optional().isBoolean()],
+    ancestorGroup: [query('groupId').isString()],
+    update: [body('description').optional().isString()],
+    delete: [param('id').trim().exists({ checkFalsy: true }), query('actionName').trim().exists({ checkFalsy: true }), query('transferToUserGroupId').trim()],
+    detail: [param('id').isString()],
   };
 
   /**
@@ -142,7 +127,7 @@ module.exports = (crowi: Crowi): Router => {
    *                     pagingLimit:
    *                       type: integer
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async (req: AuthorizedRequest, res: ApiV3Response) => {
     const { query } = req;
 
     try {
@@ -152,12 +137,14 @@ module.exports = (crowi: Crowi): Router => {
       const pagination = query.pagination != null ? query.pagination !== 'false' : undefined;
 
       const result = await ExternalUserGroup.findWithPagination({
-        page, limit, offset, pagination,
+        page,
+        limit,
+        offset,
+        pagination,
       });
       const { docs: userGroups, totalDocs: totalUserGroups, limit: pagingLimit } = result;
       return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in fetching external user group list';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg));
@@ -194,15 +181,14 @@ module.exports = (crowi: Crowi): Router => {
    *                       items:
    *                         type: object
    */
-  router.get('/ancestors', loginRequiredStrictly, adminRequired, validators.ancestorGroup, apiV3FormValidator, async(req, res: ApiV3Response) => {
+  router.get('/ancestors', loginRequiredStrictly, adminRequired, validators.ancestorGroup, apiV3FormValidator, async (req, res: ApiV3Response) => {
     const { groupId } = req.query;
 
     try {
       const userGroup = await ExternalUserGroup.findOne({ _id: { $eq: groupId } });
       const ancestorUserGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(userGroup);
       return res.apiv3({ ancestorUserGroups });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred while searching user groups';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg));
@@ -249,7 +235,7 @@ module.exports = (crowi: Crowi): Router => {
    *                       items:
    *                         type: object
    */
-  router.get('/children', loginRequiredStrictly, adminRequired, validators.listChildren, async(req, res) => {
+  router.get('/children', loginRequiredStrictly, adminRequired, validators.listChildren, async (req, res) => {
     try {
       const { parentIds, includeGrandChildren = false } = req.query;
 
@@ -258,8 +244,7 @@ module.exports = (crowi: Crowi): Router => {
         childUserGroups: externalUserGroupsResult.childUserGroups,
         grandChildUserGroups: externalUserGroupsResult.grandChildUserGroups,
       });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in fetching child user group list';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg));
@@ -294,14 +279,13 @@ module.exports = (crowi: Crowi): Router => {
    *                     userGroup:
    *                       type: object
    */
-  router.get('/:id', loginRequiredStrictly, adminRequired, validators.detail, async(req, res: ApiV3Response) => {
+  router.get('/:id', loginRequiredStrictly, adminRequired, validators.detail, async (req, res: ApiV3Response) => {
     const { id } = req.params;
 
     try {
       const userGroup = await ExternalUserGroup.findById(id);
       return res.apiv3({ userGroup });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred while getting external user group';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg));
@@ -354,34 +338,48 @@ module.exports = (crowi: Crowi): Router => {
    *                       items:
    *                         type: object
    */
-  router.delete('/:id', loginRequiredStrictly, adminRequired, validators.delete, apiV3FormValidator, addActivity,
-    async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.delete(
+    '/:id',
+    loginRequiredStrictly,
+    adminRequired,
+    validators.delete,
+    apiV3FormValidator,
+    addActivity,
+    async (req: AuthorizedRequest, res: ApiV3Response) => {
       const { id: deleteGroupId } = req.params;
       const { transferToUserGroupId, transferToUserGroupType } = req.query;
       const actionName = req.query.actionName as PageActionOnGroupDelete;
 
-      const transferToUserGroup = typeof transferToUserGroupId === 'string'
-        && (transferToUserGroupType === GroupType.userGroup || transferToUserGroupType === GroupType.externalUserGroup)
-        ? {
-          item: transferToUserGroupId,
-          type: transferToUserGroupType,
-        } : undefined;
+      const transferToUserGroup =
+        typeof transferToUserGroupId === 'string' &&
+        (transferToUserGroupType === GroupType.userGroup || transferToUserGroupType === GroupType.externalUserGroup)
+          ? {
+              item: transferToUserGroupId,
+              type: transferToUserGroupType,
+            }
+          : undefined;
 
       try {
-        const userGroups = await (crowi.userGroupService as UserGroupService)
-          .removeCompletelyByRootGroupId(deleteGroupId, actionName, req.user, transferToUserGroup, ExternalUserGroup, ExternalUserGroupRelation);
+        const userGroups = await (crowi.userGroupService as UserGroupService).removeCompletelyByRootGroupId(
+          deleteGroupId,
+          actionName,
+          req.user,
+          transferToUserGroup,
+          ExternalUserGroup,
+          ExternalUserGroupRelation,
+        );
 
         const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
         activityEvent.emit('update', res.locals.activity._id, parameters);
 
         return res.apiv3({ userGroups });
-      }
-      catch (err) {
+      } catch (err) {
         const msg = 'Error occurred while deleting user groups';
         logger.error(msg, err);
         return res.apiv3Err(new ErrorV3(msg));
       }
-    });
+    },
+  );
 
   /**
    * @swagger
@@ -420,11 +418,9 @@ module.exports = (crowi: Crowi): Router => {
    *                     userGroup:
    *                       type: object
    */
-  router.put('/:id', loginRequiredStrictly, adminRequired, validators.update, apiV3FormValidator, addActivity, async(req, res: ApiV3Response) => {
+  router.put('/:id', loginRequiredStrictly, adminRequired, validators.update, apiV3FormValidator, addActivity, async (req, res: ApiV3Response) => {
     const { id } = req.params;
-    const {
-      description,
-    } = req.body;
+    const { description } = req.body;
 
     try {
       const userGroup = await ExternalUserGroup.findOneAndUpdate({ _id: id }, { $set: { description } });
@@ -433,8 +429,7 @@ module.exports = (crowi: Crowi): Router => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroup });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating an external user group';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg));
@@ -471,17 +466,15 @@ module.exports = (crowi: Crowi): Router => {
    *                       items:
    *                         type: object
    */
-  router.get('/:id/external-user-group-relations', loginRequiredStrictly, adminRequired, async(req, res: ApiV3Response) => {
+  router.get('/:id/external-user-group-relations', loginRequiredStrictly, adminRequired, async (req, res: ApiV3Response) => {
     const { id } = req.params;
 
     try {
       const externalUserGroup = await ExternalUserGroup.findById(id);
-      const userGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: externalUserGroup })
-        .populate('relatedUser');
-      const serialized = userGroupRelations.map(relation => serializeUserGroupRelationSecurely(relation));
+      const userGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: externalUserGroup }).populate('relatedUser');
+      const serialized = userGroupRelations.map((relation) => serializeUserGroupRelationSecurely(relation));
       return res.apiv3({ userGroupRelations: serialized });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = `Error occurred in fetching user group relations for external user group: ${id}`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg));
@@ -629,12 +622,10 @@ module.exports = (crowi: Crowi): Router => {
    *                 schema:
    *                   type: object
    */
-  router.put('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/ldap/sync-settings', loginRequiredStrictly, adminRequired, validators.ldapSyncSettings, async (req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.apiv3Err(
-        new ErrorV3('Invalid sync settings', 'external_user_group.invalid_sync_settings'), 400,
-      );
+      return res.apiv3Err(new ErrorV3('Invalid sync settings', 'external_user_group.invalid_sync_settings'), 400);
     }
 
     const params = {
@@ -656,12 +647,9 @@ module.exports = (crowi: Crowi): Router => {
     try {
       await configManager.updateConfigs(params, { skipPubsub: true });
       return res.apiv3({}, 204);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
-      return res.apiv3Err(
-        new ErrorV3('Sync settings update failed', 'external_user_group.update_sync_settings_failed'), 500,
-      );
+      return res.apiv3Err(new ErrorV3('Sync settings update failed', 'external_user_group.update_sync_settings_failed'), 500);
     }
   });
 
@@ -706,13 +694,15 @@ module.exports = (crowi: Crowi): Router => {
    *                 schema:
    *                   type: object
    */
-  router.put('/keycloak/sync-settings', loginRequiredStrictly, adminRequired, validators.keycloakSyncSettings,
-    async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put(
+    '/keycloak/sync-settings',
+    loginRequiredStrictly,
+    adminRequired,
+    validators.keycloakSyncSettings,
+    async (req: AuthorizedRequest, res: ApiV3Response) => {
       const errors = validationResult(req);
       if (!errors.isEmpty()) {
-        return res.apiv3Err(
-          new ErrorV3('Invalid sync settings', 'external_user_group.invalid_sync_settings'), 400,
-        );
+        return res.apiv3Err(new ErrorV3('Invalid sync settings', 'external_user_group.invalid_sync_settings'), 400);
       }
 
       const params = {
@@ -729,14 +719,12 @@ module.exports = (crowi: Crowi): Router => {
       try {
         await configManager.updateConfigs(params, { skipPubsub: true });
         return res.apiv3({}, 204);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
-        return res.apiv3Err(
-          new ErrorV3('Sync settings update failed', 'external_user_group.update_sync_settings_failed'), 500,
-        );
+        return res.apiv3Err(new ErrorV3('Sync settings update failed', 'external_user_group.update_sync_settings_failed'), 500);
       }
-    });
+    },
+  );
 
   /**
    * @swagger
@@ -756,27 +744,20 @@ module.exports = (crowi: Crowi): Router => {
    *                 schema:
    *                   type: object
    */
-  router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/ldap/sync', loginRequiredStrictly, adminRequired, async (req: AuthorizedRequest, res: ApiV3Response) => {
     if (isExecutingSync()) {
-      return res.apiv3Err(
-        new ErrorV3('There is an ongoing sync process', 'external_user_group.sync_being_executed'), 409,
-      );
+      return res.apiv3Err(new ErrorV3('There is an ongoing sync process', 'external_user_group.sync_being_executed'), 409);
     }
 
     const isLdapEnabled = await configManager.getConfig('security:passport-ldap:isEnabled');
     if (!isLdapEnabled) {
-      return res.apiv3Err(
-        new ErrorV3('Authentication using ldap is not set', 'external_user_group.ldap.auth_not_set'), 422,
-      );
+      return res.apiv3Err(new ErrorV3('Authentication using ldap is not set', 'external_user_group.ldap.auth_not_set'), 422);
     }
 
     try {
       await crowi.ldapUserGroupSyncService?.init(req.user.name, req.body.password);
-    }
-    catch (e) {
-      return res.apiv3Err(
-        new ErrorV3('LDAP group sync failed', 'external_user_group.sync_failed'), 500,
-      );
+    } catch (e) {
+      return res.apiv3Err(new ErrorV3('LDAP group sync failed', 'external_user_group.sync_failed'), 500);
     }
 
     // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
@@ -803,11 +784,9 @@ module.exports = (crowi: Crowi): Router => {
    *                 schema:
    *                   type: object
    */
-  router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async (req: AuthorizedRequest, res: ApiV3Response) => {
     if (isExecutingSync()) {
-      return res.apiv3Err(
-        new ErrorV3('There is an ongoing sync process', 'external_user_group.sync_being_executed'), 409,
-      );
+      return res.apiv3Err(new ErrorV3('There is an ongoing sync process', 'external_user_group.sync_being_executed'), 409);
     }
 
     const getAuthProviderType = () => {
@@ -824,21 +803,23 @@ module.exports = (crowi: Crowi): Router => {
       const isOidcEnabled = configManager.getConfig('security:passport-oidc:isEnabled');
       const oidcIssuerHost = configManager.getConfig('security:passport-oidc:issuerHost');
 
-      if (isOidcEnabled && oidcIssuerHost != null && regex.test(oidcIssuerHost)) { return 'oidc'; }
+      if (isOidcEnabled && oidcIssuerHost != null && regex.test(oidcIssuerHost)) {
+        return 'oidc';
+      }
 
       const isSamlEnabled = configManager.getConfig('security:passport-saml:isEnabled');
       const samlEntryPoint = configManager.getConfig('security:passport-saml:entryPoint');
 
-      if (isSamlEnabled && samlEntryPoint != null && regex.test(samlEntryPoint)) { return 'saml'; }
+      if (isSamlEnabled && samlEntryPoint != null && regex.test(samlEntryPoint)) {
+        return 'saml';
+      }
 
       return null;
     };
 
     const authProviderType = getAuthProviderType();
     if (authProviderType == null) {
-      return res.apiv3Err(
-        new ErrorV3('Authentication using keycloak is not set', 'external_user_group.keycloak.auth_not_set'), 422,
-      );
+      return res.apiv3Err(new ErrorV3('Authentication using keycloak is not set', 'external_user_group.keycloak.auth_not_set'), 422);
     }
 
     crowi.keycloakUserGroupSyncService?.init(authProviderType);
@@ -895,5 +876,4 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   return router;
-
 };

@@ -6,12 +6,7 @@ const moduleClass = styles['grw-logo'];
 
 const GrowiLogo = memo(() => (
   <div className={`${moduleClass}`}>
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="32"
-      height="32"
-      viewBox="0 0 64 56"
-    >
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 64 56">
       <path
         // eslint-disable-next-line max-len
         d="M17.123 33.8015L10.4717 45.3855C10.2686 45.7427 10.2686 46.1829 10.4717 46.5337L15.5934 55.4514C15.7838 55.7767 16.171 55.9999 16.5645 55.9999H17.123L23.5014 44.9007L17.123 33.8015Z"

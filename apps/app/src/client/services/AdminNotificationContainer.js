@@ -1,16 +1,13 @@
 import { isServer } from '@growi/core/dist/utils';
 import { Container } from 'unstated';
 
-import {
-  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
-} from '../util/apiv3-client';
+import { apiv3Delete, apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
 
 /**
  * Service container for admin Notification setting page (NotificationSetting.jsx)
  * @extends {Container} unstated Container
  */
 export default class AdminNotificationContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -32,7 +29,6 @@ export default class AdminNotificationContainer extends Container {
       isNotificationForGroupPageEnabled: false,
       globalNotifications: [],
     };
-
   }
 
   /**
@@ -134,5 +130,4 @@ export default class AdminNotificationContainer extends Container {
     await this.retrieveNotificationData();
     return deletedNotificaton;
   }
-
 }

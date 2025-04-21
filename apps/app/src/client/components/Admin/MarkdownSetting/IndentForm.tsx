@@ -2,9 +2,7 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
@@ -15,24 +13,25 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:importer');
 
-
 type Props = {
   adminMarkDownContainer: AdminMarkDownContainer;
-}
+};
 
 const IndentForm = (props: Props) => {
   const { t } = useTranslation('admin');
 
-  const onClickSubmit = useCallback(async(props) => {
-    try {
-      await props.adminMarkDownContainer.updateIndentSetting();
-      toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.indent_header'), ns: 'commons' }));
-    }
-    catch (err) {
-      toastError(err);
-      logger.error(err);
-    }
-  }, [t]);
+  const onClickSubmit = useCallback(
+    async (props) => {
+      try {
+        await props.adminMarkDownContainer.updateIndentSetting();
+        toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.indent_header'), ns: 'commons' }));
+      } catch (err) {
+        toastError(err);
+        logger.error(err);
+      }
+    },
+    [t],
+  );
 
   const renderIndentSizeOption = (props) => {
     const { adminMarkDownContainer } = props;
@@ -41,12 +40,12 @@ const IndentForm = (props: Props) => {
     return (
       <div className="col">
         <div>
-          <label htmlFor="adminPreferredIndentSize" className="form-label">{t('markdown_settings.indent_options.indentSize')}</label>
+          <label htmlFor="adminPreferredIndentSize" className="form-label">
+            {t('markdown_settings.indent_options.indentSize')}
+          </label>
           <UncontrolledDropdown id="adminPreferredIndentSize">
             <DropdownToggle caret className="col-3 col-sm-2 col-md-5 col-lg-5 col-xl-3 text-end">
-              <span className="float-start">
-                {adminPreferredIndentSize || 4}
-              </span>
+              <span className="float-start">{adminPreferredIndentSize || 4}</span>
             </DropdownToggle>
             <DropdownMenu className="dropdown-menu" role="menu">
               {[2, 4].map((num) => {
@@ -59,9 +58,7 @@ const IndentForm = (props: Props) => {
             </DropdownMenu>
           </UncontrolledDropdown>
         </div>
-        <p className="form-text text-muted">
-          {t('markdown_settings.indent_options.indentSize_desc')}
-        </p>
+        <p className="form-text text-muted">{t('markdown_settings.indent_options.indentSize_desc')}</p>
       </div>
     );
   };

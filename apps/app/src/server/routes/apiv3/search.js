@@ -7,7 +7,6 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-
 const logger = loggerFactory('growi:routes:apiv3:search'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
@@ -126,7 +125,7 @@ module.exports = (crowi) => {
    *                    description: Status of indices
    *                    $ref: '#/components/schemas/Indices'
    */
-  router.get('/indices', noCache(), accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/indices', noCache(), accessTokenParser, loginRequired, adminRequired, async (req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
@@ -136,8 +135,7 @@ module.exports = (crowi) => {
     try {
       const info = await searchService.getInfoForAdmin();
       return res.status(200).send({ info });
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err, 503);
     }
   });
@@ -154,7 +152,7 @@ module.exports = (crowi) => {
    *        200:
    *          description: Successfully connected
    */
-  router.post('/connection', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.post('/connection', accessTokenParser, loginRequired, adminRequired, addActivity, async (req, res) => {
     const { searchService } = crowi;
 
     if (!searchService.isConfigured) {
@@ -167,15 +165,12 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SEARCH_CONNECTION });
 
       return res.status(200).send();
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err, 503);
     }
   });
 
-  const validatorForPutIndices = [
-    body('operation').isString().isIn(['rebuild', 'normalize']),
-  ];
+  const validatorForPutIndices = [body('operation').isString().isIn(['rebuild', 'normalize'])];
 
   /**
    * @swagger
@@ -208,7 +203,7 @@ module.exports = (crowi) => {
    *                    type: string
    *                    description: Operation is successfully processed, or requested
    */
-  router.put('/indices', accessTokenParser, loginRequired, adminRequired, addActivity, validatorForPutIndices, apiV3FormValidator, async(req, res) => {
+  router.put('/indices', accessTokenParser, loginRequired, adminRequired, addActivity, validatorForPutIndices, apiV3FormValidator, async (req, res) => {
     const operation = req.body.operation;
 
     const { searchService } = crowi;
@@ -239,8 +234,7 @@ module.exports = (crowi) => {
         default:
           throw new Error(`Unimplemented operation: ${operation}`);
       }
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err, 503);
     }
   });

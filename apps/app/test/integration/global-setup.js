@@ -4,10 +4,10 @@ import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 
 // check env
 if (process.env.NODE_ENV !== 'test') {
-  throw new Error('\'process.env.NODE_ENV\' must be \'test\'');
+  throw new Error("'process.env.NODE_ENV' must be 'test'");
 }
 
-module.exports = async() => {
+module.exports = async () => {
   await mongoose.connect(getMongoUri(), mongoOptions);
 
   // drop database
@@ -29,13 +29,22 @@ module.exports = async() => {
     { name: 'v5DummyUser1', username: 'v5DummyUser1', email: 'v5DummyUser1@example.com' },
     { name: 'v5DummyUser2', username: 'v5DummyUser2', email: 'v5DummyUser2@example.com' },
     {
-      _id: gGroupUserId1, name: 'gGroupUser1', username: 'gGroupUser1', email: 'gGroupUser1@example.com',
+      _id: gGroupUserId1,
+      name: 'gGroupUser1',
+      username: 'gGroupUser1',
+      email: 'gGroupUser1@example.com',
     },
     {
-      _id: gGroupUserId2, name: 'gGroupUser2', username: 'gGroupUser2', email: 'gGroupUser2@example.com',
+      _id: gGroupUserId2,
+      name: 'gGroupUser2',
+      username: 'gGroupUser2',
+      email: 'gGroupUser2@example.com',
     },
     {
-      _id: gGroupUserId3, name: 'gGroupUser3', username: 'gGroupUser3', email: 'gGroupUser3@example.com',
+      _id: gGroupUserId3,
+      name: 'gGroupUser3',
+      username: 'gGroupUser3',
+      email: 'gGroupUser3@example.com',
     },
   ]);
   const gGroupIdIsolate = new mongoose.Types.ObjectId();
@@ -104,12 +113,14 @@ module.exports = async() => {
       createdAt: new Date(),
     },
   ]);
-  await pageCollection.insertMany([{
-    path: '/',
-    grant: 1,
-    creator: globalUser,
-    lastUpdateUser: globalUser,
-  }]);
+  await pageCollection.insertMany([
+    {
+      path: '/',
+      grant: 1,
+      creator: globalUser,
+      lastUpdateUser: globalUser,
+    },
+  ]);
 
   await mongoose.disconnect();
 };

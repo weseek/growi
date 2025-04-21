@@ -12,7 +12,7 @@ import type { ApiV3Response } from './interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:login');
 
-type InvitedFormRequest = Request & { form: any, user: any };
+type InvitedFormRequest = Request & { form: any; user: any };
 
 module.exports = (crowi: Crowi): Router => {
   const applicationInstalled = require('../../middlewares/application-installed')(crowi);
@@ -60,7 +60,7 @@ module.exports = (crowi: Crowi): Router => {
    *                    type: string
    *                    description: URL to redirect after successful activation.
    */
-  router.post('/', applicationInstalled, invitedRules(), invitedValidation, async(req: InvitedFormRequest, res: ApiV3Response) => {
+  router.post('/', applicationInstalled, invitedRules(), invitedValidation, async (req: InvitedFormRequest, res: ApiV3Response) => {
     if (!req.user) {
       return res.apiv3({ redirectTo: '/login' });
     }
@@ -93,8 +93,7 @@ module.exports = (crowi: Crowi): Router => {
     try {
       await user.activateInvitedUser(username, name, password);
       return res.apiv3({ redirectTo: '/' });
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err('message.failed_to_activate', 403);
     }
   });

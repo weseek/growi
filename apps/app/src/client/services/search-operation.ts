@@ -4,10 +4,9 @@ import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
 import { useRouter } from 'next/router';
 import useSWRImmutable from 'swr/immutable';
 
-
 type UseKeywordManagerUtils = {
-  pushState: (newKeyword: string) => void,
-}
+  pushState: (newKeyword: string) => void;
+};
 
 export const useKeywordManager = (): SWRResponseWithUtils<UseKeywordManagerUtils, string> => {
   // routerRef solve the problem of infinite redrawing that occurs with routers
@@ -23,17 +22,20 @@ export const useKeywordManager = (): SWRResponseWithUtils<UseKeywordManagerUtils
   });
 
   const { mutate } = swrResponse;
-  const pushState = useCallback((newKeyword: string) => {
-    mutate((prevKeyword) => {
-      if (prevKeyword !== newKeyword) {
-        const newUrl = new URL('/_search', 'http://example.com');
-        newUrl.searchParams.append('q', newKeyword);
-        routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '');
-      }
+  const pushState = useCallback(
+    (newKeyword: string) => {
+      mutate((prevKeyword) => {
+        if (prevKeyword !== newKeyword) {
+          const newUrl = new URL('/_search', 'http://example.com');
+          newUrl.searchParams.append('q', newKeyword);
+          routerRef.current.push(`${newUrl.pathname}${newUrl.search}`, '');
+        }
 
-      return newKeyword;
-    });
-  }, [mutate]);
+        return newKeyword;
+      });
+    },
+    [mutate],
+  );
 
   // detect search keyword from the query of URL
   useEffect(() => {

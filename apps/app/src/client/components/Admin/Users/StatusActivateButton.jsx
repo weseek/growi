@@ -9,7 +9,6 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class StatusActivateButton extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -22,8 +21,7 @@ class StatusActivateButton extends React.Component {
     try {
       const username = await this.props.adminUsersContainer.activateUser(this.props.user._id);
       toastSuccess(t('toaster.activate_user_success', { username }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
@@ -32,12 +30,18 @@ class StatusActivateButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <button className="dropdown-item" type="button" onClick={() => { this.onClickAcceptBtn() }}>
-        <span className="material-symbols-outlined me-1">person_add</span>{t('user_management.user_table.accept')}
+      <button
+        className="dropdown-item"
+        type="button"
+        onClick={() => {
+          this.onClickAcceptBtn();
+        }}
+      >
+        <span className="material-symbols-outlined me-1">person_add</span>
+        {t('user_management.user_table.accept')}
       </button>
     );
   }
-
 }
 
 const StatusActivateFormWrapperFC = (props) => {

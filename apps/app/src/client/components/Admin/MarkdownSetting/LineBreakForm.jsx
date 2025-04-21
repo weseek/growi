@@ -14,13 +14,11 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 const logger = loggerFactory('growi:importer');
 
 class LineBreakForm extends React.Component {
-
   constructor(props) {
     super(props);
 
     this.onClickSubmit = this.onClickSubmit.bind(this);
   }
-
 
   async onClickSubmit() {
     const { t } = this.props;
@@ -28,8 +26,7 @@ class LineBreakForm extends React.Component {
     try {
       await this.props.adminMarkDownContainer.updateLineBreakSetting();
       toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.lineBreak_header'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -49,10 +46,12 @@ class LineBreakForm extends React.Component {
             className="form-check-input"
             id="isEnabledLinebreaks"
             checked={isEnabledLinebreaks}
-            onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
+            onChange={() => {
+              adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks });
+            }}
           />
           <label className="form-label form-check-label" htmlFor="isEnabledLinebreaks">
-            {t('markdown_settings.lineBreak_options.enable_lineBreak') }
+            {t('markdown_settings.lineBreak_options.enable_lineBreak')}
           </label>
         </div>
         <p className="form-text text-muted" dangerouslySetInnerHTML={helpLineBreak} />
@@ -74,10 +73,12 @@ class LineBreakForm extends React.Component {
             className="form-check-input"
             id="isEnabledLinebreaksInComments"
             checked={isEnabledLinebreaksInComments}
-            onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
+            onChange={() => {
+              adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments });
+            }}
           />
           <label className="form-label form-check-label" htmlFor="isEnabledLinebreaksInComments">
-            {t('markdown_settings.lineBreak_options.enable_lineBreak_for_comment') }
+            {t('markdown_settings.lineBreak_options.enable_lineBreak_for_comment')}
           </label>
         </div>
         <p className="form-text text-muted" dangerouslySetInnerHTML={helpLineBreakInComment} />
@@ -98,7 +99,6 @@ class LineBreakForm extends React.Component {
       </React.Fragment>
     );
   }
-
 }
 
 const LineBreakFormFC = (props) => {

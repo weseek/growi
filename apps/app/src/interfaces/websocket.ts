@@ -11,10 +11,10 @@ const generateGroupSyncEvents = () => {
   });
   return events as {
     [key in ExternalGroupProviderType]: {
-      GroupSyncProgress: string,
-      GroupSyncCompleted: string,
-      GroupSyncFailed: string,
-    }
+      GroupSyncProgress: string;
+      GroupSyncCompleted: string;
+      GroupSyncFailed: string;
+    };
   };
 };
 
@@ -53,7 +53,7 @@ export const SocketEventName = {
   YjsAwarenessStateSizeUpdated: 'yjs:awareness-state-size-update',
   YjsHasYdocsNewerThanLatestRevisionUpdated: 'yjs:has-ydocs-newer-than-latest-revision-update',
 } as const;
-export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
+export type SocketEventName = (typeof SocketEventName)[keyof typeof SocketEventName];
 
 type PageId = string;
 type DescendantCount = number;
@@ -68,4 +68,4 @@ export type PMMigratingData = { count: number };
 export type PMErrorCountData = { skip: number };
 export type PMEndedData = { isSucceeded: boolean };
 
-export type PageMigrationErrorData = { paths: string[] }
+export type PageMigrationErrorData = { paths: string[] };

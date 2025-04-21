@@ -5,11 +5,10 @@ import { useTranslation } from 'next-i18next';
 
 import { ThemeColorBox } from './ThemeColorBox';
 
-
 type Props = {
-  availableThemes: GrowiThemeMetadata[],
-  selectedTheme?: string,
-  onSelected?: (themeName: string) => void,
+  availableThemes: GrowiThemeMetadata[];
+  selectedTheme?: string;
+  onSelected?: (themeName: string) => void;
 };
 
 const CustomizeThemeOptions = (props: Props): JSX.Element => {
@@ -18,15 +17,14 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
   const { availableThemes, selectedTheme, onSelected } = props;
 
   const lightNDarkThemes = useMemo(() => {
-    return availableThemes.filter(s => s.schemeType === GrowiThemeSchemeType.BOTH);
+    return availableThemes.filter((s) => s.schemeType === GrowiThemeSchemeType.BOTH);
   }, [availableThemes]);
   const oneModeThemes = useMemo(() => {
-    return availableThemes.filter(s => s.schemeType !== GrowiThemeSchemeType.BOTH);
+    return availableThemes.filter((s) => s.schemeType !== GrowiThemeSchemeType.BOTH);
   }, [availableThemes]);
 
   return (
     <>
-
       {/* Light and Dark Themes */}
       <div>
         <h3 className="mb-3">{t('customize_settings.theme_desc.light_and_dark')}</h3>
@@ -60,11 +58,8 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
           })}
         </div>
       </div>
-
     </>
   );
-
 };
-
 
 export default CustomizeThemeOptions;

@@ -1,9 +1,7 @@
 import { PageGrant, type IPage } from '@growi/core';
 import type { GrowiBotEvent } from '@growi/slack';
 import { generateLastUpdateMrkdwn } from '@growi/slack/dist/utils/generate-last-update-markdown';
-import type {
-  MessageAttachment, LinkUnfurls, WebClient,
-} from '@slack/web-api';
+import type { MessageAttachment, LinkUnfurls, WebClient } from '@slack/web-api';
 import mongoose from 'mongoose';
 import urljoin from 'url-join';
 
@@ -12,9 +10,7 @@ import type { EventActionsPermission } from '~/server/interfaces/slack-integrati
 import type { PageModel } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
-import type {
-  DataForUnfurl, PublicData, UnfurlEventLink, UnfurlRequestEvent,
-} from '../../interfaces/slack-integration/link-shared-unfurl';
+import type { DataForUnfurl, PublicData, UnfurlEventLink, UnfurlRequestEvent } from '../../interfaces/slack-integration/link-shared-unfurl';
 import { growiInfoService } from '../growi-info';
 
 import type { SlackEventHandler } from './base-event-handler';
@@ -22,7 +18,6 @@ import type { SlackEventHandler } from './base-event-handler';
 const logger = loggerFactory('growi:service:SlackEventHandler:link-shared');
 
 export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEvent> {
-
   crowi: Crowi;
 
   constructor(crowi: Crowi) {
@@ -30,7 +25,9 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
   }
 
   shouldHandle(eventType: string, permission: EventActionsPermission, channel: string): boolean {
-    if (eventType !== 'link_shared') { return false; }
+    if (eventType !== 'link_shared') {
+      return false;
+    }
 
     const unfurlPermission = permission.get('unfurl');
 
@@ -41,7 +38,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     return unfurlPermission.includes(channel);
   }
 
-  async handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<UnfurlRequestEvent>, data?: {origin: string}): Promise<void> {
+  async handleEvent(client: WebClient, growiBotEvent: GrowiBotEvent<UnfurlRequestEvent>, data?: { origin: string }): Promise<void> {
     const { event } = growiBotEvent;
     const origin = data?.origin || growiInfoService.getSiteUrl();
     const { channel, message_ts: ts, links } = event;
@@ -49,43 +46,42 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     let unfurlData: DataForUnfurl[];
     try {
       unfurlData = await this.generateUnfurlsObject(links);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to generate unfurl data:', err);
       throw err;
     }
 
     // unfurl
-    const unfurlResults = await Promise.allSettled(unfurlData.map(async(data: DataForUnfurl) => {
-      const toUrl = urljoin(origin, data.id);
+    const unfurlResults = await Promise.allSettled(
+      unfurlData.map(async (data: DataForUnfurl) => {
+        const toUrl = urljoin(origin, data.id);
 
-      let targetUrl;
-      if (data.isPermalink) {
-        targetUrl = urljoin(origin, data.id);
-      }
-      else {
-        targetUrl = urljoin(origin, data.path);
-      }
+        let targetUrl;
+        if (data.isPermalink) {
+          targetUrl = urljoin(origin, data.id);
+        } else {
+          targetUrl = urljoin(origin, data.path);
+        }
 
-      let unfurls: LinkUnfurls;
+        let unfurls: LinkUnfurls;
 
-      if (data.isPublic === false) {
-        unfurls = {
-          [targetUrl]: {
-            text: 'Page is not public.',
-          },
-        };
-      }
-      else {
-        unfurls = this.generateLinkUnfurls(data as PublicData, targetUrl, toUrl);
-      }
+        if (data.isPublic === false) {
+          unfurls = {
+            [targetUrl]: {
+              text: 'Page is not public.',
+            },
+          };
+        } else {
+          unfurls = this.generateLinkUnfurls(data as PublicData, targetUrl, toUrl);
+        }
 
-      await client.chat.unfurl({
-        channel,
-        ts,
-        unfurls,
-      });
-    }));
+        await client.chat.unfurl({
+          channel,
+          ts,
+          unfurls,
+        });
+      }),
+    );
 
     this.logErrorRejectedResults(unfurlResults);
   }
@@ -102,8 +98,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
       title_link: toUrl, // permalink
       text,
       // biome-ignore lint/complexity/noUselessStringConcat: ignore
-      footer: `<${decodeURI(siteUrl)}|*${appTitle}*>`
-      + `  |  Last updated: \`${generateLastUpdateMrkdwn(updatedAt, new Date())}\``,
+      footer: `<${decodeURI(siteUrl)}|*${appTitle}*>` + `  |  Last updated: \`${generateLastUpdateMrkdwn(updatedAt, new Date())}\``,
     };
 
     const unfurls: LinkUnfurls = {
@@ -122,28 +117,18 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
     });
 
     const idRegExp = /^\/[0-9a-z]{24}$/;
-    const paths = pathOrIds.filter(pathOrId => !idRegExp.test(pathOrId));
-    const ids = pathOrIds.filter(pathOrId => idRegExp.test(pathOrId)).map(id => id.replace('/', '')); // remove a slash
+    const paths = pathOrIds.filter((pathOrId) => !idRegExp.test(pathOrId));
+    const ids = pathOrIds.filter((pathOrId) => idRegExp.test(pathOrId)).map((id) => id.replace('/', '')); // remove a slash
 
     // get pages with revision
     const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
     const pageQueryBuilderByPaths = new PageQueryBuilder(Page.find());
-    const pagesByPaths = await pageQueryBuilderByPaths
-      .addConditionToListByPathsArray(paths)
-      .query
-      .populate('revision')
-      .lean()
-      .exec();
+    const pagesByPaths = await pageQueryBuilderByPaths.addConditionToListByPathsArray(paths).query.populate('revision').lean().exec();
 
     const pageQueryBuilderByIds = new PageQueryBuilder(Page.find());
-    const pagesByIds = await pageQueryBuilderByIds
-      .addConditionToListByPageIdsArray(ids)
-      .query
-      .populate('revision')
-      .lean()
-      .exec();
+    const pagesByIds = await pageQueryBuilderByIds.addConditionToListByPageIdsArray(ids).query.populate('revision').lean().exec();
 
     const unfurlDataFromNormalLinks = this.generateDataForUnfurl(pagesByPaths, false);
     const unfurlDataFromPermalinks = this.generateDataForUnfurl(pagesByIds, true);
@@ -160,7 +145,10 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
       // not send non-public page
       if (page.grant !== PageGrant.GRANT_PUBLIC) {
         return unfurlData.push({
-          isPublic: false, isPermalink, id: page._id.toString(), path: page.path,
+          isPublic: false,
+          isPermalink,
+          id: page._id.toString(),
+          path: page.path,
         });
       }
 
@@ -168,7 +156,13 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
       const { updatedAt, commentCount } = page;
       const { body } = page.revision;
       unfurlData.push({
-        isPublic: true, isPermalink, id: page._id.toString(), path: page.path, pageBody: body, updatedAt, commentCount,
+        isPublic: true,
+        isPermalink,
+        id: page._id.toString(),
+        path: page.path,
+        pageBody: body,
+        updatedAt,
+        commentCount,
       });
     });
 
@@ -183,5 +177,4 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
       logger.error(`Error occurred (count: ${i}): `, rejected.reason.toString());
     });
   }
-
 }

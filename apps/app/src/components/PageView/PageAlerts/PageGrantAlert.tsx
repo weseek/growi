@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 
-
 export const PageGrantAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: pageData } = useSWRxCurrentPage();
@@ -15,7 +14,7 @@ export const PageGrantAlert = (): JSX.Element => {
   }
 
   const populatedGrantedGroups = () => {
-    return pageData.grantedGroups.filter(group => isPopulated(group.item));
+    return pageData.grantedGroups.filter((group) => isPopulated(group.item));
   };
 
   const renderAlertContent = () => {
@@ -23,14 +22,16 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 2) {
         return (
           <>
-            <span className="material-symbols-outlined me-1">link</span><strong>{t('Anyone with the link')}</strong>
+            <span className="material-symbols-outlined me-1">link</span>
+            <strong>{t('Anyone with the link')}</strong>
           </>
         );
       }
       if (pageData.grant === 4) {
         return (
           <>
-            <span className="material-symbols-outlined me-1">lock</span><strong>{t('Only me')}</strong>
+            <span className="material-symbols-outlined me-1">lock</span>
+            <strong>{t('Only me')}</strong>
           </>
         );
       }
@@ -38,9 +39,10 @@ export const PageGrantAlert = (): JSX.Element => {
         return (
           <>
             <span className="material-symbols-outlined me-1">account_tree</span>
-            <strong>{
-              populatedGrantedGroups().map(g => g.item.name).join(', ')
-            }
+            <strong>
+              {populatedGrantedGroups()
+                .map((g) => g.item.name)
+                .join(', ')}
             </strong>
           </>
         );
@@ -52,7 +54,6 @@ export const PageGrantAlert = (): JSX.Element => {
       </>
     );
   };
-
 
   return (
     <p data-testid="page-grant-alert" className="alert alert-primary py-3 px-4">

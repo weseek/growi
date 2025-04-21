@@ -5,10 +5,7 @@ import useSWRImmutable from 'swr/immutable';
 import { apiv3Get } from '~/client/util/apiv3-client';
 
 export const useSWRxTemplates = (): SWRResponse<TemplateSummary[], Error> => {
-  return useSWRImmutable(
-    '/templates',
-    endpoint => apiv3Get<{ summaries: TemplateSummary[] }>(endpoint).then(res => res.data.summaries),
-  );
+  return useSWRImmutable('/templates', (endpoint) => apiv3Get<{ summaries: TemplateSummary[] }>(endpoint).then((res) => res.data.summaries));
 };
 
 export const useSWRxTemplate = (summary: TemplateSummary | undefined, locale?: string): SWRResponse<string, Error> => {
@@ -25,6 +22,6 @@ export const useSWRxTemplate = (summary: TemplateSummary | undefined, locale?: s
         ? `/templates/preset-templates/${targetTemplate.id}/${targetTemplate.locale}`
         : `/templates/plugin-templates/${pluginId}/${targetTemplate.id}/${targetTemplate.locale}`;
     },
-    endpoint => apiv3Get<{ markdown: string }>(endpoint).then(res => res.data.markdown),
+    (endpoint) => apiv3Get<{ markdown: string }>(endpoint).then((res) => res.data.markdown),
   );
 };

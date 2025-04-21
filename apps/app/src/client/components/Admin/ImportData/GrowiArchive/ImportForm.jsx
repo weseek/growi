@@ -10,21 +10,13 @@ import { ImportOptionForPages } from '~/models/admin/import-option-for-pages';
 import { ImportOptionForRevisions } from '~/models/admin/import-option-for-revisions';
 import { useAdminSocket } from '~/stores/socket-io';
 
-
 import ErrorViewer from './ErrorViewer';
 import ImportCollectionConfigurationModal from './ImportCollectionConfigurationModal';
 import ImportCollectionItem, { DEFAULT_MODE, MODE_RESTRICTED_COLLECTION } from './ImportCollectionItem';
 
-
-const GROUPS_PAGE = [
-  'pages', 'revisions', 'tags', 'pagetagrelations',
-];
-const GROUPS_USER = [
-  'users', 'externalaccounts', 'usergroups', 'usergrouprelations',
-];
-const GROUPS_CONFIG = [
-  'configs', 'updateposts', 'globalnotificationsettings',
-];
+const GROUPS_PAGE = ['pages', 'revisions', 'tags', 'pagetagrelations'];
+const GROUPS_USER = ['users', 'externalaccounts', 'usergroups', 'usergrouprelations'];
+const GROUPS_CONFIG = ['configs', 'updateposts', 'globalnotificationsettings'];
 const ALL_GROUPED_COLLECTIONS = GROUPS_PAGE.concat(GROUPS_USER).concat(GROUPS_CONFIG);
 
 /** @type Record<string, typeof GrowiArchiveImportOption> */
@@ -34,7 +26,6 @@ const IMPORT_OPTION_CLASS_MAPPING = {
 };
 
 class ImportForm extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -69,9 +60,7 @@ class ImportForm extends React.Component {
       this.initialState.collectionNameToFileNameMap[collectionName] = fileName;
 
       // determine initial mode
-      const initialMode = (MODE_RESTRICTED_COLLECTION[collectionName] != null)
-        ? MODE_RESTRICTED_COLLECTION[collectionName][0]
-        : DEFAULT_MODE;
+      const initialMode = MODE_RESTRICTED_COLLECTION[collectionName] != null ? MODE_RESTRICTED_COLLECTION[collectionName][0] : DEFAULT_MODE;
       // create GrowiArchiveImportOption instance
       const ImportOption = IMPORT_OPTION_CLASS_MAPPING[collectionName] || GrowiArchiveImportOption;
       this.initialState.optionsMap[collectionName] = new ImportOption(collectionName, initialMode);
@@ -154,8 +143,7 @@ class ImportForm extends React.Component {
     const selectedCollections = new Set(this.state.selectedCollections);
     if (bool) {
       selectedCollections.add(collectionName);
-    }
-    else {
+    } else {
       selectedCollections.delete(collectionName);
     }
 
@@ -208,12 +196,7 @@ class ImportForm extends React.Component {
     await this.validateUserGroups();
     await this.validateUserGroupRelations();
 
-    const errors = [
-      ...this.state.warnForPageGroups,
-      ...this.state.warnForUserGroups,
-      ...this.state.warnForConfigGroups,
-      ...this.state.warnForOtherGroups,
-    ];
+    const errors = [...this.state.warnForPageGroups, ...this.state.warnForUserGroups, ...this.state.warnForConfigGroups, ...this.state.warnForOtherGroups];
     const canImport = errors.length === 0;
 
     this.setState({ canImport });
@@ -289,9 +272,7 @@ class ImportForm extends React.Component {
   }
 
   async import() {
-    const {
-      fileName, onPostImport, t,
-    } = this.props;
+    const { fileName, onPostImport, t } = this.props;
     const { selectedCollections, optionsMap } = this.state;
 
     // init progress data
@@ -314,8 +295,7 @@ class ImportForm extends React.Component {
       }
 
       toastSuccess(undefined, 'Import process has requested.');
-    }
-    catch (err) {
+    } catch (err) {
       if (err.code === 'only_upsert_available') {
         toastError(t('admin:importer_management.error.only_upsert_available'));
       }
@@ -431,21 +411,12 @@ class ImportForm extends React.Component {
     const { isErrorsViewerOpen, errorsMap, collectionNameForErrorsViewer } = this.state;
     const errors = errorsMap[collectionNameForErrorsViewer];
 
-    return (
-      <ErrorViewer
-        isOpen={isErrorsViewerOpen}
-        onClose={() => this.setState({ isErrorsViewerOpen: false })}
-        errors={errors}
-      />
-    );
+    return <ErrorViewer isOpen={isErrorsViewerOpen} onClose={() => this.setState({ isErrorsViewerOpen: false })} errors={errors} />;
   }
 
   render() {
     const { t } = this.props;
-    const {
-      canImport, isImporting,
-      warnForPageGroups, warnForUserGroups, warnForConfigGroups,
-    } = this.state;
+    const { canImport, isImporting, warnForPageGroups, warnForUserGroups, warnForConfigGroups } = this.state;
 
     return (
       <>
@@ -492,7 +463,6 @@ class ImportForm extends React.Component {
       </>
     );
   }
-
 }
 
 ImportForm.propTypes = {
@@ -515,6 +485,5 @@ const ImportFormWrapperFc = (props) => {
 
   return <ImportForm t={t} socket={socket} {...props} />;
 };
-
 
 export default ImportFormWrapperFc;

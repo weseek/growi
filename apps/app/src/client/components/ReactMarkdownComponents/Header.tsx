@@ -1,6 +1,4 @@
-import {
- useCallback, useEffect, useState, type ReactNode, type JSX
-} from 'react';
+import { useCallback, useEffect, useState, type ReactNode, type JSX } from 'react';
 
 import type EventEmitter from 'events';
 
@@ -8,15 +6,11 @@ import type { Element } from 'hast';
 import { useRouter } from 'next/router';
 
 import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
-import {
-  useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
-} from '~/stores-universal/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId } from '~/stores-universal/context';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
-
 import styles from './Header.module.scss';
-
 
 const logger = loggerFactory('growi:components:Header');
 const moduleClass = styles['revision-head'] ?? '';
@@ -26,7 +20,6 @@ declare global {
   var globalEmitter: EventEmitter;
 }
 
-
 function setCaretLine(line?: number): void {
   if (line != null) {
     globalEmitter.emit('reservedNextCaretLine', line);
@@ -34,8 +27,8 @@ function setCaretLine(line?: number): void {
 }
 
 type EditLinkProps = {
-  line?: number,
-}
+  line?: number;
+};
 
 /**
  * Inner FC to display edit link icon
@@ -52,17 +45,14 @@ const EditLink = (props: EditLinkProps): JSX.Element => {
   );
 };
 
-
 type HeaderProps = {
-  children: ReactNode,
-  node: Element,
-  id?: string,
-}
+  children: ReactNode;
+  node: Element;
+  id?: string;
+};
 
 export const Header = (props: HeaderProps): JSX.Element => {
-  const {
-    node, id, children,
-  } = props;
+  const { node, id, children } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
@@ -76,16 +66,18 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   const CustomTag = node.tagName as keyof JSX.IntrinsicElements;
 
-  const activateByHash = useCallback((url: string) => {
-    try {
-      const hash = (new URL(url, 'https://example.com')).hash.slice(1);
-      setActive(decodeURIComponent(hash) === id);
-    }
-    catch (err) {
-      logger.debug(err);
-      setActive(false);
-    }
-  }, [id]);
+  const activateByHash = useCallback(
+    (url: string) => {
+      try {
+        const hash = new URL(url, 'https://example.com').hash.slice(1);
+        setActive(decodeURIComponent(hash) === id);
+      } catch (err) {
+        logger.debug(err);
+        setActive(false);
+      }
+    },
+    [id],
+  );
 
   // init
   useEffect(() => {
@@ -118,8 +110,13 @@ export const Header = (props: HeaderProps): JSX.Element => {
   // This is because the current conditional logic cannot handle cases where the draft is an empty string.
   // It will be possible to address this TODO ySyncAnnotation become available for import.
   // Ref: https://github.com/yjs/y-codemirror.next/pull/30
-  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null
-                            && (!isLoadingCurrentPageYjsData && !currentPageYjsData?.hasYdocsNewerThanLatestRevision);
+  const showEditButton =
+    !isGuestUser &&
+    !isReadOnlyUser &&
+    !isSharedUser &&
+    shareLinkId == null &&
+    !isLoadingCurrentPageYjsData &&
+    !currentPageYjsData?.hasYdocsNewerThanLatestRevision;
 
   return (
     <>
@@ -130,9 +127,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
         {children}
 
-        { showEditButton && (
-          <EditLink line={node.position?.start.line} />
-        ) }
+        {showEditButton && <EditLink line={node.position?.start.line} />}
       </CustomTag>
     </>
   );

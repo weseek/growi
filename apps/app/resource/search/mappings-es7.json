@@ -3,8 +3,8 @@
     "analysis": {
       "filter": {
         "english_stop": {
-          "type":       "stop",
-          "stopwords":  "_english_"
+          "type": "stop",
+          "stopwords": "_english_"
         }
       },
       "tokenizer": {
@@ -18,20 +18,17 @@
       "analyzer": {
         "japanese": {
           "tokenizer": "kuromoji_tokenizer",
-          "char_filter" : ["icu_normalizer"]
+          "char_filter": ["icu_normalizer"]
         },
         "english_edge_ngram": {
           "tokenizer": "edge_ngram_tokenizer",
-          "filter": [
-            "lowercase",
-            "english_stop"
-          ]
+          "filter": ["lowercase", "english_stop"]
         }
       }
     }
   },
   "mappings": {
-    "properties" : {
+    "properties": {
       "path": {
         "type": "text",
         "fields": {

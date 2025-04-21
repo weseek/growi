@@ -59,23 +59,42 @@ module.exports = (crowi, app) => {
   const login = require('../login')(crowi, app);
   const loginPassport = require('../login-passport')(crowi, app);
 
-  routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation,
-    addActivity, loginPassport.injectRedirectTo, loginPassport.isEnableLoginWithLocalOrLdap, loginPassport.loginWithLocal, loginPassport.loginWithLdap,
-    loginPassport.cannotLoginErrorHadnler, loginPassport.loginFailure);
+  routerForAuth.post(
+    '/login',
+    applicationInstalled,
+    loginFormValidator.loginRules(),
+    loginFormValidator.loginValidation,
+    addActivity,
+    loginPassport.injectRedirectTo,
+    loginPassport.isEnableLoginWithLocalOrLdap,
+    loginPassport.loginWithLocal,
+    loginPassport.loginWithLdap,
+    loginPassport.cannotLoginErrorHadnler,
+    loginPassport.loginFailure,
+  );
 
   routerForAuth.use('/invited', require('./invited')(crowi));
   routerForAuth.use('/logout', require('./logout')(crowi));
 
-  routerForAuth.post('/register',
-    applicationInstalled, registerFormValidator.registerRules(minPasswordLength), registerFormValidator.registerValidation, addActivity, login.register);
+  routerForAuth.post(
+    '/register',
+    applicationInstalled,
+    registerFormValidator.registerRules(minPasswordLength),
+    registerFormValidator.registerValidation,
+    addActivity,
+    login.register,
+  );
 
-  routerForAuth.post('/user-activation/register', applicationInstalled, userActivation.registerRules(minPasswordLength),
-    userActivation.validateRegisterForm, userActivation.registerAction(crowi));
+  routerForAuth.post(
+    '/user-activation/register',
+    applicationInstalled,
+    userActivation.registerRules(minPasswordLength),
+    userActivation.validateRegisterForm,
+    userActivation.registerAction(crowi),
+  );
 
   // installer
-  routerForAdmin.use('/installer', isInstalled
-    ? allreadyInstalledMiddleware
-    : require('./installer')(crowi));
+  routerForAdmin.use('/installer', isInstalled ? allreadyInstalledMiddleware : require('./installer')(crowi));
 
   if (!isInstalled) {
     return [router, routerForAdmin, routerForAuth];
@@ -89,7 +108,6 @@ module.exports = (crowi, app) => {
   router.use('/external-user-group-relations', require('~/features/external-user-group/server/routes/apiv3/external-user-group-relation')(crowi));
 
   router.use('/statistics', require('./statistics')(crowi));
-
 
   router.use('/search', require('./search')(crowi));
 
@@ -113,12 +131,14 @@ module.exports = (crowi, app) => {
   const user = require('../user')(crowi, null);
   router.get('/check-username', user.api.checkUsername);
 
-  router.post('/complete-registration',
+  router.post(
+    '/complete-registration',
     addActivity,
     injectUserRegistrationOrderByTokenMiddleware,
     userActivation.completeRegistrationRules(),
     userActivation.validateCompleteRegistration,
-    userActivation.completeRegistrationAction(crowi));
+    userActivation.completeRegistrationAction(crowi),
+  );
 
   router.use('/user-ui-settings', require('./user-ui-settings')(crowi));
 

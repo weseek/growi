@@ -2,4 +2,4 @@
 // Ref: https://github.com/orgs/community/discussions/16925
 
 export const AllCallout = ['note', 'tip', 'important', 'info', 'warning', 'danger', 'caution'] as const;
-export type Callout = typeof AllCallout[number];
+export type Callout = (typeof AllCallout)[number];

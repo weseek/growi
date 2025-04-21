@@ -1,8 +1,6 @@
 import { useEffect } from 'react';
 
-import {
-  useGlobalSocket, GLOBAL_SOCKET_KEY, GLOBAL_SOCKET_NS, useSWRStatic,
-} from '@growi/core/dist/swr';
+import { useGlobalSocket, GLOBAL_SOCKET_KEY, GLOBAL_SOCKET_NS, useSWRStatic } from '@growi/core/dist/swr';
 import type { Socket } from 'socket.io-client';
 import type { SWRResponse } from 'swr';
 
@@ -18,7 +16,6 @@ export const GLOBAL_ADMIN_SOCKET_KEY = 'globalAdminSocket';
  * Global Socket
  */
 export const useSetupGlobalSocket = (): void => {
-
   const { data, mutate } = useSWRStatic(GLOBAL_SOCKET_KEY);
 
   useEffect(() => {
@@ -26,14 +23,18 @@ export const useSetupGlobalSocket = (): void => {
       return;
     }
 
-    mutate(async() => {
+    mutate(async () => {
       const { io } = await import('socket.io-client');
       const socket = io(GLOBAL_SOCKET_NS, {
         transports: ['websocket'],
       });
 
-      socket.on('error', (err) => { logger.error(err) });
-      socket.on('connect_error', (err) => { logger.error('Failed to connect with websocket.', err) });
+      socket.on('error', (err) => {
+        logger.error(err);
+      });
+      socket.on('connect_error', (err) => {
+        logger.error('Failed to connect with websocket.', err);
+      });
 
       return socket;
     });
@@ -67,7 +68,9 @@ export const useSetupGlobalSocketForPage = (pageId: string | undefined): void =>
   const { data: socket } = useGlobalSocket();
 
   useEffect(() => {
-    if (socket == null || pageId == null) { return }
+    if (socket == null || pageId == null) {
+      return;
+    }
 
     socket.emit(SocketEventName.JoinPage, { pageId });
 

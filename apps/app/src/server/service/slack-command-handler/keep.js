@@ -1,6 +1,4 @@
-import {
-  inputBlock, actionsBlock, buttonElement, markdownSectionBlock,
-} from '@growi/slack/dist/utils/block-kit-builder';
+import { inputBlock, actionsBlock, buttonElement, markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
 import { format } from 'date-fns/format';
 import { parse } from 'date-fns/parse';
 
@@ -17,7 +15,7 @@ module.exports = (crowi) => {
   const handler = new BaseSlackCommandHandler();
   const { User } = crowi.models;
 
-  handler.handleCommand = async function(growiCommand, client, body, respondUtil) {
+  handler.handleCommand = async function (growiCommand, client, body, respondUtil) {
     await respondUtil.respond({
       text: 'Select messages to use.',
       blocks: this.keepMessageBlocks(body.channel_name),
@@ -25,15 +23,15 @@ module.exports = (crowi) => {
     return;
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+  handler.handleInteractions = async function (client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.cancel = async(client, payload, interactionPayloadAccessor, respondUtil) => {
+  handler.cancel = async (client, payload, interactionPayloadAccessor, respondUtil) => {
     await respondUtil.deleteOriginal();
   };
 
-  handler.createPage = async function(client, payload, interactionPayloadAccessor, respondUtil) {
+  handler.createPage = async function (client, payload, interactionPayloadAccessor, respondUtil) {
     let result = [];
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
     const user = await User.findUserBySlackMemberId(payload.user.id);
@@ -50,7 +48,7 @@ module.exports = (crowi) => {
     await this.keepCreatePageAndSendPreview(client, interactionPayloadAccessor, path, user, contentsBody, respondUtil);
   };
 
-  handler.keepValidateForm = async(client, payload, interactionPayloadAccessor) => {
+  handler.keepValidateForm = async (client, payload, interactionPayloadAccessor) => {
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
     const path = interactionPayloadAccessor.getStateValues()?.page_path.page_path.value;
     let oldest = interactionPayloadAccessor.getStateValues()?.oldest.oldest.value;
@@ -93,14 +91,13 @@ module.exports = (crowi) => {
     });
   }
 
-  handler.keepGetMessages = async(client, channelId, newest, oldest) => {
+  handler.keepGetMessages = async (client, channelId, newest, oldest) => {
     let result;
 
     // first attempt
     try {
       result = await retrieveHistory(client, channelId, newest, oldest);
-    }
-    catch (err) {
+    } catch (err) {
       const errorCode = err.data?.errorCode;
 
       if (errorCode === 'not_in_channel') {
@@ -109,13 +106,9 @@ module.exports = (crowi) => {
           channel: channelId,
         });
         result = await retrieveHistory(client, channelId, newest, oldest);
-      }
-      else if (errorCode === 'channel_not_found') {
-
+      } else if (errorCode === 'channel_not_found') {
         // biome-ignore lint/complexity/noUselessStringConcat: ignore
-        const message = ':cry: GROWI Bot couldn\'t get history data because *this channel was private*.'
-          + '\nPlease add GROWI bot to this channel.'
-          + '\n';
+        const message = ":cry: GROWI Bot couldn't get history data because *this channel was private*." + '\nPlease add GROWI bot to this channel.' + '\n';
         throw new SlackCommandHandlerError(message, {
           respondBody: {
             text: message,
@@ -129,8 +122,7 @@ module.exports = (crowi) => {
             ],
           },
         });
-      }
-      else {
+      } else {
         throw err;
       }
     }
@@ -147,7 +139,7 @@ module.exports = (crowi) => {
    * @param {*} messages (array of messages)
    * @returns users object with matching Slack Member ID
    */
-  handler.getGrowiUsersFromMessages = async(messages) => {
+  handler.getGrowiUsersFromMessages = async (messages) => {
     const users = messages.map((message) => {
       return message.user;
     });
@@ -158,21 +150,20 @@ module.exports = (crowi) => {
    * Convert slack member ID to growi user if slack member ID is found in messages
    * @param {*} messages
    */
-  handler.injectGrowiUsernameToMessages = async function(messages) {
+  handler.injectGrowiUsernameToMessages = async function (messages) {
     const growiUsers = await this.getGrowiUsersFromMessages(messages);
 
-    messages.map(async(message) => {
-      const growiUser = growiUsers.find(user => user.slackMemberId === message.user);
+    messages.map(async (message) => {
+      const growiUser = growiUsers.find((user) => user.slackMemberId === message.user);
       if (growiUser != null) {
         message.user = `${growiUser.name} (@${growiUser.username})`;
-      }
-      else {
+      } else {
         message.user = `This slack member ID is not registered (${message.user})`;
       }
     });
   };
 
-  handler.keepCleanMessages = async function(messages) {
+  handler.keepCleanMessages = async function (messages) {
     const cleanedContents = [];
     let lastMessage = {};
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
@@ -200,7 +191,7 @@ module.exports = (crowi) => {
     return cleanedContents;
   };
 
-  handler.keepCreatePageAndSendPreview = async(client, interactionPayloadAccessor, path, user, contentsBody, respondUtil) => {
+  handler.keepCreatePageAndSendPreview = async (client, interactionPayloadAccessor, path, user, contentsBody, respondUtil) => {
     await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody, respondUtil, user);
 
     // TODO: contentsBody text characters must be less than 3001
@@ -235,25 +226,37 @@ module.exports = (crowi) => {
     return [
       markdownSectionBlock('*The keep command is in alpha.*'),
       markdownSectionBlock('Select the oldest and newest datetime of the messages to use.'),
-      inputBlock({
-        type: 'plain_text_input',
-        action_id: 'oldest',
-        initial_value: initialOldest,
-      }, 'oldest', 'Oldest datetime'),
-      inputBlock({
-        type: 'plain_text_input',
-        action_id: 'newest',
-        initial_value: initialNewest,
-      }, 'newest', 'Newest datetime'),
-      inputBlock({
-        type: 'plain_text_input',
-        placeholder: {
-          type: 'plain_text',
-          text: 'Input page path to create.',
+      inputBlock(
+        {
+          type: 'plain_text_input',
+          action_id: 'oldest',
+          initial_value: initialOldest,
         },
-        initial_value: initialPagePath,
-        action_id: 'page_path',
-      }, 'page_path', 'Page path'),
+        'oldest',
+        'Oldest datetime',
+      ),
+      inputBlock(
+        {
+          type: 'plain_text_input',
+          action_id: 'newest',
+          initial_value: initialNewest,
+        },
+        'newest',
+        'Newest datetime',
+      ),
+      inputBlock(
+        {
+          type: 'plain_text_input',
+          placeholder: {
+            type: 'plain_text',
+            text: 'Input page path to create.',
+          },
+          initial_value: initialPagePath,
+          action_id: 'page_path',
+        },
+        'page_path',
+        'Page path',
+      ),
       actionsBlock(
         buttonElement({ text: 'Cancel', actionId: 'keep:cancel' }),
         buttonElement({ text: 'Create page', actionId: 'keep:createPage', style: 'primary' }),

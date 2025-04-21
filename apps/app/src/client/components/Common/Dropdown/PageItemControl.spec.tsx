@@ -1,12 +1,9 @@
 import type { IPageInfoForOperation } from '@growi/core/dist/interfaces';
-import {
-  fireEvent, screen, within,
-} from '@testing-library/dom';
+import { fireEvent, screen, within } from '@testing-library/dom';
 import { render } from '@testing-library/react';
 import { mock } from 'vitest-mock-extended';
 
 import { PageItemControl } from './PageItemControl';
-
 
 // mock for isIPageInfoForOperation
 
@@ -18,10 +15,9 @@ vi.mock('@growi/core/dist/interfaces', () => ({
   isIPageInfoForOperation: mocks.isIPageInfoForOperationMock,
 }));
 
-
 describe('PageItemControl.tsx', () => {
   describe('Should trigger onClickRenameMenuItem() when clicking the rename button', () => {
-    it('without fetching PageInfo by useSWRxPageInfo', async() => {
+    it('without fetching PageInfo by useSWRxPageInfo', async () => {
       // setup
       const pageInfo = mock<IPageInfoForOperation>();
 

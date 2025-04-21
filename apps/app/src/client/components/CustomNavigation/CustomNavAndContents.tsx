@@ -4,19 +4,16 @@ import CustomNav, { CustomNavTab, CustomNavDropdown } from './CustomNav';
 import CustomTabContent from './CustomTabContent';
 
 type CustomNavAndContentsProps = {
-  navTabMapping: any,
-  defaultTabIndex?: number,
-  navigationMode?: 'both' | 'tab' | 'dropdown',
-  tabContentClasses?: string[],
-  breakpointToHideInactiveTabsDown?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
-  navRightElement?: ReactNode
-}
-
+  navTabMapping: any;
+  defaultTabIndex?: number;
+  navigationMode?: 'both' | 'tab' | 'dropdown';
+  tabContentClasses?: string[];
+  breakpointToHideInactiveTabsDown?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  navRightElement?: ReactNode;
+};
 
 const CustomNavAndContents = (props: CustomNavAndContentsProps): JSX.Element => {
-  const {
-    navTabMapping, defaultTabIndex, navigationMode = 'tab', tabContentClasses = ['p-4'], breakpointToHideInactiveTabsDown, navRightElement,
-  } = props;
+  const { navTabMapping, defaultTabIndex, navigationMode = 'tab', tabContentClasses = ['p-4'], breakpointToHideInactiveTabsDown, navRightElement } = props;
   const [activeTab, setActiveTab] = useState(Object.keys(props.navTabMapping)[defaultTabIndex || 0]);
 
   let SelectedNav;

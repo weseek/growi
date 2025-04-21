@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useMemo, useRef, useState, type JSX,
-} from 'react';
+import React, { useCallback, useMemo, useRef, useState, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -22,16 +20,15 @@ import styles from './SearchPage.module.scss';
 // TODO: replace with "customize:showPageLimitationS"
 const INITIAL_PAGIONG_SIZE = 20;
 
-
 /**
  * SearchResultListHead
  */
 
 type SearchResultListHeadProps = {
-  searchResult: IFormattedSearchResult,
-  pagingSize: number,
-  onPagingSizeChanged: (size: number) => void,
-}
+  searchResult: IFormattedSearchResult;
+  pagingSize: number;
+  onPagingSizeChanged: (size: number) => void;
+};
 
 const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.Element => {
   const { t } = useTranslation();
@@ -43,21 +40,21 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   const { took, total } = searchResult.meta;
 
   if (total === 0) {
-    return (
-      <div className="d-flex justify-content-center h2 text-muted my-5">
-        0 {t('search_result.page_number_unit')}
-      </div>
-    );
+    return <div className="d-flex justify-content-center h2 text-muted my-5">0 {t('search_result.page_number_unit')}</div>;
   }
 
   return (
     <div className="d-flex align-items-center justify-content-between">
       <div className="text-nowrap">
-        <span className="ms-3 fw-bold">{total} {t('search_result.hit_number_unit', 'hit')}</span>
-        { took != null && (
+        <span className="ms-3 fw-bold">
+          {total} {t('search_result.hit_number_unit', 'hit')}
+        </span>
+        {took != null && (
           // blackout 70px rectangle in VRT
-          (<span data-vrt-blackout className="ms-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>)
-        ) }
+          <span data-vrt-blackout className="ms-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>
+            ({took}ms)
+          </span>
+        )}
       </div>
       {/* TODO: infinite scroll for search result */}
       {/* <div className="input-group flex-nowrap search-result-select-group ms-auto d-md-flex d-none">
@@ -81,7 +78,6 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 
 SearchResultListHead.displayName = 'SearchResultListHead';
 
-
 export const SearchPage = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: showPageLimitationL } = useShowPageLimitationL();
@@ -94,8 +90,8 @@ export const SearchPage = (): JSX.Element => {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [selectedCount, setSelectedCount] = useState(0);
 
-  const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
-  const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
+  const selectAllControlRef = useRef<ISelectableAndIndeterminatable | null>(null);
+  const searchPageBaseRef = useRef<(ISelectableAll & IReturnSelectedPageIds) | null>(null);
 
   const { data, conditions, mutate } = useSWRxSearch(keyword ?? '', null, {
     ...configurationsByControl,
@@ -103,14 +99,17 @@ export const SearchPage = (): JSX.Element => {
     limit,
   });
 
-  const searchInvokedHandler = useCallback((newKeyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
-    setOffset(0);
-    setConfigurationsByControl(newConfigurations);
+  const searchInvokedHandler = useCallback(
+    (newKeyword: string, newConfigurations: Partial<ISearchConfigurations>) => {
+      setOffset(0);
+      setConfigurationsByControl(newConfigurations);
 
-    pushState(newKeyword);
+      pushState(newKeyword);
 
-    mutate();
-  }, [mutate, pushState]);
+      mutate();
+    },
+    [mutate, pushState],
+  );
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -121,8 +120,7 @@ export const SearchPage = (): JSX.Element => {
 
     if (isChecked) {
       instance.selectAll();
-    }
-    else {
+    } else {
       instance.deselectAll();
     }
 
@@ -139,11 +137,9 @@ export const SearchPage = (): JSX.Element => {
 
     if (selectedCount === 0) {
       instance.deselect();
-    }
-    else if (selectedCount === totalCount) {
+    } else if (selectedCount === totalCount) {
       instance.select();
-    }
-    else {
+    } else {
       setIsCollapsed(true);
       instance.setIndeterminate();
     }
@@ -152,16 +148,22 @@ export const SearchPage = (): JSX.Element => {
     setSelectedCount(selectedCount);
   }, []);
 
-  const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
-    setOffset(0);
-    setLimit(pagingSize);
-    mutate();
-  }, [mutate]);
+  const pagingSizeChangedHandler = useCallback(
+    (pagingSize: number) => {
+      setOffset(0);
+      setLimit(pagingSize);
+      mutate();
+    },
+    [mutate],
+  );
 
-  const pagingNumberChangedHandler = useCallback((activePage: number) => {
-    setOffset((activePage - 1) * limit);
-    mutate();
-  }, [limit, mutate]);
+  const pagingNumberChangedHandler = useCallback(
+    (activePage: number) => {
+      setOffset((activePage - 1) * limit);
+      mutate();
+    },
+    [limit, mutate],
+  );
 
   const initialSearchConditions: Partial<ISearchConditions> = useMemo(() => {
     return {
@@ -183,7 +185,9 @@ export const SearchPage = (): JSX.Element => {
             type="button"
             className={`${isCollapsed ? 'active' : ''} btn btn-muted-danger d-flex align-items-center ms-2`}
             aria-expanded="false"
-            onClick={() => { setIsCollapsed(!isCollapsed) }}
+            onClick={() => {
+              setIsCollapsed(!isCollapsed);
+            }}
           >
             <span className="material-symbols-outlined fs-5">delete</span>
             <span className={`material-symbols-outlined me-1 ${isCollapsed ? 'rotate-180' : ''}`}>keyboard_arrow_down</span>
@@ -206,10 +210,7 @@ export const SearchPage = (): JSX.Element => {
                 isCheckboxDisabled={hitsCount === 0}
                 onCheckboxChanged={selectAllCheckboxChangedHandler}
               >
-                <label
-                  className="form-check-label ms-2"
-                  htmlFor="cb-select-all"
-                >
+                <label className="form-check-label ms-2" htmlFor="cb-select-all">
                   {t('search_result.select_all')}
                 </label>
               </OperateAllControl>
@@ -221,14 +222,14 @@ export const SearchPage = (): JSX.Element => {
               disabled={selectedCount === 0}
               onClick={deleteAllButtonClickedHandler}
             >
-              <span className="material-symbols-outlined fs-5">delete</span>{t('search_result.delete_selected_pages')}
+              <span className="material-symbols-outlined fs-5">delete</span>
+              {t('search_result.delete_selected_pages')}
             </button>
           </div>
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     );
   }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, selectedCount, t]);
-
 
   const searchControl = useMemo(() => {
     return (
@@ -248,13 +249,7 @@ export const SearchPage = (): JSX.Element => {
     if (data == null) {
       return <></>;
     }
-    return (
-      <SearchResultListHead
-        searchResult={data}
-        pagingSize={limit}
-        onPagingSizeChanged={pagingSizeChangedHandler}
-      />
-    );
+    return <SearchResultListHead searchResult={data} pagingSize={limit} onPagingSizeChanged={pagingSizeChangedHandler} />;
   }, [data, limit, pagingSizeChangedHandler]);
 
   const searchPager = useMemo(() => {
@@ -267,12 +262,7 @@ export const SearchPage = (): JSX.Element => {
     const { offset, limit } = conditions;
 
     return (
-      <PaginationWrapper
-        activePage={Math.floor(offset / limit) + 1}
-        totalItemsCount={total}
-        pagingLimit={limit}
-        changePage={pagingNumberChangedHandler}
-      />
+      <PaginationWrapper activePage={Math.floor(offset / limit) + 1} totalItemsCount={total} pagingLimit={limit} changePage={pagingNumberChangedHandler} />
     );
   }, [conditions, data, pagingNumberChangedHandler]);
 

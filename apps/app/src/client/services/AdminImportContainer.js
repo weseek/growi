@@ -14,7 +14,6 @@ const logger = loggerFactory('growi:appSettings');
  * @extends {Container} unstated Container
  */
 export default class AdminImportContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -53,9 +52,7 @@ export default class AdminImportContainer extends Container {
    */
   async retrieveImportSettingsData() {
     const response = await apiv3Get('/import/');
-    const {
-      importSettingsParams,
-    } = response.data;
+    const { importSettingsParams } = response.data;
 
     this.setState({
       esaTeamName: importSettingsParams.esaTeamName,
@@ -79,8 +76,7 @@ export default class AdminImportContainer extends Container {
       };
       await apiPost('/admin/import/esa', params);
       toastSuccess('Import posts from esa success.');
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       toastError(err);
     }
@@ -94,8 +90,7 @@ export default class AdminImportContainer extends Container {
       };
       await apiPost('/admin/import/testEsaAPI', params);
       toastSuccess('Test connection to esa success.');
-    }
-    catch (error) {
+    } catch (error) {
       toastError(error);
     }
   }
@@ -108,8 +103,7 @@ export default class AdminImportContainer extends Container {
     try {
       await apiPost('/admin/settings/importerEsa', params);
       toastSuccess('Updated');
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       toastError(err);
     }
@@ -123,13 +117,11 @@ export default class AdminImportContainer extends Container {
       };
       await apiPost('/admin/import/qiita', params);
       toastSuccess('Import posts from qiita:team success.');
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       toastError(err);
     }
   }
-
 
   async qiitaHandleSubmitTest() {
     try {
@@ -139,8 +131,7 @@ export default class AdminImportContainer extends Container {
       };
       await apiPost('/admin/import/testQiitaAPI', params);
       toastSuccess('Test connection to qiita:team success.');
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       toastError(err);
     }
@@ -154,11 +145,9 @@ export default class AdminImportContainer extends Container {
     try {
       await apiPost('/admin/settings/importerQiita', params);
       toastSuccess('Updated');
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       toastError(err);
     }
   }
-
 }

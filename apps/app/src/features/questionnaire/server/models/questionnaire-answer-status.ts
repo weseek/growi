@@ -6,12 +6,15 @@ import { type IQuestionnaireAnswerStatus, StatusType } from '../../interfaces/qu
 
 export interface QuestionnaireAnswerStatusDocument extends IQuestionnaireAnswerStatus, Document {}
 
-export type QuestionnaireAnswerStatusModel = Model<QuestionnaireAnswerStatusDocument>
+export type QuestionnaireAnswerStatusModel = Model<QuestionnaireAnswerStatusDocument>;
 
-const questionnaireOrderSchema = new Schema<QuestionnaireAnswerStatusDocument>({
-  user: { type: Schema.Types.ObjectId, required: true },
-  questionnaireOrderId: { type: String, required: true },
-  status: { type: String, enum: Object.values(StatusType), default: StatusType.not_answered },
-}, { timestamps: true });
+const questionnaireOrderSchema = new Schema<QuestionnaireAnswerStatusDocument>(
+  {
+    user: { type: Schema.Types.ObjectId, required: true },
+    questionnaireOrderId: { type: String, required: true },
+    status: { type: String, enum: Object.values(StatusType), default: StatusType.not_answered },
+  },
+  { timestamps: true },
+);
 
 export default getOrCreateModel<QuestionnaireAnswerStatusDocument, QuestionnaireAnswerStatusModel>('QuestionnaireAnswerStatus', questionnaireOrderSchema);

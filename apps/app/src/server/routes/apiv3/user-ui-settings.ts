@@ -13,9 +13,8 @@ const logger = loggerFactory('growi:routes:apiv3:user-ui-settings');
 const router = express.Router();
 
 module.exports = () => {
-
   const validatorForPut = [
-    body('settings').exists().withMessage('The body param \'settings\' is required'),
+    body('settings').exists().withMessage("The body param 'settings' is required"),
     body('settings.currentSidebarContents').optional().isIn(AllSidebarContentsType),
     body('settings.currentProductNavWidth').optional().isNumeric(),
     body('settings.preferCollapsedModeByUser').optional().isBoolean(),
@@ -67,7 +66,7 @@ module.exports = () => {
    *                   type: boolean
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  router.put('/', validatorForPut, apiV3FormValidator, async(req: any, res: any) => {
+  router.put('/', validatorForPut, apiV3FormValidator, async (req: any, res: any) => {
     const { user } = req;
     const { settings } = req.body;
 
@@ -90,7 +89,6 @@ module.exports = () => {
       return res.apiv3(updateData);
     }
 
-
     // remove the keys that have null value
     Object.keys(updateData).forEach((key) => {
       if (updateData[key] == null) {
@@ -110,8 +108,7 @@ module.exports = () => {
         { upsert: true, new: true },
       );
       return res.apiv3(updatedSettings);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(err));
     }

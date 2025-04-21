@@ -46,7 +46,6 @@ export const InAppNotificationPage: FC = () => {
       setActivePage(selectedPageNumber);
     };
 
-
     if (notificationData == null) {
       return (
         <div className="wiki" data-testid="grw-in-app-notification-page-spinner">
@@ -57,7 +56,7 @@ export const InAppNotificationPage: FC = () => {
       );
     }
 
-    const updateUnopendNotificationStatusesToOpened = async() => {
+    const updateUnopendNotificationStatusesToOpened = async () => {
       await apiv3Put('/in-app-notification/all-statuses-open');
       // mutate notification statuses in 'UNREAD' Category
       mutateNotificationData();
@@ -66,29 +65,22 @@ export const InAppNotificationPage: FC = () => {
       mutateNotificationCount();
     };
 
-
     return (
       <>
-        {(status === InAppNotificationStatuses.STATUS_UNOPENED && notificationData.totalDocs > 0)
-      && (
-        <div className="mb-2 d-flex justify-content-end">
-          <button
-            type="button"
-            className="btn btn-outline-primary"
-            onClick={updateUnopendNotificationStatusesToOpened}
-          >
-            {t('in_app_notification.mark_all_as_read')}
-          </button>
-        </div>
-      )}
-        { notificationData != null && notificationData.docs.length === 0
+        {status === InAppNotificationStatuses.STATUS_UNOPENED && notificationData.totalDocs > 0 && (
+          <div className="mb-2 d-flex justify-content-end">
+            <button type="button" className="btn btn-outline-primary" onClick={updateUnopendNotificationStatusesToOpened}>
+              {t('in_app_notification.mark_all_as_read')}
+            </button>
+          </div>
+        )}
+        {notificationData != null && notificationData.docs.length === 0 ? (
           // no items
-          ? t('in_app_notification.no_unread_messages')
+          t('in_app_notification.no_unread_messages')
+        ) : (
           // render list-group
-          : (
-            <InAppNotificationList inAppNotificationData={notificationData} />
-          )
-        }
+          <InAppNotificationList inAppNotificationData={notificationData} />
+        )}
 
         {notificationData.totalDocs > 0 && (
           <div className="mt-4">
@@ -101,7 +93,7 @@ export const InAppNotificationPage: FC = () => {
               size="sm"
             />
           </div>
-        ) }
+        )}
       </>
     );
   };

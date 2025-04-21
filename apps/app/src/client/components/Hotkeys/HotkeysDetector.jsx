@@ -6,17 +6,13 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import HotkeyStroke from '~/client/models/HotkeyStroke';
 
 const HotkeysDetector = (props) => {
-
   const { keySet, strokeSet, onDetected } = props;
 
   // memorize HotkeyStroke instances
-  const hotkeyStrokes = useMemo(
-    () => {
-      const strokes = Array.from(strokeSet);
-      return strokes.map(stroke => new HotkeyStroke(stroke));
-    },
-    [strokeSet],
-  );
+  const hotkeyStrokes = useMemo(() => {
+    const strokes = Array.from(strokeSet);
+    return strokes.map((stroke) => new HotkeyStroke(stroke));
+  }, [strokeSet]);
 
   /**
    * return key expression string includes modifier
@@ -43,19 +39,22 @@ const HotkeysDetector = (props) => {
   /**
    * evaluate the key user pressed and trigger onDetected
    */
-  const checkHandler = useCallback((event) => {
-    const eventKey = getKeyExpression(event);
+  const checkHandler = useCallback(
+    (event) => {
+      const eventKey = getKeyExpression(event);
 
-    hotkeyStrokes.forEach((hotkeyStroke) => {
-      // if any stroke is completed
-      if (hotkeyStroke.evaluate(eventKey)) {
-        // cancel the key event
-        event.preventDefault();
-        // invoke detected handler
-        onDetected(hotkeyStroke.stroke);
-      }
-    });
-  }, [hotkeyStrokes, getKeyExpression, onDetected]);
+      hotkeyStrokes.forEach((hotkeyStroke) => {
+        // if any stroke is completed
+        if (hotkeyStroke.evaluate(eventKey)) {
+          // cancel the key event
+          event.preventDefault();
+          // invoke detected handler
+          onDetected(hotkeyStroke.stroke);
+        }
+      });
+    },
+    [hotkeyStrokes, getKeyExpression, onDetected],
+  );
 
   // memorize keyMap for GlobalHotKeys
   const keyMap = useMemo(() => {
@@ -67,10 +66,7 @@ const HotkeysDetector = (props) => {
     return { check: checkHandler };
   }, [checkHandler]);
 
-  return (
-    <GlobalHotKeys keyMap={keyMap} handlers={handlers} />
-  );
-
+  return <GlobalHotKeys keyMap={keyMap} handlers={handlers} />;
 };
 
 HotkeysDetector.propTypes = {

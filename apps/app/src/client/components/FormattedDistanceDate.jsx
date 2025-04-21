@@ -5,9 +5,8 @@ import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
 const FormattedDistanceDate = (props) => {
-
   // cast to date if string
-  const date = (typeof props.date === 'string') ? new Date(props.date) : props.date;
+  const date = typeof props.date === 'string' ? new Date(props.date) : props.date;
 
   const baseDate = props.baseDate || new Date();
 
@@ -23,7 +22,11 @@ const FormattedDistanceDate = (props) => {
   return (
     <>
       <span id={elemId}>{formatDistanceStrict(date, baseDate)}</span>
-      {props.isShowTooltip && <UncontrolledTooltip placement="bottom" fade={false} target={elemId}>{dateFormatted}</UncontrolledTooltip>}
+      {props.isShowTooltip && (
+        <UncontrolledTooltip placement="bottom" fade={false} target={elemId}>
+          {dateFormatted}
+        </UncontrolledTooltip>
+      )}
     </>
   );
 };

@@ -3,21 +3,18 @@ import type React from 'react';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
-
 const { convertToNewAffiliationPath } = pagePathUtils;
 
 type DuplicatedPathsTableProps = {
-  existingPaths: string[],
-  fromPath: string,
-  toPath: string
-}
+  existingPaths: string[];
+  fromPath: string;
+  toPath: string;
+};
 
 const DuplicatedPathsTable: React.FC<DuplicatedPathsTableProps> = (props: DuplicatedPathsTableProps) => {
   const { t } = useTranslation();
 
-  const {
-    fromPath, toPath, existingPaths,
-  } = props;
+  const { fromPath, toPath, existingPaths } = props;
 
   return (
     <table className="table table-bordered grw-duplicated-paths-table">
@@ -33,13 +30,9 @@ const DuplicatedPathsTable: React.FC<DuplicatedPathsTableProps> = (props: Duplic
           return (
             <tr key={existPath} className="d-flex">
               <td className="text-break w-50">
-                <a href={convertedPath}>
-                  {convertedPath}
-                </a>
+                <a href={convertedPath}>{convertedPath}</a>
               </td>
-              <td className="text-break text-danger w-50">
-                {existPath}
-              </td>
+              <td className="text-break text-danger w-50">{existPath}</td>
             </tr>
           );
         })}
@@ -47,6 +40,5 @@ const DuplicatedPathsTable: React.FC<DuplicatedPathsTableProps> = (props: Duplic
     </table>
   );
 };
-
 
 export default DuplicatedPathsTable;

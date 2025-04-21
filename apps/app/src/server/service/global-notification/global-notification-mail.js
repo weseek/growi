@@ -10,7 +10,6 @@ const logger = loggerFactory('growi:service:GlobalNotificationMailService'); // 
  * sub service class of GlobalNotificationSetting
  */
 class GlobalNotificationMailService {
-
   /** @type {import('~/server/crowi').default} Crowi instance */
   crowi;
 
@@ -37,9 +36,11 @@ class GlobalNotificationMailService {
 
     const option = this.generateOption(event, page, triggeredBy, vars);
 
-    await Promise.all(notifications.map((notification) => {
-      return mailService.send({ ...option, to: notification.toEmail });
-    }));
+    await Promise.all(
+      notifications.map((notification) => {
+        return mailService.send({ ...option, to: notification.toEmail });
+      }),
+    );
   }
 
   /**
@@ -130,7 +131,6 @@ class GlobalNotificationMailService {
       vars,
     };
   }
-
 }
 
 module.exports = GlobalNotificationMailService;

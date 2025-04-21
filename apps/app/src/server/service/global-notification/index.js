@@ -8,7 +8,6 @@ const GloabalNotificationSlack = require('./global-notification-slack');
  * service class of GlobalNotificationSetting
  */
 class GlobalNotificationService {
-
   /** @type {import('~/server/crowi').default} Crowi instance */
   crowi;
 
@@ -21,9 +20,7 @@ class GlobalNotificationService {
     this.gloabalNotificationSlack = new GloabalNotificationSlack(crowi);
 
     this.Page = this.crowi.model('Page');
-
   }
-
 
   /**
    * fire global notification
@@ -71,12 +68,11 @@ class GlobalNotificationService {
       case this.Page.GRANT_SPECIFIED:
         return false;
       case this.Page.GRANT_OWNER:
-        return (this.crowi.configManager.getConfig('notification:owner-page:isEnabled'));
+        return this.crowi.configManager.getConfig('notification:owner-page:isEnabled');
       case this.Page.GRANT_USER_GROUP:
-        return (this.crowi.configManager.getConfig('notification:group-page:isEnabled'));
+        return this.crowi.configManager.getConfig('notification:group-page:isEnabled');
     }
   }
-
 }
 
 module.exports = GlobalNotificationService;

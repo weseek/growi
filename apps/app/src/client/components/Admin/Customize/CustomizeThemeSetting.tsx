@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useEffect, useState, type JSX,
-} from 'react';
+import React, { useCallback, useEffect, useState, type JSX } from 'react';
 
 import { PresetThemes, PresetThemesMetadatas } from '@growi/preset-themes';
 import { useTranslation } from 'next-i18next';
@@ -12,10 +10,8 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 import CustomizeThemeOptions from './CustomizeThemeOptions';
 
-
 // biome-ignore lint/complexity/noBannedTypes: ignore
-type Props = {
-}
+type Props = {};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CustomizeThemeSetting = (props: Props): JSX.Element => {
@@ -32,7 +28,7 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
     setCurrentTheme(themeName);
   }, []);
 
-  const submitHandler = useCallback(async() => {
+  const submitHandler = useCallback(async () => {
     if (currentTheme == null) {
       toastWarning('The selected theme is undefined');
       return;
@@ -44,27 +40,20 @@ const CustomizeThemeSetting = (props: Props): JSX.Element => {
       });
 
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.theme'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [currentTheme, t, update]);
 
-  const availableThemes = data?.pluginThemesMetadatas == null
-    ? PresetThemesMetadatas
-    : PresetThemesMetadatas.concat(data.pluginThemesMetadatas);
+  const availableThemes = data?.pluginThemesMetadatas == null ? PresetThemesMetadatas : PresetThemesMetadatas.concat(data.pluginThemesMetadatas);
 
-  const selectedTheme = availableThemes.find(t => t.name === currentTheme)?.name ?? PresetThemes.DEFAULT;
+  const selectedTheme = availableThemes.find((t) => t.name === currentTheme)?.name ?? PresetThemes.DEFAULT;
 
   return (
     <div className="row">
       <div className="col-12">
         <h2 className="admin-setting-header">{t('admin:customize_settings.theme')}</h2>
-        <CustomizeThemeOptions
-          onSelected={selectedHandler}
-          availableThemes={availableThemes}
-          selectedTheme={selectedTheme}
-        />
+        <CustomizeThemeOptions onSelected={selectedHandler} availableThemes={availableThemes} selectedTheme={selectedTheme} />
         <AdminUpdateButtonRow onClick={submitHandler} disabled={error != null} />
       </div>
     </div>

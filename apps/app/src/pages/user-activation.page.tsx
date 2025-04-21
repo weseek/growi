@@ -10,24 +10,20 @@ import type { UserActivationErrorCode } from '~/interfaces/errors/user-activatio
 import type { RegistrationMode } from '~/interfaces/registration-mode';
 import type { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
 
-
 import type { CommonProps } from './utils/commons';
-import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
-} from './utils/commons';
+import { getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle } from './utils/commons';
 
-
-const CompleteUserRegistrationForm = dynamic(() => import('~/client/components/CompleteUserRegistrationForm')
-  .then(mod => mod.CompleteUserRegistrationForm), { ssr: false });
-
+const CompleteUserRegistrationForm = dynamic(() => import('~/client/components/CompleteUserRegistrationForm').then((mod) => mod.CompleteUserRegistrationForm), {
+  ssr: false,
+});
 
 type Props = CommonProps & {
-  token: string
-  email: string
-  errorCode?: UserActivationErrorCode
-  registrationMode: RegistrationMode
-  isEmailAuthenticationEnabled: boolean
-}
+  token: string;
+  email: string;
+  errorCode?: UserActivationErrorCode;
+  registrationMode: RegistrationMode;
+  isEmailAuthenticationEnabled: boolean;
+};
 
 const UserActivationPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
@@ -61,7 +57,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
   const req = context.req as ReqWithUserRegistrationOrder & CrowiRequest;
 

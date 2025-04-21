@@ -2,8 +2,10 @@ import { isServer } from '@growi/core/dist/utils';
 import { Container } from 'unstated';
 
 import {
-  PageSingleDeleteConfigValue, PageSingleDeleteCompConfigValue,
-  PageRecursiveDeleteConfigValue, PageRecursiveDeleteCompConfigValue,
+  PageSingleDeleteConfigValue,
+  PageSingleDeleteCompConfigValue,
+  PageRecursiveDeleteConfigValue,
+  PageRecursiveDeleteCompConfigValue,
 } from '~/interfaces/page-delete-config';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
@@ -15,7 +17,6 @@ import { toastError } from '../util/toastr';
  * @extends {Container} unstated Container
  */
 export default class AdminGeneralSecurityContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -62,7 +63,6 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.changePageRecursiveCompleteDeletionAuthority = this.changePageRecursiveCompleteDeletionAuthority.bind(this);
     this.changePreviousPageRecursiveDeletionAuthority = this.changePreviousPageRecursiveDeletionAuthority.bind(this);
     this.changePreviousPageRecursiveCompleteDeletionAuthority = this.changePreviousPageRecursiveCompleteDeletionAuthority.bind(this);
-
   }
 
   async retrieveSecurityData() {
@@ -92,7 +92,6 @@ export default class AdminGeneralSecurityContainer extends Container {
       isGitHubEnabled: generalAuth.isGitHubEnabled,
     });
   }
-
 
   /**
    * Workaround for the mangling in production build to break constructor.name
@@ -172,7 +171,6 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.setState({ previousPageRecursiveDeletionAuthority: val });
   }
 
-
   /**
    * Change previousPageRecursiveCompleteDeletionAuthority
    */
@@ -198,14 +196,14 @@ export default class AdminGeneralSecurityContainer extends Container {
    * Switch showRestrictedByOwner
    */
   switchIsShowRestrictedByOwner() {
-    this.setState({ isShowRestrictedByOwner:  !this.state.isShowRestrictedByOwner });
+    this.setState({ isShowRestrictedByOwner: !this.state.isShowRestrictedByOwner });
   }
 
   /**
    * Switch showRestrictedByGroup
    */
   switchIsShowRestrictedByGroup() {
-    this.setState({ isShowRestrictedByGroup:  !this.state.isShowRestrictedByGroup });
+    this.setState({ isShowRestrictedByGroup: !this.state.isShowRestrictedByGroup });
   }
 
   /**
@@ -229,14 +227,12 @@ export default class AdminGeneralSecurityContainer extends Container {
     this.setState({ isRomUserAllowedToComment: bool });
   }
 
-
   /**
    * Update restrictGuestMode
    * @memberOf AdminGeneralSecuritySContainer
    * @return {string} Appearance
    */
   async updateGeneralSecuritySetting() {
-
     let requestParams = {
       sessionMaxAge: this.state.sessionMaxAge,
       restrictGuestMode: this.state.currentRestrictGuestMode,
@@ -282,8 +278,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       });
       await this.retrieveSetupStratedies();
       this.setState({ [stateVariableName]: isEnabled });
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
@@ -296,8 +291,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       const response = await apiv3Get('/security-setting/authentication');
       const { setupStrategies } = response.data;
       this.setState({ setupStrategies });
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
@@ -306,7 +300,6 @@ export default class AdminGeneralSecurityContainer extends Container {
    * Retrieve All Sharelinks
    */
   async retrieveShareLinksByPagingNum(page) {
-
     const params = {
       page,
     };
@@ -314,7 +307,7 @@ export default class AdminGeneralSecurityContainer extends Container {
     const { data } = await apiv3Get('/security-setting/all-share-links', params);
 
     if (data.paginateResult == null) {
-      throw new Error('data must conclude \'paginateResult\' property.');
+      throw new Error("data must conclude 'paginateResult' property.");
     }
 
     const { docs: shareLinks, totalDocs: totalshareLinks, limit: shareLinksPagingLimit } = data.paginateResult;
@@ -368,5 +361,4 @@ export default class AdminGeneralSecurityContainer extends Container {
   async switchIsGitHubOAuthEnabled() {
     this.switchAuthentication('isGitHubEnabled', 'github');
   }
-
 }

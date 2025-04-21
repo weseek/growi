@@ -5,7 +5,6 @@ import NamedQuery from '~/server/models/named-query';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:migrate:initialize-private-legacy-pages-named-query');
 
 module.exports = {
@@ -18,8 +17,7 @@ module.exports = {
         { delegatorName: SearchDelegatorName.PRIVATE_LEGACY_PAGES },
         { upsert: true },
       );
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to migrate named query for private legacy pages search delagator.', err);
       throw err;
     }
@@ -36,8 +34,7 @@ module.exports = {
         name: SearchDelegatorName.PRIVATE_LEGACY_PAGES,
         delegatorName: SearchDelegatorName.PRIVATE_LEGACY_PAGES,
       });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to delete named query for private legacy pages search delagator.', err);
       throw err;
     }

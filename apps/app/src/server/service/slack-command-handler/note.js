@@ -1,6 +1,4 @@
-import {
-  markdownHeaderBlock, inputSectionBlock, inputBlock, actionsBlock, buttonElement,
-} from '@growi/slack/dist/utils/block-kit-builder';
+import { markdownHeaderBlock, inputSectionBlock, inputBlock, actionsBlock, buttonElement } from '@growi/slack/dist/utils/block-kit-builder';
 
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import loggerFactory from '~/utils/logger';
@@ -20,7 +18,7 @@ module.exports = (crowi) => {
   };
   const { User } = crowi.models;
 
-  handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
+  handler.handleCommand = async (growiCommand, client, body, respondUtil) => {
     await respondUtil.respond({
       text: 'Take a note on GROWI',
       blocks: [
@@ -32,20 +30,19 @@ module.exports = (crowi) => {
           buttonElement({ text: 'Cancel', actionId: 'note:cancel' }),
           buttonElement({ text: 'Create page', actionId: 'note:createPage', style: 'primary' }),
         ),
-
       ],
     });
   };
 
-  handler.cancel = async(client, interactionPayload, interactionPayloadAccessor, respondUtil) => {
+  handler.cancel = async (client, interactionPayload, interactionPayloadAccessor, respondUtil) => {
     await respondUtil.deleteOriginal();
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+  handler.handleInteractions = async function (client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.createPage = async(client, interactionPayload, interactionPayloadAccessor, respondUtil) => {
+  handler.createPage = async (client, interactionPayload, interactionPayloadAccessor, respondUtil) => {
     const user = await User.findUserBySlackMemberId(interactionPayload.user.id);
     const path = interactionPayloadAccessor.getStateValues()?.path.path_input.value;
     const contentsBody = interactionPayloadAccessor.getStateValues()?.contents.contents_input.value;

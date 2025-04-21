@@ -14,7 +14,6 @@ import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils
 
 import { checkSetupStrategiesHasAdmin } from './checkSetupStrategiesHasAdmin';
 
-
 const logger = loggerFactory('growi:routes:apiv3:security-setting');
 
 const express = require('express');
@@ -26,90 +25,196 @@ const { body } = require('express-validator');
 const validator = {
   generalSetting: [
     body('sessionMaxAge').optional({ checkFalsy: true }).trim().isInt(),
-    body('restrictGuestMode').if(value => value != null).isString().isIn([
-      'Deny', 'Readonly',
-    ]),
-    body('pageCompleteDeletionAuthority').if(value => value != null).isString().isIn(Object.values(PageDeleteConfigValue)),
-    body('hideRestrictedByOwner').if(value => value != null).isBoolean(),
-    body('hideRestrictedByGroup').if(value => value != null).isBoolean(),
-    body('isUsersHomepageDeletionEnabled').if(value => value != null).isBoolean(),
-    body('isForceDeleteUserHomepageOnUserDeletion').if(value => value != null).isBoolean(),
+    body('restrictGuestMode')
+      .if((value) => value != null)
+      .isString()
+      .isIn(['Deny', 'Readonly']),
+    body('pageCompleteDeletionAuthority')
+      .if((value) => value != null)
+      .isString()
+      .isIn(Object.values(PageDeleteConfigValue)),
+    body('hideRestrictedByOwner')
+      .if((value) => value != null)
+      .isBoolean(),
+    body('hideRestrictedByGroup')
+      .if((value) => value != null)
+      .isBoolean(),
+    body('isUsersHomepageDeletionEnabled')
+      .if((value) => value != null)
+      .isBoolean(),
+    body('isForceDeleteUserHomepageOnUserDeletion')
+      .if((value) => value != null)
+      .isBoolean(),
   ],
   shareLinkSetting: [
-    body('disableLinkSharing').if(value => value != null).isBoolean(),
+    body('disableLinkSharing')
+      .if((value) => value != null)
+      .isBoolean(),
   ],
   authenticationSetting: [
-    body('isEnabled').if(value => value != null).isBoolean(),
-    body('authId').isString().isIn([
-      'local', 'ldap', 'saml', 'oidc', 'google', 'github',
-    ]),
+    body('isEnabled')
+      .if((value) => value != null)
+      .isBoolean(),
+    body('authId').isString().isIn(['local', 'ldap', 'saml', 'oidc', 'google', 'github']),
   ],
   localSetting: [
-    body('registrationMode').isString().isIn([
-      'Open', 'Restricted', 'Closed',
-    ]),
-    body('registrationWhitelist').if(value => value != null).isArray().customSanitizer((value, { req }) => {
-      return value.filter(email => email !== '');
-    }),
+    body('registrationMode').isString().isIn(['Open', 'Restricted', 'Closed']),
+    body('registrationWhitelist')
+      .if((value) => value != null)
+      .isArray()
+      .customSanitizer((value, { req }) => {
+        return value.filter((email) => email !== '');
+      }),
   ],
   ldapAuth: [
-    body('serverUrl').if(value => value != null).isString(),
-    body('isUserBind').if(value => value != null).isBoolean(),
-    body('ldapBindDN').if(value => value != null).isString(),
-    body('ldapBindDNPassword').if(value => value != null).isString(),
-    body('ldapSearchFilter').if(value => value != null).isString(),
-    body('ldapAttrMapUsername').if(value => value != null).isString(),
-    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
-    body('ldapAttrMapMail').if(value => value != null).isString(),
-    body('ldapAttrMapName').if(value => value != null).isString(),
-    body('ldapGroupSearchBase').if(value => value != null).isString(),
-    body('ldapGroupSearchFilter').if(value => value != null).isString(),
-    body('ldapGroupDnProperty').if(value => value != null).isString(),
+    body('serverUrl')
+      .if((value) => value != null)
+      .isString(),
+    body('isUserBind')
+      .if((value) => value != null)
+      .isBoolean(),
+    body('ldapBindDN')
+      .if((value) => value != null)
+      .isString(),
+    body('ldapBindDNPassword')
+      .if((value) => value != null)
+      .isString(),
+    body('ldapSearchFilter')
+      .if((value) => value != null)
+      .isString(),
+    body('ldapAttrMapUsername')
+      .if((value) => value != null)
+      .isString(),
+    body('isSameUsernameTreatedAsIdenticalUser')
+      .if((value) => value != null)
+      .isBoolean(),
+    body('ldapAttrMapMail')
+      .if((value) => value != null)
+      .isString(),
+    body('ldapAttrMapName')
+      .if((value) => value != null)
+      .isString(),
+    body('ldapGroupSearchBase')
+      .if((value) => value != null)
+      .isString(),
+    body('ldapGroupSearchFilter')
+      .if((value) => value != null)
+      .isString(),
+    body('ldapGroupDnProperty')
+      .if((value) => value != null)
+      .isString(),
   ],
   samlAuth: [
-    body('entryPoint').if(value => value != null).isString(),
-    body('issuer').if(value => value != null).isString(),
-    body('cert').if(value => value != null).isString(),
-    body('attrMapId').if(value => value != null).isString(),
-    body('attrMapUsername').if(value => value != null).isString(),
-    body('attrMapMail').if(value => value != null).isString(),
-    body('attrMapFirstName').if(value => value != null).isString(),
-    body('attrMapLastName').if(value => value != null).isString(),
-    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
-    body('isSameEmailTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
-    body('ABLCRule').if(value => value != null).isString(),
+    body('entryPoint')
+      .if((value) => value != null)
+      .isString(),
+    body('issuer')
+      .if((value) => value != null)
+      .isString(),
+    body('cert')
+      .if((value) => value != null)
+      .isString(),
+    body('attrMapId')
+      .if((value) => value != null)
+      .isString(),
+    body('attrMapUsername')
+      .if((value) => value != null)
+      .isString(),
+    body('attrMapMail')
+      .if((value) => value != null)
+      .isString(),
+    body('attrMapFirstName')
+      .if((value) => value != null)
+      .isString(),
+    body('attrMapLastName')
+      .if((value) => value != null)
+      .isString(),
+    body('isSameUsernameTreatedAsIdenticalUser')
+      .if((value) => value != null)
+      .isBoolean(),
+    body('isSameEmailTreatedAsIdenticalUser')
+      .if((value) => value != null)
+      .isBoolean(),
+    body('ABLCRule')
+      .if((value) => value != null)
+      .isString(),
   ],
   oidcAuth: [
-    body('oidcProviderName').if(value => value != null).isString(),
-    body('oidcIssuerHost').if(value => value != null).isString(),
-    body('oidcAuthorizationEndpoint').if(value => value != null).isString(),
-    body('oidcTokenEndpoint').if(value => value != null).isString(),
-    body('oidcRevocationEndpoint').if(value => value != null).isString(),
-    body('oidcIntrospectionEndpoint').if(value => value != null).isString(),
-    body('oidcUserInfoEndpoint').if(value => value != null).isString(),
-    body('oidcEndSessionEndpoint').if(value => value != null).isString(),
-    body('oidcRegistrationEndpoint').if(value => value != null).isString(),
-    body('oidcJWKSUri').if(value => value != null).isString(),
-    body('oidcClientId').if(value => value != null).isString(),
-    body('oidcClientSecret').if(value => value != null).isString(),
-    body('oidcAttrMapId').if(value => value != null).isString(),
-    body('oidcAttrMapUserName').if(value => value != null).isString(),
-    body('oidcAttrMapEmail').if(value => value != null).isString(),
-    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
-    body('isSameEmailTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
+    body('oidcProviderName')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcIssuerHost')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcAuthorizationEndpoint')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcTokenEndpoint')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcRevocationEndpoint')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcIntrospectionEndpoint')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcUserInfoEndpoint')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcEndSessionEndpoint')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcRegistrationEndpoint')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcJWKSUri')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcClientId')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcClientSecret')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcAttrMapId')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcAttrMapUserName')
+      .if((value) => value != null)
+      .isString(),
+    body('oidcAttrMapEmail')
+      .if((value) => value != null)
+      .isString(),
+    body('isSameUsernameTreatedAsIdenticalUser')
+      .if((value) => value != null)
+      .isBoolean(),
+    body('isSameEmailTreatedAsIdenticalUser')
+      .if((value) => value != null)
+      .isBoolean(),
   ],
   googleOAuth: [
-    body('googleClientId').if(value => value != null).isString(),
-    body('googleClientSecret').if(value => value != null).isString(),
-    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
+    body('googleClientId')
+      .if((value) => value != null)
+      .isString(),
+    body('googleClientSecret')
+      .if((value) => value != null)
+      .isString(),
+    body('isSameUsernameTreatedAsIdenticalUser')
+      .if((value) => value != null)
+      .isBoolean(),
   ],
   githubOAuth: [
-    body('githubClientId').if(value => value != null).isString(),
-    body('githubClientSecret').if(value => value != null).isString(),
-    body('isSameUsernameTreatedAsIdenticalUser').if(value => value != null).isBoolean(),
+    body('githubClientId')
+      .if((value) => value != null)
+      .isString(),
+    body('githubClientSecret')
+      .if((value) => value != null)
+      .isString(),
+    body('isSameUsernameTreatedAsIdenticalUser')
+      .if((value) => value != null)
+      .isBoolean(),
   ],
 };
-
 
 /**
  * @swagger
@@ -454,8 +559,7 @@ module.exports = (crowi) => {
    *                        githubOAuth:
    *                          $ref: '#/components/schemas/GitHubOAuthSetting'
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-
+  router.get('/', loginRequiredStrictly, adminRequired, async (req, res) => {
     const securityParams = {
       generalSetting: {
         restrictGuestMode: crowi.aclService.getGuestModeValue(),
@@ -463,13 +567,11 @@ module.exports = (crowi) => {
         pageCompleteDeletionAuthority: await configManager.getConfig('security:pageCompleteDeletionAuthority'),
         pageRecursiveDeletionAuthority: await configManager.getConfig('security:pageRecursiveDeletionAuthority'),
         pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('security:pageRecursiveCompleteDeletionAuthority'),
-        isAllGroupMembershipRequiredForPageCompleteDeletion:
-        await configManager.getConfig('security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
+        isAllGroupMembershipRequiredForPageCompleteDeletion: await configManager.getConfig('security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
         hideRestrictedByOwner: await configManager.getConfig('security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await configManager.getConfig('security:list-policy:hideRestrictedByGroup'),
         isUsersHomepageDeletionEnabled: await configManager.getConfig('security:user-homepage-deletion:isEnabled'),
-        isForceDeleteUserHomepageOnUserDeletion:
-        await configManager.getConfig('security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
+        isForceDeleteUserHomepageOnUserDeletion: await configManager.getConfig('security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
         isRomUserAllowedToComment: await configManager.getConfig('security:isRomUserAllowedToComment'),
         wikiMode: await configManager.getConfig('security:wikiMode'),
         sessionMaxAge: await configManager.getConfig('security:sessionMaxAge'),
@@ -592,92 +694,97 @@ module.exports = (crowi) => {
    *                  description: updated param
    */
   // eslint-disable-next-line max-len
-  router.put('/authentication/enabled', loginRequiredStrictly, adminRequired, addActivity, validator.authenticationSetting, apiV3FormValidator, async(req, res) => {
-    const { isEnabled, authId } = req.body;
+  router.put(
+    '/authentication/enabled',
+    loginRequiredStrictly,
+    adminRequired,
+    addActivity,
+    validator.authenticationSetting,
+    apiV3FormValidator,
+    async (req, res) => {
+      const { isEnabled, authId } = req.body;
 
-    let setupStrategies = await crowi.passportService.getSetupStrategies();
+      let setupStrategies = await crowi.passportService.getSetupStrategies();
 
-    const parameters = {};
+      const parameters = {};
 
-    // Reflect request param
-    setupStrategies = setupStrategies.filter(strategy => strategy !== authId);
+      // Reflect request param
+      setupStrategies = setupStrategies.filter((strategy) => strategy !== authId);
 
-    if (setupStrategies.length === 0) {
-      return res.apiv3Err(new ErrorV3('Can not turn everything off'), 405);
-    }
-
-    if (!isEnabled) {
-      const isSetupStrategiesHasAdmin = await checkSetupStrategiesHasAdmin(setupStrategies);
-
-      // Return an error when disabling an strategy when there are no setup strategies with admin-enabled login
-      if (!isSetupStrategiesHasAdmin) {
-        return res.apiv3Err(new ErrorV3('Must have admin enabled authentication method'), 405);
+      if (setupStrategies.length === 0) {
+        return res.apiv3Err(new ErrorV3('Can not turn everything off'), 405);
       }
-    }
 
-    const enableParams = { [`security:passport-${authId}:isEnabled`]: isEnabled };
+      if (!isEnabled) {
+        const isSetupStrategiesHasAdmin = await checkSetupStrategiesHasAdmin(setupStrategies);
 
-    try {
-      await updateAndReloadStrategySettings(authId, enableParams);
-
-      const responseParams = {
-        [`security:passport-${authId}:isEnabled`]: await configManager.getConfig(`security:passport-${authId}:isEnabled`),
-      };
-      switch (authId) {
-        case 'local':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_DISABLED;
-          break;
-        case 'ldap':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_LDAP_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_LDAP_DISABLED;
-          break;
-        case 'saml':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_SAML_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_SAML_DISABLED;
-          break;
-        case 'oidc':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_DISABLED;
-          break;
-        case 'google':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_DISABLED;
-          break;
-        case 'github':
-          if (isEnabled) {
-            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_ENABLED;
-            break;
-          }
-          parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_DISABLED;
-          break;
+        // Return an error when disabling an strategy when there are no setup strategies with admin-enabled login
+        if (!isSetupStrategiesHasAdmin) {
+          return res.apiv3Err(new ErrorV3('Must have admin enabled authentication method'), 405);
+        }
       }
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ responseParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating enable setting';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-enable-setting failed'));
-    }
 
+      const enableParams = { [`security:passport-${authId}:isEnabled`]: isEnabled };
 
-  });
+      try {
+        await updateAndReloadStrategySettings(authId, enableParams);
+
+        const responseParams = {
+          [`security:passport-${authId}:isEnabled`]: await configManager.getConfig(`security:passport-${authId}:isEnabled`),
+        };
+        switch (authId) {
+          case 'local':
+            if (isEnabled) {
+              parameters.action = SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_ENABLED;
+              break;
+            }
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_DISABLED;
+            break;
+          case 'ldap':
+            if (isEnabled) {
+              parameters.action = SupportedAction.ACTION_ADMIN_AUTH_LDAP_ENABLED;
+              break;
+            }
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_LDAP_DISABLED;
+            break;
+          case 'saml':
+            if (isEnabled) {
+              parameters.action = SupportedAction.ACTION_ADMIN_AUTH_SAML_ENABLED;
+              break;
+            }
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_SAML_DISABLED;
+            break;
+          case 'oidc':
+            if (isEnabled) {
+              parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_ENABLED;
+              break;
+            }
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_OIDC_DISABLED;
+            break;
+          case 'google':
+            if (isEnabled) {
+              parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_ENABLED;
+              break;
+            }
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_DISABLED;
+            break;
+          case 'github':
+            if (isEnabled) {
+              parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_ENABLED;
+              break;
+            }
+            parameters.action = SupportedAction.ACTION_ADMIN_AUTH_GITHUB_DISABLED;
+            break;
+        }
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+        return res.apiv3({ responseParams });
+      } catch (err) {
+        const msg = 'Error occurred in updating enable setting';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-enable-setting failed'));
+      }
+    },
+  );
 
   /**
    * @swagger
@@ -704,7 +811,7 @@ module.exports = (crowi) => {
    *                        description: setup strategie
    *                      example: ["local"]
    */
-  router.get('/authentication/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/authentication/', loginRequiredStrictly, adminRequired, async (req, res) => {
     const setupStrategies = await crowi.passportService.getSetupStrategies();
 
     return res.apiv3({ setupStrategies });
@@ -734,7 +841,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/GeneralSetting'
    */
-  router.put('/general-setting', loginRequiredStrictly, adminRequired, addActivity, validator.generalSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/general-setting', loginRequiredStrictly, adminRequired, addActivity, validator.generalSetting, apiV3FormValidator, async (req, res) => {
     const updateData = {
       'security:sessionMaxAge': parseInt(req.body.sessionMaxAge),
       'security:restrictGuestMode': req.body.restrictGuestMode,
@@ -756,9 +863,12 @@ module.exports = (crowi) => {
     // Validate delete config
     const [singleAuthority1, recursiveAuthority1] = prepareDeleteConfigValuesForCalc(req.body.pageDeletionAuthority, req.body.pageRecursiveDeletionAuthority);
     // eslint-disable-next-line max-len
-    const [singleAuthority2, recursiveAuthority2] = prepareDeleteConfigValuesForCalc(req.body.pageCompleteDeletionAuthority, req.body.pageRecursiveCompleteDeletionAuthority);
-    const isDeleteConfigNormalized = validateDeleteConfigs(singleAuthority1, recursiveAuthority1)
-      && validateDeleteConfigs(singleAuthority2, recursiveAuthority2);
+    const [singleAuthority2, recursiveAuthority2] = prepareDeleteConfigValuesForCalc(
+      req.body.pageCompleteDeletionAuthority,
+      req.body.pageRecursiveCompleteDeletionAuthority,
+    );
+    const isDeleteConfigNormalized =
+      validateDeleteConfigs(singleAuthority1, recursiveAuthority1) && validateDeleteConfigs(singleAuthority2, recursiveAuthority2);
     if (!isDeleteConfigNormalized) {
       return res.apiv3Err(new ErrorV3('Delete config values are not correct.', 'delete_config_not_normalized'));
     }
@@ -777,13 +887,11 @@ module.exports = (crowi) => {
         pageCompleteDeletionAuthority: await configManager.getConfig('security:pageCompleteDeletionAuthority'),
         pageRecursiveDeletionAuthority: await configManager.getConfig('security:pageRecursiveDeletionAuthority'),
         pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('security:pageRecursiveCompleteDeletionAuthority'),
-        isAllGroupMembershipRequiredForPageCompleteDeletion:
-        await configManager.getConfig('security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
+        isAllGroupMembershipRequiredForPageCompleteDeletion: await configManager.getConfig('security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
         hideRestrictedByOwner: await configManager.getConfig('security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await configManager.getConfig('security:list-policy:hideRestrictedByGroup'),
         isUsersHomepageDeletionEnabled: await configManager.getConfig('security:user-homepage-deletion:isEnabled'),
-        isForceDeleteUserHomepageOnUserDeletion:
-        await configManager.getConfig('security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
+        isForceDeleteUserHomepageOnUserDeletion: await configManager.getConfig('security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
         isRomUserAllowedToComment: await configManager.getConfig('security:isRomUserAllowedToComment'),
       };
 
@@ -791,8 +899,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
@@ -825,7 +932,7 @@ module.exports = (crowi) => {
    *                    securitySettingParams:
    *                      $ref: '#/components/schemas/ShareLinkSetting'
    */
-  router.put('/share-link-setting', loginRequiredStrictly, adminRequired, addActivity, validator.generalSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/share-link-setting', loginRequiredStrictly, adminRequired, addActivity, validator.generalSetting, apiV3FormValidator, async (req, res) => {
     const updateData = {
       'security:disableLinkSharing': req.body.disableLinkSharing,
     };
@@ -835,17 +942,17 @@ module.exports = (crowi) => {
         disableLinkSharing: configManager.getConfig('security:disableLinkSharing'),
       };
       // eslint-disable-next-line max-len
-      const parameters = { action: updateData['security:disableLinkSharing'] ? SupportedAction.ACTION_ADMIN_REJECT_SHARE_LINK : SupportedAction.ACTION_ADMIN_PERMIT_SHARE_LINK };
+      const parameters = {
+        action: updateData['security:disableLinkSharing'] ? SupportedAction.ACTION_ADMIN_REJECT_SHARE_LINK : SupportedAction.ACTION_ADMIN_PERMIT_SHARE_LINK,
+      };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating security setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-secuirty-setting failed'));
     }
   });
-
 
   /**
    * @swagger
@@ -868,25 +975,21 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: suceed to get all share links
    */
-  router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const linkQuery = {};
     try {
-      const paginateResult = await ShareLink.paginate(
-        linkQuery,
-        {
-          page,
-          limit,
-          populate: {
-            path: 'relatedPage',
-            select: 'path',
-          },
+      const paginateResult = await ShareLink.paginate(linkQuery, {
+        page,
+        limit,
+        populate: {
+          path: 'relatedPage',
+          select: 'path',
         },
-      );
+      });
       return res.apiv3({ paginateResult });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occured in get share link';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'get-all-share-links-failed'));
@@ -914,13 +1017,12 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: total number of removed share links
    */
-  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async (req, res) => {
     try {
       const removedAct = await ShareLink.remove({});
       const removeTotal = await removedAct.n;
       return res.apiv3({ removeTotal });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occured in delete all share links';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'failed-to-delete-all-share-links'));
@@ -953,10 +1055,9 @@ module.exports = (crowi) => {
    *                    localSettingParams:
    *                      $ref: '#/components/schemas/LocalSetting'
    */
-  router.put('/local-setting', loginRequiredStrictly, adminRequired, addActivity, validator.localSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/local-setting', loginRequiredStrictly, adminRequired, addActivity, validator.localSetting, apiV3FormValidator, async (req, res) => {
     try {
-      const sanitizedRegistrationWhitelist = req.body.registrationWhitelist
-        .map(line => xss(line, { stripIgnoreTag: true }));
+      const sanitizedRegistrationWhitelist = req.body.registrationWhitelist.map((line) => xss(line, { stripIgnoreTag: true }));
 
       const requestParams = {
         'security:registrationMode': req.body.registrationMode,
@@ -976,8 +1077,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_ID_PASS_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ localSettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating local setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-local-setting failed'));
@@ -1010,7 +1110,7 @@ module.exports = (crowi) => {
    *                    securitySettingParams:
    *                      $ref: '#/components/schemas/LdapAuthSetting'
    */
-  router.put('/ldap', loginRequiredStrictly, adminRequired, addActivity, validator.ldapAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/ldap', loginRequiredStrictly, adminRequired, addActivity, validator.ldapAuth, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'security:passport-ldap:serverUrl': req.body.serverUrl,
       'security:passport-ldap:isUserBind': req.body.isUserBind,
@@ -1046,8 +1146,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_LDAP_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating SAML setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-SAML-failed'));
@@ -1080,7 +1179,7 @@ module.exports = (crowi) => {
    *                    securitySettingParams:
    *                      $ref: '#/components/schemas/SamlAuthSetting'
    */
-  router.put('/saml', loginRequiredStrictly, adminRequired, addActivity, validator.samlAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/saml', loginRequiredStrictly, adminRequired, addActivity, validator.samlAuth, apiV3FormValidator, async (req, res) => {
     const { t } = await getTranslation({ lang: req.user.lang, ns: ['translation', 'admin'] });
 
     //  For the value of each mandatory items,
@@ -1105,8 +1204,7 @@ module.exports = (crowi) => {
     if (rule != null) {
       try {
         crowi.passportService.parseABLCRule(rule);
-      }
-      catch (err) {
+      } catch (err) {
         return res.apiv3Err(t('input_validation.message.invalid_syntax', { syntax: t('security_settings.form_item_name.ABLCRule') }), 400);
       }
     }
@@ -1145,8 +1243,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_SAML_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating SAML setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-SAML-failed'));
@@ -1179,7 +1276,7 @@ module.exports = (crowi) => {
    *                    securitySettingParams:
    *                      $ref: '#/components/schemas/OidcAuthSetting'
    */
-  router.put('/oidc', loginRequiredStrictly, adminRequired, addActivity, validator.oidcAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/oidc', loginRequiredStrictly, adminRequired, addActivity, validator.oidcAuth, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'security:passport-oidc:providerName': req.body.oidcProviderName,
       'security:passport-oidc:issuerHost': req.body.oidcIssuerHost,
@@ -1227,8 +1324,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_OIDC_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating OpenIDConnect';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-OpenIDConnect-failed'));
@@ -1261,13 +1357,12 @@ module.exports = (crowi) => {
    *                    securitySettingParams:
    *                      $ref: '#/components/schemas/GoogleOAuthSetting'
    */
-  router.put('/google-oauth', loginRequiredStrictly, adminRequired, addActivity, validator.googleOAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/google-oauth', loginRequiredStrictly, adminRequired, addActivity, validator.googleOAuth, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'security:passport-google:clientId': req.body.googleClientId,
       'security:passport-google:clientSecret': req.body.googleClientSecret,
       'security:passport-google:isSameEmailTreatedAsIdenticalUser': req.body.isSameEmailTreatedAsIdenticalUser,
     };
-
 
     try {
       await updateAndReloadStrategySettings('google', requestParams);
@@ -1280,8 +1375,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GOOGLE_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating googleOAuth';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-googleOAuth-failed'));
@@ -1314,7 +1408,7 @@ module.exports = (crowi) => {
    *                    securitySettingParams:
    *                      $ref: '#/components/schemas/GitHubOAuthSetting'
    */
-  router.put('/github-oauth', loginRequiredStrictly, adminRequired, addActivity, validator.githubOAuth, apiV3FormValidator, async(req, res) => {
+  router.put('/github-oauth', loginRequiredStrictly, adminRequired, addActivity, validator.githubOAuth, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'security:passport-github:clientId': req.body.githubClientId,
       'security:passport-github:clientSecret': req.body.githubClientSecret,
@@ -1332,8 +1426,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_AUTH_GITHUB_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ securitySettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       // reset strategy
       await crowi.passportService.resetGitHubStrategy();
       const msg = 'Error occurred in updating githubOAuth';

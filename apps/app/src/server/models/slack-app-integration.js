@@ -6,7 +6,6 @@ import mongoose from 'mongoose';
 import { configManager } from '../service/config-manager';
 import { getModelSafely } from '../util/mongoose-utils';
 
-
 const schema = new mongoose.Schema({
   tokenGtoP: { type: String, required: true, unique: true },
   tokenPtoG: { type: String, required: true, unique: true },
@@ -15,12 +14,11 @@ const schema = new mongoose.Schema({
   permissionsForSingleUseCommands: Map,
   permissionsForSlackEventActions: {
     type: Map,
-    default: new Map(defaultSupportedSlackEventActions.map(action => [action, false])),
+    default: new Map(defaultSupportedSlackEventActions.map((action) => [action, false])),
   },
 });
 
 class SlackAppIntegration {
-
   static generateAccessTokens(saltForGtoP, saltForPtoG) {
     const now = new Date().getTime();
     const hasher1 = crypto.createHash('sha512');
@@ -48,10 +46,8 @@ class SlackAppIntegration {
       duplicateTokens = await this.findOne({ $or: [{ tokenGtoP }, { tokenPtoG }] });
     } while (duplicateTokens != null);
 
-
     return { tokenGtoP, tokenPtoG };
   }
-
 }
 
 const factory = (crowi) => {

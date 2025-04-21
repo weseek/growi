@@ -15,7 +15,7 @@ const logger = loggerFactory('growi:service:yjs:create-mongodb-persistence');
 export const createMongoDBPersistence = (mdb: MongodbPersistence): Persistence => {
   const persistece: Persistence = {
     provider: mdb,
-    bindState: async(docName, ydoc) => {
+    bindState: async (docName, ydoc) => {
       logger.debug('bindState', { docName });
 
       const persistedYdoc = await mdb.getYDoc(docName);
@@ -34,7 +34,7 @@ export const createMongoDBPersistence = (mdb: MongodbPersistence): Persistence =
       Y.applyUpdate(ydoc, Y.encodeStateAsUpdate(persistedYdoc));
 
       // store updates of the document in db
-      ydoc.on('update', async(update) => {
+      ydoc.on('update', async (update) => {
         mdb.storeUpdate(docName, update);
         mdb.setTypedMeta(docName, 'updatedAt', Date.now());
       });
@@ -42,7 +42,7 @@ export const createMongoDBPersistence = (mdb: MongodbPersistence): Persistence =
       // cleanup some memory
       persistedYdoc.destroy();
     },
-    writeState: async(docName) => {
+    writeState: async (docName) => {
       logger.debug('writeState', { docName });
       // This is called when all connections to the document are closed.
 

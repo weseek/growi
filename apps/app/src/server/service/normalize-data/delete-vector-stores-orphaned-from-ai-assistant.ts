@@ -6,7 +6,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:normalize-data:delete-vector-stores-orphaned-from-ai-assistant');
 
-export const deleteVectorStoresOrphanedFromAiAssistant = async(): Promise<void> => {
+export const deleteVectorStoresOrphanedFromAiAssistant = async (): Promise<void> => {
   if (!isAiEnabled()) {
     return;
   }
@@ -26,8 +26,7 @@ export const deleteVectorStoresOrphanedFromAiAssistant = async(): Promise<void> 
     try {
       const vectorStoreFileRelationId = vectorStoreRelation._id;
       await openaiService?.deleteVectorStore(vectorStoreFileRelationId);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
     }
   }

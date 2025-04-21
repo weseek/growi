@@ -1,7 +1,6 @@
 import type { IPageForItem } from '../../../interfaces/page';
 
 export class ItemNode {
-
   page: IPageForItem;
 
   children: ItemNode[];
@@ -12,7 +11,6 @@ export class ItemNode {
   }
 
   static generateNodesFromPages(pages: IPageForItem[]): ItemNode[] {
-    return pages.map(page => new ItemNode(page));
+    return pages.map((page) => new ItemNode(page));
   }
-
 }

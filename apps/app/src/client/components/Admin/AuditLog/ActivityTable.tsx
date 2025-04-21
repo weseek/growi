@@ -12,14 +12,14 @@ import { Tooltip } from 'reactstrap';
 import type { IActivityHasId } from '~/interfaces/activity';
 
 type Props = {
-  activityList: IActivityHasId[]
-}
+  activityList: IActivityHasId[];
+};
 
 const formatDate = (date: Date): string => {
   return format(new Date(date), 'yyyy/MM/dd HH:mm:ss');
 };
 
-export const ActivityTable : FC<Props> = (props: Props) => {
+export const ActivityTable: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
   const [tooltopOpen, setTooltipOpen] = useState(false);
 
@@ -47,13 +47,10 @@ export const ActivityTable : FC<Props> = (props: Props) => {
             return (
               <tr data-testid="activity-table" key={activity._id}>
                 <td>
-                  { activity.user != null && (
+                  {activity.user != null && (
                     <>
                       <UserPicture user={activity.user} />
-                      <a
-                        className="ms-2"
-                        href={isPopulated(activity.user) ? pagePathUtils.userHomepagePath(activity.user) : undefined}
-                      >
+                      <a className="ms-2" href={isPopulated(activity.user) ? pagePathUtils.userHomepagePath(activity.user) : undefined}>
                         {activity.snapshot?.username}
                       </a>
                     </>
@@ -66,7 +63,9 @@ export const ActivityTable : FC<Props> = (props: Props) => {
                   {activity.endpoint}
                   <CopyToClipboard text={activity.endpoint} onCopy={showToolTip}>
                     <button type="button" className="btn btn-outline-secondary border-0 pull-right" id="tooltipTarget">
-                      <span className="material-symbols-outlined" aria-hidden="true">content_paste</span>
+                      <span className="material-symbols-outlined" aria-hidden="true">
+                        content_paste
+                      </span>
                     </button>
                   </CopyToClipboard>
                   <Tooltip placement="top" isOpen={tooltopOpen} fade={false} target="tooltipTarget">

@@ -9,7 +9,7 @@ export const FullTextSearchManagement = (): JSX.Element => {
 
   return (
     <div data-testid="admin-full-text-search">
-      <h2 className="mb-4"> { t('full_text_search_management.elasticsearch_management') } </h2>
+      <h2 className="mb-4"> {t('full_text_search_management.elasticsearch_management')} </h2>
       <ElasticsearchManagement />
     </div>
   );

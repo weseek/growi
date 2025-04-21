@@ -4,8 +4,11 @@ import { DEFAULT_MAX_REQUESTS, type IApiRateLimitConfig } from '../config';
 
 import { rateLimiterFactory } from './rate-limiter-factory';
 
-export const consumePoints = async(
-    method: string, key: string | null, customizedConfig?: IApiRateLimitConfig, maxRequestsMultiplier?: number,
+export const consumePoints = async (
+  method: string,
+  key: string | null,
+  customizedConfig?: IApiRateLimitConfig,
+  maxRequestsMultiplier?: number,
 ): Promise<RateLimiterRes | undefined> => {
   if (key == null) {
     return;

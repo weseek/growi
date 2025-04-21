@@ -4,26 +4,25 @@ import { useTranslation } from 'next-i18next';
 
 import MaskedInput from './MaskedInput';
 
-
 export type AzureSettingMoleculeProps = {
-  azureReferenceFileWithRelayMode
-  azureUseOnlyEnvVars
-  azureTenantId
-  azureClientId
-  azureClientSecret
-  azureStorageAccountName
-  azureStorageContainerName
-  envAzureTenantId?
-  envAzureClientId?
-  envAzureClientSecret?
-  envAzureStorageAccountName?
-  envAzureStorageContainerName?
-  onChangeAzureReferenceFileWithRelayMode: (val: boolean) => void
-  onChangeAzureTenantId: (val: string) => void
-  onChangeAzureClientId: (val: string) => void
-  onChangeAzureClientSecret: (val: string) => void
-  onChangeAzureStorageAccountName: (val: string) => void
-  onChangeAzureStorageContainerName: (val: string) => void
+  azureReferenceFileWithRelayMode;
+  azureUseOnlyEnvVars;
+  azureTenantId;
+  azureClientId;
+  azureClientSecret;
+  azureStorageAccountName;
+  azureStorageContainerName;
+  envAzureTenantId?;
+  envAzureClientId?;
+  envAzureClientSecret?;
+  envAzureStorageAccountName?;
+  envAzureStorageContainerName?;
+  onChangeAzureReferenceFileWithRelayMode: (val: boolean) => void;
+  onChangeAzureTenantId: (val: string) => void;
+  onChangeAzureClientId: (val: string) => void;
+  onChangeAzureClientSecret: (val: string) => void;
+  onChangeAzureStorageAccountName: (val: string) => void;
+  onChangeAzureStorageContainerName: (val: string) => void;
 };
 
 export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Element => {
@@ -46,11 +45,8 @@ export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Elem
 
   return (
     <>
-
       <div className="row form-group my-3">
-        <label className="text-left text-md-right col-md-3 col-form-label">
-          {t('admin:app_setting.file_delivery_method')}
-        </label>
+        <label className="text-left text-md-right col-md-3 col-form-label">{t('admin:app_setting.file_delivery_method')}</label>
 
         <div className="col-md-6">
           <div className="dropdown">
@@ -69,16 +65,20 @@ export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Elem
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { props?.onChangeAzureReferenceFileWithRelayMode(true) }}
+                onClick={() => {
+                  props?.onChangeAzureReferenceFileWithRelayMode(true);
+                }}
               >
                 {t('admin:app_setting.file_delivery_method_relay')}
               </button>
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { props?.onChangeAzureReferenceFileWithRelayMode(false) }}
+                onClick={() => {
+                  props?.onChangeAzureReferenceFileWithRelayMode(false);
+                }}
               >
-                { t('admin:app_setting.file_delivery_method_redirect')}
+                {t('admin:app_setting.file_delivery_method_redirect')}
               </button>
             </div>
 
@@ -119,7 +119,7 @@ export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Elem
                 name="azureTenantId"
                 readOnly={azureUseOnlyEnvVars}
                 defaultValue={azureTenantId}
-                onChange={e => props?.onChangeAzureTenantId(e.target.value)}
+                onChange={(e) => props?.onChangeAzureTenantId(e.target.value)}
               />
             </td>
             <td>
@@ -137,7 +137,7 @@ export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Elem
                 name="azureClientId"
                 readOnly={azureUseOnlyEnvVars}
                 defaultValue={azureClientId}
-                onChange={e => props?.onChangeAzureClientId(e.target.value)}
+                onChange={(e) => props?.onChangeAzureClientId(e.target.value)}
               />
             </td>
             <td>
@@ -155,7 +155,7 @@ export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Elem
                 name="azureClientSecret"
                 readOnly={azureUseOnlyEnvVars}
                 defaultValue={azureClientSecret}
-                onChange={e => props?.onChangeAzureClientSecret(e.target.value)}
+                onChange={(e) => props?.onChangeAzureClientSecret(e.target.value)}
               />
             </td>
             <td>
@@ -175,7 +175,7 @@ export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Elem
                 name="azureStorageAccountName"
                 readOnly={azureUseOnlyEnvVars}
                 defaultValue={azureStorageAccountName}
-                onChange={e => props?.onChangeAzureStorageAccountName(e.target.value)}
+                onChange={(e) => props?.onChangeAzureStorageAccountName(e.target.value)}
               />
             </td>
             <td>
@@ -195,7 +195,7 @@ export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Elem
                 name="azureStorageContainerName"
                 readOnly={azureUseOnlyEnvVars}
                 defaultValue={azureStorageContainerName}
-                onChange={e => props?.onChangeAzureStorageContainerName(e.target.value)}
+                onChange={(e) => props?.onChangeAzureStorageContainerName(e.target.value)}
               />
             </td>
             <td>
@@ -208,7 +208,6 @@ export const AzureSettingMolecule = (props: AzureSettingMoleculeProps): JSX.Elem
           </tr>
         </tbody>
       </table>
-
     </>
   );
 };

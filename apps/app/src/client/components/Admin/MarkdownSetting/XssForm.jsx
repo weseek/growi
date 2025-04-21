@@ -17,7 +17,6 @@ import { WhitelistInput } from './WhitelistInput';
 const logger = loggerFactory('growi:importer');
 
 class XssForm extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -30,8 +29,7 @@ class XssForm extends React.Component {
     try {
       await this.props.adminMarkDownContainer.updateXssSetting();
       toastSuccess(t('toaster.update_successed', { target: t('markdown_settings.xss_header'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -47,7 +45,6 @@ class XssForm extends React.Component {
     return (
       <div className="col-12 mt-3">
         <div className="row">
-
           <div className="col-md-6 col-sm-12 align-self-start">
             <div className="form-check">
               <input
@@ -56,35 +53,19 @@ class XssForm extends React.Component {
                 id="xssOption1"
                 name="XssOption"
                 checked={xssOption === RehypeSanitizeType.RECOMMENDED}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeType.RECOMMENDED }) }}
+                onChange={() => {
+                  adminMarkDownContainer.setState({ xssOption: RehypeSanitizeType.RECOMMENDED });
+                }}
               />
               <label className="form-label form-check-label w-100" htmlFor="xssOption1">
                 <p className="fw-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
                 <div className="mt-4">
-                  <div className="d-flex justify-content-between">
-                    {t('markdown_settings.xss_options.tag_names')}
-                  </div>
-                  <textarea
-                    className="form-control xss-list"
-                    name="recommendedTags"
-                    rows="6"
-                    cols="40"
-                    readOnly
-                    defaultValue={rehypeRecommendedTags}
-                  />
+                  <div className="d-flex justify-content-between">{t('markdown_settings.xss_options.tag_names')}</div>
+                  <textarea className="form-control xss-list" name="recommendedTags" rows="6" cols="40" readOnly defaultValue={rehypeRecommendedTags} />
                 </div>
                 <div className="mt-4">
-                  <div className="d-flex justify-content-between">
-                    {t('markdown_settings.xss_options.tag_attributes')}
-                  </div>
-                  <textarea
-                    className="form-control xss-list"
-                    name="recommendedAttrs"
-                    rows="6"
-                    cols="40"
-                    readOnly
-                    defaultValue={rehypeRecommendedAttributes}
-                  />
+                  <div className="d-flex justify-content-between">{t('markdown_settings.xss_options.tag_attributes')}</div>
+                  <textarea className="form-control xss-list" name="recommendedAttrs" rows="6" cols="40" readOnly defaultValue={rehypeRecommendedAttributes} />
                 </div>
               </label>
             </div>
@@ -98,7 +79,9 @@ class XssForm extends React.Component {
                 id="xssOption2"
                 name="XssOption"
                 checked={xssOption === RehypeSanitizeType.CUSTOM}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeType.CUSTOM }) }}
+                onChange={() => {
+                  adminMarkDownContainer.setState({ xssOption: RehypeSanitizeType.CUSTOM });
+                }}
               />
               <label className="form-label form-check-label w-100" htmlFor="xssOption2">
                 <p className="fw-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
@@ -136,17 +119,13 @@ class XssForm extends React.Component {
             </div>
           </div>
 
-          <div className="col-12">
-            {isEnabledXss && this.xssOptions()}
-          </div>
+          <div className="col-12">{isEnabledXss && this.xssOptions()}</div>
         </fieldset>
         <AdminUpdateButtonRow onClick={this.onClickSubmit} disabled={adminMarkDownContainer.state.retrieveError != null} />
       </React.Fragment>
     );
   }
-
 }
-
 
 XssForm.propTypes = {
   t: PropTypes.func.isRequired, // i18next

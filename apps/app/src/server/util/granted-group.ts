@@ -2,7 +2,9 @@ import { type IGrantedGroup, GroupType } from '@growi/core';
 
 import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 
-export const divideByType = (grantedGroups: IGrantedGroup[] | null): {
+export const divideByType = (
+  grantedGroups: IGrantedGroup[] | null,
+): {
   grantedUserGroups: ObjectIdLike[];
   grantedExternalUserGroups: ObjectIdLike[];
 } => {
@@ -17,8 +19,7 @@ export const divideByType = (grantedGroups: IGrantedGroup[] | null): {
     const id = typeof group.item === 'string' ? group.item : group.item._id;
     if (group.type === GroupType.userGroup) {
       grantedUserGroups.push(id);
-    }
-    else {
+    } else {
       grantedExternalUserGroups.push(id);
     }
   });

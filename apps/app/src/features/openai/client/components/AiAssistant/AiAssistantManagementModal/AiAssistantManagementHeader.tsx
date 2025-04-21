@@ -5,18 +5,17 @@ import { ModalHeader } from 'reactstrap';
 
 import { useAiAssistantManagementModal, AiAssistantManagementModalPageMode } from '../../../stores/ai-assistant';
 
-
 export const AiAssistantManagementHeader = (): JSX.Element => {
   const { t } = useTranslation();
   const { data, close, changePageMode } = useAiAssistantManagementModal();
 
   return (
     <ModalHeader
-      close={(
+      close={
         <button type="button" className="btn p-0" onClick={close}>
           <span className="material-symbols-outlined">close</span>
         </button>
-      )}
+      }
     >
       <div className="d-flex align-items-center">
         <button type="button" className="btn p-0 me-3" onClick={() => changePageMode(AiAssistantManagementModalPageMode.HOME)}>

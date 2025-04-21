@@ -11,13 +11,8 @@ import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
-import {
-  AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
-} from './file-uploader';
-import {
-  ContentHeaders, applyHeaders,
-} from './utils';
-
+import { AbstractFileUploader, type TemporaryUrl, type SaveFileParam } from './file-uploader';
+import { ContentHeaders, applyHeaders } from './utils';
 
 const logger = loggerFactory('growi:service:fileUploaderLocal');
 
@@ -28,10 +23,8 @@ const path = require('path');
 const mkdir = require('mkdirp');
 const urljoin = require('url-join');
 
-
 // TODO: rewrite this module to be a type-safe implementation
 class LocalFileUploader extends AbstractFileUploader {
-
   /**
    * @inheritdoc
    */
@@ -68,9 +61,7 @@ class LocalFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
-    return configManager.getConfig('fileUpload:local:useInternalRedirect')
-      ? ResponseMode.DELEGATE
-      : ResponseMode.RELAY;
+    return configManager.getConfig('fileUpload:local:useInternalRedirect') ? ResponseMode.DELEGATE : ResponseMode.RELAY;
   }
 
   /**
@@ -100,7 +91,6 @@ class LocalFileUploader extends AbstractFileUploader {
   override async generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
     throw new Error('LocalFileUploader does not support ResponseMode.REDIRECT.');
   }
-
 }
 
 module.exports = (crowi: Crowi) => {
@@ -109,9 +99,7 @@ module.exports = (crowi: Crowi) => {
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment: IAttachmentDocument) {
-    const dirName = (attachment.page != null)
-      ? FilePathOnStoragePrefix.attachment
-      : FilePathOnStoragePrefix.user;
+    const dirName = attachment.page != null ? FilePathOnStoragePrefix.attachment : FilePathOnStoragePrefix.user;
     const filePath = path.posix.join(basePath, dirName, attachment.fileName);
 
     return filePath;
@@ -119,33 +107,34 @@ module.exports = (crowi: Crowi) => {
 
   async function readdirRecursively(dirPath) {
     const directories = await fsPromises.readdir(dirPath, { withFileTypes: true });
-    const files = await Promise.all(directories.map((directory) => {
-      const childDirPathOrFilePath = path.resolve(dirPath, directory.name);
-      return directory.isDirectory() ? readdirRecursively(childDirPathOrFilePath) : childDirPathOrFilePath;
-    }));
+    const files = await Promise.all(
+      directories.map((directory) => {
+        const childDirPathOrFilePath = path.resolve(dirPath, directory.name);
+        return directory.isDirectory() ? readdirRecursively(childDirPathOrFilePath) : childDirPathOrFilePath;
+      }),
+    );
 
     return files.flat();
   }
 
   lib.isValidUploadSettings = () => true;
 
-  (lib as any).deleteFile = async(attachment) => {
+  (lib as any).deleteFile = async (attachment) => {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);
   };
 
-  (lib as any).deleteFiles = async(attachments) => {
+  (lib as any).deleteFiles = async (attachments) => {
     attachments.map((attachment) => {
       return (lib as any).deleteFile(attachment);
     });
   };
 
-  lib.deleteFileByFilePath = async(filePath) => {
+  lib.deleteFileByFilePath = async (filePath) => {
     // check file exists
     try {
       fs.statSync(filePath);
-    }
-    catch (err) {
+    } catch (err) {
       logger.warn(`Any AttachmentFile which path is '${filePath}' does not exist in local fs`);
       return;
     }
@@ -153,7 +142,7 @@ module.exports = (crowi: Crowi) => {
     return fs.unlinkSync(filePath);
   };
 
-  lib.uploadAttachment = async(fileStream, attachment) => {
+  lib.uploadAttachment = async (fileStream, attachment) => {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     const filePath = getFilePathOnStorage(attachment);
@@ -167,7 +156,7 @@ module.exports = (crowi: Crowi) => {
     return pipeline(fileStream, writeStream);
   };
 
-  lib.saveFile = async({ filePath, contentType, data }) => {
+  lib.saveFile = async ({ filePath, contentType, data }) => {
     const absFilePath = path.posix.join(basePath, filePath);
     const dirpath = path.posix.dirname(absFilePath);
 
@@ -187,14 +176,13 @@ module.exports = (crowi: Crowi) => {
    * @param {Attachment} attachment
    * @return {stream.Readable} readable stream
    */
-  lib.findDeliveryFile = async(attachment) => {
+  lib.findDeliveryFile = async (attachment) => {
     const filePath = getFilePathOnStorage(attachment);
 
     // check file exists
     try {
       fs.statSync(filePath);
-    }
-    catch (err) {
+    } catch (err) {
       throw new Error(`Any AttachmentFile that relate to the Attachment (${attachment._id.toString()}) does not exist in local fs`);
     }
 
@@ -208,7 +196,7 @@ module.exports = (crowi: Crowi) => {
    * In detail, the followings are checked.
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  (lib as any).checkLimit = async(uploadFileSize) => {
+  (lib as any).checkLimit = async (uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const totalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
@@ -240,13 +228,13 @@ module.exports = (crowi: Crowi) => {
   /**
    * List files in storage
    */
-  lib.listFiles = async() => {
+  lib.listFiles = async () => {
     // `mkdir -p` to avoid ENOENT error
     await mkdir(basePath);
     const filePaths = await readdirRecursively(basePath);
     return Promise.all(
-      filePaths.map(
-        file => fsPromises.stat(file).then(({ size }) => ({
+      filePaths.map((file) =>
+        fsPromises.stat(file).then(({ size }) => ({
           name: path.relative(basePath, file),
           size,
         })),

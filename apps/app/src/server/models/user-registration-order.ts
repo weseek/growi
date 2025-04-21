@@ -2,44 +2,44 @@ import crypto from 'crypto';
 
 import { addHours } from 'date-fns/addHours';
 import type { Model, Document } from 'mongoose';
-import {
-  Schema,
-} from 'mongoose';
+import { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-
 export interface IUserRegistrationOrder {
-  token: string,
-  email: string,
-  isRevoked: boolean,
-  createdAt: Date,
-  expiredAt: Date,
+  token: string;
+  email: string;
+  isRevoked: boolean;
+  createdAt: Date;
+  expiredAt: Date;
 }
 
 export interface UserRegistrationOrderDocument extends IUserRegistrationOrder, Document {
-  isExpired(): boolean
-  revokeOneTimeToken(): Promise<void>
+  isExpired(): boolean;
+  revokeOneTimeToken(): Promise<void>;
 }
 
 export interface UserRegistrationOrderModel extends Model<UserRegistrationOrderDocument> {
-  generateOneTimeToken(): string
-  createUserRegistrationOrder(email: string): UserRegistrationOrderDocument
+  generateOneTimeToken(): string;
+  createUserRegistrationOrder(email: string): UserRegistrationOrderDocument;
 }
 
 const expiredAt = (): Date => {
   return addHours(new Date(), 1);
 };
 
-const schema = new Schema<UserRegistrationOrderDocument, UserRegistrationOrderModel>({
-  token: { type: String, required: true, unique: true },
-  email: { type: String, required: true },
-  isRevoked: { type: Boolean, default: false, required: true },
-  expiredAt: { type: Date, default: expiredAt, required: true },
-}, {
-  timestamps: true,
-});
+const schema = new Schema<UserRegistrationOrderDocument, UserRegistrationOrderModel>(
+  {
+    token: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
+    isRevoked: { type: Boolean, default: false, required: true },
+    expiredAt: { type: Date, default: expiredAt, required: true },
+  },
+  {
+    timestamps: true,
+  },
+);
 schema.plugin(uniqueValidator);
 
 schema.statics.generateOneTimeToken = () => {
@@ -49,7 +49,7 @@ schema.statics.generateOneTimeToken = () => {
   return token;
 };
 
-schema.statics.createUserRegistrationOrder = async function(email) {
+schema.statics.createUserRegistrationOrder = async function (email) {
   let token;
   let duplicateToken;
 
@@ -64,11 +64,11 @@ schema.statics.createUserRegistrationOrder = async function(email) {
   return userRegistrationOrderData;
 };
 
-schema.methods.isExpired = function() {
+schema.methods.isExpired = function () {
   return this.expiredAt.getTime() < Date.now();
 };
 
-schema.methods.revokeOneTimeToken = async function() {
+schema.methods.revokeOneTimeToken = async function () {
   this.isRevoked = true;
   return this.save();
 };

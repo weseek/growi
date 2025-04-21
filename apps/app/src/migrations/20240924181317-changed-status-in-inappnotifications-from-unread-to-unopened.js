@@ -7,16 +7,13 @@ module.exports = {
     logger.info('Apply migration');
 
     const unreadInAppnotifications = await db.collection('inappnotifications');
-    await unreadInAppnotifications.updateMany(
-      { status: { $eq: 'UNREAD' } },
-      [
-        {
-          $set: {
-            status: 'UNOPENED',
-          },
+    await unreadInAppnotifications.updateMany({ status: { $eq: 'UNREAD' } }, [
+      {
+        $set: {
+          status: 'UNOPENED',
         },
-      ],
-    );
+      },
+    ]);
 
     logger.info('Migration has successfully applied');
   },

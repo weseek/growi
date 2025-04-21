@@ -1,12 +1,8 @@
 import type { FC } from 'react';
-import React, {
-  useState,
-} from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { apiv3Delete } from '~/client/util/apiv3-client';
 import { useEmptyTrashModal } from '~/stores/modal';
@@ -36,8 +32,7 @@ const EmptyTrashModal: FC = () => {
         onEmptiedTrash();
       }
       closeEmptyTrashModal();
-    }
-    catch (err) {
+    } catch (err) {
       setErrs([err]);
     }
   }
@@ -50,9 +45,9 @@ const EmptyTrashModal: FC = () => {
     const pages = emptyTrashModalData?.pages;
 
     if (pages != null) {
-      return pages.map(page => (
+      return pages.map((page) => (
         <p key={page.data._id} className="mb-1">
-          <code>{ page.data.path }</code>
+          <code>{page.data.path}</code>
         </p>
       ));
     }
@@ -67,26 +62,25 @@ const EmptyTrashModal: FC = () => {
       </ModalHeader>
       <ModalBody>
         <div className="grw-scrollable-modal-body pb-1">
-          <label className="form-label">{ t('modal_delete.deleting_page') }:</label><br />
+          <label className="form-label">{t('modal_delete.deleting_page')}:</label>
+          <br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {renderPagePaths()}
         </div>
-        {!canDeleteAllpages && t('modal_empty.not_deletable_notice')}<br />
+        {!canDeleteAllpages && t('modal_empty.not_deletable_notice')}
+        <br />
         {t('modal_empty.notice')}
       </ModalBody>
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
-        <button
-          type="button"
-          className="btn btn-danger"
-          onClick={emptyTrashButtonHandler}
-        >
-          <span className="material-symbols-outlined" aria-hidden="true">delete_forever</span>
+        <button type="button" className="btn btn-danger" onClick={emptyTrashButtonHandler}>
+          <span className="material-symbols-outlined" aria-hidden="true">
+            delete_forever
+          </span>
           {t('modal_empty.empty_the_trash_button')}
         </button>
       </ModalFooter>
     </Modal>
-
   );
 };
 

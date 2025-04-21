@@ -1,21 +1,9 @@
 import React, { type JSX } from 'react';
 
 export const RecentlyCreatedIcon = (): JSX.Element => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 20 20"
-  >
-
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
     <g transform="translate(-921.906 192.966)">
-
-      <rect
-        width="20"
-        height="20"
-        transform="translate(921.906 -192.966)"
-        fill="none"
-      />
+      <rect width="20" height="20" transform="translate(921.906 -192.966)" fill="none" />
       <path
         d="M933.752-189.286l.022-.009a3.3,3.3,0,0,1,1.556.927,2.991,2.991,0,0,1,.505.679,3.659,3.659,0,0,1,
         .265.572c.038.126.069.245.091.356l-.911.9a6.484,6.484,0,0,1,1.086-.1c.177,0,.35.013.523.027.573-.571.93-.928,1.043-1.047a2.94,

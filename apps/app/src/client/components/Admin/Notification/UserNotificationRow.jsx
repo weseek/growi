@@ -10,7 +10,6 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import { NotificationTypeIcon } from './NotificationTypeIcon';
 
 class UserNotificationRow extends React.PureComponent {
-
   render() {
     const { t, notification } = this.props;
     const id = `user-notification-${notification._id}`;
@@ -18,21 +17,26 @@ class UserNotificationRow extends React.PureComponent {
     return (
       <React.Fragment>
         <tr className="admin-notif-row" key={id}>
+          <td className="px-4">{notification.pathPattern}</td>
           <td className="px-4">
-            {notification.pathPattern}
-          </td>
-          <td className="px-4">
-            <NotificationTypeIcon notification={notification} />{notification.channel}
+            <NotificationTypeIcon notification={notification} />
+            {notification.channel}
           </td>
           <td>
-            <button type="submit" className="btn btn-outline-danger" onClick={() => { this.props.onClickDeleteBtn(notification._id) }}>{t('Delete')}</button>
+            <button
+              type="submit"
+              className="btn btn-outline-danger"
+              onClick={() => {
+                this.props.onClickDeleteBtn(notification._id);
+              }}
+            >
+              {t('Delete')}
+            </button>
           </td>
         </tr>
       </React.Fragment>
     );
-
   }
-
 }
 
 UserNotificationRow.propTypes = {
@@ -51,6 +55,5 @@ const UserNotificationRowWrapperWrapperFC = (props) => {
 };
 
 const UserNotificationRowWrapper = withUnstatedContainers(UserNotificationRowWrapperWrapperFC, [AdminNotificationContainer]);
-
 
 export default UserNotificationRowWrapper;

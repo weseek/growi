@@ -23,7 +23,8 @@ module.exports = (crowi, app) => {
   const promisifiedPassportAuthentication = (strategyName, req, res) => {
     return new Promise((resolve, reject) => {
       passport.authenticate(strategyName, (err, response, info) => {
-        if (res.headersSent) { // dirty hack -- 2017.09.25
+        if (res.headersSent) {
+          // dirty hack -- 2017.09.25
           return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
         }
 
@@ -52,8 +53,7 @@ module.exports = (crowi, app) => {
    * @param {*} req
    * @param {*} res
    */
-  const loginSuccessHandler = async(req, res, user, action, isExternalAccount = false) => {
-
+  const loginSuccessHandler = async (req, res, user, action, isExternalAccount = false) => {
     // update lastLoginAt
     user.updateLastLoginAt(new Date(), (err, userData) => {
       if (err) {
@@ -63,7 +63,7 @@ module.exports = (crowi, app) => {
     });
 
     const parameters = {
-      ip:  req.ip,
+      ip: req.ip,
       endpoint: req.originalUrl,
       action,
       user: req.user?._id,
@@ -85,7 +85,6 @@ module.exports = (crowi, app) => {
   };
 
   const injectRedirectTo = (req, res, next) => {
-
     // Move "req.session.redirectTo" to "res.locals.redirectTo"
     // Because the session is regenerated when req.login() is called
     const redirectTo = req.session.redirectTo;
@@ -120,15 +119,14 @@ module.exports = (crowi, app) => {
    * @param {*} next
    */
   const loginFailure = (error, req, res, next) => {
-
     const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
     return res.apiv3Err(error);
   };
 
-  const loginFailureForExternalAccount = async(error, req, res, next) => {
+  const loginFailureForExternalAccount = async (error, req, res, next) => {
     const parameters = {
-      ip:  req.ip,
+      ip: req.ip,
       endpoint: req.originalUrl,
       action: SupportedAction.ACTION_USER_LOGIN_FAILURE,
     };
@@ -162,7 +160,7 @@ module.exports = (crowi, app) => {
    * @param {*} res
    * @param {*} next
    */
-  const loginWithLdap = async(req, res, next) => {
+  const loginWithLdap = async (req, res, next) => {
     if (!passportService.isLdapStrategySetup) {
       logger.debug('LdapStrategy has not been set up');
       return next();
@@ -178,8 +176,7 @@ module.exports = (crowi, app) => {
 
     try {
       ldapAccountInfo = await promisifiedPassportAuthentication(strategyName, req, res);
-    }
-    catch (err) {
+    } catch (err) {
       logger.debug(err.message);
       return next(err);
     }
@@ -190,8 +187,8 @@ module.exports = (crowi, app) => {
     }
 
     /*
-      * authentication success
-      */
+     * authentication success
+     */
     // it is guaranteed that username that is input from form can be acquired
     // because this processes after authentication
     const ldapAccountId = passportService.getLdapAccountIdFromReq(req);
@@ -212,8 +209,7 @@ module.exports = (crowi, app) => {
     let externalAccount;
     try {
       externalAccount = await externalAccountService.getOrCreateUser(userInfo, providerId);
-    }
-    catch (error) {
+    } catch (error) {
       return next(error);
     }
 
@@ -241,54 +237,66 @@ module.exports = (crowi, app) => {
    * @param {*} req
    * @param {*} res
    */
-  const testLdapCredentials = async(req, res) => {
+  const testLdapCredentials = async (req, res) => {
     const { t } = await getTranslation({ lang: req.user.lang });
 
     if (!passportService.isLdapStrategySetup) {
       logger.debug('LdapStrategy has not been set up');
-      return res.json(ApiResponse.success({
-        status: 'warning',
-        message: t('message.strategy_has_not_been_set_up', { strategy: 'LdapStrategy' }),
-      }));
+      return res.json(
+        ApiResponse.success({
+          status: 'warning',
+          message: t('message.strategy_has_not_been_set_up', { strategy: 'LdapStrategy' }),
+        }),
+      );
     }
 
     passport.authenticate('ldapauth', (err, user, info) => {
-      if (res.headersSent) { // dirty hack -- 2017.09.25
+      if (res.headersSent) {
+        // dirty hack -- 2017.09.25
         return; //              cz: somehow passport.authenticate called twice when ECONNREFUSED error occurred
       }
 
-      if (err) { // DB Error
+      if (err) {
+        // DB Error
         logger.error('LDAP Server Error: ', err);
-        return res.json(ApiResponse.success({
-          status: 'warning',
-          message: 'LDAP Server Error occured.',
-          err,
-        }));
+        return res.json(
+          ApiResponse.success({
+            status: 'warning',
+            message: 'LDAP Server Error occured.',
+            err,
+          }),
+        );
       }
       if (info && info.message) {
-        return res.json(ApiResponse.success({
-          status: 'warning',
-          message: info.message,
-          ldapConfiguration: req.ldapConfiguration,
-          ldapAccountInfo: req.ldapAccountInfo,
-        }));
+        return res.json(
+          ApiResponse.success({
+            status: 'warning',
+            message: info.message,
+            ldapConfiguration: req.ldapConfiguration,
+            ldapAccountInfo: req.ldapAccountInfo,
+          }),
+        );
       }
       if (user) {
         // check groups
         if (!isValidLdapUserByGroupFilter(user)) {
-          return res.json(ApiResponse.success({
-            status: 'warning',
-            message: 'This user does not belong to any groups designated by the group search filter.',
+          return res.json(
+            ApiResponse.success({
+              status: 'warning',
+              message: 'This user does not belong to any groups designated by the group search filter.',
+              ldapConfiguration: req.ldapConfiguration,
+              ldapAccountInfo: req.ldapAccountInfo,
+            }),
+          );
+        }
+        return res.json(
+          ApiResponse.success({
+            status: 'success',
+            message: 'Successfully authenticated.',
             ldapConfiguration: req.ldapConfiguration,
             ldapAccountInfo: req.ldapAccountInfo,
-          }));
-        }
-        return res.json(ApiResponse.success({
-          status: 'success',
-          message: 'Successfully authenticated.',
-          ldapConfiguration: req.ldapConfiguration,
-          ldapAccountInfo: req.ldapAccountInfo,
-        }));
+          }),
+        );
       }
     })(req, res, () => {});
   };
@@ -314,7 +322,8 @@ module.exports = (crowi, app) => {
       logger.debug('user', user);
       logger.debug('info', info);
 
-      if (err) { // DB Error
+      if (err) {
+        // DB Error
         logger.error('Database Server Error: ', err);
         return next(err);
       }
@@ -344,7 +353,7 @@ module.exports = (crowi, app) => {
     })(req, res);
   };
 
-  const loginPassportGoogleCallback = async(req, res, next) => {
+  const loginPassportGoogleCallback = async (req, res, next) => {
     const globalLang = crowi.configManager.getConfig('app:globalLang');
 
     const providerId = 'google';
@@ -353,8 +362,7 @@ module.exports = (crowi, app) => {
     let response;
     try {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
-    }
-    catch (err) {
+    } catch (err) {
       return next(new ExternalAccountLoginError(err.message));
     }
 
@@ -395,8 +403,11 @@ module.exports = (crowi, app) => {
     const user = (await externalAccount.populate('user')).user;
 
     // login
-    req.logIn(user, async(err) => {
-      if (err) { logger.debug(err.message); return next(new ExternalAccountLoginError(err.message)) }
+    req.logIn(user, async (err) => {
+      if (err) {
+        logger.debug(err.message);
+        return next(new ExternalAccountLoginError(err.message));
+      }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_GOOGLE, true);
     });
@@ -412,15 +423,14 @@ module.exports = (crowi, app) => {
     passport.authenticate('github')(req, res);
   };
 
-  const loginPassportGitHubCallback = async(req, res, next) => {
+  const loginPassportGitHubCallback = async (req, res, next) => {
     const providerId = 'github';
     const strategyName = 'github';
 
     let response;
     try {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
-    }
-    catch (err) {
+    } catch (err) {
       return next(new ExternalAccountLoginError(err.message));
     }
 
@@ -438,8 +448,11 @@ module.exports = (crowi, app) => {
     const user = (await externalAccount.populate('user')).user;
 
     // login
-    req.logIn(user, async(err) => {
-      if (err) { logger.debug(err.message); return next(new ExternalAccountLoginError(err.message)) }
+    req.logIn(user, async (err) => {
+      if (err) {
+        logger.debug(err.message);
+        return next(new ExternalAccountLoginError(err.message));
+      }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_GITHUB, true);
     });
@@ -455,7 +468,7 @@ module.exports = (crowi, app) => {
     passport.authenticate('oidc')(req, res);
   };
 
-  const loginPassportOidcCallback = async(req, res, next) => {
+  const loginPassportOidcCallback = async (req, res, next) => {
     const providerId = 'oidc';
     const strategyName = 'oidc';
     const attrMapId = crowi.configManager.getConfig('security:passport-oidc:attrMapId');
@@ -466,8 +479,7 @@ module.exports = (crowi, app) => {
     let response;
     try {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
-    }
-    catch (err) {
+    } catch (err) {
       logger.debug(err);
       return next(new ExternalAccountLoginError(err.message));
     }
@@ -487,8 +499,11 @@ module.exports = (crowi, app) => {
 
     // login
     const user = (await externalAccount.populate('user')).user;
-    req.logIn(user, async(err) => {
-      if (err) { logger.debug(err.message); return next(new ExternalAccountLoginError(err.message)) }
+    req.logIn(user, async (err) => {
+      if (err) {
+        logger.debug(err.message);
+        return next(new ExternalAccountLoginError(err.message));
+      }
 
       return loginSuccessHandler(req, res, user, SupportedAction.ACTION_USER_LOGIN_WITH_OIDC, true);
     });
@@ -504,7 +519,7 @@ module.exports = (crowi, app) => {
     passport.authenticate('saml')(req, res);
   };
 
-  const loginPassportSamlCallback = async(req, res, next) => {
+  const loginPassportSamlCallback = async (req, res, next) => {
     const providerId = 'saml';
     const strategyName = 'saml';
     const attrMapId = crowi.configManager.getConfig('security:passport-saml:attrMapId');
@@ -516,8 +531,7 @@ module.exports = (crowi, app) => {
     let response;
     try {
       response = await promisifiedPassportAuthentication(strategyName, req, res);
-    }
-    catch (err) {
+    } catch (err) {
       return next(new ExternalAccountLoginError(err.message));
     }
 

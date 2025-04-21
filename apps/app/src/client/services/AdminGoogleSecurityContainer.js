@@ -13,7 +13,6 @@ const logger = loggerFactory('growi:security:AdminGoogleSecurityContainer');
  * @extends {Container} unstated Container
  */
 export default class AdminGoogleSecurityContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -31,8 +30,6 @@ export default class AdminGoogleSecurityContainer extends Container {
       googleClientSecret: '',
       isSameEmailTreatedAsIdenticalUser: false,
     };
-
-
   }
 
   /**
@@ -47,8 +44,7 @@ export default class AdminGoogleSecurityContainer extends Container {
         googleClientSecret: googleOAuth.googleClientSecret,
         isSameEmailTreatedAsIdenticalUser: googleOAuth.isSameEmailTreatedAsIdenticalUser,
       });
-    }
-    catch (err) {
+    } catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to fetch data');
@@ -83,7 +79,6 @@ export default class AdminGoogleSecurityContainer extends Container {
     this.setState({ isSameEmailTreatedAsIdenticalUser: !this.state.isSameEmailTreatedAsIdenticalUser });
   }
 
-
   /**
    * Update googleSetting
    */
@@ -91,7 +86,9 @@ export default class AdminGoogleSecurityContainer extends Container {
     const { googleClientId, googleClientSecret, isSameEmailTreatedAsIdenticalUser } = this.state;
 
     let requestParams = {
-      googleClientId, googleClientSecret, isSameEmailTreatedAsIdenticalUser,
+      googleClientId,
+      googleClientSecret,
+      isSameEmailTreatedAsIdenticalUser,
     };
 
     requestParams = await removeNullPropertyFromObject(requestParams);
@@ -105,5 +102,4 @@ export default class AdminGoogleSecurityContainer extends Container {
     });
     return response;
   }
-
 }

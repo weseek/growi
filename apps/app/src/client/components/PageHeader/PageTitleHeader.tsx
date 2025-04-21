@@ -24,10 +24,10 @@ const moduleClass = styles['page-title-header'] ?? '';
 const borderColorClass = styles['page-title-header-border-color'] ?? '';
 
 type Props = {
-  currentPage: IPagePopulatedToShowRevision,
-  className?: string,
-  maxWidth?: number,
-  onMoveTerminated?: () => void,
+  currentPage: IPagePopulatedToShowRevision;
+  className?: string;
+  maxWidth?: number;
+  onMoveTerminated?: () => void;
 };
 
 export const PageTitleHeader = (props: Props): JSX.Element => {
@@ -53,20 +53,24 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
   const { data: editorMode } = useEditorMode();
   const { data: isUntitledPage } = useIsUntitledPage();
 
-  const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
-    const newPageTitle = pathUtils.removeHeadingSlash(e.target.value);
-    const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
-    const newPagePath = nodePath.resolve(parentPagePath, newPageTitle);
+  const changeHandler = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const newPageTitle = pathUtils.removeHeadingSlash(e.target.value);
+      const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
+      const newPagePath = nodePath.resolve(parentPagePath, newPageTitle);
 
-    setEditedPagePath(newPagePath);
+      setEditedPagePath(newPagePath);
 
-    // validation
-    const validationResult = inputValidator(e.target.value);
-    setValidationResult(validationResult ?? undefined);
-  }, [currentPage.path, inputValidator]);
+      // validation
+      const validationResult = inputValidator(e.target.value);
+      setValidationResult(validationResult ?? undefined);
+    },
+    [currentPage.path, inputValidator],
+  );
 
   const rename = useCallback(() => {
-    pagePathRenameHandler(editedPagePath,
+    pagePathRenameHandler(
+      editedPagePath,
       () => {
         setRenameInputShown(false);
         setValidationResult(undefined);
@@ -74,7 +78,8 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
       },
       () => {
         setRenameInputShown(true);
-      });
+      },
+    );
   }, [editedPagePath, onMoveTerminated, pagePathRenameHandler]);
 
   const cancel = useCallback(() => {
@@ -101,14 +106,12 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const isInvalid = validationResult != null;
 
-  const inputMaxWidth = maxWidth != null
-    ? getAdjustedMaxWidthForAutosizeInput(maxWidth, 'md', validationResult != null ? false : undefined) - 16
-    : undefined;
+  const inputMaxWidth = maxWidth != null ? getAdjustedMaxWidthForAutosizeInput(maxWidth, 'md', validationResult != null ? false : undefined) - 16 : undefined;
 
   return (
     <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`}>
       <div className="page-title-header-input me-1 d-inline-block">
-        { isRenameInputShown && (
+        {isRenameInputShown && (
           <div className="position-relative">
             <div className="position-absolute w-100">
               <AutosizeSubmittableInput
@@ -123,7 +126,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
               />
             </div>
           </div>
-        ) }
+        )}
         <h1
           className={`mb-0 mb-sm-1 px-2 fs-4
             ${isRenameInputShown ? 'invisible' : ''} text-truncate
@@ -137,16 +140,9 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
       </div>
 
       <div className={`${isRenameInputShown ? 'invisible' : ''} d-flex align-items-center`}>
-        { currentPage.wip && (
-          <span className="badge rounded-pill text-bg-secondary ms-2">WIP</span>
-        )}
+        {currentPage.wip && <span className="badge rounded-pill text-bg-secondary ms-2">WIP</span>}
 
-        <CopyDropdown
-          pageId={currentPage._id}
-          pagePath={currentPage.path}
-          dropdownToggleId={`copydropdown-${currentPage._id}`}
-          dropdownToggleClassName="p-1"
-        >
+        <CopyDropdown pageId={currentPage._id} pagePath={currentPage.path} dropdownToggleId={`copydropdown-${currentPage._id}`} dropdownToggleClassName="p-1">
           <span className="material-symbols-outlined fs-6">content_paste</span>
         </CopyDropdown>
       </div>

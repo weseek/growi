@@ -22,7 +22,7 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
     }
 
     const allAiAssistants = [...aiAssistantData.myAiAssistants, ...aiAssistantData.teamAiAssistants];
-    return allAiAssistants.find(aiAssistant => aiAssistant.isDefault);
+    return allAiAssistants.find((aiAssistant) => aiAssistant.isDefault);
   }, [aiAssistantData]);
 
   const openDefaultAiAssistantButtonClickHandler = useCallback(() => {
@@ -40,11 +40,7 @@ const OpenDefaultAiAssistantButton = (): JSX.Element => {
   return (
     <NotAvailableForGuest>
       <NotAvailable isDisabled={defaultAiAssistant == null} title={t('default_ai_assistant.not_set')}>
-        <button
-          type="button"
-          className={`btn btn-search ${styles['btn-open-default-ai-assistant']}`}
-          onClick={openDefaultAiAssistantButtonClickHandler}
-        >
+        <button type="button" className={`btn btn-search ${styles['btn-open-default-ai-assistant']}`} onClick={openDefaultAiAssistantButtonClickHandler}>
           <span className="growi-custom-icons fs-4 align-middle lh-1">ai_assistant</span>
         </button>
       </NotAvailable>

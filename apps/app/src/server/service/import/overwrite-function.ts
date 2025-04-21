@@ -1,18 +1,15 @@
 import { parseISO } from 'date-fns/parseISO';
 import isIsoDate from 'is-iso-date';
 import type { Schema } from 'mongoose';
-import {
-  Types, type Document,
-} from 'mongoose';
+import { Types, type Document } from 'mongoose';
 
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:import:overwrite-function');
 
-
 const { ObjectId } = Types;
 
-export type OverwriteFunction = (value: unknown, ctx: { document: Document, propertyName: string, schema?: Schema }) => unknown;
+export type OverwriteFunction = (value: unknown, ctx: { document: Document; propertyName: string; schema?: Schema }) => unknown;
 
 /**
  * keep original value
@@ -40,8 +37,7 @@ export const keepOriginal: OverwriteFunction = (value, { document, schema, prope
 
     try {
       return schemaType.cast(value, document, true);
-    }
-    catch (e) {
+    } catch (e) {
       logger.warn(`Failed to cast value for ${propertyName}`, e);
       // return original value
       return value;

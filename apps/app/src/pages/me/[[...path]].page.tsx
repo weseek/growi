@@ -1,8 +1,6 @@
 import React, { type ReactNode, useMemo, type JSX } from 'react';
 
-import type {
-  GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -15,42 +13,47 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
-  useCurrentUser, useIsSearchPage, useGrowiCloudUri,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp, useCurrentPathname,
+  useCurrentUser,
+  useIsSearchPage,
+  useGrowiCloudUri,
+  useIsSearchServiceConfigured,
+  useIsSearchServiceReachable,
+  useCsrfToken,
+  useIsSearchScopeChildrenAsDefault,
+  useRegistrationWhitelist,
+  useShowPageLimitationXL,
+  useRendererConfig,
+  useIsEnabledMarp,
+  useCurrentPathname,
 } from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
 import type { CommonProps } from '../utils/commons';
-import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
-} from '../utils/commons';
-
+import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig } from '../utils/commons';
 
 const logger = loggerFactory('growi:pages:me');
 
 type Props = CommonProps & {
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
-  isEnabledMarp: boolean,
-  rendererConfig: RendererConfig,
-  showPageLimitationXL: number,
+  isSearchServiceConfigured: boolean;
+  isSearchServiceReachable: boolean;
+  isSearchScopeChildrenAsDefault: boolean;
+  isEnabledMarp: boolean;
+  rendererConfig: RendererConfig;
+  showPageLimitationXL: number;
 
   // config
-  registrationWhitelist: string[],
+  registrationWhitelist: string[];
 
-  sidebarConfig: ISidebarConfig,
+  sidebarConfig: ISidebarConfig;
 };
 
 const PersonalSettings = dynamic(() => import('~/client/components/Me/PersonalSettings'), { ssr: false });
 // const MyDraftList = dynamic(() => import('~/components/MyDraftList/MyDraftList'), { ssr: false });
-const InAppNotificationPage = dynamic(
-  () => import('~/client/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
-);
+const InAppNotificationPage = dynamic(() => import('~/client/components/InAppNotification/InAppNotificationPage').then((mod) => mod.InAppNotificationPage), {
+  ssr: false,
+});
 
 const MePage: NextPageWithLayout<Props> = (props: Props) => {
   const router = useRouter();
@@ -75,7 +78,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
     };
   }, [t]);
 
-  const getTargetPageToRender = (pagesMap, keys): {title: string, component: JSX.Element} => {
+  const getTargetPageToRender = (pagesMap, keys): { title: string; component: JSX.Element } => {
     return keys.reduce((pagesMap, key) => {
       const page = pagesMap[key];
       if (page == null) {
@@ -131,11 +134,9 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
         <div className="main ps-sidebar">
           <div className="container-lg wide-gutter-x-lg">
-
-            <h1 className="sticky-top py-2 fs-3">{ targetPage.title }</h1>
+            <h1 className="sticky-top py-2 fs-3">{targetPage.title}</h1>
 
             {targetPage.component}
-
           </div>
         </div>
       </div>
@@ -143,20 +144,15 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
-
 type LayoutProps = Props & {
-  children?: ReactNode
-}
+  children?: ReactNode;
+};
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
-  return (
-    <BasicLayout>
-      {children}
-    </BasicLayout>
-  );
+  return <BasicLayout>{children}</BasicLayout>;
 };
 
 MePage.getLayout = function getLayout(page) {
@@ -166,10 +162,7 @@ MePage.getLayout = function getLayout(page) {
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const {
-    searchService,
-    configManager,
-  } = crowi;
+  const { searchService, configManager } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -198,9 +191,10 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     isEnabledXssPrevention: configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
     sanitizeType: configManager.getConfig('markdown:rehypeSanitize:option'),
     customTagWhitelist: crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
-    customAttrWhitelist: configManager.getConfig('markdown:rehypeSanitize:attributes') != null
-      ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
-      : undefined,
+    customAttrWhitelist:
+      configManager.getConfig('markdown:rehypeSanitize:attributes') != null
+        ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
+        : undefined,
     highlightJsStyleBorder: crowi.configManager.getConfig('customize:highlightJsStyleBorder'),
   };
 }
@@ -217,7 +211,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { user, crowi } = req;
 

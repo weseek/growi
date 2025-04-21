@@ -1,9 +1,7 @@
 import { GrowiDeploymentType, GrowiServiceType } from '@growi/core/dist/consts';
 import type { IGrowiInfo } from '@growi/core/dist/interfaces';
 import { GrowiWikiType } from '@growi/core/dist/interfaces';
-import {
-  describe, test, expect,
-} from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { mock } from 'vitest-mock-extended';
 
 import { AttachmentMethodType } from '../../../../interfaces/attachment';

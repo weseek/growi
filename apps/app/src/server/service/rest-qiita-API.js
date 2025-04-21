@@ -16,7 +16,6 @@ function getAxios(team, token) {
  */
 
 class RestQiitaAPIService {
-
   /** @type {import('~/server/crowi').default} Crowi instance */
   crowi;
 
@@ -46,13 +45,12 @@ class RestQiitaAPIService {
    * @param {string} path
    */
   async restAPI(path) {
-    return this.axios.get(path)
-      .then((res) => {
-        const data = res.data;
-        const total = res.headers['total-count'];
+    return this.axios.get(path).then((res) => {
+      const data = res.data;
+      const total = res.headers['total-count'];
 
-        return { data, total };
-      });
+      return { data, total };
+    });
   }
 
   /**
@@ -67,7 +65,6 @@ class RestQiitaAPIService {
       return user;
     }
   }
-
 
   /**
    * get Qiita pages
@@ -84,7 +81,6 @@ class RestQiitaAPIService {
       return { pages, total };
     }
   }
-
 }
 
 module.exports = RestQiitaAPIService;

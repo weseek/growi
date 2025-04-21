@@ -10,9 +10,7 @@ import { toastError } from '~/client/util/toastr';
 import { useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
-
 import { withUnstatedContainers } from '../../UnstatedUtils';
-
 
 import { EnvVarsTable } from './EnvVarsTable';
 import SystemInfomationTable from './SystemInfomationTable';
@@ -24,11 +22,10 @@ const AdminHome = (props) => {
   const { t } = useTranslation();
   const { data: migrationStatus } = useSWRxV5MigrationStatus();
 
-  const fetchAdminHomeData = useCallback(async() => {
+  const fetchAdminHomeData = useCallback(async () => {
     try {
       await adminHomeContainer.retrieveAdminHomeData();
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -44,28 +41,27 @@ const AdminHome = (props) => {
         // Alert message will be displayed in case that the GROWI is under maintenance
         adminHomeContainer.state.isMaintenanceMode && (
           <div className="alert alert-danger alert-link" role="alert">
-            <h3 className="alert-heading">
-              {t('admin:maintenance_mode.maintenance_mode')}
-            </h3>
-            <p>
-              {t('admin:maintenance_mode.description')}
-            </p>
+            <h3 className="alert-heading">{t('admin:maintenance_mode.maintenance_mode')}</h3>
+            <p>{t('admin:maintenance_mode.description')}</p>
             <hr />
             <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
-              <span className="material-symbols-outlined ms-1" aria-hidden="true">link</span>
+              <span className="material-symbols-outlined ms-1" aria-hidden="true">
+                link
+              </span>
               <strong>{t('admin:maintenance_mode.end_maintenance_mode')}</strong>
             </a>
           </div>
         )
       }
       {
-      // Alert message will be displayed in case that V5 migration has not been compleated
-        (migrationStatus != null && !migrationStatus.isV5Compatible)
-        && (
+        // Alert message will be displayed in case that V5 migration has not been compleated
+        migrationStatus != null && !migrationStatus.isV5Compatible && (
           <div className={`alert ${migrationStatus.isV5Compatible == null ? 'alert-warning' : 'alert-info'}`}>
             {t('admin:v5_page_migration.migration_desc')}
             <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
-              <span className="material-symbols-outlined ms-1" aria-hidden="true">link</span>
+              <span className="material-symbols-outlined ms-1" aria-hidden="true">
+                link
+              </span>
               <strong>{t('admin:v5_page_migration.upgrade_to_v5')}</strong>
             </a>
           </div>
@@ -122,7 +118,6 @@ const AdminHome = (props) => {
     </div>
   );
 };
-
 
 const AdminHomeWrapper = withUnstatedContainers(AdminHome, [AdminHomeContainer]);
 

@@ -16,11 +16,9 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-
 const logger = loggerFactory('growi:routes:apiv3:customize-setting');
 
 const router = express.Router();
-
 
 /**
  * @swagger
@@ -202,16 +200,9 @@ module.exports = (crowi) => {
   const { customizeService, attachmentService } = crowi;
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const validator = {
-    layout: [
-      body('isContainerFluid').isBoolean(),
-    ],
-    theme: [
-      body('theme').isString(),
-    ],
-    sidebar: [
-      body('isSidebarCollapsedMode').isBoolean(),
-      body('isSidebarClosedAtDockMode').optional().isBoolean(),
-    ],
+    layout: [body('isContainerFluid').isBoolean()],
+    theme: [body('theme').isString()],
+    sidebar: [body('isSidebarCollapsedMode').isBoolean(), body('isSidebarClosedAtDockMode').optional().isBoolean()],
     function: [
       body('isEnabledTimeline').isBoolean(),
       body('isEnabledAttachTitleHeader').isBoolean(),
@@ -224,31 +215,18 @@ module.exports = (crowi) => {
       body('isSearchScopeChildrenAsDefault').isBoolean(),
       body('showPageSideAuthors').isBoolean(),
     ],
-    CustomizePresentation: [
-      body('isEnabledMarp').isBoolean(),
-    ],
-    customizeTitle: [
-      body('customizeTitle').isString(),
-    ],
+    CustomizePresentation: [body('isEnabledMarp').isBoolean()],
+    customizeTitle: [body('customizeTitle').isString()],
     highlight: [
-      body('highlightJsStyle').isString().isIn([
-        'github', 'github-gist', 'atom-one-light', 'xcode', 'vs', 'atom-one-dark', 'hybrid', 'monokai', 'tomorrow-night', 'vs2015',
-      ]),
+      body('highlightJsStyle')
+        .isString()
+        .isIn(['github', 'github-gist', 'atom-one-light', 'xcode', 'vs', 'atom-one-dark', 'hybrid', 'monokai', 'tomorrow-night', 'vs2015']),
       body('highlightJsStyleBorder').isBoolean(),
     ],
-    customizeScript: [
-      body('customizeScript').isString(),
-    ],
-    customizeCss: [
-      body('customizeCss').isString(),
-    ],
-    customizeNoscript: [
-      body('customizeNoscript').isString(),
-    ],
-    logo: [
-      body('isDefaultLogo').isBoolean().optional({ nullable: true }),
-      body('customizedLogoSrc').isString().optional({ nullable: true }),
-    ],
+    customizeScript: [body('customizeScript').isString()],
+    customizeCss: [body('customizeCss').isString()],
+    customizeNoscript: [body('customizeNoscript').isString()],
+    logo: [body('isDefaultLogo').isBoolean().optional({ nullable: true }), body('customizedLogoSrc').isString().optional({ nullable: true })],
   };
 
   /**
@@ -274,7 +252,7 @@ module.exports = (crowi) => {
    *                      description: customize params
    *                      $ref: '#/components/schemas/CustomizeSetting'
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async (req, res) => {
     const customizeParams = {
       isEnabledTimeline: await configManager.getConfig('customize:isEnabledTimeline'),
       isEnabledAttachTitleHeader: await configManager.getConfig('customize:isEnabledAttachTitleHeader'),
@@ -317,12 +295,11 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeLayout'
    */
-  router.get('/layout', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/layout', loginRequiredStrictly, adminRequired, async (req, res) => {
     try {
       const isContainerFluid = await configManager.getConfig('customize:isContainerFluid');
       return res.apiv3({ isContainerFluid });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in getting layout';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'get-layout-failed'));
@@ -357,7 +334,7 @@ module.exports = (crowi) => {
    *                      description: customized params
    *                      $ref: '#/components/schemas/CustomizeLayout'
    */
-  router.put('/layout', loginRequiredStrictly, adminRequired, addActivity, validator.layout, apiV3FormValidator, async(req, res) => {
+  router.put('/layout', loginRequiredStrictly, adminRequired, addActivity, validator.layout, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'customize:isContainerFluid': req.body.isContainerFluid,
     };
@@ -372,8 +349,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating layout';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-layout-failed'));
@@ -408,21 +384,17 @@ module.exports = (crowi) => {
    *                      items:
    *                        $ref: '#/components/schemas/ThemesMetadata'
    */
-  router.get('/theme', loginRequiredStrictly, async(req, res) => {
-
+  router.get('/theme', loginRequiredStrictly, async (req, res) => {
     try {
       const currentTheme = await configManager.getConfig('customize:theme');
 
       // retrieve plugin manifests
       const themePlugins = await GrowiPlugin.findEnabledPluginsByType(GrowiPluginType.Theme);
 
-      const pluginThemesMetadatas = themePlugins
-        .map(themePlugin => themePlugin.meta.themes)
-        .flat();
+      const pluginThemesMetadatas = themePlugins.map((themePlugin) => themePlugin.meta.themes).flat();
 
       return res.apiv3({ currentTheme, pluginThemesMetadatas });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in getting theme';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'get-theme-failed'));
@@ -457,7 +429,7 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizeTheme'
    */
-  router.put('/theme', loginRequiredStrictly, adminRequired, addActivity, validator.theme, apiV3FormValidator, async(req, res) => {
+  router.put('/theme', loginRequiredStrictly, adminRequired, addActivity, validator.theme, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'customize:theme': req.body.theme,
     };
@@ -471,8 +443,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_THEME_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating theme';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-theme-failed'));
@@ -498,14 +469,12 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeSidebar'
    */
-  router.get('/sidebar', loginRequiredStrictly, adminRequired, async(req, res) => {
-
+  router.get('/sidebar', loginRequiredStrictly, adminRequired, async (req, res) => {
     try {
       const isSidebarCollapsedMode = await configManager.getConfig('customize:isSidebarCollapsedMode');
       const isSidebarClosedAtDockMode = await configManager.getConfig('customize:isSidebarClosedAtDockMode');
       return res.apiv3({ isSidebarCollapsedMode, isSidebarClosedAtDockMode });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in getting sidebar';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'get-sidebar-failed'));
@@ -540,7 +509,7 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizeSidebar'
    */
-  router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
+  router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, addActivity, async (req, res) => {
     const requestParams = {
       'customize:isSidebarCollapsedMode': req.body.isSidebarCollapsedMode,
       'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
@@ -556,8 +525,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SIDEBAR_UPDATE });
 
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating sidebar';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-sidebar-failed'));
@@ -592,7 +560,7 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizeFunction'
    */
-  router.put('/function', loginRequiredStrictly, adminRequired, addActivity, validator.function, apiV3FormValidator, async(req, res) => {
+  router.put('/function', loginRequiredStrictly, adminRequired, addActivity, validator.function, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'customize:isEnabledTimeline': req.body.isEnabledTimeline,
       'customize:isEnabledAttachTitleHeader': req.body.isEnabledAttachTitleHeader,
@@ -623,14 +591,12 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating function';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-function-failed'));
     }
   });
-
 
   /**
    * @swagger
@@ -660,7 +626,7 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizePresentation'
    */
-  router.put('/presentation', loginRequiredStrictly, adminRequired, addActivity, validator.CustomizePresentation, apiV3FormValidator, async(req, res) => {
+  router.put('/presentation', loginRequiredStrictly, adminRequired, addActivity, validator.CustomizePresentation, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'customize:isEnabledMarp': req.body.isEnabledMarp,
     };
@@ -673,8 +639,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_FUNCTION_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating presentaion';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-presentation-failed'));
@@ -709,7 +674,7 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizeHighlightResponse'
    */
-  router.put('/highlight', loginRequiredStrictly, adminRequired, addActivity, validator.highlight, apiV3FormValidator, async(req, res) => {
+  router.put('/highlight', loginRequiredStrictly, adminRequired, addActivity, validator.highlight, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'customize:highlightJsStyle': req.body.highlightJsStyle,
       'customize:highlightJsStyleBorder': req.body.highlightJsStyleBorder,
@@ -724,8 +689,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_CODE_HIGHLIGHT_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating highlight';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-highlight-failed'));
@@ -760,7 +724,7 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizeTitle'
    */
-  router.put('/customize-title', loginRequiredStrictly, adminRequired, addActivity, validator.customizeTitle, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-title', loginRequiredStrictly, adminRequired, addActivity, validator.customizeTitle, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'customize:title': req.body.customizeTitle,
     };
@@ -776,8 +740,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_TITLE_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating customizeTitle';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeTitle-failed'));
@@ -812,7 +775,7 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizeNoscript'
    */
-  router.put('/customize-noscript', loginRequiredStrictly, adminRequired, addActivity, validator.customizeNoscript, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-noscript', loginRequiredStrictly, adminRequired, addActivity, validator.customizeNoscript, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'customize:noscript': req.body.customizeNoscript,
     };
@@ -824,8 +787,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_NOSCRIPT_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating customizeNoscript';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeNoscript-failed'));
@@ -860,7 +822,7 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizeCss'
    */
-  router.put('/customize-css', loginRequiredStrictly, adminRequired, addActivity, validator.customizeCss, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-css', loginRequiredStrictly, adminRequired, addActivity, validator.customizeCss, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'customize:css': req.body.customizeCss,
     };
@@ -875,8 +837,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_CSS_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating customizeCss';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeCss-failed'));
@@ -911,7 +872,7 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizeScript'
    */
-  router.put('/customize-script', loginRequiredStrictly, adminRequired, addActivity, validator.customizeScript, apiV3FormValidator, async(req, res) => {
+  router.put('/customize-script', loginRequiredStrictly, adminRequired, addActivity, validator.customizeScript, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'customize:script': req.body.customizeScript,
     };
@@ -923,8 +884,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_CUSTOM_SCRIPT_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating customizeScript';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeScript-failed'));
@@ -959,11 +919,8 @@ module.exports = (crowi) => {
    *                    customizedParams:
    *                      $ref: '#/components/schemas/CustomizeLogo'
    */
-  router.put('/customize-logo', loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async(req, res) => {
-
-    const {
-      isDefaultLogo,
-    } = req.body;
+  router.put('/customize-logo', loginRequiredStrictly, adminRequired, validator.logo, apiV3FormValidator, async (req, res) => {
+    const { isDefaultLogo } = req.body;
 
     const requestParams = {
       'customize:isDefaultLogo': isDefaultLogo,
@@ -974,8 +931,7 @@ module.exports = (crowi) => {
         isDefaultLogo: await configManager.getConfig('customize:isDefaultLogo'),
       };
       return res.apiv3({ customizedParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating customizeLogo';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-customizeLogo-failed'));
@@ -1021,42 +977,39 @@ module.exports = (crowi) => {
    *                            temporaryUrlExpiredAt: {}
    *                            temporaryUrlCached: {}
    */
-  router.post('/upload-brand-logo', loginRequiredStrictly, adminRequired,
-    uploads.single('file'), validator.logo, apiV3FormValidator, async(req, res) => {
+  router.post('/upload-brand-logo', loginRequiredStrictly, adminRequired, uploads.single('file'), validator.logo, apiV3FormValidator, async (req, res) => {
+    if (req.file == null) {
+      return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));
+    }
+    if (req.user == null) {
+      return res.apiv3Err(new ErrorV3('param "user" must be set.', 'upload-brand-logo-failed'));
+    }
 
-      if (req.file == null) {
-        return res.apiv3Err(new ErrorV3('File error.', 'upload-brand-logo-failed'));
-      }
-      if (req.user == null) {
-        return res.apiv3Err(new ErrorV3('param "user" must be set.', 'upload-brand-logo-failed'));
-      }
+    const file = req.file;
 
-      const file = req.file;
+    // check type
+    const acceptableFileType = /image\/.+/;
+    if (!file.mimetype.match(acceptableFileType)) {
+      const msg = 'File type error. Only image files is allowed to set as user picture.';
+      return res.apiv3Err(new ErrorV3(msg, 'upload-brand-logo-failed'));
+    }
 
-      // check type
-      const acceptableFileType = /image\/.+/;
-      if (!file.mimetype.match(acceptableFileType)) {
-        const msg = 'File type error. Only image files is allowed to set as user picture.';
-        return res.apiv3Err(new ErrorV3(msg, 'upload-brand-logo-failed'));
-      }
+    // Check if previous attachment exists and remove it
+    const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
+    if (attachments != null) {
+      await attachmentService.removeAllAttachments(attachments);
+    }
 
-      // Check if previous attachment exists and remove it
-      const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
-      if (attachments != null) {
-        await attachmentService.removeAllAttachments(attachments);
-      }
-
-      let attachment;
-      try {
-        attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.BRAND_LOGO);
-      }
-      catch (err) {
-        logger.error(err);
-        return res.apiv3Err(new ErrorV3(err.message, 'upload-brand-logo-failed'));
-      }
-      attachment.toObject({ virtuals: true });
-      return res.apiv3({ attachment });
-    });
+    let attachment;
+    try {
+      attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.BRAND_LOGO);
+    } catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3(err.message, 'upload-brand-logo-failed'));
+    }
+    attachment.toObject({ virtuals: true });
+    return res.apiv3({ attachment });
+  });
 
   /**
    * @swagger
@@ -1077,8 +1030,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  additionalProperties: false
    */
-  router.delete('/delete-brand-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
-
+  router.delete('/delete-brand-logo', loginRequiredStrictly, adminRequired, async (req, res) => {
     const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
 
     if (attachments == null) {
@@ -1087,8 +1039,7 @@ module.exports = (crowi) => {
 
     try {
       await attachmentService.removeAllAttachments(attachments);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.status(500).apiv3Err(new ErrorV3('Error while deleting logo', 'delete-brand-logo-failed'));
     }

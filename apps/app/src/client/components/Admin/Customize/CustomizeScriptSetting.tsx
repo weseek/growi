@@ -12,20 +12,18 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 type Props = {
-  adminCustomizeContainer: AdminCustomizeContainer
-}
+  adminCustomizeContainer: AdminCustomizeContainer;
+};
 
 const CustomizeScriptSetting = (props: Props): JSX.Element => {
-
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
-  const onClickSubmit = useCallback(async() => {
+  const onClickSubmit = useCallback(async () => {
     try {
       await adminCustomizeContainer.updateCustomizeScript();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_script'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [t, adminCustomizeContainer]);
@@ -37,7 +35,8 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
           <h2 className="admin-setting-header">{t('admin:customize_settings.custom_script')}</h2>
           <Card className="card custom-card bg-body-tertiary mb-3">
             <CardBody className="px-0 py-2">
-              {t('admin:customize_settings.write_java')}<br />
+              {t('admin:customize_settings.write_java')}
+              <br />
               {t('admin:customize_settings.reflect_change')}
             </CardBody>
           </Card>
@@ -48,7 +47,9 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
               name="customizeScript"
               rows={8}
               defaultValue={adminCustomizeContainer.state.currentCustomizeScript || ''}
-              onChange={(e) => { adminCustomizeContainer.changeCustomizeScript(e.target.value) }}
+              onChange={(e) => {
+                adminCustomizeContainer.changeCustomizeScript(e.target.value);
+              }}
             />
           </div>
 
@@ -60,14 +61,13 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
             aria-expanded="false"
             aria-controls="collapseExampleScript"
           >
-            <span className="material-symbols-outlined me-1" aria-hidden="true">navigate_next</span>
+            <span className="material-symbols-outlined me-1" aria-hidden="true">
+              navigate_next
+            </span>
             Example for Google Tag Manager
           </a>
           <div className="collapse" id="collapseExampleScript">
-            <PrismAsyncLight
-              style={oneDark}
-              language="javascript"
-            >
+            <PrismAsyncLight style={oneDark} language="javascript">
               {`(function(w,d,s,l,i){
 w[l]=w[l]||[];
 w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
@@ -85,7 +85,6 @@ j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefo
       </div>
     </React.Fragment>
   );
-
 };
 
 const CustomizeScriptSettingWrapper = withUnstatedContainers(CustomizeScriptSetting, [AdminCustomizeContainer]);

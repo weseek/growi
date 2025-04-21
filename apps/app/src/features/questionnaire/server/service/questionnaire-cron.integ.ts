@@ -6,9 +6,7 @@ import mongoose from 'mongoose';
 import { configManager } from '~/server/service/config-manager';
 
 import { AttachmentMethodType } from '../../../../interfaces/attachment';
-import type {
-  IProactiveQuestionnaireAnswer, IProactiveQuestionnaireAnswerLegacy,
-} from '../../interfaces/proactive-questionnaire-answer';
+import type { IProactiveQuestionnaireAnswer, IProactiveQuestionnaireAnswerLegacy } from '../../interfaces/proactive-questionnaire-answer';
 import type { IQuestionnaireAnswer, IQuestionnaireAnswerLegacy } from '../../interfaces/questionnaire-answer';
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
 import ProactiveQuestionnaireAnswer from '../models/proactive-questionnaire-answer';
@@ -20,13 +18,16 @@ import questionnaireCronService from './questionnaire-cron';
 
 // TODO: use actual user model after ~/server/models/user.js becomes importable in vitest
 // ref: https://github.com/vitest-dev/vitest/issues/846
-const userSchema = new mongoose.Schema({
-  name: { type: String },
-  username: { type: String, required: true, unique: true },
-  email: { type: String, unique: true, sparse: true },
-}, {
-  timestamps: true,
-});
+const userSchema = new mongoose.Schema(
+  {
+    name: { type: String },
+    username: { type: String, required: true, unique: true },
+    email: { type: String, unique: true, sparse: true },
+  },
+  {
+    timestamps: true,
+  },
+);
 const User = mongoose.model('User', userSchema);
 
 describe('QuestionnaireCronService', () => {
@@ -142,7 +143,7 @@ describe('QuestionnaireCronService', () => {
     },
   };
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     await configManager.loadConfigs();
     await configManager.updateConfig('app:questionnaireCronMaxHoursUntilRequest', 0);
     await User.create({
@@ -153,7 +154,7 @@ describe('QuestionnaireCronService', () => {
     });
   });
 
-  beforeEach(async() => {
+  beforeEach(async () => {
     // insert initial db data
     await QuestionnaireOrder.insertMany([
       {
@@ -272,10 +273,12 @@ describe('QuestionnaireCronService', () => {
     ]);
 
     const validQuestionnaireAnswer: IQuestionnaireAnswer = {
-      answers: [{
-        question: '63c6da88143e531d95346188',
-        value: '1',
-      }],
+      answers: [
+        {
+          question: '63c6da88143e531d95346188',
+          value: '1',
+        },
+      ],
       answeredAt: new Date(),
       growiInfo: {
         version: '1.0',
@@ -307,10 +310,12 @@ describe('QuestionnaireCronService', () => {
     };
 
     const validQuestionnaireAnswerLegacy: IQuestionnaireAnswerLegacy = {
-      answers: [{
-        question: '63c6da88143e531d95346188',
-        value: '1',
-      }],
+      answers: [
+        {
+          question: '63c6da88143e531d95346188',
+          value: '1',
+        },
+      ],
       answeredAt: new Date(),
       growiInfo: {
         version: '1.0',
@@ -429,13 +434,11 @@ describe('QuestionnaireCronService', () => {
     questionnaireCronService.stopCron(); // vitest will not finish until cronjob stops
   });
 
-  test('Job execution should save(update) quesionnaire orders, delete outdated ones, update skipped answer statuses, and delete resent answers', async() => {
+  test('Job execution should save(update) quesionnaire orders, delete outdated ones, update skipped answer statuses, and delete resent answers', async () => {
     // testing the cronjob from schedule has untrivial overhead, so test job execution in place
     await questionnaireCronService.executeJob();
 
-    const savedOrders = await QuestionnaireOrder.find()
-      .select('-condition._id -questions._id -questions.createdAt -questions.updatedAt')
-      .sort({ _id: 1 });
+    const savedOrders = await QuestionnaireOrder.find().select('-condition._id -questions._id -questions.createdAt -questions.updatedAt').sort({ _id: 1 });
 
     expect(JSON.parse(JSON.stringify(savedOrders))).toEqual([
       {

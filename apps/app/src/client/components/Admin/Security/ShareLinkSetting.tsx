@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useEffect, useState,
-} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -15,87 +13,74 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import DeleteAllShareLinksModal from './DeleteAllShareLinksModal';
 
 type PagerProps = {
-  activePage: number,
-  pagingHandler: (page: number) => Promise<void>,
-  totalLinks: number,
-  limit: number,
-}
+  activePage: number;
+  pagingHandler: (page: number) => Promise<void>;
+  totalLinks: number;
+  limit: number;
+};
 
 type ShareLinkSettingProps = {
-  adminGeneralSecurityContainer: AdminGeneralSecurityContainer,
-}
+  adminGeneralSecurityContainer: AdminGeneralSecurityContainer;
+};
 
 const Pager = (props: PagerProps) => {
-  const {
-    activePage, pagingHandler, totalLinks, limit,
-  } = props;
+  const { activePage, pagingHandler, totalLinks, limit } = props;
 
-  return (
-    <PaginationWrapper
-      activePage={activePage}
-      changePage={pagingHandler}
-      totalItemsCount={totalLinks}
-      pagingLimit={limit}
-      align="center"
-      size="sm"
-    />
-  );
+  return <PaginationWrapper activePage={activePage} changePage={pagingHandler} totalItemsCount={totalLinks} pagingLimit={limit} align="center" size="sm" />;
 };
 
 const ShareLinkSetting = (props: ShareLinkSettingProps) => {
-
   const { t } = useTranslation('admin');
   const { adminGeneralSecurityContainer } = props;
-  const {
-    shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit,
-    disableLinkSharing, setupStrategies,
-  } = adminGeneralSecurityContainer.state;
+  const { shareLinks, shareLinksActivePage, totalshareLinks, shareLinksPagingLimit, disableLinkSharing, setupStrategies } = adminGeneralSecurityContainer.state;
   const [isDeleteConfirmModalShown, setIsDeleteConfirmModalShown] = useState<boolean>();
 
-  const getShareLinkList = useCallback(async(page: number) => {
-    try {
-      await adminGeneralSecurityContainer.retrieveShareLinksByPagingNum(page);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [adminGeneralSecurityContainer]);
+  const getShareLinkList = useCallback(
+    async (page: number) => {
+      try {
+        await adminGeneralSecurityContainer.retrieveShareLinksByPagingNum(page);
+      } catch (err) {
+        toastError(err);
+      }
+    },
+    [adminGeneralSecurityContainer],
+  );
 
   // for Next routing
   useEffect(() => {
     getShareLinkList(1);
   }, [getShareLinkList]);
 
-  const deleteAllLinksButtonHandler = useCallback(async() => {
+  const deleteAllLinksButtonHandler = useCallback(async () => {
     try {
       const res = await apiv3Delete('/share-links/all');
       const { deletedCount } = res.data;
       toastSuccess(t('toaster.remove_share_link', { count: deletedCount, ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
     getShareLinkList(1);
   }, [getShareLinkList, t]);
 
-  const deleteLinkById = useCallback(async(shareLinkId: string) => {
-    try {
-      const res = await apiv3Delete(`/share-links/${shareLinkId}`);
-      const { deletedShareLink } = res.data;
-      toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id, ns: 'commons' }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-    getShareLinkList(shareLinksActivePage);
-  }, [shareLinksActivePage, getShareLinkList, t]);
+  const deleteLinkById = useCallback(
+    async (shareLinkId: string) => {
+      try {
+        const res = await apiv3Delete(`/share-links/${shareLinkId}`);
+        const { deletedShareLink } = res.data;
+        toastSuccess(t('toaster.remove_share_link_success', { shareLinkId: deletedShareLink._id, ns: 'commons' }));
+      } catch (err) {
+        toastError(err);
+      }
+      getShareLinkList(shareLinksActivePage);
+    },
+    [shareLinksActivePage, getShareLinkList, t],
+  );
 
-  const switchDisableLinkSharing = useCallback(async() => {
+  const switchDisableLinkSharing = useCallback(async () => {
     try {
       await adminGeneralSecurityContainer.switchDisableLinkSharing();
       toastSuccess(t('toaster.switch_disable_link_sharing_success'));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [adminGeneralSecurityContainer, t]);
@@ -125,31 +110,16 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
       </div>
       <h4>{t('security_settings.all_share_links')}</h4>
 
-      {(shareLinks.length !== 0) ? (
+      {shareLinks.length !== 0 ? (
         <>
-          <Pager
-            activePage={shareLinksActivePage}
-            pagingHandler={getShareLinkList}
-            totalLinks={totalshareLinks}
-            limit={shareLinksPagingLimit}
-          />
-          <ShareLinkList
-            shareLinks={shareLinks}
-            onClickDeleteButton={deleteLinkById}
-            isAdmin
-          />
+          <Pager activePage={shareLinksActivePage} pagingHandler={getShareLinkList} totalLinks={totalshareLinks} limit={shareLinksPagingLimit} />
+          <ShareLinkList shareLinks={shareLinks} onClickDeleteButton={deleteLinkById} isAdmin />
         </>
-      )
-        : (<p className="text-center">{t('security_settings.No_share_links')}</p>
-        )
-      }
+      ) : (
+        <p className="text-center">{t('security_settings.No_share_links')}</p>
+      )}
 
-      <button
-        className="pull-right btn btn-danger mt-2"
-        disabled={shareLinks.length === 0}
-        type="button"
-        onClick={() => setIsDeleteConfirmModalShown(true)}
-      >
+      <button className="pull-right btn btn-danger mt-2" disabled={shareLinks.length === 0} type="button" onClick={() => setIsDeleteConfirmModalShown(true)}>
         {t('security_settings.delete_all_share_links')}
       </button>
 
@@ -158,7 +128,6 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
         onClose={() => setIsDeleteConfirmModalShown(false)}
         onClickDeleteButton={deleteAllLinksButtonHandler}
       />
-
     </>
   );
 };

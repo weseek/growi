@@ -1,11 +1,6 @@
-import type {
-  FC, ForwardRefRenderFunction,
-  KeyboardEvent, MouseEvent,
-} from 'react';
+import type { FC, ForwardRefRenderFunction, KeyboardEvent, MouseEvent } from 'react';
 import type React from 'react';
-import {
-  forwardRef, useImperativeHandle, useCallback, useRef, useState, useEffect,
-} from 'react';
+import { forwardRef, useImperativeHandle, useCallback, useRef, useState, useEffect } from 'react';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui/dist/components';
 import type { TypeaheadRef } from 'react-bootstrap-typeahead';
@@ -16,14 +11,12 @@ import type { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahe
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import { useSWRxSearch } from '~/stores/search';
 
-
 import styles from './SearchTypeahead.module.scss';
 
-
 type ResetFormButtonProps = {
-  input?: string,
-  onReset: (e: MouseEvent<HTMLButtonElement>) => void,
-}
+  input?: string;
+  onReset: (e: MouseEvent<HTMLButtonElement>) => void;
+};
 
 const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) => {
   const { input, onReset } = props;
@@ -39,31 +32,23 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
   );
 };
 
-
 type Props = TypeaheadProps & {
-  onSearchError?: (err: Error) => void,
-  onSubmit?: (input: string) => void,
-  keywordOnInit?: string,
-  disableIncrementalSearch?: boolean,
-  helpElement?: React.ReactNode,
+  onSearchError?: (err: Error) => void;
+  onSubmit?: (input: string) => void;
+  keywordOnInit?: string;
+  disableIncrementalSearch?: boolean;
+  helpElement?: React.ReactNode;
 };
 
 const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
-  const {
-    onSearchError, onSearch, onInputChange, onChange, onSubmit,
-    inputProps, keywordOnInit, disableIncrementalSearch, helpElement,
-    onBlur, onFocus,
-  } = props;
+  const { onSearchError, onSearch, onInputChange, onChange, onSubmit, inputProps, keywordOnInit, disableIncrementalSearch, helpElement, onBlur, onFocus } =
+    props;
 
   const [input, setInput] = useState(keywordOnInit);
   const [searchKeyword, setSearchKeyword] = useState('');
   const [isFocused, setFocused] = useState(false);
 
-  const { data: searchResult, error: searchError, isLoading } = useSWRxSearch(
-    disableIncrementalSearch ? null : searchKeyword,
-    null,
-    { limit: 10 },
-  );
+  const { data: searchResult, error: searchError, isLoading } = useSWRxSearch(disableIncrementalSearch ? null : searchKeyword, null, { limit: 10 });
 
   const typeaheadRef = useRef<TypeaheadRef>(null);
 
@@ -86,35 +71,44 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     focus: focusToTypeahead,
   }));
 
-  const resetForm = useCallback((e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const resetForm = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
 
-    setInput('');
-    setSearchKeyword('');
+      setInput('');
+      setSearchKeyword('');
 
-    clearTypeahead();
-    focusToTypeahead();
+      clearTypeahead();
+      focusToTypeahead();
 
-    if (onSearch != null) {
-      onSearch('');
-    }
-  }, [onSearch]);
+      if (onSearch != null) {
+        onSearch('');
+      }
+    },
+    [onSearch],
+  );
 
-  const searchHandler = useCallback((text: string) => {
-    setSearchKeyword(text);
+  const searchHandler = useCallback(
+    (text: string) => {
+      setSearchKeyword(text);
 
-    if (onSearch != null) {
-      onSearch(text);
-    }
-  }, [onSearch]);
+      if (onSearch != null) {
+        onSearch(text);
+      }
+    },
+    [onSearch],
+  );
 
-  const inputChangeHandler = useCallback((text: string) => {
-    setInput(text);
+  const inputChangeHandler = useCallback(
+    (text: string) => {
+      setInput(text);
 
-    if (onInputChange != null) {
-      onInputChange(text);
-    }
-  }, [onInputChange]);
+      if (onInputChange != null) {
+        onInputChange(text);
+      }
+    },
+    [onInputChange],
+  );
 
   /* -------------------------------------------------------------------------------------------------------
    *
@@ -128,33 +122,39 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   const DELAY_FOR_SUBMISSION = 100;
   const timeoutIdRef = useRef<NodeJS.Timeout>();
 
-  const changeHandler = useCallback((selectedItems: IPageWithSearchMeta[]) => {
-    // cancel schedule to submit
-    if (timeoutIdRef.current != null) {
-      clearTimeout(timeoutIdRef.current);
-    }
-
-    if (selectedItems.length > 0) {
-      setInput(selectedItems[0].data.path);
-
-      if (onInputChange != null) {
-        onInputChange(selectedItems[0].data.path);
+  const changeHandler = useCallback(
+    (selectedItems: IPageWithSearchMeta[]) => {
+      // cancel schedule to submit
+      if (timeoutIdRef.current != null) {
+        clearTimeout(timeoutIdRef.current);
       }
 
-      if (onChange != null) {
-        onChange(selectedItems);
-      }
-    }
-  }, [onChange, onInputChange]);
+      if (selectedItems.length > 0) {
+        setInput(selectedItems[0].data.path);
 
-  const keyDownHandler = useCallback((event: KeyboardEvent) => {
-    if (event.key === 'Enter') {
-      if (onSubmit != null && input != null && input.length > 0) {
-        // schedule to submit with 100ms delay
-        timeoutIdRef.current = setTimeout(() => onSubmit(input), DELAY_FOR_SUBMISSION);
+        if (onInputChange != null) {
+          onInputChange(selectedItems[0].data.path);
+        }
+
+        if (onChange != null) {
+          onChange(selectedItems);
+        }
       }
-    }
-  }, [input, onSubmit]);
+    },
+    [onChange, onInputChange],
+  );
+
+  const keyDownHandler = useCallback(
+    (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        if (onSubmit != null && input != null && input.length > 0) {
+          // schedule to submit with 100ms delay
+          timeoutIdRef.current = setTimeout(() => onSubmit(input), DELAY_FOR_SUBMISSION);
+        }
+      }
+    },
+    [input, onSubmit],
+  );
   /*
    * -------------------------------------------------------------------------------------------------------
    */
@@ -175,49 +175,51 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     }
   }, [keywordOnInit]);
 
-
   const labelKey = useCallback((option: IPageWithSearchMeta) => {
     return option.data.path ?? '';
   }, []);
 
-  const renderMenu = useCallback((options: IPageWithSearchMeta[], menuProps) => {
-    if (!isFocused) {
-      return <></>;
-    }
+  const renderMenu = useCallback(
+    (options: IPageWithSearchMeta[], menuProps) => {
+      if (!isFocused) {
+        return <></>;
+      }
 
-    const isEmptyInput = input == null || input.length === 0;
-    if (isEmptyInput) {
-      if (helpElement == null) {
+      const isEmptyInput = input == null || input.length === 0;
+      if (isEmptyInput) {
+        if (helpElement == null) {
+          return <></>;
+        }
+
+        return (
+          <Menu {...menuProps}>
+            <div className="p-3">{helpElement}</div>
+          </Menu>
+        );
+      }
+
+      if (disableIncrementalSearch) {
         return <></>;
       }
 
       return (
         <Menu {...menuProps}>
-          <div className="p-3">
-            {helpElement}
-          </div>
+          {options.map((pageWithMeta, index) => (
+            <MenuItem key={pageWithMeta.data._id} option={pageWithMeta} position={index}>
+              <span>
+                <UserPicture user={pageWithMeta.data.lastUpdateUser} size="sm" noLink />
+                <span className="ms-1 me-2 text-break text-wrap">
+                  <PagePathLabel path={pageWithMeta.data.path} />
+                </span>
+                <PageListMeta page={pageWithMeta.data} />
+              </span>
+            </MenuItem>
+          ))}
         </Menu>
       );
-    }
-
-    if (disableIncrementalSearch) {
-      return <></>;
-    }
-
-    return (
-      <Menu {...menuProps}>
-        {options.map((pageWithMeta, index) => (
-          <MenuItem key={pageWithMeta.data._id} option={pageWithMeta} position={index}>
-            <span>
-              <UserPicture user={pageWithMeta.data.lastUpdateUser} size="sm" noLink />
-              <span className="ms-1 me-2 text-break text-wrap"><PagePathLabel path={pageWithMeta.data.path} /></span>
-              <PageListMeta page={pageWithMeta.data} />
-            </span>
-          </MenuItem>
-        ))}
-      </Menu>
-    );
-  }, [disableIncrementalSearch, helpElement, input, isFocused]);
+    },
+    [disableIncrementalSearch, helpElement, input, isFocused],
+  );
 
   const isOpenAlways = helpElement != null;
 
@@ -229,7 +231,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         ref={typeaheadRef}
         delay={400}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        inputProps={{ autoComplete: 'off', ...(inputProps as any ?? {}) }}
+        inputProps={{ autoComplete: 'off', ...((inputProps as any) ?? {}) }}
         isLoading={isLoading}
         labelKey={labelKey}
         defaultInputValue={keywordOnInit}
@@ -255,10 +257,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
           }
         }}
       />
-      <ResetFormButton
-        input={input}
-        onReset={resetForm}
-      />
+      <ResetFormButton input={input} onReset={resetForm} />
     </div>
   );
 };

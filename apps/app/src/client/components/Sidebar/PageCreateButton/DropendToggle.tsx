@@ -6,9 +6,7 @@ import { Hexagon } from './Hexagon';
 
 import styles from './DropendToggle.module.scss';
 
-
 const moduleClass = styles['btn-toggle'];
-
 
 export const DropendToggle = (): JSX.Element => {
   return (

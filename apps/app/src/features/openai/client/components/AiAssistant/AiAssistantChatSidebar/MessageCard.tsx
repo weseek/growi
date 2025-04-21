@@ -12,7 +12,6 @@ import styles from './MessageCard.module.scss';
 
 const moduleClass = styles['message-card'] ?? '';
 
-
 const userMessageCardModuleClass = styles['user-message-card'] ?? '';
 
 const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
@@ -23,10 +22,9 @@ const UserMessageCard = ({ children }: { children: string }): JSX.Element => (
   </div>
 );
 
-
 const assistantMessageCardModuleClass = styles['assistant-message-card'] ?? '';
 
-const NextLinkWrapper = (props: LinkProps & {children: string, href: string}): JSX.Element => {
+const NextLinkWrapper = (props: LinkProps & { children: string; href: string }): JSX.Element => {
   const { close: closeAiAssistantChatSidebar } = useAiAssistantChatSidebar();
 
   const onClick = useCallback(() => {
@@ -49,16 +47,13 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
           <span className="growi-custom-icons grw-ai-icon rounded-pill">growi_ai</span>
         </div>
         <div>
-          { children.length > 0
-            ? (
-              <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
-            )
-            : (
-              <span className="text-thinking">
-                {t('sidebar_aichat.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
-              </span>
-            )
-          }
+          {children.length > 0 ? (
+            <ReactMarkdown components={{ a: NextLinkWrapper }}>{children}</ReactMarkdown>
+          ) : (
+            <span className="text-thinking">
+              {t('sidebar_aichat.progress_label')} <span className="material-symbols-outlined">more_horiz</span>
+            </span>
+          )}
         </div>
       </div>
     </div>
@@ -66,14 +61,12 @@ const AssistantMessageCard = ({ children }: { children: string }): JSX.Element =
 };
 
 type Props = {
-  role: 'user' | 'assistant',
-  children: string,
-}
+  role: 'user' | 'assistant';
+  children: string;
+};
 
 export const MessageCard = (props: Props): JSX.Element => {
   const { role, children } = props;
 
-  return role === 'user'
-    ? <UserMessageCard>{children}</UserMessageCard>
-    : <AssistantMessageCard>{children}</AssistantMessageCard>;
+  return role === 'user' ? <UserMessageCard>{children}</UserMessageCard> : <AssistantMessageCard>{children}</AssistantMessageCard>;
 };

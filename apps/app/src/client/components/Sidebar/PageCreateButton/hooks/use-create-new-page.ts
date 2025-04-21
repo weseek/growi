@@ -5,19 +5,20 @@ import { Origin } from '@growi/core';
 import { useCreatePage } from '~/client/services/create-page';
 import { useCurrentPagePath } from '~/stores/page';
 
-
 type UseCreateNewPage = () => {
-  isCreating: boolean,
-  createNewPage: () => Promise<void>,
-}
+  isCreating: boolean;
+  createNewPage: () => Promise<void>;
+};
 
 export const useCreateNewPage: UseCreateNewPage = () => {
   const { data: currentPagePath, isLoading: isLoadingPagePath } = useCurrentPagePath();
 
   const { isCreating, create } = useCreatePage();
 
-  const createNewPage = useCallback(async() => {
-    if (isLoadingPagePath) { return; }
+  const createNewPage = useCallback(async () => {
+    if (isLoadingPagePath) {
+      return;
+    }
 
     return create(
       {

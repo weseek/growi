@@ -3,7 +3,6 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
-
 const MessageBasedOnConnection = (props) => {
   const { isLatestConnectionSuccess, logsValue } = props;
   const { t } = useTranslation();

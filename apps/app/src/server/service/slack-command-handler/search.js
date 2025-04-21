@@ -1,23 +1,18 @@
-import {
-  markdownSectionBlock, divider,
-} from '@growi/slack/dist/utils/block-kit-builder';
+import { markdownSectionBlock, divider } from '@growi/slack/dist/utils/block-kit-builder';
 import { generateLastUpdateMrkdwn } from '@growi/slack/dist/utils/generate-last-update-markdown';
 
 import loggerFactory from '~/utils/logger';
 
 import { growiInfoService } from '../growi-info';
 
-
 const logger = loggerFactory('growi:service:SlackCommandHandler:search');
 
 const PAGINGLIMIT = 7;
-
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler(crowi);
-
 
   function getKeywords(growiCommandArgs) {
     const keywords = growiCommandArgs.join(' ');
@@ -25,14 +20,12 @@ module.exports = (crowi) => {
   }
 
   function appendSpeechBaloon(mrkdwn, commentCount) {
-    return (commentCount != null && commentCount > 0)
-      ? `${mrkdwn}   :speech_balloon: ${commentCount}`
-      : mrkdwn;
+    return commentCount != null && commentCount > 0 ? `${mrkdwn}   :speech_balloon: ${commentCount}` : mrkdwn;
   }
 
   function generateSearchResultPageLinkMrkdwn(appUrl, growiCommandArgs) {
     const url = new URL('/_search', appUrl);
-    url.searchParams.append('q', growiCommandArgs.map(kwd => encodeURIComponent(kwd)).join('+'));
+    url.searchParams.append('q', growiCommandArgs.map((kwd) => encodeURIComponent(kwd)).join('+'));
     return `<${url.href} | Results page>`;
   }
 
@@ -54,7 +47,9 @@ module.exports = (crowi) => {
     });
 
     return {
-      pages, offset, resultsTotal,
+      pages,
+      offset,
+      resultsTotal,
     };
   }
 
@@ -62,9 +57,7 @@ module.exports = (crowi) => {
     const appUrl = growiInfoService.getSiteUrl();
     const appTitle = crowi.appService.getAppTitle();
 
-    const {
-      pages, offset, resultsTotal,
-    } = searchResult;
+    const { pages, offset, resultsTotal } = searchResult;
 
     const keywords = getKeywords(growiCommandArgs);
 
@@ -84,10 +77,11 @@ module.exports = (crowi) => {
         {
           type: 'mrkdwn',
           // biome-ignore lint/complexity/noUselessStringConcat: ignore
-          text: `keyword(s) : *"${keywords}"*`
-          + `  |  Total ${resultsTotal} pages`
-          + `  |  Current: ${offset + 1} - ${offset + pages.length}`
-          + `  |  ${generateSearchResultPageLinkMrkdwn(appUrl, growiCommandArgs)}`,
+          text:
+            `keyword(s) : *"${keywords}"*` +
+            `  |  Total ${resultsTotal} pages` +
+            `  |  Current: ${offset + 1} - ${offset + pages.length}` +
+            `  |  ${generateSearchResultPageLinkMrkdwn(appUrl, growiCommandArgs)}`,
         },
       ],
     };
@@ -109,8 +103,7 @@ module.exports = (crowi) => {
           text: {
             type: 'mrkdwn',
             // biome-ignore lint/complexity/noUselessStringConcat: ignore
-            text: `${appendSpeechBaloon(`*${generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}`
-              + `  \`${generateLastUpdateMrkdwn(updatedAt, now)}\``,
+            text: `${appendSpeechBaloon(`*${generatePageLinkMrkdwn(pathname, href)}*`, commentCount)}` + `  \`${generateLastUpdateMrkdwn(updatedAt, now)}\``,
           },
           accessory: {
             type: 'button',
@@ -132,45 +125,39 @@ module.exports = (crowi) => {
       elements: [],
     };
     // add "Dismiss" button
-    actionBlocks.elements.push(
-      {
-        type: 'button',
-        text: {
-          type: 'plain_text',
-          text: 'Dismiss',
-        },
-        style: 'danger',
-        action_id: 'search:dismissSearchResults',
+    actionBlocks.elements.push({
+      type: 'button',
+      text: {
+        type: 'plain_text',
+        text: 'Dismiss',
       },
-    );
+      style: 'danger',
+      action_id: 'search:dismissSearchResults',
+    });
     // show "Prev" button if previous page exists
     // biome-ignore lint/style/noYodaExpression: ignore
     if (0 < offset) {
-      actionBlocks.elements.push(
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: '< Prev',
-          },
-          action_id: 'search:showPrevResults',
-          value: JSON.stringify({ offset, growiCommandArgs }),
+      actionBlocks.elements.push({
+        type: 'button',
+        text: {
+          type: 'plain_text',
+          text: '< Prev',
         },
-      );
+        action_id: 'search:showPrevResults',
+        value: JSON.stringify({ offset, growiCommandArgs }),
+      });
     }
     // show "Next" button if next page exists
     if (offset + PAGINGLIMIT < resultsTotal) {
-      actionBlocks.elements.push(
-        {
-          type: 'button',
-          text: {
-            type: 'plain_text',
-            text: 'Next >',
-          },
-          action_id: 'search:showNextResults',
-          value: JSON.stringify({ offset, growiCommandArgs }),
+      actionBlocks.elements.push({
+        type: 'button',
+        text: {
+          type: 'plain_text',
+          text: 'Next >',
         },
-      );
+        action_id: 'search:showNextResults',
+        value: JSON.stringify({ offset, growiCommandArgs }),
+      });
     }
     blocks.push(actionBlocks);
 
@@ -180,7 +167,6 @@ module.exports = (crowi) => {
     };
   }
 
-
   async function buildRespondBody(growiCommandArgs) {
     const firstKeyword = growiCommandArgs[0];
 
@@ -188,9 +174,7 @@ module.exports = (crowi) => {
     if (firstKeyword == null) {
       return {
         text: 'Input keywords',
-        blocks: [
-          markdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`'),
-        ],
+        blocks: [markdownSectionBlock('*Input keywords.*\n Hint\n `/growi search [keyword]`')],
       };
     }
 
@@ -227,19 +211,18 @@ module.exports = (crowi) => {
     return buildRespondBodyForSearchResult(searchResult, growiCommandArgs);
   }
 
-
-  handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
+  handler.handleCommand = async (growiCommand, client, body, respondUtil) => {
     const { growiCommandArgs } = growiCommand;
 
     const respondBody = await buildRespondBody(growiCommandArgs);
     await respondUtil.respond(respondBody);
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
+  handler.handleInteractions = async function (client, interactionPayload, interactionPayloadAccessor, handlerMethodName, respondUtil) {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor, respondUtil);
   };
 
-  handler.shareSinglePageResult = async(client, payload, interactionPayloadAccessor, respondUtil) => {
+  handler.shareSinglePageResult = async (client, payload, interactionPayloadAccessor, respondUtil) => {
     const { user } = payload;
 
     const appUrl = growiInfoService.getSiteUrl();
@@ -249,9 +232,7 @@ module.exports = (crowi) => {
     if (value == null) {
       await respondUtil.respond({
         text: 'Error occurred',
-        blocks: [
-          markdownSectionBlock('Failed to share the result.'),
-        ],
+        blocks: [markdownSectionBlock('Failed to share the result.')],
       });
       return;
     }
@@ -274,9 +255,10 @@ module.exports = (crowi) => {
             {
               type: 'mrkdwn',
               // biome-ignore lint/complexity/noUselessStringConcat: ignore
-              text: `<${decodeURI(appUrl)}|*${appTitle}*>`
-                + `  |  Last updated: \`${generateLastUpdateMrkdwn(updatedAt, now)}\``
-                + `  |  Shared by *${user.username}*`,
+              text:
+                `<${decodeURI(appUrl)}|*${appTitle}*>` +
+                `  |  Last updated: \`${generateLastUpdateMrkdwn(updatedAt, now)}\`` +
+                `  |  Shared by *${user.username}*`,
             },
           ],
         },
@@ -285,14 +267,11 @@ module.exports = (crowi) => {
   };
 
   async function showPrevOrNextResults(interactionPayloadAccessor, isNext = true, respondUtil) {
-
     const value = interactionPayloadAccessor.firstAction()?.value;
     if (value == null) {
       await respondUtil.respond({
         text: 'Error occurred',
-        blocks: [
-          markdownSectionBlock('Failed to show the next results.'),
-        ],
+        blocks: [markdownSectionBlock('Failed to show the next results.')],
       });
       return;
     }
@@ -300,20 +279,20 @@ module.exports = (crowi) => {
     const parsedValue = interactionPayloadAccessor.getOriginalData() || JSON.parse(value);
 
     const { growiCommandArgs, offset: offsetNum } = parsedValue;
-    const newOffsetNum = isNext
-      ? offsetNum + PAGINGLIMIT
-      : offsetNum - PAGINGLIMIT;
+    const newOffsetNum = isNext ? offsetNum + PAGINGLIMIT : offsetNum - PAGINGLIMIT;
 
     const searchResult = await retrieveSearchResults(growiCommandArgs, newOffsetNum);
 
     await respondUtil.replaceOriginal(buildRespondBodyForSearchResult(searchResult, growiCommandArgs));
   }
 
-  handler.showPrevResults = async(client, payload, interactionPayloadAccessor, respondUtil) => showPrevOrNextResults(interactionPayloadAccessor, false, respondUtil);
+  handler.showPrevResults = async (client, payload, interactionPayloadAccessor, respondUtil) =>
+    showPrevOrNextResults(interactionPayloadAccessor, false, respondUtil);
 
-  handler.showNextResults = async(client, payload, interactionPayloadAccessor, respondUtil) => showPrevOrNextResults(interactionPayloadAccessor, true, respondUtil);
+  handler.showNextResults = async (client, payload, interactionPayloadAccessor, respondUtil) =>
+    showPrevOrNextResults(interactionPayloadAccessor, true, respondUtil);
 
-  handler.dismissSearchResults = async(client, payload, interactionPayloadAccessor, respondUtil) => respondUtil.deleteOriginal();
+  handler.dismissSearchResults = async (client, payload, interactionPayloadAccessor, respondUtil) => respondUtil.deleteOriginal();
 
   return handler;
 };

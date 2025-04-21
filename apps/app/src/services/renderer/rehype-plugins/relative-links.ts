@@ -5,7 +5,6 @@ import { selectAll } from 'hast-util-select';
 import isAbsolute from 'is-absolute-url';
 import type { Plugin } from 'unified';
 
-
 export type IAnchorsSelector = (node: HastNode) => Element[];
 export type IUrlResolver = (relativeHref: string, basePath: string) => URL;
 
@@ -29,10 +28,10 @@ const isAnchorLink = (href: string): boolean => {
 };
 
 export type RelativeLinksPluginParams = {
-  pagePath?: string,
-  anchorsSelector?: IAnchorsSelector,
-  urlResolver?: IUrlResolver,
-}
+  pagePath?: string;
+  anchorsSelector?: IAnchorsSelector;
+  urlResolver?: IUrlResolver;
+};
 
 export const relativeLinks: Plugin<[RelativeLinksPluginParams]> = (options = {}) => {
   const anchorsSelector = options.anchorsSelector ?? defaultAnchorsSelector;

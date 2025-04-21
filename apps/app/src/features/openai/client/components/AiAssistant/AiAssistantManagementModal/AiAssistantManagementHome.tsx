@@ -1,11 +1,7 @@
-import React, {
-  useCallback, useState, useMemo, type JSX,
-} from 'react';
+import React, { useCallback, useState, useMemo, type JSX } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import {
-  ModalHeader, ModalBody, ModalFooter, Input,
-} from 'reactstrap';
+import { ModalHeader, ModalBody, ModalFooter, Input } from 'reactstrap';
 
 import { AiAssistantShareScope, AiAssistantAccessScope } from '~/features/openai/interfaces/ai-assistant';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
@@ -22,15 +18,15 @@ type Props = {
   name: string;
   description: string;
   instruction: string;
-  shareScope: AiAssistantShareScope,
-  accessScope: AiAssistantAccessScope,
+  shareScope: AiAssistantShareScope;
+  accessScope: AiAssistantAccessScope;
   selectedPages: SelectedPage[];
-  selectedUserGroupsForAccessScope: PopulatedGrantedGroup[],
-  selectedUserGroupsForShareScope: PopulatedGrantedGroup[],
+  selectedUserGroupsForAccessScope: PopulatedGrantedGroup[];
+  selectedUserGroupsForShareScope: PopulatedGrantedGroup[];
   onNameChange: (value: string) => void;
   onDescriptionChange: (value: string) => void;
-  onUpsertAiAssistant: () => Promise<void>
-}
+  onUpsertAiAssistant: () => Promise<void>;
+};
 
 export const AiAssistantManagementHome = (props: Props): JSX.Element => {
   const {
@@ -57,28 +53,27 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
   const totalSelectedPageCount = useMemo(() => {
     return selectedPages.reduce((total, selectedPage) => {
-      const descendantCount = selectedPage.isIncludeSubPage
-        ? selectedPage.page.descendantCount ?? 0
-        : 0;
+      const descendantCount = selectedPage.isIncludeSubPage ? (selectedPage.page.descendantCount ?? 0) : 0;
       const pageCountWithDescendants = descendantCount + 1;
       return total + pageCountWithDescendants;
     }, 0);
   }, [selectedPages]);
 
-  const getShareScopeLabel = useCallback((shareScope: AiAssistantShareScope) => {
-    const baseLabel = `modal_ai_assistant.share_scope.${shareScope}.label`;
-    return shareScope === AiAssistantShareScope.OWNER
-      ? t(baseLabel, { username: currentUser?.username })
-      : t(baseLabel);
-  }, [currentUser?.username, t]);
+  const getShareScopeLabel = useCallback(
+    (shareScope: AiAssistantShareScope) => {
+      const baseLabel = `modal_ai_assistant.share_scope.${shareScope}.label`;
+      return shareScope === AiAssistantShareScope.OWNER ? t(baseLabel, { username: currentUser?.username }) : t(baseLabel);
+    },
+    [currentUser?.username, t],
+  );
 
   const canUpsert = name !== '' && selectedPages.length !== 0 && (limitLearnablePageCountPerAssistant ?? 3000) >= totalSelectedPageCount;
 
-  const upsertAiAssistantHandler = useCallback(async() => {
+  const upsertAiAssistantHandler = useCallback(async () => {
     const shouldWarning = () => {
       const isDifferentUserGroup = () => {
-        const selectedShareScopeUserGroupIds = selectedUserGroupsForShareScope.map(userGroup => userGroup.item._id);
-        const selectedAccessScopeUserGroupIds = selectedUserGroupsForAccessScope.map(userGroup => userGroup.item._id);
+        const selectedShareScopeUserGroupIds = selectedUserGroupsForShareScope.map((userGroup) => userGroup.item._id);
+        const selectedAccessScopeUserGroupIds = selectedUserGroupsForAccessScope.map((userGroup) => userGroup.item._id);
         if (selectedShareScopeUserGroupIds.length !== selectedAccessScopeUserGroupIds.length) {
           return false;
         }
@@ -130,7 +125,7 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
               bsSize="lg"
               className="border-0 border-bottom border-2 px-0 rounded-0"
               value={name}
-              onChange={e => onNameChange(e.target.value)}
+              onChange={(e) => onNameChange(e.target.value)}
             />
           </div>
 
@@ -144,17 +139,17 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
               placeholder={t('modal_ai_assistant.memo.placeholder')}
               rows="4"
               value={description}
-              onChange={e => onDescriptionChange(e.target.value)}
+              onChange={(e) => onDescriptionChange(e.target.value)}
             />
-            <small className="text-secondary d-block mt-2">
-              {t('modal_ai_assistant.memo.description')}
-            </small>
+            <small className="text-secondary d-block mt-2">{t('modal_ai_assistant.memo.description')}</small>
           </div>
 
           <div>
             <button
               type="button"
-              onClick={() => { changePageMode(AiAssistantManagementModalPageMode.SHARE) }}
+              onClick={() => {
+                changePageMode(AiAssistantManagementModalPageMode.SHARE);
+              }}
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.share')}</span>
@@ -166,7 +161,9 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
             <button
               type="button"
-              onClick={() => { changePageMode(AiAssistantManagementModalPageMode.PAGES) }}
+              onClick={() => {
+                changePageMode(AiAssistantManagementModalPageMode.PAGES);
+              }}
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.pages')}</span>
@@ -178,7 +175,9 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
 
             <button
               type="button"
-              onClick={() => { changePageMode(AiAssistantManagementModalPageMode.INSTRUCTION) }}
+              onClick={() => {
+                changePageMode(AiAssistantManagementModalPageMode.INSTRUCTION);
+              }}
               className="btn w-100 d-flex justify-content-between align-items-center py-3 mb-2 border-0"
             >
               <span className="fw-normal">{t('modal_ai_assistant.page_mode_title.instruction')}</span>
@@ -193,20 +192,11 @@ export const AiAssistantManagementHome = (props: Props): JSX.Element => {
         </ModalBody>
 
         <ModalFooter>
-          <button
-            type="button"
-            className="btn btn-outline-secondary"
-            onClick={closeAiAssistantManagementModal}
-          >
+          <button type="button" className="btn btn-outline-secondary" onClick={closeAiAssistantManagementModal}>
             {t('Cancel')}
           </button>
 
-          <button
-            type="button"
-            disabled={!canUpsert}
-            className="btn btn-primary"
-            onClick={upsertAiAssistantHandler}
-          >
+          <button type="button" disabled={!canUpsert} className="btn btn-primary" onClick={upsertAiAssistantHandler}>
             {t(shouldEdit ? 'modal_ai_assistant.submit_button.update_assistant' : 'modal_ai_assistant.submit_button.create_assistant')}
           </button>
         </ModalFooter>

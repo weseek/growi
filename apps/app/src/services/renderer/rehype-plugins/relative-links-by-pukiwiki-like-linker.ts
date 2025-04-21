@@ -2,10 +2,7 @@ import { addTrailingSlash } from '@growi/core/dist/utils/path-utils';
 import { selectAll } from 'hast-util-select';
 import type { Plugin } from 'unified';
 
-import {
-  relativeLinks,
-  type IAnchorsSelector, type IUrlResolver, type RelativeLinksPluginParams,
-} from './relative-links';
+import { relativeLinks, type IAnchorsSelector, type IUrlResolver, type RelativeLinksPluginParams } from './relative-links';
 
 const customAnchorsSelector: IAnchorsSelector = (node) => {
   return selectAll('a[href].pukiwiki-like-linker', node);

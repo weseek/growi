@@ -15,16 +15,14 @@ import GlobalNotificationList from './GlobalNotificationList';
 const logger = loggerFactory('growi:GlobalNotification');
 
 const GlobalNotification = (props) => {
-
   const { adminNotificationContainer } = props;
   const { t } = useTranslation('admin');
 
-  const onClickSubmit = useCallback(async() => {
+  const onClickSubmit = useCallback(async () => {
     try {
       await adminNotificationContainer.updateGlobalNotificationForPages();
       toastSuccess(t('toaster.update_successed', { target: t('external_notification.external_notification'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -48,7 +46,9 @@ const GlobalNotification = (props) => {
               className="form-check-input"
               type="checkbox"
               checked={adminNotificationContainer.state.isNotificationForOwnerPageEnabled || false}
-              onChange={() => { adminNotificationContainer.switchIsNotificationForOwnerPageEnabled() }}
+              onChange={() => {
+                adminNotificationContainer.switchIsNotificationForOwnerPageEnabled();
+              }}
             />
             <label className="form-label form-check-label" htmlFor="isNotificationForOwnerPageEnabled">
               {/* eslint-disable-next-line react/no-danger */}
@@ -66,7 +66,9 @@ const GlobalNotification = (props) => {
               className="form-check-input"
               type="checkbox"
               checked={adminNotificationContainer.state.isNotificationForGroupPageEnabled || false}
-              onChange={() => { adminNotificationContainer.switchIsNotificationForGroupPageEnabled() }}
+              onChange={() => {
+                adminNotificationContainer.switchIsNotificationForGroupPageEnabled();
+              }}
             />
             <label className="form-label form-check-label" htmlFor="isNotificationForGroupPageEnabled">
               {/* eslint-disable-next-line react/no-danger */}
@@ -77,31 +79,24 @@ const GlobalNotification = (props) => {
       </div>
       <div className="row mt-3 mb-5">
         <div className="col-sm-5 offset-sm-4">
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={onClickSubmit}
-            disabled={adminNotificationContainer.state.retrieveError}
-          >{t('Update')}
+          <button type="button" className="btn btn-primary" onClick={onClickSubmit} disabled={adminNotificationContainer.state.retrieveError}>
+            {t('Update')}
           </button>
         </div>
       </div>
 
-      <h2 className="border-bottom mb-3">
-        {t('notification_settings.notification_list')}
-      </h2>
-      <button
-        className="btn btn-outline-secondary mb-3"
-        type="button"
-        onClick={() => router.push('/admin/global-notification/new')}
-      >{t('notification_settings.add_notification')}
+      <h2 className="border-bottom mb-3">{t('notification_settings.notification_list')}</h2>
+      <button className="btn btn-outline-secondary mb-3" type="button" onClick={() => router.push('/admin/global-notification/new')}>
+        {t('notification_settings.add_notification')}
       </button>
       <table className="table table-bordered">
         <thead>
           <tr>
             <th>ON/OFF</th>
             {/* eslint-disable-next-line react/no-danger */}
-            <th>{t('notification_settings.trigger_path')} <span dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help') }} /></th>
+            <th>
+              {t('notification_settings.trigger_path')} <span dangerouslySetInnerHTML={{ __html: t('notification_settings.trigger_path_help') }} />
+            </th>
             <th>{t('notification_settings.trigger_events')}</th>
             <th>{t('notification_settings.notify_to')}</th>
             <th></th>

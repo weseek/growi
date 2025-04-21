@@ -1,6 +1,4 @@
-import React, {
-  useState, useEffect, useCallback, useMemo, type JSX,
-} from 'react';
+import React, { useState, useEffect, useCallback, useMemo, type JSX } from 'react';
 
 import type { IUser } from '@growi/core';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
@@ -10,28 +8,24 @@ import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/co
 import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { useCurrentUser } from '~/stores-universal/context';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
-import {
-  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser,
-} from '~/stores/remote-latest-page';
+import { useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
 
 import styles from './ConflictDiffModal.module.scss';
 
 type IRevisionOnConflict = {
-  revisionBody: string
-  createdAt: Date
-  user: IUser
-}
+  revisionBody: string;
+  createdAt: Date;
+  user: IUser;
+};
 
 type ConflictDiffModalCoreProps = {
-  request: IRevisionOnConflict
-  latest: IRevisionOnConflict
+  request: IRevisionOnConflict;
+  latest: IRevisionOnConflict;
 };
 
 const formatedDate = (date: Date): string => {
@@ -50,16 +44,19 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.DIFF);
 
-  const selectRevisionHandler = useCallback((selectedRevision: string) => {
-    setResolvedRevision(selectedRevision);
-    setRevisionSelectedToggler(prev => !prev);
+  const selectRevisionHandler = useCallback(
+    (selectedRevision: string) => {
+      setResolvedRevision(selectedRevision);
+      setRevisionSelectedToggler((prev) => !prev);
 
-    if (!isRevisionselected) {
-      setIsRevisionSelected(true);
-    }
-  }, [isRevisionselected]);
+      if (!isRevisionselected) {
+        setIsRevisionSelected(true);
+      }
+    },
+    [isRevisionselected],
+  );
 
-  const resolveConflictHandler = useCallback(async() => {
+  const resolveConflictHandler = useCallback(async () => {
     const newBody = codeMirrorEditor?.getDoc();
     if (newBody == null) {
       return;
@@ -73,22 +70,25 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
     // Enable selecting the same revision after editing by including revisionSelectedToggler in the dependency array of useEffect
   }, [codeMirrorEditor, resolvedRevision, revisionSelectedToggler]);
 
-  const headerButtons = useMemo(() => (
-    <div className="d-flex align-items-center">
-      <button type="button" className="btn" onClick={() => setIsModalExpanded(prev => !prev)}>
-        <span className="material-symbols-outlined">{isModalExpanded ? 'close_fullscreen' : 'open_in_full'}</span>
-      </button>
-      <button type="button" className="btn" onClick={closeConflictDiffModal} aria-label="Close">
-        <span className="material-symbols-outlined">close</span>
-      </button>
-    </div>
-  ), [closeConflictDiffModal, isModalExpanded]);
+  const headerButtons = useMemo(
+    () => (
+      <div className="d-flex align-items-center">
+        <button type="button" className="btn" onClick={() => setIsModalExpanded((prev) => !prev)}>
+          <span className="material-symbols-outlined">{isModalExpanded ? 'close_fullscreen' : 'open_in_full'}</span>
+        </button>
+        <button type="button" className="btn" onClick={closeConflictDiffModal} aria-label="Close">
+          <span className="material-symbols-outlined">close</span>
+        </button>
+      </div>
+    ),
+    [closeConflictDiffModal, isModalExpanded],
+  );
 
   return (
     <Modal isOpen={conflictDiffModalStatus?.isOpened} className={`${styles['conflict-diff-modal']} ${isModalExpanded ? ' grw-modal-expanded' : ''}`} size="xl">
-
       <ModalHeader tag="h4" className="d-flex align-items-center" close={headerButtons}>
-        <span className="material-symbols-outlined me-1">error</span>{t('modal_resolve_conflict.resolve_conflict')}
+        <span className="material-symbols-outlined me-1">error</span>
+        {t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
 
       <ModalBody className="mx-4 my-1">
@@ -105,7 +105,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
               <div className="ms-3 text-muted">
                 <p className="my-0">updated by {request.user.username}</p>
-                <p className="my-0">{ formatedDate(request.createdAt) }</p>
+                <p className="my-0">{formatedDate(request.createdAt)}</p>
               </div>
             </div>
           </div>
@@ -118,22 +118,21 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
               <div className="ms-3 text-muted">
                 <p className="my-0">updated by {latest.user.username}</p>
-                <p className="my-0">{ formatedDate(latest.createdAt) }</p>
+                <p className="my-0">{formatedDate(latest.createdAt)}</p>
               </div>
             </div>
           </div>
 
-          <MergeViewer
-            leftBody={request.revisionBody}
-            rightBody={latest.revisionBody}
-          />
+          <MergeViewer leftBody={request.revisionBody} rightBody={latest.revisionBody} />
 
           <div className="col-6">
             <div className="text-center my-4">
               <button
                 type="button"
                 className="btn btn-outline-primary"
-                onClick={() => { selectRevisionHandler(request.revisionBody) }}
+                onClick={() => {
+                  selectRevisionHandler(request.revisionBody);
+                }}
               >
                 <span className="material-symbols-outlined me-1">arrow_circle_down</span>
                 {t('modal_resolve_conflict.select_revision', { revision: 'mine' })}
@@ -146,7 +145,9 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               <button
                 type="button"
                 className="btn btn-outline-primary"
-                onClick={() => { selectRevisionHandler(latest.revisionBody) }}
+                onClick={() => {
+                  selectRevisionHandler(latest.revisionBody);
+                }}
               >
                 <span className="material-symbols-outlined me-1">arrow_circle_down</span>
                 {t('modal_resolve_conflict.select_revision', { revision: 'theirs' })}
@@ -164,26 +165,16 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
       </ModalBody>
 
       <ModalFooter>
-        <button
-          type="button"
-          className="btn btn-outline-secondary"
-          onClick={closeConflictDiffModal}
-        >
+        <button type="button" className="btn btn-outline-secondary" onClick={closeConflictDiffModal}>
           {t('Cancel')}
         </button>
-        <button
-          type="button"
-          className="btn btn-primary ms-3"
-          onClick={resolveConflictHandler}
-          disabled={!isRevisionselected}
-        >
+        <button type="button" className="btn btn-primary ms-3" onClick={resolveConflictHandler} disabled={!isRevisionselected}>
           {t('modal_resolve_conflict.resolve_and_save')}
         </button>
       </ModalFooter>
     </Modal>
   );
 };
-
 
 export const ConflictDiffModal = (): JSX.Element => {
   const { data: currentUser } = useCurrentUser();

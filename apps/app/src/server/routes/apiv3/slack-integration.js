@@ -17,7 +17,6 @@ const express = require('express');
 const { body } = require('express-validator');
 const mongoose = require('mongoose');
 
-
 const logger = loggerFactory('growi:routes:apiv3:slack-integration');
 const router = express.Router();
 const SlackAppIntegration = mongoose.model('SlackAppIntegration');
@@ -26,7 +25,6 @@ const { checkPermission } = require('../../util/slack-integration');
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
-
   const { slackIntegrationService } = crowi;
 
   // Check if the access token is correct
@@ -34,7 +32,7 @@ module.exports = (crowi) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
 
     if (tokenPtoG == null) {
-      const message = 'The value of header \'x-growi-ptog-tokens\' must not be empty.';
+      const message = "The value of header 'x-growi-ptog-tokens' must not be empty.";
       logger.warn(message, { body: req.body });
       return next(createError(400, message));
     }
@@ -49,9 +47,10 @@ module.exports = (crowi) => {
     if (SlackAppIntegrationCount === 0) {
       return res.status(403).send({
         // biome-ignore lint/complexity/noUselessStringConcat: ignore
-        message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`.\n'
-        + 'Or did you delete registration for GROWI ? if so, the link with GROWI has been disconnected. '
-        + 'Please unregister the information registered in the proxy and setup `/growi register` again.',
+        message:
+          'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`.\n' +
+          'Or did you delete registration for GROWI ? if so, the link with GROWI has been disconnected. ' +
+          'Please unregister the information registered in the proxy and setup `/growi register` again.',
       });
     }
 
@@ -60,7 +59,9 @@ module.exports = (crowi) => {
 
   async function extractPermissionsCommands(tokenPtoG) {
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-    if (slackAppIntegration == null) { return null; }
+    if (slackAppIntegration == null) {
+      return null;
+    }
     const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
     const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
 
@@ -78,8 +79,7 @@ module.exports = (crowi) => {
     let growiCommand;
     try {
       growiCommand = getGrowiCommand(req.body);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err.message);
       return next(err);
     }
@@ -92,7 +92,9 @@ module.exports = (crowi) => {
           blocks: [
             markdownSectionBlock('*Command is not supported*'),
             // eslint-disable-next-line max-len
-            markdownSectionBlock(`\`/growi ${growiCommand.growiCommandType}\` command is not supported in this version of GROWI bot. Run \`/growi help\` to see all supported commands.`),
+            markdownSectionBlock(
+              `\`/growi ${growiCommand.growiCommandType}\` command is not supported in this version of GROWI bot. Run \`/growi help\` to see all supported commands.`,
+            ),
           ],
         },
       };
@@ -108,11 +110,14 @@ module.exports = (crowi) => {
     const siteUrl = growiInfoService.getSiteUrl();
 
     let commandPermission;
-    if (extractPermissions != null) { // with proxy
+    if (extractPermissions != null) {
+      // with proxy
       const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
       commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
       const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
-      if (isPermitted) { return next(); }
+      if (isPermitted) {
+        return next();
+      }
 
       return next(createError(403, `It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`));
     }
@@ -155,11 +160,14 @@ module.exports = (crowi) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const extractPermissions = await extractPermissionsCommands(tokenPtoG);
     let commandPermission;
-    if (extractPermissions != null) { // with proxy
+    if (extractPermissions != null) {
+      // with proxy
       const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
       commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
       const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
-      if (isPermitted) { return next(); }
+      if (isPermitted) {
+        return next();
+      }
 
       return next(createError(403, `This interaction is forbidden on this GROWI: ${siteUrl}`));
     }
@@ -175,10 +183,7 @@ module.exports = (crowi) => {
     const options = {
       respondBody: {
         text: 'Interaction forbidden',
-        blocks: [
-          markdownSectionBlock('*Interaction forbidden*'),
-          markdownSectionBlock(`This interaction is forbidden on this GROWI: ${siteUrl}`),
-        ],
+        blocks: [markdownSectionBlock('*Interaction forbidden*'), markdownSectionBlock(`This interaction is forbidden on this GROWI: ${siteUrl}`)],
       },
     };
     return next(new SlackCommandHandlerError('Interaction forbidden', options));
@@ -229,16 +234,12 @@ module.exports = (crowi) => {
     if (growiCommand == null) {
       try {
         growiCommand = parseSlashCommand(body);
-      }
-      catch (err) {
+      } catch (err) {
         if (err instanceof InvalidGrowiCommandError) {
           const options = {
             respondBody: {
               text: 'Command type is not specified',
-              blocks: [
-                markdownSectionBlock('*Command type is not specified.*'),
-                markdownSectionBlock('Run `/growi help` to check the commands you can use.'),
-              ],
+              blocks: [markdownSectionBlock('*Command type is not specified.*'), markdownSectionBlock('Run `/growi help` to check the commands you can use.')],
             },
           };
           throw new SlackCommandHandlerError('Command type is not specified', options);
@@ -255,8 +256,7 @@ module.exports = (crowi) => {
     try {
       growiCommand = getGrowiCommand(body);
       respondUtil = getRespondUtil(responseUrl);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err.message);
       return handleError(err, responseUrl);
     }
@@ -273,22 +273,17 @@ module.exports = (crowi) => {
     try {
       await respondUtil.respond({
         text: 'Processing your request ...',
-        blocks: [
-          markdownSectionBlock(`Processing your request *"/growi ${growiCommand.growiCommandType}"* on GROWI at ${appSiteUrl} ...`),
-        ],
+        blocks: [markdownSectionBlock(`Processing your request *"/growi ${growiCommand.growiCommandType}"* on GROWI at ${appSiteUrl} ...`)],
       });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred while request via axios:', err);
     }
 
     try {
       await slackIntegrationService.handleCommandRequest(growiCommand, client, body, respondUtil);
-    }
-    catch (err) {
+    } catch (err) {
       return handleError(err, responseUrl);
     }
-
   }
 
   // TODO: this method will be a middleware when typescriptize in the future
@@ -326,15 +321,14 @@ module.exports = (crowi) => {
    *               type: string
    *               example: "No text."
    */
-  router.post('/commands', addSigningSecretToReq, verifySlackRequest, checkCommandsPermission, async(req, res) => {
+  router.post('/commands', addSigningSecretToReq, verifySlackRequest, checkCommandsPermission, async (req, res) => {
     const { body } = req;
     const responseUrl = getResponseUrl(req);
 
     let client;
     try {
       client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err.message);
       return handleError(err, responseUrl);
     }
@@ -375,7 +369,7 @@ module.exports = (crowi) => {
    *                 challenge:
    *                   type: string
    */
-  router.post('/proxied/verify', verifyAccessTokenFromProxy, async(req, res) => {
+  router.post('/proxied/verify', verifyAccessTokenFromProxy, async (req, res) => {
     const { body } = req;
 
     // eslint-disable-next-line max-len
@@ -410,7 +404,7 @@ module.exports = (crowi) => {
    *               type: string
    *               example: "No text."
    */
-  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandsPermission, async(req, res) => {
+  router.post('/proxied/commands', verifyAccessTokenFromProxy, checkCommandsPermission, async (req, res) => {
     const { body } = req;
     const responseUrl = getResponseUrl(req);
 
@@ -419,8 +413,7 @@ module.exports = (crowi) => {
     let client;
     try {
       client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
-    }
-    catch (err) {
+    } catch (err) {
       return handleError(err, responseUrl);
     }
 
@@ -428,7 +421,6 @@ module.exports = (crowi) => {
   });
 
   async function handleInteractionsRequest(req, res, client) {
-
     const { interactionPayload, interactionPayloadAccessor } = req;
     const { type } = interactionPayload;
     const responseUrl = interactionPayloadAccessor.getResponseUrl();
@@ -445,8 +437,7 @@ module.exports = (crowi) => {
         default:
           break;
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return handleError(err, responseUrl);
     }
@@ -472,7 +463,7 @@ module.exports = (crowi) => {
    *       200:
    *         description: OK
    */
-  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
+  router.post('/interactions', addSigningSecretToReq, verifySlackRequest, parseSlackInteractionRequest, checkInteractionsPermission, async (req, res) => {
     const client = await slackIntegrationService.generateClientForCustomBotWithoutProxy();
     return handleInteractionsRequest(req, res, client);
   });
@@ -497,7 +488,7 @@ module.exports = (crowi) => {
    *       200:
    *         description: OK
    */
-  router.post('/proxied/interactions', verifyAccessTokenFromProxy, parseSlackInteractionRequest, checkInteractionsPermission, async(req, res) => {
+  router.post('/proxied/interactions', verifyAccessTokenFromProxy, parseSlackInteractionRequest, checkInteractionsPermission, async (req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const client = await slackIntegrationService.generateClientByTokenPtoG(tokenPtoG);
     return handleInteractionsRequest(req, res, client);
@@ -530,7 +521,7 @@ module.exports = (crowi) => {
    *                   items:
    *                     type: object
    */
-  router.get('/supported-commands', verifyAccessTokenFromProxy, async(req, res) => {
+  router.get('/supported-commands', verifyAccessTokenFromProxy, async (req, res) => {
     const tokenPtoG = req.headers['x-growi-ptog-tokens'];
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
     const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = slackAppIntegration;
@@ -565,7 +556,7 @@ module.exports = (crowi) => {
    *             schema:
    *               type: object
    */
-  router.post('/events', verifyUrlMiddleware, addSigningSecretToReq, verifySlackRequest, async(req, res) => {
+  router.post('/events', verifyUrlMiddleware, addSigningSecretToReq, verifySlackRequest, async (req, res) => {
     const { event } = req.body;
 
     const growiBotEvent = {
@@ -581,18 +572,14 @@ module.exports = (crowi) => {
       await crowi.slackIntegrationService.handleEventsRequest(client, growiBotEvent, permission);
 
       return res.apiv3({});
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred while handling event request.', err);
       return res.apiv3Err(new ErrorV3('Error occurred while handling event request.'));
     }
   });
 
   const validator = {
-    validateEventRequest: [
-      body('growiBotEvent').exists(),
-      body('data').exists(),
-    ],
+    validateEventRequest: [body('growiBotEvent').exists(), body('data').exists()],
   };
 
   /**
@@ -624,7 +611,7 @@ module.exports = (crowi) => {
    *             schema:
    *               type: object
    */
-  router.post('/proxied/events', verifyAccessTokenFromProxy, validator.validateEventRequest, async(req, res) => {
+  router.post('/proxied/events', verifyAccessTokenFromProxy, validator.validateEventRequest, async (req, res) => {
     const { growiBotEvent, data } = req.body;
 
     try {
@@ -642,15 +629,14 @@ module.exports = (crowi) => {
       await slackIntegrationService.handleEventsRequest(client, growiBotEvent, permissionsForSlackEventActions, data);
 
       return res.apiv3({});
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred while handling event request.', err);
       return res.apiv3Err(new ErrorV3('Error occurred while handling event request.'));
     }
   });
 
   // error handler
-  router.use(async(err, req, res, next) => {
+  router.use(async (err, req, res, next) => {
     const responseUrl = getResponseUrl(req);
     if (responseUrl == null) {
       // pass err to global error handler

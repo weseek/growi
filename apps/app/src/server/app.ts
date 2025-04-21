@@ -6,7 +6,6 @@ import { hasProcessFlag } from '~/utils/process-utils';
 
 const logger: Logger = loggerFactory('growi');
 
-
 /** **********************************
  *          Main Process
  ********************************** */
@@ -35,8 +34,7 @@ async function main() {
         process.exit();
       });
     }
-  }
-  catch (err) {
+  } catch (err) {
     logger.error('An error occurred, unable to start the server');
     logger.error(err);
     process.exit(1);

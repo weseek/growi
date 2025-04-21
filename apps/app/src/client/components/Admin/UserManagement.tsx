@@ -1,7 +1,5 @@
 import type React from 'react';
-import {
-  useEffect, useState, useRef, useCallback,
-} from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -19,24 +17,25 @@ import UserTable from './Users/UserTable';
 import styles from './UserManagement.module.scss';
 
 type UserManagementProps = {
-  adminUsersContainer: AdminUsersContainer
-}
+  adminUsersContainer: AdminUsersContainer;
+};
 
 const UserManagement = (props: UserManagementProps) => {
-
   const { t } = useTranslation('admin');
   const { adminUsersContainer } = props;
   const [isNotifyCommentShow, setIsNotifyCommentShow] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const pagingHandler = useCallback(async(selectedPage: number) => {
-    try {
-      await adminUsersContainer.retrieveUsersByPagingNum(selectedPage);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [adminUsersContainer]);
+  const pagingHandler = useCallback(
+    async (selectedPage: number) => {
+      try {
+        await adminUsersContainer.retrieveUsersByPagingNum(selectedPage);
+      } catch (err) {
+        toastError(err);
+      }
+    },
+    [adminUsersContainer],
+  );
 
   // for Next routing
   useEffect(() => {
@@ -44,12 +43,7 @@ const UserManagement = (props: UserManagementProps) => {
   }, [pagingHandler]);
 
   const validateToggleStatus = (statusType: string) => {
-    return (adminUsersContainer.isSelected(statusType)) ? (
-      adminUsersContainer.state.selectedStatusList.size > 1
-    )
-      : (
-        true
-      );
+    return adminUsersContainer.isSelected(statusType) ? adminUsersContainer.state.selectedStatusList.size > 1 : true;
   };
 
   const clickHandler = (statusType: string) => {
@@ -63,22 +57,24 @@ const UserManagement = (props: UserManagementProps) => {
     adminUsersContainer.handleClick(statusType);
   };
 
-  const resetButtonClickHandler = useCallback(async() => {
+  const resetButtonClickHandler = useCallback(async () => {
     try {
       await adminUsersContainer.resetAllChanges();
       setIsNotifyCommentShow(false);
       if (inputRef.current != null) {
         inputRef.current.value = '';
       }
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [adminUsersContainer]);
 
-  const changeSearchTextHandler = useCallback(async(e: React.FormEvent<HTMLInputElement>) => {
-    await adminUsersContainer.handleChangeSearchText(e?.currentTarget.value);
-  }, [adminUsersContainer]);
+  const changeSearchTextHandler = useCallback(
+    async (e: React.FormEvent<HTMLInputElement>) => {
+      await adminUsersContainer.handleChangeSearchText(e?.currentTarget.value);
+    },
+    [adminUsersContainer],
+  );
 
   const renderCheckbox = (status: string, statusLabel: string, statusColor: string) => {
     return (
@@ -91,9 +87,7 @@ const UserManagement = (props: UserManagementProps) => {
           onChange={() => clickHandler(status)}
         />
         <label className="form-label form-check-label" htmlFor={`c_${status}`}>
-          <span className={`badge text-bg-${statusColor} d-inline-block vt mt-1`}>
-            {statusLabel}
-          </span>
+          <span className={`badge text-bg-${statusColor} d-inline-block vt mt-1`}>{statusLabel}</span>
         </label>
       </div>
     );
@@ -114,55 +108,45 @@ const UserManagement = (props: UserManagementProps) => {
 
   return (
     <div data-testid="admin-users">
-      { adminUsersContainer.state.userForPasswordResetModal != null
-      && (
+      {adminUsersContainer.state.userForPasswordResetModal != null && (
         <PasswordResetModal
           isOpen={adminUsersContainer.state.isPasswordResetModalShown}
           onClose={adminUsersContainer.hidePasswordResetModal}
           userForPasswordResetModal={adminUsersContainer.state.userForPasswordResetModal}
         />
-      ) }
+      )}
       <p>
         <InviteUserControl />
-        <Link
-          href="/admin/users/external-accounts"
-          className="btn btn-outline-secondary ms-2"
-          role="button"
-        >
-          <span className="material-symbols-outlined" aria-hidden="true">person_add</span>
+        <Link href="/admin/users/external-accounts" className="btn btn-outline-secondary ms-2" role="button">
+          <span className="material-symbols-outlined" aria-hidden="true">
+            person_add
+          </span>
           {t('admin:user_management.external_account')}
         </Link>
       </p>
 
       <h2>{t('user_management.user_management')}</h2>
       <div className="border-top border-bottom">
-
         <div className="row d-flex justify-content-start align-items-center my-2">
           <div className="col-md-3 d-flex align-items-center my-2">
             <span className="material-symbols-outlined">search</span>
             <span className={`search-typeahead ${styles['search-typeahead']}`}>
-              <input
-                className="w-100"
-                type="text"
-                ref={inputRef}
-                onChange={changeSearchTextHandler}
-              />
-              {
-                adminUsersContainer.state.searchText.length > 0
-                  ? (
-                    <span
-                      className="material-symbols-outlined me-1 search-clear"
-                      onClick={async() => {
-                        await adminUsersContainer.clearSearchText();
-                        if (inputRef.current != null) {
-                          inputRef.current.value = '';
-                        }
-                      }}
-                    >cancel
-                    </span>
-                  )
-                  : ''
-              }
+              <input className="w-100" type="text" ref={inputRef} onChange={changeSearchTextHandler} />
+              {adminUsersContainer.state.searchText.length > 0 ? (
+                <span
+                  className="material-symbols-outlined me-1 search-clear"
+                  onClick={async () => {
+                    await adminUsersContainer.clearSearchText();
+                    if (inputRef.current != null) {
+                      inputRef.current.value = '';
+                    }
+                  }}
+                >
+                  cancel
+                </span>
+              ) : (
+                ''
+              )}
             </span>
           </div>
 
@@ -174,17 +158,11 @@ const UserManagement = (props: UserManagementProps) => {
               {renderCheckbox('suspended', 'Suspended', 'warning')}
               {renderCheckbox('invited', 'Invited', 'secondary')}
             </div>
-            <div>
-              { isNotifyCommentShow && <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span> }
-            </div>
+            <div>{isNotifyCommentShow && <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span>}</div>
           </div>
 
           <div className="col-md-2 my-2">
-            <button
-              type="button"
-              className="btn btn-outline-secondary btn-sm"
-              onClick={resetButtonClickHandler}
-            >
+            <button type="button" className="btn btn-outline-secondary btn-sm" onClick={resetButtonClickHandler}>
               <span className="material-symbols-outlined">refresh</span>
               {t('commons:Reset')}
             </button>
@@ -195,10 +173,8 @@ const UserManagement = (props: UserManagementProps) => {
       {pager}
       <UserTable />
       {pager}
-
     </div>
   );
-
 };
 
 const UserManagementWrapper = withUnstatedContainers(UserManagement, [AdminUsersContainer]);

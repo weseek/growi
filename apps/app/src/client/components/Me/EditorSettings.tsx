@@ -21,7 +21,6 @@ export const EditorSettings = memo((): JSX.Element => {
 
   return (
     <div data-testid="grw-editor-settings">
-
       {/*
       <div className="row my-3">
         <div className="offset-4 col-5">

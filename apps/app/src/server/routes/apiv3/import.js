@@ -15,7 +15,6 @@ const path = require('path');
 const express = require('express');
 const multer = require('multer');
 
-
 const router = express.Router();
 
 /**
@@ -197,7 +196,7 @@ export default function route(crowi) {
    *                        type: string
    *                        description: the access token of qiita.com
    */
-  router.get('/', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequired, adminRequired, async (req, res) => {
     try {
       const importSettingsParams = {
         esaTeamName: await crowi.configManager.getConfig('importer:esa:team_name'),
@@ -208,8 +207,7 @@ export default function route(crowi) {
       return res.apiv3({
         importSettingsParams,
       });
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err, 500);
     }
   });
@@ -235,12 +233,11 @@ export default function route(crowi) {
    *                  status:
    *                    $ref: '#/components/schemas/ImportStatus'
    */
-  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/status', accessTokenParser, loginRequired, adminRequired, async (req, res) => {
     try {
       const status = await importService.getStatus();
       return res.apiv3(status);
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err, 500);
     }
   });
@@ -282,7 +279,7 @@ export default function route(crowi) {
    *        200:
    *          description: Import process has requested
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async (req, res) => {
     // TODO: add express validator
     const { fileName, collections, options } = req.body;
 
@@ -291,7 +288,7 @@ export default function route(crowi) {
     const isImportPagesCollection = collections.includes('pages');
     if (isV5Compatible && isImportPagesCollection) {
       /** @type {ImportOptionForPages} */
-      const option = options.find(opt => opt.collectionName === 'pages');
+      const option = options.find((opt) => opt.collectionName === 'pages');
       if (option.mode !== 'upsert') {
         return res.apiv3Err(new ErrorV3('Upsert is only available for importing pages collection.', 'only_upsert_available'));
       }
@@ -301,7 +298,6 @@ export default function route(crowi) {
     if (!isMaintenanceMode) {
       return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
     }
-
 
     const zipFile = importService.getFile(fileName);
 
@@ -325,8 +321,7 @@ export default function route(crowi) {
       fileStatsToImport = innerFileStats.filter(({ fileName, collectionName, size }) => {
         return collections.includes(collectionName);
       });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       adminEvent.emit('onErrorForImport', { message: err.message });
       return;
@@ -337,8 +332,7 @@ export default function route(crowi) {
      */
     try {
       importService.validate(meta);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       adminEvent.emit('onErrorForImport', { message: err.message });
       return;
@@ -349,7 +343,7 @@ export default function route(crowi) {
     fileStatsToImport.forEach(({ fileName, collectionName }) => {
       // instanciate GrowiArchiveImportOption
       /** @type {import('~/models/admin/growi-archive-import-option').GrowiArchiveImportOption} */
-      const option = options.find(opt => opt.collectionName === collectionName);
+      const option = options.find((opt) => opt.collectionName === collectionName);
 
       // generate options
       /** @type {import('~/server/service/import').ImportSettings} */
@@ -370,8 +364,7 @@ export default function route(crowi) {
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_GROWI_DATA_IMPORTED };
       activityEvent.emit('update', res.locals.activity._id, parameters);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       adminEvent.emit('onErrorForImport', { message: err.message });
     }
@@ -404,15 +397,14 @@ export default function route(crowi) {
    *              schema:
    *                $ref: '#/components/schemas/FileImportResponse'
    */
-  router.post('/upload', accessTokenParser, loginRequired, adminRequired, uploads.single('file'), addActivity, async(req, res) => {
+  router.post('/upload', accessTokenParser, loginRequired, adminRequired, uploads.single('file'), addActivity, async (req, res) => {
     const { file } = req;
     const zipFile = importService.getFile(file.filename);
     let data = null;
 
     try {
       data = await growiBridgeService.parseZipFile(zipFile);
-    }
-    catch (err) {
+    } catch (err) {
       // TODO: use ApiV3Error
       logger.error(err);
       return res.status(500).send({ status: 'ERROR' });
@@ -425,8 +417,7 @@ export default function route(crowi) {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3(data);
-    }
-    catch {
+    } catch {
       const msg = 'The version of this GROWI and the uploaded GROWI data are not the same';
       const validationErr = 'versions-are-not-met';
       return res.apiv3Err(new ErrorV3(msg, validationErr), 500);
@@ -448,13 +439,12 @@ export default function route(crowi) {
    *        200:
    *          description: all files are deleted
    */
-  router.delete('/all', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.delete('/all', accessTokenParser, loginRequired, adminRequired, async (req, res) => {
     try {
       importService.deleteAllZipFiles();
 
       return res.apiv3();
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(err, 500);
     }

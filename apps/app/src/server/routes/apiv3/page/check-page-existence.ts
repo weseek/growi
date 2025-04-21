@@ -14,16 +14,14 @@ import loggerFactory from '~/utils/logger';
 
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-
 const logger = loggerFactory('growi:routes:apiv3:page:check-page-existence');
 
-
 type ReqQuery = {
-  path: string,
-}
+  path: string;
+};
 
 interface Req extends Request<ReqQuery, ApiV3Response> {
-  user: IUserHasId,
+  user: IUserHasId;
 }
 
 type CreatePageHandlersFactory = (crowi: Crowi) => RequestHandler[];
@@ -34,14 +32,14 @@ export const checkPageExistenceHandlersFactory: CreatePageHandlersFactory = (cro
   const loginRequired = require('../../../middlewares/login-required')(crowi, true);
 
   // define validators for req.body
-  const validator: ValidationChain[] = [
-    query('path').isString().withMessage('The param "path" must be specified'),
-  ];
+  const validator: ValidationChain[] = [query('path').isString().withMessage('The param "path" must be specified')];
 
   return [
-    accessTokenParser, loginRequired,
-    validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequired,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const { path } = req.query;
 
       if (path == null || Array.isArray(path)) {

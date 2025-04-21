@@ -6,18 +6,13 @@ import PropTypes from 'prop-types';
 import SearchTypeahead from './SearchTypeahead';
 
 const PagePathAutoComplete = (props) => {
-
-  const {
-    addTrailingSlash, initializedPath,
-  } = props;
+  const { addTrailingSlash, initializedPath } = props;
 
   function getKeywordOnInit(path) {
     if (path == null) {
       return;
     }
-    return addTrailingSlash
-      ? pathUtils.addTrailingSlash(path)
-      : pathUtils.removeTrailingSlash(path);
+    return addTrailingSlash ? pathUtils.addTrailingSlash(path) : pathUtils.removeTrailingSlash(path);
   }
 
   return (
@@ -29,22 +24,21 @@ const PagePathAutoComplete = (props) => {
       autoFocus={props.autoFocus}
     />
   );
-
 };
 
 PagePathAutoComplete.propTypes = {
-  initializedPath:  PropTypes.string,
+  initializedPath: PropTypes.string,
   addTrailingSlash: PropTypes.bool,
 
-  onChange:         PropTypes.func,
-  onSubmit:         PropTypes.func,
-  onInputChange:    PropTypes.func,
-  autoFocus:        PropTypes.bool,
+  onChange: PropTypes.func,
+  onSubmit: PropTypes.func,
+  onInputChange: PropTypes.func,
+  autoFocus: PropTypes.bool,
 };
 
 PagePathAutoComplete.defaultProps = {
-  initializedPath:  '/',
-  autoFocus:        false,
+  initializedPath: '/',
+  autoFocus: false,
 };
 
 export default PagePathAutoComplete;

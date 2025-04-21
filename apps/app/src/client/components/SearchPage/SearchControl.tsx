@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useEffect, useState, type JSX,
-} from 'react';
+import React, { useCallback, useEffect, useState, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { Collapse } from 'reactstrap';
@@ -15,29 +13,20 @@ import SortControl from './SortControl';
 import styles from './SearchControl.module.scss';
 
 type Props = {
-  isEnableSort: boolean,
-  isEnableFilter: boolean,
-  initialSearchConditions: Partial<ISearchConditions>,
+  isEnableSort: boolean;
+  isEnableFilter: boolean;
+  initialSearchConditions: Partial<ISearchConditions>;
 
-  onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
+  onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void;
 
-  extraControls: React.ReactNode,
+  extraControls: React.ReactNode;
 
-  collapseContents?: React.ReactNode,
-  isCollapsed?: boolean,
-}
+  collapseContents?: React.ReactNode;
+  isCollapsed?: boolean;
+};
 
 const SearchControl = React.memo((props: Props): JSX.Element => {
-
-  const {
-    isEnableSort,
-    isEnableFilter,
-    initialSearchConditions,
-    onSearchInvoked,
-    extraControls,
-    collapseContents,
-    isCollapsed,
-  } = props;
+  const { isEnableSort, isEnableFilter, initialSearchConditions, onSearchInvoked, extraControls, collapseContents, isCollapsed } = props;
 
   const keywordOnInit = initialSearchConditions.keyword ?? '';
 
@@ -50,30 +39,48 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation('');
 
-  const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
-    setSort(nextSort);
-    setOrder(nextOrder);
+  const changeSortHandler = useCallback(
+    (nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
+      setSort(nextSort);
+      setOrder(nextOrder);
 
-    onSearchInvoked?.(keyword, {
-      sort: nextSort, order: nextOrder, includeUserPages, includeTrashPages,
-    });
-  }, [includeTrashPages, includeUserPages, keyword, onSearchInvoked]);
+      onSearchInvoked?.(keyword, {
+        sort: nextSort,
+        order: nextOrder,
+        includeUserPages,
+        includeTrashPages,
+      });
+    },
+    [includeTrashPages, includeUserPages, keyword, onSearchInvoked],
+  );
 
-  const changeIncludeUserPagesHandler = useCallback((include: boolean) => {
-    setIncludeUserPages(include);
+  const changeIncludeUserPagesHandler = useCallback(
+    (include: boolean) => {
+      setIncludeUserPages(include);
 
-    onSearchInvoked?.(keyword, {
-      sort, order, includeUserPages: include, includeTrashPages,
-    });
-  }, [includeTrashPages, keyword, onSearchInvoked, order, sort]);
+      onSearchInvoked?.(keyword, {
+        sort,
+        order,
+        includeUserPages: include,
+        includeTrashPages,
+      });
+    },
+    [includeTrashPages, keyword, onSearchInvoked, order, sort],
+  );
 
-  const changeIncludeTrashPagesHandler = useCallback((include: boolean) => {
-    setIncludeTrashPages(include);
+  const changeIncludeTrashPagesHandler = useCallback(
+    (include: boolean) => {
+      setIncludeTrashPages(include);
 
-    onSearchInvoked?.(keyword, {
-      sort, order, includeUserPages, includeTrashPages: include,
-    });
-  }, [includeUserPages, keyword, onSearchInvoked, order, sort]);
+      onSearchInvoked?.(keyword, {
+        sort,
+        order,
+        includeUserPages,
+        includeTrashPages: include,
+      });
+    },
+    [includeUserPages, keyword, onSearchInvoked, order, sort],
+  );
 
   useEffect(() => {
     setKeyword(keywordOnInit);
@@ -83,9 +90,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
     <div className="shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
-          <SearchModalTriggerinput
-            keywordOnInit={keyword}
-          />
+          <SearchModalTriggerinput keywordOnInit={keyword} />
         </div>
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
@@ -93,25 +98,15 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
         {/* sort option */}
         {isEnableSort && (
           <div className="flex-grow-1">
-            <SortControl
-              sort={sort}
-              order={order}
-              onChange={changeSortHandler}
-            />
+            <SortControl sort={sort} order={order} onChange={changeSortHandler} />
           </div>
         )}
         {/* filter option */}
         {isEnableFilter && (
           <>
             <div className="d-lg-none">
-              <button
-                type="button"
-                className="btn"
-                onClick={() => setIsFileterOptionModalShown(true)}
-              >
-                <span className="material-symbols-outlined">
-                  tune
-                </span>
+              <button type="button" className="btn" onClick={() => setIsFileterOptionModalShown(true)}>
+                <span className="material-symbols-outlined">tune</span>
               </button>
             </div>
             <div className="d-none d-lg-flex align-items-center search-control-include-options">
@@ -122,12 +117,9 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                     type="checkbox"
                     id="flexCheckDefault"
                     defaultChecked={includeUserPages}
-                    onChange={e => changeIncludeUserPagesHandler(e.target.checked)}
+                    onChange={(e) => changeIncludeUserPagesHandler(e.target.checked)}
                   />
-                  <label
-                    className="form-label form-check-label mb-0 d-flex align-items-center text-secondary with-no-font-weight"
-                    htmlFor="flexCheckDefault"
-                  >
+                  <label className="form-label form-check-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckDefault">
                     {t('Include Subordinated Target Page', { target: '/user' })}
                   </label>
                 </div>
@@ -139,12 +131,9 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                     type="checkbox"
                     id="flexCheckChecked"
                     checked={includeTrashPages}
-                    onChange={e => changeIncludeTrashPagesHandler(e.target.checked)}
+                    onChange={(e) => changeIncludeTrashPagesHandler(e.target.checked)}
                   />
-                  <label
-                    className="form-label form-check-label mb-0 d-flex align-items-center text-secondary with-no-font-weight"
-                    htmlFor="flexCheckChecked"
-                  >
+                  <label className="form-label form-check-label mb-0 d-flex align-items-center text-secondary with-no-font-weight" htmlFor="flexCheckChecked">
                     {t('Include Subordinated Target Page', { target: '/trash' })}
                   </label>
                 </div>
@@ -156,11 +145,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
         {extraControls}
       </div>
 
-      { collapseContents != null && (
-        <Collapse isOpen={isCollapsed}>
-          {collapseContents}
-        </Collapse>
-      ) }
+      {collapseContents != null && <Collapse isOpen={isCollapsed}>{collapseContents}</Collapse>}
 
       <SearchOptionModal
         isOpen={isFileterOptionModalShown || false}
@@ -170,7 +155,6 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
         onIncludeUserPagesSwitched={setIncludeUserPages}
         onIncludeTrashPagesSwitched={setIncludeTrashPages}
       />
-
     </div>
   );
 });

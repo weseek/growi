@@ -19,7 +19,6 @@ declare global {
 
 type Nullable<T> = T | null;
 
-
 export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
   return useContextSWR<string, Error>('csrfToken', initialData);
 };
@@ -72,23 +71,23 @@ export const useRegistrationWhitelist = (initialData?: Nullable<string[]>): SWRR
   return useContextSWR<Nullable<string[]>, Error>('registrationWhitelist', initialData);
 };
 
-export const useIsSearchPage = (initialData?: Nullable<boolean>) : SWRResponse<Nullable<boolean>, Error> => {
+export const useIsSearchPage = (initialData?: Nullable<boolean>): SWRResponse<Nullable<boolean>, Error> => {
   return useContextSWR<Nullable<any>, Error>('isSearchPage', initialData);
 };
 
-export const useIsAclEnabled = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+export const useIsAclEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isAclEnabled', initialData);
 };
 
-export const useIsSearchServiceConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+export const useIsSearchServiceConfigured = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSearchServiceConfigured', initialData);
 };
 
-export const useIsSearchServiceReachable = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+export const useIsSearchServiceReachable = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSearchServiceReachable', initialData);
 };
 
-export const useElasticsearchMaxBodyLengthToIndex = (initialData?: number) : SWRResponse<number, Error> => {
+export const useElasticsearchMaxBodyLengthToIndex = (initialData?: number): SWRResponse<number, Error> => {
   return useContextSWR('elasticsearchMaxBodyLengthToIndex', initialData);
 };
 
@@ -96,7 +95,7 @@ export const useIsMailerSetup = (initialData?: boolean): SWRResponse<boolean, an
   return useContextSWR('isMailerSetup', initialData);
 };
 
-export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+export const useIsSearchScopeChildrenAsDefault = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSearchScopeChildrenAsDefault', initialData, { fallbackData: false });
 };
 
@@ -104,23 +103,23 @@ export const useShowPageSideAuthors = (initialData?: boolean): SWRResponse<boole
   return useContextSWR('showPageSideAuthors', initialData, { fallbackData: false });
 };
 
-export const useIsEnabledMarp = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+export const useIsEnabledMarp = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isEnabledMarp', initialData, { fallbackData: false });
 };
 
-export const useIsSlackConfigured = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+export const useIsSlackConfigured = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isSlackConfigured', initialData);
 };
 
-export const useIsEnabledAttachTitleHeader = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+export const useIsEnabledAttachTitleHeader = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isEnabledAttachTitleHeader', initialData);
 };
 
-export const useIsIndentSizeForced = (initialData?: boolean) : SWRResponse<boolean, Error> => {
+export const useIsIndentSizeForced = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useContextSWR<boolean, Error>('isIndentSizeForced', initialData, { fallbackData: false });
 };
 
-export const useDefaultIndentSize = (initialData?: number) : SWRResponse<number, Error> => {
+export const useDefaultIndentSize = (initialData?: number): SWRResponse<number, Error> => {
   return useContextSWR<number, Error>('defaultIndentSize', initialData, { fallbackData: 4 });
 };
 
@@ -128,11 +127,11 @@ export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, 
   return useContextSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
 };
 
-export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
+export const useActivityExpirationSeconds = (initialData?: number): SWRResponse<number, Error> => {
   return useContextSWR<number, Error>('activityExpirationSeconds', initialData);
 };
 
-export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionType>) : SWRResponse<Array<SupportedActionType>, Error> => {
+export const useAuditLogAvailableActions = (initialData?: Array<SupportedActionType>): SWRResponse<Array<SupportedActionType>, Error> => {
   return useContextSWR<Array<SupportedActionType>, Error>('auditLogAvailableActions', initialData);
 };
 
@@ -231,11 +230,9 @@ export const useLimitLearnablePageCountPerAssistant = (initialData?: number): SW
 export const useIsGuestUser = (): SWRResponse<boolean, Error> => {
   const { data: currentUser, isLoading } = useCurrentUser();
 
-  return useSWRImmutable(
-    isLoading ? null : ['isGuestUser', currentUser?._id],
-    ([, currentUserId]) => currentUserId == null,
-    { fallbackData: currentUser?._id == null },
-  );
+  return useSWRImmutable(isLoading ? null : ['isGuestUser', currentUser?._id], ([, currentUserId]) => currentUserId == null, {
+    fallbackData: currentUser?._id == null,
+  });
 };
 
 export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
@@ -245,28 +242,20 @@ export const useIsReadOnlyUser = (): SWRResponse<boolean, Error> => {
   const isLoading = isCurrentUserLoading || isGuestUserLoding;
   const isReadOnlyUser = !isGuestUser && !!currentUser?.readOnly;
 
-  return useSWRImmutable(
-    isLoading ? null : ['isReadOnlyUser', isReadOnlyUser, currentUser?._id],
-    () => isReadOnlyUser,
-    { fallbackData: isReadOnlyUser },
-  );
+  return useSWRImmutable(isLoading ? null : ['isReadOnlyUser', isReadOnlyUser, currentUser?._id], () => isReadOnlyUser, { fallbackData: isReadOnlyUser });
 };
 
 export const useIsAdmin = (): SWRResponse<boolean, Error> => {
   const { data: currentUser, isLoading } = useCurrentUser();
 
-  return useSWR(
-    isLoading ? null : ['isAdminUser', currentUser?._id, currentUser?.admin],
-    ([, , isAdmin]) => isAdmin ?? false,
-    {
-      fallbackData: currentUser?.admin ?? false,
-      keepPreviousData: true,
-      // disable all revalidation but revalidateIfStale
-      revalidateOnMount: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    },
-  );
+  return useSWR(isLoading ? null : ['isAdminUser', currentUser?._id, currentUser?.admin], ([, , isAdmin]) => isAdmin ?? false, {
+    fallbackData: currentUser?.admin ?? false,
+    keepPreviousData: true,
+    // disable all revalidation but revalidateIfStale
+    revalidateOnMount: false,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
 };
 
 export const useIsEditable = (): SWRResponse<boolean, Error> => {
@@ -279,7 +268,7 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     ['isEditable', isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath],
     ([, isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
-      return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser);
+      return !isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser;
     },
   );
 };
@@ -288,18 +277,15 @@ export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType,
   const { data: isUploadEnabled } = useIsUploadEnabled();
   const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
 
-  return useSWRImmutable(
-    ['acceptedUploadFileType', isUploadEnabled, isUploadAllFileAllowed],
-    ([, isUploadEnabled, isUploadAllFileAllowed]) => {
-      if (!isUploadEnabled) {
-        return AcceptedUploadFileType.NONE;
-      }
-      if (isUploadAllFileAllowed) {
-        return AcceptedUploadFileType.ALL;
-      }
-      return AcceptedUploadFileType.IMAGE;
-    },
-  );
+  return useSWRImmutable(['acceptedUploadFileType', isUploadEnabled, isUploadAllFileAllowed], ([, isUploadEnabled, isUploadAllFileAllowed]) => {
+    if (!isUploadEnabled) {
+      return AcceptedUploadFileType.NONE;
+    }
+    if (isUploadAllFileAllowed) {
+      return AcceptedUploadFileType.ALL;
+    }
+    return AcceptedUploadFileType.IMAGE;
+  });
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -309,9 +295,7 @@ export const useGrowiDocumentationUrl = () => {
   return useSWR(
     ['documentationUrl', growiCloudUri],
     ([, growiCloudUri]) => {
-      const url = growiCloudUri != null
-        ? new URL('/help', growiCloudUri)
-        : new URL('https://docs.growi.org');
+      const url = growiCloudUri != null ? new URL('/help', growiCloudUri) : new URL('https://docs.growi.org');
       return url.toString();
     },
     {

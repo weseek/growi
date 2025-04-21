@@ -17,17 +17,15 @@ import type GrowiBridgeService from './growi-bridge';
 import { growiInfoService } from './growi-info';
 import type { ZipFileStat } from './interfaces/export';
 
-
 const logger = loggerFactory('growi:services:ExportService');
 const { pipeline, finished } = require('stream/promises');
 
 const mongoose = require('mongoose');
 
 class ExportProgressingStatus extends CollectionProgressingStatus {
-
   async init() {
     // retrieve total document count from each collections
-    const promises = this.progressList.map(async(collectionProgress) => {
+    const promises = this.progressList.map(async (collectionProgress) => {
       const collection = mongoose.connection.collection(collectionProgress.collectionName);
       collectionProgress.totalCount = await collection.count();
     });
@@ -35,11 +33,9 @@ class ExportProgressingStatus extends CollectionProgressingStatus {
 
     this.recalculateTotalCount();
   }
-
 }
 
 class ExportService {
-
   crowi: any;
 
   appService: AppService;
@@ -83,7 +79,7 @@ class ExportService {
    * @return {object} info for zip files and whether currentProgressingStatus exists
    */
   async getStatus() {
-    const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
+    const zipFiles = fs.readdirSync(this.baseDir).filter((file) => path.extname(file) === '.zip');
 
     // process serially so as not to waste memory
     const zipFileStats: Array<ZipFileStat | null> = [];
@@ -96,7 +92,7 @@ class ExportService {
     }
 
     // filter null object (broken zip)
-    const filtered = zipFileStats.filter(element => element != null);
+    const filtered = zipFileStats.filter((element) => element != null);
 
     const isExporting = this.currentProgressingStatus != null;
 
@@ -235,7 +231,7 @@ class ExportService {
 
     // process serially so as not to waste memory
     const jsonFiles: string[] = [];
-    const jsonFilesPromises = collections.map(collectionName => this.exportCollectionToJson(collectionName));
+    const jsonFilesPromises = collections.map((collectionName) => this.exportCollectionToJson(collectionName));
     for await (const jsonFile of jsonFilesPromises) {
       jsonFiles.push(jsonFile);
     }
@@ -244,7 +240,9 @@ class ExportService {
     this.emitStartZippingEvent();
 
     // zip json
-    const configs = jsonFiles.map((jsonFile) => { return { from: jsonFile, as: path.basename(jsonFile) } });
+    const configs = jsonFiles.map((jsonFile) => {
+      return { from: jsonFile, as: path.basename(jsonFile) };
+    });
     // add meta.json in zip
     configs.push({ from: metaJson, as: path.basename(metaJson) });
     // exec zip
@@ -272,8 +270,7 @@ class ExportService {
     let zipFileStat: ZipFileStat | null;
     try {
       zipFileStat = await this.exportCollectionsToZippedJson(collections);
-    }
-    finally {
+    } finally {
       this.currentProgressingStatus = null;
     }
 
@@ -289,7 +286,9 @@ class ExportService {
    * @param {number} currentCount number of items exported
    */
   logProgress(collectionProgress: CollectionProgress | undefined, currentCount: number): void {
-    if (collectionProgress == null) { return; }
+    if (collectionProgress == null) {
+      return;
+    }
 
     const output = `${collectionProgress.collectionName}: ${currentCount}/${collectionProgress.totalCount} written`;
 
@@ -345,10 +344,10 @@ class ExportService {
    * @return {string} absolute path to the zip file
    * @see https://www.archiverjs.com/#quick-start
    */
-  async zipFiles(_configs: {from: string, as: string}[]): Promise<string> {
+  async zipFiles(_configs: { from: string; as: string }[]): Promise<string> {
     const configs = toArrayIfNot(_configs);
     const appTitle = this.appService.getAppTitle();
-    const timeStamp = (new Date()).getTime();
+    const timeStamp = new Date().getTime();
     const zipFile = path.join(this.baseDir, `${appTitle}-${timeStamp}.growi.zip`);
     const archive = archiver('zip', {
       zlib: { level: this.zlibLevel },
@@ -356,12 +355,17 @@ class ExportService {
 
     // good practice to catch warnings (ie stat failures and other non-blocking errors)
     archive.on('warning', (err) => {
-      if (err.code === 'ENOENT') { logger.error(err); }
-      else { throw err; }
+      if (err.code === 'ENOENT') {
+        logger.error(err);
+      } else {
+        throw err;
+      }
     });
 
     // good practice to catch this error explicitly
-    archive.on('error', (err) => { throw err });
+    archive.on('error', (err) => {
+      throw err;
+    });
 
     for (const { from, as } of configs) {
       const input = fs.createReadStream(from);
@@ -399,7 +403,6 @@ class ExportService {
 
     return readable;
   }
-
 }
 
 // eslint-disable-next-line import/no-mutable-exports

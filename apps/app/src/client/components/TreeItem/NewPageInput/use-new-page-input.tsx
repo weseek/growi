@@ -1,7 +1,5 @@
 import type { ChangeEvent } from 'react';
-import React, {
-  useState, type FC, useCallback, useRef,
-} from 'react';
+import React, { useState, type FC, useCallback, useRef } from 'react';
 
 import nodePath from 'path';
 
@@ -24,23 +22,19 @@ import type { TreeItemToolProps } from '../interfaces';
 
 import { NewPageCreateButton } from './NewPageCreateButton';
 
-
 import newPageInputStyles from './NewPageInput.module.scss';
 
-
 type UseNewPageInput = {
-  Input: FC<TreeItemToolProps>,
-  CreateButton: FC<TreeItemToolProps>,
-  isProcessingSubmission: boolean,
-}
+  Input: FC<TreeItemToolProps>;
+  CreateButton: FC<TreeItemToolProps>;
+  isProcessingSubmission: boolean;
+};
 
 export const useNewPageInput = (): UseNewPageInput => {
-
   const [showInput, setShowInput] = useState(false);
   const [isProcessingSubmission, setProcessingSubmission] = useState(false);
 
   const CreateButton: FC<TreeItemToolProps> = (props) => {
-
     const { itemNode, stateHandlers } = props;
     const { page } = itemNode;
 
@@ -49,16 +43,10 @@ export const useNewPageInput = (): UseNewPageInput => {
       stateHandlers?.setIsOpen(true);
     }, [stateHandlers]);
 
-    return (
-      <NewPageCreateButton
-        page={page}
-        onClick={onClick}
-      />
-    );
+    return <NewPageCreateButton page={page} onClick={onClick} />;
   };
 
   const Input: FC<TreeItemToolProps> = (props) => {
-
     const { t } = useTranslation();
     const { create: createPage } = useCreatePage();
 
@@ -78,10 +66,13 @@ export const useNewPageInput = (): UseNewPageInput => {
 
     const inputValidator = useInputValidator(ValidationTarget.PAGE);
 
-    const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
-      const validationResult = inputValidator(e.target.value);
-      setValidationResult(validationResult ?? undefined);
-    }, [inputValidator]);
+    const changeHandler = useCallback(
+      async (e: ChangeEvent<HTMLInputElement>) => {
+        const validationResult = inputValidator(e.target.value);
+        setValidationResult(validationResult ?? undefined);
+      },
+      [inputValidator],
+    );
     const changeHandlerDebounced = debounce(300, changeHandler);
 
     const cancel = useCallback(() => {
@@ -89,87 +80,86 @@ export const useNewPageInput = (): UseNewPageInput => {
       setShowInput(false);
     }, []);
 
-    const create = useCallback(async(inputText) => {
-      if (inputText.trim() === '') {
-        return cancel();
-      }
+    const create = useCallback(
+      async (inputText) => {
+        if (inputText.trim() === '') {
+          return cancel();
+        }
 
-      const parentPath = pathUtils.addTrailingSlash(page.path as string);
-      const newPagePath = nodePath.resolve(parentPath, inputText);
-      const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
+        const parentPath = pathUtils.addTrailingSlash(page.path as string);
+        const newPagePath = nodePath.resolve(parentPath, inputText);
+        const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
 
-      if (!isCreatable) {
-        toastWarning(t('you_can_not_create_page_with_this_name_or_hierarchy'));
-        return;
-      }
+        if (!isCreatable) {
+          toastWarning(t('you_can_not_create_page_with_this_name_or_hierarchy'));
+          return;
+        }
 
-      setProcessingSubmission(true);
+        setProcessingSubmission(true);
 
-      setShowInput(false);
+        setShowInput(false);
 
-      try {
-        await createPage(
-          {
-            path: newPagePath,
-            parentPath,
-            body: undefined,
-            // keep grant info undefined to inherit from parent
-            grant: undefined,
-            grantUserGroupIds: undefined,
-            origin: Origin.View,
-            wip: shouldCreateWipPage(newPagePath),
-          },
-          {
-            skipTransition: true,
-            onCreated: () => {
-              mutatePageTree();
-              mutateRecentlyUpdated();
-
-              if (!hasDescendants) {
-                stateHandlers?.setIsOpen(true);
-              }
-
-              toastSuccess(t('successfully_saved_the_page'));
+        try {
+          await createPage(
+            {
+              path: newPagePath,
+              parentPath,
+              body: undefined,
+              // keep grant info undefined to inherit from parent
+              grant: undefined,
+              grantUserGroupIds: undefined,
+              origin: Origin.View,
+              wip: shouldCreateWipPage(newPagePath),
             },
-          },
-        );
-      }
-      catch (err) {
-        toastError(err);
-      }
-      finally {
-        setProcessingSubmission(false);
-      }
-    }, [cancel, hasDescendants, page.path, stateHandlers, t, createPage]);
+            {
+              skipTransition: true,
+              onCreated: () => {
+                mutatePageTree();
+                mutateRecentlyUpdated();
+
+                if (!hasDescendants) {
+                  stateHandlers?.setIsOpen(true);
+                }
+
+                toastSuccess(t('successfully_saved_the_page'));
+              },
+            },
+          );
+        } catch (err) {
+          toastError(err);
+        } finally {
+          setProcessingSubmission(false);
+        }
+      },
+      [cancel, hasDescendants, page.path, stateHandlers, t, createPage],
+    );
 
     const inputContainerClass = newPageInputStyles['new-page-input-container'] ?? '';
     const isInvalid = validationResult != null;
 
-    const maxWidth = parentRect != null
-      ? getAdjustedMaxWidthForAutosizeInput(parentRect.width, 'sm', validationResult != null ? false : undefined)
-      : undefined;
+    const maxWidth = parentRect != null ? getAdjustedMaxWidthForAutosizeInput(parentRect.width, 'sm', validationResult != null ? false : undefined) : undefined;
 
-    return isEnableActions && showInput
-      ? (
-        <div ref={parentRef} className={inputContainerClass}>
-          <AutosizeSubmittableInput
-            inputClassName={`form-control ${isInvalid ? 'is-invalid' : ''}`}
-            inputStyle={{ maxWidth }}
-            placeholder={t('Input page name')}
-            aria-describedby={isInvalid ? 'new-page-input-feedback' : undefined}
-            onChange={changeHandlerDebounced}
-            onSubmit={create}
-            onCancel={cancel}
-            autoFocus
-          />
-          { isInvalid && (
-            <div id="new-page-input" className="invalid-feedback d-block my-1">
-              {validationResult.message}
-            </div>
-          ) }
-        </div>
-      )
-      : <></>;
+    return isEnableActions && showInput ? (
+      <div ref={parentRef} className={inputContainerClass}>
+        <AutosizeSubmittableInput
+          inputClassName={`form-control ${isInvalid ? 'is-invalid' : ''}`}
+          inputStyle={{ maxWidth }}
+          placeholder={t('Input page name')}
+          aria-describedby={isInvalid ? 'new-page-input-feedback' : undefined}
+          onChange={changeHandlerDebounced}
+          onSubmit={create}
+          onCancel={cancel}
+          autoFocus
+        />
+        {isInvalid && (
+          <div id="new-page-input" className="invalid-feedback d-block my-1">
+            {validationResult.message}
+          </div>
+        )}
+      </div>
+    ) : (
+      <></>
+    );
   };
 
   return {

@@ -16,26 +16,14 @@ module.exports = {
 
     await Promise.all([
       // update en-US -> en_US
-      Config.update(
-        { key: 'app:globalLang', value: JSON.stringify('en-US') },
-        { value: JSON.stringify('en_US') },
-      ),
+      Config.update({ key: 'app:globalLang', value: JSON.stringify('en-US') }, { value: JSON.stringify('en_US') }),
       // update ja -> ja_JP
-      Config.update(
-        { key: 'app:globalLang', value: JSON.stringify('ja') },
-        { value: JSON.stringify('ja_JP') },
-      ),
+      Config.update({ key: 'app:globalLang', value: JSON.stringify('ja') }, { value: JSON.stringify('ja_JP') }),
 
       // update en-US -> en_US
-      User.updateMany(
-        { lang: 'en-US' },
-        { lang: 'en_US' },
-      ),
+      User.updateMany({ lang: 'en-US' }, { lang: 'en_US' }),
       // update ja -> ja_JP
-      User.updateMany(
-        { lang: 'ja' },
-        { lang: 'ja_JP' },
-      ),
+      User.updateMany({ lang: 'ja' }, { lang: 'ja_JP' }),
     ]);
 
     logger.info('Migration has successfully applied');

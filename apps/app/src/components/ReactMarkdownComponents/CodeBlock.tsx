@@ -12,20 +12,21 @@ Object.entries<object>(oneDark).forEach(([key, value]) => {
   }
 });
 
-
 type InlineCodeBlockProps = {
-  children: ReactNode,
-  className?: string,
-}
+  children: ReactNode;
+  className?: string;
+};
 
 const InlineCodeBlockSubstance = (props: InlineCodeBlockProps): JSX.Element => {
   const { children, className, ...rest } = props;
-  return <code className={`code-inline ${className ?? ''}`} {...rest}>{children}</code>;
+  return (
+    <code className={`code-inline ${className ?? ''}`} {...rest}>
+      {children}
+    </code>
+  );
 };
 
-
 function extractChildrenToIgnoreReactNode(children: ReactNode): ReactNode {
-
   if (children == null) {
     return children;
   }
@@ -37,7 +38,7 @@ function extractChildrenToIgnoreReactNode(children: ReactNode): ReactNode {
 
   // Multiple element array
   if (Array.isArray(children) && children.length > 1) {
-    return children.map(node => extractChildrenToIgnoreReactNode(node)).join('');
+    return children.map((node) => extractChildrenToIgnoreReactNode(node)).join('');
   }
 
   // object
@@ -49,7 +50,7 @@ function extractChildrenToIgnoreReactNode(children: ReactNode): ReactNode {
   return String(children).replace(/\n$/, '');
 }
 
-function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactNode }): JSX.Element {
+function CodeBlockSubstance({ lang, children }: { lang: string; children: ReactNode }): JSX.Element {
   // return alternative element
   //   in order to fix "CodeBlock string is be [object Object] if searched"
   // see: https://github.com/weseek/growi/pull/7484
@@ -68,24 +69,19 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   }
 
   return (
-    <PrismAsyncLight
-      PreTag="div"
-      style={oneDark}
-      language={lang}
-    >
+    <PrismAsyncLight PreTag="div" style={oneDark} language={lang}>
       {extractChildrenToIgnoreReactNode(children)}
     </PrismAsyncLight>
   );
 }
 
 type CodeBlockProps = {
-  children: ReactNode,
-  className?: string,
-  inline?: true,
-}
+  children: ReactNode;
+  className?: string;
+  inline?: true;
+};
 
 export const CodeBlock = (props: CodeBlockProps): JSX.Element => {
-
   // TODO: set border according to the value of 'customize:highlightJsStyleBorder'
   const { className, children, inline } = props;
   if (inline) {
@@ -98,9 +94,7 @@ export const CodeBlock = (props: CodeBlockProps): JSX.Element => {
 
   return (
     <>
-      {name != null && (
-        <cite className={`code-highlighted-title ${styles['code-highlighted-title']}`}>{name}</cite>
-      )}
+      {name != null && <cite className={`code-highlighted-title ${styles['code-highlighted-title']}`}>{name}</cite>}
       <CodeBlockSubstance lang={lang}>{children}</CodeBlockSubstance>
     </>
   );

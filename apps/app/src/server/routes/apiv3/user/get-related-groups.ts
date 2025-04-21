@@ -13,20 +13,20 @@ const logger = loggerFactory('growi:routes:apiv3:user:get-related-groups');
 type GetRelatedGroupsHandlerFactory = (crowi: Crowi) => RequestHandler[];
 
 interface Req extends Request {
-  user: IUserHasId,
+  user: IUserHasId;
 }
 
 export const getRelatedGroupsHandlerFactory: GetRelatedGroupsHandlerFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   return [
-    accessTokenParser, loginRequiredStrictly,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    async (req: Req, res: ApiV3Response) => {
       try {
         const relatedGroups = await crowi.pageGrantService?.getUserRelatedGroups(req.user);
         return res.apiv3({ relatedGroups });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(new ErrorV3('Error occurred while getting user related groups'));
       }

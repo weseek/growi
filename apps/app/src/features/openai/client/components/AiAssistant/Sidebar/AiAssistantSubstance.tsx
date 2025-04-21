@@ -17,38 +17,23 @@ export const AiAssistantContent = (): JSX.Element => {
 
   return (
     <div className={moduleClass}>
-      <button
-        type="button"
-        className="btn btn-outline-secondary px-3 d-flex align-items-center mb-4"
-        onClick={() => open()}
-      >
+      <button type="button" className="btn btn-outline-secondary px-3 d-flex align-items-center mb-4" onClick={() => open()}>
         <span className="material-symbols-outlined fs-5 me-2">add</span>
         <span className="fw-normal">{t('ai_assistant_tree.add_assistant')}</span>
       </button>
 
       <div className="d-flex flex-column gap-4">
         <div>
-          <h3 className="fw-bold grw-ai-assistant-substance-header">
-            {t('ai_assistant_tree.my_assistants')}
-          </h3>
+          <h3 className="fw-bold grw-ai-assistant-substance-header">{t('ai_assistant_tree.my_assistants')}</h3>
           {aiAssistants?.myAiAssistants != null && aiAssistants.myAiAssistants.length !== 0 && (
-            <AiAssistantTree
-              onUpdated={mutateAiAssistants}
-              onDeleted={mutateAiAssistants}
-              aiAssistants={aiAssistants.myAiAssistants}
-            />
+            <AiAssistantTree onUpdated={mutateAiAssistants} onDeleted={mutateAiAssistants} aiAssistants={aiAssistants.myAiAssistants} />
           )}
         </div>
 
         <div>
-          <h3 className="fw-bold grw-ai-assistant-substance-header">
-            {t('ai_assistant_tree.team_assistants')}
-          </h3>
+          <h3 className="fw-bold grw-ai-assistant-substance-header">{t('ai_assistant_tree.team_assistants')}</h3>
           {aiAssistants?.teamAiAssistants != null && aiAssistants.teamAiAssistants.length !== 0 && (
-            <AiAssistantTree
-              onUpdated={mutateAiAssistants}
-              aiAssistants={aiAssistants.teamAiAssistants}
-            />
+            <AiAssistantTree onUpdated={mutateAiAssistants} aiAssistants={aiAssistants.teamAiAssistants} />
           )}
         </div>
       </div>

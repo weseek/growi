@@ -4,13 +4,12 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import type { INotificationType } from '~/client/interfaces/notification';
 
-
 type NotificationTypeIconProps = {
   // supports 2 types:
   //   User trigger notification -> has 'provider: slack'
   //   Global notification -> has '__t: slack|mail'
-  notification: INotificationType
-}
+  notification: INotificationType;
+};
 
 export const NotificationTypeIcon = (props: NotificationTypeIconProps): JSX.Element => {
   const { __t, _id, provider } = props.notification;
@@ -28,7 +27,9 @@ export const NotificationTypeIcon = (props: NotificationTypeIconProps): JSX.Elem
 
   return (
     <>
-      <span id={elemId} className="material-symbols-outlined me-1">{iconName}</span>
+      <span id={elemId} className="material-symbols-outlined me-1">
+        {iconName}
+      </span>
       <UncontrolledTooltip target={elemId}>{toolChip}</UncontrolledTooltip>
     </>
   );

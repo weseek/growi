@@ -1,6 +1,5 @@
 import type { IncomingMessage } from 'http';
 
-
 import type { IPage, IUserHasId } from '@growi/core';
 import { YDocStatus } from '@growi/core/dist/consts';
 import mongoose from 'mongoose';
@@ -22,32 +21,25 @@ import { createMongoDBPersistence } from './create-mongodb-persistence';
 import { MongodbPersistence } from './extended/mongodb-persistence';
 import { syncYDoc } from './sync-ydoc';
 
-
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 
-
 const logger = loggerFactory('growi:service:yjs');
-
 
 type RequestWithUser = IncomingMessage & { user: IUserHasId };
 
-
 export interface IYjsService {
   getYDocStatus(pageId: string): Promise<YDocStatus>;
-  syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody>
+  syncWithTheLatestRevisionForce(pageId: string, editingMarkdownLength?: number): Promise<SyncLatestRevisionBody>;
   getCurrentYdoc(pageId: string): Ydoc | undefined;
 }
 
-
 class YjsService implements IYjsService {
-
   private ysocketio: YSocketIO;
 
   private mdb: MongodbPersistence;
 
   constructor(io: Server) {
-
     const mdb = new MongodbPersistence(
       // ignore TS2345: Argument of type '{ client: any; db: any; }' is not assignable to parameter of type 'string'.
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -78,7 +70,7 @@ class YjsService implements IYjsService {
     // register middlewares
     this.registerAccessiblePageChecker(ysocketio);
 
-    ysocketio.on('document-loaded', async(doc: Document) => {
+    ysocketio.on('document-loaded', async (doc: Document) => {
       const pageId = doc.name;
 
       const ydocStatus = await this.getYDocStatus(pageId);
@@ -86,29 +78,26 @@ class YjsService implements IYjsService {
       syncYDoc(mdb, doc, { ydocStatus });
     });
 
-    ysocketio.on('awareness-update', async(doc: Document) => {
+    ysocketio.on('awareness-update', async (doc: Document) => {
       const pageId = doc.name;
 
-      if (pageId == null) { return; }
+      if (pageId == null) {
+        return;
+      }
 
       const awarenessStateSize = doc.awareness.states.size;
 
       // Triggered when awareness changes
-      io
-        .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-        .emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
+      io.in(getRoomNameWithId(RoomPrefix.PAGE, pageId)).emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
 
       // Triggered when the last user leaves the editor
       if (awarenessStateSize === 0) {
         const ydocStatus = await this.getYDocStatus(pageId);
         const hasYdocsNewerThanLatestRevision = ydocStatus === YDocStatus.DRAFT || ydocStatus === YDocStatus.ISOLATED;
 
-        io
-          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsHasYdocsNewerThanLatestRevisionUpdated, hasYdocsNewerThanLatestRevision);
+        io.in(getRoomNameWithId(RoomPrefix.PAGE, pageId)).emit(SocketEventName.YjsHasYdocsNewerThanLatestRevisionUpdated, hasYdocsNewerThanLatestRevision);
       }
     });
-
   }
 
   private injectPersistence(ysocketio: YSocketIO, mdb: MongodbPersistence): void {
@@ -121,7 +110,7 @@ class YjsService implements IYjsService {
 
   private registerAccessiblePageChecker(ysocketio: YSocketIO): void {
     // check accessible page
-    ysocketio.nsp?.use(async(socket, next) => {
+    ysocketio.nsp?.use(async (socket, next) => {
       // extract page id from namespace
       const pageId = socket.nsp.name.replace(/\/yjs\|/, '');
       const user = (socket.request as RequestWithUser).user; // should be injected by SocketIOService
@@ -146,15 +135,13 @@ class YjsService implements IYjsService {
     await normalizeLatestRevisionIfBroken(pageId);
 
     // get the latest revision createdAt
-    const result = await Revision
-      .findOne(
-        // filter
-        { pageId },
-        // projection
-        { createdAt: 1 },
-        { sort: { createdAt: -1 } },
-      )
-      .lean();
+    const result = await Revision.findOne(
+      // filter
+      { pageId },
+      // projection
+      { createdAt: 1 },
+      { sort: { createdAt: -1 } },
+    ).lean();
 
     if (result == null) {
       dumpLog(YDocStatus.ISOLATED, { result });
@@ -198,9 +185,7 @@ class YjsService implements IYjsService {
 
     return {
       synced: true,
-      isYjsDataBroken: editingMarkdownLength != null
-        ? editingMarkdownLength !== ytextLength
-        : undefined,
+      isYjsDataBroken: editingMarkdownLength != null ? editingMarkdownLength !== ytextLength : undefined,
     };
   }
 
@@ -208,7 +193,6 @@ class YjsService implements IYjsService {
     const currentYdoc = this.ysocketio.documents.get(pageId);
     return currentYdoc;
   }
-
 }
 
 let _instance: YjsService;

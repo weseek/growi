@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -10,13 +8,10 @@ import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import {
-  useCsrfToken, useAppTitle, useSiteUrl, useConfidential, useGrowiCloudUri,
-} from '~/stores-universal/context';
+import { useCsrfToken, useAppTitle, useSiteUrl, useConfidential, useGrowiCloudUri } from '~/stores-universal/context';
 
 import type { CommonProps } from './utils/commons';
 import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './utils/commons';
-
 
 const InstallerForm = dynamic(() => import('~/client/components/InstallerForm'), { ssr: false });
 const DataTransferForm = dynamic(() => import('~/client/components/DataTransferForm'), { ssr: false });
@@ -28,8 +23,8 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 type Props = CommonProps & {
-  minPasswordLength: number,
-  pageWithMetaStr: string,
+  minPasswordLength: number;
+  pageWithMetaStr: string;
 };
 
 const InstallerPage: NextPage<Props> = (props: Props) => {
@@ -82,7 +77,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.minPasswordLength = configManager.getConfig('app:minPasswordLength');
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
 
   // check for presence

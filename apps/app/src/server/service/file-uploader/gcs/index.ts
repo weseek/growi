@@ -6,22 +6,17 @@ import axios from 'axios';
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
-import {
-  AttachmentType, FilePathOnStoragePrefix, ResponseMode, type RespondOptions,
-} from '~/server/interfaces/attachment';
+import { AttachmentType, FilePathOnStoragePrefix, ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../../config-manager';
-import {
-  AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
-} from '../file-uploader';
+import { AbstractFileUploader, type TemporaryUrl, type SaveFileParam } from '../file-uploader';
 import { ContentHeaders } from '../utils';
 
 import { GcsMultipartUploader } from './multipart-uploader';
 
 const logger = loggerFactory('growi:service:fileUploaderGcs');
-
 
 function getGcsBucket(): string {
   const gcsBucket = configManager.getConfig('gcs:bucket');
@@ -36,9 +31,10 @@ function getGcsInstance() {
   if (storage == null) {
     const keyFilename = configManager.getConfig('gcs:apiKeyJsonPath');
     // see https://googleapis.dev/nodejs/storage/latest/Storage.html
-    storage = keyFilename != null
-      ? new Storage({ keyFilename }) // Create a client with explicit credentials
-      : new Storage(); // Create a client that uses Application Default Credentials
+    storage =
+      keyFilename != null
+        ? new Storage({ keyFilename }) // Create a client with explicit credentials
+        : new Storage(); // Create a client that uses Application Default Credentials
   }
   return storage;
 }
@@ -48,11 +44,9 @@ function getFilePathOnStorage(attachment: IAttachmentDocument) {
   let dirName: string;
   if (attachment.attachmentType === AttachmentType.PAGE_BULK_EXPORT) {
     dirName = FilePathOnStoragePrefix.pageBulkExport;
-  }
-  else if (attachment.page != null) {
+  } else if (attachment.page != null) {
     dirName = FilePathOnStoragePrefix.attachment;
-  }
-  else {
+  } else {
     dirName = FilePathOnStoragePrefix.user;
   }
   const filePath = urljoin(namespace, dirName, attachment.fileName);
@@ -72,7 +66,6 @@ async function isFileExists(file) {
 
 // TODO: rewrite this module to be a type-safe implementation
 class GcsFileUploader extends AbstractFileUploader {
-
   /**
    * @inheritdoc
    */
@@ -80,8 +73,7 @@ class GcsFileUploader extends AbstractFileUploader {
     try {
       getGcsBucket();
       return true;
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return false;
     }
@@ -112,9 +104,7 @@ class GcsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
-    return configManager.getConfig('gcs:referenceFileWithRelayMode')
-      ? ResponseMode.RELAY
-      : ResponseMode.REDIRECT;
+    return configManager.getConfig('gcs:referenceFileWithRelayMode') ? ResponseMode.RELAY : ResponseMode.REDIRECT;
   }
 
   /**
@@ -134,10 +124,13 @@ class GcsFileUploader extends AbstractFileUploader {
 
     const file = myBucket.file(filePath);
 
-    await pipeline(readable, file.createWriteStream({
-      // put type and the file name for reference information when uploading
-      contentType: contentHeaders.contentType?.value.toString(),
-    }));
+    await pipeline(
+      readable,
+      file.createWriteStream({
+        // put type and the file name for reference information when uploading
+        contentType: contentHeaders.contentType?.value.toString(),
+      }),
+    );
   }
 
   /**
@@ -168,8 +161,7 @@ class GcsFileUploader extends AbstractFileUploader {
 
     try {
       return file.createReadStream();
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
     }
@@ -204,7 +196,6 @@ class GcsFileUploader extends AbstractFileUploader {
       url: signedUrl,
       lifetimeSec: lifetimeSecForTemporaryUrl,
     };
-
   }
 
   override createMultipartUploader(uploadKey: string, maxPartSize: number) {
@@ -216,8 +207,7 @@ class GcsFileUploader extends AbstractFileUploader {
   override async abortPreviousMultipartUpload(uploadKey: string, uploadId: string) {
     try {
       await axios.delete(uploadId);
-    }
-    catch (e) {
+    } catch (e) {
       // allow 404: allow duplicate abort requests to ensure abortion
       // allow 499: it is the success response code for canceling upload
       // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads#cancel-upload
@@ -226,15 +216,12 @@ class GcsFileUploader extends AbstractFileUploader {
       }
     }
   }
-
 }
-
 
 module.exports = (crowi: Crowi) => {
   const lib = new GcsFileUploader(crowi);
 
-  lib.isValidUploadSettings = () => configManager.getConfig('gcs:apiKeyJsonPath') != null
-      && configManager.getConfig('gcs:bucket') != null;
+  lib.isValidUploadSettings = () => configManager.getConfig('gcs:apiKeyJsonPath') != null && configManager.getConfig('gcs:bucket') != null;
 
   (lib as any).deleteFile = (attachment) => {
     const filePath = getFilePathOnStorage(attachment);
@@ -265,7 +252,7 @@ module.exports = (crowi: Crowi) => {
     });
   };
 
-  lib.saveFile = async({ filePath, contentType, data }) => {
+  lib.saveFile = async ({ filePath, contentType, data }) => {
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
 
@@ -278,7 +265,7 @@ module.exports = (crowi: Crowi) => {
    * In detail, the followings are checked.
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  (lib as any).checkLimit = async(uploadFileSize) => {
+  (lib as any).checkLimit = async (uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const gcsTotalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
@@ -287,7 +274,7 @@ module.exports = (crowi: Crowi) => {
   /**
    * List files in storage
    */
-  (lib as any).listFiles = async() => {
+  (lib as any).listFiles = async () => {
     if (!lib.getIsReadable()) {
       throw new Error('GCS is not configured.');
     }

@@ -7,7 +7,6 @@ import { useShortcutsModal } from '~/stores/modal';
 
 import styles from './ShortcutsModal.module.scss';
 
-
 const ShortcutsModal = (): JSX.Element => {
   const { t } = useTranslation();
 
@@ -20,7 +19,7 @@ const ShortcutsModal = (): JSX.Element => {
 
     // add classes to cmd-key by OS
     const platform = window.navigator.platform.toLowerCase();
-    const isMac = (platform.indexOf('mac') > -1);
+    const isMac = platform.indexOf('mac') > -1;
     const additionalClassByOs = isMac ? 'mac' : 'win';
 
     return (
@@ -79,9 +78,7 @@ const ShortcutsModal = (): JSX.Element => {
                 </div>
                 <div className="text-start">
                   <a href={t('modal_shortcuts.global.konami_code_url')} target="_blank" rel="noreferrer">
-                    <span className="text-secondary small">
-                      {t('modal_shortcuts.global.Konami Code')}
-                    </span>
+                    <span className="text-secondary small">{t('modal_shortcuts.global.Konami Code')}</span>
                   </a>
                   <div className="d-flex gap-2 flex-column align-items-start mt-1">
                     <div className="d-flex gap-1">
@@ -108,9 +105,7 @@ const ShortcutsModal = (): JSX.Element => {
                 <div className="flex-grow-1">{t('modal_shortcuts.global.MirrorMode')}</div>
                 <div className="text-start">
                   <a href={t('modal_shortcuts.global.konami_code_url')} target="_blank" rel="noreferrer">
-                    <span className="text-secondary small">
-                      {t('modal_shortcuts.global.Konami Code')}
-                    </span>
+                    <span className="text-secondary small">{t('modal_shortcuts.global.Konami Code')}</span>
                   </a>
                   <div className="d-flex gap-2 flex-column align-items-start mt-1">
                     <div className="d-flex gap-1">
@@ -192,7 +187,7 @@ const ShortcutsModal = (): JSX.Element => {
               <li className="d-flex align-items-center p-3 border-bottom">
                 <div className="flex-grow-1">
                   <span
-                  // eslint-disable-next-line react/no-danger
+                    // eslint-disable-next-line react/no-danger
                     dangerouslySetInnerHTML={{ __html: t('modal_shortcuts.editor.Insert Line') }}
                   />
                   <br />
@@ -253,16 +248,14 @@ const ShortcutsModal = (): JSX.Element => {
 
   return (
     <>
-      { status != null && (
+      {status != null && (
         <Modal id="shortcuts-modal" size="lg" isOpen={status.isOpened} toggle={close} className={`shortcuts-modal ${styles['shortcuts-modal']}`}>
           <ModalHeader tag="h4" toggle={close} className="px-4">
             {t('Shortcuts')}
           </ModalHeader>
-          <ModalBody className="p-md-4">
-            {bodyContent()}
-          </ModalBody>
+          <ModalBody className="p-md-4">{bodyContent()}</ModalBody>
         </Modal>
-      ) }
+      )}
     </>
   );
 };

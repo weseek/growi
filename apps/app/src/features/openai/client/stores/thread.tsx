@@ -10,17 +10,10 @@ const getKey = (aiAssistantId: string) => [`/openai/threads/${aiAssistantId}`];
 
 export const useSWRxThreads = (aiAssistantId: string): SWRResponse<IThreadRelationHasId[], Error> => {
   const key = getKey(aiAssistantId);
-  return useSWRImmutable<IThreadRelationHasId[]>(
-    key,
-    ([endpoint]) => apiv3Get(endpoint).then(response => response.data.threads),
-  );
+  return useSWRImmutable<IThreadRelationHasId[]>(key, ([endpoint]) => apiv3Get(endpoint).then((response) => response.data.threads));
 };
-
 
 export const useSWRMUTxThreads = (aiAssistantId: string): SWRMutationResponse<IThreadRelationHasId[], Error> => {
   const key = getKey(aiAssistantId);
-  return useSWRMutation(
-    key,
-    ([endpoint]) => apiv3Get(endpoint).then(response => response.data.threads),
-  );
+  return useSWRMutation(key, ([endpoint]) => apiv3Get(endpoint).then((response) => response.data.threads));
 };

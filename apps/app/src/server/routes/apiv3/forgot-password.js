@@ -37,7 +37,7 @@ const { body } = require('express-validator');
  *           type: string
  *         error:
  *           type: string
-*/
+ */
 
 const router = express.Router();
 
@@ -55,23 +55,22 @@ module.exports = (crowi) => {
 
   const validator = {
     password: [
-      body('newPassword').isString().not().isEmpty()
+      body('newPassword')
+        .isString()
+        .not()
+        .isEmpty()
         .isLength({ min: minPasswordLength })
         .withMessage(`password must be at least ${minPasswordLength} characters long`),
       // checking if password confirmation matches password
-      body('newPasswordConfirm').isString().not().isEmpty()
+      body('newPasswordConfirm')
+        .isString()
+        .not()
+        .isEmpty()
         .custom((value, { req }) => {
-          return (value === req.body.newPassword);
+          return value === req.body.newPassword;
         }),
     ],
-    email: [
-      body('email')
-        .isEmail()
-        .escape()
-        .withMessage('message.Email format is invalid')
-        .notEmpty()
-        .withMessage('message.Email field is required'),
-    ],
+    email: [body('email').isEmail().escape().withMessage('message.Email format is invalid').notEmpty().withMessage('message.Email field is required')],
   };
 
   const checkPassportStrategyMiddleware = checkForgotPasswordEnabledMiddlewareFactory(crowi, true);
@@ -118,7 +117,7 @@ module.exports = (crowi) => {
    *              schema:
    *                type: object
    */
-  router.post('/', checkPassportStrategyMiddleware, validator.email, apiV3FormValidator, addActivity, async(req, res) => {
+  router.post('/', checkPassportStrategyMiddleware, validator.email, apiV3FormValidator, addActivity, async (req, res) => {
     const { email } = req.body;
     const locale = configManager.getConfig('app:globalLang');
     const appUrl = growiInfoService.getSiteUrl();
@@ -144,8 +143,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_USER_FOGOT_PASSWORD });
 
       return res.apiv3();
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred during password reset request procedure.';
       logger.error(err);
       return res.apiv3Err(`${msg} Cause: ${err}`);
@@ -184,7 +182,7 @@ module.exports = (crowi) => {
    *                    $ref: '#/components/schemas/User'
    */
   // eslint-disable-next-line max-len
-  router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, addActivity, async(req, res) => {
+  router.put('/', checkPassportStrategyMiddleware, injectResetOrderByTokenMiddleware, validator.password, apiV3FormValidator, addActivity, async (req, res) => {
     const { passwordResetOrder } = req;
     const { email } = passwordResetOrder;
     const grobalLang = configManager.getConfig('app:globalLang');
@@ -207,8 +205,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_USER_RESET_PASSWORD });
 
       return res.apiv3({ userData: serializedUserData });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('update-password-failed');
     }

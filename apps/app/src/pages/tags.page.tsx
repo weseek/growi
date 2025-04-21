@@ -16,31 +16,32 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IDataTagCount } from '~/interfaces/tag';
 import {
-  useCurrentUser, useIsSearchPage,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useGrowiCloudUri, useCurrentPathname,
+  useCurrentUser,
+  useIsSearchPage,
+  useIsSearchServiceConfigured,
+  useIsSearchServiceReachable,
+  useIsSearchScopeChildrenAsDefault,
+  useGrowiCloudUri,
+  useCurrentPathname,
 } from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import { useSWRxTagsList } from '~/stores/tag';
 
-
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
-import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, useInitSidebarConfig,
-} from './utils/commons';
+import { getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, useInitSidebarConfig } from './utils/commons';
 
 const PAGING_LIMIT = 10;
 
 type Props = CommonProps & {
-  currentUser: IUser,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
+  currentUser: IUser;
+  isSearchServiceConfigured: boolean;
+  isSearchServiceReachable: boolean;
+  isSearchScopeChildrenAsDefault: boolean;
 
-  rendererConfig: RendererConfig,
+  rendererConfig: RendererConfig;
 
-  sidebarConfig: ISidebarConfig,
+  sidebarConfig: ISidebarConfig;
 };
 
 const TagList = dynamic(() => import('~/client/components/TagList'), { ssr: false });
@@ -91,32 +92,20 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
         <div className="main ps-sidebar" data-testid="tags-page">
           <div className="container-lg wide-gutter-x-lg">
-
-            <h2 className="sticky-top py-1">
-              {`${t('Tags')}(${totalCount})`}
-            </h2>
+            <h2 className="sticky-top py-1">{`${t('Tags')}(${totalCount})`}</h2>
 
             <div className="px-3 mb-5 text-center">
               <TagCloudBox tags={tagData} minSize={20} />
             </div>
-            { isLoading
-              ? (
-                <div className="text-muted text-center">
-                  <LoadingSpinner className="mt-3 fs-3" />
-                </div>
-              )
-              : (
-                <div data-testid="grw-tags-list">
-                  <TagList
-                    tagData={tagData}
-                    totalTags={totalCount}
-                    activePage={activePage}
-                    onChangePage={setOffsetByPageNumber}
-                    pagingLimit={PAGING_LIMIT}
-                  />
-                </div>
-              )
-            }
+            {isLoading ? (
+              <div className="text-muted text-center">
+                <LoadingSpinner className="mt-3 fs-3" />
+              </div>
+            ) : (
+              <div data-testid="grw-tags-list">
+                <TagList tagData={tagData} totalTags={totalCount} activePage={activePage} onChangePage={setOffsetByPageNumber} pagingLimit={PAGING_LIMIT} />
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -125,8 +114,8 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 };
 
 type LayoutProps = Props & {
-  children?: ReactNode
-}
+  children?: ReactNode;
+};
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // init sidebar config with UserUISettings and sidebarConfig
@@ -136,19 +125,13 @@ const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
 };
 
 TagPage.getLayout = function getLayout(page) {
-  return (
-    <Layout {...page.props}>
-      {page}
-    </Layout>
-  );
+  return <Layout {...page.props}>{page}</Layout>;
 };
 
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const {
-    searchService, configManager,
-  } = crowi;
+  const { searchService, configManager } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -158,7 +141,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarCollapsedMode: configManager.getConfig('customize:isSidebarCollapsedMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('customize:isSidebarClosedAtDockMode'),
   };
-
 }
 
 /**
@@ -172,7 +154,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { user } = req;
   const result = await getServerSideCommonProps(context);

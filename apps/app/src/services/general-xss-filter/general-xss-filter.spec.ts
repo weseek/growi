@@ -1,7 +1,6 @@
 import { generalXssFilter } from './general-xss-filter';
 
 describe('generalXssFilter', () => {
-
   test('should be sanitize script tag', () => {
     // Act
     const result = generalXssFilter.process('<script>alert("XSS")</script>');
@@ -35,5 +34,4 @@ describe('generalXssFilter', () => {
     // Assert
     expect(result).toBe('<span>text</span>');
   });
-
 });

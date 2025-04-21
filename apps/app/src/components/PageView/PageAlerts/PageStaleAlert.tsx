@@ -3,12 +3,10 @@ import type { JSX } from 'react';
 import { isIPageInfoForEntity } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-
 import { useIsEnabledStaleNotification } from '~/stores-universal/context';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
-
-export const PageStaleAlert = ():JSX.Element => {
+export const PageStaleAlert = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: isEnabledStaleNotification } = useIsEnabledStaleNotification();
 
@@ -41,7 +39,7 @@ export const PageStaleAlert = ():JSX.Element => {
   return (
     <div className={`alert ${alertClass}`}>
       <span className="material-symbols-outlined me-1">hourglass</span>
-      <strong>{ t('page_page.notice.stale', { count: contentAge }) }</strong>
+      <strong>{t('page_page.notice.stale', { count: contentAge })}</strong>
     </div>
   );
 };

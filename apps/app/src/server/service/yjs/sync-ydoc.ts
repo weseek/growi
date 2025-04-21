@@ -10,13 +10,12 @@ import type { MongodbPersistence } from './extended/mongodb-persistence';
 
 const logger = loggerFactory('growi:service:yjs:sync-ydoc');
 
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Delta = Array<{insert?:Array<any>|string, delete?:number, retain?:number}>;
+type Delta = Array<{ insert?: Array<any> | string; delete?: number; retain?: number }>;
 
 type Context = {
-  ydocStatus: YDocStatus,
-}
+  ydocStatus: YDocStatus;
+};
 
 /**
  * Sync the text and the meta data with the latest revision body
@@ -24,30 +23,29 @@ type Context = {
  * @param doc
  * @param context true to force sync
  */
-export const syncYDoc = async(mdb: MongodbPersistence, doc: Document, context: true | Context): Promise<void> => {
+export const syncYDoc = async (mdb: MongodbPersistence, doc: Document, context: true | Context): Promise<void> => {
   const pageId = doc.name;
 
   // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
   await normalizeLatestRevisionIfBroken(pageId);
 
-  const revision = await Revision
-    .findOne(
-      // filter
-      { pageId },
-      // projection
-      { body: 1, createdAt: 1, origin: 1 },
-      // options
-      { sort: { createdAt: -1 } },
-    )
-    .lean();
+  const revision = await Revision.findOne(
+    // filter
+    { pageId },
+    // projection
+    { body: 1, createdAt: 1, origin: 1 },
+    // options
+    { sort: { createdAt: -1 } },
+  ).lean();
 
   if (revision == null) {
     logger.warn(`Synchronization has been canceled since the revision of the page ('${pageId}') could not be found`);
     return;
   }
 
-  const shouldSync = context === true
-    || (() => {
+  const shouldSync =
+    context === true ||
+    (() => {
       switch (context.ydocStatus) {
         case YDocStatus.NEW:
           return true;
@@ -75,9 +73,7 @@ export const syncYDoc = async(mdb: MongodbPersistence, doc: Document, context: t
     ytext.applyDelta(delta, { sanitize: false });
   }
 
-  const shouldSyncMeta = context === true
-    || context.ydocStatus === YDocStatus.NEW
-    || context.ydocStatus === YDocStatus.OUTDATED;
+  const shouldSyncMeta = context === true || context.ydocStatus === YDocStatus.NEW || context.ydocStatus === YDocStatus.OUTDATED;
 
   if (shouldSyncMeta) {
     mdb.setMeta(doc.name, 'updatedAt', revision.createdAt.getTime() ?? Date.now());

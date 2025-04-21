@@ -1,6 +1,4 @@
-import {
-  type FC, useCallback, useEffect, useState, type JSX,
-} from 'react';
+import { type FC, useCallback, useEffect, useState, type JSX } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -16,46 +14,46 @@ export const LdapGroupManagement: FC = () => {
   const { t } = useTranslation('admin');
 
   useEffect(() => {
-    const getIsUserBind = async() => {
+    const getIsUserBind = async () => {
       try {
         const response = await apiv3Get('/security-setting/');
         const { ldapAuth } = response.data.securityParams;
         setIsUserBind(ldapAuth.isUserBind);
-      }
-      catch (e) {
+      } catch (e) {
         toastError(e);
       }
     };
     getIsUserBind();
   }, []);
 
-  const requestSyncAPI = useCallback(async(e) => {
-    if (isUserBind) {
-      const password = e.target.password?.value;
-      await apiv3Put('/external-user-groups/ldap/sync', { password });
-    }
-    else {
-      await apiv3Put('/external-user-groups/ldap/sync');
-    }
-  }, [isUserBind]);
+  const requestSyncAPI = useCallback(
+    async (e) => {
+      if (isUserBind) {
+        const password = e.target.password?.value;
+        await apiv3Put('/external-user-groups/ldap/sync', { password });
+      } else {
+        await apiv3Put('/external-user-groups/ldap/sync');
+      }
+    },
+    [isUserBind],
+  );
 
   const AdditionalForm = (): JSX.Element => {
     return isUserBind ? (
       <div className="row form-group">
-        <label htmlFor="ldapGroupSyncPassword" className="text-left text-md-right col-md-3 col-form-label">{t('external_user_group.ldap.password')}</label>
+        <label htmlFor="ldapGroupSyncPassword" className="text-left text-md-right col-md-3 col-form-label">
+          {t('external_user_group.ldap.password')}
+        </label>
         <div className="col-md-6">
-          <input
-            className="form-control"
-            type="password"
-            name="password"
-            id="ldapGroupSyncPassword"
-          />
+          <input className="form-control" type="password" name="password" id="ldapGroupSyncPassword" />
           <p className="form-text text-muted">
             <small>{t('external_user_group.ldap.password_detail')}</small>
           </p>
         </div>
       </div>
-    ) : <></>;
+    ) : (
+      <></>
+    );
   };
 
   return (

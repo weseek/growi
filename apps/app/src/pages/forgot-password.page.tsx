@@ -14,7 +14,7 @@ import { getNextI18NextConfig, getServerSideCommonProps } from './utils/commons'
 const PasswordResetRequestForm = dynamic(() => import('~/client/components/PasswordResetRequestForm'), { ssr: false });
 
 type Props = CommonProps & {
-  isMailerSetup: boolean,
+  isMailerSetup: boolean;
 };
 
 const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
@@ -45,7 +45,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+const injectServerConfigurations = async (context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { mailService } = crowi;
@@ -53,7 +53,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   props.isMailerSetup = mailService.isMailerSetup;
 };
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
 
   // check for presence

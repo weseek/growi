@@ -5,7 +5,6 @@ import UserGroupRelation from '~/server/models/user-group-relation';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:migrate:remove-deleteduser-from-relationgroup');
 
 module.exports = {
@@ -22,7 +21,6 @@ module.exports = {
       return logger.info('This migration terminates without any changes.');
     }
     logger.info('Migration has successfully applied');
-
   },
 
   down(db, next) {

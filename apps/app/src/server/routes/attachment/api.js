@@ -1,11 +1,9 @@
-
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { Attachment } from '../../models/attachment';
 /* eslint-disable no-use-before-define */
-
 
 const logger = loggerFactory('growi:routes:attachment');
 
@@ -153,14 +151,14 @@ export const routesFactory = (crowi) => {
     }
 
     const ownerId = attachment.creator._id || attachment.creator;
-    if (attachment.page == null) { // when profile image
+    if (attachment.page == null) {
+      // when profile image
       return user.id === ownerId.toString();
     }
 
     // eslint-disable-next-line no-return-await
     return await Page.isAccessiblePageByViewer(attachment.page, user);
   }
-
 
   const actions = {};
   const api = {};
@@ -235,7 +233,7 @@ export const routesFactory = (crowi) => {
    *
    * @apiParam {File} file
    */
-  api.uploadProfileImage = async(req, res) => {
+  api.uploadProfileImage = async (req, res) => {
     // check params
     if (req.file == null) {
       return res.json(ApiResponse.error('File error.'));
@@ -258,8 +256,7 @@ export const routesFactory = (crowi) => {
       await user.deleteImage();
       attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.PROFILE_IMAGE);
       await user.updateImage(attachment);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.json(ApiResponse.error(err.message));
     }
@@ -310,7 +307,7 @@ export const routesFactory = (crowi) => {
    *
    * @apiParam {String} attachment_id
    */
-  api.remove = async(req, res) => {
+  api.remove = async (req, res) => {
     const id = req.body.attachment_id;
 
     const attachment = await Attachment.findById(id);
@@ -326,8 +323,7 @@ export const routesFactory = (crowi) => {
 
     try {
       await attachmentService.removeAttachment(attachment);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.status(500).json(ApiResponse.error('Error while deleting file'));
     }
@@ -373,7 +369,7 @@ export const routesFactory = (crowi) => {
    * @apiGroup Attachment
    * @apiParam {String} attachment_id
    */
-  api.removeProfileImage = async(req, res) => {
+  api.removeProfileImage = async (req, res) => {
     const user = req.user;
     const attachment = await Attachment.findById(user.imageAttachment);
 
@@ -388,8 +384,7 @@ export const routesFactory = (crowi) => {
 
     try {
       await user.deleteImage();
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.status(500).json(ApiResponse.error('Error while deleting image'));
     }

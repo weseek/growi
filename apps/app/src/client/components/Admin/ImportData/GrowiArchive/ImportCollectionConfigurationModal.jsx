@@ -4,20 +4,13 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
 
 // import { toastSuccess, toastError } from '~/client/util/toastr';
 
-
 class ImportCollectionConfigurationModal extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -46,9 +39,7 @@ class ImportCollectionConfigurationModal extends React.Component {
   }
 
   updateOption() {
-    const {
-      collectionName, onOptionChange, onClose,
-    } = this.props;
+    const { collectionName, onOptionChange, onClose } = this.props;
 
     if (onOptionChange != null) {
       onOptionChange(collectionName, this.state.option);
@@ -194,18 +185,19 @@ class ImportCollectionConfigurationModal extends React.Component {
           {`'${collectionName}'`} Configuration
         </ModalHeader>
 
-        <ModalBody>
-          {contents}
-        </ModalBody>
+        <ModalBody>{contents}</ModalBody>
 
         <ModalFooter>
-          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.props.onClose}>{t('Cancel')}</button>
-          <button type="button" className="btn btn-sm btn-primary" onClick={this.updateOption}>{t('Update')}</button>
+          <button type="button" className="btn btn-sm btn-outline-secondary" onClick={this.props.onClose}>
+            {t('Cancel')}
+          </button>
+          <button type="button" className="btn btn-sm btn-primary" onClick={this.updateOption}>
+            {t('Update')}
+          </button>
         </ModalFooter>
       </Modal>
     );
   }
-
 }
 
 ImportCollectionConfigurationModal.propTypes = {

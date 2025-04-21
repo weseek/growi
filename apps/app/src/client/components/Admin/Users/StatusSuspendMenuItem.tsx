@@ -8,13 +8,13 @@ import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores-universal/context';
 
-
 const SuspendAlert = React.memo((): JSX.Element => {
   const { t } = useTranslation();
 
   return (
     <div className="px-4">
-      <span className="material-symbols-outlined me-1 mb-2">cancel</span>{t('admin:user_management.user_table.deactivate_account')}
+      <span className="material-symbols-outlined me-1 mb-2">cancel</span>
+      {t('admin:user_management.user_table.deactivate_account')}
       <p className="alert alert-danger">{t('admin:user_management.user_table.your_own')}</p>
     </div>
   );
@@ -23,9 +23,9 @@ const SuspendAlert = React.memo((): JSX.Element => {
 SuspendAlert.displayName = 'SuspendAlert';
 
 type Props = {
-  adminUsersContainer: AdminUsersContainer,
-  user: IUserHasId,
-}
+  adminUsersContainer: AdminUsersContainer;
+  user: IUserHasId;
+};
 
 const StatusSuspendMenuItem = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
@@ -34,29 +34,31 @@ const StatusSuspendMenuItem = (props: Props): JSX.Element => {
 
   const { data: currentUser } = useCurrentUser();
 
-  const clickDeactiveBtnHandler = useCallback(async() => {
+  const clickDeactiveBtnHandler = useCallback(async () => {
     try {
       const username = await adminUsersContainer.deactivateUser(user._id);
       toastSuccess(t('toaster.deactivate_user_success', { username }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [adminUsersContainer, t, user._id]);
 
-  return user.username !== currentUser?.username
-    ? (
-      <button className="dropdown-item" type="button" onClick={clickDeactiveBtnHandler}>
-        <span className="material-symbols-outlined me-1">cancel</span> {t('user_management.user_table.deactivate_account')}
-      </button>
-    )
-    : <SuspendAlert />;
+  return user.username !== currentUser?.username ? (
+    <button className="dropdown-item" type="button" onClick={clickDeactiveBtnHandler}>
+      <span className="material-symbols-outlined me-1">cancel</span> {t('user_management.user_table.deactivate_account')}
+    </button>
+  ) : (
+    <SuspendAlert />
+  );
 };
 
 /**
  * Wrapper component for using unstated
  */
 // eslint-disable-next-line max-len
-const StatusSuspendMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(StatusSuspendMenuItem, [AdminUsersContainer]);
+const StatusSuspendMenuItemWrapper: React.ForwardRefExoticComponent<Pick<any, string | number | symbol> & React.RefAttributes<any>> = withUnstatedContainers(
+  StatusSuspendMenuItem,
+  [AdminUsersContainer],
+);
 
 export default StatusSuspendMenuItemWrapper;

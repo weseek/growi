@@ -18,23 +18,25 @@ const logger = loggerFactory('growi:routes:apiv3:openai:get-threads');
 type GetThreadsFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqParams = {
-  aiAssistantId: string,
-}
+  aiAssistantId: string;
+};
 
 type Req = Request<ReqParams, Response, undefined> & {
-  user: IUserHasId,
-}
+  user: IUserHasId;
+};
 
 export const getThreadsFactory: GetThreadsFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
-  const validator: ValidationChain[] = [
-    param('aiAssistantId').isMongoId().withMessage('aiAssistantId must be string'),
-  ];
+  const validator: ValidationChain[] = [param('aiAssistantId').isMongoId().withMessage('aiAssistantId must be string')];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    certifyAiService,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
@@ -51,8 +53,7 @@ export const getThreadsFactory: GetThreadsFactory = (crowi) => {
         const threads = await openaiService.getThreadsByAiAssistantId(aiAssistantId);
 
         return res.apiv3({ threads });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(new ErrorV3('Failed to get threads'));
       }

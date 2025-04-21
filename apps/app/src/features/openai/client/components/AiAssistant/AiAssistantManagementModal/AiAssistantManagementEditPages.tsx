@@ -12,12 +12,11 @@ import type { SelectedPage } from '../../../../interfaces/selected-page';
 import { AiAssistantManagementHeader } from './AiAssistantManagementHeader';
 import { SelectedPageList } from './SelectedPageList';
 
-
 type Props = {
   selectedPages: SelectedPage[];
   onSelect: (page: IPageForItem, isIncludeSubPage: boolean) => void;
   onRemove: (pageId: string) => void;
-}
+};
 
 export const AiAssistantManagementEditPages = (props: Props): JSX.Element => {
   const { t } = useTranslation();

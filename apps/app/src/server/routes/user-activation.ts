@@ -5,12 +5,12 @@ import type { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-u
 
 type Crowi = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  nextApp: any,
-}
+  nextApp: any;
+};
 
 type CrowiReq = ReqWithUserRegistrationOrder & {
-  crowi: Crowi,
-}
+  crowi: Crowi;
+};
 
 /**
  * @swagger
@@ -45,7 +45,7 @@ export const renderUserActivationPage = (crowi: Crowi) => {
 
 // middleware to handle error
 export const tokenErrorHandlerMiddeware = (crowi: Crowi) => {
-  return (error: Error & { code: UserActivationErrorCode, statusCode: number }, req: CrowiReq, res: Response, next: NextFunction): void => {
+  return (error: Error & { code: UserActivationErrorCode; statusCode: number }, req: CrowiReq, res: Response, next: NextFunction): void => {
     if (error != null) {
       const { nextApp } = crowi;
       req.crowi = crowi;

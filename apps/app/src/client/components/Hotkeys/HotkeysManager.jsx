@@ -9,14 +9,7 @@ import ShowStaffCredit from './Subscribers/ShowStaffCredit';
 import SwitchToMirrorMode from './Subscribers/SwitchToMirrorMode';
 
 // define supported components list
-const SUPPORTED_COMPONENTS = [
-  ShowStaffCredit,
-  SwitchToMirrorMode,
-  ShowShortcutsModal,
-  CreatePage,
-  EditPage,
-  FocusToGlobalSearch,
-];
+const SUPPORTED_COMPONENTS = [ShowStaffCredit, SwitchToMirrorMode, ShowShortcutsModal, CreatePage, EditPage, FocusToGlobalSearch];
 
 const KEY_SET = new Set();
 const STROKE_SET = new Set();
@@ -27,7 +20,7 @@ SUPPORTED_COMPONENTS.forEach((comp) => {
 
   strokes.forEach((stroke) => {
     // register key
-    stroke.forEach(key => KEY_SET.add(key));
+    stroke.forEach((key) => KEY_SET.add(key));
     // register stroke
     STROKE_SET.add(stroke);
     // register component
@@ -58,23 +51,16 @@ const HotkeysManager = (props) => {
     const key = (Math.random() * 1000).toString();
     const components = STROKE_TO_COMPONENT_MAP[strokeDetermined.toString()];
 
-    const newViews = components.map(Component => (
-      <Component key={key} onDeleteRender={deleteRender} />
-    ));
+    const newViews = components.map((Component) => <Component key={key} onDeleteRender={deleteRender} />);
     setView(view.concat(newViews).flat());
   };
 
   return (
     <>
-      <HotkeysDetector
-        onDetected={stroke => onDetected(stroke)}
-        keySet={KEY_SET}
-        strokeSet={STROKE_SET}
-      />
+      <HotkeysDetector onDetected={(stroke) => onDetected(stroke)} keySet={KEY_SET} strokeSet={STROKE_SET} />
       {view}
     </>
   );
-
 };
 
 export default HotkeysManager;

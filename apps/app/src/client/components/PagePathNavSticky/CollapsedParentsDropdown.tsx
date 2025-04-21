@@ -1,16 +1,14 @@
 import { useMemo, type JSX } from 'react';
 
 import Link from 'next/link';
-import {
-  DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
-} from 'reactstrap';
+import { DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
 
 import type LinkedPagePath from '~/models/linked-page-path';
 
 import styles from './CollapsedParentsDropdown.module.scss';
 
 const getAncestorPathAndPathNames = (linkedPagePath: LinkedPagePath) => {
-  const pathAndPathName: Array<{ path: string, pathName: string }> = [];
+  const pathAndPathName: Array<{ path: string; pathName: string }> = [];
   let currentLinkedPagePath = linkedPagePath;
 
   while (currentLinkedPagePath.parent != null) {
@@ -22,8 +20,8 @@ const getAncestorPathAndPathNames = (linkedPagePath: LinkedPagePath) => {
 };
 
 type Props = {
-  linkedPagePath: LinkedPagePath,
-}
+  linkedPagePath: LinkedPagePath;
+};
 
 export const CollapsedParentsDropdown = (props: Props): JSX.Element => {
   const { linkedPagePath } = props;
@@ -34,7 +32,7 @@ export const CollapsedParentsDropdown = (props: Props): JSX.Element => {
     <UncontrolledDropdown className="d-inline-block">
       <DropdownToggle color="transparent">...</DropdownToggle>
       <DropdownMenu className={`dropdown-menu ${styles['collapsed-parents-dropdown-menu']}`} container="body">
-        {ancestorPathAndPathNames.map(data => (
+        {ancestorPathAndPathNames.map((data) => (
           <DropdownItem key={data.path}>
             <Link href={data.path} legacyBehavior>
               <a role="menuitem">{data.pathName}</a>

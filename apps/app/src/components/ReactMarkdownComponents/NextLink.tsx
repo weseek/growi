@@ -7,7 +7,6 @@ import Link from 'next/link';
 import { useSiteUrl } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:components:NextLink');
 
 const isAnchorLink = (href: string): boolean => {
@@ -19,8 +18,7 @@ const isExternalLink = (href: string, siteUrl: string | undefined): boolean => {
     const baseUrl = new URL(siteUrl ?? 'https://example.com');
     const hrefUrl = new URL(href, baseUrl);
     return baseUrl.host !== hrefUrl.host;
-  }
-  catch (err) {
+  } catch (err) {
     logger.debug(err);
     return false;
   }
@@ -31,24 +29,21 @@ const isCreatablePage = (href: string) => {
     const url = new URL(href, 'http://example.com');
     const pathName = url.pathname;
     return pagePathUtils.isCreatablePage(pathName);
-  }
-  catch (err) {
+  } catch (err) {
     logger.debug(err);
     return false;
   }
 };
 
 type Props = Omit<LinkProps, 'href'> & {
-  children: React.ReactNode,
-  id?: string,
-  href?: string,
-  className?: string,
+  children: React.ReactNode;
+  id?: string;
+  href?: string;
+  className?: string;
 };
 
 export const NextLink = (props: Props): JSX.Element => {
-  const {
-    id, href, children, className, onClick, ...rest
-  } = props;
+  const { id, href, children, className, onClick, ...rest } = props;
 
   const { data: siteUrl } = useSiteUrl();
 
@@ -57,9 +52,7 @@ export const NextLink = (props: Props): JSX.Element => {
   }
 
   // extract 'data-*' props
-  const dataAttributes = Object.fromEntries(
-    Object.entries(rest).filter(([key]) => key.startsWith('data-')),
-  );
+  const dataAttributes = Object.fromEntries(Object.entries(rest).filter(([key]) => key.startsWith('data-')));
 
   if (isExternalLink(href, siteUrl)) {
     return (
@@ -72,13 +65,17 @@ export const NextLink = (props: Props): JSX.Element => {
   // when href is an anchor link or not-creatable path
   if (isAnchorLink(href) || !isCreatablePage(href)) {
     return (
-      <a id={id} href={href} className={className} onClick={onClick} {...dataAttributes}>{children}</a>
+      <a id={id} href={href} className={className} onClick={onClick} {...dataAttributes}>
+        {children}
+      </a>
     );
   }
 
   return (
     <Link {...rest} href={href} prefetch={false} legacyBehavior>
-      <a href={href} className={className} {...dataAttributes} onClick={onClick}>{children}</a>
+      <a href={href} className={className} {...dataAttributes} onClick={onClick}>
+        {children}
+      </a>
     </Link>
   );
 };

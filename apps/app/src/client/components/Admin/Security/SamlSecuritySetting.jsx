@@ -13,11 +13,10 @@ import SamlSecuritySettingContents from './SamlSecuritySettingContents';
 const SamlSecurityManagement = (props) => {
   const { adminSamlSecurityContainer } = props;
 
-  const fetchSamlSecuritySettingsData = useCallback(async() => {
+  const fetchSamlSecuritySettingsData = useCallback(async () => {
     try {
       await adminSamlSecurityContainer.retrieveSecurityData();
-    }
-    catch (err) {
+    } catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
     }
@@ -34,8 +33,6 @@ SamlSecurityManagement.propTypes = {
   adminSamlSecurityContainer: PropTypes.instanceOf(AdminSamlSecurityContainer).isRequired,
 };
 
-const SamlSecurityManagementWithUnstatedContainer = withUnstatedContainers(SamlSecurityManagement, [
-  AdminSamlSecurityContainer,
-]);
+const SamlSecurityManagementWithUnstatedContainer = withUnstatedContainers(SamlSecurityManagement, [AdminSamlSecurityContainer]);
 
 export default SamlSecurityManagementWithUnstatedContainer;

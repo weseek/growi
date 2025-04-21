@@ -11,21 +11,19 @@ import { useCustomizeTitle } from '~/stores-universal/context';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 export const CustomizeTitle: FC = () => {
-
   const { t } = useTranslation('admin');
 
   const { data: customizeTitle } = useCustomizeTitle();
 
   const [currentCustomizeTitle, setCrrentCustomizeTitle] = useState(customizeTitle ?? '');
 
-  const onClickSubmit = async() => {
+  const onClickSubmit = async () => {
     try {
       await apiv3Put('/customize-setting/customize-title', {
         customizeTitle: currentCustomizeTitle,
       });
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_title'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   };
@@ -68,7 +66,9 @@ export const CustomizeTitle: FC = () => {
           <input
             className="form-control"
             defaultValue={currentCustomizeTitle}
-            onChange={(e) => { setCrrentCustomizeTitle(e.target.value) }}
+            onChange={(e) => {
+              setCrrentCustomizeTitle(e.target.value);
+            }}
           />
         </div>
         <div className="col-12">

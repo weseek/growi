@@ -12,7 +12,6 @@ const apiv3Root = '/_api/v3';
 
 const logger = loggerFactory('growi:apiv3');
 
-
 const apiv3ErrorHandler = (_err: any): any[] => {
   // extract api errors from general 400 err
   const err = _err.response ? _err.response.data.errors : _err;
@@ -34,8 +33,7 @@ export async function apiv3Request<T = any>(method: string, path: string, params
   try {
     const res = await axios[method](urljoin(apiv3Root, path), params);
     return res;
-  }
-  catch (err) {
+  } catch (err) {
     const errors = apiv3ErrorHandler(err);
     throw errors;
   }

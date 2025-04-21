@@ -2,20 +2,19 @@ import type { JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-
 export type GcsSettingMoleculeProps = {
-  gcsReferenceFileWithRelayMode
-  gcsUseOnlyEnvVars
-  gcsApiKeyJsonPath
-  gcsBucket
-  gcsUploadNamespace
-  envGcsApiKeyJsonPath?
-  envGcsBucket?
-  envGcsUploadNamespace?
-  onChangeGcsReferenceFileWithRelayMode: (val: boolean) => void
-  onChangeGcsApiKeyJsonPath: (val: string) => void
-  onChangeGcsBucket: (val: string) => void
-  onChangeGcsUploadNamespace: (val: string) => void
+  gcsReferenceFileWithRelayMode;
+  gcsUseOnlyEnvVars;
+  gcsApiKeyJsonPath;
+  gcsBucket;
+  gcsUploadNamespace;
+  envGcsApiKeyJsonPath?;
+  envGcsBucket?;
+  envGcsUploadNamespace?;
+  onChangeGcsReferenceFileWithRelayMode: (val: boolean) => void;
+  onChangeGcsApiKeyJsonPath: (val: string) => void;
+  onChangeGcsBucket: (val: string) => void;
+  onChangeGcsUploadNamespace: (val: string) => void;
 };
 
 export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element => {
@@ -34,11 +33,8 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
 
   return (
     <>
-
       <div className="row my-3">
-        <label className="text-start text-md-end col-md-3 col-form-label">
-          {t('admin:app_setting.file_delivery_method')}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.file_delivery_method')}</label>
 
         <div className="col-md-6">
           <div className="dropdown">
@@ -57,16 +53,20 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { props?.onChangeGcsReferenceFileWithRelayMode(true) }}
+                onClick={() => {
+                  props?.onChangeGcsReferenceFileWithRelayMode(true);
+                }}
               >
                 {t('admin:app_setting.file_delivery_method_relay')}
               </button>
               <button
                 className="dropdown-item"
                 type="button"
-                onClick={() => { props?.onChangeGcsReferenceFileWithRelayMode(false) }}
+                onClick={() => {
+                  props?.onChangeGcsReferenceFileWithRelayMode(false);
+                }}
               >
-                { t('admin:app_setting.file_delivery_method_redirect')}
+                {t('admin:app_setting.file_delivery_method_redirect')}
               </button>
             </div>
 
@@ -109,7 +109,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
                 name="gcsApiKeyJsonPath"
                 readOnly={gcsUseOnlyEnvVars}
                 defaultValue={gcsApiKeyJsonPath}
-                onChange={e => props?.onChangeGcsApiKeyJsonPath(e.target.value)}
+                onChange={(e) => props?.onChangeGcsApiKeyJsonPath(e.target.value)}
               />
             </td>
             <td>
@@ -129,7 +129,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
                 name="gcsBucket"
                 readOnly={gcsUseOnlyEnvVars}
                 defaultValue={gcsBucket}
-                onChange={e => props?.onChangeGcsBucket(e.target.value)}
+                onChange={(e) => props?.onChangeGcsBucket(e.target.value)}
               />
             </td>
             <td>
@@ -149,7 +149,7 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
                 name="gcsUploadNamespace"
                 readOnly={gcsUseOnlyEnvVars}
                 defaultValue={gcsUploadNamespace}
-                onChange={e => props?.onChangeGcsUploadNamespace(e.target.value)}
+                onChange={(e) => props?.onChangeGcsUploadNamespace(e.target.value)}
               />
             </td>
             <td>
@@ -162,7 +162,6 @@ export const GcsSettingMolecule = (props: GcsSettingMoleculeProps): JSX.Element 
           </tr>
         </tbody>
       </table>
-
     </>
   );
 };

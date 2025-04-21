@@ -6,7 +6,6 @@ import type Crowi from '../crowi';
 import UserGroupRelation from '../models/user-group-relation';
 import { isSearchError } from '../models/vo/search-error';
 
-
 const logger = loggerFactory('growi:routes:search');
 
 /**
@@ -106,17 +105,14 @@ module.exports = (crowi: Crowi, app) => {
    * @apiParam {String} offset
    * @apiParam {String} limit
    */
-  api.search = async(req, res) => {
+  api.search = async (req, res) => {
     const user = req.user;
-    const {
-      q = null, nq = null, type = null, sort = null, order = null, vector = null,
-    } = req.query;
+    const { q = null, nq = null, type = null, sort = null, order = null, vector = null } = req.query;
     let paginateOpts;
 
     try {
       paginateOpts = ApiPaginate.parseOptionsForElasticSearch(req.query);
-    }
-    catch (e) {
+    } catch (e) {
       res.json(ApiResponse.error(e));
     }
 
@@ -129,13 +125,17 @@ module.exports = (crowi: Crowi, app) => {
       return res.json(ApiResponse.error('SearchService is not reachable.'));
     }
 
-    const userGroups = user != null ? [
-      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
-      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
-    ] : null;
+    const userGroups =
+      user != null
+        ? [...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)), ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user))]
+        : null;
 
     const searchOpts = {
-      ...paginateOpts, type, sort, order, vector,
+      ...paginateOpts,
+      type,
+      sort,
+      order,
+      vector,
     };
 
     let searchResult;
@@ -144,8 +144,7 @@ module.exports = (crowi: Crowi, app) => {
       const query = decodeURIComponent(q);
       const nqName = nq ?? decodeURIComponent(nq);
       [searchResult, delegatorName] = await searchService.searchKeyword(query, nqName, user, userGroups, searchOpts);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to search', err);
 
       if (isSearchError(err)) {
@@ -159,14 +158,13 @@ module.exports = (crowi: Crowi, app) => {
     let result;
     try {
       result = await searchService.formatSearchResult(searchResult, delegatorName, user, userGroups);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.json(ApiResponse.error(err));
     }
 
     const parameters = {
-      ip:  req.ip,
+      ip: req.ip,
       endpoint: req.originalUrl,
       action: SupportedAction.ACTION_SEARCH_PAGE,
       user: req.user?._id,

@@ -10,14 +10,12 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 const SendInvitationEmailButton = (props) => {
-  const {
-    user, isInvitationEmailSended, onSuccessfullySentInvitationEmail,
-  } = props;
+  const { user, isInvitationEmailSended, onSuccessfullySentInvitationEmail } = props;
   const { t } = useTranslation();
 
   const textColor = !isInvitationEmailSended ? 'text-danger' : '';
 
-  const onClickSendInvitationEmailButton = async() => {
+  const onClickSendInvitationEmailButton = async () => {
     try {
       const res = await apiv3Put('/users/send-invitation-email', { id: user._id });
       const { failedToSendEmail } = res.data;
@@ -25,22 +23,26 @@ const SendInvitationEmailButton = (props) => {
         const msg = `Email has been sent<br>・${user.email}`;
         toastSuccess(msg);
         onSuccessfullySentInvitationEmail();
-      }
-      else {
+      } else {
         const msg = { message: `email: ${failedToSendEmail.email}<br>reason: ${failedToSendEmail.reason}` };
         toastError(msg);
       }
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   };
 
   return (
-    <button className={`dropdown-item ${textColor}`} type="button" onClick={() => { onClickSendInvitationEmailButton() }}>
+    <button
+      className={`dropdown-item ${textColor}`}
+      type="button"
+      onClick={() => {
+        onClickSendInvitationEmailButton();
+      }}
+    >
       <span className="material-symbols-outlined me-1">mail</span>
-      {isInvitationEmailSended && (<>{t('admin:user_management.user_table.resend_invitation_email')}</>)}
-      {!isInvitationEmailSended && (<>{t('admin:user_management.user_table.send_invitation_email')}</>)}
+      {isInvitationEmailSended && <>{t('admin:user_management.user_table.resend_invitation_email')}</>}
+      {!isInvitationEmailSended && <>{t('admin:user_management.user_table.send_invitation_email')}</>}
     </button>
   );
 };

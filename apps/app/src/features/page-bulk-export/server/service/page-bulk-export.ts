@@ -1,9 +1,6 @@
-import {
-  type IPage, SubscriptionStatusType,
-} from '@growi/core';
+import { type IPage, SubscriptionStatusType } from '@growi/core';
 import type { HydratedDocument } from 'mongoose';
 import mongoose from 'mongoose';
-
 
 import { SupportedTargetModel } from '~/interfaces/activity';
 import type { PageModel } from '~/server/models/page';
@@ -18,14 +15,12 @@ import PageBulkExportJob from '../models/page-bulk-export-job';
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
 export class DuplicateBulkExportJobError extends Error {
-
   duplicateJob: HydratedDocument<PageBulkExportJobDocument>;
 
   constructor(duplicateJob: HydratedDocument<PageBulkExportJobDocument>) {
     super('Duplicate bulk export job is in progress');
     this.duplicateJob = duplicateJob;
   }
-
 }
 
 export interface IPageBulkExportService {
@@ -33,7 +28,6 @@ export interface IPageBulkExportService {
 }
 
 class PageBulkExportService implements IPageBulkExportService {
-
   /**
    * Create a new page bulk export job or reset the existing one
    */
@@ -49,7 +43,7 @@ class PageBulkExportService implements IPageBulkExportService {
       user: { $eq: currentUser },
       page: basePage,
       format: { $eq: format },
-      $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
+      $or: Object.values(PageBulkExportJobInProgressStatus).map((status) => ({ status })),
     });
     if (duplicatePageBulkExportJobInProgress != null) {
       if (restartJob) {
@@ -59,7 +53,10 @@ class PageBulkExportService implements IPageBulkExportService {
       throw new DuplicateBulkExportJobError(duplicatePageBulkExportJobInProgress);
     }
     const pageBulkExportJob: HydratedDocument<PageBulkExportJobDocument> = await PageBulkExportJob.create({
-      user: currentUser, page: basePage, format, status: PageBulkExportJobStatus.initializing,
+      user: currentUser,
+      page: basePage,
+      format,
+      status: PageBulkExportJobStatus.initializing,
     });
 
     await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
@@ -72,7 +69,6 @@ class PageBulkExportService implements IPageBulkExportService {
     pageBulkExportJob.restartFlag = true;
     await pageBulkExportJob.save();
   }
-
 }
 
 export const pageBulkExportService: PageBulkExportService = new PageBulkExportService(); // singleton instance

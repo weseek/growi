@@ -1,9 +1,10 @@
 import { useFormatter } from './use-formatter';
 
-
 const mocks = vi.hoisted(() => {
   return {
-    useCurrentPagePathMock: vi.fn(() => { return {} }),
+    useCurrentPagePathMock: vi.fn(() => {
+      return {};
+    }),
   };
 });
 
@@ -11,11 +12,8 @@ vi.mock('~/stores/page', () => {
   return { useCurrentPagePath: mocks.useCurrentPagePathMock };
 });
 
-
 describe('useFormatter', () => {
-
   describe('format()', () => {
-
     it('returns an empty string when the argument is undefined', () => {
       // setup
       const mastacheMock = {
@@ -32,13 +30,14 @@ describe('useFormatter', () => {
       expect(markdown).toBe('');
       expect(mastacheMock.render).not.toHaveBeenCalled();
     });
-
   });
 
   it('returns markdown as-is when mustache.render throws an error', () => {
     // setup
     const mastacheMock = {
-      render: vi.fn(() => { throw new Error() }),
+      render: vi.fn(() => {
+        throw new Error();
+      }),
     };
     vi.doMock('mustache', () => mastacheMock);
 
@@ -91,5 +90,4 @@ path: /Sandbox
 date: 2023/05/31 15:01
 `);
   });
-
 });

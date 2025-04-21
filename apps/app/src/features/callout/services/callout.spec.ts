@@ -9,10 +9,7 @@ import * as callout from './callout';
 
 describe('remarkPlugin', () => {
   it('should transform containerDirective to callout', () => {
-    const processor = unified()
-      .use(remarkParse)
-      .use(remarkDirective)
-      .use(callout.remarkPlugin);
+    const processor = unified().use(remarkParse).use(remarkDirective).use(callout.remarkPlugin);
 
     const markdown = `
 :::info
@@ -45,10 +42,7 @@ This is an info callout.
   });
 
   it('should transform containerDirective to callout with custom label', () => {
-    const processor = unified()
-      .use(remarkParse)
-      .use(remarkDirective)
-      .use(callout.remarkPlugin);
+    const processor = unified().use(remarkParse).use(remarkDirective).use(callout.remarkPlugin);
 
     const markdown = `
 :::info[CUSTOM LABEL]
@@ -81,10 +75,7 @@ This is an info callout.
   });
 
   it('should transform containerDirective to callout with empty label', () => {
-    const processor = unified()
-      .use(remarkParse)
-      .use(remarkDirective)
-      .use(callout.remarkPlugin);
+    const processor = unified().use(remarkParse).use(remarkDirective).use(callout.remarkPlugin);
 
     const markdown = `
 :::info[]

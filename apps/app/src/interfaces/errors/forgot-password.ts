@@ -4,4 +4,4 @@ export const forgotPasswordErrorCode = {
   PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE: 'password-reset-order-is-not-appropriate',
 } as const;
 
-export type forgotPasswordErrorCode = typeof forgotPasswordErrorCode[keyof typeof forgotPasswordErrorCode]
+export type forgotPasswordErrorCode = (typeof forgotPasswordErrorCode)[keyof typeof forgotPasswordErrorCode];

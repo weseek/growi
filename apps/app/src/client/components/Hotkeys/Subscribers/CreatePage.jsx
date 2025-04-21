@@ -6,7 +6,6 @@ import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 
 const CreatePage = React.memo((props) => {
-
   const { open: openCreateModal } = usePageCreateModal();
   const { data: currentPath = '' } = useCurrentPagePath();
 

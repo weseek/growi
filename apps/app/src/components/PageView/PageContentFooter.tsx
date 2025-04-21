@@ -5,20 +5,16 @@ import dynamic from 'next/dynamic';
 
 import styles from './PageContentFooter.module.scss';
 
-
-const AuthorInfo = dynamic(() => import('~/client/components/AuthorInfo').then(mod => mod.AuthorInfo), { ssr: false });
+const AuthorInfo = dynamic(() => import('~/client/components/AuthorInfo').then((mod) => mod.AuthorInfo), { ssr: false });
 
 export type PageContentFooterProps = {
-  page: IPage | IPagePopulatedToShowRevision,
-}
+  page: IPage | IPagePopulatedToShowRevision;
+};
 
 export const PageContentFooter = (props: PageContentFooterProps): JSX.Element => {
-
   const { page } = props;
 
-  const {
-    creator, lastUpdateUser, createdAt, updatedAt,
-  } = page;
+  const { creator, lastUpdateUser, createdAt, updatedAt } = page;
 
   if (page.isEmpty) {
     return <></>;

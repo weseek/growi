@@ -5,7 +5,7 @@ import mongoose from 'mongoose';
 
 import type { PageModel } from '~/server/models/page';
 
-export const renameDuplicateRootPages = async(): Promise<void> => {
+export const renameDuplicateRootPages = async (): Promise<void> => {
   const Page = mongoose.model<IPageHasId, PageModel>('Page');
   const rootPages = await Page.find({ path: '/' }).sort({ createdAt: 1 });
 

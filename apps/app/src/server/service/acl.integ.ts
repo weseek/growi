@@ -3,7 +3,6 @@ import type { MockInstance } from 'vitest';
 import { aclService } from './acl';
 import { configManager } from './config-manager';
 
-
 describe('AclService', () => {
   test("has consts 'isLabeledStatement'", () => {
     expect(aclService.labels.SECURITY_RESTRICT_GUEST_MODE_DENY).toBe('Deny');
@@ -15,10 +14,9 @@ describe('AclService', () => {
 });
 
 describe('AclService test', () => {
-
   const initialEnv = process.env;
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     await configManager.loadConfigs();
   });
 
@@ -27,8 +25,7 @@ describe('AclService test', () => {
   });
 
   describe('isAclEnabled()', () => {
-
-    test('to be false when FORCE_WIKI_MODE is undefined', async() => {
+    test('to be false when FORCE_WIKI_MODE is undefined', async () => {
       delete process.env.FORCE_WIKI_MODE;
 
       // reload
@@ -41,7 +38,7 @@ describe('AclService test', () => {
       expect(result).toBe(true);
     });
 
-    test('to be false when FORCE_WIKI_MODE is dummy string', async() => {
+    test('to be false when FORCE_WIKI_MODE is dummy string', async () => {
       process.env.FORCE_WIKI_MODE = 'dummy string';
 
       // reload
@@ -54,7 +51,7 @@ describe('AclService test', () => {
       expect(result).toBe(true);
     });
 
-    test('to be true when FORCE_WIKI_MODE=private', async() => {
+    test('to be true when FORCE_WIKI_MODE=private', async () => {
       process.env.FORCE_WIKI_MODE = 'private';
 
       // reload
@@ -67,7 +64,7 @@ describe('AclService test', () => {
       expect(result).toBe(true);
     });
 
-    test('to be false when FORCE_WIKI_MODE=public', async() => {
+    test('to be false when FORCE_WIKI_MODE=public', async () => {
       process.env.FORCE_WIKI_MODE = 'public';
 
       // reload
@@ -79,13 +76,10 @@ describe('AclService test', () => {
       expect(wikiMode).toBe('public');
       expect(result).toBe(false);
     });
-
   });
-
 
   describe('isWikiModeForced()', () => {
-
-    test('to be false when FORCE_WIKI_MODE is undefined', async() => {
+    test('to be false when FORCE_WIKI_MODE is undefined', async () => {
       delete process.env.FORCE_WIKI_MODE;
 
       // reload
@@ -98,7 +92,7 @@ describe('AclService test', () => {
       expect(result).toBe(false);
     });
 
-    test('to be false when FORCE_WIKI_MODE is dummy string', async() => {
+    test('to be false when FORCE_WIKI_MODE is dummy string', async () => {
       process.env.FORCE_WIKI_MODE = 'dummy string';
 
       // reload
@@ -111,7 +105,7 @@ describe('AclService test', () => {
       expect(result).toBe(false);
     });
 
-    test('to be true when FORCE_WIKI_MODE=private', async() => {
+    test('to be true when FORCE_WIKI_MODE=private', async () => {
       process.env.FORCE_WIKI_MODE = 'private';
 
       // reload
@@ -124,7 +118,7 @@ describe('AclService test', () => {
       expect(result).toBe(true);
     });
 
-    test('to be false when FORCE_WIKI_MODE=public', async() => {
+    test('to be false when FORCE_WIKI_MODE=public', async () => {
       process.env.FORCE_WIKI_MODE = 'public';
 
       // reload
@@ -136,19 +130,17 @@ describe('AclService test', () => {
       expect(wikiMode).toBe('public');
       expect(result).toBe(true);
     });
-
   });
-
 
   describe('isGuestAllowedToRead()', () => {
     let getConfigSpy: MockInstance<typeof configManager.getConfig>;
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       // prepare spy for ConfigManager.getConfig
       getConfigSpy = vi.spyOn(configManager, 'getConfig');
     });
 
-    test('to be false when FORCE_WIKI_MODE=private', async() => {
+    test('to be false when FORCE_WIKI_MODE=private', async () => {
       process.env.FORCE_WIKI_MODE = 'private';
 
       // reload
@@ -162,7 +154,7 @@ describe('AclService test', () => {
       expect(result).toBe(false);
     });
 
-    test('to be true when FORCE_WIKI_MODE=public', async() => {
+    test('to be true when FORCE_WIKI_MODE=public', async () => {
       process.env.FORCE_WIKI_MODE = 'public';
 
       // reload
@@ -178,16 +170,15 @@ describe('AclService test', () => {
 
     /* eslint-disable indent */
     describe.each`
-      restrictGuestMode   | expected
-      ${undefined}        | ${false}
-      ${'Deny'}           | ${false}
-      ${'Readonly'}       | ${true}
-      ${'Open'}           | ${false}
-      ${'Restricted'}     | ${false}
-      ${'closed'}         | ${false}
+      restrictGuestMode | expected
+      ${undefined}      | ${false}
+      ${'Deny'}         | ${false}
+      ${'Readonly'}     | ${true}
+      ${'Open'}         | ${false}
+      ${'Restricted'}   | ${false}
+      ${'closed'}       | ${false}
     `('to be $expected', ({ restrictGuestMode, expected }) => {
-      test(`when FORCE_WIKI_MODE is undefined and 'security:restrictGuestMode' is '${restrictGuestMode}`, async() => {
-
+      test(`when FORCE_WIKI_MODE is undefined and 'security:restrictGuestMode' is '${restrictGuestMode}`, async () => {
         // reload
         await configManager.loadConfigs();
 
@@ -210,8 +201,5 @@ describe('AclService test', () => {
         expect(result).toBe(expected);
       });
     });
-
   });
-
-
 });

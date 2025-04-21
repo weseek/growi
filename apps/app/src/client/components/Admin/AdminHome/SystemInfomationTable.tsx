@@ -4,17 +4,14 @@ import AdminHomeContainer from '~/client/services/AdminHomeContainer';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-
 type Props = {
-  adminHomeContainer: AdminHomeContainer,
-}
+  adminHomeContainer: AdminHomeContainer;
+};
 
 const SystemInformationTable = (props: Props) => {
   const { adminHomeContainer } = props;
 
-  const {
-    growiVersion, nodeVersion, npmVersion, pnpmVersion,
-  } = adminHomeContainer.state;
+  const { growiVersion, nodeVersion, npmVersion, pnpmVersion } = adminHomeContainer.state;
 
   if (growiVersion == null || nodeVersion == null || npmVersion == null || pnpmVersion == null) {
     return <></>;
@@ -25,24 +22,23 @@ const SystemInformationTable = (props: Props) => {
       <tbody>
         <tr>
           <th>GROWI</th>
-          <td data-vrt-blackout>{ growiVersion }</td>
+          <td data-vrt-blackout>{growiVersion}</td>
         </tr>
         <tr>
           <th>node.js</th>
-          <td>{ nodeVersion }</td>
+          <td>{nodeVersion}</td>
         </tr>
         <tr>
           <th>npm</th>
-          <td>{ npmVersion }</td>
+          <td>{npmVersion}</td>
         </tr>
         <tr>
           <th>pnpm</th>
-          <td>{ pnpmVersion }</td>
+          <td>{pnpmVersion}</td>
         </tr>
       </tbody>
     </table>
   );
-
 };
 
 /**

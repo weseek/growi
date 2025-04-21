@@ -6,38 +6,34 @@ import { useStaticSWR } from '~/stores/use-static-swr';
 import type { IGrowiPluginHasId } from '../../interfaces';
 
 type Plugins = {
-  plugins: IGrowiPluginHasId[]
-}
+  plugins: IGrowiPluginHasId[];
+};
 
 export const useSWRxAdminPlugins = (): SWRResponse<Plugins, Error> => {
-  return useSWR(
-    '/plugins',
-    async(endpoint) => {
-      try {
-        const res = await apiv3Get<Plugins>(endpoint);
-        return res.data;
-      }
-      catch (err) {
-        throw new Error(err);
-      }
-    },
-  );
+  return useSWR('/plugins', async (endpoint) => {
+    try {
+      const res = await apiv3Get<Plugins>(endpoint);
+      return res.data;
+    } catch (err) {
+      throw new Error(err);
+    }
+  });
 };
 
 /*
  * PluginDeleteModal
  */
 type PluginDeleteModalStatus = {
-  isOpen: boolean,
-  id: string,
-  name: string,
-  url: string,
-}
+  isOpen: boolean;
+  id: string;
+  name: string;
+  url: string;
+};
 
 type PluginDeleteModalUtils = {
-  open(plugin: IGrowiPluginHasId): Promise<void>,
-  close(): Promise<void>,
-}
+  open(plugin: IGrowiPluginHasId): Promise<void>;
+  close(): Promise<void>;
+};
 
 export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Error> & PluginDeleteModalUtils => {
   const initialStatus: PluginDeleteModalStatus = {
@@ -50,7 +46,7 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
   const swrResponse = useStaticSWR<PluginDeleteModalStatus, Error>('pluginDeleteModal', undefined, { fallbackData: initialStatus });
   const { mutate } = swrResponse;
 
-  const open = async(plugin) => {
+  const open = async (plugin) => {
     mutate({
       isOpen: true,
       id: plugin._id,
@@ -59,7 +55,7 @@ export const usePluginDeleteModal = (): SWRResponse<PluginDeleteModalStatus, Err
     });
   };
 
-  const close = async() => {
+  const close = async () => {
     mutate(initialStatus);
   };
 

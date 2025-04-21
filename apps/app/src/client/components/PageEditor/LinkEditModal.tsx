@@ -1,20 +1,11 @@
-import React, {
-  useEffect, useState, useCallback, type JSX,
-} from 'react';
+import React, { useEffect, useState, useCallback, type JSX } from 'react';
 
 import path from 'path';
 
 import { Linker } from '@growi/editor';
 import { useLinkEditModal } from '@growi/editor/dist/client/stores/use-link-edit-modal';
 import { useTranslation } from 'next-i18next';
-import {
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Popover,
-  PopoverBody,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Popover, PopoverBody } from 'reactstrap';
 import validator from 'validator';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
@@ -26,9 +17,7 @@ import SearchTypeahead from '../SearchTypeahead';
 
 import Preview from './Preview';
 
-
 import styles from './LinkEditPreview.module.scss';
-
 
 const logger = loggerFactory('growi:components:LinkEditModal');
 
@@ -49,11 +38,16 @@ export const LinkEditModal = (): JSX.Element => {
   const [permalink, setPermalink] = useState<string>('');
   const [isPreviewOpen, setIsPreviewOpen] = useState<boolean>(false);
 
-  const getRootPath = useCallback((type: string) => {
-    // rootPaths of md link and pukiwiki link are different
-    if (currentPath == null) { return ''; }
-    return type === Linker.types.markdownLink ? path.dirname(currentPath) : currentPath;
-  }, [currentPath]);
+  const getRootPath = useCallback(
+    (type: string) => {
+      // rootPaths of md link and pukiwiki link are different
+      if (currentPath == null) {
+        return '';
+      }
+      return type === Linker.types.markdownLink ? path.dirname(currentPath) : currentPath;
+    },
+    [currentPath],
+  );
 
   // parse link, link is ...
   // case-1. url of this growi's page (ex. 'http://localhost:3000/hoge/fuga')
@@ -61,39 +55,41 @@ export const LinkEditModal = (): JSX.Element => {
   // case-3. relative path of this growi's page (ex. '../fuga', 'hoge')
   // case-4. external link (ex. 'https://growi.org')
   // case-5. the others (ex. '')
-  const parseLinkAndSetState = useCallback((link: string, type: string) => {
-    // create url from link, add dummy origin if link is not valid url.
-    // ex-1. link = 'https://growi.org/' -> url = 'https://growi.org/' (case-1,4)
-    // ex-2. link = 'hoge' -> url = 'http://example.com/hoge' (case-2,3,5)
-    let isFqcn = false;
-    let isUseRelativePath = false;
-    let url;
-    try {
-      const url = new URL(link, 'http://example.com');
-      isFqcn = url.origin !== 'http://example.com';
-    }
-    catch (err) {
-      logger.debug(err);
-    }
+  const parseLinkAndSetState = useCallback(
+    (link: string, type: string) => {
+      // create url from link, add dummy origin if link is not valid url.
+      // ex-1. link = 'https://growi.org/' -> url = 'https://growi.org/' (case-1,4)
+      // ex-2. link = 'hoge' -> url = 'http://example.com/hoge' (case-2,3,5)
+      let isFqcn = false;
+      let isUseRelativePath = false;
+      let url;
+      try {
+        const url = new URL(link, 'http://example.com');
+        isFqcn = url.origin !== 'http://example.com';
+      } catch (err) {
+        logger.debug(err);
+      }
 
-    // case-1: when link is this growi's page url, return pathname only
-    let reshapedLink = url != null && url.origin === window.location.origin
-      ? decodeURIComponent(url.pathname)
-      : link;
+      // case-1: when link is this growi's page url, return pathname only
+      let reshapedLink = url != null && url.origin === window.location.origin ? decodeURIComponent(url.pathname) : link;
 
-    // case-3
-    if (!isFqcn && !reshapedLink.startsWith('/') && reshapedLink !== '') {
-      isUseRelativePath = true;
-      const rootPath = getRootPath(type);
-      reshapedLink = path.resolve(rootPath, reshapedLink);
-    }
+      // case-3
+      if (!isFqcn && !reshapedLink.startsWith('/') && reshapedLink !== '') {
+        isUseRelativePath = true;
+        const rootPath = getRootPath(type);
+        reshapedLink = path.resolve(rootPath, reshapedLink);
+      }
 
-    setLinkInputValue(reshapedLink);
-    setIsUseRelativePath(isUseRelativePath);
-  }, [getRootPath]);
+      setLinkInputValue(reshapedLink);
+      setIsUseRelativePath(isUseRelativePath);
+    },
+    [getRootPath],
+  );
 
   useEffect(() => {
-    if (linkEditModalStatus == null) { return }
+    if (linkEditModalStatus == null) {
+      return;
+    }
     const { label = '', link = '' } = linkEditModalStatus.defaultMarkdownLink ?? {};
     const { type = Linker.types.markdownLink } = linkEditModalStatus.defaultMarkdownLink ?? {};
 
@@ -102,7 +98,6 @@ export const LinkEditModal = (): JSX.Element => {
     setIsUsePermanentLink(false);
     setPermalink('');
     setLinkerType(type);
-
   }, [linkEditModalStatus, parseLinkAndSetState]);
 
   const toggleIsUseRelativePath = () => {
@@ -125,7 +120,7 @@ export const LinkEditModal = (): JSX.Element => {
     setIsUseRelativePath(false);
   };
 
-  const setMarkdownHandler = async() => {
+  const setMarkdownHandler = async () => {
     const path = linkInputValue;
     let markdown = '';
     let pagePath = '';
@@ -142,12 +137,10 @@ export const LinkEditModal = (): JSX.Element => {
         markdown = page.revision.body;
         pagePath = page.path;
         permalink = page.id;
-      }
-      catch (err) {
+      } catch (err) {
         setPreviewError(err.message);
       }
-    }
-    else {
+    } else {
       setPreviewError(t('link_edit.page_not_found_in_preview', { path }));
     }
 
@@ -157,7 +150,6 @@ export const LinkEditModal = (): JSX.Element => {
   };
 
   const generateLink = () => {
-
     let reshapedLink = linkInputValue;
     if (isUseRelativePath) {
       const rootPath = getRootPath(linkerType);
@@ -230,7 +222,7 @@ export const LinkEditModal = (): JSX.Element => {
     close();
   };
 
-  const toggleIsPreviewOpen = async() => {
+  const toggleIsPreviewOpen = async () => {
     // open popover
     if (!isPreviewOpen) {
       setMarkdownHandler();
@@ -261,13 +253,11 @@ export const LinkEditModal = (): JSX.Element => {
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={isPreviewOpen} target="preview-btn" toggle={toggleIsPreviewOpen}>
                   <PopoverBody>
-                    {markdown != null && pagePath != null && rendererOptions != null
-                    && (
+                    {markdown != null && pagePath != null && rendererOptions != null && (
                       <div className={`linkedit-preview ${styles['linkedit-preview']}`}>
                         <Preview markdown={markdown} pagePath={pagePath} rendererOptions={rendererOptions} />
                       </div>
-                    )
-                    }
+                    )}
                   </PopoverBody>
                 </Popover>
               </div>
@@ -283,7 +273,7 @@ export const LinkEditModal = (): JSX.Element => {
                 className="form-control"
                 id="label"
                 value={labelInputValue}
-                onChange={e => handleChangeLabelInput(e.target.value)}
+                onChange={(e) => handleChangeLabelInput(e.target.value)}
                 disabled={linkerType === Linker.types.growiLink}
                 placeholder={linkInputValue}
               />
@@ -359,7 +349,7 @@ export const LinkEditModal = (): JSX.Element => {
         </div>
       </ModalBody>
       <ModalFooter>
-        { previewError && <span className="text-danger">{previewError}</span>}
+        {previewError && <span className="text-danger">{previewError}</span>}
         <button type="button" className="btn btn-sm btn-outline-secondary mx-1" onClick={close}>
           {t('Cancel')}
         </button>

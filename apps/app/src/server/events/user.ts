@@ -13,7 +13,6 @@ import { deleteCompletelyUserHomeBySystem } from '../service/page/delete-complet
 const logger = loggerFactory('growi:events:user');
 
 class UserEvent extends EventEmitter {
-
   crowi: any;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -40,12 +39,10 @@ class UserEvent extends EventEmitter {
         await this.crowi.pageService.create(userHomepagePath, body, user, {});
         logger.debug('User page created', page);
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to create user page', err);
     }
   }
-
 }
 
 export default UserEvent;

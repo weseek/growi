@@ -2,28 +2,16 @@
   "$schema": "https://turbo.build/schema.json",
   "extends": ["//"],
   "tasks": {
-
     "pre:styles": {
       "dependsOn": ["@growi/ui#build"],
       "outputs": ["src/styles/prebuilt/**"],
-      "inputs": [
-        "vite.styles-prebuilt.config.ts",
-        "src/styles/**/*.scss",
-        "../../packages/core/scss/**"
-      ],
+      "inputs": ["vite.styles-prebuilt.config.ts", "src/styles/**/*.scss", "../../packages/core/scss/**"],
       "outputLogs": "new-only"
     },
     "build": {
       "dependsOn": ["^build", "pre:styles"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
-      "inputs": [
-        "next.config.js",
-        "config/**",
-        "public/**",
-        "resource/**",
-        "src/**",
-        "tsconfig*.json"
-      ],
+      "inputs": ["next.config.js", "config/**", "public/**", "resource/**", "src/**", "tsconfig*.json"],
       "outputLogs": "new-only"
     },
 
@@ -36,12 +24,7 @@
     "dev:pre:styles": {
       "dependsOn": ["@growi/ui#dev"],
       "outputs": ["src/styles/prebuilt/**"],
-      "inputs": [
-        "vite.styles-prebuilt.config.ts",
-        "src/styles/**/*.scss",
-        "!src/styles/prebuilt/**",
-        "../../packages/core/scss/**"
-      ],
+      "inputs": ["vite.styles-prebuilt.config.ts", "src/styles/**/*.scss", "!src/styles/prebuilt/**", "../../packages/core/scss/**"],
       "outputLogs": "new-only"
     },
     "dev": {
@@ -84,6 +67,5 @@
       "cache": false,
       "dependsOn": ["//#version:premajor"]
     }
-
   }
 }

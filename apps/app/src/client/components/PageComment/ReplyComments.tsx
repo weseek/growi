@@ -1,4 +1,3 @@
-
 import React, { useState, type JSX } from 'react';
 
 import type { IUser } from '@growi/core';
@@ -8,31 +7,25 @@ import type { ICommentHasId, ICommentHasIdList } from '~/interfaces/comment';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useIsAllReplyShown } from '~/stores-universal/context';
 
-
 import { Comment } from './Comment';
 
 import styles from './ReplyComments.module.scss';
 
-
 type ReplycommentsProps = {
-  rendererOptions: RendererOptions,
-  isReadOnly: boolean,
-  revisionId: string,
-  revisionCreatedAt: Date,
-  currentUser: IUser,
-  replyList: ICommentHasIdList,
-  pageId: string,
-  pagePath: string,
-  deleteBtnClicked: (comment: ICommentHasId) => void,
-  onComment: () => void,
-}
+  rendererOptions: RendererOptions;
+  isReadOnly: boolean;
+  revisionId: string;
+  revisionCreatedAt: Date;
+  currentUser: IUser;
+  replyList: ICommentHasIdList;
+  pageId: string;
+  pagePath: string;
+  deleteBtnClicked: (comment: ICommentHasId) => void;
+  onComment: () => void;
+};
 
 export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
-
-  const {
-    rendererOptions, isReadOnly, revisionId, revisionCreatedAt, currentUser, replyList,
-    pageId, pagePath, deleteBtnClicked, onComment,
-  } = props;
+  const { rendererOptions, isReadOnly, revisionId, revisionCreatedAt, currentUser, replyList, pageId, pagePath, deleteBtnClicked, onComment } = props;
 
   const { data: isAllReplyShown } = useIsAllReplyShown();
 
@@ -67,7 +60,7 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
     );
   }
 
-  const areThereHiddenReplies = (replyList.length > 2);
+  const areThereHiddenReplies = replyList.length > 2;
   const toggleButtonIconName = isOlderRepliesShown ? 'expand_less' : 'more_vert';
   const toggleButtonIcon = <span className="material-symbols-outlined me-1">{toggleButtonIconName}</span>;
   const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
@@ -90,11 +83,7 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
             <div>{hiddenElements}</div>
           </Collapse>
           <div className="text-center">
-            <button
-              type="button"
-              className="btn btn-link"
-              onClick={() => setIsOlderRepliesShown(!isOlderRepliesShown)}
-            >
+            <button type="button" className="btn btn-link" onClick={() => setIsOlderRepliesShown(!isOlderRepliesShown)}>
               {toggleButtonIcon} {toggleButtonLabel}
             </button>
           </div>

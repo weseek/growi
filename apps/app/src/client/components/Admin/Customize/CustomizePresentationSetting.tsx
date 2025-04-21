@@ -11,19 +11,18 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizePresentationOption from './CustomizeFunctionOption';
 
 type Props = {
-  adminCustomizeContainer: AdminCustomizeContainer
-}
+  adminCustomizeContainer: AdminCustomizeContainer;
+};
 
 const CustomizePresentationSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
-  const onClickSubmit = useCallback(async() => {
+  const onClickSubmit = useCallback(async () => {
     try {
       await adminCustomizeContainer.updateCustomizePresentation();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.presentation'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [adminCustomizeContainer, t]);
@@ -37,23 +36,19 @@ const CustomizePresentationSetting = (props: Props): JSX.Element => {
             optionId="isEnabledMarp"
             label={t('admin:customize_settings.presentation_options.enable_marp')}
             isChecked={adminCustomizeContainer?.state.isEnabledMarp || false}
-            onChecked={() => { adminCustomizeContainer.switchIsEnabledMarp() }}
+            onChecked={() => {
+              adminCustomizeContainer.switchIsEnabledMarp();
+            }}
           >
             <p className="form-text text-muted">
               {t('admin:customize_settings.presentation_options.enable_marp_desc')}
               <br></br>
-              <a
-                href={`${t('admin:customize_settings.presentation_options.marp_official_site_link')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >{`${t('admin:customize_settings.presentation_options.marp_official_site')}`}
+              <a href={`${t('admin:customize_settings.presentation_options.marp_official_site_link')}`} target="_blank" rel="noopener noreferrer">
+                {`${t('admin:customize_settings.presentation_options.marp_official_site')}`}
               </a>
               <br></br>
-              <a
-                href={`${t('admin:customize_settings.presentation_options.marp_in_gorwi_link')}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >{`${t('admin:customize_settings.presentation_options.marp_in_growi')}`}
+              <a href={`${t('admin:customize_settings.presentation_options.marp_in_gorwi_link')}`} target="_blank" rel="noopener noreferrer">
+                {`${t('admin:customize_settings.presentation_options.marp_in_growi')}`}
               </a>
             </p>
           </CustomizePresentationOption>

@@ -14,7 +14,6 @@ const { pathUtils } = require('@growi/core/dist/utils');
 const mongoose = require('mongoose');
 
 class CreatePageService {
-
   /** @type {import('~/server/crowi').default} Crowi instance */
   crowi;
 
@@ -39,12 +38,9 @@ class CreatePageService {
     const growiUri = growiInfoService.getSiteUrl();
     await respondUtil.respond({
       text: 'Page has been created',
-      blocks: [
-        markdownSectionBlock(`The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`),
-      ],
+      blocks: [markdownSectionBlock(`The page <${decodeURI(`${growiUri}/${page._id} | ${decodeURI(growiUri + normalizedPath)}`)}> has been created.`)],
     });
   }
-
 }
 
 module.exports = CreatePageService;

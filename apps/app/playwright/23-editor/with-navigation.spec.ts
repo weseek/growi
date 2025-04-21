@@ -8,7 +8,7 @@ import { test, expect, type Page } from '@playwright/test';
  * @see https://redmine.weseek.co.jp/issues/122040
  * @see https://redmine.weseek.co.jp/issues/124281
  */
-test('should not be cleared and should prevent GrantSelector from modified', async({ page }) => {
+test('should not be cleared and should prevent GrantSelector from modified', async ({ page }) => {
   await page.goto('/Sandbox/for-122040');
 
   // Open Editor
@@ -26,10 +26,10 @@ test('should not be cleared and should prevent GrantSelector from modified', asy
   const filePath = path.resolve(__dirname, '../23-editor/assets/example.txt');
   const buffer = readFileSync(filePath).toString('base64');
   const dataTransfer = await page.evaluateHandle(
-    async({ bufferData, localFileName, localFileType }) => {
+    async ({ bufferData, localFileName, localFileType }) => {
       const dt = new DataTransfer();
 
-      const blobData = await fetch(bufferData).then(res => res.blob());
+      const blobData = await fetch(bufferData).then((res) => res.blob());
 
       const file = new File([blobData], localFileName, {
         type: localFileType,
@@ -53,7 +53,7 @@ test('should not be cleared and should prevent GrantSelector from modified', asy
   await expect(page.getByTestId('page-grant-alert')).toContainText('Browsing of this page is restricted');
 });
 
-const appendTextToEditorUntilContains = async(page: Page, text: string) => {
+const appendTextToEditorUntilContains = async (page: Page, text: string) => {
   await page.locator('.cm-content').fill(text);
   await expect(page.getByTestId('page-editor-preview-body')).toContainText(text);
 };
@@ -62,13 +62,12 @@ const appendTextToEditorUntilContains = async(page: Page, text: string) => {
  * for the issue:
  * @see https://redmine.weseek.co.jp/issues/115285
  */
-test('Successfully updating the page body', async({ page }) => {
+test('Successfully updating the page body', async ({ page }) => {
   const page1Path = '/Sandbox/for-115285/page1';
   const page2Path = '/Sandbox/for-115285/page2';
 
   const page1Body = 'Hello';
   const page2Body = 'World';
-
 
   await page.goto(page1Path);
 
@@ -101,7 +100,6 @@ test('Successfully updating the page body', async({ page }) => {
   // Append text
   await appendTextToEditorUntilContains(page, page1Body + page2Body);
 
-
   await page.goto(page1Path);
 
   // Open Editor (page1)
@@ -109,5 +107,4 @@ test('Successfully updating the page body', async({ page }) => {
   await expect(page.getByTestId('grw-editor-navbar-bottom')).toBeVisible();
 
   await expect(page.getByTestId('page-editor-preview-body')).toContainText(page1Body);
-
 });

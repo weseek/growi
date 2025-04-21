@@ -25,7 +25,6 @@ import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:PassportService');
 
-
 interface IncomingMessageWithLdapAccountInfo extends IncomingMessage {
   ldapAccountInfo: any;
 }
@@ -34,11 +33,14 @@ interface IncomingMessageWithLdapAccountInfo extends IncomingMessage {
  * the service class of Passport
  */
 class PassportService implements S2sMessageHandlable {
-
   // see '/lib/form/login.js'
-  static get USERNAME_FIELD() { return 'loginForm[username]' }
+  static get USERNAME_FIELD() {
+    return 'loginForm[username]';
+  }
 
-  static get PASSWORD_FIELD() { return 'loginForm[password]' }
+  static get PASSWORD_FIELD() {
+    return 'loginForm[password]';
+  }
 
   crowi!: any;
 
@@ -122,7 +124,6 @@ class PassportService implements S2sMessageHandlable {
     this.crowi = crowi;
   }
 
-
   /**
    * @inheritdoc
    */
@@ -158,8 +159,7 @@ class PassportService implements S2sMessageHandlable {
 
       try {
         await s2sMessagingService.publish(s2sMessage);
-      }
-      catch (e) {
+      } catch (e) {
         logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
@@ -174,12 +174,24 @@ class PassportService implements S2sMessageHandlable {
   getSetupStrategies() {
     const setupStrategies: string[] = [];
 
-    if (this.isLocalStrategySetup) { setupStrategies.push('local') }
-    if (this.isLdapStrategySetup) { setupStrategies.push('ldap') }
-    if (this.isSamlStrategySetup) { setupStrategies.push('saml') }
-    if (this.isOidcStrategySetup) { setupStrategies.push('oidc') }
-    if (this.isGoogleStrategySetup) { setupStrategies.push('google') }
-    if (this.isGitHubStrategySetup) { setupStrategies.push('github') }
+    if (this.isLocalStrategySetup) {
+      setupStrategies.push('local');
+    }
+    if (this.isLdapStrategySetup) {
+      setupStrategies.push('ldap');
+    }
+    if (this.isSamlStrategySetup) {
+      setupStrategies.push('saml');
+    }
+    if (this.isOidcStrategySetup) {
+      setupStrategies.push('oidc');
+    }
+    if (this.isGoogleStrategySetup) {
+      setupStrategies.push('google');
+    }
+    if (this.isGitHubStrategySetup) {
+      setupStrategies.push('github');
+    }
 
     return setupStrategies;
   }
@@ -202,8 +214,7 @@ class PassportService implements S2sMessageHandlable {
 
     try {
       await this[func.setup]();
-    }
-    catch (err) {
+    } catch (err) {
       logger.debug(err);
       this[func.reset]();
     }
@@ -228,7 +239,6 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   setupLocalStrategy() {
-
     this.resetLocalStrategy();
 
     const { configManager } = this.crowi;
@@ -244,23 +254,27 @@ class PassportService implements S2sMessageHandlable {
 
     const User = this.crowi.model('User');
 
-    passport.use(new LocalStrategy(
-      {
-        usernameField: PassportService.USERNAME_FIELD,
-        passwordField: PassportService.PASSWORD_FIELD,
-      },
-      (username, password, done) => {
-        // find user
-        User.findUserByUsernameOrEmail(username, password, (err, user) => {
-          if (err) { return done(err) }
-          // check existence and password
-          if (!user || !user.isPasswordValid(password)) {
-            return done(null, false, { message: 'Incorrect credentials.' });
-          }
-          return done(null, user);
-        });
-      },
-    ));
+    passport.use(
+      new LocalStrategy(
+        {
+          usernameField: PassportService.USERNAME_FIELD,
+          passwordField: PassportService.PASSWORD_FIELD,
+        },
+        (username, password, done) => {
+          // find user
+          User.findUserByUsernameOrEmail(username, password, (err, user) => {
+            if (err) {
+              return done(err);
+            }
+            // check existence and password
+            if (!user || !user.isPasswordValid(password)) {
+              return done(null, false, { message: 'Incorrect credentials.' });
+            }
+            return done(null, user);
+          });
+        },
+      ),
+    );
 
     this.isLocalStrategySetup = true;
     logger.debug('LocalStrategy: setup is done');
@@ -283,7 +297,6 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   setupLdapStrategy() {
-
     this.resetLdapStrategy();
 
     const config = this.crowi.config;
@@ -298,15 +311,16 @@ class PassportService implements S2sMessageHandlable {
 
     logger.debug('LdapStrategy: setting up..');
 
-    passport.use(new LdapStrategy(this.getLdapConfigurationFunc(config, { passReqToCallback: true }),
-      (req, ldapAccountInfo, done) => {
+    passport.use(
+      new LdapStrategy(this.getLdapConfigurationFunc(config, { passReqToCallback: true }), (req, ldapAccountInfo, done) => {
         logger.debug('LDAP authentication has succeeded', ldapAccountInfo);
 
         // store ldapAccountInfo to req
         (req as IncomingMessageWithLdapAccountInfo).ldapAccountInfo = ldapAccountInfo;
 
         done(null, ldapAccountInfo);
-      }));
+      }),
+    );
 
     this.isLdapStrategySetup = true;
     logger.debug('LdapStrategy: setup is done');
@@ -367,14 +381,14 @@ class PassportService implements S2sMessageHandlable {
     const { configManager } = this.crowi;
 
     // get configurations
-    const isUserBind        = configManager.getConfig('security:passport-ldap:isUserBind');
-    const serverUrl         = configManager.getConfig('security:passport-ldap:serverUrl');
-    const bindDN            = configManager.getConfig('security:passport-ldap:bindDN');
-    const bindCredentials   = configManager.getConfig('security:passport-ldap:bindDNPassword');
-    const searchFilter      = configManager.getConfig('security:passport-ldap:searchFilter') || '(uid={{username}})';
-    const groupSearchBase   = configManager.getConfig('security:passport-ldap:groupSearchBase');
+    const isUserBind = configManager.getConfig('security:passport-ldap:isUserBind');
+    const serverUrl = configManager.getConfig('security:passport-ldap:serverUrl');
+    const bindDN = configManager.getConfig('security:passport-ldap:bindDN');
+    const bindCredentials = configManager.getConfig('security:passport-ldap:bindDNPassword');
+    const searchFilter = configManager.getConfig('security:passport-ldap:searchFilter') || '(uid={{username}})';
+    const groupSearchBase = configManager.getConfig('security:passport-ldap:groupSearchBase');
     const groupSearchFilter = configManager.getConfig('security:passport-ldap:groupSearchFilter');
-    const groupDnProperty   = configManager.getConfig('security:passport-ldap:groupDnProperty') || 'uid';
+    const groupDnProperty = configManager.getConfig('security:passport-ldap:groupDnProperty') || 'uid';
     /* eslint-enable no-multi-spaces */
 
     // parse serverUrl
@@ -382,7 +396,9 @@ class PassportService implements S2sMessageHandlable {
     const match = serverUrl.match(/(ldaps?:\/\/[^/]+)\/(.*)?/);
     if (match == null || match.length < 1) {
       logger.debug('LdapStrategy: serverUrl is invalid');
-      return (req, callback) => { callback({ message: 'serverUrl is invalid' }) };
+      return (req, callback) => {
+        callback({ message: 'serverUrl is invalid' });
+      };
     }
     const url = match[1];
     const searchBase = match[2] || '';
@@ -407,10 +423,8 @@ class PassportService implements S2sMessageHandlable {
       }
 
       // user bind
-      const fixedBindDN = (isUserBind)
-        ? bindDN.replace(/{{username}}/, loginForm.username)
-        : bindDN;
-      const fixedBindCredentials = (isUserBind) ? loginForm.password : bindCredentials;
+      const fixedBindDN = isUserBind ? bindDN.replace(/{{username}}/, loginForm.username) : bindDN;
+      const fixedBindCredentials = isUserBind ? loginForm.password : bindCredentials;
       let serverOpt = {
         url,
         bindDN: fixedBindDN,
@@ -426,11 +440,14 @@ class PassportService implements S2sMessageHandlable {
       }
 
       process.nextTick(() => {
-        const mergedOpts = Object.assign({
-          usernameField: PassportService.USERNAME_FIELD,
-          passwordField: PassportService.PASSWORD_FIELD,
-          server: serverOpt,
-        }, opts);
+        const mergedOpts = Object.assign(
+          {
+            usernameField: PassportService.USERNAME_FIELD,
+            passwordField: PassportService.PASSWORD_FIELD,
+            server: serverOpt,
+          },
+          opts,
+        );
         logger.debug('ldap configuration: ', mergedOpts);
 
         // store configuration to req
@@ -447,7 +464,6 @@ class PassportService implements S2sMessageHandlable {
    * @memberof PassportService
    */
   setupGoogleStrategy() {
-
     this.resetGoogleStrategy();
 
     const isGoogleEnabled = configManager.getConfig('security:passport-google:isEnabled');
@@ -463,9 +479,10 @@ class PassportService implements S2sMessageHandlable {
         {
           clientID: configManager.getConfig('security:passport-google:clientId'),
           clientSecret: configManager.getConfig('security:passport-google:clientSecret'),
-          callbackURL: configManager.getConfig('app:siteUrl') != null
-            ? urljoin(growiInfoService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfigLegacy<string>('security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+          callbackURL:
+            configManager.getConfig('app:siteUrl') != null
+              ? urljoin(growiInfoService.getSiteUrl(), '/passport/google/callback') // auto-generated with v3.2.4 and above
+              : configManager.getConfigLegacy<string>('security:passport-google:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -494,7 +511,6 @@ class PassportService implements S2sMessageHandlable {
   }
 
   setupGitHubStrategy() {
-
     this.resetGitHubStrategy();
 
     const isGitHubEnabled = configManager.getConfig('security:passport-github:isEnabled');
@@ -510,9 +526,10 @@ class PassportService implements S2sMessageHandlable {
         {
           clientID: configManager.getConfig('security:passport-github:clientId'),
           clientSecret: configManager.getConfig('security:passport-github:clientSecret'),
-          callbackURL: configManager.getConfig('app:siteUrl') != null
-            ? urljoin(growiInfoService.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfigLegacy('security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+          callbackURL:
+            configManager.getConfig('app:siteUrl') != null
+              ? urljoin(growiInfoService.getSiteUrl(), '/passport/github/callback') // auto-generated with v3.2.4 and above
+              : configManager.getConfigLegacy('security:passport-github:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           skipUserProfile: false,
         },
         (accessToken, refreshToken, profile, done) => {
@@ -541,7 +558,6 @@ class PassportService implements S2sMessageHandlable {
   }
 
   async setupOidcStrategy() {
-
     this.resetOidcStrategy();
 
     const isOidcEnabled = configManager.getConfig('security:passport-oidc:isEnabled');
@@ -565,9 +581,10 @@ class PassportService implements S2sMessageHandlable {
     const issuerHost = configManager.getConfig('security:passport-oidc:issuerHost');
     const clientId = configManager.getConfig('security:passport-oidc:clientId');
     const clientSecret = configManager.getConfig('security:passport-oidc:clientSecret');
-    const redirectUri = configManager.getConfig('app:siteUrl') != null
-      ? urljoin(growiInfoService.getSiteUrl(), '/passport/oidc/callback')
-      : configManager.getConfigLegacy<string>('security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
+    const redirectUri =
+      configManager.getConfig('app:siteUrl') != null
+        ? urljoin(growiInfoService.getSiteUrl(), '/passport/oidc/callback')
+        : configManager.getConfigLegacy<string>('security:passport-oidc:callbackUrl'); // DEPRECATED: backward compatible with v3.2.3 and below
 
     // Prevent request timeout error on app init
     const oidcIssuer = await this.getOIDCIssuerInstance(issuerHost);
@@ -623,24 +640,26 @@ class PassportService implements S2sMessageHandlable {
       // Doc: https://github.com/panva/node-openid-client/tree/v2.x#allow-for-system-clock-skew
       const OIDC_CLIENT_CLOCK_TOLERANCE = await configManager.getConfig('security:passport-oidc:oidcClientClockTolerance');
       client[custom.clock_tolerance] = OIDC_CLIENT_CLOCK_TOLERANCE;
-      passport.use('oidc', new OidcStrategy(
-        {
-          client,
-          params: { scope: 'openid email profile' },
-        },
-        (tokenset, userinfo, done) => {
-          if (userinfo) {
-            return done(null, userinfo);
-          }
+      passport.use(
+        'oidc',
+        new OidcStrategy(
+          {
+            client,
+            params: { scope: 'openid email profile' },
+          },
+          (tokenset, userinfo, done) => {
+            if (userinfo) {
+              return done(null, userinfo);
+            }
 
-          return done(null, false);
-        },
-      ));
+            return done(null, false);
+          },
+        ),
+      );
 
       this.isOidcStrategySetup = true;
       logger.debug('OidcStrategy: setup is done');
     }
-
   }
 
   /**
@@ -663,7 +682,7 @@ class PassportService implements S2sMessageHandlable {
    * @param issuerHost string
    * @returns string URL/.well-known/openid-configuration
    */
-  getOIDCMetadataURL(issuerHost: string) : string {
+  getOIDCMetadataURL(issuerHost: string): string {
     const protocol = 'https://';
     const pattern = /^https?:\/\//i;
     const metadataPath = '/.well-known/openid-configuration';
@@ -679,13 +698,13 @@ class PassportService implements S2sMessageHandlable {
   }
 
   /**
- *
- * Check and initialize connection to OIDC issuer host
- * Prevent request timeout error on app init
- *
- * @param issuerHost string
- * @returns boolean
- */
+   *
+   * Check and initialize connection to OIDC issuer host
+   * Prevent request timeout error on app init
+   *
+   * @param issuerHost string
+   * @returns boolean
+   */
   async isOidcHostReachable(issuerHost: string): Promise<boolean | undefined> {
     try {
       const metadataUrl = this.getOIDCMetadataURL(issuerHost);
@@ -700,8 +719,7 @@ class PassportService implements S2sMessageHandlable {
         return false;
       }
       return true;
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('OidcStrategy: issuer host unreachable:', err.code);
     }
   }
@@ -725,30 +743,30 @@ class PassportService implements S2sMessageHandlable {
     }
 
     const metadataURL = this.getOIDCMetadataURL(issuerHost);
-    const oidcIssuer = await pRetry(async() => {
-      return OIDCIssuer.discover(metadataURL);
-    }, {
-      onFailedAttempt: (error) => {
-        // get current OIDCIssuer timeout options
-        OIDCIssuer[custom.http_options] = (url, options) => {
-          const timeout = options.timeout
-            ? options.timeout * OIDC_TIMEOUT_MULTIPLIER
-            : OIDC_ISSUER_TIMEOUT_OPTION * OIDC_TIMEOUT_MULTIPLIER;
-          custom.setHttpOptionsDefaults({ timeout });
-          return { timeout };
-        };
-
-        logger.debug(`OidcStrategy: setup attempt ${error.attemptNumber} failed with error: ${error}. Retrying ...`);
+    const oidcIssuer = await pRetry(
+      async () => {
+        return OIDCIssuer.discover(metadataURL);
       },
-      retries: OIDC_DISCOVERY_RETRIES,
-    }).catch((error) => {
+      {
+        onFailedAttempt: (error) => {
+          // get current OIDCIssuer timeout options
+          OIDCIssuer[custom.http_options] = (url, options) => {
+            const timeout = options.timeout ? options.timeout * OIDC_TIMEOUT_MULTIPLIER : OIDC_ISSUER_TIMEOUT_OPTION * OIDC_TIMEOUT_MULTIPLIER;
+            custom.setHttpOptionsDefaults({ timeout });
+            return { timeout };
+          };
+
+          logger.debug(`OidcStrategy: setup attempt ${error.attemptNumber} failed with error: ${error}. Retrying ...`);
+        },
+        retries: OIDC_DISCOVERY_RETRIES,
+      },
+    ).catch((error) => {
       logger.error(`OidcStrategy: setup failed with error: ${error} `);
     });
     return oidcIssuer;
   }
 
   setupSamlStrategy(): void {
-
     this.resetSamlStrategy();
 
     const isSamlEnabled = configManager.getConfig('security:passport-saml:isEnabled');
@@ -770,9 +788,10 @@ class PassportService implements S2sMessageHandlable {
       new SamlStrategy(
         {
           entryPoint: configManager.getConfig('security:passport-saml:entryPoint'),
-          callbackUrl: configManager.getConfig('app:siteUrl') != null
-            ? urljoin(growiInfoService.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
-            : configManager.getConfig('security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
+          callbackUrl:
+            configManager.getConfig('app:siteUrl') != null
+              ? urljoin(growiInfoService.getSiteUrl(), '/passport/saml/callback') // auto-generated with v3.2.4 and above
+              : configManager.getConfig('security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           issuer: configManager.getConfig('security:passport-saml:issuer'),
           cert,
           disableRequestedAuthnContext: true,
@@ -930,11 +949,10 @@ class PassportService implements S2sMessageHandlable {
     const result = {};
     for (const attribute of attributes) {
       const name = attribute.$.Name;
-      const attributeValues = attribute.AttributeValue.map(v => v._);
+      const attributeValues = attribute.AttributeValue.map((v) => v._);
       if (result[name] == null) {
         result[name] = attributeValues;
-      }
-      else {
+      } else {
         result[name] = result[name].concat(attributeValues);
       }
     }
@@ -961,7 +979,7 @@ class PassportService implements S2sMessageHandlable {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       done(null, (user as any).id);
     });
-    passport.deserializeUser(async(id, done) => {
+    passport.deserializeUser(async (id, done) => {
       try {
         const user = await User.findById(id);
         if (user == null) {
@@ -972,8 +990,7 @@ class PassportService implements S2sMessageHandlable {
           await user.save();
         }
         done(null, user);
-      }
-      catch (err) {
+      } catch (err) {
         done(err);
       }
     });
@@ -990,18 +1007,19 @@ class PassportService implements S2sMessageHandlable {
   }
 
   literalUnescape(string: string) {
-    return string
-      .replace(/\\\\/g, '\\')
-      .replace(/\\\//g, '/')
-      .replace(/\\:/g, ':')
-      .replace(/\\"/g, '"')
-      // biome-ignore lint/nursery/noOctalEscape: ignore
-      .replace(/\\0/g, '\0')
-      .replace(/\\t/g, '\t')
-      .replace(/\\n/g, '\n')
-      .replace(/\\r/g, '\r');
+    return (
+      string
+        .replace(/\\\\/g, '\\')
+        .replace(/\\\//g, '/')
+        .replace(/\\:/g, ':')
+        .replace(/\\"/g, '"')
+        // biome-ignore lint/nursery/noOctalEscape: ignore
+        .replace(/\\0/g, '\0')
+        .replace(/\\t/g, '\t')
+        .replace(/\\n/g, '\n')
+        .replace(/\\r/g, '\r')
+    );
   }
-
 }
 
 export default PassportService;

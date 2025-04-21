@@ -328,12 +328,9 @@ export const CONFIG_KEYS = [
   'app:pageBulkExportPdfConverterUri',
   'app:isBulkExportPagesEnabled',
   'env:useOnlyEnvVars:app:isBulkExportPagesEnabled',
-
 ] as const;
 
-
 export type ConfigKey = (typeof CONFIG_KEYS)[number];
-
 
 export const CONFIG_DEFINITIONS = {
   // Auto Install Settings
@@ -1359,29 +1356,14 @@ export const ENV_ONLY_GROUPS: EnvOnlyGroup[] = [
   },
   {
     controlKey: 'env:useOnlyEnvVars:security:passport-saml',
-    targetKeys: [
-      'security:passport-saml:isEnabled',
-      'security:passport-saml:entryPoint',
-      'security:passport-saml:issuer',
-      'security:passport-saml:cert',
-    ],
+    targetKeys: ['security:passport-saml:isEnabled', 'security:passport-saml:entryPoint', 'security:passport-saml:issuer', 'security:passport-saml:cert'],
   },
   {
     controlKey: 'env:useOnlyEnvVars:gcs',
-    targetKeys: [
-      'gcs:apiKeyJsonPath',
-      'gcs:bucket',
-      'gcs:uploadNamespace',
-    ],
+    targetKeys: ['gcs:apiKeyJsonPath', 'gcs:bucket', 'gcs:uploadNamespace'],
   },
   {
     controlKey: 'env:useOnlyEnvVars:azure',
-    targetKeys: [
-      'azure:tenantId',
-      'azure:clientId',
-      'azure:clientSecret',
-      'azure:storageAccountName',
-      'azure:storageContainerName',
-    ],
+    targetKeys: ['azure:tenantId', 'azure:clientId', 'azure:clientSecret', 'azure:storageAccountName', 'azure:storageContainerName'],
   },
 ];

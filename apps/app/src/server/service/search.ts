@@ -11,9 +11,7 @@ import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../crowi';
 import type { ObjectIdLike } from '../interfaces/mongoose-utils';
-import type {
-  SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
-} from '../interfaces/search';
+import type { SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms } from '../interfaces/search';
 import NamedQuery from '../models/named-query';
 import type { PageModel } from '../models/page';
 import { SearchError } from '../models/vo/search-error';
@@ -22,7 +20,6 @@ import { hasIntersection } from '../util/compare-objectId';
 import { configManager } from './config-manager';
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
-
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:service:search');
@@ -41,8 +38,7 @@ const filterXss = new FilterXSS(filterXssOptions);
 
 const normalizeQueryString = (_queryString: string): string => {
   let queryString = _queryString.trim();
-  queryString = removeAiMenthion(queryString)
-    .replace(/\s+/g, ' ');
+  queryString = removeAiMenthion(queryString).replace(/\s+/g, ' ');
 
   return queryString;
 };
@@ -51,12 +47,11 @@ const normalizeNQName = (nqName: string): string => {
   return nqName.trim();
 };
 
-const findPageListByIds = async(pageIds: ObjectIdLike[], crowi: any) => {
-
+const findPageListByIds = async (pageIds: ObjectIdLike[], crowi: any) => {
   const Page = crowi.model('Page') as unknown as PageModel;
   const User = crowi.model('User');
 
-  const builder = new Page.PageQueryBuilder(Page.find(({ _id: { $in: pageIds } })), false);
+  const builder = new Page.PageQueryBuilder(Page.find({ _id: { $in: pageIds } }), false);
 
   builder.addConditionToPagenate(undefined, undefined); // offset and limit are unnesessary
 
@@ -73,11 +68,9 @@ const findPageListByIds = async(pageIds: ObjectIdLike[], crowi: any) => {
     pages,
     totalCount,
   };
-
 };
 
 class SearchService implements SearchQueryParser, SearchResolver {
-
   crowi: Crowi;
 
   isErrorOccuredOnHealthcheck: boolean | null;
@@ -86,7 +79,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
   fullTextSearchDelegator: any & ElasticsearchDelegator;
 
-  nqDelegators: {[key in SearchDelegatorName]: SearchDelegator};
+  nqDelegators: { [key in SearchDelegatorName]: SearchDelegator };
 
   constructor(crowi: Crowi) {
     this.crowi = crowi;
@@ -98,8 +91,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
       this.fullTextSearchDelegator = this.generateFullTextSearchDelegator();
       this.nqDelegators = this.generateNQDelegators(this.fullTextSearchDelegator);
       logger.info('Succeeded to initialize search delegators');
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
     }
 
@@ -133,7 +125,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     logger.info('No elasticsearch URI is specified so that full text search is disabled.');
   }
 
-  generateNQDelegators(defaultDelegator: ElasticsearchDelegator): {[key in SearchDelegatorName]: SearchDelegator} {
+  generateNQDelegators(defaultDelegator: ElasticsearchDelegator): { [key in SearchDelegatorName]: SearchDelegator } {
     return {
       [SearchDelegatorName.DEFAULT]: defaultDelegator,
       [SearchDelegatorName.PRIVATE_LEGACY_PAGES]: new PrivateLegacyPagesDelegator() as unknown as SearchDelegator,
@@ -188,8 +180,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
       logger.info('Reconnecting succeeded.');
       this.resetErrorStatus();
-    }
-    catch (err) {
+    } catch (err) {
       throw err;
     }
   }
@@ -197,8 +188,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   async getInfo() {
     try {
       return await this.fullTextSearchDelegator.getInfo();
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       throw err;
     }
@@ -210,8 +200,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
       this.isErrorOccuredOnHealthcheck = false;
       return result;
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
 
       // switch error flag, `isErrorOccuredOnHealthcheck` to be `false`
@@ -255,8 +244,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     let parsedQuery: ParsedQuery;
     if (aliasOf != null) {
       parsedQuery = { queryString: normalizeQueryString(aliasOf), terms: this.parseQueryString(aliasOf) };
-    }
-    else {
+    } else {
       parsedQuery = { queryString, terms, delegatorName };
     }
 
@@ -297,8 +285,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     // parse
     try {
       parsedQuery = await this.parseSearchQuery(keyword, nqName);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred while parseSearchQuery', err);
       throw err;
     }
@@ -312,8 +299,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     // resolve
     try {
       [delegator, data] = await this.resolve(parsedQuery);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred while resolving search delegator', err);
       throw err;
     }
@@ -347,8 +333,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
         phrase.trim();
         if (phrase.match(/^-/)) {
           notPhraseWords.push(phrase.replace(/^-/, ''));
-        }
-        else {
+        } else {
           phraseWords.push(phrase);
         }
       });
@@ -368,22 +353,17 @@ class SearchService implements SearchQueryParser, SearchResolver {
       if (matchNegative != null) {
         if (matchNegative[1] === 'prefix:') {
           notPrefixPaths.push(matchNegative[2]);
-        }
-        else if (matchNegative[1] === 'tag:') {
+        } else if (matchNegative[1] === 'tag:') {
           notTags.push(matchNegative[2]);
-        }
-        else {
+        } else {
           notMatchWords.push(matchNegative[2]);
         }
-      }
-      else if (matchPositive != null) {
+      } else if (matchPositive != null) {
         if (matchPositive[1] === 'prefix:') {
           prefixPaths.push(matchPositive[2]);
-        }
-        else if (matchPositive[1] === 'tag:') {
+        } else if (matchPositive[1] === 'tag:') {
           tags.push(matchPositive[2]);
-        }
-        else {
+        } else {
           matchWords.push(matchPositive[2]);
         }
       }
@@ -433,7 +413,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const result = {} as IFormattedSearchResult;
 
     // get page data
-    const pageIds: string[] = searchResult.data.map((page) => { return page._id });
+    const pageIds: string[] = searchResult.data.map((page) => {
+      return page._id;
+    });
 
     const findPageResult = await findPageListByIds(pageIds, this.crowi);
 
@@ -464,8 +446,13 @@ class SearchService implements SearchQueryParser, SearchResolver {
       const highlightData = data._highlight;
       if (highlightData != null) {
         const snippet = this.canShowSnippet(pageData, user, userGroups)
-          // eslint-disable-next-line max-len
-          ? highlightData.body || highlightData['body.en'] || highlightData['body.ja'] || highlightData.comments || highlightData['comments.en'] || highlightData['comments.ja']
+          ? // eslint-disable-next-line max-len
+            highlightData.body ||
+            highlightData['body.en'] ||
+            highlightData['body.ja'] ||
+            highlightData.comments ||
+            highlightData['comments.en'] ||
+            highlightData['comments.ja']
           : null;
         const pathMatch = highlightData['path.en'] || highlightData['path.ja'];
 
@@ -505,20 +492,26 @@ class SearchService implements SearchQueryParser, SearchResolver {
     }
 
     if (testGrant === Page.GRANT_OWNER) {
-      if (user == null) { return false; }
+      if (user == null) {
+        return false;
+      }
 
       return user._id.toString() === testGrantedUser.toString();
     }
 
     if (testGrant === Page.GRANT_USER_GROUP) {
-      if (userGroups == null) { return false; }
+      if (userGroups == null) {
+        return false;
+      }
 
-      return hasIntersection(userGroups.map(id => id.toString()), testGrantedGroups);
+      return hasIntersection(
+        userGroups.map((id) => id.toString()),
+        testGrantedGroups,
+      );
     }
 
     return true;
   }
-
 }
 
 export default SearchService;

@@ -9,8 +9,7 @@ import { useSWRxPageByPath } from '~/stores/page';
 import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 import DefaultContentSkeleton from '../Skeleton/DefaultContentSkeleton';
 
-
-const CustomSidebarContent = dynamic(() => import('./CustomSidebarSubstance').then(mod => mod.CustomSidebarSubstance), { ssr: false });
+const CustomSidebarContent = dynamic(() => import('./CustomSidebarSubstance').then((mod) => mod.CustomSidebarSubstance), { ssr: false });
 
 export const CustomSidebar = (): JSX.Element => {
   const { t } = useTranslation();
@@ -22,9 +21,13 @@ export const CustomSidebar = (): JSX.Element => {
       <div className="grw-sidebar-content-header d-flex">
         <h3 className="fs-6 fw-bold mb-0">
           {t('Custom Sidebar')}
-          { !isLoading && <Link href="/Sidebar#edit" className="h6 ms-2"><span className="material-symbols-outlined">edit</span></Link> }
+          {!isLoading && (
+            <Link href="/Sidebar#edit" className="h6 ms-2">
+              <span className="material-symbols-outlined">edit</span>
+            </Link>
+          )}
         </h3>
-        { !isLoading && <SidebarHeaderReloadButton onClick={() => mutate()} /> }
+        {!isLoading && <SidebarHeaderReloadButton onClick={() => mutate()} />}
       </div>
 
       <Suspense fallback={<DefaultContentSkeleton />}>

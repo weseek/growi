@@ -27,11 +27,7 @@ const BotCreateProcess = () => {
         {t('admin:slack_integration.accordion.create_bot')}
         <span className="growi-custom-icons ms-2">external_link</span>
       </button>
-      <a
-        href={t('admin:slack_integration.docs_url.custom_bot_with_proxy_setting')}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a href={t('admin:slack_integration.docs_url.custom_bot_with_proxy_setting')} target="_blank" rel="noopener noreferrer">
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_create_a_bot')}
@@ -51,11 +47,7 @@ const BotInstallProcessForOfficialBot = () => {
         {t('admin:slack_integration.accordion.install_now')}
         <span className="growi-custom-icons ms-2">external_link</span>
       </button>
-      <a
-        href={t('admin:slack_integration.docs_url.official_bot_setting')}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a href={t('admin:slack_integration.docs_url.official_bot_setting')} target="_blank" rel="noopener noreferrer">
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_install')}
@@ -120,15 +112,14 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
   const { t } = useTranslation();
   const { slackAppIntegrationId } = props;
 
-  const regenerateTokensHandler = async() => {
+  const regenerateTokensHandler = async () => {
     try {
       await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/regenerate-tokens`);
       if (props.onUpdateTokens != null) {
         props.onUpdateTokens();
       }
       toastSuccess(t('toaster.update_successed', { target: 'Token', ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -157,12 +148,8 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
       </div>
 
       <div className="row my-3">
-        <button
-          type="button"
-          className="btn btn-primary mx-auto"
-          onClick={regenerateTokensHandler}
-        >
-          { t('admin:slack_integration.access_token_settings.regenerate') }
+        <button type="button" className="btn btn-primary mx-auto" onClick={regenerateTokensHandler}>
+          {t('admin:slack_integration.access_token_settings.regenerate')}
         </button>
       </div>
       <p className="fw-bold mt-5">2. {t('admin:slack_integration.accordion.register_for_growi_official_bot_proxy_service')}</p>
@@ -189,7 +176,6 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
                 <CustomCopyToClipBoard textToBeCopied={props.growiUrl} message="admin:slack_integration.copied_to_clipboard"></CustomCopyToClipBoard>
               </div>
             </div>
-
           </li>
           <li>
             <p
@@ -202,20 +188,16 @@ const GeneratingTokensAndRegisteringProxyServiceProcess = (props) => {
         <img className="mb-3 border border-light img-fluid" width={500} src="/images/slack-integration/growi-register-modal.png" />
       </div>
     </div>
-
   );
 };
 
-const TestProcess = ({
-  slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess,
-}) => {
-
+const TestProcess = ({ slackAppIntegrationId, onSubmitForm, onSubmitFormFailed, isLatestConnectionSuccess }) => {
   const { t } = useTranslation();
   const [testChannel, setTestChannel] = useState('');
   const [logsValue, setLogsValue] = useState('');
   const successMessage = 'Successfully sent to Slack workspace.';
 
-  const submitForm = async(e) => {
+  const submitForm = async (e) => {
     e.preventDefault();
     try {
       await apiv3Post(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/relation-test`, { channel: testChannel });
@@ -225,8 +207,7 @@ const TestProcess = ({
       if (onSubmitForm != null) {
         onSubmitForm();
       }
-    }
-    catch (error) {
+    } catch (error) {
       const newLogs = addLogs(logsValue, error[0].message, error[0].code);
       setLogsValue(newLogs);
       logger.error(error);
@@ -240,27 +221,20 @@ const TestProcess = ({
     <>
       <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
       <p className="text-center text-warning">
-        <span className="material-symbols-outlined me-1">info</span>{t('admin:slack_integration.accordion.test_connection_only_public_channel')}
+        <span className="material-symbols-outlined me-1">info</span>
+        {t('admin:slack_integration.accordion.test_connection_only_public_channel')}
       </p>
       <div className="d-flex justify-content-center">
-        <form className="justify-content-center" onSubmit={e => submitForm(e)}>
+        <form className="justify-content-center" onSubmit={(e) => submitForm(e)}>
           <div className="input-group col-8">
             <div>
-              <span className="input-group-text" id="slack-channel-addon"><span className="material-symbols-outlined">tag</span></span>
+              <span className="input-group-text" id="slack-channel-addon">
+                <span className="material-symbols-outlined">tag</span>
+              </span>
             </div>
-            <input
-              className="form-control"
-              type="text"
-              value={testChannel}
-              placeholder="Slack Channel"
-              onChange={e => setTestChannel(e.target.value)}
-            />
+            <input className="form-control" type="text" value={testChannel} placeholder="Slack Channel" onChange={(e) => setTestChannel(e.target.value)} />
           </div>
-          <button
-            type="submit"
-            className="btn btn-info mx-3 fw-bold"
-            disabled={testChannel.trim() === ''}
-          >
+          <button type="submit" className="btn btn-info mx-3 fw-bold" disabled={testChannel.trim() === ''}>
             Test
           </button>
         </form>
@@ -269,20 +243,16 @@ const TestProcess = ({
       <form>
         <div className="row my-3 justify-content-center">
           <div className="slack-connection-log col-md-4">
-            <label className="form-label mb-1"><p className="border-info slack-connection-log-title ps-2 m-0">Logs</p></label>
-            <textarea
-              className="form-control card border-info slack-connection-log-body rounded-3"
-              rows="5"
-              value={logsValue}
-              readOnly
-            />
+            <label className="form-label mb-1">
+              <p className="border-info slack-connection-log-title ps-2 m-0">Logs</p>
+            </label>
+            <textarea className="form-control card border-info slack-connection-log-body rounded-3" rows="5" value={logsValue} readOnly />
           </div>
         </div>
       </form>
     </>
   );
 };
-
 
 const WithProxyAccordions = (props) => {
   const { t } = useTranslation();
@@ -299,7 +269,6 @@ const WithProxyAccordions = (props) => {
     setIsLatestConnectionSuccess(false);
   };
 
-
   const officialBotIntegrationProcedure = {
     1: {
       title: 'install_bot_to_slack',
@@ -307,31 +276,37 @@ const WithProxyAccordions = (props) => {
     },
     2: {
       title: 'register_for_growi_official_bot_proxy_service',
-      content: <GeneratingTokensAndRegisteringProxyServiceProcess
-        growiUrl={siteUrl}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        tokenPtoG={props.tokenPtoG}
-        tokenGtoP={props.tokenGtoP}
-        onUpdateTokens={props.onUpdateTokens}
-      />,
+      content: (
+        <GeneratingTokensAndRegisteringProxyServiceProcess
+          growiUrl={siteUrl}
+          slackAppIntegrationId={props.slackAppIntegrationId}
+          tokenPtoG={props.tokenPtoG}
+          tokenGtoP={props.tokenGtoP}
+          onUpdateTokens={props.onUpdateTokens}
+        />
+      ),
     },
     3: {
       title: 'manage_permission',
-      content: <ManageCommandsProcess
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
-        permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
-        permissionsForSlackEventActions={props.permissionsForSlackEventActions}
-      />,
+      content: (
+        <ManageCommandsProcess
+          slackAppIntegrationId={props.slackAppIntegrationId}
+          permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
+          permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
+          permissionsForSlackEventActions={props.permissionsForSlackEventActions}
+        />
+      ),
     },
     4: {
       title: 'test_connection',
-      content: <TestProcess
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        onSubmitForm={submitForm}
-        onSubmitFormFailed={submitFormFailed}
-        isLatestConnectionSuccess={isLatestConnectionSuccess}
-      />,
+      content: (
+        <TestProcess
+          slackAppIntegrationId={props.slackAppIntegrationId}
+          onSubmitForm={submitForm}
+          onSubmitFormFailed={submitFormFailed}
+          isLatestConnectionSuccess={isLatestConnectionSuccess}
+        />
+      ),
     },
   };
 
@@ -346,13 +321,15 @@ const WithProxyAccordions = (props) => {
     },
     3: {
       title: 'register_for_growi_custom_bot_proxy',
-      content: <GeneratingTokensAndRegisteringProxyServiceProcess
-        growiUrl={siteUrl}
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        tokenPtoG={props.tokenPtoG}
-        tokenGtoP={props.tokenGtoP}
-        onUpdateTokens={props.onUpdateTokens}
-      />,
+      content: (
+        <GeneratingTokensAndRegisteringProxyServiceProcess
+          growiUrl={siteUrl}
+          slackAppIntegrationId={props.slackAppIntegrationId}
+          tokenPtoG={props.tokenPtoG}
+          tokenGtoP={props.tokenGtoP}
+          onUpdateTokens={props.onUpdateTokens}
+        />
+      ),
     },
     4: {
       title: 'set_proxy_url_on_growi',
@@ -360,40 +337,42 @@ const WithProxyAccordions = (props) => {
     },
     5: {
       title: 'manage_permission',
-      content: <ManageCommandsProcess
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
-        permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
-        permissionsForSlackEventActions={props.permissionsForSlackEventActions}
-      />,
+      content: (
+        <ManageCommandsProcess
+          slackAppIntegrationId={props.slackAppIntegrationId}
+          permissionsForBroadcastUseCommands={props.permissionsForBroadcastUseCommands}
+          permissionsForSingleUseCommands={props.permissionsForSingleUseCommands}
+          permissionsForSlackEventActions={props.permissionsForSlackEventActions}
+        />
+      ),
     },
     6: {
       title: 'test_connection',
-      content: <TestProcess
-        slackAppIntegrationId={props.slackAppIntegrationId}
-        onSubmitForm={submitForm}
-        onSubmitFormFailed={submitFormFailed}
-        isLatestConnectionSuccess={isLatestConnectionSuccess}
-      />,
+      content: (
+        <TestProcess
+          slackAppIntegrationId={props.slackAppIntegrationId}
+          onSubmitForm={submitForm}
+          onSubmitFormFailed={submitFormFailed}
+          isLatestConnectionSuccess={isLatestConnectionSuccess}
+        />
+      ),
     },
   };
 
   const integrationProcedureMapping = props.botType === SlackbotType.OFFICIAL ? officialBotIntegrationProcedure : CustomBotIntegrationProcedure;
 
   return (
-    <div
-      className="accordion"
-    >
+    <div className="accordion">
       {Object.entries(integrationProcedureMapping).map(([key, value]) => {
         return (
           <Accordion
-            title={(
+            title={
               <>
                 <span className="me-3">{key}</span>
                 {t(`admin:slack_integration.accordion.${value.title}`)}
                 {value.title === 'test_connection' && isLatestConnectionSuccess && <span className="material-symbols-outlined ms-3 text-success">check</span>}
               </>
-            )}
+            }
             key={key}
           >
             {value.content}
@@ -403,7 +382,6 @@ const WithProxyAccordions = (props) => {
     </div>
   );
 };
-
 
 /**
  * Wrapper component for using unstated

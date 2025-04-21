@@ -7,8 +7,8 @@ import { DescendantsPageList } from './DescendantsPageList';
 import { PageTimeline } from './PageTimeline';
 
 type NotFoundPageProps = {
-  path: string,
-}
+  path: string;
+};
 
 const NotFoundPage = (props: NotFoundPageProps): JSX.Element => {
   const { t } = useTranslation();

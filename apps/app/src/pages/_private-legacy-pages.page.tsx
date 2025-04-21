@@ -1,7 +1,5 @@
 import type { IUser } from '@growi/core';
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -12,30 +10,36 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
-  useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp, useCurrentPathname,
+  useCsrfToken,
+  useCurrentUser,
+  useIsSearchPage,
+  useIsSearchScopeChildrenAsDefault,
+  useIsSearchServiceConfigured,
+  useIsSearchServiceReachable,
+  useRendererConfig,
+  useGrowiCloudUri,
+  useIsEnabledMarp,
+  useCurrentPathname,
 } from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { CommonProps } from './utils/commons';
-import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
-} from './utils/commons';
+import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig } from './utils/commons';
 
 const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
 
 type Props = CommonProps & {
-  currentUser: IUser,
+  currentUser: IUser;
 
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
-  isEnabledMarp: boolean,
+  isSearchServiceConfigured: boolean;
+  isSearchServiceReachable: boolean;
+  isSearchScopeChildrenAsDefault: boolean;
+  isEnabledMarp: boolean;
 
   // Render config
-  rendererConfig: RendererConfig,
+  rendererConfig: RendererConfig;
 
-  sidebarConfig: ISidebarConfig,
+  sidebarConfig: ISidebarConfig;
 };
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
@@ -116,9 +120,10 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
     isEnabledXssPrevention: configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
     sanitizeType: configManager.getConfig('markdown:rehypeSanitize:option'),
     customTagWhitelist: crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
-    customAttrWhitelist: configManager.getConfig('markdown:rehypeSanitize:attributes') != null
-      ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
-      : undefined,
+    customAttrWhitelist:
+      configManager.getConfig('markdown:rehypeSanitize:attributes') != null
+        ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
+        : undefined,
     highlightJsStyleBorder: crowi.configManager.getConfig('customize:highlightJsStyleBorder'),
   };
 }
@@ -134,7 +139,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { user } = req;
 

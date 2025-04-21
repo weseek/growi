@@ -8,8 +8,7 @@ import { setupIndependentModels, setupModelsDependentOnCrowi } from '~/server/cr
 import { constructConvertMap } from './construct-convert-map';
 
 describe('constructConvertMap', () => {
-
-  beforeAll(async() => {
+  beforeAll(async () => {
     const events = {
       page: mock<EventEmitter>(),
       user: mock<EventEmitter>(),

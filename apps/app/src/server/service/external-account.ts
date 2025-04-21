@@ -13,7 +13,6 @@ import type PassportService from './passport';
 const logger = loggerFactory('growi:service:external-account-service');
 
 class ExternalAccountService {
-
   passportService: PassportService;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -22,14 +21,12 @@ class ExternalAccountService {
   }
 
   async getOrCreateUser(
-      userInfo: {id: string, username: string, name?: string, email?: string},
-      providerId: IExternalAuthProviderType,
+    userInfo: { id: string; username: string; name?: string; email?: string },
+    providerId: IExternalAuthProviderType,
   ): Promise<ExternalAccountDocument | undefined> {
     // get option
     const isSameUsernameTreatedAsIdenticalUser = this.passportService.isSameUsernameTreatedAsIdenticalUser(providerId);
-    const isSameEmailTreatedAsIdenticalUser = providerId === 'ldap'
-      ? false
-      : this.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
+    const isSameEmailTreatedAsIdenticalUser = providerId === 'ldap' ? false : this.passportService.isSameEmailTreatedAsIdenticalUser(providerId);
 
     try {
       // find or register(create) user
@@ -43,8 +40,7 @@ class ExternalAccountService {
         userInfo.email,
       );
       return externalAccount;
-    }
-    catch (err) {
+    } catch (err) {
       if (err instanceof NullUsernameToBeRegisteredError) {
         logger.error(err.message);
         throw new ErrorV3(err.message);
@@ -57,8 +53,9 @@ class ExternalAccountService {
         }
         logger.error('provider-DuplicatedUsernameException', providerId);
 
-        throw new ErrorV3('message.provider_duplicated_username_exception', LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION,
-          undefined, { failedProviderForDuplicatedUsernameException: providerId });
+        throw new ErrorV3('message.provider_duplicated_username_exception', LoginErrorCode.PROVIDER_DUPLICATED_USERNAME_EXCEPTION, undefined, {
+          failedProviderForDuplicatedUsernameException: providerId,
+        });
       }
       if (err.name === 'UserUpperLimitException') {
         logger.error(err.message);
@@ -66,7 +63,6 @@ class ExternalAccountService {
       }
     }
   }
-
 }
 
 // eslint-disable-next-line import/no-mutable-exports

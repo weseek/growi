@@ -12,20 +12,19 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-
 const logger = loggerFactory('growi:routes:apiv3:page:get-pages-by-page-paths');
 
 type GetPagePathsWithDescendantCountFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqQuery = {
-  paths: string[],
-  userGroups?: string[],
-  isIncludeEmpty?: boolean,
-  includeAnyoneWithTheLink?: boolean,
-}
+  paths: string[];
+  userGroups?: string[];
+  isIncludeEmpty?: boolean;
+  includeAnyoneWithTheLink?: boolean;
+};
 
 interface Req extends Request<undefined, ApiV3Response, undefined, ReqQuery> {
-  user: IUserHasId,
+  user: IUserHasId;
 }
 export const getPagePathsWithDescendantCountFactory: GetPagePathsWithDescendantCountFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
@@ -56,18 +55,17 @@ export const getPagePathsWithDescendantCountFactory: GetPagePathsWithDescendantC
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly,
-    validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
-      const {
-        paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink,
-      } = req.query;
+    accessTokenParser,
+    loginRequiredStrictly,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
+      const { paths, userGroups, isIncludeEmpty, includeAnyoneWithTheLink } = req.query;
 
       try {
         const pagePathsWithDescendantCount = await Page.descendantCountByPaths(paths, req.user, userGroups, isIncludeEmpty, includeAnyoneWithTheLink);
         return res.apiv3({ pagePathsWithDescendantCount });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(err);
       }

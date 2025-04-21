@@ -1,26 +1,19 @@
 import React, { useCallback, type JSX } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import type { SelectedPage } from '../../../../interfaces/selected-page';
 
 type Props = {
-  isOpen: boolean,
-  selectedPages: SelectedPage[],
-  closeModal: () => void,
-  onSubmit: () => Promise<void>,
-}
+  isOpen: boolean;
+  selectedPages: SelectedPage[];
+  closeModal: () => void;
+  onSubmit: () => Promise<void>;
+};
 
 export const ShareScopeWarningModal = (props: Props): JSX.Element => {
-  const {
-    isOpen,
-    selectedPages,
-    closeModal,
-    onSubmit,
-  } = props;
+  const { isOpen, selectedPages, closeModal, onSubmit } = props;
 
   const { t } = useTranslation();
 
@@ -47,32 +40,20 @@ export const ShareScopeWarningModal = (props: Props): JSX.Element => {
 
         <div className="mb-4">
           <p className="mb-2 text-secondary">{t('share_scope_warning_modal.selected_pages_label')}</p>
-          {selectedPages.map(selectedPage => (
-            <code key={selectedPage.page.path}>
-              {selectedPage.page.path}
-            </code>
+          {selectedPages.map((selectedPage) => (
+            <code key={selectedPage.page.path}>{selectedPage.page.path}</code>
           ))}
         </div>
 
-        <p>
-          {t('share_scope_warning_modal.confirmation_message')}
-        </p>
+        <p>{t('share_scope_warning_modal.confirmation_message')}</p>
       </ModalBody>
 
       <ModalFooter>
-        <button
-          type="button"
-          className="btn btn-outline-secondary"
-          onClick={closeModal}
-        >
+        <button type="button" className="btn btn-outline-secondary" onClick={closeModal}>
           {t('share_scope_warning_modal.button.review')}
         </button>
 
-        <button
-          type="button"
-          className="btn btn-warning"
-          onClick={upsertAiAssistantHandler}
-        >
+        <button type="button" className="btn btn-warning" onClick={upsertAiAssistantHandler}>
           {t('share_scope_warning_modal.button.proceed')}
         </button>
       </ModalFooter>

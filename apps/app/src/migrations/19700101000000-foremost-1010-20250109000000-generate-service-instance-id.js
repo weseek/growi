@@ -5,7 +5,6 @@ import { configManager } from '~/server/service/config-manager';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:migrate:generate-service-instance-id');
 
 module.exports = {

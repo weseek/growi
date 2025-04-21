@@ -3,26 +3,21 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import type { Ref, IUserGroup, IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 type Props = {
-  userGroup?: IUserGroupHasId,
-  buttonLabel?: string,
-  onClickSubmit?: (userGroupData: Partial<IUserGroupHasId>) => Promise<IUserGroupHasId | void>
-  isShow?: boolean
-  onHide?: () => Promise<void> | void
-  isExternalGroup?: boolean
+  userGroup?: IUserGroupHasId;
+  buttonLabel?: string;
+  onClickSubmit?: (userGroupData: Partial<IUserGroupHasId>) => Promise<IUserGroupHasId | void>;
+  isShow?: boolean;
+  onHide?: () => Promise<void> | void;
+  isExternalGroup?: boolean;
 };
 
 export const UserGroupModal: FC<Props> = (props: Props) => {
-
   const { t } = useTranslation('admin');
 
-  const {
-    userGroup, buttonLabel, onClickSubmit, isShow, onHide, isExternalGroup = false,
-  } = props;
+  const { userGroup, buttonLabel, onClickSubmit, isShow, onHide, isExternalGroup = false } = props;
 
   /*
    * State
@@ -42,20 +37,23 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
     setDescription(e.target.value);
   }, []);
 
-  const onSubmitHandler = useCallback(async(e) => {
-    e.preventDefault(); // no reload
+  const onSubmitHandler = useCallback(
+    async (e) => {
+      e.preventDefault(); // no reload
 
-    if (onClickSubmit == null) {
-      return;
-    }
+      if (onClickSubmit == null) {
+        return;
+      }
 
-    await onClickSubmit({
-      _id: userGroup?._id,
-      name: currentName,
-      description: currentDescription,
-      parent: currentParent,
-    });
-  }, [userGroup, currentName, currentDescription, currentParent, onClickSubmit]);
+      await onClickSubmit({
+        _id: userGroup?._id,
+        name: currentName,
+        description: currentDescription,
+        parent: currentParent,
+      });
+    },
+    [userGroup, currentName, currentDescription, currentParent, onClickSubmit],
+  );
 
   // componentDidMount
   useEffect(() => {
@@ -97,9 +95,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
             <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
             {isExternalGroup && (
               <p className="form-text text-muted">
-                <small>
-                  {t('external_user_group.description_form_detail')}
-                </small>
+                <small>{t('external_user_group.description_form_detail')}</small>
               </p>
             )}
           </div>
@@ -107,7 +103,6 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
           {/* TODO 90732: Add a drop-down to show selectable parents */}
 
           {/* TODO 85462: Add a note that "if you change the parent, the offspring will also be moved together */}
-
         </ModalBody>
 
         <ModalFooter>

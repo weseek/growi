@@ -13,7 +13,6 @@ import { useSiteUrl } from '~/stores-universal/context';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class GoogleSecurityManagementContents extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -27,30 +26,25 @@ class GoogleSecurityManagementContents extends React.Component {
       await adminGoogleSecurityContainer.updateGoogleSetting();
       await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_settings.OAuth.Google.updated_google'));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
 
   render() {
-    const {
-      t, adminGeneralSecurityContainer, adminGoogleSecurityContainer, siteUrl,
-    } = this.props;
+    const { t, adminGeneralSecurityContainer, adminGoogleSecurityContainer, siteUrl } = this.props;
     const { isGoogleEnabled } = adminGeneralSecurityContainer.state;
     const googleCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/google/callback');
 
     return (
-
       <React.Fragment>
-
-        <h2 className="alert-anchor border-bottom">
-          {t('security_settings.OAuth.Google.name')}
-        </h2>
+        <h2 className="alert-anchor border-bottom">{t('security_settings.OAuth.Google.name')}</h2>
 
         {adminGoogleSecurityContainer.state.retrieveError != null && (
           <div className="alert alert-danger">
-            <p>{t('Error occurred')} : {adminGoogleSecurityContainer.state.retrieveError}</p>
+            <p>
+              {t('Error occurred')} : {adminGoogleSecurityContainer.state.retrieveError}
+            </p>
           </div>
         )}
 
@@ -62,54 +56,57 @@ class GoogleSecurityManagementContents extends React.Component {
                 className="form-check-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isGoogleEnabled || false}
-                onChange={() => { adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled() }}
+                onChange={() => {
+                  adminGeneralSecurityContainer.switchIsGoogleOAuthEnabled();
+                }}
               />
               <label className="form-label form-check-label" htmlFor="isGoogleEnabled">
                 {t('security_settings.OAuth.Google.enable_google')}
               </label>
             </div>
-            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('google') && isGoogleEnabled)
-              && <div className="badge text-bg-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
+            {!adminGeneralSecurityContainer.state.setupStrategies.includes('google') && isGoogleEnabled && (
+              <div className="badge text-bg-warning">{t('security_settings.setup_is_not_yet_complete')}</div>
+            )}
           </div>
         </div>
 
         <div className="row mb-5">
           <label className="form-label col-12 col-md-3 text-start text-md-end py-2">{t('security_settings.callback_URL')}</label>
           <div className="col-12 col-md-6">
-            <input
-              className="form-control"
-              type="text"
-              value={googleCallbackUrl}
-              readOnly
-            />
+            <input className="form-control" type="text" value={googleCallbackUrl} readOnly />
             <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
             {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
                 <span className="material-symbols-outlined">error</span>
                 <span
-                // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<span class="material-symbols-outlined">login</span></a>`, ns: 'commons' }) }}
+                  // eslint-disable-next-line max-len
+                  dangerouslySetInnerHTML={{
+                    __html: t('alert.siteUrl_is_not_set', {
+                      link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<span class="material-symbols-outlined">login</span></a>`,
+                      ns: 'commons',
+                    }),
+                  }}
                 />
               </div>
             )}
           </div>
         </div>
 
-
         {isGoogleEnabled && (
           <React.Fragment>
-
             <h3 className="border-bottom mb-4">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-4">
-              <label htmlFor="googleClientId" className="col-3 text-end py-2 form-label">{t('security_settings.clientID')}</label>
+              <label htmlFor="googleClientId" className="col-3 text-end py-2 form-label">
+                {t('security_settings.clientID')}
+              </label>
               <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
                   name="googleClientId"
                   defaultValue={adminGoogleSecurityContainer.state.googleClientId || ''}
-                  onChange={e => adminGoogleSecurityContainer.changeGoogleClientId(e.target.value)}
+                  onChange={(e) => adminGoogleSecurityContainer.changeGoogleClientId(e.target.value)}
                 />
                 <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'OAUTH_GOOGLE_CLIENT_ID' }) }} />
@@ -118,14 +115,16 @@ class GoogleSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-4">
-              <label htmlFor="googleClientSecret" className="col-3 text-end py-2 form-label">{t('security_settings.client_secret')}</label>
+              <label htmlFor="googleClientSecret" className="col-3 text-end py-2 form-label">
+                {t('security_settings.client_secret')}
+              </label>
               <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
                   name="googleClientSecret"
                   defaultValue={adminGoogleSecurityContainer.state.googleClientSecret || ''}
-                  onChange={e => adminGoogleSecurityContainer.changeGoogleClientSecret(e.target.value)}
+                  onChange={(e) => adminGoogleSecurityContainer.changeGoogleClientSecret(e.target.value)}
                 />
                 <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'OAUTH_GOOGLE_CLIENT_SECRET' }) }} />
@@ -141,7 +140,9 @@ class GoogleSecurityManagementContents extends React.Component {
                     className="form-check-input"
                     type="checkbox"
                     checked={adminGoogleSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
-                    onChange={() => { adminGoogleSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
+                    onChange={() => {
+                      adminGoogleSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser();
+                    }}
                   />
                   <label
                     className="form-check-label"
@@ -167,7 +168,6 @@ class GoogleSecurityManagementContents extends React.Component {
                 </button>
               </div>
             </div>
-
           </React.Fragment>
         )}
 
@@ -175,13 +175,24 @@ class GoogleSecurityManagementContents extends React.Component {
 
         <div style={{ minHeight: '300px' }}>
           <h4>
-            <span className="material-symbols-outlined" aria-hidden="true">help</span>
-            <a href="#collapseHelpForGoogleOauth" data-bs-toggle="collapse"> {t('security_settings.OAuth.how_to.google')}</a>
+            <span className="material-symbols-outlined" aria-hidden="true">
+              help
+            </span>
+            <a href="#collapseHelpForGoogleOauth" data-bs-toggle="collapse">
+              {' '}
+              {t('security_settings.OAuth.how_to.google')}
+            </a>
           </h4>
           <div className="card custom-card bg-body-tertiary">
             <ol id="collapseHelpForGoogleOauth" className="collapse mb-0">
               {/* eslint-disable-next-line max-len */}
-              <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.Google.register_1', { link: '<a href="https://console.cloud.google.com/apis/credentials" target=_blank>Google Cloud Platform API Manager</a>' }) }} />
+              <li
+                dangerouslySetInnerHTML={{
+                  __html: t('security_settings.OAuth.Google.register_1', {
+                    link: '<a href="https://console.cloud.google.com/apis/credentials" target=_blank>Google Cloud Platform API Manager</a>',
+                  }),
+                }}
+              />
               <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.Google.register_2') }} />
               <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.Google.register_3') }} />
               <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.Google.register_4', { url: googleCallbackUrl }) }} />
@@ -189,13 +200,9 @@ class GoogleSecurityManagementContents extends React.Component {
             </ol>
           </div>
         </div>
-
       </React.Fragment>
-
-
     );
   }
-
 }
 
 const GoogleSecurityManagementContentsFc = (props) => {
@@ -203,7 +210,6 @@ const GoogleSecurityManagementContentsFc = (props) => {
   const { data: siteUrl } = useSiteUrl();
   return <GoogleSecurityManagementContents t={t} siteUrl={siteUrl} {...props} />;
 };
-
 
 GoogleSecurityManagementContents.propTypes = {
   t: PropTypes.func.isRequired, // i18next

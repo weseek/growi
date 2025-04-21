@@ -13,9 +13,7 @@ import * as nextI18nConfig from '^/config/next-i18next.config';
 
 import { GlobalFonts } from '~/components/FontFamily/GlobalFonts';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import {
-  useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
-} from '~/stores-universal/context';
+import { useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme } from '~/stores-universal/context';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import { getLocaleAtServerSide, type CommonProps } from './utils/commons';
@@ -25,12 +23,12 @@ import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 // biome-ignore lint/complexity/noBannedTypes: ignore
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: JSX.Element) => ReactNode,
-}
+  getLayout?: (page: JSX.Element) => ReactNode;
+};
 
 type GrowiAppProps = AppProps & {
-  Component: NextPageWithLayout,
-  userLocale: Locale,
+  Component: NextPageWithLayout;
+  userLocale: Locale;
 };
 
 // register custom serializer
@@ -64,19 +62,17 @@ function GrowiApp({ Component, pageProps, userLocale }: GrowiAppProps): JSX.Elem
   useForcedColorScheme(commonPageProps.forcedColorScheme);
 
   // Use the layout defined at the page level, if available
-  const getLayout = Component.getLayout ?? (page => page);
+  const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <>
       <GlobalFonts />
-      <SWRConfig value={swrGlobalConfiguration}>
-        {getLayout(<Component {...pageProps} />)}
-      </SWRConfig>
+      <SWRConfig value={swrGlobalConfiguration}>{getLayout(<Component {...pageProps} />)}</SWRConfig>
     </>
   );
 }
 
-GrowiApp.getInitialProps = async(appContext: AppContext) => {
+GrowiApp.getInitialProps = async (appContext: AppContext) => {
   const appProps = App.getInitialProps(appContext);
   const userLocale = getLocaleAtServerSide(appContext.ctx.req as unknown as CrowiRequest);
 

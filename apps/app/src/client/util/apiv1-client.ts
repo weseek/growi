@@ -5,7 +5,6 @@ import axios from '~/utils/axios';
 const apiv1Root = '/_api';
 
 class Apiv1ErrorHandler extends Error {
-
   code;
 
   data;
@@ -16,9 +15,7 @@ class Apiv1ErrorHandler extends Error {
     this.message = message;
     this.code = code;
     this.data = data;
-
   }
-
 }
 
 export async function apiRequest<T>(method: string, path: string, params: unknown): Promise<T> {

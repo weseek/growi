@@ -11,28 +11,22 @@ import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';
 
 import { useStaticSWR } from './use-static-swr';
 
-
 const logger = loggerFactory('growi:stores:personal-settings');
-
 
 export const useSWRxPersonalSettings = (config?: SWRConfiguration): SWRResponse<IUser, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
 
   const key = !isGuestUser ? '/personal-setting' : null;
 
-  return useSWR(
-    key,
-    endpoint => apiv3Get(endpoint).then(response => response.data.currentUser),
-    config,
-  );
+  return useSWR(key, (endpoint) => apiv3Get(endpoint).then((response) => response.data.currentUser), config);
 };
 
 export type IPersonalSettingsInfoOption = {
-  sync: () => void,
-  updateBasicInfo: () => Promise<void>,
-  associateLdapAccount: (account: { username: string, password: string }) => Promise<void>,
-  disassociateLdapAccount: (account: { providerType: IExternalAuthProviderType, accountId: string }) => Promise<void>,
-}
+  sync: () => void;
+  updateBasicInfo: () => Promise<void>;
+  associateLdapAccount: (account: { username: string; password: string }) => Promise<void>;
+  disassociateLdapAccount: (account: { providerType: IExternalAuthProviderType; accountId: string }) => Promise<void>;
+};
 
 export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUser, Error> & IPersonalSettingsInfoOption => {
   const { i18n } = useTranslation();
@@ -42,13 +36,13 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
   const swrResult = useStaticSWR<IUser, Error>(key, undefined, { fallbackData: personalSettingsDataFromDB });
 
   // Sync with database
-  const sync = async(): Promise<void> => {
+  const sync = async (): Promise<void> => {
     const { mutate } = swrResult;
     const result = await revalidate();
     mutate(result);
   };
 
-  const updateBasicInfo = async(): Promise<void> => {
+  const updateBasicInfo = async (): Promise<void> => {
     const { data } = swrResult;
 
     if (data == null) {
@@ -67,29 +61,25 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
     try {
       await apiv3Put('/personal-setting/', updateData);
       i18n.changeLanguage(updateData.lang);
-    }
-    catch (errs) {
+    } catch (errs) {
       logger.error(errs);
       throw errs;
     }
   };
 
-
-  const associateLdapAccount = async(account): Promise<void> => {
+  const associateLdapAccount = async (account): Promise<void> => {
     try {
       await apiv3Put('/personal-setting/associate-ldap', account);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       throw new Error('Failed to associate ldap account');
     }
   };
 
-  const disassociateLdapAccount = async(account): Promise<void> => {
+  const disassociateLdapAccount = async (account): Promise<void> => {
     try {
       await apiv3Put('/personal-setting/disassociate-ldap', account);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       throw new Error('Failed to disassociate ldap account');
     }
@@ -105,8 +95,5 @@ export const usePersonalSettings = (config?: SWRConfiguration): SWRResponse<IUse
 };
 
 export const useSWRxPersonalExternalAccounts = (): SWRResponse<(IExternalAccount<IExternalAuthProviderType> & HasObjectId)[], Error> => {
-  return useSWR(
-    '/personal-setting/external-accounts',
-    endpoint => apiv3Get(endpoint).then(response => response.data.externalAccounts),
-  );
+  return useSWR('/personal-setting/external-accounts', (endpoint) => apiv3Get(endpoint).then((response) => response.data.externalAccounts));
 };

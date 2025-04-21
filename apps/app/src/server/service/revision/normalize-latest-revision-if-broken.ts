@@ -5,7 +5,6 @@ import type { PageDocument, PageModel } from '~/server/models/page';
 import { Revision } from '~/server/models/revision';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:service:revision:normalize-latest-revision');
 
 /**
@@ -13,8 +12,7 @@ const logger = loggerFactory('growi:service:revision:normalize-latest-revision')
  *
  * @ref https://github.com/weseek/growi/pull/8998
  */
-export const normalizeLatestRevisionIfBroken = async(pageId: string | Types.ObjectId): Promise<void> => {
-
+export const normalizeLatestRevisionIfBroken = async (pageId: string | Types.ObjectId): Promise<void> => {
   if (await Revision.exists({ pageId: { $eq: pageId } })) {
     return;
   }

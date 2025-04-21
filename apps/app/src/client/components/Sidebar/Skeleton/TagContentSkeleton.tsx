@@ -7,9 +7,7 @@ import { Skeleton } from '~/client/components/Skeleton';
 import styles from '../Tag.module.scss';
 
 export const TagListSkeleton = (): JSX.Element => {
-  return (
-    <Skeleton additionalClass={`${styles['grw-tag-list-skeleton']} w-100 rounded overflow-hidden`} />
-  );
+  return <Skeleton additionalClass={`${styles['grw-tag-list-skeleton']} w-100 rounded overflow-hidden`} />;
 };
 
 const TagContentSkeleton = (): JSX.Element => {

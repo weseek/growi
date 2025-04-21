@@ -2,9 +2,7 @@ import React, { type JSX } from 'react';
 
 import type { IUserGroupHasId, IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import type { SearchType } from '~/interfaces/user-group';
 import { SearchTypes } from '~/interfaces/user-group';
@@ -14,18 +12,18 @@ import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
 import { UserGroupUserFormByInput } from './UserGroupUserFormByInput';
 
 type Props = {
-  isOpen: boolean,
-  userGroup: IUserGroupHasId,
-  searchType: SearchType,
-  isAlsoMailSearched: boolean,
-  isAlsoNameSearched: boolean,
-  onClickAddUserBtn: (username: string) => Promise<void>,
-  onSearchApplicableUsers: (searchWord: string) => Promise<IUserHasId[]>,
-  onSwitchSearchType: (searchType: SearchType) => void
-  onClose: () => void,
-  onToggleIsAlsoMailSearched: () => void,
-  onToggleIsAlsoNameSearched: () => void,
-}
+  isOpen: boolean;
+  userGroup: IUserGroupHasId;
+  searchType: SearchType;
+  isAlsoMailSearched: boolean;
+  isAlsoNameSearched: boolean;
+  onClickAddUserBtn: (username: string) => Promise<void>;
+  onSearchApplicableUsers: (searchWord: string) => Promise<IUserHasId[]>;
+  onSwitchSearchType: (searchType: SearchType) => void;
+  onClose: () => void;
+  onToggleIsAlsoMailSearched: () => void;
+  onToggleIsAlsoNameSearched: () => void;
+};
 
 const UserGroupUserModal = (props: Props): JSX.Element => {
   const { t } = useTranslation();
@@ -46,7 +44,7 @@ const UserGroupUserModal = (props: Props): JSX.Element => {
   return (
     <Modal isOpen={isOpen} toggle={onClose}>
       <ModalHeader tag="h4" toggle={onClose} className="text-info">
-        {t('admin:user_group_management.add_modal.add_user') }
+        {t('admin:user_group_management.add_modal.add_user')}
       </ModalHeader>
       <ModalBody>
         <p className="card custom-card">{t('admin:user_group_management.add_modal.description')}</p>
@@ -64,18 +62,10 @@ const UserGroupUserModal = (props: Props): JSX.Element => {
         <div className="row mt-4">
           <div className="col-6">
             <div className="mb-5">
-              <CheckBoxForSerchUserOption
-                option="mail"
-                checked={isAlsoMailSearched}
-                onChange={onToggleIsAlsoMailSearched}
-              />
+              <CheckBoxForSerchUserOption option="mail" checked={isAlsoMailSearched} onChange={onToggleIsAlsoMailSearched} />
             </div>
             <div className="mb-5">
-              <CheckBoxForSerchUserOption
-                option="name"
-                checked={isAlsoNameSearched}
-                onChange={onToggleIsAlsoNameSearched}
-              />
+              <CheckBoxForSerchUserOption option="name" checked={isAlsoNameSearched} onChange={onToggleIsAlsoNameSearched} />
             </div>
           </div>
           <div className="col-6">

@@ -1,7 +1,6 @@
 import type React from 'react';
 import { useCallback, useState, type JSX } from 'react';
 
-
 import { isPopulated } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
@@ -12,9 +11,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores-universal/context';
 import { generateGravatarSrc, GRAVATAR_DEFAULT } from '~/utils/gravatar';
 
-
 const DEFAULT_IMAGE = '/images/icons/user.svg';
-
 
 const ProfileImageSettings = (): JSX.Element => {
   const { t } = useTranslation();
@@ -30,7 +27,7 @@ const ProfileImageSettings = (): JSX.Element => {
   });
 
   const [showImageCropModal, setShowImageCropModal] = useState(false);
-  const [imageCropSrc, setImageCropSrc] = useState<string|ArrayBuffer|null>(null);
+  const [imageCropSrc, setImageCropSrc] = useState<string | ArrayBuffer | null>(null);
 
   const selectFileHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files == null || e.target.files.length === 0) {
@@ -44,36 +41,36 @@ const ProfileImageSettings = (): JSX.Element => {
     setShowImageCropModal(true);
   }, []);
 
-  const processImageCompletedHandler = useCallback(async(croppedImage) => {
-    try {
-      const formData = new FormData();
-      formData.append('file', croppedImage);
-      const response = await apiPostForm('/attachments.uploadProfileImage', formData);
+  const processImageCompletedHandler = useCallback(
+    async (croppedImage) => {
+      try {
+        const formData = new FormData();
+        formData.append('file', croppedImage);
+        const response = await apiPostForm('/attachments.uploadProfileImage', formData);
 
-      toastSuccess(t('toaster.update_successed', { target: t('Current Image'), ns: 'commons' }));
+        toastSuccess(t('toaster.update_successed', { target: t('Current Image'), ns: 'commons' }));
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setUploadedPictureSrc((response as any).attachment.filePathProxied);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setUploadedPictureSrc((response as any).attachment.filePathProxied);
+      } catch (err) {
+        toastError(err);
+      }
+    },
+    [t],
+  );
 
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [t]);
-
-  const deleteImageHandler = useCallback(async() => {
+  const deleteImageHandler = useCallback(async () => {
     try {
       await apiPost('/attachments.removeProfileImage');
 
       setUploadedPictureSrc(undefined);
       toastSuccess(t('toaster.update_successed', { target: t('Current Image'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [t]);
 
-  const submit = useCallback(async() => {
+  const submit = useCallback(async () => {
     try {
       const response = await apiv3Put('/personal-setting/image-type', { isGravatarEnabled });
 
@@ -81,8 +78,7 @@ const ProfileImageSettings = (): JSX.Element => {
       setGravatarEnabled(userData.isGravatarEnabled);
 
       toastSuccess(t('toaster.update_successed', { target: t('Set Profile Image'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [isGravatarEnabled, t]);
@@ -110,7 +106,11 @@ const ProfileImageSettings = (): JSX.Element => {
                 <img src={GRAVATAR_DEFAULT} className="me-1" data-vrt-blackout-profile /> Gravatar
               </label>
               <a href="https://gravatar.com/" target="_blank" rel="noopener noreferrer">
-                <small><span className="material-symbols-outlined ms-2 text-secondary" aria-hidden="true">info</span></small>
+                <small>
+                  <span className="material-symbols-outlined ms-2 text-secondary" aria-hidden="true">
+                    info
+                  </span>
+                </small>
               </a>
             </div>
           </h5>
@@ -130,23 +130,25 @@ const ProfileImageSettings = (): JSX.Element => {
                 onChange={() => setGravatarEnabled(false)}
               />
               <label className="form-label form-check-label" htmlFor="radioUploadPicture">
-                { t('Upload Image') }
+                {t('Upload Image')}
               </label>
             </div>
           </h5>
           <div className="row mt-3">
-            <label className="col-md-6 col-lg-4 col-form-label text-start">
-              { t('Current Image') }
-            </label>
+            <label className="col-md-6 col-lg-4 col-form-label text-start">{t('Current Image')}</label>
             <div className="col-md-6 col-lg-8">
-              <p className="mb-0"><img src={uploadedPictureSrc ?? DEFAULT_IMAGE} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>
-              {uploadedPictureSrc && <button type="button" className="btn btn-danger mt-2" onClick={deleteImageHandler}>{ t('Delete Image') }</button>}
+              <p className="mb-0">
+                <img src={uploadedPictureSrc ?? DEFAULT_IMAGE} className="picture picture-lg rounded-circle" id="settingUserPicture" />
+              </p>
+              {uploadedPictureSrc && (
+                <button type="button" className="btn btn-danger mt-2" onClick={deleteImageHandler}>
+                  {t('Delete Image')}
+                </button>
+              )}
             </div>
           </div>
           <div className="row align-items-center mt-3 mt-md-5">
-            <label className="col-md-6 col-lg-4 col-form-label text-start mt-3 mt-md-0">
-              {t('Upload new image')}
-            </label>
+            <label className="col-md-6 col-lg-4 col-form-label text-start mt-3 mt-md-0">{t('Upload new image')}</label>
             <div className="col-md-6 col-lg-8">
               <input type="file" onChange={selectFileHandler} name="profileImage" accept="image/*" />
             </div>
@@ -170,10 +172,8 @@ const ProfileImageSettings = (): JSX.Element => {
           </button>
         </div>
       </div>
-
     </>
   );
-
 };
 
 export default ProfileImageSettings;

@@ -24,47 +24,46 @@ const USER_STATUS_MASTER = {
  *         type: object
  *         properties:
  *           data:
-*             type: object
-*             properties:
-*               total:
-*                 type: integer
-*                 example: 1
-*               active:
-*                 type: object
-*                 properties:
-*                   total:
-*                     type: integer
-*                     example: 1
-*                   admin:
-*                     type: integer
-*                     example: 1
-*               inactive:
-*                 type: object
-*                 properties:
-*                   total:
-*                     type: integer
-*                     example: 0
-*                   registered:
-*                     type: integer
-*                     example: 0
-*                   suspended:
-*                     type: integer
-*                     example: 0
-*                   deleted:
-*                     type: integer
-*                     example: 0
-*                   invited:
-*                     type: integer
-*                     example: 0
-*/
+ *             type: object
+ *             properties:
+ *               total:
+ *                 type: integer
+ *                 example: 1
+ *               active:
+ *                 type: object
+ *                 properties:
+ *                   total:
+ *                     type: integer
+ *                     example: 1
+ *                   admin:
+ *                     type: integer
+ *                     example: 1
+ *               inactive:
+ *                 type: object
+ *                 properties:
+ *                   total:
+ *                     type: integer
+ *                     example: 0
+ *                   registered:
+ *                     type: integer
+ *                     example: 0
+ *                   suspended:
+ *                     type: integer
+ *                     example: 0
+ *                   deleted:
+ *                     type: integer
+ *                     example: 0
+ *                   invited:
+ *                     type: integer
+ *                     example: 0
+ */
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
-
   const models = crowi.models;
   const User = models.User;
 
-  const getUserStatistics = async() => {
+  const getUserStatistics = async () => {
     const userCountGroupByStatus = await User.aggregate().group({
       _id: '$status',
       totalCount: { $sum: 1 },
@@ -104,7 +103,7 @@ module.exports = (crowi) => {
     };
   };
 
-  const getUserStatisticsForNotLoggedIn = async() => {
+  const getUserStatisticsForNotLoggedIn = async () => {
     const data = await getUserStatistics();
     delete data.active.admin;
     delete data.inactive.invited;
@@ -133,7 +132,7 @@ module.exports = (crowi) => {
    *                description: Statistics for all user
    *                $ref: '#/components/schemas/StatisticsUserResponse'
    */
-  router.get('/user', noCache(), async(req, res) => {
+  router.get('/user', noCache(), async (req, res) => {
     const data = req.user == null ? await getUserStatisticsForNotLoggedIn() : await getUserStatistics();
     res.status(200).send({ data });
   });

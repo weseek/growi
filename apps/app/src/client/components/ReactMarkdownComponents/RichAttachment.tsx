@@ -10,10 +10,10 @@ import { useDeleteAttachmentModal } from '~/stores/modal';
 import styles from './RichAttachment.module.scss';
 
 type RichAttachmentProps = {
-  attachmentId: string,
-  url: string,
-  attachmentName: string,
-}
+  attachmentId: string;
+  url: string;
+  attachmentName: string;
+};
 
 export const RichAttachment = React.memo((props: RichAttachmentProps) => {
   const { attachmentId, attachmentName } = props;
@@ -32,23 +32,10 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
     return <span className="text-muted">{t('rich_attachment.attachment_not_be_found')}</span>;
   }
 
-  const {
-    filePathProxied,
-    originalName,
-    downloadPathProxied,
-    creator,
-    createdAt,
-    fileSize,
-  } = attachment;
+  const { filePathProxied, originalName, downloadPathProxied, creator, createdAt, fileSize } = attachment;
 
   // Guard here because attachment properties might be deleted in turn when an attachment is removed
-  if (filePathProxied == null
-    || originalName == null
-    || downloadPathProxied == null
-    || creator == null
-    || createdAt == null
-    || fileSize == null
-  ) {
+  if (filePathProxied == null || originalName == null || downloadPathProxied == null || creator == null || createdAt == null || fileSize == null) {
     return <span className="text-muted">{t('rich_attachment.attachment_not_be_found')}</span>;
   }
 
@@ -75,9 +62,7 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
             </div>
             <div className="d-flex align-items-center">
               <UserPicture user={creator} size="sm" />
-              <span className="ms-2 text-muted">
-                {new Date(createdAt).toLocaleString('en-US')}
-              </span>
+              <span className="ms-2 text-muted">{new Date(createdAt).toLocaleString('en-US')}</span>
               <span className="ms-2 ps-2 border-start text-muted">{prettyBytes(fileSize)}</span>
             </div>
           </div>

@@ -18,15 +18,12 @@ vi.mock('./validate-referer', () => ({ validateReferer: mocks.validateRefererMoc
 vi.mock('./retrieve-valid-share-link', () => ({ retrieveValidShareLinkByReferer: mocks.retrieveValidShareLinkByRefererMock }));
 vi.mock('./validate-attachment', () => ({ validateAttachment: mocks.validateAttachmentMock }));
 
-
 describe('certifySharedPageAttachmentMiddleware', () => {
-
   const res = mock<Response>();
   const next = vi.fn();
 
   describe('should called next() without req.isSharedPage set', () => {
-
-    it('when the fileId param is null', async() => {
+    it('when the fileId param is null', async () => {
       // setup
       const req = mock<RequestToAllowShareLink>();
       req.params = {}; // id: undefined
@@ -41,7 +38,7 @@ describe('certifySharedPageAttachmentMiddleware', () => {
       expect(next).toHaveBeenCalledOnce();
     });
 
-    it('when validateReferer returns null', async() => {
+    it('when validateReferer returns null', async () => {
       // setup
       const req = mock<RequestToAllowShareLink>();
       req.params = { id: 'file id string' };
@@ -57,7 +54,7 @@ describe('certifySharedPageAttachmentMiddleware', () => {
       expect(next).toHaveBeenCalledOnce();
     });
 
-    it('when retrieveValidShareLinkByReferer returns null', async() => {
+    it('when retrieveValidShareLinkByReferer returns null', async () => {
       // setup
       const req = mock<RequestToAllowShareLink>();
       req.params = { id: 'file id string' };
@@ -83,7 +80,7 @@ describe('certifySharedPageAttachmentMiddleware', () => {
       expect(next).toHaveBeenCalledOnce();
     });
 
-    it('when validateAttachment returns false', async() => {
+    it('when validateAttachment returns false', async () => {
       // setup
       const req = mock<RequestToAllowShareLink>();
       req.params = { id: 'file id string' };
@@ -110,10 +107,9 @@ describe('certifySharedPageAttachmentMiddleware', () => {
       expect(req.isSharedPage === true).toBeFalsy();
       expect(next).toHaveBeenCalledOnce();
     });
-
   });
 
-  it('should set req.isSharedPage true', async() => {
+  it('should set req.isSharedPage true', async () => {
     // setup
     const req = mock<RequestToAllowShareLink>();
     req.params = { id: 'file id string' };

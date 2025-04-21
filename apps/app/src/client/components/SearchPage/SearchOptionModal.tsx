@@ -2,30 +2,21 @@ import type { FC } from 'react';
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody,
-} from 'reactstrap';
-
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 type Props = {
-  isOpen: boolean,
-  includeUserPages: boolean,
-  includeTrashPages: boolean,
-  onClose?: () => void,
-  onIncludeUserPagesSwitched?: (isChecked: boolean) => void,
-  onIncludeTrashPagesSwitched?: (isChecked: boolean) => void,
-}
+  isOpen: boolean;
+  includeUserPages: boolean;
+  includeTrashPages: boolean;
+  onClose?: () => void;
+  onIncludeUserPagesSwitched?: (isChecked: boolean) => void;
+  onIncludeTrashPagesSwitched?: (isChecked: boolean) => void;
+};
 
 const SearchOptionModal: FC<Props> = (props: Props) => {
-
   const { t } = useTranslation('');
 
-  const {
-    isOpen, includeUserPages, includeTrashPages,
-    onClose,
-    onIncludeUserPagesSwitched,
-    onIncludeTrashPagesSwitched,
-  } = props;
+  const { isOpen, includeUserPages, includeTrashPages, onClose, onIncludeUserPagesSwitched, onIncludeTrashPagesSwitched } = props;
 
   const onCloseModal = () => {
     if (onClose != null) {
@@ -54,23 +45,13 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
         <div className="d-flex p-2">
           <div className="me-3">
             <label className="form-label px-3 py-2 mb-0 d-flex align-items-center">
-              <input
-                className="me-2"
-                type="checkbox"
-                onChange={e => includeUserPagesChangeHandler(e.target.checked)}
-                checked={includeUserPages}
-              />
+              <input className="me-2" type="checkbox" onChange={(e) => includeUserPagesChangeHandler(e.target.checked)} checked={includeUserPages} />
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
           </div>
           <div className="">
             <label className="form-label px-3 py-2 mb-0 d-flex align-items-center">
-              <input
-                className="me-2"
-                type="checkbox"
-                onChange={e => includeTrashPagesChangeHandler(e.target.checked)}
-                checked={includeTrashPages}
-              />
+              <input className="me-2" type="checkbox" onChange={(e) => includeTrashPagesChangeHandler(e.target.checked)} checked={includeTrashPages} />
               {t('Include Subordinated Target Page', { target: '/trash' })}
             </label>
           </div>

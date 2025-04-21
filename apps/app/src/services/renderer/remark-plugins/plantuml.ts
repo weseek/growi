@@ -3,8 +3,8 @@ import type { Plugin } from 'unified';
 import urljoin from 'url-join';
 
 type PlantUMLPluginParams = {
-  plantumlUri: string,
-}
+  plantumlUri: string;
+};
 
 export const remarkPlugin: Plugin<[PlantUMLPluginParams]> = (options) => {
   const plantumlUri = options.plantumlUri;

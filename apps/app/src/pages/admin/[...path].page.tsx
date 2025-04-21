@@ -1,6 +1,4 @@
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import dynamic from 'next/dynamic';
 
 import AdminLayout from '~/components/Layout/AdminLayout';
@@ -10,9 +8,8 @@ import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
-const AdminNotFoundPage = dynamic(() => import('~/client/components/Admin/NotFoundPage').then(mod => mod.AdminNotFoundPage), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
-
+const AdminNotFoundPage = dynamic(() => import('~/client/components/Admin/NotFoundPage').then((mod) => mod.AdminNotFoundPage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then((mod) => mod.ForbiddenPage), { ssr: false });
 
 const AdminAppPage: NextPage<CommonProps> = (props) => {
   useIsMaintenanceMode(props.isMaintenanceMode);
@@ -29,10 +26,9 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context);
   return props;
 };
-
 
 export default AdminAppPage;

@@ -7,9 +7,7 @@ import loggerFactory from '~/utils/logger';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
 import type { ExternalUserGroupTreeNode, ExternalUserInfo } from '../../interfaces/external-user-group';
-import {
-  ExternalGroupProviderType, LdapGroupMembershipAttributeType,
-} from '../../interfaces/external-user-group';
+import { ExternalGroupProviderType, LdapGroupMembershipAttributeType } from '../../interfaces/external-user-group';
 
 import ExternalUserGroupSyncService from './external-user-group-sync';
 
@@ -22,7 +20,6 @@ const TREES_BATCH_SIZE = 10;
 const USERS_BATCH_SIZE = 30;
 
 export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
-
   passportService: PassportService;
 
   isInitialized = false;
@@ -60,17 +57,19 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
     const getChildGroupDnsFromGroupEntry = (groupEntry: SearchResultEntry) => {
       // groupChildGroupAttribute and groupMembershipAttribute may be the same,
       // so filter values of groupChildGroupAttribute to ones that include groupBase
-      return ldapService.getArrayValFromSearchResultEntry(groupEntry, groupChildGroupAttribute).filter(attr => attr.includes(groupBase));
+      return ldapService.getArrayValFromSearchResultEntry(groupEntry, groupChildGroupAttribute).filter((attr) => attr.includes(groupBase));
     };
     const getUserIdsFromGroupEntry = (groupEntry: SearchResultEntry) => {
       // groupChildGroupAttribute and groupMembershipAttribute may be the same,
       // so filter values of groupMembershipAttribute to ones that does not include groupBase
-      return ldapService.getArrayValFromSearchResultEntry(groupEntry, groupMembershipAttribute).filter(attr => !attr.includes(groupBase));
+      return ldapService.getArrayValFromSearchResultEntry(groupEntry, groupMembershipAttribute).filter((attr) => !attr.includes(groupBase));
     };
 
-    const convert = async(entry: SearchResultEntry, converted: string[]): Promise<ExternalUserGroupTreeNode | null> => {
+    const convert = async (entry: SearchResultEntry, converted: string[]): Promise<ExternalUserGroupTreeNode | null> => {
       const name = ldapService.getStringValFromSearchResultEntry(entry, groupNameAttribute);
-      if (name == null) { return null; }
+      if (name == null) {
+        return null;
+      }
 
       if (converted.includes(entry.objectName)) {
         throw new Error('Circular reference inside LDAP group tree');
@@ -79,9 +78,11 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
       const userIds = getUserIdsFromGroupEntry(entry);
 
-      const userInfos = (await batchProcessPromiseAll(userIds, USERS_BATCH_SIZE, (id) => {
-        return this.getUserInfo(id);
-      })).filter((info): info is NonNullable<ExternalUserInfo> => info != null);
+      const userInfos = (
+        await batchProcessPromiseAll(userIds, USERS_BATCH_SIZE, (id) => {
+          return this.getUserInfo(id);
+        })
+      ).filter((info): info is NonNullable<ExternalUserInfo> => info != null);
       const description = ldapService.getStringValFromSearchResultEntry(entry, groupDescriptionAttribute);
       const childGroupDNs = getChildGroupDnsFromGroupEntry(entry);
 
@@ -89,11 +90,12 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
       // Do not use Promise.all, because the number of promises processed can
       // exponentially grow when group tree is enormous
       for await (const dn of childGroupDNs) {
-        const childEntry = groupEntries.find(ge => ge.objectName === dn);
+        const childEntry = groupEntries.find((ge) => ge.objectName === dn);
         childGroupNodesWithNull.push(childEntry != null ? await convert(childEntry, converted) : null);
       }
-      const childGroupNodes: ExternalUserGroupTreeNode[] = childGroupNodesWithNull
-        .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
+      const childGroupNodes: ExternalUserGroupTreeNode[] = childGroupNodesWithNull.filter(
+        (node): node is NonNullable<ExternalUserGroupTreeNode> => node != null,
+      );
 
       return {
         id: entry.objectName,
@@ -105,17 +107,20 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
     };
 
     // all the DNs of groups that are not a root of a tree
-    const allChildGroupDNs = new Set(groupEntries.flatMap((entry) => {
-      return getChildGroupDnsFromGroupEntry(entry);
-    }));
+    const allChildGroupDNs = new Set(
+      groupEntries.flatMap((entry) => {
+        return getChildGroupDnsFromGroupEntry(entry);
+      }),
+    );
 
     // root of every tree
     const rootEntries = groupEntries.filter((entry) => {
       return !allChildGroupDNs.has(entry.objectName);
     });
 
-    return (await batchProcessPromiseAll(rootEntries, TREES_BATCH_SIZE, entry => convert(entry, [])))
-      .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
+    return (await batchProcessPromiseAll(rootEntries, TREES_BATCH_SIZE, (entry) => convert(entry, []))).filter(
+      (node): node is NonNullable<ExternalUserGroupTreeNode> => node != null,
+    );
   }
 
   private async getUserInfo(userId: string): Promise<ExternalUserInfo | null> {
@@ -125,7 +130,7 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
     const attrMapMail = this.passportService.getLdapAttrNameMappedToMail();
 
     // get full user info from LDAP server using externalUserInfo (DN or UID)
-    const getUserEntries = async() => {
+    const getUserEntries = async () => {
       if (groupMembershipAttributeType === LdapGroupMembershipAttributeType.dn) {
         return ldapService.search(undefined, userId, 'base');
       }
@@ -144,15 +149,16 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
         const nameToBeRegistered = ldapService.getStringValFromSearchResultEntry(userEntry, attrMapName);
         const mailToBeRegistered = ldapService.getStringValFromSearchResultEntry(userEntry, attrMapMail);
 
-        return usernameToBeRegistered != null ? {
-          id: uid,
-          username: usernameToBeRegistered,
-          name: nameToBeRegistered,
-          email: mailToBeRegistered,
-        } : null;
+        return usernameToBeRegistered != null
+          ? {
+              id: uid,
+              username: usernameToBeRegistered,
+              name: nameToBeRegistered,
+              email: mailToBeRegistered,
+            }
+          : null;
       }
     }
     return null;
   }
-
 }

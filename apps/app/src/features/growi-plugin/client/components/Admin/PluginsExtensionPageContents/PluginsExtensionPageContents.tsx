@@ -10,17 +10,12 @@ import { PluginCard } from './PluginCard';
 import { PluginInstallerForm } from './PluginInstallerForm';
 
 const Loading = (): JSX.Element => {
-  return (
-    <Spinner className="d-flex justify-content-center aligh-items-center">
-      Loading...
-    </Spinner>
-  );
+  return <Spinner className="d-flex justify-content-center aligh-items-center">Loading...</Spinner>;
 };
 
 export const PluginsExtensionPageContents = (): JSX.Element => {
   const { t } = useTranslation('admin');
-  const PluginDeleteModal = dynamic(() => import('./PluginDeleteModal')
-    .then(mod => mod.PluginDeleteModal), { ssr: false });
+  const PluginDeleteModal = dynamic(() => import('./PluginDeleteModal').then((mod) => mod.PluginDeleteModal), { ssr: false });
   const { data, mutate } = useSWRxAdminPlugins();
   const { open: openPluginDeleteModal } = usePluginDeleteModal();
 
@@ -41,30 +36,27 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
               <span className="material-symbols-outlined">refresh</span>
             </button>
           </h2>
-          {data?.plugins == null
-            ? <Loading />
-            : (
-              <div className="d-grid gap-5">
-                { data.plugins.length === 0 && (
-                  <div>{t('plugins.plugin_is_not_installed')}</div>
-                )}
-                {data.plugins.map(plugin => (
-                  <PluginCard
-                    key={plugin._id}
-                    id={plugin._id}
-                    name={plugin.meta.name}
-                    url={plugin.origin.url}
-                    isEnabled={plugin.isEnabled}
-                    desc={plugin.meta.desc}
-                    onDelete={() => openPluginDeleteModal(plugin)}
-                  />
-                ))}
-              </div>
-            )}
+          {data?.plugins == null ? (
+            <Loading />
+          ) : (
+            <div className="d-grid gap-5">
+              {data.plugins.length === 0 && <div>{t('plugins.plugin_is_not_installed')}</div>}
+              {data.plugins.map((plugin) => (
+                <PluginCard
+                  key={plugin._id}
+                  id={plugin._id}
+                  name={plugin.meta.name}
+                  url={plugin.origin.url}
+                  isEnabled={plugin.isEnabled}
+                  desc={plugin.meta.desc}
+                  onDelete={() => openPluginDeleteModal(plugin)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
       <PluginDeleteModal />
-
     </div>
   );
 };

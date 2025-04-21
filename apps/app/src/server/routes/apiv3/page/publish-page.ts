@@ -13,16 +13,14 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-
 const logger = loggerFactory('growi:routes:apiv3:page:unpublish-page');
 
-
 type ReqParams = {
-  pageId: string,
-}
+  pageId: string;
+};
 
 interface Req extends Request<ReqParams, ApiV3Response> {
-  user: IUserHasId,
+  user: IUserHasId;
 }
 
 type PublishPageHandlersFactory = (crowi: Crowi) => RequestHandler[];
@@ -33,14 +31,14 @@ export const publishPageHandlersFactory: PublishPageHandlersFactory = (crowi) =>
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
   // define validators for req.body
-  const validator: ValidationChain[] = [
-    param('pageId').isMongoId().withMessage('The param "pageId" must be specified'),
-  ];
+  const validator: ValidationChain[] = [param('pageId').isMongoId().withMessage('The param "pageId" must be specified')];
 
   return [
-    accessTokenParser, loginRequiredStrictly,
-    validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const { pageId } = req.params;
 
       try {
@@ -52,8 +50,7 @@ export const publishPageHandlersFactory: PublishPageHandlersFactory = (crowi) =>
         page.publish();
         const updatedPage = await page.save();
         return res.apiv3(updatedPage);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(err);
       }

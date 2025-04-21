@@ -9,7 +9,6 @@ import { useCreateTemplatePage } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import type { TargetType, LabelType } from '~/interfaces/template';
 
-
 type TemplateCardProps = {
   target: TargetType;
   label: LabelType;
@@ -17,17 +16,19 @@ type TemplateCardProps = {
   onClickHandler: () => void;
 };
 
-const TemplateCard: React.FC<TemplateCardProps> = ({
-  target, label, isPageCreating, onClickHandler,
-}) => {
+const TemplateCard: React.FC<TemplateCardProps> = ({ target, label, isPageCreating, onClickHandler }) => {
   const { t } = useTranslation();
 
   return (
     <div className="card card-select-template">
       <div className="card-header">{t(`template.${target}.label`)}</div>
       <div className="card-body">
-        <p className="text-center"><code>{label}</code></p>
-        <p className="form-text text-muted text-center"><small>{t(`template.${target}.desc`)}</small></p>
+        <p className="text-center">
+          <code>{label}</code>
+        </p>
+        <p className="form-text text-muted text-center">
+          <small>{t(`template.${target}.desc`)}</small>
+        </p>
       </div>
       <div className="card-footer text-center">
         <button
@@ -51,33 +52,28 @@ type CreateTemplateModalProps = {
   onClose: () => void;
 };
 
-export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
-  path, isOpen, onClose,
-}) => {
+export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({ path, isOpen, onClose }) => {
   const { t } = useTranslation(['translation', 'commons']);
 
   const { createTemplate, isCreating, isCreatable } = useCreateTemplatePage();
 
-  const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
-    try {
-      await createTemplate?.(label);
-      onClose();
-    }
-    catch (err) {
-      toastError(t('toaster.create_failed', { target: path }));
-    }
-  }, [createTemplate, onClose, path, t]);
+  const onClickTemplateButtonHandler = useCallback(
+    async (label: LabelType) => {
+      try {
+        await createTemplate?.(label);
+        onClose();
+      } catch (err) {
+        toastError(t('toaster.create_failed', { target: path }));
+      }
+    },
+    [createTemplate, onClose, path, t],
+  );
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
   const renderTemplateCard = (target: TargetType, label: LabelType) => (
     <div className="col">
-      <TemplateCard
-        target={target}
-        label={label}
-        isPageCreating={isCreating}
-        onClickHandler={() => onClickTemplateButtonHandler(label)}
-      />
+      <TemplateCard target={target} label={label} isPageCreating={isCreating} onClickHandler={() => onClickTemplateButtonHandler(label)} />
     </div>
   );
 
@@ -93,7 +89,8 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       <ModalBody>
         <div>
           <label className="form-label mb-4">
-            <code>{parentPath}</code><br />
+            <code>{parentPath}</code>
+            <br />
             {t('template.modal_label.Create template under')}
           </label>
           <div className="row row-cols-2">

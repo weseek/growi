@@ -10,20 +10,18 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 type Props = {
-  adminCustomizeContainer: AdminCustomizeContainer
-}
+  adminCustomizeContainer: AdminCustomizeContainer;
+};
 
 const CustomizeCssSetting = (props: Props): JSX.Element => {
-
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
-  const onClickSubmit = useCallback(async() => {
+  const onClickSubmit = useCallback(async () => {
     try {
       await adminCustomizeContainer.updateCustomizeCss();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_css'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [t, adminCustomizeContainer]);
@@ -36,8 +34,9 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
 
           <Card className="card custom-card bg-body-tertiary my-3">
             <CardBody className="px-0 py-2">
-              { t('admin:customize_settings.write_css') }<br />
-              { t('admin:customize_settings.reflect_change') }
+              {t('admin:customize_settings.write_css')}
+              <br />
+              {t('admin:customize_settings.reflect_change')}
             </CardBody>
           </Card>
 
@@ -47,7 +46,9 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
               name="customizeCss"
               rows={8}
               defaultValue={adminCustomizeContainer.state.currentCustomizeCss || ''}
-              onChange={(e) => { adminCustomizeContainer.changeCustomizeCss(e.target.value) }}
+              onChange={(e) => {
+                adminCustomizeContainer.changeCustomizeCss(e.target.value);
+              }}
             />
           </div>
 
@@ -56,7 +57,6 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
       </div>
     </React.Fragment>
   );
-
 };
 
 const CustomizeCssSettingWrapper = withUnstatedContainers(CustomizeCssSetting, [AdminCustomizeContainer]);

@@ -6,7 +6,6 @@ import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import urljoin from 'url-join';
 
-
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
@@ -15,7 +14,6 @@ import { useSiteUrl } from '~/stores-universal/context';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class GitHubSecurityManagementContents extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -29,30 +27,25 @@ class GitHubSecurityManagementContents extends React.Component {
       await adminGitHubSecurityContainer.updateGitHubSetting();
       await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_settings.OAuth.GitHub.updated_github'));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
 
   render() {
-    const {
-      t, adminGeneralSecurityContainer, adminGitHubSecurityContainer, siteUrl,
-    } = this.props;
+    const { t, adminGeneralSecurityContainer, adminGitHubSecurityContainer, siteUrl } = this.props;
     const { isGitHubEnabled } = adminGeneralSecurityContainer.state;
     const gitHubCallbackUrl = urljoin(pathUtils.removeTrailingSlash(siteUrl), '/passport/github/callback');
 
     return (
-
       <React.Fragment>
-
-        <h2 className="alert-anchor border-bottom">
-          {t('security_settings.OAuth.GitHub.name')}
-        </h2>
+        <h2 className="alert-anchor border-bottom">{t('security_settings.OAuth.GitHub.name')}</h2>
 
         {adminGitHubSecurityContainer.state.retrieveError != null && (
           <div className="alert alert-danger">
-            <p>{t('Error occurred')} : {adminGitHubSecurityContainer.state.retrieveError}</p>
+            <p>
+              {t('Error occurred')} : {adminGitHubSecurityContainer.state.retrieveError}
+            </p>
           </div>
         )}
 
@@ -64,53 +57,56 @@ class GitHubSecurityManagementContents extends React.Component {
                 className="form-check-input"
                 type="checkbox"
                 checked={adminGeneralSecurityContainer.state.isGitHubEnabled || false}
-                onChange={() => { adminGeneralSecurityContainer.switchIsGitHubOAuthEnabled() }}
+                onChange={() => {
+                  adminGeneralSecurityContainer.switchIsGitHubOAuthEnabled();
+                }}
               />
               <label className="form-label form-check-label" htmlFor="isGitHubEnabled">
                 {t('security_settings.OAuth.GitHub.enable_github')}
               </label>
             </div>
-            {(!adminGeneralSecurityContainer.state.setupStrategies.includes('github') && isGitHubEnabled)
-              && <div className="badge text-bg-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
+            {!adminGeneralSecurityContainer.state.setupStrategies.includes('github') && isGitHubEnabled && (
+              <div className="badge text-bg-warning">{t('security_settings.setup_is_not_yet_complete')}</div>
+            )}
           </div>
         </div>
 
         <div className="row mb-4">
           <label className="form-label col-12 col-md-3 text-start text-md-end py-2">{t('security_settings.callback_URL')}</label>
           <div className="col-12 col-md-6">
-            <input
-              className="form-control"
-              type="text"
-              value={gitHubCallbackUrl}
-              readOnly
-            />
+            <input className="form-control" type="text" value={gitHubCallbackUrl} readOnly />
             <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
             {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
                 <span className="material-symbols-outlined">error</span>
                 <span // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<span class="material-symbols-outlined">login</span></a>`, ns: 'commons' }) }}
+                  dangerouslySetInnerHTML={{
+                    __html: t('alert.siteUrl_is_not_set', {
+                      link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<span class="material-symbols-outlined">login</span></a>`,
+                      ns: 'commons',
+                    }),
+                  }}
                 />
               </div>
             )}
           </div>
         </div>
 
-
         {isGitHubEnabled && (
           <React.Fragment>
-
             <h3 className="border-bottom mb-4">{t('security_settings.configuration')}</h3>
 
             <div className="row mb-4">
-              <label htmlFor="githubClientId" className="col-3 text-end py-2 form-label">{t('security_settings.clientID')}</label>
+              <label htmlFor="githubClientId" className="col-3 text-end py-2 form-label">
+                {t('security_settings.clientID')}
+              </label>
               <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
                   name="githubClientId"
                   value={adminGitHubSecurityContainer.state.githubClientId || ''}
-                  onChange={e => adminGitHubSecurityContainer.changeGitHubClientId(e.target.value)}
+                  onChange={(e) => adminGitHubSecurityContainer.changeGitHubClientId(e.target.value)}
                 />
                 <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_ID' }) }} />
@@ -119,14 +115,16 @@ class GitHubSecurityManagementContents extends React.Component {
             </div>
 
             <div className="row mb-3">
-              <label htmlFor="githubClientSecret" className="col-3 text-end py-2 form-label">{t('security_settings.client_secret')}</label>
+              <label htmlFor="githubClientSecret" className="col-3 text-end py-2 form-label">
+                {t('security_settings.client_secret')}
+              </label>
               <div className="col-6">
                 <input
                   className="form-control"
                   type="text"
                   name="githubClientSecret"
                   defaultValue={adminGitHubSecurityContainer.state.githubClientSecret || ''}
-                  onChange={e => adminGitHubSecurityContainer.changeGitHubClientSecret(e.target.value)}
+                  onChange={(e) => adminGitHubSecurityContainer.changeGitHubClientSecret(e.target.value)}
                 />
                 <p className="form-text text-muted">
                   <small dangerouslySetInnerHTML={{ __html: t('security_settings.Use env var if empty', { env: 'OAUTH_GITHUB_CLIENT_SECRET' }) }} />
@@ -142,7 +140,9 @@ class GitHubSecurityManagementContents extends React.Component {
                     className="form-check-input"
                     type="checkbox"
                     checked={adminGitHubSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
-                    onChange={() => { adminGitHubSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                    onChange={() => {
+                      adminGitHubSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser();
+                    }}
                   />
                   <label
                     className="form-check-label"
@@ -163,7 +163,6 @@ class GitHubSecurityManagementContents extends React.Component {
                 </div>
               </div>
             </div>
-
           </React.Fragment>
         )}
 
@@ -171,25 +170,32 @@ class GitHubSecurityManagementContents extends React.Component {
 
         <div style={{ minHeight: '300px' }}>
           <h4>
-            <span className="material-symbols-outlined" aria-hidden="true">help</span>
-            <a href="#collapseHelpForGitHubOauth" data-bs-toggle="collapse"> {t('security_settings.OAuth.how_to.github')}</a>
+            <span className="material-symbols-outlined" aria-hidden="true">
+              help
+            </span>
+            <a href="#collapseHelpForGitHubOauth" data-bs-toggle="collapse">
+              {' '}
+              {t('security_settings.OAuth.how_to.github')}
+            </a>
           </h4>
           <div className="card custom-card bg-body-tertiary">
             <ol id="collapseHelpForGitHubOauth" className="collapse mb-0">
               {/* eslint-disable-next-line max-len */}
-              <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.GitHub.register_1', { link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>' }) }} />
+              <li
+                dangerouslySetInnerHTML={{
+                  __html: t('security_settings.OAuth.GitHub.register_1', {
+                    link: '<a href="https://github.com/settings/developers" target=_blank>GitHub Developer Settings</a>',
+                  }),
+                }}
+              />
               <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.GitHub.register_2', { url: gitHubCallbackUrl }) }} />
               <li dangerouslySetInnerHTML={{ __html: t('security_settings.OAuth.GitHub.register_3') }} />
             </ol>
           </div>
         </div>
-
       </React.Fragment>
-
-
     );
   }
-
 }
 
 const GitHubSecurityManagementContentsFC = (props) => {

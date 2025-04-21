@@ -3,10 +3,9 @@ import React, { useEffect, type JSX } from 'react';
 import { useShortcutsModal } from '~/stores/modal';
 
 type Props = {
-  onDeleteRender: () => void,
-}
+  onDeleteRender: () => void;
+};
 const ShowShortcutsModal = (props: Props): JSX.Element => {
-
   const { data: status, open } = useShortcutsModal();
 
   const { onDeleteRender } = props;

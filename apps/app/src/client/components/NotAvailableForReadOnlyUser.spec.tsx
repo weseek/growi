@@ -1,9 +1,7 @@
 import '@testing-library/jest-dom/vitest';
 
 import { render, screen } from '@testing-library/react';
-import {
-  describe, it, expect, vi,
-} from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
 import { NotAvailableIfReadOnlyUserNotAllowedToComment } from './NotAvailableForReadOnlyUser';
 
@@ -16,8 +14,7 @@ vi.mock('~/stores-universal/context', () => ({
 }));
 
 describe('NotAvailableForReadOnlyUser.tsx', () => {
-
-  it('renders NotAvailable component as enable when user is read-only and comments by rom users is allowed', async() => {
+  it('renders NotAvailable component as enable when user is read-only and comments by rom users is allowed', async () => {
     useIsReadOnlyUser.mockReturnValue({ data: true });
     useIsRomUserAllowedToComment.mockReturnValue({ data: true });
 
@@ -35,7 +32,7 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
     expect(wrapperElement).not.toHaveAttribute('aria-hidden', 'true');
   });
 
-  it('renders NotAvailable component as disable when user is read-only and comments by rom users is not allowed', async() => {
+  it('renders NotAvailable component as disable when user is read-only and comments by rom users is not allowed', async () => {
     useIsReadOnlyUser.mockReturnValue({ data: true });
     useIsRomUserAllowedToComment.mockReturnValue({ data: false });
 
@@ -53,7 +50,7 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
     expect(wrapperElement).toHaveAttribute('aria-hidden', 'true');
   });
 
-  it('renders NotAvailable component as enable when user is not read-only and comments by rom users is allowed', async() => {
+  it('renders NotAvailable component as enable when user is not read-only and comments by rom users is allowed', async () => {
     useIsReadOnlyUser.mockReturnValue({ data: false });
     useIsRomUserAllowedToComment.mockReturnValue({ data: true });
 
@@ -71,7 +68,7 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
     expect(wrapperElement).not.toHaveAttribute('aria-hidden', 'true');
   });
 
-  it('renders NotAvailable component as enable when user is not read-only and comments by rom users is not allowed', async() => {
+  it('renders NotAvailable component as enable when user is not read-only and comments by rom users is not allowed', async () => {
     useIsReadOnlyUser.mockReturnValue({ data: false });
     useIsRomUserAllowedToComment.mockReturnValue({ data: false });
 
@@ -88,5 +85,4 @@ describe('NotAvailableForReadOnlyUser.tsx', () => {
     // then
     expect(wrapperElement).not.toHaveAttribute('aria-hidden', 'true');
   });
-
 });

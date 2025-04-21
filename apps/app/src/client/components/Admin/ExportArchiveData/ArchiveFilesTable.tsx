@@ -6,9 +6,9 @@ import { useTranslation } from 'next-i18next';
 import ArchiveFilesTableMenu from './ArchiveFilesTableMenu';
 
 type ArchiveFilesTableProps = {
-  zipFileStats: any[],
-  onZipFileStatRemove: (fileName: string) => void,
-}
+  zipFileStats: any[];
+  onZipFileStatRemove: (fileName: string) => void;
+};
 
 const ArchiveFilesTable = (props: ArchiveFilesTableProps): JSX.Element => {
   const { t } = useTranslation();
@@ -30,13 +30,10 @@ const ArchiveFilesTable = (props: ArchiveFilesTableProps): JSX.Element => {
             <tr key={fileName}>
               <th>{fileName}</th>
               <td>{meta.version}</td>
-              <td className="text-capitalize">{innerFileStats.map(fileStat => fileStat.collectionName).join(', ')}</td>
+              <td className="text-capitalize">{innerFileStats.map((fileStat) => fileStat.collectionName).join(', ')}</td>
               <td>{meta.exportedAt ? format(new Date(meta.exportedAt), 'yyyy/MM/dd HH:mm:ss') : ''}</td>
               <td>
-                <ArchiveFilesTableMenu
-                  fileName={fileName}
-                  onZipFileStatRemove={props.onZipFileStatRemove}
-                />
+                <ArchiveFilesTableMenu fileName={fileName} onZipFileStatRemove={props.onZipFileStatRemove} />
               </td>
             </tr>
           );

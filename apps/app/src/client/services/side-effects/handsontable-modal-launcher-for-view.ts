@@ -13,21 +13,17 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:cli:side-effects:useHandsontableModalLauncherForView');
-
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
   var globalEmitter: EventEmitter;
 }
 
-
 export const useHandsontableModalLauncherForView = (opts?: {
-  onSaveSuccess?: () => void,
-  onSaveError?: (error: any) => void,
+  onSaveSuccess?: () => void;
+  onSaveError?: (error: any) => void;
 }): void => {
-
   const { data: shareLinkId } = useShareLinkId();
 
   const { data: currentPage } = useSWRxCurrentPage();
@@ -41,62 +37,73 @@ export const useHandsontableModalLauncherForView = (opts?: {
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   // eslint-disable-next-line max-len
-  const updatePage = useCallback(async(revisionId:string, newMarkdown: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
-    if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
-      return;
-    }
-
-    try {
-      await _updatePage({
-        pageId: currentPage._id,
-        revisionId,
-        body: newMarkdown,
-        origin: Origin.View,
-      });
-
-      closeConflictDiffModal();
-      opts?.onSaveSuccess?.();
-    }
-    catch (error) {
-      const remoteRevidsionData = extractRemoteRevisionDataFromErrorObj(error);
-      if (remoteRevidsionData != null) {
-        onConflict?.(remoteRevidsionData, newMarkdown);
+  const updatePage = useCallback(
+    async (revisionId: string, newMarkdown: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
+      if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
+        return;
       }
 
-      logger.error('failed to save', error);
-      opts?.onSaveError?.(error);
-    }
-  }, [closeConflictDiffModal, currentPage, opts, shareLinkId]);
+      try {
+        await _updatePage({
+          pageId: currentPage._id,
+          revisionId,
+          body: newMarkdown,
+          origin: Origin.View,
+        });
+
+        closeConflictDiffModal();
+        opts?.onSaveSuccess?.();
+      } catch (error) {
+        const remoteRevidsionData = extractRemoteRevisionDataFromErrorObj(error);
+        if (remoteRevidsionData != null) {
+          onConflict?.(remoteRevidsionData, newMarkdown);
+        }
+
+        logger.error('failed to save', error);
+        opts?.onSaveError?.(error);
+      }
+    },
+    [closeConflictDiffModal, currentPage, opts, shareLinkId],
+  );
 
   // eslint-disable-next-line max-len
-  const generateResolveConflictHandler = useCallback((revisionId: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
-    return async(newMarkdown: string) => {
-      await updatePage(revisionId, newMarkdown, onConflict);
-    };
-  }, [updatePage]);
+  const generateResolveConflictHandler = useCallback(
+    (revisionId: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
+      return async (newMarkdown: string) => {
+        await updatePage(revisionId, newMarkdown, onConflict);
+      };
+    },
+    [updatePage],
+  );
 
-  const onConflictHandler = useCallback((remoteRevidsionData: RemoteRevisionData, newMarkdown: string) => {
-    setRemoteLatestPageData(remoteRevidsionData);
+  const onConflictHandler = useCallback(
+    (remoteRevidsionData: RemoteRevisionData, newMarkdown: string) => {
+      setRemoteLatestPageData(remoteRevidsionData);
 
-    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, onConflictHandler);
-    if (resolveConflictHandler == null) {
-      return;
-    }
+      const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, onConflictHandler);
+      if (resolveConflictHandler == null) {
+        return;
+      }
 
-    openConflictDiffModal(newMarkdown, resolveConflictHandler);
-  }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData]);
+      openConflictDiffModal(newMarkdown, resolveConflictHandler);
+    },
+    [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData],
+  );
 
-  const saveByHandsontableModal = useCallback(async(table: MarkdownTable, bol: number, eol: number) => {
-    if (currentPage == null || currentPage.revision == null) {
-      return;
-    }
+  const saveByHandsontableModal = useCallback(
+    async (table: MarkdownTable, bol: number, eol: number) => {
+      if (currentPage == null || currentPage.revision == null) {
+        return;
+      }
 
-    const currentRevisionId = currentPage.revision._id;
-    const currentMarkdown = currentPage.revision.body;
-    const newMarkdown = replaceMarkdownTableInMarkdown(table, currentMarkdown, bol, eol);
+      const currentRevisionId = currentPage.revision._id;
+      const currentMarkdown = currentPage.revision.body;
+      const newMarkdown = replaceMarkdownTableInMarkdown(table, currentMarkdown, bol, eol);
 
-    await updatePage(currentRevisionId, newMarkdown, onConflictHandler);
-  }, [currentPage, onConflictHandler, updatePage]);
+      await updatePage(currentRevisionId, newMarkdown, onConflictHandler);
+    },
+    [currentPage, onConflictHandler, updatePage],
+  );
 
   // set handler to open HandsonTableModal
   useEffect(() => {
@@ -105,11 +112,13 @@ export const useHandsontableModalLauncherForView = (opts?: {
     }
 
     const handler = (bol: number, eol: number) => {
-      if (currentPage.revision == null) { return; }
+      if (currentPage.revision == null) {
+        return;
+      }
 
       const markdown = currentPage.revision.body;
       const currentMarkdownTable = getMarkdownTableFromLine(markdown, bol, eol);
-      openHandsontableModal(currentMarkdownTable, false, table => saveByHandsontableModal(table, bol, eol));
+      openHandsontableModal(currentMarkdownTable, false, (table) => saveByHandsontableModal(table, bol, eol));
     };
     globalEmitter.on('launchHandsonTableModal', handler);
 

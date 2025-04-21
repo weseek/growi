@@ -13,8 +13,8 @@ import Preview from './Preview';
 import { useScrollSync } from './ScrollSyncHelper';
 
 type Props = {
-  visibility?: boolean,
-}
+  visibility?: boolean;
+};
 
 export const PageEditorReadOnly = react.memo(({ visibility }: Props): JSX.Element => {
   const previewRef = useRef<HTMLDivElement>(null);
@@ -40,22 +40,14 @@ export const PageEditorReadOnly = react.memo(({ visibility }: Props): JSX.Elemen
 
       <div className="flex-expand-horiz">
         <div className="page-editor-editor-container flex-expand-vert border-end">
-          <CodeMirrorEditorReadOnly
-            markdown={revisionBody}
-            onScroll={scrollEditorHandlerThrottle}
-          />
+          <CodeMirrorEditorReadOnly markdown={revisionBody} onScroll={scrollEditorHandlerThrottle} />
         </div>
         <div
           ref={previewRef}
           onScroll={scrollPreviewHandlerThrottle}
           className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex"
         >
-          <Preview
-            markdown={revisionBody}
-            pagePath={currentPage?.path}
-            rendererOptions={rendererOptions}
-            expandContentWidth={shouldExpandContent}
-          />
+          <Preview markdown={revisionBody} pagePath={currentPage?.path} rendererOptions={rendererOptions} expandContentWidth={shouldExpandContent} />
         </div>
       </div>
     </div>

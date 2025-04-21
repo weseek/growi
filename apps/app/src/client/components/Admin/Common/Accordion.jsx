@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Collapse } from 'reactstrap';
 
-
 const Accordion = (props) => {
   const [isOpen, setIsOpen] = useState(props.isOpenDefault);
   return (
@@ -14,15 +13,13 @@ const Accordion = (props) => {
           type="button"
           data-bs-toggle="collapse"
           aria-expanded="true"
-          onClick={() => setIsOpen(prevState => !prevState)}
+          onClick={() => setIsOpen((prevState) => !prevState)}
         >
           {props.title}
         </button>
       </p>
       <Collapse isOpen={isOpen}>
-        <div className="accordion-body">
-          {props.children}
-        </div>
+        <div className="accordion-body">{props.children}</div>
       </Collapse>
     </div>
   );

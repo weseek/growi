@@ -12,20 +12,18 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 type Props = {
-  adminCustomizeContainer: AdminCustomizeContainer
-}
+  adminCustomizeContainer: AdminCustomizeContainer;
+};
 
 const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
-
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
-  const onClickSubmit = useCallback(async() => {
+  const onClickSubmit = useCallback(async () => {
     try {
       await adminCustomizeContainer.updateCustomizeNoscript();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_noscript'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [t, adminCustomizeContainer]);
@@ -51,7 +49,9 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
               name="customizeNoscript"
               rows={8}
               defaultValue={adminCustomizeContainer.state.currentCustomizeNoscript || ''}
-              onChange={(e) => { adminCustomizeContainer.changeCustomizeNoscript(e.target.value) }}
+              onChange={(e) => {
+                adminCustomizeContainer.changeCustomizeNoscript(e.target.value);
+              }}
             />
           </div>
 
@@ -63,14 +63,13 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
             aria-expanded="false"
             aria-controls="collapseExampleHtml"
           >
-            <span className="material-symbols-outlined me-1" aria-hidden="true">navigate_next</span>
+            <span className="material-symbols-outlined me-1" aria-hidden="true">
+              navigate_next
+            </span>
             Example for Google Tag Manager
           </a>
           <div className="collapse" id="collapseExampleHtml">
-            <PrismAsyncLight
-              style={oneDark}
-              language="javascript"
-            >
+            <PrismAsyncLight style={oneDark} language="javascript">
               {`<iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX"
   height="0"
   width="0"
@@ -83,7 +82,6 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
       </div>
     </React.Fragment>
   );
-
 };
 
 const CustomizeNoscriptSettingWrapper = withUnstatedContainers(CustomizeNoscriptSetting, [AdminCustomizeContainer]);

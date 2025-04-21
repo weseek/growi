@@ -1,18 +1,17 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Comment', () => {
-
   // make tests run in serial
   test.describe.configure({ mode: 'serial' });
 
-  test('Create comment page', async({ page }) => {
+  test('Create comment page', async ({ page }) => {
     await page.goto('/comment');
     await page.getByTestId('editor-button').click();
     await page.getByTestId('save-page-btn').click();
     await expect(page.locator('.page-meta')).toBeVisible();
   });
 
-  test('Successfully add comments', async({ page }) => {
+  test('Successfully add comments', async ({ page }) => {
     const commentText = 'add comment';
     await page.goto('/comment');
 
@@ -26,7 +25,7 @@ test.describe('Comment', () => {
     await expect(page.getByTestId('page-comment-button').locator('.grw-count-badge')).toHaveText('1');
   });
 
-  test('Successfully reply comments', async({ page }) => {
+  test('Successfully reply comments', async ({ page }) => {
     const commentText = 'reply comment';
     await page.goto('/comment');
 
@@ -51,5 +50,4 @@ test.describe('Comment', () => {
   // });
 
   // TODO: https://redmine.weseek.co.jp/issues/139520
-
 });

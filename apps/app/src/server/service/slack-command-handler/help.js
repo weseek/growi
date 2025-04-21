@@ -12,7 +12,7 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
-  handler.handleCommand = async(growiCommand, client, body, respondUtil) => {
+  handler.handleCommand = async (growiCommand, client, body, respondUtil) => {
     const appTitle = crowi.appService.getAppTitle();
     const appSiteUrl = growiInfoService.getSiteUrl();
     // adjust spacing
@@ -25,9 +25,7 @@ module.exports = (crowi) => {
 
     await respondUtil.respond({
       text: 'Help',
-      blocks: [
-        markdownSectionBlock(message),
-      ],
+      blocks: [markdownSectionBlock(message)],
     });
   };
 

@@ -5,12 +5,8 @@ import { useHandsontableModalForEditor } from '@growi/editor/dist/client/stores/
 import { HotTable } from '@handsontable/react';
 import type Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
-import {
-  Collapse,
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Collapse, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
-
 
 import { replaceFocusedMarkdownTableWithEditor, getMarkdownTable } from '~/client/components/PageEditor/markdown-table-util-for-editor';
 import { useHandsontableModal } from '~/stores/modal';
@@ -31,7 +27,6 @@ const MARKDOWNTABLE_TO_HANDSONTABLE_ALIGNMENT_SYMBOL_MAPPING = {
 };
 
 export const HandsontableModal = (): JSX.Element => {
-
   const { t } = useTranslation('commons');
   const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
   const { data: handsontableModalForEditorData } = useHandsontableModalForEditor();
@@ -156,10 +151,7 @@ export const HandsontableModal = (): JSX.Element => {
       return;
     }
 
-    const newMarkdownTable = new MarkdownTable(
-      hotTable.hotInstance.getData(),
-      markdownTableOption.latest,
-    ).normalizeCells();
+    const newMarkdownTable = new MarkdownTable(hotTable.hotInstance.getData(), markdownTableOption.latest).normalizeCells();
 
     // onSave is passed only when editing table directly from the page.
     if (onSave != null) {
@@ -182,7 +174,6 @@ export const HandsontableModal = (): JSX.Element => {
      *
      * At the moment, using 'afterColumnResizeHandler' instead.
      */
-
     // store column index
     // this.manuallyResizedColumnIndicesSet.add(currentColumn);
   };
@@ -283,49 +274,48 @@ export const HandsontableModal = (): JSX.Element => {
     const removed = align.splice(columns[0], columns.length);
 
     /*
-      * The following is a description of the algorithm for the alignment synchronization.
-      *
-      * Consider the case where the target is X and the columns are [2,3] and data is as follows.
-      *
-      * 0 1 2 3 4 5 (insert position number)
-      * +-+-+-+-+-+
-      * | | | | | |
-      * +-+-+-+-+-+
-      *  0 1 2 3 4  (column index number)
-      *
-      * At first, remove columns by the splice.
-      *
-      * 0 1 2   4 5
-      * +-+-+   +-+
-      * | | |   | |
-      * +-+-+   +-+
-      *  0 1     4
-      *
-      * Next, insert those columns into a new position.
-      * However the target number is a insert position number before deletion, it may be changed.
-      * These are changed as follows.
-      *
-      * Before:
-      * 0 1 2   4 5
-      * +-+-+   +-+
-      * | | |   | |
-      * +-+-+   +-+
-      *
-      * After:
-      * 0 1 2   2 3
-      * +-+-+   +-+
-      * | | |   | |
-      * +-+-+   +-+
-      *
-      * If X is 0, 1 or 2, that is, lower than columns[0], the target number is not changed.
-      * If X is 4 or 5, that is, higher than columns[columns.length - 1], the target number is modified to the original value minus columns.length.
-      *
-      */
+     * The following is a description of the algorithm for the alignment synchronization.
+     *
+     * Consider the case where the target is X and the columns are [2,3] and data is as follows.
+     *
+     * 0 1 2 3 4 5 (insert position number)
+     * +-+-+-+-+-+
+     * | | | | | |
+     * +-+-+-+-+-+
+     *  0 1 2 3 4  (column index number)
+     *
+     * At first, remove columns by the splice.
+     *
+     * 0 1 2   4 5
+     * +-+-+   +-+
+     * | | |   | |
+     * +-+-+   +-+
+     *  0 1     4
+     *
+     * Next, insert those columns into a new position.
+     * However the target number is a insert position number before deletion, it may be changed.
+     * These are changed as follows.
+     *
+     * Before:
+     * 0 1 2   4 5
+     * +-+-+   +-+
+     * | | |   | |
+     * +-+-+   +-+
+     *
+     * After:
+     * 0 1 2   2 3
+     * +-+-+   +-+
+     * | | |   | |
+     * +-+-+   +-+
+     *
+     * If X is 0, 1 or 2, that is, lower than columns[0], the target number is not changed.
+     * If X is 4 or 5, that is, higher than columns[columns.length - 1], the target number is modified to the original value minus columns.length.
+     *
+     */
     let insertPosition = 0;
     if (target <= columns[0]) {
       insertPosition = target;
-    }
-    else if (columns[columns.length - 1] < target) {
+    } else if (columns[columns.length - 1] < target) {
       insertPosition = target - columns.length;
     }
 
@@ -364,7 +354,9 @@ export const HandsontableModal = (): JSX.Element => {
     }
 
     const selectedRange = hotTable.hotInstance.getSelectedRange();
-    if (selectedRange == null) { return; }
+    if (selectedRange == null) {
+      return;
+    }
 
     const startCol = selectedRange[0].from.col < selectedRange[0].to.col ? selectedRange[0].from.col : selectedRange[0].to.col;
     const endCol = selectedRange[0].from.col < selectedRange[0].to.col ? selectedRange[0].to.col : selectedRange[0].from.col;
@@ -414,15 +406,23 @@ export const HandsontableModal = (): JSX.Element => {
               {
                 name: 'Left',
                 key: 'align_columns:1',
-                callback: (key, selection) => { align('l', selection[0].start.col, selection[0].end.col) },
-              }, {
+                callback: (key, selection) => {
+                  align('l', selection[0].start.col, selection[0].end.col);
+                },
+              },
+              {
                 name: 'Center',
                 key: 'align_columns:2',
-                callback: (key, selection) => { align('c', selection[0].start.col, selection[0].end.col) },
-              }, {
+                callback: (key, selection) => {
+                  align('c', selection[0].start.col, selection[0].end.col);
+                },
+              },
+              {
                 name: 'Right',
                 key: 'align_columns:3',
-                callback: (key, selection) => { align('r', selection[0].start.col, selection[0].end.col) },
+                callback: (key, selection) => {
+                  align('r', selection[0].start.col, selection[0].end.col);
+                },
               },
             ],
           },
@@ -438,11 +438,7 @@ export const HandsontableModal = (): JSX.Element => {
 
   const closeButton = (
     <span>
-      <ExpandOrContractButton
-        isWindowExpanded={isWindowExpanded}
-        contractWindow={contractWindow}
-        expandWindow={expandWindow}
-      />
+      <ExpandOrContractButton isWindowExpanded={isWindowExpanded} contractWindow={contractWindow} expandWindow={expandWindow} />
       <button type="button" className="btn btn-close ms-2" onClick={cancel} aria-label="Close"></button>
     </span>
   );
@@ -475,13 +471,31 @@ export const HandsontableModal = (): JSX.Element => {
             <span className="material-symbols-outlined">{isDataImportAreaExpanded ? 'expand_less' : 'expand_more'}</span>
           </button>
           <div role="group" className="btn-group">
-            <button type="button" className="btn btn-outline-neutral-secondary" onClick={() => { alignButtonHandler('l') }}>
+            <button
+              type="button"
+              className="btn btn-outline-neutral-secondary"
+              onClick={() => {
+                alignButtonHandler('l');
+              }}
+            >
               <span className="material-symbols-outlined">format_align_left</span>
             </button>
-            <button type="button" className="btn btn-outline-neutral-secondary" onClick={() => { alignButtonHandler('c') }}>
+            <button
+              type="button"
+              className="btn btn-outline-neutral-secondary"
+              onClick={() => {
+                alignButtonHandler('c');
+              }}
+            >
               <span className="material-symbols-outlined">format_align_center</span>
             </button>
-            <button type="button" className="btn btn-outline-neutral-secondary" onClick={() => { alignButtonHandler('r') }}>
+            <button
+              type="button"
+              className="btn btn-outline-neutral-secondary"
+              onClick={() => {
+                alignButtonHandler('r');
+              }}
+            >
               <span className="material-symbols-outlined">format_align_right</span>
             </button>
           </div>
@@ -515,10 +529,16 @@ export const HandsontableModal = (): JSX.Element => {
         </div>
       </ModalBody>
       <ModalFooter className="grw-modal-footer">
-        <button type="button" className="btn btn-outline-danger" onClick={reset}>{t('commons:Reset')}</button>
+        <button type="button" className="btn btn-outline-danger" onClick={reset}>
+          {t('commons:Reset')}
+        </button>
         <div className="ms-auto">
-          <button type="button" className="me-2 btn btn-outline-neutral-secondary" onClick={cancel}>{t('handsontable_modal.cancel')}</button>
-          <button type="button" className="btn btn-primary" onClick={save}>{t('handsontable_modal.done')}</button>
+          <button type="button" className="me-2 btn btn-outline-neutral-secondary" onClick={cancel}>
+            {t('handsontable_modal.cancel')}
+          </button>
+          <button type="button" className="btn btn-primary" onClick={save}>
+            {t('handsontable_modal.done')}
+          </button>
         </div>
       </ModalFooter>
     </Modal>

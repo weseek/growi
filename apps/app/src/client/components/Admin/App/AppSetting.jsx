@@ -9,28 +9,24 @@ import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
-
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:appSettings');
 
-
 const AppSetting = (props) => {
   const { adminAppContainer } = props;
   const { t } = useTranslation(['admin', 'commons']);
 
-  const submitHandler = useCallback(async() => {
+  const submitHandler = useCallback(async () => {
     try {
       await adminAppContainer.updateAppSettingHandler();
       toastSuccess(t('commons:toaster.update_successed', { target: t('commons:headers.app_settings') }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
   }, [adminAppContainer, t]);
-
 
   return (
     <React.Fragment>
@@ -51,11 +47,7 @@ const AppSetting = (props) => {
       </div>
 
       <div className="row mb-5">
-        <label
-          className="text-start text-md-end col-md-3 col-form-label"
-        >
-          {t('admin:app_setting.confidential_name')}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.confidential_name')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -71,46 +63,39 @@ const AppSetting = (props) => {
       </div>
 
       <div className="row mb-5">
-        <label
-          className="text-start text-md-end col-md-3 col-form-label"
-        >
-          {t('admin:app_setting.default_language')}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.default_language')}</label>
         <div className="col-md-6 py-2">
-          {
-            i18nConfig.locales.map((locale) => {
-              if (i18n == null) { return }
-              const fixedT = i18n.getFixedT(locale, 'admin');
+          {i18nConfig.locales.map((locale) => {
+            if (i18n == null) {
+              return;
+            }
+            const fixedT = i18n.getFixedT(locale, 'admin');
 
-              return (
-                <div key={locale} className="form-check form-check-inline">
-                  <input
-                    type="radio"
-                    id={`radioLang${locale}`}
-                    className="form-check-input"
-                    name="globalLang"
-                    value={locale}
-                    checked={adminAppContainer.state.globalLang === locale}
-                    onChange={(e) => {
-                      adminAppContainer.changeGlobalLang(e.target.value);
-                    }}
-                  />
-                  <label className="form-label form-check-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name')}</label>
-                </div>
-              );
-            })
-          }
+            return (
+              <div key={locale} className="form-check form-check-inline">
+                <input
+                  type="radio"
+                  id={`radioLang${locale}`}
+                  className="form-check-input"
+                  name="globalLang"
+                  value={locale}
+                  checked={adminAppContainer.state.globalLang === locale}
+                  onChange={(e) => {
+                    adminAppContainer.changeGlobalLang(e.target.value);
+                  }}
+                />
+                <label className="form-label form-check-label" htmlFor={`radioLang${locale}`}>
+                  {fixedT('meta.display_name')}
+                </label>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       <div className="row mb-5">
-        <label
-          className="text-start text-md-end col-md-3 col-form-label"
-        >
-          {t('admin:app_setting.default_mail_visibility')}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.default_mail_visibility')}</label>
         <div className="col-md-6 py-2">
-
           <div className="form-check form-check-inline">
             <input
               type="radio"
@@ -118,9 +103,13 @@ const AppSetting = (props) => {
               className="form-check-input"
               name="mailVisibility"
               checked={adminAppContainer.state.isEmailPublishedForNewUser === true}
-              onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(true) }}
+              onChange={() => {
+                adminAppContainer.changeIsEmailPublishedForNewUserShow(true);
+              }}
             />
-            <label className="form-label form-check-label" htmlFor="radio-email-show">{t('commons:Show')}</label>
+            <label className="form-label form-check-label" htmlFor="radio-email-show">
+              {t('commons:Show')}
+            </label>
           </div>
 
           <div className="form-check form-check-inline">
@@ -130,20 +119,19 @@ const AppSetting = (props) => {
               className="form-check-input"
               name="mailVisibility"
               checked={adminAppContainer.state.isEmailPublishedForNewUser === false}
-              onChange={() => { adminAppContainer.changeIsEmailPublishedForNewUserShow(false) }}
+              onChange={() => {
+                adminAppContainer.changeIsEmailPublishedForNewUserShow(false);
+              }}
             />
-            <label className="form-label form-check-label" htmlFor="radio-email-hide">{t('commons:Hide')}</label>
+            <label className="form-label form-check-label" htmlFor="radio-email-hide">
+              {t('commons:Hide')}
+            </label>
           </div>
-
         </div>
       </div>
 
       <div className="row mb-2">
-        <label
-          className="text-start text-md-end col-md-3 col-form-label"
-        >
-          {/* {t('admin:app_setting.file_uploading')} */}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{/* {t('admin:app_setting.file_uploading')} */}</label>
         <div className="col-md-6">
           <div className="form-check form-check-info">
             <input
@@ -156,26 +144,19 @@ const AppSetting = (props) => {
                 adminAppContainer.changeFileUpload(e.target.checked);
               }}
             />
-            <label
-              className="form-label form-check-label"
-              htmlFor="cbFileUpload"
-            >
+            <label className="form-label form-check-label" htmlFor="cbFileUpload">
               {t('admin:app_setting.enable_files_except_image')}
             </label>
           </div>
 
-          <p className="form-text text-muted">
-            {t('admin:app_setting.attach_enable')}
-          </p>
+          <p className="form-text text-muted">{t('admin:app_setting.attach_enable')}</p>
         </div>
       </div>
 
       <AdminUpdateButtonRow onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null} />
     </React.Fragment>
   );
-
 };
-
 
 /**
  * Wrapper component for using unstated
@@ -185,6 +166,5 @@ const AppSettingWrapper = withUnstatedContainers(AppSetting, [AdminAppContainer]
 AppSetting.propTypes = {
   adminAppContainer: PropTypes.instanceOf(AdminAppContainer).isRequired,
 };
-
 
 export default AppSettingWrapper;

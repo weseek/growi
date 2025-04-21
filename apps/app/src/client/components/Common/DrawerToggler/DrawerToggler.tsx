@@ -2,19 +2,16 @@ import type { ReactNode, JSX } from 'react';
 
 import { useDrawerOpened } from '~/stores/ui';
 
-
 import styles from './DrawerToggler.module.scss';
 
 const moduleClass = styles['grw-drawer-toggler'];
 
-
 type Props = {
-  className?: string,
-  children?: ReactNode,
-}
+  className?: string;
+  children?: ReactNode;
+};
 
 export const DrawerToggler = (props: Props): JSX.Element => {
-
   const { className, children } = props;
 
   const { data: isOpened, mutate } = useDrawerOpened();
@@ -32,5 +29,4 @@ export const DrawerToggler = (props: Props): JSX.Element => {
       </button>
     </div>
   );
-
 };

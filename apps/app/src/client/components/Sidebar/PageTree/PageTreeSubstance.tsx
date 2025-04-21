@@ -1,15 +1,11 @@
-import React, {
-  memo, useCallback, useEffect, useMemo, useRef, useState,
-} from 'react';
+import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
-import {
-  mutatePageTree, mutateRecentlyUpdated, useSWRxRootPage, useSWRxV5MigrationStatus,
-} from '~/stores/page-listing';
+import { mutatePageTree, mutateRecentlyUpdated, useSWRxRootPage, useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import { useSidebarScrollerRef } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -22,9 +18,9 @@ import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 const logger = loggerFactory('growi:cli:PageTreeSubstance');
 
 type HeaderProps = {
-  isWipPageShown: boolean,
-  onWipPageShownChange?: () => void
-}
+  isWipPageShown: boolean;
+  onWipPageShownChange?: () => void;
+};
 
 export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: HeaderProps) => {
   const { t } = useTranslation();
@@ -43,29 +39,15 @@ export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: He
       <SidebarHeaderReloadButton onClick={() => mutate()} />
 
       <div className="me-1">
-        <button
-          color="transparent"
-          className="btn p-0 border-0"
-          type="button"
-          data-bs-toggle="dropdown"
-          data-bs-auto-close="outside"
-          aria-expanded="false"
-        >
+        <button color="transparent" className="btn p-0 border-0" type="button" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
           <span className="material-symbols-outlined">more_horiz</span>
         </button>
 
         <ul className="dropdown-menu">
           <li className="dropdown-item" onClick={onWipPageShownChange}>
             <div className="form-check form-switch">
-              <input
-                className="form-check-input pe-none"
-                type="checkbox"
-                checked={isWipPageShown}
-                onChange={() => {}}
-              />
-              <label className="form-check-label pe-none">
-                {t('sidebar_header.show_wip_page')}
-              </label>
+              <input className="form-check-input pe-none" type="checkbox" checked={isWipPageShown} onChange={() => {}} />
+              <label className="form-check-label pe-none">{t('sidebar_header.show_wip_page')}</label>
             </div>
           </li>
         </ul>
@@ -74,7 +56,6 @@ export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: He
   );
 });
 PageTreeHeader.displayName = 'PageTreeHeader';
-
 
 const PageTreeUnavailable = () => {
   const { t } = useTranslation();
@@ -90,11 +71,10 @@ const PageTreeUnavailable = () => {
 };
 
 type PageTreeContentProps = {
-  isWipPageShown: boolean,
-}
+  isWipPageShown: boolean;
+};
 
 export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) => {
-
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPath } = useCurrentPagePath();
@@ -127,7 +107,6 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
     }
 
     logger.debug('scrollOnInit has invoked');
-
 
     // NOTE: could not use scrollIntoView
     //  https://stackoverflow.com/questions/11039885/scrollintoview-causing-the-whole-page-to-move
@@ -166,7 +145,6 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
     };
   }, [isInitialScrollCompleted, scrollOnInitDebounced, rootPageResult]);
   // *******************************  end  *******************************
-
 
   if (!migrationStatus?.isV5Compatible) {
     return <PageTreeUnavailable />;

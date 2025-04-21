@@ -5,9 +5,7 @@ import type { Locale } from '@growi/core/dist/interfaces';
 // biome-ignore lint/nursery/noDocumentImportInPage: ignore
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
 // biome-ignore lint/nursery/noDocumentImportInPage: ignore
-import Document, {
-  Html, Head, Main, NextScript,
-} from 'next/document';
+import Document, { Html, Head, Main, NextScript } from 'next/document';
 
 import type { GrowiPluginResourceEntries } from '~/features/growi-plugin/server/services';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -19,13 +17,13 @@ const logger = loggerFactory('growi:page:_document');
 
 type HeadersForGrowiPluginProps = {
   pluginResourceEntries: GrowiPluginResourceEntries;
-}
+};
 const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element => {
   const { pluginResourceEntries } = props;
 
   return (
     <>
-      { pluginResourceEntries.map(([installedPath, href]) => {
+      {pluginResourceEntries.map(([installedPath, href]) => {
         if (href.endsWith('.js')) {
           // eslint-disable-next-line @next/next/no-sync-scripts
           return <script type="module" key={`script_${installedPath}`} src={href} />;
@@ -35,25 +33,23 @@ const HeadersForGrowiPlugin = (props: HeadersForGrowiPluginProps): JSX.Element =
           return <link rel="stylesheet" key={`link_${installedPath}`} href={href} />;
         }
         return <></>;
-      }) }
+      })}
     </>
   );
 };
 
 interface GrowiDocumentProps {
-  themeHref: string,
-  customScript: string | null,
-  customCss: string | null,
-  customNoscript: string | null,
+  themeHref: string;
+  customScript: string | null;
+  customCss: string | null;
+  customNoscript: string | null;
   pluginResourceEntries: GrowiPluginResourceEntries;
   locale: Locale;
 }
 declare type GrowiDocumentInitialProps = DocumentInitialProps & GrowiDocumentProps;
 
 class GrowiDocument extends Document<GrowiDocumentInitialProps> {
-
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
-
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
     const req = ctx.req as CrowiRequest;
     const { crowi } = req;
@@ -65,7 +61,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
     const customNoscript: string | null = customizeService.getCustomNoscript();
 
     // retrieve plugin manifests
-    const growiPluginService = await import('~/features/growi-plugin/server/services').then(mod => mod.growiPluginService);
+    const growiPluginService = await import('~/features/growi-plugin/server/services').then((mod) => mod.growiPluginService);
     const pluginResourceEntries = await growiPluginService.retrieveAllPluginResourceEntries();
 
     const locale = getLocaleAtServerSide(req);
@@ -103,11 +99,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
   }
 
   override render(): JSX.Element {
-    const {
-      customCss, customScript, customNoscript,
-      themeHref, pluginResourceEntries,
-      locale,
-    } = this.props;
+    const { customCss, customScript, customNoscript, themeHref, pluginResourceEntries, locale } = this.props;
 
     return (
       <Html lang={locale}>
@@ -127,7 +119,6 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
       </Html>
     );
   }
-
 }
 
 export default GrowiDocument;

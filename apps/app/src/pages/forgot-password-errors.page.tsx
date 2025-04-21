@@ -11,7 +11,7 @@ import type { CommonProps } from './utils/commons';
 import { getNextI18NextConfig, getServerSideCommonProps } from './utils/commons';
 
 type Props = CommonProps & {
-  errorCode?: forgotPasswordErrorCode
+  errorCode?: forgotPasswordErrorCode;
 };
 
 const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
@@ -25,28 +25,27 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
           <div className="row justify-content-md-center">
             <div className="col-md-6 mt-5">
               <div className="text-center">
-                <h1><span className="material-symbols-outlined large">lock_open</span></h1>
-                <h2 className="text-center">{ t('forgot_password.reset_password') }</h2>
+                <h1>
+                  <span className="material-symbols-outlined large">lock_open</span>
+                </h1>
+                <h2 className="text-center">{t('forgot_password.reset_password')}</h2>
 
-                { errorCode == null && (
-                  <h3 className="text-muted">errorCode Unknown</h3>
+                {errorCode == null && <h3 className="text-muted">errorCode Unknown</h3>}
+
+                {errorCode === forgotPasswordErrorCode.PASSWORD_RESET_IS_UNAVAILABLE && (
+                  <h3 className="text-muted">{t('forgot_password.feature_is_unavailable')}</h3>
                 )}
 
-                { errorCode === forgotPasswordErrorCode.PASSWORD_RESET_IS_UNAVAILABLE && (
-                  <h3 className="text-muted">{ t('forgot_password.feature_is_unavailable') }</h3>
-                )}
-
-                { (errorCode === forgotPasswordErrorCode.PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE || errorCode === forgotPasswordErrorCode.TOKEN_NOT_FOUND) && (
+                {(errorCode === forgotPasswordErrorCode.PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE || errorCode === forgotPasswordErrorCode.TOKEN_NOT_FOUND) && (
                   <div>
                     <div className="alert alert-warning mb-3">
-                      <h2>{ t('forgot_password.incorrect_token_or_expired_url') }</h2>
+                      <h2>{t('forgot_password.incorrect_token_or_expired_url')}</h2>
                     </div>
                     <Link href="/forgot-password" className="link-switch" prefetch={false}>
-                      <span className="material-symbols-outlined">key</span> { t('forgot_password.forgot_password') }
+                      <span className="material-symbols-outlined">key</span> {t('forgot_password.forgot_password')}
                     </Link>
                   </div>
-                ) }
-
+                )}
               </div>
             </div>
           </div>
@@ -61,7 +60,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
 
   // check for presence

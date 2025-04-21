@@ -104,7 +104,9 @@ module.exports = (crowi) => {
 
   validator.getShareLinks = [
     // validate the page id is MongoId
-    query('relatedPage').isMongoId().withMessage('Page Id is required'),
+    query('relatedPage')
+      .isMongoId()
+      .withMessage('Page Id is required'),
   ];
 
   /**
@@ -136,7 +138,7 @@ module.exports = (crowi) => {
    *                      items:
    *                        $ref: '#/components/schemas/ShareLink'
    */
-  router.get('/', loginRequired, linkSharingRequired, validator.getShareLinks, apiV3FormValidator, async(req, res) => {
+  router.get('/', loginRequired, linkSharingRequired, validator.getShareLinks, apiV3FormValidator, async (req, res) => {
     const { relatedPage } = req.query;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
@@ -150,8 +152,7 @@ module.exports = (crowi) => {
     try {
       const shareLinksResult = await ShareLink.find({ relatedPage }).populate({ path: 'relatedPage', select: 'path' });
       return res.apiv3({ shareLinksResult });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in get share link';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'get-shareLink-failed'));
@@ -160,11 +161,18 @@ module.exports = (crowi) => {
 
   validator.shareLinkStatus = [
     // validate the page id is MongoId
-    body('relatedPage').isMongoId().withMessage('Page Id is required'),
+    body('relatedPage')
+      .isMongoId()
+      .withMessage('Page Id is required'),
     // validate expireation date is not empty, is not before today and is date.
-    body('expiredAt').if(value => value != null).isAfter(today.toString()).withMessage('Your Selected date is past'),
+    body('expiredAt')
+      .if((value) => value != null)
+      .isAfter(today.toString())
+      .withMessage('Your Selected date is past'),
     // validate the length of description is max 100.
-    body('description').isLength({ min: 0, max: 100 }).withMessage('Max length is 100'),
+    body('description')
+      .isLength({ min: 0, max: 100 })
+      .withMessage('Max length is 100'),
   ];
 
   /**
@@ -202,7 +210,7 @@ module.exports = (crowi) => {
    *                schema:
    *                 $ref: '#/components/schemas/ShareLinkSimple'
    */
-  router.post('/', loginRequired, excludeReadOnlyUser, linkSharingRequired, addActivity, validator.shareLinkStatus, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequired, excludeReadOnlyUser, linkSharingRequired, addActivity, validator.shareLinkStatus, apiV3FormValidator, async (req, res) => {
     const { relatedPage, expiredAt, description } = req.body;
 
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
@@ -219,46 +227,46 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_CREATE });
 
       return res.apiv3(postedShareLink, 201);
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occured in post share link';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'post-shareLink-failed'));
     }
   });
 
-
   validator.deleteShareLinks = [
     // validate the page id is MongoId
-    query('relatedPage').isMongoId().withMessage('Page Id is required'),
+    query('relatedPage')
+      .isMongoId()
+      .withMessage('Page Id is required'),
   ];
 
   /**
-  * @swagger
-  *
-  *    /share-links/:
-  *      delete:
-  *        tags: [ShareLinks]
-  *        security:
-  *          - cookieAuth: []
-  *        summary: delete all share links related one page
-  *        description: delete all share links related one page
-  *        parameters:
-  *          - name: relatedPage
-  *            in: query
-  *            required: true
-  *            description: page id of share link
-  *            schema:
-  *              type: string
-  *        responses:
-  *          200:
-  *            description: Succeeded to delete o all share links related one page
-  *            content:
-  *              application/json:
-  *                schema:
-  *                 $ref: '#/components/schemas/ShareLinkSimple'
-  */
-  router.delete('/', loginRequired, excludeReadOnlyUser, addActivity, validator.deleteShareLinks, apiV3FormValidator, async(req, res) => {
+   * @swagger
+   *
+   *    /share-links/:
+   *      delete:
+   *        tags: [ShareLinks]
+   *        security:
+   *          - cookieAuth: []
+   *        summary: delete all share links related one page
+   *        description: delete all share links related one page
+   *        parameters:
+   *          - name: relatedPage
+   *            in: query
+   *            required: true
+   *            description: page id of share link
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete o all share links related one page
+   *            content:
+   *              application/json:
+   *                schema:
+   *                 $ref: '#/components/schemas/ShareLinkSimple'
+   */
+  router.delete('/', loginRequired, excludeReadOnlyUser, addActivity, validator.deleteShareLinks, apiV3FormValidator, async (req, res) => {
     const { relatedPage } = req.query;
     const page = await Page.findByIdAndViewer(relatedPage, req.user);
 
@@ -274,8 +282,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_DELETE_BY_PAGE });
 
       return res.apiv3(deletedShareLink);
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occured in delete share link';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'delete-shareLink-failed'));
@@ -283,28 +290,27 @@ module.exports = (crowi) => {
   });
 
   /**
-  * @swagger
-  *
-  *    /share-links/all:
-  *      delete:
-  *        tags: [ShareLink Management]
-  *        security:
-  *         - cookieAuth: []
-  *        summary: delete all share links
-  *        description: delete all share links
-  *        responses:
-  *          200:
-  *            description: Succeeded to remove all share links
-  *            content:
-  *              application/json:
-  *                schema:
-  *                  properties:
-  *                    deletedCount:
-  *                      type: integer
-  *                      description: The number of share links deleted
-  */
-  router.delete('/all', loginRequired, adminRequired, addActivity, async(req, res) => {
-
+   * @swagger
+   *
+   *    /share-links/all:
+   *      delete:
+   *        tags: [ShareLink Management]
+   *        security:
+   *         - cookieAuth: []
+   *        summary: delete all share links
+   *        description: delete all share links
+   *        responses:
+   *          200:
+   *            description: Succeeded to remove all share links
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    deletedCount:
+   *                      type: integer
+   *                      description: The number of share links deleted
+   */
+  router.delete('/all', loginRequired, adminRequired, addActivity, async (req, res) => {
     try {
       const deletedShareLink = await ShareLink.deleteMany({});
       const { deletedCount } = deletedShareLink;
@@ -312,39 +318,36 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_ALL_DELETE });
 
       return res.apiv3({ deletedCount });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in delete all share link';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'delete-all-shareLink-failed'));
     }
   });
 
-  validator.deleteShareLink = [
-    param('id').isMongoId().withMessage('ShareLink Id is required'),
-  ];
+  validator.deleteShareLink = [param('id').isMongoId().withMessage('ShareLink Id is required')];
 
   /**
-  * @swagger
-  *
-  *    /share-links/{id}:
-  *      delete:
-  *        tags: [ShareLinks]
-  *        security:
-  *          - cookieAuth: []
-  *        description: delete one share link related one page
-  *        parameters:
-  *          - name: id
-  *            in: path
-  *            required: true
-  *            description: id of share link
-  *            schema:
-  *              type: string
-  *        responses:
-  *          200:
-  *            description: Succeeded to delete one share link
-  */
-  router.delete('/:id', loginRequired, excludeReadOnlyUser, addActivity, validator.deleteShareLink, apiV3FormValidator, async(req, res) => {
+   * @swagger
+   *
+   *    /share-links/{id}:
+   *      delete:
+   *        tags: [ShareLinks]
+   *        security:
+   *          - cookieAuth: []
+   *        description: delete one share link related one page
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: id of share link
+   *            schema:
+   *              type: string
+   *        responses:
+   *          200:
+   *            description: Succeeded to delete one share link
+   */
+  router.delete('/:id', loginRequired, excludeReadOnlyUser, addActivity, validator.deleteShareLink, apiV3FormValidator, async (req, res) => {
     const { id } = req.params;
     const { user } = req;
 
@@ -354,7 +357,7 @@ module.exports = (crowi) => {
       // check permission
       if (!user.isAdmin) {
         const page = await Page.findByIdAndViewer(shareLinkToDelete.relatedPage, user);
-        const isPageExists = (await Page.count({ _id: shareLinkToDelete.relatedPage }) > 0);
+        const isPageExists = (await Page.count({ _id: shareLinkToDelete.relatedPage })) > 0;
         if (page == null && isPageExists) {
           const msg = 'Page is not found or forbidden';
           logger.error('Error', msg);
@@ -368,15 +371,12 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_SHARE_LINK_DELETE });
 
       return res.apiv3({ deletedShareLink: shareLinkToDelete });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in delete share link';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'delete-shareLink-failed'));
     }
-
   });
-
 
   return router;
 };

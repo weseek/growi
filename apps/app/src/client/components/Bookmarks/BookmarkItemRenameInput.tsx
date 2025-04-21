@@ -12,7 +12,6 @@ import { ValidationTarget, useInputValidator } from '~/client/util/use-input-val
 import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
 import type { SubmittableInputProps } from '../Common/SubmittableInput/types';
 
-
 type Props = Pick<SubmittableInputProps<AutosizeInputProps>, 'value' | 'onSubmit' | 'onCancel'>;
 
 export const BookmarkItemRenameInput = (props: Props): JSX.Element => {
@@ -25,13 +24,15 @@ export const BookmarkItemRenameInput = (props: Props): JSX.Element => {
 
   const [validationResult, setValidationResult] = useState<InputValidationResult>();
 
-
   const inputValidator = useInputValidator(ValidationTarget.PAGE);
 
-  const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
-    const validationResult = inputValidator(e.target.value);
-    setValidationResult(validationResult ?? undefined);
-  }, [inputValidator]);
+  const changeHandler = useCallback(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      const validationResult = inputValidator(e.target.value);
+      setValidationResult(validationResult ?? undefined);
+    },
+    [inputValidator],
+  );
   const changeHandlerDebounced = debounce(300, changeHandler);
 
   const cancelHandler = useCallback(() => {
@@ -41,9 +42,7 @@ export const BookmarkItemRenameInput = (props: Props): JSX.Element => {
 
   const isInvalid = validationResult != null;
 
-  const maxWidth = parentRect != null
-    ? getAdjustedMaxWidthForAutosizeInput(parentRect.width, 'md', validationResult != null ? false : undefined)
-    : undefined;
+  const maxWidth = parentRect != null ? getAdjustedMaxWidthForAutosizeInput(parentRect.width, 'md', validationResult != null ? false : undefined) : undefined;
 
   return (
     <div className="flex-fill" ref={parentRef}>
@@ -58,11 +57,11 @@ export const BookmarkItemRenameInput = (props: Props): JSX.Element => {
         onSubmit={onSubmit}
         onCancel={cancelHandler}
       />
-      { isInvalid && (
+      {isInvalid && (
         <div id="bookmark-item-rename-input-feedback" className="invalid-feedback d-block my-1">
           {validationResult.message}
         </div>
-      ) }
+      )}
     </div>
   );
 };

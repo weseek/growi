@@ -1,9 +1,7 @@
-
 import type { JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
-
 
 const ProxyCircle = () => (
   <div className="grw-bridge-proxy-circle position-relative">
@@ -15,16 +13,14 @@ const ProxyCircle = () => (
 );
 
 type BridgeCoreProps = {
-  description: string,
-  iconClass: string,
-  iconName: string,
-  hrClass: string,
-  withProxy?: boolean,
-}
+  description: string;
+  iconClass: string;
+  iconName: string;
+  hrClass: string;
+  withProxy?: boolean;
+};
 const BridgeCore = (props: BridgeCoreProps): JSX.Element => {
-  const {
-    description, iconClass, iconName, hrClass, withProxy,
-  } = props;
+  const { description, iconClass, iconName, hrClass, withProxy } = props;
 
   return (
     <>
@@ -38,7 +34,7 @@ const BridgeCore = (props: BridgeCoreProps): JSX.Element => {
           />
         </p>
         <div className="hr-container">
-          { withProxy && <ProxyCircle /> }
+          {withProxy && <ProxyCircle />}
           <hr className={`align-self-center ${hrClass}`} />
         </div>
       </div>
@@ -52,12 +48,11 @@ const BridgeCore = (props: BridgeCoreProps): JSX.Element => {
   );
 };
 
-
 type BridgeProps = {
-  errorCount: number,
-  totalCount: number,
-  withProxy?: boolean,
-}
+  errorCount: number;
+  totalCount: number;
+  withProxy?: boolean;
+};
 export const Bridge = (props: BridgeProps): JSX.Element => {
   const { t } = useTranslation();
   const { errorCount, totalCount, withProxy } = props;
@@ -89,15 +84,7 @@ export const Bridge = (props: BridgeProps): JSX.Element => {
     hrClass = 'border-warning admin-border-failed';
   }
 
-  return (
-    <BridgeCore
-      description={description}
-      iconClass={iconClass}
-      iconName={iconName}
-      hrClass={hrClass}
-      withProxy={withProxy}
-    />
-  );
+  return <BridgeCore description={description} iconClass={iconClass} iconName={iconName} hrClass={hrClass} withProxy={withProxy} />;
 };
 
 Bridge.displayName = 'Bridge';

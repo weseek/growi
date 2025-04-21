@@ -9,14 +9,12 @@ import { SidebarBrandLogo } from '../SidebarBrandLogo';
 
 import styles from './AppTitle.module.scss';
 
-
 type Props = {
-  className?: string,
+  className?: string;
   hideAppTitle?: boolean;
-}
+};
 
 const AppTitleSubstance = memo(({ className = '', hideAppTitle = false }: Props): JSX.Element => {
-
   const { data: isDefaultLogo } = useIsDefaultLogo();
   const { data: appTitle } = useAppTitle();
   const { data: confidential } = useConfidential();
@@ -36,8 +34,7 @@ const AppTitleSubstance = memo(({ className = '', hideAppTitle = false }: Props)
           </div>
         )}
       </div>
-      {!(confidential == null || confidential === '')
-      && (
+      {!(confidential == null || confidential === '') && (
         <UncontrolledTooltip
           className="d-none d-sm-block confidential-tooltip"
           innerClassName="text-start"
@@ -58,20 +55,13 @@ export const AppTitleOnSubnavigation = memo((): JSX.Element => {
 });
 
 export const AppTitleOnSidebarHead = memo(({ hideAppTitle }: Props): JSX.Element => {
-  return (
-    <AppTitleSubstance
-      className={`position-absolute z-1 ${styles['on-sidebar-head']}`}
-      hideAppTitle={hideAppTitle}
-    />
-  );
+  return <AppTitleSubstance className={`position-absolute z-1 ${styles['on-sidebar-head']}`} hideAppTitle={hideAppTitle} />;
 });
 
 export const AppTitleOnEditorSidebarHead = memo((): JSX.Element => {
   return (
     <div className={`${styles['on-editor-sidebar-head']}`}>
-      <AppTitleSubstance
-        className={`${styles['on-sidebar-head']}`}
-      />
+      <AppTitleSubstance className={`${styles['on-sidebar-head']}`} />
     </div>
   );
 });

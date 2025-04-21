@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-
-test('Sub navigation sticky changes when scrolling down and up', async({ page }) => {
+test('Sub navigation sticky changes when scrolling down and up', async ({ page }) => {
   await page.goto('/Sandbox');
 
   // Sticky

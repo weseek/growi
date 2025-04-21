@@ -15,7 +15,6 @@ const logger = loggerFactory('growi:routes:apiv3:bookmarks'); // eslint-disable-
 const express = require('express');
 const { body, query, param } = require('express-validator');
 
-
 const router = express.Router();
 
 /**
@@ -93,13 +92,8 @@ module.exports = (crowi) => {
   const { Page, Bookmark } = crowi.models;
 
   const validator = {
-    bookmarks: [
-      body('pageId').isString(),
-      body('bool').isBoolean(),
-    ],
-    bookmarkInfo: [
-      query('pageId').isMongoId(),
-    ],
+    bookmarks: [body('pageId').isString(), body('bool').isBoolean()],
+    bookmarkInfo: [query('pageId').isMongoId()],
   };
 
   /**
@@ -125,7 +119,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/BookmarkInfo'
    */
-  router.get('/info', accessTokenParser, loginRequired, validator.bookmarkInfo, apiV3FormValidator, async(req, res) => {
+  router.get('/info', accessTokenParser, loginRequired, validator.bookmarkInfo, apiV3FormValidator, async (req, res) => {
     const { user } = req;
     const { pageId } = req.query;
 
@@ -135,13 +129,12 @@ module.exports = (crowi) => {
       const bookmarks = await Bookmark.find({ page: pageId }).populate('user');
       let users = [];
       if (bookmarks.length > 0) {
-        users = bookmarks.map(bookmark => serializeUserSecurely(bookmark.user));
+        users = bookmarks.map((bookmark) => serializeUserSecurely(bookmark.user));
       }
       responsesParams.sumOfBookmarks = bookmarks.length;
       responsesParams.bookmarkedUsers = users;
       responsesParams.pageId = pageId;
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('get-bookmark-document-failed', err);
       return res.apiv3Err(err, 500);
     }
@@ -153,14 +146,12 @@ module.exports = (crowi) => {
 
     try {
       const bookmark = await Bookmark.findByPageIdAndUserId(pageId, user._id);
-      responsesParams.isBookmarked = (bookmark != null);
+      responsesParams.isBookmarked = bookmark != null;
       return res.apiv3(responsesParams);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('get-bookmark-state-failed', err);
       return res.apiv3Err(err, 500);
     }
-
   });
 
   // select page from bookmark where userid = userid
@@ -188,11 +179,9 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/Bookmarks'
    */
-  validator.userBookmarkList = [
-    param('userId').isMongoId().withMessage('userId is required'),
-  ];
+  validator.userBookmarkList = [param('userId').isMongoId().withMessage('userId is required')];
 
-  router.get('/:userId', accessTokenParser, loginRequired, validator.userBookmarkList, apiV3FormValidator, async(req, res) => {
+  router.get('/:userId', accessTokenParser, loginRequired, validator.userBookmarkList, apiV3FormValidator, async (req, res) => {
     const { userId } = req.params;
 
     if (userId == null) {
@@ -203,26 +192,26 @@ module.exports = (crowi) => {
       const userRootBookmarks = await Bookmark.find({
         _id: { $nin: bookmarkIdsInFolders },
         user: userId,
-      }).populate({
-        path: 'page',
-        model: 'Page',
-        populate: {
-          path: 'lastUpdateUser',
-          model: 'User',
-        },
-      }).exec();
+      })
+        .populate({
+          path: 'page',
+          model: 'Page',
+          populate: {
+            path: 'lastUpdateUser',
+            model: 'User',
+          },
+        })
+        .exec();
 
       // serialize Bookmark
-      const serializedUserRootBookmarks = userRootBookmarks.map(bookmark => serializeBookmarkSecurely(bookmark));
+      const serializedUserRootBookmarks = userRootBookmarks.map((bookmark) => serializeBookmarkSecurely(bookmark));
 
       return res.apiv3({ userRootBookmarks: serializedUserRootBookmarks });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('get-bookmark-failed', err);
       return res.apiv3Err(err, 500);
     }
   });
-
 
   /**
    * @swagger
@@ -249,7 +238,7 @@ module.exports = (crowi) => {
    *                    bookmark:
    *                      $ref: '#/components/schemas/Bookmark'
    */
-  router.put('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator, async(req, res) => {
+  router.put('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.bookmarks, apiV3FormValidator, async (req, res) => {
     const { pageId, bool } = req.body;
     const userId = req.user?._id;
 
@@ -270,22 +259,18 @@ module.exports = (crowi) => {
       if (bookmark == null) {
         if (bool) {
           bookmark = await Bookmark.add(page, req.user);
-        }
-        else {
+        } else {
           logger.warn(`Removing the bookmark for ${page._id} by ${req.user._id} failed because the bookmark does not exist.`);
         }
-      }
-      else {
+      } else {
         // biome-ignore lint/style/useCollapsedElseIf: ignore
         if (bool) {
           logger.warn(`Adding the bookmark for ${page._id} by ${req.user._id} failed because the bookmark has already exist.`);
-        }
-        else {
+        } else {
           bookmark = await Bookmark.removeBookmark(page, req.user);
         }
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('update-bookmark-failed', err);
       return res.apiv3Err(err, 500);
     }

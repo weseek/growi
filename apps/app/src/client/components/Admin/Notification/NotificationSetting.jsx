@@ -1,13 +1,9 @@
-import React, {
-  useCallback, useEffect, useMemo, useState,
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { SlackbotType } from '@growi/slack';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import {
-  TabContent, TabPane,
-} from 'reactstrap';
+import { TabContent, TabPane } from 'reactstrap';
 
 import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
 import { toastError } from '~/client/util/toastr';
@@ -17,7 +13,6 @@ import loggerFactory from '~/utils/logger';
 import CustomNav from '../../CustomNavigation/CustomNav';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
-
 import GlobalNotification from './GlobalNotification';
 import UserTriggerNotification from './UserTriggerNotification';
 
@@ -25,14 +20,15 @@ const logger = loggerFactory('growi:NotificationSetting');
 
 let retrieveErrors = null;
 
-
 // eslint-disable-next-line react/prop-types
 const Badge = ({ isEnabled }) => {
   const { t } = useTranslation('admin');
 
-  return isEnabled
-    ? <span className="badge text-bg-success">{t('external_notification.enabled')}</span>
-    : <span className="badge text-bg-primary">{t('external_notification.disabled')}</span>;
+  return isEnabled ? (
+    <span className="badge text-bg-success">{t('external_notification.enabled')}</span>
+  ) : (
+    <span className="badge text-bg-primary">{t('external_notification.disabled')}</span>
+  );
 };
 
 const SkeletonListItem = () => (
@@ -54,14 +50,16 @@ const SlackIntegrationListItem = ({ isEnabled, currentBotType }) => {
     <li data-testid="slack-integration-list-item" className="list-group-item bg-body-tertiary">
       <h4>
         <Badge isEnabled={isEnabled} />
-        <a href="/admin/slack-integration" className="ms-2">{t('slack_integration.slack_integration')}</a>
+        <a href="/admin/slack-integration" className="ms-2">
+          {t('slack_integration.slack_integration')}
+        </a>
       </h4>
-      { isCautionVisible && (
+      {isCautionVisible && (
         <ul className="mt-2 ps-4">
           {/* eslint-disable-next-line react/no-danger */}
           <li dangerouslySetInnerHTML={{ __html: t('external_notification.caution_enabled') }} />
         </ul>
-      ) }
+      )}
     </li>
   );
 };
@@ -74,16 +72,18 @@ const LegacySlackIntegrationListItem = ({ isEnabled }) => {
     <li className="list-group-item">
       <h4>
         <Badge isEnabled={isEnabled} />
-        <a href="/admin/slack-integration-legacy" className="ms-2">{t('slack_integration_legacy.slack_integration_legacy')}</a>
+        <a href="/admin/slack-integration-legacy" className="ms-2">
+          {t('slack_integration_legacy.slack_integration_legacy')}
+        </a>
       </h4>
-      { isEnabled && (
+      {isEnabled && (
         <ul className="mt-2 ps-4">
           <li>
             {/* eslint-disable-next-line react/no-danger */}
             <span className="text-danger" dangerouslySetInnerHTML={{ __html: t('slack_integration_legacy.alert_deplicated') }}></span>
           </li>
         </ul>
-      ) }
+      )}
     </li>
   );
 };
@@ -102,17 +102,15 @@ function NotificationSetting(props) {
     setActiveComponents(activeComponents.add(selectedTab));
   };
 
-  const fetchData = useCallback(async() => {
+  const fetchData = useCallback(async () => {
     try {
       await adminNotificationContainer.retrieveNotificationData();
-    }
-    catch (err) {
+    } catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
       logger.error(errs);
       retrieveErrors = errs;
-    }
-    finally {
+    } finally {
       setMounted(true);
     }
   }, [adminNotificationContainer]);
@@ -142,34 +140,23 @@ function NotificationSetting(props) {
     <div data-testid="admin-notification">
       <h2 className="admin-setting-header">{t('external_notification.header_status')}</h2>
       <ul className="list-group">
-        { !isMounted && <SkeletonListItem />}
-        { isMounted && (
+        {!isMounted && <SkeletonListItem />}
+        {isMounted && (
           <>
             <SlackIntegrationListItem isEnabled={isSlackEnabled} currentBotType={currentBotType} />
             {/* Legacy Slack Integration become visible only when new Slack Integration is disabled */}
-            { !isSlackEnabled && <LegacySlackIntegrationListItem isEnabled={isSlackLegacyEnabled} /> }
+            {!isSlackEnabled && <LegacySlackIntegrationListItem isEnabled={isSlackLegacyEnabled} />}
           </>
-        ) }
+        )}
       </ul>
-
 
       <h2 className="admin-setting-header mt-5">{t('notification_settings.notification_settings')}</h2>
 
-      <CustomNav
-        activeTab={activeTab}
-        navTabMapping={navTabMapping}
-        onNavSelected={switchActiveTab}
-        hideBorderBottom
-        breakpointToSwitchDropdownDown="md"
-      />
+      <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom breakpointToSwitchDropdownDown="md" />
 
       <TabContent activeTab={activeTab} className="p-5">
-        <TabPane tabId="user_trigger_notification">
-          {activeComponents.has('user_trigger_notification') && <UserTriggerNotification />}
-        </TabPane>
-        <TabPane tabId="global_notification">
-          {activeComponents.has('global_notification') && <GlobalNotification />}
-        </TabPane>
+        <TabPane tabId="user_trigger_notification">{activeComponents.has('user_trigger_notification') && <UserTriggerNotification />}</TabPane>
+        <TabPane tabId="global_notification">{activeComponents.has('global_notification') && <GlobalNotification />}</TabPane>
       </TabContent>
     </div>
   );

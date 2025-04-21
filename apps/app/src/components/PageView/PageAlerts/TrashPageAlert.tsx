@@ -6,12 +6,9 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
-import {
-  useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage, useSWRMUTxCurrentPage,
-} from '~/stores/page';
+import { useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage, useSWRMUTxCurrentPage } from '~/stores/page';
 import { mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useIsAbleToShowTrashPageManagementButtons } from '~/stores/ui';
-
 
 const onDeletedHandler = (pathOrPathsToDelete) => {
   if (typeof pathOrPathsToDelete !== 'string') {
@@ -48,7 +45,7 @@ export const TrashPageAlert = (): JSX.Element => {
     if (isEmptyPage) {
       return;
     }
-    const putBackedHandler = async() => {
+    const putBackedHandler = async () => {
       if (currentPagePath == null) {
         return;
       }
@@ -59,8 +56,7 @@ export const TrashPageAlert = (): JSX.Element => {
         router.push(`/${pageId}`);
         mutateCurrentPage();
         mutateRecentlyUpdated();
-      }
-      catch (err) {
+      } catch (err) {
         const toastError = (await import('~/client/util/toastr')).toastError;
         toastError(err);
       }
@@ -87,13 +83,11 @@ export const TrashPageAlert = (): JSX.Element => {
   const renderTrashPageManagementButtons = useCallback(() => {
     return (
       <>
-        <button
-          type="button"
-          className="btn btn-info rounded-pill btn-sm ms-auto me-2"
-          onClick={openPutbackPageModalHandler}
-          data-testid="put-back-button"
-        >
-          <span className="material-symbols-outlined" aria-hidden="true">undo</span> {t('Put Back')}
+        <button type="button" className="btn btn-info rounded-pill btn-sm ms-auto me-2" onClick={openPutbackPageModalHandler} data-testid="put-back-button">
+          <span className="material-symbols-outlined" aria-hidden="true">
+            undo
+          </span>{' '}
+          {t('Put Back')}
         </button>
         <button
           type="button"
@@ -101,7 +95,10 @@ export const TrashPageAlert = (): JSX.Element => {
           disabled={!(pageInfo?.isAbleToDeleteCompletely ?? false)}
           onClick={openPageDeleteModalHandler}
         >
-          <span className="material-symbols-outlined" aria-hidden="true">delete_forever</span> {t('Delete Completely')}
+          <span className="material-symbols-outlined" aria-hidden="true">
+            delete_forever
+          </span>{' '}
+          {t('Delete Completely')}
         </button>
       </>
     );
@@ -116,16 +113,18 @@ export const TrashPageAlert = (): JSX.Element => {
     <>
       <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
         <div className="flex-grow-1">
-          This page is in the trash <span className="material-symbols-outlined" aria-hidden="true">delete</span>.
+          This page is in the trash{' '}
+          <span className="material-symbols-outlined" aria-hidden="true">
+            delete
+          </span>
+          .
           <br />
           <UserPicture user={deleteUser} />
           <span className="ms-2">
             Deleted by {deleteUser?.name} at <span data-vrt-blackout-datetime>{deletedAt ?? pageData?.updatedAt}</span>
           </span>
         </div>
-        <div className="pt-1 d-flex align-items-end align-items-lg-center">
-          {isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}
-        </div>
+        <div className="pt-1 d-flex align-items-end align-items-lg-center">{isAbleToShowTrashPageManagementButtons && renderTrashPageManagementButtons()}</div>
       </div>
     </>
   );

@@ -1,9 +1,7 @@
 import React, { useEffect, type JSX } from 'react';
 
 import { type IPagePopulatedToShowRevision, getIdForRef } from '@growi/core';
-import type {
-  GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -21,41 +19,46 @@ import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import ShareLink from '~/server/models/share-link';
 import {
-  useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
-  useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
-  useIsLocalAccountRegistrationEnabled, useShowPageSideAuthors,
+  useCurrentUser,
+  useRendererConfig,
+  useIsSearchPage,
+  useCurrentPathname,
+  useShareLinkId,
+  useIsSearchServiceConfigured,
+  useIsSearchServiceReachable,
+  useIsSearchScopeChildrenAsDefault,
+  useIsContainerFluid,
+  useIsEnabledMarp,
+  useIsLocalAccountRegistrationEnabled,
+  useShowPageSideAuthors,
 } from '~/stores-universal/context';
 import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
 import type { CommonProps } from '../utils/commons';
-import {
-  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, skipSSR, addActivity,
-} from '../utils/commons';
-
+import { getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, skipSSR, addActivity } from '../utils/commons';
 
 const GrowiContextualSubNavigationSubstance = dynamic(() => import('~/client/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
-
 
 const logger = loggerFactory('growi:next-page:share');
 
 type Props = CommonProps & {
-  shareLinkRelatedPage?: IShareLinkRelatedPage,
-  shareLink?: IShareLinkHasId,
-  isNotFound: boolean,
-  isExpired: boolean,
-  disableLinkSharing: boolean,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
-  showPageSideAuthors: boolean,
-  isEnabledMarp: boolean,
-  isLocalAccountRegistrationEnabled: boolean,
-  drawioUri: string | null,
-  rendererConfig: RendererConfig,
-  skipSSR: boolean,
-  ssrMaxRevisionBodyLength: number,
+  shareLinkRelatedPage?: IShareLinkRelatedPage;
+  shareLink?: IShareLinkHasId;
+  isNotFound: boolean;
+  isExpired: boolean;
+  disableLinkSharing: boolean;
+  isSearchServiceConfigured: boolean;
+  isSearchServiceReachable: boolean;
+  isSearchScopeChildrenAsDefault: boolean;
+  showPageSideAuthors: boolean;
+  isEnabledMarp: boolean;
+  isLocalAccountRegistrationEnabled: boolean;
+  drawioUri: string | null;
+  rendererConfig: RendererConfig;
+  skipSSR: boolean;
+  ssrMaxRevisionBodyLength: number;
 };
 
 type IShareLinkRelatedPage = IPagePopulatedToShowRevision & PageDocument;
@@ -63,11 +66,14 @@ type IShareLinkRelatedPage = IPagePopulatedToShowRevision & PageDocument;
 superjson.registerCustom<IShareLinkRelatedPage, string>(
   {
     isApplicable: (v): v is IShareLinkRelatedPage => {
-      return v != null
-        && v.toObject != null;
+      return v != null && v.toObject != null;
     },
-    serialize: (v) => { return superjson.stringify(v.toObject()) },
-    deserialize: (v) => { return superjson.parse(v) },
+    serialize: (v) => {
+      return superjson.stringify(v.toObject());
+    },
+    deserialize: (v) => {
+      return superjson.parse(v);
+    },
   },
   'IShareLinkRelatedPageTransformer',
 );
@@ -75,16 +81,14 @@ superjson.registerCustom<IShareLinkRelatedPage, string>(
 // GrowiContextualSubNavigation for shared page
 // get page info from props not to send request 'GET /page' from client
 type GrowiContextualSubNavigationForSharedPageProps = {
-  page?: IPagePopulatedToShowRevision,
-  isLinkSharingDisabled: boolean,
-}
+  page?: IPagePopulatedToShowRevision;
+  isLinkSharingDisabled: boolean;
+};
 
 const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
   const { page, isLinkSharingDisabled } = props;
 
-  return (
-    <GrowiContextualSubNavigationSubstance currentPage={page} isLinkSharingDisabled={isLinkSharingDisabled} />
-  );
+  return <GrowiContextualSubNavigationSubstance currentPage={page} isLinkSharingDisabled={isLinkSharingDisabled} />;
 };
 
 const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
@@ -115,7 +119,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
     }
   }, [mutateCurrentPage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
 
-
   const pagePath = props.shareLinkRelatedPage?.path ?? '';
 
   const title = generateCustomTitleForPage(props, pagePath);
@@ -127,7 +130,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
 
       <div className="dynamic-layout-root justify-content-between">
-
         <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
 
         <ShareLinkPageView
@@ -138,7 +140,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
           isExpired={props.isExpired}
           disableLinkSharing={props.disableLinkSharing}
         />
-
       </div>
     </>
   );
@@ -168,8 +169,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.showPageSideAuthors = configManager.getConfig('customize:showPageSideAuthors');
 
-  props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
-    && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;
+  props.isLocalAccountRegistrationEnabled =
+    crowi.passportService.isLocalStrategySetup && configManager.getConfig('security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.rendererConfig = {
     isSharedPage: true,
@@ -186,9 +187,10 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isEnabledXssPrevention: configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
     sanitizeType: configManager.getConfig('markdown:rehypeSanitize:option'),
     customTagWhitelist: crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
-    customAttrWhitelist: configManager.getConfig('markdown:rehypeSanitize:attributes') != null
-      ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
-      : undefined,
+    customAttrWhitelist:
+      configManager.getConfig('markdown:rehypeSanitize:attributes') != null
+        ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
+        : undefined,
     highlightJsStyleBorder: crowi.configManager.getConfig('customize:highlightJsStyleBorder'),
   };
 
@@ -204,17 +206,15 @@ function getAction(props: Props): SupportedActionType {
   let action: SupportedActionType;
   if (props.isExpired) {
     action = SupportedAction.ACTION_SHARE_LINK_EXPIRED_PAGE_VIEW;
-  }
-  else if (props.shareLink == null) {
+  } else if (props.shareLink == null) {
     action = SupportedAction.ACTION_SHARE_LINK_NOT_FOUND;
-  }
-  else {
+  } else {
     action = SupportedAction.ACTION_SHARE_LINK_PAGE_VIEW;
   }
 
   return action;
 }
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { crowi, params } = req;
   const result = await getServerSideCommonProps(context);
@@ -228,8 +228,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
     const shareLink = await ShareLink.findOne({ _id: params.linkId }).populate('relatedPage');
     if (shareLink == null) {
       props.isNotFound = true;
-    }
-    else {
+    } else {
       props.isNotFound = false;
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
@@ -246,8 +245,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
         props.shareLinkRelatedPage = await relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
       }
     }
-  }
-  catch (err) {
+  } catch (err) {
     logger.error(err);
   }
 
