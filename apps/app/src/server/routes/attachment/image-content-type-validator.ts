@@ -25,7 +25,7 @@ export interface ImageContentTypeValidatorResult {
 
 /**
  * Validate and extract content type from MIME type string
- * @param mimeType MIME type string, possibly containing multiple values
+ * @param mimeType MIME type string
  * @returns Validation result containing isValid flag and extracted content type
  */
 export const validateImageContentType = (mimeType: string): ImageContentTypeValidatorResult => {
@@ -37,25 +37,20 @@ export const validateImageContentType = (mimeType: string): ImageContentTypeVali
     };
   }
 
-  // Extract the last content type from comma-separated values
-  const contentType = mimeType.split(',')
-    .map(type => type.trim())
-    .pop() ?? '';
-
-  // Check if the content type is in supported list
-  const isValid = SUPPORTED_IMAGE_MIME_TYPES.includes(contentType as SupportedImageMimeType);
+  const trimmedType = mimeType.trim();
+  const isValid = SUPPORTED_IMAGE_MIME_TYPES.includes(trimmedType as SupportedImageMimeType);
 
   if (!isValid) {
     const supportedFormats = 'PNG, JPEG, GIF, WebP, AVIF, HEIC/HEIF, TIFF, SVG';
     return {
       isValid: false,
-      contentType,
+      contentType: trimmedType,
       error: `Invalid file type. Supported formats: ${supportedFormats}`,
     };
   }
 
   return {
     isValid: true,
-    contentType,
+    contentType: trimmedType,
   };
 };
