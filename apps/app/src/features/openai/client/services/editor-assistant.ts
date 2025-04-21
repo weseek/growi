@@ -3,7 +3,9 @@ import {
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { acceptChange, rejectChange, useTextSelectionEffect } from '@growi/editor/dist/client/services/unified-merge-view';
+import {
+  acceptAllChunks, useTextSelectionEffect,
+} from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
 import { type Text as YText } from 'yjs';
@@ -155,18 +157,13 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       return;
     }
 
-    acceptChange(codeMirrorEditor.view);
+    acceptAllChunks(codeMirrorEditor.view);
     mutateIsEnableUnifiedMergeView(false);
   }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
 
   const reject = useCallback(() => {
-    if (codeMirrorEditor?.view == null) {
-      return;
-    }
-
-    rejectChange(codeMirrorEditor.view);
     mutateIsEnableUnifiedMergeView(false);
-  }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+  }, [mutateIsEnableUnifiedMergeView]);
 
   const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
     setSelectedText(selectedText);
