@@ -40,11 +40,9 @@ const updatePostSchema = new Schema<UpdatePostDocument, UpdatePostModel>({
   timestamps: true,
 });
 
-updatePostSchema.statics.normalizeChannelName = function(channel) {
-  return channel.replace(/(#|,)/g, '');
-};
+updatePostSchema.statics.normalizeChannelName = channel => channel.replace(/(#|,)/g, '');
 
-updatePostSchema.statics.createPrefixesByPathPattern = function(pathPattern) {
+updatePostSchema.statics.createPrefixesByPathPattern = (pathPattern) => {
   const patternPrefix = ['*', '*'];
 
   // not begin with slash
@@ -64,7 +62,7 @@ updatePostSchema.statics.createPrefixesByPathPattern = function(pathPattern) {
   return patternPrefix;
 };
 
-updatePostSchema.statics.getRegExpByPattern = function(pattern) {
+updatePostSchema.statics.getRegExpByPattern = (pattern) => {
   let reg = pattern;
   if (!reg.match(/^\/.*/)) {
     reg = `/*${reg}*`;

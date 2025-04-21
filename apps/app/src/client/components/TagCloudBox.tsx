@@ -1,5 +1,4 @@
-import type { FC } from 'react';
-import React, { memo } from 'react';
+import React, { type FC, memo } from 'react';
 
 import { useKeywordManager } from '~/client/services/search-operation';
 import type { IDataTagCount } from '~/interfaces/tag';

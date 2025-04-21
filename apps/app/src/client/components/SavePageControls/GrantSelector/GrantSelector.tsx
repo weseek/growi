@@ -73,7 +73,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
   const applyCurrentPageGrantToSelectedGrant = useCallback(() => {
     const currentPageGrant = grantData?.grantData.currentPageGrant;
-    if (currentPageGrant == null) return;
+    if (currentPageGrant == null) { return; }
 
     const userRelatedGrantedGroups = currentPageGrant.groupGrantData
       ?.userRelatedGroups.filter(group => group.status === UserGroupPageGrantStatus.isGranted)?.map((group) => {
@@ -100,7 +100,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
   const changeGrantHandler = useCallback((grant: PageGrant) => {
     // select group
     if (grant === 5) {
-      if (selectedGrant?.grant !== 5) applyCurrentPageGrantToSelectedGrant();
+      if (selectedGrant?.grant !== 5) { applyCurrentPageGrantToSelectedGrant(); }
       showSelectGroupModal();
       return;
     }

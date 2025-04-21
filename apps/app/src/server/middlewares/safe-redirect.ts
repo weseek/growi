@@ -40,7 +40,7 @@ const factory = (whitelistOfHosts: string[]) => {
   return (req: Request, res: ResWithSafeRedirect, next: NextFunction): void => {
 
     // extend res object
-    res.safeRedirect = function(redirectTo?: string) {
+    res.safeRedirect = (redirectTo?: string) => {
       if (redirectTo == null) {
         return res.redirect('/');
       }

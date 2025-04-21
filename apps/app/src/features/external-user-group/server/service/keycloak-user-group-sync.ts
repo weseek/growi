@@ -85,7 +85,7 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
    * Convert GroupRepresentation response returned from Keycloak to ExternalUserGroupTreeNode
    */
   private async groupRepresentationToTreeNode(group: GroupRepresentation): Promise<ExternalUserGroupTreeNode | null> {
-    if (group.id == null || group.name == null) return null;
+    if (group.id == null || group.name == null) { return null; }
 
     logger.info('Get users from keycloak server');
     const userRepresentations = await this.getMembers(group.id);
@@ -139,7 +139,7 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
    * Fetch group detail from Keycloak and return group description
    */
   private async getGroupDescription(groupId: string): Promise<string | null> {
-    if (this.groupDescriptionAttribute == null) return null;
+    if (this.groupDescriptionAttribute == null) { return null; }
 
     await this.auth();
     const groupDetail = await this.kcAdminClient.groups.findOne({ id: groupId, realm: this.realm });

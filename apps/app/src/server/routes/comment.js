@@ -54,7 +54,7 @@ import { preNotifyService } from '../service/pre-notify';
  */
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, app) => {
   const logger = loggerFactory('growi:routes:comment');
   const User = crowi.model('User');
   const Page = crowi.model('Page');
@@ -119,7 +119,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id Revision Id.
    */
-  api.get = async function(req, res) {
+  api.get = async(req, res) => {
     const pageId = req.query.page_id;
     const revisionId = req.query.revision_id;
 
@@ -153,7 +153,7 @@ module.exports = function(crowi, app) {
     res.json(ApiResponse.success({ comments }));
   };
 
-  api.validators.add = function() {
+  api.validators.add = () => {
     const validator = [
       body('commentForm.page_id').exists(),
       body('commentForm.revision_id').exists(),
@@ -225,7 +225,7 @@ module.exports = function(crowi, app) {
    * @apiParam {String} comment Comment body
    * @apiParam {Number} comment_position=-1 Line number of the comment
    */
-  api.add = async function(req, res) {
+  api.add = async(req, res) => {
     const { commentForm, slackNotificationForm } = req.body;
     const { validationResult } = require('express-validator');
 
@@ -366,7 +366,7 @@ module.exports = function(crowi, app) {
    * @apiName UpdateComment
    * @apiGroup Comment
    */
-  api.update = async function(req, res) {
+  api.update = async(req, res) => {
     const { commentForm } = req.body;
 
     const commentStr = commentForm?.comment;
@@ -459,7 +459,7 @@ module.exports = function(crowi, app) {
    *
    * @apiParam {String} comment_id Comment Id.
    */
-  api.remove = async function(req, res) {
+  api.remove = async(req, res) => {
     const commentId = req.body.comment_id;
     if (!commentId) {
       return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));

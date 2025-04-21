@@ -87,7 +87,7 @@ module.exports = (crowi: Crowi): Router => {
 
   if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
     || growiBridgeService == null || configManager == null) {
-    throw Error('GROWI is not ready for g2g transfer');
+    throw new Error('GROWI is not ready for g2g transfer');
   }
 
   const uploads = multer({

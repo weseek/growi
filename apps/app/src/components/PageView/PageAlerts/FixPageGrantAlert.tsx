@@ -117,7 +117,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
       return t('fix_page_grant.modal.grant_label.isForbidden');
     }
 
-    throw Error('cannot get grant label'); // this error can't be throwed
+    throw new Error('cannot get grant label'); // this error can't be throwed
   }, [t]);
 
   const renderGrantDataLabel = useCallback(() => {

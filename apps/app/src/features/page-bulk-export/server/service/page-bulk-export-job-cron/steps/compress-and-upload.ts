@@ -21,8 +21,8 @@ function setUpPageArchiver(): Archiver {
 
   // good practice to catch warnings (ie stat failures and other non-blocking errors)
   pageArchiver.on('warning', (err) => {
-    if (err.code === 'ENOENT') logger.error(err);
-    else throw err;
+    if (err.code === 'ENOENT') { logger.error(err); }
+    else { throw err; }
   });
 
   return pageArchiver;
@@ -49,7 +49,7 @@ async function postProcess(
 export async function compressAndUpload(this: IPageBulkExportJobCronService, user, pageBulkExportJob: PageBulkExportJobDocument): Promise<void> {
   const pageArchiver = setUpPageArchiver();
 
-  if (pageBulkExportJob.revisionListHash == null) throw new Error('revisionListHash is not set');
+  if (pageBulkExportJob.revisionListHash == null) { throw new Error('revisionListHash is not set'); }
   const originalName = `${pageBulkExportJob.revisionListHash}.${this.compressExtension}`;
   const attachment = Attachment.createWithoutSave(null, user, originalName, this.compressExtension, 0, AttachmentType.PAGE_BULK_EXPORT);
 

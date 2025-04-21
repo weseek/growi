@@ -104,6 +104,7 @@ export const Cheatsheet = (): JSX.Element => {
         {renderCheetSheetElm(imageStr)}
 
         <hr />
+        {/* biome-ignore lint/a11y/noBlankTarget: ignore */}
         <a href="/Sandbox" className="btn btn-info" target="_blank">
           <span className="growi-custom-icons">external_link</span> {t('sandbox.open_sandbox')}
         </a>

@@ -184,7 +184,7 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
    * @param pageBulkExportJob PageBulkExportJob executed in the pipeline
    */
   async handleError(err: Error | null, pageBulkExportJob: PageBulkExportJobDocument) {
-    if (err == null) return;
+    if (err == null) { return; }
 
     if (err instanceof BulkExportJobExpiredError) {
       logger.error(err);
@@ -255,7 +255,7 @@ class PageBulkExportJobCronService extends CronService implements IPageBulkExpor
 
     const results = await Promise.allSettled(promises);
     results.forEach((result) => {
-      if (result.status === 'rejected') logger.error(result.reason);
+      if (result.status === 'rejected') { logger.error(result.reason); }
     });
   }
 

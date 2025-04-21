@@ -2,7 +2,8 @@ import type {
   FC, ForwardRefRenderFunction,
   KeyboardEvent, MouseEvent,
 } from 'react';
-import React, {
+import type React from 'react';
+import {
   forwardRef, useImperativeHandle, useCallback, useRef, useState, useEffect,
 } from 'react';
 

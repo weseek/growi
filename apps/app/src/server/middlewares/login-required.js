@@ -11,7 +11,7 @@ const logger = loggerFactory('growi:middleware:login-required');
  */
 module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
 
-  return function(req, res, next) {
+  return (req, res, next) => {
 
     const User = crowi.model('User');
 

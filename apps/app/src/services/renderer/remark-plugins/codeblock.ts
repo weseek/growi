@@ -9,7 +9,10 @@ const SUPPORTED_CODE = ['inline'];
 export const remarkPlugin: Plugin = () => {
   return (tree) => {
     visit(tree, 'inlineCode', (node: InlineCode) => {
-      const data = node.data || (node.data = {});
+      if (node.data == null) {
+        node.data = {};
+      }
+      const data = node.data;
       data.hProperties = { inline: 'true' }; // set 'true' explicitly because the empty string is evaluated as false for `if (inline) { ... }`
     });
   };

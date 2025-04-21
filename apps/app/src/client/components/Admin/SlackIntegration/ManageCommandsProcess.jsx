@@ -77,7 +77,7 @@ const PermissionSettingForEachPermissionTypeComponent = ({
   const hiddenClass = currentPermissionType === PermissionTypes.ALLOW_SPECIFIED ? '' : 'd-none';
 
   const permission = permissionSettings[keyName];
-  if (permission === undefined) logger.error('Must be implemented');
+  if (permission === undefined) { logger.error('Must be implemented') }
   const textareaDefaultValue = Array.isArray(permission) ? permission.join(',') : '';
 
 

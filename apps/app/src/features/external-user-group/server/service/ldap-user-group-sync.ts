@@ -70,10 +70,10 @@ export class LdapUserGroupSyncService extends ExternalUserGroupSyncService {
 
     const convert = async(entry: SearchResultEntry, converted: string[]): Promise<ExternalUserGroupTreeNode | null> => {
       const name = ldapService.getStringValFromSearchResultEntry(entry, groupNameAttribute);
-      if (name == null) return null;
+      if (name == null) { return null; }
 
       if (converted.includes(entry.objectName)) {
-        throw Error('Circular reference inside LDAP group tree');
+        throw new Error('Circular reference inside LDAP group tree');
       }
       converted.push(entry.objectName);
 

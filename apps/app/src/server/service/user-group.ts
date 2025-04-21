@@ -81,7 +81,7 @@ class UserGroupService implements IUserGroupService {
     const parent = await UserGroup.findById(parentId);
 
     if (parent == null) { // it should not be null
-      throw Error('Parent group does not exist.');
+      throw new Error('Parent group does not exist.');
     }
 
     /*
@@ -91,7 +91,7 @@ class UserGroupService implements IUserGroupService {
     // throw if parent was in self and its descendants
     const descendantsWithTarget = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
     if (includesObjectIds(descendantsWithTarget.map(d => d._id), [parent._id])) {
-      throw Error('It is not allowed to choose parent from descendant groups.');
+      throw new Error('It is not allowed to choose parent from descendant groups.');
     }
 
     // find users for comparison
@@ -117,7 +117,7 @@ class UserGroupService implements IUserGroupService {
     else {
       const isUpdatable = usersBelongsToTargetButNotParent.length === 0;
       if (!isUpdatable) {
-        throw Error('The parent group does not contain the users in this group.');
+        throw new Error('The parent group does not contain the users in this group.');
       }
     }
 

@@ -40,7 +40,7 @@ export const getRecentlyUpdatedKey = (
     previousPageData: RecentApiResult | null,
     includeWipPage?: boolean,
 ): [string, number | undefined, boolean | undefined] | null => {
-  if (previousPageData != null && previousPageData.pages.length === 0) return null;
+  if (previousPageData != null && previousPageData.pages.length === 0) { return null; }
 
   if (pageIndex === 0 || previousPageData == null) {
     return ['/pages/recent', undefined, includeWipPage];

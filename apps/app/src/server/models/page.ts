@@ -151,8 +151,8 @@ const schema = new Schema<PageDocument, PageModel>({
         index: true,
       },
     }],
-    validate: [function(arr) {
-      if (arr == null) return true;
+    validate: [(arr) => {
+      if (arr == null) { return true; }
       const uniqueItemValues = new Set(arr.map(e => e.item));
       return arr.length === uniqueItemValues.size;
     }, 'grantedGroups contains non unique item'],
@@ -577,7 +577,7 @@ schema.statics.createEmptyPage = async function(
     path: string, parent: any, descendantCount = 0,
 ): Promise<HydratedDocument<PageDocument>> {
   if (parent == null) {
-    throw Error('parent must not be null');
+    throw new Error('parent must not be null');
   }
 
   const page = new this();
@@ -599,7 +599,7 @@ schema.statics.replaceTargetWithPage = async function(exPage, pageToReplaceWith?
   // find parent
   const parent = await this.findOne({ _id: exPage.parent });
   if (parent == null) {
-    throw Error('parent to update does not exist. Prepare parent first.');
+    throw new Error('parent to update does not exist. Prepare parent first.');
   }
 
   // create empty page at path
@@ -740,6 +740,7 @@ schema.statics.findRecentUpdatedPages = async function(
   const sortOpt = {};
   sortOpt[options.sort] = options.desc;
 
+  // biome-ignore lint/complexity/noUselessThisAlias: ignore
   const Page = this;
   const User = mongoose.model('User') as any;
 
@@ -916,7 +917,7 @@ schema.statics.findAncestorsUsingParentRecursively = async function(pageId: Obje
   const self = this;
   const target = await this.findById(pageId);
   if (target == null) {
-    throw Error('Target not found');
+    throw new Error('Target not found');
   }
 
   async function findAncestorsRecursively(target, ancestors = shouldIncludeTarget ? [target] : []) {

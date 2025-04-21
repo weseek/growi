@@ -132,7 +132,7 @@ export const getPageSchema = (crowi) => {
     }
 
     // comparing ObjectId with string
-    // eslint-disable-next-line eqeqeq
+    // biome-ignore lint/suspicious/noDoubleEquals: ignore
     return (this.latestRevision == this.revision._id.toString());
   };
 
@@ -152,7 +152,7 @@ export const getPageSchema = (crowi) => {
 
     const revision = this.latestRevision || this.revision._id;
     // comparing ObjectId with string
-    // eslint-disable-next-line eqeqeq
+    // biome-ignore lint/suspicious/noDoubleEquals: ignore
     if (revision != previousRevision) {
       return false;
     }
@@ -170,12 +170,11 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.methods.like = function(userData) {
-    const self = this;
 
     return new Promise(((resolve, reject) => {
-      const added = self.liker.addToSet(userData._id);
+      const added = this.liker.addToSet(userData._id);
       if (added.length > 0) {
-        self.save((err, data) => {
+        this.save((err, data) => {
           if (err) {
             return reject(err);
           }
@@ -191,13 +190,12 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.methods.unlike = function(userData, callback) {
-    const self = this;
 
     return new Promise(((resolve, reject) => {
-      const beforeCount = self.liker.length;
-      self.liker.pull(userData._id);
-      if (self.liker.length !== beforeCount) {
-        self.save((err, data) => {
+      const beforeCount = this.liker.length;
+      this.liker.pull(userData._id);
+      if (this.liker.length !== beforeCount) {
+        this.save((err, data) => {
           if (err) {
             return reject(err);
           }
@@ -285,11 +283,9 @@ export const getPageSchema = (crowi) => {
 
   pageSchema.statics.updateCommentCount = function(pageId) {
     validateCrowi();
-
-    const self = this;
     return Comment.countCommentByPageId(pageId)
       .then((count) => {
-        self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
+        this.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
           if (err) {
             logger.debug('Update commentCount Error', err);
             throw err;
@@ -300,22 +296,18 @@ export const getPageSchema = (crowi) => {
       });
   };
 
-  pageSchema.statics.getDeletedPageName = function(path) {
+  pageSchema.statics.getDeletedPageName = (path) => {
     if (path.match('/')) {
-      // eslint-disable-next-line no-param-reassign
+      // biome-ignore lint/style/noParameterAssign: ignore
       path = path.substr(1);
     }
     return `/trash/${path}`;
   };
 
-  pageSchema.statics.getRevertDeletedPageName = function(path) {
-    return path.replace('/trash', '');
-  };
+  pageSchema.statics.getRevertDeletedPageName = path => path.replace('/trash', '');
 
-  pageSchema.statics.fixToCreatableName = function(path) {
-    return path
-      .replace(/\/\//g, '/');
-  };
+  pageSchema.statics.fixToCreatableName = path => path
+    .replace(/\/\//g, '/');
 
   pageSchema.statics.updateRevision = function(pageId, revisionId, cb) {
     this.update({ _id: pageId }, { revision: revisionId }, {}, (err, data) => {
@@ -663,13 +655,13 @@ export const getPageSchema = (crowi) => {
     const userGroupModel = transferToUserGroup.type === GroupType.userGroup ? UserGroup : ExternalUserGroup;
 
     if ((await userGroupModel.count({ _id: transferToUserGroup.item })) === 0) {
-      throw Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroup.item);
+      throw new Error('Cannot find the group to which private pages belong to. _id: ', transferToUserGroup.item);
     }
 
     await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroups: [transferToUserGroup] });
   };
 
-  pageSchema.statics.getHistories = function() {
+  pageSchema.statics.getHistories = () => {
     // TODO
 
   };

@@ -1,4 +1,4 @@
-import { type SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 

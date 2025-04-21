@@ -2,7 +2,7 @@ import type { IUserHasId } from '@growi/core';
 import mongoose, { Types } from 'mongoose';
 
 import {
-  ExternalGroupProviderType, ExternalUserGroupTreeNode, IExternalUserGroup, IExternalUserGroupHasId,
+  ExternalGroupProviderType, type ExternalUserGroupTreeNode, type IExternalUserGroup, type IExternalUserGroupHasId,
 } from '../../../src/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroup from '../../../src/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '../../../src/features/external-user-group/server/models/external-user-group-relation';

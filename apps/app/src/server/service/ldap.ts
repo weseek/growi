@@ -60,7 +60,7 @@ class LdapService {
    */
   bind(userBindUsername = '', userBindPassword = ''): Promise<void> {
     const client = this.client;
-    if (client == null) throw new Error('LDAP client is not initialized');
+    if (client == null) { throw new Error('LDAP client is not initialized'); }
 
     const isLdapEnabled = configManager.getConfig('security:passport-ldap:isEnabled');
     if (!isLdapEnabled) {
@@ -99,7 +99,7 @@ class LdapService {
    */
   search(filter?: string, base?: string, scope: 'sub' | 'base' | 'one' = 'sub'): Promise<SearchResultEntry[]> {
     const client = this.client;
-    if (client == null) throw new Error('LDAP client is not initialized');
+    if (client == null) { throw new Error('LDAP client is not initialized'); }
 
     const searchResults: SearchResultEntry[] = [];
 

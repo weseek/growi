@@ -45,7 +45,7 @@ schema.statics.findAndUpdateOrCreateGroup = async function(name: string, externa
   if (parentId != null) {
     parent = await this.findOne({ _id: parentId });
     if (parent == null) {
-      throw Error('Parent does not exist.');
+      throw new Error('Parent does not exist.');
     }
   }
 

@@ -23,7 +23,7 @@ export function useContextSWR<Data, Error>(
   const swrResponse = useSWRStatic(key, data, configuration);
 
   // overwrite mutate
-  const result = Object.assign(swrResponse, { mutate: () => { throw Error('mutate can not be used in context') } });
+  const result = Object.assign(swrResponse, { mutate: () => { throw new Error('mutate can not be used in context') } });
 
   return result;
 }

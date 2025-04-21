@@ -1,7 +1,7 @@
 import { DefaultAzureCredential, getBearerTokenProvider } from '@azure/identity';
 import type OpenAI from 'openai';
 import { AzureOpenAI } from 'openai';
-import { type Uploadable } from 'openai/uploads';
+import type { Uploadable } from 'openai/uploads';
 
 import type { MessageListParams } from '../../../interfaces/message';
 

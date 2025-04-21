@@ -233,7 +233,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
   }
 
   async parseSearchQuery(queryString: string, nqName: string | null): Promise<ParsedQuery> {
-    // eslint-disable-next-line no-param-reassign
+    // biome-ignore lint/style/noParameterAssign: ignore
     queryString = normalizeQueryString(queryString);
 
     const terms = this.parseQueryString(queryString);
@@ -340,7 +340,8 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const phrases = queryString.match(phraseRegExp);
 
     if (phrases !== null) {
-      queryString = queryString.replace(phraseRegExp, ''); // eslint-disable-line no-param-reassign
+      // biome-ignore lint/style/noParameterAssign: ignore
+      queryString = queryString.replace(phraseRegExp, '');
 
       phrases.forEach((phrase) => {
         phrase.trim();
@@ -504,13 +505,13 @@ class SearchService implements SearchQueryParser, SearchResolver {
     }
 
     if (testGrant === Page.GRANT_OWNER) {
-      if (user == null) return false;
+      if (user == null) { return false; }
 
       return user._id.toString() === testGrantedUser.toString();
     }
 
     if (testGrant === Page.GRANT_USER_GROUP) {
-      if (userGroups == null) return false;
+      if (userGroups == null) { return false; }
 
       return hasIntersection(userGroups.map(id => id.toString()), testGrantedGroups);
     }

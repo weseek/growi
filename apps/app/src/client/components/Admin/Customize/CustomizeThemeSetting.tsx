@@ -13,7 +13,7 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 import CustomizeThemeOptions from './CustomizeThemeOptions';
 
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+// biome-ignore lint/complexity/noBannedTypes: ignore
 type Props = {
 }
 

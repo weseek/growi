@@ -1,4 +1,4 @@
-import { type IPageInfoForOperation } from '@growi/core/dist/interfaces';
+import type { IPageInfoForOperation } from '@growi/core/dist/interfaces';
 import {
   fireEvent, screen, within,
 } from '@testing-library/dom';

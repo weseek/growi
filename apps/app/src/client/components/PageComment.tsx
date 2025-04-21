@@ -87,7 +87,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   }, [mutate, onCancelDeleteComment, mutatePageInfo]);
 
   const onDeleteComment = useCallback(async() => {
-    if (commentToBeDeleted == null) return;
+    if (commentToBeDeleted == null) { return; }
     try {
       await apiPost('/comments.remove', { comment_id: commentToBeDeleted._id });
       onDeleteCommentAfterOperation();

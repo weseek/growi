@@ -1,7 +1,6 @@
 import { Schema } from 'mongoose';
 
-import type { IQuestion } from '../../../interfaces/question';
-import { QuestionType } from '../../../interfaces/question';
+import { type IQuestion, QuestionType } from '../../../interfaces/question';
 
 const questionTextSchema = new Schema<IQuestion['text']>({
   ja_JP: { type: String, required: true },

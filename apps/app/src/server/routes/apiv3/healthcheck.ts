@@ -168,7 +168,7 @@ module.exports = (crowi) => {
    */
   router.get('/', nocache(), async(req, res: ApiV3Response) => {
     let checkServices = (() => {
-      if (req.query.checkServices == null) return [];
+      if (req.query.checkServices == null) { return []; }
       return Array.isArray(req.query.checkServices) ? req.query.checkServices : [req.query.checkServices];
     })();
     let isStrictly = req.query.strictly != null;

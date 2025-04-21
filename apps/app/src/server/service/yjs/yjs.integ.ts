@@ -25,7 +25,7 @@ const ObjectId = Types.ObjectId;
 
 
 const getPrivateMdbInstance = (yjsService: IYjsService): MongodbPersistence => {
-  // eslint-disable-next-line dot-notation
+  // biome-ignore lint/complexity/useLiteralKeys: ignore
   return yjsService['mdb'];
 };
 

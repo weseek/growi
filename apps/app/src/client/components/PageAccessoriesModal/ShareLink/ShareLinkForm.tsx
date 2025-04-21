@@ -1,5 +1,4 @@
-import type { FC } from 'react';
-import React, { useState, useCallback } from 'react';
+import React, { type FC, useState, useCallback } from 'react';
 
 import {
   format, parse, addDays, set,

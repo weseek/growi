@@ -560,10 +560,10 @@ export const AllLargeGroupActions = Object.values(LargeActionGroup);
 const pageRegExp = new RegExp(`^${SupportedActionCategory.PAGE.toUpperCase()}_`);
 const commentRegExp = new RegExp(`^${SupportedActionCategory.COMMENT.toUpperCase()}_`);
 const tagRegExp = new RegExp(`^${SupportedActionCategory.TAG.toUpperCase()}_`);
-const attachmentRegExp = RegExp(`^${SupportedActionCategory.ATTACHMENT.toUpperCase()}_`);
-const shareLinkRegExp = RegExp(`^${SupportedActionCategory.SHARE_LINK.toUpperCase()}_`);
-const inAppNotificationRegExp = RegExp(`^${SupportedActionCategory.IN_APP_NOTIFICATION.toUpperCase()}_`);
-const searchRegExp = RegExp(`^${SupportedActionCategory.SEARCH.toUpperCase()}_`);
+const attachmentRegExp = new RegExp(`^${SupportedActionCategory.ATTACHMENT.toUpperCase()}_`);
+const shareLinkRegExp = new RegExp(`^${SupportedActionCategory.SHARE_LINK.toUpperCase()}_`);
+const inAppNotificationRegExp = new RegExp(`^${SupportedActionCategory.IN_APP_NOTIFICATION.toUpperCase()}_`);
+const searchRegExp = new RegExp(`^${SupportedActionCategory.SEARCH.toUpperCase()}_`);
 const userRegExp = new RegExp(`^${SupportedActionCategory.USER.toUpperCase()}_`);
 const adminRegExp = new RegExp(`^${SupportedActionCategory.ADMIN.toUpperCase()}_`);
 

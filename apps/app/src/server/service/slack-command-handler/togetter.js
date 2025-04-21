@@ -30,7 +30,7 @@ module.exports = (crowi) => {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
   };
 
-  handler.cancel = async function(client, payload, interactionPayloadAccessor) {
+  handler.cancel = async(client, payload, interactionPayloadAccessor) => {
     await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
       delete_original: true,
     });
@@ -53,7 +53,7 @@ module.exports = (crowi) => {
     await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody);
   };
 
-  handler.togetterValidateForm = async function(client, payload, interactionPayloadAccessor) {
+  handler.togetterValidateForm = async(client, payload, interactionPayloadAccessor) => {
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
     const path = interactionPayloadAccessor.getStateValues()?.page_path.page_path.value;
     let oldest = interactionPayloadAccessor.getStateValues()?.oldest.oldest.value;
@@ -96,7 +96,7 @@ module.exports = (crowi) => {
     });
   }
 
-  handler.togetterGetMessages = async function(client, channelId, newest, oldest) {
+  handler.togetterGetMessages = async(client, channelId, newest, oldest) => {
     let result;
 
     // first attempt
@@ -114,7 +114,7 @@ module.exports = (crowi) => {
         result = await retrieveHistory(client, channelId, newest, oldest);
       }
       else if (errorCode === 'channel_not_found') {
-
+        // biome-ignore lint/complexity/noUselessStringConcat: ignore
         const message = ':cry: GROWI Bot couldn\'t get history data because *this channel was private*.'
           + '\nPlease add GROWI bot to this channel.'
           + '\n';
@@ -144,7 +144,7 @@ module.exports = (crowi) => {
     return result;
   };
 
-  handler.togetterCleanMessages = async function(messages) {
+  handler.togetterCleanMessages = async(messages) => {
     const cleanedContents = [];
     let lastMessage = {};
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
@@ -171,7 +171,7 @@ module.exports = (crowi) => {
     return cleanedContents;
   };
 
-  handler.togetterCreatePageAndSendPreview = async function(client, interactionPayloadAccessor, path, userChannelId, contentsBody) {
+  handler.togetterCreatePageAndSendPreview = async(client, interactionPayloadAccessor, path, userChannelId, contentsBody) => {
     await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
 
     // send preview to dm
@@ -208,18 +208,16 @@ module.exports = (crowi) => {
    * Plain-text input element
    * https://api.slack.com/reference/block-kit/block-elements#input
    */
-  handler.togetterInputBlockElement = function(actionId, placeholderText = 'Write something ...') {
-    return {
-      type: 'plain_text_input',
-      placeholder: {
-        type: 'plain_text',
-        text: placeholderText,
-      },
-      action_id: actionId,
-    };
-  };
+  handler.togetterInputBlockElement = (actionId, placeholderText = 'Write something ...') => ({
+    type: 'plain_text_input',
+    placeholder: {
+      type: 'plain_text',
+      text: placeholderText,
+    },
+    action_id: actionId,
+  });
 
-  handler.plainTextInputElementWithInitialTime = function(actionId) {
+  handler.plainTextInputElementWithInitialTime = (actionId) => {
     const tzDateSec = new Date().getTime();
     const grwTzoffset = crowi.appService.getTzoffset() * 60 * 1000;
     const initialDateTime = format(new Date(tzDateSec - grwTzoffset), 'yyyy/MM/dd-HH:mm');

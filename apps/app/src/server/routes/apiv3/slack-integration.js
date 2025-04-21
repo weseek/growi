@@ -13,7 +13,6 @@ import { configManager } from '~/server/service/config-manager';
 import { growiInfoService } from '~/server/service/growi-info';
 import loggerFactory from '~/utils/logger';
 
-
 const express = require('express');
 const { body } = require('express-validator');
 const mongoose = require('mongoose');
@@ -49,6 +48,7 @@ module.exports = (crowi) => {
 
     if (SlackAppIntegrationCount === 0) {
       return res.status(403).send({
+        // biome-ignore lint/complexity/noUselessStringConcat: ignore
         message: 'The access token that identifies the request source is slackbot-proxy is invalid. Did you setup with `/growi register`.\n'
         + 'Or did you delete registration for GROWI ? if so, the link with GROWI has been disconnected. '
         + 'Please unregister the information registered in the proxy and setup `/growi register` again.',
@@ -60,7 +60,7 @@ module.exports = (crowi) => {
 
   async function extractPermissionsCommands(tokenPtoG) {
     const slackAppIntegration = await SlackAppIntegration.findOne({ tokenPtoG });
-    if (slackAppIntegration == null) return null;
+    if (slackAppIntegration == null) { return null; }
     const permissionsForBroadcastUseCommands = slackAppIntegration.permissionsForBroadcastUseCommands;
     const permissionsForSingleUseCommands = slackAppIntegration.permissionsForSingleUseCommands;
 
@@ -112,7 +112,7 @@ module.exports = (crowi) => {
       const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
       commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
       const isPermitted = checkPermission(commandPermission, growiCommand.growiCommandType, fromChannel);
-      if (isPermitted) return next();
+      if (isPermitted) { return next(); }
 
       return next(createError(403, `It is not allowed to send \`/growi ${growiCommand.growiCommandType}\` command to this GROWI: ${siteUrl}`));
     }
@@ -159,7 +159,7 @@ module.exports = (crowi) => {
       const { permissionsForBroadcastUseCommands, permissionsForSingleUseCommands } = extractPermissions;
       commandPermission = Object.fromEntries([...permissionsForBroadcastUseCommands, ...permissionsForSingleUseCommands]);
       const isPermitted = checkPermission(commandPermission, callbacIdkOrActionId, fromChannel);
-      if (isPermitted) return next();
+      if (isPermitted) { return next(); }
 
       return next(createError(403, `This interaction is forbidden on this GROWI: ${siteUrl}`));
     }

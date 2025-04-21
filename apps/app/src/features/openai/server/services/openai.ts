@@ -486,12 +486,12 @@ class OpenaiService implements IOpenaiService {
     const isPublicPage = (page :HydratedDocument<PageDocument>) => page.grant === PageGrant.GRANT_PUBLIC;
 
     const isUserGroupAccessible = (page :HydratedDocument<PageDocument>, ownerUserGroupIds: string[]) => {
-      if (page.grant !== PageGrant.GRANT_USER_GROUP) return false;
+      if (page.grant !== PageGrant.GRANT_USER_GROUP) { return false; }
       return page.grantedGroups.some(group => ownerUserGroupIds.includes(getIdStringForRef(group.item)));
     };
 
     const isOwnerAccessible = (page: HydratedDocument<PageDocument>, ownerId: Ref<IUser>) => {
-      if (page.grant !== PageGrant.GRANT_OWNER) return false;
+      if (page.grant !== PageGrant.GRANT_OWNER) { return false; }
       return page.grantedUsers.some(user => getIdStringForRef(user) === getIdStringForRef(ownerId));
     };
 

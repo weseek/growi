@@ -5,14 +5,17 @@ import { visit } from 'unist-util-visit';
 
 function rewriteNode(node: Code) {
   // replace node
-  const data = node.data ?? (node.data = {});
+  if (node.data == null) {
+    node.data = {};
+  }
+  const data = node.data;
   data.hName = 'mermaid';
   data.hProperties = {
     value: node.value,
   };
 }
 
-export const remarkPlugin: Plugin = function() {
+export const remarkPlugin: Plugin = () => {
   return (tree) => {
     visit(tree, 'code', (node: Code) => {
       if (node.lang === 'mermaid') {

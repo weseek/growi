@@ -7,7 +7,7 @@ export const checkAndUpdateImageUrlCached: Middleware = (useSWRNext: SWRHook) =>
   return (key, fetcher, config) => {
     const swrNext = useSWRNext(key, fetcher, config);
     if (swrNext.data != null) {
-
+      // biome-ignore lint/style/useConsistentBuiltinInstantiation: ignore
       const userIds = Object(swrNext.data)
         .filter((user: IUserHasId) => user.imageUrlCached == null)
         .map((user: IUserHasId) => user._id);

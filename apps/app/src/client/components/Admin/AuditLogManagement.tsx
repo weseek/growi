@@ -1,5 +1,6 @@
 import type { FC } from 'react';
-import React, { useState, useCallback, useRef } from 'react';
+import type React from 'react';
+import { useState, useCallback, useRef } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { format } from 'date-fns/format';
@@ -121,7 +122,7 @@ export const AuditLogManagement: FC = () => {
     const isNan = Number.isNaN(inputNumber);
 
     if (!isNan) {
-      // eslint-disable-next-line no-nested-ternary
+      // biome-ignore lint/nursery/noNestedTernary: ignore
       const jumpPageNumber = inputNumber > totalPagingPages ? totalPagingPages : inputNumber <= 0 ? activePageNumber : inputNumber;
       setJumpPageNumber(jumpPageNumber);
     }

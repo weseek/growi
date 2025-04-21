@@ -50,6 +50,7 @@ const factory = (crowi) => {
 
   // bookmark チェック用
   bookmarkSchema.statics.findByPageIdAndUserId = function(pageId, userId) {
+    // biome-ignore lint/complexity/noUselessThisAlias: ignore
     const Bookmark = this;
 
     return new Promise(((resolve, reject) => {
@@ -64,6 +65,7 @@ const factory = (crowi) => {
   };
 
   bookmarkSchema.statics.add = async function(page, user) {
+    // biome-ignore lint/complexity/noUselessThisAlias: ignore
     const Bookmark = this;
 
     const newBookmark = new Bookmark({ page, user });
@@ -89,6 +91,7 @@ const factory = (crowi) => {
    * @param {string} pageId
    */
   bookmarkSchema.statics.removeBookmarksByPageId = async function(pageId) {
+    // biome-ignore lint/complexity/noUselessThisAlias: ignore
     const Bookmark = this;
 
     try {
@@ -103,6 +106,7 @@ const factory = (crowi) => {
   };
 
   bookmarkSchema.statics.removeBookmark = async function(pageId, user) {
+    // biome-ignore lint/complexity/noUselessThisAlias: ignore
     const Bookmark = this;
 
     try {

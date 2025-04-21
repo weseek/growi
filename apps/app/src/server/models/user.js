@@ -35,8 +35,23 @@ const factory = (crowi) => {
   const STATUS_SUSPENDED = 3;
   const STATUS_DELETED = 4;
   const STATUS_INVITED = 5;
-  const USER_FIELDS_EXCEPT_CONFIDENTIAL = '_id image isEmailPublished isGravatarEnabled googleId name username email introduction'
-  + ' status lang createdAt lastLoginAt admin imageUrlCached';
+  const USER_FIELDS_EXCEPT_CONFIDENTIAL = [
+    '_id',
+    'image',
+    'isEmailPublished',
+    'isGravatarEnabled',
+    'googleId',
+    'name',
+    'username',
+    'email',
+    'introduction',
+    'status',
+    'lang',
+    'createdAt',
+    'lastLoginAt',
+    'admin',
+    'imageUrlCached',
+  ].join(' ');
 
   const PAGE_ITEMS = 50;
 
@@ -214,10 +229,9 @@ const factory = (crowi) => {
   };
 
   userSchema.methods.updateApiToken = async function() {
-    const self = this;
 
-    self.apiToken = generateApiToken(this);
-    const userData = await self.save();
+    this.apiToken = generateApiToken(this);
+    const userData = await this.save();
     return userData;
   };
 
@@ -358,7 +372,7 @@ const factory = (crowi) => {
     return this.save();
   };
 
-  userSchema.statics.getUserStatusLabels = function() {
+  userSchema.statics.getUserStatusLabels = () => {
     const userStatus = {};
     userStatus[STATUS_REGISTERED] = 'Approval Pending';
     userStatus[STATUS_ACTIVE] = 'Active';
@@ -369,7 +383,7 @@ const factory = (crowi) => {
     return userStatus;
   };
 
-  userSchema.statics.isEmailValid = function(email, callback) {
+  userSchema.statics.isEmailValid = (email, callback) => {
     validateCrowi();
 
     const whitelist = configManager.getConfig('security:registrationWhitelist');
@@ -397,7 +411,7 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.findAllUsers = function(option) {
-    // eslint-disable-next-line no-param-reassign
+    // biome-ignore lint/style/noParameterAssign: ignore
     option = option || {};
 
     const sort = option.sort || { createdAt: -1 };
@@ -415,7 +429,7 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.findUsersByIds = function(ids, option) {
-    // eslint-disable-next-line no-param-reassign
+    // biome-ignore lint/style/noParameterAssign: ignore
     option = option || {};
 
     const sort = option.sort || { createdAt: -1 };
@@ -496,11 +510,10 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.countListByStatus = async function(status) {
-    const User = this;
     const conditions = { status };
 
     // TODO count は非推奨。mongoose のバージョンアップ後に countDocuments に変更する。
-    return User.count(conditions);
+    return this.count(conditions);
   };
 
   userSchema.statics.isRegisterableUsername = async function(username) {
@@ -524,7 +537,6 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.isRegisterable = function(email, username, callback) {
-    const User = this;
     let emailUsable = true;
     let usernameUsable = true;
 
@@ -535,7 +547,7 @@ const factory = (crowi) => {
       }
 
       // email check
-      User.findOne({ email }, (err, userData) => {
+      this.findOne({ email }, (err, userData) => {
         if (userData) {
           emailUsable = false;
         }
@@ -564,8 +576,7 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.createUserByEmail = async function(email) {
-    const User = this;
-    const newUser = new User();
+    const newUser = new this();
 
     /* eslint-disable newline-per-chained-call */
     const tmpUsername = `temp_${Math.random().toString(36).slice(-16)}`;
@@ -598,10 +609,9 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.createUsersByEmailList = async function(emailList) {
-    const User = this;
 
     // check exists and get list of try to create
-    const existingUserList = await User.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
+    const existingUserList = await this.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
     const existingEmailList = existingUserList.map((user) => { return user.email });
     const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
 
@@ -627,11 +637,10 @@ const factory = (crowi) => {
   };
 
   userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
-    const User = this;
-    const newUser = new User();
+    const newUser = new this();
 
     // check user upper limit
-    const isUserCountExceedsUpperLimit = await User.isUserCountExceedsUpperLimit();
+    const isUserCountExceedsUpperLimit = await this.isUserCountExceedsUpperLimit();
     if (isUserCountExceedsUpperLimit) {
       const err = new UserUpperLimitException();
       return callback(err);
@@ -640,7 +649,7 @@ const factory = (crowi) => {
     // check email duplication because email must be unique
     const count = await this.count({ email });
     if (count > 0) {
-      // eslint-disable-next-line no-param-reassign
+      // biome-ignore lint/style/noParameterAssign: ignore
       email = generateRandomEmail();
     }
 
@@ -691,10 +700,9 @@ const factory = (crowi) => {
    * @return {Promise<User>}
    */
   userSchema.statics.createUser = function(name, username, email, password, lang, status) {
-    const User = this;
 
     return new Promise((resolve, reject) => {
-      User.createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, status, (err, userData) => {
+      this.createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, status, (err, userData) => {
         if (err) {
           return reject(err);
         }

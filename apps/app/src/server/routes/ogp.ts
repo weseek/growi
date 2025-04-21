@@ -29,12 +29,12 @@ const DEFAULT_USER_IMAGE_PATH = `public${DEFAULT_USER_IMAGE_URL}`;
 
 let bufferedDefaultUserImageCache: Buffer = Buffer.from('');
 fs.readFile(path.join(projectRoot, DEFAULT_USER_IMAGE_PATH), (err, buffer) => {
-  if (err) throw err;
+  if (err) { throw err; }
   bufferedDefaultUserImageCache = buffer;
 });
 
 
-module.exports = function(crowi: Crowi) {
+module.exports = (crowi: Crowi) => {
 
   const isUserImageAttachment = (userImageUrlCached: string): boolean => {
     return /^\/attachment\/.+/.test(userImageUrlCached);
@@ -132,9 +132,9 @@ module.exports = function(crowi: Crowi) {
 
     const ogpUri = configManager.getConfig('app:ogpUri');
 
-    if (ogpUri == null) return res.status(400).send('OGP URI for GROWI has not been setup');
-    if (!fileUploadService.getIsUploadable()) return res.status(501).send('This GROWI can not upload file');
-    if (!aclService.isGuestAllowedToRead()) return res.status(501).send('This GROWI is not public');
+    if (ogpUri == null) { return res.status(400).send('OGP URI for GROWI has not been setup'); }
+    if (!fileUploadService.getIsUploadable()) { return res.status(501).send('This GROWI can not upload file'); }
+    if (!aclService.isGuestAllowedToRead()) { return res.status(501).send('This GROWI is not public'); }
 
     const errors = validationResult(req);
 

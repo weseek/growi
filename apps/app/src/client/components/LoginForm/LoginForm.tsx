@@ -85,7 +85,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, []);
 
   const resetLoginErrors = useCallback(() => {
-    if (loginErrors.length === 0) return;
+    if (loginErrors.length === 0) { return; }
     setLoginErrors([]);
   }, [loginErrors.length]);
 
@@ -137,7 +137,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   // wrap error elements which use dangerouslySetInnerHtml
   const generateDangerouslySetErrors = useCallback((errors: IErrorV3[]): JSX.Element => {
-    if (errors == null || errors.length === 0) return <></>;
+    if (errors == null || errors.length === 0) { return <></>; }
     return (
       <div className="alert alert-danger">
         {errors.map((err) => {
@@ -150,7 +150,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   // wrap error elements which do not use dangerouslySetInnerHtml
   const generateSafelySetErrors = useCallback((errors: (IErrorV3 | IExternalAccountLoginError)[]): JSX.Element => {
-    if (errors == null || errors.length === 0) return <></>;
+    if (errors == null || errors.length === 0) { return <></>; }
     return (
       <ul className="alert alert-danger">
         {errors.map((err, index) => (
@@ -275,7 +275,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }, [props]);
 
   const resetRegisterErrors = useCallback(() => {
-    if (registerErrors.length === 0) return;
+    if (registerErrors.length === 0) { return; }
     setRegisterErrors([]);
   }, [registerErrors.length]);
 

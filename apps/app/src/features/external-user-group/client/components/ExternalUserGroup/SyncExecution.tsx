@@ -44,7 +44,7 @@ export const SyncExecution = ({
   const [currentSubmitEvent, setCurrentSubmitEvent] = useState<React.FormEvent<HTMLFormElement>>();
 
   useEffect(() => {
-    if (socket == null) return;
+    if (socket == null) { return; }
 
     const eventName = SocketEventName.externalUserGroup[provider];
 
@@ -108,7 +108,7 @@ export const SyncExecution = ({
   }, [t, requestSyncAPI, currentSubmitEvent]);
 
   const renderProgressBar = () => {
-    if (syncStatus === SyncStatus.beforeSync) return null;
+    if (syncStatus === SyncStatus.beforeSync) { return null; }
 
     let header;
     if (syncStatus === SyncStatus.syncExecuting) {

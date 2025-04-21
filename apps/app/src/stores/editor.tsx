@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 
-import { type Nullable } from '@growi/core';
+import type { Nullable } from '@growi/core';
 import { withUtils, type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
 import type { EditorSettings } from '@growi/editor';
 import useSWR, { type SWRResponse } from 'swr';

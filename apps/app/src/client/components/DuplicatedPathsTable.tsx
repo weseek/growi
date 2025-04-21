@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';

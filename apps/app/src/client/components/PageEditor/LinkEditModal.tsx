@@ -51,7 +51,7 @@ export const LinkEditModal = (): JSX.Element => {
 
   const getRootPath = useCallback((type: string) => {
     // rootPaths of md link and pukiwiki link are different
-    if (currentPath == null) return '';
+    if (currentPath == null) { return ''; }
     return type === Linker.types.markdownLink ? path.dirname(currentPath) : currentPath;
   }, [currentPath]);
 

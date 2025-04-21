@@ -29,7 +29,7 @@ const csrfProtection = csrf({ cookie: false });
 autoReap.options.reapOnError = true; // continue reaping the file even if an error occurs
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, app) => {
   const autoReconnectToSearch = require('../middlewares/auto-reconnect-to-search')(crowi);
   const applicationInstalled = require('../middlewares/application-installed')(crowi);
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);

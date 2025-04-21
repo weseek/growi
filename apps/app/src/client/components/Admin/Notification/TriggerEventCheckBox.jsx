@@ -16,6 +16,7 @@ const TriggerEventCheckBox = (props) => {
         onChange={props.onChange}
       />
       <label className="form-label form-check-label" htmlFor={`trigger-event-${props.event}`}>
+        {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
         {props.children}{' '}
         {t(`notification_settings.event_${props.event}`)}
       </label>

@@ -129,7 +129,7 @@ export const DrawioModal = (): JSX.Element => {
     }
 
     // clean up
-    return function() {
+    return () => {
       window.removeEventListener('message', receiveMessageHandler);
     };
   }, [isOpened, isOpenedInEditor, receiveMessageHandler]);

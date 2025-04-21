@@ -289,9 +289,7 @@ schema.statics.removeById = function(id) {
       if (relationData == null) {
         throw new Error('UserGroupRelation data is not exists. id:', id);
       }
-      else {
-        relationData.remove();
-      }
+      relationData.remove();
     });
 };
 

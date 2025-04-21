@@ -1,7 +1,7 @@
 import type { IUserHasId } from '@growi/core';
 import type { Handler, Request } from 'express';
 import md5 from 'md5';
-import { type RateLimiterRes } from 'rate-limiter-flexible';
+import type { RateLimiterRes } from 'rate-limiter-flexible';
 
 import loggerFactory from '~/utils/logger';
 

@@ -995,6 +995,7 @@ class PassportService implements S2sMessageHandlable {
       .replace(/\\\//g, '/')
       .replace(/\\:/g, ':')
       .replace(/\\"/g, '"')
+      // biome-ignore lint/nursery/noOctalEscape: ignore
       .replace(/\\0/g, '\0')
       .replace(/\\t/g, '\t')
       .replace(/\\n/g, '\n')

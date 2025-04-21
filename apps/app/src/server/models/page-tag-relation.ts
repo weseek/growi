@@ -170,7 +170,7 @@ const updatePageTags: UpdatePageTags = async function(pageId, tags) {
   }
 
   // filter empty string
-  // eslint-disable-next-line no-param-reassign
+  // biome-ignore lint/style/noParameterAssign: ignore
   tags = tags.filter((tag) => { return tag !== '' });
 
   // get relations for this page

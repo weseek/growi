@@ -5,13 +5,13 @@ const sanitizers = {};
 
 sanitizers.toPagingLimit = (_value) => {
   const value = parseInt(_value);
-  // eslint-disable-next-line no-restricted-globals
+  // biome-ignore lint/style/noRestrictedGlobals: ignore
   return !isNaN(value) && isFinite(value) ? value : 20;
 };
 
 sanitizers.toPagingOffset = (_value) => {
   const value = parseInt(_value);
-  // eslint-disable-next-line no-restricted-globals
+  // biome-ignore lint/style/noRestrictedGlobals: ignore
   return !isNaN(value) && isFinite(value) ? value : 0;
 };
 

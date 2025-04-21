@@ -11,7 +11,7 @@ import { externalAccountService } from '../service/external-account';
 /* eslint-disable no-use-before-define */
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = function(crowi, app) {
+module.exports = (crowi, app) => {
   const logger = loggerFactory('growi:routes:login-passport');
   const passport = require('passport');
   const passportService = crowi.passportService;
@@ -332,7 +332,7 @@ module.exports = function(crowi, app) {
     })(req, res, next);
   };
 
-  const loginWithGoogle = function(req, res, next) {
+  const loginWithGoogle = (req, res, next) => {
     if (!passportService.isGoogleStrategySetup) {
       logger.debug('GoogleStrategy has not been set up');
       const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'GoogleStrategy' });
@@ -402,7 +402,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const loginWithGitHub = function(req, res, next) {
+  const loginWithGitHub = (req, res, next) => {
     if (!passportService.isGitHubStrategySetup) {
       logger.debug('GitHubStrategy has not been set up');
       const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'GitHubStrategy' });
@@ -445,7 +445,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const loginWithOidc = function(req, res, next) {
+  const loginWithOidc = (req, res, next) => {
     if (!passportService.isOidcStrategySetup) {
       logger.debug('OidcStrategy has not been set up');
       const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'OidcStrategy' });
@@ -494,7 +494,7 @@ module.exports = function(crowi, app) {
     });
   };
 
-  const loginWithSaml = function(req, res, next) {
+  const loginWithSaml = (req, res, next) => {
     if (!passportService.isSamlStrategySetup) {
       logger.debug('SamlStrategy has not been set up');
       const error = new ExternalAccountLoginError('message.strategy_has_not_been_set_up', { strategy: 'SamlStrategy' });

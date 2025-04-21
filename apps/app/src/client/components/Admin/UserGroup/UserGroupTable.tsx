@@ -1,5 +1,6 @@
 import type { FC, JSX } from 'react';
-import React, { useState, useEffect } from 'react';
+import type React from 'react';
+import { useState, useEffect } from 'react';
 
 import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
 import { format as dateFnsFormat } from 'date-fns/format';

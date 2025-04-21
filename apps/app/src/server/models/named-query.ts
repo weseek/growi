@@ -30,7 +30,7 @@ const schema = new Schema<NamedQueryDocument, NamedQueryModel>({
 
 schema.pre('validate', async function(this, next) {
   if (this.aliasOf == null && this.delegatorName == null) {
-    throw Error('Either of aliasOf and delegatorNameName must not be null.');
+    throw new Error('Either of aliasOf and delegatorNameName must not be null.');
   }
 
   next();

@@ -69,7 +69,7 @@ function tokenizeDirectiveLeaf(effects, ok, nok) {
 
   /** @type {State} */
   function afterName(code) {
-    // eslint-disable-next-line no-nested-ternary
+    // biome-ignore lint/nursery/noNestedTernary: ignore
     return code === codes.dollarSign
       ? nok(code)
       : code === codes.leftSquareBracket

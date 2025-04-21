@@ -10,9 +10,9 @@ import { useSubmittable } from './use-submittable';
 
 
 export const getAdjustedMaxWidthForAutosizeInput = (parentMaxWidth: number, size: 'sm' | 'md' | 'lg' = 'md', isValid?: boolean): number => {
-  // eslint-disable-next-line no-nested-ternary
+  // biome-ignore lint/nursery/noNestedTernary: ignore
   const bsFormPaddingSize = size === 'sm' ? 8 : size === 'md' ? 12 : 16; // by bootstrap form
-  // eslint-disable-next-line no-nested-ternary
+  // biome-ignore lint/nursery/noNestedTernary: ignore
   const bsValidationIconSize = size === 'sm' ? 25 : size === 'md' ? 24 : 26; // by bootstrap form validation
 
   return parentMaxWidth

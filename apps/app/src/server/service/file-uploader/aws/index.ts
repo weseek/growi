@@ -222,7 +222,7 @@ class AwsFileUploader extends AbstractFileUploader {
         throw new Error(`S3 returned null for the Attachment (${filePath})`);
       }
 
-      // eslint-disable-next-line no-nested-ternary
+      // biome-ignore lint/nursery/noNestedTernary: ignore
       return 'stream' in body
         ? body.stream() as unknown as NodeJS.ReadableStream // get stream from Blob and cast force
         : body as unknown as NodeJS.ReadableStream; // cast force
@@ -292,22 +292,20 @@ class AwsFileUploader extends AbstractFileUploader {
 module.exports = (crowi: Crowi) => {
   const lib = new AwsFileUploader(crowi);
 
-  lib.isValidUploadSettings = function() {
-    return configManager.getConfig('aws:s3AccessKeyId') != null
+  lib.isValidUploadSettings = () => configManager.getConfig('aws:s3AccessKeyId') != null
       && configManager.getConfig('aws:s3SecretAccessKey') != null
       && (
         configManager.getConfig('aws:s3Region') != null
           || configManager.getConfig('aws:s3CustomEndpoint') != null
       )
       && configManager.getConfig('aws:s3Bucket') != null;
-  };
 
-  (lib as any).deleteFile = async function(attachment) {
+  (lib as any).deleteFile = async(attachment) => {
     const filePath = getFilePathOnStorage(attachment);
     return (lib as any).deleteFileByFilePath(filePath);
   };
 
-  (lib as any).deleteFiles = async function(attachments) {
+  (lib as any).deleteFiles = async(attachments) => {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -324,7 +322,7 @@ module.exports = (crowi: Crowi) => {
     return s3.send(new DeleteObjectsCommand(totalParams));
   };
 
-  (lib as any).deleteFileByFilePath = async function(filePath) {
+  (lib as any).deleteFileByFilePath = async(filePath) => {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -345,7 +343,7 @@ module.exports = (crowi: Crowi) => {
     return s3.send(new DeleteObjectCommand(params));
   };
 
-  lib.saveFile = async function({ filePath, contentType, data }) {
+  lib.saveFile = async({ filePath, contentType, data }) => {
     const s3 = S3Factory();
 
     return s3.send(new PutObjectCommand({
@@ -357,7 +355,7 @@ module.exports = (crowi: Crowi) => {
     }));
   };
 
-  (lib as any).checkLimit = async function(uploadFileSize) {
+  (lib as any).checkLimit = async(uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const totalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
@@ -366,7 +364,7 @@ module.exports = (crowi: Crowi) => {
   /**
    * List files in storage
    */
-  (lib as any).listFiles = async function() {
+  (lib as any).listFiles = async() => {
     if (!lib.getIsReadable()) {
       throw new Error('AWS is not configured.');
     }

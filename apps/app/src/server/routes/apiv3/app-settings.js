@@ -657,12 +657,12 @@ module.exports = (crowi) => {
     const { mailService } = crowi;
 
     if (!mailService.isMailerSetup) {
-      throw Error('mailService is not setup');
+      throw new Error('mailService is not setup');
     }
 
     const fromAddress = configManager.getConfig('mail:from');
     if (fromAddress == null) {
-      throw Error('fromAddress is not setup');
+      throw new Error('fromAddress is not setup');
     }
 
     const smtpHost = configManager.getConfig('mail:smtpHost');
@@ -697,7 +697,7 @@ module.exports = (crowi) => {
     await sendMailPromiseWrapper(smtpClient, mailOptions);
   }
 
-  const updateMailSettinConfig = async function(requestMailSettingParams) {
+  const updateMailSettinConfig = async(requestMailSettingParams) => {
     const {
       mailService,
     } = crowi;

@@ -17,9 +17,7 @@ const contributorsCache = contributors;
 let gcContributors;
 
 // Sorting contributors by this method
-const compareFunction = function(a, b) {
-  return a.order - b.order;
-};
+const compareFunction = (a, b) => a.order - b.order;
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {

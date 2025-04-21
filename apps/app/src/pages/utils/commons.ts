@@ -7,7 +7,7 @@ import type { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
-import { type SupportedActionType } from '~/interfaces/activity';
+import type { SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';

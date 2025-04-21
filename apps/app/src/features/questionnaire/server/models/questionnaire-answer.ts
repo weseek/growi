@@ -1,5 +1,4 @@
-import type { Document, Model } from 'mongoose';
-import { Schema } from 'mongoose';
+import { type Document, type Model, Schema } from 'mongoose';
 
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';

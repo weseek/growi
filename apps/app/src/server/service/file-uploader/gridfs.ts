@@ -101,7 +101,7 @@ class GridfsFileUploader extends AbstractFileUploader {
 }
 
 
-module.exports = function(crowi: Crowi) {
+module.exports = (crowi: Crowi) => {
   const lib = new GridfsFileUploader(crowi);
 
   // get Collection instance of chunk
@@ -111,11 +111,9 @@ module.exports = function(crowi: Crowi) {
   AttachmentFile.promisifiedWrite = util.promisify(AttachmentFile.write).bind(AttachmentFile);
   AttachmentFile.promisifiedUnlink = util.promisify(AttachmentFile.unlink).bind(AttachmentFile);
 
-  lib.isValidUploadSettings = function() {
-    return true;
-  };
+  lib.isValidUploadSettings = () => true;
 
-  (lib as any).deleteFile = async function(attachment) {
+  (lib as any).deleteFile = async(attachment) => {
     const filenameValue = attachment.fileName;
 
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
@@ -127,7 +125,7 @@ module.exports = function(crowi: Crowi) {
     return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
   };
 
-  (lib as any).deleteFiles = async function(attachments) {
+  (lib as any).deleteFiles = async(attachments) => {
     const filenameValues = attachments.map((attachment) => {
       return attachment.fileName;
     });
@@ -165,13 +163,13 @@ module.exports = function(crowi: Crowi) {
    * - per-file size limit (specified by MAX_FILE_SIZE)
    * - mongodb(gridfs) size limit (specified by MONGO_GRIDFS_TOTAL_LIMIT)
    */
-  (lib as any).checkLimit = async function(uploadFileSize) {
+  (lib as any).checkLimit = async(uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const totalLimit = lib.getFileUploadTotalLimit();
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
-  lib.saveFile = async function({ filePath, contentType, data }) {
+  lib.saveFile = async({ filePath, contentType, data }) => {
     const readable = new Readable();
     readable.push(data);
     readable.push(null); // EOF
@@ -191,7 +189,7 @@ module.exports = function(crowi: Crowi) {
    * @param {Attachment} attachment
    * @return {stream.Readable} readable stream
    */
-  lib.findDeliveryFile = async function(attachment) {
+  lib.findDeliveryFile = async(attachment) => {
     const filenameValue = attachment.fileName;
 
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
@@ -207,7 +205,7 @@ module.exports = function(crowi: Crowi) {
   /**
    * List files in storage
    */
-  (lib as any).listFiles = async function() {
+  (lib as any).listFiles = async() => {
     const attachmentFiles = await AttachmentFile.find();
     return attachmentFiles.map(({ filename: name, length: size }) => ({
       name, size,

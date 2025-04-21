@@ -91,7 +91,7 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
   // didMount
   useEffect(() => {
     const isPathToTarget = page.path != null && targetPath.startsWith(page.path) && targetPath !== page.path; // Target Page does not need to be opened
-    if (isPathToTarget) setIsOpen(true);
+    if (isPathToTarget) { setIsOpen(true); }
   }, [targetPath, page.path]);
 
   /*
@@ -175,7 +175,7 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
         { showAlternativeContent && AlternativeComponents != null
           ? (
             AlternativeComponents.map((AlternativeContent, index) => (
-              // eslint-disable-next-line react/no-array-index-key
+              // biome-ignore lint/suspicious/noArrayIndexKey: ignore
               (<AlternativeContent key={index} {...toolProps} />)
             ))
           )
@@ -184,13 +184,13 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
               <SimpleItemContent page={page} />
               <div className="d-hover-none">
                 {EndComponents?.map((EndComponent, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
+                  // biome-ignore lint/suspicious/noArrayIndexKey: ignore
                   (<EndComponent key={index} {...toolProps} />)
                 ))}
               </div>
               <div className="d-none d-hover-flex">
                 {HoveredEndComponents?.map((HoveredEndContent, index) => (
-                  // eslint-disable-next-line react/no-array-index-key
+                  // biome-ignore lint/suspicious/noArrayIndexKey: ignore
                   (<HoveredEndContent key={index} {...toolProps} />)
                 ))}
               </div>
@@ -203,7 +203,7 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
         <div className={`tree-item-layout-children level-${baseItemLevel + 1}`}>
 
           {HeadObChildrenComponents?.map((HeadObChildrenContents, index) => (
-            // eslint-disable-next-line react/no-array-index-key
+            // biome-ignore lint/suspicious/noArrayIndexKey: ignore
             (<HeadObChildrenContents key={index} {...toolProps} itemLevel={baseItemLevel + 1} />)
           ))}
 

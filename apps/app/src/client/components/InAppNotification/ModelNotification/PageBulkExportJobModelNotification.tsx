@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 import { isPopulated, type HasObjectId } from '@growi/core';
 import { useTranslation } from 'react-i18next';

@@ -47,6 +47,10 @@ class LdapSecuritySettingContents extends React.Component {
     this.setState({ isLdapAuthTestModalShown: false });
   }
 
+  addCurlyBracesForExample(str) {
+    return `{{ ${str} }}`;
+  }
+
   render() {
     const { t, adminGeneralSecurityContainer, adminLdapSecurityContainer } = this.props;
     const { isLdapEnabled } = adminGeneralSecurityContainer.state;
@@ -154,8 +158,8 @@ class LdapSecuritySettingContents extends React.Component {
                       {t('security_settings.ldap.bind_DN_user_detail1')}<br />
                       {/* eslint-disable-next-line react/no-danger */}
                       <span dangerouslySetInnerHTML={{ __html: t('security_settings.ldap.bind_DN_user_detail2') }} /><br />
-                      {t('security_settings.example')}1: <code>uid={'{{ username }}'},dc=domain,dc=com</code><br />
-                      {t('security_settings.example')}2: <code>{'{{ username }}'}@domain.com</code>
+                      {t('security_settings.example')}1: <code>uid={this.addCurlyBracesForExample('username')},dc=domain,dc=com</code><br />
+                      {t('security_settings.example')}2: <code>{this.addCurlyBracesForExample('username')}@domain.com</code>
                     </small>
                   </p>
                 )
@@ -226,9 +230,9 @@ class LdapSecuritySettingContents extends React.Component {
                 <p className="form-text text-muted">
                   <small>
                     {t('security_settings.example')}1 - {t('security_settings.ldap.search_filter_example1')}:
-                    <code>(|(uid={'{{username}}'})(mail={'{{username}}'}))</code><br />
+                    <code>(|(uid={this.addCurlyBracesForExample('username')})(mail={this.addCurlyBracesForExample('username')}))</code><br />
                     {t('security_settings.example')}2 - {t('security_settings.ldap.search_filter_example2')}:
-                    <code>(sAMAccountName={'{{username}}'})</code>
+                    <code>(sAMAccountName={this.addCurlyBracesForExample('username')})</code>
                   </small>
                 </p>
               </div>

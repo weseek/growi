@@ -64,7 +64,7 @@ export const usePageItemControl = (): UsePageItemControl => {
       const { _id: pageId, path } = page;
 
       if (pageId == null || path == null) {
-        throw Error('Any of _id and path must not be null.');
+        throw new Error('Any of _id and path must not be null.');
       }
 
       const pageToDuplicate = { pageId, path };
@@ -82,7 +82,7 @@ export const usePageItemControl = (): UsePageItemControl => {
       }
 
       if (page._id == null || page.path == null) {
-        throw Error('_id and path must not be null.');
+        throw new Error('_id and path must not be null.');
       }
 
       const pageToDelete: IPageToDeleteWithMeta = {

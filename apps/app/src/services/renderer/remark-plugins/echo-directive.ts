@@ -21,7 +21,10 @@ export const remarkPlugin: Plugin = () => {
     visit(tree, 'textDirective', (node: TextDirective) => {
       const tagName = 'span';
 
-      const data = node.data ?? (node.data = {});
+      if (node.data == null) {
+        node.data = {};
+      }
+      const data = node.data;
       data.hName = tagName;
       data.hProperties = h(tagName, node.attributes ?? {}).properties;
       data.hChildren = echoDirective(node);
@@ -30,7 +33,10 @@ export const remarkPlugin: Plugin = () => {
     visit(tree, 'leafDirective', (node: LeafDirective) => {
       const tagName = 'div';
 
-      const data = node.data ?? (node.data = {});
+      if (node.data == null) {
+        node.data = {};
+      }
+      const data = node.data;
       data.hName = tagName;
       data.hProperties = h(tagName, node.attributes ?? {}).properties;
       data.hChildren = echoDirective(node);

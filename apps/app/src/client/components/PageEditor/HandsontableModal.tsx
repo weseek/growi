@@ -364,7 +364,7 @@ export const HandsontableModal = (): JSX.Element => {
     }
 
     const selectedRange = hotTable.hotInstance.getSelectedRange();
-    if (selectedRange == null) return;
+    if (selectedRange == null) { return; }
 
     const startCol = selectedRange[0].from.col < selectedRange[0].to.col ? selectedRange[0].from.col : selectedRange[0].to.col;
     const endCol = selectedRange[0].from.col < selectedRange[0].to.col ? selectedRange[0].to.col : selectedRange[0].from.col;

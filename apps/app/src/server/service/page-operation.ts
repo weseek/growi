@@ -59,7 +59,7 @@ class PageOperationService {
    * Execute renameSubOperation on every page operation for rename ordered by createdAt ASC
    */
   private async executeAllRenameOperationBySystem(pageOps: PageOperationDocument[]): Promise<void> {
-    if (pageOps.length === 0) return;
+    if (pageOps.length === 0) { return; }
 
     const Page = mongoose.model<IPage, PageModel>('Page');
 
@@ -96,36 +96,36 @@ class PageOperationService {
     if (isRecursively) {
       if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
         const fromFlag = fromPaths.some(p => isEitherOfPathAreaOverlap(p, fromPathToOp));
-        if (fromFlag) return false;
+        if (fromFlag) { return false; }
 
         const toFlag = toPaths.some(p => isEitherOfPathAreaOverlap(p, fromPathToOp));
-        if (toFlag) return false;
+        if (toFlag) { return false; }
       }
 
       if (toPathToOp != null && !isTrashPage(toPathToOp)) {
         const fromFlag = fromPaths.some(p => isPathAreaOverlap(p, toPathToOp));
-        if (fromFlag) return false;
+        if (fromFlag) { return false; }
 
         const toFlag = toPaths.some(p => isPathAreaOverlap(p, toPathToOp));
-        if (toFlag) return false;
+        if (toFlag) { return false; }
       }
 
     }
     else {
       if (fromPathToOp != null && !isTrashPage(fromPathToOp)) {
         const fromFlag = fromPaths.some(p => isPathAreaOverlap(p, fromPathToOp));
-        if (fromFlag) return false;
+        if (fromFlag) { return false; }
 
         const toFlag = toPaths.some(p => isPathAreaOverlap(p, fromPathToOp));
-        if (toFlag) return false;
+        if (toFlag) { return false; }
       }
 
       if (toPathToOp != null && !isTrashPage(toPathToOp)) {
         const fromFlag = fromPaths.some(p => isPathAreaOverlap(p, toPathToOp));
-        if (fromFlag) return false;
+        if (fromFlag) { return false; }
 
         const toFlag = toPaths.some(p => isPathAreaOverlap(p, toPathToOp));
-        if (toFlag) return false;
+        if (toFlag) { return false; }
       }
     }
 

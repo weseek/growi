@@ -97,7 +97,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   ): Promise<void> {
     const results = await Promise.allSettled(pageBulkExportJobs.map(job => cleanUp(job)));
     results.forEach((result) => {
-      if (result.status === 'rejected') logger.error(result.reason);
+      if (result.status === 'rejected') { logger.error(result.reason); }
     });
 
     // Only batch delete jobs which have been successfully cleaned up

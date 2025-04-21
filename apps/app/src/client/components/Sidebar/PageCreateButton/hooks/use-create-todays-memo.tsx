@@ -31,7 +31,7 @@ export const useCreateTodaysMemo: UseCreateTodaysMemo = () => {
     : null;
 
   const createTodaysMemo = useCallback(async() => {
-    if (!isCreatable || todaysPath == null) return;
+    if (!isCreatable || todaysPath == null) { return; }
 
     return create(
       {

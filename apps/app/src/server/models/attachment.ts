@@ -74,7 +74,7 @@ attachmentSchema.set('toJSON', { virtuals: true });
 attachmentSchema.statics.createWithoutSave = function(
     pageId, user, originalName: string, fileFormat: string, fileSize: number, attachmentType: AttachmentType,
 ) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
+  // biome-ignore lint/complexity/noUselessThisAlias: ignore
   const Attachment = this;
 
   const extname = path.extname(originalName);

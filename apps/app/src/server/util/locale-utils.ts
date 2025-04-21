@@ -18,7 +18,7 @@ const ACCEPT_LANG_MAP = {
 const getPreferredLanguage = (sortedAcceptLanguagesArray: string[]): Lang => {
   for (const lang of sortedAcceptLanguagesArray) {
     const matchingLang = Object.keys(ACCEPT_LANG_MAP).find(key => lang.includes(key));
-    if (matchingLang) return ACCEPT_LANG_MAP[matchingLang];
+    if (matchingLang) { return ACCEPT_LANG_MAP[matchingLang]; }
   }
   return i18nextConfig.defaultLang;
 };

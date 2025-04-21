@@ -65,6 +65,7 @@ const TableOfContents = ({ tagsElementHeight }: Props): JSX.Element => {
           className="revision-toc-content mb-3"
         >
           {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
+          {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
           <ReactMarkdown {...rendererOptions}>{' '}</ReactMarkdown>
         </div>
       </StickyStretchableScroller>
