@@ -13,15 +13,11 @@ import type { UseCodeMirrorEditor } from '..';
 export const acceptAllChunks = (view: EditorView): void => {
   // Get all chunks from the editor state
   const chunkData = getChunks(view.state);
-  if (!chunkData || chunkData.chunks.length === 0) {
+  if (chunkData == null || chunkData.chunks.length === 0) {
     return;
   }
 
-  // Get all chunks and sort them in reverse order by position
-  const chunks = [...chunkData.chunks].sort((a, b) => b.fromB - a.fromB);
-
-  // Process each chunk from bottom to top
-  for (const chunk of chunks) {
+  for (const chunk of chunkData.chunks) {
     // Use a position inside the chunk (middle point is safe)
     const pos = chunk.fromB + Math.floor((chunk.endB - chunk.fromB) / 2);
     acceptChunk(view, pos);
