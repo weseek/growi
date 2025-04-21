@@ -2,19 +2,26 @@ import { useEffect } from 'react';
 
 import {
   acceptChunk,
-  rejectChunk,
+  getChunks,
 } from '@codemirror/merge';
 import type { ViewUpdate } from '@codemirror/view';
 import { EditorView } from '@codemirror/view';
 
 import type { UseCodeMirrorEditor } from '..';
 
-export const acceptChange = (view: EditorView): boolean => {
-  return acceptChunk(view);
-};
 
-export const rejectChange = (view: EditorView): boolean => {
-  return rejectChunk(view);
+export const acceptAllChunks = (view: EditorView): void => {
+  // Get all chunks from the editor state
+  const chunkData = getChunks(view.state);
+  if (chunkData == null || chunkData.chunks.length === 0) {
+    return;
+  }
+
+  for (const chunk of chunkData.chunks) {
+    // Use a position inside the chunk (middle point is safe)
+    const pos = chunk.fromB + Math.floor((chunk.endB - chunk.fromB) / 2);
+    acceptChunk(view, pos);
+  }
 };
 
 
