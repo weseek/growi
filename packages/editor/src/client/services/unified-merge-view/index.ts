@@ -10,26 +10,22 @@ import { EditorView } from '@codemirror/view';
 import type { UseCodeMirrorEditor } from '..';
 
 
-export const acceptAllChunks = (view: EditorView): boolean => {
+export const acceptAllChunks = (view: EditorView): void => {
   // Get all chunks from the editor state
   const chunkData = getChunks(view.state);
-  if (!chunkData || chunkData.chunks.length === 0) return false;
+  if (!chunkData || chunkData.chunks.length === 0) {
+    return;
+  }
 
   // Get all chunks and sort them in reverse order by position
   const chunks = [...chunkData.chunks].sort((a, b) => b.fromB - a.fromB);
-
-  // Track if we've accepted at least one chunk
-  let accepted = false;
 
   // Process each chunk from bottom to top
   for (const chunk of chunks) {
     // Use a position inside the chunk (middle point is safe)
     const pos = chunk.fromB + Math.floor((chunk.endB - chunk.fromB) / 2);
-    const success = acceptChunk(view, pos);
-    if (success) accepted = true;
+    acceptChunk(view, pos);
   }
-
-  return accepted;
 };
 
 
