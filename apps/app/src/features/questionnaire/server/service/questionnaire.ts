@@ -16,7 +16,7 @@ import QuestionnaireOrder from '../models/questionnaire-order';
 import { isShowableCondition } from '../util/condition';
 
 
-const _logger = loggerFactory('growi:service:questionnaire');
+const logger = loggerFactory('growi:service:questionnaire');
 
 class QuestionnaireService {
 

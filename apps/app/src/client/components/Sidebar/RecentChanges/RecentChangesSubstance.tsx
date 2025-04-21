@@ -25,7 +25,7 @@ const formerLinkClass = styles['grw-former-link'];
 const pageItemLowerClass = styles['grw-recent-changes-item-lower'];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _logger = loggerFactory('growi:History');
+const logger = loggerFactory('growi:History');
 
 type PageItemLowerProps = {
   page: IPageHasId,

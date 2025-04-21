@@ -3,7 +3,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:middleware:admin-required');
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = (_crowi, fallback = null) => {
+module.exports = (crowi, fallback = null) => {
 
   return (req, res, next) => {
 

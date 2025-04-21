@@ -7,7 +7,7 @@ function createBatchStream(batchSize) {
     // object mode
     objectMode: true,
 
-    transform(doc, _encoding, callback) {
+    transform(doc, encoding, callback) {
       batchBuffer.push(doc);
 
       if (batchBuffer.length >= batchSize) {

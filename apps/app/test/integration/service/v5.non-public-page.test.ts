@@ -1166,7 +1166,7 @@ describe('PageService page operations with non-public pages', () => {
           activityId: '62e291bc10e0ab61bd691794',
         });
       }
-      catch (_err) {
+      catch (err) {
         isThrown = true;
       }
       expect(isThrown).toBe(true);

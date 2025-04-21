@@ -29,7 +29,7 @@ const V5PageMigration: FC<Props> = (props: Props) => {
   // Progress bar
   const [isInProgress, setProgressing] = useState<boolean | undefined>(undefined); // use false as ended
   const [total, setTotal] = useState<number>(0);
-  const [_skip, setSkip] = useState<number>(0);
+  const [skip, setSkip] = useState<number>(0);
   const [current, setCurrent] = useState<number>(0);
   const [isSucceeded, setSucceeded] = useState<boolean | undefined>(undefined);
 

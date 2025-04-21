@@ -13,7 +13,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const _logger = loggerFactory('growi:models:named-query');
+const logger = loggerFactory('growi:models:named-query');
 
 export interface NamedQueryDocument extends INamedQuery, Document {}
 

@@ -10,7 +10,7 @@ import { SidebarNotFound } from './CustomSidebarNotFound';
 import styles from './CustomSidebarSubstance.module.scss';
 
 
-const _logger = loggerFactory('growi:components:CustomSidebarSubstance');
+const logger = loggerFactory('growi:components:CustomSidebarSubstance');
 
 
 export const CustomSidebarSubstance = (): JSX.Element => {

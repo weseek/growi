@@ -135,7 +135,7 @@ const ApiResponse = require('../../util/apiResponse');
 export const routesFactory = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const _GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
+  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const { attachmentService, globalNotificationService } = crowi;
 
   const activityEvent = crowi.event('activity');

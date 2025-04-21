@@ -15,7 +15,7 @@ import loggerFactory from '~/utils/logger';
 
 import { getLocaleAtServerSide } from './utils/commons';
 
-const _logger = loggerFactory('growi:page:_document');
+const logger = loggerFactory('growi:page:_document');
 
 type HeadersForGrowiPluginProps = {
   pluginResourceEntries: GrowiPluginResourceEntries;

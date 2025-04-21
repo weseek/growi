@@ -39,7 +39,7 @@ export const deleteUserAiAssistant = async(user: IUserHasId): Promise<void> => {
       try {
         await deleteAiAssistant(user._id, aiAssistant._id);
       }
-      catch (_err) {
+      catch (err) {
         logger.error(`Failed to delete AiAssistant ${aiAssistant._id}`);
       }
     }

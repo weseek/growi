@@ -13,7 +13,7 @@ import type {
 } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
-const _logger = loggerFactory('growi:stores:modal');
+const logger = loggerFactory('growi:stores:modal');
 
 /*
 * PageCreateModal

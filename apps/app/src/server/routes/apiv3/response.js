@@ -13,12 +13,12 @@ const addCustomFunctionToResponse = (express) => {
     this.status(status).json(obj);
   };
 
-  express.response.apiv3Err = function(_err, status = 400, info) { // not arrow function
+  express.response.apiv3Err = function(err, status = 400, info) { // not arrow function
     if (!Number.isInteger(status)) {
       throw new Error('invalid status supplied to res.apiv3Err');
     }
 
-    let errors = toArrayIfNot(_err);
+    let errors = toArrayIfNot(err);
     errors = errors.map((e) => {
       if (e instanceof ErrorV3) {
         return e;

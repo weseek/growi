@@ -87,7 +87,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
         },
       );
     }
-    catch (_err) {
+    catch (err) {
       toastError(t('toaster.create_failed', { target: path }));
     }
   }, [create, isNotFound, mutateEditorMode, path, t]);

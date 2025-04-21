@@ -3,7 +3,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:granted-group-to-array-of-objects');
 
 module.exports = {
-  async up(db, _client) {
+  async up(db, client) {
     logger.info('Apply migration');
 
     const pageCollection = await db.collection('pages');
@@ -91,7 +91,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(db, _client) {
+  async down(db, client) {
     logger.info('Rollback migration');
 
     const pageCollection = await db.collection('pages');

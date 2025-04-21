@@ -145,7 +145,7 @@ class ExportService {
     let count = 0;
 
     return new Transform({
-      transform(chunk, _encoding, callback) {
+      transform(chunk, encoding, callback) {
         count++;
         logProgress(exportProgress, count);
 
@@ -166,7 +166,7 @@ class ExportService {
     let isFirst = true;
 
     const transformStream = new Transform({
-      transform(chunk, _encoding, callback) {
+      transform(chunk, encoding, callback) {
         // write beginning brace
         if (isFirst) {
           this.push('[');
@@ -389,7 +389,7 @@ class ExportService {
     return zipFile;
   }
 
-  getReadStreamFromRevision(revision, _format): Readable {
+  getReadStreamFromRevision(revision, format): Readable {
     const data = revision.body;
 
     const readable = new Readable();

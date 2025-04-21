@@ -90,7 +90,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const duplicatedHandler = useCallback((fromPath, _toPath) => {
+  const duplicatedHandler = useCallback((fromPath, toPath) => {
     toastSuccess(t('duplicated_pages', { fromPath }));
 
     mutatePageTree();
@@ -106,7 +106,7 @@ const SearchResultListSubstance: ForwardRefRenderFunction<ISelectableAll, Props>
     mutateSearching();
   }, [t]);
 
-  const deletedHandler = useCallback((pathOrPathsToDelete, _isRecursively, isCompletely) => {
+  const deletedHandler = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }

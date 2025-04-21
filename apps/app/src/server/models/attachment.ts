@@ -14,7 +14,7 @@ import { AttachmentType } from '../interfaces/attachment';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 // eslint-disable-next-line no-unused-vars
-const _logger = loggerFactory('growi:models:attachment');
+const logger = loggerFactory('growi:models:attachment');
 
 
 function generateFileHash(fileName) {

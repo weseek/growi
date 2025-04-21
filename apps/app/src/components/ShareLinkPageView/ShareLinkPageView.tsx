@@ -20,7 +20,7 @@ import RevisionRenderer from '../PageView/RevisionRenderer';
 import ShareLinkAlert from './ShareLinkAlert';
 
 
-const _logger = loggerFactory('growi:Page');
+const logger = loggerFactory('growi:Page');
 
 
 const PageSideContents = dynamic(() => import('~/client/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });

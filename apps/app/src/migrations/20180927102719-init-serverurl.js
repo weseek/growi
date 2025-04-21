@@ -18,7 +18,7 @@ function isAllValuesSame(array) {
 
 module.exports = {
 
-  async up(_db) {
+  async up(db) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -71,7 +71,7 @@ module.exports = {
     }
   },
 
-  async down(_db) {
+  async down(db) {
     logger.info('Rollback migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 

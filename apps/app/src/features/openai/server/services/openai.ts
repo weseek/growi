@@ -590,7 +590,7 @@ class OpenaiService implements IOpenaiService {
     const createVectorStoreFile = this.createVectorStoreFile.bind(this);
     const createVectorStoreFileStream = new Transform({
       objectMode: true,
-      async transform(chunk: HydratedDocument<PageDocument>[], _encoding, callback) {
+      async transform(chunk: HydratedDocument<PageDocument>[], encoding, callback) {
         try {
           logger.debug('Search results of page paths', chunk.map(page => page.path));
           await createVectorStoreFile(vectorStoreRelation, chunk);

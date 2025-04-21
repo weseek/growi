@@ -41,7 +41,7 @@ import '@growi/editor/dist/style.css';
 import styles from './CommentEditor.module.scss';
 
 
-const _logger = loggerFactory('growi:components:CommentEditor');
+const logger = loggerFactory('growi:components:CommentEditor');
 
 
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
@@ -226,7 +226,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   // set handler to focus
   useLayoutEffect(() => {
-    if (showPreview) return;
+    if (showPreview) { return };
     codeMirrorEditor?.focus();
   }, [codeMirrorEditor, showPreview]);
 

@@ -12,7 +12,7 @@ const BATCH_SIZE = 100;
 
 
 module.exports = {
-  async up(db, _client) {
+  async up(db, client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
     const pageCollection = await db.collection('pages');
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;
@@ -48,7 +48,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(db, _client) {
+  async down(db, client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
     const pageCollection = await db.collection('pages');
     const PageRedirect = getModelSafely('PageRedirect') || PageRedirectModel;

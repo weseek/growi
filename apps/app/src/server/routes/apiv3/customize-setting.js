@@ -274,7 +274,7 @@ module.exports = (crowi) => {
    *                      description: customize params
    *                      $ref: '#/components/schemas/CustomizeSetting'
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(_req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const customizeParams = {
       isEnabledTimeline: await configManager.getConfig('customize:isEnabledTimeline'),
       isEnabledAttachTitleHeader: await configManager.getConfig('customize:isEnabledAttachTitleHeader'),
@@ -317,7 +317,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeLayout'
    */
-  router.get('/layout', loginRequiredStrictly, adminRequired, async(_req, res) => {
+  router.get('/layout', loginRequiredStrictly, adminRequired, async(req, res) => {
     try {
       const isContainerFluid = await configManager.getConfig('customize:isContainerFluid');
       return res.apiv3({ isContainerFluid });
@@ -408,7 +408,7 @@ module.exports = (crowi) => {
    *                      items:
    *                        $ref: '#/components/schemas/ThemesMetadata'
    */
-  router.get('/theme', loginRequiredStrictly, async(_req, res) => {
+  router.get('/theme', loginRequiredStrictly, async(req, res) => {
 
     try {
       const currentTheme = await configManager.getConfig('customize:theme');
@@ -498,7 +498,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/CustomizeSidebar'
    */
-  router.get('/sidebar', loginRequiredStrictly, adminRequired, async(_req, res) => {
+  router.get('/sidebar', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     try {
       const isSidebarCollapsedMode = await configManager.getConfig('customize:isSidebarCollapsedMode');
@@ -1077,7 +1077,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  additionalProperties: false
    */
-  router.delete('/delete-brand-logo', loginRequiredStrictly, adminRequired, async(_req, res) => {
+  router.delete('/delete-brand-logo', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
 

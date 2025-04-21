@@ -23,7 +23,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  down(_db) {
+  down(db) {
     // do not rollback
   },
 };

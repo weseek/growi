@@ -382,7 +382,7 @@ class PassportService implements S2sMessageHandlable {
     const match = serverUrl.match(/(ldaps?:\/\/[^/]+)\/(.*)?/);
     if (match == null || match.length < 1) {
       logger.debug('LdapStrategy: serverUrl is invalid');
-      return (_req, callback) => { callback({ message: 'serverUrl is invalid' }) };
+      return (req, callback) => { callback({ message: 'serverUrl is invalid' }) };
     }
     const url = match[1];
     const searchBase = match[2] || '';

@@ -92,7 +92,7 @@ module.exports = (crowi, app) => {
   app.use(methodOverride());
 
   // inject rawBody to req
-  app.use((req, _res, next) => {
+  app.use((req, res, next) => {
     if (!req.is('multipart/form-data')) {
       req.rawBody = '';
       req.on('data', (chunk) => {

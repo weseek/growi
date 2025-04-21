@@ -29,7 +29,7 @@ module.exports = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-  router.get('/', loginRequiredStrictly, adminRequired, async(_req: Request, res: ApiV3Response) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
     try {
       const data = await GrowiPlugin.find({});
       return res.apiv3({ plugins: data });

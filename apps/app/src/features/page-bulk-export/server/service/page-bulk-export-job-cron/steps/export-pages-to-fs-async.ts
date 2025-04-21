@@ -42,7 +42,7 @@ async function getPageWritable(this: IPageBulkExportJobCronService, pageBulkExpo
     .use(remarkHtml);
   return new Writable({
     objectMode: true,
-    write: async(page: PageBulkExportPageSnapshotDocument, _encoding, callback) => {
+    write: async(page: PageBulkExportPageSnapshotDocument, encoding, callback) => {
       try {
         const revision = page.revision;
 

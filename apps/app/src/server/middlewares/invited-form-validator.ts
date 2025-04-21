@@ -27,7 +27,7 @@ export const invitedRules = (): ValidationChain[] => {
   ];
 };
 
-export const invitedValidation = (req: Request, _res: Response, next: () => NextFunction): any => {
+export const invitedValidation = (req: Request, res: Response, next: () => NextFunction): any => {
   const form = req.body;
   const errors = validationResult(req);
   const extractedErrors: string[] = [];

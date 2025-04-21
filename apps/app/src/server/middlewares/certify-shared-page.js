@@ -4,9 +4,9 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:middleware:certify-shared-page');
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = (_crowi) => {
+module.exports = (crowi) => {
 
-  return async(req, _res, next) => {
+  return async(req, res, next) => {
     const pageId = req.query.pageId || req.body.pageId || null;
     const shareLinkId = req.query.shareLinkId || req.body.shareLinkId || null;
     if (pageId == null || shareLinkId == null) {

@@ -283,7 +283,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     try {
       handler = require(modulePath)(this.crowi);
     }
-    catch (_err) {
+    catch (err) {
       throw new SlackCommandHandlerError(`No interaction.\n \`actionId: ${actionId}\``);
     }
 
@@ -304,7 +304,7 @@ export class SlackIntegrationService implements S2sMessageHandlable {
     try {
       handler = require(modulePath)(this.crowi);
     }
-    catch (_err) {
+    catch (err) {
       throw new SlackCommandHandlerError(`No interaction.\n \`callbackId: ${callbackId}\``);
     }
 

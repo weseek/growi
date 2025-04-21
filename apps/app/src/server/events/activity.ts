@@ -2,7 +2,7 @@ import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../crowi';
 
-const _logger = loggerFactory('growi:events:activity');
+const logger = loggerFactory('growi:events:activity');
 
 const events = require('events');
 const util = require('util');

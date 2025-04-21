@@ -41,7 +41,7 @@ export default class AppService implements S2sMessageHandlable {
   /**
    * @inheritdoc
    */
-  async handleS2sMessage(_s2sMessage) {
+  async handleS2sMessage(s2sMessage) {
     logger.info('Invoke post installation process by pubsub notification');
 
     const isDBInitialized = await this.isDBInitialized(true);

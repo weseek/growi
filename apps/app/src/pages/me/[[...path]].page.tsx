@@ -30,7 +30,7 @@ import {
 } from '../utils/commons';
 
 
-const _logger = loggerFactory('growi:pages:me');
+const logger = loggerFactory('growi:pages:me');
 
 type Props = CommonProps & {
   isSearchServiceConfigured: boolean,

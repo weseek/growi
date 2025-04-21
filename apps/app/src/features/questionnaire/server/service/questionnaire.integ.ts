@@ -79,18 +79,18 @@ describe('QuestionnaireService', () => {
   });
 
   describe('getQuestionnaireOrdersToShow', () => {
-    let _doc1;
-    let _doc2;
-    let _doc3;
+    let doc1;
+    let doc2;
+    let doc3;
     let doc4;
     let doc5;
     let doc6;
-    let _doc7;
-    let _doc8;
-    let _doc9;
-    let _doc10;
-    let _doc11;
-    let _doc12;
+    let doc7;
+    let doc8;
+    let doc9;
+    let doc10;
+    let doc11;
+    let doc12;
 
     beforeAll(async() => {
       const questionnaireToBeShown = {
@@ -122,15 +122,15 @@ describe('QuestionnaireService', () => {
       };
 
       // insert initial db data
-      _doc1 = await QuestionnaireOrder.create(questionnaireToBeShown);
+      doc1 = await QuestionnaireOrder.create(questionnaireToBeShown);
       // insert finished data
-      _doc2 = await QuestionnaireOrder.create({
+      doc2 = await QuestionnaireOrder.create({
         ...questionnaireToBeShown,
         showFrom: '2020-12-11',
         showUntil: '2021-12-12',
       });
       // insert data for admin or guest
-      _doc3 = await QuestionnaireOrder.create({
+      doc3 = await QuestionnaireOrder.create({
         ...questionnaireToBeShown,
         condition: {
           user: {
@@ -149,7 +149,7 @@ describe('QuestionnaireService', () => {
       // insert denied data
       doc6 = await QuestionnaireOrder.create(questionnaireToBeShown);
       // insert data for different growi type
-      _doc7 = await QuestionnaireOrder.create(
+      doc7 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
           condition: {
@@ -164,7 +164,7 @@ describe('QuestionnaireService', () => {
         },
       );
       // insert data for different growi version
-      _doc8 = await QuestionnaireOrder.create(
+      doc8 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
           condition: {
@@ -179,7 +179,7 @@ describe('QuestionnaireService', () => {
         },
       );
       // insert data for users that used GROWI for less than or equal to a year
-      _doc9 = await QuestionnaireOrder.create(
+      doc9 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
           condition: {
@@ -197,7 +197,7 @@ describe('QuestionnaireService', () => {
         },
       );
       // insert data for users that used GROWI for more than or equal to 1000 years
-      _doc10 = await QuestionnaireOrder.create(
+      doc10 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
           condition: {
@@ -215,7 +215,7 @@ describe('QuestionnaireService', () => {
         },
       );
       // insert data for users that used GROWI for more than a month and less than 6 months
-      _doc11 = await QuestionnaireOrder.create(
+      doc11 = await QuestionnaireOrder.create(
         {
           ...questionnaireToBeShown,
           condition: {

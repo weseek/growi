@@ -17,7 +17,7 @@ const logger = loggerFactory('growi:migrate:add-config-app-installed');
  */
 module.exports = {
 
-  async up(_db) {
+  async up(db) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -45,7 +45,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(_db) {
+  async down(db) {
     logger.info('Rollback migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 

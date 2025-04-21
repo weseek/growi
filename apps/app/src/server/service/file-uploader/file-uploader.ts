@@ -161,7 +161,7 @@ export abstract class AbstractFileUploader implements FileUploader {
   /**
    * Create a multipart uploader for cloud storage
    */
-  createMultipartUploader(_uploadKey: string, _maxPartSize: number): MultipartUploader {
+  createMultipartUploader(uploadKey: string, maxPartSize: number): MultipartUploader {
     throw new Error('Multipart upload not available for file upload type');
   }
 
@@ -170,7 +170,7 @@ export abstract class AbstractFileUploader implements FileUploader {
   /**
    * Abort an existing multipart upload without creating a MultipartUploader instance
    */
-  abortPreviousMultipartUpload(_uploadKey: string, _uploadId: string): Promise<void> {
+  abortPreviousMultipartUpload(uploadKey: string, _uploadId: string): Promise<void> {
     throw new Error('Multipart upload not available for file upload type');
   }
 

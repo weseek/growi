@@ -100,7 +100,7 @@ const factory = (crowi) => {
   }, {
     timestamps: true,
     toObject: {
-      transform: (_doc, ret, _opt) => {
+      transform: (doc, ret, opt) => {
         return omitInsecureAttributes(ret);
       },
     },
@@ -328,7 +328,7 @@ const factory = (crowi) => {
     return this.save();
   };
 
-  userSchema.methods.asyncGrantAdmin = async function(_callback) {
+  userSchema.methods.asyncGrantAdmin = async function(callback) {
     this.admin = 1;
     return this.save();
   };
@@ -476,7 +476,7 @@ const factory = (crowi) => {
     });
   };
 
-  userSchema.statics.findUserByUsernameOrEmail = function(usernameOrEmail, _password, callback) {
+  userSchema.statics.findUserByUsernameOrEmail = function(usernameOrEmail, password, callback) {
     this.findOne()
       .or([
         { username: usernameOrEmail },
@@ -541,13 +541,13 @@ const factory = (crowi) => {
     let usernameUsable = true;
 
     // username check
-    this.findOne({ username }, (_err, userData) => {
+    this.findOne({ username }, (err, userData) => {
       if (userData) {
         usernameUsable = false;
       }
 
       // email check
-      this.findOne({ email }, (_err, userData) => {
+      this.findOne({ email }, (err, userData) => {
         if (userData) {
           emailUsable = false;
         }
@@ -601,7 +601,7 @@ const factory = (crowi) => {
         user: newUserData,
       };
     }
-    catch (_err) {
+    catch (err) {
       return {
         email,
       };

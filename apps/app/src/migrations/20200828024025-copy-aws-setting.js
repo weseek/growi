@@ -8,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:remove-layout-setting');
 
 module.exports = {
-  async up(_db, _client) {
+  async up(db, client) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -52,7 +52,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(_db, _client) {
+  async down(db, client) {
     logger.info('Rollback migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 

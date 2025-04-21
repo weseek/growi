@@ -1235,7 +1235,7 @@ describe('PageService page operations with only public pages', () => {
           endpoint: '/_api/v3/pages/rename',
         });
       }
-      catch (_err) {
+      catch (err) {
         isThrown = true;
       }
 
@@ -1391,7 +1391,7 @@ describe('PageService page operations with only public pages', () => {
           endpoint: '/_api/v3/pages/rename',
         });
       }
-      catch (_err) {
+      catch (err) {
         isThrown = true;
       }
 
@@ -1733,7 +1733,7 @@ describe('PageService page operations with only public pages', () => {
         const newPagePath = '/duplicatedv5PageForDuplicate2';
         duplicatedPage = await duplicate(page, newPagePath, dummyUser1, false);
       }
-      catch (_err) {
+      catch (err) {
         isThrown = true;
       }
 
@@ -1914,7 +1914,7 @@ describe('PageService page operations with only public pages', () => {
           endpoint: '/_api/v3/pages/delete',
         });
       }
-      catch (_err) { isThrown = true }
+      catch (err) { isThrown = true }
 
       const page = await Page.findOne({ path: '/' });
 
@@ -1933,7 +1933,7 @@ describe('PageService page operations with only public pages', () => {
           endpoint: '/_api/v3/pages/delete',
         });
       }
-      catch (_err) { isThrown = true }
+      catch (err) { isThrown = true }
 
       const page = await Page.findOne({ path: '/trash/v5_PageForDelete1' });
 
@@ -1951,7 +1951,7 @@ describe('PageService page operations with only public pages', () => {
           endpoint: '/_api/v3/pages/delete',
         });
       }
-      catch (_err) { isThrown = true }
+      catch (err) { isThrown = true }
 
       const page = await Page.findOne({ path: '/user/v5DummyUser1' });
 
@@ -2051,7 +2051,7 @@ describe('PageService page operations with only public pages', () => {
           endpoint: '/_api/v3/pages/deletecompletely',
         });
       }
-      catch (_err) { isThrown = true }
+      catch (err) { isThrown = true }
       const page = await Page.findOne({ path: '/' });
       expect(page).toBeTruthy();
       expect(isThrown).toBe(true);

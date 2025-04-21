@@ -7,7 +7,7 @@ import { OpenaiServiceTypes } from '../../../interfaces/ai';
 
 const logger = loggerFactory('growi:middlewares:certify-ai-service');
 
-export const certifyAiService = (_req: Request, res: Response & { apiv3Err }, next: NextFunction): void => {
+export const certifyAiService = (req: Request, res: Response & { apiv3Err }, next: NextFunction): void => {
   const aiEnabled = configManager.getConfig('app:aiEnabled');
 
   if (!aiEnabled) {

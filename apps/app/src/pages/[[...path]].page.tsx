@@ -97,7 +97,7 @@ const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire
 const EditablePageEffects = dynamic(() => import('~/client/components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
 
 
-const _logger = loggerFactory('growi:pages:all');
+const logger = loggerFactory('growi:pages:all');
 
 const {
   isPermalink: _isPermalink, isCreatablePage,

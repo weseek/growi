@@ -34,7 +34,7 @@ import { useStaticSWR } from './use-static-swr';
 
 const { isTrashTopPage, isUsersTopPage } = pagePathUtils;
 
-const _logger = loggerFactory('growi:stores:ui');
+const logger = loggerFactory('growi:stores:ui');
 
 
 /** **********************************************************

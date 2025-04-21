@@ -206,7 +206,7 @@ module.exports = (crowi) => {
    *                      description: notification params
    *                      $ref: '#/components/schemas/NotificationParams'
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(_req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const notificationParams = {
       // status of slack intagration
@@ -361,7 +361,7 @@ module.exports = (crowi) => {
       try {
         globalNotification = await GlobalNotificationSetting.findOne({ _id: notificationSettingId });
       }
-      catch (_err) {
+      catch (err) {
         logger.error(`Error in finding a global notification setting with {_id: ${notificationSettingId}}`);
       }
     }

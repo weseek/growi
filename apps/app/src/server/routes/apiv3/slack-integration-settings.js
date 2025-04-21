@@ -199,7 +199,7 @@ module.exports = (crowi) => {
    *                    errorCode:
    *                      type: string
    */
-  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(_req, res) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
 
     const { configManager, slackIntegrationService } = crowi;
     const currentBotType = configManager.getConfig('slackbot:currentBotType');
@@ -278,7 +278,7 @@ module.exports = (crowi) => {
   });
 
 
-  const handleBotTypeChanging = async(_req, res, initializedBotType) => {
+  const handleBotTypeChanging = async(req, res, initializedBotType) => {
     await resetAllBotSettings(initializedBotType);
     crowi.slackIntegrationService.publishUpdatedMessage();
 
@@ -526,7 +526,7 @@ module.exports = (crowi) => {
    *                    isPrimary:
    *                      type: boolean
    */
-  router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, addActivity, async(_req, res) => {
+  router.post('/slack-app-integrations', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
     const SlackAppIntegrationRecordsNum = await SlackAppIntegration.countDocuments();
     if (SlackAppIntegrationRecordsNum >= 10) {
       const msg = 'Not be able to create more than 10 slack workspace integration settings';

@@ -41,7 +41,7 @@ schema.statics.findWithPagination = function(opts) {
   }
 
   return this.paginate(query, options)
-    .catch((_err) => {
+    .catch((err) => {
       // debug('Error on pagination:', err); TODO: add logger
     });
 };

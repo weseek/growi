@@ -122,7 +122,7 @@ export const ExternalGroupManagement: FC = () => {
 
       toastSuccess(`Deleted ${selectedExternalUserGroup?.name} group.`);
     }
-    catch (_err) {
+    catch (err) {
       toastError(new Error('Unable to delete the groups'));
     }
   }, [mutateExternalUserGroups, selectedExternalUserGroup, hideDeleteModal]);

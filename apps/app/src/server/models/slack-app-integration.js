@@ -54,7 +54,7 @@ class SlackAppIntegration {
 
 }
 
-const factory = (_crowi) => {
+const factory = (crowi) => {
   const modelExists = getModelSafely('SlackAppIntegration');
   if (modelExists != null) {
     return modelExists;

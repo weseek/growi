@@ -16,7 +16,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 
 import type { PageDocument } from './page';
 
-const _logger = loggerFactory('growi:models:revision');
+const logger = loggerFactory('growi:models:revision');
 
 
 export interface IRevisionDocument extends IRevision, Document {

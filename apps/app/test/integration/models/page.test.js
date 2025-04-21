@@ -10,7 +10,7 @@ let parentPage;
 
 describe('Page', () => {
   // eslint-disable-next-line no-unused-vars
-  let _crowi;
+  let crowi;
   let Page;
   let PageQueryBuilder;
   let User;
@@ -18,7 +18,7 @@ describe('Page', () => {
   let UserGroupRelation;
 
   beforeAll(async() => {
-    _crowi = await getInstance();
+    crowi = await getInstance();
 
     User = mongoose.model('User');
     UserGroup = mongoose.model('UserGroup');

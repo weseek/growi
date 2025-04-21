@@ -16,7 +16,7 @@ const LIMIT = 300;
 
 module.exports = {
   // path => pageId
-  async up(_db, _client) {
+  async up(db, client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
 
@@ -25,7 +25,7 @@ module.exports = {
 
     const migratePagesStream = new Writable({
       objectMode: true,
-      async write(pages, _encoding, callback) {
+      async write(pages, encoding, callback) {
         const updateManyOperations = pages.map((page) => {
           return {
             updateMany: {
@@ -62,7 +62,7 @@ module.exports = {
   },
 
   // pageId => path
-  async down(_db, _client) {
+  async down(db, client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
     const Page = getModelSafely('Page') || getPageModel();
 
@@ -71,7 +71,7 @@ module.exports = {
 
     const migratePagesStream = new Writable({
       objectMode: true,
-      async write(pages, _encoding, callback) {
+      async write(pages, encoding, callback) {
         const updateManyOperations = pages.map((page) => {
           return {
             updateMany: {

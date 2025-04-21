@@ -5,7 +5,7 @@ import {
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import loggerFactory from '~/utils/logger';
 
-const _logger = loggerFactory('growi:service:SlackCommandHandler:note');
+const logger = loggerFactory('growi:service:SlackCommandHandler:note');
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -20,7 +20,7 @@ module.exports = (crowi) => {
   };
   const { User } = crowi.models;
 
-  handler.handleCommand = async(_growiCommand, _client, _body, respondUtil) => {
+  handler.handleCommand = async(_growiCommand, client, _body, respondUtil) => {
     await respondUtil.respond({
       text: 'Take a note on GROWI',
       blocks: [

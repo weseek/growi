@@ -20,7 +20,7 @@ export type RevisionLoaderProps = {
   onRevisionLoaded?: (revision: IRevisionHasId) => void,
 }
 
-const _logger = loggerFactory('growi:Page:RevisionLoader');
+const logger = loggerFactory('growi:Page:RevisionLoader');
 
 /**
  * Load data from server and render RevisionBody component

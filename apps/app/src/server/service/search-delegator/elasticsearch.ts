@@ -423,7 +423,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return this.updateOrInsertPages(() => Page.findById(pageId));
   }
 
-  updateOrInsertDescendantsPagesById(page, _user) {
+  updateOrInsertDescendantsPagesById(page, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
     const builder = new PageQueryBuilder(Page.find());
@@ -462,7 +462,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const appendTagNamesStream = new Transform({
       objectMode: true,
-      async transform(chunk, _encoding, callback) {
+      async transform(chunk, encoding, callback) {
         const pageIds = chunk.map(doc => doc._id);
 
         const idToTagNamesMap = await PageTagRelation.getIdToTagNamesMap(pageIds);
@@ -506,7 +506,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         const body: (BulkWriteCommand|BulkWriteBody)[] = [];
         batch.forEach((doc: AggregatedPage) => {
           body.push(...prepareBodyForCreate(doc));
@@ -963,13 +963,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       .map(([key]) => key as UnavailableTermsKey<ESTermsKey>);
   }
 
-  async syncPageUpdated(page, _user) {
+  async syncPageUpdated(page, user) {
     logger.debug('SearchClient.syncPageUpdated', page.path);
     return this.updateOrInsertPageById(page._id);
   }
 
   // remove pages whitch should nod Indexed
-  async syncPagesUpdated(_pages, _user) {
+  async syncPagesUpdated(pages, user) {
     const shoudDeletePages: any[] = [];
 
     // delete if page should not indexed
@@ -987,7 +987,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     return this.updateOrInsertDescendantsPagesById(parentPage, user);
   }
 
-  async syncDescendantsPagesDeleted(pages, _user) {
+  async syncDescendantsPagesDeleted(pages, user) {
     for (let i = 0; i < pages.length; i++) {
       logger.debug('SearchClient.syncDescendantsPagesDeleted', pages[i].path);
     }
@@ -1000,7 +1000,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
   }
 
-  async syncPageDeleted(page, _user) {
+  async syncPageDeleted(page, user) {
     logger.debug('SearchClient.syncPageDeleted', page.path);
 
     try {

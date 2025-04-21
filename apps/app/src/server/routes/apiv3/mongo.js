@@ -1,6 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
-const _logger = loggerFactory('growi:routes:apiv3:mongo'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:routes:apiv3:mongo'); // eslint-disable-line no-unused-vars
 
 const express = require('express');
 const mongoose = require('mongoose');
@@ -36,7 +36,7 @@ module.exports = (crowi) => {
    *                    items:
    *                      type: string
    */
-  router.get('/collections', loginRequiredStrictly, adminRequired, async(_req, res) => {
+  router.get('/collections', loginRequiredStrictly, adminRequired, async(req, res) => {
     const listCollectionsResult = await mongoose.connection.db.listCollections().toArray();
     const collections = listCollectionsResult.map(collectionObj => collectionObj.name);
 

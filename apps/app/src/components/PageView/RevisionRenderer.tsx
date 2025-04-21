@@ -10,7 +10,7 @@ import loggerFactory from '~/utils/logger';
 import 'katex/dist/katex.min.css';
 
 
-const _logger = loggerFactory('components:Page:RevisionRenderer');
+const logger = loggerFactory('components:Page:RevisionRenderer');
 
 type Props = {
   rendererOptions: RendererOptions,

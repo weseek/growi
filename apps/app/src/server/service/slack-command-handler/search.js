@@ -228,7 +228,7 @@ module.exports = (crowi) => {
   }
 
 
-  handler.handleCommand = async(growiCommand, _client, _body, respondUtil) => {
+  handler.handleCommand = async(growiCommand, client, _body, respondUtil) => {
     const { growiCommandArgs } = growiCommand;
 
     const respondBody = await buildRespondBody(growiCommandArgs);

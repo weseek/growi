@@ -166,7 +166,7 @@ module.exports = (crowi, app) => {
     .get('/:token', applicationInstalled, injectUserRegistrationOrderByTokenMiddleware, userActivation.renderUserActivationPage(crowi))
     .use(userActivation.tokenErrorHandlerMiddeware(crowi)));
 
-  app.get('/share$', (_req, res) => res.redirect('/'));
+  app.get('/share$', (req, res) => res.redirect('/'));
   app.get('/share/:linkId', next.delegateToNext);
 
   app.use('/ogp', express.Router().get('/:pageId([0-9a-z]{0,})', loginRequired, ogp.pageIdRequired, ogp.ogpValidator, ogp.renderOgp));

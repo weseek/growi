@@ -7,7 +7,7 @@ import PageBulkExportJob from '../models/page-bulk-export-job';
 
 import { pageBulkExportJobCronService } from './page-bulk-export-job-cron';
 
-const _logger = loggerFactory('growi:service:check-page-bulk-export-job-in-progress-cron');
+const logger = loggerFactory('growi:service:check-page-bulk-export-job-in-progress-cron');
 
 /**
  * Manages cronjob which checks if PageBulkExportJob in progress exists.

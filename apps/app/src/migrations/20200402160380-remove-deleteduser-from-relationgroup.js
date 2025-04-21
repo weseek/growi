@@ -9,7 +9,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:remove-deleteduser-from-relationgroup');
 
 module.exports = {
-  async up(_db) {
+  async up(db) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -25,7 +25,7 @@ module.exports = {
 
   },
 
-  down(_db, next) {
+  down(db, next) {
     // do not rollback
     next();
   },

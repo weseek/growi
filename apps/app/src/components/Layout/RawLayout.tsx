@@ -13,7 +13,7 @@ import styles from './RawLayout.module.scss';
 
 const toastContainerClass = styles['grw-toast-container'] ?? '';
 
-const _logger = loggerFactory('growi:cli:RawLayout');
+const logger = loggerFactory('growi:cli:RawLayout');
 
 
 const ToastContainer = dynamic(() => import('react-toastify').then(mod => mod.ToastContainer), { ssr: false });

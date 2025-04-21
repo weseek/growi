@@ -35,7 +35,7 @@ import ApiResponse from '../util/apiResponse';
  *            example: 3
  */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = (crowi, _app) => {
+module.exports = (crowi, app) => {
 
   const activityEvent = crowi.event('activity');
   const actions = {};

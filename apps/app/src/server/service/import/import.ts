@@ -215,7 +215,7 @@ export class ImportService {
       // stream 3
       const convertStream = new Transform({
         objectMode: true,
-        transform(doc, _encoding, callback) {
+        transform(doc, encoding, callback) {
           const converted = convertDocuments(collectionName, doc, overwriteParams);
           this.push(converted);
           callback();
@@ -228,7 +228,7 @@ export class ImportService {
       // stream 5
       const writeStream = new Writable({
         objectMode: true,
-        async write(batch, _encoding, callback) {
+        async write(batch, encoding, callback) {
           const unorderedBulkOp = collection.initializeUnorderedBulkOp();
 
           // documents are not persisted until unorderedBulkOp.execute()

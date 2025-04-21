@@ -7,7 +7,7 @@ import { PageRevisionTable } from '../PageHistory/PageRevisionTable';
 
 import { useAutoComparingRevisionsByQueryParam } from './hooks';
 
-const _logger = loggerFactory('growi:PageHistory');
+const logger = loggerFactory('growi:PageHistory');
 
 type PageHistoryProps = {
   onClose: () => void

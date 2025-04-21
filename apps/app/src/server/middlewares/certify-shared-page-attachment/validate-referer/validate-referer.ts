@@ -21,7 +21,7 @@ export const validateReferer = (referer: string | undefined): ValidReferer | fal
   try {
     refererUrl = new URL(referer);
   }
-  catch (_err) {
+  catch (err) {
     logger.info(`Parsing referer ('${referer}') has failed`);
     return false;
   }

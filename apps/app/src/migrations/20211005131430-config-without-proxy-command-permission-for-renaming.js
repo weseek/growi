@@ -9,7 +9,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:slack-app-integration-rename-keys');
 
 module.exports = {
-  async up(_db) {
+  async up(db) {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isExist = (await Config.count({ key: 'slackbot:withoutProxy:commandPermission' })) > 0;
@@ -52,7 +52,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(_db, next) {
+  async down(db, next) {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isExist = (await Config.count({ key: 'slackbot:withoutProxy:commandPermission' })) > 0;

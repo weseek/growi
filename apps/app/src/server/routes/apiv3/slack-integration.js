@@ -184,7 +184,7 @@ module.exports = (crowi) => {
     return next(new SlackCommandHandlerError('Interaction forbidden', options));
   }
 
-  const addSigningSecretToReq = (req, _res, next) => {
+  const addSigningSecretToReq = (req, res, next) => {
     req.slackSigningSecret = configManager.getConfig('slackbot:withoutProxy:signingSecret');
     return next();
   };
@@ -201,7 +201,7 @@ module.exports = (crowi) => {
     next();
   };
 
-  const parseSlackInteractionRequest = (req, _res, next) => {
+  const parseSlackInteractionRequest = (req, res, next) => {
     if (req.body.payload == null) {
       return next(new Error('The payload is not in the request from slack or proxy.'));
     }
@@ -249,7 +249,7 @@ module.exports = (crowi) => {
     return growiCommand;
   }
 
-  async function handleCommands(body, _res, client, responseUrl) {
+  async function handleCommands(body, res, client, responseUrl) {
     let growiCommand;
     let respondUtil;
     try {
@@ -427,7 +427,7 @@ module.exports = (crowi) => {
     return handleCommands(body, res, client, responseUrl);
   });
 
-  async function handleInteractionsRequest(req, _res, client) {
+  async function handleInteractionsRequest(req, res, client) {
 
     const { interactionPayload, interactionPayloadAccessor } = req;
     const { type } = interactionPayload;
@@ -650,7 +650,7 @@ module.exports = (crowi) => {
   });
 
   // error handler
-  router.use(async(err, req, _res, next) => {
+  router.use(async(err, req, res, next) => {
     const responseUrl = getResponseUrl(req);
     if (responseUrl == null) {
       // pass err to global error handler

@@ -219,7 +219,7 @@ class ImportForm extends React.Component {
     this.setState({ canImport });
   }
 
-  async validateCollectionSize(_validationErrors) {
+  async validateCollectionSize(validationErrors) {
     const { t } = this.props;
     const { warnForOtherGroups, selectedCollections } = this.state;
 

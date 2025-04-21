@@ -13,7 +13,7 @@ import {
 } from './get';
 
 
-const _logger = loggerFactory('growi:routes:attachment:download');
+const logger = loggerFactory('growi:routes:attachment:download');
 
 
 const generateActivityParameters = (req: CrowiRequest) => {

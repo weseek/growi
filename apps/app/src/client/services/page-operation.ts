@@ -17,7 +17,7 @@ import { apiPost } from '../util/apiv1-client';
 import { apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
 import { toastError } from '../util/toastr';
 
-const _logger = loggerFactory('growi:services:page-operation');
+const logger = loggerFactory('growi:services:page-operation');
 
 
 export const toggleSubscribe = async(pageId: string, currentStatus: SubscriptionStatusType | undefined): Promise<void> => {

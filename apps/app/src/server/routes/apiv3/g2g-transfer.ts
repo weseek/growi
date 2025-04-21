@@ -92,15 +92,15 @@ module.exports = (crowi: Crowi): Router => {
 
   const uploads = multer({
     storage: multer.diskStorage({
-      destination: (_req, _file, cb) => {
+      destination: (req, file, cb) => {
         cb(null, importService.baseDir);
       },
-      filename(_req, file, cb) {
+      filename(req, file, cb) {
         // to prevent hashing the file name. files with same name will be overwritten.
         cb(null, file.originalname);
       },
     }),
-    fileFilter: (_req, file, cb) => {
+    fileFilter: (req, file, cb) => {
       if (path.extname(file.originalname) === '.zip') {
         return cb(null, true);
       }
@@ -110,10 +110,10 @@ module.exports = (crowi: Crowi): Router => {
 
   const uploadsForAttachment = multer({
     storage: multer.diskStorage({
-      destination: (_req, _file, cb) => {
+      destination: (req, file, cb) => {
         cb(null, importService.baseDir);
       },
-      filename(_req, file, cb) {
+      filename(req, file, cb) {
         // to prevent hashing the file name. files with same name will be overwritten.
         cb(null, file.originalname);
       },
@@ -157,7 +157,7 @@ module.exports = (crowi: Crowi): Router => {
     try {
       await g2gTransferReceiverService.validateTransferKey(transferKey);
     }
-    catch (_err) {
+    catch (err) {
       return res.apiv3Err(new ErrorV3('Invalid transfer key', 'invalid_transfer_key'), 403);
     }
 
@@ -198,7 +198,7 @@ module.exports = (crowi: Crowi): Router => {
    *                          description: The size of the file
    */
   // eslint-disable-next-line max-len
-  receiveRouter.get('/files', validateTransferKey, async(_req: Request, res: ApiV3Response) => {
+  receiveRouter.get('/files', validateTransferKey, async(req: Request, res: ApiV3Response) => {
     const files = await crowi.fileUploadService.listFiles();
     return res.apiv3({ files });
   });
@@ -415,7 +415,7 @@ module.exports = (crowi: Crowi): Router => {
    *                  growiInfo:
    *                    $ref: '#/components/schemas/GrowiInfo'
    */
-  receiveRouter.get('/growi-info', validateTransferKey, async(_req: Request, res: ApiV3Response) => {
+  receiveRouter.get('/growi-info', validateTransferKey, async(req: Request, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;
     try {
       growiInfo = await g2gTransferReceiverService.answerGROWIInfo();

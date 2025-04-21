@@ -64,7 +64,7 @@ import UpdatePost from '../models/update-post';
 
 /* eslint-disable no-use-before-define */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = (crowi, _app) => {
+module.exports = (crowi, app) => {
   const logger = loggerFactory('growi:routes:page');
 
   const { pagePathUtils } = require('@growi/core/dist/utils');
@@ -371,7 +371,7 @@ module.exports = (crowi, _app) => {
    *
    * @apiParam {String} page_id Page Id.
    */
-  api.revertRemove = async(req, res, _options) => {
+  api.revertRemove = async(req, res, options) => {
     const pageId = req.body.page_id;
 
     // get recursively flag

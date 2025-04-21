@@ -249,7 +249,7 @@ export class PageQueryBuilder {
    * generate the query to find the pages '{path}/*' and '{path}' self.
    * If top page, return without doing anything.
    */
-  addConditionToListWithDescendants(path: string, _option?): PageQueryBuilder {
+  addConditionToListWithDescendants(path: string, option?): PageQueryBuilder {
     // No request is set for the top page
     if (isTopPage(path)) {
       return this;

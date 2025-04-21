@@ -35,7 +35,7 @@ const logger = loggerFactory('growi:routes:search');
  *                 example: 2
  *
  */
-module.exports = (crowi: Crowi, _app) => {
+module.exports = (crowi: Crowi, app) => {
   const ApiResponse = require('../util/apiResponse');
   const ApiPaginate = require('../util/apiPaginate');
 

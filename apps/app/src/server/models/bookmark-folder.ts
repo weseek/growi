@@ -11,7 +11,7 @@ import { getOrCreateModel } from '../util/mongoose-utils';
 import { InvalidParentBookmarkFolderError } from './errors';
 
 
-const _logger = loggerFactory('growi:models:bookmark-folder');
+const logger = loggerFactory('growi:models:bookmark-folder');
 const Bookmark = monggoose.model('Bookmark');
 
 export interface BookmarkFolderDocument extends Document {

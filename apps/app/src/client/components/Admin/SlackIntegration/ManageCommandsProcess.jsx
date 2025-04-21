@@ -257,7 +257,7 @@ const ManageCommandsProcess = ({
   }, []);
 
 
-  const updateSettingsHandler = async(_e) => {
+  const updateSettingsHandler = async(e) => {
     try {
       // TODO: add new attribute 78975
       await apiv3Put(`/slack-integration-settings/slack-app-integrations/${slackAppIntegrationId}/permissions`, {

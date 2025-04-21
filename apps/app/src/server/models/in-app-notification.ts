@@ -82,7 +82,7 @@ inAppNotificationSchema.index({ createdAt: 1 });
 // apply plugins
 inAppNotificationSchema.plugin(mongoosePaginate);
 
-const transform = (_doc, ret) => {
+const transform = (doc, ret) => {
   delete ret.activities;
 };
 inAppNotificationSchema.set('toObject', { virtuals: true, transform });

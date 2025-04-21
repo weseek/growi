@@ -5,13 +5,13 @@ const { getInstance } = require('../setup-crowi');
 
 describe('User', () => {
   // eslint-disable-next-line no-unused-vars
-  let _crowi;
+  let crowi;
   let User;
 
   let adminusertestToBeRemovedId;
 
   beforeAll(async() => {
-    _crowi = await getInstance();
+    crowi = await getInstance();
     User = mongoose.model('User');
 
     await User.insertMany([

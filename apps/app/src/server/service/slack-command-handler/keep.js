@@ -7,7 +7,7 @@ import { parse } from 'date-fns/parse';
 import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handler-error';
 import loggerFactory from '~/utils/logger';
 
-const _logger = loggerFactory('growi:service:SlackBotService:keep');
+const logger = loggerFactory('growi:service:SlackBotService:keep');
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -17,7 +17,7 @@ module.exports = (crowi) => {
   const handler = new BaseSlackCommandHandler();
   const { User } = crowi.models;
 
-  handler.handleCommand = async function(_growiCommand, _client, body, respondUtil) {
+  handler.handleCommand = async function(_growiCommand, client, body, respondUtil) {
     await respondUtil.respond({
       text: 'Select messages to use.',
       blocks: this.keepMessageBlocks(body.channel_name),

@@ -1,8 +1,8 @@
 import type Crowi from '../crowi';
 
-export const generateCertifyBrandLogoMiddleware = (_crowi: Crowi) => {
+export const generateCertifyBrandLogoMiddleware = (crowi: Crowi) => {
 
-  return async(req, _res, next) => {
+  return async(req, res, next) => {
     req.isBrandLogo = true;
     next();
   };

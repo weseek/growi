@@ -8,7 +8,7 @@ const logger = loggerFactory('growi:migrate:adjust-page-grant');
 
 module.exports = {
 
-  async up(_db) {
+  async up(db) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -28,7 +28,7 @@ module.exports = {
 
   },
 
-  down(_db) {
+  down(db) {
     // do not rollback
   },
 };

@@ -37,7 +37,7 @@ SUPPORTED_COMPONENTS.forEach((comp) => {
   });
 });
 
-const HotkeysManager = (_props) => {
+const HotkeysManager = (props) => {
   const [view, setView] = useState([]);
 
   /**

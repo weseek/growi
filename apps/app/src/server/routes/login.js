@@ -8,7 +8,7 @@ import { growiInfoService } from '../service/growi-info';
 // because this file is a deprecated legacy of Crowi
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = (crowi, _app) => {
+module.exports = (crowi, app) => {
   const logger = loggerFactory('growi:routes:login');
   const path = require('path');
   const User = crowi.model('User');

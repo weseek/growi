@@ -8,7 +8,7 @@ const logger = loggerFactory('growi:routes:admin');
 
 /* eslint-disable no-use-before-define */
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
-module.exports = (crowi, _app) => {
+module.exports = (crowi, app) => {
   const ApiResponse = require('../util/apiResponse');
   const importer = require('../util/importer')(crowi);
 
@@ -189,7 +189,7 @@ module.exports = (crowi, _app) => {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.testEsaAPI = async(_req, res) => {
+  actions.api.testEsaAPI = async(req, res) => {
     try {
       await importer.testConnectionToEsa();
       const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_ESA_DATA };
@@ -207,7 +207,7 @@ module.exports = (crowi, _app) => {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.testQiitaAPI = async(_req, res) => {
+  actions.api.testQiitaAPI = async(req, res) => {
     try {
       await importer.testConnectionToQiita();
       const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_QIITA_DATA };
@@ -220,7 +220,7 @@ module.exports = (crowi, _app) => {
   };
 
 
-  actions.api.searchBuildIndex = async(_req, res) => {
+  actions.api.searchBuildIndex = async(req, res) => {
     const search = crowi.getSearcher();
     if (!search) {
       return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));

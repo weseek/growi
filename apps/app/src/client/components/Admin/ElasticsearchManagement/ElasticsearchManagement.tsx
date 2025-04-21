@@ -78,11 +78,11 @@ const ElasticsearchManagement = () => {
     if (socket == null) {
       return;
     }
-    socket.on(SocketEventName.AddPageProgress, (_data) => {
+    socket.on(SocketEventName.AddPageProgress, (data) => {
       setIsRebuildingProcessing(true);
     });
 
-    socket.on(SocketEventName.FinishAddPage, async(_data) => {
+    socket.on(SocketEventName.FinishAddPage, async(data) => {
       await retrieveIndicesStatus();
       setIsRebuildingProcessing(false);
       setIsRebuildingCompleted(true);

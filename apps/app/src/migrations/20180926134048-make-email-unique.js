@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:migrate:make-email-unique');
 
 module.exports = {
 
-  async up(_db, next) {
+  async up(db, next) {
     logger.info('Start migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -40,7 +40,7 @@ module.exports = {
     next();
   },
 
-  down(_db, next) {
+  down(db, next) {
     // do not rollback
     next();
   },

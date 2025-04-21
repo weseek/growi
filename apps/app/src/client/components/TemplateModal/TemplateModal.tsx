@@ -36,7 +36,7 @@ import { useFormatter } from './use-formatter';
 import styles from './TemplateModal.module.scss';
 
 
-const _logger = loggerFactory('growi:components:TemplateModal');
+const logger = loggerFactory('growi:components:TemplateModal');
 
 
 function constructTemplateId(templateSummary: TemplateSummary): string {

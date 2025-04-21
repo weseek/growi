@@ -8,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:abolish-crowi-classic-auth');
 
 module.exports = {
-  async up(_db, next) {
+  async up(db, next) {
     logger.info('Start migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -35,7 +35,7 @@ module.exports = {
     next();
   },
 
-  async down(_db, next) {
+  async down(db, next) {
     // do not rollback
     next();
   },

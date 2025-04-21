@@ -15,7 +15,7 @@ import { PageBulkExportJobInProgressStatus, PageBulkExportJobStatus } from '../.
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
 
-const _logger = loggerFactory('growi:services:PageBulkExportService');
+const logger = loggerFactory('growi:services:PageBulkExportService');
 
 export class DuplicateBulkExportJobError extends Error {
 

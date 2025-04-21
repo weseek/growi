@@ -140,7 +140,7 @@ class AwsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override saveFile(_param: SaveFileParam) {
+  override saveFile(param: SaveFileParam) {
     throw new Error('Method not implemented.');
   }
 

@@ -8,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:update-theme-color-for-dark');
 
 module.exports = {
-  async up(_db, _client) {
+  async up(db, client) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
@@ -20,7 +20,7 @@ module.exports = {
     logger.info('Migration has successfully applied');
   },
 
-  async down(_db, _client) {
+  async down(db, client) {
     // do not rollback
   },
 };

@@ -97,7 +97,7 @@ class GcsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override saveFile(_param: SaveFileParam) {
+  override saveFile(param: SaveFileParam) {
     throw new Error('Method not implemented.');
   }
 
@@ -213,7 +213,7 @@ class GcsFileUploader extends AbstractFileUploader {
     return new GcsMultipartUploader(myBucket, uploadKey, maxPartSize);
   }
 
-  override async abortPreviousMultipartUpload(_uploadKey: string, uploadId: string) {
+  override async abortPreviousMultipartUpload(uploadKey: string, uploadId: string) {
     try {
       await axios.delete(uploadId);
     }

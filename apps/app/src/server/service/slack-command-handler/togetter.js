@@ -9,7 +9,7 @@ import { SlackCommandHandlerError } from '~/server/models/vo/slack-command-handl
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line no-unused-vars
-const _logger = loggerFactory('growi:service:SlackBotService:togetter');
+const logger = loggerFactory('growi:service:SlackBotService:togetter');
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
@@ -18,7 +18,7 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
-  handler.handleCommand = async function(growiCommand, _client, _body) {
+  handler.handleCommand = async function(growiCommand, client, _body) {
     await respond(growiCommand.responseUrl, {
       text: 'Select messages to use.',
       blocks: this.togetterMessageBlocks(),

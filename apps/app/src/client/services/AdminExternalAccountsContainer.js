@@ -7,7 +7,7 @@ import { apiv3Delete, apiv3Get } from '../util/apiv3-client';
 
 
 // eslint-disable-next-line no-unused-vars
-const _logger = loggerFactory('growi:services:AdminexternalaccountsContainer');
+const logger = loggerFactory('growi:services:AdminexternalaccountsContainer');
 
 /**
  * Service container for admin external-accounts page (ManageExternalAccountsContainer.jsx)

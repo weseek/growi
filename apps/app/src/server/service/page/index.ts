@@ -1016,7 +1016,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         try {
           count += batch.length;
           await renameDescendants(
@@ -1061,7 +1061,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         try {
           count += batch.length;
           await renameDescendants(batch, user, options, pathRegExp, newPagePathPrefix);
@@ -1481,7 +1481,7 @@ class PageService implements IPageService {
     let nNonEmptyDuplicatedPages = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         try {
           count += batch.length;
           nNonEmptyDuplicatedPages += batch.filter(page => !page.isEmpty).length;
@@ -1520,7 +1520,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         try {
           count += batch.length;
           await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, onlyDuplicateUserRelatedResources);
@@ -1716,7 +1716,7 @@ class PageService implements IPageService {
     // no sub operation available
   }
 
-  private async deletePageV4(page: HydratedDocument<PageDocument>, user, _options = {}, isRecursively = false) {
+  private async deletePageV4(page: HydratedDocument<PageDocument>, user, options = {}, isRecursively = false) {
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     const newPath = Page.getDeletedPageName(page.path);
@@ -1844,7 +1844,7 @@ class PageService implements IPageService {
 
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         nDeletedNonEmptyPages += batch.filter(d => !d.isEmpty).length;
 
         try {
@@ -2085,7 +2085,7 @@ class PageService implements IPageService {
   /**
    * Create delete completely stream
    */
-  private async deleteCompletelyDescendantsWithStream(targetPage, user, _options = {}, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
+  private async deleteCompletelyDescendantsWithStream(targetPage, user, options = {}, shouldUseV4Process = true, descendantsSubscribedSets?): Promise<number> {
     let readStream;
 
     if (shouldUseV4Process) { // pages don't have parents
@@ -2104,7 +2104,7 @@ class PageService implements IPageService {
     const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         nDeletedNonEmptyPages += batch.filter(d => !d.isEmpty).length;
 
         try {
@@ -2408,7 +2408,7 @@ class PageService implements IPageService {
     const batchStream = createBatchStream(BULK_REINDEX_SIZE);
     const childPagesWritable = new Writable({
       objectMode: true,
-      write: async(batch, _encoding, callback) => {
+      write: async(batch, encoding, callback) => {
         await this.updateChildPagesGrant(batch, grant, user, userRelatedGroups, userRelatedParentGrantedGroups);
         callback();
       },
@@ -2458,7 +2458,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         try {
           count += batch.length;
           await revertDeletedDescendants(batch, user);
@@ -2486,7 +2486,7 @@ class PageService implements IPageService {
     return count;
   }
 
-  private async revertDeletedDescendantsWithStreamV4(targetPage, user, _options = {}) {
+  private async revertDeletedDescendantsWithStreamV4(targetPage, user, options = {}) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(targetPage.path, user);
     const batchStream = createBatchStream(BULK_REINDEX_SIZE);
 
@@ -2494,7 +2494,7 @@ class PageService implements IPageService {
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         try {
           count += batch.length;
           await revertDeletedDescendants(batch, user);
@@ -3243,7 +3243,7 @@ class PageService implements IPageService {
 
     const migratePagesStream = new Writable({
       objectMode: true,
-      async write(pages, _encoding, callback) {
+      async write(pages, encoding, callback) {
         const parentPaths = Array.from(new Set<string>(pages.map(p => pathlib.dirname(p.path))));
 
         // 1. Remove unnecessary empty pages & reset parent for pages which had had those empty pages
@@ -3464,7 +3464,7 @@ class PageService implements IPageService {
     const batchStream = createBatchStream(batchSize);
     const recountWriteStream = new Writable({
       objectMode: true,
-      async write(pageDocuments, _encoding, callback) {
+      async write(pageDocuments, encoding, callback) {
         for await (const document of pageDocuments) {
           const descendantCount = await Page.recountDescendantCount(document._id);
           await Page.findByIdAndUpdate(document._id, { descendantCount });
@@ -3877,7 +3877,7 @@ class PageService implements IPageService {
       await PageRedirect.deleteOne({ fromPath: page.path });
       logger.warn(`Deleted page redirect after creating a new page at path "${page.path}".`);
     }
-    catch (_err) {
+    catch (err) {
       // no throw
       logger.error('Failed to delete PageRedirect');
     }

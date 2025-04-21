@@ -13,16 +13,16 @@ function PageEvent(crowi) {
 }
 util.inherits(PageEvent, events.EventEmitter);
 
-PageEvent.prototype.onCreate = (_page, _user) => {
+PageEvent.prototype.onCreate = (page, user) => {
   logger.debug('onCreate event fired');
 };
-PageEvent.prototype.onUpdate = (_page, _user) => {
+PageEvent.prototype.onUpdate = (page, user) => {
   logger.debug('onUpdate event fired');
 };
-PageEvent.prototype.onCreateMany = (_pages, _user) => {
+PageEvent.prototype.onCreateMany = (pages, user) => {
   logger.debug('onCreateMany event fired');
 };
-PageEvent.prototype.onAddSeenUsers = (_pages, _user) => {
+PageEvent.prototype.onAddSeenUsers = (pages, user) => {
   logger.debug('onAddSeenUsers event fired');
 };
 module.exports = PageEvent;

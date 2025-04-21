@@ -92,7 +92,7 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
     let count = 0;
     const writeStream = new Writable({
       objectMode: true,
-      async write(batch, _encoding, callback) {
+      async write(batch, encoding, callback) {
         try {
           count += batch.length;
           // Delete multiple pages completely

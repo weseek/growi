@@ -63,7 +63,7 @@ class MailService implements S2sMessageHandlable {
   /**
    * @inheritdoc
    */
-  async handleS2sMessage(_s2sMessage) {
+  async handleS2sMessage(s2sMessage) {
     const { configManager } = this;
 
     logger.info('Initialize mail settings by pubsub notification');

@@ -57,7 +57,7 @@ class GridEditModal extends React.Component {
   //   this.setState({ gridHtml: initGridHtml });
   // }
 
-  show(_gridHtml) {
+  show(gridHtml) {
     // use when re-edit grid
     // this.init(gridHtml);
     this.setState({ show: true });

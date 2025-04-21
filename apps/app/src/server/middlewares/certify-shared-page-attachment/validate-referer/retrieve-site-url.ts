@@ -15,7 +15,7 @@ export const retrieveSiteUrl = (): URL | null => {
   try {
     return new URL(siteUrlString);
   }
-  catch (_err) {
+  catch (err) {
     logger.error(`Parsing 'app:siteUrl' ('${siteUrlString}') has failed.`);
     return null;
   }

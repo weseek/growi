@@ -9,7 +9,7 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:migrate:initialize-private-legacy-pages-named-query');
 
 module.exports = {
-  async up(_db, next) {
+  async up(db, next) {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     try {
@@ -28,7 +28,7 @@ module.exports = {
     logger.info('Successfully migrated named query for private legacy pages search delagator.');
   },
 
-  async down(_db, next) {
+  async down(db, next) {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     try {

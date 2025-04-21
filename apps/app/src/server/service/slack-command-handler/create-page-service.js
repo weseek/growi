@@ -8,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 import { growiInfoService } from '../growi-info';
 
 // eslint-disable-next-line no-unused-vars
-const _logger = loggerFactory('growi:service:CreatePageService');
+const logger = loggerFactory('growi:service:CreatePageService');
 
 const { pathUtils } = require('@growi/core/dist/utils');
 const mongoose = require('mongoose');

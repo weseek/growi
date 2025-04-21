@@ -131,7 +131,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const duplicatedHandler: OnDuplicatedFunction = (fromPath, _toPath) => {
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       toastSuccess(t('duplicated_pages', { fromPath }));
 
       mutatePageTree();
@@ -154,7 +154,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     openRenameModal(pageToRename, { onRenamed: renamedHandler });
   }, [openRenameModal, t]);
 
-  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, _isRecursively, isCompletely) => {
+  const onDeletedHandler: OnDeletedFunction = useCallback((pathOrPathsToDelete, isRecursively, isCompletely) => {
     if (typeof pathOrPathsToDelete !== 'string') {
       return;
     }

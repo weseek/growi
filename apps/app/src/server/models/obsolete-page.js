@@ -550,7 +550,7 @@ export const getPageSchema = (crowi) => {
   /**
    * Throw error for growi-lsx-plugin (v1.x)
    */
-  pageSchema.statics.generateQueryToListByStartWith = function(_path, _user, _option) {
+  pageSchema.statics.generateQueryToListByStartWith = function(path, user, option) {
     const dummyQuery = this.find();
     dummyQuery.exec = async() => {
       throw new Error('Plugin version mismatch. Upgrade growi-lsx-plugin to v2.0.0 or above.');
