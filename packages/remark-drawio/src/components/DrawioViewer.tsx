@@ -14,7 +14,7 @@ import styles from './DrawioViewer.module.scss';
 
 
 declare global {
-  // eslint-disable-next-line vars-on-top, no-var
+  // eslint-disable-next-line vars-on-top, no-var, no-unused-vars
   var GraphViewer: IGraphViewerGlobal;
 }
 
