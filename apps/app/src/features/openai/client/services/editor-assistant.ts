@@ -156,8 +156,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       }),
     });
 
-    setSelectedText(undefined);
-
     return response;
   }, [selectedText]);
 
@@ -268,6 +266,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
       // Set detectedDiff to undefined after applying all detectedDiff to secondaryDoc
       if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === false).length === 0) {
+        setSelectedText(undefined);
         setDetectedDiff(undefined);
         lineRef.current = 0;
         // positionRef.current = 0;
