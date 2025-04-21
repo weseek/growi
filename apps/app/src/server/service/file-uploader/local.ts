@@ -76,14 +76,14 @@ class LocalFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override async uploadAttachment(readable: Readable, _attachment: IAttachmentDocument): Promise<void> {
+  override async uploadAttachment(readable: Readable, attachment: IAttachmentDocument): Promise<void> {
     throw new Error('Method not implemented.');
   }
 
   /**
    * @inheritdoc
    */
-  override respond(res: Response, _attachment: IAttachmentDocument, opts?: RespondOptions): void {
+  override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void {
     throw new Error('Method not implemented.');
   }
 

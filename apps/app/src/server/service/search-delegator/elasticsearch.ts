@@ -638,8 +638,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     }
 
     // sort by score
-    // eslint-disable-next-line prefer-const
-    const query = {
+    // biome-ignore lint/style/useConst: ignore
+    let query = {
       index: this.aliasName,
       _source: fields,
       body: {

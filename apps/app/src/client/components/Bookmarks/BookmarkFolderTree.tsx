@@ -58,12 +58,12 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   }, [mutateBookmarkFolders, mutatePageInfo, mutateCurrentUserBookmarks, mutateUserBookmarks]);
 
   const onClickDeleteMenuItemHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
-    const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, isRecursively, isCompletely) => {
+    const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
       if (typeof pathOrPathsToDelete !== 'string') { return }
       toastSuccess(isCompletely ? t('deleted_pages_completely', { path: pathOrPathsToDelete }) : t('deleted_pages', { path: pathOrPathsToDelete }));
       bookmarkFolderTreeMutation();
       mutateAllPageInfo();
-      if (pageToDelete.data._id === currentPage?._id && isRecursively) {
+      if (pageToDelete.data._id === currentPage?._id && _isRecursively) {
         router.push(`/trash${currentPage.path}`);
       }
     };

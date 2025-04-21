@@ -612,7 +612,8 @@ class PageService implements IPageService {
 
     const updateMetadata = options.updateMetadata || false;
     // sanitize path
-    newPagePath = generalXssFilter.process(newPagePath); // biome-ignore lint/style/noParameterAssign: ignore
+    // biome-ignore lint/style/noParameterAssign: ignore
+    newPagePath = generalXssFilter.process(newPagePath);
 
     // UserGroup & Owner validation
     // use the parent's grant when target page is an empty page

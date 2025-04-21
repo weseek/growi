@@ -144,8 +144,8 @@ module.exports = (crowi) => {
       },
     );
     // show "Prev" button if previous page exists
-    // eslint-disable-next-line yoda
-    if (offset > 0) {
+    // biome-ignore lint/style/noYodaExpression: ignore
+    if (0 < offset) {
       actionBlocks.elements.push(
         {
           type: 'button',

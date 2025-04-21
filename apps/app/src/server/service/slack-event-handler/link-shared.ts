@@ -153,7 +153,7 @@ export class LinkSharedEventHandler implements SlackEventHandler<UnfurlRequestEv
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private generateDataForUnfurl(pages: any, isPermalink: boolean): DataForUnfurl[] {
-    const _Page = this.crowi.model('Page');
+    const Page = this.crowi.model('Page');
     const unfurlData: DataForUnfurl[] = [];
 
     pages.forEach((page) => {
