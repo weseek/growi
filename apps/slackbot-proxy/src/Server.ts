@@ -4,8 +4,8 @@ import '@tsed/typeorm'; // !! DO NOT MODIFY !! -- https://github.com/tsedio/tsed
 
 import { createTerminus } from '@godaddy/terminus';
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { HttpServer, PlatformApplication } from '@tsed/common';
-import { Configuration, Inject, InjectorService } from '@tsed/di';
+import { HttpServer, PlatformApplication, Configuration } from '@tsed/common';
+import { Inject, InjectorService } from '@tsed/di';
 /* eslint-enable @typescript-eslint/consistent-type-imports */
 import bodyParser from 'body-parser';
 import compress from 'compression';
