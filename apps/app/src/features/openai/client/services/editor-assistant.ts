@@ -69,6 +69,35 @@ const insertTextAtLine = (ytext: YText, lineNumber: number, textToInsert: string
   ytext.insert(insertPosition, textToInsert);
 };
 
+const appendTextLastLine = (yText: YText, textToAppend: string) => {
+  // First, get the current content of the Y.Text
+  const currentContent = yText.toString();
+
+  // Find the position of the last line
+  let insertPosition: number;
+
+  if (currentContent.length === 0) {
+    // If the document is empty, insert at position 0
+    insertPosition = 0;
+  }
+  else {
+    // Otherwise, find the end of the document
+    insertPosition = currentContent.length;
+
+    // If we want to ensure we're at the end of a line (not starting a new one)
+    // we can check if the last character is already a newline
+    const endsWithNewline = currentContent.endsWith('\n');
+
+    // If you want to append to the existing last line (not create a new one)
+    // and the document ends with a newline, move back one character
+    if (endsWithNewline && textToAppend !== '\n') {
+      insertPosition -= 1;
+    }
+  }
+
+  // Insert the text at the determined position
+  yText.insert(insertPosition, textToAppend);
+};
 
 const getLineInfo = (ytext: YText, lineNumber: number): { text: string, startIndex: number } | null => {
   // Get the entire text content
@@ -200,13 +229,19 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       ydocs.secondaryDoc.transact(() => {
         pendingDetectedDiff.forEach((detectedDiff) => {
           if (isReplaceDiff(detectedDiff.data)) {
-            const lineInfo = getLineInfo(ytext, lineRef.current);
-            if (lineInfo != null && lineInfo.text !== detectedDiff.data.diff.replace) {
-              ytext.delete(lineInfo.startIndex, lineInfo.text.length);
-              insertTextAtLine(ytext, lineRef.current, detectedDiff.data.diff.replace);
-            }
 
-            lineRef.current += 1;
+            if (selectedText != null && selectedText.length !== 0) {
+              const lineInfo = getLineInfo(ytext, lineRef.current);
+              if (lineInfo != null && lineInfo.text !== detectedDiff.data.diff.replace) {
+                ytext.delete(lineInfo.startIndex, lineInfo.text.length);
+                insertTextAtLine(ytext, lineRef.current, detectedDiff.data.diff.replace);
+              }
+
+              lineRef.current += 1;
+            }
+            else {
+              appendTextLastLine(ytext, detectedDiff.data.diff.replace);
+            }
           }
           // if (isInsertDiff(detectedDiff.data)) {
           //   ytext.insert(positionRef.current, detectedDiff.data.diff.insert);
@@ -238,7 +273,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         // positionRef.current = 0;
       }
     }
-  }, [codeMirrorEditor, detectedDiff, ydocs?.secondaryDoc]);
+  }, [codeMirrorEditor, detectedDiff, selectedText, ydocs?.secondaryDoc]);
 
   return {
     postMessage,
