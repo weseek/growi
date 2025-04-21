@@ -4,6 +4,8 @@ import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { Attachment } from '../../models/attachment';
+
+import { validateImageContentType } from './image-content-type-validator';
 /* eslint-disable no-use-before-define */
 
 
@@ -246,30 +248,11 @@ export const routesFactory = (crowi) => {
 
     const file = req.file;
 
-    // check type
-    // Define explicitly allowed image types
-    // Keep supporting wide range of formats as ImageCropModal can handle them:
-    // - When cropping: converts to PNG
-    // - When not cropping: maintains original format
-    const acceptableFileTypes = [
-      'image/png', // Universal web format
-      'image/jpeg', // Universal web format
-      'image/jpg', // Universal web format
-      'image/gif', // Universal web format
-      'image/webp', // Modern efficient format
-      'image/avif', // Next-gen format
-      'image/heic', // iOS format
-      'image/heif', // iOS format
-      'image/tiff', // High quality format
-      'image/svg+xml', // Vector format
-    ];
+    // Validate file type
+    const { isValid, error } = validateImageContentType(file.mimetype);
 
-    // Security: Extract the actual content type from potentially multiple values
-    const contentType = file.mimetype.split(',').map(type => type.trim()).pop();
-
-    if (!acceptableFileTypes.includes(contentType)) {
-      const supportedFormats = 'PNG, JPEG, GIF, WebP, AVIF, HEIC/HEIF, TIFF, SVG';
-      return res.json(ApiResponse.error(`Invalid file type. Supported formats: ${supportedFormats}`));
+    if (!isValid) {
+      return res.json(ApiResponse.error(error));
     }
 
     let attachment;
