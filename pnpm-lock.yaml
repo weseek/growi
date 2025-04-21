@@ -1079,22 +1079,25 @@ importers:
         version: 6.12.0
       '@tsed/common':
         specifier: '=6.133.2'
-        version: 6.133.2(@tsed/logger-file@7.0.1(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+        version: 6.133.2(@tsed/logger-file@6.7.8(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tsed/di':
         specifier: '=6.133.2'
         version: 6.133.2(@tsed/core@6.133.2)(@tsed/logger@6.7.8)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0))
       '@tsed/logger':
         specifier: '=6.7.8'
         version: 6.7.8
+      '@tsed/logger-file':
+        specifier: '=6.7.8'
+        version: 6.7.8(@tsed/logger@6.7.8)
       '@tsed/platform-express':
         specifier: '=6.133.2'
-        version: 6.133.2(265fcbb69498db62fd64ef36bc7bf662)
+        version: 6.133.2(9ee7e82e8d3116a918e4159eb2a2b505)
       '@tsed/schema':
         specifier: '=6.133.2'
         version: 6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0)
       '@tsed/swagger':
         specifier: '=6.133.2'
-        version: 6.133.2(@tsed/common@6.133.2(@tsed/logger-file@7.0.1(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
+        version: 6.133.2(@tsed/common@6.133.2(@tsed/logger-file@6.7.8(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))
       '@tsed/typeorm':
         specifier: '=6.133.2'
         version: 6.133.2(@tsed/core@6.133.2)(@tsed/di@6.133.2(@tsed/core@6.133.2)(@tsed/logger@6.7.8)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0)))(@tsed/json-mapper@6.133.2(@tsed/core@6.133.2)(@tsed/exceptions@6.133.2)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0)))(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0))(typeorm@0.2.45(mysql2@2.3.3)(redis@3.1.2))
@@ -5026,6 +5029,11 @@ packages:
     peerDependencies:
       '@tsed/core': '>=8.5.0'
       '@tsed/schema': '>=8.5.0'
+
+  '@tsed/logger-file@6.7.8':
+    resolution: {integrity: sha512-xOZtTia2ipZRSdaRcOeCSajfYHV+FvTxvtmtiu1gP9l7tvtsAS7TZ3e6XY0LsFZdv/3Eor7n1jVdaEKZYznMwA==}
+    peerDependencies:
+      '@tsed/logger': 6.7.8
 
   '@tsed/logger-file@7.0.1':
     resolution: {integrity: sha512-F2eDpqMMXi3rcUUhORrbLoLzIML7r9hb2eBqTQcmbv5C6+teAhBmgyyPj5kuQvYDyA7ZXLAVsZs1DvKogvvgxA==}
@@ -19658,7 +19666,7 @@ snapshots:
       change-case: 5.4.4
       tslib: 2.7.0
 
-  '@tsed/common@6.133.2(@tsed/logger-file@7.0.1(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
+  '@tsed/common@6.133.2(@tsed/logger-file@6.7.8(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@tsed/components-scan': 6.133.2
       '@tsed/core': 6.133.2
@@ -19666,7 +19674,7 @@ snapshots:
       '@tsed/exceptions': 6.133.2
       '@tsed/json-mapper': 6.133.2(@tsed/core@6.133.2)(@tsed/exceptions@6.133.2)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0))
       '@tsed/logger': 6.7.8
-      '@tsed/logger-file': 7.0.1(@tsed/logger@6.7.8)
+      '@tsed/logger-file': 6.7.8(@tsed/logger@6.7.8)
       '@tsed/perf': 6.133.2
       '@tsed/platform-cache': 6.133.2(@tsed/core@6.133.2)(@tsed/di@6.133.2(@tsed/core@6.133.2)(@tsed/logger@6.7.8)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0)))(@tsed/json-mapper@6.133.2(@tsed/core@6.133.2)(@tsed/exceptions@6.133.2)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0)))(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0))
       '@tsed/platform-exceptions': 6.133.2(@tsed/core@6.133.2)(@tsed/di@6.133.2(@tsed/core@6.133.2)(@tsed/logger@6.7.8)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0)))(@tsed/exceptions@6.133.2)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0))
@@ -19821,7 +19829,7 @@ snapshots:
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
 
-  '@tsed/logger-file@7.0.1(@tsed/logger@6.7.8)':
+  '@tsed/logger-file@6.7.8(@tsed/logger@6.7.8)':
     dependencies:
       '@tsed/logger': 6.7.8
       streamroller: 3.1.5
@@ -19900,9 +19908,9 @@ snapshots:
       '@tsed/schema': 8.5.0(@tsed/core@8.5.0)(@tsed/hooks@8.5.0)(@tsed/openspec@8.5.0)
       tslib: 2.7.0
 
-  '@tsed/platform-express@6.133.2(265fcbb69498db62fd64ef36bc7bf662)':
+  '@tsed/platform-express@6.133.2(9ee7e82e8d3116a918e4159eb2a2b505)':
     dependencies:
-      '@tsed/common': 6.133.2(@tsed/logger-file@7.0.1(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@tsed/common': 6.133.2(@tsed/logger-file@6.7.8(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tsed/core': 6.133.2
       '@tsed/di': 6.133.2(@tsed/core@6.133.2)(@tsed/logger@6.7.8)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0))
       '@tsed/json-mapper': 6.133.2(@tsed/core@6.133.2)(@tsed/exceptions@6.133.2)(@tsed/schema@6.133.2(@tsed/core@6.133.2)(@tsed/openspec@8.5.0))
@@ -20126,9 +20134,9 @@ snapshots:
       statuses: 2.0.1
       tslib: 2.7.0
 
-  '@tsed/swagger@6.133.2(@tsed/common@6.133.2(@tsed/logger-file@7.0.1(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))':
+  '@tsed/swagger@6.133.2(@tsed/common@6.133.2(@tsed/logger-file@6.7.8(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0))':
     dependencies:
-      '@tsed/common': 6.133.2(@tsed/logger-file@7.0.1(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+      '@tsed/common': 6.133.2(@tsed/logger-file@6.7.8(@tsed/logger@6.7.8))(@tsed/logger@6.7.8)(@tsed/openspec@8.5.0)(handlebars@4.7.8)(hogan.js@3.0.2)(lodash@4.17.21)(mustache@4.2.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@tsed/openspec': 6.133.2
       fs-extra: 10.0.1
       micromatch: 4.0.5

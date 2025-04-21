@@ -41,6 +41,7 @@
     "@tsed/common": "=6.133.2",
     "@tsed/di": "=6.133.2",
     "@tsed/logger": "=6.7.8",
+    "@tsed/logger-file": "=6.7.8",
     "@tsed/platform-express": "=6.133.2",
     "@tsed/schema": "=6.133.2",
     "@tsed/swagger": "=6.133.2",
