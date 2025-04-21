@@ -3,10 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { CommonProps } from '~/pages/utils/commons';
-import {
-  getServerSideCommonProps, getNextI18NextConfig,
-} from '~/pages/utils/commons';
-
+import { getServerSideCommonProps, getNextI18NextConfig } from '~/pages/utils/commons';
 
 /**
  * for Server Side Translations
@@ -20,9 +17,9 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-
-export const retrieveServerSideProps: any = async(
-    context: GetServerSidePropsContext, injectServerConfigurations?:(context: GetServerSidePropsContext, props) => Promise<void>,
+export const retrieveServerSideProps: any = async (
+  context: GetServerSidePropsContext,
+  injectServerConfigurations?: (context: GetServerSidePropsContext, props) => Promise<void>,
 ) => {
   const req = context.req as CrowiRequest;
   const { user } = req;
@@ -44,9 +41,7 @@ export const retrieveServerSideProps: any = async(
     props.currentUser = user.toObject();
   }
 
-  props.isAccessDeniedForNonAdminUser = props.currentUser == null
-    ? true
-    : !props.currentUser.admin;
+  props.isAccessDeniedForNonAdminUser = props.currentUser == null ? true : !props.currentUser.admin;
 
   await injectNextI18NextConfigurations(context, props, ['admin', 'commons']);
 

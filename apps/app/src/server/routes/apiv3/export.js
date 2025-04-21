@@ -6,7 +6,6 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-
 const logger = loggerFactory('growi:routes:apiv3:export');
 const fs = require('fs');
 
@@ -145,10 +144,11 @@ module.exports = (crowi) => {
     deleteFile: [
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing delete file (path traversal attack)
-      param('fileName').not().matches(/(\.\.\/|\.\.\\)/),
+      param('fileName')
+        .not()
+        .matches(/(\.\.\/|\.\.\\)/),
     ],
   };
-
 
   /**
    * @swagger
@@ -172,7 +172,7 @@ module.exports = (crowi) => {
    *                  status:
    *                    $ref: '#/components/schemas/ExportStatus'
    */
-  router.get('/status', accessTokenParser, loginRequired, adminRequired, async(req, res) => {
+  router.get('/status', accessTokenParser, loginRequired, adminRequired, async (req, res) => {
     const status = await exportService.getStatus();
 
     // TODO: use res.apiv3
@@ -213,7 +213,7 @@ module.exports = (crowi) => {
    *                    type: boolean
    *                    description: whether the request is succeeded
    */
-  router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async(req, res) => {
+  router.post('/', accessTokenParser, loginRequired, adminRequired, addActivity, async (req, res) => {
     // TODO: add express validator
     try {
       const { collections } = req.body;
@@ -227,8 +227,7 @@ module.exports = (crowi) => {
       return res.status(200).json({
         ok: true,
       });
-    }
-    catch (err) {
+    } catch (err) {
       // TODO: use ApiV3Error
       logger.error(err);
       return res.status(500).send({ status: 'ERROR' });
@@ -263,7 +262,7 @@ module.exports = (crowi) => {
    *                    type: boolean
    *                    description: whether the request is succeeded
    */
-  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, addActivity, async(req, res) => {
+  router.delete('/:fileName', accessTokenParser, loginRequired, adminRequired, validator.deleteFile, apiV3FormValidator, addActivity, async (req, res) => {
     // TODO: add express validator
     const { fileName } = req.params;
 
@@ -275,8 +274,7 @@ module.exports = (crowi) => {
 
       // TODO: use res.apiv3
       return res.status(200).send({ ok: true });
-    }
-    catch (err) {
+    } catch (err) {
       // TODO: use ApiV3Error
       logger.error(err);
       return res.status(500).send({ ok: false });

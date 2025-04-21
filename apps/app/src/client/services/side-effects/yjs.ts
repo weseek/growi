@@ -10,8 +10,9 @@ export const useCurrentPageYjsDataEffect = (): void => {
   const { updateHasYdocsNewerThanLatestRevision, updateAwarenessStateSize } = useCurrentPageYjsData();
 
   useEffect(() => {
-
-    if (socket == null) { return }
+    if (socket == null) {
+      return;
+    }
 
     socket.on(SocketEventName.YjsHasYdocsNewerThanLatestRevisionUpdated, updateHasYdocsNewerThanLatestRevision);
     socket.on(SocketEventName.YjsAwarenessStateSizeUpdated, updateAwarenessStateSize);
@@ -20,6 +21,5 @@ export const useCurrentPageYjsDataEffect = (): void => {
       socket.off(SocketEventName.YjsHasYdocsNewerThanLatestRevisionUpdated, updateHasYdocsNewerThanLatestRevision);
       socket.off(SocketEventName.YjsAwarenessStateSizeUpdated, updateAwarenessStateSize);
     };
-
   }, [socket, updateAwarenessStateSize, updateHasYdocsNewerThanLatestRevision]);
 };

@@ -9,26 +9,23 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import styles from './PluginCard.module.scss';
 
 type Props = {
-  id: string,
-  name: string,
-  url: string,
-  isEnabled: boolean,
-  desc?: string,
-  onDelete: () => void,
-}
+  id: string;
+  name: string;
+  url: string;
+  isEnabled: boolean;
+  desc?: string;
+  onDelete: () => void;
+};
 
 export const PluginCard = (props: Props): JSX.Element => {
-
-  const {
-    id, name, url, isEnabled, desc,
-  } = props;
+  const { id, name, url, isEnabled, desc } = props;
 
   const { t } = useTranslation('admin');
 
   const PluginCardButton = (): JSX.Element => {
     const [_isEnabled, setIsEnabled] = useState<boolean>(isEnabled);
 
-    const onChangeHandler = async() => {
+    const onChangeHandler = async () => {
       try {
         if (_isEnabled) {
           const reqUrl = `/plugins/${id}/deactivate`;
@@ -36,16 +33,14 @@ export const PluginCard = (props: Props): JSX.Element => {
           setIsEnabled(!_isEnabled);
           const pluginName = res.data.pluginName;
           toastSuccess(t('toaster.deactivate_plugin_success', { pluginName }));
-        }
-        else {
+        } else {
           const reqUrl = `/plugins/${id}/activate`;
           const res = await apiv3Put(reqUrl);
           setIsEnabled(!_isEnabled);
           const pluginName = res.data.pluginName;
           toastSuccess(t('toaster.activate_plugin_success', { pluginName }));
         }
-      }
-      catch (err) {
+      } catch (err) {
         toastError(err);
       }
     };
@@ -54,12 +49,7 @@ export const PluginCard = (props: Props): JSX.Element => {
       <div className={`${styles.plugin_card}`}>
         <div className="switch">
           <label className="form-label switch__label">
-            <input
-              type="checkbox"
-              className="switch__input"
-              onChange={() => onChangeHandler()}
-              checked={isEnabled}
-            />
+            <input type="checkbox" className="switch__input" onChange={() => onChangeHandler()} checked={isEnabled} />
             <span className="switch__content"></span>
             <span className="switch__circle"></span>
           </label>
@@ -69,14 +59,9 @@ export const PluginCard = (props: Props): JSX.Element => {
   };
 
   const PluginDeleteButton = (): JSX.Element => {
-
     return (
       <div>
-        <button
-          type="submit"
-          className="btn btn-primary"
-          onClick={props.onDelete}
-        >
+        <button type="submit" className="btn btn-primary" onClick={props.onDelete}>
           {t('Delete')}
         </button>
       </div>
@@ -89,7 +74,9 @@ export const PluginCard = (props: Props): JSX.Element => {
         <div className="row mb-3">
           <div className="col-9">
             <h2 className="card-title h3 border-bottom pb-2 mb-3">
-              <Link href={`${url}`} legacyBehavior>{name}</Link>
+              <Link href={`${url}`} legacyBehavior>
+                {name}
+              </Link>
             </h2>
             <p className="card-text text-muted">{desc}</p>
           </div>
@@ -104,8 +91,7 @@ export const PluginCard = (props: Props): JSX.Element => {
         </div>
       </div>
       <div className="card-footer px-5 border-top-0">
-        <p className="d-flex justify-content-between align-self-center mb-0">
-        </p>
+        <p className="d-flex justify-content-between align-self-center mb-0"></p>
       </div>
     </div>
   );

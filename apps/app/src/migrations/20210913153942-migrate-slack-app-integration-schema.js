@@ -5,7 +5,6 @@ import slackAppIntegrationFactory from '~/server/models/slack-app-integration';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:migrate:migrate-slack-app-integration-schema');
 
 // create default data
@@ -31,7 +30,9 @@ module.exports = {
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 
-    if (slackAppIntegrations.length === 0) { return; }
+    if (slackAppIntegrations.length === 0) {
+      return;
+    }
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {
@@ -100,7 +101,9 @@ module.exports = {
 
     const slackAppIntegrations = await SlackAppIntegration.find();
 
-    if (slackAppIntegrations.length === 0) { return next(); }
+    if (slackAppIntegrations.length === 0) {
+      return next();
+    }
 
     // create operations
     const operations = slackAppIntegrations.map((doc) => {

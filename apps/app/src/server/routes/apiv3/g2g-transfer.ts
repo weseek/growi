@@ -17,14 +17,13 @@ import { getImportService } from '~/server/service/import';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
-
 import type Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
 interface AuthorizedRequest extends Request {
-  user?: any
+  user?: any;
 }
 
 const logger = loggerFactory('growi:routes:apiv3:transfer');
@@ -73,20 +72,23 @@ const validator = {
  *                 type: string
  *               containerName:
  *                 type: string
-*/
+ */
 /*
  * Routes
  */
 module.exports = (crowi: Crowi): Router => {
-  const {
-    g2gTransferPusherService, g2gTransferReceiverService,
-    growiBridgeService,
-  } = crowi;
+  const { g2gTransferPusherService, g2gTransferReceiverService, growiBridgeService } = crowi;
 
   const importService = getImportService();
 
-  if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
-    || growiBridgeService == null || configManager == null) {
+  if (
+    g2gTransferPusherService == null ||
+    g2gTransferReceiverService == null ||
+    exportService == null ||
+    importService == null ||
+    growiBridgeService == null ||
+    configManager == null
+  ) {
     throw new Error('GROWI is not ready for g2g transfer');
   }
 
@@ -151,13 +153,12 @@ module.exports = (crowi: Crowi): Router => {
   };
 
   // Local middleware to check if key is valid or not
-  const validateTransferKey = async(req: Request, res: ApiV3Response, next: NextFunction) => {
+  const validateTransferKey = async (req: Request, res: ApiV3Response, next: NextFunction) => {
     const transferKey = req.headers[X_GROWI_TRANSFER_KEY_HEADER_NAME] as string;
 
     try {
       await g2gTransferReceiverService.validateTransferKey(transferKey);
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(new ErrorV3('Invalid transfer key', 'invalid_transfer_key'), 403);
     }
 
@@ -198,7 +199,7 @@ module.exports = (crowi: Crowi): Router => {
    *                          description: The size of the file
    */
   // eslint-disable-next-line max-len
-  receiveRouter.get('/files', validateTransferKey, async(req: Request, res: ApiV3Response) => {
+  receiveRouter.get('/files', validateTransferKey, async (req: Request, res: ApiV3Response) => {
     const files = await crowi.fileUploadService.listFiles();
     return res.apiv3({ files });
   });
@@ -249,14 +250,9 @@ module.exports = (crowi: Crowi): Router => {
    *                    description: The message of the result
    */
   // eslint-disable-next-line max-len
-  receiveRouter.post('/', validateTransferKey, uploads.single('transferDataZipFile'), async(req: Request & { file: any; }, res: ApiV3Response) => {
+  receiveRouter.post('/', validateTransferKey, uploads.single('transferDataZipFile'), async (req: Request & { file: any }, res: ApiV3Response) => {
     const { file } = req;
-    const {
-      collections: strCollections,
-      optionsMap: strOptionsMap,
-      operatorUserId,
-      uploadConfigs: strUploadConfigs,
-    } = req.body;
+    const { collections: strCollections, optionsMap: strOptionsMap, operatorUserId, uploadConfigs: strUploadConfigs } = req.body;
 
     /*
      * parse multipart form data
@@ -268,8 +264,7 @@ module.exports = (crowi: Crowi): Router => {
       collections = JSON.parse(strCollections);
       optionsMap = JSON.parse(strOptionsMap);
       sourceGROWIUploadConfigs = JSON.parse(strUploadConfigs);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Failed to parse request body.', 'parse_failed'), 500);
     }
@@ -286,8 +281,7 @@ module.exports = (crowi: Crowi): Router => {
       const zipFileStat = await growiBridgeService.parseZipFile(zipFile);
       innerFileStats = zipFileStat?.innerFileStats;
       meta = zipFileStat?.meta;
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Failed to validate transfer data file.', 'validation_failed'), 500);
     }
@@ -297,16 +291,9 @@ module.exports = (crowi: Crowi): Router => {
      */
     try {
       importService.validate(meta);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
-      return res.apiv3Err(
-        new ErrorV3(
-          'The version of this GROWI and the uploaded GROWI data are not the same',
-          'version_incompatible',
-        ),
-        500,
-      );
+      return res.apiv3Err(new ErrorV3('The version of this GROWI and the uploaded GROWI data are not the same', 'version_incompatible'), 500);
     }
 
     /*
@@ -315,16 +302,14 @@ module.exports = (crowi: Crowi): Router => {
     let importSettingsMap;
     try {
       importSettingsMap = g2gTransferReceiverService.getImportSettingMap(innerFileStats, optionsMap, operatorUserId);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Import settings are invalid. See GROWI docs about details.', 'import_settings_invalid'));
     }
 
     try {
       await g2gTransferReceiverService.importCollections(collections, importSettingsMap, sourceGROWIUploadConfigs);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(new ErrorV3('Failed to import MongoDB collections', 'mongo_collection_import_failure'), 500);
     }
@@ -367,33 +352,32 @@ module.exports = (crowi: Crowi): Router => {
    *                    description: The message of the result
    */
   // This endpoint uses multer's MemoryStorage since the received data should be persisted directly on attachment storage.
-  receiveRouter.post('/attachment', validateTransferKey, uploadsForAttachment.single('content'),
-    async(req: Request & { file: any; }, res: ApiV3Response) => {
-      const { file } = req;
-      const { attachmentMetadata } = req.body;
+  receiveRouter.post('/attachment', validateTransferKey, uploadsForAttachment.single('content'), async (req: Request & { file: any }, res: ApiV3Response) => {
+    const { file } = req;
+    const { attachmentMetadata } = req.body;
 
-      let attachmentMap;
-      try {
-        attachmentMap = JSON.parse(attachmentMetadata);
-      }
-      catch (err) {
-        logger.error(err);
-        return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
-      }
+    let attachmentMap;
+    try {
+      attachmentMap = JSON.parse(attachmentMetadata);
+    } catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Failed to parse body.', 'parse_failed'), 500);
+    }
 
-      const fileStream = createReadStream(file.path, {
-        flags: 'r', mode: 0o666, autoClose: true,
-      });
-      try {
-        await g2gTransferReceiverService.receiveAttachment(fileStream, attachmentMap);
-      }
-      catch (err) {
-        logger.error(err);
-        return res.apiv3Err(new ErrorV3('Failed to upload.', 'upload_failed'), 500);
-      }
-
-      return res.apiv3({ message: 'Successfully imported attached file.' });
+    const fileStream = createReadStream(file.path, {
+      flags: 'r',
+      mode: 0o666,
+      autoClose: true,
     });
+    try {
+      await g2gTransferReceiverService.receiveAttachment(fileStream, attachmentMap);
+    } catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Failed to upload.', 'upload_failed'), 500);
+    }
+
+    return res.apiv3({ message: 'Successfully imported attached file.' });
+  });
 
   /**
    * @swagger
@@ -415,12 +399,11 @@ module.exports = (crowi: Crowi): Router => {
    *                  growiInfo:
    *                    $ref: '#/components/schemas/GrowiInfo'
    */
-  receiveRouter.get('/growi-info', validateTransferKey, async(req: Request, res: ApiV3Response) => {
+  receiveRouter.get('/growi-info', validateTransferKey, async (req: Request, res: ApiV3Response) => {
     let growiInfo: IDataGROWIInfo;
     try {
       growiInfo = await g2gTransferReceiverService.answerGROWIInfo();
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
 
       if (!isG2GTransferError(err)) {
@@ -465,30 +448,34 @@ module.exports = (crowi: Crowi): Router => {
    *                    description: The transfer key
    */
   // eslint-disable-next-line max-len
-  receiveRouter.post('/generate-key', accessTokenParser, adminRequiredIfInstalled, appSiteUrlRequiredIfNotInstalled, async(req: Request, res: ApiV3Response) => {
-    const appSiteUrl = req.body.appSiteUrl ?? configManager.getConfig('app:siteUrl');
+  receiveRouter.post(
+    '/generate-key',
+    accessTokenParser,
+    adminRequiredIfInstalled,
+    appSiteUrlRequiredIfNotInstalled,
+    async (req: Request, res: ApiV3Response) => {
+      const appSiteUrl = req.body.appSiteUrl ?? configManager.getConfig('app:siteUrl');
 
-    let appSiteUrlOrigin: string;
-    try {
-      appSiteUrlOrigin = new URL(appSiteUrl).origin;
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('appSiteUrl may be wrong', 'failed_to_generate_key_string'));
-    }
+      let appSiteUrlOrigin: string;
+      try {
+        appSiteUrlOrigin = new URL(appSiteUrl).origin;
+      } catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('appSiteUrl may be wrong', 'failed_to_generate_key_string'));
+      }
 
-    // Save TransferKey document
-    let transferKeyString: string;
-    try {
-      transferKeyString = await g2gTransferReceiverService.createTransferKey(appSiteUrlOrigin);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Error occurred while generating transfer key.', 'failed_to_generate_key'));
-    }
+      // Save TransferKey document
+      let transferKeyString: string;
+      try {
+        transferKeyString = await g2gTransferReceiverService.createTransferKey(appSiteUrlOrigin);
+      } catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Error occurred while generating transfer key.', 'failed_to_generate_key'));
+      }
 
-    return res.apiv3({ transferKey: transferKeyString });
-  });
+      return res.apiv3({ transferKey: transferKeyString });
+    },
+  );
 
   /**
    * @swagger
@@ -530,42 +517,48 @@ module.exports = (crowi: Crowi): Router => {
    *                    description: The message of the result
    */
   // eslint-disable-next-line max-len
-  pushRouter.post('/transfer', accessTokenParser, loginRequiredStrictly, adminRequired, validator.transfer, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const { transferKey, collections, optionsMap } = req.body;
+  pushRouter.post(
+    '/transfer',
+    accessTokenParser,
+    loginRequiredStrictly,
+    adminRequired,
+    validator.transfer,
+    apiV3FormValidator,
+    async (req: AuthorizedRequest, res: ApiV3Response) => {
+      const { transferKey, collections, optionsMap } = req.body;
 
-    // Parse transfer key
-    let tk: TransferKey;
-    try {
-      tk = TransferKey.parse(transferKey);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Transfer key is invalid', 'transfer_key_invalid'), 400);
-    }
+      // Parse transfer key
+      let tk: TransferKey;
+      try {
+        tk = TransferKey.parse(transferKey);
+      } catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Transfer key is invalid', 'transfer_key_invalid'), 400);
+      }
 
-    // get growi info
-    let destGROWIInfo: IDataGROWIInfo;
-    try {
-      destGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Error occurred while asking GROWI info.', 'failed_to_ask_growi_info'));
-    }
+      // get growi info
+      let destGROWIInfo: IDataGROWIInfo;
+      try {
+        destGROWIInfo = await g2gTransferPusherService.askGROWIInfo(tk);
+      } catch (err) {
+        logger.error(err);
+        return res.apiv3Err(new ErrorV3('Error occurred while asking GROWI info.', 'failed_to_ask_growi_info'));
+      }
 
-    // Check if can transfer
-    const transferability = await g2gTransferPusherService.getTransferability(destGROWIInfo);
-    if (!transferability.canTransfer) {
-      return res.apiv3Err(new ErrorV3(transferability.reason, 'growi_incompatible_to_transfer'));
-    }
+      // Check if can transfer
+      const transferability = await g2gTransferPusherService.getTransferability(destGROWIInfo);
+      if (!transferability.canTransfer) {
+        return res.apiv3Err(new ErrorV3(transferability.reason, 'growi_incompatible_to_transfer'));
+      }
 
-    // Start transfer
-    // DO NOT "await". Let it run in the background.
-    // Errors should be emitted through websocket.
-    g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap, destGROWIInfo);
+      // Start transfer
+      // DO NOT "await". Let it run in the background.
+      // Errors should be emitted through websocket.
+      g2gTransferPusherService.startTransfer(tk, req.user, collections, optionsMap, destGROWIInfo);
 
-    return res.apiv3({ message: 'Successfully requested auto transfer.' });
-  });
+      return res.apiv3({ message: 'Successfully requested auto transfer.' });
+    },
+  );
 
   // Merge receiveRouter and pushRouter
   router.use(receiveRouter, pushRouter);

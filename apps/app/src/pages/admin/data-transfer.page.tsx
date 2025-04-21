@@ -1,8 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -17,11 +15,9 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const G2GDataTransferPage = dynamic(() => import('~/client/components/Admin/G2GDataTransfer'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
-
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then((mod) => mod.ForbiddenPage), { ssr: false });
 
 type Props = CommonProps;
-
 
 const DataTransferPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('commons');
@@ -33,7 +29,7 @@ const DataTransferPage: NextPage<Props> = (props) => {
   const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const AdminAppContainer = (await import('~/client/services/AdminAppContainer')).default;
       const adminAppContainer = new AdminAppContainer();
       injectableContainers.push(adminAppContainer);
@@ -56,17 +52,16 @@ const DataTransferPage: NextPage<Props> = (props) => {
   );
 };
 
-const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+const injectServerConfigurations = async (context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
 
   props.growiCloudUri = await crowi.configManager.getConfig('app:growiCloudUri');
 };
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context, injectServerConfigurations);
   return props;
 };
-
 
 export default DataTransferPage;

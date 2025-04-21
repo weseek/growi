@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-
-test('Visit User home', async({ page }) => {
+test('Visit User home', async ({ page }) => {
   await page.goto('dummy');
 
   // Open PersonalDropdown
@@ -13,7 +12,7 @@ test('Visit User home', async({ page }) => {
   await expect(page.getByTestId('grw-users-info')).toBeVisible();
 });
 
-test('Vist User settings', async({ page }) => {
+test('Vist User settings', async ({ page }) => {
   await page.goto('dummy');
 
   // Open PersonalDropdown
@@ -25,7 +24,7 @@ test('Vist User settings', async({ page }) => {
   await expect(page.getByTestId('grw-user-settings')).toBeVisible();
 });
 
-test('Open questionnaire modal', async({ page }) => {
+test('Open questionnaire modal', async ({ page }) => {
   await page.goto('/dummy');
 
   // Open PersonalDropdown
@@ -37,7 +36,7 @@ test('Open questionnaire modal', async({ page }) => {
   await expect(page.getByTestId('grw-proactive-questionnaire-modal')).toBeVisible();
 });
 
-test('Access User information', async({ page }) => {
+test('Access User information', async ({ page }) => {
   await page.goto('/me');
 
   // Click BasicInfoSettingUpdateButton
@@ -48,7 +47,7 @@ test('Access User information', async({ page }) => {
   await expect(page.locator('.Toastify__toast')).toBeVisible();
 });
 
-test('Access External account', async({ page }) => {
+test('Access External account', async ({ page }) => {
   await page.goto('/me');
 
   // Click ExternalAccountsTabButton
@@ -64,7 +63,7 @@ test('Access External account', async({ page }) => {
   await expect(page.locator('.Toastify__toast')).not.toBeVisible();
 });
 
-test('Access Password setting', async({ page }) => {
+test('Access Password setting', async ({ page }) => {
   await page.goto('/me');
 
   // Click PasswordSettingTabButton
@@ -84,8 +83,7 @@ test('Access Password setting', async({ page }) => {
   await expect(page.getByTestId('.Toastify__toast')).not.toBeVisible();
 });
 
-
-test('Access API setting', async({ page }) => {
+test('Access API setting', async ({ page }) => {
   await page.goto('/me');
 
   // Click ApiSettingTabButton
@@ -97,7 +95,7 @@ test('Access API setting', async({ page }) => {
   await expect(page.locator('.Toastify__toast')).toBeVisible();
 });
 
-test('Access In-App Notification setting', async({ page }) => {
+test('Access In-App Notification setting', async ({ page }) => {
   await page.goto('/me');
 
   // Click InAppNotificationSettingTabButton
@@ -109,7 +107,7 @@ test('Access In-App Notification setting', async({ page }) => {
   await expect(page.locator('.Toastify__toast')).toBeVisible();
 });
 
-test('Acccess Other setting', async({ page }) => {
+test('Acccess Other setting', async ({ page }) => {
   await page.goto('/me');
 
   // Click OtherSettingTabButton

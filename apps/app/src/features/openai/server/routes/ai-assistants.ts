@@ -13,20 +13,20 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:get-ai-assistants');
 
-
 type GetAiAssistantsFactory = (crowi: Crowi) => RequestHandler[];
 
 type Req = Request<undefined, Response, undefined> & {
-  user: IUserHasId,
-}
+  user: IUserHasId;
+};
 
 export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
-
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    certifyAiService,
+    async (req: Req, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
@@ -36,8 +36,7 @@ export const getAiAssistantsFactory: GetAiAssistantsFactory = (crowi) => {
         const accessibleAiAssistants = await openaiService.getAccessibleAiAssistants(req.user);
 
         return res.apiv3({ accessibleAiAssistants });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(new ErrorV3('Failed to get AiAssistants'));
       }

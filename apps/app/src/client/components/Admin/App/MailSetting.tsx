@@ -10,11 +10,9 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import SesSetting from './SesSetting';
 import SmtpSetting from './SmtpSetting';
 
-
 type Props = {
-  adminAppContainer: AdminAppContainer,
-}
-
+  adminAppContainer: AdminAppContainer;
+};
 
 const MailSetting = (props: Props) => {
   const { t } = useTranslation(['admin', 'commons']);
@@ -26,8 +24,7 @@ const MailSetting = (props: Props) => {
     try {
       await adminAppContainer.updateMailSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.mail_settings'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
@@ -37,17 +34,17 @@ const MailSetting = (props: Props) => {
     try {
       await adminAppContainer.sendTestEmail();
       toastSuccess(t('admin:app_setting.success_to_send_test_email'));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
 
-
   return (
     <React.Fragment>
       {!adminAppContainer.state.isMailerSetup && (
-        <div className="alert alert-danger"><span className="material-symbols-outlined">error</span> {t('admin:app_setting.mailer_is_not_set_up')}</div>
+        <div className="alert alert-danger">
+          <span className="material-symbols-outlined">error</span> {t('admin:app_setting.mailer_is_not_set_up')}
+        </div>
       )}
       <div className="row mb-5">
         <label className="col-md-3 col-form-label text-end">{t('admin:app_setting.from_e-mail_address')}</label>
@@ -57,15 +54,15 @@ const MailSetting = (props: Props) => {
             type="text"
             placeholder={`${t('eg')} mail@growi.org`}
             defaultValue={adminAppContainer.state.fromAddress || ''}
-            onChange={(e) => { adminAppContainer.changeFromAddress(e.target.value) }}
+            onChange={(e) => {
+              adminAppContainer.changeFromAddress(e.target.value);
+            }}
           />
         </div>
       </div>
 
       <div className="row mb-2">
-        <label className="form-label text-start text-md-end col-md-3 col-form-label">
-          {t('admin:app_setting.transmission_method')}
-        </label>
+        <label className="form-label text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.transmission_method')}</label>
         <div className="col-md-6 py-2">
           {transmissionMethods.map((method) => {
             return (
@@ -80,7 +77,9 @@ const MailSetting = (props: Props) => {
                     adminAppContainer.changeTransmissionMethod(method);
                   }}
                 />
-                <label className="form-label form-check-label" htmlFor={`transmission-method-radio-${method}`}>{t(`admin:app_setting.${method}_label`)}</label>
+                <label className="form-label form-check-label" htmlFor={`transmission-method-radio-${method}`}>
+                  {t(`admin:app_setting.${method}_label`)}
+                </label>
               </div>
             );
           })}
@@ -93,7 +92,7 @@ const MailSetting = (props: Props) => {
       <div className="row my-3">
         <div className="mx-auto">
           <button type="button" className="btn btn-primary" onClick={submitHandler} disabled={adminAppContainer.state.retrieveError != null}>
-            { t('Update') }
+            {t('Update')}
           </button>
           {adminAppContainer.state.transmissionMethod === 'smtp' && (
             <button type="button" className="btn btn-secondary ms-4" onClick={sendTestEmailHandler}>
@@ -104,7 +103,6 @@ const MailSetting = (props: Props) => {
       </div>
     </React.Fragment>
   );
-
 };
 
 /**

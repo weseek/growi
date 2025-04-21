@@ -8,14 +8,13 @@ import type { MessageListParams } from '../../../interfaces/message';
 import type { IOpenaiClientDelegator } from './interfaces';
 
 export class OpenaiClientDelegator implements IOpenaiClientDelegator {
-
   private client: OpenAI;
 
   constructor() {
     // Retrieve OpenAI related values from environment variables
     const apiKey = configManager.getConfig('openai:apiKey');
 
-    const isValid = [apiKey].every(value => value != null);
+    const isValid = [apiKey].every((value) => value != null);
     if (!isValid) {
       throw new Error("Environment variables required to use OpenAI's API are not set");
     }
@@ -92,5 +91,4 @@ export class OpenaiClientDelegator implements IOpenaiClientDelegator {
   async chatCompletion(body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming): Promise<OpenAI.Chat.Completions.ChatCompletion> {
     return this.client.chat.completions.create(body);
   }
-
 }

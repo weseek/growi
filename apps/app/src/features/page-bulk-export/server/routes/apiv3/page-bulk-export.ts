@@ -14,7 +14,7 @@ const logger = loggerFactory('growi:routes:apiv3:page-bulk-export');
 const router = Router();
 
 interface AuthorizedRequest extends Request {
-  user?: any
+  user?: any;
 }
 
 module.exports = (crowi: Crowi): Router => {
@@ -28,7 +28,7 @@ module.exports = (crowi: Crowi): Router => {
     ],
   };
 
-  router.post('/', loginRequiredStrictly, validators.pageBulkExport, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.post('/', loginRequiredStrictly, validators.pageBulkExport, async (req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -39,20 +39,19 @@ module.exports = (crowi: Crowi): Router => {
     try {
       await pageBulkExportService?.createOrResetBulkExportJob(path, format, req.user, restartJob);
       return res.apiv3({}, 204);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       if (err instanceof DuplicateBulkExportJobError) {
-        return res.apiv3Err(new ErrorV3(
-          'Duplicate bulk export job is in progress',
-          'page_export.duplicate_bulk_export_job_error', undefined,
-          { duplicateJob: { createdAt: err.duplicateJob.createdAt } },
-        ), 409);
+        return res.apiv3Err(
+          new ErrorV3('Duplicate bulk export job is in progress', 'page_export.duplicate_bulk_export_job_error', undefined, {
+            duplicateJob: { createdAt: err.duplicateJob.createdAt },
+          }),
+          409,
+        );
       }
       return res.apiv3Err(new ErrorV3('Failed to start bulk export', 'page_export.failed_to_export'));
     }
   });
 
   return router;
-
 };

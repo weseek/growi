@@ -31,30 +31,19 @@ import * as attachment from '~/services/renderer/remark-plugins/attachment';
 import * as codeBlock from '~/services/renderer/remark-plugins/codeblock';
 import * as plantuml from '~/services/renderer/remark-plugins/plantuml';
 import * as xsvToTable from '~/services/renderer/remark-plugins/xsv-to-table';
-import {
-  getCommonSanitizeOption, generateCommonOptions, verifySanitizePlugin,
-} from '~/services/renderer/renderer';
+import { getCommonSanitizeOption, generateCommonOptions, verifySanitizePlugin } from '~/services/renderer/renderer';
 import loggerFactory from '~/utils/logger';
 
 // import EasyGrid from './PreProcessor/EasyGrid';
 
-
 import '@growi/remark-lsx/dist/client/style.css';
 import '@growi/remark-attachment-refs/dist/client/style.css';
 
-
 const logger = loggerFactory('growi:cli:services:renderer');
-
 
 assert(isClient(), 'This module must be loaded only from client modules.');
 
-
-export const generateViewOptions = (
-    pagePath: string,
-    config: RendererConfig,
-    storeTocNode: (toc: HtmlElementNode) => void,
-): RendererOptions => {
-
+export const generateViewOptions = (pagePath: string, config: RendererConfig, storeTocNode: (toc: HtmlElementNode) => void): RendererOptions => {
   const options = generateCommonOptions(pagePath);
 
   const { remarkPlugins, rehypePlugins, components } = options;
@@ -77,17 +66,20 @@ export const generateViewOptions = (
   }
 
   const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      getCommonSanitizeOption(config),
-      presentation.sanitizeOption,
-      drawio.sanitizeOption,
-      mermaid.sanitizeOption,
-      callout.sanitizeOption,
-      attachment.sanitizeOption,
-      lsxGrowiDirective.sanitizeOption,
-      refsGrowiDirective.sanitizeOption,
-      codeBlock.sanitizeOption,
-    )]
+    ? [
+        sanitize,
+        deepmerge(
+          getCommonSanitizeOption(config),
+          presentation.sanitizeOption,
+          drawio.sanitizeOption,
+          mermaid.sanitizeOption,
+          callout.sanitizeOption,
+          attachment.sanitizeOption,
+          lsxGrowiDirective.sanitizeOption,
+          refsGrowiDirective.sanitizeOption,
+          codeBlock.sanitizeOption,
+        ),
+      ]
     : () => {};
 
   // add rehype plugins
@@ -129,7 +121,6 @@ export const generateViewOptions = (
 };
 
 export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementNode | undefined): RendererOptions => {
-
   const options = generateCommonOptions(undefined);
 
   const { rehypePlugins } = options;
@@ -138,17 +129,11 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // remarkPlugins.push();
 
   const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      getCommonSanitizeOption(config),
-      codeBlock.sanitizeOption,
-    )]
+    ? [sanitize, deepmerge(getCommonSanitizeOption(config), codeBlock.sanitizeOption)]
     : () => {};
 
   // add rehype plugins
-  rehypePlugins.push(
-    [relocateToc.rehypePluginRestore, { tocNode }],
-    rehypeSanitizePlugin,
-  );
+  rehypePlugins.push([relocateToc.rehypePluginRestore, { tocNode }], rehypeSanitizePlugin);
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options);
@@ -158,10 +143,10 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
 };
 
 export const generateSimpleViewOptions = (
-    config: RendererConfig,
-    pagePath: string,
-    highlightKeywords?: string | string[],
-    overrideIsEnabledLinebreaks?: boolean,
+  config: RendererConfig,
+  pagePath: string,
+  highlightKeywords?: string | string[],
+  overrideIsEnabledLinebreaks?: boolean,
 ): RendererOptions => {
   const options = generateCommonOptions(pagePath);
 
@@ -188,17 +173,20 @@ export const generateSimpleViewOptions = (
   }
 
   const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      getCommonSanitizeOption(config),
-      presentation.sanitizeOption,
-      drawio.sanitizeOption,
-      mermaid.sanitizeOption,
-      callout.sanitizeOption,
-      attachment.sanitizeOption,
-      lsxGrowiDirective.sanitizeOption,
-      refsGrowiDirective.sanitizeOption,
-      codeBlock.sanitizeOption,
-    )]
+    ? [
+        sanitize,
+        deepmerge(
+          getCommonSanitizeOption(config),
+          presentation.sanitizeOption,
+          drawio.sanitizeOption,
+          mermaid.sanitizeOption,
+          callout.sanitizeOption,
+          attachment.sanitizeOption,
+          lsxGrowiDirective.sanitizeOption,
+          refsGrowiDirective.sanitizeOption,
+          codeBlock.sanitizeOption,
+        ),
+      ]
     : () => {};
 
   // add rehype plugins
@@ -231,27 +219,18 @@ export const generateSimpleViewOptions = (
   return options;
 };
 
-export const generatePresentationViewOptions = (
-    config: RendererConfig,
-    pagePath: string,
-): RendererOptions => {
+export const generatePresentationViewOptions = (config: RendererConfig, pagePath: string): RendererOptions => {
   // based on simple view options
   const options = generateSimpleViewOptions(config, pagePath);
 
   const { rehypePlugins } = options;
 
-
   const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      addLineNumberAttribute.sanitizeOption,
-    )]
+    ? [sanitize, deepmerge(addLineNumberAttribute.sanitizeOption)]
     : () => {};
 
   // add rehype plugins
-  rehypePlugins.push(
-    addLineNumberAttribute.rehypePlugin,
-    rehypeSanitizePlugin,
-  );
+  rehypePlugins.push(addLineNumberAttribute.rehypePlugin, rehypeSanitizePlugin);
 
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
@@ -282,17 +261,20 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
   }
 
   const rehypeSanitizePlugin: Pluggable | (() => void) = config.isEnabledXssPrevention
-    ? [sanitize, deepmerge(
-      getCommonSanitizeOption(config),
-      drawio.sanitizeOption,
-      mermaid.sanitizeOption,
-      callout.sanitizeOption,
-      attachment.sanitizeOption,
-      lsxGrowiDirective.sanitizeOption,
-      refsGrowiDirective.sanitizeOption,
-      addLineNumberAttribute.sanitizeOption,
-      codeBlock.sanitizeOption,
-    )]
+    ? [
+        sanitize,
+        deepmerge(
+          getCommonSanitizeOption(config),
+          drawio.sanitizeOption,
+          mermaid.sanitizeOption,
+          callout.sanitizeOption,
+          attachment.sanitizeOption,
+          lsxGrowiDirective.sanitizeOption,
+          refsGrowiDirective.sanitizeOption,
+          addLineNumberAttribute.sanitizeOption,
+          codeBlock.sanitizeOption,
+        ),
+      ]
     : () => {};
 
   // add rehype plugins

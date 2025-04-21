@@ -1,16 +1,25 @@
 import { UploadStatus, MultipartUploader } from './multipart-uploader';
 
 class MockMultipartUploader extends MultipartUploader {
+  async initUpload(): Promise<void> {
+    return;
+  }
 
-  async initUpload(): Promise<void> { return }
+  async uploadPart(part: Buffer, partNumber: number): Promise<void> {
+    return;
+  }
 
-  async uploadPart(part: Buffer, partNumber: number): Promise<void> { return }
+  async completeUpload(): Promise<void> {
+    return;
+  }
 
-  async completeUpload(): Promise<void> { return }
+  async abortUpload(): Promise<void> {
+    return;
+  }
 
-  async abortUpload(): Promise<void> { return }
-
-  async getUploadedFileSize(): Promise<number> { return 0 }
+  async getUploadedFileSize(): Promise<number> {
+    return 0;
+  }
 
   // Expose the protected method for testing
   testValidateUploadStatus(desired: UploadStatus): void {
@@ -20,7 +29,6 @@ class MockMultipartUploader extends MultipartUploader {
   setCurrentStatus(status: UploadStatus): void {
     this.currentStatus = status;
   }
-
 }
 
 describe('MultipartUploader', () => {

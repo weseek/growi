@@ -15,32 +15,35 @@ import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import type { DescendantsPageListProps } from './DescendantsPageList';
 import EmptyTrashButton from './EmptyTrashButton';
 
-const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
-
+const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then((mod) => mod.DescendantsPageList), { ssr: false });
 
 const convertToIDataWithMeta = (page) => {
   return { data: page };
 };
 
 const useEmptyTrashButton = () => {
-
   const { t } = useTranslation();
   const { data: limit } = useShowPageLimitationXL();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: pagingResult, mutate: mutatePageLists } = useSWRxPageList('/trash', 1, limit);
   const { open: openEmptyTrashModal } = useEmptyTrashModal();
 
-  const pageIds = pagingResult?.items?.map(page => page._id);
+  const pageIds = pagingResult?.items?.map((page) => page._id);
   const { injectTo } = useSWRxPageInfoForList(pageIds, null, true, true);
 
-  const calculateDeletablePages = useCallback((pagingResult?: IPagingResult<IPageHasId>) => {
-    if (pagingResult == null) { return undefined }
+  const calculateDeletablePages = useCallback(
+    (pagingResult?: IPagingResult<IPageHasId>) => {
+      if (pagingResult == null) {
+        return undefined;
+      }
 
-    const dataWithMetas = pagingResult.items.map(page => convertToIDataWithMeta(page));
-    const pageWithMetas = injectTo(dataWithMetas);
+      const dataWithMetas = pagingResult.items.map((page) => convertToIDataWithMeta(page));
+      const pageWithMetas = injectTo(dataWithMetas);
 
-    return pageWithMetas.filter(page => page.meta?.isAbleToDeleteCompletely);
-  }, [injectTo]);
+      return pageWithMetas.filter((page) => page.meta?.isAbleToDeleteCompletely);
+    },
+    [injectTo],
+  );
 
   const deletablePages = calculateDeletablePages(pagingResult);
 
@@ -51,7 +54,9 @@ const useEmptyTrashButton = () => {
   }, [t, mutatePageLists]);
 
   const emptyTrashClickHandler = useCallback(() => {
-    if (deletablePages == null) { return }
+    if (deletablePages == null) {
+      return;
+    }
     openEmptyTrashModal(deletablePages, { onEmptiedTrash: onEmptiedTrashHandler, canDeleteAllPages: pagingResult?.totalCount === deletablePages.length });
   }, [deletablePages, onEmptiedTrashHandler, openEmptyTrashModal, pagingResult?.totalCount]);
 
@@ -65,13 +70,7 @@ const useEmptyTrashButton = () => {
 const DescendantsPageListForTrash = (): JSX.Element => {
   const { data: limit } = useShowPageLimitationXL();
 
-  return (
-    <DescendantsPageList
-      path="/trash"
-      limit={limit}
-      forceHideMenuItems={[MenuItemType.RENAME]}
-    />
-  );
+  return <DescendantsPageList path="/trash" limit={limit} forceHideMenuItems={[MenuItemType.RENAME]} />;
 };
 
 export const TrashPageList = (): JSX.Element => {

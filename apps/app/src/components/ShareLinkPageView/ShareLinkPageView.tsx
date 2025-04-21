@@ -19,29 +19,23 @@ import RevisionRenderer from '../PageView/RevisionRenderer';
 
 import ShareLinkAlert from './ShareLinkAlert';
 
-
 const logger = loggerFactory('growi:Page');
 
-
-const PageSideContents = dynamic(() => import('~/client/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const PageSideContents = dynamic(() => import('~/client/components/PageSideContents').then((mod) => mod.PageSideContents), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/client/components/ForbiddenPage'), { ssr: false });
-const SlideRenderer = dynamic(() => import('~/client/components/Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
+const SlideRenderer = dynamic(() => import('~/client/components/Page/SlideRenderer').then((mod) => mod.SlideRenderer), { ssr: false });
 
 type Props = {
-  pagePath: string,
-  rendererConfig: RendererConfig,
-  page?: IPagePopulatedToShowRevision,
-  shareLink?: IShareLinkHasId,
-  isExpired: boolean,
-  disableLinkSharing: boolean,
-}
+  pagePath: string;
+  rendererConfig: RendererConfig;
+  page?: IPagePopulatedToShowRevision;
+  shareLink?: IShareLinkHasId;
+  isExpired: boolean;
+  disableLinkSharing: boolean;
+};
 
 export const ShareLinkPageView = (props: Props): JSX.Element => {
-  const {
-    pagePath, rendererConfig,
-    page, shareLink,
-    isExpired, disableLinkSharing,
-  } = props;
+  const { pagePath, rendererConfig, page, shareLink, isExpired, disableLinkSharing } = props;
 
   const { data: isNotFoundMeta } = useIsNotFound();
 
@@ -63,18 +57,9 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
   const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} />;
 
-  const sideContents = !isNotFound
-    ? (
-      <PageSideContents page={page} />
-    )
-    : null;
+  const sideContents = !isNotFound ? <PageSideContents page={page} /> : null;
 
-
-  const footerContents = !isNotFound
-    ? (
-      <PageContentFooter page={page} />
-    )
-    : null;
+  const footerContents = !isNotFound ? <PageContentFooter page={page} /> : null;
 
   const Contents = () => {
     if (isNotFound || page.revision == null) {
@@ -85,7 +70,9 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
       return (
         <>
           <h2 className="text-muted mt-4">
-            <span className="material-symbols-outlined" aria-hidden="true">block</span>
+            <span className="material-symbols-outlined" aria-hidden="true">
+              block
+            </span>
             <span> Page is expired</span>
           </h2>
         </>
@@ -95,37 +82,36 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
 
-    return isSlide != null
-      ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
-      : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />;
+    return isSlide != null ? (
+      <SlideRenderer marp={isSlide.marp} markdown={markdown} />
+    ) : (
+      <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+    );
   };
 
   return (
-    <PageViewLayout
-      headerContents={headerContents}
-      sideContents={sideContents}
-      expandContentWidth={shouldExpandContent}
-      footerContents={footerContents}
-    >
-      { specialContents }
-      { specialContents == null && (
+    <PageViewLayout headerContents={headerContents} sideContents={sideContents} expandContentWidth={shouldExpandContent} footerContents={footerContents}>
+      {specialContents}
+      {specialContents == null && (
         <>
-          { isNotFound && (
+          {isNotFound && (
             <h2 className="text-muted mt-4">
-              <span className="material-symbols-outlined" aria-hidden="true">block</span>
+              <span className="material-symbols-outlined" aria-hidden="true">
+                block
+              </span>
               <span> Page is not found</span>
             </h2>
-          ) }
-          { !isNotFound && (
+          )}
+          {!isNotFound && (
             <>
               <ShareLinkAlert expiredAt={shareLink.expiredAt} createdAt={shareLink.createdAt} />
               <div className="mb-5">
                 <Contents />
               </div>
             </>
-          ) }
+          )}
         </>
-      ) }
+      )}
     </PageViewLayout>
   );
 };

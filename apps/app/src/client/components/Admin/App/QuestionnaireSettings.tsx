@@ -1,6 +1,4 @@
-import {
-  useState, useCallback, useEffect, type JSX,
-} from 'react';
+import { useState, useCallback, useEffect, type JSX } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
@@ -18,23 +16,22 @@ const QuestionnaireSettings = (): JSX.Element => {
 
   const [isQuestionnaireEnabled, setIsQuestionnaireEnabled] = useState(data?.isQuestionnaireEnabled);
   const onChangeIsQuestionnaireEnabledHandler = useCallback(() => {
-    setIsQuestionnaireEnabled(prev => !prev);
+    setIsQuestionnaireEnabled((prev) => !prev);
   }, []);
 
   const [isAppSiteUrlHashed, setIsAppSiteUrlHashed] = useState(data?.isAppSiteUrlHashed);
   const onChangeisAppSiteUrlHashedHandler = useCallback(() => {
-    setIsAppSiteUrlHashed(prev => !prev);
+    setIsAppSiteUrlHashed((prev) => !prev);
   }, []);
 
-  const onSubmitHandler = useCallback(async() => {
+  const onSubmitHandler = useCallback(async () => {
     try {
       await apiv3Put('/app-settings/questionnaire-settings', {
         isQuestionnaireEnabled,
         isAppSiteUrlHashed,
       });
       toastSuccess(t('commons:toaster.update_successed', { target: t('app_setting.questionnaire_settings') }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
     mutate();
@@ -54,12 +51,16 @@ const QuestionnaireSettings = (): JSX.Element => {
         <div className="mb-3">{t('app_setting.questionnaire_settings_explanation')}</div>
         <span>
           <div className="mb-2">
-            <span className="text-info me-2"><span className="material-symbols-outlined">info</span>{t('app_setting.about_data_sent')}</span>
+            <span className="text-info me-2">
+              <span className="material-symbols-outlined">info</span>
+              {t('app_setting.about_data_sent')}
+            </span>
             <a href={t('app_setting.docs_link')} rel="noreferrer" target="_blank" className="d-inline">
               {t('app_setting.learn_more')} <span className="material-symbols-outlined">share</span>
             </a>
           </div>
-          {t('app_setting.other_info_will_be_sent')}<br />
+          {t('app_setting.other_info_will_be_sent')}
+          <br />
           {t('app_setting.we_will_use_the_data_to_improve_growi')}
         </span>
       </p>
@@ -73,10 +74,7 @@ const QuestionnaireSettings = (): JSX.Element => {
       {!isLoading && (
         <>
           <div className="my-4 row">
-            <label
-              className="text-start text-md-end col-md-3 col-form-label"
-            >
-            </label>
+            <label className="text-start text-md-end col-md-3 col-form-label"></label>
 
             <div className="col-md-6">
               <div className="form-check form-switch form-check-info">
@@ -95,10 +93,7 @@ const QuestionnaireSettings = (): JSX.Element => {
           </div>
 
           <div className="my-4 row">
-            <label
-              className="text-start text-md-end col-md-3 col-form-label"
-            >
-            </label>
+            <label className="text-start text-md-end col-md-3 col-form-label"></label>
 
             <div className="col-md-6">
               <div className="form-check form-check-info">
@@ -113,9 +108,7 @@ const QuestionnaireSettings = (): JSX.Element => {
                 <label className="form-label form-check-label" htmlFor="isAppSiteUrlHashed">
                   {t('app_setting.anonymize_app_site_url')}
                 </label>
-                <p className="form-text text-muted small">
-                  {t('app_setting.url_anonymization_explanation')}
-                </p>
+                <p className="form-text text-muted small">{t('app_setting.url_anonymization_explanation')}</p>
               </div>
             </div>
           </div>

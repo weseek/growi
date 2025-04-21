@@ -4,7 +4,6 @@ import type { Request, RequestHandler } from 'express';
 import { type ValidationChain, param } from 'express-validator';
 import { isHttpError } from 'http-errors';
 
-
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -23,8 +22,8 @@ type DeleteThreadFactory = (crowi: Crowi) => RequestHandler[];
 type ReqParams = IApiv3DeleteThreadParams;
 
 type Req = Request<ReqParams, Response, undefined> & {
-  user: IUserHasId,
-}
+  user: IUserHasId;
+};
 
 export const deleteThreadFactory: DeleteThreadFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
@@ -35,8 +34,12 @@ export const deleteThreadFactory: DeleteThreadFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    certifyAiService,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const { aiAssistantId, threadRelationId } = req.params;
       const { user } = req;
 
@@ -53,8 +56,7 @@ export const deleteThreadFactory: DeleteThreadFactory = (crowi) => {
       try {
         const deletedThreadRelation = await openaiService.deleteThread(threadRelationId);
         return res.apiv3({ deletedThreadRelation });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
 
         if (isHttpError(err)) {

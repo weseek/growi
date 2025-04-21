@@ -41,8 +41,6 @@ describe('excludeReadOnlyUser', () => {
     excludeReadOnlyUser(req, res, next);
 
     expect(next).not.toBeCalled();
-    expect(res.apiv3Err).toBeCalledWith(
-      new ErrorV3('This user is read only user', 'validatioin_failed'),
-    );
+    expect(res.apiv3Err).toBeCalledWith(new ErrorV3('This user is read only user', 'validatioin_failed'));
   });
 });

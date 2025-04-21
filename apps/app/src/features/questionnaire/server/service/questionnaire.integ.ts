@@ -3,7 +3,6 @@ import { mock } from 'vitest-mock-extended';
 
 import pkg from '^/package.json';
 
-
 import type UserEvent from '~/server/events/user';
 import { configManager } from '~/server/service/config-manager';
 
@@ -16,7 +15,6 @@ import QuestionnaireOrder from '../models/questionnaire-order';
 
 import QuestionnaireService from './questionnaire';
 
-
 describe('QuestionnaireService', () => {
   const appVersion = pkg.version;
 
@@ -25,8 +23,7 @@ describe('QuestionnaireService', () => {
   let User;
   let user;
 
-  beforeAll(async() => {
-
+  beforeAll(async () => {
     await configManager.loadConfigs();
 
     const crowiMock = mock<Crowi>({
@@ -92,7 +89,7 @@ describe('QuestionnaireService', () => {
     let doc11;
     let doc12;
 
-    beforeAll(async() => {
+    beforeAll(async () => {
       const questionnaireToBeShown = {
         shortTitle: {
           ja_JP: 'GROWI に関するアンケート',
@@ -149,90 +146,80 @@ describe('QuestionnaireService', () => {
       // insert denied data
       doc6 = await QuestionnaireOrder.create(questionnaireToBeShown);
       // insert data for different growi type
-      doc7 = await QuestionnaireOrder.create(
-        {
-          ...questionnaireToBeShown,
-          condition: {
-            user: {
-              types: ['general'],
-            },
-            growi: {
-              types: ['cloud'],
-              versionRegExps: [appVersion],
-            },
+      doc7 = await QuestionnaireOrder.create({
+        ...questionnaireToBeShown,
+        condition: {
+          user: {
+            types: ['general'],
+          },
+          growi: {
+            types: ['cloud'],
+            versionRegExps: [appVersion],
           },
         },
-      );
+      });
       // insert data for different growi version
-      doc8 = await QuestionnaireOrder.create(
-        {
-          ...questionnaireToBeShown,
-          condition: {
-            user: {
-              types: ['general'],
-            },
-            growi: {
-              types: ['on-premise'],
-              versionRegExps: ['1.0.0-alpha'],
-            },
+      doc8 = await QuestionnaireOrder.create({
+        ...questionnaireToBeShown,
+        condition: {
+          user: {
+            types: ['general'],
+          },
+          growi: {
+            types: ['on-premise'],
+            versionRegExps: ['1.0.0-alpha'],
           },
         },
-      );
+      });
       // insert data for users that used GROWI for less than or equal to a year
-      doc9 = await QuestionnaireOrder.create(
-        {
-          ...questionnaireToBeShown,
-          condition: {
-            user: {
-              types: ['general'],
-              daysSinceCreation: {
-                lessThanOrEqualTo: 365,
-              },
-            },
-            growi: {
-              types: ['on-premise'],
-              versionRegExps: [appVersion],
+      doc9 = await QuestionnaireOrder.create({
+        ...questionnaireToBeShown,
+        condition: {
+          user: {
+            types: ['general'],
+            daysSinceCreation: {
+              lessThanOrEqualTo: 365,
             },
           },
+          growi: {
+            types: ['on-premise'],
+            versionRegExps: [appVersion],
+          },
         },
-      );
+      });
       // insert data for users that used GROWI for more than or equal to 1000 years
-      doc10 = await QuestionnaireOrder.create(
-        {
-          ...questionnaireToBeShown,
-          condition: {
-            user: {
-              types: ['general'],
-              daysSinceCreation: {
-                moreThanOrEqualTo: 365 * 1000,
-              },
-            },
-            growi: {
-              types: ['on-premise'],
-              versionRegExps: [appVersion],
+      doc10 = await QuestionnaireOrder.create({
+        ...questionnaireToBeShown,
+        condition: {
+          user: {
+            types: ['general'],
+            daysSinceCreation: {
+              moreThanOrEqualTo: 365 * 1000,
             },
           },
+          growi: {
+            types: ['on-premise'],
+            versionRegExps: [appVersion],
+          },
         },
-      );
+      });
       // insert data for users that used GROWI for more than a month and less than 6 months
-      doc11 = await QuestionnaireOrder.create(
-        {
-          ...questionnaireToBeShown,
-          condition: {
-            user: {
-              types: ['general'],
-              daysSinceCreation: {
-                moreThanOrEqualTo: 30,
-                lessThanOrEqualTo: 30 * 6,
-              },
-            },
-            growi: {
-              types: ['on-premise'],
-              versionRegExps: [appVersion],
+      doc11 = await QuestionnaireOrder.create({
+        ...questionnaireToBeShown,
+        condition: {
+          user: {
+            types: ['general'],
+            daysSinceCreation: {
+              moreThanOrEqualTo: 30,
+              lessThanOrEqualTo: 30 * 6,
             },
           },
+          growi: {
+            types: ['on-premise'],
+            versionRegExps: [appVersion],
+          },
         },
-      );
+      });
 
       await QuestionnaireAnswerStatus.insertMany([
         {
@@ -253,7 +240,7 @@ describe('QuestionnaireService', () => {
       ]);
     });
 
-    test('Should get questionnaire orders to show', async() => {
+    test('Should get questionnaire orders to show', async () => {
       const growiInfo = mock<IGrowiInfo<IGrowiAppAdditionalInfo>>({
         type: 'on-premise',
         version: appVersion,
@@ -262,40 +249,35 @@ describe('QuestionnaireService', () => {
 
       const questionnaireOrderDocuments = await questionnaireService.getQuestionnaireOrdersToShow(userInfo, growiInfo, user._id);
 
-      expect(questionnaireOrderDocuments[0].toObject()).toMatchObject(
-        {
-          __v: 0,
-          shortTitle: {
-            ja_JP: 'GROWI に関するアンケート',
-            en_US: 'Questions about GROWI',
-          },
-          title: {
-            ja_JP: 'GROWI に関するアンケート',
-            en_US: 'Questions about GROWI',
-          },
-          showFrom: new Date('2022-12-11'),
-          showUntil: new Date('2100-12-12'),
-          questions: [],
-          condition: {
-            user: {
-              types: ['general'],
-              daysSinceCreation: {
-                moreThanOrEqualTo: 365,
-                lessThanOrEqualTo: 365 * 1000,
-              },
-            },
-            growi: {
-              types: ['on-premise'],
-              versionRegExps: [appVersion],
-            },
-          },
-          createdAt: new Date('2023-01-01'),
-          updatedAt: new Date('2023-01-01'),
+      expect(questionnaireOrderDocuments[0].toObject()).toMatchObject({
+        __v: 0,
+        shortTitle: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
         },
-      );
-
+        title: {
+          ja_JP: 'GROWI に関するアンケート',
+          en_US: 'Questions about GROWI',
+        },
+        showFrom: new Date('2022-12-11'),
+        showUntil: new Date('2100-12-12'),
+        questions: [],
+        condition: {
+          user: {
+            types: ['general'],
+            daysSinceCreation: {
+              moreThanOrEqualTo: 365,
+              lessThanOrEqualTo: 365 * 1000,
+            },
+          },
+          growi: {
+            types: ['on-premise'],
+            versionRegExps: [appVersion],
+          },
+        },
+        createdAt: new Date('2023-01-01'),
+        updatedAt: new Date('2023-01-01'),
+      });
     });
-
   });
-
 });

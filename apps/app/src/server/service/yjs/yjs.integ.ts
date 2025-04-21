@@ -9,7 +9,6 @@ import type { MongodbPersistence } from './extended/mongodb-persistence';
 import type { IYjsService } from './yjs';
 import { getYjsService, initializeYjsService } from './yjs';
 
-
 vi.mock('y-socket.io/dist/server', () => {
   const YSocketIO = vi.fn();
   YSocketIO.prototype.on = vi.fn();
@@ -23,24 +22,21 @@ vi.mock('../revision/normalize-latest-revision-if-broken', () => ({
 
 const ObjectId = Types.ObjectId;
 
-
 const getPrivateMdbInstance = (yjsService: IYjsService): MongodbPersistence => {
   // biome-ignore lint/complexity/useLiteralKeys: ignore
   return yjsService['mdb'];
 };
 
 describe('YjsService', () => {
-
   describe('getYDocStatus()', () => {
-
-    beforeAll(async() => {
+    beforeAll(async () => {
       const ioMock = mock<Server>();
 
       // initialize
       initializeYjsService(ioMock);
     });
 
-    afterAll(async() => {
+    afterAll(async () => {
       // flush revisions
       await Revision.deleteMany({});
 
@@ -50,7 +46,7 @@ describe('YjsService', () => {
       await privateMdb.flushDB();
     });
 
-    it('returns ISOLATED when neither revisions nor YDocs exists', async() => {
+    it('returns ISOLATED when neither revisions nor YDocs exists', async () => {
       // arrange
       const yjsService = getYjsService();
 
@@ -63,7 +59,7 @@ describe('YjsService', () => {
       expect(result).toBe(YDocStatus.ISOLATED);
     });
 
-    it('returns ISOLATED when no revisions exist', async() => {
+    it('returns ISOLATED when no revisions exist', async () => {
       // arrange
       const yjsService = getYjsService();
 
@@ -79,15 +75,13 @@ describe('YjsService', () => {
       expect(result).toBe(YDocStatus.ISOLATED);
     });
 
-    it('returns NEW when no YDocs exist', async() => {
+    it('returns NEW when no YDocs exist', async () => {
       // arrange
       const yjsService = getYjsService();
 
       const pageId = new ObjectId();
 
-      await Revision.insertMany([
-        { pageId, body: '' },
-      ]);
+      await Revision.insertMany([{ pageId, body: '' }]);
 
       // act
       const result = await yjsService.getYDocStatus(pageId.toString());
@@ -96,18 +90,16 @@ describe('YjsService', () => {
       expect(result).toBe(YDocStatus.NEW);
     });
 
-    it('returns DRAFT when the newer YDocs exist', async() => {
+    it('returns DRAFT when the newer YDocs exist', async () => {
       // arrange
       const yjsService = getYjsService();
 
       const pageId = new ObjectId();
 
-      await Revision.insertMany([
-        { pageId, body: '' },
-      ]);
+      await Revision.insertMany([{ pageId, body: '' }]);
 
       const privateMdb = getPrivateMdbInstance(yjsService);
-      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', (new Date(2034, 1, 1)).getTime());
+      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', new Date(2034, 1, 1).getTime());
 
       // act
       const result = await yjsService.getYDocStatus(pageId.toString());
@@ -116,18 +108,16 @@ describe('YjsService', () => {
       expect(result).toBe(YDocStatus.DRAFT);
     });
 
-    it('returns SYNCED', async() => {
+    it('returns SYNCED', async () => {
       // arrange
       const yjsService = getYjsService();
 
       const pageId = new ObjectId();
 
-      await Revision.insertMany([
-        { pageId, body: '', createdAt: new Date(2025, 1, 1) },
-      ]);
+      await Revision.insertMany([{ pageId, body: '', createdAt: new Date(2025, 1, 1) }]);
 
       const privateMdb = getPrivateMdbInstance(yjsService);
-      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', (new Date(2025, 1, 1)).getTime());
+      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', new Date(2025, 1, 1).getTime());
 
       // act
       const result = await yjsService.getYDocStatus(pageId.toString());
@@ -136,18 +126,16 @@ describe('YjsService', () => {
       expect(result).toBe(YDocStatus.SYNCED);
     });
 
-    it('returns OUTDATED when the latest revision is newer than meta data', async() => {
+    it('returns OUTDATED when the latest revision is newer than meta data', async () => {
       // arrange
       const yjsService = getYjsService();
 
       const pageId = new ObjectId();
 
-      await Revision.insertMany([
-        { pageId, body: '' },
-      ]);
+      await Revision.insertMany([{ pageId, body: '' }]);
 
       const privateMdb = getPrivateMdbInstance(yjsService);
-      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', (new Date(2024, 1, 1)).getTime());
+      await privateMdb.setTypedMeta(pageId.toString(), 'updatedAt', new Date(2024, 1, 1).getTime());
 
       // act
       const result = await yjsService.getYDocStatus(pageId.toString());
@@ -155,6 +143,5 @@ describe('YjsService', () => {
       // assert
       expect(result).toBe(YDocStatus.OUTDATED);
     });
-
   });
 });

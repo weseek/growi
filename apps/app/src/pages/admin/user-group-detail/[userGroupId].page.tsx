@@ -1,6 +1,4 @@
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -16,11 +14,11 @@ import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const UserGroupDetailPage = dynamic(() => import('~/client/components/Admin/UserGroupDetail/UserGroupDetailPage'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then((mod) => mod.ForbiddenPage), { ssr: false });
 
 type Props = CommonProps & {
-  isAclEnabled: boolean
-}
+  isAclEnabled: boolean;
+};
 
 const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
@@ -47,20 +45,17 @@ const AdminUserGroupDetailPage: NextPage<Props> = (props: Props) => {
       <Head>
         <title>{customTitle}</title>
       </Head>
-      {
-        currentUserGroupId != null && router.isReady
-      && <UserGroupDetailPage userGroupId={currentUserGroupId} isExternalGroup={isExternalGroupBool} />
-      }
+      {currentUserGroupId != null && router.isReady && <UserGroupDetailPage userGroupId={currentUserGroupId} isExternalGroup={isExternalGroupBool} />}
     </AdminLayout>
   );
 };
 
-const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+const injectServerConfigurations = async (context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
   props.isAclEnabled = req.crowi.aclService.isAclEnabled();
 };
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context, injectServerConfigurations);
 
   return props;

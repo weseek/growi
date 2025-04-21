@@ -9,7 +9,6 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-
 // eslint-disable-next-line no-unused-vars
 const logger = loggerFactory('growi:routes:apiv3:slack-integration-legacy-setting');
 
@@ -17,9 +16,15 @@ const router = express.Router();
 
 const validator = {
   slackConfiguration: [
-    body('webhookUrl').if(value => value != null).isString().trim(),
+    body('webhookUrl')
+      .if((value) => value != null)
+      .isString()
+      .trim(),
     body('isIncomingWebhookPrioritized').isBoolean(),
-    body('slackToken').if(value => value != null).isString().trim(),
+    body('slackToken')
+      .if((value) => value != null)
+      .isString()
+      .trim(),
   ],
 };
 
@@ -75,8 +80,7 @@ module.exports = (crowi) => {
    *                              type: boolean
    *                              description: whether slackbot is configured
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
-
+  router.get('/', loginRequiredStrictly, adminRequired, async (req, res) => {
     const slackIntegrationParams = {
       isSlackbotConfigured: crowi.slackIntegrationService.isSlackbotConfigured,
       webhookUrl: await crowi.configManager.getConfig('slack:incomingWebhookUrl'),
@@ -121,8 +125,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/SlackConfigurationParams'
    */
-  router.put('/', loginRequiredStrictly, adminRequired, addActivity, validator.slackConfiguration, apiV3FormValidator, async(req, res) => {
-
+  router.put('/', loginRequiredStrictly, adminRequired, addActivity, validator.slackConfiguration, apiV3FormValidator, async (req, res) => {
     const requestParams = {
       'slack:incomingWebhookUrl': req.body.webhookUrl,
       'slack:isIncomingWebhookPrioritized': req.body.isIncomingWebhookPrioritized,
@@ -141,13 +144,11 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ responseParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating slack configuration';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-slackConfiguration-failed'));
     }
-
   });
 
   return router;

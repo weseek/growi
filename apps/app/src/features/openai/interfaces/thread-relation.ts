@@ -3,8 +3,8 @@ import type { IUser, Ref, HasObjectId } from '@growi/core';
 import type { AiAssistant } from './ai-assistant';
 
 export interface IThreadRelation {
-  userId: Ref<IUser>
-  aiAssistant: Ref<AiAssistant>
+  userId: Ref<IUser>;
+  aiAssistant: Ref<AiAssistant>;
   threadId: string;
   title?: string;
   expiredAt: Date;
@@ -13,6 +13,6 @@ export interface IThreadRelation {
 export type IThreadRelationHasId = IThreadRelation & HasObjectId;
 
 export type IApiv3DeleteThreadParams = {
-  aiAssistantId: string
+  aiAssistantId: string;
   threadRelationId: string;
-}
+};

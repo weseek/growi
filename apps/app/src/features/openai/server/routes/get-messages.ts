@@ -18,16 +18,16 @@ const logger = loggerFactory('growi:routes:apiv3:openai:get-message');
 type GetMessagesFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqParam = {
-  threadId: string,
-  aiAssistantId: string,
-  before?: string,
-  after?: string,
-  limit?: number,
-}
+  threadId: string;
+  aiAssistantId: string;
+  before?: string;
+  after?: string;
+  limit?: number;
+};
 
 type Req = Request<ReqParam, Response, undefined> & {
-  user: IUserHasId,
-}
+  user: IUserHasId;
+};
 
 export const getMessagesFactory: GetMessagesFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
@@ -41,17 +41,19 @@ export const getMessagesFactory: GetMessagesFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    certifyAiService,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
       }
 
       try {
-        const {
-          threadId, aiAssistantId, limit, before, after,
-        } = req.params;
+        const { threadId, aiAssistantId, limit, before, after } = req.params;
 
         const isAiAssistantUsable = await openaiService.isAiAssistantUsable(aiAssistantId, req.user);
         if (!isAiAssistantUsable) {
@@ -59,12 +61,14 @@ export const getMessagesFactory: GetMessagesFactory = (crowi) => {
         }
 
         const messages = await openaiService.getMessageData(threadId, req.user.lang, {
-          limit, before, after, order: 'desc',
+          limit,
+          before,
+          after,
+          order: 'desc',
         });
 
         return res.apiv3({ messages });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(new ErrorV3('Failed to get messages'));
       }

@@ -10,16 +10,14 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
 
 type LdapAuthTestProps = {
-  username: string,
-  password: string,
-  onChangeUsername: (username: string) => void,
-  onChangePassword: (password: string) => void,
-}
+  username: string;
+  password: string;
+  onChangeUsername: (username: string) => void;
+  onChangePassword: (password: string) => void;
+};
 
 export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
-  const {
-    username, password, onChangeUsername, onChangePassword,
-  } = props;
+  const { username, password, onChangeUsername, onChangePassword } = props;
   const { t } = useTranslation();
   const [logs, setLogs] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -36,7 +34,7 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
   /**
    * Test ldap auth
    */
-  const testLdapCredentials = async() => {
+  const testLdapCredentials = async () => {
     try {
       const response = await apiPost<IResTestLdap>('/login/testLdap', {
         loginForm: {
@@ -45,9 +43,7 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
         },
       });
 
-      const {
-        err, message, status, ldapConfiguration, ldapAccountInfo,
-      } = response;
+      const { err, message, status, ldapConfiguration, ldapAccountInfo } = response;
 
       // add logs
       if (err) {
@@ -75,55 +71,63 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
         const prettified = JSON.stringify(ldapAccountInfo, undefined, 4);
         addLogs(`Retrieved LDAP Account : ${prettified}`);
       }
-
-    }
-    // Catch server communication error
-    catch (err) {
+    } catch (err) {
+      // Catch server communication error
       toastError(err);
       logger.error(err);
     }
   };
-
 
   return (
     <React.Fragment>
       {successMessage !== '' && <div className="alert alert-success">{successMessage}</div>}
       {errorMessage !== '' && <div className="alert alert-warning">{errorMessage}</div>}
       <div className="row mt-3">
-        <label htmlFor="username" className="col-3 col-form-label text-end">{t('username')}</label>
+        <label htmlFor="username" className="col-3 col-form-label text-end">
+          {t('username')}
+        </label>
         <div className="col-6">
           <input
             className="form-control"
             name="username"
             value={username}
-            onChange={(e) => { onChangeUsername(e.target.value) }}
+            onChange={(e) => {
+              onChangeUsername(e.target.value);
+            }}
             autoComplete="off"
           />
         </div>
       </div>
       <div className="row mt-3">
-        <label htmlFor="password" className="col-3 col-form-label text-end">{t('Password')}</label>
+        <label htmlFor="password" className="col-3 col-form-label text-end">
+          {t('Password')}
+        </label>
         <div className="col-6">
           <input
             className="form-control"
             type="password"
             name="password"
             value={password}
-            onChange={(e) => { onChangePassword(e.target.value) }}
+            onChange={(e) => {
+              onChangePassword(e.target.value);
+            }}
             autoComplete="off"
           />
         </div>
       </div>
 
       <div className="mt-4">
-        <label className="form-label"><h5>Logs</h5></label>
+        <label className="form-label">
+          <h5>Logs</h5>
+        </label>
         <textarea id="taLogs" className="col form-control" rows={4} value={logs} readOnly />
       </div>
 
       <div className="mt-4">
-        <button type="button" className="btn btn-outline-secondary offset-5 col-2" onClick={testLdapCredentials}>Test</button>
+        <button type="button" className="btn btn-outline-secondary offset-5 col-2" onClick={testLdapCredentials}>
+          Test
+        </button>
       </div>
     </React.Fragment>
-
   );
 };

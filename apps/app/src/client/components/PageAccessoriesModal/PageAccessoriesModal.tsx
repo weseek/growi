@@ -2,13 +2,9 @@ import React, { useMemo, useState, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
-import {
-  Modal, ModalBody, ModalHeader,
-} from 'reactstrap';
+import { Modal, ModalBody, ModalHeader } from 'reactstrap';
 
-import {
-  useDisableLinkSharing, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser,
-} from '~/stores-universal/context';
+import { useDisableLinkSharing, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores-universal/context';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
@@ -20,14 +16,11 @@ import { useAutoOpenModalByQueryParam } from './hooks';
 
 import styles from './PageAccessoriesModal.module.scss';
 
-
 const PageAttachment = dynamic(() => import('./PageAttachment'), { ssr: false });
-const PageHistory = dynamic(() => import('./PageHistory').then(mod => mod.PageHistory), { ssr: false });
-const ShareLink = dynamic(() => import('./ShareLink').then(mod => mod.ShareLink), { ssr: false });
-
+const PageHistory = dynamic(() => import('./PageHistory').then((mod) => mod.PageHistory), { ssr: false });
+const ShareLink = dynamic(() => import('./ShareLink').then((mod) => mod.ShareLink), { ssr: false });
 
 export const PageAccessoriesModal = (): JSX.Element => {
-
   const { t } = useTranslation();
 
   const [isWindowExpanded, setIsWindowExpanded] = useState(false);
@@ -70,16 +63,19 @@ export const PageAccessoriesModal = (): JSX.Element => {
     };
   }, [t, close, isGuestUser, isReadOnlyUser, isSharedUser, isLinkSharingDisabled]);
 
-  const buttons = useMemo(() => (
-    <span className="me-3">
-      <ExpandOrContractButton
-        isWindowExpanded={isWindowExpanded}
-        expandWindow={() => setIsWindowExpanded(true)}
-        contractWindow={() => setIsWindowExpanded(false)}
-      />
-      <button type="button" className="btn btn-close ms-2" onClick={close} aria-label="Close"></button>
-    </span>
-  ), [close, isWindowExpanded]);
+  const buttons = useMemo(
+    () => (
+      <span className="me-3">
+        <ExpandOrContractButton
+          isWindowExpanded={isWindowExpanded}
+          expandWindow={() => setIsWindowExpanded(true)}
+          contractWindow={() => setIsWindowExpanded(false)}
+        />
+        <button type="button" className="btn btn-close ms-2" onClick={close} aria-label="Close"></button>
+      </span>
+    ),
+    [close, isWindowExpanded],
+  );
 
   if (status == null || status.activatedContents == null) {
     return <></>;
@@ -107,13 +103,7 @@ export const PageAccessoriesModal = (): JSX.Element => {
         )}
       </ModalHeader>
       <ModalBody className="overflow-auto grw-modal-body-style">
-        {!isDeviceLargerThanLg && (
-          <CustomNavDropdown
-            activeTab={status.activatedContents}
-            navTabMapping={navTabMapping}
-            onNavSelected={selectContents}
-          />
-        )}
+        {!isDeviceLargerThanLg && <CustomNavDropdown activeTab={status.activatedContents} navTabMapping={navTabMapping} onNavSelected={selectContents} />}
         <CustomTabContent
           activeTab={status.activatedContents}
           navTabMapping={navTabMapping}

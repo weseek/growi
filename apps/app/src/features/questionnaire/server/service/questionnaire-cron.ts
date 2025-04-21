@@ -24,8 +24,7 @@ axiosRetry(axios, { retries: 3 });
  *  4. resend QuestionnaireAnswers & ProactiveQuestionnaireAnswers which failed to reach questionnaire server
  */
 class QuestionnaireCronService extends CronService {
-
-  sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
+  sleep = (msec: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, msec));
 
   override getCronSchedule(): string {
     return configManager.getConfig('app:questionnaireCronSchedule');
@@ -38,44 +37,39 @@ class QuestionnaireCronService extends CronService {
     const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
     const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
 
-    const fetchQuestionnaireOrders = async(): Promise<IQuestionnaireOrder[]> => {
+    const fetchQuestionnaireOrders = async (): Promise<IQuestionnaireOrder[]> => {
       const response = await axios.get(`${questionnaireServerOrigin}/questionnaire-order/index`);
       return response.data.questionnaireOrders;
     };
 
-    const saveUnfinishedOrders = async(questionnaireOrders: IQuestionnaireOrder[]) => {
+    const saveUnfinishedOrders = async (questionnaireOrders: IQuestionnaireOrder[]) => {
       const currentDate = new Date(Date.now());
-      const unfinishedOrders = questionnaireOrders.filter(order => new Date(order.showUntil) > currentDate);
+      const unfinishedOrders = questionnaireOrders.filter((order) => new Date(order.showUntil) > currentDate);
       await QuestionnaireOrder.insertMany(unfinishedOrders);
     };
 
-    const changeSkippedAnswerStatusToNotAnswered = async() => {
-      await QuestionnaireAnswerStatus.updateMany(
-        { status: StatusType.skipped },
-        { status: StatusType.not_answered },
-      );
+    const changeSkippedAnswerStatusToNotAnswered = async () => {
+      await QuestionnaireAnswerStatus.updateMany({ status: StatusType.skipped }, { status: StatusType.not_answered });
     };
 
-    const resendQuestionnaireAnswers = async() => {
-      const questionnaireAnswers = await QuestionnaireAnswer.find()
-        .select('-_id -answers._id  -growiInfo._id -userInfo._id')
-        .lean();
-      const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find()
-        .select('-_id -growiInfo._id -userInfo._id')
-        .lean();
+    const resendQuestionnaireAnswers = async () => {
+      const questionnaireAnswers = await QuestionnaireAnswer.find().select('-_id -answers._id  -growiInfo._id -userInfo._id').lean();
+      const proactiveQuestionnaireAnswers = await ProactiveQuestionnaireAnswer.find().select('-_id -growiInfo._id -userInfo._id').lean();
 
-      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/batch`, {
-        // convert to legacy format
-        questionnaireAnswers: questionnaireAnswers.map(answer => convertToLegacyFormat(answer, isAppSiteUrlHashed)),
-      })
-        .then(async() => {
+      axios
+        .post(`${questionnaireServerOrigin}/questionnaire-answer/batch`, {
+          // convert to legacy format
+          questionnaireAnswers: questionnaireAnswers.map((answer) => convertToLegacyFormat(answer, isAppSiteUrlHashed)),
+        })
+        .then(async () => {
           await QuestionnaireAnswer.deleteMany();
         });
-      axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive/batch`, {
-        // convert to legacy format
-        proactiveQuestionnaireAnswers: proactiveQuestionnaireAnswers.map(answer => convertToLegacyFormat(answer, isAppSiteUrlHashed)),
-      })
-        .then(async() => {
+      axios
+        .post(`${questionnaireServerOrigin}/questionnaire-answer/proactive/batch`, {
+          // convert to legacy format
+          proactiveQuestionnaireAnswers: proactiveQuestionnaireAnswers.map((answer) => convertToLegacyFormat(answer, isAppSiteUrlHashed)),
+        })
+        .then(async () => {
           await ProactiveQuestionnaireAnswer.deleteMany();
         });
     };
@@ -98,7 +92,6 @@ class QuestionnaireCronService extends CronService {
     const secToSleep = getRandomIntInRange(0, maxSecondsUntilRequest);
     await this.sleep(secToSleep * 1000);
   }
-
 }
 
 const questionnaireCronService = new QuestionnaireCronService();

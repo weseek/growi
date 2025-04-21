@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useEffect, useState, type JSX,
-} from 'react';
+import React, { useCallback, useEffect, useState, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -17,9 +15,7 @@ import CustomCopyToClipBoard from '../Common/CustomCopyToClipBoard';
 import G2GDataTransferExportForm from './G2GDataTransferExportForm';
 import G2GDataTransferStatusIcon from './G2GDataTransferStatusIcon';
 
-const IGNORED_COLLECTION_NAMES = [
-  'sessions', 'rlflx', 'activities', 'attachmentFiles.files', 'attachmentFiles.chunks',
-];
+const IGNORED_COLLECTION_NAMES = ['sessions', 'rlflx', 'activities', 'attachmentFiles.files', 'attachmentFiles.chunks'];
 
 const G2GDataTransfer = (): JSX.Element => {
   const { data: socket } = useAdminSocket();
@@ -61,8 +57,8 @@ const G2GDataTransfer = (): JSX.Element => {
     setStartTransferKey(e.target.value);
   }, []);
 
-  const setCollectionsAndSelectedCollections = useCallback(async() => {
-    const { data: collectionsData } = await apiv3Get<{collections: any[]}>('/mongo/collections', {});
+  const setCollectionsAndSelectedCollections = useCallback(async () => {
+    const { data: collectionsData } = await apiv3Get<{ collections: any[] }>('/mongo/collections', {});
 
     // filter only not ignored collection names
     const filteredCollections = collectionsData.collections.filter((collectionName) => {
@@ -99,30 +95,31 @@ const G2GDataTransfer = (): JSX.Element => {
 
   const { transferKey, generateTransferKey } = useGenerateTransferKey();
 
-  const onClickHandler = useCallback(async() => {
+  const onClickHandler = useCallback(async () => {
     try {
       await generateTransferKey();
-    }
-    catch (errs) {
+    } catch (errs) {
       toastError(errs);
     }
   }, [generateTransferKey]);
 
-  const startTransfer = useCallback(async(e) => {
-    e.preventDefault();
-    setTransferring(true);
+  const startTransfer = useCallback(
+    async (e) => {
+      e.preventDefault();
+      setTransferring(true);
 
-    try {
-      await apiv3Post('/g2g-transfer/transfer', {
-        transferKey: startTransferKey,
-        collections: Array.from(selectedCollections),
-        optionsMap,
-      });
-    }
-    catch (errs) {
-      toastError(errs);
-    }
-  }, [setTransferring, startTransferKey, selectedCollections, optionsMap]);
+      try {
+        await apiv3Post('/g2g-transfer/transfer', {
+          transferKey: startTransferKey,
+          collections: Array.from(selectedCollections),
+          optionsMap,
+        });
+      } catch (errs) {
+        toastError(errs);
+      }
+    },
+    [setTransferring, startTransferKey, selectedCollections, optionsMap],
+  );
 
   const { data: documentationUrl } = useGrowiDocumentationUrl();
 
@@ -172,7 +169,6 @@ const G2GDataTransfer = (): JSX.Element => {
   // const onChangeGcsUploadNamespaceHandler = useCallback((val: string) => {
   //   setGcsUploadNamespace(val);
   // }, []);
-
 
   useEffect(() => {
     setCollectionsAndSelectedCollections();
@@ -243,7 +239,9 @@ const G2GDataTransfer = (): JSX.Element => {
             />
           </div>
           <div className="col-3">
-            <button type="submit" className="btn btn-primary w-100">{t('admin:g2g_data_transfer.start_transfer')}</button>
+            <button type="submit" className="btn btn-primary w-100">
+              {t('admin:g2g_data_transfer.start_transfer')}
+            </button>
           </div>
         </div>
       </form>

@@ -4,28 +4,23 @@ import { isPopulated } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
-import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { Username } from '../../../components/User/Username';
 import type { ICommentHasId } from '../../../interfaces/comment';
 
 import styles from './DeleteCommentModal.module.scss';
 
-
 export type DeleteCommentModalProps = {
-  isShown: boolean,
-  comment: ICommentHasId | null,
-  errorMessage: string,
-  cancelToDelete: () => void,
-  confirmToDelete: () => void,
-}
+  isShown: boolean;
+  comment: ICommentHasId | null;
+  errorMessage: string;
+  cancelToDelete: () => void;
+  confirmToDelete: () => void;
+};
 
 export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element => {
-  const {
-    isShown, comment, errorMessage, cancelToDelete, confirmToDelete,
-  } = props;
+  const { isShown, comment, errorMessage, cancelToDelete, confirmToDelete } = props;
 
   const { t } = useTranslation();
 
@@ -54,14 +49,19 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     const creator = isPopulated(comment.creator) ? comment.creator : undefined;
 
     let commentBody = comment.comment;
-    if (commentBody.length > OMIT_BODY_THRES) { // omit
+    if (commentBody.length > OMIT_BODY_THRES) {
+      // omit
       commentBody = `${commentBody.substr(0, OMIT_BODY_THRES)}...`;
     }
     const commentBodyElement = <span style={{ whiteSpace: 'pre-wrap' }}>{commentBody}</span>;
 
     return (
       <>
-        <UserPicture user={creator} size="xs" /> <strong className="me-2"><Username user={creator}></Username></strong>{commentDate}:
+        <UserPicture user={creator} size="xs" />{' '}
+        <strong className="me-2">
+          <Username user={creator}></Username>
+        </strong>
+        {commentDate}:
         <div className="card mt-2">
           <div className="card-body comment-body px-3 py-2">{commentBodyElement}</div>
         </div>
@@ -90,12 +90,8 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
       <ModalHeader tag="h4" toggle={cancelToDelete} className="text-danger">
         {headerContent()}
       </ModalHeader>
-      <ModalBody>
-        {bodyContent()}
-      </ModalBody>
-      <ModalFooter>
-        {footerContent()}
-      </ModalFooter>
+      <ModalBody>{bodyContent()}</ModalBody>
+      <ModalFooter>{footerContent()}</ModalFooter>
     </Modal>
   );
 };

@@ -4,9 +4,7 @@ import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter, Tooltip,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Tooltip } from 'reactstrap';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -14,7 +12,6 @@ import { toastError } from '~/client/util/toastr';
 import { useIsMailerSetup } from '~/stores-universal/context';
 
 class PasswordResetModal extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -36,8 +33,7 @@ class PasswordResetModal extends React.Component {
       const res = await apiv3Put('/users/reset-password', { id: userForPasswordResetModal._id });
       const { newPassword } = res.data;
       this.setState({ temporaryPassword: newPassword, isPasswordResetDone: true });
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
@@ -90,7 +86,8 @@ class PasswordResetModal extends React.Component {
     return (
       <>
         <p>
-          {t('user_management.reset_password_modal.password_never_seen')}<br />
+          {t('user_management.reset_password_modal.password_never_seen')}
+          <br />
           <span className="text-danger">{t('user_management.reset_password_modal.send_new_password')}</span>
         </p>
         <p>
@@ -104,9 +101,7 @@ class PasswordResetModal extends React.Component {
     const { t, userForPasswordResetModal } = this.props;
     const { temporaryPassword, showPassword, showTooltip } = this.state;
 
-    const maskedPassword = showPassword
-      ? temporaryPassword
-      : '•'.repeat(temporaryPassword.length);
+    const maskedPassword = showPassword ? temporaryPassword : '•'.repeat(temporaryPassword.length);
 
     return (
       <>
@@ -118,24 +113,18 @@ class PasswordResetModal extends React.Component {
           {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
           {t('user_management.reset_password_modal.new_password')}:{' '}
           <code>
-            <span
-              onMouseEnter={() => this.setState({ showPassword: true })}
-              onMouseLeave={() => this.setState({ showPassword: false })}
-            >
+            <span onMouseEnter={() => this.setState({ showPassword: true })} onMouseLeave={() => this.setState({ showPassword: false })}>
               {showPassword ? temporaryPassword : maskedPassword}
             </span>
           </code>
           <CopyToClipboard text={temporaryPassword} onCopy={() => this.setState({ showTooltip: true })}>
             <button id="copy-tooltip" type="button" className="btn btn-outline-secondary border-0">
-              <span className="material-symbols-outlined" aria-hidden="true">content_copy</span>
+              <span className="material-symbols-outlined" aria-hidden="true">
+                content_copy
+              </span>
             </button>
           </CopyToClipboard>
-          <Tooltip
-            placement="right"
-            isOpen={showTooltip}
-            target="copy-tooltip"
-            toggle={() => this.setState({ showTooltip: false })}
-          >
+          <Tooltip placement="right" isOpen={showTooltip} target="copy-tooltip" toggle={() => this.setState({ showTooltip: false })}>
             {t('Copied!')}
           </Tooltip>
         </p>
@@ -162,26 +151,20 @@ class PasswordResetModal extends React.Component {
   }
 
   async onClickSendNewPasswordButton() {
-
-    const {
-      userForPasswordResetModal,
-    } = this.props;
+    const { userForPasswordResetModal } = this.props;
 
     this.setState({ isEmailSending: true });
 
     try {
       await apiv3Put('/users/reset-password-email', { id: userForPasswordResetModal._id, newPassword: this.state.temporaryPassword });
       this.setState({ isEmailSent: true });
-    }
-    catch (err) {
+    } catch (err) {
       this.setState({ isEmailSent: false });
       toastError(err);
-    }
-    finally {
+    } finally {
       this.setState({ isEmailSending: false });
     }
   }
-
 
   render() {
     const { t } = this.props;
@@ -189,18 +172,13 @@ class PasswordResetModal extends React.Component {
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
         <ModalHeader tag="h4" toggle={this.props.onClose} className="text-warning">
-          {t('user_management.reset_password') }
+          {t('user_management.reset_password')}
         </ModalHeader>
-        <ModalBody>
-          {this.state.isPasswordResetDone ? this.returnModalBodyAfterReset() : this.renderModalBodyBeforeReset()}
-        </ModalBody>
-        <ModalFooter>
-          {this.state.isPasswordResetDone ? this.returnModalFooterAfterReset() : this.returnModalFooterBeforeReset()}
-        </ModalFooter>
+        <ModalBody>{this.state.isPasswordResetDone ? this.returnModalBodyAfterReset() : this.renderModalBodyBeforeReset()}</ModalBody>
+        <ModalFooter>{this.state.isPasswordResetDone ? this.returnModalFooterAfterReset() : this.returnModalFooterBeforeReset()}</ModalFooter>
       </Modal>
     );
   }
-
 }
 
 const PasswordResetModalWrapperFC = (props) => {
@@ -222,7 +200,6 @@ PasswordResetModal.propTypes = {
   userForPasswordResetModal: PropTypes.object,
   onSuccessfullySentNewPasswordEmail: PropTypes.func.isRequired,
   adminUsersContainer: PropTypes.instanceOf(AdminUsersContainer).isRequired,
-
 };
 
 export default PasswordResetModalWrapperFC;

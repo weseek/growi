@@ -10,7 +10,6 @@ import { getOpenaiService, type IOpenaiService } from '../openai';
 const logger = loggerFactory('growi:service:vector-store-file-deletion-cron');
 
 export class VectorStoreFileDeletionCronService {
-
   cronJob: nodeCron.ScheduledTask;
 
   openaiService: IOpenaiService;
@@ -23,7 +22,7 @@ export class VectorStoreFileDeletionCronService {
 
   vectorStoreFileDeletionApiCallInterval: number;
 
-  sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
+  sleep = (msec: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, msec));
 
   startCron(): void {
     if (!isAiEnabled()) {
@@ -52,18 +51,16 @@ export class VectorStoreFileDeletionCronService {
   }
 
   private generateCronJob() {
-    return nodeCron.schedule(this.vectorStoreFileDeletionCronExpression, async() => {
+    return nodeCron.schedule(this.vectorStoreFileDeletionCronExpression, async () => {
       try {
         // Random fractional sleep to distribute request timing among GROWI apps
         const randomMilliseconds = getRandomIntInRange(0, this.vectorStoreFileDeletionCronMaxMinutesUntilRequest) * 60 * 1000;
         await this.sleep(randomMilliseconds);
 
         await this.executeJob();
-      }
-      catch (e) {
+      } catch (e) {
         logger.error(e);
       }
     });
   }
-
 }

@@ -30,10 +30,12 @@ const schema = new Schema<AiAssistantDocument>(
       required: true,
       default: '',
     },
-    pagePathPatterns: [{
-      type: String,
-      required: true,
-    }],
+    pagePathPatterns: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     vectorStore: {
       type: Schema.Types.ObjectId,
       ref: 'VectorStore',
@@ -45,47 +47,61 @@ const schema = new Schema<AiAssistantDocument>(
       required: true,
     },
     grantedGroupsForShareScope: {
-      type: [{
-        type: {
-          type: String,
-          enum: Object.values(GroupType),
-          required: true,
-          default: 'UserGroup',
+      type: [
+        {
+          type: {
+            type: String,
+            enum: Object.values(GroupType),
+            required: true,
+            default: 'UserGroup',
+          },
+          item: {
+            type: Schema.Types.ObjectId,
+            refPath: 'grantedGroupsForShareScope.type',
+            required: true,
+            index: true,
+          },
         },
-        item: {
-          type: Schema.Types.ObjectId,
-          refPath: 'grantedGroupsForShareScope.type',
-          required: true,
-          index: true,
+      ],
+      validate: [
+        (arr: IGrantedGroup[]): boolean => {
+          if (arr == null) {
+            return true;
+          }
+          const uniqueItemValues = new Set(arr.map((e) => e.item));
+          return arr.length === uniqueItemValues.size;
         },
-      }],
-      validate: [(arr: IGrantedGroup[]): boolean => {
-        if (arr == null) { return true; }
-        const uniqueItemValues = new Set(arr.map(e => e.item));
-        return arr.length === uniqueItemValues.size;
-      }, 'grantedGroups contains non unique item'],
+        'grantedGroups contains non unique item',
+      ],
       default: [],
     },
     grantedGroupsForAccessScope: {
-      type: [{
-        type: {
-          type: String,
-          enum: Object.values(GroupType),
-          required: true,
-          default: 'UserGroup',
+      type: [
+        {
+          type: {
+            type: String,
+            enum: Object.values(GroupType),
+            required: true,
+            default: 'UserGroup',
+          },
+          item: {
+            type: Schema.Types.ObjectId,
+            refPath: 'grantedGroupsForAccessScope.type',
+            required: true,
+            index: true,
+          },
         },
-        item: {
-          type: Schema.Types.ObjectId,
-          refPath: 'grantedGroupsForAccessScope.type',
-          required: true,
-          index: true,
+      ],
+      validate: [
+        (arr: IGrantedGroup[]): boolean => {
+          if (arr == null) {
+            return true;
+          }
+          const uniqueItemValues = new Set(arr.map((e) => e.item));
+          return arr.length === uniqueItemValues.size;
         },
-      }],
-      validate: [(arr: IGrantedGroup[]): boolean => {
-        if (arr == null) { return true; }
-        const uniqueItemValues = new Set(arr.map(e => e.item));
-        return arr.length === uniqueItemValues.size;
-      }, 'grantedGroups contains non unique item'],
+        'grantedGroups contains non unique item',
+      ],
       default: [],
     },
     shareScope: {
@@ -109,15 +125,14 @@ const schema = new Schema<AiAssistantDocument>(
   },
 );
 
-
-schema.statics.setDefault = async function(id: string, isDefault: boolean): Promise<AiAssistantDocument> {
+schema.statics.setDefault = async function (id: string, isDefault: boolean): Promise<AiAssistantDocument> {
   if (isDefault) {
     await this.bulkWrite([
       {
         updateOne: {
           filter: {
             _id: id,
-            shareScope:  AiAssistantShareScope.PUBLIC_ONLY,
+            shareScope: AiAssistantShareScope.PUBLIC_ONLY,
           },
           update: { $set: { isDefault: true } },
         },
@@ -132,14 +147,12 @@ schema.statics.setDefault = async function(id: string, isDefault: boolean): Prom
         },
       },
     ]);
-  }
-  else {
+  } else {
     await this.findByIdAndUpdate(id, { isDefault: false });
   }
 
   const updatedAiAssistant = await this.findById(id);
   return updatedAiAssistant;
 };
-
 
 export default getOrCreateModel<AiAssistantDocument, AiAssistantModel>('AiAssistant', schema);

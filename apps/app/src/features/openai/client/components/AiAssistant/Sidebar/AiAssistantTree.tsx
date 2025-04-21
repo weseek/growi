@@ -24,29 +24,25 @@ const logger = loggerFactory('growi:openai:client:components:AiAssistantTree');
 
 const moduleClass = styles['ai-assistant-tree-item'] ?? '';
 
-
 /*
-*  ThreadItem
-*/
+ *  ThreadItem
+ */
 type ThreadItemProps = {
-  threadData: IThreadRelationHasId
+  threadData: IThreadRelationHasId;
   aiAssistantData: AiAssistantHasId;
   onThreadClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
   onThreadDelete: () => void;
 };
 
-const ThreadItem: React.FC<ThreadItemProps> = ({
-  threadData, aiAssistantData, onThreadClick, onThreadDelete,
-}) => {
+const ThreadItem: React.FC<ThreadItemProps> = ({ threadData, aiAssistantData, onThreadClick, onThreadDelete }) => {
   const { t } = useTranslation();
 
-  const deleteThreadHandler = useCallback(async() => {
+  const deleteThreadHandler = useCallback(async () => {
     try {
       await deleteThread({ aiAssistantId: aiAssistantData._id, threadRelationId: threadData._id });
       toastSuccess(t('ai_assistant_tree.toaster.thread_deleted_success'));
       onThreadDelete();
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       toastError(t('ai_assistant_tree.toaster.thread_deleted_failed'));
     }
@@ -89,10 +85,9 @@ const ThreadItem: React.FC<ThreadItemProps> = ({
   );
 };
 
-
 /*
-*  ThreadItems
-*/
+ *  ThreadItems
+ */
 type ThreadItemsProps = {
   aiAssistantData: AiAssistantHasId;
   onThreadClick: (aiAssistantData: AiAssistantHasId, threadData?: IThreadRelationHasId) => void;
@@ -109,23 +104,16 @@ const ThreadItems: React.FC<ThreadItemsProps> = ({ aiAssistantData, onThreadClic
 
   return (
     <div className="grw-ai-assistant-item-children">
-      {threads.map(thread => (
-        <ThreadItem
-          key={thread._id}
-          threadData={thread}
-          aiAssistantData={aiAssistantData}
-          onThreadClick={onThreadClick}
-          onThreadDelete={onThreadDelete}
-        />
+      {threads.map((thread) => (
+        <ThreadItem key={thread._id} threadData={thread} aiAssistantData={aiAssistantData} onThreadClick={onThreadClick} onThreadDelete={onThreadDelete} />
       ))}
     </div>
   );
 };
 
-
 /*
-*  AiAssistantItem
-*/
+ *  AiAssistantItem
+ */
 const getShareScopeIcon = (shareScope: AiAssistantShareScope, accessScope: AiAssistantAccessScope): string => {
   const determinedSharedScope = determineShareScope(shareScope, accessScope);
   switch (determinedSharedScope) {
@@ -149,59 +137,56 @@ type AiAssistantItemProps = {
   onDeleted?: () => void;
 };
 
-const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
-  currentUser,
-  aiAssistant,
-  onEditClick,
-  onItemClick,
-  onUpdated,
-  onDeleted,
-}) => {
+const AiAssistantItem: React.FC<AiAssistantItemProps> = ({ currentUser, aiAssistant, onEditClick, onItemClick, onUpdated, onDeleted }) => {
   const [isThreadsOpened, setIsThreadsOpened] = useState(false);
 
   const { t } = useTranslation();
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistant._id);
 
-  const openManagementModalHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
-    onEditClick(aiAssistantData);
-  }, [onEditClick]);
+  const openManagementModalHandler = useCallback(
+    (aiAssistantData: AiAssistantHasId) => {
+      onEditClick(aiAssistantData);
+    },
+    [onEditClick],
+  );
 
-  const openChatHandler = useCallback((aiAssistantData: AiAssistantHasId) => {
-    onItemClick(aiAssistantData);
-  }, [onItemClick]);
+  const openChatHandler = useCallback(
+    (aiAssistantData: AiAssistantHasId) => {
+      onItemClick(aiAssistantData);
+    },
+    [onItemClick],
+  );
 
-  const openThreadsHandler = useCallback(async() => {
+  const openThreadsHandler = useCallback(async () => {
     mutateThreadData();
-    setIsThreadsOpened(toggle => !toggle);
+    setIsThreadsOpened((toggle) => !toggle);
   }, [mutateThreadData]);
 
-  const setDefaultAiAssistantHandler = useCallback(async() => {
+  const setDefaultAiAssistantHandler = useCallback(async () => {
     try {
       await setDefaultAiAssistant(aiAssistant._id, !aiAssistant.isDefault);
       onUpdated?.();
       toastSuccess(t('ai_assistant_tree.toaster.ai_assistant_set_default_success'));
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       toastError(t('ai_assistant_tree.toaster.ai_assistant_set_default_failed'));
     }
   }, [aiAssistant._id, aiAssistant.isDefault, onUpdated, t]);
 
-  const deleteAiAssistantHandler = useCallback(async() => {
+  const deleteAiAssistantHandler = useCallback(async () => {
     try {
       await deleteAiAssistant(aiAssistant._id);
       onDeleted?.();
       toastSuccess('ai_assistant_tree.toaster.assistant_deleted_success');
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       toastError('ai_assistant_tree.toaster.assistant_deleted');
     }
   }, [aiAssistant._id, onDeleted]);
 
   const isOperable = currentUser?._id != null && getIdStringForRef(aiAssistant.owner) === currentUser._id;
-  const isPublicAiAssistantOperable = currentUser?.admin
-    && determineShareScope(aiAssistant.shareScope, aiAssistant.accessScope) === AiAssistantShareScope.PUBLIC_ONLY;
+  const isPublicAiAssistantOperable =
+    currentUser?.admin && determineShareScope(aiAssistant.shareScope, aiAssistant.accessScope) === AiAssistantShareScope.PUBLIC_ONLY;
 
   return (
     <>
@@ -276,21 +261,14 @@ const AiAssistantItem: React.FC<AiAssistantItemProps> = ({
         </div>
       </li>
 
-      { isThreadsOpened && (
-        <ThreadItems
-          aiAssistantData={aiAssistant}
-          onThreadClick={onItemClick}
-          onThreadDelete={mutateThreadData}
-        />
-      ) }
+      {isThreadsOpened && <ThreadItems aiAssistantData={aiAssistant} onThreadClick={onItemClick} onThreadDelete={mutateThreadData} />}
     </>
   );
 };
 
-
 /*
-*  AiAssistantTree
-*/
+ *  AiAssistantTree
+ */
 type AiAssistantTreeProps = {
   aiAssistants: AiAssistantHasId[];
   onUpdated?: () => void;
@@ -304,7 +282,7 @@ export const AiAssistantTree: React.FC<AiAssistantTreeProps> = ({ aiAssistants, 
 
   return (
     <ul className={`list-group ${moduleClass}`}>
-      {aiAssistants.map(assistant => (
+      {aiAssistants.map((assistant) => (
         <AiAssistantItem
           key={assistant._id}
           currentUser={currentUser}

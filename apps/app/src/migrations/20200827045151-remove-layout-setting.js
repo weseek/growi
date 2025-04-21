@@ -24,12 +24,7 @@ module.exports = {
     ];
 
     if (layoutType.value === '"kibela"') {
-      promise.push(
-        Config.update(
-          { key: 'customize:theme' },
-          { value: JSON.stringify('kibela') },
-        ),
-      );
+      promise.push(Config.update({ key: 'customize:theme' }, { value: JSON.stringify('kibela') }));
     }
 
     await Promise.all(promise);
@@ -42,20 +37,14 @@ module.exports = {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const theme = await Config.findOne({ key: 'customize:theme' });
-    const insertLayoutType = (theme.value === '"kibela"') ? 'kibela' : 'growi';
+    const insertLayoutType = theme.value === '"kibela"' ? 'kibela' : 'growi';
 
     const insertConfig = new Config({
       key: 'customize:layout',
       value: JSON.stringify(insertLayoutType),
     });
 
-    const promise = [
-      insertConfig.save(),
-      Config.update(
-        { key: 'customize:theme', value: JSON.stringify('kibela') },
-        { value: JSON.stringify('default') },
-      ),
-    ];
+    const promise = [insertConfig.save(), Config.update({ key: 'customize:theme', value: JSON.stringify('kibela') }, { value: JSON.stringify('default') })];
 
     await Promise.all(promise);
 

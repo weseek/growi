@@ -40,19 +40,22 @@ export async function requestPdfConverter(pageBulkExportJob: PageBulkExportJobDo
       pdfConvertStatus = PdfCtrlSyncJobStatusBodyStatus.FAILED;
     }
 
-    const res = await pdfCtrlSyncJobStatus({
-      jobId: pageBulkExportJob._id.toString(), expirationDate: bulkExportJobExpirationDate.toISOString(), status: pdfConvertStatus,
-    }, { baseURL: configManager.getConfig('app:pageBulkExportPdfConverterUri') });
+    const res = await pdfCtrlSyncJobStatus(
+      {
+        jobId: pageBulkExportJob._id.toString(),
+        expirationDate: bulkExportJobExpirationDate.toISOString(),
+        status: pdfConvertStatus,
+      },
+      { baseURL: configManager.getConfig('app:pageBulkExportPdfConverterUri') },
+    );
 
     if (res.data.status === PdfCtrlSyncJobStatus202Status.PDF_EXPORT_DONE) {
       pageBulkExportJob.status = PageBulkExportJobStatus.uploading;
       await pageBulkExportJob.save();
-    }
-    else if (res.data.status === PdfCtrlSyncJobStatus202Status.FAILED) {
+    } else if (res.data.status === PdfCtrlSyncJobStatus202Status.FAILED) {
       throw new Error('PDF export failed');
     }
-  }
-  catch (err) {
+  } catch (err) {
     // Only set as failure when host is ready but failed.
     // If host is not ready, the request should be retried on the next cron execution.
     if (!['ENOTFOUND', 'ECONNREFUSED'].includes(err.code)) {

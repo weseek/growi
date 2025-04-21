@@ -1,17 +1,10 @@
-import {
-  memo, useCallback, useMemo, type JSX,
-} from 'react';
+import { memo, useCallback, useMemo, type JSX } from 'react';
 
-import {
-  useCollapsedContentsOpened, usePreferCollapsedMode, useDrawerOpened, useSidebarMode,
-} from '~/stores/ui';
-
+import { useCollapsedContentsOpened, usePreferCollapsedMode, useDrawerOpened, useSidebarMode } from '~/stores/ui';
 
 import styles from './ToggleCollapseButton.module.scss';
 
-
 export const ToggleCollapseButton = memo((): JSX.Element => {
-
   const { isDrawerMode, isCollapsedMode } = useSidebarMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
   const { mutateAndSave: mutatePreferCollapsedMode } = usePreferCollapsedMode();

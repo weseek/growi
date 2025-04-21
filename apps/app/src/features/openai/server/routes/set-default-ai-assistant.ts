@@ -19,14 +19,14 @@ const logger = loggerFactory('growi:routes:apiv3:openai:set-default-ai-assistant
 type setDefaultAiAssistantFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqParams = {
-  id: string,
-}
+  id: string;
+};
 
 type ReqBody = {
-  isDefault: boolean,
-}
+  isDefault: boolean;
+};
 
-type Req = Request<ReqParams, Response, ReqBody>
+type Req = Request<ReqParams, Response, ReqBody>;
 
 export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi) => {
   const adminRequired = require('~/server/middlewares/admin-required')(crowi);
@@ -38,8 +38,13 @@ export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, adminRequired, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    adminRequired,
+    certifyAiService,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
@@ -51,8 +56,7 @@ export const setDefaultAiAssistantFactory: setDefaultAiAssistantFactory = (crowi
 
         const updatedAiAssistant = await AiAssistantModel.setDefault(id, isDefault);
         return res.apiv3({ updatedAiAssistant });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
 
         if (isHttpError(err)) {

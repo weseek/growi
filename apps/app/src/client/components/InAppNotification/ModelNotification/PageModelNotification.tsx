@@ -13,7 +13,6 @@ import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 import type { ModelNotificationUtils } from '.';
 
 export const usePageModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
-
   const router = useRouter();
   const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
 
@@ -27,11 +26,9 @@ export const usePageModelNotification = (notification: IInAppNotification & HasO
     const latestUsersCount = latestUsers.length;
     if (latestUsersCount === 1) {
       actionedUsers = latestUsers[0];
-    }
-    else if (notification.actionUsers.length >= 4) {
+    } else if (notification.actionUsers.length >= 4) {
       actionedUsers = `${latestUsers.slice(0, 2).join(', ')} and ${notification.actionUsers.length - 2} others`;
-    }
-    else {
+    } else {
       actionedUsers = latestUsers.join(', ');
     }
 
@@ -51,14 +48,7 @@ export const usePageModelNotification = (notification: IInAppNotification & HasO
   notification.parsedSnapshot = pageSerializers.parseSnapshot(notification.snapshot);
 
   const Notification = () => {
-    return (
-      <ModelNotification
-        notification={notification}
-        actionMsg={actionMsg}
-        actionIcon={actionIcon}
-        actionUsers={actionUsers}
-      />
-    );
+    return <ModelNotification notification={notification} actionMsg={actionMsg} actionIcon={actionIcon} actionUsers={actionUsers} />;
   };
 
   const publishOpen = () => {
@@ -75,5 +65,4 @@ export const usePageModelNotification = (notification: IInAppNotification & HasO
     Notification,
     publishOpen,
   };
-
 };

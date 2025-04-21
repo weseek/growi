@@ -16,11 +16,7 @@ function isXsv(lang?: string | null | undefined): lang is Lang {
 function rewriteNode(node: Node, lang: Lang) {
   const tableContents = (node as Code).value;
 
-  const tableDoc = csvToMarkdownTable(
-    tableContents,
-    lang === 'csv' || lang === 'csv-h' ? ',' : '\t',
-    lang === 'csv-h' || lang === 'tsv-h',
-  );
+  const tableDoc = csvToMarkdownTable(tableContents, lang === 'csv' || lang === 'csv-h' ? ',' : '\t', lang === 'csv-h' || lang === 'tsv-h');
   const tableTree = fromMarkdown(tableDoc, {
     extensions: [gfmTable()],
     mdastExtensions: [gfmTableFromMarkdown()],
@@ -34,9 +30,9 @@ function rewriteNode(node: Node, lang: Lang) {
 }
 
 export const remarkPlugin: Plugin = () => (tree) => {
-    visit(tree, 'code', (node: Code) => {
-      if (isXsv(node.lang)) {
-        rewriteNode(node, node.lang);
-      }
-    });
-  };
+  visit(tree, 'code', (node: Code) => {
+    if (isXsv(node.lang)) {
+      rewriteNode(node, node.lang);
+    }
+  });
+};

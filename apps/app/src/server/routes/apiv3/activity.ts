@@ -15,9 +15,7 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
 import type { ApiV3Response } from './interfaces/apiv3-response';
 
-
 const logger = loggerFactory('growi:routes:apiv3:activity');
-
 
 const validator = {
   list: [
@@ -210,7 +208,7 @@ module.exports = (crowi: Crowi): Router => {
    *             schema:
    *               $ref: '#/components/schemas/ActivityResponse'
    */
-  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async(req: Request, res: ApiV3Response) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, validator.list, apiV3FormValidator, async (req: Request, res: ApiV3Response) => {
     const auditLogEnabled = configManager.getConfig('app:auditLogEnabled');
     if (!auditLogEnabled) {
       const msg = 'AuditLog is not enabled';
@@ -227,11 +225,8 @@ module.exports = (crowi: Crowi): Router => {
       const parsedSearchFilter = JSON.parse(req.query.searchFilter as string) as ISearchFilter;
 
       // add username to query
-      const canContainUsernameFilterToQuery = (
-        parsedSearchFilter.usernames != null
-        && parsedSearchFilter.usernames.length > 0
-        && parsedSearchFilter.usernames.every(u => typeof u === 'string')
-      );
+      const canContainUsernameFilterToQuery =
+        parsedSearchFilter.usernames != null && parsedSearchFilter.usernames.length > 0 && parsedSearchFilter.usernames.every((u) => typeof u === 'string');
       if (canContainUsernameFilterToQuery) {
         Object.assign(query, { 'snapshot.username': parsedSearchFilter.usernames });
       }
@@ -239,7 +234,7 @@ module.exports = (crowi: Crowi): Router => {
       // add action to query
       if (parsedSearchFilter.actions != null) {
         const availableActions = crowi.activityService.getAvailableActions(false);
-        const searchableActions = parsedSearchFilter.actions.filter(action => availableActions.includes(action));
+        const searchableActions = parsedSearchFilter.actions.filter((action) => availableActions.includes(action));
         Object.assign(query, { action: searchableActions });
       }
 
@@ -254,8 +249,7 @@ module.exports = (crowi: Crowi): Router => {
             $lt: addMinutes(endDate, 1439),
           },
         });
-      }
-      else if (isValid(startDate) && !isValid(endDate)) {
+      } else if (isValid(startDate) && !isValid(endDate)) {
         Object.assign(query, {
           createdAt: {
             $gte: startDate,
@@ -264,23 +258,19 @@ module.exports = (crowi: Crowi): Router => {
           },
         });
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Invalid value', err);
       return res.apiv3Err(err, 400);
     }
 
     try {
-      const paginateResult = await Activity.paginate(
-        query,
-        {
-          lean: true,
-          limit,
-          offset,
-          sort: { createdAt: -1 },
-          populate: 'user',
-        },
-      );
+      const paginateResult = await Activity.paginate(query, {
+        lean: true,
+        limit,
+        offset,
+        sort: { createdAt: -1 },
+        populate: 'user',
+      });
 
       const serializedDocs = paginateResult.docs.map((doc: IActivity) => {
         const { user, ...rest } = doc;
@@ -296,8 +286,7 @@ module.exports = (crowi: Crowi): Router => {
       };
 
       return res.apiv3({ serializedPaginationResult });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Failed to get paginated activity', err);
       return res.apiv3Err(err, 500);
     }

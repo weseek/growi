@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 import { format as dateFnsFormat } from 'date-fns/format';
@@ -11,19 +10,15 @@ const ExternalAccountRow = (props) => {
 
   return (
     <tr>
-      <td>{ account.providerType }</td>
+      <td>{account.providerType}</td>
       <td>
-        <strong>{ account.accountId }</strong>
+        <strong>{account.accountId}</strong>
       </td>
       <td>{dateFnsFormat(new Date(account.createdAt), 'yyyy-MM-dd')}</td>
       <td className="text-center">
-        <button
-          type="button"
-          className="btn btn-sm btn-danger"
-          onClick={() => props.openDisassociateModal(account)}
-        >
+        <button type="button" className="btn btn-sm btn-danger" onClick={() => props.openDisassociateModal(account)}>
           <span className="material-symbols-outlined">link_off</span>
-          { t('Disassociate') }
+          {t('Disassociate')}
         </button>
       </td>
     </tr>

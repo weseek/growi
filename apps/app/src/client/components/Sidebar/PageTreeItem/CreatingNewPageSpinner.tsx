@@ -2,7 +2,6 @@ import type { JSX } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
 
-
 export const CreatingNewPageSpinner = ({ show }: { show?: boolean }): JSX.Element => {
   if (!show) {
     return <></>;

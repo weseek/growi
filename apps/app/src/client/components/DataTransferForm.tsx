@@ -15,7 +15,7 @@ const DataTransferForm = (): JSX.Element => {
   return (
     <div data-testid="installerForm" className="py-3 px-4">
       <p className="text-white fs-5 mt-2">
-        <strong>{ t('g2g_data_transfer.transfer_data_to_this_growi')}</strong>
+        <strong>{t('g2g_data_transfer.transfer_data_to_this_growi')}</strong>
       </p>
 
       <div className="row mt-3">

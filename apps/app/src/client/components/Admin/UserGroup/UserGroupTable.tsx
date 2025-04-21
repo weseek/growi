@@ -9,22 +9,20 @@ import Link from 'next/link';
 
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 
-
 import styles from './UserGroupTable.module.scss';
 
 const userGroupEditLinkStyle = styles['user-group-edit-link'] ?? '';
 
-
 type Props = {
-  headerLabel?: string,
-  userGroups: IUserGroupHasId[],
-  userGroupRelations: IUserGroupRelation[],
-  childUserGroups: IUserGroupHasId[],
-  isAclEnabled: boolean,
-  onEdit?: (userGroup: IUserGroupHasId) => void | Promise<void>,
-  onRemove?: (userGroup: IUserGroupHasId) => void | Promise<void>,
-  onDelete?: (userGroup: IUserGroupHasId) => void | Promise<void>,
-  isExternalGroup?: boolean
+  headerLabel?: string;
+  userGroups: IUserGroupHasId[];
+  userGroupRelations: IUserGroupRelation[];
+  childUserGroups: IUserGroupHasId[];
+  isAclEnabled: boolean;
+  onEdit?: (userGroup: IUserGroupHasId) => void | Promise<void>;
+  onRemove?: (userGroup: IUserGroupHasId) => void | Promise<void>;
+  onDelete?: (userGroup: IUserGroupHasId) => void | Promise<void>;
+  isExternalGroup?: boolean;
 };
 
 /*
@@ -61,9 +59,9 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
 };
 
 type UserGroupEditLinkProps = {
-  group:IUserGroupHasId,
-  isExternalGroup:boolean,
-}
+  group: IUserGroupHasId;
+  isExternalGroup: boolean;
+};
 
 const UserGroupEditLink = (props: UserGroupEditLinkProps): JSX.Element => {
   return (
@@ -107,7 +105,7 @@ export const UserGroupTable: FC<Props> = ({
     });
   };
 
-  const onClickEdit = async(e) => {
+  const onClickEdit = async (e) => {
     if (onEdit == null) {
       return;
     }
@@ -120,7 +118,7 @@ export const UserGroupTable: FC<Props> = ({
     onEdit(userGroup);
   };
 
-  const onClickRemove = async(e) => {
+  const onClickRemove = async (e) => {
     if (onRemove == null) {
       return;
     }
@@ -133,13 +131,13 @@ export const UserGroupTable: FC<Props> = ({
     try {
       await onRemove(userGroup);
       userGroup.parent = null;
-    }
-    catch {
+    } catch {
       //
     }
   };
 
-  const onClickDelete = (e) => { // no preventDefault
+  const onClickDelete = (e) => {
+    // no preventDefault
     if (onDelete == null) {
       return;
     }
@@ -183,76 +181,72 @@ export const UserGroupTable: FC<Props> = ({
             return (
               <tr key={group._id}>
                 {isExternalGroup && <td>{(group as IExternalUserGroupHasId).provider}</td>}
-                {isAclEnabled
-                  ? (
-                    <td>
-                      <UserGroupEditLink group={group} isExternalGroup={isExternalGroup} />
-                    </td>
-                  )
-                  : (
-                    <td>{group.name}</td>
-                  )
-                }
+                {isAclEnabled ? (
+                  <td>
+                    <UserGroupEditLink group={group} isExternalGroup={isExternalGroup} />
+                  </td>
+                ) : (
+                  <td>{group.name}</td>
+                )}
                 <td>{group.description}</td>
                 <td>
                   <ul className="list-inline">
-                    {users != null && users.map((user) => {
-                      return <li key={user._id} className="list-inline-item badge text-bg-warning">{user.username}</li>;
-                    })}
+                    {users != null &&
+                      users.map((user) => {
+                        return (
+                          <li key={user._id} className="list-inline-item badge text-bg-warning">
+                            {user.username}
+                          </li>
+                        );
+                      })}
                   </ul>
                 </td>
                 <td>
                   <ul className="list-inline">
-                    {groupIdToChildGroupsMap[group._id] != null && groupIdToChildGroupsMap[group._id].map((group) => {
-                      return (
-                        <li key={group._id} className="list-inline-item badge text-bg-success">
-                          {isAclEnabled
-                            ? (
+                    {groupIdToChildGroupsMap[group._id] != null &&
+                      groupIdToChildGroupsMap[group._id].map((group) => {
+                        return (
+                          <li key={group._id} className="list-inline-item badge text-bg-success">
+                            {isAclEnabled ? (
                               <Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link>
-                            )
-                            : (
+                            ) : (
                               <p>{group.name}</p>
-                            )
-                          }
-                        </li>
-                      );
-                    })}
+                            )}
+                          </li>
+                        );
+                      })}
                   </ul>
                 </td>
                 <td>{dateFnsFormat(new Date(group.createdAt), 'yyyy-MM-dd')}</td>
-                {isAclEnabled
-                  ? (
-                    <td>
-                      <div className="btn-group admin-group-menu">
-                        <button
-                          type="button"
-                          id={`admin-group-menu-button-${group._id}`}
-                          className="btn btn-outline-secondary btn-sm dropdown-toggle"
-                          data-bs-toggle="dropdown"
-                        >
-                          <span className="material-symbols-outlined fs-5">settings</span>
+                {isAclEnabled ? (
+                  <td>
+                    <div className="btn-group admin-group-menu">
+                      <button
+                        type="button"
+                        id={`admin-group-menu-button-${group._id}`}
+                        className="btn btn-outline-secondary btn-sm dropdown-toggle"
+                        data-bs-toggle="dropdown"
+                      >
+                        <span className="material-symbols-outlined fs-5">settings</span>
+                      </button>
+                      <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
+                        <button className="dropdown-item" type="button" role="button" onClick={onClickEdit} data-user-group-id={group._id}>
+                          <span className="material-symbols-outlined me-1">edit_square</span> {t('Edit')}
                         </button>
-                        <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
-                          <button className="dropdown-item" type="button" role="button" onClick={onClickEdit} data-user-group-id={group._id}>
-                            <span className="material-symbols-outlined me-1">edit_square</span> {t('Edit')}
+                        {onRemove != null && (
+                          <button className="dropdown-item" type="button" role="button" onClick={onClickRemove} data-user-group-id={group._id}>
+                            <span className="material-symbols-outlined me-1">group_remove</span> {t('admin:user_group_management.remove_child_group')}
                           </button>
-                          {onRemove != null
-                          && (
-                            <button className="dropdown-item" type="button" role="button" onClick={onClickRemove} data-user-group-id={group._id}>
-                              <span className="material-symbols-outlined me-1">group_remove</span> {t('admin:user_group_management.remove_child_group')}
-                            </button>
-                          )}
-                          <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>
-                            <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
-                          </button>
-                        </div>
+                        )}
+                        <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>
+                          <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
+                        </button>
                       </div>
-                    </td>
-                  )
-                  : (
-                    <td></td>
-                  )
-                }
+                    </div>
+                  </td>
+                ) : (
+                  <td></td>
+                )}
               </tr>
             );
           })}

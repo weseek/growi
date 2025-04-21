@@ -6,18 +6,17 @@ import { configManager } from './config-manager';
 const logger = loggerFactory('growi:service:AclService');
 
 export interface AclService {
-  get labels(): { [key: string]: string },
-  isAclEnabled(): boolean,
-  isWikiModeForced(): boolean,
-  isGuestAllowedToRead(): boolean,
-  getGuestModeValue(): string,
+  get labels(): { [key: string]: string };
+  isAclEnabled(): boolean;
+  isWikiModeForced(): boolean;
+  isGuestAllowedToRead(): boolean;
+  getGuestModeValue(): string;
 }
 
 /**
  * the service class of AclService
  */
 class AclServiceImpl implements AclService {
-
   get labels() {
     return {
       SECURITY_RESTRICT_GUEST_MODE_DENY: 'Deny',
@@ -69,11 +68,8 @@ class AclServiceImpl implements AclService {
   }
 
   getGuestModeValue() {
-    return this.isGuestAllowedToRead()
-      ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY
-      : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
+    return this.isGuestAllowedToRead() ? this.labels.SECURITY_RESTRICT_GUEST_MODE_READONLY : this.labels.SECURITY_RESTRICT_GUEST_MODE_DENY;
   }
-
 }
 
 export const aclService = new AclServiceImpl();

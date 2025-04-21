@@ -3,7 +3,6 @@ import crypto from 'crypto';
 
 import type { IGrowiAppInfoLegacy } from '../../interfaces/growi-app-info';
 
-
 type IHasGrowiAppInfoLegacy<T> = T & {
   growiInfo: IGrowiAppInfoLegacy;
 };

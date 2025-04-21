@@ -12,9 +12,9 @@ const logger = loggerFactory('growi:service:openai');
 
 type ErrorHandler = {
   notFoundError?: () => Promise<void>;
-}
+};
 
-export const openaiApiErrorHandler = async(error: unknown, handler: ErrorHandler): Promise<void> => {
+export const openaiApiErrorHandler = async (error: unknown, handler: ErrorHandler): Promise<void> => {
   if (!(error instanceof OpenAI.APIError)) {
     return;
   }
@@ -25,5 +25,4 @@ export const openaiApiErrorHandler = async(error: unknown, handler: ErrorHandler
     await handler.notFoundError();
     return;
   }
-
 };

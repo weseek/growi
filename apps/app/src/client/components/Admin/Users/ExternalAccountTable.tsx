@@ -13,24 +13,25 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import styles from './ExternalAccountTable.module.scss';
 
 type ExternalAccountTableProps = {
-  adminExternalAccountsContainer: AdminExternalAccountsContainer,
-}
+  adminExternalAccountsContainer: AdminExternalAccountsContainer;
+};
 
 const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => {
-
   const { t } = useTranslation('admin');
 
   const { adminExternalAccountsContainer } = props;
 
-  const removeExtenalAccount = useCallback(async(externalAccountId) => {
-    try {
-      const accountId = await adminExternalAccountsContainer.removeExternalAccountById(externalAccountId);
-      toastSuccess(t('toaster.remove_external_user_success', { accountId }));
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [adminExternalAccountsContainer, t]);
+  const removeExtenalAccount = useCallback(
+    async (externalAccountId) => {
+      try {
+        const accountId = await adminExternalAccountsContainer.removeExternalAccountById(externalAccountId);
+        toastSuccess(t('toaster.remove_external_user_success', { accountId }));
+      } catch (err) {
+        toastError(err);
+      }
+    },
+    [adminExternalAccountsContainer, t],
+  );
 
   return (
     <div className="table-responsive text-nowrap">
@@ -38,9 +39,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
         <thead>
           <tr>
             <th style={{ width: '100px' }}>
-              <div className="d-flex align-items-center">
-                {t('user_management.authentication_provider')}
-              </div>
+              <div className="d-flex align-items-center">{t('user_management.authentication_provider')}</div>
             </th>
             <th style={{ width: '200px' }}>
               <div className="d-flex align-items-center">
@@ -49,7 +48,8 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
             </th>
             <th style={{ width: '200px' }}>
               <div className="d-flex align-items-center">
-                {t('user_management.related_username')}<code className="ms-2">username</code>
+                {t('user_management.related_username')}
+                <code className="ms-2">username</code>
               </div>
             </th>
             <th style={{ width: '100px' }}>
@@ -64,30 +64,39 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                   data-html="true"
                   title={t('user_management.password_setting_help')}
                 >
-                  <small><span className="material-symbols-outlined" aria-hidden="true">help</span></small>
+                  <small>
+                    <span className="material-symbols-outlined" aria-hidden="true">
+                      help
+                    </span>
+                  </small>
                 </span>
               </div>
             </th>
             <th style={{ width: '100px' }}>
-              <div className="d-flex align-items-center">
-                {t('Created')}
-              </div>
+              <div className="d-flex align-items-center">{t('Created')}</div>
             </th>
             <th style={{ width: '70px' }}></th>
           </tr>
         </thead>
         <tbody>
-          { adminExternalAccountsContainer.state.externalAccounts.map((ea: IAdminExternalAccount<IExternalAuthProviderType>) => {
+          {adminExternalAccountsContainer.state.externalAccounts.map((ea: IAdminExternalAccount<IExternalAuthProviderType>) => {
             return (
               <tr key={ea._id}>
-                <td><span>{ea.providerType}</span></td>
-                <td><strong>{ea.accountId}</strong></td>
-                <td><strong>{ea.user.username}</strong></td>
                 <td>
-                  {ea.user.password
-                    ? (<span className="badge bg-info">{t('user_management.set')}</span>)
-                    : (<span className="badge bg-warning text-dark">{t('user_management.unset')}</span>)
-                  }
+                  <span>{ea.providerType}</span>
+                </td>
+                <td>
+                  <strong>{ea.accountId}</strong>
+                </td>
+                <td>
+                  <strong>{ea.user.username}</strong>
+                </td>
+                <td>
+                  {ea.user.password ? (
+                    <span className="badge bg-info">{t('user_management.set')}</span>
+                  ) : (
+                    <span className="badge bg-warning text-dark">{t('user_management.unset')}</span>
+                  )}
                 </td>
                 <td>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</td>
                 <td>
@@ -97,12 +106,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                     </button>
                     <ul className="dropdown-menu" role="menu">
                       <li className="dropdown-header">{t('user_management.user_table.edit_menu')}</li>
-                      <button
-                        className="dropdown-item"
-                        type="button"
-                        role="button"
-                        onClick={() => removeExtenalAccount(ea._id)}
-                      >
+                      <button className="dropdown-item" type="button" role="button" onClick={() => removeExtenalAccount(ea._id)}>
                         <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
                       </button>
                     </ul>
@@ -110,11 +114,10 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 </td>
               </tr>
             );
-          }) }
+          })}
         </tbody>
       </table>
     </div>
-
   );
 };
 

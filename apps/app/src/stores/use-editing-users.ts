@@ -5,14 +5,12 @@ import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
 type EditingUsersStatus = {
-  userList: IUserHasId[],
-}
+  userList: IUserHasId[];
+};
 
 type EditingUsersStatusUtils = {
-  onEditorsUpdated(
-    userList: IUserHasId[],
-  ): void,
-}
+  onEditorsUpdated(userList: IUserHasId[]): void;
+};
 
 export const useEditingUsers = (status?: EditingUsersStatus): SWRResponse<EditingUsersStatus, Error> & EditingUsersStatusUtils => {
   const initialData: EditingUsersStatus = {
@@ -22,9 +20,12 @@ export const useEditingUsers = (status?: EditingUsersStatus): SWRResponse<Editin
 
   const { mutate } = swrResponse;
 
-  const onEditorsUpdated = useCallback((userList: IUserHasId[]): void => {
-    mutate({ userList });
-  }, [mutate]);
+  const onEditorsUpdated = useCallback(
+    (userList: IUserHasId[]): void => {
+      mutate({ userList });
+    },
+    [mutate],
+  );
 
   return {
     ...swrResponse,

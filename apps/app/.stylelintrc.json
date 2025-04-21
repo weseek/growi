@@ -1,6 +1,4 @@
 {
   "extends": "../../.stylelintrc.json",
-  "ignoreFiles": [
-    "src/styles/prebuilt/*.css"
-  ]
+  "ignoreFiles": ["src/styles/prebuilt/*.css"]
 }

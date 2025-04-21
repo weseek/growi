@@ -6,35 +6,24 @@ import styles from './ThemeColorBox.module.scss';
 
 const themeOptionClass = styles['theme-option-container'];
 
-
 type Props = {
-  isSelected: boolean,
-  metadata: GrowiThemeMetadata,
-  onSelected?: () => void,
+  isSelected: boolean;
+  metadata: GrowiThemeMetadata;
+  onSelected?: () => void;
 };
 
 export const ThemeColorBox = (props: Props): JSX.Element => {
-
-  const {
-    isSelected, metadata, onSelected,
-  } = props;
-  const {
-    name, lightBg, darkBg, lightSidebar, darkSidebar, lightIcon, darkIcon, createBtn, isPresetTheme,
-  } = metadata;
+  const { isSelected, metadata, onSelected } = props;
+  const { name, lightBg, darkBg, lightSidebar, darkSidebar, lightIcon, darkIcon, createBtn, isPresetTheme } = metadata;
 
   return (
-    <div
-      id={`theme-option-${name}`}
-      className={`${themeOptionClass} d-flex flex-column align-items-center ${isSelected ? 'active' : ''}`}
-      onClick={onSelected}
-    >
+    <div id={`theme-option-${name}`} className={`${themeOptionClass} d-flex flex-column align-items-center ${isSelected ? 'active' : ''}`} onClick={onSelected}>
       <a
         id={name}
         role="button"
         className={`
           m-0 rounded rounded-3
-          border border-4 border-primary ${isSelected ? '' : 'border-opacity-10'}`
-        }
+          border border-4 border-primary ${isSelected ? '' : 'border-opacity-10'}`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" className="rounded">
           <path d="M32.5,0V36.364L64,20.437V0Z" fill={lightBg} />
@@ -55,9 +44,10 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
           <rect width="19.629" height="2.062" transform="translate(6.436 53.439)" fill={darkIcon} />
         </svg>
       </a>
-      <span className={`mt-2 ${isSelected ? '' : 'opacity-25'}`}><b>{ name }</b></span>
-      { !isPresetTheme && <span className={`badge bg-primary mt-1 ${isSelected ? '' : 'opacity-25'}`}>Plugin</span> }
+      <span className={`mt-2 ${isSelected ? '' : 'opacity-25'}`}>
+        <b>{name}</b>
+      </span>
+      {!isPresetTheme && <span className={`badge bg-primary mt-1 ${isSelected ? '' : 'opacity-25'}`}>Plugin</span>}
     </div>
   );
-
 };

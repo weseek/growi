@@ -10,8 +10,8 @@ import { useAutoComparingRevisionsByQueryParam } from './hooks';
 const logger = loggerFactory('growi:PageHistory');
 
 type PageHistoryProps = {
-  onClose: () => void
-}
+  onClose: () => void;
+};
 
 export const PageHistory: React.FC<PageHistoryProps> = (props: PageHistoryProps) => {
   const { onClose } = props;

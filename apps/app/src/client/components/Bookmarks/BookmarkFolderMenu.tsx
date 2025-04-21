@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useMemo, useState, type JSX,
-} from 'react';
+import React, { useCallback, useMemo, useState, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
@@ -17,18 +15,16 @@ import { BookmarkFolderMenuItem } from './BookmarkFolderMenuItem';
 import styles from './BookmarkFolderMenu.module.scss';
 
 type BookmarkFolderMenuProps = {
-  isOpen: boolean,
-  pageId: string,
-  isBookmarked: boolean,
-  onToggle?: () => void,
-  onUnbookmark?: () => void,
-  children?: React.ReactNode,
-}
+  isOpen: boolean;
+  pageId: string;
+  isBookmarked: boolean;
+  onToggle?: () => void;
+  onUnbookmark?: () => void;
+  children?: React.ReactNode;
+};
 
 export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element => {
-  const {
-    isOpen, pageId, isBookmarked, onToggle, onUnbookmark, children,
-  } = props;
+  const { isOpen, pageId, isBookmarked, onToggle, onUnbookmark, children } = props;
 
   const { t } = useTranslation();
 
@@ -44,16 +40,15 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
     return bookmarkFolders != null && bookmarkFolders.length > 0;
   }, [bookmarkFolders]);
 
-  const toggleBookmarkHandler = useCallback(async() => {
+  const toggleBookmarkHandler = useCallback(async () => {
     try {
       await toggleBookmark(pageId, isBookmarked);
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [isBookmarked, pageId]);
 
-  const onUnbookmarkHandler = useCallback(async() => {
+  const onUnbookmarkHandler = useCallback(async () => {
     if (onUnbookmark != null) {
       onUnbookmark();
     }
@@ -64,7 +59,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
     mutatePageInfo();
   }, [onUnbookmark, toggleBookmarkHandler, mutateCurrentUserBookmarks, mutateBookmarkFolders, mutatePageInfo]);
 
-  const toggleHandler = useCallback(async() => {
+  const toggleHandler = useCallback(async () => {
     // on close
     if (isOpen && bookmarkFolders != null) {
       bookmarkFolders.forEach((bookmarkFolder) => {
@@ -89,43 +84,36 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
         await toggleBookmarkHandler();
         mutateCurrentUserBookmarks();
         mutatePageInfo();
-      }
-      catch (err) {
+      } catch (err) {
         toastError(err);
       }
     }
-  },
-  [isOpen, bookmarkFolders, onToggle, selectedItem, isBookmarked, pageId, toggleBookmarkHandler, mutateCurrentUserBookmarks, mutatePageInfo]);
+  }, [isOpen, bookmarkFolders, onToggle, selectedItem, isBookmarked, pageId, toggleBookmarkHandler, mutateCurrentUserBookmarks, mutatePageInfo]);
 
-  const onMenuItemClickHandler = useCallback(async(e, itemId: string) => {
-    e.stopPropagation();
+  const onMenuItemClickHandler = useCallback(
+    async (e, itemId: string) => {
+      e.stopPropagation();
 
-    setSelectedItem(itemId);
+      setSelectedItem(itemId);
 
-    try {
-      await addBookmarkToFolder(pageId, itemId === 'root' ? null : itemId);
-      mutateCurrentUserBookmarks();
-      mutateBookmarkFolders();
-      mutatePageInfo();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [pageId, mutateCurrentUserBookmarks, mutateBookmarkFolders, mutatePageInfo]);
+      try {
+        await addBookmarkToFolder(pageId, itemId === 'root' ? null : itemId);
+        mutateCurrentUserBookmarks();
+        mutateBookmarkFolders();
+        mutatePageInfo();
+      } catch (err) {
+        toastError(err);
+      }
+    },
+    [pageId, mutateCurrentUserBookmarks, mutateBookmarkFolders, mutatePageInfo],
+  );
 
   const renderBookmarkMenuItem = () => {
     return (
       <>
-        <DropdownItem
-          toggle={false}
-          onClick={onUnbookmarkHandler}
-          className="grw-bookmark-folder-menu-item text-danger text-truncate"
-        >
+        <DropdownItem toggle={false} onClick={onUnbookmarkHandler} className="grw-bookmark-folder-menu-item text-danger text-truncate">
           {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
-          <span className="material-symbols-outlined">bookmark</span>{' '}
-          <span className="mx-2">
-            {t('bookmark_folder.cancel_bookmark')}
-          </span>
+          <span className="material-symbols-outlined">bookmark</span> <span className="mx-2">{t('bookmark_folder.cancel_bookmark')}</span>
         </DropdownItem>
 
         {isBookmarkFolderExists && (
@@ -136,42 +124,30 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
                 className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action px-4"
                 tabIndex={0}
                 role="menuitem"
-                onClick={e => onMenuItemClickHandler(e, 'root')}
+                onClick={(e) => onMenuItemClickHandler(e, 'root')}
               >
-                <BookmarkFolderMenuItem
-                  itemId="root"
-                  itemName={t('bookmark_folder.root')}
-                  isSelected={selectedItem === 'root'}
-                />
+                <BookmarkFolderMenuItem itemId="root" itemName={t('bookmark_folder.root')} isSelected={selectedItem === 'root'} />
               </div>
             </div>
-            {bookmarkFolders?.map(folder => (
+            {bookmarkFolders?.map((folder) => (
               <React.Fragment key={`bookmark-folders-${folder._id}`}>
                 <div
                   className="dropdown-item grw-bookmark-folder-menu-item grw-bookmark-folder-menu-item-folder-first list-group-item list-group-item-action"
                   tabIndex={0}
                   role="menuitem"
-                  onClick={e => onMenuItemClickHandler(e, folder._id)}
+                  onClick={(e) => onMenuItemClickHandler(e, folder._id)}
                 >
-                  <BookmarkFolderMenuItem
-                    itemId={folder._id}
-                    itemName={folder.name}
-                    isSelected={selectedItem === folder._id}
-                  />
+                  <BookmarkFolderMenuItem itemId={folder._id} itemName={folder.name} isSelected={selectedItem === folder._id} />
                 </div>
-                {folder.childFolder?.map(child => (
+                {folder.childFolder?.map((child) => (
                   <div key={child._id}>
                     <div
                       className="dropdown-item grw-bookmark-folder-menu-item grw-bookmark-folder-menu-item-folder-second list-group-item list-group-item-action"
                       tabIndex={0}
                       role="menuitem"
-                      onClick={e => onMenuItemClickHandler(e, child._id)}
+                      onClick={(e) => onMenuItemClickHandler(e, child._id)}
                     >
-                      <BookmarkFolderMenuItem
-                        itemId={child._id}
-                        itemName={child.name}
-                        isSelected={selectedItem === child._id}
-                      />
+                      <BookmarkFolderMenuItem itemId={child._id} itemName={child.name} isSelected={selectedItem === child._id} />
                     </div>
                   </div>
                 ))}
@@ -184,23 +160,14 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
   };
 
   return (
-    <UncontrolledDropdown
-      isOpen={isOpen}
-      onToggle={toggleHandler}
-    >
+    <UncontrolledDropdown isOpen={isOpen} onToggle={toggleHandler}>
       {children}
 
-      { isOpen && (
-        <DropdownMenu
-          end
-          persist
-          strategy="fixed"
-          container="body"
-          className={`grw-bookmark-folder-menu ${styles['grw-bookmark-folder-menu']}`}
-        >
-          { renderBookmarkMenuItem() }
+      {isOpen && (
+        <DropdownMenu end persist strategy="fixed" container="body" className={`grw-bookmark-folder-menu ${styles['grw-bookmark-folder-menu']}`}>
+          {renderBookmarkMenuItem()}
         </DropdownMenu>
-      ) }
+      )}
     </UncontrolledDropdown>
   );
 };

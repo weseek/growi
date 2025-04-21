@@ -12,7 +12,6 @@ import type { ZipFileStat } from '../interfaces/export';
 
 import { tapStreamDataByPromise } from './unzip-stream-utils';
 
-
 const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-disable-line no-unused-vars
 
 /**
@@ -20,7 +19,6 @@ const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-dis
  * common properties and methods between export service and import service are defined in this service
  */
 class GrowiBridgeService {
-
   crowi: Crowi;
 
   encoding: BufferEncoding = 'utf-8';
@@ -76,7 +74,7 @@ class GrowiBridgeService {
    */
   async parseZipFile(zipFile: string): Promise<ZipFileStat | null> {
     const fileStat = fs.statSync(zipFile);
-    const innerFileStats: Array<{ fileName: string, collectionName: string, size: number }> = [];
+    const innerFileStats: Array<{ fileName: string; collectionName: string; size: number }> = [];
     let meta = {};
 
     const readStream = fs.createReadStream(zipFile);
@@ -92,8 +90,7 @@ class GrowiBridgeService {
         tapPromise = tapStreamDataByPromise(entry).then((metaBuffer) => {
           meta = JSON.parse(metaBuffer.toString());
         });
-      }
-      else {
+      } else {
         innerFileStats.push({
           fileName,
           collectionName: path.basename(fileName, '.json'),
@@ -106,9 +103,8 @@ class GrowiBridgeService {
     try {
       await finished(unzipEntryStream);
       await tapPromise;
-    }
-    // if zip is broken
-    catch (err) {
+    } catch (err) {
+      // if zip is broken
       logger.error(err);
       return null;
     }
@@ -121,7 +117,6 @@ class GrowiBridgeService {
       innerFileStats,
     };
   }
-
 }
 
 export default GrowiBridgeService;

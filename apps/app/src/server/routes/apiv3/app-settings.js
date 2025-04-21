@@ -13,14 +13,12 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-
 const logger = loggerFactory('growi:routes:apiv3:app-settings');
 
 const { pathUtils } = require('@growi/core/dist/utils');
 const express = require('express');
 
 const router = express.Router();
-
 
 /**
  * @swagger
@@ -345,20 +343,32 @@ module.exports = (crowi) => {
     ],
     siteUrlSetting: [
       // https://regex101.com/r/5Xef8V/1
-      body('siteUrl').trim().matches(/^(https?:\/\/)/).isURL({ require_tld: false }),
+      body('siteUrl')
+        .trim()
+        .matches(/^(https?:\/\/)/)
+        .isURL({ require_tld: false }),
     ],
     mailSetting: [
-      body('fromAddress').trim().if(value => value !== '').isEmail(),
+      body('fromAddress')
+        .trim()
+        .if((value) => value !== '')
+        .isEmail(),
       body('transmissionMethod').isIn(['smtp', 'ses']),
     ],
     smtpSetting: [
       body('smtpHost').trim(),
-      body('smtpPort').trim().if(value => value !== '').isPort(),
+      body('smtpPort')
+        .trim()
+        .if((value) => value !== '')
+        .isPort(),
       body('smtpUser').trim(),
       body('smtpPassword').trim(),
     ],
     sesSetting: [
-      body('sesAccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
+      body('sesAccessKeyId')
+        .trim()
+        .if((value) => value !== '')
+        .matches(/^[\da-zA-Z]+$/),
       body('sesSecretAccessKey').trim(),
     ],
     fileUploadSetting: [
@@ -366,11 +376,13 @@ module.exports = (crowi) => {
       body('gcsApiKeyJsonPath').trim(),
       body('gcsBucket').trim(),
       body('gcsUploadNamespace').trim(),
-      body('gcsReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
+      body('gcsReferenceFileWithRelayMode')
+        .if((value) => value != null)
+        .isBoolean(),
       body('s3Region')
         .trim()
-        .if(value => value !== '')
-        .custom(async(value) => {
+        .if((value) => value !== '')
+        .custom(async (value) => {
           const { t } = await getTranslation();
           if (!/^[a-z]+-[a-z]+-\d+$/.test(value)) {
             throw new Error(t('validation.aws_region'));
@@ -379,8 +391,8 @@ module.exports = (crowi) => {
         }),
       body('s3CustomEndpoint')
         .trim()
-        .if(value => value !== '')
-        .custom(async(value) => {
+        .if((value) => value !== '')
+        .custom(async (value) => {
           const { t } = await getTranslation();
           if (!/^(https?:\/\/[^/]+|)$/.test(value)) {
             throw new Error(t('validation.aws_custom_endpoint'));
@@ -388,28 +400,26 @@ module.exports = (crowi) => {
           return true;
         }),
       body('s3Bucket').trim(),
-      body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
+      body('s3AccessKeyId')
+        .trim()
+        .if((value) => value !== '')
+        .matches(/^[\da-zA-Z]+$/),
       body('s3SecretAccessKey').trim(),
-      body('s3ReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
+      body('s3ReferenceFileWithRelayMode')
+        .if((value) => value != null)
+        .isBoolean(),
       body('azureTenantId').trim(),
       body('azureClientId').trim(),
       body('azureClientSecret').trim(),
       body('azureStorageAccountName').trim(),
       body('azureStorageStorageName').trim(),
-      body('azureReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
-
+      body('azureReferenceFileWithRelayMode')
+        .if((value) => value != null)
+        .isBoolean(),
     ],
-    questionnaireSettings: [
-      body('isQuestionnaireEnabled').isBoolean(),
-      body('isAppSiteUrlHashed').isBoolean(),
-    ],
-    pageBulkExportSettings: [
-      body('isBulkExportPagesEnabled').isBoolean(),
-      body('bulkExportDownloadExpirationSeconds').isInt(),
-    ],
-    maintenanceMode: [
-      body('flag').isBoolean(),
-    ],
+    questionnaireSettings: [body('isQuestionnaireEnabled').isBoolean(), body('isAppSiteUrlHashed').isBoolean()],
+    pageBulkExportSettings: [body('isBulkExportPagesEnabled').isBoolean(), body('bulkExportDownloadExpirationSeconds').isInt()],
+    maintenanceMode: [body('flag').isBoolean()],
   };
 
   /**
@@ -434,7 +444,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/AppSettingParams'
    */
-  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, adminRequired, async (req, res) => {
     const appSettingsParams = {
       title: configManager.getConfig('app:title'),
       confidential: configManager.getConfig('app:confidential'),
@@ -505,7 +515,6 @@ module.exports = (crowi) => {
       isBulkExportDisabledForCloud: configManager.getConfig('app:growiCloudUri') != null,
     };
     return res.apiv3({ appSettingsParams });
-
   });
 
   /**
@@ -537,7 +546,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/AppSettingPutParams'
    */
-  router.put('/app-setting', loginRequiredStrictly, adminRequired, addActivity, validator.appSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/app-setting', loginRequiredStrictly, adminRequired, addActivity, validator.appSetting, apiV3FormValidator, async (req, res) => {
     const requestAppSettingParams = {
       'app:title': req.body.title,
       'app:confidential': req.body.confidential,
@@ -560,13 +569,11 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ appSettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating app setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-appSetting-failed'));
     }
-
   });
 
   /**
@@ -602,8 +609,7 @@ module.exports = (crowi) => {
    *                          description: Site URL. e.g. https://example.com, https://example.com:3000
    *                          example: 'http://localhost:3000'
    */
-  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, addActivity, validator.siteUrlSetting, apiV3FormValidator, async(req, res) => {
-
+  router.put('/site-url-setting', loginRequiredStrictly, adminRequired, addActivity, validator.siteUrlSetting, apiV3FormValidator, async (req, res) => {
     const useOnlyEnvVars = configManager.getConfig('env:useOnlyEnvVars:app:siteUrl');
 
     if (useOnlyEnvVars) {
@@ -624,13 +630,11 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_SITE_URL_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ siteUrlSettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating site url setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-siteUrlSetting-failed'));
     }
-
   });
 
   /**
@@ -641,8 +645,7 @@ module.exports = (crowi) => {
       smtpClient.sendMail(options, (err, res) => {
         if (err) {
           reject(err);
-        }
-        else {
+        } else {
           resolve(res);
         }
       });
@@ -653,7 +656,6 @@ module.exports = (crowi) => {
    * validate mail setting send test mail
    */
   async function sendTestEmail(destinationAddress) {
-
     const { mailService } = crowi;
 
     if (!mailService.isMailerSetup) {
@@ -697,10 +699,8 @@ module.exports = (crowi) => {
     await sendMailPromiseWrapper(smtpClient, mailOptions);
   }
 
-  const updateMailSettinConfig = async(requestMailSettingParams) => {
-    const {
-      mailService,
-    } = crowi;
+  const updateMailSettinConfig = async (requestMailSettingParams) => {
+    const { mailService } = crowi;
 
     // update config without publishing S2sMessage
     await configManager.updateConfigs(requestMailSettingParams, { skipPubsub: true });
@@ -749,7 +749,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      $ref: '#/components/schemas/SmtpSettingResponseParams'
    */
-  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, addActivity, validator.smtpSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/smtp-setting', loginRequiredStrictly, adminRequired, addActivity, validator.smtpSetting, apiV3FormValidator, async (req, res) => {
     const requestMailSettingParams = {
       'mail:from': req.body.fromAddress,
       'mail:transmissionMethod': req.body.transmissionMethod,
@@ -764,8 +764,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_SMTP_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ mailSettingParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating smtp setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-smtpSetting-failed'));
@@ -792,7 +791,7 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: Empty object
    */
-  router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async(req, res) => {
+  router.post('/smtp-test', loginRequiredStrictly, adminRequired, addActivity, async (req, res) => {
     const { t } = await getTranslation({ lang: req.user.lang });
 
     try {
@@ -800,8 +799,7 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_MAIL_TEST_SUBMIT };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({});
-    }
-    catch (err) {
+    } catch (err) {
       const msg = t('validation.failed_to_send_a_test_email');
       logger.error('Error', err);
       logger.debug('Error validate mail setting: ', err);
@@ -834,7 +832,7 @@ module.exports = (crowi) => {
    *                schema:
    *                  $ref: '#/components/schemas/SesSettingResponseParams'
    */
-  router.put('/ses-setting', loginRequiredStrictly, adminRequired, addActivity, validator.sesSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/ses-setting', loginRequiredStrictly, adminRequired, addActivity, validator.sesSetting, apiV3FormValidator, async (req, res) => {
     const { mailService } = crowi;
 
     const requestSesSettingParams = {
@@ -847,8 +845,7 @@ module.exports = (crowi) => {
     let mailSettingParams;
     try {
       mailSettingParams = await updateMailSettinConfig(requestSesSettingParams);
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating ses setting';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-ses-setting-failed'));
@@ -891,7 +888,7 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/FileUploadSettingParams'
    */
   //  eslint-disable-next-line max-len
-  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async(req, res) => {
+  router.put('/file-upload-setting', loginRequiredStrictly, adminRequired, addActivity, validator.fileUploadSetting, apiV3FormValidator, async (req, res) => {
     const { fileUploadType } = req.body;
 
     const requestParams = {
@@ -963,13 +960,11 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ responseParams });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating fileUploadType';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'update-fileUploadType-failed'));
     }
-
   });
 
   /**
@@ -1002,36 +997,48 @@ module.exports = (crowi) => {
    *                      $ref: '#/components/schemas/QuestionnaireSettingParams'
    */
   // eslint-disable-next-line max-len
-  router.put('/questionnaire-settings', loginRequiredStrictly, adminRequired, addActivity, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
-    const { isQuestionnaireEnabled, isAppSiteUrlHashed } = req.body;
+  router.put(
+    '/questionnaire-settings',
+    loginRequiredStrictly,
+    adminRequired,
+    addActivity,
+    validator.questionnaireSettings,
+    apiV3FormValidator,
+    async (req, res) => {
+      const { isQuestionnaireEnabled, isAppSiteUrlHashed } = req.body;
 
-    const requestParams = {
-      'questionnaire:isQuestionnaireEnabled': isQuestionnaireEnabled,
-      'questionnaire:isAppSiteUrlHashed': isAppSiteUrlHashed,
-    };
-
-    try {
-      await configManager.updateConfigs(requestParams, { skipPubsub: true });
-
-      const responseParams = {
-        isQuestionnaireEnabled: configManager.getConfig('questionnaire:isQuestionnaireEnabled'),
-        isAppSiteUrlHashed: configManager.getConfig('questionnaire:isAppSiteUrlHashed'),
+      const requestParams = {
+        'questionnaire:isQuestionnaireEnabled': isQuestionnaireEnabled,
+        'questionnaire:isAppSiteUrlHashed': isAppSiteUrlHashed,
       };
 
-      const parameters = { action: SupportedAction.ACTION_ADMIN_QUESTIONNAIRE_SETTINGS_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-      return res.apiv3({ responseParams });
-    }
-    catch (err) {
-      const msg = 'Error occurred in updating questionnaire settings';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg, 'update-questionnaire-settings-failed'));
-    }
+      try {
+        await configManager.updateConfigs(requestParams, { skipPubsub: true });
 
-  });
+        const responseParams = {
+          isQuestionnaireEnabled: configManager.getConfig('questionnaire:isQuestionnaireEnabled'),
+          isAppSiteUrlHashed: configManager.getConfig('questionnaire:isAppSiteUrlHashed'),
+        };
 
-  router.put('/page-bulk-export-settings', loginRequiredStrictly, adminRequired, addActivity, validator.pageBulkExportSettings, apiV3FormValidator,
-    async(req, res) => {
+        const parameters = { action: SupportedAction.ACTION_ADMIN_QUESTIONNAIRE_SETTINGS_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+        return res.apiv3({ responseParams });
+      } catch (err) {
+        const msg = 'Error occurred in updating questionnaire settings';
+        logger.error('Error', err);
+        return res.apiv3Err(new ErrorV3(msg, 'update-questionnaire-settings-failed'));
+      }
+    },
+  );
+
+  router.put(
+    '/page-bulk-export-settings',
+    loginRequiredStrictly,
+    adminRequired,
+    addActivity,
+    validator.pageBulkExportSettings,
+    apiV3FormValidator,
+    async (req, res) => {
       const requestParams = {
         'app:isBulkExportPagesEnabled': req.body.isBulkExportPagesEnabled,
         'app:bulkExportDownloadExpirationSeconds': req.body.bulkExportDownloadExpirationSeconds,
@@ -1048,14 +1055,13 @@ module.exports = (crowi) => {
         activityEvent.emit('update', res.locals.activity._id, parameters);
 
         return res.apiv3({ responseParams });
-      }
-      catch (err) {
+      } catch (err) {
         const msg = 'Error occurred in updating page bulk export settings';
         logger.error('Error', err);
         return res.apiv3Err(new ErrorV3(msg, 'update-page-bulk-export-settings-failed'));
       }
-
-    });
+    },
+  );
 
   /**
    * @swagger
@@ -1081,7 +1087,7 @@ module.exports = (crowi) => {
    *                      description: is V5 compatible, or not
    *                      example: true
    */
-  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.post('/v5-schema-migration', accessTokenParser, loginRequiredStrictly, adminRequired, async (req, res) => {
     const isMaintenanceMode = crowi.appService.isMaintenanceMode();
     if (!isMaintenanceMode) {
       return res.apiv3Err(new ErrorV3('GROWI is not maintenance mode. To import data, please activate the maintenance mode first.', 'not_maintenance_mode'));
@@ -1094,8 +1100,7 @@ module.exports = (crowi) => {
         // This method throws and emit socketIo event when error occurs
         crowi.pageService.normalizeAllPublicPages();
       }
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(new ErrorV3(`Failed to migrate pages: ${err.message}`), 500);
     }
 
@@ -1136,35 +1141,41 @@ module.exports = (crowi) => {
    *                      example: true
    */
   // eslint-disable-next-line max-len
-  router.post('/maintenance-mode', accessTokenParser, loginRequiredStrictly, adminRequired, addActivity, validator.maintenanceMode, apiV3FormValidator, async(req, res) => {
-    const { flag } = req.body;
-    const parameters = {};
-    try {
-      if (flag) {
-        await crowi.appService.startMaintenanceMode();
-        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_ENABLED });
+  router.post(
+    '/maintenance-mode',
+    accessTokenParser,
+    loginRequiredStrictly,
+    adminRequired,
+    addActivity,
+    validator.maintenanceMode,
+    apiV3FormValidator,
+    async (req, res) => {
+      const { flag } = req.body;
+      const parameters = {};
+      try {
+        if (flag) {
+          await crowi.appService.startMaintenanceMode();
+          Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_ENABLED });
+        } else {
+          await crowi.appService.endMaintenanceMode();
+          Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_DISABLED });
+        }
+      } catch (err) {
+        logger.error(err);
+        if (flag) {
+          res.apiv3Err(new ErrorV3('Failed to start maintenance mode', 'failed_to_start_maintenance_mode'), 500);
+        } else {
+          res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
+        }
       }
-      else {
-        await crowi.appService.endMaintenanceMode();
-        Object.assign(parameters, { action: SupportedAction.ACTION_ADMIN_MAINTENANCEMODE_DISABLED });
-      }
-    }
-    catch (err) {
-      logger.error(err);
-      if (flag) {
-        res.apiv3Err(new ErrorV3('Failed to start maintenance mode', 'failed_to_start_maintenance_mode'), 500);
-      }
-      else {
-        res.apiv3Err(new ErrorV3('Failed to end maintenance mode', 'failed_to_end_maintenance_mode'), 500);
-      }
-    }
 
-    if ('action' in parameters) {
-      activityEvent.emit('update', res.locals.activity._id, parameters);
-    }
+      if ('action' in parameters) {
+        activityEvent.emit('update', res.locals.activity._id, parameters);
+      }
 
-    res.apiv3({ flag });
-  });
+      res.apiv3({ flag });
+    },
+  );
 
   return router;
 };

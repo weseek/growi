@@ -17,7 +17,6 @@ const logger = loggerFactory('growi:service:page-bulk-export-job-clean-up-cron')
  * Manages cronjob which deletes unnecessary bulk export jobs
  */
 class PageBulkExportJobCleanUpCronService extends CronService {
-
   crowi: Crowi;
 
   constructor(crowi: Crowi) {
@@ -43,7 +42,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   async deleteExpiredExportJobs() {
     const exportJobExpirationSeconds = configManager.getConfig('app:bulkExportJobExpirationSeconds');
     const expiredExportJobs = await PageBulkExportJob.find({
-      $or: Object.values(PageBulkExportJobInProgressStatus).map(status => ({ status })),
+      $or: Object.values(PageBulkExportJobInProgressStatus).map((status) => ({ status })),
       createdAt: { $lt: new Date(Date.now() - exportJobExpirationSeconds * 1000) },
     });
 
@@ -63,7 +62,7 @@ class PageBulkExportJobCleanUpCronService extends CronService {
       completedAt: { $lt: thresholdDate },
     });
 
-    const cleanUp = async(job: PageBulkExportJobDocument) => {
+    const cleanUp = async (job: PageBulkExportJobDocument) => {
       await pageBulkExportJobCronService?.cleanUpExportJobResources(job);
 
       const hasSameAttachmentAndDownloadNotExpired = await PageBulkExportJob.findOne({
@@ -92,23 +91,24 @@ class PageBulkExportJobCleanUpCronService extends CronService {
   }
 
   async cleanUpAndDeleteBulkExportJobs(
-      pageBulkExportJobs: HydratedDocument<PageBulkExportJobDocument>[],
-      cleanUp: (job: PageBulkExportJobDocument) => Promise<void>,
+    pageBulkExportJobs: HydratedDocument<PageBulkExportJobDocument>[],
+    cleanUp: (job: PageBulkExportJobDocument) => Promise<void>,
   ): Promise<void> {
-    const results = await Promise.allSettled(pageBulkExportJobs.map(job => cleanUp(job)));
+    const results = await Promise.allSettled(pageBulkExportJobs.map((job) => cleanUp(job)));
     results.forEach((result) => {
-      if (result.status === 'rejected') { logger.error(result.reason); }
+      if (result.status === 'rejected') {
+        logger.error(result.reason);
+      }
     });
 
     // Only batch delete jobs which have been successfully cleaned up
     // Clean up failed jobs will be retried in the next cron execution
     const cleanedUpJobs = pageBulkExportJobs.filter((_, index) => results[index].status === 'fulfilled');
     if (cleanedUpJobs.length > 0) {
-      const cleanedUpJobIds = cleanedUpJobs.map(job => job._id);
+      const cleanedUpJobIds = cleanedUpJobs.map((job) => job._id);
       await PageBulkExportJob.deleteMany({ _id: { $in: cleanedUpJobIds } });
     }
   }
-
 }
 
 // eslint-disable-next-line import/no-mutable-exports

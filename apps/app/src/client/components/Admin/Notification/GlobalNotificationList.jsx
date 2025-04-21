@@ -14,11 +14,9 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import NotificationDeleteModal from './NotificationDeleteModal';
 import { NotificationTypeIcon } from './NotificationTypeIcon';
 
-
 const logger = loggerFactory('growi:GolobalNotificationList');
 
 class GlobalNotificationList extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -41,8 +39,7 @@ class GlobalNotificationList extends React.Component {
       });
       toastSuccess(t('notification_settings.toggle_notification', { path: notification.triggerPath }));
       await this.props.adminNotificationContainer.retrieveNotificationData();
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -62,8 +59,7 @@ class GlobalNotificationList extends React.Component {
     try {
       const deletedNotificaton = await adminNotificationContainer.deleteGlobalNotificationPattern(this.state.notificationForConfiguration._id);
       toastSuccess(t('notification_settings.delete_notification_pattern', { path: deletedNotificaton.triggerPath }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -91,9 +87,7 @@ class GlobalNotificationList extends React.Component {
                   <label className="form-label form-check-label" htmlFor={notification._id} />
                 </div>
               </td>
-              <td>
-                {notification.triggerPath}
-              </td>
+              <td>{notification.triggerPath}</td>
               <td>
                 <ul className="list-inline mb-0">
                   {notification.triggerEvents.includes('pageCreate') && (
@@ -130,8 +124,8 @@ class GlobalNotificationList extends React.Component {
               </td>
               <td>
                 <NotificationTypeIcon notification={notification} />
-                { notification.__t === 'mail' && notification.toEmail }
-                { notification.__t === 'slack' && notification.slackChannels }
+                {notification.__t === 'mail' && notification.toEmail}
+                {notification.__t === 'slack' && notification.slackChannels}
               </td>
               <td className="td-abs-center">
                 <div className="dropdown">
@@ -169,13 +163,11 @@ class GlobalNotificationList extends React.Component {
       </React.Fragment>
     );
   }
-
 }
 
 GlobalNotificationList.propTypes = {
   t: PropTypes.func.isRequired, // i18next
   adminNotificationContainer: PropTypes.instanceOf(AdminNotificationContainer).isRequired,
-
 };
 
 const GlobalNotificationListWrapperFC = (props) => {

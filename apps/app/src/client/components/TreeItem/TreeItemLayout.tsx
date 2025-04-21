@@ -1,13 +1,4 @@
-import React, {
-  useCallback,
-  useState,
-  useEffect,
-  useMemo,
-  type RefObject,
-  type RefCallback,
-  type MouseEvent,
-  type JSX,
-} from 'react';
+import React, { useCallback, useState, useEffect, useMemo, type RefObject, type RefCallback, type MouseEvent, type JSX } from 'react';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -16,27 +7,36 @@ import { ItemNode } from './ItemNode';
 import { SimpleItemContent } from './SimpleItemContent';
 import type { TreeItemProps, TreeItemToolProps } from './interfaces';
 
-
 import styles from './TreeItemLayout.module.scss';
 
 const moduleClass = styles['tree-item-layout'] ?? '';
 
-
 type TreeItemLayoutProps = TreeItemProps & {
-  className?: string,
-  itemRef?: RefObject<any> | RefCallback<any>,
-  indentSize?: number,
-}
+  className?: string;
+  itemRef?: RefObject<any> | RefCallback<any>;
+  indentSize?: number;
+};
 
 export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
   const {
-    className, itemClassName,
+    className,
+    itemClassName,
     indentSize = 10,
     itemLevel: baseItemLevel = 1,
-    itemNode, targetPath, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, onWheelClick,
-    isEnableActions, isReadOnlyUser, isWipPageShown = true,
-    itemRef, itemClass,
+    itemNode,
+    targetPath,
+    targetPathOrId,
+    isOpen: _isOpen = false,
+    onRenamed,
+    onClick,
+    onClickDuplicateMenuItem,
+    onClickDeleteMenuItem,
+    onWheelClick,
+    isEnableActions,
+    isReadOnlyUser,
+    isWipPageShown = true,
+    itemRef,
+    itemClass,
     showAlternativeContent,
   } = props;
 
@@ -47,30 +47,32 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
 
+  const itemClickHandler = useCallback(
+    (e: MouseEvent) => {
+      // DO NOT handle the event when e.currentTarget and e.target is different
+      if (e.target !== e.currentTarget) {
+        return;
+      }
 
-  const itemClickHandler = useCallback((e: MouseEvent) => {
-    // DO NOT handle the event when e.currentTarget and e.target is different
-    if (e.target !== e.currentTarget) {
-      return;
-    }
+      onClick?.(page);
+    },
+    [onClick, page],
+  );
 
-    onClick?.(page);
+  const itemMouseupHandler = useCallback(
+    (e: MouseEvent) => {
+      // DO NOT handle the event when e.currentTarget and e.target is different
+      if (e.target !== e.currentTarget) {
+        return;
+      }
 
-  }, [onClick, page]);
-
-  const itemMouseupHandler = useCallback((e: MouseEvent) => {
-    // DO NOT handle the event when e.currentTarget and e.target is different
-    if (e.target !== e.currentTarget) {
-      return;
-    }
-
-    if (e.button === 1) {
-      e.preventDefault();
-      onWheelClick?.(page);
-    }
-
-  }, [onWheelClick, page]);
-
+      if (e.button === 1) {
+        e.preventDefault();
+        onWheelClick?.(page);
+      }
+    },
+    [onWheelClick, page],
+  );
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -91,7 +93,9 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
   // didMount
   useEffect(() => {
     const isPathToTarget = page.path != null && targetPath.startsWith(page.path) && targetPath !== page.path; // Target Page does not need to be opened
-    if (isPathToTarget) { setIsOpen(true); }
+    if (isPathToTarget) {
+      setIsOpen(true);
+    }
   }, [targetPath, page.path]);
 
   /*
@@ -157,14 +161,9 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
         onMouseUp={itemMouseupHandler}
         aria-current={isSelected ? true : undefined}
       >
-
         <div className="btn-triangle-container d-flex justify-content-center">
           {hasDescendants && (
-            <button
-              type="button"
-              className={`btn btn-triangle p-0 ${isOpen ? 'open' : ''}`}
-              onClick={onClickLoadChildren}
-            >
+            <button type="button" className={`btn btn-triangle p-0 ${isOpen ? 'open' : ''}`} onClick={onClickLoadChildren}>
               <div className="d-flex justify-content-center">
                 <span className="material-symbols-outlined fs-5">arrow_right</span>
               </div>
@@ -172,59 +171,52 @@ export const TreeItemLayout = (props: TreeItemLayoutProps): JSX.Element => {
           )}
         </div>
 
-        { showAlternativeContent && AlternativeComponents != null
-          ? (
-            AlternativeComponents.map((AlternativeContent, index) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: ignore
-              (<AlternativeContent key={index} {...toolProps} />)
-            ))
-          )
-          : (
-            <>
-              <SimpleItemContent page={page} />
-              <div className="d-hover-none">
-                {EndComponents?.map((EndComponent, index) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: ignore
-                  (<EndComponent key={index} {...toolProps} />)
-                ))}
-              </div>
-              <div className="d-none d-hover-flex">
-                {HoveredEndComponents?.map((HoveredEndContent, index) => (
-                  // biome-ignore lint/suspicious/noArrayIndexKey: ignore
-                  (<HoveredEndContent key={index} {...toolProps} />)
-                ))}
-              </div>
-            </>
-          )
-        }
-
+        {showAlternativeContent && AlternativeComponents != null ? (
+          AlternativeComponents.map((AlternativeContent, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: ignore
+            <AlternativeContent key={index} {...toolProps} />
+          ))
+        ) : (
+          <>
+            <SimpleItemContent page={page} />
+            <div className="d-hover-none">
+              {EndComponents?.map((EndComponent, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: ignore
+                <EndComponent key={index} {...toolProps} />
+              ))}
+            </div>
+            <div className="d-none d-hover-flex">
+              {HoveredEndComponents?.map((HoveredEndContent, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: ignore
+                <HoveredEndContent key={index} {...toolProps} />
+              ))}
+            </div>
+          </>
+        )}
       </li>
-      { isOpen && (
+      {isOpen && (
         <div className={`tree-item-layout-children level-${baseItemLevel + 1}`}>
-
           {HeadObChildrenComponents?.map((HeadObChildrenContents, index) => (
             // biome-ignore lint/suspicious/noArrayIndexKey: ignore
-            (<HeadObChildrenContents key={index} {...toolProps} itemLevel={baseItemLevel + 1} />)
+            <HeadObChildrenContents key={index} {...toolProps} itemLevel={baseItemLevel + 1} />
           ))}
 
-          { hasChildren() && currentChildren.map((node) => {
-            const itemProps = {
-              ...baseProps,
-              className,
-              itemLevel: baseItemLevel + 1,
-              itemNode: node,
-              itemClass,
-              itemClassName,
-              onClick,
-            };
+          {hasChildren() &&
+            currentChildren.map((node) => {
+              const itemProps = {
+                ...baseProps,
+                className,
+                itemLevel: baseItemLevel + 1,
+                itemNode: node,
+                itemClass,
+                itemClassName,
+                onClick,
+              };
 
-            return (
-              <ItemClassFixed key={node.page._id} {...itemProps} />
-            );
-          }) }
-
+              return <ItemClassFixed key={node.page._id} {...itemProps} />;
+            })}
         </div>
-      ) }
+      )}
     </div>
   );
 };

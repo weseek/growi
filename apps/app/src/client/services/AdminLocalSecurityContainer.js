@@ -12,7 +12,6 @@ const logger = loggerFactory('growi:services:AdminLocalSecurityContainer');
  * @extends {Container} unstated Container
  */
 export default class AdminLocalSecurityContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -33,7 +32,6 @@ export default class AdminLocalSecurityContainer extends Container {
       isPasswordResetEnabled: false,
       isEmailAuthenticationEnabled: false,
     };
-
   }
 
   async retrieveSecurityData() {
@@ -47,13 +45,11 @@ export default class AdminLocalSecurityContainer extends Container {
         isPasswordResetEnabled: localSetting.isPasswordResetEnabled,
         isEmailAuthenticationEnabled: localSetting.isEmailAuthenticationEnabled,
       });
-    }
-    catch (err) {
+    } catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to fetch data');
     }
-
   }
 
   /**
@@ -62,7 +58,6 @@ export default class AdminLocalSecurityContainer extends Container {
   static getClassName() {
     return 'AdminLocalSecurityContainer';
   }
-
 
   /**
    * Change registration mode
@@ -115,6 +110,4 @@ export default class AdminLocalSecurityContainer extends Container {
 
     return localSettingParams;
   }
-
-
 }

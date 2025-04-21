@@ -5,11 +5,10 @@ import Image from 'next/image';
 
 import { Bridge } from './Bridge';
 
-
 type CustomBotWithProxyConnectionStatusProps = {
-  siteName: string,
-  connectionStatuses: any,
-}
+  siteName: string;
+  connectionStatuses: any;
+};
 
 export const CustomBotWithProxyConnectionStatus = (props: CustomBotWithProxyConnectionStatusProps): JSX.Element => {
   const { siteName, connectionStatuses } = props;
@@ -17,11 +16,10 @@ export const CustomBotWithProxyConnectionStatus = (props: CustomBotWithProxyConn
   const connectionStatusValues: ConnectionStatus[] = Object.values(connectionStatuses);
 
   const totalCount = connectionStatusValues.length;
-  const errorCount = connectionStatusValues.filter(connectionStatus => connectionStatus.error != null).length;
+  const errorCount = connectionStatusValues.filter((connectionStatus) => connectionStatus.error != null).length;
 
   return (
     <div className="row justify-content-center my-5 bot-integration">
-
       <div className="card rounded shadow col-4 border-0 admin-bot-card">
         <h5 className="card-title fw-bold mt-3 text-center">Slack</h5>
         <div className="card-body px-5">
@@ -47,9 +45,7 @@ export const CustomBotWithProxyConnectionStatus = (props: CustomBotWithProxyConn
       <div className="card rounded-3 shadow col-4 border-0 admin-bot-card">
         <h5 className="card-title fw-bold mt-3 text-center">GROWI App</h5>
         <div className="card-body text-center">
-          <div className="mx-md-3 my-4 my-lg-5 p-2 border bg-primary text-light">
-            {siteName}
-          </div>
+          <div className="mx-md-3 my-4 my-lg-5 p-2 border bg-primary text-light">{siteName}</div>
         </div>
       </div>
     </div>

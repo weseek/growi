@@ -14,7 +14,7 @@ export const OldRevisionAlert = (): JSX.Element => {
   const { data: page } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
-  const onClickShowLatestButton = useCallback(async() => {
+  const onClickShowLatestButton = useCallback(async () => {
     if (page == null) {
       return;
     }
@@ -32,7 +32,8 @@ export const OldRevisionAlert = (): JSX.Element => {
     <div className="alert alert-warning">
       <strong>{t('Warning')}: </strong> {t('page_page.notice.version')}
       <button type="button" className="btn btn-outline-natural-secondary" onClick={onClickShowLatestButton}>
-        <span className="material-symbols-outlined me-1">arrow_circle_right</span>{t('Show latest')}
+        <span className="material-symbols-outlined me-1">arrow_circle_right</span>
+        {t('Show latest')}
       </button>
     </div>
   );

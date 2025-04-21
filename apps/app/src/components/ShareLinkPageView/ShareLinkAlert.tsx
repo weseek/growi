@@ -14,23 +14,20 @@ const getAlertColor = (ratio: number): string => {
 
   if (ratio >= 0.75) {
     color = 'success';
-  }
-  else if (ratio < 0.75 && ratio >= 0.5) {
+  } else if (ratio < 0.75 && ratio >= 0.5) {
     color = 'info';
-  }
-  else if (ratio < 0.5 && ratio >= 0.25) {
+  } else if (ratio < 0.5 && ratio >= 0.25) {
     color = 'warning';
-  }
-  else {
+  } else {
     color = 'danger';
   }
   return color;
 };
 
 type Props = {
-  createdAt: Date,
-  expiredAt?: Date,
-}
+  createdAt: Date;
+  expiredAt?: Date;
+};
 
 const ShareLinkAlert: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
@@ -42,9 +39,11 @@ const ShareLinkAlert: FC<Props> = (props: Props) => {
   return (
     <p className={`alert alert-${alertColor} px-4 d-edit-none`}>
       <span className="material-symbols-outlined me-1">link</span>
-      {(expiredAt == null ? <span>{t('page_page.notice.no_deadline')}</span>
-      // eslint-disable-next-line react/no-danger
-        : <span dangerouslySetInnerHTML={{ __html: t('page_page.notice.expiration', { expiredAt }) }} />
+      {expiredAt == null ? (
+        <span>{t('page_page.notice.no_deadline')}</span>
+      ) : (
+        // eslint-disable-next-line react/no-danger
+        <span dangerouslySetInnerHTML={{ __html: t('page_page.notice.expiration', { expiredAt }) }} />
       )}
     </p>
   );

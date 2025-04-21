@@ -15,22 +15,10 @@ const SelectedPageListBase: React.FC<SelectedPageListProps> = ({ selectedPages, 
   return (
     <div className="mb-3">
       {selectedPages.map(({ page, isIncludeSubPage }) => (
-        <div
-          key={page.path}
-          className="mb-2 d-flex justify-content-between align-items-center bg-body-tertiary rounded py-2 px-3"
-        >
-          <div className="d-flex align-items-center overflow-hidden text-body">
-            { isIncludeSubPage
-              ? <>{`${page.path}/*`}</>
-              : <>{page.path}</>
-            }
-          </div>
+        <div key={page.path} className="mb-2 d-flex justify-content-between align-items-center bg-body-tertiary rounded py-2 px-3">
+          <div className="d-flex align-items-center overflow-hidden text-body">{isIncludeSubPage ? <>{`${page.path}/*`}</> : <>{page.path}</>}</div>
           {onRemove != null && page.path != null && (
-            <button
-              type="button"
-              className="btn p-0 ms-3 text-body-secondary"
-              onClick={() => onRemove(page.path)}
-            >
+            <button type="button" className="btn p-0 ms-3 text-body-secondary" onClick={() => onRemove(page.path)}>
               <span className="material-symbols-outlined fs-4">delete</span>
             </button>
           )}

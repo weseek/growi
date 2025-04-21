@@ -4,8 +4,7 @@ import type { OpenAI } from 'openai';
 
 import { openaiClient } from './client';
 
-
-export const embed = async(input: string, username?: string): Promise<OpenAI.Embedding[]> => {
+export const embed = async (input: string, username?: string): Promise<OpenAI.Embedding[]> => {
   let user;
 
   if (username != null) {

@@ -1,8 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -19,14 +17,12 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const CustomizeSettingContents = dynamic(() => import('~/client/components/Admin/Customize/Customize'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
-
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then((mod) => mod.ForbiddenPage), { ssr: false });
 
 type Props = CommonProps & {
-  customizeTitle?: string,
-  isCustomizedLogoUploaded: boolean,
+  customizeTitle?: string;
+  isCustomizedLogoUploaded: boolean;
 };
-
 
 const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('admin');
@@ -39,7 +35,7 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
   const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const AdminCustomizeContainer = (await import('~/client/services/AdminCustomizeContainer')).default;
       const adminCustomizeContainer = new AdminCustomizeContainer();
       injectableContainers.push(adminCustomizeContainer);
@@ -62,8 +58,7 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
   );
 };
 
-
-const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+const injectServerConfigurations = async (context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
 
@@ -71,10 +66,9 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   props.isCustomizedLogoUploaded = await crowi.attachmentService.isBrandLogoExist();
 };
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context, injectServerConfigurations);
   return props;
 };
-
 
 export default AdminCustomizeSettingsPage;

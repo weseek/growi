@@ -18,32 +18,27 @@ interface ModuleCache {
 
 let moduleCache: ModuleCache = {};
 
-const initializeModules = async(): Promise<void> => {
-  if (moduleCache.unified != null
-    && moduleCache.visit != null
-    && moduleCache.remarkParse != null
-    && moduleCache.remarkRehype != null
-    && moduleCache.rehypeMeta != null
-    && moduleCache.rehypeStringify != null
+const initializeModules = async (): Promise<void> => {
+  if (
+    moduleCache.unified != null &&
+    moduleCache.visit != null &&
+    moduleCache.remarkParse != null &&
+    moduleCache.remarkRehype != null &&
+    moduleCache.rehypeMeta != null &&
+    moduleCache.rehypeStringify != null
   ) {
     return;
   }
 
-  const [
-    { unified },
-    { visit },
-    { default: remarkParse },
-    { default: remarkRehype },
-    { default: rehypeMeta },
-    { default: rehypeStringify },
-  ] = await Promise.all([
-    dynamicImport<typeof Unified>('unified', __dirname),
-    dynamicImport<typeof UnistUtilVisit>('unist-util-visit', __dirname),
-    dynamicImport<typeof RemarkParse>('remark-parse', __dirname),
-    dynamicImport<typeof RemarkRehype>('remark-rehype', __dirname),
-    dynamicImport<typeof RehypeMeta>('rehype-meta', __dirname),
-    dynamicImport<typeof RehypeStringify>('rehype-stringify', __dirname),
-  ]);
+  const [{ unified }, { visit }, { default: remarkParse }, { default: remarkRehype }, { default: rehypeMeta }, { default: rehypeStringify }] =
+    await Promise.all([
+      dynamicImport<typeof Unified>('unified', __dirname),
+      dynamicImport<typeof UnistUtilVisit>('unist-util-visit', __dirname),
+      dynamicImport<typeof RemarkParse>('remark-parse', __dirname),
+      dynamicImport<typeof RemarkRehype>('remark-rehype', __dirname),
+      dynamicImport<typeof RehypeMeta>('rehype-meta', __dirname),
+      dynamicImport<typeof RehypeStringify>('rehype-stringify', __dirname),
+    ]);
 
   moduleCache = {
     unified,
@@ -55,12 +50,10 @@ const initializeModules = async(): Promise<void> => {
   };
 };
 
-export const convertMarkdownToHtml = async({ pagePath, revisionBody }: { pagePath: string, revisionBody: string }): Promise<string> => {
+export const convertMarkdownToHtml = async ({ pagePath, revisionBody }: { pagePath: string; revisionBody: string }): Promise<string> => {
   await initializeModules();
 
-  const {
-    unified, visit, remarkParse, remarkRehype, rehypeMeta, rehypeStringify,
-  } = moduleCache;
+  const { unified, visit, remarkParse, remarkRehype, rehypeMeta, rehypeStringify } = moduleCache;
 
   if (unified == null || visit == null || remarkParse == null || remarkRehype == null || rehypeMeta == null || rehypeStringify == null) {
     throw new Error('Failed to initialize required modules');

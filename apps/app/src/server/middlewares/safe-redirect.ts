@@ -4,9 +4,7 @@
  * Usage: app.use(require('middlewares/safe-redirect')(['example.com', 'some.example.com:8080']))
  */
 
-import type {
-  Request, Response, NextFunction,
-} from 'express';
+import type { Request, Response, NextFunction } from 'express';
 
 import loggerFactory from '~/utils/logger';
 
@@ -23,22 +21,18 @@ function isInWhitelist(whitelistOfHosts: string[], redirectToFqdn: string): bool
   try {
     const redirectUrl = new URL(redirectToFqdn);
     return whitelistOfHosts.includes(redirectUrl.hostname) || whitelistOfHosts.includes(redirectUrl.host);
-  }
-  catch (err) {
+  } catch (err) {
     logger.warn(err);
     return false;
   }
 }
 
-
 export type ResWithSafeRedirect = Response & {
-  safeRedirect: (redirectTo?: string) => void,
-}
+  safeRedirect: (redirectTo?: string) => void;
+};
 
 const factory = (whitelistOfHosts: string[]) => {
-
   return (req: Request, res: ResWithSafeRedirect, next: NextFunction): void => {
-
     // extend res object
     res.safeRedirect = (redirectTo?: string) => {
       if (redirectTo == null) {
@@ -61,8 +55,7 @@ const factory = (whitelistOfHosts: string[]) => {
           return res.redirect(redirectTo);
         }
         logger.debug(`Requested redirect URL (${redirectTo}) is NOT in whitelist.`, `whitelist=${whitelistOfHosts}`);
-      }
-      catch (err) {
+      } catch (err) {
         logger.warn(`Requested redirect URL (${redirectTo}) is invalid.`, err);
       }
 
@@ -71,9 +64,7 @@ const factory = (whitelistOfHosts: string[]) => {
     };
 
     next();
-
   };
-
 };
 
 export default factory;

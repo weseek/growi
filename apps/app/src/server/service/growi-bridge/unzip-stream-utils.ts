@@ -15,8 +15,6 @@ export const tapStreamDataByPromise = (entry: Entry): Promise<Buffer> => {
       })
       .on('error', reject);
 
-    entry
-      .pipe(entryContentGetterStream)
-      .on('error', reject);
+    entry.pipe(entryContentGetterStream).on('error', reject);
   });
 };

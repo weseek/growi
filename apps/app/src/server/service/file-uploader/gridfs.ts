@@ -16,7 +16,6 @@ import { ContentHeaders } from './utils';
 
 const logger = loggerFactory('growi:service:fileUploaderGridfs');
 
-
 const COLLECTION_NAME = 'attachmentFiles';
 const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
@@ -27,10 +26,8 @@ const AttachmentFile = createModel({
   connection: mongoose.connection,
 });
 
-
 // TODO: rewrite this module to be a type-safe implementation
 class GridfsFileUploader extends AbstractFileUploader {
-
   /**
    * @inheritdoc
    */
@@ -97,9 +94,7 @@ class GridfsFileUploader extends AbstractFileUploader {
   override async generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
     throw new Error('GridfsFileUploader does not support ResponseMode.REDIRECT.');
   }
-
 }
-
 
 module.exports = (crowi: Crowi) => {
   const lib = new GridfsFileUploader(crowi);
@@ -113,7 +108,7 @@ module.exports = (crowi: Crowi) => {
 
   lib.isValidUploadSettings = () => true;
 
-  (lib as any).deleteFile = async(attachment) => {
+  (lib as any).deleteFile = async (attachment) => {
     const filenameValue = attachment.fileName;
 
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
@@ -125,17 +120,16 @@ module.exports = (crowi: Crowi) => {
     return AttachmentFile.promisifiedUnlink({ _id: attachmentFile._id });
   };
 
-  (lib as any).deleteFiles = async(attachments) => {
+  (lib as any).deleteFiles = async (attachments) => {
     const filenameValues = attachments.map((attachment) => {
       return attachment.fileName;
     });
     const fileIdObjects = await AttachmentFile.find({ filename: { $in: filenameValues } }, { _id: 1 });
-    const idsRelatedFiles = fileIdObjects.map((obj) => { return obj._id });
+    const idsRelatedFiles = fileIdObjects.map((obj) => {
+      return obj._id;
+    });
 
-    return Promise.all([
-      AttachmentFile.deleteMany({ filename: { $in: filenameValues } }),
-      chunkCollection.deleteMany({ files_id: { $in: idsRelatedFiles } }),
-    ]);
+    return Promise.all([AttachmentFile.deleteMany({ filename: { $in: filenameValues } }), chunkCollection.deleteMany({ files_id: { $in: idsRelatedFiles } })]);
   };
 
   /**
@@ -163,13 +157,13 @@ module.exports = (crowi: Crowi) => {
    * - per-file size limit (specified by MAX_FILE_SIZE)
    * - mongodb(gridfs) size limit (specified by MONGO_GRIDFS_TOTAL_LIMIT)
    */
-  (lib as any).checkLimit = async(uploadFileSize) => {
+  (lib as any).checkLimit = async (uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const totalLimit = lib.getFileUploadTotalLimit();
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
   };
 
-  lib.saveFile = async({ filePath, contentType, data }) => {
+  lib.saveFile = async ({ filePath, contentType, data }) => {
     const readable = new Readable();
     readable.push(data);
     readable.push(null); // EOF
@@ -189,7 +183,7 @@ module.exports = (crowi: Crowi) => {
    * @param {Attachment} attachment
    * @return {stream.Readable} readable stream
    */
-  lib.findDeliveryFile = async(attachment) => {
+  lib.findDeliveryFile = async (attachment) => {
     const filenameValue = attachment.fileName;
 
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
@@ -205,10 +199,11 @@ module.exports = (crowi: Crowi) => {
   /**
    * List files in storage
    */
-  (lib as any).listFiles = async() => {
+  (lib as any).listFiles = async () => {
     const attachmentFiles = await AttachmentFile.find();
     return attachmentFiles.map(({ filename: name, length: size }) => ({
-      name, size,
+      name,
+      size,
     }));
   };
 

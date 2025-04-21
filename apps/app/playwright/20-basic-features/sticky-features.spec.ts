@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Sticky features', () => {
-  test.beforeEach(async({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/');
   });
 
-  test('Subnavigation displays changes on scroll down and up', async({ page }) => {
+  test('Subnavigation displays changes on scroll down and up', async ({ page }) => {
     // Scroll down to trigger sticky effect
     await page.evaluate(() => window.scrollTo(0, 250));
     await expect(page.locator('.sticky-outer-wrapper').first()).toHaveClass(/active/);
@@ -15,7 +15,7 @@ test.describe('Sticky features', () => {
     await expect(page.locator('.sticky-outer-wrapper').first()).not.toHaveClass(/active/);
   });
 
-  test('Subnavigation is not displayed when move to other pages', async({ page }) => {
+  test('Subnavigation is not displayed when move to other pages', async ({ page }) => {
     // Scroll down to trigger sticky effect
     await page.evaluate(() => window.scrollTo(0, 250));
     await expect(page.locator('.sticky-outer-wrapper').first()).toHaveClass(/active/);
@@ -25,7 +25,7 @@ test.describe('Sticky features', () => {
     await expect(page.locator('.sticky-outer-wrapper').first()).not.toHaveClass(/active/);
   });
 
-  test('Able to click buttons on subnavigation switcher when sticky', async({ page }) => {
+  test('Able to click buttons on subnavigation switcher when sticky', async ({ page }) => {
     // Scroll down to trigger sticky effect
     await page.evaluate(() => window.scrollTo(0, 250));
     await expect(page.locator('.sticky-outer-wrapper').first()).toHaveClass(/active/);
@@ -35,7 +35,7 @@ test.describe('Sticky features', () => {
     await expect(page.locator('.layout-root')).toHaveClass(/editing/);
   });
 
-  test('Subnavigation is sticky when on small window', async({ page }) => {
+  test('Subnavigation is sticky when on small window', async ({ page }) => {
     // Scroll down to trigger sticky effect
     await page.evaluate(() => window.scrollTo(0, 500));
     await expect(page.locator('.sticky-outer-wrapper').first()).toHaveClass(/active/);

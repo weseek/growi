@@ -13,34 +13,34 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
-  useCurrentUser, useCurrentPathname, useGrowiCloudUri,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
+  useCurrentUser,
+  useCurrentPathname,
+  useGrowiCloudUri,
+  useIsSearchServiceConfigured,
+  useIsSearchServiceReachable,
+  useIsSearchScopeChildrenAsDefault,
+  useIsSearchPage,
+  useShowPageLimitationXL,
 } from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
-
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
-import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, useInitSidebarConfig,
-} from './utils/commons';
+import { getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, useInitSidebarConfig } from './utils/commons';
 
-
-const TrashPageList = dynamic(() => import('~/client/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
+const TrashPageList = dynamic(() => import('~/client/components/TrashPageList').then((mod) => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/client/components/EmptyTrashModal'), { ssr: false });
 
-
 type Props = CommonProps & {
-  currentUser: IUser,
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
-  showPageLimitationXL: number,
+  currentUser: IUser;
+  isSearchServiceConfigured: boolean;
+  isSearchServiceReachable: boolean;
+  isSearchScopeChildrenAsDefault: boolean;
+  showPageLimitationXL: number;
 
-  rendererConfig: RendererConfig,
+  rendererConfig: RendererConfig;
 
-  sidebarConfig: ISidebarConfig,
+  sidebarConfig: ISidebarConfig;
 };
 
 const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
@@ -87,8 +87,8 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 };
 
 type LayoutProps = Props & {
-  children?: ReactNode,
-}
+  children?: ReactNode;
+};
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // init sidebar config with UserUISettings and sidebarConfig
@@ -100,9 +100,7 @@ const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
 TrashPage.getLayout = function getLayout(page) {
   return (
     <>
-      <Layout {...page.props}>
-        {page}
-      </Layout>
+      <Layout {...page.props}>{page}</Layout>
       <EmptyTrashModal />
     </>
   );
@@ -111,9 +109,7 @@ TrashPage.getLayout = function getLayout(page) {
 function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): void {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
-  const {
-    searchService, configManager,
-  } = crowi;
+  const { searchService, configManager } = crowi;
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -124,7 +120,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isSidebarCollapsedMode: configManager.getConfig('customize:isSidebarCollapsedMode'),
     isSidebarClosedAtDockMode: configManager.getConfig('customize:isSidebarClosedAtDockMode'),
   };
-
 }
 
 /**
@@ -138,7 +133,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { user } = req;
   const result = await getServerSideCommonProps(context);

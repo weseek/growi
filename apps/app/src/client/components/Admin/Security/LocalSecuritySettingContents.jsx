@@ -12,7 +12,6 @@ import { useIsMailerSetup } from '~/stores-universal/context';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class LocalSecuritySettingContents extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -25,19 +24,13 @@ class LocalSecuritySettingContents extends React.Component {
       await adminLocalSecurityContainer.updateLocalSecuritySetting();
       await adminGeneralSecurityContainer.retrieveSetupStratedies();
       toastSuccess(t('security_settings.updated_general_security_setting'));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
 
   render() {
-    const {
-      t,
-      adminGeneralSecurityContainer,
-      adminLocalSecurityContainer,
-      isMailerSetup,
-    } = this.props;
+    const { t, adminGeneralSecurityContainer, adminLocalSecurityContainer, isMailerSetup } = this.props;
     const { registrationMode, isPasswordResetEnabled, isEmailAuthenticationEnabled } = adminLocalSecurityContainer.state;
     const { isLocalEnabled } = adminGeneralSecurityContainer.state;
 
@@ -148,7 +141,7 @@ class LocalSecuritySettingContents extends React.Component {
                   type="textarea"
                   name="registrationWhitelist"
                   defaultValue={adminLocalSecurityContainer.state.registrationWhitelist.join('\n')}
-                  onChange={e => adminLocalSecurityContainer.changeRegistrationWhitelist(e.target.value)}
+                  onChange={(e) => adminLocalSecurityContainer.changeRegistrationWhitelist(e.target.value)}
                 />
                 <p className="form-text text-muted small">
                   {t('security_settings.restrict_emails')}
@@ -185,9 +178,7 @@ class LocalSecuritySettingContents extends React.Component {
                     </Link>
                   </div>
                 )}
-                <p className="form-text text-muted small">
-                  {t('security_settings.Local.password_reset_desc')}
-                </p>
+                <p className="form-text text-muted small">{t('security_settings.Local.password_reset_desc')}</p>
               </div>
             </div>
 
@@ -214,9 +205,7 @@ class LocalSecuritySettingContents extends React.Component {
                     </Link>
                   </div>
                 )}
-                <p className="form-text text-muted small">
-                  {t('security_settings.Local.enable_email_authentication_desc')}
-                </p>
+                <p className="form-text text-muted small">{t('security_settings.Local.enable_email_authentication_desc')}</p>
               </div>
             </div>
 
@@ -237,7 +226,6 @@ class LocalSecuritySettingContents extends React.Component {
       </>
     );
   }
-
 }
 
 LocalSecuritySettingContents.propTypes = {

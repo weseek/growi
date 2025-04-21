@@ -2,11 +2,8 @@ import mockRequire from 'mock-require';
 
 const { reRequire } = mockRequire;
 
-
 describe('config/migrate-mongo-config.js', () => {
-
   test.concurrent('throws an error when MIGRATIONS_DIR is not set', () => {
-
     const getMongoUriMock = vi.fn();
     const mongoOptionsMock = vi.fn();
 
@@ -32,13 +29,11 @@ describe('config/migrate-mongo-config.js', () => {
     ${'mongodb://user:pass@example.com/growi'}        | ${'growi'}
     ${'mongodb://example.com/growi?replicaSet=mySet'} | ${'growi'}
   `('returns', ({ MONGO_URI, expectedDbName }) => {
-
-    beforeEach(async() => {
+    beforeEach(async () => {
       process.env.MIGRATIONS_DIR = 'testdir/migrations';
     });
 
     test(`when 'MONGO_URI' is '${MONGO_URI}`, () => {
-
       const getMongoUriMock = vi.fn(() => MONGO_URI);
       const mongoOptionsMock = vi.fn();
 
@@ -61,5 +56,4 @@ describe('config/migrate-mongo-config.js', () => {
       expect(changelogCollectionName).toBe('migrations');
     });
   });
-
 });

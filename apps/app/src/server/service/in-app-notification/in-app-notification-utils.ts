@@ -14,14 +14,12 @@ const isIPageBulkExportJob = (targetModel: string, target: IUser | IPage | IPage
 };
 
 // snapshots are infos about the target that are displayed in the notification, which should not change on target update/deletion
-export const generateSnapshot = async(targetModel: string, target: IUser | IPage | IPageBulkExportJob): Promise<string | undefined> => {
-
+export const generateSnapshot = async (targetModel: string, target: IUser | IPage | IPageBulkExportJob): Promise<string | undefined> => {
   let snapshot: string | undefined;
 
   if (isIPage(targetModel, target)) {
     snapshot = pageSerializers.stringifySnapshot(target);
-  }
-  else if (isIPageBulkExportJob(targetModel, target)) {
+  } else if (isIPageBulkExportJob(targetModel, target)) {
     snapshot = await pageBulkExportJobSerializers.stringifySnapshot(target);
   }
 

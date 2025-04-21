@@ -13,13 +13,11 @@ import { RevisionLoader } from './Page/RevisionLoader';
 
 import styles from './PageTimeline.module.scss';
 
-
 type TimelineCardProps = {
-  page: IPageHasId,
-}
+  page: IPageHasId;
+};
 
 const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
-
   const { data: rendererOptions } = useTimelineOptions(page.path);
 
   return (
@@ -30,20 +28,13 @@ const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
         </Link>
       </div>
       <div className="card-body">
-        { rendererOptions != null && page.revision != null && (
-          <RevisionLoader
-            rendererOptions={rendererOptions}
-            pageId={page._id}
-            revisionId={page.revision}
-          />
-        ) }
+        {rendererOptions != null && page.revision != null && <RevisionLoader rendererOptions={rendererOptions} pageId={page._id} revisionId={page.revision} />}
       </div>
     </div>
   );
 };
 
 export const PageTimeline = (): JSX.Element => {
-
   const PER_PAGE = 3;
   const { t } = useTranslation();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -64,15 +55,8 @@ export const PageTimeline = (): JSX.Element => {
 
   return (
     <div>
-      <InfiniteScroll
-        swrInifiniteResponse={swrInfinitexPageTimeline}
-        isReachingEnd={isReachingEnd}
-      >
-        { data != null && data.flatMap(apiResult => apiResult.pages)
-          .map(page => (
-            <TimelineCard key={page._id} page={page} />
-          ))
-        }
+      <InfiniteScroll swrInifiniteResponse={swrInfinitexPageTimeline} isReachingEnd={isReachingEnd}>
+        {data != null && data.flatMap((apiResult) => apiResult.pages).map((page) => <TimelineCard key={page._id} page={page} />)}
       </InfiniteScroll>
     </div>
   );

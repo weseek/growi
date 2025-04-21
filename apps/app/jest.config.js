@@ -69,11 +69,5 @@ module.exports = {
   coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
-  coveragePathIgnorePatterns: [
-    'index.ts',
-    '/config/',
-    '/resource/',
-    '/node_modules/',
-  ],
-
+  coveragePathIgnorePatterns: ['index.ts', '/config/', '/resource/', '/node_modules/'],
 };

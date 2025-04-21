@@ -8,7 +8,6 @@ import { apiv3Get, apiv3Put } from '../util/apiv3-client';
  * @extends {Container} unstated Container
  */
 export default class AdminSlackIntegrationLegacyContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -26,7 +25,6 @@ export default class AdminSlackIntegrationLegacyContainer extends Container {
       isIncomingWebhookPrioritized: false,
       slackToken: '',
     };
-
   }
 
   /**
@@ -92,5 +90,4 @@ export default class AdminSlackIntegrationLegacyContainer extends Container {
 
     return response;
   }
-
 }

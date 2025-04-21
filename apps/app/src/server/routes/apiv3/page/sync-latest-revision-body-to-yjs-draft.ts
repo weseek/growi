@@ -14,19 +14,18 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-
 const logger = loggerFactory('growi:routes:apiv3:page:sync-latest-revision-body-to-yjs-draft');
 
 type SyncLatestRevisionBodyToYjsDraftHandlerFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqParams = {
-  pageId: string,
-}
+  pageId: string;
+};
 type ReqBody = {
-  editingMarkdownLength?: number,
-}
+  editingMarkdownLength?: number;
+};
 interface Req extends Request<ReqParams, ApiV3Response, ReqBody> {
-  user: IUserHasId,
+  user: IUserHasId;
 }
 export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionBodyToYjsDraftHandlerFactory = (crowi) => {
   const Page = mongoose.model<IPage, PageModel>('Page');
@@ -39,9 +38,11 @@ export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionB
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly,
-    validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const { pageId } = req.params;
       const { editingMarkdownLength } = req.body;
 
@@ -54,8 +55,7 @@ export const syncLatestRevisionBodyToYjsDraftHandlerFactory: SyncLatestRevisionB
         const yjsService = getYjsService();
         const result = await yjsService.syncWithTheLatestRevisionForce(pageId, editingMarkdownLength);
         return res.apiv3(result);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(err);
       }

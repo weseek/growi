@@ -5,15 +5,14 @@ import { useEffect, useState } from 'react';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import type { SWRInfiniteResponse } from 'swr/infinite';
 
-
 type Props<T> = {
-  swrInifiniteResponse: SWRInfiniteResponse<T>
-  children: React.ReactNode,
-  loadingIndicator?: React.ReactNode
-  endingIndicator?: React.ReactNode
-  isReachingEnd?: boolean
-  offset?: number
-}
+  swrInifiniteResponse: SWRInfiniteResponse<T>;
+  children: React.ReactNode;
+  loadingIndicator?: React.ReactNode;
+  endingIndicator?: React.ReactNode;
+  isReachingEnd?: boolean;
+  offset?: number;
+};
 
 const useIntersection = <E extends HTMLElement>(): [boolean, Ref<E>] => {
   const [intersecting, setIntersecting] = useState<boolean>(false);
@@ -28,7 +27,14 @@ const useIntersection = <E extends HTMLElement>(): [boolean, Ref<E>] => {
     }
     return;
   }, [element]);
-  return [intersecting, (el) => { if (el != null) { setElement(el); } }];
+  return [
+    intersecting,
+    (el) => {
+      if (el != null) {
+        setElement(el);
+      }
+    },
+  ];
 };
 
 const LoadingIndicator = (): JSX.Element => {
@@ -39,11 +45,9 @@ const LoadingIndicator = (): JSX.Element => {
   );
 };
 
-const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
+const InfiniteScroll = <E,>(props: Props<E>): React.ReactElement<Props<E>> => {
   const {
-    swrInifiniteResponse: {
-      setSize, isValidating,
-    },
+    swrInifiniteResponse: { setSize, isValidating },
     children,
     loadingIndicator,
     endingIndicator,
@@ -55,7 +59,7 @@ const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
 
   useEffect(() => {
     if (intersecting && !isValidating && !isReachingEnd) {
-      setSize(size => size + 1);
+      setSize((size) => size + 1);
     }
   }, [setSize, intersecting, isValidating, isReachingEnd]);
 
@@ -64,10 +68,7 @@ const InfiniteScroll = <E, >(props: Props<E>): React.ReactElement<Props<E>> => {
       {children}
       <div style={{ position: 'relative' }}>
         <div ref={ref} style={{ position: 'absolute', top: offset }}></div>
-        {isReachingEnd
-          ? endingIndicator
-          : loadingIndicator || <LoadingIndicator />
-        }
+        {isReachingEnd ? endingIndicator : loadingIndicator || <LoadingIndicator />}
       </div>
     </>
   );

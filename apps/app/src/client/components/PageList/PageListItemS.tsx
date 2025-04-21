@@ -8,26 +8,24 @@ import Clamp from 'react-multiline-clamp';
 import styles from './PageListItemS.module.scss';
 
 type PageListItemSProps = {
-  page: IPageHasId,
-  noLink?: boolean,
-  pageTitle?: string
-  isNarrowView?: boolean,
-}
+  page: IPageHasId;
+  noLink?: boolean;
+  pageTitle?: string;
+  isNarrowView?: boolean;
+};
 
 export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
-
-  const {
-    page,
-    noLink = false,
-    pageTitle,
-    isNarrowView = false,
-  } = props;
+  const { page, noLink = false, pageTitle, isNarrowView = false } = props;
 
   const path = pageTitle != null ? pageTitle : page.path;
 
   let pagePathElement = <PagePathLabel path={path} additionalClassNames={['mx-1']} />;
   if (!noLink) {
-    pagePathElement = <Link href={`/${page._id}`} className="text-break" prefetch={false}>{pagePathElement}</Link>;
+    pagePathElement = (
+      <Link href={`/${page._id}`} className="text-break" prefetch={false}>
+        {pagePathElement}
+      </Link>
+    );
   }
 
   return (
@@ -35,9 +33,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
       {isNarrowView ? (
         <Clamp lines={2}>
-          <div className={`mx-1 ${styles['page-title']} ${noLink ? 'text-break' : ''}`}>
-            {pagePathElement}
-          </div>
+          <div className={`mx-1 ${styles['page-title']} ${noLink ? 'text-break' : ''}`}>{pagePathElement}</div>
         </Clamp>
       ) : (
         pagePathElement
@@ -47,5 +43,4 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
       </span>
     </>
   );
-
 };

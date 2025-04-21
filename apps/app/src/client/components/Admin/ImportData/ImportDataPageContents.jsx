@@ -15,7 +15,6 @@ import GrowiArchiveSection from './GrowiArchiveSection';
 const logger = loggerFactory('growi:importer');
 
 class ImportDataPageContents extends React.Component {
-
   render() {
     const { t, adminImportContainer } = this.props;
 
@@ -23,11 +22,7 @@ class ImportDataPageContents extends React.Component {
       <div data-testid="admin-import-data">
         <GrowiArchiveSection />
 
-        <form
-          className="mt-5"
-          id="importerSettingFormEsa"
-          role="form"
-        >
+        <form className="mt-5" id="importerSettingFormEsa" role="form">
           <fieldset>
             <h2 className="admin-setting-header">{t('importer_management.import_from', { from: 'esa.io' })}</h2>
             <table className="table table-bordered table-mapping">
@@ -41,12 +36,16 @@ class ImportDataPageContents extends React.Component {
               <tbody>
                 <tr>
                   <th>{t('importer_management.article')}</th>
-                  <th><span className="material-symbols-outlined text-success">arrow_circle_right</span></th>
+                  <th>
+                    <span className="material-symbols-outlined text-success">arrow_circle_right</span>
+                  </th>
                   <th>{t('importer_management.page')}</th>
                 </tr>
                 <tr>
                   <th>{t('importer_management.category')}</th>
-                  <th><span className="material-symbols-outlined text-success">arrow_circle_right</span></th>
+                  <th>
+                    <span className="material-symbols-outlined text-success">arrow_circle_right</span>
+                  </th>
                   <th>{t('importer_management.page_path')}</th>
                 </tr>
                 <tr>
@@ -80,7 +79,6 @@ class ImportDataPageContents extends React.Component {
                   onChange={adminImportContainer.handleInputValue}
                 />
               </div>
-
             </div>
 
             <div className="row mt-3">
@@ -119,17 +117,12 @@ class ImportDataPageContents extends React.Component {
                     value={t('importer_management.esa_settings.test_connection')}
                   />
                 </span>
-
               </div>
             </div>
           </fieldset>
         </form>
 
-        <form
-          className="mt-5"
-          id="importerSettingFormQiita"
-          role="form"
-        >
+        <form className="mt-5" id="importerSettingFormQiita" role="form">
           <fieldset>
             <h2 className="admin-setting-header">{t('importer_management.import_from', { from: 'Qiita:Team' })}</h2>
             <table className="table table-bordered table-mapping">
@@ -143,7 +136,9 @@ class ImportDataPageContents extends React.Component {
               <tbody>
                 <tr>
                   <th>{t('importer_management.article')}</th>
-                  <th><span className="material-symbols-outlined">arrow_circle_right</span></th>
+                  <th>
+                    <span className="material-symbols-outlined">arrow_circle_right</span>
+                  </th>
                   <th>{t('importer_management.page')}</th>
                 </tr>
                 <tr>
@@ -202,7 +197,6 @@ class ImportDataPageContents extends React.Component {
               </div>
             </div>
 
-
             <div className="row mt-3">
               <div className="offset-md-3 col-md-6">
                 <input
@@ -224,19 +218,13 @@ class ImportDataPageContents extends React.Component {
                     value={t('importer_management.qiita_settings.test_connection')}
                   />
                 </span>
-
               </div>
             </div>
-
-
           </fieldset>
-
-
         </form>
       </div>
     );
   }
-
 }
 
 ImportDataPageContents.propTypes = {
@@ -250,14 +238,13 @@ const ImportDataPageContentsWrapperFc = (props) => {
   const { adminImportContainer } = props;
 
   useEffect(() => {
-    const fetchImportSettingsData = async() => {
+    const fetchImportSettingsData = async () => {
       await adminImportContainer.retrieveImportSettingsData();
     };
 
     try {
       fetchImportSettingsData();
-    }
-    catch (err) {
+    } catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
       logger.error(errs);

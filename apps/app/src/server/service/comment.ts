@@ -13,7 +13,6 @@ const USERNAME_PATTERN = new RegExp(/\B@[\w@.-]+/g);
 const logger = loggerFactory('growi:service:CommentService');
 
 class CommentService {
-
   crowi!: Crowi;
 
   activityService!: any;
@@ -31,35 +30,30 @@ class CommentService {
 
   initCommentEventListeners(): void {
     // create
-    commentEvent.on(CommentEvent.CREATE, async(savedComment) => {
-
+    commentEvent.on(CommentEvent.CREATE, async (savedComment) => {
       try {
         const Page = pageModelFactory(this.crowi);
         await Page.updateCommentCount(savedComment.page);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('Error occurred while handling the comment create event:\n', err);
       }
-
     });
 
     // update
-    commentEvent.on(CommentEvent.UPDATE, async() => {
-    });
+    commentEvent.on(CommentEvent.UPDATE, async () => {});
 
     // remove
-    commentEvent.on(CommentEvent.DELETE, async(removedComment) => {
+    commentEvent.on(CommentEvent.DELETE, async (removedComment) => {
       try {
         const Page = pageModelFactory(this.crowi);
         await Page.updateCommentCount(removedComment.page);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('Error occurred while updating the comment count:\n', err);
       }
     });
   }
 
-  getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
+  getMentionedUsers = async (commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
     const User = userModelFactory(this.crowi);
 
     // Get comment by comment ID
@@ -76,9 +70,13 @@ class CommentService {
     const usernamesFromComment = comment.match(USERNAME_PATTERN);
 
     // Get username from comment and remove duplicate username
-    const mentionedUsernames = [...new Set(usernamesFromComment?.map((username) => {
-      return username.slice(1);
-    }))];
+    const mentionedUsernames = [
+      ...new Set(
+        usernamesFromComment?.map((username) => {
+          return username.slice(1);
+        }),
+      ),
+    ];
 
     // Get mentioned users ID
     const mentionedUserIDs = await User.find({ username: { $in: mentionedUsernames } });
@@ -86,8 +84,6 @@ class CommentService {
       return user._id;
     });
   };
-
 }
-
 
 module.exports = CommentService;

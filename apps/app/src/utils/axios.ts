@@ -15,7 +15,7 @@ const customAxios = axios.create({
 
 // serialize Date config: https://github.com/axios/axios/issues/1548#issuecomment-548306666
 customAxios.interceptors.request.use((config) => {
-  config.paramsSerializer = params => qs.stringify(params, { serializeDate: (date: Date) => dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ') });
+  config.paramsSerializer = (params) => qs.stringify(params, { serializeDate: (date: Date) => dayjs(date).format('YYYY-MM-DDTHH:mm:ssZ') });
   return config;
 });
 

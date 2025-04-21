@@ -8,7 +8,6 @@ import { apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
  * @extends {Container} unstated Container
  */
 export default class AdminAppContainer extends Container {
-
   constructor() {
     super();
 
@@ -80,7 +79,6 @@ export default class AdminAppContainer extends Container {
       // TODO: remove this property when bulk export can be relased for cloud (https://redmine.weseek.co.jp/issues/163220)
       isBulkExportDisabledForCloud: false,
     };
-
   }
 
   /**
@@ -213,7 +211,6 @@ export default class AdminAppContainer extends Container {
   changeSiteUrl(siteUrl) {
     this.setState({ siteUrl });
   }
-
 
   /**
    * Change from address
@@ -407,7 +404,6 @@ export default class AdminAppContainer extends Container {
     return appSettingParams;
   }
 
-
   /**
    * Update site url setting
    * @memberOf AdminAppContainer
@@ -535,5 +531,4 @@ export default class AdminAppContainer extends Container {
   async endMaintenanceMode() {
     await apiv3Post('/app-settings/maintenance-mode', { flag: false });
   }
-
 }

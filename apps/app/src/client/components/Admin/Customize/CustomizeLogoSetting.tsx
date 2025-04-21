@@ -3,20 +3,16 @@ import React, { useCallback, useState, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ImageCropModal from '~/client/components/Common/ImageCropModal';
-import {
-  apiv3Delete, apiv3PostForm, apiv3Put,
-} from '~/client/util/apiv3-client';
+import { apiv3Delete, apiv3PostForm, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useIsDefaultLogo, useIsCustomizedLogoUploaded } from '~/stores-universal/context';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-
 const DEFAULT_LOGO = '/images/logo.svg';
 const CUSTOMIZED_LOGO = '/attachment/brand-logo';
 
 const CustomizeLogoSetting = (): JSX.Element => {
-
   const { t } = useTranslation();
   const { data: isDefaultLogo } = useIsDefaultLogo();
   const { data: isCustomizedLogoUploaded, mutate: mutateIsCustomizedLogoUploaded } = useIsCustomizedLogoUploaded();
@@ -35,44 +31,43 @@ const CustomizeLogoSetting = (): JSX.Element => {
     }
   }, []);
 
-  const onClickSubmit = useCallback(async() => {
+  const onClickSubmit = useCallback(async () => {
     try {
       await apiv3Put('/customize-setting/customize-logo', { isDefaultLogo: isDefaultLogoSelected });
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.custom_logo'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [t, isDefaultLogoSelected]);
 
-  const onClickDeleteBtn = useCallback(async() => {
+  const onClickDeleteBtn = useCallback(async () => {
     try {
       await apiv3Delete('/customize-setting/delete-brand-logo');
       mutateIsCustomizedLogoUploaded(false);
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       setRetrieveError(err);
       throw new Error('Failed to delete logo');
     }
   }, [mutateIsCustomizedLogoUploaded, t]);
 
-
-  const processImageCompletedHandler = useCallback(async(croppedImage) => {
-    try {
-      const formData = new FormData();
-      formData.append('file', croppedImage);
-      await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
-      mutateIsCustomizedLogoUploaded(true);
-      toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo'), ns: 'commons' }));
-    }
-    catch (err) {
-      toastError(err);
-      setRetrieveError(err);
-      throw new Error('Failed to upload brand logo');
-    }
-  }, [mutateIsCustomizedLogoUploaded, t]);
+  const processImageCompletedHandler = useCallback(
+    async (croppedImage) => {
+      try {
+        const formData = new FormData();
+        formData.append('file', croppedImage);
+        await apiv3PostForm('/customize-setting/upload-brand-logo', formData);
+        mutateIsCustomizedLogoUploaded(true);
+        toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.current_logo'), ns: 'commons' }));
+      } catch (err) {
+        toastError(err);
+        setRetrieveError(err);
+        throw new Error('Failed to upload brand logo');
+      }
+    },
+    [mutateIsCustomizedLogoUploaded, t],
+  );
 
   return (
     <React.Fragment>
@@ -91,7 +86,9 @@ const CustomizeLogoSetting = (): JSX.Element => {
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={isDefaultLogoSelected}
-                      onChange={() => { setIsDefaultLogoSelected(true) }}
+                      onChange={() => {
+                        setIsDefaultLogoSelected(true);
+                      }}
                     />
                     <label className="form-check-label" htmlFor="radioDefaultLogo">
                       {t('admin:customize_settings.default_logo')}
@@ -110,17 +107,17 @@ const CustomizeLogoSetting = (): JSX.Element => {
                       form="formImageType"
                       name="imagetypeForm[isDefaultLogo]"
                       checked={!isDefaultLogoSelected}
-                      onChange={() => { setIsDefaultLogoSelected(false) }}
+                      onChange={() => {
+                        setIsDefaultLogoSelected(false);
+                      }}
                     />
                     <label className="form-check-label" htmlFor="radioUploadLogo">
-                      { t('admin:customize_settings.upload_logo') }
+                      {t('admin:customize_settings.upload_logo')}
                     </label>
                   </div>
                 </h4>
                 <div className="row mb-3">
-                  <label className="col-sm-4 col-12 col-form-label text-start">
-                    { t('admin:customize_settings.current_logo') }
-                  </label>
+                  <label className="col-sm-4 col-12 col-form-label text-start">{t('admin:customize_settings.current_logo')}</label>
                   <div className="col-sm-8 col-12">
                     {isCustomizedLogoUploaded && (
                       <>
@@ -128,16 +125,14 @@ const CustomizeLogoSetting = (): JSX.Element => {
                           <img src={CUSTOMIZED_LOGO} className="picture picture-lg " id="settingBrandLogo" width="64" />
                         </p>
                         <button type="button" className="btn btn-danger" onClick={onClickDeleteBtn}>
-                          { t('admin:customize_settings.delete_logo') }
+                          {t('admin:customize_settings.delete_logo')}
                         </button>
                       </>
                     )}
                   </div>
                 </div>
                 <div className="row">
-                  <label className="col-sm-4 col-12 col-form-label text-start">
-                    { t('admin:customize_settings.upload_new_logo') }
-                  </label>
+                  <label className="col-sm-4 col-12 col-form-label text-start">{t('admin:customize_settings.upload_new_logo')}</label>
                   <div className="col-sm-8 col-12">
                     <input type="file" onChange={onSelectFile} name="brandLogo" accept="image/*" />
                   </div>
@@ -159,9 +154,6 @@ const CustomizeLogoSetting = (): JSX.Element => {
       />
     </React.Fragment>
   );
-
-
 };
-
 
 export default CustomizeLogoSetting;

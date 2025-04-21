@@ -14,30 +14,25 @@ vi.mock('../../models/config', () => ({
   Config: mocks.ConfigMock,
 }));
 
-
 type ConfigManagerToGetLoader = {
   configLoader: { loadFromDB: () => void };
-}
-
+};
 
 describe('ConfigManager test', () => {
-
   const s2sMessagingServiceMock = mock<S2sMessagingService>();
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     process.env.CONFIG_PUBSUB_SERVER_TYPE = 'nchan';
     configManager.setS2sMessagingService(s2sMessagingServiceMock);
   });
 
-
   describe('updateConfig()', () => {
-
     let loadConfigsSpy;
-    beforeEach(async() => {
+    beforeEach(async () => {
       loadConfigsSpy = vi.spyOn(configManager, 'loadConfigs');
     });
 
-    test('invoke publishUpdateMessage()', async() => {
+    test('invoke publishUpdateMessage()', async () => {
       // arrenge
       configManager.publishUpdateMessage = vi.fn();
       vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
@@ -51,7 +46,7 @@ describe('ConfigManager test', () => {
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
     });
 
-    test('skip publishUpdateMessage()', async() => {
+    test('skip publishUpdateMessage()', async () => {
       // arrenge
       configManager.publishUpdateMessage = vi.fn();
       vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
@@ -64,17 +59,15 @@ describe('ConfigManager test', () => {
       expect(loadConfigsSpy).toHaveBeenCalledTimes(1);
       expect(configManager.publishUpdateMessage).not.toHaveBeenCalled();
     });
-
   });
 
   describe('updateConfigs()', () => {
-
     let loadConfigsSpy;
-    beforeEach(async() => {
+    beforeEach(async () => {
       loadConfigsSpy = vi.spyOn(configManager, 'loadConfigs');
     });
 
-    test('invoke publishUpdateMessage()', async() => {
+    test('invoke publishUpdateMessage()', async () => {
       // arrenge
       configManager.publishUpdateMessage = vi.fn();
       vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
@@ -88,7 +81,7 @@ describe('ConfigManager test', () => {
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
     });
 
-    test('skip publishUpdateMessage()', async() => {
+    test('skip publishUpdateMessage()', async () => {
       // arrange
       configManager.publishUpdateMessage = vi.fn();
       vi.spyOn((configManager as unknown as ConfigManagerToGetLoader).configLoader, 'loadFromDB').mockImplementation(vi.fn());
@@ -104,8 +97,7 @@ describe('ConfigManager test', () => {
   });
 
   describe('getManagedEnvVars()', () => {
-
-    beforeAll(async() => {
+    beforeAll(async () => {
       process.env.AUTO_INSTALL_ADMIN_USERNAME = 'admin';
       process.env.AUTO_INSTALL_ADMIN_PASSWORD = 'password';
 
@@ -129,7 +121,5 @@ describe('ConfigManager test', () => {
       expect(result.AUTO_INSTALL_ADMIN_USERNAME).toEqual('admin');
       expect(result.AUTO_INSTALL_ADMIN_PASSWORD).toEqual('***');
     });
-
   });
-
 });

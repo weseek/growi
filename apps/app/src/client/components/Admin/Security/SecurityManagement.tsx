@@ -9,17 +9,16 @@ import { withUnstatedContainers } from '../../UnstatedUtils';
 import SecurityManagementContents from './SecurityManagementContents';
 
 type Props = {
-  adminGeneralSecurityContainer: AdminGeneralSecurityContainer
-}
+  adminGeneralSecurityContainer: AdminGeneralSecurityContainer;
+};
 
 const SecurityManagement = (props: Props) => {
   const { adminGeneralSecurityContainer } = props;
 
-  const fetchGeneralSecuritySettingsData = useCallback(async() => {
+  const fetchGeneralSecuritySettingsData = useCallback(async () => {
     try {
       await adminGeneralSecurityContainer.retrieveSecurityData();
-    }
-    catch (err) {
+    } catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
     }

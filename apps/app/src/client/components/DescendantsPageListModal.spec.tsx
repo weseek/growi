@@ -26,7 +26,6 @@ vi.mock('~/stores/ui', () => ({
 }));
 
 describe('DescendantsPageListModal.tsx', () => {
-
   it('should render the modal when isOpened is true', () => {
     render(<DescendantsPageListModal />);
     expect(screen.getByTestId('descendants-page-list-modal')).not.toBeNull();
@@ -40,7 +39,6 @@ describe('DescendantsPageListModal.tsx', () => {
   });
 
   describe('when device is larger than lg', () => {
-
     it('should render CustomNavTab', () => {
       render(<DescendantsPageListModal />);
       expect(screen.getByTestId('custom-nav-tab')).not.toBeNull();

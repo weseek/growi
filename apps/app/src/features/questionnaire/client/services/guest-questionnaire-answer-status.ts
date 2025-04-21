@@ -4,12 +4,12 @@
 import { StatusType } from '../../interfaces/questionnaire-answer-status';
 
 interface GuestQuestionnaireAnswerStatus {
-  status: StatusType
-  updatedDate: string
+  status: StatusType;
+  updatedDate: string;
 }
 
 interface GuestQuestionnaireAnswerStatusStorage {
-  [key: string]: GuestQuestionnaireAnswerStatus
+  [key: string]: GuestQuestionnaireAnswerStatus;
 }
 
 const storageKey = 'guestQuestionnaireAnswerStatuses';
@@ -20,11 +20,15 @@ const DAYS_UNTIL_EXPIRATION = 30;
  * and update outdated information.
  */
 const getStorage = (): GuestQuestionnaireAnswerStatusStorage | null => {
-  if (typeof window === 'undefined') { return null }
+  if (typeof window === 'undefined') {
+    return null;
+  }
 
   const currentStorage = localStorage.getItem(storageKey);
 
-  if (currentStorage == null) { return null }
+  if (currentStorage == null) {
+    return null;
+  }
 
   const storageJson: GuestQuestionnaireAnswerStatusStorage = JSON.parse(currentStorage);
   // delete status if outdated to prevent localStorage overflow
@@ -35,9 +39,7 @@ const getStorage = (): GuestQuestionnaireAnswerStatusStorage | null => {
     const expirationDate = new Date(updatedDate.setDate(updatedDate.getDate() + DAYS_UNTIL_EXPIRATION));
     if (expirationDate < new Date()) {
       delete storageJson[key];
-    }
-    else if (answerStatus.status === StatusType.skipped
-          && new Date().toDateString() !== answerStatus.updatedDate) {
+    } else if (answerStatus.status === StatusType.skipped && new Date().toDateString() !== answerStatus.updatedDate) {
       storageJson[key] = {
         status: StatusType.not_answered,
         updatedDate: new Date().toDateString(),
@@ -53,7 +55,9 @@ const getStorage = (): GuestQuestionnaireAnswerStatusStorage | null => {
  * and save it in localStorage.
  */
 const setStatus = (questionnaireOrderId: string, status: StatusType): void => {
-  if (typeof window === 'undefined') { return }
+  if (typeof window === 'undefined') {
+    return;
+  }
 
   const guestQuestionnaireAnswerStatus: GuestQuestionnaireAnswerStatus = {
     status,
@@ -70,7 +74,6 @@ const setStatus = (questionnaireOrderId: string, status: StatusType): void => {
 
   const initialStorage: GuestQuestionnaireAnswerStatusStorage = { [questionnaireOrderId]: guestQuestionnaireAnswerStatus };
   localStorage.setItem(storageKey, JSON.stringify(initialStorage));
-
 };
 
 export const GuestQuestionnaireAnswerStatusService = {

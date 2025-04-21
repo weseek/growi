@@ -5,17 +5,17 @@ import type { IGrowiAppAdditionalInfo, IGrowiAppInfoLegacy } from './growi-app-i
 import type { IUserInfo } from './user-info';
 
 export interface IQuestionnaireAnswer<ID = string> {
-  answers: IAnswer[]
-  answeredAt: Date
-  growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>
-  userInfo: IUserInfo
-  questionnaireOrder: ID
+  answers: IAnswer[];
+  answeredAt: Date;
+  growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>;
+  userInfo: IUserInfo;
+  questionnaireOrder: ID;
 }
 
 export interface IQuestionnaireAnswerLegacy<ID = string> {
-  answers: IAnswer[]
-  answeredAt: Date
-  growiInfo: IGrowiAppInfoLegacy,
-  userInfo: IUserInfo
-  questionnaireOrder: ID
+  answers: IAnswer[];
+  answeredAt: Date;
+  growiInfo: IGrowiAppInfoLegacy;
+  userInfo: IUserInfo;
+  questionnaireOrder: ID;
 }

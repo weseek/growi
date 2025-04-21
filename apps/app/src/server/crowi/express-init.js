@@ -33,10 +33,9 @@ module.exports = (crowi, app) => {
 
   // see: https://qiita.com/nazomikan/items/9458d591a4831480098d
   // Cannot set a custom query parser after app.use() has been called: https://github.com/expressjs/express/issues/3454
-  app.set('query parser', str => qs.parse(str, { arrayLimit: Infinity }));
+  app.set('query parser', (str) => qs.parse(str, { arrayLimit: Infinity }));
 
   app.use(compression());
-
 
   const { configManager } = crowi;
 
@@ -48,24 +47,27 @@ module.exports = (crowi, app) => {
 
   try {
     if (trustProxy != null) {
-      const isNotSpec = [trustProxyBool, trustProxyCsv, trustProxyHops].filter(trustProxy => trustProxy != null).length !== 1;
+      const isNotSpec = [trustProxyBool, trustProxyCsv, trustProxyHops].filter((trustProxy) => trustProxy != null).length !== 1;
       if (isNotSpec) {
         // eslint-disable-next-line max-len
-        logger.warn(`If more than one TRUST_PROXY_ ~ environment variable is set, the values are set in the following order of inequality size (BOOL > CSV > HOPS) first. Set value: ${trustProxy}`);
+        logger.warn(
+          `If more than one TRUST_PROXY_ ~ environment variable is set, the values are set in the following order of inequality size (BOOL > CSV > HOPS) first. Set value: ${trustProxy}`,
+        );
       }
       app.set('trust proxy', trustProxy);
     }
-  }
-  catch (err) {
+  } catch (err) {
     logger.error(err);
   }
 
-  app.use(helmet({
-    contentSecurityPolicy: false,
-    expectCt: false,
-    referrerPolicy: false,
-    permittedCrossDomainPolicies: false,
-  }));
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+      expectCt: false,
+      referrerPolicy: false,
+      permittedCrossDomainPolicies: false,
+    }),
+  );
 
   app.use((req, res, next) => {
     const now = new Date();
@@ -82,11 +84,9 @@ module.exports = (crowi, app) => {
 
   app.set('port', crowi.port);
 
-  const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
+  const staticOption = crowi.node_env === 'production' ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
-  app.use('/static/preset-themes', express.static(
-    resolveFromRoot(`node_modules/@growi/preset-themes/${presetThemesRootPath}`),
-  ));
+  app.use('/static/preset-themes', express.static(resolveFromRoot(`node_modules/@growi/preset-themes/${presetThemesRootPath}`)));
   app.use(PLUGIN_EXPRESS_STATIC_DIR, express.static(PLUGIN_STORING_PATH));
 
   app.use(methodOverride());

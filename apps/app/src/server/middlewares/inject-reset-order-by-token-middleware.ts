@@ -9,11 +9,11 @@ import PasswordResetOrder, { type IPasswordResetOrder } from '../models/password
 const logger = loggerFactory('growi:routes:forgot-password');
 
 export type ReqWithPasswordResetOrder = Request & {
-  passwordResetOrder: IPasswordResetOrder,
+  passwordResetOrder: IPasswordResetOrder;
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default async(req: ReqWithPasswordResetOrder, res: Response, next: NextFunction): Promise<void> => {
+export default async (req: ReqWithPasswordResetOrder, res: Response, next: NextFunction): Promise<void> => {
   const token: string = req.params.token || req.body.token;
 
   if (token == null) {
@@ -27,11 +27,9 @@ export default async(req: ReqWithPasswordResetOrder, res: Response, next: NextFu
   if (passwordResetOrder == null || passwordResetOrder.isExpired() || passwordResetOrder.isRevoked) {
     const message = 'passwordResetOrder is null or expired or revoked';
     logger.error(message);
-    return next(createError(
-      400,
-      'passwordResetOrder is null or expired or revoked',
-      { code: forgotPasswordErrorCode.PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE },
-    ));
+    return next(
+      createError(400, 'passwordResetOrder is null or expired or revoked', { code: forgotPasswordErrorCode.PASSWORD_RESET_ORDER_IS_NOT_APPROPRIATE }),
+    );
   }
 
   req.passwordResetOrder = passwordResetOrder;

@@ -8,10 +8,10 @@ const logger = loggerFactory('growi:crowi:setup-models');
 
 export type ModelsMapDependentOnCrowi = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [modelName: string]: Model<any>,
-}
+  [modelName: string]: Model<any>;
+};
 
-export const setupModelsDependentOnCrowi = async(crowi: Crowi): Promise<ModelsMapDependentOnCrowi> => {
+export const setupModelsDependentOnCrowi = async (crowi: Crowi): Promise<ModelsMapDependentOnCrowi> => {
   const modelsMap: ModelsMapDependentOnCrowi = {};
 
   const modelsDependsOnCrowi = {
@@ -38,7 +38,7 @@ export const setupModelsDependentOnCrowi = async(crowi: Crowi): Promise<ModelsMa
   return modelsMap;
 };
 
-export const setupIndependentModels = async(): Promise<void> => {
+export const setupIndependentModels = async (): Promise<void> => {
   await Promise.all([
     import('~/features/comment/server/models'),
     import('~/features/external-user-group/server/models/external-user-group-relation'),

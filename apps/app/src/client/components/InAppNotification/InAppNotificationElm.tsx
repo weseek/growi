@@ -12,12 +12,11 @@ import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import { useModelNotification } from './ModelNotification';
 
 interface Props {
-  notification: IInAppNotification & HasObjectId
-  onUnopenedNotificationOpend?: () => void,
+  notification: IInAppNotification & HasObjectId;
+  onUnopenedNotificationOpend?: () => void;
 }
 
 const InAppNotificationElm: FC<Props> = (props: Props) => {
-
   const { notification, onUnopenedNotificationOpend } = props;
 
   const modelNotificationUtils = useModelNotification(notification);
@@ -32,7 +31,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     return <></>;
   }
 
-  const clickHandler = async(notification: IInAppNotification & HasObjectId): Promise<void> => {
+  const clickHandler = async (notification: IInAppNotification & HasObjectId): Promise<void> => {
     if (notification.status === InAppNotificationStatuses.STATUS_UNOPENED) {
       // set notification status "OPEND"
       await apiv3Post('/in-app-notification/open', { id: notification._id });
@@ -40,7 +39,9 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       mutateNotificationCount();
     }
 
-    if (isDisabled) { return; }
+    if (isDisabled) {
+      return;
+    }
 
     publishOpen?.();
   };
@@ -66,23 +67,15 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   return (
     <div className="list-group-item list-group-item-action" style={{ cursor: 'pointer' }}>
-      <a
-        href={isDisabled ? undefined : clickLink}
-        onClick={() => clickHandler(notification)}
-      >
+      <a href={isDisabled ? undefined : clickLink} onClick={() => clickHandler(notification)}>
         <div className="d-flex align-items-center">
           <span
-            className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
-              ? 'grw-unopend-notification'
-              : 'ms-2'
-            } rounded-circle me-3`}
-          >
-          </span>
+            className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED ? 'grw-unopend-notification' : 'ms-2'} rounded-circle me-3`}
+          ></span>
 
           {renderActionUserPictures()}
 
           <Notification />
-
         </div>
       </a>
     </div>

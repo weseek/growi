@@ -1,12 +1,8 @@
 import type React from 'react';
-import {
-  useState, useCallback, useEffect,
-} from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
@@ -16,9 +12,9 @@ import { useTagEditModal, type TagEditModalStatus } from '~/stores/modal';
 import { TagsInput } from './TagsInput';
 
 type TagEditModalSubstanceProps = {
-  tagEditModalData: TagEditModalStatus,
-  closeTagEditModal: () => void,
-}
+  tagEditModalData: TagEditModalStatus;
+  closeTagEditModal: () => void;
+};
 
 const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagEditModalSubstanceProps) => {
   const { tagEditModalData, closeTagEditModal } = props;
@@ -37,16 +33,14 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
     setTags(initTags);
   }, [initTags]);
 
-  const handleSubmit = useCallback(async() => {
-
+  const handleSubmit = useCallback(async () => {
     try {
       await apiPost('/tags.update', { pageId, revisionId, tags });
       updateStateAfterSave?.();
 
       toastSuccess('updated tags successfully');
       closeTagEditModal();
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [closeTagEditModal, tags, pageId, revisionId, updateStateAfterSave]);
@@ -57,7 +51,7 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
         {t('tag_edit_modal.edit_tags')}
       </ModalHeader>
       <ModalBody>
-        <TagsInput tags={initTags} onTagsUpdated={tags => setTags(tags)} autoFocus />
+        <TagsInput tags={initTags} onTagsUpdated={(tags) => setTags(tags)} autoFocus />
       </ModalBody>
       <ModalFooter>
         <button type="button" data-testid="tag-edit-done-btn" className="btn btn-primary" onClick={handleSubmit}>
@@ -66,7 +60,6 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
       </ModalFooter>
     </Modal>
   );
-
 };
 
 export const TagEditModal: React.FC = () => {

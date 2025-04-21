@@ -10,7 +10,6 @@ const logger = loggerFactory('growi:migrate:convert-redirect-to-pages-to-page-re
 
 const BATCH_SIZE = 100;
 
-
 module.exports = {
   async up(db, client) {
     await mongoose.connect(getMongoUri(), mongoOptions);
@@ -35,8 +34,7 @@ module.exports = {
 
       try {
         await PageRedirect.bulkWrite(insertPageRedirectOperations);
-      }
-      catch (err) {
+      } catch (err) {
         if (err.code !== 11000) {
           throw new Error(`Failed to migrate: ${err}`);
         }
@@ -71,8 +69,7 @@ module.exports = {
 
       try {
         await pageCollection.bulkWrite(insertPageOperations);
-      }
-      catch (err) {
+      } catch (err) {
         if (err.code !== 11000) {
           throw new Error(`Failed to migrate: ${err}`);
         }

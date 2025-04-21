@@ -10,10 +10,10 @@ import { useSWRxTagsSearch } from '~/stores/tag';
 import styles from './TagsInput.module.scss';
 
 type Props = {
-  tags: string[],
-  autoFocus: boolean,
-  onTagsUpdated: (tags: string[]) => void,
-}
+  tags: string[];
+  autoFocus: boolean;
+  onTagsUpdated: (tags: string[]) => void;
+};
 
 export const TagsInput: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
@@ -27,16 +27,22 @@ export const TagsInput: FC<Props> = (props: Props) => {
 
   const isLoading = error == null && tagsSearch === undefined;
 
-  const changeHandler = useCallback((selected: string[]) => {
-    onTagsUpdated(selected);
-  }, [onTagsUpdated]);
+  const changeHandler = useCallback(
+    (selected: string[]) => {
+      onTagsUpdated(selected);
+    },
+    [onTagsUpdated],
+  );
 
-  const searchHandler = useCallback((query: string) => {
-    const tagsSearchData = tagsSearch?.tags || [];
-    setSearchQuery(query);
-    tagsSearchData.unshift(query);
-    setResultTags(Array.from(new Set(tagsSearchData)));
-  }, [tagsSearch?.tags]);
+  const searchHandler = useCallback(
+    (query: string) => {
+      const tagsSearchData = tagsSearch?.tags || [];
+      setSearchQuery(query);
+      tagsSearchData.unshift(query);
+      setResultTags(Array.from(new Set(tagsSearchData)));
+    },
+    [tagsSearch?.tags],
+  );
 
   const keyDownHandler = useCallback((event: KeyboardEvent<HTMLElement>) => {
     if (event.code === 'Space') {

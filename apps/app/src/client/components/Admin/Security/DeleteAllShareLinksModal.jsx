@@ -2,9 +2,7 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import {
-  Button, Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 const DeleteAllShareLinksModal = React.memo((props) => {
   const { t, onClickDeleteButton, onClose } = props;
@@ -26,9 +24,7 @@ const DeleteAllShareLinksModal = React.memo((props) => {
           {t('security_settings.delete_all_share_links')}
         </span>
       </ModalHeader>
-      <ModalBody>
-        { t('security_settings.share_link_notice')}
-      </ModalBody>
+      <ModalBody>{t('security_settings.share_link_notice')}</ModalBody>
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
         <Button color="danger" onClick={deleteAllLinkHandler}>
@@ -38,10 +34,8 @@ const DeleteAllShareLinksModal = React.memo((props) => {
       </ModalFooter>
     </Modal>
   );
-
 });
 DeleteAllShareLinksModal.displayName = 'DeleteAllShareLinksModal';
-
 
 DeleteAllShareLinksModal.propTypes = {
   t: PropTypes.func.isRequired, // i18next

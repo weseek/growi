@@ -13,19 +13,20 @@ const getDefaultTop = (): number => {
   return defaultTop + padding;
 };
 
-
 const getDataLine = (element: Element | null): number => {
   return element ? +(element.getAttribute('data-line') ?? '0') - 1 : 0;
 };
 
 const getEditorElements = (editorRootElement: HTMLElement): Array<Element> => {
-  return Array.from(editorRootElement.getElementsByClassName('cm-line'))
-    .filter((element) => { return !Number.isNaN(element.getAttribute('data-line') ?? Number.NaN) });
+  return Array.from(editorRootElement.getElementsByClassName('cm-line')).filter((element) => {
+    return !Number.isNaN(element.getAttribute('data-line') ?? Number.NaN);
+  });
 };
 
 const getPreviewElements = (previewRootElement: HTMLElement): Array<Element> => {
-  return Array.from(previewRootElement.getElementsByClassName('has-data-line'))
-    .filter((element) => { return !Number.isNaN(element.getAttribute('data-line') ?? Number.NaN) });
+  return Array.from(previewRootElement.getElementsByClassName('has-data-line')).filter((element) => {
+    return !Number.isNaN(element.getAttribute('data-line') ?? Number.NaN);
+  });
 };
 
 // Ref: https://github.com/mikolalysenko/binary-search-bounds/blob/f436a2a8af11bf3208434e18bbac17e18e7a3a30/search-bounds.js
@@ -36,8 +37,7 @@ const elementBinarySearch = (list: Array<Element>, fn: (index: number) => boolea
     const mid = Math.floor((ok + ng) / 2);
     if (fn(mid)) {
       ok = mid;
-    }
-    else {
+    } else {
       ng = mid;
     }
   }
@@ -45,7 +45,6 @@ const elementBinarySearch = (list: Array<Element>, fn: (index: number) => boolea
 };
 
 const findTopElementIndex = (elements: Array<Element>): number => {
-
   const find = (index: number): boolean => {
     return elements[index].getBoundingClientRect().top < getDefaultTop();
   };
@@ -54,7 +53,6 @@ const findTopElementIndex = (elements: Array<Element>): number => {
 };
 
 const findElementIndexFromDataLine = (previewElements: Array<Element>, dataline: number): number => {
-
   const find = (index: number): boolean => {
     return getDataLine(previewElements[index]) <= dataline;
   };
@@ -62,17 +60,16 @@ const findElementIndexFromDataLine = (previewElements: Array<Element>, dataline:
   return elementBinarySearch(previewElements, find);
 };
 
-
 type SourceElement = {
-  start?: DOMRect,
-  top?: DOMRect,
-  next?: DOMRect,
-}
+  start?: DOMRect;
+  top?: DOMRect;
+  next?: DOMRect;
+};
 
 type TargetElement = {
-  start?: DOMRect,
-  next?: DOMRect,
-}
+  start?: DOMRect;
+  next?: DOMRect;
+};
 
 const calcScrollElementToTop = (element: Element): number => {
   return element.getBoundingClientRect().top - getDefaultTop();
@@ -98,9 +95,7 @@ const calcScorllElementByRatio = (sourceElement: SourceElement, targetElement: T
   return targetAllHeight * sourceRaito;
 };
 
-
 const scrollEditor = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
-
   setDefaultTop(editorRootElement.getBoundingClientRect().top);
 
   const editorElements = getEditorElements(editorRootElement);
@@ -132,11 +127,9 @@ const scrollEditor = (editorRootElement: HTMLElement, previewRootElement: HTMLEl
   );
 
   previewRootElement.scrollTop = newScrollTop;
-
 };
 
 const scrollPreview = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
-
   setDefaultTop(previewRootElement.getBoundingClientRect().y);
 
   const previewElements = getPreviewElements(previewRootElement);
@@ -167,11 +160,13 @@ const scrollPreview = (editorRootElement: HTMLElement, previewRootElement: HTMLE
   );
 
   editorRootElement.scrollTop = newScrollTop;
-
 };
 
 // eslint-disable-next-line max-len
-export const useScrollSync = (codeMirrorKey: GlobalCodeMirrorEditorKey, previewRef: RefObject<HTMLDivElement | null>): { scrollEditorHandler: () => void; scrollPreviewHandler: () => void } => {
+export const useScrollSync = (
+  codeMirrorKey: GlobalCodeMirrorEditorKey,
+  previewRef: RefObject<HTMLDivElement | null>,
+): { scrollEditorHandler: () => void; scrollPreviewHandler: () => void } => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(codeMirrorKey);
 
   const isOriginOfScrollSyncEditor = useRef(false);

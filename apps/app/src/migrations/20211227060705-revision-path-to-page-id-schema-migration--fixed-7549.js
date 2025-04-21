@@ -9,7 +9,6 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:migrate:revision-path-to-page-id-schema-migration--fixed-7549');
 
 const LIMIT = 300;
@@ -30,10 +29,7 @@ module.exports = {
           return {
             updateMany: {
               filter: {
-                $and: [
-                  { path: page.path },
-                  { pageId: { $exists: false } },
-                ],
+                $and: [{ path: page.path }, { pageId: { $exists: false } }],
               },
               update: [
                 {
@@ -76,11 +72,7 @@ module.exports = {
           return {
             updateMany: {
               filter: {
-                $and: [
-                  { pageId: page._id },
-                  { path: { $exists: false } },
-                ],
-
+                $and: [{ pageId: page._id }, { path: { $exists: false } }],
               },
               update: [
                 {

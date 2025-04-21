@@ -8,22 +8,14 @@ const TriggerEventCheckBox = (props) => {
 
   return (
     <div className={`form-check form-check-${props.checkbox}`}>
-      <input
-        className="form-check-input"
-        type="checkbox"
-        id={`trigger-event-${props.event}`}
-        checked={props.checked}
-        onChange={props.onChange}
-      />
+      <input className="form-check-input" type="checkbox" id={`trigger-event-${props.event}`} checked={props.checked} onChange={props.onChange} />
       <label className="form-label form-check-label" htmlFor={`trigger-event-${props.event}`}>
         {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
-        {props.children}{' '}
-        {t(`notification_settings.event_${props.event}`)}
+        {props.children} {t(`notification_settings.event_${props.event}`)}
       </label>
     </div>
   );
 };
-
 
 TriggerEventCheckBox.propTypes = {
   t: PropTypes.func.isRequired, // i18next

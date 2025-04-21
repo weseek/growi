@@ -12,7 +12,6 @@ import { generalXssFilter } from '../../../src/services/general-xss-filter';
 
 const mongoose = require('mongoose');
 
-
 const { getInstance } = require('../setup-crowi');
 
 let rootPage;
@@ -59,7 +58,6 @@ let childForDeleteCompletely;
 let childForRevert;
 
 describe('PageService', () => {
-
   let crowi;
   let Page;
   let Revision;
@@ -69,7 +67,7 @@ describe('PageService', () => {
   let ShareLink;
   let generalXssFilterProcessSpy;
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     crowi = await getInstance();
     await crowi.configManager.updateConfig('app:isV5Compatible', null);
 
@@ -320,11 +318,7 @@ describe('PageService', () => {
     childForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely/child' });
     childForRevert = await Page.findOne({ path: '/trash/parentForRevert/child' });
 
-
-    await Tag.insertMany([
-      { name: 'Parent' },
-      { name: 'Child' },
-    ]);
+    await Tag.insertMany([{ name: 'Parent' }, { name: 'Child' }]);
 
     parentTag = await Tag.findOne({ name: 'Parent' });
     childTag = await Tag.findOne({ name: 'Child' });
@@ -437,9 +431,14 @@ describe('PageService', () => {
   });
 
   describe('rename page without using renameDescendantsWithStreamSpy', () => {
-    test('rename page with different tree with isRecursively [deeper]', async() => {
-      const resultPage = await crowi.pageService.renamePage(parentForRename6, '/parentForRename6/renamedChild', testUser1, { isRecursively: true },
-        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
+    test('rename page with different tree with isRecursively [deeper]', async () => {
+      const resultPage = await crowi.pageService.renamePage(
+        parentForRename6,
+        '/parentForRename6/renamedChild',
+        testUser1,
+        { isRecursively: true },
+        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' },
+      );
       const wrongPage = await Page.findOne({ path: '/parentForRename6/renamedChild/renamedChild' });
       const expectPage1 = await Page.findOne({ path: '/parentForRename6/renamedChild' });
       const expectPage2 = await Page.findOne({ path: '/parentForRename6-2021H1' });
@@ -451,7 +450,7 @@ describe('PageService', () => {
       expect(wrongPage).toBeNull();
     });
 
-    test('rename page with different tree with isRecursively [shallower]', async() => {
+    test('rename page with different tree with isRecursively [shallower]', async () => {
       // setup
       expect(await Page.findOne({ path: '/level1' })).toBeNull();
       expect(await Page.findOne({ path: '/level1/level2' })).not.toBeNull();
@@ -461,8 +460,13 @@ describe('PageService', () => {
 
       // when
       //   rename /level1/level2 --> /level1
-      await crowi.pageService.renamePage(parentForRename7, '/level1', testUser1, { isRecursively: true },
-        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
+      await crowi.pageService.renamePage(
+        parentForRename7,
+        '/level1',
+        testUser1,
+        { isRecursively: true },
+        { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' },
+      );
 
       // then
       expect(await Page.findOne({ path: '/level1' })).not.toBeNull();
@@ -483,17 +487,20 @@ describe('PageService', () => {
     advanceTo(new Date(2000, 1, 1, 0, 0, 0));
     const dateToUse = new Date();
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit').mockImplementation();
       renameDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'renameDescendantsWithStream').mockImplementation();
     });
 
     describe('renamePage()', () => {
-
-      test('rename page without options', async() => {
-
-        const resultPage = await crowi.pageService.renamePage(parentForRename1,
-          '/renamed1', testUser2, {}, { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
+      test('rename page without options', async () => {
+        const resultPage = await crowi.pageService.renamePage(
+          parentForRename1,
+          '/renamed1',
+          testUser2,
+          {},
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' },
+        );
 
         expect(generalXssFilterProcessSpy).toHaveBeenCalled();
 
@@ -504,10 +511,14 @@ describe('PageService', () => {
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
       });
 
-      test('rename page with updateMetadata option', async() => {
-
-        const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true },
-          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
+      test('rename page with updateMetadata option', async () => {
+        const resultPage = await crowi.pageService.renamePage(
+          parentForRename2,
+          '/renamed2',
+          testUser2,
+          { updateMetadata: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' },
+        );
 
         expect(generalXssFilterProcessSpy).toHaveBeenCalled();
 
@@ -518,10 +529,14 @@ describe('PageService', () => {
         expect(resultPage.lastUpdateUser).toEqual(testUser2._id);
       });
 
-      test('rename page with createRedirectPage option', async() => {
-
-        const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true },
-          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
+      test('rename page with createRedirectPage option', async () => {
+        const resultPage = await crowi.pageService.renamePage(
+          parentForRename3,
+          '/renamed3',
+          testUser2,
+          { createRedirectPage: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' },
+        );
 
         expect(generalXssFilterProcessSpy).toHaveBeenCalled();
         expect(pageEventSpy).toHaveBeenCalledWith('rename');
@@ -531,10 +546,14 @@ describe('PageService', () => {
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
       });
 
-      test('rename page with isRecursively', async() => {
-
-        const resultPage = await crowi.pageService.renamePage(parentForRename4, '/renamed4', testUser2, { isRecursively: true },
-          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
+      test('rename page with isRecursively', async () => {
+        const resultPage = await crowi.pageService.renamePage(
+          parentForRename4,
+          '/renamed4',
+          testUser2,
+          { isRecursively: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' },
+        );
 
         expect(generalXssFilterProcessSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
@@ -545,20 +564,23 @@ describe('PageService', () => {
         expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
       });
 
-      test('rename page with different tree with isRecursively', async() => {
-
-        const resultPage = await crowi.pageService.renamePage(parentForRename5, '/parentForRename5/renamedChild', testUser1, { isRecursively: true },
-          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
+      test('rename page with different tree with isRecursively', async () => {
+        const resultPage = await crowi.pageService.renamePage(
+          parentForRename5,
+          '/parentForRename5/renamedChild',
+          testUser1,
+          { isRecursively: true },
+          { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' },
+        );
         const wrongPage = await Page.findOne({ path: '/parentForRename5/renamedChild/renamedChild' });
         const expectPage = await Page.findOne({ path: '/parentForRename5/renamedChild' });
 
         expect(resultPage.path).toEqual(expectPage.path);
         expect(wrongPage).toBeNull();
       });
-
     });
 
-    test('renameDescendants without options', async() => {
+    test('renameDescendants without options', async () => {
       const oldPagePathPrefix = new RegExp('^/parentForRename1', 'i');
       const newPagePathPrefix = '/renamed1';
 
@@ -573,7 +595,7 @@ describe('PageService', () => {
       expect(resultPage.lastUpdateUser).toEqual(testUser1._id);
     });
 
-    test('renameDescendants with updateMetadata option', async() => {
+    test('renameDescendants with updateMetadata option', async () => {
       const oldPagePathPrefix = new RegExp('^/parentForRename2', 'i');
       const newPagePathPrefix = '/renamed2';
 
@@ -588,7 +610,7 @@ describe('PageService', () => {
       expect(resultPage.lastUpdateUser).toEqual(testUser2._id);
     });
 
-    test('renameDescendants with createRedirectPage option', async() => {
+    test('renameDescendants with createRedirectPage option', async () => {
       const oldPagePathPrefix = new RegExp('^/parentForRename3', 'i');
       const newPagePathPrefix = '/renamed3';
 
@@ -612,16 +634,24 @@ describe('PageService', () => {
     // const { serializePageSecurely } = require('~/server/models/serializers/page-serializer');
     // serializePageSecurely.mockImplementation(page => page);
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       duplicateDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'duplicateDescendantsWithStream').mockImplementation();
     });
 
-    test('duplicate page (isRecursively: false)', async() => {
+    test('duplicate page (isRecursively: false)', async () => {
       const dummyId = '600d395667536503354c9999';
-      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
-      const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
-      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, parentTag.name] });
-      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag.name] });
+      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => {
+        return parentTag;
+      });
+      const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => {
+        return parentTag;
+      });
+      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => {
+        return [dummyId, parentTag.name];
+      });
+      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => {
+        return [parentTag.name];
+      });
 
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicate', testUser2, false);
       const duplicatedToPageRevision = await Revision.findOne({ pageId: resultPage._id });
@@ -637,12 +667,20 @@ describe('PageService', () => {
       expect(resultPage.tags).toEqual([originTagsMock().name]);
     });
 
-    test('duplicate page (isRecursively: true)', async() => {
+    test('duplicate page (isRecursively: true)', async () => {
       const dummyId = '600d395667536503354c9999';
-      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => { return parentTag });
-      const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => { return parentTag });
-      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => { return [dummyId, parentTag.name] });
-      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => { return [parentTag.name] });
+      crowi.models.Page.findRelatedTagsById = jest.fn().mockImplementation(() => {
+        return parentTag;
+      });
+      const originTagsMock = jest.spyOn(Page, 'findRelatedTagsById').mockImplementation(() => {
+        return parentTag;
+      });
+      jest.spyOn(PageTagRelation, 'updatePageTags').mockImplementation(() => {
+        return [dummyId, parentTag.name];
+      });
+      jest.spyOn(PageTagRelation, 'listTagNamesByPage').mockImplementation(() => {
+        return [parentTag.name];
+      });
 
       const resultPageRecursivly = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicateRecursively', testUser2, true);
       const duplicatedRecursivelyToPageRevision = await Revision.findOne({ pageId: resultPageRecursivly._id });
@@ -658,7 +696,7 @@ describe('PageService', () => {
       expect(resultPageRecursivly.tags).toEqual([originTagsMock().name]);
     });
 
-    test('duplicateDescendants()', async() => {
+    test('duplicateDescendants()', async () => {
       const duplicateTagsMock = await jest.spyOn(crowi.pageService, 'duplicateTags').mockImplementationOnce();
       await crowi.pageService.duplicateDescendants([childForDuplicate], testUser2, parentForDuplicate.path, '/newPathPrefix');
 
@@ -678,7 +716,7 @@ describe('PageService', () => {
       expect(duplicateTagsMock).toHaveBeenCalled();
     });
 
-    test('duplicateTags()', async() => {
+    test('duplicateTags()', async () => {
       const pageIdMapping = {
         [parentForDuplicate._id]: '60110bdd85339d7dc732dddd',
       };
@@ -695,15 +733,15 @@ describe('PageService', () => {
     let deleteDescendantsWithStreamSpy;
     const dateToUse = new Date('2000-01-01');
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       jest.spyOn(global.Date, 'now').mockImplementation(() => dateToUse);
       getDeletedPageNameSpy = jest.spyOn(Page, 'getDeletedPageName');
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
       deleteDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'deleteDescendantsWithStream').mockImplementation();
     });
 
-    test('delete page without options', async() => {
-      const resultPage = await crowi.pageService.deletePage(parentForDelete1, testUser2, { }, false, {
+    test('delete page without options', async () => {
+      const resultPage = await crowi.pageService.deletePage(parentForDelete1, testUser2, {}, false, {
         ip: '::ffff:127.0.0.1',
         endpoint: '/_api/v3/pages/delete',
       });
@@ -721,8 +759,8 @@ describe('PageService', () => {
       expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete1, resultPage, testUser2);
     });
 
-    test('delete page with isRecursively', async() => {
-      const resultPage = await crowi.pageService.deletePage(parentForDelete2, testUser2, { }, true, {
+    test('delete page with isRecursively', async () => {
+      const resultPage = await crowi.pageService.deletePage(parentForDelete2, testUser2, {}, true, {
         ip: '::ffff:127.0.0.1',
         endpoint: '/_api/v3/pages/delete',
       });
@@ -740,8 +778,7 @@ describe('PageService', () => {
       expect(pageEventSpy).toHaveBeenCalledWith('delete', parentForDelete2, resultPage, testUser2);
     });
 
-
-    test('deleteDescendants', async() => {
+    test('deleteDescendants', async () => {
       await crowi.pageService.deleteDescendants([childForDelete], testUser2);
       const resultPage = await Page.findOne({ path: '/trash/parentForDelete/child' });
 
@@ -760,7 +797,7 @@ describe('PageService', () => {
         pageCompleteDeletionAuthority is 'anyone',
         user is not related to all granted groups,
         and isAllGroupMembershipRequiredForPageCompleteDeletion is true`, () => {
-        beforeEach(async() => {
+        beforeEach(async () => {
           const config = {
             'security:isAllGroupMembershipRequiredForPageCompleteDeletion': true,
             'security:pageCompleteDeletionAuthority': PageSingleDeleteCompConfigValue.Anyone,
@@ -769,7 +806,7 @@ describe('PageService', () => {
           await crowi.configManager.updateConfigs(config);
         });
 
-        test('is not deletable', async() => {
+        test('is not deletable', async () => {
           const creatorId = await crowi.pageService.getCreatorIdForCanDelete(canDeleteCompletelyTestPage);
           const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser1);
           const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, creatorId, testUser1, false, userRelatedGroups);
@@ -781,7 +818,7 @@ describe('PageService', () => {
         pageCompleteDeletionAuthority is 'anyone',
         user is related to all granted groups,
         and isAllGroupMembershipRequiredForPageCompleteDeletion is true`, () => {
-        beforeEach(async() => {
+        beforeEach(async () => {
           const config = {
             'security:isAllGroupMembershipRequiredForPageCompleteDeletion': true,
             'security:pageCompleteDeletionAuthority': PageSingleDeleteCompConfigValue.Anyone,
@@ -790,7 +827,7 @@ describe('PageService', () => {
           await crowi.configManager.updateConfigs(config);
         });
 
-        test('is not deletable', async() => {
+        test('is not deletable', async () => {
           const creatorId = await crowi.pageService.getCreatorIdForCanDelete(canDeleteCompletelyTestPage);
           const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser3);
           const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, creatorId, testUser3, false, userRelatedGroups);
@@ -802,7 +839,7 @@ describe('PageService', () => {
         pageCompleteDeletionAuthority is 'anyone',
         user is not related to all granted groups,
         and isAllGroupMembershipRequiredForPageCompleteDeletion is false`, () => {
-        beforeEach(async() => {
+        beforeEach(async () => {
           const config = {
             'security:isAllGroupMembershipRequiredForPageCompleteDeletion': false,
             'security:pageCompleteDeletionAuthority': PageSingleDeleteCompConfigValue.Anyone,
@@ -811,7 +848,7 @@ describe('PageService', () => {
           await crowi.configManager.updateConfigs(config);
         });
 
-        test('is deletable', async() => {
+        test('is deletable', async () => {
           const creatorId = await crowi.pageService.getCreatorIdForCanDelete(canDeleteCompletelyTestPage);
           const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser1);
           const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, creatorId, testUser1, false, userRelatedGroups);
@@ -823,7 +860,7 @@ describe('PageService', () => {
         pageCompleteDeletionAuthority is 'anyone',
         user is not related to all granted groups,
         and isAllGroupMembershipRequiredForPageCompleteDeletion is true`, () => {
-        beforeEach(async() => {
+        beforeEach(async () => {
           const config = {
             'security:isAllGroupMembershipRequiredForPageCompleteDeletion': false,
             'security:pageCompleteDeletionAuthority': PageSingleDeleteCompConfigValue.Anyone,
@@ -832,7 +869,7 @@ describe('PageService', () => {
           await crowi.configManager.updateConfigs(config);
         });
 
-        test('is deletable', async() => {
+        test('is deletable', async () => {
           const creatorId = await crowi.pageService.getCreatorIdForCanDelete(canDeleteCompletelyTestPage);
           const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser2);
           const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, creatorId, testUser2, false, userRelatedGroups);
@@ -854,7 +891,7 @@ describe('PageService', () => {
       let deleteManyPageSpy;
       let removeAllAttachmentsSpy;
 
-      beforeEach(async() => {
+      beforeEach(async () => {
         pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
         deleteCompletelyOperationSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyOperation');
         deleteCompletelyDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyDescendantsWithStream').mockImplementation();
@@ -868,8 +905,8 @@ describe('PageService', () => {
         removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
       });
 
-      test('deleteCompletelyOperation', async() => {
-        await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
+      test('deleteCompletelyOperation', async () => {
+        await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], {});
 
         // bookmarks should not be deleted
         expect(deleteManyBookmarkSpy).not.toHaveBeenCalled();
@@ -882,8 +919,8 @@ describe('PageService', () => {
         expect(removeAllAttachmentsSpy).toHaveBeenCalled();
       });
 
-      test('delete completely without options', async() => {
-        await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, false, false, {
+      test('delete completely without options', async () => {
+        await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, {}, false, false, {
           ip: '::ffff:127.0.0.1',
           endpoint: '/_api/v3/pages/deletecompletely',
         });
@@ -894,9 +931,8 @@ describe('PageService', () => {
         expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
       });
 
-
-      test('delete completely with isRecursively', async() => {
-        await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, true, false, {
+      test('delete completely with isRecursively', async () => {
+        await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, {}, true, false, {
           ip: '::ffff:127.0.0.1',
           endpoint: '/_api/v3/pages/deletecompletely',
         });
@@ -916,13 +952,13 @@ describe('PageService', () => {
     let deleteCompletelySpy;
     let revertDeletedDescendantsWithStreamSpy;
 
-    beforeEach(async() => {
+    beforeEach(async () => {
       getRevertDeletedPageNameSpy = jest.spyOn(Page, 'getRevertDeletedPageName');
       deleteCompletelySpy = jest.spyOn(crowi.pageService, 'deleteCompletely').mockImplementation();
       revertDeletedDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'revertDeletedDescendantsWithStream').mockImplementation();
     });
 
-    test('revert deleted page when the redirect from page exists', async() => {
+    test('revert deleted page when the redirect from page exists', async () => {
       const resultPage = await crowi.pageService.revertDeletedPage(parentForRevert1, testUser2, {}, false, {
         ip: '::ffff:127.0.0.1',
         endpoint: '/_api/v3/pages/revert',
@@ -938,8 +974,7 @@ describe('PageService', () => {
       expect(resultPage.deletedAt).toBeNull();
     });
 
-    test('revert deleted page when the redirect from page does not exist', async() => {
-
+    test('revert deleted page when the redirect from page does not exist', async () => {
       findByPathSpy = jest.spyOn(Page, 'findByPath').mockImplementation(() => {
         return null;
       });
@@ -961,7 +996,7 @@ describe('PageService', () => {
       expect(resultPage.deletedAt).toBeNull();
     });
 
-    test('revert deleted descendants', async() => {
+    test('revert deleted descendants', async () => {
       await crowi.pageService.revertDeletedDescendants([childForRevert], testUser2);
       const resultPage = await Page.findOne({ path: '/parentForRevert/child' });
       const revrtedFromPage = await Page.findOne({ path: '/trash/parentForRevert/child' });
@@ -981,13 +1016,13 @@ describe('PageService', () => {
   });
 
   describe('getParentAndFillAncestors', () => {
-    test('return parent if exist', async() => {
+    test('return parent if exist', async () => {
       const page1 = await Page.findOne({ path: '/PAF1' });
       const parent = await crowi.pageService.getParentAndFillAncestorsByUser(dummyUser1, page1.path);
       expect(parent).toBeTruthy();
       expect(page1.parent).toStrictEqual(parent._id);
     });
-    test('create parent and ancestors when they do not exist, and return the new parent', async() => {
+    test('create parent and ancestors when they do not exist, and return the new parent', async () => {
       const path1 = '/emp_anc1';
       const path2 = '/emp_anc1/emp_anc2';
       const path3 = '/emp_anc1/emp_anc2/PAF2';
@@ -1015,7 +1050,7 @@ describe('PageService', () => {
       expect(page1.parent).toStrictEqual(rootPage._id);
       expect(page2.parent).toStrictEqual(page1._id);
     });
-    test('return parent even if the parent page is empty', async() => {
+    test('return parent even if the parent page is empty', async () => {
       const path1 = '/emp_anc3';
       const path2 = '/emp_anc3/PAF3';
       const _page1 = await Page.findOne({ path: path1, isEmpty: true });
@@ -1035,7 +1070,7 @@ describe('PageService', () => {
       expect(page1.parent).toStrictEqual(rootPage._id);
       expect(page2.parent).toStrictEqual(page1._id);
     });
-    test('should find parent while NOT updating private legacy page\'s parent', async() => {
+    test("should find parent while NOT updating private legacy page's parent", async () => {
       const path1 = '/emp_anc4';
       const path2 = '/emp_anc4/PAF4';
       const _page1 = await Page.findOne({ path: path1, isEmpty: true, grant: Page.GRANT_PUBLIC });
@@ -1057,9 +1092,8 @@ describe('PageService', () => {
 
       expect(page1._id).toStrictEqual(parent._id);
       expect(page2.parent).toStrictEqual(parent._id);
-
     });
-    test('should find parent while NOT creating unnecessary empty pages with all v4 public pages', async() => {
+    test('should find parent while NOT creating unnecessary empty pages with all v4 public pages', async () => {
       // All pages does not have parent (v4 schema)
       const _pageA = await Page.findOne({
         path: '/get_parent_A',
@@ -1107,7 +1141,7 @@ describe('PageService', () => {
       expect(pageA.parent).not.toBeNull();
       expect(pageAB.parent).not.toBeNull();
     });
-    test('should find parent while NOT creating unnecessary empty pages with some v5 public pages', async() => {
+    test('should find parent while NOT creating unnecessary empty pages with some v5 public pages', async () => {
       const _pageC = await Page.findOne({
         path: '/get_parent_C',
         grant: Page.GRANT_PUBLIC,
@@ -1157,5 +1191,4 @@ describe('PageService', () => {
       expect(parent.toObject()).toStrictEqual(pageCD.toObject());
     });
   });
-
 });

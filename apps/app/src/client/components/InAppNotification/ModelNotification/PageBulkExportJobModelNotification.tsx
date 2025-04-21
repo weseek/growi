@@ -13,14 +13,12 @@ import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 
 import type { ModelNotificationUtils } from '.';
 
-
 export const usePageBulkExportJobModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
-
   const { t } = useTranslation();
   const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
 
   const isPageBulkExportJobModelNotification = (
-      notification: IInAppNotification & HasObjectId,
+    notification: IInAppNotification & HasObjectId,
   ): notification is IInAppNotification<IPageBulkExportJobHasId> & HasObjectId => {
     return notification.targetModel === SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB;
   };
@@ -35,10 +33,18 @@ export const usePageBulkExportJobModelNotification = (notification: IInAppNotifi
 
   const getSubMsg = (): JSX.Element => {
     if (notification.action === SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED && notification.target == null) {
-      return <div className="text-danger"><small>{t('page_export.bulk_export_download_expired')}</small></div>;
+      return (
+        <div className="text-danger">
+          <small>{t('page_export.bulk_export_download_expired')}</small>
+        </div>
+      );
     }
     if (notification.action === SupportedAction.ACTION_PAGE_BULK_EXPORT_JOB_EXPIRED) {
-      return <div className="text-danger"><small>{t('page_export.bulk_export_job_expired')}</small></div>;
+      return (
+        <div className="text-danger">
+          <small>{t('page_export.bulk_export_job_expired')}</small>
+        </div>
+      );
     }
     return <></>;
   };
@@ -56,14 +62,16 @@ export const usePageBulkExportJobModelNotification = (notification: IInAppNotifi
     );
   };
 
-  const clickLink = (notification.action === SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED
-    && notification.target?.attachment != null && isPopulated(notification.target?.attachment))
-    ? notification.target.attachment.downloadPathProxied : undefined;
+  const clickLink =
+    notification.action === SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED &&
+    notification.target?.attachment != null &&
+    isPopulated(notification.target?.attachment)
+      ? notification.target.attachment.downloadPathProxied
+      : undefined;
 
   return {
     Notification,
     clickLink,
     isDisabled: notification.target == null,
   };
-
 };

@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useMemo, useState, type JSX,
-} from 'react';
+import React, { useCallback, useMemo, useState, type JSX } from 'react';
 
 import type { IAttachmentHasId } from '@growi/core';
 import { LoadingSpinner } from '@growi/ui/dist/components';
@@ -19,7 +17,6 @@ const checkIfFileInUse = (markdown: string, attachment): boolean => {
 };
 
 const PageAttachment = (): JSX.Element => {
-
   // Static SWRs
   const { data: pageId } = useCurrentPageId();
   const { data: isGuestUser } = useIsGuestUser();
@@ -42,10 +39,9 @@ const PageAttachment = (): JSX.Element => {
       return undefined;
     }
 
-    const attachmentEntries = dataAttachments.attachments
-      .map((attachment) => {
-        return [attachment._id, checkIfFileInUse(markdown, attachment)];
-      });
+    const attachmentEntries = dataAttachments.attachments.map((attachment) => {
+      return [attachment._id, checkIfFileInUse(markdown, attachment)];
+    });
 
     return Object.fromEntries(attachmentEntries);
   }, [dataAttachments, markdown]);
@@ -55,9 +51,12 @@ const PageAttachment = (): JSX.Element => {
     setPageNumber(newPageNumber);
   }, []);
 
-  const onAttachmentDeleteClicked = useCallback((attachment: IAttachmentHasId) => {
-    openDeleteAttachmentModal(attachment, remove);
-  }, [openDeleteAttachmentModal, remove]);
+  const onAttachmentDeleteClicked = useCallback(
+    (attachment: IAttachmentHasId) => {
+      openDeleteAttachmentModal(attachment, remove);
+    },
+    [openDeleteAttachmentModal, remove],
+  );
 
   // Renderers
   const renderPageAttachmentList = useCallback(() => {

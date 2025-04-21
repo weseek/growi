@@ -5,12 +5,9 @@ import type { Uploadable } from 'openai/uploads';
 
 import type { MessageListParams } from '../../../interfaces/message';
 
-
 import type { IOpenaiClientDelegator } from './interfaces';
 
-
 export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
-
   private client: AzureOpenAI;
 
   constructor() {
@@ -91,5 +88,4 @@ export class AzureOpenaiClientDelegator implements IOpenaiClientDelegator {
   async chatCompletion(body: OpenAI.Chat.Completions.ChatCompletionCreateParamsNonStreaming): Promise<OpenAI.Chat.Completions.ChatCompletion> {
     return this.client.chat.completions.create(body);
   }
-
 }

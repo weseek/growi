@@ -55,7 +55,6 @@ const SecurityManagementContents = () => {
     };
   }, []);
 
-
   return (
     <div data-testid="admin-security">
       <div className="mb-5">
@@ -67,15 +66,11 @@ const SecurityManagementContents = () => {
         <ShareLinkSetting />
       </div>
 
-
       {/* XSS configuration link */}
       <div className="mb-5">
         <h2 className="border-bottom pb-2">{t('security_settings.xss_prevent_setting')}</h2>
         <div className="mt-4">
-          <Link
-            href="/admin/markdown/#preventXSS"
-            style={{ fontSize: 'large' }}
-          >
+          <Link href="/admin/markdown/#preventXSS" style={{ fontSize: 'large' }}>
             <span className="material-symbols-outlined me-1">login</span> {t('security_settings.xss_prevent_setting_link')}
           </Link>
         </div>
@@ -83,37 +78,18 @@ const SecurityManagementContents = () => {
 
       <div className="auth-mechanism-configurations">
         <h2 className="border-bottom pb-2">{t('security_settings.Authentication mechanism settings')}</h2>
-        <CustomNav
-          activeTab={activeTab}
-          navTabMapping={navTabMapping}
-          onNavSelected={switchActiveTab}
-          hideBorderBottom
-          breakpointToSwitchDropdownDown="md"
-        />
+        <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom breakpointToSwitchDropdownDown="md" />
         <TabContent activeTab={activeTab} className="p-5">
-          <TabPane tabId="passport_local">
-            {activeComponents.has('passport_local') && <LocalSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport_ldap">
-            {activeComponents.has('passport_ldap') && <LdapSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport_saml">
-            {activeComponents.has('passport_saml') && <SamlSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport_oidc">
-            {activeComponents.has('passport_oidc') && <OidcSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport_google">
-            {activeComponents.has('passport_google') && <GoogleSecuritySetting />}
-          </TabPane>
-          <TabPane tabId="passport_github">
-            {activeComponents.has('passport_github') && <GitHubSecuritySetting />}
-          </TabPane>
+          <TabPane tabId="passport_local">{activeComponents.has('passport_local') && <LocalSecuritySetting />}</TabPane>
+          <TabPane tabId="passport_ldap">{activeComponents.has('passport_ldap') && <LdapSecuritySetting />}</TabPane>
+          <TabPane tabId="passport_saml">{activeComponents.has('passport_saml') && <SamlSecuritySetting />}</TabPane>
+          <TabPane tabId="passport_oidc">{activeComponents.has('passport_oidc') && <OidcSecuritySetting />}</TabPane>
+          <TabPane tabId="passport_google">{activeComponents.has('passport_google') && <GoogleSecuritySetting />}</TabPane>
+          <TabPane tabId="passport_github">{activeComponents.has('passport_github') && <GitHubSecuritySetting />}</TabPane>
         </TabContent>
       </div>
     </div>
   );
-
 };
 
 export default SecurityManagementContents;

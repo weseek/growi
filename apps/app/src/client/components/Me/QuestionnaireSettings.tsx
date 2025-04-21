@@ -1,6 +1,4 @@
-import {
-  useCallback, useEffect, useState, type JSX,
-} from 'react';
+import { useCallback, useEffect, useState, type JSX } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
@@ -11,7 +9,6 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRxIsQuestionnaireEnabled } from '~/features/questionnaire/client/stores/questionnaire';
 import { useCurrentUser } from '~/stores-universal/context';
 
-
 export const QuestionnaireSettings = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser, error: errorCurrentUser } = useCurrentUser();
@@ -19,18 +16,17 @@ export const QuestionnaireSettings = (): JSX.Element => {
 
   const [isQuestionnaireEnabled, setIsQuestionnaireEnabled] = useState(currentUser?.isQuestionnaireEnabled);
 
-  const onChangeIsQuestionnaireEnabledHandler = useCallback(async() => {
-    setIsQuestionnaireEnabled(prev => !prev);
+  const onChangeIsQuestionnaireEnabledHandler = useCallback(async () => {
+    setIsQuestionnaireEnabled((prev) => !prev);
   }, []);
 
-  const onClickUpdateIsQuestionnaireEnabledHandler = useCallback(async() => {
+  const onClickUpdateIsQuestionnaireEnabledHandler = useCallback(async () => {
     try {
       await apiv3Put('/personal-setting/questionnaire-settings', {
         isQuestionnaireEnabled,
       });
       toastSuccess(t('toaster.update_successed', { target: t('questionnaire.settings'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [isQuestionnaireEnabled, t]);
@@ -73,11 +69,9 @@ export const QuestionnaireSettings = (): JSX.Element => {
                 <UncontrolledTooltip placement="bottom" target="grw-questionnaire-settings-toggle-wrapper">
                   {t('questionnaire.disabled_by_admin')}
                 </UncontrolledTooltip>
-              ) }
+              )}
             </div>
-            <p className="form-text text-muted small">
-              {t('questionnaire.personal_settings_explanation')}
-            </p>
+            <p className="form-text text-muted small">{t('questionnaire.personal_settings_explanation')}</p>
           </div>
         )}
       </div>
@@ -104,6 +98,5 @@ export const QuestionnaireSettings = (): JSX.Element => {
         </div>
       </div>
     </>
-
   );
 };

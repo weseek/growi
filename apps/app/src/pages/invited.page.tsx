@@ -15,13 +15,13 @@ import { useCsrfToken, useCurrentPathname, useCurrentUser } from '~/stores-unive
 import type { CommonProps } from './utils/commons';
 import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from './utils/commons';
 
-const InvitedForm = dynamic(() => import('~/client/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
+const InvitedForm = dynamic(() => import('~/client/components/InvitedForm').then((mod) => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
-  currentUser: IUser,
-  invitedFormUsername: string,
-  invitedFormName: string,
-}
+  currentUser: IUser;
+  invitedFormUsername: string;
+  invitedFormName: string;
+};
 
 const InvitedPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
@@ -41,7 +41,6 @@ const InvitedPage: NextPage<Props> = (props: Props) => {
       <InvitedForm invitedFormUsername={props.invitedFormUsername} invitedFormName={props.invitedFormName} />
     </NoLoginLayout>
   );
-
 };
 
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -67,7 +66,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { user } = req;
   const result = await getServerSideCommonProps(context);
@@ -91,7 +90,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
         },
       };
     }
-
   }
 
   await injectServerConfigurations(context, props);

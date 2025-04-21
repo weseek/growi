@@ -11,11 +11,8 @@ const LIMIT = 1000;
 /**
  * set isPageTrashed of pagetagrelations included in updateIdList as true
  */
-const updateIsPageTrashed = async(db, updateIdList) => {
-  await db.collection('pagetagrelations').updateMany(
-    { relatedPage: { $in: updateIdList } },
-    { $set: { isPageTrashed: true } },
-  );
+const updateIsPageTrashed = async (db, updateIdList) => {
+  await db.collection('pagetagrelations').updateMany({ relatedPage: { $in: updateIdList } }, { $set: { isPageTrashed: true } });
 };
 
 module.exports = {
@@ -27,10 +24,7 @@ module.exports = {
     let updateDeletedPageIds = [];
 
     // set isPageTrashed as false temporarily
-    await db.collection('pagetagrelations').updateMany(
-      {},
-      { $set: { isPageTrashed: false } },
-    );
+    await db.collection('pagetagrelations').updateMany({}, { $set: { isPageTrashed: false } });
 
     for await (const deletedPage of Page.find({ status: Page.STATUS_DELETED }).select('_id').cursor()) {
       updateDeletedPageIds.push(deletedPage._id);
@@ -47,7 +41,6 @@ module.exports = {
     }
 
     logger.info('Migration has successfully applied');
-
   },
 
   async down(db) {
@@ -55,16 +48,11 @@ module.exports = {
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     try {
-      await db.collection('pagetagrelations').updateMany(
-        {},
-        { $unset: { isPageTrashed: '' } },
-      );
+      await db.collection('pagetagrelations').updateMany({}, { $unset: { isPageTrashed: '' } });
       logger.info('Migration has been successfully rollbacked');
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       logger.info('Migration has failed');
     }
-
   },
 };

@@ -10,9 +10,7 @@ const ruleTester = new RuleTester({
 
 test('test no-populate', () => {
   ruleTester.run('no-populate', noPopulate, {
-    valid: [
-      { code: 'Model.find();' },
-    ],
+    valid: [{ code: 'Model.find();' }],
     invalid: [
       {
         code: "Model.find().populate('children');",

@@ -7,16 +7,11 @@ import type { ISearchResult } from '~/interfaces/search';
 import type { PageModel, PageDocument, PageQueryBuilder } from '~/server/models/page';
 import { serializePageSecurely } from '~/server/models/serializers';
 
-import type {
-  QueryTerms, MongoTermsKey,
-  SearchableData, SearchDelegator, UnavailableTermsKey, MongoQueryTerms,
-} from '../../interfaces/search';
-
+import type { QueryTerms, MongoTermsKey, SearchableData, SearchDelegator, UnavailableTermsKey, MongoQueryTerms } from '../../interfaces/search';
 
 const AVAILABLE_KEYS = ['match', 'not_match', 'prefix', 'not_prefix'];
 
 class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKey, MongoQueryTerms> {
-
   name!: SearchDelegatorName.PRIVATE_LEGACY_PAGES;
 
   constructor() {
@@ -48,15 +43,10 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
 
     const total = await countQueryBuilder.query.count();
 
-    const pages: PageDocument[] = await findQueryBuilder
-      .addConditionToPagenate(offset, limit)
-      .query
-      .populate('creator')
-      .populate('lastUpdateUser')
-      .exec();
+    const pages: PageDocument[] = await findQueryBuilder.addConditionToPagenate(offset, limit).query.populate('creator').populate('lastUpdateUser').exec();
 
     return {
-      data: pages.map(page => serializePageSecurely(page)),
+      data: pages.map((page) => serializePageSecurely(page)),
       meta: {
         total,
         hitsCount: pages.length,
@@ -65,21 +55,19 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
   }
 
   private addConditionByTerms(builder: PageQueryBuilder, terms: MongoQueryTerms): PageQueryBuilder {
-    const {
-      match, not_match: notMatch, prefix, not_prefix: notPrefix,
-    } = terms;
+    const { match, not_match: notMatch, prefix, not_prefix: notPrefix } = terms;
 
     if (match.length > 0) {
-      match.forEach(m => builder.addConditionToListByMatch(m));
+      match.forEach((m) => builder.addConditionToListByMatch(m));
     }
     if (notMatch.length > 0) {
-      notMatch.forEach(nm => builder.addConditionToListByNotMatch(nm));
+      notMatch.forEach((nm) => builder.addConditionToListByNotMatch(nm));
     }
     if (prefix.length > 0) {
-      prefix.forEach(p => builder.addConditionToListByStartWith(p));
+      prefix.forEach((p) => builder.addConditionToListByStartWith(p));
     }
     if (notPrefix.length > 0) {
-      notPrefix.forEach(np => builder.addConditionToListByNotStartWith(np));
+      notPrefix.forEach((np) => builder.addConditionToListByNotStartWith(np));
     }
 
     return builder;
@@ -94,11 +82,8 @@ class PrivateLegacyPagesDelegator implements SearchDelegator<IPage, MongoTermsKe
   validateTerms(terms: QueryTerms): UnavailableTermsKey<MongoTermsKey>[] {
     const entries = Object.entries(terms);
 
-    return entries
-      .filter(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0)
-      .map(([key]) => key as UnavailableTermsKey<MongoTermsKey>); // use "as": https://github.com/microsoft/TypeScript/issues/41173
+    return entries.filter(([key, val]) => !AVAILABLE_KEYS.includes(key) && val.length > 0).map(([key]) => key as UnavailableTermsKey<MongoTermsKey>); // use "as": https://github.com/microsoft/TypeScript/issues/41173
   }
-
 }
 
 export default PrivateLegacyPagesDelegator;

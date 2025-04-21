@@ -6,9 +6,7 @@ import { finished, pipeline as pipelinePromise } from 'stream/promises';
 
 import JSONStream from 'JSONStream';
 import gc from 'expose-gc/function';
-import type {
-  BulkWriteResult, MongoBulkWriteError, UnorderedBulkOperation, WriteError,
-} from 'mongodb';
+import type { BulkWriteResult, MongoBulkWriteError, UnorderedBulkOperation, WriteError } from 'mongodb';
 import type { Document } from 'mongoose';
 import mongoose from 'mongoose';
 import unzipStream from 'unzip-stream';
@@ -30,27 +28,20 @@ import { getModelFromCollectionName } from './get-model-from-collection-name';
 import type { ImportSettings, OverwriteParams } from './import-settings';
 import { keepOriginal } from './overwrite-function';
 
-
 const logger = loggerFactory('growi:services:ImportService'); // eslint-disable-line no-unused-vars
-
 
 const BULK_IMPORT_SIZE = 100;
 
-
 class ImportingCollectionError extends Error {
-
   collectionProgress: CollectionProgress;
 
   constructor(collectionProgress, error) {
     super(error);
     this.collectionProgress = collectionProgress;
   }
-
 }
 
-
 export class ImportService {
-
   private crowi: Crowi;
 
   private growiBridgeService: any;
@@ -85,7 +76,7 @@ export class ImportService {
    * @return {object} info for zip files and whether currentProgressingStatus exists
    */
   async getStatus() {
-    const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
+    const zipFiles = fs.readdirSync(this.baseDir).filter((file) => path.extname(file) === '.zip');
 
     // process serially so as not to waste memory
     const zipFileStats: any[] = [];
@@ -98,10 +89,11 @@ export class ImportService {
     }
 
     // filter null object (broken zip)
-    const filtered = zipFileStats
-      .filter(zipFileStat => zipFileStat != null);
+    const filtered = zipFileStats.filter((zipFileStat) => zipFileStat != null);
     // sort with ctime("Change Time" - Time when file status was last changed (inode data modification).)
-    filtered.sort((a, b) => { return a.fileStat.ctime - b.fileStat.ctime });
+    filtered.sort((a, b) => {
+      return a.fileStat.ctime - b.fileStat.ctime;
+    });
 
     const zipFileStat = filtered.pop();
     let isTheSameVersion = false;
@@ -110,13 +102,11 @@ export class ImportService {
       try {
         this.validate(zipFileStat.meta);
         isTheSameVersion = true;
-      }
-      catch (err) {
+      } catch (err) {
         isTheSameVersion = false;
         logger.error('the versions are not met', err);
       }
     }
-
 
     return {
       isTheSameVersion,
@@ -125,7 +115,6 @@ export class ImportService {
       progressList: this.currentProgressingStatus?.progressList ?? null,
     };
   }
-
 
   async preImport() {
     await setupIndependentModels();
@@ -153,9 +142,8 @@ export class ImportService {
     for await (const promise of promises) {
       try {
         await promise;
-      }
-      // catch ImportingCollectionError
-      catch (err) {
+      } catch (err) {
+        // catch ImportingCollectionError
         const { collectionProgress } = err;
         logger.error(`failed to import to ${collectionProgress.collectionName}`, err);
         this.emitProgressEvent(collectionProgress, { message: err.message });
@@ -171,7 +159,9 @@ export class ImportService {
     const isImportPagesCollection = collections.includes('pages');
     const shouldNormalizePages = currentIsV5Compatible && isImportPagesCollection;
 
-    if (shouldNormalizePages) { await this.crowi.pageService.normalizeAllPublicPages(); }
+    if (shouldNormalizePages) {
+      await this.crowi.pageService.normalizeAllPublicPages();
+    }
   }
 
   /**
@@ -255,8 +245,7 @@ export class ImportService {
             // First aid to prevent unexplained memory leaks
             logger.info('global.gc() invoked.');
             gc();
-          }
-          catch (err) {
+          } catch (err) {
             logger.error('fail garbage collection: ', err);
           }
 
@@ -272,11 +261,9 @@ export class ImportService {
 
       // clean up tmp directory
       fs.unlinkSync(jsonFile);
-    }
-    catch (err) {
+    } catch (err) {
       throw new ImportingCollectionError(collectionProgress, err);
     }
-
   }
 
   /**
@@ -362,8 +349,7 @@ export class ImportService {
       if (fileName === this.growiBridgeService.getMetaFileName()) {
         // skip meta.json
         entry.autodrain();
-      }
-      else {
+      } else {
         const jsonFile = path.join(this.baseDir, fileName);
         const writeStream = fs.createWriteStream(jsonFile, { encoding: this.growiBridgeService.getEncoding() });
         pipeline(entry, writeStream, () => {});
@@ -381,13 +367,12 @@ export class ImportService {
    *
    * @memberOf ImportService
    */
-  async execUnorderedBulkOpSafely(unorderedBulkOp: UnorderedBulkOperation): Promise<{ result: BulkWriteResult, errors?: WriteError[] }> {
+  async execUnorderedBulkOpSafely(unorderedBulkOp: UnorderedBulkOperation): Promise<{ result: BulkWriteResult; errors?: WriteError[] }> {
     try {
       return {
         result: await unorderedBulkOp.execute(),
       };
-    }
-    catch (err) {
+    } catch (err) {
       const errTypeGuard = (err): err is MongoBulkWriteError => {
         return 'result' in err && 'writeErrors' in err;
       };
@@ -402,7 +387,6 @@ export class ImportService {
       logger.error('Failed to execute unorderedBulkOp and the error could not handled.', err);
       throw new Error('Failed to execute unorderedBulkOp and the error could not handled.', err);
     }
-
   }
 
   /**
@@ -415,7 +399,7 @@ export class ImportService {
    */
   convertDocuments<D extends Document>(collectionName: string, document: D, overwriteParams: OverwriteParams): D {
     const Model = getModelFromCollectionName(collectionName);
-    const schema = (Model != null) ? Model.schema : undefined;
+    const schema = Model != null ? Model.schema : undefined;
     const convertMap = this.convertMap[collectionName];
 
     const _document: D = structuredClone(document);
@@ -436,8 +420,8 @@ export class ImportService {
           return; // next entry
         }
 
-        const convertFunc = (typeof convertedValue === 'function') ? convertedValue : null;
-        _document[propertyName] = (convertFunc != null) ? convertFunc(value, { document, propertyName, schema }) : convertedValue;
+        const convertFunc = typeof convertedValue === 'function' ? convertedValue : null;
+        _document[propertyName] = convertFunc != null ? convertFunc(value, { document, propertyName, schema }) : convertedValue;
       });
     }
 
@@ -447,8 +431,8 @@ export class ImportService {
 
       // distinguish between null and undefined
       if (value !== undefined) {
-        const overwriteFunc = (typeof overwriteValue === 'function') ? overwriteValue : null;
-        _document[propertyName] = (overwriteFunc != null) ? overwriteFunc(value, { document: _document, propertyName, schema }) : overwriteValue;
+        const overwriteFunc = typeof overwriteValue === 'function' ? overwriteValue : null;
+        _document[propertyName] = overwriteFunc != null ? overwriteFunc(value, { document: _document, propertyName, schema }) : overwriteValue;
       }
     });
 
@@ -478,8 +462,7 @@ export class ImportService {
    */
   deleteAllZipFiles() {
     fs.readdirSync(this.baseDir)
-      .filter(file => path.extname(file) === '.zip')
-      .forEach(file => fs.unlinkSync(path.join(this.baseDir, file)));
+      .filter((file) => path.extname(file) === '.zip')
+      .forEach((file) => fs.unlinkSync(path.join(this.baseDir, file)));
   }
-
 }

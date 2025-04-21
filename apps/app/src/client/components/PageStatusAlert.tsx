@@ -49,20 +49,25 @@ export const PageStatusAlert = (): JSX.Element => {
     <div className={`${styles['grw-page-status-alert']} card fixed-bottom animated fadeInUp faster text-bg-warning`}>
       <div className="card-body">
         <p className="card-text grw-card-label-container">
-          { hasResolveConflictHandler
-            ? <>{t('modal_resolve_conflict.file_conflicting_with_newer_remote')}</>
-            : <><Username user={remoteRevisionLastUpdateUser} /> {t('edited this page')}</>
-          }
+          {hasResolveConflictHandler ? (
+            <>{t('modal_resolve_conflict.file_conflicting_with_newer_remote')}</>
+          ) : (
+            <>
+              <Username user={remoteRevisionLastUpdateUser} /> {t('edited this page')}
+            </>
+          )}
         </p>
         <p className="card-text grw-card-btn-container">
           {hasRefreshPageHandler && (
             <button type="button" onClick={onClickRefreshPage} className="btn btn-outline-white">
-              <span className="material-symbols-outlined">refresh</span>{t('Load latest')}
+              <span className="material-symbols-outlined">refresh</span>
+              {t('Load latest')}
             </button>
           )}
           {hasResolveConflictHandler && (
             <button type="button" onClick={onClickResolveConflict} className="btn btn-outline-white">
-              <span className="material-symbols-outlined">description</span>{t('modal_resolve_conflict.resolve_conflict')}
+              <span className="material-symbols-outlined">description</span>
+              {t('modal_resolve_conflict.resolve_conflict')}
             </button>
           )}
         </p>

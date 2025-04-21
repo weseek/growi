@@ -5,10 +5,9 @@ import { useShortcutsModal } from '~/stores/modal';
 
 import styles from './SystemVersion.module.scss';
 
-
 type Props = {
-  showShortcutsButton?: boolean,
-}
+  showShortcutsButton?: boolean;
+};
 
 const SystemVersion = (props: Props): JSX.Element => {
   const { showShortcutsButton } = props;
@@ -18,7 +17,7 @@ const SystemVersion = (props: Props): JSX.Element => {
   const { data: growiVersion } = useGrowiVersion();
   // add classes to cmd-key by OS
   const platform = window.navigator.platform.toLowerCase();
-  const isMac = (platform.indexOf('mac') > -1);
+  const isMac = platform.indexOf('mac') > -1;
   const os = isMac ? 'mac' : 'win';
 
   return (
@@ -27,13 +26,12 @@ const SystemVersion = (props: Props): JSX.Element => {
         <span>
           <a href="https://growi.org">GROWI</a> {growiVersion}
         </span>
-        { showShortcutsButton && (
+        {showShortcutsButton && (
           <button type="button" className="btn btn-link ms-2 p-0" onClick={() => openShortcutsModal()}>
             <span className="material-symbols-outlined">keyboard</span>&nbsp;<span className={`cmd-key ${os}`}></span>-/
           </button>
-        ) }
+        )}
       </div>
-
     </>
   );
 };

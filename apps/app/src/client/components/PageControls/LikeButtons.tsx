@@ -5,21 +5,19 @@ import type { IUser } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
-
 import UserPictureList from '../Common/UserPictureList';
 
 import styles from './LikeButtons.module.scss';
 import popoverStyles from './user-list-popover.module.scss';
 
 type LikeButtonsProps = {
+  sumOfLikers: number;
+  likers: IUser[];
 
-  sumOfLikers: number,
-  likers: IUser[],
-
-  isGuestUser?: boolean,
-  isLiked?: boolean,
-  onLikeClicked?: ()=>void,
-}
+  isGuestUser?: boolean;
+  isLiked?: boolean;
+  onLikeClicked?: () => void;
+};
 
 const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
   const { t } = useTranslation();
@@ -30,12 +28,9 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
     setIsPopoverOpen(!isPopoverOpen);
   };
 
-  const {
-    isGuestUser, isLiked, sumOfLikers, onLikeClicked,
-  } = props;
+  const { isGuestUser, isLiked, sumOfLikers, onLikeClicked } = props;
 
   const getTooltipMessage = useCallback(() => {
-
     if (isLiked) {
       return 'tooltip.cancel_like';
     }
@@ -75,7 +70,6 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
       </Popover>
     </div>
   );
-
 };
 
 export default LikeButtons;

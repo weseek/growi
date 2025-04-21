@@ -5,12 +5,11 @@ import { addDays, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-
 type CustomInputProps = {
-  value?: string
-  onChange?: () => void
-  onFocus?: () => void
-}
+  value?: string;
+  onChange?: () => void;
+  onFocus?: () => void;
+};
 
 const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: CustomInputProps, ref) => {
   const dateFormat = 'MM/dd/yyyy';
@@ -39,36 +38,32 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: Custo
 CustomInput.displayName = 'CustomInput';
 
 type DateRangePickerProps = {
-  startDate: Date | null
-  endDate: Date | null
-  onChange: (dateList: Date[] | null[]) => void
-}
+  startDate: Date | null;
+  endDate: Date | null;
+  onChange: (dateList: Date[] | null[]) => void;
+};
 
 export const DateRangePicker: FC<DateRangePickerProps> = (props: DateRangePickerProps) => {
   const { startDate, endDate, onChange } = props;
 
-  const changeHandler = useCallback((dateList: Date[] | null[]) => {
-    if (onChange != null) {
-      const [start, end] = dateList;
-      const isSameTime = (start != null && end != null) && (start.getTime() === end.getTime());
-      if (isSameTime) {
-        onChange([null, null]);
+  const changeHandler = useCallback(
+    (dateList: Date[] | null[]) => {
+      if (onChange != null) {
+        const [start, end] = dateList;
+        const isSameTime = start != null && end != null && start.getTime() === end.getTime();
+        if (isSameTime) {
+          onChange([null, null]);
+        } else {
+          onChange(dateList);
+        }
       }
-      else {
-        onChange(dateList);
-      }
-    }
-  }, [onChange]);
+    },
+    [onChange],
+  );
 
   return (
     <div className="me-2">
-      <DatePicker
-        selectsRange
-        startDate={startDate}
-        endDate={endDate}
-        onChange={changeHandler}
-        customInput={<CustomInput />}
-      />
+      <DatePicker selectsRange startDate={startDate} endDate={endDate} onChange={changeHandler} customInput={<CustomInput />} />
     </div>
   );
 };

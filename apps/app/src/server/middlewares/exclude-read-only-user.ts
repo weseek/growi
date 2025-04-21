@@ -6,7 +6,6 @@ import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../service/config-manager';
 
-
 const logger = loggerFactory('growi:middleware:exclude-read-only-user');
 
 export const excludeReadOnlyUser = (req: Request, res: Response & { apiv3Err }, next: () => NextFunction): NextFunction => {
@@ -45,5 +44,4 @@ export const excludeReadOnlyUserIfCommentNotAllowed = (req: Request, res: Respon
   }
 
   return next();
-
 };

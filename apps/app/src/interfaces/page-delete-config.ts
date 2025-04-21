@@ -4,7 +4,7 @@ export const PageDeleteConfigValue = {
   AdminOnly: 'adminOnly',
   Inherit: 'inherit',
 } as const;
-export type IPageDeleteConfigValue = typeof PageDeleteConfigValue[keyof typeof PageDeleteConfigValue];
+export type IPageDeleteConfigValue = (typeof PageDeleteConfigValue)[keyof typeof PageDeleteConfigValue];
 
 export type IPageDeleteConfigValueToProcessValidation = Exclude<IPageDeleteConfigValue, typeof PageDeleteConfigValue.Inherit>;
 

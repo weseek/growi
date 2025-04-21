@@ -1,10 +1,7 @@
 import React, { useState, useCallback } from 'react';
 
-
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { usePutBackPageModal } from '~/stores/modal';
@@ -47,8 +44,7 @@ const PutBackPageModal = () => {
         onPutBacked(response.page.path);
       }
       closePutBackPageModal();
-    }
-    catch (err) {
+    } catch (err) {
       setTargetPath(err.data);
       setErrs([err]);
     }
@@ -60,7 +56,10 @@ const PutBackPageModal = () => {
     }
     return (
       <>
-        <span className="material-symbols-outlined" aria-hidden="true">undo</span> { t('modal_putback.label.Put Back Page') }
+        <span className="material-symbols-outlined" aria-hidden="true">
+          undo
+        </span>{' '}
+        {t('modal_putback.label.Put Back Page')}
       </>
     );
   };
@@ -72,7 +71,8 @@ const PutBackPageModal = () => {
     return (
       <>
         <div>
-          <label className="form-label">{t('modal_putback.label.Put Back Page')}:</label><br />
+          <label className="form-label">{t('modal_putback.label.Put Back Page')}:</label>
+          <br />
           <code>{path}</code>
         </div>
         <div className="form-check form-check-warning">
@@ -84,15 +84,15 @@ const PutBackPageModal = () => {
             onChange={changeIsPutbackRecursivelyHandler}
           />
           <label htmlFor="cbPutBackRecursively" className="form-label form-check-label">
-            { t('modal_putback.label.recursively') }
+            {t('modal_putback.label.recursively')}
           </label>
           <p className="form-text text-muted mt-0">
-            <code>{ path }</code>{ t('modal_putback.help.recursively') }
+            <code>{path}</code>
+            {t('modal_putback.help.recursively')}
           </p>
         </div>
       </>
     );
-
   };
   const FooterContent = () => {
     if (!isOpened) {
@@ -102,7 +102,10 @@ const PutBackPageModal = () => {
       <>
         <ApiErrorMessageList errs={errs} targetPath={targetPath} />
         <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler} data-testid="put-back-execution-button">
-          <span className="material-symbols-outlined" aria-hidden="true">undo</span> { t('Put Back') }
+          <span className="material-symbols-outlined" aria-hidden="true">
+            undo
+          </span>{' '}
+          {t('Put Back')}
         </button>
       </>
     );
@@ -126,7 +129,6 @@ const PutBackPageModal = () => {
       </ModalFooter>
     </Modal>
   );
-
 };
 
 export default PutBackPageModal;

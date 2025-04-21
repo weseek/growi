@@ -3,13 +3,13 @@ import type { SWRResponse } from 'swr';
 import { useStaticSWR } from '../../../../stores/use-static-swr';
 
 type PageBulkExportSelectModalStatus = {
-  isOpened: boolean,
-}
+  isOpened: boolean;
+};
 
 type PageBulkExportSelectModalUtils = {
-  open(): Promise<void>,
-  close(): Promise<void>,
-}
+  open(): Promise<void>;
+  close(): Promise<void>;
+};
 
 export const usePageBulkExportSelectModal = (): SWRResponse<PageBulkExportSelectModalStatus, Error> & PageBulkExportSelectModalUtils => {
   const initialStatus: PageBulkExportSelectModalStatus = { isOpened: false };

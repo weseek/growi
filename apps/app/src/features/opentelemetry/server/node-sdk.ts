@@ -6,7 +6,6 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:opentelemetry:server');
 
-
 let sdkInstance: NodeSDK;
 
 /**
@@ -16,27 +15,20 @@ let sdkInstance: NodeSDK;
 function overwriteSdkDisabled(): void {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
-  if (instrumentationEnabled && (
-    process.env.OTEL_SDK_DISABLED === 'true'
-    || process.env.OTEL_SDK_DISABLED === '1'
-  )) {
+  if (instrumentationEnabled && (process.env.OTEL_SDK_DISABLED === 'true' || process.env.OTEL_SDK_DISABLED === '1')) {
     logger.warn("OTEL_SDK_DISABLED overwritten with 'false' since GROWI's 'otel:enabled' config is true.");
     process.env.OTEL_SDK_DISABLED = 'false';
     return;
   }
 
-  if (!instrumentationEnabled && (
-    process.env.OTEL_SDK_DISABLED === 'false'
-    || process.env.OTEL_SDK_DISABLED === '0'
-  )) {
+  if (!instrumentationEnabled && (process.env.OTEL_SDK_DISABLED === 'false' || process.env.OTEL_SDK_DISABLED === '0')) {
     logger.warn("OTEL_SDK_DISABLED is overwritten with 'true' since GROWI's 'otel:enabled' config is false.");
     process.env.OTEL_SDK_DISABLED = 'true';
     return;
   }
-
 }
 
-export const startInstrumentation = async(): Promise<void> => {
+export const startInstrumentation = async (): Promise<void> => {
   if (sdkInstance != null) {
     logger.warn('OpenTelemetry instrumentation already started');
     return;
@@ -49,7 +41,6 @@ export const startInstrumentation = async(): Promise<void> => {
 
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
   if (instrumentationEnabled) {
-
     logger.info(`GROWI now collects anonymous telemetry.
 
 This data is used to help improve GROWI, but you can opt-out at any time.
@@ -73,14 +64,13 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
   }
 };
 
-export const initServiceInstanceId = async(): Promise<void> => {
+export const initServiceInstanceId = async (): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
   if (instrumentationEnabled) {
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
-    const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
-      ?? configManager.getConfig('app:serviceInstanceId');
+    const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId') ?? configManager.getConfig('app:serviceInstanceId');
 
     // overwrite resource
     const updatedResource = generateNodeSDKConfiguration(serviceInstanceId).resource;

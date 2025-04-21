@@ -26,17 +26,16 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:message');
 
-
 type ReqBody = {
-  userMessage: string,
-  aiAssistantId: string,
-  threadId?: string,
-  summaryMode?: boolean,
-}
+  userMessage: string;
+  aiAssistantId: string;
+  threadId?: string;
+  summaryMode?: boolean;
+};
 
 type Req = Request<undefined, Response, ReqBody> & {
-  user: IUserHasId,
-}
+  user: IUserHasId;
+};
 
 type PostMessageHandlersFactory = (crowi: Crowi) => RequestHandler[];
 
@@ -44,18 +43,18 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   const validator: ValidationChain[] = [
-    body('userMessage')
-      .isString()
-      .withMessage('userMessage must be string')
-      .notEmpty()
-      .withMessage('userMessage must be set'),
+    body('userMessage').isString().withMessage('userMessage must be string').notEmpty().withMessage('userMessage must be set'),
     body('aiAssistantId').isMongoId().withMessage('aiAssistantId must be string'),
     body('threadId').optional().isString().withMessage('threadId must be string'),
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    certifyAiService,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const { aiAssistantId, threadId } = req.body;
 
       if (threadId == null) {
@@ -106,9 +105,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
           ],
           additional_instructions: aiAssistant.additionalInstruction,
         });
-
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
 
         // TODO: improve error handling by https://redmine.weseek.co.jp/issues/155004
@@ -120,7 +117,7 @@ export const postMessageHandlersFactory: PostMessageHandlersFactory = (crowi) =>
         'Cache-Control': 'no-cache, no-transform',
       });
 
-      const messageDeltaHandler = async(delta: MessageDelta) => {
+      const messageDeltaHandler = async (delta: MessageDelta) => {
         const content = delta.content?.[0];
 
         // If annotation is found

@@ -6,9 +6,7 @@ import type { ValidReferer } from '../interfaces';
 
 import { retrieveSiteUrl } from './retrieve-site-url';
 
-
 const logger = loggerFactory('growi:middlewares:certify-shared-page-attachment:validate-referer');
-
 
 export const validateReferer = (referer: string | undefined): ValidReferer | false => {
   // not null
@@ -20,8 +18,7 @@ export const validateReferer = (referer: string | undefined): ValidReferer | fal
   let refererUrl: URL;
   try {
     refererUrl = new URL(referer);
-  }
-  catch (err) {
+  } catch (err) {
     logger.info(`Parsing referer ('${referer}') has failed`);
     return false;
   }

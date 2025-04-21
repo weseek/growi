@@ -1,15 +1,12 @@
 import React, { useState, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { usePrivateLegacyPagesMigrationModal } from '~/stores/modal';
 
 import ApiErrorMessageList from './PageManagement/ApiErrorMessageList';
-
 
 export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
   const { t } = useTranslation();
@@ -29,7 +26,7 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
     }
 
     const { pages, onSubmited } = status;
-    const pageIds = pages.map(page => page.pageId);
+    const pageIds = pages.map((page) => page.pageId);
     try {
       await apiv3Post<void>('/pages/legacy-pages-migration', {
         pageIds,
@@ -39,8 +36,7 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
       if (onSubmited != null) {
         onSubmited(pages, isRecursively);
       }
-    }
-    catch (err) {
+    } catch (err) {
       setErrs([err]);
     }
   }
@@ -58,8 +54,8 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
           }}
         />
         <label className="form-label form-check-label" htmlFor="convertRecursively">
-          { t('private_legacy_pages.modal.convert_recursively_label') }
-          <p className="form-text text-muted mt-0"> { t('private_legacy_pages.modal.convert_recursively_desc') }</p>
+          {t('private_legacy_pages.modal.convert_recursively_label')}
+          <p className="form-text text-muted mt-0"> {t('private_legacy_pages.modal.convert_recursively_desc')}</p>
         </label>
       </div>
     );
@@ -67,7 +63,11 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
 
   const renderPageIds = () => {
     if (status != null && status.pages != null) {
-      return status.pages.map(page => <div key={page.pageId}><code>{ page.path }</code></div>);
+      return status.pages.map((page) => (
+        <div key={page.pageId}>
+          <code>{page.path}</code>
+        </div>
+      ));
     }
     return <></>;
   };
@@ -75,11 +75,12 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
   return (
     <Modal size="lg" isOpen={isOpened} toggle={close}>
       <ModalHeader tag="h4" toggle={close}>
-        { t('private_legacy_pages.modal.title') }
+        {t('private_legacy_pages.modal.title')}
       </ModalHeader>
       <ModalBody>
         <div className="grw-scrollable-modal-body pb-1">
-          <label>{ t('private_legacy_pages.modal.converting_pages') }:</label><br />
+          <label>{t('private_legacy_pages.modal.converting_pages')}:</label>
+          <br />
           {/* Todo: change the way to show path on modal when too many pages are selected */}
           {/* https://redmine.weseek.co.jp/issues/82787 */}
           {renderPageIds()}
@@ -89,11 +90,12 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
         <button type="button" className="btn btn-primary" onClick={submit}>
-          <span className="material-symbols-outlined" aria-hidden="true">refresh</span>
-          { t('private_legacy_pages.modal.button_label') }
+          <span className="material-symbols-outlined" aria-hidden="true">
+            refresh
+          </span>
+          {t('private_legacy_pages.modal.button_label')}
         </button>
       </ModalFooter>
     </Modal>
-
   );
 };

@@ -23,7 +23,6 @@ const logger = loggerFactory('growi:service:system-events:SyncPageStatusService'
  *
  */
 class SyncPageStatusService implements S2sMessageHandlable {
-
   crowi: Crowi;
 
   s2sMessagingService!: S2sMessagingService;
@@ -75,8 +74,7 @@ class SyncPageStatusService implements S2sMessageHandlable {
 
       try {
         await s2sMessagingService.publish(s2sMessage);
-      }
-      catch (e) {
+      } catch (e) {
         logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
@@ -87,12 +85,13 @@ class SyncPageStatusService implements S2sMessageHandlable {
 
     // register events
     this.emitter.on('create', (page, user) => {
-      logger.debug('\'create\' event emitted.');
+      logger.debug("'create' event emitted.");
 
       const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
 
       // emit to the room for each page
-      socketIoService.getDefaultSocket()
+      socketIoService
+        .getDefaultSocket()
         .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
         .except(getRoomNameWithId(RoomPrefix.USER, user._id))
         .emit('page:create', { s2cMessagePageUpdated });
@@ -100,12 +99,13 @@ class SyncPageStatusService implements S2sMessageHandlable {
       this.publishToOtherServers('page:create', { s2cMessagePageUpdated });
     });
     this.emitter.on('update', (page, user) => {
-      logger.debug('\'update\' event emitted.');
+      logger.debug("'update' event emitted.");
 
       const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
 
       // emit to the room for each page
-      socketIoService.getDefaultSocket()
+      socketIoService
+        .getDefaultSocket()
         .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
         .except(getRoomNameWithId(RoomPrefix.USER, user._id))
         .emit('page:update', { s2cMessagePageUpdated });
@@ -113,12 +113,13 @@ class SyncPageStatusService implements S2sMessageHandlable {
       this.publishToOtherServers('page:update', { s2cMessagePageUpdated });
     });
     this.emitter.on('delete', (page, user) => {
-      logger.debug('\'delete\' event emitted.');
+      logger.debug("'delete' event emitted.");
 
       const s2cMessagePageUpdated = new S2cMessagePageUpdated(page, user);
 
       // emit to the room for each page
-      socketIoService.getDefaultSocket()
+      socketIoService
+        .getDefaultSocket()
         .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
         .except(getRoomNameWithId(RoomPrefix.USER, user._id))
         .emit('page:delete', { s2cMessagePageUpdated });
@@ -126,7 +127,6 @@ class SyncPageStatusService implements S2sMessageHandlable {
       this.publishToOtherServers('page:delete', { s2cMessagePageUpdated });
     });
   }
-
 }
 
 module.exports = SyncPageStatusService;

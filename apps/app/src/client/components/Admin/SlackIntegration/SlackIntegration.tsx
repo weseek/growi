@@ -1,15 +1,10 @@
-import React, {
-  useState, useEffect, useCallback, type JSX,
-} from 'react';
+import React, { useState, useEffect, useCallback, type JSX } from 'react';
 
 import { SlackbotType } from '@growi/slack';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
-
-import {
-  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
-} from '~/client/util/apiv3-client';
+import { apiv3Delete, apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 
 import { BotTypeCard } from './BotTypeCard';
@@ -19,11 +14,9 @@ import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
 import { DeleteSlackBotSettingsModal } from './DeleteSlackBotSettingsModal';
 import OfficialBotSettings from './OfficialBotSettings';
 
-
 const botTypes = Object.values(SlackbotType);
 
 export const SlackIntegration = (): JSX.Element => {
-
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState<SlackbotType | undefined>();
   const [selectedBotType, setSelectedBotType] = useState<SlackbotType | undefined>();
@@ -41,8 +34,7 @@ export const SlackIntegration = (): JSX.Element => {
   const [errorCode, setErrorCode] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-
-  const fetchSlackIntegrationData = useCallback(async() => {
+  const fetchSlackIntegrationData = useCallback(async () => {
     try {
       const { data } = await apiv3Get('/slack-integration-settings');
       const {
@@ -68,33 +60,29 @@ export const SlackIntegration = (): JSX.Element => {
       setProxyServerUri(proxyServerUri);
       setCommandPermission(commandPermission);
       setEventActionsPermission(eventActionsPermission);
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
-    }
-    finally {
+    } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const resetAllSettings = async() => {
+  const resetAllSettings = async () => {
     try {
       await apiv3Delete('/slack-integration-settings/bot-type');
       fetchSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.bot_all_reset_successful'));
-    }
-    catch (error) {
+    } catch (error) {
       toastError(error);
     }
   };
 
-  const createSlackIntegrationData = async() => {
+  const createSlackIntegrationData = async () => {
     try {
       await apiv3Post('/slack-integration-settings/slack-app-integrations');
       fetchSlackIntegrationData();
       toastSuccess(t('admin:slack_integration.adding_slack_ws_integration_settings_successful'));
-    }
-    catch (error) {
+    } catch (error) {
       toastError(error);
     }
   };
@@ -108,20 +96,19 @@ export const SlackIntegration = (): JSX.Element => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
-  const changeCurrentBotSettings = async(botType?: SlackbotType) => {
+  const changeCurrentBotSettings = async (botType?: SlackbotType) => {
     try {
       await apiv3Put('/slack-integration-settings/bot-type', {
         currentBotType: botType,
       });
       setSelectedBotType(undefined);
       fetchSlackIntegrationData();
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   };
 
-  const botTypeSelectHandler = async(botType: SlackbotType) => {
+  const botTypeSelectHandler = async (botType: SlackbotType) => {
     if (botType === currentBotType) {
       return;
     }
@@ -131,7 +118,7 @@ export const SlackIntegration = (): JSX.Element => {
     setSelectedBotType(botType);
   };
 
-  const changeCurrentBotSettingsHandler = async() => {
+  const changeCurrentBotSettingsHandler = async () => {
     changeCurrentBotSettings(selectedBotType);
     toastSuccess(t('admin:slack_integration.bot_reset_successful'));
   };
@@ -197,11 +184,7 @@ export const SlackIntegration = (): JSX.Element => {
 
   return (
     <div data-testid="admin-slack-integration">
-      <ConfirmBotChangeModal
-        isOpen={selectedBotType != null}
-        onConfirmClick={changeCurrentBotSettingsHandler}
-        onCancelClick={cancelBotChangeHandler}
-      />
+      <ConfirmBotChangeModal isOpen={selectedBotType != null} onConfirmClick={changeCurrentBotSettingsHandler} onCancelClick={cancelBotChangeHandler} />
 
       <DeleteSlackBotSettingsModal
         isResetAll
@@ -214,22 +197,22 @@ export const SlackIntegration = (): JSX.Element => {
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
           <a className="ms-2 btn-link small" href={t('admin:slack_integration.docs_url.slack_integration')} target="_blank" rel="noopener noreferrer">
-            <span className="material-symbols-outlined ms-1" aria-hidden="true">help</span>
+            <span className="material-symbols-outlined ms-1" aria-hidden="true">
+              help
+            </span>
           </a>
         </h2>
 
-        { errorCode && (
+        {errorCode && (
           <div className="alert alert-warning">
-            <strong>ERROR: </strong>{errorMsg} ({errorCode})
+            <strong>ERROR: </strong>
+            {errorMsg} ({errorCode})
           </div>
-        ) }
+        )}
 
         <div className="d-flex justify-content-end">
-          <button
-            className="btn btn-outline-danger"
-            type="button"
-            onClick={() => setIsDeleteConfirmModalShown(true)}
-          >{t('admin:slack_integration.reset_all_settings')}
+          <button className="btn btn-outline-danger" type="button" onClick={() => setIsDeleteConfirmModalShown(true)}>
+            {t('admin:slack_integration.reset_all_settings')}
           </button>
         </div>
 
@@ -237,11 +220,7 @@ export const SlackIntegration = (): JSX.Element => {
           {botTypes.map((botType) => {
             return (
               <div key={botType} className="m-3">
-                <BotTypeCard
-                  botType={botType}
-                  isActive={currentBotType === botType}
-                  onBotTypeSelectHandler={botTypeSelectHandler}
-                />
+                <BotTypeCard botType={botType} isActive={currentBotType === botType} onBotTypeSelectHandler={botTypeSelectHandler} />
               </div>
             );
           })}

@@ -10,7 +10,6 @@ import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 const logger = loggerFactory('growi:service:FileUploaderSwitch');
 
 class FileUploaderSwitch implements S2sMessageHandlable {
-
   crowi: Crowi;
 
   s2sMessagingService: S2sMessagingService;
@@ -51,13 +50,11 @@ class FileUploaderSwitch implements S2sMessageHandlable {
 
       try {
         await s2sMessagingService.publish(s2sMessage);
-      }
-      catch (e) {
+      } catch (e) {
         logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
       }
     }
   }
-
 }
 
 module.exports = FileUploaderSwitch;

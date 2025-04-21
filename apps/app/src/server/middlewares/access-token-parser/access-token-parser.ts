@@ -10,8 +10,7 @@ import type { AccessTokenParserReq } from './interfaces';
 
 const logger = loggerFactory('growi:middleware:access-token-parser');
 
-
-export const accessTokenParser = async(req: AccessTokenParserReq, res: Response, next: NextFunction): Promise<void> => {
+export const accessTokenParser = async (req: AccessTokenParserReq, res: Response, next: NextFunction): Promise<void> => {
   // TODO: comply HTTP header of RFC6750 / Authorization: Bearer
   const accessToken = req.query.access_token ?? req.body.access_token;
   if (accessToken == null || typeof accessToken !== 'string') {

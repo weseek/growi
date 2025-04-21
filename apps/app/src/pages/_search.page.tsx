@@ -13,37 +13,42 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
-  useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri, useCurrentPathname,
+  useCsrfToken,
+  useCurrentUser,
+  useIsContainerFluid,
+  useIsSearchPage,
+  useIsSearchScopeChildrenAsDefault,
+  useIsSearchServiceConfigured,
+  useIsSearchServiceReachable,
+  useRendererConfig,
+  useShowPageLimitationL,
+  useGrowiCloudUri,
+  useCurrentPathname,
 } from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
-import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
-} from './utils/commons';
+import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig } from './utils/commons';
 
-
-const SearchPage = dynamic(() => import('~/client/components/SearchPage').then(mod => mod.SearchPage), { ssr: false });
-
+const SearchPage = dynamic(() => import('~/client/components/SearchPage').then((mod) => mod.SearchPage), { ssr: false });
 
 type Props = CommonProps & {
-  currentUser: IUser,
+  currentUser: IUser;
 
-  isSearchServiceConfigured: boolean,
-  isSearchServiceReachable: boolean,
-  isSearchScopeChildrenAsDefault: boolean,
+  isSearchServiceConfigured: boolean;
+  isSearchServiceReachable: boolean;
+  isSearchScopeChildrenAsDefault: boolean;
 
   // Render config
-  rendererConfig: RendererConfig,
+  rendererConfig: RendererConfig;
 
   // search limit
-  showPageLimitationL: number
+  showPageLimitationL: number;
 
-  isContainerFluid: boolean,
+  isContainerFluid: boolean;
 
-  sidebarConfig: ISidebarConfig,
+  sidebarConfig: ISidebarConfig;
 };
 
 const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
@@ -90,19 +95,15 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 };
 
 type LayoutProps = Props & {
-  sidebarConfig: ISidebarConfig,
-  children?: ReactNode,
-}
+  sidebarConfig: ISidebarConfig;
+  children?: ReactNode;
+};
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
-  return (
-    <SearchResultLayout>
-      {children}
-    </SearchResultLayout>
-  );
+  return <SearchResultLayout>{children}</SearchResultLayout>;
 };
 
 SearchResultPage.getLayout = function getLayout(page) {
@@ -143,9 +144,10 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
     isEnabledXssPrevention: configManager.getConfig('markdown:rehypeSanitize:isEnabledPrevention'),
     sanitizeType: configManager.getConfig('markdown:rehypeSanitize:option'),
     customTagWhitelist: crowi.configManager.getConfig('markdown:rehypeSanitize:tagNames'),
-    customAttrWhitelist: configManager.getConfig('markdown:rehypeSanitize:attributes') != null
-      ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
-      : undefined,
+    customAttrWhitelist:
+      configManager.getConfig('markdown:rehypeSanitize:attributes') != null
+        ? JSON.parse(configManager.getConfig('markdown:rehypeSanitize:attributes'))
+        : undefined,
     highlightJsStyleBorder: crowi.configManager.getConfig('customize:highlightJsStyleBorder'),
   };
 
@@ -163,7 +165,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { user } = req;
 

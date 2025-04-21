@@ -1,6 +1,4 @@
-import {
-  useCallback, useEffect, useRef, useState, type JSX,
-} from 'react';
+import { useCallback, useEffect, useRef, useState, type JSX } from 'react';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 import { usePageControlsX } from '~/stores/ui';
@@ -13,7 +11,6 @@ import styles from './PageHeader.module.scss';
 const moduleClass = styles['page-header'] ?? '';
 
 export const PageHeader = (): JSX.Element => {
-
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: pageControlsX } = usePageControlsX();
   const pageHeaderRef = useRef<HTMLDivElement>(null);
@@ -41,17 +38,9 @@ export const PageHeader = (): JSX.Element => {
 
   return (
     <div className={`${moduleClass} w-100`} ref={pageHeaderRef}>
-      <PagePathHeader
-        currentPage={currentPage}
-        maxWidth={maxWidth}
-        onRenameTerminated={calcMaxWidth}
-      />
+      <PagePathHeader currentPage={currentPage} maxWidth={maxWidth} onRenameTerminated={calcMaxWidth} />
       <div className="mt-0 mt-md-1">
-        <PageTitleHeader
-          currentPage={currentPage}
-          maxWidth={maxWidth}
-          onMoveTerminated={calcMaxWidth}
-        />
+        <PageTitleHeader currentPage={currentPage} maxWidth={maxWidth} onMoveTerminated={calcMaxWidth} />
       </div>
     </div>
   );

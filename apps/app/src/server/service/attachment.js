@@ -14,7 +14,6 @@ const logger = loggerFactory('growi:service:AttachmentService');
  * the service class for Attachment and file-uploader
  */
 class AttachmentService {
-
   /** @type {import('~/server/crowi').default} Crowi instance */
   crowi;
 
@@ -33,7 +32,11 @@ class AttachmentService {
     }
 
     const fileStream = fs.createReadStream(file.path, {
-      flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
+      flags: 'r',
+      encoding: null,
+      fd: null,
+      mode: '0666',
+      autoClose: true,
     });
 
     // create an Attachment document and upload file
@@ -42,10 +45,13 @@ class AttachmentService {
       attachment = Attachment.createWithoutSave(pageId, user, file.originalname, file.mimetype, file.size, attachmentType);
       await fileUploadService.uploadAttachment(fileStream, attachment);
       await attachment.save();
-    }
-    catch (err) {
+    } catch (err) {
       // delete temporary file
-      fs.unlink(file.path, (err) => { if (err) { logger.error('Error while deleting tmp file.') } });
+      fs.unlink(file.path, (err) => {
+        if (err) {
+          logger.error('Error while deleting tmp file.');
+        }
+      });
       throw err;
     }
 
@@ -87,7 +93,6 @@ class AttachmentService {
 
     return count >= 1;
   }
-
 }
 
 module.exports = AttachmentService;

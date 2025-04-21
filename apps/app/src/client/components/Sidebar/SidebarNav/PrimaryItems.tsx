@@ -11,13 +11,13 @@ import { PrimaryItem } from './PrimaryItem';
 import styles from './PrimaryItems.module.scss';
 
 // Do not SSR Socket.io to make it work
-const PrimaryItemForNotification = dynamic(
-  () => import('../InAppNotification/PrimaryItemForNotification').then(mod => mod.PrimaryItemForNotification), { ssr: false },
-);
+const PrimaryItemForNotification = dynamic(() => import('../InAppNotification/PrimaryItemForNotification').then((mod) => mod.PrimaryItemForNotification), {
+  ssr: false,
+});
 
 type Props = {
-  onItemHover?: (contents: SidebarContentsType) => void,
-}
+  onItemHover?: (contents: SidebarContentsType) => void;
+};
 
 export const PrimaryItems = memo((props: Props) => {
   const { onItemHover } = props;

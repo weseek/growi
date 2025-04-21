@@ -18,11 +18,13 @@ import { GcsSettingMolecule } from './GcsSetting';
 import type { GcsSettingMoleculeProps } from './GcsSetting';
 
 type FileUploadSettingMoleculeProps = {
-  fileUploadType: string
-  isFixedFileUploadByEnvVar: boolean
-  envFileUploadType?: string
-  onChangeFileUploadType: (e: ChangeEvent, type: string) => void
-} & AwsSettingMoleculeProps & GcsSettingMoleculeProps & AzureSettingMoleculeProps;
+  fileUploadType: string;
+  isFixedFileUploadByEnvVar: boolean;
+  envFileUploadType?: string;
+  onChangeFileUploadType: (e: ChangeEvent, type: string) => void;
+} & AwsSettingMoleculeProps &
+  GcsSettingMoleculeProps &
+  AzureSettingMoleculeProps;
 
 export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMoleculeProps): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
@@ -38,9 +40,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
       </p>
 
       <div className="row mb-3">
-        <label className="text-start text-md-end col-md-3 col-form-label">
-          {t('admin:app_setting.file_upload_method')}
-        </label>
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('admin:app_setting.file_upload_method')}</label>
 
         <div className="col-md-6 py-2">
           {Object.values(FileUploadType).map((type) => {
@@ -53,9 +53,13 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
                   id={`file-upload-type-radio-${type}`}
                   checked={props.fileUploadType === type}
                   disabled={props.isFixedFileUploadByEnvVar}
-                  onChange={(e) => { props?.onChangeFileUploadType(e, type) }}
+                  onChange={(e) => {
+                    props?.onChangeFileUploadType(e, type);
+                  }}
                 />
-                <label className="form-label form-check-label" htmlFor={`file-upload-type-radio-${type}`}>{t(`admin:app_setting.${type}_label`)}</label>
+                <label className="form-label form-check-label" htmlFor={`file-upload-type-radio-${type}`}>
+                  {t(`admin:app_setting.${type}_label`)}
+                </label>
               </div>
             );
           })}
@@ -63,14 +67,16 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
         {props.isFixedFileUploadByEnvVar && (
           <p className="alert alert-warning mt-2 text-start offset-3 col-6">
             <span className="material-symbols-outlined">help</span>
-            <b>FIXED</b><br />
+            <b>FIXED</b>
+            <br />
             {/* eslint-disable-next-line react/no-danger */}
-            <b dangerouslySetInnerHTML={{
-              __html: t('admin:app_setting.fixed_by_env_var', {
-                envKey: 'FILE_UPLOAD',
-                envVar: props.envFileUploadType,
-              }),
-            }}
+            <b
+              dangerouslySetInnerHTML={{
+                __html: t('admin:app_setting.fixed_by_env_var', {
+                  envKey: 'FILE_UPLOAD',
+                  envVar: props.envFileUploadType,
+                }),
+              }}
             />
           </p>
         )}
@@ -135,110 +141,177 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
 });
 FileUploadSettingMolecule.displayName = 'FileUploadSettingMolecule';
 
-
 type FileUploadSettingProps = {
-  adminAppContainer: AdminAppContainer
-}
+  adminAppContainer: AdminAppContainer;
+};
 
 const FileUploadSetting = (props: FileUploadSettingProps): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
   const { adminAppContainer } = props;
 
   const {
-    fileUploadType, isFixedFileUploadByEnvVar, envFileUploadType, retrieveError,
+    fileUploadType,
+    isFixedFileUploadByEnvVar,
+    envFileUploadType,
+    retrieveError,
     s3ReferenceFileWithRelayMode,
-    s3Region, s3CustomEndpoint, s3Bucket,
-    s3AccessKeyId, s3SecretAccessKey,
-    gcsReferenceFileWithRelayMode, gcsUseOnlyEnvVars,
-    gcsApiKeyJsonPath, envGcsApiKeyJsonPath, gcsBucket,
-    envGcsBucket, gcsUploadNamespace, envGcsUploadNamespace,
-    azureReferenceFileWithRelayMode, azureUseOnlyEnvVars,
-    azureTenantId, azureClientId, azureClientSecret,
-    azureStorageAccountName, azureStorageContainerName,
-    envAzureTenantId, envAzureClientId, envAzureClientSecret,
-    envAzureStorageAccountName, envAzureStorageContainerName,
+    s3Region,
+    s3CustomEndpoint,
+    s3Bucket,
+    s3AccessKeyId,
+    s3SecretAccessKey,
+    gcsReferenceFileWithRelayMode,
+    gcsUseOnlyEnvVars,
+    gcsApiKeyJsonPath,
+    envGcsApiKeyJsonPath,
+    gcsBucket,
+    envGcsBucket,
+    gcsUploadNamespace,
+    envGcsUploadNamespace,
+    azureReferenceFileWithRelayMode,
+    azureUseOnlyEnvVars,
+    azureTenantId,
+    azureClientId,
+    azureClientSecret,
+    azureStorageAccountName,
+    azureStorageContainerName,
+    envAzureTenantId,
+    envAzureClientId,
+    envAzureClientSecret,
+    envAzureStorageAccountName,
+    envAzureStorageContainerName,
   } = adminAppContainer.state;
 
-  const submitHandler = useCallback(async() => {
+  const submitHandler = useCallback(async () => {
     try {
       await adminAppContainer.updateFileUploadSettingHandler();
       toastSuccess(t('toaster.update_successed', { target: t('admin:app_setting.file_upload_settings'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [adminAppContainer, t]);
 
-  const onChangeFileUploadTypeHandler = useCallback((e: ChangeEvent, type: string) => {
-    adminAppContainer.changeFileUploadType(type);
-  }, [adminAppContainer]);
+  const onChangeFileUploadTypeHandler = useCallback(
+    (e: ChangeEvent, type: string) => {
+      adminAppContainer.changeFileUploadType(type);
+    },
+    [adminAppContainer],
+  );
 
   // S3
-  const onChangeS3ReferenceFileWithRelayModeHandler = useCallback((val: boolean) => {
-    adminAppContainer.changeS3ReferenceFileWithRelayMode(val);
-  }, [adminAppContainer]);
+  const onChangeS3ReferenceFileWithRelayModeHandler = useCallback(
+    (val: boolean) => {
+      adminAppContainer.changeS3ReferenceFileWithRelayMode(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeS3RegionHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3Region(val);
-  }, [adminAppContainer]);
+  const onChangeS3RegionHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeS3Region(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeS3CustomEndpointHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3CustomEndpoint(val);
-  }, [adminAppContainer]);
+  const onChangeS3CustomEndpointHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeS3CustomEndpoint(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeS3BucketHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3Bucket(val);
-  }, [adminAppContainer]);
+  const onChangeS3BucketHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeS3Bucket(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeS3AccessKeyIdHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3AccessKeyId(val);
-  }, [adminAppContainer]);
+  const onChangeS3AccessKeyIdHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeS3AccessKeyId(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeS3SecretAccessKeyHandler = useCallback((val: string) => {
-    adminAppContainer.changeS3SecretAccessKey(val);
-  }, [adminAppContainer]);
+  const onChangeS3SecretAccessKeyHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeS3SecretAccessKey(val);
+    },
+    [adminAppContainer],
+  );
 
   // GCS
-  const onChangeGcsReferenceFileWithRelayModeHandler = useCallback((val: boolean) => {
-    adminAppContainer.changeGcsReferenceFileWithRelayMode(val);
-  }, [adminAppContainer]);
+  const onChangeGcsReferenceFileWithRelayModeHandler = useCallback(
+    (val: boolean) => {
+      adminAppContainer.changeGcsReferenceFileWithRelayMode(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeGcsApiKeyJsonPathHandler = useCallback((val: string) => {
-    adminAppContainer.changeGcsApiKeyJsonPath(val);
-  }, [adminAppContainer]);
+  const onChangeGcsApiKeyJsonPathHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeGcsApiKeyJsonPath(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeGcsBucketHandler = useCallback((val: string) => {
-    adminAppContainer.changeGcsBucket(val);
-  }, [adminAppContainer]);
+  const onChangeGcsBucketHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeGcsBucket(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeGcsUploadNamespaceHandler = useCallback((val: string) => {
-    adminAppContainer.changeGcsUploadNamespace(val);
-  }, [adminAppContainer]);
+  const onChangeGcsUploadNamespaceHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeGcsUploadNamespace(val);
+    },
+    [adminAppContainer],
+  );
 
   // Azure
-  const onChangeAzureReferenceFileWithRelayModeHandler = useCallback((val: boolean) => {
-    adminAppContainer.changeAzureReferenceFileWithRelayMode(val);
-  }, [adminAppContainer]);
+  const onChangeAzureReferenceFileWithRelayModeHandler = useCallback(
+    (val: boolean) => {
+      adminAppContainer.changeAzureReferenceFileWithRelayMode(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeAzureTenantIdHandler = useCallback((val: string) => {
-    adminAppContainer.changeAzureTenantId(val);
-  }, [adminAppContainer]);
+  const onChangeAzureTenantIdHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeAzureTenantId(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeAzureClientIdHandler = useCallback((val: string) => {
-    adminAppContainer.changeAzureClientId(val);
-  }, [adminAppContainer]);
+  const onChangeAzureClientIdHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeAzureClientId(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeAzureClientSecretHandler = useCallback((val: string) => {
-    adminAppContainer.changeAzureClientSecret(val);
-  }, [adminAppContainer]);
+  const onChangeAzureClientSecretHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeAzureClientSecret(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeAzureStorageAccountNameHandler = useCallback((val: string) => {
-    adminAppContainer.changeAzureStorageAccountName(val);
-  }, [adminAppContainer]);
+  const onChangeAzureStorageAccountNameHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeAzureStorageAccountName(val);
+    },
+    [adminAppContainer],
+  );
 
-  const onChangeAzureStorageContainerNameHandler = useCallback((val: string) => {
-    adminAppContainer.changeAzureStorageContainerName(val);
-  }, [adminAppContainer]);
+  const onChangeAzureStorageContainerNameHandler = useCallback(
+    (val: string) => {
+      adminAppContainer.changeAzureStorageContainerName(val);
+    },
+    [adminAppContainer],
+  );
 
   return (
     <>
@@ -294,7 +367,6 @@ const FileUploadSetting = (props: FileUploadSettingProps): JSX.Element => {
     </>
   );
 };
-
 
 /**
  * Wrapper component for using unstated

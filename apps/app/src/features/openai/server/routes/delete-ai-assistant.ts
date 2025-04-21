@@ -4,7 +4,6 @@ import type { Request, RequestHandler } from 'express';
 import { type ValidationChain, param } from 'express-validator';
 import { isHttpError } from 'http-errors';
 
-
 import type Crowi from '~/server/crowi';
 import { accessTokenParser } from '~/server/middlewares/access-token-parser';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -17,35 +16,35 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 
 const logger = loggerFactory('growi:routes:apiv3:openai:delete-ai-assistants');
 
-
 type DeleteAiAssistantsFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqParams = {
-  id: string,
-}
+  id: string;
+};
 
 type Req = Request<ReqParams, Response, undefined> & {
-  user: IUserHasId,
-}
+  user: IUserHasId;
+};
 
 export const deleteAiAssistantsFactory: DeleteAiAssistantsFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
-  const validator: ValidationChain[] = [
-    param('id').isMongoId().withMessage('aiAssistant id is required'),
-  ];
+  const validator: ValidationChain[] = [param('id').isMongoId().withMessage('aiAssistant id is required')];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    certifyAiService,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const { id } = req.params;
       const { user } = req;
 
       try {
         const deletedAiAssistant = await deleteAiAssistant(user._id, id);
         return res.apiv3({ deletedAiAssistant });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
 
         if (isHttpError(err)) {

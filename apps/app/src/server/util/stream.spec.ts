@@ -7,7 +7,7 @@ const pipelinePromise = promisify(pipeline);
 
 describe('stream util', () => {
   describe('getBufferToFixedSizeTransform', () => {
-    it('should buffer data to fixed size and push to next stream', async() => {
+    it('should buffer data to fixed size and push to next stream', async () => {
       const bufferSize = 10;
       const chunks: Buffer[] = [];
 

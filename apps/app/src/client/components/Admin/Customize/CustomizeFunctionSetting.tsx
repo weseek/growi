@@ -13,21 +13,18 @@ import CustomizeFunctionOption from './CustomizeFunctionOption';
 import PagingSizeUncontrolledDropdown from './PagingSizeUncontrolledDropdown';
 
 type Props = {
-  adminCustomizeContainer: AdminCustomizeContainer
-}
+  adminCustomizeContainer: AdminCustomizeContainer;
+};
 
 const CustomizeFunctionSetting = (props: Props): JSX.Element => {
-
   const { adminCustomizeContainer } = props;
   const { t } = useTranslation();
 
-  const onClickSubmit = useCallback(async() => {
-
+  const onClickSubmit = useCallback(async () => {
     try {
       await adminCustomizeContainer.updateCustomizeFunction();
       toastSuccess(t('toaster.update_successed', { target: t('admin:customize_settings.function'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [t, adminCustomizeContainer]);
@@ -38,11 +35,8 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_settings.function')}</h2>
           <Card className="card custom-card bg-body-tertiary my-3">
-            <CardBody className="px-0 py-2">
-              {t('admin:customize_settings.function_desc')}
-            </CardBody>
+            <CardBody className="px-0 py-2">{t('admin:customize_settings.function_desc')}</CardBody>
           </Card>
-
 
           <div className="row mt-4">
             <div className="offset-md-2 col-md-7 text-start">
@@ -50,11 +44,11 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
                 optionId="isEnabledAttachTitleHeader"
                 label={t('admin:customize_settings.function_options.attach_title_header')}
                 isChecked={adminCustomizeContainer.state.isEnabledAttachTitleHeader}
-                onChecked={() => { adminCustomizeContainer.switchEnabledAttachTitleHeader() }}
+                onChecked={() => {
+                  adminCustomizeContainer.switchEnabledAttachTitleHeader();
+                }}
               >
-                <p className="form-text text-muted">
-                  {t('admin:customize_settings.function_options.attach_title_header_desc')}
-                </p>
+                <p className="form-text text-muted">{t('admin:customize_settings.function_options.attach_title_header_desc')}</p>
               </CustomizeFunctionOption>
             </div>
           </div>
@@ -94,11 +88,11 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
                 optionId="isEnabledStaleNotification"
                 label={t('admin:customize_settings.function_options.stale_notification')}
                 isChecked={adminCustomizeContainer.state.isEnabledStaleNotification}
-                onChecked={() => { adminCustomizeContainer.switchEnableStaleNotification() }}
+                onChecked={() => {
+                  adminCustomizeContainer.switchEnableStaleNotification();
+                }}
               >
-                <p className="form-text text-muted">
-                  {t('admin:customize_settings.function_options.stale_notification_desc')}
-                </p>
+                <p className="form-text text-muted">{t('admin:customize_settings.function_options.stale_notification_desc')}</p>
               </CustomizeFunctionOption>
             </div>
           </div>
@@ -109,11 +103,11 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
                 optionId="isAllReplyShown"
                 label={t('admin:customize_settings.function_options.show_all_reply_comments')}
                 isChecked={adminCustomizeContainer.state.isAllReplyShown || false}
-                onChecked={() => { adminCustomizeContainer.switchIsAllReplyShown() }}
+                onChecked={() => {
+                  adminCustomizeContainer.switchIsAllReplyShown();
+                }}
               >
-                <p className="form-text text-muted">
-                  {t('admin:customize_settings.function_options.show_all_reply_comments_desc')}
-                </p>
+                <p className="form-text text-muted">{t('admin:customize_settings.function_options.show_all_reply_comments_desc')}</p>
               </CustomizeFunctionOption>
             </div>
           </div>
@@ -124,11 +118,11 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
                 optionId="isSearchScopeChildrenAsDefault"
                 label={t('admin:customize_settings.function_options.select_search_scope_children_as_default')}
                 isChecked={adminCustomizeContainer.state.isSearchScopeChildrenAsDefault || false}
-                onChecked={() => { adminCustomizeContainer.switchIsSearchScopeChildrenAsDefault() }}
+                onChecked={() => {
+                  adminCustomizeContainer.switchIsSearchScopeChildrenAsDefault();
+                }}
               >
-                <p className="form-text text-muted">
-                  {t('admin:customize_settings.function_options.select_search_scope_children_as_default_desc')}
-                </p>
+                <p className="form-text text-muted">{t('admin:customize_settings.function_options.select_search_scope_children_as_default_desc')}</p>
               </CustomizeFunctionOption>
             </div>
           </div>
@@ -139,11 +133,11 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
                 optionId="showPageSideAuthors"
                 label={t('admin:customize_settings.function_options.show_page_side_authors')}
                 isChecked={adminCustomizeContainer.state.showPageSideAuthors}
-                onChecked={() => { adminCustomizeContainer.switchShowPageSideAuthors() }}
+                onChecked={() => {
+                  adminCustomizeContainer.switchShowPageSideAuthors();
+                }}
               >
-                <p className="form-text text-muted">
-                  {t('admin:customize_settings.function_options.show_page_side_authors_desc')}
-                </p>
+                <p className="form-text text-muted">{t('admin:customize_settings.function_options.show_page_side_authors_desc')}</p>
               </CustomizeFunctionOption>
             </div>
           </div>
@@ -153,7 +147,6 @@ const CustomizeFunctionSetting = (props: Props): JSX.Element => {
       </div>
     </React.Fragment>
   );
-
 };
 
 const CustomizeFunctionSettingWrapper = withUnstatedContainers(CustomizeFunctionSetting, [AdminCustomizeContainer]);

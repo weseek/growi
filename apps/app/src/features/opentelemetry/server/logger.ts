@@ -4,9 +4,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:opentelemetry:diag');
 
-
 class DiagLoggerBunyanAdapter implements DiagLogger {
-
   private parseMessage(message: string, args: unknown[]): [logMessage: string, data: object] {
     let logMessage = message;
     let data = {};
@@ -17,12 +15,9 @@ class DiagLoggerBunyanAdapter implements DiagLogger {
       if (typeof parsedMessage === 'object' && parsedMessage !== null) {
         data = parsedMessage;
         // if parsed successfully, use 'message' property as log message
-        logMessage = 'message' in data && typeof data.message === 'string'
-          ? data.message
-          : message;
+        logMessage = 'message' in data && typeof data.message === 'string' ? data.message : message;
       }
-    }
-    catch (e) {
+    } catch (e) {
       // do nothing if the message is not a JSON string
     }
 
@@ -34,8 +29,7 @@ class DiagLoggerBunyanAdapter implements DiagLogger {
           try {
             const parsed = JSON.parse(arg);
             return { ...acc, ...parsed };
-          }
-          catch (e) {
+          } catch (e) {
             return { ...acc, additionalInfo: arg };
           }
         }
@@ -66,9 +60,7 @@ class DiagLoggerBunyanAdapter implements DiagLogger {
   verbose(message: string, ...args): void {
     logger.trace(...this.parseMessage(message, args));
   }
-
 }
-
 
 export const initLogger = (): void => {
   // Enable global logger for OpenTelemetry

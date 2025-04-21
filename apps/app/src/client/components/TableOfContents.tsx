@@ -17,8 +17,8 @@ const { isUsersHomepage: _isUsersHomepage } = pagePathUtils;
 const logger = loggerFactory('growi:TableOfContents');
 
 type Props = {
-  tagsElementHeight?: number
-}
+  tagsElementHeight?: number;
+};
 
 const TableOfContents = ({ tagsElementHeight }: Props): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
@@ -55,23 +55,15 @@ const TableOfContents = ({ tagsElementHeight }: Props): JSX.Element => {
 
   return (
     <div id="revision-toc" className={`revision-toc ${styles['revision-toc']}`}>
-      <StickyStretchableScroller
-        stickyElemSelector=".grw-side-contents-sticky-container"
-        calcViewHeight={calcViewHeight}
-      >
-        <div
-          id="revision-toc-content"
-          data-testid="revision-toc-content"
-          className="revision-toc-content mb-3"
-        >
+      <StickyStretchableScroller stickyElemSelector=".grw-side-contents-sticky-container" calcViewHeight={calcViewHeight}>
+        <div id="revision-toc-content" data-testid="revision-toc-content" className="revision-toc-content mb-3">
           {/* parse blank to show toc (https://github.com/weseek/growi/pull/6277) */}
           {/* biome-ignore lint/nursery/useConsistentCurlyBraces: ignore */}
-          <ReactMarkdown {...rendererOptions}>{' '}</ReactMarkdown>
+          <ReactMarkdown {...rendererOptions}> </ReactMarkdown>
         </div>
       </StickyStretchableScroller>
     </div>
   );
-
 };
 
 export default TableOfContents;

@@ -7,21 +7,15 @@ import type { ISelectableAndIndeterminatable } from '~/client/interfaces/selecta
 import type { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
 
 type Props = {
-  inputId?: string,
-  inputClassName?: string,
-  isCheckboxDisabled?: boolean,
-  onCheckboxChanged?: (isChecked: boolean) => void,
-  children?: React.ReactNode,
-}
+  inputId?: string;
+  inputClassName?: string;
+  isCheckboxDisabled?: boolean;
+  onCheckboxChanged?: (isChecked: boolean) => void;
+  children?: React.ReactNode;
+};
 
 const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeterminatable, Props> = (props: Props, ref): JSX.Element => {
-  const {
-    inputId,
-    inputClassName = '',
-    isCheckboxDisabled,
-    onCheckboxChanged,
-    children,
-  } = props;
+  const { inputId, inputClassName = '', isCheckboxDisabled, onCheckboxChanged, children } = props;
 
   const selectAllCheckboxElm = useRef<IndeterminateInputElement>(null);
 

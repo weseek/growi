@@ -1,42 +1,34 @@
 import type { IPageHasId, PageGrant } from '@growi/core';
 
-export type AggregatedPage = Pick<IPageHasId,
-  '_id'
-  | 'path'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'grant'
-  | 'grantedUsers'
-  | 'grantedGroups'
-> & {
-  revision: { body: string },
-  comments: string[],
-  commentsCount: number,
-  bookmarksCount: number,
-  likeCount: number,
-  seenUsersCount: number,
+export type AggregatedPage = Pick<IPageHasId, '_id' | 'path' | 'createdAt' | 'updatedAt' | 'grant' | 'grantedUsers' | 'grantedGroups'> & {
+  revision: { body: string };
+  comments: string[];
+  commentsCount: number;
+  bookmarksCount: number;
+  likeCount: number;
+  seenUsersCount: number;
   creator?: {
-    username: string,
-    email: string,
-  },
+    username: string;
+    email: string;
+  };
 } & {
-  tagNames: string[],
-  revisionBodyEmbedded?: number[],
+  tagNames: string[];
+  revisionBodyEmbedded?: number[];
 };
 
 export type BulkWriteCommand = {
   index: {
-    _index: string,
-    _type: '_doc' | undefined,
-    _id: string,
-  },
-}
+    _index: string;
+    _type: '_doc' | undefined;
+    _id: string;
+  };
+};
 
 export type BulkWriteBodyRestriction = {
-  grant: PageGrant,
-  granted_users?: string[],
-  granted_groups: string[],
-}
+  grant: PageGrant;
+  granted_users?: string[];
+  granted_groups: string[];
+};
 
 export type BulkWriteBody = {
   path: string;

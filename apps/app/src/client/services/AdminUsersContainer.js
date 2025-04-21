@@ -2,17 +2,13 @@ import { isServer } from '@growi/core/dist/utils';
 import { debounce } from 'throttle-debounce';
 import { Container } from 'unstated';
 
-import {
-  apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
-} from '../util/apiv3-client';
-
+import { apiv3Delete, apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
 
 /**
  * Service container for admin users page (Users.jsx)
  * @extends {Container} unstated Container
  */
 export default class AdminUsersContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -61,12 +57,10 @@ export default class AdminUsersContainer extends Container {
     const all = 'all';
     if (this.isSelected(statusType)) {
       this.deleteStatusFromList(statusType);
-    }
-    else {
+    } else {
       if (statusType === all) {
         this.clearStatusList();
-      }
-      else {
+      } else {
         this.deleteStatusFromList(all);
       }
       this.addStatusToList(statusType);
@@ -131,7 +125,6 @@ export default class AdminUsersContainer extends Container {
    * @param {number} selectedPage
    */
   async retrieveUsersByPagingNum(selectedPage) {
-
     const params = {
       page: selectedPage,
       sort: this.state.sort,
@@ -144,7 +137,7 @@ export default class AdminUsersContainer extends Container {
     const { data } = await apiv3Get('/users', params);
 
     if (data.paginateResult == null) {
-      throw new Error('data must conclude \'paginateResult\' property.');
+      throw new Error("data must conclude 'paginateResult' property.");
     }
 
     const { docs: users, totalDocs: totalUsers, limit: pagingLimit } = data.paginateResult;
@@ -155,7 +148,6 @@ export default class AdminUsersContainer extends Container {
       pagingLimit,
       activePage: selectedPage,
     });
-
   }
 
   /**
@@ -294,5 +286,4 @@ export default class AdminUsersContainer extends Container {
     await this.retrieveUsersByPagingNum(this.state.activePage);
     return removedUserData;
   }
-
 }

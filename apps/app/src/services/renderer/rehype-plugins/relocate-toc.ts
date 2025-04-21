@@ -4,8 +4,8 @@ import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 type StoreTocPluginParams = {
-  storeTocNode: (toc: HtmlElementNode) => void,
-}
+  storeTocNode: (toc: HtmlElementNode) => void;
+};
 
 export const rehypePluginStore: Plugin<[StoreTocPluginParams]> = (options) => {
   return rehypeToc.bind(this)({
@@ -21,7 +21,6 @@ export const rehypePluginStore: Plugin<[StoreTocPluginParams]> = (options) => {
   });
 };
 
-
 // method for replace <ol> to <ul>
 const replaceOlToUl = (tree: HtmlElementNode) => {
   visit(tree, 'element', (node: HtmlElementNode) => {
@@ -32,8 +31,8 @@ const replaceOlToUl = (tree: HtmlElementNode) => {
 };
 
 type RestoreTocPluginParams = {
-  tocNode?: HtmlElementNode,
-}
+  tocNode?: HtmlElementNode;
+};
 
 export const rehypePluginRestore: Plugin<[RestoreTocPluginParams]> = (options) => {
   const { tocNode } = options;

@@ -8,7 +8,6 @@ import { apiv3Get, apiv3Put } from '../util/apiv3-client';
  * @extends {Container} unstated Container
  */
 export default class AdminMarkDownContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -75,7 +74,6 @@ export default class AdminMarkDownContainer extends Container {
    * Update LineBreak Setting
    */
   async updateLineBreakSetting() {
-
     const response = await apiv3Put('/markdown-setting/lineBreak', {
       isEnabledLinebreaks: this.state.isEnabledLinebreaks,
       isEnabledLinebreaksInComments: this.state.isEnabledLinebreaksInComments,
@@ -88,7 +86,6 @@ export default class AdminMarkDownContainer extends Container {
    * Update
    */
   async updateIndentSetting() {
-
     const response = await apiv3Put('/markdown-setting/indent', {
       adminPreferredIndentSize: this.state.adminPreferredIndentSize,
       isIndentSizeForced: this.state.isIndentSizeForced,
@@ -109,8 +106,7 @@ export default class AdminMarkDownContainer extends Container {
     try {
       // Check if parsing is possible
       JSON.parse(attrWhitelist);
-    }
-    catch (err) {
+    } catch (err) {
       throw new Error(err);
     }
 
@@ -121,5 +117,4 @@ export default class AdminMarkDownContainer extends Container {
       attrWhitelist: attrWhitelist ?? '{}',
     });
   }
-
 }

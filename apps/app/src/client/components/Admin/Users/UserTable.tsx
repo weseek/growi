@@ -13,11 +13,10 @@ import { SortIcons } from './SortIcons';
 import UserMenu from './UserMenu';
 
 type UserTableProps = {
-  adminUsersContainer: AdminUsersContainer,
-}
+  adminUsersContainer: AdminUsersContainer;
+};
 
 const UserTable = (props: UserTableProps) => {
-
   const { t } = useTranslation('admin');
   const { adminUsersContainer } = props;
 
@@ -48,17 +47,16 @@ const UserTable = (props: UserTableProps) => {
         break;
     }
 
-    return (
-      <span className={`badge ${additionalClassName}`}>
-        {text}
-      </span>
-    );
+    return <span className={`badge ${additionalClassName}`}>{text}</span>;
   };
 
-  const sortIconsClickedHandler = useCallback(async(sort: string, sortOrder: string) => {
-    const isAsc = sortOrder === 'asc';
-    await adminUsersContainer.sort(sort, isAsc);
-  }, [adminUsersContainer]);
+  const sortIconsClickedHandler = useCallback(
+    async (sort: string, sortOrder: string) => {
+      const isAsc = sortOrder === 'asc';
+      await adminUsersContainer.sort(sort, isAsc);
+    },
+    [adminUsersContainer],
+  );
 
   const isCurrentSortOrderAsc = adminUsersContainer.state.sortOrder === 'asc';
 
@@ -70,13 +68,11 @@ const UserTable = (props: UserTableProps) => {
             <th style={{ width: '100px' }}>#</th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="me-3">
-                  {t('user_management.status')}
-                </div>
+                <div className="me-3">{t('user_management.status')}</div>
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'status'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={sortOrder => sortIconsClickedHandler('status', sortOrder)}
+                  onClick={(sortOrder) => sortIconsClickedHandler('status', sortOrder)}
                 />
               </div>
             </th>
@@ -88,55 +84,47 @@ const UserTable = (props: UserTableProps) => {
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'username'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={sortOrder => sortIconsClickedHandler('username', sortOrder)}
+                  onClick={(sortOrder) => sortIconsClickedHandler('username', sortOrder)}
                 />
               </div>
             </th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="me-3">
-                  {t('Name')}
-                </div>
+                <div className="me-3">{t('Name')}</div>
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'name'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={sortOrder => sortIconsClickedHandler('name', sortOrder)}
+                  onClick={(sortOrder) => sortIconsClickedHandler('name', sortOrder)}
                 />
               </div>
             </th>
             <th>
               <div className="d-flex align-items-center">
-                <div className="me-3">
-                  {t('Email')}
-                </div>
+                <div className="me-3">{t('Email')}</div>
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'email'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={sortOrder => sortIconsClickedHandler('email', sortOrder)}
+                  onClick={(sortOrder) => sortIconsClickedHandler('email', sortOrder)}
                 />
               </div>
             </th>
             <th style={{ width: '100px' }}>
               <div className="d-flex align-items-center">
-                <div className="me-3">
-                  {t('Created')}
-                </div>
+                <div className="me-3">{t('Created')}</div>
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'createdAt'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={sortOrder => sortIconsClickedHandler('createdAt', sortOrder)}
+                  onClick={(sortOrder) => sortIconsClickedHandler('createdAt', sortOrder)}
                 />
               </div>
             </th>
             <th style={{ width: '150px' }}>
               <div className="d-flex align-items-center">
-                <div className="me-3">
-                  {t('last_login')}
-                </div>
+                <div className="me-3">{t('last_login')}</div>
                 <SortIcons
                   isSelected={adminUsersContainer.state.sort === 'lastLoginAt'}
                   isAsc={isCurrentSortOrderAsc}
-                  onClick={sortOrder => sortIconsClickedHandler('lastLoginAt', sortOrder)}
+                  onClick={(sortOrder) => sortIconsClickedHandler('lastLoginAt', sortOrder)}
                 />
               </div>
             </th>
@@ -144,7 +132,7 @@ const UserTable = (props: UserTableProps) => {
           </tr>
         </thead>
         <tbody>
-          { adminUsersContainer.state.users.map((user: IUserHasId) => {
+          {adminUsersContainer.state.users.map((user: IUserHasId) => {
             return (
               <tr data-testid="user-table-tr" key={user._id}>
                 <td>
@@ -152,16 +140,8 @@ const UserTable = (props: UserTableProps) => {
                 </td>
                 <td>
                   {getUserStatusLabel(user.status)}
-                  {(user.admin) && (
-                    <span className="badge text-bg-secondary ms-2">
-                      {t('admin:user_management.user_table.administrator')}
-                    </span>
-                  )}
-                  {(user.readOnly) && (
-                    <span className="badge text-bg-light ms-2">
-                      {t('admin:user_management.user_table.read_only')}
-                    </span>
-                  )}
+                  {user.admin && <span className="badge text-bg-secondary ms-2">{t('admin:user_management.user_table.administrator')}</span>}
+                  {user.readOnly && <span className="badge text-bg-light ms-2">{t('admin:user_management.user_table.read_only')}</span>}
                 </td>
                 <td>
                   <strong>{user.username}</strong>
@@ -169,20 +149,17 @@ const UserTable = (props: UserTableProps) => {
                 <td>{user.name}</td>
                 <td>{user.email}</td>
                 <td>{dateFnsFormat(new Date(user.createdAt), 'yyyy-MM-dd')}</td>
-                <td>
-                  {user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-dd HH:mm')}</span>}
-                </td>
+                <td>{user.lastLoginAt && <span>{dateFnsFormat(new Date(user.lastLoginAt), 'yyyy-MM-dd HH:mm')}</span>}</td>
                 <td>
                   <UserMenu user={user} />
                 </td>
               </tr>
             );
-          }) }
+          })}
         </tbody>
       </table>
     </div>
   );
-
 };
 
 const UserTableWrapper = withUnstatedContainers(UserTable, [AdminUsersContainer]);

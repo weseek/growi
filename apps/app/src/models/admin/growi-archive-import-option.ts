@@ -1,7 +1,6 @@
 import { ImportMode } from './import-mode';
 
 export class GrowiArchiveImportOption {
-
   collectionName: string;
 
   mode: ImportMode;
@@ -14,5 +13,4 @@ export class GrowiArchiveImportOption {
       this[key] = value;
     });
   }
-
 }

@@ -2,13 +2,9 @@
 import type { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  FormGroup, Input, InputGroup, InputGroupText,
-  PopoverBody, PopoverHeader, UncontrolledPopover,
-} from 'reactstrap';
+import { FormGroup, Input, InputGroup, InputGroupText, PopoverBody, PopoverHeader, UncontrolledPopover } from 'reactstrap';
 
 import styles from './SlackNotification.module.scss';
-
 
 type SlackNotificationProps = {
   id: string;
@@ -18,14 +14,11 @@ type SlackNotificationProps = {
   onChannelChange?: (value: string) => void;
 };
 
-export const SlackNotification: FC<SlackNotificationProps> = ({
-  id, isSlackEnabled, slackChannels, onEnabledFlagChange, onChannelChange,
-}) => {
-
+export const SlackNotification: FC<SlackNotificationProps> = ({ id, isSlackEnabled, slackChannels, onEnabledFlagChange, onChannelChange }) => {
   const { t } = useTranslation();
   const idForSlackPopover = `${id}ForSlackPopover`;
 
-  const updateCheckboxHandler = (event: { target: { checked: boolean }; }) => {
+  const updateCheckboxHandler = (event: { target: { checked: boolean } }) => {
     const value = event.target.checked;
     if (onEnabledFlagChange != null) {
       onEnabledFlagChange(value);
@@ -38,7 +31,6 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
       onChannelChange(value);
     }
   };
-
 
   return (
     <InputGroup className={`d-flex align-items-center ${styles['grw-slack-switch']}`}>

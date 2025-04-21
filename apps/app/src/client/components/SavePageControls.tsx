@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useState, useEffect, type JSX,
-} from 'react';
+import React, { useCallback, useState, useEffect, type JSX } from 'react';
 
 import type EventEmitter from 'events';
 
@@ -8,15 +6,9 @@ import { PageGrant } from '@growi/core';
 import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
-import {
-  UncontrolledButtonDropdown, Button,
-  DropdownToggle, DropdownMenu, DropdownItem, Modal,
-} from 'reactstrap';
+import { UncontrolledButtonDropdown, Button, DropdownToggle, DropdownMenu, DropdownItem, Modal } from 'reactstrap';
 
-import {
-  useIsEditable, useIsAclEnabled,
-  useIsSlackConfigured,
-} from '~/stores-universal/context';
+import { useIsEditable, useIsAclEnabled, useIsSlackConfigured } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useSWRxCurrentPage, useCurrentPagePath } from '~/stores/page';
@@ -27,18 +19,14 @@ import { NotAvailable } from './NotAvailable';
 import { GrantSelector } from './SavePageControls/GrantSelector';
 import { SlackNotification } from './SlackNotification';
 
-
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
   var globalEmitter: EventEmitter;
 }
 
-
 const logger = loggerFactory('growi:SavePageControls');
 
-
-const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean, isDeviceLargerThanMd?: boolean}) => {
-
+const SavePageButton = (props: { slackChannels: string; isSlackEnabled?: boolean; isDeviceLargerThanMd?: boolean }) => {
   const { t } = useTranslation();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const [isSavePageModalShown, setIsSavePageModalShown] = useState<boolean>(false);
@@ -48,7 +36,7 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
 
-  const save = useCallback(async(): Promise<void> => {
+  const save = useCallback(async (): Promise<void> => {
     // save
     globalEmitter.emit('saveAndReturnToView', { wip: false, slackChannels, isSlackEnabled });
   }, [isSlackEnabled, slackChannels]);
@@ -56,7 +44,10 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
     // save
     globalEmitter.emit('saveAndReturnToView', {
-      wip: false, overwriteScopesOfDescendants: true, slackChannels, isSlackEnabled,
+      wip: false,
+      overwriteScopesOfDescendants: true,
+      slackChannels,
+      isSlackEnabled,
     });
   }, [isSlackEnabled, slackChannels]);
 
@@ -73,74 +64,66 @@ const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean,
   return (
     <>
       <UncontrolledButtonDropdown direction="up" size="sm">
-        <Button
-          id="caret"
-          data-testid="save-page-btn"
-          color="primary"
-          className="btn-submit"
-          onClick={save}
-          disabled={isWaitingSaveProcessing}
-        >
-          {isWaitingSaveProcessing && (
-            <LoadingSpinner />
-          )}
+        <Button id="caret" data-testid="save-page-btn" color="primary" className="btn-submit" onClick={save} disabled={isWaitingSaveProcessing}>
+          {isWaitingSaveProcessing && <LoadingSpinner />}
           {labelSubmitButton}
         </Button>
-        {
-          isDeviceLargerThanMd ? (
-            <>
-              <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
-              <DropdownMenu container="body" end>
+        {isDeviceLargerThanMd ? (
+          <>
+            <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
+            <DropdownMenu container="body" end>
+              <NotAvailable
+                isDisabled={selectedGrant?.grant === PageGrant.GRANT_RESTRICTED}
+                classNamePrefix="grw-not-available-when-grant-restricted-is-selected"
+                title={restrictedGrantOverrideErrorTitle}
+              >
+                <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>{labelOverwriteScopes}</DropdownItem>
+              </NotAvailable>
+              <DropdownItem onClick={saveAndMakeWip}>{labelUnpublishPage}</DropdownItem>
+            </DropdownMenu>
+          </>
+        ) : (
+          <>
+            <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} onClick={() => setIsSavePageModalShown(true)} />
+            <Modal centered isOpen={isSavePageModalShown} toggle={() => setIsSavePageModalShown(false)}>
+              <div className="d-flex flex-column pt-4 pb-3 px-4 gap-4">
                 <NotAvailable
                   isDisabled={selectedGrant?.grant === PageGrant.GRANT_RESTRICTED}
                   classNamePrefix="grw-not-available-when-grant-restricted-is-selected"
                   title={restrictedGrantOverrideErrorTitle}
                 >
-                  <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
-                    {labelOverwriteScopes}
-                  </DropdownItem>
-                </NotAvailable>
-                <DropdownItem onClick={saveAndMakeWip}>
-                  {labelUnpublishPage}
-                </DropdownItem>
-              </DropdownMenu>
-            </>
-          ) : (
-            <>
-              <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} onClick={() => setIsSavePageModalShown(true)} />
-              <Modal
-                centered
-                isOpen={isSavePageModalShown}
-                toggle={() => setIsSavePageModalShown(false)}
-              >
-                <div className="d-flex flex-column pt-4 pb-3 px-4 gap-4">
-                  <NotAvailable
-                    isDisabled={selectedGrant?.grant === PageGrant.GRANT_RESTRICTED}
-                    classNamePrefix="grw-not-available-when-grant-restricted-is-selected"
-                    title={restrictedGrantOverrideErrorTitle}
+                  <button
+                    type="button"
+                    className="btn btn-primary"
+                    onClick={() => {
+                      setIsSavePageModalShown(false);
+                      saveAndOverwriteScopesOfDescendants();
+                    }}
                   >
-                    <button type="button" className="btn btn-primary" onClick={() => { setIsSavePageModalShown(false); saveAndOverwriteScopesOfDescendants() }}>
-                      {labelOverwriteScopes}
-                    </button>
-                  </NotAvailable>
-                  <button type="button" className="btn btn-primary" onClick={() => { setIsSavePageModalShown(false); saveAndMakeWip() }}>
-                    {labelUnpublishPage}
+                    {labelOverwriteScopes}
                   </button>
-                  <button type="button" className="btn btn-outline-neutral-secondary mx-auto mt-1" onClick={() => setIsSavePageModalShown(false)}>
-                    <label className="mx-2">
-                      {t('Cancel')}
-                    </label>
-                  </button>
-                </div>
-              </Modal>
-            </>
-          )
-        }
+                </NotAvailable>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => {
+                    setIsSavePageModalShown(false);
+                    saveAndMakeWip();
+                  }}
+                >
+                  {labelUnpublishPage}
+                </button>
+                <button type="button" className="btn btn-outline-neutral-secondary mx-auto mt-1" onClick={() => setIsSavePageModalShown(false)}>
+                  <label className="mx-2">{t('Cancel')}</label>
+                </button>
+              </div>
+            </Modal>
+          </>
+        )}
       </UncontrolledButtonDropdown>
     </>
   );
 };
-
 
 export const SavePageControls = (): JSX.Element | null => {
   const { t } = useTranslation('commons');
@@ -167,7 +150,6 @@ export const SavePageControls = (): JSX.Element | null => {
     }
   }, [editorMode, mutateIsSlackEnabled, slackChannelsDataString]);
 
-
   const isSlackEnabledToggleHandler = (bool: boolean) => {
     mutateIsSlackEnabled(bool, false);
   };
@@ -188,85 +170,68 @@ export const SavePageControls = (): JSX.Element | null => {
 
   return (
     <div className="d-flex align-items-center flex-nowrap">
-      {
-        isDeviceLargerThanMd ? (
-          <>
-            {
-              isSlackConfigured && (
-                <div className="me-2">
-                  {isSlackEnabled != null && (
-                    <SlackNotification
-                      isSlackEnabled={isSlackEnabled}
-                      slackChannels={slackChannels}
-                      onEnabledFlagChange={isSlackEnabledToggleHandler}
-                      onChannelChange={slackChannelsChangedHandler}
-                      id="idForEditorNavbarBottom"
-                    />
-                  )}
-                </div>
-              )
-            }
+      {isDeviceLargerThanMd ? (
+        <>
+          {isSlackConfigured && (
+            <div className="me-2">
+              {isSlackEnabled != null && (
+                <SlackNotification
+                  isSlackEnabled={isSlackEnabled}
+                  slackChannels={slackChannels}
+                  onEnabledFlagChange={isSlackEnabledToggleHandler}
+                  onChannelChange={slackChannelsChangedHandler}
+                  id="idForEditorNavbarBottom"
+                />
+              )}
+            </div>
+          )}
 
-            {
-              isAclEnabled && (
-                <div className="me-2">
-                  <GrantSelector disabled={isGrantSelectorDisabledPage} />
-                </div>
-              )
-            }
+          {isAclEnabled && (
+            <div className="me-2">
+              <GrantSelector disabled={isGrantSelectorDisabledPage} />
+            </div>
+          )}
 
-            <SavePageButton isSlackEnabled={isSlackEnabled} slackChannels={slackChannels} isDeviceLargerThanMd />
-          </>
-        ) : (
-          <>
-            <SavePageButton isSlackEnabled={isSlackEnabled} slackChannels={slackChannels} />
-            <button
-              type="button"
-              className="btn btn-outline-neutral-secondary border-0 fs-5 p-0 ms-1 text-muted"
-              onClick={() => setIsSavePageControlsModalShown(true)}
-            >
-              <span className="material-symbols-outlined">more_vert</span>
-            </button>
-            <Modal
-              className="save-page-controls-modal"
-              centered
-              isOpen={isSavePageControlsModalShown}
-            >
-              <div className="d-flex flex-column pt-5 pb-3 px-4 gap-3">
-                {
-                  isAclEnabled && (
-                    <>
-                      <GrantSelector
-                        disabled={isGrantSelectorDisabledPage}
-                        openInModal
-                      />
-                    </>
-                  )
-                }
+          <SavePageButton isSlackEnabled={isSlackEnabled} slackChannels={slackChannels} isDeviceLargerThanMd />
+        </>
+      ) : (
+        <>
+          <SavePageButton isSlackEnabled={isSlackEnabled} slackChannels={slackChannels} />
+          <button
+            type="button"
+            className="btn btn-outline-neutral-secondary border-0 fs-5 p-0 ms-1 text-muted"
+            onClick={() => setIsSavePageControlsModalShown(true)}
+          >
+            <span className="material-symbols-outlined">more_vert</span>
+          </button>
+          <Modal className="save-page-controls-modal" centered isOpen={isSavePageControlsModalShown}>
+            <div className="d-flex flex-column pt-5 pb-3 px-4 gap-3">
+              {isAclEnabled && (
+                <>
+                  <GrantSelector disabled={isGrantSelectorDisabledPage} openInModal />
+                </>
+              )}
 
-                {
-                  isSlackConfigured && isSlackEnabled != null && (
-                    <>
-                      <SlackNotification
-                        isSlackEnabled={isSlackEnabled}
-                        slackChannels={slackChannels}
-                        onEnabledFlagChange={isSlackEnabledToggleHandler}
-                        onChannelChange={slackChannelsChangedHandler}
-                        id="idForEditorNavbarBottom"
-                      />
-                    </>
-                  )
-                }
-                <div className="d-flex">
-                  <button type="button" className="mx-auto btn btn-primary rounded-1" onClick={() => setIsSavePageControlsModalShown(false)}>
-                    {t('Done')}
-                  </button>
-                </div>
+              {isSlackConfigured && isSlackEnabled != null && (
+                <>
+                  <SlackNotification
+                    isSlackEnabled={isSlackEnabled}
+                    slackChannels={slackChannels}
+                    onEnabledFlagChange={isSlackEnabledToggleHandler}
+                    onChannelChange={slackChannelsChangedHandler}
+                    id="idForEditorNavbarBottom"
+                  />
+                </>
+              )}
+              <div className="d-flex">
+                <button type="button" className="mx-auto btn btn-primary rounded-1" onClick={() => setIsSavePageControlsModalShown(false)}>
+                  {t('Done')}
+                </button>
               </div>
-            </Modal>
-          </>
-        )
-      }
+            </div>
+          </Modal>
+        </>
+      )}
     </div>
   );
 };

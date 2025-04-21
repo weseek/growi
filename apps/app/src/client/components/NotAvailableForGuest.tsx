@@ -7,8 +7,8 @@ import { useIsGuestUser } from '~/stores-universal/context';
 import { NotAvailable } from './NotAvailable';
 
 type NotAvailableForGuestProps = {
-  children: JSX.Element
-}
+  children: JSX.Element;
+};
 
 export const NotAvailableForGuest = React.memo(({ children }: NotAvailableForGuestProps): JSX.Element => {
   const { t } = useTranslation();
@@ -18,11 +18,7 @@ export const NotAvailableForGuest = React.memo(({ children }: NotAvailableForGue
   const title = t('Not available for guest');
 
   return (
-    <NotAvailable
-      isDisabled={isDisabled}
-      title={title}
-      classNamePrefix="grw-not-available-for-guest"
-    >
+    <NotAvailable isDisabled={isDisabled} title={title} classNamePrefix="grw-not-available-for-guest">
       {children}
     </NotAvailable>
   );

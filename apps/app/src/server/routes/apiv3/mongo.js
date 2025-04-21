@@ -36,9 +36,9 @@ module.exports = (crowi) => {
    *                    items:
    *                      type: string
    */
-  router.get('/collections', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/collections', loginRequiredStrictly, adminRequired, async (req, res) => {
     const listCollectionsResult = await mongoose.connection.db.listCollections().toArray();
-    const collections = listCollectionsResult.map(collectionObj => collectionObj.name);
+    const collections = listCollectionsResult.map((collectionObj) => collectionObj.name);
 
     // TODO: use res.apiv3
     return res.json({

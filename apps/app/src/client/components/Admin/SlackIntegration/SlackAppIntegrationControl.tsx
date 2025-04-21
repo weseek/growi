@@ -1,17 +1,15 @@
-
 import type { JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-
 type Props = {
   slackAppIntegration: {
-    _id: string,
-    isPrimary?: boolean,
-  },
-  onIsPrimaryChanged?: (slackAppIntegration: unknown, newValue: boolean) => void,
-  onDeleteButtonClicked?: (slackAppIntegration: unknown) => void,
-}
+    _id: string;
+    isPrimary?: boolean;
+  };
+  onIsPrimaryChanged?: (slackAppIntegration: unknown, newValue: boolean) => void;
+  onDeleteButtonClicked?: (slackAppIntegration: unknown) => void;
+};
 
 export const SlackAppIntegrationControl = (props: Props): JSX.Element => {
   const { t } = useTranslation();

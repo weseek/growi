@@ -3,9 +3,7 @@ import { pagePathUtils } from '@growi/core/dist/utils';
 import { GlobalNotificationSettingEvent, GlobalNotificationSettingType } from '~/server/models/GlobalNotificationSetting';
 import loggerFactory from '~/utils/logger';
 
-import {
-  prepareSlackMessageForGlobalNotification,
-} from '../../util/slack';
+import { prepareSlackMessageForGlobalNotification } from '../../util/slack';
 import { growiInfoService } from '../growi-info';
 
 const logger = loggerFactory('growi:service:GlobalNotificationSlackService'); // eslint-disable-line no-unused-vars
@@ -17,7 +15,6 @@ const { encodeSpaces } = pagePathUtils;
  * sub service class of GlobalNotificationSetting
  */
 class GlobalNotificationSlackService {
-
   /** @type {import('~/server/crowi').default} Crowi instance */
   crowi;
 
@@ -48,11 +45,12 @@ class GlobalNotificationSlackService {
 
     const appTitle = appService.getAppTitle();
 
-    await Promise.all(notifications.map((notification) => {
-      const messageObj = prepareSlackMessageForGlobalNotification(messageBody, attachmentBody, appTitle, notification.slackChannels);
-      return slackIntegrationService.postMessage(messageObj);
-    }));
-
+    await Promise.all(
+      notifications.map((notification) => {
+        const messageObj = prepareSlackMessageForGlobalNotification(messageBody, attachmentBody, appTitle, notification.slackChannels);
+        return slackIntegrationService.postMessage(messageObj);
+      }),
+    );
   }
 
   /**
@@ -148,7 +146,6 @@ class GlobalNotificationSlackService {
 
     return attachmentBody;
   }
-
 }
 
 module.exports = GlobalNotificationSlackService;

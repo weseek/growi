@@ -1,7 +1,5 @@
 import express from 'express';
-import type {
-  Response, Router,
-} from 'express';
+import type { Response, Router } from 'express';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import loggerFactory from '~/utils/logger';
@@ -14,18 +12,15 @@ import ApiResponse from '../../util/apiResponse';
 
 import { getActionFactory } from './get';
 
-
 const logger = loggerFactory('growi:routes:attachment:get-brand-logo');
 
-
 export const getBrandLogoRouterFactory = (crowi: Crowi): Router => {
-
   const certifyBrandLogo = generateCertifyBrandLogoMiddleware(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const router = express.Router();
 
-  router.get('/brand-logo', certifyBrandLogo, loginRequired, async(req: CrowiRequest, res: Response) => {
+  router.get('/brand-logo', certifyBrandLogo, loginRequired, async (req: CrowiRequest, res: Response) => {
     const brandLogoAttachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
 
     if (brandLogoAttachment == null) {

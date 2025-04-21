@@ -5,7 +5,6 @@ import { Skeleton } from '~/client/components/Skeleton';
 import styles from './RecentChangesSubstance.module.scss';
 
 const SkeletonItem = () => {
-
   const isSmall = window.localStorage.isRecentChangesSidebarSmall === 'true';
 
   return (
@@ -25,7 +24,6 @@ const SkeletonItem = () => {
 };
 
 const RecentChangesContentSkeleton = (): JSX.Element => {
-
   return (
     <div className="grw-recent-changes py-3">
       <ul className="list-group list-group-flush">

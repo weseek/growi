@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 import { useElasticsearchMaxBodyLengthToIndex } from '~/stores-universal/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-
 export const FullTextSearchNotCoverAlert = (): JSX.Element => {
   const { t } = useTranslation();
 
@@ -20,7 +19,10 @@ export const FullTextSearchNotCoverAlert = (): JSX.Element => {
 
   return (
     <div className="alert alert-warning">
-      <strong>{t('Warning')}: {t('page_page.notice.not_indexed1')}</strong><br />
+      <strong>
+        {t('Warning')}: {t('page_page.notice.not_indexed1')}
+      </strong>
+      <br />
       <small
         // eslint-disable-next-line react/no-danger
         dangerouslySetInnerHTML={{

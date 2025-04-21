@@ -5,9 +5,7 @@ import { getIdStringForRef, type IUser } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
-import type {
-  Request, Response, NextFunction,
-} from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import type { ValidationError } from 'express-validator';
 import { param, validationResult } from 'express-validator';
 import type { HydratedDocument } from 'mongoose';
@@ -29,19 +27,18 @@ const DEFAULT_USER_IMAGE_PATH = `public${DEFAULT_USER_IMAGE_URL}`;
 
 let bufferedDefaultUserImageCache: Buffer = Buffer.from('');
 fs.readFile(path.join(projectRoot, DEFAULT_USER_IMAGE_PATH), (err, buffer) => {
-  if (err) { throw err; }
+  if (err) {
+    throw err;
+  }
   bufferedDefaultUserImageCache = buffer;
 });
 
-
 module.exports = (crowi: Crowi) => {
-
   const isUserImageAttachment = (userImageUrlCached: string): boolean => {
     return /^\/attachment\/.+/.test(userImageUrlCached);
   };
 
-  const getBufferedUserImage = async(userImageUrlCached: string): Promise<Buffer | null> => {
-
+  const getBufferedUserImage = async (userImageUrlCached: string): Promise<Buffer | null> => {
     let bufferedUserImage: Buffer;
 
     if (isUserImageAttachment(userImageUrlCached)) {
@@ -57,16 +54,14 @@ module.exports = (crowi: Crowi) => {
       return bufferedUserImage;
     }
 
-    return (await axios.get(
-      userImageUrlCached, {
+    return (
+      await axios.get(userImageUrlCached, {
         responseType: 'arraybuffer',
-      },
-    )).data;
-
+      })
+    ).data;
   };
 
-  const renderOgp = async(req: Request, res: Response) => {
-
+  const renderOgp = async (req: Request, res: Response) => {
     const ogpUri = configManager.getConfig('app:ogpUri');
 
     if (ogpUri == null) {
@@ -75,7 +70,7 @@ module.exports = (crowi: Crowi) => {
 
     const page: PageDocument = req.body.page; // asserted by ogpValidator
 
-    const title = (new DevidedPagePath(page.path)).latter;
+    const title = new DevidedPagePath(page.path).latter;
 
     let user: IUser | null = null;
     let userName = '(unknown)';
@@ -88,13 +83,13 @@ module.exports = (crowi: Crowi) => {
 
         if (user != null) {
           userName = user.username;
-          userImage = user.imageUrlCached !== DEFAULT_USER_IMAGE_URL
-            ? bufferedDefaultUserImageCache
-            : await getBufferedUserImage(user.imageUrlCached) ?? bufferedDefaultUserImageCache;
+          userImage =
+            user.imageUrlCached !== DEFAULT_USER_IMAGE_URL
+              ? bufferedDefaultUserImageCache
+              : ((await getBufferedUserImage(user.imageUrlCached)) ?? bufferedDefaultUserImageCache);
         }
       }
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.status(500).send(`error: ${err}`);
     }
@@ -102,18 +97,19 @@ module.exports = (crowi: Crowi) => {
     let result;
     try {
       result = await axios.post(
-        ogpUri, {
+        ogpUri,
+        {
           data: {
             title,
             userName,
             userImage,
           },
-        }, {
+        },
+        {
           responseType: 'stream',
         },
       );
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.status(500).send(`error: ${err}`);
     }
@@ -122,24 +118,28 @@ module.exports = (crowi: Crowi) => {
       'Content-Type': 'image/jpeg',
     });
     result.data.pipe(res);
-
   };
 
   const pageIdRequired = param('pageId').not().isEmpty().withMessage('page id is not included in the parameter');
 
-  const ogpValidator = async(req:Request, res:Response, next:NextFunction) => {
+  const ogpValidator = async (req: Request, res: Response, next: NextFunction) => {
     const { aclService, fileUploadService, configManager } = crowi;
 
     const ogpUri = configManager.getConfig('app:ogpUri');
 
-    if (ogpUri == null) { return res.status(400).send('OGP URI for GROWI has not been setup'); }
-    if (!fileUploadService.getIsUploadable()) { return res.status(501).send('This GROWI can not upload file'); }
-    if (!aclService.isGuestAllowedToRead()) { return res.status(501).send('This GROWI is not public'); }
+    if (ogpUri == null) {
+      return res.status(400).send('OGP URI for GROWI has not been setup');
+    }
+    if (!fileUploadService.getIsUploadable()) {
+      return res.status(501).send('This GROWI can not upload file');
+    }
+    if (!aclService.isGuestAllowedToRead()) {
+      return res.status(501).send('This GROWI is not public');
+    }
 
     const errors = validationResult(req);
 
     if (errors.isEmpty()) {
-
       const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
       try {
@@ -150,8 +150,7 @@ module.exports = (crowi: Crowi) => {
         }
 
         req.body.page = page;
-      }
-      catch (error) {
+      } catch (error) {
         logger.error(error);
         return res.status(500).send(`error: ${error}`);
       }
@@ -170,5 +169,4 @@ module.exports = (crowi: Crowi) => {
     pageIdRequired,
     ogpValidator,
   };
-
 };

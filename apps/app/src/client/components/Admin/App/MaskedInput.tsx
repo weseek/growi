@@ -3,11 +3,11 @@ import { useState, type JSX } from 'react';
 import styles from './MaskedInput.module.scss';
 
 type Props = {
-  name: string
-  readOnly: boolean
-  defaultValue: string
-  onChange?: (e: any) => void
-  tabIndex?: number | undefined
+  name: string;
+  readOnly: boolean;
+  defaultValue: string;
+  onChange?: (e: any) => void;
+  tabIndex?: number | undefined;
 };
 
 export default function MaskedInput(props: Props): JSX.Element {
@@ -16,9 +16,7 @@ export default function MaskedInput(props: Props): JSX.Element {
     setPasswordShown(!passwordShown);
   };
 
-  const {
-    name, readOnly, defaultValue, onChange, tabIndex,
-  } = props;
+  const { name, readOnly, defaultValue, onChange, tabIndex } = props;
 
   return (
     <div className={styles.MaskedInput}>
@@ -32,11 +30,7 @@ export default function MaskedInput(props: Props): JSX.Element {
         tabIndex={tabIndex}
       />
       <span onClick={togglePassword} className={styles.PasswordReveal}>
-        {passwordShown ? (
-          <span className="material-symbols-outlined">visibility</span>
-        ) : (
-          <span className="material-symbols-outlined">visibility_off</span>
-        )}
+        {passwordShown ? <span className="material-symbols-outlined">visibility</span> : <span className="material-symbols-outlined">visibility_off</span>}
       </span>
     </div>
   );

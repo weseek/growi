@@ -14,10 +14,9 @@ import { ConfigLoader } from './config-loader';
 
 const logger = loggerFactory('growi:service:ConfigManager');
 
-export type IConfigManagerForApp = IConfigManager<ConfigKey, ConfigValues>
+export type IConfigManagerForApp = IConfigManager<ConfigKey, ConfigValues>;
 
 export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable {
-
   private configLoader: ConfigLoader;
 
   private s2sMessagingService?: S2sMessagingService;
@@ -48,11 +47,9 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
   async loadConfigs(options?: { source?: ConfigSource }): Promise<void> {
     if (options?.source === 'env') {
       this.envConfig = await this.configLoader.loadFromEnv();
-    }
-    else if (options?.source === 'db') {
+    } else if (options?.source === 'db') {
       this.dbConfig = await this.configLoader.loadFromDB();
-    }
-    else {
+    } else {
       this.envConfig = await this.configLoader.loadFromEnv();
       this.dbConfig = await this.configLoader.loadFromDB();
     }
@@ -78,11 +75,7 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
       throw new Error('Config is not loaded');
     }
 
-    return (
-      this.shouldUseEnvOnly(key)
-        ? this.envConfig[key]?.value
-        : this.dbConfig[key]?.value ?? this.envConfig[key]?.value
-    ) as ConfigValues[K];
+    return (this.shouldUseEnvOnly(key) ? this.envConfig[key]?.value : (this.dbConfig[key]?.value ?? this.envConfig[key]?.value)) as ConfigValues[K];
   }
 
   /**
@@ -111,11 +104,7 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     // Dynamic import to avoid loading database modules too early
     const { Config } = await import('../../models/config');
 
-    await Config.updateOne(
-      { key },
-      { value: JSON.stringify(value) },
-      { upsert: true },
-    );
+    await Config.updateOne({ key }, { value: JSON.stringify(value) }, { upsert: true });
 
     await this.loadConfigs({ source: 'db' });
 
@@ -148,7 +137,7 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     // Dynamic import to avoid loading database modules too early
     const { Config } = await import('../../models/config');
 
-    const operations = keys.map(key => ({
+    const operations = keys.map((key) => ({
       deleteOne: {
         filter: { key },
       },
@@ -205,8 +194,7 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     const s2sMessage = new S2sMessage('configUpdated', { updatedAt: new Date() });
     try {
       await this.s2sMessagingService?.publish(s2sMessage);
-    }
-    catch (e) {
+    } catch (e) {
       logger.error('Failed to publish update message with S2sMessagingService: ', e.message);
     }
   }
@@ -219,9 +207,11 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     if (eventName !== 'configUpdated') {
       return false;
     }
-    return this.lastLoadedAt == null // loaded for the first time
-      || !('updatedAt' in s2sMessage) // updatedAt is not included in the message
-      || (typeof s2sMessage.updatedAt === 'string' && this.lastLoadedAt < parseISO(s2sMessage.updatedAt));
+    return (
+      this.lastLoadedAt == null || // loaded for the first time
+      !('updatedAt' in s2sMessage) || // updatedAt is not included in the message
+      (typeof s2sMessage.updatedAt === 'string' && this.lastLoadedAt < parseISO(s2sMessage.updatedAt))
+    );
   }
 
   /**
@@ -231,7 +221,6 @@ export class ConfigManager implements IConfigManagerForApp, S2sMessageHandlable 
     logger.info('Reload configs by pubsub notification');
     return this.loadConfigs();
   }
-
 }
 
 // Export singleton instance

@@ -1,7 +1,6 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { body } from 'express-validator';
 
-
 import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction } from '~/interfaces/activity';
@@ -13,7 +12,6 @@ import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import EditorSettings from '../../models/editor-settings';
 import ExternalAccount from '../../models/external-account';
 import InAppNotificationSettings from '../../models/in-app-notification-settings';
-
 
 const logger = loggerFactory('growi:routes:apiv3:personal-setting');
 
@@ -85,47 +83,42 @@ module.exports = (crowi) => {
       body('email')
         .isEmail()
         .custom((email) => {
-          if (!User.isEmailValid(email)) { throw new Error('email is not included in whitelist'); }
+          if (!User.isEmailValid(email)) {
+            throw new Error('email is not included in whitelist');
+          }
           return true;
         }),
       body('lang').isString().isIn(i18n.locales),
       body('isEmailPublished').isBoolean(),
       body('slackMemberId').optional().isString(),
     ],
-    imageType: [
-      body('isGravatarEnabled').isBoolean(),
-    ],
+    imageType: [body('isGravatarEnabled').isBoolean()],
     password: [
       body('oldPassword').isString(),
-      body('newPassword').isString().not().isEmpty()
+      body('newPassword')
+        .isString()
+        .not()
+        .isEmpty()
         .isLength({ min: minPasswordLength })
         .withMessage(`password must be at least ${minPasswordLength} characters long`),
-      body('newPasswordConfirm').isString().not().isEmpty()
+      body('newPasswordConfirm')
+        .isString()
+        .not()
+        .isEmpty()
         .custom((value, { req }) => {
-          return (value === req.body.newPassword);
+          return value === req.body.newPassword;
         }),
     ],
-    associateLdap: [
-      body('username').isString().not().isEmpty(),
-      body('password').isString().not().isEmpty(),
-    ],
-    disassociateLdap: [
-      body('providerType').isString().not().isEmpty(),
-      body('accountId').isString().not().isEmpty(),
-    ],
+    associateLdap: [body('username').isString().not().isEmpty(), body('password').isString().not().isEmpty()],
+    disassociateLdap: [body('providerType').isString().not().isEmpty(), body('accountId').isString().not().isEmpty()],
     editorSettings: [
       body('theme').optional().isString(),
       body('keymapMode').optional().isString(),
       body('styleActiveLine').optional().isBoolean(),
       body('autoFormatMarkdownTable').optional().isBoolean(),
     ],
-    inAppNotificationSettings: [
-      body('defaultSubscribeRules.*.name').isString(),
-      body('defaultSubscribeRules.*.isEnabled').optional().isBoolean(),
-    ],
-    questionnaireSettings: [
-      body('isQuestionnaireEnabled').isBoolean(),
-    ],
+    inAppNotificationSettings: [body('defaultSubscribeRules.*.name').isString(), body('defaultSubscribeRules.*.isEnabled').optional().isBoolean()],
+    questionnaireSettings: [body('isQuestionnaireEnabled').isBoolean()],
   };
 
   /**
@@ -148,7 +141,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.get('/', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/', accessTokenParser, loginRequiredStrictly, async (req, res) => {
     const { username } = req.user;
     try {
       const user = await User.findUserByUsername(username);
@@ -160,8 +153,7 @@ module.exports = (crowi) => {
       currentUser.apiToken = apiToken;
 
       return res.apiv3({ currentUser });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('update-personal-settings-failed');
     }
@@ -190,7 +182,7 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: Minimum password length
    */
-  router.get('/is-password-set', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/is-password-set', accessTokenParser, loginRequiredStrictly, async (req, res) => {
     const { username } = req.user;
 
     try {
@@ -198,12 +190,10 @@ module.exports = (crowi) => {
       const isPasswordSet = user.isPasswordSet();
       const minPasswordLength = crowi.configManager.getConfig('app:minPasswordLength');
       return res.apiv3({ isPasswordSet, minPasswordLength });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('fail-to-get-whether-password-is-set');
     }
-
   });
 
   /**
@@ -232,8 +222,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: personal params
    */
-  router.put('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator, async(req, res) => {
-
+  router.put('/', accessTokenParser, loginRequiredStrictly, addActivity, validator.personal, apiV3FormValidator, async (req, res) => {
     try {
       const user = await User.findOne({ _id: req.user.id });
       user.name = req.body.name;
@@ -255,12 +244,10 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ updatedUser });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('update-personal-settings-failed');
     }
-
   });
 
   /**
@@ -292,7 +279,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/image-type', accessTokenParser, loginRequiredStrictly, addActivity, validator.imageType, apiV3FormValidator, async(req, res) => {
+  router.put('/image-type', accessTokenParser, loginRequiredStrictly, addActivity, validator.imageType, apiV3FormValidator, async (req, res) => {
     const { isGravatarEnabled } = req.body;
 
     try {
@@ -302,8 +289,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userData });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('update-personal-settings-failed');
     }
@@ -329,18 +315,16 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: array of external accounts
    */
-  router.get('/external-accounts', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/external-accounts', accessTokenParser, loginRequiredStrictly, async (req, res) => {
     const userData = req.user;
 
     try {
       const externalAccounts = await ExternalAccount.find({ user: userData });
       return res.apiv3({ externalAccounts });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('get-external-accounts-failed');
     }
-
   });
 
   /**
@@ -374,7 +358,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data updated
    */
-  router.put('/password', accessTokenParser, loginRequiredStrictly, addActivity, validator.password, apiV3FormValidator, async(req, res) => {
+  router.put('/password', accessTokenParser, loginRequiredStrictly, addActivity, validator.password, apiV3FormValidator, async (req, res) => {
     const { body, user } = req;
     const { oldPassword, newPassword } = body;
 
@@ -388,12 +372,10 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userData });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('update-password-failed');
     }
-
   });
 
   /**
@@ -418,7 +400,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: user data
    */
-  router.put('/api-token', loginRequiredStrictly, addActivity, async(req, res) => {
+  router.put('/api-token', loginRequiredStrictly, addActivity, async (req, res) => {
     const { user } = req;
 
     try {
@@ -428,12 +410,10 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userData });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('update-api-token-failed');
     }
-
   });
 
   /**
@@ -465,7 +445,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: Ldap account associate to me
    */
-  router.put('/associate-ldap', accessTokenParser, loginRequiredStrictly, addActivity, validator.associateLdap, apiV3FormValidator, async(req, res) => {
+  router.put('/associate-ldap', accessTokenParser, loginRequiredStrictly, addActivity, validator.associateLdap, apiV3FormValidator, async (req, res) => {
     const { passportService } = crowi;
     const { user, body } = req;
     const { username } = body;
@@ -483,12 +463,10 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ associateUser });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('associate-ldap-account-failed');
     }
-
   });
 
   /**
@@ -518,7 +496,7 @@ module.exports = (crowi) => {
    *                      description: Ldap account disassociate to me
    */
   // eslint-disable-next-line max-len
-  router.put('/disassociate-ldap', accessTokenParser, loginRequiredStrictly, addActivity, validator.disassociateLdap, apiV3FormValidator, async(req, res) => {
+  router.put('/disassociate-ldap', accessTokenParser, loginRequiredStrictly, addActivity, validator.disassociateLdap, apiV3FormValidator, async (req, res) => {
     const { user, body } = req;
     const { providerType, accountId } = body;
 
@@ -538,12 +516,10 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ disassociateUser });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('disassociate-ldap-account-failed');
     }
-
   });
 
   /**
@@ -578,16 +554,17 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: editor settings
    */
-  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, addActivity, validator.editorSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/editor-settings', accessTokenParser, loginRequiredStrictly, addActivity, validator.editorSettings, apiV3FormValidator, async (req, res) => {
     const query = { userId: req.user.id };
     const { body } = req;
 
-    const {
-      theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
-    } = body;
+    const { theme, keymapMode, styleActiveLine, autoFormatMarkdownTable } = body;
 
     const document = {
-      theme, keymapMode, styleActiveLine, autoFormatMarkdownTable,
+      theme,
+      keymapMode,
+      styleActiveLine,
+      autoFormatMarkdownTable,
     };
 
     // Insert if document does not exist, and return new values
@@ -600,13 +577,11 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3(response);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('updating-editor-settings-failed');
     }
   });
-
 
   /**
    * @swagger
@@ -626,13 +601,12 @@ module.exports = (crowi) => {
    *                  type: object
    *                  description: editor settings
    */
-  router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/editor-settings', accessTokenParser, loginRequiredStrictly, async (req, res) => {
     try {
       const query = { userId: req.user.id };
-      const editorSettings = await EditorSettings.findOne(query) ?? new EditorSettings();
+      const editorSettings = (await EditorSettings.findOne(query)) ?? new EditorSettings();
       return res.apiv3(editorSettings);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('getting-editor-settings-failed');
     }
@@ -671,28 +645,35 @@ module.exports = (crowi) => {
    *                 type: object
    */
   // eslint-disable-next-line max-len
-  router.put('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, addActivity, validator.inAppNotificationSettings, apiV3FormValidator, async(req, res) => {
-    const query = { userId: req.user.id };
-    const subscribeRules = req.body.subscribeRules;
+  router.put(
+    '/in-app-notification-settings',
+    accessTokenParser,
+    loginRequiredStrictly,
+    addActivity,
+    validator.inAppNotificationSettings,
+    apiV3FormValidator,
+    async (req, res) => {
+      const query = { userId: req.user.id };
+      const subscribeRules = req.body.subscribeRules;
 
-    if (subscribeRules == null) {
-      return res.apiv3Err('no-rules-found');
-    }
+      if (subscribeRules == null) {
+        return res.apiv3Err('no-rules-found');
+      }
 
-    const options = { upsert: true, new: true, runValidators: true };
-    try {
-      const response = await InAppNotificationSettings.findOneAndUpdate(query, { $set: { subscribeRules } }, options);
+      const options = { upsert: true, new: true, runValidators: true };
+      try {
+        const response = await InAppNotificationSettings.findOneAndUpdate(query, { $set: { subscribeRules } }, options);
 
-      const parameters = { action: SupportedAction.ACTION_USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE };
-      activityEvent.emit('update', res.locals.activity._id, parameters);
+        const parameters = { action: SupportedAction.ACTION_USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE };
+        activityEvent.emit('update', res.locals.activity._id, parameters);
 
-      return res.apiv3(response);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err('updating-in-app-notification-settings-failed');
-    }
-  });
+        return res.apiv3(response);
+      } catch (err) {
+        logger.error(err);
+        return res.apiv3Err('updating-in-app-notification-settings-failed');
+      }
+    },
+  );
 
   /**
    * @swagger
@@ -714,13 +695,12 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: InAppNotificationSettings
    */
-  router.get('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, async(req, res) => {
+  router.get('/in-app-notification-settings', accessTokenParser, loginRequiredStrictly, async (req, res) => {
     const query = { userId: req.user.id };
     try {
       const response = await InAppNotificationSettings.findOne(query);
       return res.apiv3(response);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err('getting-in-app-notification-settings-failed');
     }
@@ -755,20 +735,18 @@ module.exports = (crowi) => {
    *                     type: boolean
    */
   // eslint-disable-next-line max-len
-  router.put('/questionnaire-settings', accessTokenParser, loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async(req, res) => {
+  router.put('/questionnaire-settings', accessTokenParser, loginRequiredStrictly, validator.questionnaireSettings, apiV3FormValidator, async (req, res) => {
     const { isQuestionnaireEnabled } = req.body;
     const { user } = req;
     try {
       await user.updateIsQuestionnaireEnabled(isQuestionnaireEnabled);
 
       return res.apiv3({ message: 'Successfully updated questionnaire settings.', isQuestionnaireEnabled });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err({ error: 'Failed to update questionnaire settings.' });
     }
   });
-
 
   return router;
 };

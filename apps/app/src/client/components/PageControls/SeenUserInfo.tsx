@@ -7,15 +7,13 @@ import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
 import UserPictureList from '../Common/UserPictureList';
 
-
 import styles from './SeenUserInfo.module.scss';
 import popoverStyles from './user-list-popover.module.scss';
 
-
 interface Props {
-  seenUsers: IUser[],
-  sumOfSeenUsers?: number,
-  disabled?: boolean,
+  seenUsers: IUser[];
+  sumOfSeenUsers?: number;
+  disabled?: boolean;
 }
 
 const SeenUserInfo: FC<Props> = (props: Props) => {

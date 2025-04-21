@@ -1,31 +1,27 @@
-import React, {
-  useState, useMemo, useCallback,
-} from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-  Tooltip,
-} from 'reactstrap';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Tooltip } from 'reactstrap';
 
 import styles from './CopyDropdown.module.scss';
 
 const { encodeSpaces } = pagePathUtils;
 
 /* eslint-disable react/prop-types */
-const DropdownItemContents = ({
-  title, contents, className, style,
-}) => (
+const DropdownItemContents = ({ title, contents, className, style }) => (
   <>
-    <div className="h6 mt-1 mb-2"><strong>{title}</strong></div>
-    <div className={`card mb-1 p-2 ${className}`} style={style}>{contents}</div>
+    <div className="h6 mt-1 mb-2">
+      <strong>{title}</strong>
+    </div>
+    <div className={`card mb-1 p-2 ${className}`} style={style}>
+      {contents}
+    </div>
   </>
 );
 /* eslint-enable react/prop-types */
-
 
 export const CopyDropdown = (props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -40,9 +36,7 @@ export const CopyDropdown = (props) => {
       return '';
     }
 
-    const {
-      search, hash,
-    } = window.location;
+    const { search, hash } = window.location;
 
     return `${search}${hash}`;
   }, [isParamsAppended, dropdownOpen]);
@@ -80,7 +74,6 @@ export const CopyDropdown = (props) => {
     return `[${label}](${permalink})`;
   }, [props, getUriParams, permalink]);
 
-
   /**
    * control
    */
@@ -99,51 +92,34 @@ export const CopyDropdown = (props) => {
     }, 1000);
   }, []);
 
-
   /*
    * render
    */
   const { t } = useTranslation('commons');
-  const {
-    dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode,
-  } = props;
+  const { dropdownToggleId, pageId, dropdownToggleClassName, children, isShareLinkMode } = props;
 
   const customSwitchForParamsId = `customSwitchForParams_${dropdownToggleId}`;
 
   return (
     <>
-      <Dropdown
-        className={`${styles['grw-copy-dropdown']} grw-copy-dropdown d-print-none`}
-        isOpen={dropdownOpen}
-        size="sm"
-        toggle={toggleDropdown}
-      >
-        <DropdownToggle
-          caret={isShareLinkMode}
-          className={`btn-copy ${dropdownToggleClassName}`}
-        >
+      <Dropdown className={`${styles['grw-copy-dropdown']} grw-copy-dropdown d-print-none`} isOpen={dropdownOpen} size="sm" toggle={toggleDropdown}>
+        <DropdownToggle caret={isShareLinkMode} className={`btn-copy ${dropdownToggleClassName}`}>
           <span id={dropdownToggleId}>{children}</span>
         </DropdownToggle>
 
-        <DropdownMenu
-          strategy="fixed"
-        >
+        <DropdownMenu strategy="fixed">
           <div className="d-flex align-items-center justify-content-between">
             <DropdownItem header className="px-3">
-              { t('copy_to_clipboard.Copy to clipboard') }
+              {t('copy_to_clipboard.Copy to clipboard')}
             </DropdownItem>
-            { !isShareLinkMode && (
+            {!isShareLinkMode && (
               <div className="px-3 form-check form-switch form-switch-sm">
-                <input
-                  type="checkbox"
-                  id={customSwitchForParamsId}
-                  className="form-check-input"
-                  checked={isParamsAppended}
-                  onChange={toggleAppendParams}
-                />
-                <label className="form-label form-check-label small" htmlFor={customSwitchForParamsId}>{ t('copy_to_clipboard.Append params') }</label>
+                <input type="checkbox" id={customSwitchForParamsId} className="form-check-input" checked={isParamsAppended} onChange={toggleAppendParams} />
+                <label className="form-label form-check-label small" htmlFor={customSwitchForParamsId}>
+                  {t('copy_to_clipboard.Append params')}
+                </label>
               </div>
-            ) }
+            )}
           </div>
 
           <DropdownItem divider className="my-0"></DropdownItem>
@@ -151,11 +127,7 @@ export const CopyDropdown = (props) => {
           {/* Page path */}
           <CopyToClipboard text={pagePathWithParams} onCopy={showToolTip}>
             <DropdownItem className="px-3">
-              <DropdownItemContents
-                title={t('copy_to_clipboard.Page path')}
-                contents={pagePathWithParams}
-                className="text-truncate d-block"
-              />
+              <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} className="text-truncate d-block" />
             </DropdownItem>
           </CopyToClipboard>
 
@@ -164,24 +136,16 @@ export const CopyDropdown = (props) => {
           {/* Page path URL */}
           <CopyToClipboard text={pagePathUrl} onCopy={showToolTip}>
             <DropdownItem className="px-3">
-              <DropdownItemContents
-                title={t('copy_to_clipboard.Page URL')}
-                contents={pagePathUrl}
-                className="text-truncate d-block"
-              />
+              <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} className="text-truncate d-block" />
             </DropdownItem>
           </CopyToClipboard>
           <DropdownItem divider className="my-0"></DropdownItem>
 
           {/* Permanent Link */}
-          { pageId && (
+          {pageId && (
             <CopyToClipboard text={permalink} onCopy={showToolTip}>
               <DropdownItem className="px-3">
-                <DropdownItemContents
-                  title={t('copy_to_clipboard.Permanent link')}
-                  contents={permalink}
-                  className="text-truncate d-block"
-                />
+                <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={permalink} className="text-truncate d-block" />
               </DropdownItem>
             </CopyToClipboard>
           )}
@@ -189,12 +153,18 @@ export const CopyDropdown = (props) => {
           <DropdownItem divider className="my-0"></DropdownItem>
 
           {/* Page path + Permanent Link */}
-          { pageId && (
+          {pageId && (
             <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={showToolTip}>
               <DropdownItem className="px-3">
                 <DropdownItemContents
                   title={t('copy_to_clipboard.Page path and permanent link')}
-                  contents={<>{pagePathWithParams}<br />{permalink}</>}
+                  contents={
+                    <>
+                      {pagePathWithParams}
+                      <br />
+                      {permalink}
+                    </>
+                  }
                   className="text-truncate d-block"
                 />
               </DropdownItem>
@@ -204,7 +174,7 @@ export const CopyDropdown = (props) => {
           <DropdownItem divider className="my-0"></DropdownItem>
 
           {/* Markdown Link */}
-          { pageId && (
+          {pageId && (
             <CopyToClipboard text={markdownLink} onCopy={showToolTip}>
               <DropdownItem className="px-3 text-wrap">
                 <DropdownItemContents title={t('copy_to_clipboard.Markdown link')} contents={markdownLink} isContentsWrap />
@@ -212,7 +182,6 @@ export const CopyDropdown = (props) => {
             </CopyToClipboard>
           )}
         </DropdownMenu>
-
       </Dropdown>
 
       <Tooltip placement="bottom" isOpen={tooltipOpen} target={dropdownToggleId} fade={false}>

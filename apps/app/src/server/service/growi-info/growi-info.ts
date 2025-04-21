@@ -15,9 +15,7 @@ import { getGrowiVersion } from '~/utils/growi-version';
 
 import type { IGrowiAppAdditionalInfo } from '../../../features/questionnaire/interfaces/growi-app-info';
 
-
 export class GrowiInfoService {
-
   /**
    * get the site url
    *
@@ -47,7 +45,6 @@ export class GrowiInfoService {
   getGrowiInfo(includeAdditionalInfo: true): Promise<IGrowiInfo<IGrowiAppAdditionalInfo>>;
 
   async getGrowiInfo(includeAdditionalInfo?: boolean): Promise<IGrowiInfo<Record<string, never>> | IGrowiInfo<IGrowiAppAdditionalInfo>> {
-
     const appSiteUrl = this.getSiteUrl();
 
     const isGuestAllowedToRead = aclService.isGuestAllowedToRead();
@@ -105,7 +102,6 @@ export class GrowiInfoService {
       activeExternalAccountTypes,
     };
   }
-
 }
 
 export const growiInfoService = new GrowiInfoService();

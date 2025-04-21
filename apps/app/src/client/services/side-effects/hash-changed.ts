@@ -34,13 +34,12 @@ export const useHashChangedEffect = (): void => {
     return function cleanup() {
       window.removeEventListener('hashchange', hashchangeHandler);
     };
-
   }, [hashchangeHandler, isEditable]);
 
   /*
-  * Route changes by Next Router
-  * https://nextjs.org/docs/api-reference/next/router
-  */
+   * Route changes by Next Router
+   * https://nextjs.org/docs/api-reference/next/router
+   */
   useEffect(() => {
     router.events.on('routeChangeComplete', hashchangeHandler);
 

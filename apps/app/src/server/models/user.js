@@ -13,7 +13,6 @@ import { getModelSafely } from '../util/mongoose-utils';
 
 import { Attachment } from './attachment';
 
-
 const crypto = require('crypto');
 
 const mongoose = require('mongoose');
@@ -24,7 +23,6 @@ const logger = loggerFactory('growi:models:user');
 
 /** @param {import('~/server/crowi').default | null} crowi Crowi instance */
 const factory = (crowi) => {
-
   const userModelExists = getModelSafely('User');
   if (userModelExists != null) {
     return userModelExists;
@@ -63,48 +61,53 @@ const factory = (crowi) => {
     userEvent.on('activated', userEvent.onActivated);
   }
 
-
-  const userSchema = new mongoose.Schema({
-    userId: String,
-    image: String,
-    imageAttachment: { type: mongoose.Schema.Types.ObjectId, ref: 'Attachment' },
-    imageUrlCached: String,
-    isGravatarEnabled: { type: Boolean, default: false },
-    isEmailPublished: { type: Boolean, default: true },
-    googleId: String,
-    name: { type: String, index: true },
-    username: { type: String, required: true, unique: true },
-    email: { type: String, unique: true, sparse: true },
-    slackMemberId: { type: String, unique: true, sparse: true },
-    // === Crowi settings
-    // username: { type: String, index: true },
-    // email: { type: String, required: true, index: true },
-    // === crowi-plus (>= 2.1.0, <2.3.0) settings
-    // email: { type: String, required: true, unique: true },
-    introduction: String,
-    password: String,
-    apiToken: { type: String, index: true },
-    lang: {
-      type: String,
-      enum: i18n.locales,
-      default: 'en_US',
+  const userSchema = new mongoose.Schema(
+    {
+      userId: String,
+      image: String,
+      imageAttachment: { type: mongoose.Schema.Types.ObjectId, ref: 'Attachment' },
+      imageUrlCached: String,
+      isGravatarEnabled: { type: Boolean, default: false },
+      isEmailPublished: { type: Boolean, default: true },
+      googleId: String,
+      name: { type: String, index: true },
+      username: { type: String, required: true, unique: true },
+      email: { type: String, unique: true, sparse: true },
+      slackMemberId: { type: String, unique: true, sparse: true },
+      // === Crowi settings
+      // username: { type: String, index: true },
+      // email: { type: String, required: true, index: true },
+      // === crowi-plus (>= 2.1.0, <2.3.0) settings
+      // email: { type: String, required: true, unique: true },
+      introduction: String,
+      password: String,
+      apiToken: { type: String, index: true },
+      lang: {
+        type: String,
+        enum: i18n.locales,
+        default: 'en_US',
+      },
+      status: {
+        type: Number,
+        required: true,
+        default: STATUS_ACTIVE,
+        index: true,
+      },
+      lastLoginAt: { type: Date, index: true },
+      admin: { type: Boolean, default: 0, index: true },
+      readOnly: { type: Boolean, default: 0 },
+      isInvitationEmailSended: { type: Boolean, default: false },
+      isQuestionnaireEnabled: { type: Boolean, default: true },
     },
-    status: {
-      type: Number, required: true, default: STATUS_ACTIVE, index: true,
-    },
-    lastLoginAt: { type: Date, index: true },
-    admin: { type: Boolean, default: 0, index: true },
-    readOnly: { type: Boolean, default: 0 },
-    isInvitationEmailSended: { type: Boolean, default: false },
-    isQuestionnaireEnabled: { type: Boolean, default: true },
-  }, {
-    timestamps: true,
-    toObject: {
-      transform: (doc, ret, opt) => {
-        return omitInsecureAttributes(ret);
+    {
+      timestamps: true,
+      toObject: {
+        transform: (doc, ret, opt) => {
+          return omitInsecureAttributes(ret);
+        },
       },
     },
-  });
+  );
   userSchema.plugin(mongoosePaginate);
   userSchema.plugin(uniqueValidator);
 
@@ -164,20 +167,18 @@ const factory = (crowi) => {
 
   function generateApiToken(user) {
     const hasher = crypto.createHash('sha256');
-    hasher.update((new Date()).getTime() + user._id);
+    hasher.update(new Date().getTime() + user._id);
 
     return hasher.digest('base64');
   }
 
-  userSchema.methods.isUniqueEmail = async function() {
+  userSchema.methods.isUniqueEmail = async function () {
     const query = this.model('User').find();
 
-    const count = await query.count((
-      {
-        username: { $ne: this.username },
-        email: this.email,
-      }
-    ));
+    const count = await query.count({
+      username: { $ne: this.username },
+      email: this.email,
+    });
 
     if (count > 0) {
       return false;
@@ -185,65 +186,64 @@ const factory = (crowi) => {
     return true;
   };
 
-  userSchema.methods.isPasswordSet = function() {
+  userSchema.methods.isPasswordSet = function () {
     if (this.password) {
       return true;
     }
     return false;
   };
 
-  userSchema.methods.isPasswordValid = function(password) {
+  userSchema.methods.isPasswordValid = function (password) {
     return this.password === generatePassword(password);
   };
 
-  userSchema.methods.setPassword = function(password) {
+  userSchema.methods.setPassword = function (password) {
     this.password = generatePassword(password);
     return this;
   };
 
-  userSchema.methods.isEmailSet = function() {
+  userSchema.methods.isEmailSet = function () {
     if (this.email) {
       return true;
     }
     return false;
   };
 
-  userSchema.methods.updateLastLoginAt = function(lastLoginAt, callback) {
+  userSchema.methods.updateLastLoginAt = function (lastLoginAt, callback) {
     this.lastLoginAt = lastLoginAt;
     this.save((err, userData) => {
       return callback(err, userData);
     });
   };
 
-  userSchema.methods.updateIsGravatarEnabled = async function(isGravatarEnabled) {
+  userSchema.methods.updateIsGravatarEnabled = async function (isGravatarEnabled) {
     this.isGravatarEnabled = isGravatarEnabled;
     await this.updateImageUrlCached();
     const userData = await this.save();
     return userData;
   };
 
-  userSchema.methods.updatePassword = async function(password) {
+  userSchema.methods.updatePassword = async function (password) {
     this.setPassword(password);
     const userData = await this.save();
     return userData;
   };
 
-  userSchema.methods.updateApiToken = async function() {
-
+  userSchema.methods.updateApiToken = async function () {
     this.apiToken = generateApiToken(this);
     const userData = await this.save();
     return userData;
   };
 
   // TODO: create UserService and transplant this method because image uploading depends on AttachmentService
-  userSchema.methods.updateImage = async function(attachment) {
+  userSchema.methods.updateImage = async function (attachment) {
     this.imageAttachment = attachment;
     await this.updateImageUrlCached();
     return this.save();
   };
 
   // TODO: create UserService and transplant this method because image deletion depends on AttachmentService
-  userSchema.methods.deleteImage = async function() {
+  userSchema.methods.deleteImage = async function () {
     validateCrowi();
 
     // the 'image' field became DEPRECATED in v3.3.8
@@ -259,11 +259,11 @@ const factory = (crowi) => {
     return this.save();
   };
 
-  userSchema.methods.updateImageUrlCached = async function() {
+  userSchema.methods.updateImageUrlCached = async function () {
     this.imageUrlCached = await this.generateImageUrlCached();
   };
 
-  userSchema.methods.generateImageUrlCached = async function() {
+  userSchema.methods.generateImageUrlCached = async function () {
     if (this.isGravatarEnabled) {
       return generateGravatarSrc(this.email);
     }
@@ -277,18 +277,18 @@ const factory = (crowi) => {
     return '/images/icons/user.svg';
   };
 
-  userSchema.methods.updateGoogleId = function(googleId, callback) {
+  userSchema.methods.updateGoogleId = function (googleId, callback) {
     this.googleId = googleId;
     this.save((err, userData) => {
       return callback(err, userData);
     });
   };
 
-  userSchema.methods.deleteGoogleId = function(callback) {
+  userSchema.methods.deleteGoogleId = function (callback) {
     return this.updateGoogleId(null, callback);
   };
 
-  userSchema.methods.activateInvitedUser = async function(username, name, password) {
+  userSchema.methods.activateInvitedUser = async function (username, name, password) {
     this.setPassword(password);
     this.name = name;
     this.username = username;
@@ -304,58 +304,61 @@ const factory = (crowi) => {
     });
   };
 
-  userSchema.methods.grantAdmin = async function() {
+  userSchema.methods.grantAdmin = async function () {
     logger.debug('Grant Admin', this);
     this.admin = 1;
     return this.save();
   };
 
-  userSchema.methods.revokeAdmin = async function() {
+  userSchema.methods.revokeAdmin = async function () {
     logger.debug('Revove admin', this);
     this.admin = 0;
     return this.save();
   };
 
-  userSchema.methods.grantReadOnly = async function() {
+  userSchema.methods.grantReadOnly = async function () {
     logger.debug('Grant read only access', this);
     this.readOnly = 1;
     return this.save();
   };
 
-  userSchema.methods.revokeReadOnly = async function() {
+  userSchema.methods.revokeReadOnly = async function () {
     logger.debug('Revoke read only access', this);
     this.readOnly = 0;
     return this.save();
   };
 
-  userSchema.methods.asyncGrantAdmin = async function(callback) {
+  userSchema.methods.asyncGrantAdmin = async function (callback) {
     this.admin = 1;
     return this.save();
   };
 
-  userSchema.methods.statusActivate = async function() {
+  userSchema.methods.statusActivate = async function () {
     logger.debug('Activate User', this);
     this.status = STATUS_ACTIVE;
     const userData = await this.save();
     return userEvent.emit('activated', userData);
   };
 
-  userSchema.methods.statusSuspend = async function() {
+  userSchema.methods.statusSuspend = async function () {
     logger.debug('Suspend User', this);
     this.status = STATUS_SUSPENDED;
-    if (this.email === undefined || this.email === null) { // migrate old data
+    if (this.email === undefined || this.email === null) {
+      // migrate old data
       this.email = '-';
     }
-    if (this.name === undefined || this.name === null) { // migrate old data
+    if (this.name === undefined || this.name === null) {
+      // migrate old data
       this.name = `-${Date.now()}`;
     }
-    if (this.username === undefined || this.usename === null) { // migrate old data
+    if (this.username === undefined || this.usename === null) {
+      // migrate old data
       this.username = '-';
     }
     return this.save();
   };
 
-  userSchema.methods.statusDelete = async function() {
+  userSchema.methods.statusDelete = async function () {
     logger.debug('Delete User', this);
 
     const now = new Date();
@@ -398,7 +401,7 @@ const factory = (crowi) => {
     return true;
   };
 
-  userSchema.statics.findUsers = function(options, callback) {
+  userSchema.statics.findUsers = function (options, callback) {
     const sort = options.sort || { status: 1, createdAt: 1 };
 
     this.find()
@@ -410,7 +413,7 @@ const factory = (crowi) => {
       });
   };
 
-  userSchema.statics.findAllUsers = function(option) {
+  userSchema.statics.findAllUsers = function (option) {
     // biome-ignore lint/style/noParameterAssign: ignore
     option = option || {};
 
@@ -423,12 +426,16 @@ const factory = (crowi) => {
     }
 
     return this.find()
-      .or(status.map((s) => { return { status: s } }))
+      .or(
+        status.map((s) => {
+          return { status: s };
+        }),
+      )
       .select(fields)
       .sort(sort);
   };
 
-  userSchema.statics.findUsersByIds = function(ids, option) {
+  userSchema.statics.findUsersByIds = function (ids, option) {
     // biome-ignore lint/style/noParameterAssign: ignore
     option = option || {};
 
@@ -441,7 +448,7 @@ const factory = (crowi) => {
       .sort(sort);
   };
 
-  userSchema.statics.findAdmins = async function(option) {
+  userSchema.statics.findAdmins = async function (option) {
     const sort = option?.sort ?? { createdAt: -1 };
 
     let status = option?.status ?? [STATUS_ACTIVE];
@@ -449,25 +456,24 @@ const factory = (crowi) => {
       status = [status];
     }
 
-    return this.find({ admin: true, status: { $in: status } })
-      .sort(sort);
+    return this.find({ admin: true, status: { $in: status } }).sort(sort);
   };
 
-  userSchema.statics.findUserByUsername = function(username) {
+  userSchema.statics.findUserByUsername = function (username) {
     if (username == null) {
       return Promise.resolve(null);
     }
     return this.findOne({ username });
   };
 
-  userSchema.statics.findUserByApiToken = function(apiToken) {
+  userSchema.statics.findUserByApiToken = function (apiToken) {
     if (apiToken == null) {
       return Promise.resolve(null);
     }
     return this.findOne({ apiToken }).lean();
   };
 
-  userSchema.statics.findUserByGoogleId = function(googleId, callback) {
+  userSchema.statics.findUserByGoogleId = function (googleId, callback) {
     if (googleId == null) {
       callback(null, null);
     }
@@ -476,25 +482,22 @@ const factory = (crowi) => {
     });
   };
 
-  userSchema.statics.findUserByUsernameOrEmail = function(usernameOrEmail, password, callback) {
+  userSchema.statics.findUserByUsernameOrEmail = function (usernameOrEmail, password, callback) {
     this.findOne()
-      .or([
-        { username: usernameOrEmail },
-        { email: usernameOrEmail },
-      ])
+      .or([{ username: usernameOrEmail }, { email: usernameOrEmail }])
       .exec((err, userData) => {
         callback(err, userData);
       });
   };
 
-  userSchema.statics.findUserByEmailAndPassword = function(email, password, callback) {
+  userSchema.statics.findUserByEmailAndPassword = function (email, password, callback) {
     const hashedPassword = generatePassword(password);
     this.findOne({ email, password: hashedPassword }, (err, userData) => {
       callback(err, userData);
     });
   };
 
-  userSchema.statics.isUserCountExceedsUpperLimit = async function() {
+  userSchema.statics.isUserCountExceedsUpperLimit = async function () {
     const userUpperLimit = configManager.getConfig('security:userUpperLimit');
 
     const activeUsers = await this.countActiveUsers();
@@ -505,18 +508,18 @@ const factory = (crowi) => {
     return false;
   };
 
-  userSchema.statics.countActiveUsers = async function() {
+  userSchema.statics.countActiveUsers = async function () {
     return this.countListByStatus(STATUS_ACTIVE);
   };
 
-  userSchema.statics.countListByStatus = async function(status) {
+  userSchema.statics.countListByStatus = async function (status) {
     const conditions = { status };
 
     // TODO count は非推奨。mongoose のバージョンアップ後に countDocuments に変更する。
     return this.count(conditions);
   };
 
-  userSchema.statics.isRegisterableUsername = async function(username) {
+  userSchema.statics.isRegisterableUsername = async function (username) {
     let usernameUsable = true;
 
     const userData = await this.findOne({ username });
@@ -526,7 +529,7 @@ const factory = (crowi) => {
     return usernameUsable;
   };
 
-  userSchema.statics.isRegisterableEmail = async function(email) {
+  userSchema.statics.isRegisterableEmail = async function (email) {
     let isEmailUsable = true;
 
     const userData = await this.findOne({ email });
@@ -536,7 +539,7 @@ const factory = (crowi) => {
     return isEmailUsable;
   };
 
-  userSchema.statics.isRegisterable = function(email, username, callback) {
+  userSchema.statics.isRegisterable = function (email, username, callback) {
     let emailUsable = true;
     let usernameUsable = true;
 
@@ -561,7 +564,7 @@ const factory = (crowi) => {
     });
   };
 
-  userSchema.statics.resetPasswordByRandomString = async function(id) {
+  userSchema.statics.resetPasswordByRandomString = async function (id) {
     const user = await this.findById(id);
 
     if (!user) {
@@ -575,7 +578,7 @@ const factory = (crowi) => {
     return newPassword;
   };
 
-  userSchema.statics.createUserByEmail = async function(email) {
+  userSchema.statics.createUserByEmail = async function (email) {
     const newUser = new this();
 
     /* eslint-disable newline-per-chained-call */
@@ -600,20 +603,22 @@ const factory = (crowi) => {
         password,
         user: newUserData,
       };
-    }
-    catch (err) {
+    } catch (err) {
       return {
         email,
       };
     }
   };
 
-  userSchema.statics.createUsersByEmailList = async function(emailList) {
-
+  userSchema.statics.createUsersByEmailList = async function (emailList) {
     // check exists and get list of try to create
     const existingUserList = await this.find({ email: { $in: emailList }, userStatus: { $ne: STATUS_DELETED } });
-    const existingEmailList = existingUserList.map((user) => { return user.email });
-    const creationEmailList = emailList.filter((email) => { return existingEmailList.indexOf(email) === -1 });
+    const existingEmailList = existingUserList.map((user) => {
+      return user.email;
+    });
+    const creationEmailList = emailList.filter((email) => {
+      return existingEmailList.indexOf(email) === -1;
+    });
 
     const createdUserList = [];
     const failedToCreateUserEmailList = [];
@@ -623,8 +628,7 @@ const factory = (crowi) => {
         // eslint-disable-next-line no-await-in-loop
         const createdUser = await this.createUserByEmail(email);
         createdUserList.push(createdUser);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         failedToCreateUserEmailList.push({
           email,
@@ -636,7 +640,7 @@ const factory = (crowi) => {
     return { createdUserList, existingEmailList, failedToCreateUserEmailList };
   };
 
-  userSchema.statics.createUserByEmailAndPasswordAndStatus = async function(name, username, email, password, lang, status, callback) {
+  userSchema.statics.createUserByEmailAndPasswordAndStatus = async function (name, username, email, password, lang, status, callback) {
     const newUser = new this();
 
     // check user upper limit
@@ -690,7 +694,7 @@ const factory = (crowi) => {
    * A wrapper function of createUserByEmailAndPasswordAndStatus with callback
    *
    */
-  userSchema.statics.createUserByEmailAndPassword = function(name, username, email, password, lang, callback) {
+  userSchema.statics.createUserByEmailAndPassword = function (name, username, email, password, lang, callback) {
     this.createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, undefined, callback);
   };
 
@@ -699,8 +703,7 @@ const factory = (crowi) => {
    *
    * @return {Promise<User>}
    */
-  userSchema.statics.createUser = function(name, username, email, password, lang, status) {
-
+  userSchema.statics.createUser = function (name, username, email, password, lang, status) {
     return new Promise((resolve, reject) => {
       this.createUserByEmailAndPasswordAndStatus(name, username, email, password, lang, status, (err, userData) => {
         if (err) {
@@ -711,7 +714,7 @@ const factory = (crowi) => {
     });
   };
 
-  userSchema.statics.isExistUserByUserPagePath = async function(path) {
+  userSchema.statics.isExistUserByUserPagePath = async function (path) {
     const username = pagePathUtils.getUsernameByPath(path);
 
     if (username == null) {
@@ -722,7 +725,7 @@ const factory = (crowi) => {
     return user != null;
   };
 
-  userSchema.statics.updateIsInvitationEmailSended = async function(id) {
+  userSchema.statics.updateIsInvitationEmailSended = async function (id) {
     const user = await this.findById(id);
 
     if (user == null) {
@@ -737,7 +740,7 @@ const factory = (crowi) => {
     user.save();
   };
 
-  userSchema.statics.findUserBySlackMemberId = async function(slackMemberId) {
+  userSchema.statics.findUserBySlackMemberId = async function (slackMemberId) {
     const user = this.findOne({ slackMemberId });
     if (user == null) {
       throw new Error('User not found');
@@ -745,7 +748,7 @@ const factory = (crowi) => {
     return user;
   };
 
-  userSchema.statics.findUsersBySlackMemberIds = async function(slackMemberIds) {
+  userSchema.statics.findUsersBySlackMemberIds = async function (slackMemberIds) {
     const users = this.find({ slackMemberId: { $in: slackMemberIds } });
     if (users.length === 0) {
       throw new Error('No user found');
@@ -753,7 +756,7 @@ const factory = (crowi) => {
     return users;
   };
 
-  userSchema.statics.findUserByUsernameRegexWithTotalCount = async function(username, status, option) {
+  userSchema.statics.findUserByUsernameRegexWithTotalCount = async function (username, status, option) {
     const opt = option || {};
     const sortOpt = opt.sortOpt || { username: 1 };
     const offset = opt.offset || 0;
@@ -761,27 +764,22 @@ const factory = (crowi) => {
 
     const conditions = { username: { $regex: username, $options: 'i' }, status: { $in: status } };
 
-    const users = await this.find(conditions)
-      .sort(sortOpt)
-      .skip(offset)
-      .limit(limit);
+    const users = await this.find(conditions).sort(sortOpt).skip(offset).limit(limit);
 
     const totalCount = (await this.find(conditions).distinct('username')).length;
 
     return { users, totalCount };
   };
 
-  userSchema.methods.updateIsQuestionnaireEnabled = async function(value) {
+  userSchema.methods.updateIsQuestionnaireEnabled = async function (value) {
     this.isQuestionnaireEnabled = value;
     return this.save();
   };
 
   class UserUpperLimitException {
-
     constructor() {
       this.name = this.constructor.name;
     }
-
   }
 
   userSchema.statics.STATUS_REGISTERED = STATUS_REGISTERED;

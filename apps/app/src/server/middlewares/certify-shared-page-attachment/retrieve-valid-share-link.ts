@@ -4,11 +4,9 @@ import loggerFactory from '~/utils/logger';
 
 import type { ValidReferer } from './interfaces';
 
-
 const logger = loggerFactory('growi:middleware:certify-shared-page-attachment:retrieve-valid-share-link');
 
-
-export const retrieveValidShareLinkByReferer = async(referer: ValidReferer): Promise<ShareLinkDocument | null> => {
+export const retrieveValidShareLinkByReferer = async (referer: ValidReferer): Promise<ShareLinkDocument | null> => {
   const ShareLink = getModelSafely<ShareLinkDocument, ShareLinkModel>('ShareLink');
   if (ShareLink == null) {
     logger.warn('Could not get ShareLink model. next() will be called without processing anything.');

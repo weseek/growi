@@ -54,7 +54,7 @@ module.exports = (crowi) => {
    *                          items:
    *                            type: object
    */
-  router.get('/', loginRequiredStrictly, adminRequired, validator.list, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, validator.list, async (req, res) => {
     const { query } = req;
 
     try {
@@ -63,14 +63,13 @@ module.exports = (crowi) => {
       let relationsOfChildGroups = null;
       if (Array.isArray(query.childGroupIds)) {
         const _relationsOfChildGroups = await UserGroupRelation.find({ relatedGroup: { $in: query.childGroupIds } }).populate('relatedUser');
-        relationsOfChildGroups = _relationsOfChildGroups.map(relation => serializeUserGroupRelationSecurely(relation)); // serialize
+        relationsOfChildGroups = _relationsOfChildGroups.map((relation) => serializeUserGroupRelationSecurely(relation)); // serialize
       }
 
-      const serialized = relations.map(relation => serializeUserGroupRelationSecurely(relation));
+      const serialized = relations.map((relation) => serializeUserGroupRelationSecurely(relation));
 
       return res.apiv3({ userGroupRelations: serialized, relationsOfChildGroups });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in fetching user group relations';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-relation-list-fetch-failed'));

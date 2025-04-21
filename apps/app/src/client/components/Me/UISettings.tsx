@@ -10,24 +10,29 @@ import { useCollapsedContentsOpened, usePreferCollapsedMode, useSidebarMode } fr
 import styles from './UISettings.module.scss';
 
 const IconWithTooltip = ({
-  id, label, children, additionalClasses,
+  id,
+  label,
+  children,
+  additionalClasses,
 }: {
-id: string,
-label: string,
-children: JSX.Element,
-additionalClasses: string
+  id: string;
+  label: string;
+  children: JSX.Element;
+  additionalClasses: string;
 }) => (
   <>
-    <div id={id} className={`${additionalClasses != null ? additionalClasses : ''}`}>{children}</div>
-    <UncontrolledTooltip placement="bottom" fade={false} target={id}>{label}</UncontrolledTooltip>
+    <div id={id} className={`${additionalClasses != null ? additionalClasses : ''}`}>
+      {children}
+    </div>
+    <UncontrolledTooltip placement="bottom" fade={false} target={id}>
+      {label}
+    </UncontrolledTooltip>
   </>
 );
 
 export const UISettings = (): JSX.Element => {
   const { t } = useTranslation();
-  const {
-    isDockMode, isCollapsedMode,
-  } = useSidebarMode();
+  const { isDockMode, isCollapsedMode } = useSidebarMode();
   const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
@@ -36,15 +41,13 @@ export const UISettings = (): JSX.Element => {
     mutateCollapsedContentsOpened(false);
   }, [mutatePreferCollapsedMode, isCollapsedMode, mutateCollapsedContentsOpened]);
 
-  const updateButtonHandler = useCallback(async() => {
+  const updateButtonHandler = useCallback(async () => {
     try {
       await updateUserUISettings({ preferCollapsedModeByUser: isCollapsedMode() });
       toastSuccess(t('toaster.update_successed', { target: t('ui_settings.side_bar_mode.settings'), ns: 'commons' }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
-
   }, [isCollapsedMode, t]);
 
   const renderSidebarModeSwitch = () => {
@@ -52,22 +55,11 @@ export const UISettings = (): JSX.Element => {
       <>
         <div className="d-flex align-items-start">
           <div className="d-flex align-items-center">
-            <IconWithTooltip
-              id="iwt-sidebar-collapsed"
-              label="Collapsed"
-              additionalClasses={styles['grw-sidebar-mode-icon']}
-            >
+            <IconWithTooltip id="iwt-sidebar-collapsed" label="Collapsed" additionalClasses={styles['grw-sidebar-mode-icon']}>
               <span className="growi-custom-icons fs-6">sidebar-collapsed</span>
             </IconWithTooltip>
             <div className="form-check form-switch ms-1">
-
-              <input
-                id="swSidebarMode"
-                className="form-check-input"
-                type="checkbox"
-                checked={isDockMode()}
-                onChange={toggleCollapsed}
-              />
+              <input id="swSidebarMode" className="form-check-input" type="checkbox" checked={isDockMode()} onChange={toggleCollapsed} />
               <label className="form-label form-check-label" htmlFor="swSidebarMode"></label>
             </div>
             <IconWithTooltip id="iwt-sidebar-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
@@ -91,11 +83,9 @@ export const UISettings = (): JSX.Element => {
 
       <div className="row justify-content-center">
         <div className="col-md-6">
+          {renderSidebarModeSwitch()}
 
-          { renderSidebarModeSwitch() }
-
-          <div>
-          </div>
+          <div></div>
         </div>
       </div>
 

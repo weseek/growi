@@ -10,9 +10,7 @@ const mocks = vi.hoisted(() => {
 
 vi.mock('./retrieve-site-url', () => ({ retrieveSiteUrl: mocks.retrieveSiteUrlMock }));
 
-
 describe('validateReferer', () => {
-
   const isValidObjectIdSpy = vi.spyOn(objectIdUtils, 'isValidObjectId');
 
   beforeEach(() => {
@@ -20,7 +18,6 @@ describe('validateReferer', () => {
   });
 
   describe('refurns false', () => {
-
     it('when the referer argument is undefined', () => {
       // setup
 
@@ -106,7 +103,6 @@ describe('validateReferer', () => {
       expect(mocks.retrieveSiteUrlMock).toHaveBeenCalledOnce();
       expect(isValidObjectIdSpy).toHaveBeenCalledOnce();
     });
-
   });
 
   it('returns ValidReferer instance', () => {
@@ -114,7 +110,6 @@ describe('validateReferer', () => {
     mocks.retrieveSiteUrlMock.mockImplementation(() => {
       return new URL('https://example.com');
     });
-
 
     // when
     const shareLinkId = '65436ba09ae6983bd608b89c';
@@ -127,5 +122,4 @@ describe('validateReferer', () => {
       shareLinkId,
     });
   });
-
 });

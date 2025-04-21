@@ -19,7 +19,10 @@ interface VectorStoreFileRelationModel extends Model<VectorStoreFileRelation> {
 }
 
 export const prepareVectorStoreFileRelations = (
-    vectorStoreRelationId: Types.ObjectId, page: Types.ObjectId, fileId: string, relationsMap: Map<string, VectorStoreFileRelation>,
+  vectorStoreRelationId: Types.ObjectId,
+  page: Types.ObjectId,
+  fileId: string,
+  relationsMap: Map<string, VectorStoreFileRelation>,
 ): Map<string, VectorStoreFileRelation> => {
   const pageIdStr = page.toHexString();
   const existingData = relationsMap.get(pageIdStr);
@@ -52,10 +55,12 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
     ref: 'Page',
     required: true,
   },
-  fileIds: [{
-    type: String,
-    required: true,
-  }],
+  fileIds: [
+    {
+      type: String,
+      required: true,
+    },
+  ],
   isAttachedToVectorStore: {
     type: Boolean,
     default: false, // File is not attached to the Vector Store at the time it is uploaded
@@ -66,7 +71,7 @@ const schema = new Schema<VectorStoreFileRelationDocument, VectorStoreFileRelati
 // define unique compound index
 schema.index({ vectorStoreRelationId: 1, page: 1 }, { unique: true });
 
-schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
+schema.statics.upsertVectorStoreFileRelations = async function (vectorStoreFileRelations: VectorStoreFileRelation[]): Promise<void> {
   await this.bulkWrite(
     vectorStoreFileRelations.map((data) => {
       return {
@@ -83,11 +88,8 @@ schema.statics.upsertVectorStoreFileRelations = async function(vectorStoreFileRe
 };
 
 // Used when attached to VectorStore
-schema.statics.markAsAttachedToVectorStore = async function(pageIds: Types.ObjectId[]): Promise<void> {
-  await this.updateMany(
-    { page: { $in: pageIds } },
-    { $set: { isAttachedToVectorStore: true } },
-  );
+schema.statics.markAsAttachedToVectorStore = async function (pageIds: Types.ObjectId[]): Promise<void> {
+  await this.updateMany({ page: { $in: pageIds } }, { $set: { isAttachedToVectorStore: true } });
 };
 
 export default getOrCreateModel<VectorStoreFileRelationDocument, VectorStoreFileRelationModel>('VectorStoreFileRelation', schema);

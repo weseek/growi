@@ -1,15 +1,11 @@
-import {
-  useEffect, useMemo, useRef, useState, type JSX,
-} from 'react';
+import { useEffect, useMemo, useRef, useState, type JSX } from 'react';
 
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import Sticky from 'react-stickynode';
 
 import LinkedPagePath from '~/models/linked-page-path';
-import {
-  usePageControlsX, useCurrentProductNavWidth, useSidebarMode,
-} from '~/stores/ui';
+import { usePageControlsX, useCurrentProductNavWidth, useSidebarMode } from '~/stores/ui';
 
 import { PagePathHierarchicalLink } from '../../../components/Common/PagePathHierarchicalLink';
 import type { PagePathNavLayoutProps } from '../../../components/Common/PagePathNav';
@@ -22,7 +18,6 @@ import styles from './PagePathNavSticky.module.scss';
 const moduleClass = styles['grw-page-path-nav-sticky'];
 
 const { isTrashPage } = pagePathUtils;
-
 
 export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element => {
   const { pagePath } = props;
@@ -91,15 +86,15 @@ export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element =>
             //      which width is minimized by 'd-inline-block'
             //
             <div className="d-inline-block pe-auto">
-              { !isCollapseParents && <PagePathNav {...props} /> }
-              { isCollapseParents && (
+              {!isCollapseParents && <PagePathNav {...props} />}
+              {isCollapseParents && (
                 <PagePathNavLayout
                   {...props}
                   latterLink={latterLink}
                   latterLinkClassName="fs-3 text-truncate"
                   maxWidth={isCollapseParents ? navMaxWidth : undefined}
                 />
-              ) }
+              )}
             </div>
           );
         }}

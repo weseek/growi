@@ -31,7 +31,6 @@ module.exports = {
     await Page.bulkWrite(operations);
 
     logger.info('Migration has successfully applied');
-
   },
 
   down(db) {

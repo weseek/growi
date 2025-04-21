@@ -2,12 +2,7 @@ import type { Readable } from 'stream';
 
 import type { TokenCredential } from '@azure/identity';
 import { ClientSecretCredential } from '@azure/identity';
-import type {
-  BlobClient,
-  BlockBlobClient,
-  BlobDeleteOptions,
-  ContainerClient,
-} from '@azure/storage-blob';
+import type { BlobClient, BlockBlobClient, BlobDeleteOptions, ContainerClient } from '@azure/storage-blob';
 import {
   generateBlobSASQueryParameters,
   BlobServiceClient,
@@ -25,9 +20,7 @@ import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
-import {
-  AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
-} from './file-uploader';
+import { AbstractFileUploader, type TemporaryUrl, type SaveFileParam } from './file-uploader';
 import { ContentHeaders } from './utils';
 
 const urljoin = require('url-join');
@@ -40,10 +33,9 @@ interface FileMeta {
 }
 
 type AzureConfig = {
-  accountName: string,
-  containerName: string,
-}
-
+  accountName: string;
+  containerName: string;
+};
 
 function getAzureConfig(): AzureConfig {
   const accountName = configManager.getConfig('azure:storageAccountName');
@@ -78,12 +70,11 @@ async function getContainerClient(): Promise<ContainerClient> {
 }
 
 function getFilePathOnStorage(attachment: IAttachmentDocument) {
-  const dirName = (attachment.page != null) ? FilePathOnStoragePrefix.attachment : FilePathOnStoragePrefix.user;
+  const dirName = attachment.page != null ? FilePathOnStoragePrefix.attachment : FilePathOnStoragePrefix.user;
   return urljoin(dirName, attachment.fileName);
 }
 
 class AzureFileUploader extends AbstractFileUploader {
-
   /**
    * @inheritdoc
    */
@@ -91,8 +82,7 @@ class AzureFileUploader extends AbstractFileUploader {
     try {
       getAzureConfig();
       return true;
-    }
-    catch (e) {
+    } catch (e) {
       logger.error(e);
       return false;
     }
@@ -146,9 +136,7 @@ class AzureFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override determineResponseMode() {
-    return configManager.getConfig('azure:referenceFileWithRelayMode')
-      ? ResponseMode.RELAY
-      : ResponseMode.REDIRECT;
+    return configManager.getConfig('azure:referenceFileWithRelayMode') ? ResponseMode.RELAY : ResponseMode.REDIRECT;
   }
 
   /**
@@ -192,14 +180,14 @@ class AzureFileUploader extends AbstractFileUploader {
 
     const lifetimeSecForTemporaryUrl = configManager.getConfig('azure:lifetimeSecForTemporaryUrl');
 
-    const url = await (async() => {
+    const url = await (async () => {
       const containerClient = await getContainerClient();
       const filePath = getFilePathOnStorage(attachment);
       const blockBlobClient = await containerClient.getBlockBlobClient(filePath);
       return blockBlobClient.url;
     })();
 
-    const sasToken = await (async() => {
+    const sasToken = await (async () => {
       const { accountName, containerName } = getAzureConfig();
       const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, getCredential());
 
@@ -233,18 +221,16 @@ class AzureFileUploader extends AbstractFileUploader {
       url: signedUrl,
       lifetimeSec: lifetimeSecForTemporaryUrl,
     };
-
   }
-
 }
 
 module.exports = (crowi: Crowi) => {
   const lib = new AzureFileUploader(crowi);
 
-  lib.isValidUploadSettings = () => configManager.getConfig('azure:storageAccountName') != null
-      && configManager.getConfig('azure:storageContainerName') != null;
+  lib.isValidUploadSettings = () =>
+    configManager.getConfig('azure:storageAccountName') != null && configManager.getConfig('azure:storageContainerName') != null;
 
-  (lib as any).deleteFile = async(attachment) => {
+  (lib as any).deleteFile = async (attachment) => {
     const filePath = getFilePathOnStorage(attachment);
     const containerClient = await getContainerClient();
     const blockBlobClient = await containerClient.getBlockBlobClient(filePath);
@@ -255,7 +241,7 @@ module.exports = (crowi: Crowi) => {
     }
   };
 
-  (lib as any).deleteFiles = async(attachments) => {
+  (lib as any).deleteFiles = async (attachments) => {
     if (!lib.getIsUploadable()) {
       throw new Error('Azure is not configured.');
     }
@@ -264,7 +250,7 @@ module.exports = (crowi: Crowi) => {
     }
   };
 
-  lib.saveFile = async({ filePath, contentType, data }) => {
+  lib.saveFile = async ({ filePath, contentType, data }) => {
     const containerClient = await getContainerClient();
     const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
     const options: BlockBlobParallelUploadOptions = {
@@ -273,17 +259,19 @@ module.exports = (crowi: Crowi) => {
       },
     };
     const blockBlobUploadResponse: BlockBlobUploadResponse = await blockBlobClient.upload(data, data.length, options);
-    if (blockBlobUploadResponse.errorCode) { throw new Error(blockBlobUploadResponse.errorCode) }
+    if (blockBlobUploadResponse.errorCode) {
+      throw new Error(blockBlobUploadResponse.errorCode);
+    }
     return;
   };
 
-  (lib as any).checkLimit = async(uploadFileSize) => {
+  (lib as any).checkLimit = async (uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const gcsTotalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
   };
 
-  (lib as any).listFiles = async() => {
+  (lib as any).listFiles = async () => {
     if (!lib.getIsReadable()) {
       throw new Error('Azure is not configured.');
     }
@@ -298,9 +286,7 @@ module.exports = (crowi: Crowi) => {
       includeVersions: false,
       prefix: '',
     })) {
-      files.push(
-        { name: blob.name, size: blob.properties.contentLength || 0 },
-      );
+      files.push({ name: blob.name, size: blob.properties.contentLength || 0 });
     }
 
     return files;

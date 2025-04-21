@@ -51,12 +51,11 @@ module.exports = (crowi, app) => {
 
   const actions = {};
 
-
   const api = {};
 
   actions.api = api;
 
-  api.checkUsername = async(req, res) => {
+  api.checkUsername = async (req, res) => {
     const username = req.query.username;
 
     let valid = false;
@@ -64,8 +63,7 @@ module.exports = (crowi, app) => {
       .then((userData) => {
         if (userData) {
           valid = false;
-        }
-        else {
+        } else {
           valid = true;
         }
       })

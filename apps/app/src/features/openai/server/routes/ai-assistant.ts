@@ -21,15 +21,19 @@ type CreateAssistantFactory = (crowi: Crowi) => RequestHandler[];
 type ReqBody = UpsertAiAssistantData;
 
 type Req = Request<undefined, Response, ReqBody> & {
-  user: IUserHasId,
-}
+  user: IUserHasId;
+};
 
 export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, upsertAiAssistantValidator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    certifyAiService,
+    upsertAiAssistantValidator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
@@ -46,8 +50,7 @@ export const createAiAssistantFactory: CreateAssistantFactory = (crowi) => {
         const aiAssistant = await openaiService.createAiAssistant(req.body, req.user);
 
         return res.apiv3({ aiAssistant });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(new ErrorV3('AiAssistant creation failed'));
       }

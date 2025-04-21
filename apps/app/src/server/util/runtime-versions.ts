@@ -6,19 +6,18 @@ type RuntimeVersions = {
   pnpm: string | undefined;
 };
 
-
 // define original types because the object returned is not according to the official type definition
 type SatisfiedVersionInfo = {
   isSatisfied: true;
   version: {
     version: string;
-  }
-}
+  };
+};
 
 type NotfoundVersionInfo = {
   isSatisfied: true;
   notfound: true;
-}
+};
 
 type VersionInfo = SatisfiedVersionInfo | NotfoundVersionInfo;
 
@@ -41,7 +40,6 @@ const getVersion = (versionInfo: VersionInfo): string | undefined => {
 
   return undefined;
 };
-
 
 export function getRuntimeVersions(): Promise<RuntimeVersions> {
   return new Promise((resolve, reject) => {

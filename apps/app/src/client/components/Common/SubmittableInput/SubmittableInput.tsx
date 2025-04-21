@@ -1,10 +1,7 @@
-import type {
-  ReactElement,
-} from 'react';
+import type { ReactElement } from 'react';
 
 import type { SubmittableInputProps } from './types';
 import { useSubmittable } from './use-submittable';
-
 
 export const SubmittableInput = (props: SubmittableInputProps): ReactElement<HTMLInputElement> => {
   // // autoFocus
@@ -17,7 +14,5 @@ export const SubmittableInput = (props: SubmittableInputProps): ReactElement<HTM
 
   const submittableProps = useSubmittable(props);
 
-  return (
-    <input {...submittableProps} />
-  );
+  return <input {...submittableProps} />;
 };

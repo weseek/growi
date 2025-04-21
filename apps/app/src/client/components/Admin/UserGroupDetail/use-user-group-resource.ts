@@ -7,7 +7,10 @@ import {
 } from '~/features/external-user-group/client/stores/external-user-group';
 import {
   useSWRxAncestorUserGroups,
-  useSWRxChildUserGroupList, useSWRxUserGroup, useSWRxUserGroupRelationList, useSWRxUserGroupRelations,
+  useSWRxChildUserGroupList,
+  useSWRxUserGroup,
+  useSWRxUserGroupRelationList,
+  useSWRxUserGroupRelations,
 } from '~/stores/user-group';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -26,12 +29,8 @@ export const useUserGroupRelations = (userGroupId: string, isExternalGroup: bool
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const useChildUserGroupList = (userGroupId: string, isExternalGroup: boolean) => {
-  const userGroupRes = useSWRxChildUserGroupList(
-    !isExternalGroup ? [userGroupId] : [], true,
-  );
-  const externalUserGroupRes = useSWRxChildExternalUserGroupList(
-    isExternalGroup ? [userGroupId] : [], true,
-  );
+  const userGroupRes = useSWRxChildUserGroupList(!isExternalGroup ? [userGroupId] : [], true);
+  const externalUserGroupRes = useSWRxChildExternalUserGroupList(isExternalGroup ? [userGroupId] : [], true);
   return isExternalGroup ? externalUserGroupRes : userGroupRes;
 };
 

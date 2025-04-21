@@ -9,7 +9,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:NormalizeData:convert-revision-page-id-to-string');
 
-export const convertRevisionPageIdToObjectId = async(): Promise<void> => {
+export const convertRevisionPageIdToObjectId = async (): Promise<void> => {
   const Revision = mongoose.model<IRevisionHasId, IRevisionModel>('Revision');
 
   const filter: FilterQuery<IRevisionDocument> = { pageId: { $type: 'string' } };

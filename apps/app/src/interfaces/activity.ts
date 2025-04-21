@@ -167,7 +167,6 @@ const ACTION_ADMIN_SEARCH_CONNECTION = 'ADMIN_SEARCH_CONNECTION';
 const ACTION_ADMIN_SEARCH_INDICES_NORMALIZE = 'ADMIN_SEARCH_INDICES_NORMALIZE';
 const ACTION_ADMIN_SEARCH_INDICES_REBUILD = 'ADMIN_SEARCH_INDICES_REBUILD';
 
-
 export const SupportedTargetModel = {
   MODEL_PAGE,
   MODEL_USER,
@@ -378,7 +377,7 @@ export const ActionGroupSize = {
   Medium: 'MEDIUM',
   Large: 'LARGE',
 } as const;
-export type ActionGroupSize = typeof ActionGroupSize[keyof typeof ActionGroupSize];
+export type ActionGroupSize = (typeof ActionGroupSize)[keyof typeof ActionGroupSize];
 
 export const SmallActionGroup = {
   ACTION_USER_LOGIN_WITH_LOCAL,
@@ -544,7 +543,6 @@ export const LargeActionGroup = {
   ACTION_ADMIN_SEARCH_INDICES_REBUILD,
 } as const;
 
-
 /*
  * Array
  */
@@ -567,43 +565,43 @@ const searchRegExp = new RegExp(`^${SupportedActionCategory.SEARCH.toUpperCase()
 const userRegExp = new RegExp(`^${SupportedActionCategory.USER.toUpperCase()}_`);
 const adminRegExp = new RegExp(`^${SupportedActionCategory.ADMIN.toUpperCase()}_`);
 
-export const PageActions = AllSupportedActions.filter(action => action.match(pageRegExp));
-export const CommentActions = AllSupportedActions.filter(action => action.match(commentRegExp));
-export const TagActions = AllSupportedActions.filter(action => action.match(tagRegExp));
-export const AttachmentActions = AllSupportedActions.filter(action => action.match(attachmentRegExp));
-export const ShareLinkActions = AllSupportedActions.filter(action => action.match(shareLinkRegExp));
-export const InAppNotificationActions = AllSupportedActions.filter(action => action.match(inAppNotificationRegExp));
-export const SearchActions = AllSupportedActions.filter(action => action.match(searchRegExp));
-export const UserActions = AllSupportedActions.filter(action => action.match(userRegExp));
-export const AdminActions = AllSupportedActions.filter(action => action.match(adminRegExp));
+export const PageActions = AllSupportedActions.filter((action) => action.match(pageRegExp));
+export const CommentActions = AllSupportedActions.filter((action) => action.match(commentRegExp));
+export const TagActions = AllSupportedActions.filter((action) => action.match(tagRegExp));
+export const AttachmentActions = AllSupportedActions.filter((action) => action.match(attachmentRegExp));
+export const ShareLinkActions = AllSupportedActions.filter((action) => action.match(shareLinkRegExp));
+export const InAppNotificationActions = AllSupportedActions.filter((action) => action.match(inAppNotificationRegExp));
+export const SearchActions = AllSupportedActions.filter((action) => action.match(searchRegExp));
+export const UserActions = AllSupportedActions.filter((action) => action.match(userRegExp));
+export const AdminActions = AllSupportedActions.filter((action) => action.match(adminRegExp));
 
 /*
  * Type
  */
-export type SupportedTargetModelType = typeof SupportedTargetModel[keyof typeof SupportedTargetModel];
-export type SupportedEventModelType = typeof SupportedEventModel[keyof typeof SupportedEventModel];
-export type SupportedActionType = typeof SupportedAction[keyof typeof SupportedAction];
-export type SupportedActionCategoryType = typeof SupportedActionCategory[keyof typeof SupportedActionCategory]
+export type SupportedTargetModelType = (typeof SupportedTargetModel)[keyof typeof SupportedTargetModel];
+export type SupportedEventModelType = (typeof SupportedEventModel)[keyof typeof SupportedEventModel];
+export type SupportedActionType = (typeof SupportedAction)[keyof typeof SupportedAction];
+export type SupportedActionCategoryType = (typeof SupportedActionCategory)[keyof typeof SupportedActionCategory];
 
-export type ISnapshot = Partial<Pick<IUser, 'username'>>
+export type ISnapshot = Partial<Pick<IUser, 'username'>>;
 
 export type IActivity = {
-  user?: Ref<IUser>
-  ip?: string
-  endpoint?: string
-  targetModel?: SupportedTargetModelType
-  target?: string
-  eventModel?: SupportedEventModelType
-  event?: string
-  action: SupportedActionType
-  createdAt: Date
-  snapshot?: ISnapshot
-}
+  user?: Ref<IUser>;
+  ip?: string;
+  endpoint?: string;
+  targetModel?: SupportedTargetModelType;
+  target?: string;
+  eventModel?: SupportedEventModelType;
+  event?: string;
+  action: SupportedActionType;
+  createdAt: Date;
+  snapshot?: ISnapshot;
+};
 
 export type IActivityHasId = IActivity & HasObjectId;
 
 export type ISearchFilter = {
-  usernames?: string[]
-  dates?: {startDate: string | null, endDate: string | null}
-  actions?: SupportedActionType[]
-}
+  usernames?: string[];
+  dates?: { startDate: string | null; endDate: string | null };
+  actions?: SupportedActionType[];
+};

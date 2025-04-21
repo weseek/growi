@@ -21,26 +21,27 @@ const logger = loggerFactory('growi:routes:apiv3:openai:update-ai-assistants');
 type UpdateAiAssistantsFactory = (crowi: Crowi) => RequestHandler[];
 
 type ReqParams = {
-  id: string,
-}
+  id: string;
+};
 
 type ReqBody = UpsertAiAssistantData;
 
 type Req = Request<ReqParams, Response, ReqBody> & {
-  user: IUserHasId,
-}
+  user: IUserHasId;
+};
 
 export const updateAiAssistantsFactory: UpdateAiAssistantsFactory = (crowi) => {
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
-  const validator: ValidationChain[] = [
-    param('id').isMongoId().withMessage('aiAssistant id is required'),
-    ...upsertAiAssistantValidator,
-  ];
+  const validator: ValidationChain[] = [param('id').isMongoId().withMessage('aiAssistant id is required'), ...upsertAiAssistantValidator];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: Req, res: ApiV3Response) => {
+    accessTokenParser,
+    loginRequiredStrictly,
+    certifyAiService,
+    validator,
+    apiV3FormValidator,
+    async (req: Req, res: ApiV3Response) => {
       const { id } = req.params;
       const { user } = req;
 
@@ -58,8 +59,7 @@ export const updateAiAssistantsFactory: UpdateAiAssistantsFactory = (crowi) => {
         const updatedAiAssistant = await openaiService.updateAiAssistant(id, req.body, user);
 
         return res.apiv3({ updatedAiAssistant });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
 
         if (isHttpError(err)) {

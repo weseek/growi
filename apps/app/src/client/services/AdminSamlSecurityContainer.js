@@ -13,7 +13,6 @@ const logger = loggerFactory('growi:security:AdminSamlSecurityContainer');
  * @extends {Container} unstated Container
  */
 export default class AdminSamlSecurityContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -49,7 +48,6 @@ export default class AdminSamlSecurityContainer extends Container {
       envAttrMapLastName: '',
       envABLCRule: '',
     };
-
   }
 
   /**
@@ -83,8 +81,7 @@ export default class AdminSamlSecurityContainer extends Container {
         envAttrMapLastName: samlAuth.samlEnvVarAttrMapLastName,
         envABLCRule: samlAuth.samlEnvVarABLCRule,
       });
-    }
-    catch (err) {
+    } catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to fetch data');
@@ -179,7 +176,6 @@ export default class AdminSamlSecurityContainer extends Container {
    * Update saml option
    */
   async updateSamlSetting() {
-
     let requestParams = {
       entryPoint: this.state.samlEntryPoint,
       issuer: this.state.samlIssuer,
@@ -214,5 +210,4 @@ export default class AdminSamlSecurityContainer extends Container {
     });
     return response;
   }
-
 }

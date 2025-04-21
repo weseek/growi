@@ -6,17 +6,16 @@ import { OpenaiClientDelegator } from './openai-client-delegator';
 
 type GetDelegatorOptions = {
   openaiServiceType: OpenaiServiceType;
-}
+};
 
-type IsAny<T> = 'dummy' extends (T & 'dummy') ? true : false;
-type Delegator<Opts extends GetDelegatorOptions> =
-  IsAny<Opts> extends true
-    ? IOpenaiClientDelegator
-    : Opts extends { openaiServiceType: 'openai' }
-      ? OpenaiClientDelegator
-      : Opts extends { openaiServiceType: 'azure-openai' }
-        ? AzureOpenaiClientDelegator
-        : IOpenaiClientDelegator;
+type IsAny<T> = 'dummy' extends T & 'dummy' ? true : false;
+type Delegator<Opts extends GetDelegatorOptions> = IsAny<Opts> extends true
+  ? IOpenaiClientDelegator
+  : Opts extends { openaiServiceType: 'openai' }
+    ? OpenaiClientDelegator
+    : Opts extends { openaiServiceType: 'azure-openai' }
+      ? AzureOpenaiClientDelegator
+      : IOpenaiClientDelegator;
 
 let instance;
 

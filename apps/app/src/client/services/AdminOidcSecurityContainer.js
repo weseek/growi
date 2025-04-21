@@ -13,7 +13,6 @@ const logger = loggerFactory('growi:services:AdminLdapSecurityContainer');
  * @extends {Container} unstated Container
  */
 export default class AdminOidcSecurityContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -44,7 +43,6 @@ export default class AdminOidcSecurityContainer extends Container {
       isSameUsernameTreatedAsIdenticalUser: false,
       isSameEmailTreatedAsIdenticalUser: false,
     };
-
   }
 
   /**
@@ -74,8 +72,7 @@ export default class AdminOidcSecurityContainer extends Container {
         isSameUsernameTreatedAsIdenticalUser: oidcAuth.isSameUsernameTreatedAsIdenticalUser,
         isSameEmailTreatedAsIdenticalUser: oidcAuth.isSameEmailTreatedAsIdenticalUser,
       });
-    }
-    catch (err) {
+    } catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to fetch data');
@@ -287,5 +284,4 @@ export default class AdminOidcSecurityContainer extends Container {
     });
     return response;
   }
-
 }

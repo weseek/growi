@@ -1,6 +1,4 @@
-import React, {
-  useEffect, useMemo, useRef, type JSX,
-} from 'react';
+import React, { useEffect, useMemo, useRef, type JSX } from 'react';
 
 import type { IRevisionHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
@@ -12,25 +10,20 @@ import { useCurrentUser } from '~/stores-universal/context';
 import { useSWRxPageComment } from '~/stores/comment';
 import { useIsTrashPage, useSWRMUTxPageInfo } from '~/stores/page';
 
-
 const { isTopPage } = pagePathUtils;
 
-
-const PageComment = dynamic(() => import('~/client/components/PageComment').then(mod => mod.PageComment), { ssr: false });
-const CommentEditorPre = dynamic(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditorPre), { ssr: false });
+const PageComment = dynamic(() => import('~/client/components/PageComment').then((mod) => mod.PageComment), { ssr: false });
+const CommentEditorPre = dynamic(() => import('./PageComment/CommentEditor').then((mod) => mod.CommentEditorPre), { ssr: false });
 
 type CommentsProps = {
-  pageId: string,
-  pagePath: string,
-  revision: IRevisionHasId,
-  onLoaded?: () => void,
-}
+  pageId: string;
+  pagePath: string;
+  revision: IRevisionHasId;
+  onLoaded?: () => void;
+};
 
 export const Comments = (props: CommentsProps): JSX.Element => {
-
-  const {
-    pageId, pagePath, revision, onLoaded,
-  } = props;
+  const { pageId, pagePath, revision, onLoaded } = props;
 
   const { t } = useTranslation('');
 
@@ -45,7 +38,9 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   useEffect(() => {
     const parent = pageCommentParentRef.current;
-    if (parent == null) { return }
+    if (parent == null) {
+      return;
+    }
 
     const observer = new MutationObserver(() => {
       onLoadedDebounced();
@@ -73,24 +68,13 @@ export const Comments = (props: CommentsProps): JSX.Element => {
     <div className="page-comments-row mt-5 py-4 border-top d-edit-none d-print-none">
       <h4 className="mb-3">{t('page_comment.comments')}</h4>
       <div id="page-comments-list" className="page-comments-list" ref={pageCommentParentRef}>
-        <PageComment
-          pageId={pageId}
-          pagePath={pagePath}
-          revision={revision}
-          currentUser={currentUser}
-          isReadOnly={false}
-        />
+        <PageComment pageId={pageId} pagePath={pagePath} revision={revision} currentUser={currentUser} isReadOnly={false} />
       </div>
       {!isDeleted && (
         <div id="page-comment-write">
-          <CommentEditorPre
-            pageId={pageId}
-            onCommented={onCommentButtonClickHandler}
-            revisionId={revision._id}
-          />
+          <CommentEditorPre pageId={pageId} onCommented={onCommentButtonClickHandler} revisionId={revision._id} />
         </div>
       )}
     </div>
   );
-
 };

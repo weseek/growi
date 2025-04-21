@@ -20,7 +20,6 @@ module.exports = (crowi, app) => {
 
   const api = {};
 
-
   // Importer management
   actions.importer = {};
   actions.importer.api = api;
@@ -43,7 +42,6 @@ module.exports = (crowi, app) => {
     return validator;
   };
 
-
   // Export management
   actions.export = {};
   actions.export.api = api;
@@ -53,7 +51,9 @@ module.exports = (crowi, app) => {
     const validator = [
       // https://regex101.com/r/mD4eZs/6
       // prevent from pass traversal attack
-      param('fileName').not().matches(/(\.\.\/|\.\.\\)/),
+      param('fileName')
+        .not()
+        .matches(/(\.\.\/|\.\.\\)/),
     ];
     return validator;
   };
@@ -69,7 +69,7 @@ module.exports = (crowi, app) => {
     try {
       const zipFile = exportService.getFile(fileName);
       const parameters = {
-        ip:  req.ip,
+        ip: req.ip,
         endpoint: req.originalUrl,
         action: SupportedAction.ACTION_ADMIN_ARCHIVE_DATA_DOWNLOAD,
         user: req.user?._id,
@@ -79,8 +79,7 @@ module.exports = (crowi, app) => {
       };
       crowi.activityService.createActivity(parameters);
       return res.download(zipFile);
-    }
-    catch (err) {
+    } catch (err) {
       // TODO: use ApiV3Error
       logger.error(err);
       return res.json(ApiResponse.error());
@@ -95,7 +94,7 @@ module.exports = (crowi, app) => {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.importerSettingEsa = async(req, res) => {
+  actions.api.importerSettingEsa = async (req, res) => {
     const form = req.body;
 
     const { validationResult } = require('express-validator');
@@ -117,7 +116,7 @@ module.exports = (crowi, app) => {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.importerSettingQiita = async(req, res) => {
+  actions.api.importerSettingQiita = async (req, res) => {
     const form = req.body;
 
     const { validationResult } = require('express-validator');
@@ -139,7 +138,7 @@ module.exports = (crowi, app) => {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.importDataFromEsa = async(req, res) => {
+  actions.api.importDataFromEsa = async (req, res) => {
     const user = req.user;
     let errors;
 
@@ -147,8 +146,7 @@ module.exports = (crowi, app) => {
       errors = await importer.importDataFromEsa(user);
       const parameters = { action: SupportedAction.ACTION_ADMIN_ESA_DATA_IMPORTED };
       activityEvent.emit('update', res.locals.activity._id, parameters);
-    }
-    catch (err) {
+    } catch (err) {
       errors = [err];
     }
 
@@ -164,7 +162,7 @@ module.exports = (crowi, app) => {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.importDataFromQiita = async(req, res) => {
+  actions.api.importDataFromQiita = async (req, res) => {
     const user = req.user;
     let errors;
 
@@ -172,8 +170,7 @@ module.exports = (crowi, app) => {
       errors = await importer.importDataFromQiita(user);
       const parameters = { action: SupportedAction.ACTION_ADMIN_QIITA_DATA_IMPORTED };
       activityEvent.emit('update', res.locals.activity._id, parameters);
-    }
-    catch (err) {
+    } catch (err) {
       errors = [err];
     }
 
@@ -189,14 +186,13 @@ module.exports = (crowi, app) => {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.testEsaAPI = async(req, res) => {
+  actions.api.testEsaAPI = async (req, res) => {
     try {
       await importer.testConnectionToEsa();
       const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_ESA_DATA };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.json(ApiResponse.success());
-    }
-    catch (err) {
+    } catch (err) {
       return res.json(ApiResponse.error(err));
     }
   };
@@ -207,20 +203,18 @@ module.exports = (crowi, app) => {
    * @param {*} req
    * @param {*} res
    */
-  actions.api.testQiitaAPI = async(req, res) => {
+  actions.api.testQiitaAPI = async (req, res) => {
     try {
       await importer.testConnectionToQiita();
       const parameters = { action: SupportedAction.ACTION_ADMIN_CONNECTION_TEST_OF_QIITA_DATA };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.json(ApiResponse.success());
-    }
-    catch (err) {
+    } catch (err) {
       return res.json(ApiResponse.error(err));
     }
   };
 
-
-  actions.api.searchBuildIndex = async(req, res) => {
+  actions.api.searchBuildIndex = async (req, res) => {
     const search = crowi.getSearcher();
     if (!search) {
       return res.json(ApiResponse.error('ElasticSearch Integration is not set up.'));
@@ -228,8 +222,7 @@ module.exports = (crowi, app) => {
 
     try {
       search.buildIndex();
-    }
-    catch (err) {
+    } catch (err) {
       return res.json(ApiResponse.error(err));
     }
 

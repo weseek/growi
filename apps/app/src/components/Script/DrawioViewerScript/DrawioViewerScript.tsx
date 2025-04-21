@@ -12,7 +12,7 @@ declare global {
 
 type Props = {
   drawioUri: string;
-}
+};
 
 export const DrawioViewerScript = ({ drawioUri }: Props): JSX.Element => {
   const viewerMinJsSrc = useViewerMinJsUrl(drawioUri);
@@ -38,12 +38,7 @@ export const DrawioViewerScript = ({ drawioUri }: Props): JSX.Element => {
 
   return (
     <Head>
-      <script
-        type="text/javascript"
-        async
-        src={viewerMinJsSrc}
-        onLoad={loadedHandler}
-      />
+      <script type="text/javascript" async src={viewerMinJsSrc} onLoad={loadedHandler} />
     </Head>
   );
 };

@@ -3,10 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const nodeModulesPaths = [
-  path.resolve(__dirname, '../../node_modules'),
-  path.resolve(__dirname, '../../../../node_modules'),
-];
+const nodeModulesPaths = [path.resolve(__dirname, '../../node_modules'), path.resolve(__dirname, '../../../../node_modules')];
 
 /**
  * @typedef { { ignorePackageNames: string[] } } Opts
@@ -24,17 +21,12 @@ exports.listScopedPackages = (scopes, opts = defaultOpts) => {
 
   nodeModulesPaths.forEach((nodeModulesPath) => {
     fs.readdirSync(nodeModulesPath)
-      .filter(name => scopes.includes(name))
+      .filter((name) => scopes.includes(name))
       .forEach((scope) => {
         fs.readdirSync(path.resolve(nodeModulesPath, scope))
-          .filter(name => !name.startsWith('.'))
+          .filter((name) => !name.startsWith('.'))
           .forEach((folderName) => {
-            const packageJsonPath = path.resolve(
-              nodeModulesPath,
-              scope,
-              folderName,
-              'package.json',
-            );
+            const packageJsonPath = path.resolve(nodeModulesPath, scope, folderName, 'package.json');
             if (fs.existsSync(packageJsonPath)) {
               const { name } = require(packageJsonPath);
               if (!opts.ignorePackageNames.includes(name)) {
@@ -57,14 +49,10 @@ exports.listPrefixedPackages = (prefixes, opts = defaultOpts) => {
 
   nodeModulesPaths.forEach((nodeModulesPath) => {
     fs.readdirSync(nodeModulesPath)
-      .filter(name => prefixes.some(prefix => name.startsWith(prefix)))
-      .filter(name => !name.startsWith('.'))
+      .filter((name) => prefixes.some((prefix) => name.startsWith(prefix)))
+      .filter((name) => !name.startsWith('.'))
       .forEach((folderName) => {
-        const packageJsonPath = path.resolve(
-          nodeModulesPath,
-          folderName,
-          'package.json',
-        );
+        const packageJsonPath = path.resolve(nodeModulesPath, folderName, 'package.json');
         if (fs.existsSync(packageJsonPath)) {
           const { name } = require(packageJsonPath);
           if (!opts.ignorePackageNames.includes(name)) {

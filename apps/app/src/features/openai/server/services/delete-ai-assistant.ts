@@ -1,6 +1,4 @@
-import {
-  getIdStringForRef, type IUserHasId,
-} from '@growi/core';
+import { getIdStringForRef, type IUserHasId } from '@growi/core';
 import createError from 'http-errors';
 
 import loggerFactory from '~/utils/logger';
@@ -13,8 +11,7 @@ import { getOpenaiService } from './openai';
 
 const logger = loggerFactory('growi:service:openai:delete-ai-assistant');
 
-
-export const deleteAiAssistant = async(ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument> => {
+export const deleteAiAssistant = async (ownerId: string, aiAssistantId: string): Promise<AiAssistantDocument> => {
   const openaiService = getOpenaiService();
   if (openaiService == null) {
     throw createError(500, 'openaiService is not initialized');
@@ -32,14 +29,13 @@ export const deleteAiAssistant = async(ownerId: string, aiAssistantId: string): 
   return deletedAiAssistant;
 };
 
-export const deleteUserAiAssistant = async(user: IUserHasId): Promise<void> => {
+export const deleteUserAiAssistant = async (user: IUserHasId): Promise<void> => {
   if (isAiEnabled()) {
     const aiAssistants = await AiAssistantModel.find({ owner: user });
     for await (const aiAssistant of aiAssistants) {
       try {
         await deleteAiAssistant(user._id, aiAssistant._id);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(`Failed to delete AiAssistant ${aiAssistant._id}`);
       }
     }

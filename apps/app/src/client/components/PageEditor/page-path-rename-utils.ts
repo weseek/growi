@@ -9,56 +9,53 @@ import { useSWRMUTxCurrentPage } from '~/stores/page';
 import { mutatePageTree, mutatePageList, mutateRecentlyUpdated } from '~/stores/page-listing';
 import { useIsUntitledPage } from '~/stores/ui';
 
+type PagePathRenameHandler = (newPagePath: string, onRenameFinish?: () => void, onRenameFailure?: () => void, onRenamedSkipped?: () => void) => Promise<void>;
 
-type PagePathRenameHandler = (newPagePath: string, onRenameFinish?: () => void, onRenameFailure?: () => void, onRenamedSkipped?: () => void) => Promise<void>
-
-export const usePagePathRenameHandler = (
-    currentPage?: IPagePopulatedToShowRevision | null,
-): PagePathRenameHandler => {
-
+export const usePagePathRenameHandler = (currentPage?: IPagePopulatedToShowRevision | null): PagePathRenameHandler => {
   const { t } = useTranslation();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { mutate: mutateIsUntitledPage } = useIsUntitledPage();
 
-  const pagePathRenameHandler = useCallback(async(newPagePath, onRenameFinish, onRenameFailure) => {
-
-    if (currentPage == null) {
-      return;
-    }
-
-    if (newPagePath === currentPage.path || newPagePath === '') {
-      onRenameFinish?.();
-      return;
-    }
-
-    const onRenamed = (fromPath: string | undefined, toPath: string) => {
-      mutatePageTree();
-      mutateRecentlyUpdated();
-      mutatePageList();
-      mutateIsUntitledPage(false);
-
-      if (currentPage.path === fromPath || currentPage.path === toPath) {
-        mutateCurrentPage();
+  const pagePathRenameHandler = useCallback(
+    async (newPagePath, onRenameFinish, onRenameFailure) => {
+      if (currentPage == null) {
+        return;
       }
-    };
 
-    try {
-      await apiv3Put('/pages/rename', {
-        pageId: currentPage._id,
-        revisionId: currentPage.revision?._id,
-        newPagePath,
-      });
+      if (newPagePath === currentPage.path || newPagePath === '') {
+        onRenameFinish?.();
+        return;
+      }
 
-      onRenamed(currentPage.path, newPagePath);
-      onRenameFinish?.();
+      const onRenamed = (fromPath: string | undefined, toPath: string) => {
+        mutatePageTree();
+        mutateRecentlyUpdated();
+        mutatePageList();
+        mutateIsUntitledPage(false);
 
-      toastSuccess(t('renamed_pages', { path: currentPage.path }));
-    }
-    catch (err) {
-      onRenameFailure?.();
-      toastError(err);
-    }
-  }, [currentPage, mutateCurrentPage, mutateIsUntitledPage, t]);
+        if (currentPage.path === fromPath || currentPage.path === toPath) {
+          mutateCurrentPage();
+        }
+      };
+
+      try {
+        await apiv3Put('/pages/rename', {
+          pageId: currentPage._id,
+          revisionId: currentPage.revision?._id,
+          newPagePath,
+        });
+
+        onRenamed(currentPage.path, newPagePath);
+        onRenameFinish?.();
+
+        toastSuccess(t('renamed_pages', { path: currentPage.path }));
+      } catch (err) {
+        onRenameFailure?.();
+        toastError(err);
+      }
+    },
+    [currentPage, mutateCurrentPage, mutateIsUntitledPage, t],
+  );
 
   return pagePathRenameHandler;
 };

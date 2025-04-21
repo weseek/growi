@@ -10,10 +10,7 @@ import { generateOverwriteParams as generateForRevisions } from './revisions';
 /**
  * generate overwrite params with overwrite-params/* modules
  */
-export const generateOverwriteParams = <OPT extends GrowiArchiveImportOption>(
-  collectionName: string, operatorUserId: string, option: OPT,
-): OverwriteParams => {
-
+export const generateOverwriteParams = <OPT extends GrowiArchiveImportOption>(collectionName: string, operatorUserId: string, option: OPT): OverwriteParams => {
   switch (collectionName) {
     case 'pages':
       if (!isImportOptionForPages(option)) {

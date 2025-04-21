@@ -4,4 +4,4 @@ export const UserActivationErrorCode = {
   USER_REGISTRATION_ORDER_IS_NOT_APPROPRIATE: 'user-registration-order-is-not-appropriate',
 } as const;
 
-export type UserActivationErrorCode = typeof UserActivationErrorCode[keyof typeof UserActivationErrorCode];
+export type UserActivationErrorCode = (typeof UserActivationErrorCode)[keyof typeof UserActivationErrorCode];

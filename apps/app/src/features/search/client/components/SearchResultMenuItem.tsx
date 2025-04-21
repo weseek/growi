@@ -10,10 +10,10 @@ import type { GetItemProps } from '../interfaces/downshift';
 import { SearchMenuItem } from './SearchMenuItem';
 
 type Props = {
-  activeIndex: number | null,
-  searchKeyword: string,
-  getItemProps: GetItemProps,
-}
+  activeIndex: number | null;
+  searchKeyword: string;
+  getItemProps: GetItemProps;
+};
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
   const { activeIndex, searchKeyword, getItemProps } = props;
 
@@ -28,9 +28,12 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
    *  If no keywords are entered into SearchForm, SearchMethodMenuItem returns a single item. Conversely, when keywords are entered, three items are returned.
    *  For these reasons, the starting index of SearchResultMemuItem changes depending on the presence or absence of the searchKeyword.
    */
-  const getFiexdIndex = useCallback((index: number) => {
-    return (isEmptyKeyword ? 1 : 3) + index;
-  }, [isEmptyKeyword]);
+  const getFiexdIndex = useCallback(
+    (index: number) => {
+      return (isEmptyKeyword ? 1 : 3) + index;
+    },
+    [isEmptyKeyword],
+  );
 
   if (isLoading) {
     return (
@@ -48,28 +51,26 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
   return (
     <div>
       <div className="border-top mt-2 mb-2" />
-      {searchResult?.data
-        .map((item, index) => (
-          <SearchMenuItem
-            key={item.data._id}
-            index={getFiexdIndex(index)}
-            isActive={getFiexdIndex(index) === activeIndex}
-            getItemProps={getItemProps}
-            url={item.data._id}
-          >
-            <UserPicture user={item.data.creator} />
+      {searchResult?.data.map((item, index) => (
+        <SearchMenuItem
+          key={item.data._id}
+          index={getFiexdIndex(index)}
+          isActive={getFiexdIndex(index) === activeIndex}
+          getItemProps={getItemProps}
+          url={item.data._id}
+        >
+          <UserPicture user={item.data.creator} />
 
-            <span className="ms-3 text-break text-wrap">
-              <PagePathLabel path={item.data.path} />
-            </span>
+          <span className="ms-3 text-break text-wrap">
+            <PagePathLabel path={item.data.path} />
+          </span>
 
-            <span className="text-body-tertiary ms-2 d-flex justify-content-center align-items-center">
-              <span className="material-symbols-outlined fs-6 p-0">footprint</span>
-              <span className="fs-6">{item.data.seenUsers.length}</span>
-            </span>
-          </SearchMenuItem>
-        ))
-      }
+          <span className="text-body-tertiary ms-2 d-flex justify-content-center align-items-center">
+            <span className="material-symbols-outlined fs-6 p-0">footprint</span>
+            <span className="fs-6">{item.data.seenUsers.length}</span>
+          </span>
+        </SearchMenuItem>
+      ))}
     </div>
   );
 };

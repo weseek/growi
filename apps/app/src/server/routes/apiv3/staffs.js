@@ -7,7 +7,6 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:staffs'); // eslint-disable-line no-unused-vars
 
-
 const router = Router();
 
 const contributors = require('^/resource/Contributor');
@@ -21,8 +20,7 @@ const compareFunction = (a, b) => a.order - b.order;
 
 /** @param {import('~/server/crowi').default} crowi Crowi instance */
 module.exports = (crowi) => {
-
-  router.get('/', async(req, res) => {
+  router.get('/', async (req, res) => {
     const now = new Date();
     const growiCloudUri = await crowi.configManager.getConfig('app:growiCloudUri');
 
@@ -39,8 +37,7 @@ module.exports = (crowi) => {
         contributorsCache.sort(compareFunction);
         // caching 'expiredAt' for 1 hour
         expiredAt = addHours(now, 1);
-      }
-      catch (err) {
+      } catch (err) {
         logger.warn('Getting GROWI.cloud staffcredit is failed');
       }
     }
@@ -48,5 +45,4 @@ module.exports = (crowi) => {
   });
 
   return router;
-
 };

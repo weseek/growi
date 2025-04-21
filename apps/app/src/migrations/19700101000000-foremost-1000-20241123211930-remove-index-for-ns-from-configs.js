@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:migrate:remove-index-for-ns-from-configs');
 
 async function dropIndexIfExists(db, collectionName, indexName) {
@@ -29,10 +28,7 @@ module.exports = {
     await db.collection('configs').deleteMany({
       ns: 'crowi',
       key: {
-        $in: [
-          'notification:owner-page:isEnabled',
-          'notification:group-page:isEnabled',
-        ],
+        $in: ['notification:owner-page:isEnabled', 'notification:group-page:isEnabled'],
       },
     });
 

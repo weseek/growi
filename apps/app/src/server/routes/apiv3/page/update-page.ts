@@ -1,7 +1,5 @@
 import { Origin, allOrigin, getIdForRef } from '@growi/core';
-import type {
-  IPage, IRevisionHasId, IUserHasId,
-} from '@growi/core';
+import type { IPage, IRevisionHasId, IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
@@ -31,14 +29,12 @@ import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
-
 const logger = loggerFactory('growi:routes:apiv3:page:update-page');
-
 
 type ReqBody = IApiv3PageUpdateParams;
 
 interface UpdatePageRequest extends Request<undefined, ApiV3Response, ReqBody> {
-  user: IUserHasId,
+  user: IUserHasId;
 }
 
 type UpdatePageHandlersFactory = (crowi: Crowi) => RequestHandler[];
@@ -51,16 +47,10 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
   // define validators for req.body
   const validator: ValidationChain[] = [
-    body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("'pageId' must be specified"),
-    body('revisionId').optional().exists().not()
-      .isEmpty({ ignore_whitespace: true })
-      .withMessage("'revisionId' must be specified"),
-    body('body').exists().isString()
-      .withMessage("Empty value is not allowed for 'body'"),
-    body('grant').optional().not().isString()
-      .isInt({ min: 0, max: 5 })
-      .withMessage('grant must be an integer from 1 to 5'),
+    body('pageId').exists().not().isEmpty({ ignore_whitespace: true }).withMessage("'pageId' must be specified"),
+    body('revisionId').optional().exists().not().isEmpty({ ignore_whitespace: true }).withMessage("'revisionId' must be specified"),
+    body('body').exists().isString().withMessage("Empty value is not allowed for 'body'"),
+    body('grant').optional().not().isString().isInt({ min: 0, max: 5 }).withMessage('grant must be an integer from 1 to 5'),
     body('userRelatedGrantUserGroupIds').optional().isArray().withMessage('userRelatedGrantUserGroupIds must be an array of group id'),
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
@@ -68,7 +58,6 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
     body('wip').optional().isBoolean().withMessage('wip must be boolean'),
   ];
-
 
   async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: HydratedDocument<PageDocument>, previousRevision: IRevisionHasId | null) {
     // Reflect the updates in ydoc
@@ -86,17 +75,12 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       action: SupportedAction.ACTION_PAGE_UPDATE,
     };
     const activityEvent = crowi.event('activity');
-    activityEvent.emit(
-      'update', res.locals.activity._id, parameters,
-      { path: updatedPage.path, creator },
-      preNotifyService.generatePreNotify,
-    );
+    activityEvent.emit('update', res.locals.activity._id, parameters, { path: updatedPage.path, creator }, preNotifyService.generatePreNotify);
 
     // global notification
     try {
       await crowi.globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_EDIT, updatedPage, req.user);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Edit notification failed', err);
     }
 
@@ -111,8 +95,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
             logger.error('Create user notification failed', result.reason);
           }
         });
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('Create user notification failed', err);
       }
     }
@@ -123,8 +106,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       try {
         const openaiService = getOpenaiService();
         await openaiService?.updateVectorStoreFileOnPageUpdate(updatedPage);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('Rebuild vector store failed', err);
       }
     }
@@ -133,17 +115,19 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const addActivity = generateAddActivityMiddleware();
 
   return [
-    accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,
-    validator, apiV3FormValidator,
-    async(req: UpdatePageRequest, res: ApiV3Response) => {
-      const {
-        pageId, revisionId, body, origin, grant,
-      } = req.body;
+    accessTokenParser,
+    loginRequiredStrictly,
+    excludeReadOnlyUser,
+    addActivity,
+    validator,
+    apiV3FormValidator,
+    async (req: UpdatePageRequest, res: ApiV3Response) => {
+      const { pageId, revisionId, body, origin, grant } = req.body;
 
       const sanitizeRevisionId = revisionId == null ? undefined : generalXssFilter.process(revisionId);
 
       // check page existence
-      const isExist = await Page.count({ _id: pageId }) > 0;
+      const isExist = (await Page.count({ _id: pageId })) > 0;
       if (!isExist) {
         return res.apiv3Err(new ErrorV3(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 400);
       }
@@ -165,13 +149,12 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
         try {
           await normalizeLatestRevisionIfBroken(pageId);
-        }
-        catch (err) {
+        } catch (err) {
           logger.error('Error occurred in normalizing the latest revision');
         }
       }
 
-      if (currentPage != null && !await currentPage.isUpdatable(sanitizeRevisionId, origin)) {
+      if (currentPage != null && !(await currentPage.isUpdatable(sanitizeRevisionId, origin))) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
@@ -185,9 +168,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       let updatedPage: HydratedDocument<PageDocument>;
       let previousRevision: IRevisionHasId | null;
       try {
-        const {
-          userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
-        } = req.body;
+        const { userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip } = req.body;
         const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin, wip };
         if (grant != null) {
           options.grant = grant;
@@ -195,8 +176,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         }
         previousRevision = await Revision.findById(sanitizeRevisionId);
         updatedPage = await crowi.pageService.updatePage(currentPage, body, previousRevision?.body ?? null, req.user, options);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error('Error occurred while updating a page.', err);
         return res.apiv3Err(err);
       }

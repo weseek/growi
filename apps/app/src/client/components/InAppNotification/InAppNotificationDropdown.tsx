@@ -1,12 +1,8 @@
-import React, {
-  useState, useEffect, useRef, type JSX,
-} from 'react';
+import React, { useState, useEffect, useRef, type JSX } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRipple } from 'react-use-ripple';
-import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
+import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import { useDefaultSocket } from '~/stores/socket-io';
@@ -20,10 +16,9 @@ export const InAppNotificationDropdown = (): JSX.Element => {
   const limit = 6;
 
   const { data: socket } = useDefaultSocket();
-  const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(
-    limit, undefined, undefined,
-    { revalidateOnFocus: isOpen },
-  );
+  const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(limit, undefined, undefined, {
+    revalidateOnFocus: isOpen,
+  });
   const { data: inAppNotificationUnreadStatusCount, mutate: mutateInAppNotificationUnreadStatusCount } = useSWRxInAppNotificationStatus();
 
   // ripple
@@ -43,8 +38,7 @@ export const InAppNotificationDropdown = (): JSX.Element => {
     }
   }, [mutateInAppNotificationUnreadStatusCount, socket]);
 
-
-  const toggleDropdownHandler = async() => {
+  const toggleDropdownHandler = async () => {
     if (!isOpen && inAppNotificationUnreadStatusCount != null && inAppNotificationUnreadStatusCount > 0) {
       mutateInAppNotificationUnreadStatusCount();
     }
@@ -59,8 +53,7 @@ export const InAppNotificationDropdown = (): JSX.Element => {
   let badge;
   if (inAppNotificationUnreadStatusCount != null && inAppNotificationUnreadStatusCount > 0) {
     badge = <span className="badge rounded-pill bg-danger grw-notification-badge">{inAppNotificationUnreadStatusCount}</span>;
-  }
-  else {
+  } else {
     badge = '';
   }
 
@@ -70,20 +63,21 @@ export const InAppNotificationDropdown = (): JSX.Element => {
         <span className="material-symbols-outlined">notifications</span> {badge}
       </DropdownToggle>
 
-      { isOpen && (
+      {isOpen && (
         <DropdownMenu end>
-          { inAppNotificationData != null && inAppNotificationData.docs.length === 0
-          // no items
-            ? <DropdownItem disabled>{t('in_app_notification.no_unread_messages')}</DropdownItem>
-          // render DropdownItem
-            : <InAppNotificationList inAppNotificationData={inAppNotificationData} />
-          }
+          {inAppNotificationData != null && inAppNotificationData.docs.length === 0 ? (
+            // no items
+            <DropdownItem disabled>{t('in_app_notification.no_unread_messages')}</DropdownItem>
+          ) : (
+            // render DropdownItem
+            <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+          )}
           <DropdownItem divider />
           <DropdownItem tag="a" href="/me/all-in-app-notifications">
-            { t('in_app_notification.see_all') }
+            {t('in_app_notification.see_all')}
           </DropdownItem>
         </DropdownMenu>
-      ) }
+      )}
     </Dropdown>
   );
 };

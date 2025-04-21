@@ -4,11 +4,10 @@ import { useCurrentUser } from '~/stores-universal/context';
 
 import type { IQuestionHasId } from '../../interfaces/question';
 
-
 type QuestionProps = {
-  question: IQuestionHasId,
-  inputNamePrefix: string,
-}
+  question: IQuestionHasId;
+  inputNamePrefix: string;
+};
 
 const Question = ({ question, inputNamePrefix }: QuestionProps): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
@@ -19,9 +18,7 @@ const Question = ({ question, inputNamePrefix }: QuestionProps): JSX.Element => 
   return (
     <div className="row mt-4">
       <div className="col-6 d-flex align-items-center">
-        <span>
-          {questionText}
-        </span>
+        <span>{questionText}</span>
       </div>
       <div className="col-6 d-flex align-items-center ps-0">
         <div className="btn-group flex-fill grw-questionnaire-btn-group">

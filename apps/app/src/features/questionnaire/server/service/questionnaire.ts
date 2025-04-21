@@ -15,11 +15,9 @@ import type { QuestionnaireOrderDocument } from '../models/questionnaire-order';
 import QuestionnaireOrder from '../models/questionnaire-order';
 import { isShowableCondition } from '../util/condition';
 
-
 const logger = loggerFactory('growi:service:questionnaire');
 
 class QuestionnaireService {
-
   crowi: Crowi;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -43,7 +41,9 @@ class QuestionnaireService {
   }
 
   async getQuestionnaireOrdersToShow(
-      userInfo: IUserInfo, growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>, userId: ObjectIdLike | null,
+    userInfo: IUserInfo,
+    growiInfo: IGrowiInfo<IGrowiAppAdditionalInfo>,
+    userId: ObjectIdLike | null,
   ): Promise<QuestionnaireOrderDocument[]> {
     const currentDate = new Date();
 
@@ -54,21 +54,19 @@ class QuestionnaireService {
     });
 
     if (userId != null) {
-      const statuses = await QuestionnaireAnswerStatus.find({ userId, questionnaireOrderId: { $in: questionnaireOrders.map(d => d._id) } });
+      const statuses = await QuestionnaireAnswerStatus.find({ userId, questionnaireOrderId: { $in: questionnaireOrders.map((d) => d._id) } });
 
       questionnaireOrders = questionnaireOrders.filter((order) => {
-        const status = statuses.find(s => s.questionnaireOrderId.toString() === order._id.toString());
+        const status = statuses.find((s) => s.questionnaireOrderId.toString() === order._id.toString());
 
         return !status || status?.status === StatusType.not_answered;
       });
     }
 
-    return questionnaireOrders
-      .filter((order) => {
-        return isShowableCondition(order, userInfo, growiInfo);
-      });
+    return questionnaireOrders.filter((order) => {
+      return isShowableCondition(order, userInfo, growiInfo);
+    });
   }
-
 }
 
 export default QuestionnaireService;

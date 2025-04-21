@@ -5,12 +5,11 @@ import { useTranslation } from 'next-i18next';
 import type AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { tagNames as recommendedTagNames, attributes as recommendedAttributes } from '~/services/renderer/recommended-whitelist';
 
-type Props ={
-  adminMarkDownContainer: AdminMarkDownContainer
-}
+type Props = {
+  adminMarkDownContainer: AdminMarkDownContainer;
+};
 
 export const WhitelistInput = (props: Props): JSX.Element => {
-
   const { t } = useTranslation('admin');
   const { adminMarkDownContainer } = props;
 
@@ -53,7 +52,9 @@ export const WhitelistInput = (props: Props): JSX.Element => {
           rows={6}
           cols={40}
           defaultValue={adminMarkDownContainer.state.tagWhitelist}
-          onChange={(e) => { adminMarkDownContainer.setState({ tagWhitelist: e.target.value }) }}
+          onChange={(e) => {
+            adminMarkDownContainer.setState({ tagWhitelist: e.target.value });
+          }}
         />
       </div>
       <div className="mt-4">
@@ -70,10 +71,11 @@ export const WhitelistInput = (props: Props): JSX.Element => {
           rows={6}
           cols={40}
           defaultValue={adminMarkDownContainer.state.attrWhitelist}
-          onChange={(e) => { adminMarkDownContainer.setState({ attrWhitelist: e.target.value }) }}
+          onChange={(e) => {
+            adminMarkDownContainer.setState({ attrWhitelist: e.target.value });
+          }}
         />
       </div>
     </>
   );
-
 };

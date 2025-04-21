@@ -13,16 +13,14 @@ import GoogleSecurityManagementContents from './GoogleSecuritySettingContents';
 const GoogleSecurityManagement = (props) => {
   const { adminGoogleSecurityContainer } = props;
 
-  const fetchGoogleSecuritySettingsData = useCallback(async() => {
+  const fetchGoogleSecuritySettingsData = useCallback(async () => {
     try {
       await adminGoogleSecurityContainer.retrieveSecurityData();
-    }
-    catch (err) {
+    } catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
     }
   }, [adminGoogleSecurityContainer]);
-
 
   useEffect(() => {
     fetchGoogleSecuritySettingsData();
@@ -31,13 +29,10 @@ const GoogleSecurityManagement = (props) => {
   return <GoogleSecurityManagementContents />;
 };
 
-
 GoogleSecurityManagement.propTypes = {
   adminGoogleSecurityContainer: PropTypes.instanceOf(AdminGoogleSecurityContainer).isRequired,
 };
 
-const GoogleSecurityManagementWithUnstatedContainer = withUnstatedContainers(GoogleSecurityManagement, [
-  AdminGoogleSecurityContainer,
-]);
+const GoogleSecurityManagementWithUnstatedContainer = withUnstatedContainers(GoogleSecurityManagement, [AdminGoogleSecurityContainer]);
 
 export default GoogleSecurityManagementWithUnstatedContainer;

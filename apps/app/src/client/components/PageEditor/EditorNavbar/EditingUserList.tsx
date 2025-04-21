@@ -11,8 +11,8 @@ import styles from './EditingUserList.module.scss';
 const userListPopoverClass = styles['user-list-popover'] ?? '';
 
 type Props = {
-  userList: IUserHasId[]
-}
+  userList: IUserHasId[];
+};
 
 export const EditingUserList: FC<Props> = ({ userList }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -29,13 +29,9 @@ export const EditingUserList: FC<Props> = ({ userList }) => {
   return (
     <div className="d-flex flex-column justify-content-start justify-content-sm-end">
       <div className="d-flex justify-content-start justify-content-sm-end">
-        {firstFourUsers.map(user => (
+        {firstFourUsers.map((user) => (
           <div key={user._id} className="ms-1">
-            <UserPicture
-              user={user}
-              noLink
-              additionalClassName="border border-info"
-            />
+            <UserPicture user={user} noLink additionalClassName="border border-info" />
           </div>
         ))}
 

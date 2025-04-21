@@ -1,11 +1,6 @@
 import type { IPage } from '@growi/core';
-import {
-  type IGrantedGroup,
-  PageGrant, GroupType, getIdForRef,
-} from '@growi/core';
-import {
-  pagePathUtils, pathUtils, pageUtils,
-} from '@growi/core/dist/utils';
+import { type IGrantedGroup, PageGrant, GroupType, getIdForRef } from '@growi/core';
+import { pagePathUtils, pathUtils, pageUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
@@ -29,47 +24,50 @@ const { isTopPage } = pagePathUtils;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 type ComparableTarget = {
-  grant?: number,
-  grantedUserIds?: ObjectIdLike[],
-  grantedGroupIds?: IGrantedGroup[],
-  applicableUserIds?: ObjectIdLike[],
-  applicableGroupIds?: ObjectIdLike[],
+  grant?: number;
+  grantedUserIds?: ObjectIdLike[];
+  grantedGroupIds?: IGrantedGroup[];
+  applicableUserIds?: ObjectIdLike[];
+  applicableGroupIds?: ObjectIdLike[];
 };
 
 type ComparableAncestor = {
-  grant: number,
-  grantedUserIds: ObjectIdLike[],
-  applicableUserIds?: ObjectIdLike[],
-  applicableGroupIds?: ObjectIdLike[],
+  grant: number;
+  grantedUserIds: ObjectIdLike[];
+  applicableUserIds?: ObjectIdLike[];
+  applicableGroupIds?: ObjectIdLike[];
 };
 
 type ComparableDescendants = {
-  isPublicExist: boolean,
-  grantedUserIds: ObjectIdLike[],
-  grantedGroupIds: IGrantedGroup[],
+  isPublicExist: boolean;
+  grantedUserIds: ObjectIdLike[];
+  grantedGroupIds: IGrantedGroup[];
 };
 
 /**
  * @param grantedUserGroupInfo This parameter has info to calculate whether the update operation is allowed.
  *   - See the `calcCanOverwriteDescendants` private method for detail.
  */
-type UpdateGrantInfo = {
-  grant: typeof PageGrant.GRANT_PUBLIC,
-} | {
-  grant: typeof PageGrant.GRANT_OWNER,
-  grantedUserId: ObjectIdLike,
-} | {
-  grant: typeof PageGrant.GRANT_USER_GROUP,
-  grantedUserGroupInfo: {
-    userIds: Set<ObjectIdLike>,
-    childrenOrItselfGroupIds: Set<ObjectIdLike>,
-  },
-};
+type UpdateGrantInfo =
+  | {
+      grant: typeof PageGrant.GRANT_PUBLIC;
+    }
+  | {
+      grant: typeof PageGrant.GRANT_OWNER;
+      grantedUserId: ObjectIdLike;
+    }
+  | {
+      grant: typeof PageGrant.GRANT_USER_GROUP;
+      grantedUserGroupInfo: {
+        userIds: Set<ObjectIdLike>;
+        childrenOrItselfGroupIds: Set<ObjectIdLike>;
+      };
+    };
 
 type DescendantPagesGrantInfo = {
-  grantSet: Set<number>,
-  grantedUserIds: Set<ObjectIdLike>, // all only me users of descendant pages
-  grantedUserGroupIds: Set<ObjectIdLike>, // all user groups of descendant pages
+  grantSet: Set<number>;
+  grantedUserIds: Set<ObjectIdLike>; // all only me users of descendant pages
+  grantedUserGroupIds: Set<ObjectIdLike>; // all user groups of descendant pages
 };
 
 /**
@@ -77,8 +75,8 @@ type DescendantPagesGrantInfo = {
  * @param {Set<ObjectIdLike>} userGroupIds The Set of the _id of the user groups that the operator belongs.
  */
 type OperatorGrantInfo = {
-  userId: ObjectIdLike,
-  userGroupIds: Set<ObjectIdLike>,
+  userId: ObjectIdLike;
+  userGroupIds: Set<ObjectIdLike>;
 };
 
 export interface IPageGrantService {
@@ -90,29 +88,29 @@ export interface IPageGrantService {
     grantedGroupIds?: IGrantedGroup[],
     shouldCheckDescendants?: boolean,
     includeNotMigratedPages?: boolean,
-    previousGrantedGroupIds?: IGrantedGroup[]
-  ) => Promise<boolean>,
-  separateNormalizableAndNotNormalizablePages: (user, pages) => Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]>,
-  generateUpdateGrantInfoToOverwriteDescendants: (
-    operator, updateGrant?: PageGrant, grantGroupIds?: IGrantedGroup[],
-  ) => Promise<UpdateGrantInfo>,
-  canOverwriteDescendants: (targetPath: string, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo) => Promise<boolean>,
-  validateGrantChange: (user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]) => Promise<boolean>,
-  validateGrantChangeSyncronously:(
-    userRelatedGroups: PopulatedGrantedGroup[], previousGrantedGroups: IGrantedGroup[], grant?: PageGrant, grantedGroups?: IGrantedGroup[],
-  ) => boolean,
-  getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>,
-  getPopulatedGrantedGroups: (grantedGroups: IGrantedGroup[]) => Promise<PopulatedGrantedGroup[]>,
-  getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
-  getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
-  getNonUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
-  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[], allowAnyoneWithTheLink?: boolean) => boolean,
-  getPageGroupGrantData: (page: PageDocument, user) => Promise<GroupGrantData>,
-  calcApplicableGrantData: (page, user) => Promise<IRecordApplicableGrant>
+    previousGrantedGroupIds?: IGrantedGroup[],
+  ) => Promise<boolean>;
+  separateNormalizableAndNotNormalizablePages: (user, pages) => Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]>;
+  generateUpdateGrantInfoToOverwriteDescendants: (operator, updateGrant?: PageGrant, grantGroupIds?: IGrantedGroup[]) => Promise<UpdateGrantInfo>;
+  canOverwriteDescendants: (targetPath: string, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo) => Promise<boolean>;
+  validateGrantChange: (user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]) => Promise<boolean>;
+  validateGrantChangeSyncronously: (
+    userRelatedGroups: PopulatedGrantedGroup[],
+    previousGrantedGroups: IGrantedGroup[],
+    grant?: PageGrant,
+    grantedGroups?: IGrantedGroup[],
+  ) => boolean;
+  getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>;
+  getPopulatedGrantedGroups: (grantedGroups: IGrantedGroup[]) => Promise<PopulatedGrantedGroup[]>;
+  getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>;
+  getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[];
+  getNonUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>;
+  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[], allowAnyoneWithTheLink?: boolean) => boolean;
+  getPageGroupGrantData: (page: PageDocument, user) => Promise<GroupGrantData>;
+  calcApplicableGrantData: (page, user) => Promise<IRecordApplicableGrant>;
 }
 
 class PageGrantService implements IPageGrantService {
-
   crowi!: any;
 
   constructor(crowi: any) {
@@ -148,7 +146,8 @@ class PageGrantService implements IPageGrantService {
      * ancestor side
      */
     // GRANT_PUBLIC
-    if (ancestor.grant === Page.GRANT_PUBLIC) { // any page can exist under public page
+    if (ancestor.grant === Page.GRANT_PUBLIC) {
+      // any page can exist under public page
       // do nothing
     }
     // GRANT_OWNER
@@ -157,11 +156,13 @@ class PageGrantService implements IPageGrantService {
         return false;
       }
 
-      if (target.grant !== Page.GRANT_OWNER) { // only GRANT_OWNER page can exist under GRANT_OWNER page
+      if (target.grant !== Page.GRANT_OWNER) {
+        // only GRANT_OWNER page can exist under GRANT_OWNER page
         return false;
       }
 
-      if (ancestor.grantedUserIds[0].toString() !== target.grantedUserIds[0].toString()) { // the grantedUser must be the same as parent's under the GRANT_OWNER page
+      if (ancestor.grantedUserIds[0].toString() !== target.grantedUserIds[0].toString()) {
+        // the grantedUser must be the same as parent's under the GRANT_OWNER page
         return false;
       }
     }
@@ -171,7 +172,8 @@ class PageGrantService implements IPageGrantService {
         throw new Error('applicableGroupIds and applicableUserIds are not specified');
       }
 
-      if (target.grant === Page.GRANT_PUBLIC) { // public page must not exist under GRANT_USER_GROUP page
+      if (target.grant === Page.GRANT_PUBLIC) {
+        // public page must not exist under GRANT_USER_GROUP page
         return false;
       }
 
@@ -180,7 +182,8 @@ class PageGrantService implements IPageGrantService {
           throw new Error('grantedUserIds must have one user');
         }
 
-        if (!includesObjectIds(ancestor.applicableUserIds, [target.grantedUserIds[0]])) { // GRANT_OWNER pages under GRAND_USER_GROUP page must be owned by the member of the grantedGroup of the GRAND_USER_GROUP page
+        if (!includesObjectIds(ancestor.applicableUserIds, [target.grantedUserIds[0]])) {
+          // GRANT_OWNER pages under GRAND_USER_GROUP page must be owned by the member of the grantedGroup of the GRAND_USER_GROUP page
           return false;
         }
       }
@@ -189,8 +192,9 @@ class PageGrantService implements IPageGrantService {
         if (target.grantedGroupIds == null || target.grantedGroupIds.length === 0) {
           throw new Error('grantedGroupId must not be empty');
         }
-        const targetGrantedGroupStrIds = target.grantedGroupIds.map(e => (typeof e.item === 'string' ? e.item : e.item._id));
-        if (!includesObjectIds(ancestor.applicableGroupIds, targetGrantedGroupStrIds)) { // only child groups or the same group can exist under GRANT_USER_GROUP page
+        const targetGrantedGroupStrIds = target.grantedGroupIds.map((e) => (typeof e.item === 'string' ? e.item : e.item._id));
+        if (!includesObjectIds(ancestor.applicableGroupIds, targetGrantedGroupStrIds)) {
+          // only child groups or the same group can exist under GRANT_USER_GROUP page
           return false;
         }
       }
@@ -204,7 +208,8 @@ class PageGrantService implements IPageGrantService {
      */
 
     // GRANT_PUBLIC
-    if (target.grant === Page.GRANT_PUBLIC) { // any page can exist under public page
+    if (target.grant === Page.GRANT_PUBLIC) {
+      // any page can exist under public page
       // do nothing
     }
     // GRANT_OWNER
@@ -213,15 +218,18 @@ class PageGrantService implements IPageGrantService {
         throw new Error('grantedUserIds must have one user');
       }
 
-      if (descendants.isPublicExist) { // public page must not exist under GRANT_OWNER page
+      if (descendants.isPublicExist) {
+        // public page must not exist under GRANT_OWNER page
         return false;
       }
 
-      if (descendants.grantedGroupIds.length !== 0 || descendants.grantedUserIds.length > 1) { // groups or more than 2 grantedUsers must not be in descendants
+      if (descendants.grantedGroupIds.length !== 0 || descendants.grantedUserIds.length > 1) {
+        // groups or more than 2 grantedUsers must not be in descendants
         return false;
       }
 
-      if (descendants.grantedUserIds.length === 1 && descendants.grantedUserIds[0].toString() !== target.grantedUserIds[0].toString()) { // if Only me page exists, then all of them must be owned by the same user as the target page
+      if (descendants.grantedUserIds.length === 1 && descendants.grantedUserIds[0].toString() !== target.grantedUserIds[0].toString()) {
+        // if Only me page exists, then all of them must be owned by the same user as the target page
         return false;
       }
     }
@@ -231,11 +239,15 @@ class PageGrantService implements IPageGrantService {
         throw new Error('applicableGroupIds and applicableUserIds must not be null');
       }
 
-      if (descendants.isPublicExist) { // public page must not exist under GRANT_USER_GROUP page
+      if (descendants.isPublicExist) {
+        // public page must not exist under GRANT_USER_GROUP page
         return false;
       }
 
-      const shouldNotExistGroupIds = excludeTestIdsFromTargetIds(descendants.grantedGroupIds.map(g => g.item), target.applicableGroupIds);
+      const shouldNotExistGroupIds = excludeTestIdsFromTargetIds(
+        descendants.grantedGroupIds.map((g) => g.item),
+        target.applicableGroupIds,
+      );
       const shouldNotExistUserIds = excludeTestIdsFromTargetIds(descendants.grantedUserIds, target.applicableUserIds);
       if (shouldNotExistGroupIds.length !== 0 || shouldNotExistUserIds.length !== 0) {
         return false;
@@ -264,22 +276,23 @@ class PageGrantService implements IPageGrantService {
    * Specification of userRelatedGroups is necessary to avoid the cost of fetching userRelatedGroups from DB every time.
    */
   validateGrantChangeSyncronously(
-      userRelatedGroups: PopulatedGrantedGroup[],
-      previousGrantedGroups: IGrantedGroup[],
-      grant?: PageGrant,
-      grantedGroups?: IGrantedGroup[],
+    userRelatedGroups: PopulatedGrantedGroup[],
+    previousGrantedGroups: IGrantedGroup[],
+    grant?: PageGrant,
+    grantedGroups?: IGrantedGroup[],
   ): boolean {
-    const userRelatedGroupIds = userRelatedGroups.map(g => g.item._id);
-    const userBelongsToAllPreviousGrantedGroups = excludeTestIdsFromTargetIds(
-      previousGrantedGroups.map(g => getIdForRef(g.item)),
-      userRelatedGroupIds,
-    ).length === 0;
+    const userRelatedGroupIds = userRelatedGroups.map((g) => g.item._id);
+    const userBelongsToAllPreviousGrantedGroups =
+      excludeTestIdsFromTargetIds(
+        previousGrantedGroups.map((g) => getIdForRef(g.item)),
+        userRelatedGroupIds,
+      ).length === 0;
 
     if (!userBelongsToAllPreviousGrantedGroups) {
       if (grant !== PageGrant.GRANT_USER_GROUP) {
         return false;
       }
-      const pageGrantIncludesUserRelatedGroup = hasIntersection(grantedGroups?.map(g => getIdForRef(g.item)) || [], userRelatedGroupIds);
+      const pageGrantIncludesUserRelatedGroup = hasIntersection(grantedGroups?.map((g) => getIdForRef(g.item)) || [], userRelatedGroupIds);
       if (!pageGrantIncludesUserRelatedGroup) {
         return false;
       }
@@ -293,7 +306,9 @@ class PageGrantService implements IPageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableTargetWithApplicableData(
-      grant: PageGrant | undefined, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupIds: IGrantedGroup[] | undefined,
+    grant: PageGrant | undefined,
+    grantedUserIds: ObjectIdLike[] | undefined,
+    grantedGroupIds: IGrantedGroup[] | undefined,
   ): Promise<ComparableTarget> {
     const Page = mongoose.model<IPage, PageModel>('Page');
 
@@ -312,17 +327,25 @@ class PageGrantService implements IPageGrantService {
         throw new Error('Target user group does not exist');
       }
 
-      const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
-      const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: targetExternalUserGroups.map(g => g._id) } });
-      applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(u => u.relatedUser as ObjectIdLike)));
+      const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map((g) => g._id) } });
+      const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: targetExternalUserGroups.map((g) => g._id) } });
+      applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map((u) => u.relatedUser as ObjectIdLike)));
 
-      const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
-        return UserGroup.findGroupsWithDescendantsById(group._id);
-      }))).flat();
-      const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
-        return ExternalUserGroup.findGroupsWithDescendantsById(group._id);
-      }))).flat();
-      applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id);
+      const applicableUserGroups = (
+        await Promise.all(
+          targetUserGroups.map((group) => {
+            return UserGroup.findGroupsWithDescendantsById(group._id);
+          }),
+        )
+      ).flat();
+      const applicableExternalUserGroups = (
+        await Promise.all(
+          targetExternalUserGroups.map((group) => {
+            return ExternalUserGroup.findGroupsWithDescendantsById(group._id);
+          }),
+        )
+      ).flat();
+      applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map((g) => g._id);
     }
 
     return {
@@ -353,11 +376,7 @@ class PageGrantService implements IPageGrantService {
     if (!includeNotMigratedPages) {
       builderForAncestors.addConditionAsOnTree();
     }
-    const ancestors = await builderForAncestors
-      .addConditionToListOnlyAncestors(targetPath)
-      .addConditionToSortPagesByDescPath()
-      .query
-      .exec();
+    const ancestors = await builderForAncestors.addConditionToListOnlyAncestors(targetPath).addConditionToSortPagesByDescPath().query.exec();
     const testAncestor = ancestors[0]; // TODO: consider when duplicate testAncestors exist
     if (testAncestor == null) {
       throw new Error('testAncestor must exist');
@@ -369,16 +388,23 @@ class PageGrantService implements IPageGrantService {
 
       const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: grantedUserGroups } }, { _id: 0, relatedUser: 1 });
       const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: grantedExternalUserGroups } }, { _id: 0, relatedUser: 1 });
-      applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(r => r.relatedUser as ObjectIdLike)));
+      applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map((r) => r.relatedUser as ObjectIdLike)));
 
-      const applicableUserGroups = (await Promise.all(grantedUserGroups.map((groupId) => {
-        return UserGroup.findGroupsWithDescendantsById(groupId);
-      }))).flat();
-      const applicableExternalUserGroups = (await Promise.all(grantedExternalUserGroups.map((groupId) => {
-        return ExternalUserGroup.findGroupsWithDescendantsById(groupId);
-      }))).flat();
-      applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id);
-
+      const applicableUserGroups = (
+        await Promise.all(
+          grantedUserGroups.map((groupId) => {
+            return UserGroup.findGroupsWithDescendantsById(groupId);
+          }),
+        )
+      ).flat();
+      const applicableExternalUserGroups = (
+        await Promise.all(
+          grantedExternalUserGroups.map((groupId) => {
+            return ExternalUserGroup.findGroupsWithDescendantsById(groupId);
+          }),
+        )
+      ).flat();
+      applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map((g) => g._id);
     }
 
     return {
@@ -398,7 +424,7 @@ class PageGrantService implements IPageGrantService {
     const Page = mongoose.model<IPage, PageModel>('Page');
 
     // Build conditions
-    const $match: {$or: any} = {
+    const $match: { $or: any } = {
       $or: [],
     };
 
@@ -433,7 +459,8 @@ class PageGrantService implements IPageGrantService {
     }
 
     const result = await Page.aggregate([
-      { // match to descendants excluding empty pages
+      {
+        // match to descendants excluding empty pages
         $match,
       },
       {
@@ -445,18 +472,21 @@ class PageGrantService implements IPageGrantService {
         },
       },
       {
-        $unwind: { // preprocess for creating groups set
+        $unwind: {
+          // preprocess for creating groups set
           path: '$grantedGroups',
           preserveNullAndEmptyArrays: true,
         },
       },
       {
-        $unwind: { // preprocess for creating users set
+        $unwind: {
+          // preprocess for creating users set
           path: '$grantedUsersSet',
           preserveNullAndEmptyArrays: true,
         },
       },
-      { // remove duplicates from pipeline
+      {
+        // remove duplicates from pipeline
         $group: {
           _id: '$grant',
           grantedGroupsSet: { $addToSet: '$grantedGroups' },
@@ -466,12 +496,12 @@ class PageGrantService implements IPageGrantService {
     ]);
 
     // GRANT_PUBLIC group
-    const isPublicExist = result.some(r => r._id === Page.GRANT_PUBLIC);
+    const isPublicExist = result.some((r) => r._id === Page.GRANT_PUBLIC);
     // GRANT_OWNER group
-    const grantOwnerResult = result.filter(r => r._id === Page.GRANT_OWNER)[0]; // users of GRANT_OWNER
+    const grantOwnerResult = result.filter((r) => r._id === Page.GRANT_OWNER)[0]; // users of GRANT_OWNER
     const grantedUserIds: ObjectIdLike[] = grantOwnerResult?.grantedUsersSet ?? [];
     // GRANT_USER_GROUP group
-    const grantUserGroupResult = result.filter(r => r._id === Page.GRANT_USER_GROUP)[0]; // users of GRANT_OWNER
+    const grantUserGroupResult = result.filter((r) => r._id === Page.GRANT_USER_GROUP)[0]; // users of GRANT_OWNER
     const grantedGroupIds = grantUserGroupResult?.grantedGroupsSet ?? [];
 
     return {
@@ -500,13 +530,13 @@ class PageGrantService implements IPageGrantService {
    * @returns Promise<boolean>
    */
   async isGrantNormalized(
-      user,
-      targetPath: string,
-      grant?: PageGrant,
-      grantedUserIds?: ObjectIdLike[],
-      grantedGroupIds?: IGrantedGroup[],
-      shouldCheckDescendants = false,
-      includeNotMigratedPages = false,
+    user,
+    targetPath: string,
+    grant?: PageGrant,
+    grantedUserIds?: ObjectIdLike[],
+    grantedGroupIds?: IGrantedGroup[],
+    shouldCheckDescendants = false,
+    includeNotMigratedPages = false,
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
@@ -514,7 +544,8 @@ class PageGrantService implements IPageGrantService {
 
     const comparableAncestor = await this.generateComparableAncestor(targetPath, includeNotMigratedPages);
 
-    if (!shouldCheckDescendants) { // checking the parent is enough
+    if (!shouldCheckDescendants) {
+      // checking the parent is enough
       const comparableTarget: ComparableTarget = { grant, grantedUserIds, grantedGroupIds };
       return this.validateGrant(comparableTarget, comparableAncestor);
     }
@@ -543,9 +574,7 @@ class PageGrantService implements IPageGrantService {
     const nonNormalizable: (PageDocument & { _id: any })[] = []; // can be used to tell user which page failed to migrate
 
     for await (const page of pages) {
-      const {
-        path, grant, grantedUsers: grantedUserIds, grantedGroups: grantedGroupIds,
-      } = page;
+      const { path, grant, grantedUsers: grantedUserIds, grantedGroups: grantedGroupIds } = page;
 
       if (!pageUtils.isPageNormalized(page)) {
         nonNormalizable.push(page);
@@ -554,8 +583,7 @@ class PageGrantService implements IPageGrantService {
 
       if (await this.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, shouldIncludeNotMigratedPages)) {
         normalizable.push(page);
-      }
-      else {
+      } else {
         nonNormalizable.push(page);
       }
     }
@@ -593,19 +621,16 @@ class PageGrantService implements IPageGrantService {
 
     const parent = await Page.findById(page.parent);
     if (parent == null) {
-      throw new Error('The page\'s parent does not exist.');
+      throw new Error("The page's parent does not exist.");
     }
 
-    const {
-      grant, grantedUsers, grantedGroups,
-    } = parent;
+    const { grant, grantedUsers, grantedGroups } = parent;
 
     if (grant === PageGrant.GRANT_PUBLIC) {
       data[PageGrant.GRANT_PUBLIC] = null;
       data[PageGrant.GRANT_OWNER] = null;
       data[PageGrant.GRANT_USER_GROUP] = { applicableGroups: userRelatedGroups };
-    }
-    else if (grant === PageGrant.GRANT_OWNER) {
+    } else if (grant === PageGrant.GRANT_OWNER) {
       const grantedUser = grantedUsers[0];
 
       const isUserApplicable = grantedUser.toString() === user._id.toString();
@@ -613,8 +638,7 @@ class PageGrantService implements IPageGrantService {
       if (isUserApplicable) {
         data[PageGrant.GRANT_OWNER] = null;
       }
-    }
-    else if (grant === PageGrant.GRANT_USER_GROUP) {
+    } else if (grant === PageGrant.GRANT_USER_GROUP) {
       const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantedGroups);
       const targetUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroupIds } });
       const targetExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroupIds } });
@@ -622,24 +646,40 @@ class PageGrantService implements IPageGrantService {
         throw new Error('Group not found to calculate grant data.');
       }
 
-      const isUserExistInUserGroup = (await Promise.all(targetUserGroups.map((group) => {
-        return UserGroupRelation.countByGroupIdsAndUser([group._id], user);
-      }))).some(count => count > 0);
-      const isUserExistInExternalUserGroup = (await Promise.all(targetExternalUserGroups.map((group) => {
-        return ExternalUserGroupRelation.countByGroupIdsAndUser([group._id], user);
-      }))).some(count => count > 0);
+      const isUserExistInUserGroup = (
+        await Promise.all(
+          targetUserGroups.map((group) => {
+            return UserGroupRelation.countByGroupIdsAndUser([group._id], user);
+          }),
+        )
+      ).some((count) => count > 0);
+      const isUserExistInExternalUserGroup = (
+        await Promise.all(
+          targetExternalUserGroups.map((group) => {
+            return ExternalUserGroupRelation.countByGroupIdsAndUser([group._id], user);
+          }),
+        )
+      ).some((count) => count > 0);
       const isUserExistInGroup = isUserExistInUserGroup || isUserExistInExternalUserGroup;
 
       if (isUserExistInGroup) {
         data[PageGrant.GRANT_OWNER] = null;
       }
 
-      const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
-        return UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
-      }))).flat();
-      const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
-        return ExternalUserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
-      }))).flat();
+      const applicableUserGroups = (
+        await Promise.all(
+          targetUserGroups.map((group) => {
+            return UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+          }),
+        )
+      ).flat();
+      const applicableExternalUserGroups = (
+        await Promise.all(
+          targetExternalUserGroups.map((group) => {
+            return ExternalUserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+          }),
+        )
+      ).flat();
 
       const applicableGroups = [
         ...applicableUserGroups.map((group) => {
@@ -669,15 +709,19 @@ class PageGrantService implements IPageGrantService {
       const provider = group.type === GroupType.externalUserGroup ? group.item.provider : undefined;
       return {
         // default status as notGranted
-        id: group.item._id.toString(), name: group.item.name, type: group.type, provider, status: UserGroupPageGrantStatus.notGranted,
+        id: group.item._id.toString(),
+        name: group.item.name,
+        type: group.type,
+        provider,
+        status: UserGroupPageGrantStatus.notGranted,
       };
     });
 
     const nonUserRelatedGrantedGroups: {
-      id: string,
-      name: string,
-      type: GroupType,
-      provider?: ExternalGroupProviderType,
+      id: string;
+      name: string;
+      type: GroupType;
+      provider?: ExternalGroupProviderType;
     }[] = [];
 
     const populatedGrantedGroups = await this.getPopulatedGrantedGroups(page.grantedGroups);
@@ -690,17 +734,19 @@ class PageGrantService implements IPageGrantService {
       });
       if (userRelatedGrantedGroup != null) {
         userRelatedGrantedGroup.status = UserGroupPageGrantStatus.isGranted;
-      }
-      else {
+      } else {
         const provider = group.type === GroupType.externalUserGroup ? group.item.provider : undefined;
         nonUserRelatedGrantedGroups.push({
-          id: group.item._id.toString(), name: group.item.name, type: group.type, provider,
+          id: group.item._id.toString(),
+          name: group.item.name,
+          type: group.type,
+          provider,
         });
       }
     });
 
     // Check if group can be granted to page for non-granted groups
-    const grantedUserIds = page.grantedUsers?.map(user => getIdForRef(user)) ?? [];
+    const grantedUserIds = page.grantedUsers?.map((user) => getIdForRef(user)) ?? [];
     const comparableAncestor = await this.generateComparableAncestor(page.path, false);
     userRelatedGroupsData = userRelatedGroupsData.map((groupData) => {
       if (groupData.status === UserGroupPageGrantStatus.isGranted) {
@@ -747,12 +793,12 @@ class PageGrantService implements IPageGrantService {
     const userGroupDocuments = await UserGroup.find({ _id: { $in: grantedUserGroups } });
     const externalUserGroupDocuments = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
     return [
-      ...(userGroupDocuments.map((group) => {
+      ...userGroupDocuments.map((group) => {
         return { type: GroupType.userGroup, item: group };
-      })),
-      ...(externalUserGroupDocuments.map((group) => {
+      }),
+      ...externalUserGroupDocuments.map((group) => {
         return { type: GroupType.externalUserGroup, item: group };
-      })),
+      }),
     ];
   }
 
@@ -760,7 +806,7 @@ class PageGrantService implements IPageGrantService {
    * get all groups of Page that user is related to
    */
   async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
-    const userRelatedGroups = (await this.getUserRelatedGroups(user));
+    const userRelatedGroups = await this.getUserRelatedGroups(user);
     return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page);
   }
 
@@ -769,31 +815,43 @@ class PageGrantService implements IPageGrantService {
    * Specification of userRelatedGroups is necessary to avoid the cost of fetching userRelatedGroups from DB every time.
    */
   getUserRelatedGrantedGroupsSyncronously(userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument): IGrantedGroup[] {
-    const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
-    return page.grantedGroups?.filter((group) => {
-      return userRelatedGroupIds.includes(getIdForRef(group.item).toString());
-    }) || [];
+    const userRelatedGroupIds: string[] = userRelatedGroups.map((ug) => ug.item._id.toString());
+    return (
+      page.grantedGroups?.filter((group) => {
+        return userRelatedGroupIds.includes(getIdForRef(group.item).toString());
+      }) || []
+    );
   }
 
   /*
    * get all groups of Page that user is not related to
    */
   async getNonUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
-    const userRelatedGroups = (await this.getUserRelatedGroups(user));
-    const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
-    return page.grantedGroups?.filter((group) => {
-      return !userRelatedGroupIds.includes(getIdForRef(group.item).toString());
-    }) || [];
+    const userRelatedGroups = await this.getUserRelatedGroups(user);
+    const userRelatedGroupIds: string[] = userRelatedGroups.map((ug) => ug.item._id.toString());
+    return (
+      page.grantedGroups?.filter((group) => {
+        return !userRelatedGroupIds.includes(getIdForRef(group.item).toString());
+      }) || []
+    );
   }
 
   /**
    * Check if user is granted access to page
    */
   isUserGrantedPageAccess(page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[], allowAnyoneWithTheLink = false): boolean {
-    if (page.grant === PageGrant.GRANT_PUBLIC) { return true; }
-    if (page.grant === PageGrant.GRANT_RESTRICTED && allowAnyoneWithTheLink) { return true; }
-    if (page.grant === PageGrant.GRANT_OWNER) { return page.grantedUsers?.includes(user._id.toString()) ?? false; }
-    if (page.grant === PageGrant.GRANT_USER_GROUP) { return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page).length > 0; }
+    if (page.grant === PageGrant.GRANT_PUBLIC) {
+      return true;
+    }
+    if (page.grant === PageGrant.GRANT_RESTRICTED && allowAnyoneWithTheLink) {
+      return true;
+    }
+    if (page.grant === PageGrant.GRANT_OWNER) {
+      return page.grantedUsers?.includes(user._id.toString()) ?? false;
+    }
+    if (page.grant === PageGrant.GRANT_USER_GROUP) {
+      return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page).length > 0;
+    }
     return false;
   }
 
@@ -829,31 +887,29 @@ class PageGrantService implements IPageGrantService {
     const descendantPagesGrantInfo = {
       grantSet,
       grantedUserIds: new Set(comparableDescendants.grantedUserIds), // all only me users of descendant pages
-      grantedUserGroupIds: new Set(comparableDescendants.grantedGroupIds.map((g) => {
-        return typeof g.item === 'string' ? g.item : g.item._id;
-      })), // all user groups of descendant pages
+      grantedUserGroupIds: new Set(
+        comparableDescendants.grantedGroupIds.map((g) => {
+          return typeof g.item === 'string' ? g.item : g.item._id;
+        }),
+      ), // all user groups of descendant pages
     };
 
     return this.calcCanOverwriteDescendants(operatorGrantInfo, updateGrantInfo, descendantPagesGrantInfo);
   }
 
-  async generateUpdateGrantInfoToOverwriteDescendants(
-      operator, updateGrant?: PageGrant, grantGroupIds?: IGrantedGroup[],
-  ): Promise<UpdateGrantInfo> {
+  async generateUpdateGrantInfoToOverwriteDescendants(operator, updateGrant?: PageGrant, grantGroupIds?: IGrantedGroup[]): Promise<UpdateGrantInfo> {
     let updateGrantInfo: UpdateGrantInfo | null = null;
 
     if (updateGrant === PageGrant.GRANT_PUBLIC) {
       updateGrantInfo = {
         grant: PageGrant.GRANT_PUBLIC,
       };
-    }
-    else if (updateGrant === PageGrant.GRANT_OWNER) {
+    } else if (updateGrant === PageGrant.GRANT_OWNER) {
       updateGrantInfo = {
         grant: PageGrant.GRANT_OWNER,
         grantedUserId: operator._id,
       };
-    }
-    else if (updateGrant === PageGrant.GRANT_USER_GROUP) {
+    } else if (updateGrant === PageGrant.GRANT_USER_GROUP) {
       if (grantGroupIds == null) {
         throw new Error('The parameter `grantGroupIds` is required.');
       }
@@ -863,14 +919,22 @@ class PageGrantService implements IPageGrantService {
       const externalUserGroupUserIds = await ExternalUserGroupRelation.findAllUserIdsForUserGroups(grantedExternalUserGroupIds);
       const userIds = [...userGroupUserIds, ...externalUserGroupUserIds];
 
-      const childrenOrItselfUserGroups = (await Promise.all(grantedUserGroupIds.map((groupId) => {
-        return UserGroup.findGroupsWithDescendantsById(groupId);
-      }))).flat();
-      const childrenOrItselfExternalUserGroups = (await Promise.all(grantedExternalUserGroupIds.map((groupId) => {
-        return ExternalUserGroup.findGroupsWithDescendantsById(groupId);
-      }))).flat();
+      const childrenOrItselfUserGroups = (
+        await Promise.all(
+          grantedUserGroupIds.map((groupId) => {
+            return UserGroup.findGroupsWithDescendantsById(groupId);
+          }),
+        )
+      ).flat();
+      const childrenOrItselfExternalUserGroups = (
+        await Promise.all(
+          grantedExternalUserGroupIds.map((groupId) => {
+            return ExternalUserGroup.findGroupsWithDescendantsById(groupId);
+          }),
+        )
+      ).flat();
       const childrenOrItselfGroups = [...childrenOrItselfUserGroups, ...childrenOrItselfExternalUserGroups];
-      const childrenOrItselfGroupIds = childrenOrItselfGroups.map(d => d._id);
+      const childrenOrItselfGroupIds = childrenOrItselfGroups.map((d) => d._id);
 
       updateGrantInfo = {
         grant: PageGrant.GRANT_USER_GROUP,
@@ -891,17 +955,16 @@ class PageGrantService implements IPageGrantService {
 
   private calcIsAllDescendantsGrantedByOperator(operatorGrantInfo: OperatorGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo): boolean {
     if (descendantPagesGrantInfo.grantSet.has(PageGrant.GRANT_OWNER)) {
-      const isNonApplicableOwnerExist = descendantPagesGrantInfo.grantedUserIds.size >= 2
-        || !includesObjectIds([...descendantPagesGrantInfo.grantedUserIds], [operatorGrantInfo.userId]);
+      const isNonApplicableOwnerExist =
+        descendantPagesGrantInfo.grantedUserIds.size >= 2 || !includesObjectIds([...descendantPagesGrantInfo.grantedUserIds], [operatorGrantInfo.userId]);
       if (isNonApplicableOwnerExist) {
         return false;
       }
     }
 
     if (descendantPagesGrantInfo.grantSet.has(PageGrant.GRANT_USER_GROUP)) {
-      const isNonApplicableGroupExist = excludeTestIdsFromTargetIds(
-        [...descendantPagesGrantInfo.grantedUserGroupIds], [...operatorGrantInfo.userGroupIds],
-      ).length > 0;
+      const isNonApplicableGroupExist =
+        excludeTestIdsFromTargetIds([...descendantPagesGrantInfo.grantedUserGroupIds], [...operatorGrantInfo.userGroupIds]).length > 0;
       if (isNonApplicableGroupExist) {
         return false;
       }
@@ -911,7 +974,9 @@ class PageGrantService implements IPageGrantService {
   }
 
   private calcCanOverwriteDescendants(
-      operatorGrantInfo: OperatorGrantInfo, updateGrantInfo: UpdateGrantInfo, descendantPagesGrantInfo: DescendantPagesGrantInfo,
+    operatorGrantInfo: OperatorGrantInfo,
+    updateGrantInfo: UpdateGrantInfo,
+    descendantPagesGrantInfo: DescendantPagesGrantInfo,
   ): boolean {
     // 1. check is tree GRANTED and it returns true when GRANTED
     //   - GRANTED is the tree with all pages granted by the operator
@@ -933,18 +998,16 @@ class PageGrantService implements IPageGrantService {
     //      a. if all descendants user groups are children or itself of update user group
     //      b. if all descendants grantedUsers belong to update user group
     if (updateGrantInfo.grant === PageGrant.GRANT_USER_GROUP) {
-      const isAllDescendantGroupsChildrenOrItselfOfUpdateGroup = excludeTestIdsFromTargetIds(
-        [...descendantPagesGrantInfo.grantedUserGroupIds], [...updateGrantInfo.grantedUserGroupInfo.childrenOrItselfGroupIds],
-      ).length === 0; // a.
-      const isUpdateGroupUsersIncludeAllDescendantsOwners = excludeTestIdsFromTargetIds(
-        [...descendantPagesGrantInfo.grantedUserIds], [...updateGrantInfo.grantedUserGroupInfo.userIds],
-      ).length === 0; // b.
+      const isAllDescendantGroupsChildrenOrItselfOfUpdateGroup =
+        excludeTestIdsFromTargetIds([...descendantPagesGrantInfo.grantedUserGroupIds], [...updateGrantInfo.grantedUserGroupInfo.childrenOrItselfGroupIds])
+          .length === 0; // a.
+      const isUpdateGroupUsersIncludeAllDescendantsOwners =
+        excludeTestIdsFromTargetIds([...descendantPagesGrantInfo.grantedUserIds], [...updateGrantInfo.grantedUserGroupInfo.userIds]).length === 0; // b.
       return isAllDescendantGroupsChildrenOrItselfOfUpdateGroup && isUpdateGroupUsersIncludeAllDescendantsOwners;
     }
 
     return false;
   }
-
 }
 
 export default PageGrantService;

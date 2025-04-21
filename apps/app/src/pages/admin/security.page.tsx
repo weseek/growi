@@ -1,8 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -18,14 +16,12 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const SecurityManagement = dynamic(() => import('~/client/components/Admin/Security/SecurityManagement'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
-
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then((mod) => mod.ForbiddenPage), { ssr: false });
 
 type Props = CommonProps & {
-  isMailerSetup: boolean,
-  siteUrl: string,
+  isMailerSetup: boolean;
+  siteUrl: string;
 };
-
 
 const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('admin');
@@ -39,7 +35,7 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
   const adminSecurityContainers: Container<any>[] = useMemo(() => [], []);
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const AdminGeneralSecurityContainer = (await import('~/client/services/AdminGeneralSecurityContainer')).default;
       const adminGeneralSecurityContainer = new AdminGeneralSecurityContainer();
 
@@ -89,7 +85,7 @@ const AdminSecuritySettingsPage: NextPage<Props> = (props) => {
   );
 };
 
-const injectServerConfigurations = async(context: GetServerSidePropsContext, props: Props): Promise<void> => {
+const injectServerConfigurations = async (context: GetServerSidePropsContext, props: Props): Promise<void> => {
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { growiInfoService, mailService } = crowi;
@@ -98,11 +94,9 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   props.isMailerSetup = mailService.isMailerSetup;
 };
 
-
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context, injectServerConfigurations);
   return props;
 };
-
 
 export default AdminSecuritySettingsPage;

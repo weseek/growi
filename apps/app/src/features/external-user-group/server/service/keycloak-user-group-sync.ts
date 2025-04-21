@@ -20,7 +20,6 @@ const logger = loggerFactory('growi:service:keycloak-user-group-sync-service');
 const TREES_BATCH_SIZE = 10;
 
 export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
-
   kcAdminClient: KeycloakAdminClient;
 
   realm: string | undefined; // realm that contains the groups
@@ -63,8 +62,9 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
     logger.info('Get groups from keycloak server');
     const rootGroups = await this.kcAdminClient.groups.find({ realm: this.realm });
 
-    return (await batchProcessPromiseAll(rootGroups, TREES_BATCH_SIZE, group => this.groupRepresentationToTreeNode(group)))
-      .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
+    return (await batchProcessPromiseAll(rootGroups, TREES_BATCH_SIZE, (group) => this.groupRepresentationToTreeNode(group))).filter(
+      (node): node is NonNullable<ExternalUserGroupTreeNode> => node != null,
+    );
   }
 
   /**
@@ -85,13 +85,15 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
    * Convert GroupRepresentation response returned from Keycloak to ExternalUserGroupTreeNode
    */
   private async groupRepresentationToTreeNode(group: GroupRepresentation): Promise<ExternalUserGroupTreeNode | null> {
-    if (group.id == null || group.name == null) { return null; }
+    if (group.id == null || group.name == null) {
+      return null;
+    }
 
     logger.info('Get users from keycloak server');
     const userRepresentations = await this.getMembers(group.id);
 
     const userInfos = userRepresentations != null ? this.userRepresentationsToExternalUserInfos(userRepresentations) : [];
-    const description = await this.getGroupDescription(group.id) || undefined;
+    const description = (await this.getGroupDescription(group.id)) || undefined;
     const childGroups = group.subGroups;
 
     const childGroupNodesWithNull: (ExternalUserGroupTreeNode | null)[] = [];
@@ -102,8 +104,7 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
         childGroupNodesWithNull.push(await this.groupRepresentationToTreeNode(childGroup));
       }
     }
-    const childGroupNodes: ExternalUserGroupTreeNode[] = childGroupNodesWithNull
-      .filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
+    const childGroupNodes: ExternalUserGroupTreeNode[] = childGroupNodesWithNull.filter((node): node is NonNullable<ExternalUserGroupTreeNode> => node != null);
 
     return {
       id: group.id,
@@ -117,10 +118,12 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
   private async getMembers(groupId: string): Promise<UserRepresentation[]> {
     let allUsers: UserRepresentation[] = [];
 
-    const fetchUsersWithOffset = async(offset: number) => {
+    const fetchUsersWithOffset = async (offset: number) => {
       await this.auth();
       const response = await this.kcAdminClient.groups.listMembers({
-        id: groupId, realm: this.realm, first: offset,
+        id: groupId,
+        realm: this.realm,
+        first: offset,
       });
 
       if (response != null && response.length > 0) {
@@ -134,12 +137,13 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
     return allUsers;
   }
 
-
   /**
    * Fetch group detail from Keycloak and return group description
    */
   private async getGroupDescription(groupId: string): Promise<string | null> {
-    if (this.groupDescriptionAttribute == null) { return null; }
+    if (this.groupDescriptionAttribute == null) {
+      return null;
+    }
 
     await this.auth();
     const groupDetail = await this.kcAdminClient.groups.findOne({ id: groupId, realm: this.realm });
@@ -165,5 +169,4 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
     return externalUserGroupsWithNull.filter((node): node is NonNullable<ExternalUserInfo> => node != null);
   }
-
 }

@@ -1,6 +1,4 @@
-import React, {
-  useEffect, useMemo, useState, type JSX,
-} from 'react';
+import React, { useEffect, useMemo, useState, type JSX } from 'react';
 
 import { isPopulated, type IUser } from '@growi/core';
 import * as pathUtils from '@growi/core/dist/utils/path-utils';
@@ -13,7 +11,6 @@ import urljoin from 'url-join';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
-
 import RevisionRenderer from '../../../components/PageView/RevisionRenderer';
 import { Username } from '../../../components/User/Username';
 import type { ICommentHasId } from '../../../interfaces/comment';
@@ -25,24 +22,20 @@ import { CommentEditor } from './CommentEditor';
 import styles from './Comment.module.scss';
 
 type CommentProps = {
-  comment: ICommentHasId,
-  rendererOptions: RendererOptions,
-  revisionId: string,
-  revisionCreatedAt: Date,
-  currentUser: IUser,
-  isReadOnly: boolean,
-  pageId: string,
-  pagePath: string,
-  deleteBtnClicked: (comment: ICommentHasId) => void,
-  onComment: () => void,
-}
+  comment: ICommentHasId;
+  rendererOptions: RendererOptions;
+  revisionId: string;
+  revisionCreatedAt: Date;
+  currentUser: IUser;
+  isReadOnly: boolean;
+  pageId: string;
+  pagePath: string;
+  deleteBtnClicked: (comment: ICommentHasId) => void;
+  onComment: () => void;
+};
 
 export const Comment = (props: CommentProps): JSX.Element => {
-
-  const {
-    comment, rendererOptions, revisionId, revisionCreatedAt, currentUser, isReadOnly,
-    pageId, pagePath, deleteBtnClicked, onComment,
-  } = props;
+  const { comment, rendererOptions, revisionId, revisionCreatedAt, currentUser, isReadOnly, pageId, pagePath, deleteBtnClicked, onComment } = props;
 
   const { returnPathForURL } = pathUtils;
 
@@ -82,22 +75,16 @@ export const Comment = (props: CommentProps): JSX.Element => {
     let className = 'page-comment flex-column';
 
     // TODO: fix so that `comment.createdAt` to be type Date https://redmine.weseek.co.jp/issues/113876
-    const commentCreatedAtFixed = typeof comment.createdAt === 'string'
-      ? parseISO(comment.createdAt)
-      : comment.createdAt;
-    const revisionCreatedAtFixed = typeof revisionCreatedAt === 'string'
-      ? parseISO(revisionCreatedAt)
-      : revisionCreatedAt;
+    const commentCreatedAtFixed = typeof comment.createdAt === 'string' ? parseISO(comment.createdAt) : comment.createdAt;
+    const revisionCreatedAtFixed = typeof revisionCreatedAt === 'string' ? parseISO(revisionCreatedAt) : revisionCreatedAt;
 
     // Conditional for called from SearchResultContext
     if (revisionId != null && revisionCreatedAt != null) {
       if (comment.revision === revisionId) {
         className += ' page-comment-current';
-      }
-      else if (commentCreatedAtFixed.getTime() > revisionCreatedAtFixed.getTime()) {
+      } else if (commentCreatedAtFixed.getTime() > revisionCreatedAtFixed.getTime()) {
         className += ' page-comment-newer';
-      }
-      else {
+      } else {
         className += ' page-comment-older';
       }
     }
@@ -118,13 +105,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
       return <></>;
     }
 
-    return (
-      <RevisionRenderer
-        rendererOptions={rendererOptions}
-        markdown={markdown}
-        additionalClassName="comment"
-      />
-    );
+    return <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} additionalClassName="comment" />;
   }, [markdown, rendererOptions]);
 
   const rootClassName = getRootClassName(comment);
@@ -134,7 +115,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   return (
     <div className={`${styles['comment-styles']}`}>
-      { (isReEdit && !isReadOnly) ? (
+      {isReEdit && !isReadOnly ? (
         <CommentEditor
           pageId={comment._id}
           replyTo={undefined}
@@ -174,22 +155,21 @@ export const Comment = (props: CommentProps): JSX.Element => {
             </div>
             <div className="page-comment-body">{commentBody}</div>
             <div className="page-comment-meta">
-              { isEdited && (
+              {isEdited && (
                 <>
                   <span id={editedDateId}>&nbsp;(edited)</span>
-                  <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
+                  <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>
+                    {editedDateFormatted}
+                  </UncontrolledTooltip>
                 </>
-              ) }
+              )}
             </div>
-            { (isCurrentUserEqualsToAuthor() && !isReadOnly) && (
-              <CommentControl
-                onClickDeleteBtn={deleteBtnClickedHandler}
-                onClickEditBtn={() => setIsReEdit(true)}
-              />
-            ) }
+            {isCurrentUserEqualsToAuthor() && !isReadOnly && (
+              <CommentControl onClickDeleteBtn={deleteBtnClickedHandler} onClickEditBtn={() => setIsReEdit(true)} />
+            )}
           </div>
         </div>
-      ) }
+      )}
     </div>
   );
 };

@@ -12,10 +12,7 @@ export const invitedRules = (): ValidationChain[] => {
       .not()
       .isEmpty()
       .withMessage('message.Username field is required'),
-    body('invitedForm.name')
-      .not()
-      .isEmpty()
-      .withMessage('message.Name field is required'),
+    body('invitedForm.name').not().isEmpty().withMessage('message.Name field is required'),
     body('invitedForm.password')
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('message.Password has invalid character')
@@ -34,9 +31,8 @@ export const invitedValidation = (req: Request, _res: Response, next: () => Next
 
   if (errors.isEmpty()) {
     Object.assign(form, { isValid: true });
-  }
-  else {
-    errors.array().map(err => extractedErrors.push(err.msg));
+  } else {
+    errors.array().map((err) => extractedErrors.push(err.msg));
     Object.assign(form, { isValid: false, errors: extractedErrors });
   }
 

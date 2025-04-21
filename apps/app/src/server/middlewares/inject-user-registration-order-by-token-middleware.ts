@@ -9,11 +9,11 @@ import UserRegistrationOrder, { type IUserRegistrationOrder } from '../models/us
 const logger = loggerFactory('growi:routes:user-activation');
 
 export type ReqWithUserRegistrationOrder = Request & {
-  userRegistrationOrder: IUserRegistrationOrder
+  userRegistrationOrder: IUserRegistrationOrder;
 };
 
 // eslint-disable-next-line import/no-anonymous-default-export
-export default async(req: ReqWithUserRegistrationOrder, res: Response, next: NextFunction): Promise<void> => {
+export default async (req: ReqWithUserRegistrationOrder, res: Response, next: NextFunction): Promise<void> => {
   const token = req.params.token || req.body.token;
 
   if (token == null) {

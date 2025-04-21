@@ -1,7 +1,6 @@
 import UpdatePost from '../../../src/server/models/update-post';
 
 describe('UpdatePost', () => {
-
   describe('.createPrefixesByPathPattern', () => {
     describe('with a path', () => {
       test('should return right patternPrfixes', () => {

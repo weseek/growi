@@ -20,13 +20,12 @@ import QuestionnaireAnswer from '../../models/questionnaire-answer';
 import QuestionnaireAnswerStatus from '../../models/questionnaire-answer-status';
 import { convertToLegacyFormat, getSiteUrlHashed } from '../../util/convert-to-legacy-format';
 
-
 const logger = loggerFactory('growi:routes:apiv3:questionnaire');
 
 const router = Router();
 
 interface AuthorizedRequest extends Request {
-  user?: any
+  user?: any;
 }
 
 module.exports = (crowi: Crowi): Router => {
@@ -44,13 +43,17 @@ module.exports = (crowi: Crowi): Router => {
     skipDeny: [body('questionnaireOrderId').exists().isString()],
   };
 
-  const changeAnswerStatus = async(user, questionnaireOrderId, status) => {
-    const result = await QuestionnaireAnswerStatus.updateOne({
-      user: { $eq: user },
-      questionnaireOrderId: { $eq: questionnaireOrderId },
-    }, {
-      status,
-    }, { upsert: true });
+  const changeAnswerStatus = async (user, questionnaireOrderId, status) => {
+    const result = await QuestionnaireAnswerStatus.updateOne(
+      {
+        user: { $eq: user },
+        questionnaireOrderId: { $eq: questionnaireOrderId },
+      },
+      {
+        status,
+      },
+      { upsert: true },
+    );
 
     if (result.modifiedCount === 1) {
       return 204;
@@ -84,7 +87,7 @@ module.exports = (crowi: Crowi): Router => {
    *                   items:
    *                     type: object
    */
-  router.get('/orders', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/orders', accessTokenParser, loginRequired, async (req: AuthorizedRequest, res: ApiV3Response) => {
     const growiInfo = await growiInfoService.getGrowiInfo(true);
     const userInfo = crowi.questionnaireService.getUserInfo(req.user ?? null, getSiteUrlHashed(growiInfo.appSiteUrl));
 
@@ -92,8 +95,7 @@ module.exports = (crowi: Crowi): Router => {
       const questionnaireOrders = await crowi.questionnaireService.getQuestionnaireOrdersToShow(userInfo, growiInfo, req.user?._id ?? null);
 
       return res.apiv3({ questionnaireOrders });
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(err, 500);
     }
@@ -120,7 +122,7 @@ module.exports = (crowi: Crowi): Router => {
    *                 isEnabled:
    *                   type: boolean
    */
-  router.get('/is-enabled', accessTokenParser, loginRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.get('/is-enabled', accessTokenParser, loginRequired, async (req: AuthorizedRequest, res: ApiV3Response) => {
     const isEnabled = configManager.getConfig('questionnaire:isQuestionnaireEnabled');
     return res.apiv3({ isEnabled });
   });
@@ -149,8 +151,8 @@ module.exports = (crowi: Crowi): Router => {
    *             schema:
    *               type: object
    */
-  router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const sendQuestionnaireAnswer = async() => {
+  router.post('/proactive/answer', accessTokenParser, loginRequired, validators.proactiveAnswer, async (req: AuthorizedRequest, res: ApiV3Response) => {
+    const sendQuestionnaireAnswer = async () => {
       const questionnaireServerOrigin = configManager.getConfig('app:questionnaireServerOrigin');
       const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
       const growiInfo = await growiInfoService.getGrowiInfo(true);
@@ -171,13 +173,11 @@ module.exports = (crowi: Crowi): Router => {
 
       try {
         await axios.post(`${questionnaireServerOrigin}/questionnaire-answer/proactive`, proactiveQuestionnaireAnswerLegacy);
-      }
-      catch (err) {
+      } catch (err) {
         if (err.request != null) {
           // when failed to send, save to resend in cronjob
           await ProactiveQuestionnaireAnswer.create(proactiveQuestionnaireAnswer);
-        }
-        else {
+        } else {
           throw err;
         }
       }
@@ -191,8 +191,7 @@ module.exports = (crowi: Crowi): Router => {
     try {
       await sendQuestionnaireAnswer();
       return res.apiv3({});
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(err, 500);
     }
@@ -230,8 +229,8 @@ module.exports = (crowi: Crowi): Router => {
    *       404:
    *         description: Not Found
    */
-  router.put('/answer', accessTokenParser, loginRequired, validators.answer, async(req: AuthorizedRequest, res: ApiV3Response) => {
-    const sendQuestionnaireAnswer = async(user: IUserHasId, answers: IAnswer[]) => {
+  router.put('/answer', accessTokenParser, loginRequired, validators.answer, async (req: AuthorizedRequest, res: ApiV3Response) => {
+    const sendQuestionnaireAnswer = async (user: IUserHasId, answers: IAnswer[]) => {
       const questionnaireServerOrigin = crowi.configManager.getConfig('app:questionnaireServerOrigin');
       const isAppSiteUrlHashed = configManager.getConfig('questionnaire:isAppSiteUrlHashed');
       const growiInfo = await growiInfoService.getGrowiInfo(true);
@@ -249,13 +248,11 @@ module.exports = (crowi: Crowi): Router => {
 
       try {
         await axios.post(`${questionnaireServerOrigin}/questionnaire-answer`, questionnaireAnswerLegacy);
-      }
-      catch (err) {
+      } catch (err) {
         if (err.request != null) {
           // when failed to send, save to resend in cronjob
           await QuestionnaireAnswer.create(questionnaireAnswer);
-        }
-        else {
+        } else {
           throw err;
         }
       }
@@ -270,8 +267,7 @@ module.exports = (crowi: Crowi): Router => {
       await sendQuestionnaireAnswer(req.user ?? null, req.body.answers);
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.answered);
       return res.apiv3({}, status);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(err, 500);
     }
@@ -309,7 +305,7 @@ module.exports = (crowi: Crowi): Router => {
    *       404:
    *         description: Not Found
    */
-  router.put('/skip', accessTokenParser, loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/skip', accessTokenParser, loginRequired, validators.skipDeny, async (req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -318,8 +314,7 @@ module.exports = (crowi: Crowi): Router => {
     try {
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.skipped);
       return res.apiv3({}, status);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(err, 500);
     }
@@ -357,7 +352,7 @@ module.exports = (crowi: Crowi): Router => {
    *       404:
    *         description: Not Found
    */
-  router.put('/deny', accessTokenParser, loginRequired, validators.skipDeny, async(req: AuthorizedRequest, res: ApiV3Response) => {
+  router.put('/deny', accessTokenParser, loginRequired, validators.skipDeny, async (req: AuthorizedRequest, res: ApiV3Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -366,13 +361,11 @@ module.exports = (crowi: Crowi): Router => {
     try {
       const status = await changeAnswerStatus(req.user, req.body.questionnaireOrderId, StatusType.denied);
       return res.apiv3({}, status);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error(err);
       return res.apiv3Err(err, 500);
     }
   });
 
   return router;
-
 };

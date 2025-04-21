@@ -13,16 +13,14 @@ import LocalSecuritySettingContents from './LocalSecuritySettingContents';
 const LocalSecuritySetting = (props) => {
   const { adminLocalSecurityContainer } = props;
 
-  const fetchLocalSecuritySettingsData = useCallback(async() => {
+  const fetchLocalSecuritySettingsData = useCallback(async () => {
     try {
       await adminLocalSecurityContainer.retrieveSecurityData();
-    }
-    catch (err) {
+    } catch (err) {
       const errs = toArrayIfNot(err);
       toastError(errs);
     }
   }, [adminLocalSecurityContainer]);
-
 
   useEffect(() => {
     fetchLocalSecuritySettingsData();
@@ -35,8 +33,6 @@ LocalSecuritySetting.propTypes = {
   adminLocalSecurityContainer: PropTypes.instanceOf(AdminLocalSecurityContainer).isRequired,
 };
 
-const LocalSecuritySettingWithUnstatedContainer = withUnstatedContainers(LocalSecuritySetting, [
-  AdminLocalSecurityContainer,
-]);
+const LocalSecuritySettingWithUnstatedContainer = withUnstatedContainers(LocalSecuritySetting, [AdminLocalSecurityContainer]);
 
 export default LocalSecuritySettingWithUnstatedContainer;

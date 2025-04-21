@@ -2,9 +2,7 @@ import { GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { serializeUserSecurely } from '@growi/core/dist/models/serializers';
 import express from 'express';
-import {
-  body, param, query, sanitizeQuery,
-} from 'express-validator';
+import { body, param, query, sanitizeQuery } from 'express-validator';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
@@ -18,7 +16,6 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 
-
 const logger = loggerFactory('growi:routes:apiv3:user-group'); // eslint-disable-line no-unused-vars
 
 const router = express.Router();
@@ -31,10 +28,7 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  const {
-    User,
-    Page,
-  } = crowi.models;
+  const { User, Page } = crowi.models;
 
   const validator = {
     create: [
@@ -48,30 +42,16 @@ module.exports = (crowi) => {
       body('parentId', 'ParentId must be a string or null').optional({ nullable: true }).isString(),
       body('forceUpdateParents', 'forceUpdateParents must be a boolean').optional().isBoolean(),
     ],
-    delete: [
-      param('id').trim().exists({ checkFalsy: true }),
-      query('actionName').trim().exists({ checkFalsy: true }),
-      query('transferToUserGroupId').trim(),
-    ],
+    delete: [param('id').trim().exists({ checkFalsy: true }), query('actionName').trim().exists({ checkFalsy: true }), query('transferToUserGroupId').trim()],
     listChildren: [
       query('parentIds', 'parentIds must be an array').optional().isArray(),
       query('includeGrandChildren', 'parentIds must be boolean').optional().isBoolean(),
     ],
-    ancestorGroup: [
-      query('groupId', 'groupId must be a string').optional().isString(),
-    ],
-    selectableGroups: [
-      query('groupId', 'groupId must be a string').optional().isString(),
-    ],
+    ancestorGroup: [query('groupId', 'groupId must be a string').optional().isString()],
+    selectableGroups: [query('groupId', 'groupId must be a string').optional().isString()],
     users: {
-      post: [
-        param('id').trim().exists({ checkFalsy: true }),
-        param('username').trim().exists({ checkFalsy: true }),
-      ],
-      delete: [
-        param('id').trim().exists({ checkFalsy: true }),
-        param('username').trim().exists({ checkFalsy: true }),
-      ],
+      post: [param('id').trim().exists({ checkFalsy: true }), param('username').trim().exists({ checkFalsy: true })],
+      delete: [param('id').trim().exists({ checkFalsy: true }), param('username').trim().exists({ checkFalsy: true })],
     },
     pages: {
       get: [
@@ -136,7 +116,7 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: the number of items per page
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async (req, res) => {
     const { query } = req;
 
     try {
@@ -146,12 +126,14 @@ module.exports = (crowi) => {
       const pagination = query.pagination != null ? query.pagination !== 'false' : undefined;
 
       const result = await UserGroup.findWithPagination({
-        page, limit, offset, pagination,
+        page,
+        limit,
+        offset,
+        pagination,
       });
       const { docs: userGroups, totalDocs: totalUserGroups, limit: pagingLimit } = result;
       return res.apiv3({ userGroups, totalUserGroups, pagingLimit });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in fetching user group list';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-list-fetch-failed'));
@@ -190,15 +172,14 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: userGroup objects
    */
-  router.get('/ancestors', loginRequiredStrictly, adminRequired, validator.ancestorGroup, async(req, res) => {
+  router.get('/ancestors', loginRequiredStrictly, adminRequired, validator.ancestorGroup, async (req, res) => {
     const { groupId } = req.query;
 
     try {
       const userGroup = await UserGroup.findById(groupId);
       const ancestorUserGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
       return res.apiv3({ ancestorUserGroups });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred while searching user groups';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
@@ -249,7 +230,7 @@ module.exports = (crowi) => {
    *                          type: object
    *                        description: Grandchild user group objects
    */
-  router.get('/children', loginRequiredStrictly, adminRequired, validator.listChildren, async(req, res) => {
+  router.get('/children', loginRequiredStrictly, adminRequired, validator.listChildren, async (req, res) => {
     try {
       const { parentIds, includeGrandChildren = false } = req.query;
 
@@ -258,14 +239,12 @@ module.exports = (crowi) => {
         childUserGroups: userGroupsResult.childUserGroups,
         grandChildUserGroups: userGroupsResult.grandChildUserGroups,
       });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in fetching child user group list';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'child-user-group-list-fetch-failed'));
     }
   });
-
 
   /**
    * @swagger
@@ -305,7 +284,7 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.createGroupByName`
    */
-  router.post('/', loginRequiredStrictly, adminRequired, addActivity, validator.create, apiV3FormValidator, async(req, res) => {
+  router.post('/', loginRequiredStrictly, adminRequired, addActivity, validator.create, apiV3FormValidator, async (req, res) => {
     const { name, description = '', parentId } = req.body;
 
     try {
@@ -317,8 +296,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroup }, 201);
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in creating a user group';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-create-failed'));
@@ -357,19 +335,18 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: userGroup objects
    */
-  router.get('/selectable-parent-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+  router.get('/selectable-parent-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async (req, res) => {
     const { groupId } = req.query;
 
     try {
       const userGroup = await UserGroup.findById(groupId);
 
       const descendantGroups = await UserGroup.findGroupsWithDescendantsRecursively([userGroup], []);
-      const descendantGroupIds = descendantGroups.map(userGroups => userGroups._id.toString());
+      const descendantGroupIds = descendantGroups.map((userGroups) => userGroups._id.toString());
 
       const selectableParentGroups = await UserGroup.find({ _id: { $nin: [groupId, ...descendantGroupIds] } });
       return res.apiv3({ selectableParentGroups });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred while searching user groups';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
@@ -408,7 +385,7 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: userGroup objects
    */
-  router.get('/selectable-child-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+  router.get('/selectable-child-groups', loginRequiredStrictly, adminRequired, validator.selectableGroups, async (req, res) => {
     const { groupId } = req.query;
 
     try {
@@ -419,11 +396,10 @@ module.exports = (crowi) => {
         UserGroup.findGroupsWithDescendantsRecursively([userGroup], []),
       ]);
 
-      const excludeUserGroupIds = [userGroup, ...ancestorGroups, ...descendantGroups].map(userGroups => userGroups._id.toString());
+      const excludeUserGroupIds = [userGroup, ...ancestorGroups, ...descendantGroups].map((userGroups) => userGroups._id.toString());
       const selectableChildGroups = await UserGroup.find({ _id: { $nin: excludeUserGroupIds } });
       return res.apiv3({ selectableChildGroups });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred while searching user groups';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-groups-search-failed'));
@@ -460,14 +436,13 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: userGroup object
    */
-  router.get('/:id', loginRequiredStrictly, adminRequired, validator.selectableGroups, async(req, res) => {
+  router.get('/:id', loginRequiredStrictly, adminRequired, validator.selectableGroups, async (req, res) => {
     const { id: groupId } = req.params;
 
     try {
       const userGroup = await UserGroup.findById(groupId);
       return res.apiv3({ userGroup });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred while getting user group';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-groups-get-failed'));
@@ -519,16 +494,17 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.removeCompletelyById`
    */
-  router.delete('/:id', loginRequiredStrictly, adminRequired, validator.delete, apiV3FormValidator, addActivity, async(req, res) => {
+  router.delete('/:id', loginRequiredStrictly, adminRequired, validator.delete, apiV3FormValidator, addActivity, async (req, res) => {
     const { id: deleteGroupId } = req.params;
     const { actionName, transferToUserGroupId, transferToUserGroupType } = req.query;
 
-    const transferToUserGroup = typeof transferToUserGroupId === 'string'
-        && (transferToUserGroupType === GroupType.userGroup || transferToUserGroupType === GroupType.externalUserGroup)
-      ? {
-        item: transferToUserGroupId,
-        type: transferToUserGroupType,
-      } : undefined;
+    const transferToUserGroup =
+      typeof transferToUserGroupId === 'string' && (transferToUserGroupType === GroupType.userGroup || transferToUserGroupType === GroupType.externalUserGroup)
+        ? {
+            item: transferToUserGroupId,
+            type: transferToUserGroupType,
+          }
+        : undefined;
 
     try {
       const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, req.user, transferToUserGroup);
@@ -537,8 +513,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroups });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred while deleting user groups';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-groups-delete-failed'));
@@ -593,11 +568,9 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: A result of `UserGroup.updateName`
    */
-  router.put('/:id', loginRequiredStrictly, adminRequired, validator.update, apiV3FormValidator, addActivity, async(req, res) => {
+  router.put('/:id', loginRequiredStrictly, adminRequired, validator.update, apiV3FormValidator, addActivity, async (req, res) => {
     const { id } = req.params;
-    const {
-      name, description, parentId, forceUpdateParents = false,
-    } = req.body;
+    const { name, description, parentId, forceUpdateParents = false } = req.body;
 
     try {
       const userGroup = await crowi.userGroupService.updateGroup(id, name, description, parentId, forceUpdateParents);
@@ -606,14 +579,12 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, parameters);
 
       return res.apiv3({ userGroup });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in updating a user group name';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-update-failed'));
     }
   });
-
 
   /**
    * @swagger
@@ -647,7 +618,7 @@ module.exports = (crowi) => {
    *                        $ref: '#/components/schemas/User'
    *                      description: user objects
    */
-  router.get('/:id/users', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/:id/users', loginRequiredStrictly, adminRequired, async (req, res) => {
     const { id } = req.params;
 
     try {
@@ -657,11 +628,10 @@ module.exports = (crowi) => {
       const serializeUsers = userGroupRelations.map((userGroupRelation) => {
         return serializeUserSecurely(userGroupRelation.relatedUser);
       });
-      const users = serializeUsers.filter(user => user != null);
+      const users = serializeUsers.filter((user) => user != null);
 
       return res.apiv3({ users });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = `Error occurred in fetching users for group: ${id}`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-user-list-fetch-failed'));
@@ -720,14 +690,15 @@ module.exports = (crowi) => {
    *                        $ref: '#/components/schemas/User'
    *                      description: user objects
    */
-  router.get('/:id/unrelated-users', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/:id/unrelated-users', loginRequiredStrictly, adminRequired, async (req, res) => {
     const { id } = req.params;
-    const {
-      searchWord, searchType, isAlsoNameSearched, isAlsoMailSearched,
-    } = req.query;
+    const { searchWord, searchType, isAlsoNameSearched, isAlsoMailSearched } = req.query;
 
     const queryOptions = {
-      searchWord, searchType, isAlsoNameSearched, isAlsoMailSearched,
+      searchWord,
+      searchType,
+      isAlsoNameSearched,
+      isAlsoMailSearched,
     };
 
     try {
@@ -742,14 +713,12 @@ module.exports = (crowi) => {
         return serializedUser;
       });
       return res.apiv3({ users: serializedUsers });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = `Error occurred in fetching unrelated users for group: ${id}`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-unrelated-user-list-fetch-failed'));
     }
   });
-
 
   /**
    * @swagger
@@ -791,21 +760,18 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: the number of relations created
    */
-  router.post('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.post, apiV3FormValidator, addActivity, async(req, res) => {
+  router.post('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.post, apiV3FormValidator, addActivity, async (req, res) => {
     const { id, username } = req.params;
 
     try {
-      const [userGroup, user] = await Promise.all([
-        UserGroup.findById(id),
-        User.findUserByUsername(username),
-      ]);
+      const [userGroup, user] = await Promise.all([UserGroup.findById(id), User.findUserByUsername(username)]);
 
       const userGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
-      const userGroupIds = userGroups.map(g => g._id);
+      const userGroupIds = userGroups.map((g) => g._id);
 
       // remove existing relations from list to create
       const existingRelations = await UserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
-      const existingGroupIds = existingRelations.map(r => r.relatedGroup);
+      const existingGroupIds = existingRelations.map((r) => r.relatedGroup);
       const groupIdsToCreateRelation = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
 
       const insertedRelations = await UserGroupRelation.createRelations(groupIdsToCreateRelation, user);
@@ -814,14 +780,12 @@ module.exports = (crowi) => {
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_ADD_USER };
       activityEvent.emit('update', res.locals.activity._id, parameters);
       return res.apiv3({ user: serializedUser, createdRelationCount: insertedRelations.length });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = `Error occurred in adding the user "${username}" to group "${id}"`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-add-user-failed'));
     }
   });
-
 
   /**
    * @swagger
@@ -864,7 +828,7 @@ module.exports = (crowi) => {
    *                      type: number
    *                      description: the number of groups from which the user was removed
    */
-  router.delete('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.delete, apiV3FormValidator, async(req, res) => {
+  router.delete('/:id/users/:username', loginRequiredStrictly, adminRequired, validator.users.delete, apiV3FormValidator, async (req, res) => {
     const { id: userGroupId, username } = req.params;
 
     try {
@@ -872,14 +836,12 @@ module.exports = (crowi) => {
       const serializedUser = serializeUserSecurely(removedUserRes.user);
 
       return res.apiv3({ user: serializedUser, deletedGroupsCount: removedUserRes.deletedGroupsCount });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred while removing the user from groups.';
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-remove-user-failed'));
     }
   });
-
 
   /**
    * @swagger
@@ -913,22 +875,20 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: userGroupRelation objects
    */
-  router.get('/:id/user-group-relations', loginRequiredStrictly, adminRequired, async(req, res) => {
+  router.get('/:id/user-group-relations', loginRequiredStrictly, adminRequired, async (req, res) => {
     const { id } = req.params;
 
     try {
       const userGroup = await UserGroup.findById(id);
       const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
-      const serialized = userGroupRelations.map(relation => serializeUserGroupRelationSecurely(relation));
+      const serialized = userGroupRelations.map((relation) => serializeUserGroupRelationSecurely(relation));
       return res.apiv3({ userGroupRelations: serialized });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = `Error occurred in fetching user group relations for group: ${id}`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-user-group-relation-list-fetch-failed'));
     }
   });
-
 
   /**
    * @swagger
@@ -962,23 +922,26 @@ module.exports = (crowi) => {
    *                        type: object
    *                      description: page objects
    */
-  router.get('/:id/pages', loginRequiredStrictly, adminRequired, validator.pages.get, apiV3FormValidator, async(req, res) => {
+  router.get('/:id/pages', loginRequiredStrictly, adminRequired, validator.pages.get, apiV3FormValidator, async (req, res) => {
     const { id } = req.params;
     const { limit, offset } = req.query;
 
     try {
-      const { docs, totalDocs } = await Page.paginate({
-        grant: Page.GRANT_USER_GROUP,
-        grantedGroups: {
-          $elemMatch: {
-            item: id,
+      const { docs, totalDocs } = await Page.paginate(
+        {
+          grant: Page.GRANT_USER_GROUP,
+          grantedGroups: {
+            $elemMatch: {
+              item: id,
+            },
           },
         },
-      }, {
-        offset,
-        limit,
-        populate: 'lastUpdateUser',
-      });
+        {
+          offset,
+          limit,
+          populate: 'lastUpdateUser',
+        },
+      );
 
       const current = offset / limit + 1;
 
@@ -989,8 +952,7 @@ module.exports = (crowi) => {
 
       // TODO: create a common moudule for paginated response
       return res.apiv3({ total: totalDocs, current, pages });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = `Error occurred in fetching pages for group: ${id}`;
       logger.error(msg, err);
       return res.apiv3Err(new ErrorV3(msg, 'user-group-page-list-fetch-failed'));

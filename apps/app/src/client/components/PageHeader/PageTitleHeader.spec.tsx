@@ -2,11 +2,8 @@ import '@testing-library/jest-dom/vitest';
 
 import { faker } from '@faker-js/faker';
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import {
-  fireEvent, render, screen, waitFor,
-} from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { mock } from 'vitest-mock-extended';
-
 
 import { EditorMode } from '~/stores-universal/ui';
 
@@ -20,18 +17,17 @@ const mocks = vi.hoisted(() => ({
 vi.mock('~/stores/ui', () => ({
   useIsUntitledPage: mocks.useIsUntitledPageMock,
 }));
-vi.mock('~/stores-universal/ui', async importOriginal => ({
-  ...await importOriginal(),
+vi.mock('~/stores-universal/ui', async (importOriginal) => ({
+  ...(await importOriginal()),
   useEditorMode: mocks.useEditorModeMock,
 }));
 
 describe('PageTitleHeader Component with untitled page', () => {
-
   beforeAll(() => {
     mocks.useIsUntitledPageMock.mockImplementation(() => ({ data: true }));
   });
 
-  it('should render the textbox correctly', async() => {
+  it('should render the textbox correctly', async () => {
     // arrange
     const currentPage = mock<IPagePopulatedToShowRevision>({
       _id: faker.database.mongodbObjectId(),
@@ -53,17 +49,14 @@ describe('PageTitleHeader Component with untitled page', () => {
       expect(headerElement).toHaveClass('invisible');
     });
   });
-
 });
 
-
 describe('PageTitleHeader Component', () => {
-
   beforeAll(() => {
     mocks.useIsUntitledPageMock.mockImplementation(() => ({ data: false }));
   });
 
-  it('should render the title correctly', async() => {
+  it('should render the title correctly', async () => {
     // arrange
     const pageTitle = faker.lorem.slug();
     const currentPage = mock<IPagePopulatedToShowRevision>({
@@ -86,7 +79,7 @@ describe('PageTitleHeader Component', () => {
     expect(inputElement).not.toBeInTheDocument();
   });
 
-  it('should render text input after clicking', async() => {
+  it('should render text input after clicking', async () => {
     // arrange
     const pageTitle = faker.lorem.slug();
     const currentPage = mock<IPagePopulatedToShowRevision>({
@@ -111,5 +104,4 @@ describe('PageTitleHeader Component', () => {
       expect(headerElement).toHaveClass('invisible');
     });
   });
-
 });

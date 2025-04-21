@@ -9,7 +9,6 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 class UserRemoveButton extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -23,8 +22,7 @@ class UserRemoveButton extends React.Component {
       await this.props.adminUsersContainer.removeUser(this.props.user._id);
       const { username } = this.props.user;
       toastSuccess(t('toaster.remove_user_success', { username }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }
@@ -33,12 +31,17 @@ class UserRemoveButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <button className="dropdown-item" type="button" onClick={() => { this.onClickDeleteBtn() }}>
+      <button
+        className="dropdown-item"
+        type="button"
+        onClick={() => {
+          this.onClickDeleteBtn();
+        }}
+      >
         <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
       </button>
     );
   }
-
 }
 
 UserRemoveButton.propTypes = {

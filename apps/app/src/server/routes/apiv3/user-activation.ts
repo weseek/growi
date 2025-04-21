@@ -49,7 +49,7 @@ export const validateCompleteRegistration = (req, res, next) => {
   }
 
   const extractedErrors: string[] = [];
-  errors.array().map(err => extractedErrors.push(err.msg));
+  errors.array().map((err) => extractedErrors.push(err.msg));
 
   return res.apiv3Err(extractedErrors);
 };
@@ -111,15 +111,11 @@ async function sendEmailToAllAdmins(userData, admins, appTitle, mailService, tem
  *                   type: string
  */
 export const completeRegistrationAction = (crowi: Crowi) => {
-  const User = mongoose.model<IUser, { isEmailValid, isRegisterable, createUserByEmailAndPassword, findAdmins }>('User');
+  const User = mongoose.model<IUser, { isEmailValid; isRegisterable; createUserByEmailAndPassword; findAdmins }>('User');
   const activityEvent = crowi.event('activity');
-  const {
-    aclService,
-    appService,
-    mailService,
-  } = crowi;
+  const { aclService, appService, mailService } = crowi;
 
-  return async(req, res) => {
+  return async (req, res) => {
     const { t } = await getTranslation();
 
     if (req.user != null) {
@@ -166,12 +162,11 @@ export const completeRegistrationAction = (crowi: Crowi) => {
         return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
       }
 
-      User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
+      User.createUserByEmailAndPassword(name, username, email, password, undefined, async (err, userData) => {
         if (err) {
           if (err.name === 'UserUpperLimitException') {
             errorMessage = t('message.can_not_register_maximum_number_of_users');
-          }
-          else {
+          } else {
             errorMessage = t('message.failed_to_register');
           }
           return res.apiv3Err(new ErrorV3(errorMessage, 'registration-failed'), 403);
@@ -206,8 +201,7 @@ export const completeRegistrationAction = (crowi: Crowi) => {
         req.login(userData, (err) => {
           if (err) {
             logger.debug(err);
-          }
-          else {
+          } else {
             // update lastLoginAt
             userData.updateLastLoginAt(new Date(), (err) => {
               if (err) {
@@ -228,13 +222,7 @@ export const completeRegistrationAction = (crowi: Crowi) => {
 
 // validation rules for registration form when email authentication enabled
 export const registerRules = () => {
-  return [
-    body('registerForm.email')
-      .isEmail()
-      .withMessage('Email format is invalid.')
-      .exists()
-      .withMessage('Email field is required.'),
-  ];
+  return [body('registerForm.email').isEmail().withMessage('Email format is invalid.').exists().withMessage('Email field is required.')];
 };
 
 // middleware to validate register form if email authentication enabled
@@ -245,17 +233,13 @@ export const validateRegisterForm = (req, res, next) => {
   }
 
   const extractedErrors: string[] = [];
-  errors.array().map(err => extractedErrors.push(err.msg));
+  errors.array().map((err) => extractedErrors.push(err.msg));
 
   return res.apiv3Err(extractedErrors, 400);
 };
 
 async function makeRegistrationEmailToken(email, crowi: Crowi) {
-  const {
-    mailService,
-    localeDir,
-    appService,
-  } = crowi;
+  const { mailService, localeDir, appService } = crowi;
 
   const isMailerSetup = mailService.isMailerSetup ?? false;
   if (!isMailerSetup) {
@@ -286,9 +270,9 @@ async function makeRegistrationEmailToken(email, crowi: Crowi) {
 }
 
 export const registerAction = (crowi: Crowi) => {
-  const User = mongoose.model<IUser, { isRegisterableEmail, isEmailValid }>('User');
+  const User = mongoose.model<IUser, { isRegisterableEmail; isEmailValid }>('User');
 
-  return async(req, res) => {
+  return async (req, res) => {
     const registerForm = req.body.registerForm || {};
     const email = registerForm.email;
     const isRegisterableEmail = await User.isRegisterableEmail(email);
@@ -310,8 +294,7 @@ export const registerAction = (crowi: Crowi) => {
 
     try {
       await makeRegistrationEmailToken(email, crowi);
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err);
     }
 

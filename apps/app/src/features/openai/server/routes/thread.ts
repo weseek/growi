@@ -17,9 +17,9 @@ import { certifyAiService } from './middlewares/certify-ai-service';
 const logger = loggerFactory('growi:routes:apiv3:openai:thread');
 
 type ReqBody = {
-  aiAssistantId: string,
-  initialUserMessage: string,
-}
+  aiAssistantId: string;
+  initialUserMessage: string;
+};
 
 type CreateThreadReq = Request<undefined, ApiV3Response, ReqBody> & { user: IUserHasId };
 
@@ -34,9 +34,12 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
   ];
 
   return [
-    accessTokenParser, loginRequiredStrictly, certifyAiService, validator, apiV3FormValidator,
-    async(req: CreateThreadReq, res: ApiV3Response) => {
-
+    accessTokenParser,
+    loginRequiredStrictly,
+    certifyAiService,
+    validator,
+    apiV3FormValidator,
+    async (req: CreateThreadReq, res: ApiV3Response) => {
       const openaiService = getOpenaiService();
       if (openaiService == null) {
         return res.apiv3Err(new ErrorV3('GROWI AI is not enabled'), 501);
@@ -47,7 +50,6 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
       // express-validator ensures aiAssistantId is a string
 
       try {
-
         const isAiAssistantUsable = await openaiService.isAiAssistantUsable(aiAssistantId, req.user);
         if (!isAiAssistantUsable) {
           return res.apiv3Err(new ErrorV3('The specified AI assistant is not usable'), 400);
@@ -56,8 +58,7 @@ export const createThreadHandlersFactory: CreateThreadFactory = (crowi) => {
         const thread = await openaiService.createThread(req.user._id, aiAssistantId, initialUserMessage);
 
         return res.apiv3(thread);
-      }
-      catch (err) {
+      } catch (err) {
         logger.error(err);
         return res.apiv3Err(err);
       }

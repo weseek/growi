@@ -29,7 +29,6 @@ const rewriteNode = (node: Link) => {
   };
 };
 
-
 export const remarkPlugin: Plugin = () => {
   return (tree) => {
     visit(tree, 'link', (node: Link) => {

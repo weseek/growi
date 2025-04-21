@@ -5,7 +5,6 @@ import { Progress } from 'reactstrap';
 
 import { GrowiArchiveImportOption } from '~/models/admin/growi-archive-import-option';
 
-
 const MODE_ATTR_MAP = {
   insert: { color: 'info', icon: 'add_circle', label: 'Insert' },
   upsert: { color: 'success', icon: 'add_circle', label: 'Upsert' },
@@ -21,7 +20,6 @@ export const MODE_RESTRICTED_COLLECTION = {
 };
 
 export default class ImportCollectionItem extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -72,13 +70,15 @@ export default class ImportCollectionItem extends React.Component {
   renderModeLabel(mode, isColorized = false) {
     const attrMap = MODE_ATTR_MAP[mode];
     const className = isColorized ? `text-${attrMap.color}` : '';
-    return <span className={`text-nowrap ${className}`}><span className="material-symbols-outlined">{attrMap.icon}</span> {attrMap.label}</span>;
+    return (
+      <span className={`text-nowrap ${className}`}>
+        <span className="material-symbols-outlined">{attrMap.icon}</span> {attrMap.label}
+      </span>
+    );
   }
 
   renderCheckbox() {
-    const {
-      collectionName, isSelected, isImporting,
-    } = this.props;
+    const { collectionName, isSelected, isImporting } = this.props;
 
     return (
       <div className="form-check form-check-info my-0">
@@ -100,9 +100,7 @@ export default class ImportCollectionItem extends React.Component {
   }
 
   renderModeSelector() {
-    const {
-      collectionName, option, isImporting,
-    } = this.props;
+    const { collectionName, option, isImporting } = this.props;
 
     const attrMap = MODE_ATTR_MAP[option.mode];
     const btnColor = `btn-${attrMap.color}`;
@@ -126,7 +124,7 @@ export default class ImportCollectionItem extends React.Component {
             <span className="caret ms-2"></span>
           </button>
           <ul className="dropdown-menu" aria-labelledby="ddmMode">
-            { modes.map((mode) => {
+            {modes.map((mode) => {
               return (
                 <li key={`buttonMode_${mode}`}>
                   <button type="button" className="dropdown-item" role="button" onClick={() => this.modeSelectedHandler(mode)}>
@@ -134,7 +132,7 @@ export default class ImportCollectionItem extends React.Component {
                   </button>
                 </li>
               );
-            }) }
+            })}
           </ul>
         </div>
       </span>
@@ -157,9 +155,7 @@ export default class ImportCollectionItem extends React.Component {
   }
 
   renderProgressBar() {
-    const {
-      isImporting, insertedCount, modifiedCount, errorsCount,
-    } = this.props;
+    const { isImporting, insertedCount, modifiedCount, errorsCount } = this.props;
 
     const total = insertedCount + modifiedCount + errorsCount;
 
@@ -182,21 +178,31 @@ export default class ImportCollectionItem extends React.Component {
     const { insertedCount, modifiedCount, errorsCount } = this.props;
     return (
       <div className="w-100 text-center">
-        <span className="text-info"><strong>{insertedCount}</strong> Inserted</span>,&nbsp;
-        <span className="text-success"><strong>{modifiedCount}</strong> Modified</span>,&nbsp;
-        { errorsCount > 0
-          ? <a className="text-danger" role="button" onClick={this.errorLinkClickedHandler}><u><strong>{errorsCount}</strong> Failed</u></a>
-          : <span className="text-muted"><strong>0</strong> Failed</span>
-        }
+        <span className="text-info">
+          <strong>{insertedCount}</strong> Inserted
+        </span>
+        ,&nbsp;
+        <span className="text-success">
+          <strong>{modifiedCount}</strong> Modified
+        </span>
+        ,&nbsp;
+        {errorsCount > 0 ? (
+          <a className="text-danger" role="button" onClick={this.errorLinkClickedHandler}>
+            <u>
+              <strong>{errorsCount}</strong> Failed
+            </u>
+          </a>
+        ) : (
+          <span className="text-muted">
+            <strong>0</strong> Failed
+          </span>
+        )}
       </div>
     );
-
   }
 
   render() {
-    const {
-      isSelected, isHideProgress,
-    } = this.props;
+    const { isSelected, isHideProgress } = this.props;
 
     return (
       <div className="card border-light">
@@ -220,7 +226,6 @@ export default class ImportCollectionItem extends React.Component {
       </div>
     );
   }
-
 }
 
 ImportCollectionItem.propTypes = {

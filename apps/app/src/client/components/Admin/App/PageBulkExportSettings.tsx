@@ -1,6 +1,4 @@
-import {
-  useState, useCallback, useEffect, type JSX,
-} from 'react';
+import { useState, useCallback, useEffect, type JSX } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
@@ -24,15 +22,14 @@ const PageBulkExportSettings = (): JSX.Element => {
     setBulkExportDownloadExpirationSeconds(bulkExportDownloadExpirationSeconds);
   };
 
-  const onSubmitHandler = useCallback(async() => {
+  const onSubmitHandler = useCallback(async () => {
     try {
       await apiv3Put('/app-settings/page-bulk-export-settings', {
         isBulkExportPagesEnabled,
         bulkExportDownloadExpirationSeconds,
       });
       toastSuccess(t('commons:toaster.update_successed', { target: t('app_setting.questionnaire_settings') }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
     mutate();
@@ -41,8 +38,7 @@ const PageBulkExportSettings = (): JSX.Element => {
   useEffect(() => {
     if (data?.useOnlyEnvVarForFileUploadType) {
       setIsBulkExportPagesEnabled(data?.envIsBulkExportPagesEnabled);
-    }
-    else {
+    } else {
       setIsBulkExportPagesEnabled(data?.isBulkExportPagesEnabled);
     }
     setBulkExportDownloadExpirationSeconds(data?.bulkExportDownloadExpirationSeconds);
@@ -62,16 +58,11 @@ const PageBulkExportSettings = (): JSX.Element => {
         <>
           <p className="card custom-card bg-warning-subtle my-3">
             {t('admin:app_setting.page_bulk_export_explanation')} <br />
-            <span className="text-danger mt-1">
-              {t('admin:app_setting.page_bulk_export_warning')}
-            </span>
+            <span className="text-danger mt-1">{t('admin:app_setting.page_bulk_export_warning')}</span>
           </p>
 
           <div className="my-4 row">
-            <label
-              className="text-start text-md-end col-md-3 col-form-label"
-            >
-            </label>
+            <label className="text-start text-md-end col-md-3 col-form-label"></label>
 
             <div className="col-md-6">
               <div className="form-check form-switch form-check-info">
@@ -81,7 +72,7 @@ const PageBulkExportSettings = (): JSX.Element => {
                   id="cbIsPageBulkExportEnabled"
                   checked={isBulkExportPagesEnabled}
                   disabled={data?.useOnlyEnvVarsForIsBulkExportPagesEnabled}
-                  onChange={e => setIsBulkExportPagesEnabled(e.target.checked)}
+                  onChange={(e) => setIsBulkExportPagesEnabled(e.target.checked)}
                 />
                 <label className="form-label form-check-label" htmlFor="cbIsPageBulkExportEnabled">
                   {t('app_setting.enable_page_bulk_export')}
@@ -90,12 +81,13 @@ const PageBulkExportSettings = (): JSX.Element => {
               {data?.useOnlyEnvVarsForIsBulkExportPagesEnabled && (
                 <p className="form-text text-muted">
                   {/* eslint-disable-next-line react/no-danger */}
-                  <b dangerouslySetInnerHTML={{
-                    __html: t('admin:app_setting.fixed_by_env_var', {
-                      envKey: 'BULK_EXPORT_PAGES_ENABLED',
-                      envVar: isBulkExportPagesEnabled,
-                    }),
-                  }}
+                  <b
+                    dangerouslySetInnerHTML={{
+                      __html: t('admin:app_setting.fixed_by_env_var', {
+                        envKey: 'BULK_EXPORT_PAGES_ENABLED',
+                        envVar: isBulkExportPagesEnabled,
+                      }),
+                    }}
                   />
                 </p>
               )}
@@ -104,19 +96,17 @@ const PageBulkExportSettings = (): JSX.Element => {
 
           <div className="mb-4">
             <div className="row">
-              <label
-                className="text-start text-md-end col-md-3 col-form-label"
-              >
-                {t('app_setting.page_bulk_export_storage_period')}
-              </label>
+              <label className="text-start text-md-end col-md-3 col-form-label">{t('app_setting.page_bulk_export_storage_period')}</label>
 
               <div className="col-md-2">
                 <select
                   className="form-select"
                   value={(bulkExportDownloadExpirationSeconds ?? 0) / (24 * 60 * 60)}
-                  onChange={(e) => { changeBulkExportDownloadExpirationSeconds(Number(e.target.value)) }}
+                  onChange={(e) => {
+                    changeBulkExportDownloadExpirationSeconds(Number(e.target.value));
+                  }}
                 >
-                  {Array.from({ length: 7 }, (_, i) => i + 1).map(number => (
+                  {Array.from({ length: 7 }, (_, i) => i + 1).map((number) => (
                     <option key={`be-download-expiration-option-${number}`} value={number}>
                       {number} {t('admin:days')}
                     </option>

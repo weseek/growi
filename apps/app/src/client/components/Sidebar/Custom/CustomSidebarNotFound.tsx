@@ -10,7 +10,7 @@ export const SidebarNotFound = (): JSX.Element => {
 
   const { create } = useCreatePage();
 
-  const clickCreateButtonHandler = useCallback(async() => {
+  const clickCreateButtonHandler = useCallback(async () => {
     create({ path: '/Sidebar', wip: false, origin: Origin.View }, { skipPageExistenceCheck: true });
   }, [create]);
 

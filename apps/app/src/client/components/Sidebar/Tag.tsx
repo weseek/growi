@@ -13,12 +13,10 @@ import TagList from '../TagList';
 import { SidebarHeaderReloadButton } from './SidebarHeaderReloadButton';
 import { TagListSkeleton } from './Skeleton/TagContentSkeleton';
 
-
 const PAGING_LIMIT = 10;
 const TAG_CLOUD_LIMIT = 20;
 
 const Tag: FC = () => {
-
   const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
 
@@ -51,30 +49,16 @@ const Tag: FC = () => {
 
       <h6 className="my-3 pb-1 border-bottom">{t('tag_list')}</h6>
 
-      { isLoading
-        ? (
-          <TagListSkeleton />
-        )
-        : (
-          <div data-testid="grw-tags-list">
-            <TagList
-              tagData={tagData}
-              totalTags={totalCount}
-              activePage={activePage}
-              onChangePage={setOffsetByPageNumber}
-              pagingLimit={PAGING_LIMIT}
-            />
-          </div>
-        )
-      }
+      {isLoading ? (
+        <TagListSkeleton />
+      ) : (
+        <div data-testid="grw-tags-list">
+          <TagList tagData={tagData} totalTags={totalCount} activePage={activePage} onChangePage={setOffsetByPageNumber} pagingLimit={PAGING_LIMIT} />
+        </div>
+      )}
 
       <div className="d-flex justify-content-center my-5" data-testid="check-all-tags-button">
-        <Link
-          href="/tags"
-          className="btn btn-primary rounded px-4"
-          role="button"
-          prefetch={false}
-        >
+        <Link href="/tags" className="btn btn-primary rounded px-4" role="button" prefetch={false}>
           {t('Check All tags')}
         </Link>
       </div>
@@ -84,7 +68,6 @@ const Tag: FC = () => {
       <TagCloudBox tags={tagCloudData} />
     </div>
   );
-
 };
 
 export default Tag;

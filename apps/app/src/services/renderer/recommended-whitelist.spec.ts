@@ -3,7 +3,6 @@ import { notDeepEqual } from 'assert';
 import { tagNames, attributes } from './recommended-whitelist';
 
 describe('recommended-whitelist', () => {
-
   test('.tagNames should return iframe tag', () => {
     expect(tagNames).not.toBeNull();
     expect(tagNames).includes('iframe');
@@ -72,5 +71,4 @@ describe('recommended-whitelist', () => {
     expect(Object.keys(attributes)).includes('a');
     expect(attributes.a).not.toContainEqual(['className', 'data-footnote-backref']);
   });
-
 });

@@ -12,10 +12,7 @@ module.exports = {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
-    const [accessKeyId, secretAccessKey] = await Promise.all([
-      Config.findOne({ key: 'aws:accessKeyId' }),
-      Config.findOne({ key: 'aws:secretAccessKey' }),
-    ]);
+    const [accessKeyId, secretAccessKey] = await Promise.all([Config.findOne({ key: 'aws:accessKeyId' }), Config.findOne({ key: 'aws:secretAccessKey' })]);
 
     const request = [];
 

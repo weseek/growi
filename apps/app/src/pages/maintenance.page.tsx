@@ -9,15 +9,13 @@ import { useCurrentUser } from '~/stores-universal/context';
 import type { CommonProps } from './utils/commons';
 import { getServerSideCommonProps, getNextI18NextConfig } from './utils/commons';
 
-
-const Maintenance = dynamic(() => import('~/client/components/Maintenance').then(mod => mod.Maintenance), { ssr: false });
+const Maintenance = dynamic(() => import('~/client/components/Maintenance').then((mod) => mod.Maintenance), { ssr: false });
 
 type Props = CommonProps & {
-  currentUser: IUser,
+  currentUser: IUser;
 };
 
 const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
-
   useCurrentUser(props.currentUser ?? null);
 
   return (
@@ -38,7 +36,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
 
   const result = await getServerSideCommonProps(context);

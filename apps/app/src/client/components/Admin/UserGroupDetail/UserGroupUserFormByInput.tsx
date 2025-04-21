@@ -10,18 +10,16 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { SearchType } from '~/interfaces/user-group';
 
 type Props = {
-  userGroup: IUserGroupHasId,
-  onClickAddUserBtn: (username: string) => Promise<void>,
-  onSearchApplicableUsers: (searchWord: string) => Promise<IUserHasId[]>,
-  isAlsoNameSearched: boolean,
-  isAlsoMailSearched: boolean,
-  searchType: SearchType,
-}
+  userGroup: IUserGroupHasId;
+  onClickAddUserBtn: (username: string) => Promise<void>;
+  onSearchApplicableUsers: (searchWord: string) => Promise<IUserHasId[]>;
+  isAlsoNameSearched: boolean;
+  isAlsoMailSearched: boolean;
+  searchType: SearchType;
+};
 
 export const UserGroupUserFormByInput: FC<Props> = (props) => {
-  const {
-    userGroup, onClickAddUserBtn, onSearchApplicableUsers, isAlsoNameSearched, isAlsoMailSearched, searchType,
-  } = props;
+  const { userGroup, onClickAddUserBtn, onSearchApplicableUsers, isAlsoNameSearched, isAlsoMailSearched, searchType } = props;
 
   const { t } = useTranslation();
   const [inputUser, setInputUser] = useState<IUserHasId[]>([]);
@@ -29,27 +27,27 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSearchError, setIsSearchError] = useState(false);
 
-  const addUserBySubmit = async() => {
-    if (inputUser.length === 0) { return }
+  const addUserBySubmit = async () => {
+    if (inputUser.length === 0) {
+      return;
+    }
     const userName = inputUser[0].username;
 
     try {
       await onClickAddUserBtn(userName);
       toastSuccess(`Added "${userName}" to "${userGroup.name}"`);
       setInputUser([]);
-    }
-    catch (err) {
+    } catch (err) {
       toastError(new Error(`Unable to add "${userName}" to "${userGroup.name}"`));
     }
   };
 
-  const searchApplicableUsers = async(keyword: string) => {
+  const searchApplicableUsers = async (keyword: string) => {
     try {
       const users = await onSearchApplicableUsers(keyword);
       setApplicableUsers(users);
       setIsLoading(false);
-    }
-    catch (err) {
+    } catch (err) {
       setIsSearchError(true);
       toastError(err);
     }
@@ -59,7 +57,7 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
     setInputUser(inputUser);
   };
 
-  const handleSearch = async(keyword: string) => {
+  const handleSearch = async (keyword: string) => {
     setIsLoading(true);
     await searchApplicableUsers(keyword);
   };
@@ -97,19 +95,14 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
           onChange={handleChange}
           onKeyDown={onKeyDown}
           minLength={1}
-          searchText={isLoading ? 'Searching...' : (isSearchError && 'Error on searching.')}
+          searchText={isLoading ? 'Searching...' : isSearchError && 'Error on searching.'}
           renderMenuItemChildren={renderMenuItemChildren}
           align="left"
           clearButton
         />
       </div>
       <div className="col-2 ps-0">
-        <button
-          type="button"
-          className="btn btn-success"
-          disabled={inputUser.length === 0}
-          onClick={addUserBySubmit}
-        >
+        <button type="button" className="btn btn-success" disabled={inputUser.length === 0} onClick={addUserBySubmit}>
           {t('add')}
         </button>
       </div>

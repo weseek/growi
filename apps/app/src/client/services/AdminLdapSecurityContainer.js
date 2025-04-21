@@ -13,7 +13,6 @@ const logger = loggerFactory('growi:services:AdminLdapSecurityContainer');
  * @extends {Container} unstated Container
  */
 export default class AdminLdapSecurityContainer extends Container {
-
   constructor(appContainer) {
     super();
 
@@ -38,7 +37,6 @@ export default class AdminLdapSecurityContainer extends Container {
       ldapGroupSearchFilter: '',
       ldapGroupDnProperty: '',
     };
-
   }
 
   /**
@@ -62,14 +60,12 @@ export default class AdminLdapSecurityContainer extends Container {
         ldapGroupSearchFilter: ldapAuth.ldapGroupSearchFilter,
         ldapGroupDnProperty: ldapAuth.ldapGroupDnProperty,
       });
-    }
-    catch (err) {
+    } catch (err) {
       this.setState({ retrieveError: err });
       logger.error(err);
       throw new Error('Failed to fetch data');
     }
   }
-
 
   /**
    * Workaround for the mangling in production build to break constructor.name
@@ -167,8 +163,18 @@ export default class AdminLdapSecurityContainer extends Container {
    */
   async updateLdapSetting() {
     const {
-      serverUrl, isUserBind, ldapBindDN, ldapBindDNPassword, ldapSearchFilter, ldapAttrMapUsername, isSameUsernameTreatedAsIdenticalUser,
-      ldapAttrMapMail, ldapAttrMapName, ldapGroupSearchBase, ldapGroupSearchFilter, ldapGroupDnProperty,
+      serverUrl,
+      isUserBind,
+      ldapBindDN,
+      ldapBindDNPassword,
+      ldapSearchFilter,
+      ldapAttrMapUsername,
+      isSameUsernameTreatedAsIdenticalUser,
+      ldapAttrMapMail,
+      ldapAttrMapName,
+      ldapGroupSearchBase,
+      ldapGroupSearchFilter,
+      ldapGroupDnProperty,
     } = this.state;
 
     let requestParams = {
@@ -206,5 +212,4 @@ export default class AdminLdapSecurityContainer extends Container {
     });
     return response;
   }
-
 }

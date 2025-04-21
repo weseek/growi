@@ -1,6 +1,4 @@
-import {
-  inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider,
-} from '@growi/slack/dist/utils/block-kit-builder';
+import { inputBlock, actionsBlock, buttonElement, markdownSectionBlock, divider } from '@growi/slack/dist/utils/block-kit-builder';
 import { respond, deleteOriginal } from '@growi/slack/dist/utils/response-url';
 import { format, formatDate } from 'date-fns/format';
 import { parse } from 'date-fns/parse';
@@ -18,7 +16,7 @@ module.exports = (crowi) => {
   const BaseSlackCommandHandler = require('./slack-command-handler');
   const handler = new BaseSlackCommandHandler();
 
-  handler.handleCommand = async function(growiCommand, client, body) {
+  handler.handleCommand = async function (growiCommand, client, body) {
     await respond(growiCommand.responseUrl, {
       text: 'Select messages to use.',
       blocks: this.togetterMessageBlocks(),
@@ -26,17 +24,17 @@ module.exports = (crowi) => {
     return;
   };
 
-  handler.handleInteractions = async function(client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
+  handler.handleInteractions = async function (client, interactionPayload, interactionPayloadAccessor, handlerMethodName) {
     await this[handlerMethodName](client, interactionPayload, interactionPayloadAccessor);
   };
 
-  handler.cancel = async(client, payload, interactionPayloadAccessor) => {
+  handler.cancel = async (client, payload, interactionPayloadAccessor) => {
     await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
       delete_original: true,
     });
   };
 
-  handler.createPage = async function(client, payload, interactionPayloadAccessor) {
+  handler.createPage = async function (client, payload, interactionPayloadAccessor) {
     let result = [];
     const channelId = payload.channel.id; // this must exist since the type is always block_actions
     const userChannelId = payload.user.id;
@@ -53,7 +51,7 @@ module.exports = (crowi) => {
     await this.togetterCreatePageAndSendPreview(client, interactionPayloadAccessor, path, userChannelId, contentsBody);
   };
 
-  handler.togetterValidateForm = async(client, payload, interactionPayloadAccessor) => {
+  handler.togetterValidateForm = async (client, payload, interactionPayloadAccessor) => {
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
     const path = interactionPayloadAccessor.getStateValues()?.page_path.page_path.value;
     let oldest = interactionPayloadAccessor.getStateValues()?.oldest.oldest.value;
@@ -96,14 +94,13 @@ module.exports = (crowi) => {
     });
   }
 
-  handler.togetterGetMessages = async(client, channelId, newest, oldest) => {
+  handler.togetterGetMessages = async (client, channelId, newest, oldest) => {
     let result;
 
     // first attempt
     try {
       result = await retrieveHistory(client, channelId, newest, oldest);
-    }
-    catch (err) {
+    } catch (err) {
       const errorCode = err.data?.errorCode;
 
       if (errorCode === 'not_in_channel') {
@@ -112,12 +109,9 @@ module.exports = (crowi) => {
           channel: channelId,
         });
         result = await retrieveHistory(client, channelId, newest, oldest);
-      }
-      else if (errorCode === 'channel_not_found') {
+      } else if (errorCode === 'channel_not_found') {
         // biome-ignore lint/complexity/noUselessStringConcat: ignore
-        const message = ':cry: GROWI Bot couldn\'t get history data because *this channel was private*.'
-          + '\nPlease add GROWI bot to this channel.'
-          + '\n';
+        const message = ":cry: GROWI Bot couldn't get history data because *this channel was private*." + '\nPlease add GROWI bot to this channel.' + '\n';
         throw new SlackCommandHandlerError(message, {
           respondBody: {
             text: message,
@@ -131,8 +125,7 @@ module.exports = (crowi) => {
             ],
           },
         });
-      }
-      else {
+      } else {
         throw err;
       }
     }
@@ -144,7 +137,7 @@ module.exports = (crowi) => {
     return result;
   };
 
-  handler.togetterCleanMessages = async(messages) => {
+  handler.togetterCleanMessages = async (messages) => {
     const cleanedContents = [];
     let lastMessage = {};
     const grwTzoffset = crowi.appService.getTzoffset() * 60;
@@ -171,19 +164,14 @@ module.exports = (crowi) => {
     return cleanedContents;
   };
 
-  handler.togetterCreatePageAndSendPreview = async(client, interactionPayloadAccessor, path, userChannelId, contentsBody) => {
+  handler.togetterCreatePageAndSendPreview = async (client, interactionPayloadAccessor, path, userChannelId, contentsBody) => {
     await createPageService.createPageInGrowi(interactionPayloadAccessor, path, contentsBody);
 
     // send preview to dm
     await client.chat.postMessage({
       channel: userChannelId,
       text: 'Preview from togetter command',
-      blocks: [
-        markdownSectionBlock('*Preview*'),
-        divider(),
-        markdownSectionBlock(contentsBody),
-        divider(),
-      ],
+      blocks: [markdownSectionBlock('*Preview*'), divider(), markdownSectionBlock(contentsBody), divider()],
     });
     // dismiss
     await deleteOriginal(interactionPayloadAccessor.getResponseUrl(), {
@@ -191,7 +179,7 @@ module.exports = (crowi) => {
     });
   };
 
-  handler.togetterMessageBlocks = function() {
+  handler.togetterMessageBlocks = function () {
     return [
       markdownSectionBlock('Select the oldest and newest datetime of the messages to use.'),
       inputBlock(this.plainTextInputElementWithInitialTime('oldest'), 'oldest', 'Oldest datetime'),

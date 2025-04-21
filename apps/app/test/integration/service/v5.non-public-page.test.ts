@@ -14,7 +14,6 @@ import { generalXssFilter } from '../../../src/services/general-xss-filter';
 import { getInstance } from '../setup-crowi';
 
 describe('PageService page operations with non-public pages', () => {
-
   let dummyUser1;
   let dummyUser2;
   let npDummyUser1;
@@ -94,7 +93,7 @@ describe('PageService page operations with non-public pages', () => {
   const tagIdRevert1 = new mongoose.Types.ObjectId();
   const tagIdRevert2 = new mongoose.Types.ObjectId();
 
-  const create = async(path, body, user, options = {}) => {
+  const create = async (path, body, user, options = {}) => {
     const mockedCreateSubOperation = jest.spyOn(crowi.pageService, 'createSubOperation').mockReturnValue(null);
 
     const createdPage = await crowi.pageService.create(path, body, user, options);
@@ -116,7 +115,7 @@ describe('PageService page operations with non-public pages', () => {
     });
   };
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     crowi = await getInstance();
     await crowi.configManager.updateConfig('app:isV5Compatible', true);
 
@@ -133,13 +132,22 @@ describe('PageService page operations with non-public pages', () => {
     const npUserId3 = new mongoose.Types.ObjectId();
     await User.insertMany([
       {
-        _id: npUserId1, name: 'npUser1', username: 'npUser1', email: 'npUser1@example.com',
+        _id: npUserId1,
+        name: 'npUser1',
+        username: 'npUser1',
+        email: 'npUser1@example.com',
       },
       {
-        _id: npUserId2, name: 'npUser2', username: 'npUser2', email: 'npUser2@example.com',
+        _id: npUserId2,
+        name: 'npUser2',
+        username: 'npUser2',
+        email: 'npUser2@example.com',
       },
       {
-        _id: npUserId3, name: 'npUser3', username: 'npUser3', email: 'npUser3@example.com',
+        _id: npUserId3,
+        name: 'npUser3',
+        username: 'npUser3',
+        email: 'npUser3@example.com',
       },
     ]);
 
@@ -446,7 +454,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename2,
         path: '/np_rename2',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdB, type: GroupType.userGroup },
+          { item: externalGroupIdB, type: GroupType.externalUserGroup },
+        ],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         parent: rootPage._id,
@@ -455,7 +466,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename3,
         path: '/np_rename2/np_rename3',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdC, type: GroupType.userGroup }, { item: externalGroupIdC, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdC, type: GroupType.userGroup },
+          { item: externalGroupIdC, type: GroupType.externalUserGroup },
+        ],
         creator: npDummyUser3._id,
         lastUpdateUser: npDummyUser3._id,
         parent: pageIdRename2._id,
@@ -464,7 +478,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename4,
         path: '/np_rename4_destination',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdIsolate, type: GroupType.userGroup }, { item: externalGroupIdIsolate, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdIsolate, type: GroupType.userGroup },
+          { item: externalGroupIdIsolate, type: GroupType.externalUserGroup },
+        ],
         creator: npDummyUser3._id,
         lastUpdateUser: npDummyUser3._id,
         parent: rootPage._id,
@@ -473,7 +490,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename5,
         path: '/np_rename5',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdB, type: GroupType.userGroup },
+          { item: externalGroupIdB, type: GroupType.externalUserGroup },
+        ],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         parent: rootPage._id,
@@ -482,7 +502,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename6,
         path: '/np_rename5/np_rename6',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdB, type: GroupType.userGroup },
+          { item: externalGroupIdB, type: GroupType.externalUserGroup },
+        ],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         parent: pageIdRename5,
@@ -491,7 +514,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRename7,
         path: '/np_rename7_destination',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdIsolate, type: GroupType.userGroup }, { item: externalGroupIdIsolate, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdIsolate, type: GroupType.userGroup },
+          { item: externalGroupIdIsolate, type: GroupType.externalUserGroup },
+        ],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         parent: pageIdRename5,
@@ -699,7 +725,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDelete2,
         path: '/npdel2_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdA, type: GroupType.userGroup },
+          { item: externalGroupIdA, type: GroupType.externalUserGroup },
+        ],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -709,7 +738,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDelete3,
         path: '/npdel3_top',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdA, type: GroupType.userGroup },
+          { item: externalGroupIdA, type: GroupType.externalUserGroup },
+        ],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -719,7 +751,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDelete4,
         path: '/npdel3_top/npdel4_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdB, type: GroupType.userGroup },
+          { item: externalGroupIdB, type: GroupType.externalUserGroup },
+        ],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDelete3._id,
@@ -734,7 +769,10 @@ describe('PageService page operations with non-public pages', () => {
       {
         path: '/npdel3_top/npdel4_ug/npdel5_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdC, type: GroupType.userGroup }, { item: externalGroupIdC, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdC, type: GroupType.userGroup },
+          { item: externalGroupIdC, type: GroupType.externalUserGroup },
+        ],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDelete4._id,
@@ -757,7 +795,10 @@ describe('PageService page operations with non-public pages', () => {
       {
         path: '/npdc2_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdA, type: GroupType.userGroup },
+          { item: externalGroupIdA, type: GroupType.externalUserGroup },
+        ],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -766,7 +807,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDeleteComp1,
         path: '/npdc3_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdA, type: GroupType.userGroup },
+          { item: externalGroupIdA, type: GroupType.externalUserGroup },
+        ],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: rootPage._id,
@@ -775,7 +819,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDeleteComp2,
         path: '/npdc3_ug/npdc4_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdB, type: GroupType.userGroup },
+          { item: externalGroupIdB, type: GroupType.externalUserGroup },
+        ],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDeleteComp1,
@@ -783,7 +830,10 @@ describe('PageService page operations with non-public pages', () => {
       {
         path: '/npdc3_ug/npdc4_ug/npdc5_ug',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdC, type: GroupType.userGroup }, { item: externalGroupIdC, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdC, type: GroupType.userGroup },
+          { item: externalGroupIdC, type: GroupType.externalUserGroup },
+        ],
         status: Page.STATUS_PUBLISHED,
         isEmpty: false,
         parent: pageIdDeleteComp2,
@@ -811,7 +861,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert2,
         path: '/trash/np_revert2',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdA, type: GroupType.userGroup },
+          { item: externalGroupIdA, type: GroupType.externalUserGroup },
+        ],
         revision: revisionIdRevert2,
         status: Page.STATUS_DELETED,
       },
@@ -833,7 +886,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert5,
         path: '/trash/np_revert5',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdA, type: GroupType.userGroup },
+          { item: externalGroupIdA, type: GroupType.externalUserGroup },
+        ],
         revision: revisionIdRevert5,
         status: Page.STATUS_DELETED,
       },
@@ -841,7 +897,10 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdRevert6,
         path: '/trash/np_revert5/middle/np_revert6',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdB, type: GroupType.userGroup },
+          { item: externalGroupIdB, type: GroupType.externalUserGroup },
+        ],
         revision: revisionIdRevert6,
         status: Page.STATUS_DELETED,
       },
@@ -911,9 +970,8 @@ describe('PageService page operations with non-public pages', () => {
   });
 
   describe('create', () => {
-
     describe('Creating a page using existing path', () => {
-      test('with grant RESTRICTED should only create the page and change nothing else', async() => {
+      test('with grant RESTRICTED should only create the page and change nothing else', async () => {
         const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
         const pathT = '/mc4_top';
         const path1 = '/mc4_top/mc1_emp';
@@ -944,7 +1002,7 @@ describe('PageService page operations with non-public pages', () => {
       });
     });
     describe('Creating a page under a page with grant RESTRICTED', () => {
-      test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
+      test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async () => {
         const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
         const pathT = '/mc5_top';
         const path1 = '/mc5_top/mc3_awl';
@@ -974,7 +1032,7 @@ describe('PageService page operations with non-public pages', () => {
     });
     describe('Creating a page under a page with grant USER_GROUP', () => {
       describe('When onlyInheritUserRelatedGrantedGroups is true', () => {
-        test('Only user related groups should be inherited', async() => {
+        test('Only user related groups should be inherited', async () => {
           const pathT = '/mc6_top';
           const pageT = await Page.findOne({ path: pathT });
           expect(pageT).toBeTruthy();
@@ -988,14 +1046,12 @@ describe('PageService page operations with non-public pages', () => {
           expect(_pageN).toBeTruthy();
           expect(_pageN.parent).toStrictEqual(_pageT._id);
           expect(_pageT.descendantCount).toStrictEqual(1);
-          expect(normalizeGrantedGroups(_pageN.grantedGroups)).toStrictEqual([
-            { item: groupIdIsolate, type: GroupType.userGroup },
-          ]);
+          expect(normalizeGrantedGroups(_pageN.grantedGroups)).toStrictEqual([{ item: groupIdIsolate, type: GroupType.userGroup }]);
         });
       });
 
       describe('When onlyInheritUserRelatedGrantedGroups is false', () => {
-        test('All groups should be inherited', async() => {
+        test('All groups should be inherited', async () => {
           const pathT = '/mc6_top';
           const pageT = await Page.findOne({ path: pathT });
           expect(pageT).toBeTruthy();
@@ -1016,13 +1072,11 @@ describe('PageService page operations with non-public pages', () => {
         });
       });
     });
-
   });
 
   describe('create by system', () => {
-
     describe('Creating a page using existing path', () => {
-      test('with grant RESTRICTED should only create the page and change nothing else', async() => {
+      test('with grant RESTRICTED should only create the page and change nothing else', async () => {
         const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
         const pathT = '/mc4_top_by_system';
         const path1 = '/mc4_top_by_system/mc1_emp_by_system';
@@ -1053,7 +1107,7 @@ describe('PageService page operations with non-public pages', () => {
       });
     });
     describe('Creating a page under a page with grant RESTRICTED', () => {
-      test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async() => {
+      test('will create a new empty page with the same path as the grant RESTRECTED page and become a parent', async () => {
         const isGrantNormalizedSpy = jest.spyOn(crowi.pageGrantService, 'isGrantNormalized');
         const pathT = '/mc5_top_by_system';
         const path1 = '/mc5_top_by_system/mc3_awl_by_system';
@@ -1081,11 +1135,10 @@ describe('PageService page operations with non-public pages', () => {
         expect(isGrantNormalizedSpy).toBeCalledTimes(0);
       });
     });
-
   });
 
   describe('Rename', () => {
-    const renamePage = async(page, newPagePath, user, options, activityParameters?) => {
+    const renamePage = async (page, newPagePath, user, options, activityParameters?) => {
       // mock return value
       const mockedRenameSubOperation = jest.spyOn(crowi.pageService, 'renameSubOperation').mockReturnValue(null);
       const renamedPage = await crowi.pageService.renamePage(page, newPagePath, user, options, activityParameters);
@@ -1104,7 +1157,7 @@ describe('PageService page operations with non-public pages', () => {
       return renamedPage;
     };
 
-    test('Should rename/move with descendants with grant normalized pages', async() => {
+    test('Should rename/move with descendants with grant normalized pages', async () => {
       const _pathD = '/np_rename1_destination';
       const _path2 = '/np_rename2';
       const _path3 = '/np_rename2/np_rename3';
@@ -1120,11 +1173,17 @@ describe('PageService page operations with non-public pages', () => {
 
       const newPathForPage2 = '/np_rename1_destination/np_rename2';
       const newPathForPage3 = '/np_rename1_destination/np_rename2/np_rename3';
-      await renamePage(_page2, newPathForPage2, npDummyUser2, {}, {
-        ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
-        activityId: '62e291bc10e0ab61bd691794',
-      });
+      await renamePage(
+        _page2,
+        newPathForPage2,
+        npDummyUser2,
+        {},
+        {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+          activityId: '62e291bc10e0ab61bd691794',
+        },
+      );
 
       const pageD = await Page.findOne({ path: _pathD, ..._propertiesD });
       const page2 = await Page.findOne({ path: _path2, ..._properties2 }); // not exist
@@ -1142,16 +1201,16 @@ describe('PageService page operations with non-public pages', () => {
       expect(normalizeGrantedGroups(page3Renamed.grantedGroups)).toStrictEqual(normalizeGrantedGroups(_page3.grantedGroups));
       expect(generalXssFilterProcessSpy).toHaveBeenCalled();
     });
-    test('Should throw with NOT grant normalized pages', async() => {
+    test('Should throw with NOT grant normalized pages', async () => {
       const _pathD = '/np_rename4_destination';
       const _path2 = '/np_rename5';
       const _path3 = '/np_rename5/np_rename6';
       const _propertiesD = { grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdIsolate } } };
       const _properties2 = { grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } };
       const _properties3 = { grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdB } } };
-      const _pageD = await Page.findOne({ path: _pathD, ..._propertiesD });// isolate
-      const _page2 = await Page.findOne({ path: _path2, ..._properties2 });// groupIdB
-      const _page3 = await Page.findOne({ path: _path3, ..._properties3, parent: _page2 });// groupIdB
+      const _pageD = await Page.findOne({ path: _pathD, ..._propertiesD }); // isolate
+      const _page2 = await Page.findOne({ path: _path2, ..._properties2 }); // groupIdB
+      const _page3 = await Page.findOne({ path: _path3, ..._properties3, parent: _page2 }); // groupIdB
       expect(_pageD).toBeTruthy();
       expect(_page2).toBeTruthy();
       expect(_page3).toBeTruthy();
@@ -1160,13 +1219,18 @@ describe('PageService page operations with non-public pages', () => {
       const newPathForPage3 = '/np_rename4_destination/np_rename5/np_rename6';
       let isThrown = false;
       try {
-        await renamePage(_page2, newPathForPage2, dummyUser1, {}, {
-          ip: '::ffff:127.0.0.1',
-          endpoint: '/_api/v3/pages/rename',
-          activityId: '62e291bc10e0ab61bd691794',
-        });
-      }
-      catch (err) {
+        await renamePage(
+          _page2,
+          newPathForPage2,
+          dummyUser1,
+          {},
+          {
+            ip: '::ffff:127.0.0.1',
+            endpoint: '/_api/v3/pages/rename',
+            activityId: '62e291bc10e0ab61bd691794',
+          },
+        );
+      } catch (err) {
         isThrown = true;
       }
       expect(isThrown).toBe(true);
@@ -1179,7 +1243,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(page2Renamed).toBeNull();
       expect(page3Renamed).toBeNull();
     });
-    test('Should rename/move multiple pages: child page with GRANT_RESTRICTED should NOT be renamed.', async() => {
+    test('Should rename/move multiple pages: child page with GRANT_RESTRICTED should NOT be renamed.', async () => {
       const _pathD = '/np_rename7_destination';
       const _path2 = '/np_rename8';
       const _path3 = '/np_rename8/np_rename9';
@@ -1192,11 +1256,17 @@ describe('PageService page operations with non-public pages', () => {
 
       const newPathForPage2 = '/np_rename7_destination/np_rename8';
       const newpathForPage3 = '/np_rename7_destination/np_rename8/np_rename9';
-      await renamePage(_page2, newPathForPage2, npDummyUser1, { isRecursively: true }, {
-        ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/rename',
-        activityId: '62e291bc10e0ab61bd691794',
-      });
+      await renamePage(
+        _page2,
+        newPathForPage2,
+        npDummyUser1,
+        { isRecursively: true },
+        {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/rename',
+          activityId: '62e291bc10e0ab61bd691794',
+        },
+      );
 
       const page2 = await Page.findOne({ path: _path2 }); // not exist
       const page3 = await Page.findOne({ path: _path3 }); // not renamed thus exist
@@ -1211,8 +1281,7 @@ describe('PageService page operations with non-public pages', () => {
     });
   });
   describe('Duplicate', () => {
-
-    const duplicate = async(page, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedResources: boolean) => {
+    const duplicate = async (page, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedResources: boolean) => {
       // mock return value
       const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources);
@@ -1230,7 +1299,7 @@ describe('PageService page operations with non-public pages', () => {
 
       return duplicatedPage;
     };
-    test('Duplicate single page with GRANT_RESTRICTED', async() => {
+    test('Duplicate single page with GRANT_RESTRICTED', async () => {
       const _page = await Page.findOne({ path: '/np_duplicate1', grant: Page.GRANT_RESTRICTED }).populate({ path: 'revision', model: 'Revision' });
       const _revision = _page.revision;
       expect(_page).toBeTruthy();
@@ -1251,13 +1320,17 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedRevision.body).toBe(_revision.body);
     });
 
-    test('Should duplicate multiple pages with GRANT_USER_GROUP', async() => {
+    test('Should duplicate multiple pages with GRANT_USER_GROUP', async () => {
       const _path1 = '/np_duplicate2';
       const _path2 = '/np_duplicate2/np_duplicate3';
-      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grantedGroups: { $elemMatch: { item: groupIdA } } })
-        .populate({ path: 'revision', model: 'Revision' });
-      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id, grantedGroups: { $elemMatch: { item: groupIdB } } })
-        .populate({ path: 'revision', model: 'Revision' });
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grantedGroups: { $elemMatch: { item: groupIdA } } }).populate({
+        path: 'revision',
+        model: 'Revision',
+      });
+      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id, grantedGroups: { $elemMatch: { item: groupIdB } } }).populate({
+        path: 'revision',
+        model: 'Revision',
+      });
       const _revision1 = _page1.revision;
       const _revision2 = _page2.revision;
       expect(_page1).toBeTruthy();
@@ -1292,12 +1365,11 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id);
     });
-    test('Should duplicate multiple pages. Page with GRANT_RESTRICTED should NOT be duplicated', async() => {
+    test('Should duplicate multiple pages. Page with GRANT_RESTRICTED should NOT be duplicated', async () => {
       const _path1 = '/np_duplicate4';
       const _path2 = '/np_duplicate4/np_duplicate5';
       const _path3 = '/np_duplicate4/np_duplicate6';
-      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grant: Page.GRANT_PUBLIC })
-        .populate({ path: 'revision', model: 'Revision' });
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grant: Page.GRANT_PUBLIC }).populate({ path: 'revision', model: 'Revision' });
       const _page2 = await Page.findOne({ path: _path2, grant: Page.GRANT_RESTRICTED }).populate({ path: 'revision', model: 'Revision' });
       const _page3 = await Page.findOne({ path: _path3, grant: Page.GRANT_PUBLIC }).populate({ path: 'revision', model: 'Revision' });
       const baseRevision1 = _page1.revision;
@@ -1332,12 +1404,11 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id);
     });
-    test('Should duplicate only user related pages and granted groups when onlyDuplicateUserRelatedResources is true', async() => {
+    test('Should duplicate only user related pages and granted groups when onlyDuplicateUserRelatedResources is true', async () => {
       const _path1 = '/np_duplicate7';
       const _path2 = '/np_duplicate7/np_duplicate8';
       const _path3 = '/np_duplicate7/np_duplicate9';
-      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id })
-        .populate({ path: 'revision', model: 'Revision' });
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id }).populate({ path: 'revision', model: 'Revision' });
       const _page2 = await Page.findOne({ path: _path2, parent: _page1._id });
       const _page3 = await Page.findOne({ path: _path3, parent: _page1._id });
       const _revision1 = _page1.revision;
@@ -1366,16 +1437,13 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedRevision1.body).toBe(_revision1.body);
       expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
     });
-    test('Should duplicate all pages and granted groups when onlyDuplicateUserRelatedResources is false', async() => {
+    test('Should duplicate all pages and granted groups when onlyDuplicateUserRelatedResources is false', async () => {
       const _path1 = '/np_duplicate7';
       const _path2 = '/np_duplicate7/np_duplicate8';
       const _path3 = '/np_duplicate7/np_duplicate9';
-      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id })
-        .populate({ path: 'revision', model: 'Revision' });
-      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id })
-        .populate({ path: 'revision', model: 'Revision' });
-      const _page3 = await Page.findOne({ path: _path3, parent: _page1._id })
-        .populate({ path: 'revision', model: 'Revision' });
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id }).populate({ path: 'revision', model: 'Revision' });
+      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id }).populate({ path: 'revision', model: 'Revision' });
+      const _page3 = await Page.findOne({ path: _path3, parent: _page1._id }).populate({ path: 'revision', model: 'Revision' });
       const _revision1 = _page1.revision;
       const _revision2 = _page2.revision;
       const _revision3 = _page3.revision;
@@ -1423,11 +1491,9 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedRevision3.body).toBe(_revision3.body);
       expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id);
     });
-
   });
   describe('Delete', () => {
-
-    const deletePage = async(page, user, options, isRecursively, activityParameters?) => {
+    const deletePage = async (page, user, options, isRecursively, activityParameters?) => {
       const mockedDeleteRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteRecursivelyMainOperation').mockReturnValue(null);
 
       const deletedPage = await crowi.pageService.deletePage(page, user, options, isRecursively, activityParameters);
@@ -1443,7 +1509,7 @@ describe('PageService page operations with non-public pages', () => {
       return deletedPage;
     };
     describe('Delete single page with grant RESTRICTED', () => {
-      test('should be able to delete', async() => {
+      test('should be able to delete', async () => {
         const _pathT = '/npdel1_awl';
         const _pageT = await Page.findOne({ path: _pathT, grant: Page.GRANT_RESTRICTED });
         expect(_pageT).toBeTruthy();
@@ -1463,7 +1529,7 @@ describe('PageService page operations with non-public pages', () => {
       });
     });
     describe('Delete single page with grant USER_GROUP', () => {
-      test('should be able to delete', async() => {
+      test('should be able to delete', async () => {
         const _path = '/npdel2_ug';
         const _page1 = await Page.findOne({ path: _path, grantedGroups: { $elemMatch: { item: groupIdA } } });
         expect(_page1).toBeTruthy();
@@ -1484,7 +1550,7 @@ describe('PageService page operations with non-public pages', () => {
       });
     });
     describe('Delete multiple pages with grant USER_GROUP', () => {
-      test('should be able to delete all descendants except page with GRANT_RESTRICTED', async() => {
+      test('should be able to delete all descendants except page with GRANT_RESTRICTED', async () => {
         const _pathT = '/npdel3_top';
         const _path1 = '/npdel3_top/npdel4_ug';
         const _path2 = '/npdel3_top/npdel4_ug/npdel5_ug';
@@ -1528,10 +1594,9 @@ describe('PageService page operations with non-public pages', () => {
         expect(page2.parent).toBeNull();
       });
     });
-
   });
   describe('Delete completely', () => {
-    const deleteCompletely = async(page, user, options = {}, isRecursively = false, preventEmitting = false, activityParameters?) => {
+    const deleteCompletely = async (page, user, options = {}, isRecursively = false, preventEmitting = false, activityParameters?) => {
       const mockedDeleteCompletelyRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'deleteCompletelyRecursivelyMainOperation').mockReturnValue(null);
 
       await crowi.pageService.deleteCompletely(page, user, options, isRecursively, preventEmitting, activityParameters);
@@ -1548,7 +1613,7 @@ describe('PageService page operations with non-public pages', () => {
     };
 
     describe('Delete single page with grant RESTRICTED', () => {
-      test('should be able to delete completely', async() => {
+      test('should be able to delete completely', async () => {
         const _path = '/npdc1_awl';
         const _page = await Page.findOne({ path: _path, grant: Page.GRANT_RESTRICTED });
         expect(_page).toBeTruthy();
@@ -1563,7 +1628,7 @@ describe('PageService page operations with non-public pages', () => {
       });
     });
     describe('Delete single page with grant USER_GROUP', () => {
-      test('should be able to delete completely', async() => {
+      test('should be able to delete completely', async () => {
         const _path = '/npdc2_ug';
         const _page = await Page.findOne({ path: _path, grant: Page.GRANT_USER_GROUP, grantedGroups: { $elemMatch: { item: groupIdA } } });
         expect(_page).toBeTruthy();
@@ -1578,7 +1643,7 @@ describe('PageService page operations with non-public pages', () => {
       });
     });
     describe('Delete multiple pages with grant USER_GROUP', () => {
-      test('should be able to delete all descendants completely except page with GRANT_RESTRICTED', async() => {
+      test('should be able to delete all descendants completely except page with GRANT_RESTRICTED', async () => {
         const _path1 = '/npdc3_ug';
         const _path2 = '/npdc3_ug/npdc4_ug';
         const _path3 = '/npdc3_ug/npdc4_ug/npdc5_ug';
@@ -1609,7 +1674,7 @@ describe('PageService page operations with non-public pages', () => {
     });
   });
   describe('revert', () => {
-    const revertDeletedPage = async(page, user, options = {}, isRecursively = false, activityParameters?) => {
+    const revertDeletedPage = async (page, user, options = {}, isRecursively = false, activityParameters?) => {
       // mock return value
       const mockedRevertRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'revertRecursivelyMainOperation').mockReturnValue(null);
       const revertedPage = await crowi.pageService.revertDeletedPage(page, user, options, isRecursively, activityParameters);
@@ -1623,9 +1688,8 @@ describe('PageService page operations with non-public pages', () => {
       }
 
       return revertedPage;
-
     };
-    test('should revert single deleted page with GRANT_RESTRICTED', async() => {
+    test('should revert single deleted page with GRANT_RESTRICTED', async () => {
       const trashedPage = await Page.findOne({ path: '/trash/np_revert1', status: Page.STATUS_DELETED, grant: Page.GRANT_RESTRICTED });
       const revision = await Revision.findOne({ pageId: trashedPage._id });
       const tag = await Tag.findOne({ name: 'np_revertTag1' });
@@ -1653,7 +1717,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.grant).toBe(Page.GRANT_RESTRICTED);
       expect(pageTagRelation?.isPageTrashed).toBe(false);
     });
-    test('should revert single deleted page with GRANT_USER_GROUP', async() => {
+    test('should revert single deleted page with GRANT_USER_GROUP', async () => {
       const beforeRevertPath = '/trash/np_revert2';
       const user1 = await User.findOne({ name: 'npUser1' });
       const trashedPage = await Page.findOne({ path: beforeRevertPath, status: Page.STATUS_DELETED, grant: Page.GRANT_USER_GROUP });
@@ -1687,7 +1751,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(pageTagRelation?.isPageTrashed).toBe(false);
     });
     test(`revert multiple pages: only target page should be reverted.
-          Non-existant middle page and leaf page with GRANT_RESTRICTED shoud not be reverted`, async() => {
+          Non-existant middle page and leaf page with GRANT_RESTRICTED shoud not be reverted`, async () => {
       const beforeRevertPath1 = '/trash/np_revert3';
       const beforeRevertPath2 = '/trash/np_revert3/middle/np_revert4';
       const trashedPage1 = await Page.findOne({ path: beforeRevertPath1, status: Page.STATUS_DELETED, grant: Page.GRANT_PUBLIC });
@@ -1724,7 +1788,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_PUBLIC);
     });
-    test('revert multiple pages: target page, initially non-existant page and leaf page with GRANT_USER_GROUP shoud be reverted', async() => {
+    test('revert multiple pages: target page, initially non-existant page and leaf page with GRANT_USER_GROUP shoud be reverted', async () => {
       const user = await User.findOne({ _id: npDummyUser3 });
       const beforeRevertPath1 = '/trash/np_revert5';
       const beforeRevertPath2 = '/trash/np_revert5/middle/np_revert6';
@@ -1774,7 +1838,6 @@ describe('PageService page operations with non-public pages', () => {
         { item: externalGroupIdB, type: GroupType.externalUserGroup },
       ]);
       expect(newlyCreatedPage.grant).toBe(Page.GRANT_PUBLIC);
-
     });
   });
 });

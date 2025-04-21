@@ -7,8 +7,7 @@ import ThreadRelation from '../../../models/thread-relation';
 import { MAX_DAYS_UNTIL_EXPIRATION, normalizeExpiredAtForThreadRelations } from './normalize-thread-relation-expired-at';
 
 describe('normalizeExpiredAtForThreadRelations', () => {
-
-  it('should update expiredAt to 3 days from now for expired thread relations', async() => {
+  it('should update expiredAt to 3 days from now for expired thread relations', async () => {
     // arrange
     const expiredDays = faker.number.int({ min: MAX_DAYS_UNTIL_EXPIRATION, max: 30 });
     const expiredDate = addDays(new Date(), expiredDays);
@@ -30,7 +29,7 @@ describe('normalizeExpiredAtForThreadRelations', () => {
     expect(updatedThreadRelation.expiredAt < addDays(new Date(), MAX_DAYS_UNTIL_EXPIRATION)).toBeTruthy();
   });
 
-  it('should not update expiredAt for non-expired thread relations', async() => {
+  it('should not update expiredAt for non-expired thread relations', async () => {
     // arrange
     const nonExpiredDays = faker.number.int({ min: 0, max: MAX_DAYS_UNTIL_EXPIRATION });
     const nonExpiredDate = addDays(new Date(), nonExpiredDays);
@@ -51,7 +50,7 @@ describe('normalizeExpiredAtForThreadRelations', () => {
     expect(updatedThreadRelation?.expiredAt).toEqual(nonExpiredDate);
   });
 
-  it('should not update expiredAt is before today', async() => {
+  it('should not update expiredAt is before today', async () => {
     // arrange
     const nonExpiredDate = subDays(new Date(), 1);
     const threadRelation = new ThreadRelation({

@@ -4,7 +4,6 @@ import VectorStoreFileRelationModel from '~/features/openai/server/models/vector
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:migrate:rename-pageId-to-page');
 
 async function dropIndexIfExists(db, collectionName, indexName) {
@@ -29,13 +28,7 @@ module.exports = {
     await dropIndexIfExists(db, 'vectorstorefilerelations', 'vectorStoreRelationId_1_pageId_1');
 
     // Rename field (pageId -> page)
-    await VectorStoreFileRelationModel.updateMany(
-      {},
-      [
-        { $set: { page: '$pageId' } },
-        { $unset: ['pageId'] },
-      ],
-    );
+    await VectorStoreFileRelationModel.updateMany({}, [{ $set: { page: '$pageId' } }, { $unset: ['pageId'] }]);
 
     // Create index
     const collection = mongoose.connection.collection('vectorstorefilerelations');

@@ -2,9 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import {
-  Modal, ModalHeader, ModalBody, ModalFooter,
-} from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import BootstrapGrid from '~/client/models/BootstrapGrid';
 
@@ -19,7 +17,6 @@ const resSizeObj = {
   [resSizes.MD_SIZE]: { displayText: 'desktop' },
 };
 class GridEditModal extends React.Component {
-
   constructor(props) {
     super(props);
 
@@ -99,7 +96,7 @@ class GridEditModal extends React.Component {
             id={responsiveSizeForMap[1].displayText}
             value={responsiveSizeForMap[1].displayText}
             checked={this.state.responsiveSize === responsiveSizeForMap[0]}
-            onChange={e => this.checkResposiveSize(responsiveSizeForMap[0])}
+            onChange={(e) => this.checkResposiveSize(responsiveSizeForMap[0])}
           />
           <label className="form-label form-check-label" htmlFor={responsiveSizeForMap[1].displayText}>
             {t(responsiveSizeForMap[1].displayText)}
@@ -120,16 +117,29 @@ class GridEditModal extends React.Component {
             const numOfDivisions = gridDivision.numberOfGridDivisions;
             return (
               <div key={`${numOfDivisions}-divisions`} className="col-md-4 text-center">
-                <h6 className="dropdown-header">{numOfDivisions} {t('grid_edit.division')}</h6>
+                <h6 className="dropdown-header">
+                  {numOfDivisions} {t('grid_edit.division')}
+                </h6>
                 {gridDivision.mapping.map((gridOneDivision) => {
                   const keyOfRow = `${numOfDivisions}-divisions-${gridOneDivision.join('-')}`;
                   return (
-                    <button key={keyOfRow} className="dropdown-item" type="button" onClick={() => { this.checkColsRatios(gridOneDivision) }}>
+                    <button
+                      key={keyOfRow}
+                      className="dropdown-item"
+                      type="button"
+                      onClick={() => {
+                        this.checkColsRatios(gridOneDivision);
+                      }}
+                    >
                       <div className="row">
                         {gridOneDivision.map((god, i) => {
                           const keyOfCol = `${keyOfRow}-${i}`;
                           const className = `bg-info col-${god} border`;
-                          return <span key={keyOfCol} className={className}>{god}</span>;
+                          return (
+                            <span key={keyOfCol} className={className}>
+                              {god}
+                            </span>
+                          );
                         })}
                       </div>
                     </button>
@@ -151,21 +161,15 @@ class GridEditModal extends React.Component {
       <div className="row grw-grid-edit-preview border my-4 p-3">
         <div className="col-lg-2">
           <h4 className="d-block mt-2">{t('phone')}</h4>
-          <div className="mobile-preview d-block px-3 py-2">
-            {this.renderGridPreview(!isXsSelected)}
-          </div>
+          <div className="mobile-preview d-block px-3 py-2">{this.renderGridPreview(!isXsSelected)}</div>
         </div>
         <div className="col-lg-3">
           <h4 className="d-block mt-2">{t('tablet')}</h4>
-          <div className="tablet-preview d-block px-3 py-2">
-            {this.renderGridPreview(isMdSelected)}
-          </div>
+          <div className="tablet-preview d-block px-3 py-2">{this.renderGridPreview(isMdSelected)}</div>
         </div>
         <div className="col-lg-4">
           <h4 className="d-block mt-2">{t('desktop')}</h4>
-          <div className="desktop-preview d-block px-3 py-2">
-            {this.renderGridPreview(false)}
-          </div>
+          <div className="desktop-preview d-block px-3 py-2">{this.renderGridPreview(false)}</div>
         </div>
       </div>
     );
@@ -178,13 +182,9 @@ class GridEditModal extends React.Component {
       const ratio = isBreakEnabled ? 12 : colsRatio;
       const key = `grid-preview-col-${i}`;
       const className = `col-${ratio} grid-edit-border-for-each-cols`;
-      return (
-        <div key={key} className={`${key} ${className}`}></div>
-      );
+      return <div key={key} className={`${key} ${className}`}></div>;
     });
-    return (
-      <div className="row">{convertedHTML}</div>
-    );
+    return <div className="row">{convertedHTML}</div>;
   }
 
   render() {
@@ -223,17 +223,13 @@ class GridEditModal extends React.Component {
                   <label className="form-label col-sm-3" htmlFor="breakPoint">
                     {t('grid_edit.break_point')}
                   </label>
-                  <div className="col-sm-9">
-                    {this.renderBreakPointSetting()}
-                  </div>
+                  <div className="col-sm-9">{this.renderBreakPointSetting()}</div>
                 </div>
               </form>
             </div>
           </div>
           <h3 className="grw-modal-head">{t('preview')}</h3>
-          <div className="col-12">
-            {this.renderPreview()}
-          </div>
+          <div className="col-12">{this.renderPreview()}</div>
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
           <div className="ms-auto">
@@ -248,7 +244,6 @@ class GridEditModal extends React.Component {
       </Modal>
     );
   }
-
 }
 
 const GridEditModalFc = React.forwardRef((props, ref) => {

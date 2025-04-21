@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 import AdminAppContainer from '~/client/services/AdminAppContainer';
@@ -6,8 +5,8 @@ import AdminAppContainer from '~/client/services/AdminAppContainer';
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
 type Props = {
-  adminAppContainer: AdminAppContainer,
-}
+  adminAppContainer: AdminAppContainer;
+};
 
 const SmtpSetting = (props: Props) => {
   const { adminAppContainer } = props;
@@ -15,11 +14,8 @@ const SmtpSetting = (props: Props) => {
   return (
     <React.Fragment>
       <div id="mail-smtp" className="tab-pane active mt-5">
-
         <div className="row">
-          <label className="text-start text-md-end col-md-3 col-form-label">
-            Access key ID
-          </label>
+          <label className="text-start text-md-end col-md-3 col-form-label">Access key ID</label>
           <div className="col-md-6">
             <input
               className="form-control"
@@ -33,9 +29,7 @@ const SmtpSetting = (props: Props) => {
         </div>
 
         <div className="row">
-          <label className="text-start text-md-end col-md-3 col-form-label">
-            Secret access key
-          </label>
+          <label className="text-start text-md-end col-md-3 col-form-label">Secret access key</label>
           <div className="col-md-6">
             <input
               className="form-control"
@@ -48,7 +42,6 @@ const SmtpSetting = (props: Props) => {
           </div>
         </div>
       </div>
-
     </React.Fragment>
   );
 };

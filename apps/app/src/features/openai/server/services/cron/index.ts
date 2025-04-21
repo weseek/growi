@@ -2,10 +2,9 @@ import loggerFactory from '~/utils/logger';
 
 import { isAiEnabled } from '../is-ai-enabled';
 
-
 const logger = loggerFactory('growi:openai:service:cron');
 
-export const startCronIfEnabled = async(): Promise<void> => {
+export const startCronIfEnabled = async (): Promise<void> => {
   if (isAiEnabled()) {
     logger.info('Starting cron service for thread deletion');
     const { ThreadDeletionCronService } = await import('./thread-deletion-cron');

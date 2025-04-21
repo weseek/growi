@@ -10,13 +10,11 @@ const logger = loggerFactory('growi:middleware:login-required');
  * @param {function} fallback fallback function which will be triggered when the check cannot be passed
  */
 module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
-
   return (req, res, next) => {
-
     const User = crowi.model('User');
 
     // check the user logged in
-    if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
+    if (req.user != null && req.user instanceof Object && '_id' in req.user) {
       if (req.user.status === User.STATUS_ACTIVE) {
         // Active の人だけ先に進める
         return next();
@@ -59,5 +57,4 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
     req.session.redirectTo = req.originalUrl;
     return res.redirect('/login');
   };
-
 };

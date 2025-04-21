@@ -1,8 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -17,7 +15,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const LegacySlackIntegration = dynamic(() => import('~/client/components/Admin/LegacySlackIntegration/LegacySlackIntegration'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then((mod) => mod.ForbiddenPage), { ssr: false });
 
 const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
@@ -29,7 +27,7 @@ const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
   const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const AdminSlackIntegrationLegacyContainer = (await import('~/client/services/AdminSlackIntegrationLegacyContainer')).default;
       const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
       injectableContainers.push(adminSlackIntegrationLegacyContainer);
@@ -39,7 +37,6 @@ const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
   if (props.isAccessDeniedForNonAdminUser) {
     return <ForbiddenPage />;
   }
-
 
   return (
     <Provider inject={[...injectableContainers]}>
@@ -51,14 +48,11 @@ const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
       </AdminLayout>
     </Provider>
   );
-
 };
 
-
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context);
   return props;
 };
-
 
 export default AdminLegacySlackIntegrationPage;

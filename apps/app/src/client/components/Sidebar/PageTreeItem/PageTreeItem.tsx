@@ -1,6 +1,4 @@
-import React, {
-  useCallback, useState, type JSX,
-} from 'react';
+import React, { useCallback, useState, type JSX } from 'react';
 
 import nodePath from 'path';
 
@@ -17,23 +15,19 @@ import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
 import type { ItemNode } from '../../TreeItem';
-import {
-  TreeItemLayout, useNewPageInput, type TreeItemProps,
-} from '../../TreeItem';
+import { TreeItemLayout, useNewPageInput, type TreeItemProps } from '../../TreeItem';
 
 import { CountBadgeForPageTreeItem } from './CountBadgeForPageTreeItem';
 import { CreatingNewPageSpinner } from './CreatingNewPageSpinner';
 import { usePageItemControl } from './use-page-item-control';
 
-
 import styles from './PageTreeItem.module.scss';
 
 const moduleClass = styles['page-tree-item'] ?? '';
 
-
 const logger = loggerFactory('growi:cli:Item');
 
-export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
+export const PageTreeItem = (props: TreeItemProps): JSX.Element => {
   const router = useRouter();
 
   const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
@@ -55,29 +49,28 @@ export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false, onRenamed,
-  } = props;
+  const { itemNode, targetPathOrId, isOpen: _isOpen = false, onRenamed } = props;
 
   const { page } = itemNode;
   const [isOpen, setIsOpen] = useState(_isOpen);
 
   const { mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
-  const {
-    showRenameInput, Control, RenameInput,
-  } = usePageItemControl();
+  const { showRenameInput, Control, RenameInput } = usePageItemControl();
   const { isProcessingSubmission, Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
-  const itemSelectedHandler = useCallback((page: IPageForItem) => {
-    if (page.path == null || page._id == null) {
-      return;
-    }
+  const itemSelectedHandler = useCallback(
+    (page: IPageForItem) => {
+      if (page.path == null || page._id == null) {
+        return;
+      }
 
-    const link = pathUtils.returnPathForURL(page.path, page._id);
+      const link = pathUtils.returnPathForURL(page.path, page._id);
 
-    router.push(link);
-  }, [router]);
+      router.push(link);
+    },
+    [router],
+  );
 
   const itemSelectedByWheelClickHandler = useCallback((page: IPageForItem) => {
     if (page.path == null || page._id == null) {
@@ -102,13 +95,13 @@ export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult();
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging(),
       canDrag: monitor.canDrag(),
     }),
   });
 
-  const pageItemDropHandler = async(item: ItemNode) => {
+  const pageItemDropHandler = async (item: ItemNode) => {
     const { page: droppedPage } = item;
     if (!isDroppable(droppedPage, page, true)) {
       return;
@@ -132,12 +125,10 @@ export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
       }
       // force open
       setIsOpen(true);
-    }
-    catch (err) {
+    } catch (err) {
       if (err.code === 'operation__blocked') {
         toastWarning(t('pagetree.you_cannot_move_this_page_now'));
-      }
-      else {
+      } else {
         toastError(t('pagetree.something_went_wrong_with_moving_page'));
       }
     }
@@ -161,7 +152,7 @@ export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
         const { page: droppedPage } = item;
         return isDroppable(droppedPage, page);
       },
-      collect: monitor => ({
+      collect: (monitor) => ({
         isOver: monitor.isOver(),
       }),
     }),
@@ -170,7 +161,9 @@ export const PageTreeItem = (props:TreeItemProps): JSX.Element => {
 
   const itemRef = (c) => {
     // do not apply when RenameInput is shown
-    if (showRenameInput) { return; }
+    if (showRenameInput) {
+      return;
+    }
 
     drag(c);
     drop(c);

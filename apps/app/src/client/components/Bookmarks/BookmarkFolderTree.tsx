@@ -1,4 +1,3 @@
-
 import type React from 'react';
 import { useCallback } from 'react';
 
@@ -11,9 +10,7 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { toastSuccess } from '~/client/util/toastr';
 import type { OnDeletedFunction } from '~/interfaces/ui';
 import { useIsReadOnlyUser } from '~/stores-universal/context';
-import {
-  useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,
-} from '~/stores/bookmark';
+import { useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { usePageDeleteModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxPageInfo, useSWRxCurrentPage } from '~/stores/page';
@@ -30,10 +27,10 @@ import styles from './BookmarkFolderTree.module.scss';
 //  } & IPageHasId
 
 type Props = {
-  isUserHomepage?: boolean,
-  userId?: string,
-  isOperable: boolean,
-}
+  isUserHomepage?: boolean;
+  userId?: string;
+  isOperable: boolean;
+};
 
 export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   const { isUserHomepage, userId } = props;
@@ -57,18 +54,23 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
     mutateBookmarkFolders();
   }, [mutateBookmarkFolders, mutatePageInfo, mutateCurrentUserBookmarks, mutateUserBookmarks]);
 
-  const onClickDeleteMenuItemHandler = useCallback((pageToDelete: IPageToDeleteWithMeta) => {
-    const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
-      if (typeof pathOrPathsToDelete !== 'string') { return }
-      toastSuccess(isCompletely ? t('deleted_pages_completely', { path: pathOrPathsToDelete }) : t('deleted_pages', { path: pathOrPathsToDelete }));
-      bookmarkFolderTreeMutation();
-      mutateAllPageInfo();
-      if (pageToDelete.data._id === currentPage?._id && _isRecursively) {
-        router.push(`/trash${currentPage.path}`);
-      }
-    };
-    openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
-  }, [openDeleteModal, t, bookmarkFolderTreeMutation, currentPage?._id, currentPage?.path, router]);
+  const onClickDeleteMenuItemHandler = useCallback(
+    (pageToDelete: IPageToDeleteWithMeta) => {
+      const pageDeletedHandler: OnDeletedFunction = (pathOrPathsToDelete, _isRecursively, isCompletely) => {
+        if (typeof pathOrPathsToDelete !== 'string') {
+          return;
+        }
+        toastSuccess(isCompletely ? t('deleted_pages_completely', { path: pathOrPathsToDelete }) : t('deleted_pages', { path: pathOrPathsToDelete }));
+        bookmarkFolderTreeMutation();
+        mutateAllPageInfo();
+        if (pageToDelete.data._id === currentPage?._id && _isRecursively) {
+          router.push(`/trash${currentPage.path}`);
+        }
+      };
+      openDeleteModal([pageToDelete], { onDeleted: pageDeletedHandler });
+    },
+    [openDeleteModal, t, bookmarkFolderTreeMutation, currentPage?._id, currentPage?.path, router],
+  );
 
   /* TODO: update in bookmarks folder v2. */
   // const itemDropHandler = async(item: DragItemDataType, dragType: string | null | symbol) => {
@@ -106,7 +108,6 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
 
   return (
     <DndProvider backend={HTML5Backend}>
-
       <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}`}>
         <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group py-2`}>
           {bookmarkFolders?.map((bookmarkFolder) => {
@@ -125,7 +126,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
               />
             );
           })}
-          {userBookmarks?.map(userBookmark => (
+          {userBookmarks?.map((userBookmark) => (
             <div key={userBookmark?._id} className="grw-foldertree-item-container grw-root-bookmarks">
               <BookmarkItem
                 isReadOnlyUser={!!isReadOnlyUser}
@@ -156,7 +157,6 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
           </DragAndDropWrapper>
         )} */}
       </div>
-
     </DndProvider>
   );
 };

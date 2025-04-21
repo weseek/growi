@@ -1,8 +1,6 @@
 import { useEffect, useMemo } from 'react';
 
-import type {
-  NextPage, GetServerSideProps, GetServerSidePropsContext,
-} from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
@@ -17,8 +15,7 @@ import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const ExportArchiveDataPage = dynamic(() => import('~/client/components/Admin/ExportArchiveDataPage'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
-
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then((mod) => mod.ForbiddenPage), { ssr: false });
 
 const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   const { t } = useTranslation('admin');
@@ -30,7 +27,7 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
   useEffect(() => {
-    (async() => {
+    (async () => {
       const AdminAppContainer = (await import('~/client/services/AdminAppContainer')).default;
       const adminAppContainer = new AdminAppContainer();
       injectableContainers.push(adminAppContainer);
@@ -53,11 +50,9 @@ const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {
   );
 };
 
-
-export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
   const props = await retrieveServerSideProps(context);
   return props;
 };
-
 
 export default AdminExportDataArchivePage;

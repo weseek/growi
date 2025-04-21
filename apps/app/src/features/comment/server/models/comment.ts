@@ -1,7 +1,5 @@
 import type { IUser } from '@growi/core/dist/interfaces';
-import type {
-  Types, Document, Model, Query,
-} from 'mongoose';
+import type { Types, Document, Model, Query } from 'mongoose';
 import { Schema } from 'mongoose';
 
 import type { IComment } from '~/interfaces/comment';
@@ -11,10 +9,9 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:models:comment');
 
 export interface CommentDocument extends IComment, Document {
-  removeWithReplies: () => Promise<void>
-  findCreatorsByPage: (pageId: Types.ObjectId) => Promise<CommentDocument[]>
+  removeWithReplies: () => Promise<void>;
+  findCreatorsByPage: (pageId: Types.ObjectId) => Promise<CommentDocument[]>;
 }
-
 
 type Add = (
   pageId: Types.ObjectId,
@@ -26,37 +23,32 @@ type Add = (
 ) => Promise<CommentDocument>;
 type FindCommentsByPageId = (pageId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
 type FindCommentsByRevisionId = (revisionId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
-type FindCreatorsByPage = (pageId: Types.ObjectId) => Promise<IUser[]>
-type CountCommentByPageId = (pageId: Types.ObjectId) => Promise<number>
+type FindCreatorsByPage = (pageId: Types.ObjectId) => Promise<IUser[]>;
+type CountCommentByPageId = (pageId: Types.ObjectId) => Promise<number>;
 
 export interface CommentModel extends Model<CommentDocument> {
-  add: Add
-  findCommentsByPageId: FindCommentsByPageId
-  findCommentsByRevisionId: FindCommentsByRevisionId
-  findCreatorsByPage: FindCreatorsByPage
-  countCommentByPageId: CountCommentByPageId
+  add: Add;
+  findCommentsByPageId: FindCommentsByPageId;
+  findCommentsByRevisionId: FindCommentsByRevisionId;
+  findCreatorsByPage: FindCreatorsByPage;
+  countCommentByPageId: CountCommentByPageId;
 }
 
-const commentSchema = new Schema<CommentDocument, CommentModel>({
-  page: { type: Schema.Types.ObjectId, ref: 'Page', index: true },
-  creator: { type: Schema.Types.ObjectId, ref: 'User', index: true },
-  revision: { type: Schema.Types.ObjectId, ref: 'Revision', index: true },
-  comment: { type: String, required: true },
-  commentPosition: { type: Number, default: -1 },
-  replyTo: { type: Schema.Types.ObjectId },
-}, {
-  timestamps: true,
-});
+const commentSchema = new Schema<CommentDocument, CommentModel>(
+  {
+    page: { type: Schema.Types.ObjectId, ref: 'Page', index: true },
+    creator: { type: Schema.Types.ObjectId, ref: 'User', index: true },
+    revision: { type: Schema.Types.ObjectId, ref: 'Revision', index: true },
+    comment: { type: String, required: true },
+    commentPosition: { type: Number, default: -1 },
+    replyTo: { type: Schema.Types.ObjectId },
+  },
+  {
+    timestamps: true,
+  },
+);
 
-const add: Add = async function(
-    this: CommentModel,
-    pageId,
-    creatorId,
-    revisionId,
-    comment,
-    commentPosition,
-    replyTo?,
-): Promise<CommentDocument> {
+const add: Add = async function (this: CommentModel, pageId, creatorId, revisionId, comment, commentPosition, replyTo?): Promise<CommentDocument> {
   try {
     const data = await this.create({
       page: pageId.toString(),
@@ -69,34 +61,32 @@ const add: Add = async function(
     logger.debug('Comment saved.', data);
 
     return data;
-  }
-  catch (err) {
+  } catch (err) {
     logger.debug('Error on saving comment.', err);
     throw err;
   }
 };
 commentSchema.statics.add = add;
 
-commentSchema.statics.findCommentsByPageId = function(id) {
+commentSchema.statics.findCommentsByPageId = function (id) {
   return this.find({ page: id }).sort({ createdAt: -1 });
 };
 
-commentSchema.statics.findCommentsByRevisionId = function(id) {
+commentSchema.statics.findCommentsByRevisionId = function (id) {
   return this.find({ revision: id }).sort({ createdAt: -1 });
 };
 
-commentSchema.statics.findCreatorsByPage = async function(page) {
+commentSchema.statics.findCreatorsByPage = async function (page) {
   return this.distinct('creator', { page }).exec();
 };
 
-commentSchema.statics.countCommentByPageId = async function(page) {
+commentSchema.statics.countCommentByPageId = async function (page) {
   return this.count({ page });
 };
 
-commentSchema.statics.removeWithReplies = async function(comment) {
+commentSchema.statics.removeWithReplies = async function (comment) {
   await this.deleteMany({
-    $or:
-      [{ replyTo: comment._id }, { _id: comment._id }],
+    $or: [{ replyTo: comment._id }, { _id: comment._id }],
   });
 };
 

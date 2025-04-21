@@ -18,16 +18,14 @@ import styles from './BookmarkButtons.module.scss';
 import popoverStyles from './user-list-popover.module.scss';
 
 interface Props {
-  pageId: string,
-  isBookmarked?: boolean,
-  bookmarkCount: number,
+  pageId: string;
+  isBookmarked?: boolean;
+  bookmarkCount: number;
 }
 
 export const BookmarkButtons: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
-  const {
-    pageId, isBookmarked, bookmarkCount,
-  } = props;
+  const { pageId, isBookmarked, bookmarkCount } = props;
 
   const [isBookmarkFolderMenuOpen, setBookmarkFolderMenuOpen] = useState(false);
   const [isBookmarkUsersPopoverOpen, setBookmarkUsersPopoverOpen] = useState(false);
@@ -41,15 +39,14 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
   };
 
   const toggleBookmarkFolderMenuHandler = () => {
-    setBookmarkFolderMenuOpen(v => !v);
+    setBookmarkFolderMenuOpen((v) => !v);
   };
 
   const toggleBookmarkUsersPopover = () => {
-    setBookmarkUsersPopoverOpen(v => !v);
+    setBookmarkUsersPopoverOpen((v) => !v);
   };
 
   const getTooltipMessage = useCallback(() => {
-
     if (isGuestUser) {
       return 'Not available for guest';
     }
@@ -62,7 +59,6 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
 
   return (
     <div className={`btn-group btn-group-bookmark ${styles['btn-group-bookmark']}`} role="group" aria-label="Bookmark buttons">
-
       <BookmarkFolderMenu
         isOpen={isBookmarkFolderMenuOpen}
         pageId={pageId}
@@ -76,9 +72,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
           className={`btn btn-bookmark rounded-end-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
-          <span className={`material-symbols-outlined ${isBookmarked ? 'fill' : ''}`}>
-            bookmark
-          </span>
+          <span className={`material-symbols-outlined ${isBookmarked ? 'fill' : ''}`}>bookmark</span>
         </DropdownToggle>
       </BookmarkFolderMenu>
       <UncontrolledTooltip data-testid="bookmark-button-tooltip" target="bookmark-dropdown-btn" fade={false}>
@@ -95,19 +89,18 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
       </button>
       <Popover placement="bottom" isOpen={isBookmarkUsersPopoverOpen} target="po-total-bookmarks" toggle={toggleBookmarkUsersPopover} trigger="legacy">
         <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
-          { isLoadingBookmarkedUsers && <LoadingSpinner /> }
-          { !isLoadingBookmarkedUsers && bookmarkedUsers != null && (
+          {isLoadingBookmarkedUsers && <LoadingSpinner />}
+          {!isLoadingBookmarkedUsers && bookmarkedUsers != null && (
             <>
-              { bookmarkedUsers.length > 0
-                ? (
-                  <div className="px-2 text-end user-list-content text-truncate text-muted">
-                    <UserPictureList users={bookmarkedUsers} />
-                  </div>
-                )
-                : t('No users have bookmarked yet')
-              }
+              {bookmarkedUsers.length > 0 ? (
+                <div className="px-2 text-end user-list-content text-truncate text-muted">
+                  <UserPictureList users={bookmarkedUsers} />
+                </div>
+              ) : (
+                t('No users have bookmarked yet')
+              )}
             </>
-          ) }
+          )}
         </PopoverBody>
       </Popover>
     </div>

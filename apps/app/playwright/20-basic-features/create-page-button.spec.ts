@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Create page button', () => {
-  test('click and autofocus to title text input', async({ page }) => {
+  test('click and autofocus to title text input', async ({ page }) => {
     await page.goto('/');
 
     await page.getByTestId('grw-page-create-button').getByRole('button', { name: 'Create' }).click();
@@ -12,7 +12,7 @@ test.describe('Create page button', () => {
 });
 
 test.describe('Create page button dropdown menu', () => {
-  test('open and create today page', async({ page }) => {
+  test('open and create today page', async ({ page }) => {
     await page.goto('/');
 
     // open dropdown menu

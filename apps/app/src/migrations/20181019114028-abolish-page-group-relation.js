@@ -5,7 +5,6 @@ import userGroupModelFactory from '~/server/models/user-group';
 import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
-
 const logger = loggerFactory('growi:migrate:abolish-page-group-relation');
 
 async function isCollectionExists(db, collectionName) {
@@ -28,14 +27,13 @@ async function isCollectionExists(db, collectionName) {
  *   - Page model has 'grantedGroup' field newly
  */
 module.exports = {
-
   async up(db) {
     logger.info('Apply migration');
     await mongoose.connect(getMongoUri(), mongoOptions);
 
     const isPagegrouprelationsExists = await isCollectionExists(db, 'pagegrouprelations');
     if (!isPagegrouprelationsExists) {
-      logger.info("'pagegrouprelations' collection doesn't exist");   // eslint-disable-line
+      logger.info("'pagegrouprelations' collection doesn't exist"); // eslint-disable-line
       logger.info('Migration has successfully applied');
       return;
     }
@@ -115,5 +113,4 @@ module.exports = {
 
     logger.info('Migration has been successfully rollbacked');
   },
-
 };

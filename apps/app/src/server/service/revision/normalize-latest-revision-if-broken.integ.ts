@@ -9,13 +9,11 @@ import { Revision } from '~/server/models/revision';
 import { normalizeLatestRevisionIfBroken } from './normalize-latest-revision-if-broken';
 
 describe('normalizeLatestRevisionIfBroken', () => {
-
-  beforeAll(async() => {
+  beforeAll(async () => {
     await PageModelFactory(null);
   });
 
-
-  test('should update the latest revision', async() => {
+  test('should update the latest revision', async () => {
     const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
     // == Arrange
@@ -48,9 +46,8 @@ describe('normalizeLatestRevisionIfBroken', () => {
     expect(getIdStringForRef(revisionById.pageId)).toEqual(page._id.toString());
   });
 
-
   describe('should returns without any operation', () => {
-    test('when the page has revisions at least one', async() => {
+    test('when the page has revisions at least one', async () => {
       const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
       // Arrange
@@ -66,7 +63,7 @@ describe('normalizeLatestRevisionIfBroken', () => {
       expect(updateOneSpy).not.toHaveBeenCalled();
     });
 
-    test('when the page is not found', async() => {
+    test('when the page is not found', async () => {
       // Arrange
       const pageIdOfRevision = new Types.ObjectId();
       // create an orphan revision
@@ -82,7 +79,7 @@ describe('normalizeLatestRevisionIfBroken', () => {
       expect(updateOneSpy).not.toHaveBeenCalled();
     });
 
-    test('when the page.revision is null', async() => {
+    test('when the page.revision is null', async () => {
       const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
       // Arrange
@@ -100,7 +97,7 @@ describe('normalizeLatestRevisionIfBroken', () => {
       expect(updateOneSpy).not.toHaveBeenCalled();
     });
 
-    test('when the page.revision does not exist', async() => {
+    test('when the page.revision does not exist', async () => {
       const Page = mongoose.model<HydratedDocument<PageDocument>, PageModel>('Page');
 
       // Arrange
@@ -118,7 +115,5 @@ describe('normalizeLatestRevisionIfBroken', () => {
       // Assert
       expect(updateOneSpy).not.toHaveBeenCalled();
     });
-
   });
-
 });

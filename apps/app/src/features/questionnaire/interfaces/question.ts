@@ -2,14 +2,14 @@ import type { HasObjectId } from '@growi/core';
 
 export const QuestionType = { points: 'points', text: 'text' } as const;
 
-type QuestionType = typeof QuestionType[keyof typeof QuestionType];
+type QuestionType = (typeof QuestionType)[keyof typeof QuestionType];
 
 export interface IQuestion {
-  type: QuestionType
+  type: QuestionType;
   text: {
-    ja_JP: string
-    en_US: string
-  }
+    ja_JP: string;
+    en_US: string;
+  };
 }
 
 export type IQuestionHasId = IQuestion & HasObjectId;

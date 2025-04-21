@@ -29,10 +29,13 @@ export const ExternalGroupManagement: FC = () => {
   const externalUserGroupsForDeleteModal: IGrantedGroup[] = externalUserGroups.map((group) => {
     return { item: group, type: GroupType.externalUserGroup };
   });
-  const userGroupsForDeleteModal: IGrantedGroup[] = userGroupList != null ? userGroupList.map((group) => {
-    return { item: group, type: GroupType.userGroup };
-  }) : [];
-  const externalUserGroupIds = externalUserGroups.map(group => group._id);
+  const userGroupsForDeleteModal: IGrantedGroup[] =
+    userGroupList != null
+      ? userGroupList.map((group) => {
+          return { item: group, type: GroupType.userGroup };
+        })
+      : [];
+  const externalUserGroupIds = externalUserGroups.map((group) => group._id);
 
   const { data: externalUserGroupRelationList } = useSWRxExternalUserGroupRelationList(externalUserGroupIds);
   const externalUserGroupRelations = externalUserGroupRelationList != null ? externalUserGroupRelationList : [];
@@ -50,82 +53,88 @@ export const ExternalGroupManagement: FC = () => {
 
   const { t } = useTranslation('admin');
 
-  const showUpdateModal = useCallback((group: IExternalUserGroupHasId) => {
-    setUpdateModalShown(true);
-    setSelectedExternalUserGroup(group);
-  }, [setUpdateModalShown]);
+  const showUpdateModal = useCallback(
+    (group: IExternalUserGroupHasId) => {
+      setUpdateModalShown(true);
+      setSelectedExternalUserGroup(group);
+    },
+    [setUpdateModalShown],
+  );
 
   const hideUpdateModal = useCallback(() => {
     setUpdateModalShown(false);
     setSelectedExternalUserGroup(undefined);
   }, [setUpdateModalShown]);
 
-  const syncUserGroupAndRelations = useCallback(async() => {
+  const syncUserGroupAndRelations = useCallback(async () => {
     try {
       await mutateExternalUserGroups();
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
     }
   }, [mutateExternalUserGroups]);
 
-  const showDeleteModal = useCallback(async(group: IExternalUserGroupHasId) => {
-    try {
-      await syncUserGroupAndRelations();
+  const showDeleteModal = useCallback(
+    async (group: IExternalUserGroupHasId) => {
+      try {
+        await syncUserGroupAndRelations();
 
-      setSelectedExternalUserGroup(group);
-      setDeleteModalShown(true);
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [syncUserGroupAndRelations]);
+        setSelectedExternalUserGroup(group);
+        setDeleteModalShown(true);
+      } catch (err) {
+        toastError(err);
+      }
+    },
+    [syncUserGroupAndRelations],
+  );
 
   const hideDeleteModal = useCallback(() => {
     setSelectedExternalUserGroup(undefined);
     setDeleteModalShown(false);
   }, []);
 
-  const updateExternalUserGroup = useCallback(async(userGroupData: IExternalUserGroupHasId) => {
-    try {
-      await apiv3Put(`/external-user-groups/${userGroupData._id}`, {
-        description: userGroupData.description,
-      });
+  const updateExternalUserGroup = useCallback(
+    async (userGroupData: IExternalUserGroupHasId) => {
+      try {
+        await apiv3Put(`/external-user-groups/${userGroupData._id}`, {
+          description: userGroupData.description,
+        });
 
-      toastSuccess(t('toaster.update_successed', { target: t('ExternalUserGroup'), ns: 'commons' }));
+        toastSuccess(t('toaster.update_successed', { target: t('ExternalUserGroup'), ns: 'commons' }));
 
-      await mutateExternalUserGroups();
+        await mutateExternalUserGroups();
 
-      hideUpdateModal();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [t, mutateExternalUserGroups, hideUpdateModal]);
+        hideUpdateModal();
+      } catch (err) {
+        toastError(err);
+      }
+    },
+    [t, mutateExternalUserGroups, hideUpdateModal],
+  );
 
-  const deleteExternalUserGroupById = useCallback(async(
-      deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup | null,
-  ) => {
-    const transferToUserGroupId = transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : null;
-    const transferToUserGroupType = transferToUserGroup != null ? transferToUserGroup.type : null;
-    try {
-      await apiv3Delete(`/external-user-groups/${deleteGroupId}`, {
-        actionName,
-        transferToUserGroupId,
-        transferToUserGroupType,
-      });
+  const deleteExternalUserGroupById = useCallback(
+    async (deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup | null) => {
+      const transferToUserGroupId = transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : null;
+      const transferToUserGroupType = transferToUserGroup != null ? transferToUserGroup.type : null;
+      try {
+        await apiv3Delete(`/external-user-groups/${deleteGroupId}`, {
+          actionName,
+          transferToUserGroupId,
+          transferToUserGroupType,
+        });
 
-      // sync
-      await mutateExternalUserGroups();
+        // sync
+        await mutateExternalUserGroups();
 
-      hideDeleteModal();
+        hideDeleteModal();
 
-      toastSuccess(`Deleted ${selectedExternalUserGroup?.name} group.`);
-    }
-    catch (err) {
-      toastError(new Error('Unable to delete the groups'));
-    }
-  }, [mutateExternalUserGroups, selectedExternalUserGroup, hideDeleteModal]);
+        toastSuccess(`Deleted ${selectedExternalUserGroup?.name} group.`);
+      } catch (err) {
+        toastError(new Error('Unable to delete the groups'));
+      }
+    },
+    [mutateExternalUserGroups, selectedExternalUserGroup, hideDeleteModal],
+  );
 
   const switchActiveTab = (selectedTab) => {
     setActiveTab(selectedTab);
@@ -176,20 +185,10 @@ export const ExternalGroupManagement: FC = () => {
         onHide={hideDeleteModal}
       />
 
-      <CustomNav
-        activeTab={activeTab}
-        navTabMapping={navTabMapping}
-        onNavSelected={switchActiveTab}
-        hideBorderBottom
-        breakpointToSwitchDropdownDown="md"
-      />
+      <CustomNav activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={switchActiveTab} hideBorderBottom breakpointToSwitchDropdownDown="md" />
       <TabContent activeTab={activeTab} className="p-5">
-        <TabPane tabId="ldap">
-          {activeComponents.has('ldap') && <LdapGroupManagement />}
-        </TabPane>
-        <TabPane tabId="keycloak">
-          {activeComponents.has('keycloak') && <KeycloakGroupManagement />}
-        </TabPane>
+        <TabPane tabId="ldap">{activeComponents.has('ldap') && <LdapGroupManagement />}</TabPane>
+        <TabPane tabId="keycloak">{activeComponents.has('keycloak') && <KeycloakGroupManagement />}</TabPane>
       </TabContent>
     </>
   );

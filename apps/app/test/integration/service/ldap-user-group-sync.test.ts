@@ -26,25 +26,27 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   const mockLdapSearch = jest.spyOn(ldapService, 'search');
   const mockLdapCreateClient = jest.spyOn(ldap, 'createClient');
 
-  beforeAll(async() => {
+  beforeAll(async () => {
     crowi = await getInstance();
     await configManager.updateConfigs(configParams, { skipPubsub: true });
 
     mockBind.mockImplementation(() => {
       return Promise.resolve();
     });
-    mockLdapCreateClient.mockImplementation(() => { return {} as Client });
+    mockLdapCreateClient.mockImplementation(() => {
+      return {} as Client;
+    });
 
     const passportService = new PassportService(crowi);
     ldapUserGroupSyncService = new LdapUserGroupSyncService(passportService, null, null);
   });
 
   describe('When there is no circular reference in group tree', () => {
-    it('creates ExternalUserGroupTrees', async() => {
+    it('creates ExternalUserGroupTrees', async () => {
       // mock search on LDAP server
       mockLdapSearch.mockImplementation((filter, base) => {
         if (base === 'ou=groups,dc=example,dc=org') {
-        // search groups
+          // search groups
           return Promise.resolve([
             {
               objectName: 'cn=childGroup,ou=groups,dc=example,dc=org',
@@ -95,7 +97,7 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
           ]);
         }
         if (base === 'cn=childGroupUser,ou=users,dc=example,dc=org') {
-        // search childGroupUser
+          // search childGroupUser
           return Promise.resolve([
             {
               objectName: 'cn=childGroupUser,ou=users,dc=example,dc=org',
@@ -154,39 +156,45 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
       expect(rootNodes?.length).toBe(2);
 
       // check grandParentGroup
-      const grandParentNode = rootNodes?.find(node => node.id === 'cn=grandParentGroup,ou=groups,dc=example,dc=org');
+      const grandParentNode = rootNodes?.find((node) => node.id === 'cn=grandParentGroup,ou=groups,dc=example,dc=org');
       const expectedChildNode = {
         id: 'cn=childGroup,ou=groups,dc=example,dc=org',
-        userInfos: [{
-          id: 'childGroupUser',
-          username: 'childGroupUser',
-          name: 'Child Group User',
-          email: 'user@childGroup.com',
-        }],
+        userInfos: [
+          {
+            id: 'childGroupUser',
+            username: 'childGroupUser',
+            name: 'Child Group User',
+            email: 'user@childGroup.com',
+          },
+        ],
         childGroupNodes: [],
         name: 'childGroup',
         description: 'this is a child group',
       };
       const expectedParentNode = {
         id: 'cn=parentGroup,ou=groups,dc=example,dc=org',
-        userInfos: [{
-          id: 'parentGroupUser',
-          username: 'parentGroupUser',
-          name: 'Parent Group User',
-          email: 'user@parentGroup.com',
-        }],
+        userInfos: [
+          {
+            id: 'parentGroupUser',
+            username: 'parentGroupUser',
+            name: 'Parent Group User',
+            email: 'user@parentGroup.com',
+          },
+        ],
         childGroupNodes: [expectedChildNode],
         name: 'parentGroup',
         description: 'this is a parent group',
       };
       const expectedGrandParentNode = {
         id: 'cn=grandParentGroup,ou=groups,dc=example,dc=org',
-        userInfos: [{
-          id: 'grandParentGroupUser',
-          username: 'grandParentGroupUser',
-          name: 'Grand Parent Group User',
-          email: 'user@grandParentGroup.com',
-        }],
+        userInfos: [
+          {
+            id: 'grandParentGroupUser',
+            username: 'grandParentGroupUser',
+            name: 'Grand Parent Group User',
+            email: 'user@grandParentGroup.com',
+          },
+        ],
         childGroupNodes: [expectedParentNode],
         name: 'grandParentGroup',
         description: 'this is a grand parent group',
@@ -194,15 +202,17 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
       expect(grandParentNode).toStrictEqual(expectedGrandParentNode);
 
       // check rootGroup
-      const rootNode = rootNodes?.find(node => node.id === 'cn=rootGroup,ou=groups,dc=example,dc=org');
+      const rootNode = rootNodes?.find((node) => node.id === 'cn=rootGroup,ou=groups,dc=example,dc=org');
       const expectedRootNode = {
         id: 'cn=rootGroup,ou=groups,dc=example,dc=org',
-        userInfos: [{
-          id: 'rootGroupUser',
-          username: 'rootGroupUser',
-          name: 'Root Group User',
-          email: 'user@rootGroup.com',
-        }],
+        userInfos: [
+          {
+            id: 'rootGroupUser',
+            username: 'rootGroupUser',
+            name: 'Root Group User',
+            email: 'user@rootGroup.com',
+          },
+        ],
         childGroupNodes: [],
         name: 'rootGroup',
         description: 'this is a root group',
@@ -212,13 +222,13 @@ describe('LdapUserGroupSyncService.generateExternalUserGroupTrees', () => {
   });
 
   describe('When there is a circular reference in group tree', () => {
-    it('rejects creating ExternalUserGroupTrees', async() => {
+    it('rejects creating ExternalUserGroupTrees', async () => {
       // mock search on LDAP server
       mockLdapSearch.mockImplementation((filter, base) => {
         if (base === 'ou=groups,dc=example,dc=org') {
-        // search groups
+          // search groups
           return Promise.resolve([
-          // childGroup and parentGroup have circular reference
+            // childGroup and parentGroup have circular reference
             {
               objectName: 'cn=childGroup,ou=groups,dc=example,dc=org',
               attributes: [

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('Installer', async({ page }) => {
+test('Installer', async ({ page }) => {
   await page.goto('/');
   await page.waitForURL('/installer');
 

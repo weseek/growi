@@ -13,9 +13,10 @@ const conditionSchema = new Schema<ICondition>({
         type: Number,
         min: 0,
         validate: [
-          function(value) {
+          function (value) {
             return this.user.daysSinceCreation.moreThanOrEqualTo == null || this.user.daysSinceCreation.moreThanOrEqualTo <= value;
-          }, 'daysSinceCreation.lessThanOrEqualTo must be greater than moreThanOrEqualTo',
+          },
+          'daysSinceCreation.lessThanOrEqualTo must be greater than moreThanOrEqualTo',
         ],
       },
     },

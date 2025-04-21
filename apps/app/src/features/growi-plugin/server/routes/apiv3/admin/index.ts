@@ -8,19 +8,14 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 import { GrowiPlugin } from '../../../models';
 import { growiPluginService } from '../../../services';
 
-
 const ObjectID = mongoose.Types.ObjectId;
 
 /*
  * Validators
  */
 const validator = {
-  pluginIdisRequired: [
-    query('id').isMongoId().withMessage('pluginId is required'),
-  ],
-  pluginFormValueisRequired: [
-    body('pluginInstallerForm').isString().withMessage('pluginFormValue is required'),
-  ],
+  pluginIdisRequired: [query('id').isMongoId().withMessage('pluginId is required')],
+  pluginFormValueisRequired: [body('pluginInstallerForm').isString().withMessage('pluginFormValue is required')],
 };
 
 module.exports = (crowi: Crowi): Router => {
@@ -29,12 +24,11 @@ module.exports = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-  router.get('/', loginRequiredStrictly, adminRequired, async(req: Request, res: ApiV3Response) => {
+  router.get('/', loginRequiredStrictly, adminRequired, async (req: Request, res: ApiV3Response) => {
     try {
       const data = await GrowiPlugin.find({});
       return res.apiv3({ plugins: data });
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err);
     }
   });
@@ -78,14 +72,13 @@ module.exports = (crowi: Crowi): Router => {
    *                   description: The name of the installed plugin
    *
    */
-  router.post('/', loginRequiredStrictly, adminRequired, validator.pluginFormValueisRequired, async(req: Request, res: ApiV3Response) => {
+  router.post('/', loginRequiredStrictly, adminRequired, validator.pluginFormValueisRequired, async (req: Request, res: ApiV3Response) => {
     const { pluginInstallerForm: formValue } = req.body;
 
     try {
       const pluginName = await growiPluginService.install(formValue);
       return res.apiv3({ pluginName });
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err);
     }
   });
@@ -118,28 +111,26 @@ module.exports = (crowi: Crowi): Router => {
    *                   type: string
    *                   description: The name of the activated plugin
    */
-  router.put('/:id/activate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
+  router.put('/:id/activate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async (req: Request, res: ApiV3Response) => {
     const { id } = req.params;
     const pluginId = new ObjectID(id);
 
     try {
       const pluginName = await GrowiPlugin.activatePlugin(pluginId);
       return res.apiv3({ pluginName });
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err);
     }
   });
 
-  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
+  router.put('/:id/deactivate', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async (req: Request, res: ApiV3Response) => {
     const { id } = req.params;
     const pluginId = new ObjectID(id);
 
     try {
       const pluginName = await GrowiPlugin.deactivatePlugin(pluginId);
       return res.apiv3({ pluginName });
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err);
     }
   });
@@ -172,15 +163,14 @@ module.exports = (crowi: Crowi): Router => {
    *                   type: string
    *                   description: The name of the removed plugin
    */
-  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async(req: Request, res: ApiV3Response) => {
+  router.delete('/:id/remove', loginRequiredStrictly, adminRequired, validator.pluginIdisRequired, async (req: Request, res: ApiV3Response) => {
     const { id } = req.params;
     const pluginId = new ObjectID(id);
 
     try {
       const pluginName = await growiPluginService.deletePlugin(pluginId);
       return res.apiv3({ pluginName });
-    }
-    catch (err) {
+    } catch (err) {
       return res.apiv3Err(err);
     }
   });

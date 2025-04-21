@@ -11,23 +11,20 @@ import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
 const logger = loggerFactory('growi:appSettings');
 
-
 type Props = {
-  adminAppContainer: AdminAppContainer,
-}
+  adminAppContainer: AdminAppContainer;
+};
 
 const SiteUrlSetting = (props: Props) => {
   const { t } = useTranslation('admin', { keyPrefix: 'app_setting' });
   const { t: tCommon } = useTranslation('commons');
   const { adminAppContainer } = props;
 
-
-  const submitHandler = useCallback(async() => {
+  const submitHandler = useCallback(async () => {
     try {
       await adminAppContainer.updateSiteUrlSettingHandler();
       toastSuccess(tCommon('toaster.update_successed', { target: t('site_url.title') }));
-    }
-    catch (err) {
+    } catch (err) {
       toastError(err);
       logger.error(err);
     }
@@ -36,10 +33,13 @@ const SiteUrlSetting = (props: Props) => {
   return (
     <React.Fragment>
       <p className="card custom-card bg-body-tertiary">{t('site_url.desc')}</p>
-      {!adminAppContainer.state.isSetSiteUrl
-          && (<p className="alert alert-danger"><span className="material-symbols-outlined">error</span> {t('site_url.warn')}</p>)}
+      {!adminAppContainer.state.isSetSiteUrl && (
+        <p className="alert alert-danger">
+          <span className="material-symbols-outlined">error</span> {t('site_url.warn')}
+        </p>
+      )}
 
-      { adminAppContainer.state.siteUrlUseOnlyEnvVars && (
+      {adminAppContainer.state.siteUrlUseOnlyEnvVars && (
         <div className="row">
           <p
             className="alert alert-info"
@@ -49,7 +49,7 @@ const SiteUrlSetting = (props: Props) => {
             }}
           />
         </div>
-      ) }
+      )}
 
       <div className="row">
         <table className="table settings-table">
@@ -72,7 +72,9 @@ const SiteUrlSetting = (props: Props) => {
                   name="settingForm[app:siteUrl]"
                   defaultValue={adminAppContainer.state.siteUrl || ''}
                   disabled={adminAppContainer.state.siteUrlUseOnlyEnvVars ?? true}
-                  onChange={(e) => { adminAppContainer.changeSiteUrl(e.target.value) }}
+                  onChange={(e) => {
+                    adminAppContainer.changeSiteUrl(e.target.value);
+                  }}
                   placeholder="e.g. https://my.growi.org"
                 />
                 <p className="form-text text-muted">

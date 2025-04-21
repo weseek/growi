@@ -2,9 +2,8 @@
 // biome-ignore lint/correctness/noUndeclaredVariables: ignore
 export type SubmittableInputProps<T extends InputHTMLAttributes<HTMLInputElement> = InputHTMLAttributes<HTMLInputElement>> =
   // biome-ignore lint/correctness/noUndeclaredVariables: ignore
-  Omit<InputHTMLAttributes<T>, 'value' | 'onKeyDown' | 'onSubmit'>
-  & {
-    value?: string,
-    onSubmit?: (inputText: string) => void,
-    onCancel?: () => void,
-  }
+  Omit<InputHTMLAttributes<T>, 'value' | 'onKeyDown' | 'onSubmit'> & {
+    value?: string;
+    onSubmit?: (inputText: string) => void;
+    onCancel?: () => void;
+  };

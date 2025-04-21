@@ -12,9 +12,7 @@ module.exports = (crowi, app) => {
   const logger = loggerFactory('growi:routes:login');
   const path = require('path');
   const User = crowi.model('User');
-  const {
-    appService, aclService, mailService, activityService,
-  } = crowi;
+  const { appService, aclService, mailService, activityService } = crowi;
   const activityEvent = crowi.event('activity');
 
   const actions = {};
@@ -40,13 +38,10 @@ module.exports = (crowi, app) => {
     });
 
     const results = await Promise.allSettled(promises);
-    results
-      .filter(result => result.status === 'rejected')
-      .forEach(result => logger.error(result.reason));
+    results.filter((result) => result.status === 'rejected').forEach((result) => logger.error(result.reason));
   }
 
   async function sendNotificationToAllAdmins(user) {
-
     const activity = await activityService.createActivity({
       action: SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST,
       target: user,
@@ -56,7 +51,7 @@ module.exports = (crowi, app) => {
     /**
      * @param {import('../service/pre-notify').PreNotifyProps} props
      */
-    const preNotify = async(props) => {
+    const preNotify = async (props) => {
       /** @type {(import('mongoose').HydratedDocument<import('@growi/core').IUser>)[]} */
       const adminUsers = await User.findAdmins();
 
@@ -68,7 +63,7 @@ module.exports = (crowi, app) => {
     return;
   }
 
-  const registerSuccessHandler = async(req, res, userData, registrationMode) => {
+  const registerSuccessHandler = async (req, res, userData, registrationMode) => {
     const parameters = { action: SupportedAction.ACTION_USER_REGISTRATION_SUCCESS };
     activityEvent.emit('update', res.locals.activity._id, parameters);
 
@@ -117,8 +112,7 @@ module.exports = (crowi, app) => {
     req.login(userData, (err) => {
       if (err) {
         logger.debug(err);
-      }
-      else {
+      } else {
         // update lastLoginAt
         userData.updateLastLoginAt(new Date(), (err) => {
           if (err) {
@@ -132,12 +126,10 @@ module.exports = (crowi, app) => {
         // userData.password can't be empty but, prepare redirect because password property in User Model is optional
         // https://github.com/weseek/growi/pull/6670
         redirectTo = '/me#password_settings';
-      }
-      else if (req.session.redirectTo != null) {
+      } else if (req.session.redirectTo != null) {
         redirectTo = req.session.redirectTo;
         delete req.session.redirectTo;
-      }
-      else {
+      } else {
         redirectTo = '/';
       }
 
@@ -242,13 +234,12 @@ module.exports = (crowi, app) => {
 
       const registrationMode = configManager.getConfig('security:registrationMode');
 
-      User.createUserByEmailAndPassword(name, username, email, password, undefined, async(err, userData) => {
+      User.createUserByEmailAndPassword(name, username, email, password, undefined, async (err, userData) => {
         if (err) {
           const errors = [];
           if (err.name === 'UserUpperLimitException') {
             errors.push('message.can_not_register_maximum_number_of_users');
-          }
-          else {
+          } else {
             errors.push('message.failed_to_register');
           }
           return res.apiv3Err(errors, 405);

@@ -7,7 +7,6 @@ import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { PageUpdateErrorCode } from '~/interfaces/apiv3';
 import { useCurrentPageId } from '~/stores/page';
 
-
 export const PageContentsUtilities = (): null => {
   const { t } = useTranslation();
 

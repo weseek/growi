@@ -58,28 +58,26 @@ module.exports = (crowi) => {
   const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
-  const {
-    Page,
-    User,
-  } = crowi.models;
+  const { Page, User } = crowi.models;
 
   const validator = {
     retrieveRevisions: [
       query('pageId').isMongoId().withMessage('pageId is required'),
-      query('offset').if(value => value != null).isInt({ min: 0 }).withMessage('offset must be int'),
-      query('limit').if(value => value != null).isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
-
+      query('offset')
+        .if((value) => value != null)
+        .isInt({ min: 0 })
+        .withMessage('offset must be int'),
+      query('limit')
+        .if((value) => value != null)
+        .isInt({ max: 100 })
+        .withMessage('You should set less than 100 or not to set limit.'),
     ],
-    retrieveRevisionById: [
-      query('pageId').isMongoId().withMessage('pageId is required'),
-      param('id').isMongoId().withMessage('id is required'),
-    ],
+    retrieveRevisionById: [query('pageId').isMongoId().withMessage('pageId is required'), param('id').isMongoId().withMessage('id is required')],
   };
 
   let cachedAppliedAt = null;
 
-  const getAppliedAtOfTheMigrationFile = async() => {
-
+  const getAppliedAtOfTheMigrationFile = async () => {
     if (cachedAppliedAt != null) {
       return cachedAppliedAt;
     }
@@ -134,9 +132,9 @@ module.exports = (crowi) => {
    *                    type: number
    *                    description: offset of the revisions
    */
-  router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async(req, res) => {
+  router.get('/list', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisions, apiV3FormValidator, async (req, res) => {
     const pageId = req.query.pageId;
-    const limit = req.query.limit || await crowi.configManager.getConfig('customize:showPageLimitationS') || 10;
+    const limit = req.query.limit || (await crowi.configManager.getConfig('customize:showPageLimitationS')) || 10;
     const { isSharedPage } = req;
     const offset = req.query.offset || 0;
 
@@ -148,8 +146,7 @@ module.exports = (crowi) => {
     // Normalize the latest revision which was borken by the migration script '20211227060705-revision-path-to-page-id-schema-migration--fixed-7549.js'
     try {
       await normalizeLatestRevisionIfBroken(pageId);
-    }
-    catch (err) {
+    } catch (err) {
       logger.error('Error occurred in normalizing the latest revision');
     }
 
@@ -176,10 +173,7 @@ module.exports = (crowi) => {
       };
 
       // https://redmine.weseek.co.jp/issues/151652
-      const paginateResult = await Revision.paginate(
-        queryCondition,
-        queryOpts,
-      );
+      const paginateResult = await Revision.paginate(queryCondition, queryOpts);
 
       paginateResult.docs.forEach((doc) => {
         if (doc.author != null && doc.author instanceof User) {
@@ -194,13 +188,11 @@ module.exports = (crowi) => {
       };
 
       return res.apiv3(result);
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in getting revisions by poge id';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'faild-to-find-revisions'), 500);
     }
-
   });
 
   /**
@@ -233,7 +225,7 @@ module.exports = (crowi) => {
    *                    revision:
    *                      $ref: '#/components/schemas/Revision'
    */
-  router.get('/:id', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisionById, apiV3FormValidator, async(req, res) => {
+  router.get('/:id', certifySharedPage, accessTokenParser, loginRequired, validator.retrieveRevisionById, apiV3FormValidator, async (req, res) => {
     const revisionId = req.params.id;
     const pageId = req.query.pageId;
     const { isSharedPage } = req;
@@ -251,13 +243,11 @@ module.exports = (crowi) => {
       }
 
       return res.apiv3({ revision });
-    }
-    catch (err) {
+    } catch (err) {
       const msg = 'Error occurred in getting revision data by id';
       logger.error('Error', err);
       return res.apiv3Err(new ErrorV3(msg, 'faild-to-find-revision'), 500);
     }
-
   });
 
   return router;

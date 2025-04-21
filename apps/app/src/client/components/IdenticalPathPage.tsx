@@ -9,15 +9,13 @@ import { useSWRxPageInfoForList, useSWRxPagesByPath } from '~/stores/page-listin
 
 import { PageListItemL } from './PageList/PageListItemL';
 
-
 import styles from './IdenticalPathPage.module.scss';
 
-
 type IdenticalPathAlertProps = {
-  path? : string | null,
-}
+  path?: string | null;
+};
 
-const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAlertProps) => {
+const IdenticalPathAlert: FC<IdenticalPathAlertProps> = (props: IdenticalPathAlertProps) => {
   const { path } = props;
   const { t } = useTranslation();
 
@@ -30,13 +28,12 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
     _pageName = devidedPath.latter;
   }
 
-
   return (
     <div className="alert alert-warning py-3">
       <h5 className="fw-bold mt-1">{t('duplicated_page_alert.same_page_name_exists', { pageName: _pageName })}</h5>
       <p>
-        {t('duplicated_page_alert.same_page_name_exists_at_path',
-          { path: _path, pageName: _pageName })}<br />
+        {t('duplicated_page_alert.same_page_name_exists_at_path', { path: _path, pageName: _pageName })}
+        <br />
         <span
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{ __html: t('See_more_detail_on_new_schema', { title: t('GROWI.5.0_new_schema') }) }}
@@ -47,9 +44,7 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
   );
 };
 
-
 export const IdenticalPathPage = (): JSX.Element => {
-
   const { data: currentPath } = useCurrentPathname();
 
   const { data: pages } = useSWRxPagesByPath(currentPath);
@@ -70,20 +65,10 @@ export const IdenticalPathPage = (): JSX.Element => {
           {injectedPages.map((pageWithMeta) => {
             const pageId = pageWithMeta.data._id;
 
-            return (
-              <PageListItemL
-                key={pageId}
-                page={pageWithMeta}
-                isSelected={false}
-                isEnableActions
-                isReadOnlyUser={false}
-                showPageUpdatedTime
-              />
-            );
+            return <PageListItemL key={pageId} page={pageWithMeta} isSelected={false} isEnableActions isReadOnlyUser={false} showPageUpdatedTime />;
           })}
         </ul>
       </div>
-
     </>
   );
 };

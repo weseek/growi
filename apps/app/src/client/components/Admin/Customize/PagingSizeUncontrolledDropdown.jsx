@@ -1,13 +1,9 @@
 import React from 'react';
 
 import PropTypes from 'prop-types';
-import {
-  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
-} from 'reactstrap';
-
+import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 
 const PagingSizeUncontrolledDropdown = (props) => {
-
   function dropdownItemOnClickHandler(num) {
     if (props.onChangeDropdownItem === null) {
       return;
@@ -36,15 +32,12 @@ const PagingSizeUncontrolledDropdown = (props) => {
               })}
             </DropdownMenu>
           </UncontrolledDropdown>
-          <p className="form-text text-muted">
-            {props.desc}
-          </p>
+          <p className="form-text text-muted">{props.desc}</p>
         </div>
       </div>
     </React.Fragment>
   );
 };
-
 
 PagingSizeUncontrolledDropdown.propTypes = {
   label: PropTypes.string,

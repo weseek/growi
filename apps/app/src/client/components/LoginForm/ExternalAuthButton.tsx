@@ -18,8 +18,7 @@ const authLabel = {
   [IExternalAuthProviderType.saml]: 'SAML',
 };
 
-
-export const ExternalAuthButton = ({ authType }: {authType: IExternalAuthProviderType}): JSX.Element => {
+export const ExternalAuthButton = ({ authType }: { authType: IExternalAuthProviderType }): JSX.Element => {
   const { t } = useTranslation();
 
   const key = `btn-auth-${authType.toString()}`;
@@ -30,12 +29,7 @@ export const ExternalAuthButton = ({ authType }: {authType: IExternalAuthProvide
   }, [authType]);
 
   return (
-    <button
-      key={key}
-      type="button"
-      className={`btn btn-secondary ${btnClass} my-2 col-10 col-sm-7 mx-auto d-flex`}
-      onClick={handleLoginWithExternalAuth}
-    >
+    <button key={key} type="button" className={`btn btn-secondary ${btnClass} my-2 col-10 col-sm-7 mx-auto d-flex`} onClick={handleLoginWithExternalAuth}>
       <span>{authIcon[authType]}</span>
       <span className="flex-grow-1">{t('Sign in with External auth', { signin: authLabel[authType] })}</span>
     </button>
