@@ -277,7 +277,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { isLinkSharingDisabled } = props;
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
-    const duplicatedHandler: OnDuplicatedFunction = (_fromPath, toPath) => {
+    const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
       router.push(toPath);
     };
     openDuplicateModal(page, { onDuplicated: duplicatedHandler });
