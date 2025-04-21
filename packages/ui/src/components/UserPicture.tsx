@@ -51,12 +51,10 @@ const withTooltip = (UserPictureSpanElm: React.ForwardRefExoticComponent<UserPic
     return (
       <>
         <UserPictureSpanElm ref={userPictureRef} user={user}>{props.children}</UserPictureSpanElm>
-        {userPictureRef.current != null && (
-          <UncontrolledTooltip placement="bottom" target={userPictureRef.current} delay={0} fade={false}>
-            @{user.username}<br />
-            {user.name}
-          </UncontrolledTooltip>
-        )}
+        <UncontrolledTooltip placement="bottom" target={userPictureRef} delay={0} fade={false} show>
+          @{user.username}<br />
+          {user.name}
+        </UncontrolledTooltip>
       </>
     );
   };
