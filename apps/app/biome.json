@@ -1,0 +1,87 @@
+{
+  "extends": ["../../biome.json"],
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": false,
+      "a11y": {
+        "noBlankTarget": "error",
+        "useButtonType": "error",
+        "useValidAriaProps": "warn",
+        "useValidAriaValues": "warn",
+        "noAriaUnsupportedElements": "warn",
+        "useAriaPropsForRole": "warn"
+      },
+      "complexity": {
+        "noUselessThisAlias": "warn"
+      },
+      "correctness": {
+        "noChildrenProp": "error",
+        "noInvalidUseBeforeDeclaration": "warn",
+        "noUnusedVariables": "warn",
+        "noVoidElementsWithChildren": "error",
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "error"
+      },
+      "nursery": {
+        "noRestrictedImports": {
+          "options": {
+            "paths": {
+              "axios": "Please use src/utils/axios instead."
+            }
+          }
+        },
+        "useConsistentCurlyBraces": "error",
+        "noImgElement": "warn",
+        "noHeadElement": "warn",
+        "useGoogleFontDisplay": "warn",
+        "noDocumentImportInPage": "error",
+        "noHeadImportInDocument": "error",
+        "useAriaPropsSupportedByRole": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn",
+        "noDangerouslySetInnerHtmlWithChildren": "error"
+      },
+      "style": {
+        "noParameterAssign": "error",
+        "useDefaultSwitchClause": "off"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "error",
+        "noCommentText": "error",
+        "noDuplicateJsxProps": "error"
+      }
+    },
+    "ignore": [
+      "./dist/**",
+      "./transpiled/**",
+      "./public/**",
+      "./src/linter-checker/**",
+      "./tmp/**",
+      "./next-env.d.ts",
+      "./.next/**",
+      "./coverage/**",
+      "./src/styles/prebuilt/**"
+    ]
+  },
+  "javascript": {
+    "globals": [
+      "afterEach",
+      "afterAll",
+      "beforeEach",
+      "beforeAll",
+      "describe",
+      "expect",
+      "it",
+      "test",
+      "vi",
+      "jest",
+      "assert",
+      "JSX",
+      "React",
+      "globalEmitter",
+      "BufferEncoding"
+    ]
+  }
+}
