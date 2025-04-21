@@ -1,5 +1,18 @@
 {
   "extends": ["../../biome.json"],
+  "formatter": {
+    "ignore": [
+      "./dist/**",
+      "./transpiled/**",
+      "./public/**",
+      "./src/linter-checker/**",
+      "./tmp/**",
+      "./next-env.d.ts",
+      "./.next/**",
+      "./coverage/**",
+      "./src/styles/prebuilt/**"
+    ]
+  },
   "linter": {
     "enabled": true,
     "rules": {

@@ -1,5 +1,17 @@
 {
   "files": { "ignore": ["node_modules/**", "dist/**", "coverage/**"] },
+  "formatter": {
+    "enabled": true,
+    "formatWithErrors": false,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 160,
+    "attributePosition": "auto",
+    "ignore": [
+      "node_modules/**",
+      ".turbo/**"
+    ]
+  },
   "linter": {
     "enabled": true,
     "rules": {
@@ -191,6 +203,7 @@
       ".turbo/**"
     ]
   },
+  "javascript": { "formatter": { "quoteStyle": "single" } },
   "json": {
     "parser": {
       "allowTrailingCommas": true
