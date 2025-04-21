@@ -42,9 +42,6 @@ module.exports = {
       '\\.(coffee|scss|css|less|hbs|svg|json)$',
     ],
   },
-  ignorePatterns: [
-    'node_modules/**',
-  ],
   rules: {
     'regex/invalid': [
       'error',

@@ -67,14 +67,6 @@ module.exports = {
       '\\.(coffee|scss|css|less|hbs|svg|json)$',
     ],
   },
-  ignorePatterns: [
-    '/dist/**',
-    '/transpiled/**',
-    '/public/**',
-    '/src/linter-checker/**',
-    '/tmp/**',
-    '/next-env.d.ts',
-  ],
   rules: {
     'import/no-anonymous-default-export': [
       'warn',
