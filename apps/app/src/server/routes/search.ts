@@ -106,7 +106,7 @@ module.exports = (crowi: Crowi, app) => {
    * @apiParam {String} offset
    * @apiParam {String} limit
    */
-  api.search = async (req, res) => {
+  api.search = async(req, res) => {
     const user = req.user;
     const {
       q = null, nq = null, type = null, sort = null, order = null, vector = null,

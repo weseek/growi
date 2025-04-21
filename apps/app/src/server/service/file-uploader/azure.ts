@@ -244,7 +244,7 @@ module.exports = (crowi: Crowi) => {
   lib.isValidUploadSettings = () => configManager.getConfig('azure:storageAccountName') != null
       && configManager.getConfig('azure:storageContainerName') != null;
 
-  (lib as any).deleteFile = async (attachment) => {
+  (lib as any).deleteFile = async(attachment) => {
     const filePath = getFilePathOnStorage(attachment);
     const containerClient = await getContainerClient();
     const blockBlobClient = await containerClient.getBlockBlobClient(filePath);
@@ -255,7 +255,7 @@ module.exports = (crowi: Crowi) => {
     }
   };
 
-  (lib as any).deleteFiles = async (attachments) => {
+  (lib as any).deleteFiles = async(attachments) => {
     if (!lib.getIsUploadable()) {
       throw new Error('Azure is not configured.');
     }
@@ -264,7 +264,7 @@ module.exports = (crowi: Crowi) => {
     }
   };
 
-  lib.saveFile = async ({ filePath, contentType, data }) => {
+  lib.saveFile = async({ filePath, contentType, data }) => {
     const containerClient = await getContainerClient();
     const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
     const options: BlockBlobParallelUploadOptions = {
@@ -277,13 +277,13 @@ module.exports = (crowi: Crowi) => {
     return;
   };
 
-  (lib as any).checkLimit = async (uploadFileSize) => {
+  (lib as any).checkLimit = async(uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const gcsTotalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
   };
 
-  (lib as any).listFiles = async () => {
+  (lib as any).listFiles = async() => {
     if (!lib.getIsReadable()) {
       throw new Error('Azure is not configured.');
     }

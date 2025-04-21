@@ -300,12 +300,12 @@ module.exports = (crowi: Crowi) => {
       )
       && configManager.getConfig('aws:s3Bucket') != null;
 
-  (lib as any).deleteFile = async (attachment) => {
+  (lib as any).deleteFile = async(attachment) => {
     const filePath = getFilePathOnStorage(attachment);
     return (lib as any).deleteFileByFilePath(filePath);
   };
 
-  (lib as any).deleteFiles = async (attachments) => {
+  (lib as any).deleteFiles = async(attachments) => {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -322,7 +322,7 @@ module.exports = (crowi: Crowi) => {
     return s3.send(new DeleteObjectsCommand(totalParams));
   };
 
-  (lib as any).deleteFileByFilePath = async (filePath) => {
+  (lib as any).deleteFileByFilePath = async(filePath) => {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -343,7 +343,7 @@ module.exports = (crowi: Crowi) => {
     return s3.send(new DeleteObjectCommand(params));
   };
 
-  lib.saveFile = async ({ filePath, contentType, data }) => {
+  lib.saveFile = async({ filePath, contentType, data }) => {
     const s3 = S3Factory();
 
     return s3.send(new PutObjectCommand({
@@ -355,7 +355,7 @@ module.exports = (crowi: Crowi) => {
     }));
   };
 
-  (lib as any).checkLimit = async (uploadFileSize) => {
+  (lib as any).checkLimit = async(uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const totalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
@@ -364,7 +364,7 @@ module.exports = (crowi: Crowi) => {
   /**
    * List files in storage
    */
-  (lib as any).listFiles = async () => {
+  (lib as any).listFiles = async() => {
     if (!lib.getIsReadable()) {
       throw new Error('AWS is not configured.');
     }

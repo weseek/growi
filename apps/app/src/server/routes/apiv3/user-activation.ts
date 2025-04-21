@@ -119,7 +119,7 @@ export const completeRegistrationAction = (crowi: Crowi) => {
     mailService,
   } = crowi;
 
-  return async (req, res) => {
+  return async(req, res) => {
     const { t } = await getTranslation();
 
     if (req.user != null) {
@@ -288,7 +288,7 @@ async function makeRegistrationEmailToken(email, crowi: Crowi) {
 export const registerAction = (crowi: Crowi) => {
   const User = mongoose.model<IUser, { isRegisterableEmail, isEmailValid }>('User');
 
-  return async (req, res) => {
+  return async(req, res) => {
     const registerForm = req.body.registerForm || {};
     const email = registerForm.email;
     const isRegisterableEmail = await User.isRegisterableEmail(email);

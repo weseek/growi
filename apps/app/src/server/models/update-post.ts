@@ -40,7 +40,7 @@ const updatePostSchema = new Schema<UpdatePostDocument, UpdatePostModel>({
   timestamps: true,
 });
 
-updatePostSchema.statics.normalizeChannelName = (channel) => channel.replace(/(#|,)/g, '');
+updatePostSchema.statics.normalizeChannelName = channel => channel.replace(/(#|,)/g, '');
 
 updatePostSchema.statics.createPrefixesByPathPattern = (pathPattern) => {
   const patternPrefix = ['*', '*'];

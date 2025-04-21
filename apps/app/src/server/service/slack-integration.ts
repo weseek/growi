@@ -5,8 +5,7 @@ import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder'
 import type { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
 import type { RespondUtil } from '@growi/slack/dist/utils/respond-util-factory';
 import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
-import type { WebClient } from '@slack/web-api';
-import type { ChatPostMessageArguments } from '@slack/web-api';
+import type { WebClient, ChatPostMessageArguments } from '@slack/web-api';
 import type { IncomingWebhookSendArguments } from '@slack/webhook';
 import mongoose from 'mongoose';
 

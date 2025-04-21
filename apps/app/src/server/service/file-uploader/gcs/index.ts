@@ -265,7 +265,7 @@ module.exports = (crowi: Crowi) => {
     });
   };
 
-  lib.saveFile = async ({ filePath, contentType, data }) => {
+  lib.saveFile = async({ filePath, contentType, data }) => {
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
 
@@ -278,7 +278,7 @@ module.exports = (crowi: Crowi) => {
    * In detail, the followings are checked.
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  (lib as any).checkLimit = async (uploadFileSize) => {
+  (lib as any).checkLimit = async(uploadFileSize) => {
     const maxFileSize = configManager.getConfig('app:maxFileSize');
     const gcsTotalLimit = configManager.getConfig('app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
@@ -287,7 +287,7 @@ module.exports = (crowi: Crowi) => {
   /**
    * List files in storage
    */
-  (lib as any).listFiles = async () => {
+  (lib as any).listFiles = async() => {
     if (!lib.getIsReadable()) {
       throw new Error('GCS is not configured.');
     }

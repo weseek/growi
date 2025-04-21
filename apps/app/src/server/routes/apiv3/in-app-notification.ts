@@ -158,7 +158,7 @@ module.exports = (crowi) => {
     const paginationResult = await inAppNotificationService.getLatestNotificationsByUser(user._id, queryOptions);
 
 
-    const getActionUsersFromActivities = (activities) => activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
+    const getActionUsersFromActivities = activities => activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
 
     const serializedDocs: Array<IInAppNotification> = paginationResult.docs.map((doc) => {
       if (doc.user != null && doc.user instanceof User) {
