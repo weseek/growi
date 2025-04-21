@@ -143,7 +143,7 @@ describe('PageService page operations with only public pages', () => {
     const childPageIdForRename5 = new mongoose.Types.ObjectId();
     const childPageIdForRename7 = new mongoose.Types.ObjectId();
 
-    const _pageIdForRename16 = new mongoose.Types.ObjectId();
+    const pageIdForRename16 = new mongoose.Types.ObjectId();
 
     const pageIdForRename17 = new mongoose.Types.ObjectId();
     const pageIdForRename18 = new mongoose.Types.ObjectId();
