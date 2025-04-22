@@ -72,7 +72,7 @@ const insertTextAtLine = (yText: YText, lineNumber: number, textToInsert: string
 const appendTextLastLine = (yText: YText, textToAppend: string) => {
   const content = yText.toString();
   const insertPosition = content.length;
-  yText.insert(insertPosition, textToAppend);
+  yText.insert(insertPosition, `\n\n${textToAppend}`);
 };
 
 const getLineInfo = (yText: YText, lineNumber: number): { text: string, startIndex: number } | null => {
