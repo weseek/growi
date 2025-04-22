@@ -70,32 +70,8 @@ const insertTextAtLine = (yText: YText, lineNumber: number, textToInsert: string
 };
 
 const appendTextLastLine = (yText: YText, textToAppend: string) => {
-  // First, get the current content of the Y.Text
   const content = yText.toString();
-
-  // Find the position of the last line
-  let insertPosition: number;
-
-  if (content.length === 0) {
-    // If the document is empty, insert at position 0
-    insertPosition = 0;
-  }
-  else {
-    // Otherwise, find the end of the document
-    insertPosition = content.length;
-
-    // If we want to ensure we're at the end of a line (not starting a new one)
-    // we can check if the last character is already a newline
-    const endsWithNewline = content.endsWith('\n');
-
-    // If you want to append to the existing last line (not create a new one)
-    // and the document ends with a newline, move back one character
-    if (endsWithNewline && textToAppend !== '\n') {
-      insertPosition -= 1;
-    }
-  }
-
-  // Insert the text at the determined position
+  const insertPosition = content.length;
   yText.insert(insertPosition, textToAppend);
 };
 
