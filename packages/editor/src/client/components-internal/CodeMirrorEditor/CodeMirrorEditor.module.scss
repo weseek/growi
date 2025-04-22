@@ -39,6 +39,17 @@
       font-size: 1.2em;
     }
 
+    // @codemirror/merge style
+    .cm-chunkButtons {
+      button[name="reject"] {
+        font-size: 0;
+        &::after {
+          font-size: 16px;
+          content: 'Discard'
+        }
+      }
+    }
+
   }
 
 }
