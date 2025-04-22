@@ -179,6 +179,9 @@ describe('ConfigManager test', () => {
         'app:siteUrl': { value: 'https://example.com' },
         'app:fileUpload': { value: true },
         'app:fileUploadType': { value: 'aws' },
+        // Add control flags for env vars
+        'env:useOnlyEnvVars:app:siteUrl': { value: false },
+        'env:useOnlyEnvVars:app:fileUploadType': { value: false },
       };
       setTestConfigs(dbConfig, envConfig);
 
