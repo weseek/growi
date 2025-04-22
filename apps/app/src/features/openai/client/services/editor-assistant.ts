@@ -7,7 +7,7 @@ import {
   acceptAllChunks, useTextSelectionEffect,
 } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
-import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-yDocs';
+import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
 import { type Text as YText } from 'yjs';
 
 import {
