@@ -173,3 +173,12 @@
     }
   }
 }
+
+// Change buttons layout for @codemirror/merge
+.codemirror-editor :global {
+  .cm-chunkButtons {
+    // reverse order
+    display: flex;
+    flex-direction: row-reverse;
+  }
+}
