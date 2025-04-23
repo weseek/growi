@@ -107,45 +107,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     return thread;
   }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant]);
 
-  const initialView = useMemo(() => {
-    return isEditorAssistant
-      ? initialViewForEditorAssistant
-      : initialViewForKnowledgeAssistant;
-  }, [initialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant]);
-
-  const messageCard = useCallback(
-    (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
-      if (isEditorAssistant) {
-        if (messageId == null || messageLogs == null) {
-          return <></>;
-        }
-        return generateMessageCardForEditorAssistant(role, children, messageId, messageLogs, generatingAnswerMessage);
-      }
-
-      return generateMessageCardForKnowledgeAssistant(role, children);
-    }, [generateMessageCardForEditorAssistant, generateMessageCardForKnowledgeAssistant, isEditorAssistant],
-  );
-
-  const headerIcon = useMemo(() => {
-    return isEditorAssistant
-      ? headerIconForEditorAssistant
-      : headerIconForKnowledgeAssistant;
-  }, [headerIconForEditorAssistant, headerIconForKnowledgeAssistant, isEditorAssistant]);
-
-  const headerText = useMemo(() => {
-    return isEditorAssistant
-      ? headerTextForEditorAssistant
-      : headerTextForKnowledgeAssistant;
-  }, [isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant]);
-
-  const placeHolder = useMemo(() => {
-    if (form.formState.isSubmitting) {
-      return '';
-    }
-    return t(isEditorAssistant
-      ? placeHolderForEditorAssistant
-      : placeHolderForKnowledgeAssistant);
-  }, [form.formState.isSubmitting, isEditorAssistant, placeHolderForEditorAssistant, placeHolderForKnowledgeAssistant, t]);
 
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
@@ -309,6 +270,47 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       form.handleSubmit(submit)();
     }
   };
+
+  // Views
+  const initialView = useMemo(() => {
+    return isEditorAssistant
+      ? initialViewForEditorAssistant
+      : initialViewForKnowledgeAssistant;
+  }, [initialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant]);
+
+  const messageCard = useCallback(
+    (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
+      if (isEditorAssistant) {
+        if (messageId == null || messageLogs == null) {
+          return <></>;
+        }
+        return generateMessageCardForEditorAssistant(role, children, messageId, messageLogs, generatingAnswerMessage);
+      }
+
+      return generateMessageCardForKnowledgeAssistant(role, children);
+    }, [generateMessageCardForEditorAssistant, generateMessageCardForKnowledgeAssistant, isEditorAssistant],
+  );
+
+  const headerIcon = useMemo(() => {
+    return isEditorAssistant
+      ? headerIconForEditorAssistant
+      : headerIconForKnowledgeAssistant;
+  }, [headerIconForEditorAssistant, headerIconForKnowledgeAssistant, isEditorAssistant]);
+
+  const headerText = useMemo(() => {
+    return isEditorAssistant
+      ? headerTextForEditorAssistant
+      : headerTextForKnowledgeAssistant;
+  }, [isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant]);
+
+  const placeHolder = useMemo(() => {
+    if (form.formState.isSubmitting) {
+      return '';
+    }
+    return t(isEditorAssistant
+      ? placeHolderForEditorAssistant
+      : placeHolderForKnowledgeAssistant);
+  }, [form.formState.isSubmitting, isEditorAssistant, placeHolderForEditorAssistant, placeHolderForKnowledgeAssistant, t]);
 
 
   return (
