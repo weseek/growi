@@ -214,13 +214,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
         }
 
         setCurrentThreadId(thread.threadId);
-
         currentThreadId_ = thread.threadId;
-
-        // No need to await because data is not used
-        if (!isEditorAssistant) {
-          mutateThreadData();
-        }
       }
       catch (err) {
         logger.error(err.toString());

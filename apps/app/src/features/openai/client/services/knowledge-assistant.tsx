@@ -7,6 +7,7 @@ import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-su
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
+import { useSWRMUTxThreads } from '../stores/thread';
 
 interface CreateThread {
   (aiAssistantId: string, initialUserMessage: string): Promise<IThreadRelationHasId>;
@@ -38,6 +39,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
   const { aiAssistantData } = aiAssistantSidebarData ?? {};
   const { threadData } = aiAssistantSidebarData ?? {};
+  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
 
   // States
   const [currentThreadTitle, setCurrentThreadId] = useState(threadData?.title);
@@ -53,8 +55,11 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
 
     setCurrentThreadId(thread.title);
 
+    // No need to await because data is not used
+    mutateThreadData();
+
     return thread;
-  }, []);
+  }, [mutateThreadData]);
 
   const postMessage: PostMessage = useCallback(async(aiAssistantId, threadId, userMessage, summaryMode) => {
     const response = await fetch('/_api/v3/openai/message', {
