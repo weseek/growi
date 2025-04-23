@@ -33,6 +33,7 @@ import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
+import { type FormData } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantSidebar';
 import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
@@ -51,6 +52,9 @@ interface ProcessMessage {
   }): void;
 }
 
+interface GenerateInitialView {
+  (onSubmit: (data: FormData) => Promise<void>): JSX.Element;
+}
 interface GenerateMessageCard {
   (role: MessageCardRole, children: string, messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
 }
@@ -67,7 +71,7 @@ type UseEditorAssistant = () => {
   processMessage: ProcessMessage,
 
   // Views
-  initialView: JSX.Element,
+  generateInitialView: GenerateInitialView,
   generateMessageCard: GenerateMessageCard,
   headerIcon: JSX.Element,
   headerText: JSX.Element,
@@ -284,13 +288,13 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   const placeHolder = useMemo(() => { return 'sidebar_ai_assistant.editor_assistant_placeholder' }, []);
 
-  const initialView = useMemo(() => {
+  const generateInitialView: GenerateInitialView = useCallback((onSubmit) => {
     const selectAiAssistantHandler = (aiAssistant?: AiAssistantHasId) => {
       setSelectedAiAssistant(aiAssistant);
     };
 
     const clickQuickMenuHandler = async(quickMenu: string) => {
-      // await submit({ input: quickMenu });
+      await onSubmit({ input: quickMenu });
     };
 
     return (
@@ -362,7 +366,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     processMessage,
 
     // Views
-    initialView,
+    generateInitialView,
     generateMessageCard,
     headerIcon,
     headerText,

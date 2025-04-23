@@ -30,7 +30,7 @@ const logger = loggerFactory('growi:openai:client:components:AiAssistantSidebar'
 
 const moduleClass = styles['grw-ai-assistant-sidebar'] ?? '';
 
-type FormData = {
+export type FormData = {
   input: string;
   summaryMode?: boolean;
 };
@@ -80,7 +80,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     processMessage: processMessageForEditorAssistant,
 
     // Views
-    initialView: initialViewForEditorAssistant,
+    generateInitialView: generateInitialViewForEditorAssistant,
     generateMessageCard: generateMessageCardForEditorAssistant,
     headerIcon: headerIconForEditorAssistant,
     headerText: headerTextForEditorAssistant,
@@ -273,10 +273,12 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   // Views
   const initialView = useMemo(() => {
-    return isEditorAssistant
-      ? initialViewForEditorAssistant
-      : initialViewForKnowledgeAssistant;
-  }, [initialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant]);
+    if (isEditorAssistant) {
+      return generateInitialViewForEditorAssistant(submit);
+    }
+
+    return initialViewForKnowledgeAssistant;
+  }, [generateInitialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant, submit]);
 
   const messageCard = useCallback(
     (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
@@ -311,7 +313,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       ? placeHolderForEditorAssistant
       : placeHolderForKnowledgeAssistant);
   }, [form.formState.isSubmitting, isEditorAssistant, placeHolderForEditorAssistant, placeHolderForKnowledgeAssistant, t]);
-
 
   return (
     <>
