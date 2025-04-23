@@ -28,8 +28,10 @@ import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-su
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
 
+import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
+import { useAiAssistantSidebar } from '../stores/ai-assistant';
 
 interface CreateThread {
   (aiAssistantId?: string): Promise<IThreadRelationHasId>;
@@ -45,6 +47,10 @@ interface ProcessMessage {
   }): void;
 }
 
+interface IsActionButtonShown {
+  (messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): boolean;
+}
+
 type DetectedDiff = Array<{
   data: SseDetectedDiff,
   applied: boolean,
@@ -55,6 +61,7 @@ type UseEditorAssistant = () => {
   createThread: CreateThread,
   postMessage: PostMessage,
   processMessage: ProcessMessage,
+  isActionButtonShown: IsActionButtonShown,
   accept: () => void,
   reject: () => void,
 
@@ -126,14 +133,13 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [selectedText, setSelectedText] = useState<string>();
 
-  // SWR Hooks
+  // Hooks
+  const { t } = useTranslation();
   const { data: currentPageId } = useCurrentPageId();
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
-
-  // Hooks
-  const { t } = useTranslation();
+  const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
 
   // Functions
   const createThread: CreateThread = useCallback(async(aiAssistantId) => {
@@ -197,6 +203,27 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     setSelectedText(selectedText);
     lineRef.current = selectedTextFirstLineNumber;
   }, []);
+
+
+  const isActionButtonShown: IsActionButtonShown = useCallback((messageId: string, messageLogs: MessageLog[], generatingAnswerMessage: MessageLog) => {
+    if (!aiAssistantSidebarData?.isEditorAssistant) {
+      return false;
+    }
+
+    if (generatingAnswerMessage != null) {
+      return false;
+    }
+
+    const latestAssistantMessageLogId = messageLogs
+      .filter(message => !message.isUserMessage)
+      .slice(-1)[0];
+
+    if (messageId === latestAssistantMessageLogId?.id) {
+      return true;
+    }
+
+    return false;
+  }, [aiAssistantSidebarData?.isEditorAssistant]);
 
   // Effects
   useTextSelectionEffect(codeMirrorEditor, selectTextHandler);
@@ -292,6 +319,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     createThread,
     postMessage,
     processMessage,
+    isActionButtonShown,
     accept,
     reject,
 
