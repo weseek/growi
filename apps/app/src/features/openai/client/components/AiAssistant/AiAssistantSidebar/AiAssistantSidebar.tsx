@@ -50,16 +50,17 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     closeAiAssistantSidebar,
   } = props;
 
+  // States
   const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<MessageLog[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<MessageLog>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
 
+
+  // Hooks
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
-
-  useFetchAndSetMessageDataEffect(setMessageLogs, threadData?.threadId);
 
   const {
     createThread: createThreadForKnowledgeAssistant,
@@ -94,6 +95,10 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     },
   });
 
+  // Effects
+  useFetchAndSetMessageDataEffect(setMessageLogs, threadData?.threadId);
+
+  // Functions
   const createThread = useCallback(async(initialUserMessage: string) => {
     if (isEditorAssistant) {
       const thread = await createThreadForEditorAssistant();
@@ -106,7 +111,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     const thread = await createThreadForKnowledgeAssistant(aiAssistantData._id, initialUserMessage);
     return thread;
   }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant]);
-
 
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
@@ -272,27 +276,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   };
 
   // Views
-  const initialView = useMemo(() => {
-    if (isEditorAssistant) {
-      return generateInitialViewForEditorAssistant(submit);
-    }
-
-    return initialViewForKnowledgeAssistant;
-  }, [generateInitialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant, submit]);
-
-  const messageCard = useCallback(
-    (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
-      if (isEditorAssistant) {
-        if (messageId == null || messageLogs == null) {
-          return <></>;
-        }
-        return generateMessageCardForEditorAssistant(role, children, messageId, messageLogs, generatingAnswerMessage);
-      }
-
-      return generateMessageCardForKnowledgeAssistant(role, children);
-    }, [generateMessageCardForEditorAssistant, generateMessageCardForKnowledgeAssistant, isEditorAssistant],
-  );
-
   const headerIcon = useMemo(() => {
     return isEditorAssistant
       ? headerIconForEditorAssistant
@@ -313,6 +296,27 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       ? placeHolderForEditorAssistant
       : placeHolderForKnowledgeAssistant);
   }, [form.formState.isSubmitting, isEditorAssistant, placeHolderForEditorAssistant, placeHolderForKnowledgeAssistant, t]);
+
+  const initialView = useMemo(() => {
+    if (isEditorAssistant) {
+      return generateInitialViewForEditorAssistant(submit);
+    }
+
+    return initialViewForKnowledgeAssistant;
+  }, [generateInitialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant, submit]);
+
+  const messageCard = useCallback(
+    (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
+      if (isEditorAssistant) {
+        if (messageId == null || messageLogs == null) {
+          return <></>;
+        }
+        return generateMessageCardForEditorAssistant(role, children, messageId, messageLogs, generatingAnswerMessage);
+      }
+
+      return generateMessageCardForKnowledgeAssistant(role, children);
+    }, [generateMessageCardForEditorAssistant, generateMessageCardForKnowledgeAssistant, isEditorAssistant],
+  );
 
   return (
     <>
