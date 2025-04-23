@@ -117,6 +117,17 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     return thread;
   }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant]);
 
+  const postMessage = useCallback(async(currentThreadId: string, input: string, summaryMode?: boolean) => {
+    if (isEditorAssistant) {
+      const response = await postMessageForEditorAssistant(currentThreadId, input);
+      return response;
+    }
+    if (aiAssistantData?._id != null) {
+      const response = postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId, input, summaryMode);
+      return response;
+    }
+  }, [aiAssistantData?._id, isEditorAssistant, postMessageForEditorAssistant, postMessageForKnowledgeAssistant]);
+
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
@@ -167,15 +178,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
         return;
       }
 
-      const response = await (async() => {
-        if (isEditorAssistant) {
-          return postMessageForEditorAssistant(currentThreadId_, data.input);
-        }
-        if (aiAssistantData?._id != null) {
-          return postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId_, data.input, data.summaryMode);
-        }
-      })();
-
+      const response = await postMessage(currentThreadId_, data.input, data.summaryMode);
       if (response == null) {
         return;
       }
@@ -272,7 +275,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, form, currentThreadId, createThread, isEditorAssistant, t, aiAssistantData?._id, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, createThread, t, postMessage, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
