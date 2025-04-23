@@ -10,15 +10,21 @@ import SimpleBar from 'simplebar-react';
 
 import { toastError } from '~/client/util/toastr';
 import { useGrowiCloudUri, useIsEnableUnifiedMergeView } from '~/stores-universal/context';
-import { useEditorMode, EditorMode } from '~/stores-universal/ui';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
 import type { MessageLog } from '../../../../interfaces/message';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
-import { useEditorAssistant } from '../../../services/editor-assistant';
-import { useKnowledgeAssistant, useFetchAndSetMessageDataEffect } from '../../../services/knowledge-assistant';
+import {
+  useEditorAssistant,
+  useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForEditorAssistant,
+} from '../../../services/editor-assistant';
+import {
+  useKnowledgeAssistant,
+  useFetchAndSetMessageDataEffect,
+  useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForKnowledgeAssistant,
+} from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 
 import { MessageCard, type MessageCardRole } from './MessageCard';
@@ -56,7 +62,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<MessageLog>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
-
 
   // Hooks
   const { t } = useTranslation();
@@ -460,7 +465,6 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
-  const { data: editorMode } = useEditorMode();
   const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
   const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
@@ -469,24 +473,8 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const isOpened = aiAssistantSidebarData?.isOpened;
   const isEditorAssistant = aiAssistantSidebarData?.isEditorAssistant ?? false;
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isOpened && sidebarRef.current && !sidebarRef.current.contains(event.target as Node) && !isEditorAssistant) {
-        closeAiAssistantSidebar();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [closeAiAssistantSidebar, isEditorAssistant, isOpened]);
-
-  useEffect(() => {
-    if (isEditorAssistant && editorMode !== EditorMode.Editor) {
-      closeAiAssistantSidebar();
-    }
-  }, [closeAiAssistantSidebar, editorMode, isEditorAssistant]);
+  useAiAssistantSidebarCloseEffectForEditorAssistant();
+  useAiAssistantSidebarCloseEffectForKnowledgeAssistant(sidebarRef);
 
   useEffect(() => {
     if (!aiAssistantSidebarData?.isOpened) {
