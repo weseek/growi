@@ -34,7 +34,7 @@ export const EditingUserList: FC<Props> = ({ clientList }) => {
             <UserPicture
               user={editingClient.userId}
               noLink
-              additionalClassName="border border-info"
+              className="border border-info"
             />
           </div>
         ))}

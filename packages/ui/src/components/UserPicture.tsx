@@ -9,13 +9,21 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import type { UncontrolledTooltipProps } from 'reactstrap';
 
+import styles from './UserPicture.module.scss';
+
+const moduleClass = styles['user-picture'];
+const moduleTooltipClass = styles['user-picture-tooltip'];
+
 const UncontrolledTooltip = dynamic<UncontrolledTooltipProps>(() => import('reactstrap').then(mod => mod.UncontrolledTooltip), { ssr: false });
 
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 
+type UserPitureSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+
 type UserPictureRootProps = {
   user: IUser,
+  size?: UserPitureSize,
   className?: string,
   children?: ReactNode,
 }
@@ -44,19 +52,26 @@ const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootProps
 // wrapper with Tooltip
 const withTooltip = (UserPictureSpanElm: React.ForwardRefExoticComponent<UserPictureRootProps & React.RefAttributes<HTMLSpanElement>>) => {
   return (props: UserPictureRootProps) => {
-    const { user } = props;
+    const { user, size } = props;
+
+    const tooltipClassName = `${moduleTooltipClass} user-picture-tooltip-${size ?? 'md'}`;
 
     const userPictureRef = useRef<HTMLSpanElement>(null);
 
     return (
       <>
         <UserPictureSpanElm ref={userPictureRef} user={user}>{props.children}</UserPictureSpanElm>
-        {userPictureRef.current != null && (
-          <UncontrolledTooltip placement="bottom" target={userPictureRef.current} delay={0} fade={false}>
-            @{user.username}<br />
-            {user.name}
-          </UncontrolledTooltip>
-        )}
+        <UncontrolledTooltip
+          placement="bottom"
+          target={userPictureRef}
+          popperClassName={tooltipClassName}
+          delay={0}
+          fade={false}
+          show
+        >
+          @{user.username}<br />
+          {user.name}
+        </UncontrolledTooltip>
       </>
     );
   };
@@ -73,21 +88,21 @@ const isUserObj = (obj: Partial<IUser> | Ref<IUser>): obj is IUser => {
 
 type Props = {
   user?: Partial<IUser> | Ref<IUser> | null,
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
+  size?: UserPitureSize,
   noLink?: boolean,
   noTooltip?: boolean,
-  additionalClassName?: string
+  className?: string
 };
 
 export const UserPicture = memo((props: Props): JSX.Element => {
 
   const {
-    user, size, noLink, noTooltip, additionalClassName,
+    user, size, noLink, noTooltip, className: additionalClassName,
   } = props;
 
-  const classNames = ['rounded-circle', 'picture'];
+  const classNames = [moduleClass, 'user-picture', 'rounded-circle'];
   if (size != null) {
-    classNames.push(`picture-${size}`);
+    classNames.push(`user-picture-${size}`);
   }
   if (additionalClassName != null) {
     classNames.push(additionalClassName);
@@ -113,7 +128,7 @@ export const UserPicture = memo((props: Props): JSX.Element => {
   const userPictureSrc = user.imageUrlCached ?? DEFAULT_IMAGE;
 
   return (
-    <UserPictureRootElm user={user}>
+    <UserPictureRootElm user={user} size={size}>
       <img
         src={userPictureSrc}
         alt={user.username}
