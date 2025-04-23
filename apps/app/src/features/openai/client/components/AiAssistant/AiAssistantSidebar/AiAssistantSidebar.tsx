@@ -60,7 +60,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     closeAiAssistantSidebar,
   } = props;
 
-  const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
   const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
   const [messageLogs, setMessageLogs] = useState<Message[]>([]);
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
@@ -77,6 +76,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     createThread: createThreadForKnowledgeAssistant,
     postMessage: postMessageForKnowledgeAssistant,
     processMessage: processMessageForKnowledgeAssistant,
+    headerIcon: headerIconForKnowledgeAssistant,
+    headerText: headerTextForKnowledgeAssistant,
+    placeHolder: placeHolderForKnowledgeAssistant,
   } = useKnowledgeAssistant();
 
   const {
@@ -85,6 +87,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     processMessage: processMessageForEditorAssistant,
     accept,
     reject,
+    headerIcon: headerIconForEditorAssistant,
+    headerText: headerTextForEditorAssistant,
+    placeHolder: placeHolderForEditorAssistant,
   } = useEditorAssistant();
 
   const form = useForm<FormData>({
@@ -154,24 +159,24 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   const headerIcon = useMemo(() => {
     return isEditorAssistant
-      ? <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>
-      : <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>;
-  }, [isEditorAssistant]);
+      ? headerIconForEditorAssistant
+      : headerIconForKnowledgeAssistant;
+  }, [headerIconForEditorAssistant, headerIconForKnowledgeAssistant, isEditorAssistant]);
 
   const headerText = useMemo(() => {
     return isEditorAssistant
-      ? <>{t('Editor Assistant')}</>
-      : <>{currentThreadTitle ?? aiAssistantData?.name}</>;
-  }, [isEditorAssistant, currentThreadTitle, aiAssistantData?.name, t]);
+      ? headerTextForEditorAssistant
+      : headerTextForKnowledgeAssistant;
+  }, [isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant]);
 
   const placeHolder = useMemo(() => {
     if (form.formState.isSubmitting) {
       return '';
     }
     return t(isEditorAssistant
-      ? 'sidebar_ai_assistant.editor_assistant_placeholder'
-      : 'sidebar_ai_assistant.knowledge_assistant_placeholder');
-  }, [form.formState.isSubmitting, isEditorAssistant, t]);
+      ? placeHolderForEditorAssistant
+      : placeHolderForKnowledgeAssistant);
+  }, [form.formState.isSubmitting, isEditorAssistant, placeHolderForEditorAssistant, placeHolderForKnowledgeAssistant, t]);
 
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
@@ -214,10 +219,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
           return;
         }
 
-        // const thread = res.data;
-
         setCurrentThreadId(thread.threadId);
-        setCurrentThreadTitle(thread.title);
 
         currentThreadId_ = thread.threadId;
 
@@ -343,7 +345,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, form, currentThreadId, isEditorAssistant, selectedAiAssistant?._id, aiAssistantData?._id, mutateThreadData, t, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, createThread, isEditorAssistant, mutateThreadData, t, aiAssistantData?._id, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {

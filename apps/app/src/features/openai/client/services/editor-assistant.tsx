@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useState, useRef,
+  useCallback, useEffect, useState, useRef, useMemo,
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
@@ -8,6 +8,7 @@ import {
 } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
+import { useTranslation } from 'react-i18next';
 import { type Text as YText } from 'yjs';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -56,6 +57,11 @@ type UseEditorAssistant = () => {
   processMessage: ProcessMessage,
   accept: () => void,
   reject: () => void,
+
+  // Views
+  headerIcon: JSX.Element,
+  headerText: JSX.Element,
+  placeHolder: string,
 }
 
 const insertTextAtLine = (yText: YText, lineNumber: number, textToInsert: string): void => {
@@ -125,6 +131,9 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
+
+  // Hooks
+  const { t } = useTranslation();
 
   // Functions
   const createThread: CreateThread = useCallback(async(aiAssistantId) => {
@@ -266,11 +275,29 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     }
   }, [codeMirrorEditor, detectedDiff, selectedText, yDocs?.secondaryDoc]);
 
+
+  // Views
+  const headerIcon = useMemo(() => {
+    return <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>;
+  }, []);
+
+  const headerText = useMemo(() => {
+    return <>{t('Editor Assistant')}</>;
+  }, [t]);
+
+  const placeHolder = useMemo(() => { return 'sidebar_ai_assistant.editor_assistant_placeholder' }, []);
+
+
   return {
     createThread,
     postMessage,
     processMessage,
     accept,
     reject,
+
+    // Views
+    headerIcon,
+    headerText,
+    placeHolder,
   };
 };

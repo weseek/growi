@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { SseMessageSchema, type SseMessage } from '~/features/openai/interfaces/knowledge-assistant/sse-schemas';
@@ -6,6 +6,7 @@ import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-su
 
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
+import { useAiAssistantSidebar } from '../stores/ai-assistant';
 
 interface CreateThread {
   (aiAssistantId: string, initialUserMessage: string): Promise<IThreadRelationHasId>;
@@ -25,10 +26,23 @@ type UseKnowledgeAssistant = () => {
   createThread: CreateThread
   postMessage: PostMessage
   processMessage: ProcessMessage
+
+  // Views
+  headerIcon: JSX.Element
+  headerText: JSX.Element
+  placeHolder: string
 }
 
 export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
+  // Hooks
+  const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
+  const { aiAssistantData } = aiAssistantSidebarData ?? {};
+  const { threadData } = aiAssistantSidebarData ?? {};
 
+  // States
+  const [currentThreadTitle, setCurrentThreadId] = useState(threadData?.title);
+
+  // Functions
   const createThread: CreateThread = useCallback(async(aiAssistantId, initialUserMessage) => {
     const response = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
       type: ThreadType.KNOWLEDGE,
@@ -36,6 +50,9 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
       initialUserMessage,
     });
     const thread = response.data;
+
+    setCurrentThreadId(thread.title);
+
     return thread;
   }, []);
 
@@ -59,9 +76,26 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     });
   }, []);
 
+  // Views
+  const headerIcon = useMemo(() => {
+    return <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>;
+  }, []);
+
+  const headerText = useMemo(() => {
+    return <>{currentThreadTitle ?? aiAssistantData?.name}</>;
+  }, [aiAssistantData?.name, currentThreadTitle]);
+
+  const placeHolder = useMemo(() => { return 'sidebar_ai_assistant.knowledge_assistant_placeholder' }, []);
+
   return {
+    // Functions
     createThread,
     postMessage,
     processMessage,
+
+    // Views
+    headerIcon,
+    headerText,
+    placeHolder,
   };
 };
