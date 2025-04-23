@@ -33,6 +33,7 @@ import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
+import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 
@@ -50,8 +51,8 @@ interface ProcessMessage {
   }): void;
 }
 
-interface IsActionButtonShown {
-  (messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): boolean;
+interface GenerateMessageCard {
+  (role: MessageCardRole, children: string, messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
 }
 
 type DetectedDiff = Array<{
@@ -64,12 +65,10 @@ type UseEditorAssistant = () => {
   createThread: CreateThread,
   postMessage: PostMessage,
   processMessage: ProcessMessage,
-  isActionButtonShown: IsActionButtonShown,
-  accept: () => void,
-  reject: () => void,
 
   // Views
   initialView: JSX.Element,
+  generateMessageCard: GenerateMessageCard,
   headerIcon: JSX.Element,
   headerText: JSX.Element,
   placeHolder: string,
@@ -191,43 +190,10 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     });
   }, [mutateIsEnableUnifiedMergeView]);
 
-  const accept = useCallback(() => {
-    if (codeMirrorEditor?.view == null) {
-      return;
-    }
-
-    acceptAllChunks(codeMirrorEditor.view);
-    mutateIsEnableUnifiedMergeView(false);
-  }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
-
-  const reject = useCallback(() => {
-    mutateIsEnableUnifiedMergeView(false);
-  }, [mutateIsEnableUnifiedMergeView]);
-
   const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
     setSelectedText(selectedText);
     lineRef.current = selectedTextFirstLineNumber;
   }, []);
-
-  const isActionButtonShown: IsActionButtonShown = useCallback((messageId: string, messageLogs: MessageLog[], generatingAnswerMessage: MessageLog) => {
-    if (!aiAssistantSidebarData?.isEditorAssistant) {
-      return false;
-    }
-
-    if (generatingAnswerMessage != null) {
-      return false;
-    }
-
-    const latestAssistantMessageLogId = messageLogs
-      .filter(message => !message.isUserMessage)
-      .slice(-1)[0];
-
-    if (messageId === latestAssistantMessageLogId?.id) {
-      return true;
-    }
-
-    return false;
-  }, [aiAssistantSidebarData?.isEditorAssistant]);
 
   // Effects
   useTextSelectionEffect(codeMirrorEditor, selectTextHandler);
@@ -342,16 +308,62 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     );
   }, [selectedAiAssistant]);
 
+
+  const generateMessageCard: GenerateMessageCard = useCallback((role, children, messageId, messageLogs, generatingAnswerMessage) => {
+    const isActionButtonShown = (() => {
+      if (!aiAssistantSidebarData?.isEditorAssistant) {
+        return false;
+      }
+
+      if (generatingAnswerMessage != null) {
+        return false;
+      }
+
+      const latestAssistantMessageLogId = messageLogs
+        .filter(message => !message.isUserMessage)
+        .slice(-1)[0];
+
+      if (messageId === latestAssistantMessageLogId?.id) {
+        return true;
+      }
+
+      return false;
+    })();
+
+
+    const accept = () => {
+      if (codeMirrorEditor?.view == null) {
+        return;
+      }
+
+      acceptAllChunks(codeMirrorEditor.view);
+      mutateIsEnableUnifiedMergeView(false);
+    };
+
+    const reject = () => {
+      mutateIsEnableUnifiedMergeView(false);
+    };
+
+    return (
+      <MessageCard
+        role={role}
+        showActionButtons={isActionButtonShown}
+        onAccept={accept}
+        onDiscard={reject}
+      >
+        {children}
+      </MessageCard>
+    );
+  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+
   return {
     createThread,
     postMessage,
     processMessage,
-    isActionButtonShown,
-    accept,
-    reject,
 
     // Views
     initialView,
+    generateMessageCard,
     headerIcon,
     headerText,
     placeHolder,

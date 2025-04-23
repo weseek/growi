@@ -11,6 +11,7 @@ import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantChatInitialView } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantChatInitialView';
+import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../stores/message';
 import { useSWRMUTxThreads } from '../stores/thread';
@@ -29,6 +30,10 @@ interface ProcessMessage {
   ): void;
 }
 
+interface GenerateMessageCard {
+  (role: MessageCardRole, children: string): JSX.Element;
+}
+
 type UseKnowledgeAssistant = () => {
   createThread: CreateThread
   postMessage: PostMessage
@@ -36,6 +41,7 @@ type UseKnowledgeAssistant = () => {
 
   // Views
   initialView: JSX.Element
+  generateMessageCard: GenerateMessageCard,
   headerIcon: JSX.Element
   headerText: JSX.Element
   placeHolder: string
@@ -113,6 +119,16 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     );
   }, [aiAssistantSidebarData?.aiAssistantData]);
 
+  const generateMessageCard: GenerateMessageCard = useCallback((role, children) => {
+    return (
+      <MessageCard
+        role={role}
+      >
+        {children}
+      </MessageCard>
+    );
+  }, []);
+
   return {
     // Functions
     createThread,
@@ -121,6 +137,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
 
     // Views
     initialView,
+    generateMessageCard,
     headerIcon,
     headerText,
     placeHolder,

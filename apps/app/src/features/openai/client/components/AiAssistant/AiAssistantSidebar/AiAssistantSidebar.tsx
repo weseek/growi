@@ -21,7 +21,7 @@ import { useEditorAssistant } from '../../../services/editor-assistant';
 import { useKnowledgeAssistant, useFetchAndSetMessageDataEffect } from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 
-import { MessageCard } from './MessageCard';
+import { MessageCard, type MessageCardRole } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantSidebar.module.scss';
@@ -68,21 +68,20 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     // Views
     initialView: initialViewForKnowledgeAssistant,
+    generateMessageCard: generateMessageCardForKnowledgeAssistant,
     headerIcon: headerIconForKnowledgeAssistant,
     headerText: headerTextForKnowledgeAssistant,
     placeHolder: placeHolderForKnowledgeAssistant,
   } = useKnowledgeAssistant();
 
   const {
-    initialView: initialViewForEditorAssistant,
     createThread: createThreadForEditorAssistant,
     postMessage: postMessageForEditorAssistant,
     processMessage: processMessageForEditorAssistant,
-    isActionButtonShown,
-    accept,
-    reject,
 
     // Views
+    initialView: initialViewForEditorAssistant,
+    generateMessageCard: generateMessageCardForEditorAssistant,
     headerIcon: headerIconForEditorAssistant,
     headerText: headerTextForEditorAssistant,
     placeHolder: placeHolderForEditorAssistant,
@@ -113,6 +112,19 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       ? initialViewForEditorAssistant
       : initialViewForKnowledgeAssistant;
   }, [initialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant]);
+
+  const messageCard = useCallback(
+    (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
+      if (isEditorAssistant) {
+        if (messageId == null || messageLogs == null) {
+          return <></>;
+        }
+        return generateMessageCardForEditorAssistant(role, children, messageId, messageLogs, generatingAnswerMessage);
+      }
+
+      return generateMessageCardForKnowledgeAssistant(role, children);
+    }, [generateMessageCardForEditorAssistant, generateMessageCardForKnowledgeAssistant, isEditorAssistant],
+  );
 
   const headerIcon = useMemo(() => {
     return isEditorAssistant
@@ -298,13 +310,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
   };
 
-  const clickAcceptHandler = useCallback(() => {
-    accept();
-  }, [accept]);
-
-  const clickDiscardHandler = useCallback(() => {
-    reject();
-  }, [reject]);
 
   return (
     <>
@@ -328,15 +333,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             ? (
               <div className="vstack gap-4 pb-2">
                 { messageLogs.map(message => (
-                  <MessageCard
-                    key={message.id}
-                    role={message.isUserMessage ? 'user' : 'assistant'}
-                    showActionButtons={isActionButtonShown(message.id, messageLogs, generatingAnswerMessage)}
-                    onAccept={clickAcceptHandler}
-                    onDiscard={clickDiscardHandler}
-                  >
-                    {message.content}
-                  </MessageCard>
+                  <>
+                    {messageCard(message.isUserMessage ? 'user' : 'assistant', message.content, message.id, messageLogs, generatingAnswerMessage)}
+                  </>
                 )) }
                 { generatingAnswerMessage != null && (
                   <MessageCard role="assistant">{generatingAnswerMessage.content}</MessageCard>
