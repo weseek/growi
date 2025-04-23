@@ -1,12 +1,17 @@
-import { useCallback, useMemo, useState } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
+import {
+  useCallback, useMemo, useState, useEffect,
+} from 'react';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { SseMessageSchema, type SseMessage } from '~/features/openai/interfaces/knowledge-assistant/sse-schemas';
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
 
+import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
+import { useSWRMUTxMessages } from '../stores/message';
 import { useSWRMUTxThreads } from '../stores/thread';
 
 interface CreateThread {
@@ -103,4 +108,36 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     headerText,
     placeHolder,
   };
+};
+
+
+export const useFetchAndSetMessageDataEffect = (setMessageLogs: Dispatch<SetStateAction<MessageLog[]>>, threadId?: string): void => {
+  const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
+  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantSidebarData?.aiAssistantData?._id, threadId);
+
+  useEffect(() => {
+    const fetchAndSetMessageData = async() => {
+      const messageData = await mutateMessageData();
+      if (messageData != null) {
+        const normalizedMessageData = messageData.data
+          .reverse()
+          .filter(message => message.metadata?.shouldHideMessage !== 'true');
+
+        setMessageLogs(() => {
+          return normalizedMessageData.map((message, index) => (
+            {
+              id: index.toString(),
+              content: message.content[0].type === 'text' ? message.content[0].text.value : '',
+              isUserMessage: message.role === 'user',
+            }
+          ));
+        });
+      }
+    };
+
+    if (threadId != null) {
+      fetchAndSetMessageData();
+    }
+
+  }, [mutateMessageData, setMessageLogs, threadId]);
 };
