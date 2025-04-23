@@ -17,6 +17,8 @@ import { deltaToChangeSpecs } from '../../../utils/delta-to-changespecs';
 import type { UseCodeMirrorEditor } from '../../services';
 import { useSecondaryYdocs } from '../../stores/use-secondary-ydocs';
 
+import { useCustomizedButtonStyles } from './use-customized-button-styles';
+
 
 // for avoiding apply update from primaryDoc to secondaryDoc twice
 const SYNC_BY_ACCEPT_CHUNK = 'synkByAcceptChunk';
@@ -39,6 +41,8 @@ export const useUnifiedMergeView = (
     useSecondary: isEnabled,
   }) ?? {};
 
+  useCustomizedButtonStyles(codeMirrorEditor);
+
   // setup unifiedMergeView
   useEffect(() => {
     if (!isEnabled || primaryDoc == null || secondaryDoc == null || codeMirrorEditor == null) {
@@ -54,37 +58,6 @@ export const useUnifiedMergeView = (
     const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
     return cleanupFunction;
   }, [isEnabled, pageId, codeMirrorEditor, primaryDoc, secondaryDoc]);
-
-  // Setup button styles
-  useEffect(() => {
-    if (!isEnabled || codeMirrorEditor?.view == null) {
-      return;
-    }
-
-    const updateButtonStyles = () => {
-      const acceptButton = codeMirrorEditor.view?.dom.querySelector('button[name="accept"]');
-      acceptButton?.classList.add('btn', 'btn-sm', 'btn-outline-success');
-      acceptButton?.setAttribute('style', '--bs-btn-padding-y: .1rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: 1rem;');
-      const rejectButton = codeMirrorEditor.view?.dom.querySelector('button[name="reject"]');
-      rejectButton?.classList.add('btn', 'btn-sm', 'btn-outline-secondary');
-      rejectButton?.setAttribute('style', '--bs-btn-padding-y: .1rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: 1rem;');
-      // Set button text
-      if (rejectButton != null) {
-        rejectButton.textContent = 'Discard';
-      }
-    };
-
-    // Initial setup
-    updateButtonStyles();
-
-    // Setup listener for future updates
-    const extension = EditorView.updateListener.of(() => {
-      updateButtonStyles();
-    });
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions([extension]);
-    return cleanupFunction;
-  }, [isEnabled, codeMirrorEditor]);
 
   // Setup sync from primaryDoc to secondaryDoc
   useEffect(() => {
