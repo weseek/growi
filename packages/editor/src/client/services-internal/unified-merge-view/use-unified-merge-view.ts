@@ -17,6 +17,8 @@ import { deltaToChangeSpecs } from '../../../utils/delta-to-changespecs';
 import type { UseCodeMirrorEditor } from '../../services';
 import { useSecondaryYdocs } from '../../stores/use-secondary-ydocs';
 
+import { useCustomizedButtonStyles } from './use-customized-button-styles';
+
 
 // for avoiding apply update from primaryDoc to secondaryDoc twice
 const SYNC_BY_ACCEPT_CHUNK = 'synkByAcceptChunk';
@@ -38,6 +40,8 @@ export const useUnifiedMergeView = (
     pageId,
     useSecondary: isEnabled,
   }) ?? {};
+
+  useCustomizedButtonStyles(codeMirrorEditor);
 
   // setup unifiedMergeView
   useEffect(() => {
