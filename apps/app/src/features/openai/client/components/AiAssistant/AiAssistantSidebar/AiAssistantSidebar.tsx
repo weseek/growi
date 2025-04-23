@@ -21,10 +21,7 @@ import { useEditorAssistant } from '../../../services/editor-assistant';
 import { useKnowledgeAssistant, useFetchAndSetMessageDataEffect } from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 
-import { AiAssistantChatInitialView } from './AiAssistantChatInitialView';
-import { AiAssistantDropdown } from './AiAssistantDropdown';
 import { MessageCard } from './MessageCard';
-import { QuickMenuList } from './QuickMenuList';
 import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantSidebar.module.scss';
@@ -69,18 +66,24 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     createThread: createThreadForKnowledgeAssistant,
     postMessage: postMessageForKnowledgeAssistant,
     processMessage: processMessageForKnowledgeAssistant,
+
+    // Views
+    initialView: initialViewForKnowledgeAssistant,
     headerIcon: headerIconForKnowledgeAssistant,
     headerText: headerTextForKnowledgeAssistant,
     placeHolder: placeHolderForKnowledgeAssistant,
   } = useKnowledgeAssistant();
 
   const {
+    initialView: initialViewForEditorAssistant,
     createThread: createThreadForEditorAssistant,
     postMessage: postMessageForEditorAssistant,
     processMessage: processMessageForEditorAssistant,
     isActionButtonShown,
     accept,
     reject,
+
+    // Views
     headerIcon: headerIconForEditorAssistant,
     headerText: headerTextForEditorAssistant,
     placeHolder: placeHolderForEditorAssistant,
@@ -105,6 +108,12 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     const thread = await createThreadForKnowledgeAssistant(aiAssistantData._id, initialUserMessage);
     return thread;
   }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant, selectedAiAssistant?._id]);
+
+  const initialView = useMemo(() => {
+    return isEditorAssistant
+      ? initialViewForEditorAssistant
+      : initialViewForKnowledgeAssistant;
+  }, [initialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant]);
 
   const headerIcon = useMemo(() => {
     return isEditorAssistant
@@ -290,10 +299,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
   };
 
-  const clickQuickMenuHandler = useCallback(async(quickMenu: string) => {
-    await submit({ input: quickMenu });
-  }, [submit]);
-
   const clickAcceptHandler = useCallback(() => {
     accept();
   }, [accept]);
@@ -301,10 +306,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const clickDiscardHandler = useCallback(() => {
     reject();
   }, [reject]);
-
-  const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
-    setSelectedAiAssistant(aiAssistant);
-  }, []);
 
   return (
     <>
@@ -351,28 +352,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               </div>
             )
             : (
-              <>{isEditorAssistant
-                ? (
-                  <>
-                    <div className="py-2">
-                      <AiAssistantDropdown
-                        selectedAiAssistant={selectedAiAssistant}
-                        onSelect={selectAiAssistantHandler}
-                      />
-                    </div>
-                    <QuickMenuList
-                      onClick={clickQuickMenuHandler}
-                    />
-                  </>
-                )
-                : (
-                  <AiAssistantChatInitialView
-                    description={aiAssistantData?.description ?? ''}
-                    additionalInstruction={aiAssistantData?.additionalInstruction ?? ''}
-                    pagePathPatterns={aiAssistantData?.pagePathPatterns ?? []}
-                  />
-                )}
-              </>
+              <>{ initialView }</>
             )
           }
 

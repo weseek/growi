@@ -28,9 +28,12 @@ import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-su
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
 
+import type { AiAssistantHasId } from '../../interfaces/ai-assistant';
 import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
+import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
+import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 
 interface CreateThread {
@@ -66,6 +69,7 @@ type UseEditorAssistant = () => {
   reject: () => void,
 
   // Views
+  initialView: JSX.Element,
   headerIcon: JSX.Element,
   headerText: JSX.Element,
   placeHolder: string,
@@ -132,6 +136,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [selectedText, setSelectedText] = useState<string>();
+  const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
 
   // Hooks
   const { t } = useTranslation();
@@ -314,6 +319,29 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   const placeHolder = useMemo(() => { return 'sidebar_ai_assistant.editor_assistant_placeholder' }, []);
 
+  const initialView = useMemo(() => {
+    const selectAiAssistantHandler = (aiAssistant?: AiAssistantHasId) => {
+      setSelectedAiAssistant(aiAssistant);
+    };
+
+    const clickQuickMenuHandler = async(quickMenu: string) => {
+      // await submit({ input: quickMenu });
+    };
+
+    return (
+      <>
+        <div className="py-2">
+          <AiAssistantDropdown
+            selectedAiAssistant={selectedAiAssistant}
+            onSelect={selectAiAssistantHandler}
+          />
+        </div>
+        <QuickMenuList
+          onClick={clickQuickMenuHandler}
+        />
+      </>
+    );
+  }, [selectedAiAssistant]);
 
   return {
     createThread,
@@ -324,6 +352,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     reject,
 
     // Views
+    initialView,
     headerIcon,
     headerText,
     placeHolder,

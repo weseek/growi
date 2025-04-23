@@ -10,6 +10,7 @@ import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-su
 import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
+import { AiAssistantChatInitialView } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantChatInitialView';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 import { useSWRMUTxMessages } from '../stores/message';
 import { useSWRMUTxThreads } from '../stores/thread';
@@ -34,6 +35,7 @@ type UseKnowledgeAssistant = () => {
   processMessage: ProcessMessage
 
   // Views
+  initialView: JSX.Element
   headerIcon: JSX.Element
   headerText: JSX.Element
   placeHolder: string
@@ -97,6 +99,20 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
 
   const placeHolder = useMemo(() => { return 'sidebar_ai_assistant.knowledge_assistant_placeholder' }, []);
 
+  const initialView = useMemo(() => {
+    if (aiAssistantSidebarData?.aiAssistantData == null) {
+      return <></>;
+    }
+
+    return (
+      <AiAssistantChatInitialView
+        description={aiAssistantSidebarData.aiAssistantData.description}
+        additionalInstruction={aiAssistantSidebarData.aiAssistantData.additionalInstruction}
+        pagePathPatterns={aiAssistantSidebarData.aiAssistantData.pagePathPatterns}
+      />
+    );
+  }, [aiAssistantSidebarData?.aiAssistantData]);
+
   return {
     // Functions
     createThread,
@@ -104,6 +120,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     processMessage,
 
     // Views
+    initialView,
     headerIcon,
     headerText,
     placeHolder,
