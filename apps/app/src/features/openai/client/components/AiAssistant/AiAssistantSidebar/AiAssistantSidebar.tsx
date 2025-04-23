@@ -55,7 +55,6 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
   const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<MessageLog>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
-  const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
 
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
@@ -98,7 +97,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   const createThread = useCallback(async(initialUserMessage: string) => {
     if (isEditorAssistant) {
-      const thread = await createThreadForEditorAssistant(selectedAiAssistant?._id);
+      const thread = await createThreadForEditorAssistant();
       return thread;
     }
 
@@ -107,7 +106,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
     const thread = await createThreadForKnowledgeAssistant(aiAssistantData._id, initialUserMessage);
     return thread;
-  }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant, selectedAiAssistant?._id]);
+  }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant]);
 
   const initialView = useMemo(() => {
     return isEditorAssistant

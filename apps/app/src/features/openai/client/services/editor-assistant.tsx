@@ -37,7 +37,7 @@ import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/Quic
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
 
 interface CreateThread {
-  (aiAssistantId?: string): Promise<IThreadRelationHasId>;
+  (): Promise<IThreadRelationHasId>;
 }
 interface PostMessage {
   (threadId: string, userMessage: string): Promise<Response>;
@@ -147,13 +147,13 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
 
   // Functions
-  const createThread: CreateThread = useCallback(async(aiAssistantId) => {
+  const createThread: CreateThread = useCallback(async() => {
     const response = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
       type: ThreadType.EDITOR,
-      aiAssistantId,
+      aiAssistantId: selectedAiAssistant?._id,
     });
     return response.data;
-  }, []);
+  }, [selectedAiAssistant?._id]);
 
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
     const response = await fetch('/_api/v3/openai/edit', {
@@ -208,7 +208,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     setSelectedText(selectedText);
     lineRef.current = selectedTextFirstLineNumber;
   }, []);
-
 
   const isActionButtonShown: IsActionButtonShown = useCallback((messageId: string, messageLogs: MessageLog[], generatingAnswerMessage: MessageLog) => {
     if (!aiAssistantSidebarData?.isEditorAssistant) {
