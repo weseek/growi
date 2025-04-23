@@ -10,6 +10,7 @@ import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/co
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
 import { type Text as YText } from 'yjs';
 
+import { apiv3Post } from '~/client/util/apiv3-client';
 import {
   SseMessageSchema,
   SseDetectedDiffSchema,
@@ -26,6 +27,12 @@ import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-su
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
 import { useCurrentPageId } from '~/stores/page';
 
+import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
+import { ThreadType } from '../../interfaces/thread-relation';
+
+interface CreateThread {
+  (aiAssistantId?: string): Promise<IThreadRelationHasId>;
+}
 interface PostMessage {
   (threadId: string, userMessage: string): Promise<Response>;
 }
@@ -44,6 +51,7 @@ type DetectedDiff = Array<{
 }>
 
 type UseEditorAssistant = () => {
+  createThread: CreateThread,
   postMessage: PostMessage,
   processMessage: ProcessMessage,
   accept: () => void,
@@ -119,6 +127,14 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
 
   // Functions
+  const createThread: CreateThread = useCallback(async(aiAssistantId) => {
+    const response = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
+      type: ThreadType.EDITOR,
+      aiAssistantId,
+    });
+    return response.data;
+  }, []);
+
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
@@ -251,6 +267,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [codeMirrorEditor, detectedDiff, selectedText, yDocs?.secondaryDoc]);
 
   return {
+    createThread,
     postMessage,
     processMessage,
     accept,
