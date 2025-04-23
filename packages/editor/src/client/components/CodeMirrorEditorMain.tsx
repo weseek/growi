@@ -9,7 +9,7 @@ import deepmerge from 'ts-deepmerge';
 import { GlobalCodeMirrorEditorKey } from '../../consts';
 import type { EditingClient } from '../../interfaces';
 import { CodeMirrorEditor, type CodeMirrorEditorProps } from '../components-internal/CodeMirrorEditor';
-import { setDataLine, useUnifiedMergeView } from '../services-internal';
+import { setDataLine, useUnifiedMergeView, codemirrorEditorClassForUnifiedMergeView } from '../services-internal';
 import { useCodeMirrorEditorIsolated } from '../stores/codemirror-editor';
 import { useCollaborativeEditorMode } from '../stores/use-collaborative-editor-mode';
 
@@ -92,6 +92,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
+      className={codemirrorEditorClassForUnifiedMergeView}
       onSave={onSave}
       cmProps={cmPropsOverride}
       {...otherProps}
