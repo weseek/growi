@@ -106,8 +106,10 @@ const AssistantMessageCard = ({
   );
 };
 
+export type MessageCardRole = 'user' | 'assistant';
+
 type Props = {
-  role: 'user' | 'assistant',
+  role: MessageCardRole,
   children: string,
   showActionButtons?: boolean,
   onDiscard?: () => void,

@@ -1,5 +1,5 @@
 import {
-  useCallback, useEffect, useState, useRef,
+  useCallback, useEffect, useState, useRef, useMemo,
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
@@ -8,8 +8,10 @@ import {
 } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
+import { useTranslation } from 'react-i18next';
 import { type Text as YText } from 'yjs';
 
+import { apiv3Post } from '~/client/util/apiv3-client';
 import {
   SseMessageSchema,
   SseDetectedDiffSchema,
@@ -24,8 +26,22 @@ import {
 } from '~/features/openai/interfaces/editor-assistant/sse-schemas';
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
 import { useIsEnableUnifiedMergeView } from '~/stores-universal/context';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useCurrentPageId } from '~/stores/page';
 
+import type { AiAssistantHasId } from '../../interfaces/ai-assistant';
+import type { MessageLog } from '../../interfaces/message';
+import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
+import { ThreadType } from '../../interfaces/thread-relation';
+import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
+import { type FormData } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantSidebar';
+import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
+import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
+import { useAiAssistantSidebar } from '../stores/ai-assistant';
+
+interface CreateThread {
+  (): Promise<IThreadRelationHasId>;
+}
 interface PostMessage {
   (threadId: string, userMessage: string): Promise<Response>;
 }
@@ -37,6 +53,13 @@ interface ProcessMessage {
   }): void;
 }
 
+interface GenerateInitialView {
+  (onSubmit: (data: FormData) => Promise<void>): JSX.Element;
+}
+interface GenerateMessageCard {
+  (role: MessageCardRole, children: string, messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
+}
+
 type DetectedDiff = Array<{
   data: SseDetectedDiff,
   applied: boolean,
@@ -44,10 +67,16 @@ type DetectedDiff = Array<{
 }>
 
 type UseEditorAssistant = () => {
+  createThread: CreateThread,
   postMessage: PostMessage,
   processMessage: ProcessMessage,
-  accept: () => void,
-  reject: () => void,
+
+  // Views
+  generateInitialView: GenerateInitialView,
+  generateMessageCard: GenerateMessageCard,
+  headerIcon: JSX.Element,
+  headerText: JSX.Element,
+  placeHolder: string,
 }
 
 const insertTextAtLine = (yText: YText, lineNumber: number, textToInsert: string): void => {
@@ -111,14 +140,25 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
   const [selectedText, setSelectedText] = useState<string>();
+  const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
 
-  // SWR Hooks
+  // Hooks
+  const { t } = useTranslation();
   const { data: currentPageId } = useCurrentPageId();
   const { data: isEnableUnifiedMergeView, mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
+  const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
 
   // Functions
+  const createThread: CreateThread = useCallback(async() => {
+    const response = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
+      type: ThreadType.EDITOR,
+      aiAssistantId: selectedAiAssistant?._id,
+    });
+    return response.data;
+  }, [selectedAiAssistant?._id]);
+
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
@@ -153,19 +193,6 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     handleIfSuccessfullyParsed(data, SseFinalizedSchema, (data: SseFinalized) => {
       handler.onFinalized(data);
     });
-  }, [mutateIsEnableUnifiedMergeView]);
-
-  const accept = useCallback(() => {
-    if (codeMirrorEditor?.view == null) {
-      return;
-    }
-
-    acceptAllChunks(codeMirrorEditor.view);
-    mutateIsEnableUnifiedMergeView(false);
-  }, [codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
-
-  const reject = useCallback(() => {
-    mutateIsEnableUnifiedMergeView(false);
   }, [mutateIsEnableUnifiedMergeView]);
 
   const selectTextHandler = useCallback((selectedText: string, selectedTextFirstLineNumber: number) => {
@@ -250,10 +277,111 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     }
   }, [codeMirrorEditor, detectedDiff, selectedText, yDocs?.secondaryDoc]);
 
+
+  // Views
+  const headerIcon = useMemo(() => {
+    return <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>;
+  }, []);
+
+  const headerText = useMemo(() => {
+    return <>{t('Editor Assistant')}</>;
+  }, [t]);
+
+  const placeHolder = useMemo(() => { return 'sidebar_ai_assistant.editor_assistant_placeholder' }, []);
+
+  const generateInitialView: GenerateInitialView = useCallback((onSubmit) => {
+    const selectAiAssistantHandler = (aiAssistant?: AiAssistantHasId) => {
+      setSelectedAiAssistant(aiAssistant);
+    };
+
+    const clickQuickMenuHandler = async(quickMenu: string) => {
+      await onSubmit({ input: quickMenu });
+    };
+
+    return (
+      <>
+        <div className="py-2">
+          <AiAssistantDropdown
+            selectedAiAssistant={selectedAiAssistant}
+            onSelect={selectAiAssistantHandler}
+          />
+        </div>
+        <QuickMenuList
+          onClick={clickQuickMenuHandler}
+        />
+      </>
+    );
+  }, [selectedAiAssistant]);
+
+
+  const generateMessageCard: GenerateMessageCard = useCallback((role, children, messageId, messageLogs, generatingAnswerMessage) => {
+    const isActionButtonShown = (() => {
+      if (!aiAssistantSidebarData?.isEditorAssistant) {
+        return false;
+      }
+
+      if (generatingAnswerMessage != null) {
+        return false;
+      }
+
+      const latestAssistantMessageLogId = messageLogs
+        .filter(message => !message.isUserMessage)
+        .slice(-1)[0];
+
+      if (messageId === latestAssistantMessageLogId?.id) {
+        return true;
+      }
+
+      return false;
+    })();
+
+
+    const accept = () => {
+      if (codeMirrorEditor?.view == null) {
+        return;
+      }
+
+      acceptAllChunks(codeMirrorEditor.view);
+      mutateIsEnableUnifiedMergeView(false);
+    };
+
+    const reject = () => {
+      mutateIsEnableUnifiedMergeView(false);
+    };
+
+    return (
+      <MessageCard
+        role={role}
+        showActionButtons={isActionButtonShown}
+        onAccept={accept}
+        onDiscard={reject}
+      >
+        {children}
+      </MessageCard>
+    );
+  }, [aiAssistantSidebarData?.isEditorAssistant, codeMirrorEditor?.view, mutateIsEnableUnifiedMergeView]);
+
   return {
+    createThread,
     postMessage,
     processMessage,
-    accept,
-    reject,
+
+    // Views
+    generateInitialView,
+    generateMessageCard,
+    headerIcon,
+    headerText,
+    placeHolder,
   };
+};
+
+export const useAiAssistantSidebarCloseEffect = (): void => {
+  const { data, close } = useAiAssistantSidebar();
+  const { data: editorMode } = useEditorMode();
+
+  useEffect(() => {
+    if (data?.isEditorAssistant && editorMode !== EditorMode.Editor) {
+      close();
+    }
+  }, [close, data?.isEditorAssistant, editorMode]);
 };

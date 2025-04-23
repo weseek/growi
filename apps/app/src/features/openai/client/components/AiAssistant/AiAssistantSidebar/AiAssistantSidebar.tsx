@@ -8,27 +8,26 @@ import { useTranslation } from 'react-i18next';
 import { Collapse, UncontrolledTooltip } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
-
-import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useGrowiCloudUri, useIsEnableUnifiedMergeView } from '~/stores-universal/context';
-import { useEditorMode, EditorMode } from '~/stores-universal/ui';
 import loggerFactory from '~/utils/logger';
 
 import type { AiAssistantHasId } from '../../../../interfaces/ai-assistant';
+import type { MessageLog } from '../../../../interfaces/message';
 import { MessageErrorCode, StreamErrorCode } from '../../../../interfaces/message-error';
-import { ThreadType } from '../../../../interfaces/thread-relation';
 import type { IThreadRelationHasId } from '../../../../interfaces/thread-relation';
-import { useEditorAssistant } from '../../../services/editor-assistant';
-import { useKnowledgeAssistant } from '../../../services/knowledge-assistant';
+import {
+  useEditorAssistant,
+  useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForEditorAssistant,
+} from '../../../services/editor-assistant';
+import {
+  useKnowledgeAssistant,
+  useFetchAndSetMessageDataEffect,
+  useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForKnowledgeAssistant,
+} from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
-import { useSWRMUTxMessages } from '../../../stores/message';
-import { useSWRMUTxThreads } from '../../../stores/thread';
 
-import { AiAssistantChatInitialView } from './AiAssistantChatInitialView';
-import { AiAssistantDropdown } from './AiAssistantDropdown';
-import { MessageCard } from './MessageCard';
-import { QuickMenuList } from './QuickMenuList';
+import { MessageCard, type MessageCardRole } from './MessageCard';
 import { ResizableTextarea } from './ResizableTextArea';
 
 import styles from './AiAssistantSidebar.module.scss';
@@ -37,13 +36,7 @@ const logger = loggerFactory('growi:openai:client:components:AiAssistantSidebar'
 
 const moduleClass = styles['grw-ai-assistant-sidebar'] ?? '';
 
-type Message = {
-  id: string,
-  content: string,
-  isUserMessage?: boolean,
-}
-
-type FormData = {
+export type FormData = {
   input: string;
   summaryMode?: boolean;
 };
@@ -63,25 +56,41 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     closeAiAssistantSidebar,
   } = props;
 
-  const [currentThreadTitle, setCurrentThreadTitle] = useState<string | undefined>(threadData?.title);
+  // States
   const [currentThreadId, setCurrentThreadId] = useState<string | undefined>(threadData?.threadId);
-  const [messageLogs, setMessageLogs] = useState<Message[]>([]);
-  const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<Message>();
+  const [messageLogs, setMessageLogs] = useState<MessageLog[]>([]);
+  const [generatingAnswerMessage, setGeneratingAnswerMessage] = useState<MessageLog>();
   const [errorMessage, setErrorMessage] = useState<string | undefined>();
   const [isErrorDetailCollapsed, setIsErrorDetailCollapsed] = useState<boolean>(false);
-  const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
 
+  // Hooks
   const { t } = useTranslation();
   const { data: growiCloudUri } = useGrowiCloudUri();
-  const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
-  const { trigger: mutateMessageData } = useSWRMUTxMessages(aiAssistantData?._id, threadData?.threadId);
 
-  const { postMessage: postMessageForKnowledgeAssistant, processMessage: processMessageForKnowledgeAssistant } = useKnowledgeAssistant();
   const {
+    createThread: createThreadForKnowledgeAssistant,
+    postMessage: postMessageForKnowledgeAssistant,
+    processMessage: processMessageForKnowledgeAssistant,
+
+    // Views
+    initialView: initialViewForKnowledgeAssistant,
+    generateMessageCard: generateMessageCardForKnowledgeAssistant,
+    headerIcon: headerIconForKnowledgeAssistant,
+    headerText: headerTextForKnowledgeAssistant,
+    placeHolder: placeHolderForKnowledgeAssistant,
+  } = useKnowledgeAssistant();
+
+  const {
+    createThread: createThreadForEditorAssistant,
     postMessage: postMessageForEditorAssistant,
     processMessage: processMessageForEditorAssistant,
-    accept,
-    reject,
+
+    // Views
+    generateInitialView: generateInitialViewForEditorAssistant,
+    generateMessageCard: generateMessageCardForEditorAssistant,
+    headerIcon: headerIconForEditorAssistant,
+    headerText: headerTextForEditorAssistant,
+    placeHolder: placeHolderForEditorAssistant,
   } = useEditorAssistant();
 
   const form = useForm<FormData>({
@@ -91,71 +100,33 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     },
   });
 
-  useEffect(() => {
-    const fetchAndSetMessageData = async() => {
-      const messageData = await mutateMessageData();
-      if (messageData != null) {
-        const normalizedMessageData = messageData.data
-          .reverse()
-          .filter(message => message.metadata?.shouldHideMessage !== 'true');
+  // Effects
+  useFetchAndSetMessageDataEffect(setMessageLogs, threadData?.threadId);
 
-        setMessageLogs(() => {
-          return normalizedMessageData.map((message, index) => (
-            {
-              id: index.toString(),
-              content: message.content[0].type === 'text' ? message.content[0].text.value : '',
-              isUserMessage: message.role === 'user',
-            }
-          ));
-        });
-      }
-    };
-
-    if (threadData != null) {
-      fetchAndSetMessageData();
-    }
-  }, [mutateMessageData, threadData]);
-
-  const isActionButtonShown = useCallback((messageId: string) => {
-    if (!isEditorAssistant) {
-      return false;
+  // Functions
+  const createThread = useCallback(async(initialUserMessage: string) => {
+    if (isEditorAssistant) {
+      const thread = await createThreadForEditorAssistant();
+      return thread;
     }
 
-    if (generatingAnswerMessage != null) {
-      return false;
+    if (aiAssistantData == null) {
+      return;
     }
+    const thread = await createThreadForKnowledgeAssistant(aiAssistantData._id, initialUserMessage);
+    return thread;
+  }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant]);
 
-    const latestAssistantMessageLogId = messageLogs
-      .filter(message => !message.isUserMessage)
-      .slice(-1)[0];
-
-    if (messageId === latestAssistantMessageLogId?.id) {
-      return true;
+  const postMessage = useCallback(async(currentThreadId: string, input: string, summaryMode?: boolean) => {
+    if (isEditorAssistant) {
+      const response = await postMessageForEditorAssistant(currentThreadId, input);
+      return response;
     }
-
-    return false;
-  }, [generatingAnswerMessage, isEditorAssistant, messageLogs]);
-
-  const headerIcon = useMemo(() => {
-    return isEditorAssistant
-      ? <span className="material-symbols-outlined growi-ai-chat-icon me-3 fs-4">support_agent</span>
-      : <span className="growi-custom-icons growi-ai-chat-icon me-3 fs-4">ai_assistant</span>;
-  }, [isEditorAssistant]);
-
-  const headerText = useMemo(() => {
-    return isEditorAssistant
-      ? <>{t('Editor Assistant')}</>
-      : <>{currentThreadTitle ?? aiAssistantData?.name}</>;
-  }, [isEditorAssistant, currentThreadTitle, aiAssistantData?.name, t]);
-
-  const placeHolder = useMemo(() => {
-    if (form.formState.isSubmitting) {
-      return '';
+    if (aiAssistantData?._id != null) {
+      const response = postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId, input, summaryMode);
+      return response;
     }
-    return t(isEditorAssistant
-      ? 'sidebar_ai_assistant.editor_assistant_placeholder'
-      : 'sidebar_ai_assistant.knowledge_assistant_placeholder');
-  }, [form.formState.isSubmitting, isEditorAssistant, t]);
+  }, [aiAssistantData?._id, isEditorAssistant, postMessageForEditorAssistant, postMessageForKnowledgeAssistant]);
 
   const isGenerating = generatingAnswerMessage != null;
   const submit = useCallback(async(data: FormData) => {
@@ -187,23 +158,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     let currentThreadId_ = currentThreadId;
     if (currentThreadId_ == null) {
       try {
-        const res = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
-          type: isEditorAssistant ? ThreadType.EDITOR : ThreadType.KNOWLEDGE,
-          aiAssistantId: isEditorAssistant ? selectedAiAssistant?._id : aiAssistantData?._id,
-          initialUserMessage: isEditorAssistant ? undefined : newUserMessage.content,
-        });
-
-        const thread = res.data;
+        const thread = await createThread(newUserMessage.content);
+        if (thread == null) {
+          return;
+        }
 
         setCurrentThreadId(thread.threadId);
-        setCurrentThreadTitle(thread.title);
-
         currentThreadId_ = thread.threadId;
-
-        // No need to await because data is not used
-        if (!isEditorAssistant) {
-          mutateThreadData();
-        }
       }
       catch (err) {
         logger.error(err.toString());
@@ -217,15 +178,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
         return;
       }
 
-      const response = await (async() => {
-        if (isEditorAssistant) {
-          return postMessageForEditorAssistant(currentThreadId_, data.input);
-        }
-        if (aiAssistantData?._id != null) {
-          return postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId_, data.input, data.summaryMode);
-        }
-      })();
-
+      const response = await postMessage(currentThreadId_, data.input, data.summaryMode);
       if (response == null) {
         return;
       }
@@ -322,7 +275,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, form, currentThreadId, isEditorAssistant, selectedAiAssistant?._id, aiAssistantData?._id, mutateThreadData, t, postMessageForEditorAssistant, postMessageForKnowledgeAssistant, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, form, currentThreadId, createThread, t, postMessage, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -330,21 +283,48 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
   };
 
-  const clickQuickMenuHandler = useCallback(async(quickMenu: string) => {
-    await submit({ input: quickMenu });
-  }, [submit]);
+  // Views
+  const headerIcon = useMemo(() => {
+    return isEditorAssistant
+      ? headerIconForEditorAssistant
+      : headerIconForKnowledgeAssistant;
+  }, [headerIconForEditorAssistant, headerIconForKnowledgeAssistant, isEditorAssistant]);
 
-  const clickAcceptHandler = useCallback(() => {
-    accept();
-  }, [accept]);
+  const headerText = useMemo(() => {
+    return isEditorAssistant
+      ? headerTextForEditorAssistant
+      : headerTextForKnowledgeAssistant;
+  }, [isEditorAssistant, headerTextForEditorAssistant, headerTextForKnowledgeAssistant]);
 
-  const clickDiscardHandler = useCallback(() => {
-    reject();
-  }, [reject]);
+  const placeHolder = useMemo(() => {
+    if (form.formState.isSubmitting) {
+      return '';
+    }
+    return t(isEditorAssistant
+      ? placeHolderForEditorAssistant
+      : placeHolderForKnowledgeAssistant);
+  }, [form.formState.isSubmitting, isEditorAssistant, placeHolderForEditorAssistant, placeHolderForKnowledgeAssistant, t]);
 
-  const selectAiAssistantHandler = useCallback((aiAssistant?: AiAssistantHasId) => {
-    setSelectedAiAssistant(aiAssistant);
-  }, []);
+  const initialView = useMemo(() => {
+    if (isEditorAssistant) {
+      return generateInitialViewForEditorAssistant(submit);
+    }
+
+    return initialViewForKnowledgeAssistant;
+  }, [generateInitialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant, submit]);
+
+  const messageCard = useCallback(
+    (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
+      if (isEditorAssistant) {
+        if (messageId == null || messageLogs == null) {
+          return <></>;
+        }
+        return generateMessageCardForEditorAssistant(role, children, messageId, messageLogs, generatingAnswerMessage);
+      }
+
+      return generateMessageCardForKnowledgeAssistant(role, children);
+    }, [generateMessageCardForEditorAssistant, generateMessageCardForKnowledgeAssistant, isEditorAssistant],
+  );
 
   return (
     <>
@@ -368,15 +348,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
             ? (
               <div className="vstack gap-4 pb-2">
                 { messageLogs.map(message => (
-                  <MessageCard
-                    key={message.id}
-                    role={message.isUserMessage ? 'user' : 'assistant'}
-                    showActionButtons={isActionButtonShown(message.id)}
-                    onAccept={clickAcceptHandler}
-                    onDiscard={clickDiscardHandler}
-                  >
-                    {message.content}
-                  </MessageCard>
+                  <>
+                    {messageCard(message.isUserMessage ? 'user' : 'assistant', message.content, message.id, messageLogs, generatingAnswerMessage)}
+                  </>
                 )) }
                 { generatingAnswerMessage != null && (
                   <MessageCard role="assistant">{generatingAnswerMessage.content}</MessageCard>
@@ -391,28 +365,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
               </div>
             )
             : (
-              <>{isEditorAssistant
-                ? (
-                  <>
-                    <div className="py-2">
-                      <AiAssistantDropdown
-                        selectedAiAssistant={selectedAiAssistant}
-                        onSelect={selectAiAssistantHandler}
-                      />
-                    </div>
-                    <QuickMenuList
-                      onClick={clickQuickMenuHandler}
-                    />
-                  </>
-                )
-                : (
-                  <AiAssistantChatInitialView
-                    description={aiAssistantData?.description ?? ''}
-                    additionalInstruction={aiAssistantData?.additionalInstruction ?? ''}
-                    pagePathPatterns={aiAssistantData?.pagePathPatterns ?? []}
-                  />
-                )}
-              </>
+              <>{ initialView }</>
             )
           }
 
@@ -515,7 +468,6 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarScrollerRef = useRef<HTMLDivElement>(null);
 
-  const { data: editorMode } = useEditorMode();
   const { data: aiAssistantSidebarData, close: closeAiAssistantSidebar } = useAiAssistantSidebar();
   const { mutate: mutateIsEnableUnifiedMergeView } = useIsEnableUnifiedMergeView();
 
@@ -524,24 +476,8 @@ export const AiAssistantSidebar: FC = memo((): JSX.Element => {
   const isOpened = aiAssistantSidebarData?.isOpened;
   const isEditorAssistant = aiAssistantSidebarData?.isEditorAssistant ?? false;
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (isOpened && sidebarRef.current && !sidebarRef.current.contains(event.target as Node) && !isEditorAssistant) {
-        closeAiAssistantSidebar();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [closeAiAssistantSidebar, isEditorAssistant, isOpened]);
-
-  useEffect(() => {
-    if (isEditorAssistant && editorMode !== EditorMode.Editor) {
-      closeAiAssistantSidebar();
-    }
-  }, [closeAiAssistantSidebar, editorMode, isEditorAssistant]);
+  useAiAssistantSidebarCloseEffectForEditorAssistant();
+  useAiAssistantSidebarCloseEffectForKnowledgeAssistant(sidebarRef);
 
   useEffect(() => {
     if (!aiAssistantSidebarData?.isOpened) {
