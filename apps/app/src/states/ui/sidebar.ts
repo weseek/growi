@@ -1,24 +1,23 @@
 import { useCallback, useEffect } from 'react';
 
-
-import { isClient } from '@growi/core/dist/utils';
-import { Breakpoint } from '@growi/ui/dist/interfaces';
-import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import { atom, useAtom } from 'jotai';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarMode } from '~/interfaces/ui';
 import { EditorMode } from '~/stores-universal/ui';
 
+import { isDeviceLargerThanXlAtom } from './device';
+import { editorModeAtom } from './editor';
 
-const isDrawerOpenedAtom = atom<boolean>(false);
+
+const isDrawerOpenedAtom = atom(false);
 
 export const useDrawerOpened = () => {
   return useAtom(isDrawerOpenedAtom);
 };
 
 // Avoid local storage to prevent conflicts with DB settings
-const preferCollapsedModeAtom = atom<boolean>(false);
+const preferCollapsedModeAtom = atom(false);
 
 // Custom hook for managing sidebar state
 export const usePreferCollapsedMode = () => {
@@ -34,7 +33,7 @@ export const usePreferCollapsedMode = () => {
 };
 
 // Initialize state from server-side props only once per session
-const preferCollapsedModeInitializedAtom = atom<boolean>(false);
+const preferCollapsedModeInitializedAtom = atom(false);
 
 export const usePreferCollapsedModeInitializer = (initialData: boolean): void => {
   const [isInitialized, setIsInitialized] = useAtom(preferCollapsedModeInitializedAtom);
@@ -46,42 +45,6 @@ export const usePreferCollapsedModeInitializer = (initialData: boolean): void =>
       setIsInitialized(true);
     }
   }, [isInitialized, setPreferCollapsedMode, setIsInitialized, initialData]);
-};
-
-
-// Device state atoms
-const isDeviceLargerThanXlAtom = atom<boolean>(false);
-
-export const useDeviceLargerThanXl = () => {
-  const [isLargerThanXl, setIsLargerThanXl] = useAtom(isDeviceLargerThanXlAtom);
-
-  useEffect(() => {
-    if (isClient()) {
-      const xlOrAboveHandler = function(this: MediaQueryList): void {
-        // lg -> xl: matches will be true
-        // xl -> lg: matches will be false
-        setIsLargerThanXl(this.matches);
-      };
-      const mql = addBreakpointListener(Breakpoint.XL, xlOrAboveHandler);
-
-      // initialize
-      setIsLargerThanXl(mql.matches);
-
-      return () => {
-        cleanupBreakpointListener(mql, xlOrAboveHandler);
-      };
-    }
-    return undefined;
-  }, [setIsLargerThanXl]);
-
-  return [isLargerThanXl, setIsLargerThanXl] as const;
-};
-
-
-const editorModeAtom = atom<EditorMode>(EditorMode.View);
-
-export const useEditorModeState = () => {
-  return useAtom(editorModeAtom);
 };
 
 

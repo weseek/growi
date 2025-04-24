@@ -14,7 +14,7 @@ import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import { detectLocaleFromBrowserAcceptLanguage } from '~/server/util/locale-utils';
-import { usePreferCollapsedModeInitializer } from '~/states/ui';
+import { usePreferCollapsedModeInitializer } from '~/states/ui/sidebar';
 import { useCurrentProductNavWidth, useCurrentSidebarContents } from '~/stores/ui';
 import { getGrowiVersion } from '~/utils/growi-version';
 

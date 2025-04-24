@@ -16,12 +16,12 @@ import {
   useSidebarScrollerRef,
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
+import { useDeviceLargerThanXl } from '~/states/ui/device';
 import {
   useDrawerOpened,
   usePreferCollapsedMode,
   useSidebarMode,
-  useDeviceLargerThanXl,
-} from '~/states/ui';
+} from '~/states/ui/sidebar';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
 

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useIsAiEnabled } from '~/stores-universal/context';
-import { useSidebarMode } from '~/states/ui';
+import { useSidebarMode } from '~/states/ui/sidebar';
 
 import { PrimaryItem } from './PrimaryItem';
 

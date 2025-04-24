@@ -5,7 +5,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { updateUserUISettings } from '~/client/services/user-ui-settings';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { usePreferCollapsedMode, useSidebarMode } from '~/states/ui';
+import { usePreferCollapsedMode, useSidebarMode } from '~/states/ui/sidebar';
 import { useCollapsedContentsOpened } from '~/stores/ui';
 
 import styles from './UISettings.module.scss';

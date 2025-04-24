@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { useDrawerOpened } from '~/states/ui';
+import { useDrawerOpened } from '~/states/ui/sidebar';
 
 import styles from './EditorNavbarBottom.module.scss';
 

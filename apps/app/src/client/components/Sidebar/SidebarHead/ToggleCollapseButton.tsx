@@ -4,7 +4,7 @@ import {
 
 import {
   useDrawerOpened, usePreferCollapsedMode, useSidebarMode,
-} from '~/states/ui';
+} from '~/states/ui/sidebar';
 import {
   useCollapsedContentsOpened,
 } from '~/stores/ui';
