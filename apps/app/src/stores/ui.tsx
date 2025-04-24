@@ -18,7 +18,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 import type { IPageSelectedGrant } from '~/interfaces/page';
-import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
+import { SidebarContentsType } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
   useIsEditable, useIsReadOnlyUser,

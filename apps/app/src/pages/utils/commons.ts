@@ -14,7 +14,7 @@ import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import { detectLocaleFromBrowserAcceptLanguage } from '~/server/util/locale-utils';
-import { usePreferCollapsedMode } from '~/states/ui';
+import { usePreferCollapsedModeInitializer } from '~/states/ui';
 import { useCurrentProductNavWidth, useCurrentSidebarContents } from '~/stores/ui';
 import { getGrowiVersion } from '~/utils/growi-version';
 
@@ -183,10 +183,8 @@ export const generateCustomTitleForPage = (props: CommonProps, pagePath: string)
 };
 
 export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettings?: IUserUISettings): void => {
-  // UserUISettings
-  const [, setPreferCollapsedMode] = usePreferCollapsedMode();
-  const value = userUISettings?.preferCollapsedModeByUser ?? sidebarConfig.isSidebarCollapsedMode;
-  setPreferCollapsedMode(userUISettings?.preferCollapsedModeByUser ?? sidebarConfig.isSidebarCollapsedMode);
+  // Initialize with user preference from DB if available, otherwise use system default
+  usePreferCollapsedModeInitializer(userUISettings?.preferCollapsedModeByUser ?? sidebarConfig.isSidebarCollapsedMode);
 
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
   useCurrentProductNavWidth(userUISettings?.currentProductNavWidth);
