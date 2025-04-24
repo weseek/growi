@@ -2,7 +2,8 @@ import React, { memo, useMemo } from 'react';
 
 import { AiAssistant } from '~/features/openai/client/components/AiAssistant/Sidebar/AiAssistant';
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
+import { useSidebarMode } from '~/states/ui';
+import { useCollapsedContentsOpened, useCurrentSidebarContents } from '~/stores/ui';
 
 
 import { Bookmarks } from './Bookmarks';

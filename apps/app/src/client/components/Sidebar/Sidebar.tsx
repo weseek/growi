@@ -13,12 +13,15 @@ import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import {
   useCollapsedContentsOpened,
   useCurrentProductNavWidth,
-  useSidebarMode,
   useSidebarScrollerRef,
   useIsDeviceLargerThanMd,
-  useIsDeviceLargerThanXl,
 } from '~/stores/ui';
-import { useDrawerOpened, usePreferCollapsedMode } from '~/states/ui';
+import {
+  useDrawerOpened,
+  usePreferCollapsedMode,
+  useSidebarMode,
+  useDeviceLargerThanXl,
+} from '~/states/ui';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
 
@@ -225,14 +228,14 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 export const Sidebar = (): JSX.Element => {
 
   const {
-    data: sidebarMode,
+    sidebarMode,
     isDrawerMode, isCollapsedMode, isDockMode,
   } = useSidebarMode();
 
   const { data: isSearchPage } = useIsSearchPage();
   const { data: editorMode } = useEditorMode();
   const { data: isMdSize } = useIsDeviceLargerThanMd();
-  const { data: isXlSize } = useIsDeviceLargerThanXl();
+  const [isXlSize] = useDeviceLargerThanXl();
 
   const isEditorMode = editorMode === EditorMode.Editor;
   const shouldHideSiteName = isEditorMode && isXlSize;

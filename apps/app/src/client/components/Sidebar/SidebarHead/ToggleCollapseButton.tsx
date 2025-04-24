@@ -2,9 +2,11 @@ import {
   memo, useCallback, useMemo, type JSX,
 } from 'react';
 
-import { useDrawerOpened, usePreferCollapsedMode } from '~/states/ui';
 import {
-  useCollapsedContentsOpened, useSidebarMode,
+  useDrawerOpened, usePreferCollapsedMode, useSidebarMode,
+} from '~/states/ui';
+import {
+  useCollapsedContentsOpened,
 } from '~/stores/ui';
 
 

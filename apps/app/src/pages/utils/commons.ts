@@ -185,6 +185,7 @@ export const generateCustomTitleForPage = (props: CommonProps, pagePath: string)
 export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettings?: IUserUISettings): void => {
   // UserUISettings
   const [, setPreferCollapsedMode] = usePreferCollapsedMode();
+  const value = userUISettings?.preferCollapsedModeByUser ?? sidebarConfig.isSidebarCollapsedMode;
   setPreferCollapsedMode(userUISettings?.preferCollapsedModeByUser ?? sidebarConfig.isSidebarCollapsedMode);
 
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);

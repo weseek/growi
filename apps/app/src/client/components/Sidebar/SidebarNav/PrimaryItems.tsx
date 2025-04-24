@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useIsAiEnabled } from '~/stores-universal/context';
-import { useSidebarMode } from '~/stores/ui';
+import { useSidebarMode } from '~/states/ui';
 
 import { PrimaryItem } from './PrimaryItem';
 
@@ -22,7 +22,7 @@ type Props = {
 export const PrimaryItems = memo((props: Props) => {
   const { onItemHover } = props;
 
-  const { data: sidebarMode } = useSidebarMode();
+  const { sidebarMode } = useSidebarMode();
   const { data: isAiEnabled } = useIsAiEnabled();
 
   if (sidebarMode == null) {
