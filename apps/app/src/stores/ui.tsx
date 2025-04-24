@@ -20,6 +20,7 @@ import { scheduleToPut } from '~/client/services/user-ui-settings';
 import type { IPageSelectedGrant } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
+import { usePreferCollapsedMode } from '~/states/ui';
 import {
   useIsEditable, useIsReadOnlyUser,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
@@ -213,25 +214,8 @@ export const useCurrentProductNavWidth = (initialData?: number): SWRResponseWith
   return withUtils(swrResponse, { mutateAndSave });
 };
 
-export const usePreferCollapsedMode = (initialData?: boolean): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<boolean>, boolean> => {
-  const swrResponse = useSWRStatic('isPreferCollapsedMode', initialData, { fallbackData: false });
-
-  const { mutate } = swrResponse;
-
-  const mutateAndSave: MutateAndSaveUserUISettings<boolean> = useCallback((data, opts?) => {
-    scheduleToPut({ preferCollapsedModeByUser: data });
-    return mutate(data, opts);
-  }, [mutate]);
-
-  return withUtils(swrResponse, { mutateAndSave });
-};
-
 export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<boolean> => {
   return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
-};
-
-export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
-  return useSWRStatic('isDrawerOpened', isOpened, { fallbackData: false });
 };
 
 type DetectSidebarModeUtils = {
@@ -243,20 +227,20 @@ type DetectSidebarModeUtils = {
 export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, SidebarMode> => {
   const { data: isDeviceLargerThanXl } = useIsDeviceLargerThanXl();
   const { data: editorMode } = useEditorMode();
-  const { data: isCollapsedModeUnderDockMode } = usePreferCollapsedMode();
+  const [isCollapsedModeUnderDockMode] = usePreferCollapsedMode();
 
   const condition = isDeviceLargerThanXl != null && editorMode != null && isCollapsedModeUnderDockMode != null;
 
   const isEditorMode = editorMode === EditorMode.Editor;
 
   const fetcher = useCallback((
-      [, isDeviceLargerThanXl, isEditorMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined, boolean|undefined],
-  ) => {
+      [, isDeviceLargerThanXl, isEditorMode]: [Key, boolean | undefined, boolean | undefined, boolean|undefined],
+  ): SidebarMode => {
     if (!isDeviceLargerThanXl) {
       return SidebarMode.DRAWER;
     }
-    return isEditorMode || isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
-  }, []);
+    return (isEditorMode || isCollapsedModeUnderDockMode) ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
+  }, [isCollapsedModeUnderDockMode]);
 
   const swrResponse = useSWRImmutable(
     condition ? ['sidebarMode', isDeviceLargerThanXl, isEditorMode, isCollapsedModeUnderDockMode] : null,

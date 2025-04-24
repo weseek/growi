@@ -5,7 +5,8 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 import { updateUserUISettings } from '~/client/services/user-ui-settings';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { useCollapsedContentsOpened, usePreferCollapsedMode, useSidebarMode } from '~/stores/ui';
+import { usePreferCollapsedMode } from '~/states/ui';
+import { useCollapsedContentsOpened, useSidebarMode } from '~/stores/ui';
 
 import styles from './UISettings.module.scss';
 
@@ -28,13 +29,13 @@ export const UISettings = (): JSX.Element => {
   const {
     isDockMode, isCollapsedMode,
   } = useSidebarMode();
-  const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
+  const [, setPreferCollapsedMode] = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const toggleCollapsed = useCallback(() => {
-    mutatePreferCollapsedMode(!isCollapsedMode());
+    setPreferCollapsedMode(!isCollapsedMode());
     mutateCollapsedContentsOpened(false);
-  }, [mutatePreferCollapsedMode, isCollapsedMode, mutateCollapsedContentsOpened]);
+  }, [setPreferCollapsedMode, isCollapsedMode, mutateCollapsedContentsOpened]);
 
   const updateButtonHandler = useCallback(async() => {
     try {

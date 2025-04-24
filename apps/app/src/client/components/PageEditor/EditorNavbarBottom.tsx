@@ -2,7 +2,7 @@ import type { JSX } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { useDrawerOpened } from '~/stores/ui';
+import { useDrawerOpened } from '~/states/ui';
 
 import styles from './EditorNavbarBottom.module.scss';
 
@@ -14,7 +14,7 @@ const OptionsSelector = dynamic(() => import('~/client/components/PageEditor/Opt
 
 const EditorNavbarBottom = (): JSX.Element => {
 
-  const { mutate: mutateDrawerOpened } = useDrawerOpened();
+  const [, setIsDrawerOpened] = useDrawerOpened();
 
   return (
     <div className="border-top" data-testid="grw-editor-navbar-bottom">
@@ -22,7 +22,7 @@ const EditorNavbarBottom = (): JSX.Element => {
         <a
           role="button"
           className="nav-link btn-lg p-2 d-md-none me-3 opacity-50"
-          onClick={() => mutateDrawerOpened(true)}
+          onClick={() => setIsDrawerOpened(true)}
         >
           <span className="material-symbols-outlined fs-2">reorder</span>
         </a>

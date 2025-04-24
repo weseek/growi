@@ -11,15 +11,14 @@ import { SidebarMode } from '~/interfaces/ui';
 import { useIsSearchPage } from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import {
-  useDrawerOpened,
   useCollapsedContentsOpened,
   useCurrentProductNavWidth,
-  usePreferCollapsedMode,
   useSidebarMode,
   useSidebarScrollerRef,
   useIsDeviceLargerThanMd,
   useIsDeviceLargerThanXl,
 } from '~/stores/ui';
+import { useDrawerOpened, usePreferCollapsedMode } from '~/states/ui';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
 
@@ -70,9 +69,9 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   const { children } = props;
 
   const { isDrawerMode, isCollapsedMode, isDockMode } = useSidebarMode();
-  const { mutate: mutateDrawerOpened } = useDrawerOpened();
+  const [, setIsDrawerOpened] = useDrawerOpened();
   const { data: currentProductNavWidth, mutateAndSave: mutateProductNavWidth } = useCurrentProductNavWidth();
-  const { mutateAndSave: mutatePreferCollapsedMode } = usePreferCollapsedMode();
+  const [, setPreferCollapsedMode] = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const [isClient, setClient] = useState(false);
@@ -89,9 +88,9 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   }, [mutateProductNavWidth]);
 
   const collapsedByResizableAreaHandler = useCallback(() => {
-    mutatePreferCollapsedMode(true);
+    setPreferCollapsedMode(true);
     mutateCollapsedContentsOpened(false);
-  }, [mutateCollapsedContentsOpened, mutatePreferCollapsedMode]);
+  }, [mutateCollapsedContentsOpened, setPreferCollapsedMode]);
 
   useIsomorphicLayoutEffect(() => {
     setClient(true);
@@ -100,8 +99,8 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   // open/close resizable container when drawer mode
   useEffect(() => {
     setResizableAreaWidth(getWidthByMode(isDrawerMode(), isCollapsedMode(), currentProductNavWidth));
-    mutateDrawerOpened(false);
-  }, [currentProductNavWidth, isCollapsedMode, isDrawerMode, mutateDrawerOpened]);
+    setIsDrawerOpened(false);
+  }, [currentProductNavWidth, isCollapsedMode, isDrawerMode, setIsDrawerOpened]);
 
   return !isClient
     ? (
@@ -206,7 +205,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
   const { divProps, className, children } = props;
 
-  const { data: isDrawerOpened, mutate } = useDrawerOpened();
+  const [isDrawerOpened, setIsDrawerOpened] = useDrawerOpened();
 
   const openClass = `${isDrawerOpened ? 'open' : ''}`;
 
@@ -216,7 +215,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
         {children}
       </div>
       { isDrawerOpened && (
-        <div className="modal-backdrop fade show" onClick={() => mutate(false)} />
+        <div className="modal-backdrop fade show" onClick={() => setIsDrawerOpened(false)} />
       ) }
     </>
   );

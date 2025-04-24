@@ -2,17 +2,17 @@ import React, { useCallback, type JSX } from 'react';
 
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { useSearchModal } from '~/features/search/client/stores/search';
+import { useDrawerOpened } from '~/states/ui';
 import { useIsSearchPage } from '~/stores-universal/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
-import { useDrawerOpened } from '~/stores/ui';
 
 import styles from './GrowiNavbarBottom.module.scss';
 
 
 export const GrowiNavbarBottom = (): JSX.Element => {
 
-  const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
+  const [isDrawerOpened, setIsDrawerOpened] = useDrawerOpened();
   const { open: openCreateModal } = usePageCreateModal();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
@@ -35,7 +35,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => mutateDrawerOpened(true)}
+              onClick={() => setIsDrawerOpened(true)}
             >
               <span className="material-symbols-outlined fs-2">reorder</span>
             </a>
