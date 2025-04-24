@@ -445,9 +445,6 @@ importers:
       jotai:
         specifier: ^2.12.3
         version: 2.12.3(@types/react@18.3.3)(react@18.2.0)
-      jotai-devtools:
-        specifier: ^0.11.0
-        version: 0.11.0(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(redux@4.2.1)
       js-tiktoken:
         specifier: ^1.0.15
         version: 1.0.15
@@ -911,6 +908,9 @@ importers:
       jest-localstorage-mock:
         specifier: ^2.4.14
         version: 2.4.26
+      jotai-devtools:
+        specifier: ^0.11.0
+        version: 0.11.0(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(redux@4.2.1)
       load-css-file:
         specifier: ^1.0.0
         version: 1.0.0
@@ -10020,6 +10020,7 @@ packages:
     resolution: {integrity: sha512-Quz3MvAwHxVYNXsOByL7xI5EB2WYOeFswqaHIA3qOK3isRWTxiplBEocmmru6XmxDB2L7jDNYtYA4FyimoAFEw==}
     engines: {node: '>=8.17.0'}
     hasBin: true
+    bundledDependencies: []
 
   jsonfile@3.0.1:
     resolution: {integrity: sha512-oBko6ZHlubVB5mRFkur5vgYR1UyqX+S6Y/oCfLhqNdcc2fYFlDpIoNc7AfKS1KOGcnNAkvsr0grLck9ANM815w==}
