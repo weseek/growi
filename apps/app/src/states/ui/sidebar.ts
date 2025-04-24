@@ -8,28 +8,29 @@ import { EditorMode } from '~/stores-universal/ui';
 
 import { isDeviceLargerThanXlAtom } from './device';
 import { editorModeAtom } from './editor';
+import type { UseAtom } from './helper';
+import { resolveSetStateAction } from './helper';
 
 
 const isDrawerOpenedAtom = atom(false);
 
-export const useDrawerOpened = () => {
+export const useDrawerOpened = (): UseAtom<typeof isDrawerOpenedAtom> => {
   return useAtom(isDrawerOpenedAtom);
 };
 
 // Avoid local storage to prevent conflicts with DB settings
 const preferCollapsedModeAtom = atom(false);
 
-// Custom hook for managing sidebar state
-export const usePreferCollapsedMode = () => {
+export const usePreferCollapsedMode = (): UseAtom<typeof preferCollapsedModeAtom> => {
   const [value, setValue] = useAtom(preferCollapsedModeAtom);
-
-  const setValueWithPersist = useCallback((newValue: boolean) => {
-    setValue(newValue);
-    // Save to server
-    scheduleToPut({ preferCollapsedModeByUser: newValue });
-  }, [setValue]);
-
-  return [value, setValueWithPersist] as const;
+  return [
+    value,
+    (update) => {
+      const nextValue = resolveSetStateAction(update, value);
+      setValue(nextValue);
+      scheduleToPut({ preferCollapsedModeByUser: nextValue });
+    },
+  ] as const;
 };
 
 // Initialize state from server-side props only once per session
