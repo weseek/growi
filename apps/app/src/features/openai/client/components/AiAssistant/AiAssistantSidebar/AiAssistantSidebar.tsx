@@ -3,9 +3,9 @@ import {
   type FC, memo, useRef, useEffect, useState, useCallback, useMemo,
 } from 'react';
 
-import { useForm, Controller } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Collapse, UncontrolledTooltip } from 'reactstrap';
+import { Collapse } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
 import { toastError } from '~/client/util/toastr';
@@ -19,11 +19,13 @@ import type { IThreadRelationHasId } from '../../../../interfaces/thread-relatio
 import {
   useEditorAssistant,
   useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForEditorAssistant,
+  type FormData as FormDataForEditorAssistant,
 } from '../../../services/editor-assistant';
 import {
   useKnowledgeAssistant,
   useFetchAndSetMessageDataEffect,
   useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForKnowledgeAssistant,
+  type FormData as FormDataForKnowledgeAssistant,
 } from '../../../services/knowledge-assistant';
 import { useAiAssistantSidebar } from '../../../stores/ai-assistant';
 
@@ -36,10 +38,7 @@ const logger = loggerFactory('growi:openai:client:components:AiAssistantSidebar'
 
 const moduleClass = styles['grw-ai-assistant-sidebar'] ?? '';
 
-export type FormData = {
-  input: string;
-  summaryMode?: boolean;
-};
+type FormData = FormDataForEditorAssistant | FormDataForKnowledgeAssistant;
 
 type AiAssistantSidebarSubstanceProps = {
   isEditorAssistant: boolean;
@@ -71,10 +70,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     createThread: createThreadForKnowledgeAssistant,
     postMessage: postMessageForKnowledgeAssistant,
     processMessage: processMessageForKnowledgeAssistant,
+    form: formForForKnowledgeAssistant,
+    resetForm: resetFormForKnowledgeAssistant,
 
     // Views
     initialView: initialViewForKnowledgeAssistant,
     generateMessageCard: generateMessageCardForKnowledgeAssistant,
+    generateSummaryModeSwitch: generateSummaryModeSwitchForKnowledgeAssistant,
     headerIcon: headerIconForKnowledgeAssistant,
     headerText: headerTextForKnowledgeAssistant,
     placeHolder: placeHolderForKnowledgeAssistant,
@@ -84,6 +86,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     createThread: createThreadForEditorAssistant,
     postMessage: postMessageForEditorAssistant,
     processMessage: processMessageForEditorAssistant,
+    form: formForForEditorAssistant,
+    resetForm: resetFormEditorAssistant,
 
     // Views
     generateInitialView: generateInitialViewForEditorAssistant,
@@ -93,17 +97,20 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     placeHolder: placeHolderForEditorAssistant,
   } = useEditorAssistant();
 
-  const form = useForm<FormData>({
-    defaultValues: {
-      input: '',
-      summaryMode: true,
-    },
-  });
+  const form = isEditorAssistant ? formForForEditorAssistant : formForForKnowledgeAssistant;
 
   // Effects
   useFetchAndSetMessageDataEffect(setMessageLogs, threadData?.threadId);
 
   // Functions
+  const resetForm = useCallback(() => {
+    if (isEditorAssistant) {
+      resetFormEditorAssistant();
+    }
+
+    resetFormForKnowledgeAssistant();
+  }, [isEditorAssistant, resetFormEditorAssistant, resetFormForKnowledgeAssistant]);
+
   const createThread = useCallback(async(initialUserMessage: string) => {
     if (isEditorAssistant) {
       const thread = await createThreadForEditorAssistant();
@@ -117,13 +124,13 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     return thread;
   }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant]);
 
-  const postMessage = useCallback(async(currentThreadId: string, input: string, summaryMode?: boolean) => {
+  const postMessage = useCallback(async(currentThreadId: string, input: string) => {
     if (isEditorAssistant) {
       const response = await postMessageForEditorAssistant(currentThreadId, input);
       return response;
     }
     if (aiAssistantData?._id != null) {
-      const response = postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId, input, summaryMode);
+      const response = postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId, input);
       return response;
     }
   }, [aiAssistantData?._id, isEditorAssistant, postMessageForEditorAssistant, postMessageForKnowledgeAssistant]);
@@ -146,8 +153,8 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     const newUserMessage = { id: logLength.toString(), content: data.input, isUserMessage: true };
     setMessageLogs(msgs => [...msgs, newUserMessage]);
 
-    // reset form
-    form.reset({ input: '', summaryMode: data.summaryMode });
+    resetForm();
+
     setErrorMessage(undefined);
 
     // add an empty assistant message
@@ -178,7 +185,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
         return;
       }
 
-      const response = await postMessage(currentThreadId_, data.input, data.summaryMode);
+      const response = await postMessage(currentThreadId_, data.input);
       if (response == null) {
         return;
       }
@@ -275,7 +282,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     }
 
   // eslint-disable-next-line max-len
-  }, [isGenerating, messageLogs, form, currentThreadId, createThread, t, postMessage, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+  }, [isGenerating, messageLogs, resetForm, currentThreadId, createThread, t, postMessage, form, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {
@@ -312,6 +319,14 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
     return initialViewForKnowledgeAssistant;
   }, [generateInitialViewForEditorAssistant, initialViewForKnowledgeAssistant, isEditorAssistant, submit]);
+
+  const additionalInputControl = useMemo(() => {
+    if (isEditorAssistant) {
+      return <></>;
+    }
+
+    return generateSummaryModeSwitchForKnowledgeAssistant(isGenerating);
+  }, [generateSummaryModeSwitchForKnowledgeAssistant, isEditorAssistant, isGenerating]);
 
   const messageCard = useCallback(
     (role: MessageCardRole, children: string, messageId?: string, messageLogs?: MessageLog[], generatingAnswerMessage?: MessageLog) => {
@@ -396,33 +411,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
                   <span className="material-symbols-outlined">send</span>
                 </button>
               </div>
-              <div className="form-check form-switch">
-                <input
-                  id="swSummaryMode"
-                  type="checkbox"
-                  role="switch"
-                  className="form-check-input"
-                  {...form.register('summaryMode')}
-                  disabled={form.formState.isSubmitting || isGenerating}
-                />
-                <label className="form-check-label" htmlFor="swSummaryMode">
-                  {t('sidebar_ai_assistant.summary_mode_label')}
-                </label>
-
-                {/* Help */}
-                <a
-                  id="tooltipForHelpOfSummaryMode"
-                  role="button"
-                  className="ms-1"
-                >
-                  <span className="material-symbols-outlined fs-6" style={{ lineHeight: 'unset' }}>help</span>
-                </a>
-                <UncontrolledTooltip
-                  target="tooltipForHelpOfSummaryMode"
-                >
-                  {t('sidebar_ai_assistant.summary_mode_help')}
-                </UncontrolledTooltip>
-              </div>
+              { additionalInputControl }
             </form>
 
             {form.formState.errors.input != null && (

@@ -8,6 +8,7 @@ import {
 } from '@growi/editor/dist/client/services/unified-merge-view';
 import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useSecondaryYdocs } from '@growi/editor/dist/client/stores/use-secondary-ydocs';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { type Text as YText } from 'yjs';
 
@@ -34,7 +35,7 @@ import type { MessageLog } from '../../interfaces/message';
 import type { IThreadRelationHasId } from '../../interfaces/thread-relation';
 import { ThreadType } from '../../interfaces/thread-relation';
 import { AiAssistantDropdown } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantDropdown';
-import { type FormData } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantSidebar';
+// import { type FormData } from '../components/AiAssistant/AiAssistantSidebar/AiAssistantSidebar';
 import { MessageCard, type MessageCardRole } from '../components/AiAssistant/AiAssistantSidebar/MessageCard';
 import { QuickMenuList } from '../components/AiAssistant/AiAssistantSidebar/QuickMenuList';
 import { useAiAssistantSidebar } from '../stores/ai-assistant';
@@ -59,6 +60,10 @@ interface GenerateInitialView {
 interface GenerateMessageCard {
   (role: MessageCardRole, children: string, messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
 }
+export interface FormData {
+  input: string
+  markdown?: string
+}
 
 type DetectedDiff = Array<{
   data: SseDetectedDiff,
@@ -70,6 +75,8 @@ type UseEditorAssistant = () => {
   createThread: CreateThread,
   postMessage: PostMessage,
   processMessage: ProcessMessage,
+  form: UseFormReturn<FormData>
+  resetForm: () => void
 
   // Views
   generateInitialView: GenerateInitialView,
@@ -150,7 +157,17 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   const yDocs = useSecondaryYdocs(isEnableUnifiedMergeView ?? false, { pageId: currentPageId ?? undefined, useSecondary: isEnableUnifiedMergeView ?? false });
   const { data: aiAssistantSidebarData } = useAiAssistantSidebar();
 
+  const form = useForm<FormData>({
+    defaultValues: {
+      input: '',
+    },
+  });
+
   // Functions
+  const resetForm = useCallback(() => {
+    form.reset({ input: '', markdown: undefined });
+  }, [form]);
+
   const createThread: CreateThread = useCallback(async() => {
     const response = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
       type: ThreadType.EDITOR,
@@ -365,6 +382,8 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     createThread,
     postMessage,
     processMessage,
+    form,
+    resetForm,
 
     // Views
     generateInitialView,

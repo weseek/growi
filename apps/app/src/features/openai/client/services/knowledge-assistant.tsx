@@ -3,6 +3,10 @@ import {
   useCallback, useMemo, useState, useEffect,
 } from 'react';
 
+import { useForm, type UseFormReturn } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
+
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { SseMessageSchema, type SseMessage } from '~/features/openai/interfaces/knowledge-assistant/sse-schemas';
 import { handleIfSuccessfullyParsed } from '~/features/openai/utils/handle-if-successfully-parsed';
@@ -21,7 +25,7 @@ interface CreateThread {
 }
 
 interface PostMessage {
-  (aiAssistantId: string, threadId: string, userMessage: string, summaryMode?: boolean): Promise<Response>;
+  (aiAssistantId: string, threadId: string, userMessage: string): Promise<Response>;
 }
 
 interface ProcessMessage {
@@ -34,14 +38,26 @@ interface GenerateMessageCard {
   (role: MessageCardRole, children: string): JSX.Element;
 }
 
+interface GenerateSummaryModeSwitch {
+  (isGenerating: boolean): JSX.Element
+}
+
+export interface FormData {
+  input: string
+  summaryMode?: boolean
+}
+
 type UseKnowledgeAssistant = () => {
   createThread: CreateThread
   postMessage: PostMessage
   processMessage: ProcessMessage
+  form: UseFormReturn<FormData>
+  resetForm: () => void
 
   // Views
   initialView: JSX.Element
-  generateMessageCard: GenerateMessageCard,
+  generateMessageCard: GenerateMessageCard
+  generateSummaryModeSwitch: GenerateSummaryModeSwitch
   headerIcon: JSX.Element
   headerText: JSX.Element
   placeHolder: string
@@ -53,11 +69,24 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
   const { aiAssistantData } = aiAssistantSidebarData ?? {};
   const { threadData } = aiAssistantSidebarData ?? {};
   const { trigger: mutateThreadData } = useSWRMUTxThreads(aiAssistantData?._id);
+  const { t } = useTranslation();
+
+  const form = useForm<FormData>({
+    defaultValues: {
+      input: '',
+      summaryMode: true,
+    },
+  });
 
   // States
   const [currentThreadTitle, setCurrentThreadId] = useState(threadData?.title);
 
   // Functions
+  const resetForm = useCallback(() => {
+    const summaryMode = form.getValues('summaryMode');
+    form.reset({ input: '', summaryMode });
+  }, [form]);
+
   const createThread: CreateThread = useCallback(async(aiAssistantId, initialUserMessage) => {
     const response = await apiv3Post<IThreadRelationHasId>('/openai/thread', {
       type: ThreadType.KNOWLEDGE,
@@ -74,7 +103,7 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     return thread;
   }, [mutateThreadData]);
 
-  const postMessage: PostMessage = useCallback(async(aiAssistantId, threadId, userMessage, summaryMode) => {
+  const postMessage: PostMessage = useCallback(async(aiAssistantId, threadId, userMessage) => {
     const response = await fetch('/_api/v3/openai/message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -82,11 +111,11 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
         aiAssistantId,
         threadId,
         userMessage,
-        summaryMode,
+        summaryMode: form.getValues('summaryMode'),
       }),
     });
     return response;
-  }, []);
+  }, [form]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
@@ -129,14 +158,49 @@ export const useKnowledgeAssistant: UseKnowledgeAssistant = () => {
     );
   }, []);
 
+  const generateSummaryModeSwitch: GenerateSummaryModeSwitch = useCallback((isGenerating) => {
+    return (
+      <div className="form-check form-switch">
+        <input
+          id="swSummaryMode"
+          type="checkbox"
+          role="switch"
+          className="form-check-input"
+          {...form.register('summaryMode')}
+          disabled={form.formState.isSubmitting || isGenerating}
+        />
+        <label className="form-check-label" htmlFor="swSummaryMode">
+          {t('sidebar_ai_assistant.summary_mode_label')}
+        </label>
+
+        {/* Help */}
+        <a
+          id="tooltipForHelpOfSummaryMode"
+          role="button"
+          className="ms-1"
+        >
+          <span className="material-symbols-outlined fs-6" style={{ lineHeight: 'unset' }}>help</span>
+        </a>
+        <UncontrolledTooltip
+          target="tooltipForHelpOfSummaryMode"
+        >
+          {t('sidebar_ai_assistant.summary_mode_help')}
+        </UncontrolledTooltip>
+      </div>
+    );
+  }, [form, t]);
+
   return {
     createThread,
     postMessage,
     processMessage,
+    form,
+    resetForm,
 
     // Views
     initialView,
     generateMessageCard,
+    generateSummaryModeSwitch,
     headerIcon,
     headerText,
     placeHolder,
