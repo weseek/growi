@@ -5,11 +5,13 @@ import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import { atom, useAtom } from 'jotai';
 
+import type { UseAtom } from './helper';
+
 
 // Device state atoms
 export const isDeviceLargerThanXlAtom = atom(false);
 
-export const useDeviceLargerThanXl = () => {
+export const useDeviceLargerThanXl = (): UseAtom<typeof isDeviceLargerThanXlAtom> => {
   const [isLargerThanXl, setIsLargerThanXl] = useAtom(isDeviceLargerThanXlAtom);
 
   useEffect(() => {
