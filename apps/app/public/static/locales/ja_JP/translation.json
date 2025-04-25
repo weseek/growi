@@ -155,6 +155,7 @@
   "In-App Notification": "通知",
   "AI Assistant": "AI アシスタント",
   "Knowledge Assistant": "ナレッジアシスタント (ベータ版)",
+  "Editor Assistant": "エディターアシスタント (ベータ版)",
   "original_path": "元のパス",
   "new_path": "新しいパス",
   "duplicated_path": "重複したパス",
@@ -376,7 +377,8 @@
       "text": "テキストのみ",
       "file": "ファイルのみ"
     },
-    "editor_config": "エディタ設定",
+    "editor_config": "エディター設定",
+    "editor_assistant": "エディターアシスタント",
     "Show active line": "アクティブ行をハイライト",
     "auto_format_table": "表の自動整形",
     "overwrite_scopes": "{{operation}}と同時に全ての配下ページのスコープを上書き",
@@ -526,10 +528,11 @@
     "latest_revision": "最新の本文",
     "selected_editable_revision": "保存するページ本文(編集可能)"
   },
-  "sidebar_aichat": {
+  "sidebar_ai_assistant": {
     "instruction_label": "アシスタントへの指示",
     "reference_pages_label": "参照するページ",
-    "placeholder": "ききたいことを入力してください",
+    "knowledge_assistant_placeholder": "ききたいことを入力してください",
+    "editor_assistant_placeholder": "お手伝いできることはありますか？",
     "summary_mode_label": "要約モード",
     "summary_mode_help": "2～3文以内の簡潔な回答",
     "caution_against_hallucination": "情報が正しいか出典を確認しましょう",
@@ -538,7 +541,21 @@
     "budget_exceeded": "OpenAI の API の利用上限に達しました。ナレッジアシスタントを再度利用するには OpenAI の請求ページからクレジットを追加してください。",
     "budget_exceeded_for_growi_cloud": "OpenAI の API の利用上限に達しました。ナレッジアシスタントを再度利用するには Hosted の場合は GROWI.cloud の管理画面から Owned の場合は OpenAI の請求ページからクレジットを追加してください。",
     "error_message": "エラーが発生しました",
-    "show_error_detail": "詳細を表示"
+    "show_error_detail": "詳細を表示",
+    "discard": "破棄",
+    "accept": "採用",
+    "use_assistant": "アシスタントを使用する",
+    "remove_assistant": "選択されているアシスタントの解除",
+    "preset_menu": {
+      "summarize": {
+        "title": "この記事の要約をつくる",
+        "prompt": "マークダウンの内容を要約してください"
+      },
+      "correct": {
+        "title": "文章の誤りを修正する",
+        "prompt": "マークダウンの内の文章の誤りを修正してください"
+      }
+    }
   },
   "modal_ai_assistant": {
     "header": {

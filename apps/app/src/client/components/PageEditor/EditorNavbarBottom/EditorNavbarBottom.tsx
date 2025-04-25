@@ -1,19 +1,22 @@
 import type { JSX } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
 import { useDrawerOpened } from '~/stores/ui';
+
+import { EditorAssistantToggleButton } from './EditorAssistantToggleButton';
 
 import styles from './EditorNavbarBottom.module.scss';
 
 
 const moduleClass = styles['grw-editor-navbar-bottom'];
 
-const SavePageControls = dynamic(() => import('~/client/components/SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
-const OptionsSelector = dynamic(() => import('~/client/components/PageEditor/OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
+const SavePageControls = dynamic(() => import('./SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
+const OptionsSelector = dynamic(() => import('./OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
 
-const EditorNavbarBottom = (): JSX.Element => {
-
+export const EditorNavbarBottom = (): JSX.Element => {
+  const { t } = useTranslation();
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
 
   return (
@@ -26,8 +29,9 @@ const EditorNavbarBottom = (): JSX.Element => {
         >
           <span className="material-symbols-outlined fs-2">reorder</span>
         </a>
-        <form className="me-auto">
+        <form className="me-auto d-flex gap-2">
           <OptionsSelector />
+          <EditorAssistantToggleButton />
         </form>
         <form>
           <SavePageControls />
@@ -36,5 +40,3 @@ const EditorNavbarBottom = (): JSX.Element => {
     </div>
   );
 };
-
-export default EditorNavbarBottom;

@@ -154,6 +154,7 @@
   "In-App Notification": "Notifications",
   "AI Assistant": "AI Assistant",
   "Knowledge Assistant": "Knowledge Assistant (Beta)",
+  "Editor Assistant": "Editor Assistant (Beta)",
   "original_path": "Original path",
   "new_path": "New path",
   "duplicated_path": "Duplicated path",
@@ -344,6 +345,7 @@
       "file": "File only"
     },
     "editor_config": "Editor Config",
+    "editor_assistant": "Editor Assistant",
     "Show active line": "Show active line",
     "auto_format_table": "Auto format table",
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
@@ -493,10 +495,12 @@
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
-  "sidebar_aichat": {
+  "sidebar_ai_assistant": {
     "instruction_label": "Assistant instructions",
     "reference_pages_label": "Reference pages",
     "placeholder": "Ask me anything.",
+    "knowledge_assistant_placeholder": "Ask me anything.",
+    "editor_assistant_placeholder": "Can I help you with anything?",
     "summary_mode_label": "Summary mode",
     "summary_mode_help": "Concise answer within 2-3 sentences",
     "caution_against_hallucination": "Please verify the information and check the sources.",
@@ -505,7 +509,21 @@
     "budget_exceeded": "You have reached your usage limit for OpenAI's API. To use the Knowledge Assistant again, please add credits from the OpenAI billing page.",
     "budget_exceeded_for_growi_cloud": "You have reached your OpenAI API usage limit. To use the Knowledge Assistant again, please add credits from the GROWI.cloud admin page for Hosted users or from the OpenAI billing page for Owned users.",
     "error_message": "An error has occurred",
-    "show_error_detail": "Show error details"
+    "show_error_detail": "Show error details",
+    "discard": "Discard",
+    "accept": "Accept",
+    "use_assistant": "Use Assistant",
+    "remove_assistant": "Deselect the selected assistant",
+    "preset_menu": {
+      "summarize": {
+        "title": "Summarize this article",
+        "prompt": "Please summarize the markdown content"
+      },
+      "correct": {
+        "title": "Correct errors in the text",
+        "prompt": "Please correct the errors in the markdown text"
+      }
+    }
   },
   "modal_ai_assistant": {
     "header": {
