@@ -22,6 +22,8 @@ const DEFAULT_IMAGE = '/images/icons/user.svg';
 type UserPictureSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 type UserPictureRootProps = {
+  username: string,
+  displayName: string,
   size?: UserPictureSize,
   className?: string,
   children?: ReactNode,
@@ -34,12 +36,12 @@ const UserPictureRootWithoutLink = forwardRef<HTMLSpanElement, UserPictureRootPr
 const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootProps>((props, ref) => {
   const router = useRouter();
 
-  const { user } = props;
+  const { username } = props;
 
   const clickHandler = useCallback(() => {
-    const href = pagePathUtils.userHomepagePath(user);
+    const href = pagePathUtils.userHomepagePath({ username });
     router.push(href);
-  }, [router, user]);
+  }, [router, username]);
 
   // Using <span> tag here instead of <a> tag because UserPicture is used in SearchResultList which is essentially a anchor tag.
   // Nested anchor tags causes a warning.
@@ -51,25 +53,30 @@ const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootProps
 // wrapper with Tooltip
 const withTooltip = (UserPictureSpanElm: React.ForwardRefExoticComponent<UserPictureRootProps & React.RefAttributes<HTMLSpanElement>>) => {
   return (props: UserPictureRootProps) => {
-    const { user, size } = props;
+    const { username, displayName, size } = props;
 
     const tooltipClassName = `${moduleTooltipClass} user-picture-tooltip-${size ?? 'md'}`;
 
     const userPictureRef = useRef<HTMLSpanElement>(null);
 
+    const tooltipContent = (
+      <>
+        {username && <>@{username}<br /></>}
+        {displayName}
+      </>
+    );
+
     return (
       <>
-        <UserPictureSpanElm ref={userPictureRef} user={user}>{props.children}</UserPictureSpanElm>
+        <UserPictureSpanElm ref={userPictureRef} username={username} displayName={displayName}>{props.children}</UserPictureSpanElm>
         <UncontrolledTooltip
           placement="bottom"
           target={userPictureRef}
           popperClassName={tooltipClassName}
           delay={0}
           fade={false}
-          show
         >
-          @{user.username}<br />
-          {user.name}
+          {tooltipContent}
         </UncontrolledTooltip>
       </>
     );
@@ -80,25 +87,38 @@ const withTooltip = (UserPictureSpanElm: React.ForwardRefExoticComponent<UserPic
 /**
  * type guard to determine whether the specified object is IUser
  */
-const isUserObj = (obj: Partial<IUser> | Ref<IUser>): obj is IUser => {
+const hasUsername = (obj: Partial<IUser> | Ref<IUser>): obj is { username: string } => {
   return typeof obj !== 'string' && 'username' in obj;
+};
+
+/**
+ * type guard to determine whether the specified object is IUser
+ */
+const isUserObj = (obj: Partial<IUser> | Ref<IUser>): obj is IUser => {
+  return hasUsername(obj) && 'name' in obj && 'imageUrlCached' in obj;
 };
 
 
 type Props = {
   user?: Partial<IUser> | Ref<IUser> | null,
-  size?: UserPitureSize,
+  size?: UserPictureSize,
   noLink?: boolean,
   noTooltip?: boolean,
   className?: string
 };
 
 export const UserPicture = memo((props: Props): JSX.Element => {
-
   const {
     user, size, noLink, noTooltip, className: additionalClassName,
   } = props;
 
+  // Extract user information
+  const isValidUserObj = user != null && isUserObj(user);
+  const username = user != null && hasUsername(user) ? user.username : null;
+  const displayName = isValidUserObj ? user.name : 'someone';
+  const src = isValidUserObj ? user.imageUrlCached ?? DEFAULT_IMAGE : DEFAULT_IMAGE;
+
+  // Determine className
   const classNames = [moduleClass, 'user-picture', 'rounded-circle'];
   if (size != null) {
     classNames.push(`user-picture-${size}`);
@@ -108,29 +128,35 @@ export const UserPicture = memo((props: Props): JSX.Element => {
   }
   const className = classNames.join(' ');
 
-  if (user == null || !isUserObj(user)) {
+  // If no valid user data, return default image
+  if (!user) {
+    return <img src={DEFAULT_IMAGE} alt="someone" className={className} />;
+  }
+
+  // If username is not available, return image without link and tooltip
+  if (username == null) {
     return (
-      <img
-        src={DEFAULT_IMAGE}
-        alt="someone"
-        className={className}
-      />
+      <UserPictureRootWithoutLink username="" displayName={displayName}>
+        <img
+          src={src}
+          alt={displayName}
+          className={className}
+        />
+      </UserPictureRootWithoutLink>
     );
   }
 
-  // determine RootElm
-  const UserPictureSpanElm = noLink ? UserPictureRootWithoutLink : UserPictureRootWithLink;
-  const UserPictureRootElm = noTooltip
-    ? UserPictureSpanElm
-    : withTooltip(UserPictureSpanElm);
-
-  const userPictureSrc = user.imageUrlCached ?? DEFAULT_IMAGE;
+  // Determine component based on conditions
+  const shouldUseLink = !noLink;
+  const UserPictureSpanElm = shouldUseLink ? UserPictureRootWithLink : UserPictureRootWithoutLink;
+  const shouldShowTooltip = !noTooltip && isValidUserObj && user.name != null;
+  const UserPictureRootElm = shouldShowTooltip ? withTooltip(UserPictureSpanElm) : UserPictureSpanElm;
 
   return (
-    <UserPictureRootElm user={user} size={size}>
+    <UserPictureRootElm username={username} displayName={displayName} size={size}>
       <img
-        src={userPictureSrc}
-        alt={user.username}
+        src={src}
+        alt={displayName}
         className={className}
       />
     </UserPictureRootElm>
