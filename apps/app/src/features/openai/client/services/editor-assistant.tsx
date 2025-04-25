@@ -160,7 +160,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [selectedAiAssistant?._id]);
 
   const postMessage: PostMessage = useCallback(async(threadId, userMessage, markdown) => {
-    const hoge = () => {
+    const getMarkdownForPost = () => {
       if (markdown != null) {
         return markdown;
       }
@@ -178,7 +178,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       body: JSON.stringify({
         threadId,
         userMessage,
-        markdown: hoge(),
+        markdown: getMarkdownForPost(),
       }),
     });
 
