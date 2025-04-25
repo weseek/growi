@@ -62,7 +62,6 @@ interface GenerateMessageCard {
 }
 export interface FormData {
   input: string
-  markdown?: string
 }
 
 type DetectedDiff = Array<{
@@ -143,6 +142,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
   // const positionRef = useRef<number>(0);
   const lineRef = useRef<number>(0);
+  const isQuickMenuReqRef = useRef<boolean>(false);
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
@@ -165,7 +165,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
 
   // Functions
   const resetForm = useCallback(() => {
-    form.reset({ input: '', markdown: undefined });
+    form.reset({ input: '' });
   }, [form]);
 
   const createThread: CreateThread = useCallback(async() => {
@@ -177,20 +177,31 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   }, [selectedAiAssistant?._id]);
 
   const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
+    const getMarkdown = (): string | undefined => {
+      if (isQuickMenuReqRef.current) {
+        return codeMirrorEditor?.getDoc();
+      }
+
+      if (selectedText != null && selectedText.length !== 0) {
+        return selectedText;
+      }
+
+      return undefined;
+    };
+
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         threadId,
         userMessage,
-        markdown: selectedText != null && selectedText.length !== 0
-          ? selectedText
-          : undefined,
+        markdown: getMarkdown(),
       }),
     });
 
+    isQuickMenuReqRef.current = false;
     return response;
-  }, [selectedText]);
+  }, [codeMirrorEditor, selectedText]);
 
   const processMessage: ProcessMessage = useCallback((data, handler) => {
     handleIfSuccessfullyParsed(data, SseMessageSchema, (data: SseMessage) => {
@@ -312,6 +323,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     };
 
     const clickQuickMenuHandler = async(quickMenu: string) => {
+      isQuickMenuReqRef.current = true;
       await onSubmit({ input: quickMenu });
     };
 
