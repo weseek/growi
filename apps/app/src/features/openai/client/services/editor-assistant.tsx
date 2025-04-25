@@ -43,7 +43,7 @@ interface CreateThread {
   (): Promise<IThreadRelationHasId>;
 }
 interface PostMessage {
-  (threadId: string, userMessage: string): Promise<Response>;
+  (threadId: string, userMessage: string, markdown?: string): Promise<Response>;
 }
 interface ProcessMessage {
   (data: unknown, handler: {
@@ -159,16 +159,26 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     return response.data;
   }, [selectedAiAssistant?._id]);
 
-  const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
+  const postMessage: PostMessage = useCallback(async(threadId, userMessage, markdown) => {
+    const hoge = () => {
+      if (markdown != null) {
+        return markdown;
+      }
+
+      if (selectedText != null && selectedText.length !== 0) {
+        return selectedText;
+      }
+
+      return;
+    };
+
     const response = await fetch('/_api/v3/openai/edit', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         threadId,
         userMessage,
-        markdown: selectedText != null && selectedText.length !== 0
-          ? selectedText
-          : undefined,
+        markdown: hoge(),
       }),
     });
 
@@ -295,7 +305,12 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     };
 
     const clickQuickMenuHandler = async(quickMenu: string) => {
-      await onSubmit({ input: quickMenu });
+      const markdown = codeMirrorEditor?.getDoc();
+      if (markdown == null) {
+        return;
+      }
+
+      await onSubmit({ input: quickMenu, markdown });
     };
 
     return (
@@ -311,7 +326,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         />
       </>
     );
-  }, [selectedAiAssistant]);
+  }, [codeMirrorEditor, selectedAiAssistant]);
 
 
   const generateMessageCard: GenerateMessageCard = useCallback((role, children, messageId, messageLogs, generatingAnswerMessage) => {

@@ -38,6 +38,7 @@ const moduleClass = styles['grw-ai-assistant-sidebar'] ?? '';
 
 export type FormData = {
   input: string;
+  markdown?: string;
   summaryMode?: boolean;
 };
 
@@ -117,9 +118,9 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     return thread;
   }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant]);
 
-  const postMessage = useCallback(async(currentThreadId: string, input: string, summaryMode?: boolean) => {
+  const postMessage = useCallback(async(currentThreadId: string, input: string, summaryMode?: boolean, markdown?: string) => {
     if (isEditorAssistant) {
-      const response = await postMessageForEditorAssistant(currentThreadId, input);
+      const response = await postMessageForEditorAssistant(currentThreadId, input, markdown);
       return response;
     }
     if (aiAssistantData?._id != null) {
@@ -178,7 +179,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
         return;
       }
 
-      const response = await postMessage(currentThreadId_, data.input, data.summaryMode);
+      const response = await postMessage(currentThreadId_, data.input, data.summaryMode, data.markdown);
       if (response == null) {
         return;
       }
