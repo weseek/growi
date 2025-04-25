@@ -130,7 +130,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
       return response;
     }
     if (aiAssistantData?._id != null) {
-      const response = postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId, input);
+      const response = await postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId, input);
       return response;
     }
   }, [aiAssistantData?._id, isEditorAssistant, postMessageForEditorAssistant, postMessageForKnowledgeAssistant]);
