@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { atom, useAtom } from 'jotai';
 
@@ -9,7 +9,6 @@ import { EditorMode } from '~/stores-universal/ui';
 import { isDeviceLargerThanXlAtom } from './device';
 import { editorModeAtom } from './editor';
 import type { UseAtom } from './helper';
-import { resolveSetStateAction } from './helper';
 
 
 const isDrawerOpenedAtom = atom(false);
@@ -18,19 +17,18 @@ export const useDrawerOpened = (): UseAtom<typeof isDrawerOpenedAtom> => {
   return useAtom(isDrawerOpenedAtom);
 };
 
-// Avoid local storage to prevent conflicts with DB settings
 const preferCollapsedModeAtom = atom(false);
+// define a derived atom to call scheduleToPut when the value changes
+const preferCollapsedModeAtomExt = atom(
+  get => get(preferCollapsedModeAtom),
+  (get, set, update: boolean) => {
+    set(preferCollapsedModeAtom, update);
+    scheduleToPut({ preferCollapsedModeByUser: update });
+  },
+);
 
 export const usePreferCollapsedMode = (): UseAtom<typeof preferCollapsedModeAtom> => {
-  const [value, setValue] = useAtom(preferCollapsedModeAtom);
-  return [
-    value,
-    (update) => {
-      const nextValue = resolveSetStateAction(update, value);
-      setValue(nextValue);
-      scheduleToPut({ preferCollapsedModeByUser: nextValue });
-    },
-  ] as const;
+  return useAtom(preferCollapsedModeAtomExt);
 };
 
 // Initialize state from server-side props only once per session
