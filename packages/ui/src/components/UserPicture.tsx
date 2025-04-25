@@ -19,11 +19,10 @@ const UncontrolledTooltip = dynamic<UncontrolledTooltipProps>(() => import('reac
 const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 
-type UserPitureSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+type UserPictureSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 type UserPictureRootProps = {
-  user: IUser,
-  size?: UserPitureSize,
+  size?: UserPictureSize,
   className?: string,
   children?: ReactNode,
 }
