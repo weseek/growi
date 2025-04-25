@@ -32,7 +32,7 @@ export const EditingUserList: FC<Props> = ({ clientList }) => {
         {firstFourUsers.map(editingClient => (
           <div key={editingClient.clientId} className="ms-1">
             <UserPicture
-              user={editingClient.userId}
+              user={editingClient}
               noLink
               className="border border-info"
             />

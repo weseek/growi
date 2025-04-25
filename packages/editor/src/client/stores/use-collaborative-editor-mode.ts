@@ -67,8 +67,10 @@ export const useCollaborativeEditorMode = (
 
       const userLocalState: EditingClient = {
         clientId: primaryDoc.clientID,
-        name: user?.name ? `${user.name}` : `Guest User ${Math.floor(Math.random() * 100)}`,
+        name: user?.name ?? `Guest User ${Math.floor(Math.random() * 100)}`,
         userId: user?._id,
+        username: user?.username,
+        imageUrlCached: user?.imageUrlCached,
         color: userColor.color,
         colorLight: userColor.light,
       };
