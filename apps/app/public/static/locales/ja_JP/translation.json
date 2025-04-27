@@ -817,7 +817,8 @@
     "export_cancel_warning": "進行中の以下のエクスポートはキャンセルされます",
     "restart": "やり直す",
     "format": "形式",
-    "started_on": "開始日時"
+    "started_on": "開始日時",
+    "file_upload_not_configured": "ファイルアップロード設定が完了していません"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",
