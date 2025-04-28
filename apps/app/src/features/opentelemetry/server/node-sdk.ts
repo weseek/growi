@@ -1,9 +1,10 @@
 import { ConfigSource } from '@growi/core/dist/interfaces';
-import { Resource } from '@opentelemetry/resources';
 import type { NodeSDK } from '@opentelemetry/sdk-node';
 
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
+
+import { setResource } from './node-sdk-resource';
 
 const logger = loggerFactory('growi:opentelemetry:server');
 
@@ -73,11 +74,7 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
 export const detectServiceInstanceId = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
-  if (instrumentationEnabled) {
-    if (sdkInstance == null) {
-      throw new Error('OpenTelemetry SDK instance is not initialized');
-    }
-
+  if (instrumentationEnabled && sdkInstance != null) {
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
     const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
@@ -85,20 +82,14 @@ export const detectServiceInstanceId = async(): Promise<void> => {
 
     // Update resource with new service instance id
     const newConfig = generateNodeSDKConfiguration(serviceInstanceId);
-    if (newConfig.resource instanceof Resource) {
-      (sdkInstance as any)._resource = newConfig.resource;
-    }
+    setResource(sdkInstance, newConfig.resource);
   }
 };
 
 export const startOpenTelemetry = (): void => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
-  if (instrumentationEnabled) {
-    if (sdkInstance == null) {
-      throw new Error('OpenTelemetry SDK instance is not initialized');
-    }
-
+  if (instrumentationEnabled && sdkInstance != null) {
     sdkInstance.start();
   }
 };

@@ -7,6 +7,7 @@ import {
 import { configManager } from '~/server/service/config-manager';
 
 import { detectServiceInstanceId, initInstrumentation } from './node-sdk';
+import { getResource } from './node-sdk-resource';
 import { getSdkInstance, resetSdkInstance } from './node-sdk.testing';
 
 // Only mock configManager as it's external to what we're testing
@@ -42,8 +43,10 @@ describe('node-sdk', () => {
       expect(sdkInstance).toBeDefined();
       expect(sdkInstance).toBeInstanceOf(NodeSDK);
 
+      assert(sdkInstance != null);
+
       // Verify initial state (service.instance.id should not be set)
-      const resource = (sdkInstance as any)._resource;
+      const resource = getResource(sdkInstance);
       expect(resource).toBeInstanceOf(Resource);
       expect(resource.attributes['service.instance.id']).toBeUndefined();
 
@@ -51,7 +54,7 @@ describe('node-sdk', () => {
       await detectServiceInstanceId();
 
       // Verify that resource was updated with app:serviceInstanceId
-      const updatedResource = (sdkInstance as any)._resource;
+      const updatedResource = getResource(sdkInstance);
       expect(updatedResource.attributes['service.instance.id']).toBe('test-instance-id');
     });
 
@@ -69,14 +72,16 @@ describe('node-sdk', () => {
 
       // Verify initial state
       const sdkInstance = getSdkInstance();
-      const resource = (sdkInstance as any)._resource;
+      assert(sdkInstance != null);
+
+      const resource = getResource(sdkInstance);
       expect(resource.attributes['service.instance.id']).toBeUndefined();
 
       // Call detectServiceInstanceId
       await detectServiceInstanceId();
 
       // Verify that otel:serviceInstanceId was used
-      const updatedResource = (sdkInstance as any)._resource;
+      const updatedResource = getResource(sdkInstance);
       expect(updatedResource.attributes['service.instance.id']).toBe('otel-instance-id');
     });
 
