@@ -19,6 +19,7 @@ import type { IThreadRelationHasId } from '../../../../interfaces/thread-relatio
 import {
   useEditorAssistant,
   useAiAssistantSidebarCloseEffect as useAiAssistantSidebarCloseEffectForEditorAssistant,
+  isEditorAssistantFormData,
   type FormData as FormDataForEditorAssistant,
 } from '../../../services/editor-assistant';
 import {
@@ -88,6 +89,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     processMessage: processMessageForEditorAssistant,
     form: formForForEditorAssistant,
     resetForm: resetFormEditorAssistant,
+    isTextSelected,
 
     // Views
     generateInitialView: generateInitialViewForEditorAssistant,
@@ -124,19 +126,22 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
     return thread;
   }, [aiAssistantData, createThreadForEditorAssistant, createThreadForKnowledgeAssistant, isEditorAssistant]);
 
-  const postMessage = useCallback(async(currentThreadId: string, input: string) => {
+  const postMessage = useCallback(async(currentThreadId: string, formData: FormData) => {
     if (isEditorAssistant) {
-      const response = await postMessageForEditorAssistant(currentThreadId, input);
-      return response;
+      if (isEditorAssistantFormData(formData)) {
+        const response = await postMessageForEditorAssistant(currentThreadId, formData);
+        return response;
+      }
+      return;
     }
     if (aiAssistantData?._id != null) {
-      const response = await postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId, input);
+      const response = await postMessageForKnowledgeAssistant(aiAssistantData._id, currentThreadId, formData);
       return response;
     }
   }, [aiAssistantData?._id, isEditorAssistant, postMessageForEditorAssistant, postMessageForKnowledgeAssistant]);
 
   const isGenerating = generatingAnswerMessage != null;
-  const submit = useCallback(async(data: FormData) => {
+  const submitSubstance = useCallback(async(data: FormData) => {
     // do nothing when the assistant is generating an answer
     if (isGenerating) {
       return;
@@ -185,7 +190,7 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
         return;
       }
 
-      const response = await postMessage(currentThreadId_, data.input);
+      const response = await postMessage(currentThreadId_, data);
       if (response == null) {
         return;
       }
@@ -283,6 +288,22 @@ const AiAssistantSidebarSubstance: React.FC<AiAssistantSidebarSubstanceProps> = 
 
   // eslint-disable-next-line max-len
   }, [isGenerating, messageLogs, resetForm, currentThreadId, createThread, t, postMessage, form, processMessageForKnowledgeAssistant, processMessageForEditorAssistant, growiCloudUri]);
+
+  const submit = useCallback((data: FormData) => {
+    if (isEditorAssistant) {
+      const markdownType = (() => {
+        if (isEditorAssistantFormData(data) && data.markdownType != null) {
+          return data.markdownType;
+        }
+
+        return isTextSelected ? 'selected' : 'none';
+      })();
+
+      return submitSubstance({ ...data, markdownType });
+    }
+
+    return submitSubstance(data);
+  }, [isEditorAssistant, isTextSelected, submitSubstance]);
 
   const keyDownHandler = (event: KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) {

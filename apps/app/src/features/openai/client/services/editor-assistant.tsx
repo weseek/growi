@@ -44,7 +44,7 @@ interface CreateThread {
   (): Promise<IThreadRelationHasId>;
 }
 interface PostMessage {
-  (threadId: string, userMessage: string): Promise<Response>;
+  (threadId: string, formData: FormData): Promise<Response>;
 }
 interface ProcessMessage {
   (data: unknown, handler: {
@@ -61,7 +61,8 @@ interface GenerateMessageCard {
   (role: MessageCardRole, children: string, messageId: string, messageLogs: MessageLog[], generatingAnswerMessage?: MessageLog): JSX.Element;
 }
 export interface FormData {
-  input: string
+  input: string,
+  markdownType?: 'full' | 'selected' | 'none'
 }
 
 type DetectedDiff = Array<{
@@ -76,6 +77,7 @@ type UseEditorAssistant = () => {
   processMessage: ProcessMessage,
   form: UseFormReturn<FormData>
   resetForm: () => void
+  isTextSelected: boolean,
 
   // Views
   generateInitialView: GenerateInitialView,
@@ -142,12 +144,13 @@ export const useEditorAssistant: UseEditorAssistant = () => {
   // Refs
   // const positionRef = useRef<number>(0);
   const lineRef = useRef<number>(0);
-  const isQuickMenuReqRef = useRef<boolean>(false);
 
   // States
   const [detectedDiff, setDetectedDiff] = useState<DetectedDiff>();
-  const [selectedText, setSelectedText] = useState<string>();
   const [selectedAiAssistant, setSelectedAiAssistant] = useState<AiAssistantHasId>();
+  const [selectedText, setSelectedText] = useState<string>();
+
+  const isTextSelected = useMemo(() => selectedText != null && selectedText.length !== 0, [selectedText]);
 
   // Hooks
   const { t } = useTranslation();
@@ -176,17 +179,19 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     return response.data;
   }, [selectedAiAssistant?._id]);
 
-  const postMessage: PostMessage = useCallback(async(threadId, userMessage) => {
+  const postMessage: PostMessage = useCallback(async(threadId, formData) => {
     const getMarkdown = (): string | undefined => {
-      if (isQuickMenuReqRef.current) {
-        return codeMirrorEditor?.getDoc();
+      if (formData.markdownType === 'none') {
+        return undefined;
       }
 
-      if (selectedText != null && selectedText.length !== 0) {
+      if (formData.markdownType === 'selected') {
         return selectedText;
       }
 
-      return undefined;
+      if (formData.markdownType === 'full') {
+        return codeMirrorEditor?.getDoc();
+      }
     };
 
     const response = await fetch('/_api/v3/openai/edit', {
@@ -194,12 +199,11 @@ export const useEditorAssistant: UseEditorAssistant = () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         threadId,
-        userMessage,
+        userMessage: formData.input,
         markdown: getMarkdown(),
       }),
     });
 
-    isQuickMenuReqRef.current = false;
     return response;
   }, [codeMirrorEditor, selectedText]);
 
@@ -259,7 +263,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         pendingDetectedDiff.forEach((detectedDiff) => {
           if (isReplaceDiff(detectedDiff.data)) {
 
-            if (selectedText != null && selectedText.length !== 0) {
+            if (isTextSelected) {
               const lineInfo = getLineInfo(yText, lineRef.current);
               if (lineInfo != null && lineInfo.text !== detectedDiff.data.diff.replace) {
                 yText.delete(lineInfo.startIndex, lineInfo.text.length);
@@ -284,26 +288,29 @@ export const useEditorAssistant: UseEditorAssistant = () => {
         });
       });
 
-      // Mark as applied: true after applying to secondaryDoc
+      // Mark items as applied after applying to secondaryDoc
       setDetectedDiff((prev) => {
+        if (!prev) return prev;
         const pendingDetectedDiffIds = pendingDetectedDiff.map(diff => diff.id);
-        prev?.forEach((diff) => {
+        return prev.map((diff) => {
           if (pendingDetectedDiffIds.includes(diff.id)) {
-            diff.applied = true;
+            return { ...diff, applied: true };
           }
+          return diff;
         });
-        return prev;
       });
-
-      // Set detectedDiff to undefined after applying all detectedDiff to secondaryDoc
-      if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === false).length === 0) {
-        setSelectedText(undefined);
-        setDetectedDiff(undefined);
-        lineRef.current = 0;
-        // positionRef.current = 0;
-      }
     }
-  }, [codeMirrorEditor, detectedDiff, selectedText, yDocs?.secondaryDoc]);
+  }, [codeMirrorEditor, detectedDiff, isTextSelected, selectedText, yDocs?.secondaryDoc]);
+
+  // Set detectedDiff to undefined after applying all detectedDiff to secondaryDoc
+  useEffect(() => {
+    if (detectedDiff?.filter(detectedDiff => detectedDiff.applied === false).length === 0) {
+      setSelectedText(undefined);
+      setDetectedDiff(undefined);
+      lineRef.current = 0;
+      // positionRef.current = 0;
+    }
+  }, [detectedDiff]);
 
 
   // Views
@@ -323,8 +330,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     };
 
     const clickQuickMenuHandler = async(quickMenu: string) => {
-      isQuickMenuReqRef.current = true;
-      await onSubmit({ input: quickMenu });
+      await onSubmit({ input: quickMenu, markdownType: 'full' });
     };
 
     return (
@@ -396,6 +402,7 @@ export const useEditorAssistant: UseEditorAssistant = () => {
     processMessage,
     form,
     resetForm,
+    isTextSelected,
 
     // Views
     generateInitialView,
@@ -415,4 +422,9 @@ export const useAiAssistantSidebarCloseEffect = (): void => {
       close();
     }
   }, [close, data?.isEditorAssistant, editorMode]);
+};
+
+// type guard
+export const isEditorAssistantFormData = (formData): formData is FormData => {
+  return 'markdownType' in formData;
 };
