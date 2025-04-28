@@ -1,4 +1,5 @@
 import { ConfigSource } from '@growi/core/dist/interfaces';
+import { Resource } from '@opentelemetry/resources';
 import type { NodeSDK } from '@opentelemetry/sdk-node';
 
 import { configManager } from '~/server/service/config-manager';
@@ -6,8 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:opentelemetry:server');
 
-
-let sdkInstance: NodeSDK;
+let sdkInstance: NodeSDK | undefined;
 
 /**
  * Overwrite "OTEL_SDK_DISABLED" env var before sdk.start() is invoked if needed.
@@ -33,7 +33,6 @@ function overwriteSdkDisabled(): void {
     process.env.OTEL_SDK_DISABLED = 'true';
     return;
   }
-
 }
 
 export const initInstrumentation = async(): Promise<void> => {
@@ -49,7 +48,6 @@ export const initInstrumentation = async(): Promise<void> => {
 
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
   if (instrumentationEnabled) {
-
     logger.info(`GROWI now collects anonymous telemetry.
 
 This data is used to help improve GROWI, but you can opt-out at any time.
@@ -75,22 +73,32 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
 export const detectServiceInstanceId = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
-  if (instrumentationEnabled) {
+  if (instrumentationEnabled && sdkInstance != null) {
     const { generateNodeSDKConfiguration } = await import('./node-sdk-configuration');
 
     const serviceInstanceId = configManager.getConfig('otel:serviceInstanceId')
       ?? configManager.getConfig('app:serviceInstanceId');
 
-    // overwrite resource
-    const updatedResource = generateNodeSDKConfiguration(serviceInstanceId).resource;
-    (sdkInstance as any)._resource = updatedResource;
+    // Update resource with new service instance id
+    const newConfig = generateNodeSDKConfiguration(serviceInstanceId);
+    if (newConfig.resource instanceof Resource) {
+      (sdkInstance as any)._resource = newConfig.resource;
+    }
   }
 };
 
 export const startOpenTelemetry = (): void => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
-  if (instrumentationEnabled) {
+  if (instrumentationEnabled && sdkInstance != null) {
     sdkInstance.start();
   }
+};
+
+// For testing purposes only
+export const __testing__ = {
+  getSdkInstance: () => sdkInstance,
+  reset: () => {
+    sdkInstance = undefined;
+  },
 };

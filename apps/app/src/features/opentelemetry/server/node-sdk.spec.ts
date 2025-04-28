@@ -1,3 +1,4 @@
+import { Resource } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import {
   beforeEach, describe, expect, it, vi,
@@ -6,8 +7,9 @@ import {
 import { configManager } from '~/server/service/config-manager';
 
 import { detectServiceInstanceId, initInstrumentation } from './node-sdk';
+import { getSdkInstance, resetSdkInstance } from './node-sdk.testing';
 
-// Mock configManager
+// Only mock configManager as it's external to what we're testing
 vi.mock('~/server/service/config-manager', () => ({
   configManager: {
     getConfig: vi.fn(),
@@ -15,38 +17,11 @@ vi.mock('~/server/service/config-manager', () => ({
   },
 }));
 
-// Mock NodeSDK
-let mockSdkInstance: any;
-vi.mock('@opentelemetry/sdk-node', () => ({
-  NodeSDK: vi.fn().mockImplementation(() => {
-    const instance = {
-      _resource: {
-        attributes: () => ({
-          'service.instance.id': 'default-instance-id',
-        }),
-      },
-      start: vi.fn(),
-    };
-    mockSdkInstance = instance;
-    return instance;
-  }),
-}));
-
-// Mock node-sdk-configuration
-vi.mock('./node-sdk-configuration', () => ({
-  generateNodeSDKConfiguration: vi.fn().mockImplementation((serviceInstanceId?: string) => ({
-    resource: {
-      attributes: () => ({
-        'service.instance.id': serviceInstanceId ?? 'default-instance-id',
-      }),
-    },
-  })),
-}));
-
 describe('node-sdk', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockSdkInstance = undefined;
+    vi.resetModules();
+    resetSdkInstance();
 
     // Reset configManager mock implementation
     (configManager.getConfig as any).mockImplementation((key: string) => {
@@ -58,37 +33,73 @@ describe('node-sdk', () => {
   });
 
   describe('detectServiceInstanceId', () => {
-    it('should update service.instance.id in the resource attributes', async() => {
+    it('should update service.instance.id when app:serviceInstanceId is available', async() => {
       // Initialize SDK first
       await initInstrumentation();
 
-      // Get initial resource attributes
-      const initialAttributes = mockSdkInstance._resource.attributes();
-      expect(initialAttributes['service.instance.id']).toBe('default-instance-id');
+      // Get instance for testing
+      const sdkInstance = getSdkInstance();
+      expect(sdkInstance).toBeDefined();
+      expect(sdkInstance).toBeInstanceOf(NodeSDK);
+
+      // Verify initial state (service.instance.id should not be set)
+      const resource = (sdkInstance as any)._resource;
+      expect(resource).toBeInstanceOf(Resource);
+      expect(resource.attributes['service.instance.id']).toBeUndefined();
 
       // Call detectServiceInstanceId
       await detectServiceInstanceId();
 
-      // Get updated resource attributes
-      const updatedAttributes = mockSdkInstance._resource.attributes();
-      expect(updatedAttributes['service.instance.id']).toBe('test-instance-id');
+      // Verify that resource was updated with app:serviceInstanceId
+      const updatedResource = (sdkInstance as any)._resource;
+      expect(updatedResource.attributes['service.instance.id']).toBe('test-instance-id');
     });
 
-    it('should not update resource if instrumentation is disabled', async() => {
+    it('should update service.instance.id with otel:serviceInstanceId if available', async() => {
+      // Mock otel:serviceInstanceId is available
+      (configManager.getConfig as any).mockImplementation((key: string) => {
+        if (key === 'otel:enabled') return true;
+        if (key === 'otel:serviceInstanceId') return 'otel-instance-id';
+        if (key === 'app:serviceInstanceId') return 'test-instance-id';
+        return undefined;
+      });
+
+      // Initialize SDK
+      await initInstrumentation();
+
+      // Verify initial state
+      const sdkInstance = getSdkInstance();
+      const resource = (sdkInstance as any)._resource;
+      expect(resource.attributes['service.instance.id']).toBeUndefined();
+
+      // Call detectServiceInstanceId
+      await detectServiceInstanceId();
+
+      // Verify that otel:serviceInstanceId was used
+      const updatedResource = (sdkInstance as any)._resource;
+      expect(updatedResource.attributes['service.instance.id']).toBe('otel-instance-id');
+    });
+
+    it('should not create SDK instance if instrumentation is disabled', async() => {
       // Mock instrumentation as disabled
       (configManager.getConfig as any).mockImplementation((key: string) => {
         if (key === 'otel:enabled') return false;
         return undefined;
       });
 
-      // Initialize SDK first
+      // Initialize SDK
       await initInstrumentation();
+
+      // Verify that no SDK instance was created
+      const sdkInstance = getSdkInstance();
+      expect(sdkInstance).toBeUndefined();
 
       // Call detectServiceInstanceId
       await detectServiceInstanceId();
 
-      // Verify that SDK instance was not created
-      expect(mockSdkInstance).toBeUndefined();
+      // Verify that still no SDK instance exists
+      const updatedSdkInstance = getSdkInstance();
+      expect(updatedSdkInstance).toBeUndefined();
     });
   });
 });
