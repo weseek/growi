@@ -36,7 +36,7 @@ function overwriteSdkDisabled(): void {
 
 }
 
-export const startInstrumentation = async(): Promise<void> => {
+export const initInstrumentation = async(): Promise<void> => {
   if (sdkInstance != null) {
     logger.warn('OpenTelemetry instrumentation already started');
     return;
@@ -72,7 +72,7 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
   }
 };
 
-export const initServiceInstanceId = async(): Promise<void> => {
+export const startOpenTelemetry = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
   if (instrumentationEnabled) {
@@ -88,17 +88,3 @@ export const initServiceInstanceId = async(): Promise<void> => {
     sdkInstance.start();
   }
 };
-
-// public async shutdownInstrumentation(): Promise<void> {
-//   await this.sdkInstance.shutdown();
-
-//   // メモ: 以下の restart コードは動かない
-//   // span/metrics ともに何も出なくなる
-//   // そもそも、restart するような使い方が出来なさそう？
-//   // see: https://github.com/open-telemetry/opentelemetry-specification/issues/27/
-//   // const sdk = new NodeSDK({...});
-//   // sdk.start();
-//   // await sdk.shutdown().catch(console.error);
-//   // const newSdk = new NodeSDK({...});
-//   // newSdk.start();
-// }
