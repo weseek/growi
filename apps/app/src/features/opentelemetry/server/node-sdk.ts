@@ -72,7 +72,7 @@ For more information, see https://docs.growi.org/en/admin-guide/admin-cookbook/t
   }
 };
 
-export const startOpenTelemetry = async(): Promise<void> => {
+export const detectServiceInstanceId = async(): Promise<void> => {
   const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
 
   if (instrumentationEnabled) {
@@ -84,7 +84,13 @@ export const startOpenTelemetry = async(): Promise<void> => {
     // overwrite resource
     const updatedResource = generateNodeSDKConfiguration(serviceInstanceId).resource;
     (sdkInstance as any)._resource = updatedResource;
+  }
+};
 
+export const startOpenTelemetry = (): void => {
+  const instrumentationEnabled = configManager.getConfig('otel:enabled', ConfigSource.env);
+
+  if (instrumentationEnabled) {
     sdkInstance.start();
   }
 };

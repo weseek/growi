@@ -1,6 +1,6 @@
 import type Logger from 'bunyan';
 
-import { initInstrumentation, startOpenTelemetry } from '~/features/opentelemetry/server';
+import { initInstrumentation, detectServiceInstanceId, startOpenTelemetry } from '~/features/opentelemetry/server';
 import loggerFactory from '~/utils/logger';
 import { hasProcessFlag } from '~/utils/process-utils';
 
@@ -28,7 +28,8 @@ async function main() {
     const server = await growi.start();
 
     // Start OpenTelemetry
-    await startOpenTelemetry();
+    await detectServiceInstanceId();
+    startOpenTelemetry();
 
     if (hasProcessFlag('ci')) {
       logger.info('"--ci" flag is detected. Exit process.');
